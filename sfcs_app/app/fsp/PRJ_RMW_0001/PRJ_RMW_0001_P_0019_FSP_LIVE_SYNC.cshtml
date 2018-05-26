@@ -1,0 +1,47 @@
+﻿<!-- 
+
+Page Description: This page is to sync live data with FR Plan
+
+-->
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>FR and LIVE Sync</title>
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+
+            
+            //Date Period Selection
+            DateTime d = DateTime.Now;
+            
+            //To Track Page Start Time
+            db_class.exe_queries("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_010_EXE_LOG] (page_name,start_time,log_user) values('"+Page.g_page_name+"','"+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"','"+Page.g_log_user+"')");
+                        
+            var page_log_in_id=db_class.last_insert_id();
+
+            
+            //Sync FR Plan table with Live Data
+            db_class.exe_queries("BEK_DBS_RMW_0001","exec [BEK_DBS_RMW_0001].[dbo].[FRPLAN_SFCS_SYNC]");
+
+            
+         }
+
+       
+
+        @{
+            d = DateTime.Now;
+            //To Track Page End Time
+            db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_010_EXE_LOG] set end_time='"+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"' where log_id='"+page_log_in_id+"'");
+            
+            //Redirect Page 
+            //Response.Redirect("PRJ_RMW_0001_P_0003_BOM_TRACK_UPDATE.cshtml");  
+            <h2>Successfully Completed.</h2> 
+            <script> setTimeout("CloseWindow()",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script>         
+        }
+    </body>
+</html>

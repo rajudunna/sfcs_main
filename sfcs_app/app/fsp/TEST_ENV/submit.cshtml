@@ -1,0 +1,8 @@
+﻿@{
+
+	  var fileSavePath = "";
+        var uploadedFile = Request.Files[0];
+         var fileName = Path.GetFileName(uploadedFile.FileName);
+        fileSavePath = Server.MapPath("uploads/" +'1'+Path.GetExtension(uploadedFile.FileName));
+        uploadedFile.SaveAs(fileSavePath);
+}

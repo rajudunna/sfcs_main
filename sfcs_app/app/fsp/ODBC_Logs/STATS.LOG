@@ -1,0 +1,12 @@
+Time	TimerResolution	SQLIDU	SQLIDURows	SQLSelects	SQLSelectRows	Transactions	SQLPrepares	ExecDirects	SQLExecutes	CursorOpens	CursorSize	CursorUsed	PercentCursorUsed	AvgFetchTime	AvgCursorSize	AvgCursorUsed	SQLFetchTime	SQLFetchCount	CurrentStmtCount	MaxOpenStmt	SumOpenStmt	CurrentConnectionCount	MaxConnectionsOpened	SumConnectionsOpened	SumConnectiontime	AvgTimeOpened	ServerRndTrips	BuffersSent	BuffersRec	BytesSent	BytesRec	msExecutionTime	msNetWorkServerTime	Comment
+Sat Jun 15 08:44:04	0	515	752	2	123	790	0	1	0	0	0	0	0.000000	0.000000	0.000000	0.000000	0	0	0	1	2	0	1	1	30208	30208.000000	2	2	33	400	80555	29800	30254	
+20	31849	
+
+
+
+
+	234573	472311	
+0290	
+
+
+

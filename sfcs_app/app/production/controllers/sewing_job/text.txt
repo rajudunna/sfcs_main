@@ -1,0 +1,66 @@
+	include("../../../common/config/dbconf.php");
+	include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/production/common/config/dbconf.php");
+	include($_SERVER['DOCUMENT_ROOT']."/sfcs/common/config/user_acl_v1.php");
+	include($_SERVER['DOCUMENT_ROOT']."/sfcs/common/config/group_def.php");
+
+
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/production/common/config/functions.php");
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/production/common/config/header_scripts.php");
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/production/common/config/menu_content.php");
+
+    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+    include("..".getFullURLLevel($_GET['r'],'common/config/dbconf.php',2,'R'));
+
+    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+
+    Add Carton Properties:
+    http://localhost//sfcsui/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvY2FydG9uX3JhdGlvLnBocA==
+    /sfcs_app/app/production/controllers/sewing_job/carton_ratio.php
+
+    Delete Sewing Jobs:
+    http://localhost//sfcsui/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvZGVsZXRlX3Nld2luZ19qb2JzLnBocA==
+    /sfcs_app/app/production/controllers/sewing_job/delete_sewing_jobs.php
+
+    Orders Re-Sync:
+    http://localhost//sfcsui/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivb3JkZXJzX3N5bmNfdjEucGhw
+    /sfcs_app/app/production/controllers/sewing_job/orders_sync_v1.php
+
+    Create Sewing Jobs:
+    http://localhost/sfcsui/?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9jcmVhdGUucGhw
+    /sfcs_app/app/production/controllers/sewing_job/sewing_job_create.php
+
+
+    Sewing Jobs Split:
+    http://localhost/sfcsui/?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX3NwbGl0LnBocA==
+    /sfcs_app/app/production/controllers/sewing_job/input_job_split.php
+
+    Operations Master:
+    http://localhost//sfcsui/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nX2Jlay9vcGVyYXRpb25zX2NyZWF0aW9uLnBocA==
+    /sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/operations_creation.php
+
+    Operations Mapping:
+    http://localhost/sfcsui/?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nX2Jlay9idW5kbGVfb3BlcmF0aW9ucy5waHA=
+    /sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/bundle_operations.php
+
+    Sewing Jobs Scanning:
+    http://localhost/sfcsui/?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nX2Jlay9wcmVfaW5wdXRfam9iX3NjYW5uaW5nLnBocA==
+    /sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/pre_input_job_scanning.php
+
+    Garments Sending:
+    http://localhost/sfcsui/?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nX2Jlay9zZW5kX3F1YW50aXR5X3JlcG9ydC5waHA=
+    /sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/send_quantity_report.php
+
+    Garment Receiving:
+    http://localhost/sfcsui/?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nX2Jlay9yZWNlaXZlZF9xdWFudGl0eV91cGRhdGUucGhw
+    /sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/received_quantity_update.php
+
+    Sewing Job Reversal:
+    http://localhost/sfcsui/?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nX2Jlay9pbnB1dGpvYl9yZXZlcnNhbF9zY2FuLnBocA==
+    /sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/inputjob_reversal_scan.php
+
+    Bundle Operations Report:
+    http://localhost/sfcsui/?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nX2Jlay9idW5kbGVfb3BlcmF0aW9uc19yZXBvcnQucGhw==
+    /sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/bundle_operations_report.php

@@ -1,0 +1,13 @@
+﻿@{
+
+String MBBOMID;
+
+MBBOMID="";
+
+if(String.IsNullOrEmpty(MBBOMID)  ||  String.IsNullOrWhiteSpace(MBBOMID))
+{
+    MBBOMID="1001";
+}
+@(MBBOMID);    
+
+}

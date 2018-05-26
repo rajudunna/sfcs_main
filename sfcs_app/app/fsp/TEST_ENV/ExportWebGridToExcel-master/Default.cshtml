@@ -1,0 +1,35 @@
+﻿@{
+    Page.Title = "Export To Excel";
+    var db = Database.Open("BEK_DBS_RMW_0001");
+    var query = "SELECT top 5 order_code,delivery_date " +
+        "FROM dbo.T_0001_002_FRPLAN";
+    var data = db.Query(query);
+    var grid = new WebGrid(data, ajaxUpdateContainerId: "grid");
+}
+<h1>Export to Excel</h1>
+<div id="gridContainer">
+    <div id="grid">
+        @grid.GetHtml(    
+            tableStyle : "table",
+            alternatingRowStyle : "alternate",
+            headerStyle : "header",
+            columns: grid.Columns(
+                grid.Column("Order_Code", header: "Order Code"),
+                    grid.Column("Delivery_Date" , header: "Delivery Date")
+            )
+        )
+        <span id="excel">Export</span>
+    </div>
+</div>
+@section script{
+<script type="text/javascript">
+    $(function () {
+        $('#excel').appendTo($('tfoot tr td')).on('hover', function () {
+            $(this).css('cursor', 'pointer');
+        });
+        $('#excel').on('click', function () {
+            $('<iframe src="/GenerateExcelStyled"></iframe>').appendTo('body').hide();
+        });
+    });
+</script>       
+}

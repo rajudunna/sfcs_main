@@ -1,0 +1,23 @@
+<html>
+<head>
+<!-- This file is to copy Picking list from remote server to local webserver and facilitate the same for an access. -->
+
+</head>
+
+<body>
+<h3>Bundle Tracking System</h3>
+<form>
+Picking List #:<input name="num" size="20"> &nbsp;&nbsp; <input type="submit" name="submit" value="Click to Open" >
+
+</form>
+    
+
+@{
+
+    
+   Process.Start("chrome", @"http://bai3net:8080/projects/beta/bundle_tracking_system/brandix_bts/");
+}
+
+</body>
+
+</html>

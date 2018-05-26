@@ -1,0 +1,67 @@
+﻿<!-- 
+
+Page Description: This page to update remarks agains individual pending items.
+
+-->
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Update Item Level Status</title>
+    </head>
+    <body>
+        @{
+            //Construct : Class Object
+            db_object db_class=new db_object();
+            String start_time="";
+
+            DateTime d = DateTime.Now;
+            @("Start"+d); <br/>
+
+
+            //To Auto Reset item status based on criteria
+            if(Page.auto_reset_status==1)
+            {
+                String today_date=d.ToString("yyyy-MM-dd").ToString();
+                udf_functions udf_class=new udf_functions();
+                                
+                var result_set3=db_class.show_result("BEK_DBS_RMW_0001","SELECT bom_tid,cast(m3bompool_tid_ref as varchar(max)) as m3bompool_tid_ref FROM [BEK_DBS_RMW_0001].[dbo].[V_0001_0005_FR_BOM_TRACK_REP] where  PROC_GRP in ("+Page.auto_reset_cats+") and production_date<='"+today_date+"'  and bom_status not in (0,1)  and bom_status is not null  and bom_status<="+Page.auto_reset_status_code_limit+" and ISNUMERIC(bom_remarks)=1  and CONVERT(decimal(15,4),bom_remarks)<=(((bom_req_qty)*"+Page.auto_reset_perc_limit+")/100)");
+                foreach(var result_record in result_set3)
+                {
+                     udf_class.FN_REM_UPDATE("0","","AUTO RESET BY SYSTEM",result_record.bom_tid,result_record.m3bompool_tid_ref,Page.g_log_user);
+                }
+            }
+
+
+
+
+            //To update Intrim Manually updated Schedules to FR Plan.
+            var result_set_up_a=db_class.show_result("BEK_DBS_RMW_0001","select * from [EXT_DB_UPLOAD].[dbo].[BAI_FRPLAN_MANUAL] where isnumeric(schedule)=1 order by order_code");                      
+            if(db_class.queries_count()>0)
+            {
+                foreach(var record_result_a in result_set_up_a)
+                {
+                    var result_set_up_b=db_class.show_result("BEK_DBS_RMW_0001","select schedule from [BEK_DBS_RMW_0001].[dbo].[V_0001_0001_FRPLAN_POOL] where [BEK_DBS_RMW_0001].[dbo].TRIM(schedule)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+record_result_a.schedule+"')");
+                    
+                    if(db_class.queries_count()==0)
+                    {
+                        //To insert into FR Plan
+                        db_class.exe_queries("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_002_FRPLAN] (group_code,module,style,order_code,color,smv,delivery_date,schedule,production_date,qty,status,efficiency,plan_smo) select group_code,module,style,order_code,color,smv,delivery_date,schedule,production_date,qty,status,efficiency,plan_smo from [EXT_DB_UPLOAD].[dbo].[BAI_FRPLAN_MANUAL] where [BEK_DBS_RMW_0001].[dbo].TRIM(schedule)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+record_result_a.schedule+"')");
+
+                        //To update in FR Pool Table
+                        db_class.exe_queries("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] (fr_plan_tid_ref)  values ("+db_class.last_insert_id()+")");
+                    }                     
+                }
+
+                //Truncated Source Plan in External Temp Table
+                db_class.exe_queries("BEK_DBS_RMW_0001","truncate table [EXT_DB_UPLOAD].[dbo].[BAI_FRPLAN_MANUAL]");
+            }
+                
+        }
+
+
+
+    </body>
+</html>

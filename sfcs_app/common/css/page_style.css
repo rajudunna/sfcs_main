@@ -1,0 +1,51 @@
+body {
+font: normal 12px Arial, Verdana, sans-serif;
+}
+
+table
+{
+border-collapse:collapse;
+white-space:nowrap;
+border: solid 1px black; 
+font: normal 12px Arial, Verdana, sans-serif;
+}
+
+th
+{
+border-collapse:collapse;
+white-space:nowrap;
+border: solid 1px black; 
+background-color:#29759C;
+color:white;
+padding: 5px;
+}
+
+tr
+{
+border-collapse:collapse;
+white-space:nowrap;
+border: solid 1px black; 
+padding: 5px;
+}
+
+td
+{
+border-collapse:collapse;
+white-space:nowrap;
+border: solid 1px black;
+padding: 5px;
+}
+
+.tb8 {
+	width: 100px;
+	border: 1px solid #3366FF;
+	border-left: 4px solid #3366FF;
+}
+
+.new
+{
+border-collapse:collapse;
+white-space:nowrap;
+border: solid 1px black; 
+padding: 5px;
+}

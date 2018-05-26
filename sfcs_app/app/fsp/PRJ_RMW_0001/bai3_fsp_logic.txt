@@ -1,0 +1,23 @@
+1) Need to add two new fields against the BOM Pool to identify the singlesizeratio and totalpackratio, stock available %, This is one time task and the same need to tracked in FR Pool table by adding new flag field against the bom ratio track status and unplanned_qty completed schedules.
+
+2) Need to add FSP fields in FR Plan table to update the status against the each day plan and required and cummulative past required.
+
+
+1) Added filed "ratio_track_status","un_planned_qty" tinyint in [dbo].[T_0001_003_FR_POOL]
+2) Added filed pas_ratio, pack_ratio, stock_available_per in [dbo].[T_0001_004_BOM_POOL]
+3) added fa_status, pt,st status in _FRPLAN Table
+
+3) modify V_0001_0001_FRPLAN_POOL view to add new field "ratio_track_status"
+
+4) modfiy V_0001_0004_BOM_POOL, v_0001_0005_FR_BOM_TRACK_REP view to add new fiels "pcs_ratio","pack_ratio","stock_available_per"
+
+5) added fab_status,strim_status,ptrim_status,3 fields in SP [S_0001_014_SP_REP_FR3]
+
+6) modified track_update with garment size
+
+SCH TEST # 347836
+-- to update available qty
+if bombalance is 0 then put 1
+else
+if (bom_issued+bom_remarks/bom_req)
+

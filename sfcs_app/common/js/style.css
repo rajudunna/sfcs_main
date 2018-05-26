@@ -1,0 +1,67 @@
+/*bai 1*/
+body
+{	
+	background:#EEE;	
+	font-family: arial;
+	font-size:12px;
+}
+
+/* For Page Form Heading */
+#page_heading{
+    width: 100%;
+    height: 25px;
+    color: WHITE;
+    background-color: #29759c;
+    z-index: -999;
+    font-family:Arial;
+    font-size:15px;  
+	margin-bottom: 10px;
+}
+
+#page_heading h3{
+	vertical-align: middle;
+	margin-left: 15px;
+	margin-bottom: 0;	
+	padding: 0px;
+ }
+
+#page_heading img{
+    margin-top: 2px;
+    margin-right: 15px;
+}
+
+/*<div id="page_heading"><span style="float: left"><h3>Input Management System - Production WIP Dashboard</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>*/
+/* For Page Form Heading */
+
+table
+{
+	border-collapse:collapse;
+	font-size:14px;
+}
+table div
+{
+	border-collapse:collapse;
+	text-align: center;
+
+}
+table div
+{
+
+	border-collapse:collapse;
+	text-align: left;
+
+}
+table th
+{
+	border-collapse:collapse;
+	text-align: center;
+    background-color:#29759c;
+	color:white;
+	border-right:white;
+
+}
+
+input,select,textarea{
+border-color:black; 
+border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;}
+

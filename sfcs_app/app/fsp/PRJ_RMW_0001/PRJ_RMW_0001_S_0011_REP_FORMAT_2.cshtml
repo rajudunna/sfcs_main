@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	 @RenderPage(Page.scripts_include_head)
+	<script type="text/javascript">
+     $(document).ready(function ()
+     {
+         $("#myButton").click(function ()
+         {
+
+             $("#content").html("");
+
+             $.ajax({
+                 cache: false,
+                 type: 'POST',
+                 url: 'PRJ_RMW_0001_P_0007_REP_FORMAT_2.cshtml',
+                 data: $("#myForm").serialize() + '&rando='+Math.random(),
+                 beforeSend: function ()
+                 {
+                     // this is where we append a loading image
+                     $("#myForm").hide();
+                     $('#ajax-panel').html('<div class="loading"><img src="/images/loading/animated_loading.gif" alt="Loading..." /></div>');
+                 },
+                 success: function (response)
+                 {
+                     $("#myForm").show();
+                     $('#ajax-panel').empty();
+                     $("#ajax-panel").html(response);
+                 },
+                 error: function (response)
+                 {
+                     // failed request; give feedback to user
+                     $("#myForm").show();
+                     $('#ajax-panel').html('<p class="error"><strong>Oops!</strong> Try that again in a few moments.</p>');
+                 }
+
+             });
+         });
+     });
+
+     $(window).bind('beforeunload', function ()
+     {
+         $.blockUI();
+     });
+	</script>
+
+    <!-- Table Filter -->
+
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/tablefilter_all_min.js")" language="javascript" type="text/javascript"></script>
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility/TFExt_ColsVisibility.js")" language="javascript" type="text/javascript"></script>
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/filtergrid.css")" rel="stylesheet" type="text/css" id="demo_style">
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility//TFExt_ColsVisibility.css")" rel="stylesheet" type="text/css" id="ColsVisibilityStyle">
+
+    <style>
+        #tablefilter {
+            font-size: 12px;
+        }
+        
+    </style>
+
+</head>
+<body>
+
+<!-- To Show Current Progress-->
+<div id="load_tweets"></div>
+<!-- To Show Current Progress-->
+
+<div id="page_heading"><span style="float: left"><h3>@{@Page.page_title;}: PSD Summary</h3></span><span style="float: right"> @{@Html.Raw(Page.help_link);} </span></div>
+<!-- index.html -->
+<div id="form">
+<form id="myForm"> 
+Start Date: <input type="text" name="sdate" id="sdate" value="@Request["sdate"]"  onclick="javascript:NewCssCal('sdate','yyyyMMdd')">
+End Date: <input type="text" name="edate" id="edate" value="@Request["edate"]" onclick="javascript:NewCssCal('edate','yyyyMMdd')">
+
+Buyer Division:
+    <select name="buyer" id="select">
+        @{
+            var items = Page.buyerdivision.Split(new[]{';'});
+            var items_title = Page.buyerdivision_title.Split(new[]{';'});
+            for(int i=0;i<items.Length;i++)
+            {
+                if(@Request["buyer"]==items[i])
+                {
+                    @Html.Raw("<option value='"+items[i]+"' selected>"+items_title[i]+"</option>");
+                } 
+                else
+                {
+                    @Html.Raw("<option value='"+items[i]+"'>"+items_title[i]+"</option>");
+                }
+                
+            }
+        }
+    </select>
+<br/><br/>
+Item Codes:
+    <select name="item_code" id="select">
+        @{
+            items = Page.item_codes.Split(new[]{';'});
+            items_title = Page.item_codes_title.Split(new[]{';'});
+            for(int i=0;i<items.Length;i++)
+            {
+                if(@Request["item_code"]==items[i])
+                {
+                    @Html.Raw("<option value='"+items[i]+"' selected>"+items_title[i]+"</option>");
+                } 
+                else
+                {
+                    @Html.Raw("<option value='"+items[i]+"'>"+items_title[i]+"</option>");
+                }
+                
+            }
+        }
+    </select>
+
+(Apply) Show Only Pendings Items: <input type="checkbox" id="show_pendings" name="show_pendings" value="1" />
+
+<input type="button" id="myButton" value="Filter"/>
+</form>
+</div>
+
+<div id="ajax-panel">
+@{
+    if(!Request["sdate"].IsEmpty()){
+        @RenderPage("PRJ_RMW_0001_P_0007_REP_FORMAT_2.cshtml");
+    }
+}
+
+</div>
+
+</body>
+</html>

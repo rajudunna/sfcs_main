@@ -1,0 +1,202 @@
+<?php
+	include("../../dbconf2.php");
+	include("../../functions.php");
+?>
+<?php 
+	// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf2.php',2,'R')); 
+?>
+
+<?php 
+	// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'functions.php',2,'R')); 
+?>
+
+<?php $lot_no=$_GET['lot_no']; ?>
+
+<?php
+
+$html = '
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<style>
+
+body {font-family: arial;
+	font-size: 12px;
+}
+
+b{
+	font-size:16px;
+}
+
+table{
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:auto;
+	margin-bottom:auto;
+}
+
+td{
+	overflow: hidden;
+}
+
+@page {
+margin-top: 8px;
+}
+
+</style>
+</head>
+<body>';
+
+
+$sql="select * from sticker_report where lot_no like \"%".trim($lot_no)."%\"";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	$product_group=$sql_row['product_group'];
+	$item=$sql_row['item'];
+	$item_name=str_replace("?","",utf8_decode($sql_row['item_name']));
+	$item_desc=str_replace("?","",utf8_decode($sql_row['item_desc']));
+	$inv_no=$sql_row['inv_no'];
+	$po_no=$sql_row['po_no'];
+	$rec_no=$sql_row['rec_no'];
+	$rec_qty=$sql_row['rec_qty'];
+	$batch_no=$sql_row['batch_no'];
+	$buyer=$sql_row['buyer'];
+	$pkg_no=$sql_row['pkg_no'];
+	$grn_date=$sql_row['grn_date'];
+	$uom_ref=$sql_row['uom'];
+}
+if($uom_ref=='MTR')
+{
+	$uom_ref='YRD';
+}
+
+$child_lots="";
+
+$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from sticker_report where batch_no=\"$batch_no\" and inv_no=\"$inv_no\" and item=\"$item\" and lot_no not in ($lot_no)";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	$child_lots=$sql_row['child_lots'];
+}
+
+$sql="select * from store_in where lot_no like \"%".trim($lot_no)."%\"";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$tot_labels=mysqli_num_rows($sql_result);
+$x=1;
+//$sql_row=mysqli_fetch_array($sql_result)
+for($i=0;$i<$tot_labels;$i++)
+{
+	$tid=$sql_row['tid'];
+	$lot_no=$sql_row['lot_no'];
+	$ref1=$sql_row['ref1'];
+	$ref2=$sql_row['ref2'];
+	$ref3=$sql_row['ref3'];
+	$ref4=$sql_row['ref4'];
+	$qty_rec=round($sql_row['qty_rec'],2);
+	$qty_issued=$sql_row['qty_issued'];
+	$qty_ret=$sql_row['qty_ret'];
+	$date=$sql_row['date'];
+	$log_user=$sql_row['log_user'];
+	$remarks=$sql_row['remarks'];
+	$log_stamp=$sql_row['log_stamp'];
+	
+	$html.= '<div><table>';
+		switch (trim($product_group))
+		{
+			case "Elastic":	
+			{	
+				// $html.= '<tr><td>ITEM CODE :<b> '.$item.'</b> / Buy. : '.substr($buyer,0,7).''.'</td></tr>';
+ 				// $html.= "<tr><td>ITEM  NAME : <strong>$item_name</strong></td></tr>";  
+				// $html.= "<tr><td>COLOR : <strong>$item_desc</strong> / <strong>Shade </strong>: <strong>$ref4</strong></td></tr>";
+				// //$html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  / REF NO : <strong>$remarks</strong></td></tr>";
+ 				// $html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  </td></tr>";
+				// $html.= "<tr><td>LOT No : <b>$lot_no</b>/$child_lots</td></tr>";
+				// //$html.= "<tr><td>REC # : <strong>$rec_no </strong>/ GRN D: <strong>$grn_date</strong> /Qty (YDS) : <strong> $qty_rec</strong></td></tr>";
+				// $html.= "<tr><td>REC # : <strong>$rec_no</strong> / Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
+				// $html.= "<tr><td>BATCH # : <b>$batch_no</b> / BOX # : <b>$ref2</b>  </td></td></tr>";
+				// $html.= "<tr><td>".'<barcode code="'.leading_zeros($tid,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".leading_zeros($tid,8)."</strong></tr>";
+				break;
+			}	
+			case "Lace":	
+			{	
+				// $html.= '<tr><td >ITEM CODE :<b> '.$item.'</b> / Buy. : '.substr($buyer,0,7).''.'</td></tr>';
+ 				// $html.= "<tr><td>ITEM  NAME : <strong>$item_name</strong></td></tr>";  
+				// $html.= "<tr><td>COLOR : <strong>$item_desc</strong> / <strong>Shade </strong> : <strong>$ref4</strong></td></tr>";
+				// $html.= "<tr><td>PO No : <strong>$po_no</strong> /  Loc # : <b>$ref1</b>  / </td></tr>";
+				// $html.= "<tr><td>LOT No : <b>$lot_no</b></td></tr>";
+				// $html.= "<tr><td>REC # : <strong>$rec_no </strong>/ Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
+				// $html.= "<tr><td>BATCH # : <b>$batch_no</b> / BOX # : <b>$ref2</b> </td></td></tr>";
+				// $html.= "<tr><td>".'<barcode code="'.leading_zeros($tid,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".leading_zeros($tid,8)."</strong></tr>";
+				break;
+			}	
+			case "Fabric":	
+			{	
+				$html.= '<tr><td >ITEM CODE :<b> '.$item.'</b> / Buy. : '.substr($buyer,0,7).''.'</td></tr>';
+ 				// $html.= "<tr><td>ITEM  NAME : <strong>$item_name</strong></td></tr>";  
+				// $html.= "<tr><td>COLOR : <strong>$item_desc</strong> / <strong>Shade </strong> : <strong>$ref4</strong></td></tr>";
+				// //$html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  / REF NO : <strong>$remarks</strong></td></tr>";
+				// $html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b> </td></tr>";
+				// $html.= "<tr><td>LOT No : <b>$lot_no</b>/$child_lots</td></tr>";
+				// //$html.= "<tr><td>REC # : <strong>$rec_no </strong>/ GRN D: <strong>$grn_date</strong> /Qty (YDS) : <strong> $qty_rec</strong></td></tr>";
+				// $html.= "<tr><td>REC # : <strong>$rec_no </strong>/ Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
+				// $html.= "<tr><td>BATCH # : <b>$batch_no</b> / ROLL # : <b>$ref2</b>  </td></tr>";
+				// $html.= "<tr><td>".'<barcode code="'.leading_zeros($tid,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".leading_zeros($tid,8)."</strong></tr>";
+				break;
+			}	
+			case "Thread":	
+			{	
+				// $html.= '<tr><td >ITEM CODE :<b> '.$item.'</b> / Buy. : '.substr($buyer,0,7).''.'</td></tr>';
+ 				// $html.= "<tr><td>ITEM  NAME : <strong>$item_name</strong></td></tr>";  
+				// $html.= "<tr><td>COLOR : <strong>$item_desc</strong> / Shade : <strong>$ref4</strong></td></tr>";
+				// $html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  / REF NO : <strong>$remarks</strong></td></tr>";
+				// $html.= "<tr><td>LOT No : <b>$lot_no</b></td></tr>";
+				// $html.= "<tr><td>REC # : <strong>$rec_no </strong>/ GRN D: <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
+				// $html.= "<tr><td>BATCH # : <b>$batch_no </b>/ BOX # : <b>$ref2</b> </td></td></tr>";
+				// $html.= "<tr><td>".'<barcode code="'.leading_zeros($tid,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".leading_zeros($tid,8)."</strong></tr>";
+				break;
+			}	
+			default:	
+			{	
+				// $html.= '<tr><td >ITEM CODE :<b> '.$item.'</b> / Buy. : '.substr($buyer,0,7).''.'</td></tr>';
+				// $html.= "<tr><td>ITEM  NAME : <strong>$item_name</strong></td></tr>";  
+				// $html.= "<tr><td>COLOR : <strong>$item_desc</strong> / Shade : <strong>$ref4</strong></td></tr>";
+				// $html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  / REF NO : <strong>$remarks</strong></td></tr>";
+				// $html.= "<tr><td>LOT No : <b>$lot_no </b></td></tr>";
+				// $html.= "<tr><td>REC # : <strong>$rec_no </strong>/ GRN Date : <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
+				// $html.= "<tr><td>BATCH # : <b>$batch_no</b> / BOX # : <b>$ref2</b> </td></td></tr>";
+				// $html.= "<tr><td>".'<barcode code="'.leading_zeros($tid,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".leading_zeros($tid,8)."</strong></tr>";
+				break;
+			}	
+		}
+
+		$html.= '</table></div>';
+
+		if($x!=$tot_labels)
+		{
+			
+		$html.='<pagebreak />';
+		}
+		$x++;
+		
+}
+
+$html.='</body></html>';
+//  echo $html;
+
+//==============================================================
+//==============================================================
+
+include("../../mpdf7/mpdf.php");
+$mpdf= new \mPDF('',array(101.6,50.8),0,'',3,0,0,0,0,0,'P');
+$mpdf->WriteHTML($html); 
+$mpdf->Output();
+
+
+// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'mpdf.php',1,'R'));
+// $mpdf=new mPDF('',array(101.6,50.8),0,'',3,0,0,0,0,0,'P');
+// $mpdf->WriteHTML($html);
+// $mpdf->Output(); 
+// exit;
+
+?>

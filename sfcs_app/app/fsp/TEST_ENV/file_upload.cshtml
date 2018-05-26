@@ -1,0 +1,32 @@
+﻿<html>
+	<head>
+        <script>
+        function CloseMySelf(sender) {
+    try {
+        window.opener.HandlePopupResult(sender.getAttribute("result"));
+    }
+    catch (err) {}
+    window.close();
+    return false;
+}
+</script>
+	</head>
+	<body>
+		
+		<form class="uploadform" method="post" enctype="multipart/form-data" 
+action='submit.cshtml'>
+Upload your image <input type="file" name="imagefile" />
+<input type="submit" value="Submit" name="submitbtn" id="submitbtn">
+</form>
+<!-- The uploaded image will display here -->
+<div id='viewimage'></div>
+
+
+        <a href="#" result="allow" onclick="return CloseMySelf(this);">Allow</a>
+<a href="#" result="disallow" onclick="return CloseMySelf(this);">Don't Allow</a>
+
+	</body>
+
+
+	
+</html>

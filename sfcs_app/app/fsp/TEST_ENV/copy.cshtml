@@ -1,0 +1,35 @@
+@{
+
+    
+
+
+string sourceDir = @"\\10.227.40.36\movex\bal";
+    string destDir = @"c:\wserver\wamp\www\m3_packing_list";
+    
+var file = Directory.GetFiles(destDir, "*2004429*.*", SearchOption.AllDirectories)
+                    .FirstOrDefault();
+    
+    if(file==null)
+{
+
+var r = Directory.GetFiles(sourceDir, "*2004429*.*"); //Replace this part with your read from notepad file
+    
+foreach (var s in r)
+    {
+        var sourceFile = new FileInfo(s);
+        sourceFile.CopyTo(destDir + "\\" + s.Replace(sourceDir, string.Empty));
+    }
+}
+else
+{
+ var filenames = String.Join(
+                    ", ",
+                    Directory.GetFiles(destDir, "*2004429*.*")
+                       .Select(filename => 
+                           Path.GetFileName(filename))
+                      .ToArray());
+@(Html.Raw("<a href='http://bainet:8080/m3_packing_list/"+filenames+"' target='_new'>Open</a>"));
+
+}
+
+}

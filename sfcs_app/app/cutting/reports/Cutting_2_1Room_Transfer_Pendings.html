@@ -1,0 +1,227 @@
+<script type="text/javascript" src="'../'.getFullURLLevel($_GET['r'],'/common/js/jquery-1.3.2.js',1,'R')"></script> 
+<title>Cut to 1% Transfer Pendings</title> 
+<style> 
+body 
+{ 
+    font-family:calibri; 
+    font-size:12px; 
+} 
+
+table tr 
+{ 
+    border: 1px solid black; 
+    text-align: right; 
+    white-space:nowrap;  
+} 
+
+table td 
+{ 
+    border: 1px solid black; 
+    text-align: right; 
+white-space:nowrap;  
+} 
+
+table th 
+{ 
+    border: 1px solid black; 
+    text-align: center; 
+        background-color:#29759C; 
+    color: WHITE; 
+white-space:nowrap;  
+    padding-left: 5px; 
+    padding-right: 5px; 
+} 
+
+.total 
+{ 
+    border: 1px solid black; 
+    text-align: center; 
+        background-color: ORANGE; 
+    color: WHITE; 
+white-space:nowrap;  
+    padding-left: 5px; 
+    padding-right: 5px; 
+} 
+
+
+table{ 
+    white-space:nowrap;  
+    border-collapse:collapse; 
+    font-size:12px; 
+    background-color: white; 
+} 
+
+
+} 
+
+} 
+</style> 
+
+<script> 
+    /** 
+ *  jQuery ColumnFilter Plugin 
+ *  @requires jQuery v1.2.6 or greater 
+ *  http://hernan.amiune.com/labs 
+ * 
+ *  Copyright (c)  Hernan Amiune (hernan.amiune.com) 
+ *  Licensed under MIT license: 
+ *  http://www.opensource.org/licenses/mit-license.php 
+ *  
+ *  Version: 1.1 
+ */ 
+
+(function($) { 
+    $.fn.columnfilter = function(options) { 
+
+        var defaults = {}; 
+
+        var options = $.extend(defaults, options); 
+
+        return this.each(function(index) { 
+
+            var $table = $(this); 
+                 
+            $table.find("th.filter").each(function() { 
+                //create a select list for each filter column 
+                var i = 0; 
+                var $select = $('<select class="selectfilter" multiple></select>'); 
+                var $this = $(this); 
+                var colindex = $this.parent().children().index($this) + 1; 
+                var dictionary = []; 
+                $table.find("tr td:nth-child(" + colindex + ")").each(function() { 
+                    var text = $(this).text(); 
+                    dictionary[text] = true; 
+                }); 
+                var colkeys = []; 
+                for (i in dictionary) colkeys.push(i); 
+                colkeys.sort(); 
+                $select.append('<option value="All" selected>All</option>'); 
+                for (i=0; i<colkeys.length; i++) { 
+                    if(colkeys[i] === "indexOf")continue; //weird stuff happens in ie and chrome, firefox is awesome 
+                    if(colkeys[i]!="") 
+                        $select.append('<option value="' + colkeys[i] + '">' + colkeys[i] + '</option>'); 
+                } 
+                $(this).append("<br/>"); 
+                $(this).append($select); 
+
+                //bind change function to each select filter 
+                $select.change(function() { 
+
+                    //create an array of the filters selected values 
+                    var colIndexes = []; 
+                    var selectedOptions = []; 
+                    $table.find(".selectfilter").each(function() { 
+                        $this = $(this); 
+                        var $parent = $(this).parent(); 
+                        colIndexes.push($parent.parent().children().index($parent)+1); 
+                        //selectedOptions.push($this.children(":selected").text()); 
+                        var test=""; 
+                        $this.children(":selected").each(function(x, selected) { 
+                        test += $(selected).text() + " "; 
+                        }); 
+                        selectedOptions.push(test); 
+                        //alert(test); 
+                    }); 
+                     
+                    //To calculate Total 
+                    var col1=0; 
+                    var col2=0; 
+                    var col3=0; 
+                    var col4=0; 
+                    var col5=0; 
+                    var col6=0; 
+                    var col7=0; 
+                    var col8=0; 
+                    var col9=0; 
+                     
+                    //show or hide the corresponding rows 
+                    $table.find("tr").each(function(rowindex) { 
+                        if (rowindex > 0) { 
+                            var rowok = true; 
+                            for (i = 0; i < colIndexes.length;  i++) { 
+                             
+                                text = $(this).find("td:nth-child(" + colIndexes[i] + ")").text()+" "; 
+                                     
+                               // if (selectedOptions[i] != "All " && text != selectedOptions[i] && selectedOptions[i].indexOf(text)>0) rowok = false; 
+                                 if (selectedOptions[i] != "All " && selectedOptions[i].indexOf(text)<0) rowok = false; 
+                                //if (selectedOptions[i] != "All " && text != selectedOptions[i]) rowok = false; 
+                            } 
+                             
+                            if (rowok === true)  
+                            { $(this).show();  
+                                 
+                                //To Calculate Total 
+                                if(!isNaN(parseFloat($(this).find("td:nth-child(6)").html()))) 
+                                col1 += parseFloat($(this).find("td:nth-child(6)").html()); 
+                                $("#col1").html(col1); 
+                                 
+                                if(!isNaN(parseFloat($(this).find("td:nth-child(7)").html()))) 
+                                col2 += parseFloat($(this).find("td:nth-child(7)").html()); 
+                                $("#col2").html(col2); 
+                                 
+                                if(!isNaN(parseFloat($(this).find("td:nth-child(8)").html()))) 
+                                col3 += parseFloat($(this).find("td:nth-child(8)").html()); 
+                                $("#col3").html(col3); 
+                                 
+                         
+                            } 
+                            else 
+                            { 
+                                $(this).hide(); 
+                            } 
+                     
+                        } 
+                         
+                    }); 
+                }); 
+                 
+            }); 
+        }); 
+    }  
+
+})(jQuery); 
+
+    </script> 
+
+<script type="text/javascript"> 
+$(document).ready(function() { 
+     
+    $("table").columnfilter(); 
+
+     
+}); 
+</script> 
+
+
+
+</head> 
+<body> 
+<!--<h2>Cutting to 1% Room Transfer Pendings</h2>--> 
+<div id="page_heading"><span style="float: left"><h3>Cutting to 1% Room Transfer Pendings</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div> 
+
+
+
+
+
+
+
+
+LU:20180512 154148<table><tr> 
+    <th colspan=6 class="total">Total</th> 
+    <th id="col1" class="total" >0</th> 
+    <th id="col2" class="total" >0</th> 
+    <th id="col3" class="total" >0</th> 
+     
+     
+</tr><tr> 
+    <th>Style</th> 
+    <th class="filter">Schedule</th> 
+    <th>Color</th> 
+    <th class="filter">Ex-Factory Date</th> 
+    <th class="filter">Size</th> 
+    <th class="filter">EMB Status</th> 
+    <th>Excess Panels</th> 
+    <th>Received</th> 
+    <th>Balance</th> 
+</tr></table> 
+

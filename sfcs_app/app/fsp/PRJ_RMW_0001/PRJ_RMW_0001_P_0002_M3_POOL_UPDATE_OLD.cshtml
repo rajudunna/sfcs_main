@@ -1,0 +1,141 @@
+﻿<!-- 
+
+Page Description: This page to download M3 Items details for pending production with day limit
+
+-->
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>M3 BOM POOL Filling Processor</title>
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+
+            
+            //Date Period Selection
+            DateTime d = DateTime.Now;
+            
+            //To Track Page Start Time
+            db_class.exe_queries("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_010_EXE_LOG] (page_name,start_time,log_user) values('"+Page.g_page_name+"','"+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"','"+Page.g_log_user+"')");
+                        
+            var page_log_in_id=db_class.last_insert_id();
+
+
+            //To update Intrim Manually updated Schedules to FR Plan.
+            var result_set_up_a=db_class.show_result("BEK_DBS_RMW_0001","select * from [EXT_DB_UPLOAD].[dbo].[BAI_FRPLAN_MANUAL] where isnumeric(schedule)=1 order by order_code");                      
+            if(db_class.queries_count()>0)
+            {
+                foreach(var record_result_a in result_set_up_a)
+                {
+                    var result_set_up_b=db_class.show_result("BEK_DBS_RMW_0001","select schedule from [BEK_DBS_RMW_0001].[dbo].[V_0001_0001_FRPLAN_POOL] where [BEK_DBS_RMW_0001].[dbo].TRIM(schedule)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+record_result_a.schedule+"')");
+                    
+                    if(db_class.queries_count()==0)
+                    {
+                        //To insert into FR Plan
+                        db_class.exe_queries("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_002_FRPLAN] (group_code,module,style,order_code,color,smv,delivery_date,schedule,production_date,qty,status,efficiency,plan_smo) select group_code,module,style,order_code,color,smv,delivery_date,schedule,production_date,qty,status,efficiency,plan_smo from [EXT_DB_UPLOAD].[dbo].[BAI_FRPLAN_MANUAL] where [BEK_DBS_RMW_0001].[dbo].TRIM(schedule)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+record_result_a.schedule+"')");
+
+                        //To update in FR Pool Table
+                        db_class.exe_queries("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] (fr_plan_tid_ref)  values ("+db_class.last_insert_id()+")");
+                    }                     
+                }
+
+                //Truncated Source Plan in External Temp Table
+                db_class.exe_queries("BEK_DBS_RMW_0001","truncate table [EXT_DB_UPLOAD].[dbo].[BAI_FRPLAN_MANUAL]");
+            }
+            
+            
+            //Truncate Existing Values
+            db_class.exe_queries("BEK_DBS_RMW_0001","truncate table [BEK_DBS_RMW_0001].[dbo].[T_0001_001_M3BOMPOOL]");
+
+            
+            string prev_limit=d.AddDays(-3).ToString("dd-MMM-yyyy").ToString() + " 12:00:00 AM";
+            string next_limit=d.AddDays(Page.period_range).ToString("dd-MMM-yyyy").ToString() + " 12:00:00 AM";
+
+
+            //TEMP distinct sytle pool
+
+            db_class.exe_queries_bulk("BEK_DBS_RMW_0001","IF OBJECT_ID(N'[BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES]', N'U') IS NULL CREATE TABLE [BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES] ( style varchar(30), status int)");
+
+            db_class.exe_queries("BEK_DBS_RMW_0001","truncate table [BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES]");
+
+            db_class.exe_queries_bulk("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES] (style,status) select distinct style, 0 as status FROM [BEK_DBS_RMW_0001].[dbo].[V_0001_0001_FRPLAN_POOL] where (prod_status=0 or prod_status is null) and production_date<='"+next_limit+"'");
+            
+            var count=1;
+            do
+            {
+                //Select Distinct Styles from FR Plan
+                var result_set1=db_class.show_result("BEK_DBS_RMW_0001","select * from [BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES] where status=0");
+                      
+                foreach(var record in result_set1)
+                {
+                   @record.style <br/>;
+                   //var result_set2=db_class.show_result("BEK_DBS_RMW_0001","exec [BEK_DBS_RMW_0001].[dbo].m3bel_rmmacro_sp '"+record.style+"'");
+                   
+                   //Existing Exclusive SP having some issues
+                   var result_set2=db_class.show_result_remote("M3_BEL","exec [BCI-MVXRPT-02].m3_bel.dbo.TFR_BEL_BAI_STYLE_WISE_RM_INDIA_REQUIREMENT '"+record.style+"','',''");
+
+                   //Actual Excel Macro SP (Missing Fields on exclusive SP (IPRICE,TN_MODE)
+                   //var result_set2=db_class.show_result_remote("BEK_DBS_RMW_0001","exec [BEK_DBS_RMW_0001].[dbo].m3bel_rmmacro_sp @style='"+record.style+"'");
+
+                   //To extract values from macro
+
+                   //If timeout error occurs, function triggers null
+                   if(result_set2==null){
+
+                       //If errors the update the status as 2 and continue
+                       db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES] set status=0 where [BEK_DBS_RMW_0001].[dbo].TRIM(style)=[BEK_DBS_RMW_0001].[dbo].trim('"+@record.style+"')");
+
+                       continue;
+
+                   } else {
+                       //If no errors the update the status
+                       db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES] set status=1 where [BEK_DBS_RMW_0001].[dbo].TRIM(style)=[BEK_DBS_RMW_0001].[dbo].trim('"+@record.style+"')");
+                   }
+
+                   foreach(var result_val in result_set2)
+                   {
+                        //if(result_val.WAREHOUSE==Page.wh_code)
+                        if(Page.wh_code.Contains(result_val.WAREHOUSE))
+                        {
+                            //To insert values in table
+                            //Exclusive SP Results based query
+                            db_class.exe_queries("BEK_DBS_RMW_0001","INSERT INTO [BEK_DBS_RMW_0001].[dbo].[T_0001_001_M3BOMPOOL] ([IDNO],[PURCH_WH],[STYLE],[GMT_COLOUR],[PROC_GRP],[MATERIAL_ITEM],[ITEM_DESCRIPTION],[MAT_COLOUR],[MAT_SIZE],[MAT_Z],[WAREHOUSE],[LTYPE],[CO],[CO_QTY],[SCHEDULE],[PCD],[DELDATE],[CONSUMPTION],[PRICE],[UOM],[WASTAGE],[REQUIRED_],[ISSUED],[BAL_TO_ISSUE],[PO_NO],[PO_DATE],[XMILL_DATE],[PO_QTY],[P_UOM],[EXP_QTY],[PL_IH_DATE],[SUPPLIER],[MODE],[ARRIVAL_DATE],[TTYPE],[STOCKDATE],[SEQ],[TR_QTY],[PROJECTED_BALANCE]) VALUES ("+"'"+result_val.IDNO+"',"+"'"+result_val.PURCH_WH+"',"+"'"+result_val.STYLE+"',"+"'"+result_val.GMT_COLOUR+"',"+"'"+result_val.PROC_GRP+"',"+"'"+result_val.MATERIAL_ITEM+"',"+"'"+result_val.ITEM_DESCRIPTION+"',"+"'"+result_val.MAT_COLOUR+"',"+"'"+result_val.MAT_SIZE+"',"+"'"+result_val.MAT_Z+"',"+"'"+result_val.WAREHOUSE+"',"+"'"+result_val.LTYPE+"',"+"'"+result_val.CO+"',"+"'"+result_val.CO_QTY+"',"+"'"+result_val.SCHEDULE+"',"+"'"+result_val.PCD+"',"+"'"+result_val.DELDATE+"',"+"'"+result_val.CONSUMPTION+"',"+"'"+result_val.PRICE+"',"+"'"+result_val.UOM+"',"+"'"+result_val.WASTAGE+"',"+"'"+result_val.REQUIRED_+"',"+"'"+result_val.ISSUED+"',"+"'"+result_val.BAL_TO_ISSUE+"',"+"'"+result_val.PO_NO+"',"+"'"+result_val.PO_DATE+"',"+"'"+result_val.XMILL_DATE+"',"+"'"+result_val.PO_QTY+"',"+"'"+result_val.P_UOM+"',"+"'"+result_val.EXP_QTY+"',"+"'"+result_val.PL_IH_DATE+"',"+"'"+result_val.SUPPLIER+"',"+"'"+result_val.MODE+"',"+"'"+result_val.ARRIVAL_DATE+"',"+"'"+result_val.TTYPE+"',"+"'"+result_val.STOCKDATE+"',"+"'"+result_val.SEQ+"',"+"'"+result_val.TR_QTY+"',"+"'"+result_val.PROJECTED_BALANCE+"'"+")");
+                       
+                        //Macro Result based
+                        //db_class.exe_queries("BEK_DBS_RMW_0001","INSERT INTO [BEK_DBS_RMW_0001].[dbo].[T_0001_001_M3BOMPOOL] ([IDNO],[PURCH_WH],[STYLE],[GMT_COLOUR],[PROC_GRP],[MATERIAL_ITEM],[ITEM_DESCRIPTION],[MAT_COLOUR],[MAT_SIZE],[MAT_Z],[WAREHOUSE],[LTYPE],[CO],[CO_QTY],[SCHEDULE],[PCD],[DELDATE],[CONSUMPTION],[PRICE],[UOM],[WASTAGE],[REQUIRED_],[ISSUED],[BAL_TO_ISSUE],[PO_NO],[PO_DATE],[XMILL_DATE],[PO_QTY],[P_UOM],[EXP_QTY],[PL_IH_DATE],[SUPPLIER],[MODE],[ARRIVAL_DATE],[TTYPE],[STOCKDATE],[SEQ],[TR_QTY],[PROJECTED_BALANCE]) VALUES ("+"'"+result_val.IDNO+"',"+"'"+result_val.PURCH_WH+"',"+"'"+result_val.STYLE+"',"+"'"+result_val.GMT_COLOUR+"',"+"'"+result_val.PROC_GRP+"',"+"'"+result_val.MATERIAL_ITEM+"',"+"'"+result_val.ITEM_DESCRIPTION+"',"+"'"+result_val.MAT_COLOUR+"',"+"'"+result_val.MAT_SIZE+"',"+"'"+result_val.MAT_Z+"',"+"'"+result_val.WAREHOUSE+"',"+"'"+result_val.LTYPE+"',"+"'"+result_val.CO+"',"+"'"+(result_val.CO_QTY==null?0:result_val.CO_QTY)+"',"+"'"+result_val.SCHEDULE+"',"+"'"+result_val.PCD+"',"+"'"+result_val.DELDATE+"',"+"'"+(result_val.CONSUMPTION==null?0:result_val.CONSUMPTION)+"',"+"'"+(result_val.PPRICE==null?0:result_val.PPRICE)+"',"+"'"+result_val.UOM+"',"+"'"+result_val.WASTAGE+"',"+"'"+(result_val.REQUIRED_==null?0:result_val.REQUIRED_)+"',"+"'"+(result_val.ISSUED==null?0:result_val.ISSUED)+"',"+"'"+(result_val.BAL_TO_ISSUE==null?0:result_val.BAL_TO_ISSUE)+"',"+"'"+result_val.PO_NO+"',"+"'"+result_val.PO_DATE+"',"+"'"+result_val.XMILL_DATE+"',"+"'"+(result_val.PO_QTY==null?0:result_val.PO_QTY)+"',"+"'"+result_val.P_UOM+"',"+"'"+(result_val.EXP_QTY==null?0:result_val.EXP_QTY)+"',"+"'"+result_val.PL_IH_DATE+"',"+"'"+result_val.SUPPLIER+"',"+"'"+result_val.MODE+"',"+"'"+result_val.ARRIVAL_DATE+"',"+"'"+result_val.TTYPE+"',"+"'"+result_val.STOCKDATE+"',"+"'"+result_val.SEQ+"',"+"'"+(result_val.TR_QTY==null?0:result_val.TR_QTY)+"',"+"'"+(result_val.PROJECTED_BALANCE==null?0:result_val.PROJECTED_BALANCE)+"'"+")");
+                        
+                        }
+                   }
+                }
+
+                //To check the pending count
+                var result_set11=db_class.show_result("BEK_DBS_RMW_0001","select * from [BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES] where status=0");
+                count=db_class.queries_count();
+            }while(count>0);
+
+            //New Version
+            //db_class.exe_queries("BEK_DBS_RMW_0001","drop table [BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES]");
+    
+         }
+
+       
+
+        @{
+            d = DateTime.Now;
+            //To Track Page End Time
+            db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_010_EXE_LOG] set end_time='"+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"' where log_id='"+page_log_in_id+"'");
+
+             //To Backup M3 downloaded data for RM Reference
+            db_class.exe_queries("BEK_DBS_RMW_0001","exec [BEK_DBS_RMW_0001].[dbo].M3BOMPOOL_BACKUP");
+            
+            //Redirect Page 
+            //Response.Redirect("PRJ_RMW_0001_P_0003_BOM_TRACK_UPDATE.cshtml");  
+            <h2>Successfully Completed.</h2> 
+            <script> setTimeout("CloseWindow()",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script>         
+        }
+    </body>
+</html>

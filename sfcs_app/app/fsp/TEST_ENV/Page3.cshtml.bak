@@ -1,0 +1,78 @@
+﻿@{
+    
+@("test");
+
+@(Request["Ch1"]);
+               @(Request["new"]+"new");
+
+if(Request["items"]!=null){
+    var items = Request["items"].Split(new[]{','});
+foreach(string item in items){
+    @item<br />
+}
+}
+
+
+}
+
+
+<!-- 
+
+Page Description: This is first page to show day wise with buyer division filtering
+
+-->
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>FR Plan with PSD/Schedule Level Breakup</title>
+
+        @RenderPage(Page.scripts_include_head)
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+         }    
+            <table>
+                <tr>
+                    <th>Production<br/>Start Date</th>
+                    <th>Ex-Factory<br/>Date</th>
+                    <th>Style</th>
+                    <th>Schedule</th>
+                    <th>Color</th>
+                    <th>Not<br/>Updated</th>
+                    <th>Stock</th>
+                    <th>50</th>
+                    <th>45</th>
+                    <th>35</th>
+                    <th>20</th>
+                    <th>10</th>
+                </tr>
+          @{ 
+                //Select to be prepared bom details from FR Pool View
+                var result_set=db_class.show_result("DBS_RMW_0001","exec [DBS_RMW_0001].[dbo].[S_0001_013_SP_REP_FR2]");                      
+                foreach(var record in result_set)
+                {             
+                    <tr>
+                        <td>@record.production_date</td>
+                        <td>@record.delivery_date</td>
+                        <td>@record.style</td>
+                        <td>@record.schedule</td>
+                        <td>@record.color_grouped</td>
+                        <td>@record.not_updated</td>
+                        <td>@record.stock</td>
+                        <td>@record.status_50</td>
+                        <td>@record.status_45</td>
+                        <td>@record.status_35</td>
+                        <td>@record.status_20</td>
+                        <td>@record.status_10</td>
+                    </tr>
+                }
+               
+            }
+        </table>  
+    </body>
+</html>

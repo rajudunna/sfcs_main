@@ -1,0 +1,273 @@
+﻿<!-- 
+
+Page Description: This page to update remarks agains individual pending items.
+
+//20140171
+//Changed to seq pool verification from filtered/backup data
+//Removed Style specification from seq pool table
+//Changed the seq pool table view to _STOCK
+
+-->
+
+@{
+    //Construct : Class Object
+    db_object db_class=new db_object();
+    String start_time="";
+
+    DateTime d = DateTime.Now;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Update Item Level Status @(d)</title>
+    </head>
+    <body>
+        @{
+            
+            @("Start"+d); <br/>
+
+            List <string> schedule_list=new List<string>();
+
+            start_time=d.ToString("yyyy-MM-dd HH:mm:ss").ToString();          
+            
+			
+            //Drop Table If Exists
+            db_class.exe_queries("BEK_DBS_RMW_0001","IF OBJECT_ID('[BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL]', 'U') IS NOT NULL  DROP TABLE [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL]");
+            db_class.exe_queries("BEK_DBS_RMW_0001","IF OBJECT_ID('[BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL]', 'U') IS NOT NULL  DROP TABLE [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL]");
+
+		
+            //TEMP Bom pool creation
+            db_class.exe_queries_bulk("BEK_DBS_RMW_0001","select top 1 * into [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL] from [BEK_DBS_RMW_0001].[dbo].[V_0001_0002_BOMPENDING_POOL]");
+
+            //TEMP Sequence pool creation
+            db_class.exe_queries_bulk("BEK_DBS_RMW_0001","select top 1 tr_qty,seq,m3bompool_tid,po_no,pl_ih_date,supplier,mode,arrival_date,material_item into [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL] from [BEK_DBS_RMW_0001].[dbo].[V_0001_0003_BOMSEQ_POOL_STOCK]");
+
+			//New Version
+            db_class.exe_queries("BEK_DBS_RMW_0001","truncate table [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL]");
+            db_class.exe_queries("BEK_DBS_RMW_0001","truncate table [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL]");
+			
+			//New Version
+            db_class.exe_queries("BEK_DBS_RMW_0001","alter table [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL] drop column fr_pool_tid");
+            db_class.exe_queries("BEK_DBS_RMW_0001","alter table [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL] drop column m3bompool_tid"); 
+
+			db_class.exe_queries("BEK_DBS_RMW_0001","alter table [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL] add fr_pool_tid bigint");
+            db_class.exe_queries("BEK_DBS_RMW_0001","alter table [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL] add m3bompool_tid bigint"); 
+
+
+            string prev_limit=d.AddDays(-3).ToString("dd-MMM-yyyy").ToString() + " 12:00:00 AM";
+            string next_limit=d.AddDays(Page.period_range).ToString("dd-MMM-yyyy").ToString() + " 12:00:00 AM";
+			
+			@("Prev="+prev_limit);<br>
+			@("Next="+next_limit);<br>
+
+            int exe_switch=0;
+            int count=db_class.show_value("BEK_DBS_RMW_0001","select count(*) as value from [BEK_DBS_RMW_0001].[dbo].[T_0001_010_EXE_LOG] where CONVERT(VARCHAR(10),[end_time],101)=CONVERT(VARCHAR(10),GETDATE(),101) and page_name='PRJ_RMW_0001_P_0005_BOM_REM_UPDATE.cshtml'");
+            if((count%2)==0)
+            {
+                exe_switch=1;
+            }
+
+            //Irrespective of status, things will update against material items. -20131109
+            db_class.exe_queries("BEK_DBS_RMW_0001","update BEK_DBS_RMW_0001.dbo.V_0001_0005_FR_BOM_TRACK_REP set bom_rem_tid_ref=null where bom_material_item in (SELECT [rec_material_item] FROM [EXT_DB_UPLOAD].[dbo].[RECON_MET_DB])");
+
+            db_class.exe_queries("BEK_DBS_RMW_0001","truncate table [EXT_DB_UPLOAD].[dbo].[RECON_MET_DB]");
+
+            string add_qry="(0)";
+
+            var result_setx=db_class.show_result("BEK_DBS_RMW_0001","exec [BEK_DBS_RMW_0001].[dbo].[BOM_REM_PROC_SEL_CRITERIA] @next_limit='"+next_limit+"',@add_qry='"+add_qry+"'");
+                                 
+            foreach(var recordval in result_setx)
+            {
+                var filteritem=recordval.bom_material_item;
+                
+                //TEMP Bom pool creation
+                //Added bom_status not in "+add_qry+" in query 2014-07-22 - KiranG // bom_status clause added //to avoid exempted items we have added the below caluse in query. {and ([bom_status] is null or bom_status>0 or len(bom_status)=0)}
+                db_class.exe_queries_bulk("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL] ([fr_pool_tid],[fr_plan_tid_ref],[bom_tid],[production_date],[style],[schedule],[color],[bom_track_status],[prod_status],[bom_material_item],[bom_req_qty],[bom_issued_qty],[bom_balance],[bom_status],[bom_remarks_master],[bom_man_p_ih_date_master]) select [fr_pool_tid],[fr_plan_tid_ref],[bom_tid],[production_date],[style],[schedule],[color],[bom_track_status],[prod_status],[bom_material_item],[bom_req_qty],[bom_issued_qty],[bom_balance],[bom_status],[bom_remarks_master],[bom_man_p_ih_date_master] from [BEK_DBS_RMW_0001].[dbo].[V_0001_0002_BOMPENDING_POOL] where [BEK_DBS_RMW_0001].[dbo].TRIM(bom_material_item)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+filteritem+"') and ([bom_status] is null or bom_status>0 or len(bom_status)=0) order by [production_date],[schedule],[color]");
+
+                //TEMP Sequence pool creation
+                db_class.exe_queries_bulk("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL] (tr_qty,seq,m3bompool_tid,po_no,pl_ih_date,supplier,mode,arrival_date,material_item) select tr_qty,seq,m3bompool_tid,po_no,pl_ih_date,supplier,mode,arrival_date,material_item from [BEK_DBS_RMW_0001].[dbo].[V_0001_0003_BOMSEQ_POOL_STOCK] where [BEK_DBS_RMW_0001].[dbo].TRIM(material_item)='O29749E8ST1 064' and [BEK_DBS_RMW_0001].[dbo].TRIM(material_item)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+filteritem+"')");
+
+                //Check the total availability of records to avoid unnecessary processing load
+                var result_set_count=db_class.show_result("BEK_DBS_RMW_0001","select m3bompool_tid from [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL]");
+                int tot_rec_count=0;
+                tot_rec_count=db_class.queries_count();
+
+                if(tot_rec_count>0)
+                {
+                   var result_set1=db_class.show_result("BEK_DBS_RMW_0001","select bom_tid,bom_material_item,production_date,bom_balance,schedule,color,style from [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL] where bom_material_item='O29749E8ST1 064' and ((bom_status not in "+add_qry+" or bom_status is null) and (prod_status=0 or prod_status is null)) order by [production_date],[schedule],[color]"); 
+                      
+					@("3=select bom_tid,bom_material_item,production_date,bom_balance,schedule,color,style from [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL] where bom_material_item='O29749E8ST1 064' and ((bom_status not in "+add_qry+" or bom_status is null) and (prod_status=0 or prod_status is null)) order by [production_date],[schedule],[color]");<br>
+					
+                    foreach(var record in result_set1)
+                    {
+               
+                       decimal x=0; //balance to issue qty below the ex-factory
+                       decimal y=0; //actual to be issued
+				       decimal balance=0; //to track balance qty
+				       decimal application_qty=0; //Temp variable to track qty allocation
+                       var item=record.bom_material_item;
+                       var psd=record.production_date;
+                       var schedule=record.schedule;
+                       var color=record.color;
+                       var style=record.style;
+
+                       y=record.bom_balance;
+
+                       x=(decimal)db_class.show_value("BEK_DBS_RMW_0001","select sum(bom_balance) as value from [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL] where production_date<'"+psd+"' and ([BEK_DBS_RMW_0001].[dbo].TRIM(color)+[BEK_DBS_RMW_0001].[dbo].TRIM(schedule)) not in (([BEK_DBS_RMW_0001].[dbo].TRIM('"+color+"')+[BEK_DBS_RMW_0001].[dbo].TRIM('"+schedule+"')))");
+
+                       x+=(decimal)db_class.show_value("BEK_DBS_RMW_0001","select sum(bom_balance) as value from [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL] where production_date='"+psd+"' and schedule<'"+schedule+"' and ([BEK_DBS_RMW_0001].[dbo].TRIM(color)+[BEK_DBS_RMW_0001].[dbo].TRIM(schedule)) not in (([BEK_DBS_RMW_0001].[dbo].TRIM('"+color+"')+[BEK_DBS_RMW_0001].[dbo].TRIM('"+schedule+"')))");
+
+               
+                       //To extract item level detail for given schedule and color
+                       //OLD VERSION var result_set2=db_class.show_result("BEK_DBS_RMW_0001","select tr_qty,seq,m3bompool_tid from [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL] where [BEK_DBS_RMW_0001].[dbo].TRIM(material_item)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+item+"') order by CASE SEQ WHEN '1' THEN 1 WHEN '75' THEN 2 WHEN '64' THEN 3 WHEN '65' THEN 4 WHEN '50' THEN 5 WHEN '45' THEN 6 WHEN '35' THEN 7 WHEN '20' THEN 8 WHEN '15' THEN 9 WHEN '12' THEN 10 WHEN '10' THEN 11 ELSE 12 END, m3bompool_tid");
+
+                       //Not Consider Style 
+                       //var result_set2=db_class.show_result("BEK_DBS_RMW_0001","select tr_qty,seq,m3bompool_tid,po_no,pl_ih_date,supplier,mode,arrival_date from [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL] where [BEK_DBS_RMW_0001].[dbo].TRIM(material_item)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+item+"') order by m3bompool_tid,CASE SEQ WHEN '1' THEN 1 WHEN '75' THEN 2 WHEN '64' THEN 3 WHEN '65' THEN 4 WHEN '50' THEN 5 WHEN '45' THEN 6 WHEN '35' THEN 7 WHEN '20' THEN 8 WHEN '15' THEN 9 WHEN '12' THEN 10 WHEN '10' THEN 11 ELSE 12 END");
+
+                       //Considering Style (Logo common code item)
+                       //var result_set2=db_class.show_result("BEK_DBS_RMW_0001","select tr_qty,seq,m3bompool_tid,po_no,pl_ih_date,supplier,mode,arrival_date from [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL] where [BEK_DBS_RMW_0001].[dbo].TRIM(style)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+style+"') and [BEK_DBS_RMW_0001].[dbo].TRIM(material_item)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+item+"') order by m3bompool_tid,CASE SEQ WHEN '1' THEN 1 WHEN '75' THEN 2 WHEN '64' THEN 3 WHEN '65' THEN 4 WHEN '50' THEN 5 WHEN '45' THEN 6 WHEN '35' THEN 7 WHEN '20' THEN 8 WHEN '15' THEN 9 WHEN '12' THEN 10 WHEN '10' THEN 11 ELSE 12 END");
+                       //Above code working and the below query is to further analyse the code
+                       var result_set2=db_class.show_result("BEK_DBS_RMW_0001","select tr_qty,seq,m3bompool_tid,po_no,pl_ih_date,supplier,mode,arrival_date from [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL] where [BEK_DBS_RMW_0001].[dbo].TRIM(material_item)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+item+"') order by CASE SEQ WHEN '1' THEN 1 WHEN '75' THEN 2 WHEN '74' THEN 3 WHEN '73' THEN 4 WHEN '72' THEN 5 WHEN '71' THEN 6 WHEN '70' THEN 7 WHEN '69' THEN 8 WHEN '68' THEN 9 WHEN '67' THEN 10 WHEN '66' THEN 11 WHEN '65' THEN 12 WHEN '64' THEN 13 WHEN '63' THEN 14 WHEN '62' THEN 15 WHEN '61' THEN 16 WHEN '60' THEN 17 WHEN '59' THEN 18 WHEN '58' THEN 19 WHEN '57' THEN 20 WHEN '56' THEN 21 WHEN '55' THEN 22 WHEN '54' THEN 23 WHEN '53' THEN 24 WHEN '52' THEN 25 WHEN '51' THEN 26 WHEN '50' THEN 27 WHEN '49' THEN 28 WHEN '48' THEN 29 WHEN '47' THEN 30 WHEN '46' THEN 31 WHEN '45' THEN 32 WHEN '44' THEN 33 WHEN '43' THEN 34 WHEN '42' THEN 35 WHEN '41' THEN 36 WHEN '40' THEN 37 WHEN '39' THEN 38 WHEN '38' THEN 39 WHEN '37' THEN 40 WHEN '36' THEN 41 WHEN '35' THEN 42 WHEN '34' THEN 43 WHEN '33' THEN 44 WHEN '32' THEN 45 WHEN '31' THEN 46 WHEN '30' THEN 47 WHEN '29' THEN 48 WHEN '28' THEN 49 WHEN '27' THEN 50 WHEN '26' THEN 51 WHEN '25' THEN 52 WHEN '24' THEN 53 WHEN '23' THEN 54 WHEN '22' THEN 55 WHEN '21' THEN 56 WHEN '20' THEN 57 WHEN '19' THEN 58 WHEN '18' THEN 59 WHEN '17' THEN 60 WHEN '16' THEN 61 WHEN '15' THEN 62 WHEN '14' THEN 63 WHEN '13' THEN 64 WHEN '12' THEN 65 WHEN '11' THEN 66 WHEN '10' THEN 67 WHEN '9' THEN 68 WHEN '8' THEN 69 WHEN '7' THEN 70 WHEN '6' THEN 71 WHEN '5' THEN 72 WHEN '4' THEN 73 WHEN '3' THEN 74 WHEN '2' THEN 75 ELSE 76 END,m3bompool_tid");
+					   
+					    @("1=select tr_qty,seq,m3bompool_tid,po_no,pl_ih_date,supplier,mode,arrival_date from [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL] where material_item='O29749E8ST1 064' and [BEK_DBS_RMW_0001].[dbo].TRIM(material_item)=[BEK_DBS_RMW_0001].[dbo].TRIM('"+item+"') order by CASE SEQ WHEN '1' THEN 1 WHEN '75' THEN 2 WHEN '74' THEN 3 WHEN '73' THEN 4 WHEN '72' THEN 5 WHEN '71' THEN 6 WHEN '70' THEN 7 WHEN '69' THEN 8 WHEN '68' THEN 9 WHEN '67' THEN 10 WHEN '66' THEN 11 WHEN '65' THEN 12 WHEN '64' THEN 13 WHEN '63' THEN 14 WHEN '62' THEN 15 WHEN '61' THEN 16 WHEN '60' THEN 17 WHEN '59' THEN 18 WHEN '58' THEN 19 WHEN '57' THEN 20 WHEN '56' THEN 21 WHEN '55' THEN 22 WHEN '54' THEN 23 WHEN '53' THEN 24 WHEN '52' THEN 25 WHEN '51' THEN 26 WHEN '50' THEN 27 WHEN '49' THEN 28 WHEN '48' THEN 29 WHEN '47' THEN 30 WHEN '46' THEN 31 WHEN '45' THEN 32 WHEN '44' THEN 33 WHEN '43' THEN 34 WHEN '42' THEN 35 WHEN '41' THEN 36 WHEN '40' THEN 37 WHEN '39' THEN 38 WHEN '38' THEN 39 WHEN '37' THEN 40 WHEN '36' THEN 41 WHEN '35' THEN 42 WHEN '34' THEN 43 WHEN '33' THEN 44 WHEN '32' THEN 45 WHEN '31' THEN 46 WHEN '30' THEN 47 WHEN '29' THEN 48 WHEN '28' THEN 49 WHEN '27' THEN 50 WHEN '26' THEN 51 WHEN '25' THEN 52 WHEN '24' THEN 53 WHEN '23' THEN 54 WHEN '22' THEN 55 WHEN '21' THEN 56 WHEN '20' THEN 57 WHEN '19' THEN 58 WHEN '18' THEN 59 WHEN '17' THEN 60 WHEN '16' THEN 61 WHEN '15' THEN 62 WHEN '14' THEN 63 WHEN '13' THEN 64 WHEN '12' THEN 65 WHEN '11' THEN 66 WHEN '10' THEN 67 WHEN '9' THEN 68 WHEN '8' THEN 69 WHEN '7' THEN 70 WHEN '6' THEN 71 WHEN '5' THEN 72 WHEN '4' THEN 73 WHEN '3' THEN 74 WHEN '2' THEN 75 ELSE 76 END,m3bompool_tid"); <br/>    
+               
+                       //To extract values from macro
+                       foreach(var result_val in result_set2)
+                       {
+                            if(x>0)
+                            {
+                                x=x-result_val.tr_qty;
+                            }
+                            if(x<0)
+                            {
+                                balance=Math.Abs(x);
+							    x=0; 
+                            }
+
+                            if(x<=0)
+                            {
+                                if(y>0)
+                                {
+                                    application_qty=0;
+								    if(balance>0)
+								    {
+									    if(balance>y)
+									    {
+										    application_qty=y;
+										    y=0;
+									    }
+									    else
+									    {
+										    application_qty=balance;
+										    y=y-balance;
+										    balance=0;
+									    }
+								    }
+								    else
+								    {
+									    if(result_val.tr_qty>y)
+									    {
+										    application_qty=y;
+                                            y=0;
+									    }
+									    else
+									    {
+										    application_qty=result_val.tr_qty;
+                                            y=y-result_val.tr_qty;   
+									    }
+									
+								    }
+		
+                                    //To update remarks
+                                    db_class.exe_queries("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_005_REM_REF] (bom_tid_ref,bom_status,m3bompool_tid_ref,bom_remarks,po_no,pl_ih_date,supplier,mode,arrival_date) values("+"'"+record.bom_tid+"','"+result_val.seq+"','"+result_val.m3bompool_tid+"','"+application_qty+"','"+result_val.po_no+"','"+result_val.pl_ih_date+"','"+result_val.supplier+"','"+result_val.mode+"','"+result_val.arrival_date+"')");
+									
+                                    var Linsertid=db_class.last_insert_id();
+
+                                    db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_004_BOM_POOL] set bom_rem_tid_ref="+Linsertid+" where bom_tid="+record.bom_tid);
+
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+
+                       } 
+
+                       //To update latest status in FSP Table
+                       //Disabled to avoid more delay in processing. 20130911
+                       //db_class.exe_queries("BEK_DBS_RMW_0001","exec [BEK_DBS_RMW_0001].[dbo].[UPDATE_BULK_REM] @schedule_in='"+schedule+"'");
+                       schedule_list.Add(schedule);
+
+                    }
+                }
+                
+                //New Version
+                db_class.exe_queries("BEK_DBS_RMW_0001","truncate table [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL]");
+                db_class.exe_queries("BEK_DBS_RMW_0001","truncate table [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL]"); 
+            }
+
+            //To Auto Reset item status based on criteria
+            if(Page.auto_reset_status==1)
+            {
+                String today_date=d.ToString("yyyy-MM-dd").ToString();
+                udf_functions udf_class=new udf_functions();
+                                
+                var result_set3=db_class.show_result("BEK_DBS_RMW_0001","SELECT bom_tid,cast(m3bompool_tid_ref as varchar(max)) as m3bompool_tid_ref FROM [BEK_DBS_RMW_0001].[dbo].[V_0001_0005_FR_BOM_TRACK_REP] where m3bompool_tid_ref is not null and PROC_GRP in ("+Page.auto_reset_cats+") and production_date<='"+today_date+"'  and bom_status not in (0,1)  and bom_status is not null  and bom_status<="+Page.auto_reset_status_code_limit+" and ISNUMERIC(bom_remarks)=1  and CONVERT(decimal(15,4),bom_balance)<=(((bom_req_qty)*"+Page.auto_reset_perc_limit+")/100)");
+                foreach(var result_record in result_set3)
+                {
+                     udf_class.FN_REM_UPDATE("0","","AUTO RESET BY SYSTEM",result_record.bom_tid,result_record.m3bompool_tid_ref,Page.g_log_user);
+                }
+
+                //New enhacement to reset values to null, if the bom status changed or auto reset 0
+
+                result_set3=db_class.show_result("BEK_DBS_RMW_0001","SELECT bom_tid,cast(m3bompool_tid_ref as varchar(max)) as m3bompool_tid_ref,schedule,fr_pool_tid FROM [BEK_DBS_RMW_0001].[dbo].[V_0001_0005_FR_BOM_TRACK_REP] where m3bompool_tid_ref is not null and PROC_GRP in ("+Page.auto_reset_cats+") and production_date<='"+today_date+"'  and bom_status in (0)  and bom_status is not null and bom_remarks='AUTO RESET BY SYSTEM'  and CONVERT(decimal(15,4),bom_balance)>=(((bom_req_qty)*"+Page.auto_reset_perc_limit+")/100)");
+                foreach(var result_record in result_set3)
+                {
+                     //udf_class.FN_REM_UPDATE("10","","AUTO REVER BY SYSTEM",result_record.bom_tid,result_record.m3bompool_tid_ref,Page.g_log_user);
+                     db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_004_BOM_POOL] set bom_rem_tid_ref=NULL,bom_remarks_master='AUTO REVER BY SYSTEM' where bom_tid="+result_record.bom_tid);
+                     db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set fab_status=NULL,strim_status=NULL,ptrim_status=NULL where fr_pool_tid="+result_record.fr_pool_tid);
+                     //db_class.exe_queries("BEK_DBS_RMW_0001","exec [BEK_DBS_RMW_0001].[dbo].[UPDATE_BULK_REM] @schedule_in='"+result_record.schedule+"'");
+                }
+            }
+                
+            
+            //New Version
+            db_class.exe_queries("BEK_DBS_RMW_0001","drop table [BEK_DBS_RMW_0001].[dbo].[T_0001_007_TEMP_BOM_POOL]");
+            db_class.exe_queries("BEK_DBS_RMW_0001","drop table [BEK_DBS_RMW_0001].[dbo].[T_0001_008_TEMP_SEQ_POOL]"); 
+            
+                     
+            //Destroy : Class Object
+            db_class.Dispose();   
+        }
+
+        @{
+            d = DateTime.Now;
+            //To Track Page End Time
+            //To delete remarks log which is older
+            db_class.exe_queries("BEK_DBS_RMW_0001","delete from [BEK_DBS_RMW_0001].dbo.T_0001_005_REM_REF where rem_tid not in (select bom_rem_tid_ref from [BEK_DBS_RMW_0001].[dbo].[T_0001_004_BOM_POOL] where bom_rem_tid_ref is not null) and bom_log_time<'"+start_time+"' and bom_log_user is null");
+
+            //To update live status (SFCS)
+
+            //A Trigger will run the [FRPLAN_SFCS_SYNC] from database end.
+            
+           
+	        List<string> distinct = schedule_list.Distinct().ToList();
+
+            
+				   File.WriteAllText(Page.bulk_pro_filename,"0");
+
+            @("End"+d); <br/>        
+            <h2>Successfully Completed.</h2> 
+            //To update long period data
+                   
+             
+            //Redirect to level to process.
+             //Response.Redirect("PRJ_RMW_0001_P_0005_BOM_REM_UPDATE_LEVEL2.cshtml");                     
+
+        }
+    </body>
+</html>

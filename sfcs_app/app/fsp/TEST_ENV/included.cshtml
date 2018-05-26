@@ -1,0 +1,15 @@
+
+@{
+RenderPage("new.cshtml");
+ DateTime d = DateTime.Now;
+
+ //@d;
+
+  // string date_up_limit=d.AddBusinessDays(-19).ToString("yyyy-MM-dd").ToString();
+   //@date_up_limit;
+
+   var test=Page.rlist;
+   @(test.Count);
+    @(Page.rlist.Contains("Value1"));
+}
+

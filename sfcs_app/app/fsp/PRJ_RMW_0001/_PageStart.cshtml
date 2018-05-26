@@ -1,0 +1,262 @@
+﻿@{
+   //Page Start Configurations will be reside here
+   
+   //Config Variables
+   DateTime conf_dt = DateTime.Now;
+  
+   //Global Variable
+
+    PageData["g_log_user"] = Request.LogonUserIdentity.Name.ToString();  //Login User Name
+    PageData["g_page_name"] = Path.GetFileName(this.Request.PhysicalPath); //File Name
+    PageData["g_log_user_short"] = Request.LogonUserIdentity.Name.ToString().Replace('\\','_'); //short name
+
+    PageData["help_link"]="<a href=\"FSP_RM_Forecast_Product_Presentation_V1.pdf\"  target=\"_blank\"><img src=\"/images/16x16/Help symbol.png\" border=\"none\"/></a>";
+   
+    //CSS File Include
+    PageData["scripts_include_head"]="SCRIPTS_INCLUDE_HEAD.cshtml";
+    PageData["scripts_include_tail"]="SCRIPTS_INCLUDE_TAIL.cshtml";
+
+    //Global Buyer Divisions
+	//before 2017-11-17 Fresh desk SR#1213
+    //PageData["buyerdivision"]=";DIM;GLAMOR;IU;LBI;LOGO;PINK;T14;T61;T32";
+    //PageData["buyerdivision_title"]="ALL;DIM;GLAMOR;IU;LBI;LOGO;PINK;T14;T61;T32";
+
+    //Global Buyer Divisions
+	//after 2017-11-17 Fresh desk SR#1213
+    //PageData["buyerdivision"]=";DIM;GLAMOR;IU;LBI;LOGO;PINK;T14;T61;T32:VSD/PINK;VSD/VSI/Signature Cotton;VSS/PINK;VSS/VSI/Signature Cotton";
+    PageData["buyerdivision"]=";DIM;GLAMOR;IU;LBI;LOGO;PINK;T14;T61;T32;VS PINK;VS LOGO";
+    
+	//PageData["buyerdivision_title"]="ALL;DIM;GLAMOR;IU;LBI;LOGO;PINK;T14;T61;T32;VS PINK;VS LOGO;VS PINK;VS LOGO";
+	PageData["buyerdivision_title"]="ALL;DIM;GLAMOR;IU;LBI;LOGO;PINK;T14;T61;T32;VS PINK;VS LOGO";
+
+    //Material Category
+    PageData["material"]=";FAB;PTRIM;STRIM";
+    PageData["material_title"]="ALL;FAB;PTRIM;STRIM";
+
+    //Global Item Codes
+    PageData["item_codes"]=";BC;BD;BE;BF;BR;BT;BX;CP;CT;DV;EL;EY;FK;FT;GM;HB;HC;HG;HT;IL;IN;LB;LC;LL;MF;MT;PA;PB;PL;PP;PT;PV;RB;RI;RN;SC;SE;SP;ST;SW;SZ;TA;TG;TH;TP;TU;WK;WN;WP";
+    PageData["item_codes_title"]="ALL;BC-BODY CARD;BD-BOARD;BE-BEADS;BF-WEFT;BR-BANDEROLL;BT-BUTTON;BX-BOX / WITH HANGER;CP-CLIP;CT-CARTON;DV-DIVIDER;EL-ELASTIC;EY-EYELET;FK-FLAT KNIT;FT-FASTNERS;GM-GUM;HB-HANGER BAG;HC-HEADER CARD / W-ADHSIV / W-HANGER;HG-HANGER;HT-HANG TAG;IL-INTERLINING;IN-INSERT BODY CARD;LB-LABEL;LC-LACE;LL-LOCKER LOOP;MF-MOTIFF;MT-METAL;PA-PAPER / A4;PB-POLY BAG;PL-PLASTIC;PP-PAD PRINT;PT-PRICE TICKET;PV-PVC;RB-RUBBER BAND;RI-RIBBON;RN-RINGS;SC-SPRAY CAN;SE-SERVICES;SP-STRAP;ST-STICKER;SW-SHRINK WRAPPING / SWITCHES;SZ-SIZER;TA-TAPE;TG-TAG;TH-SEWING THREAD;TP-TAG PIN;TU-TISSUES;WK-WARP KNIT;WN-WOVEN;WP-WATERFALL PACK";
+
+    //Project Code Titles
+    PageData["page_title"]="FSP RM Forecast";
+
+    //Warehouse code filtering
+    //PageData["wh_code"]="104";
+    
+    var whrlist = new List<string>();
+    whrlist.Add("104");
+
+    PageData["wh_code"]=whrlist;
+
+    PageData["wh_code_str"]="104";
+	
+	//Report Period Range (Filtering)
+	PageData["report_period_range"]=+30; //+30
+
+    //No of days processing period +16 days (must change in SP also "FRPLAN_SFCS_SYNC","UPDATE_BULK_REM")
+    //OLD Version =+14
+    PageData["period_range"]=+7; //+14
+
+    //Please check file exist with name bulk_process.txt
+    //File will get update in remarks update interface
+    //0 is in process, 1 is completed
+
+    PageData["bulk_pro_filename"]=System.AppDomain.CurrentDomain.BaseDirectory+"PRJ_RMW_0001\\bulk_process.txt";
+    PageData["bulk_pro_contents"]=File.ReadAllText(Page.bulk_pro_filename);
+	
+	//During the Night hours, the schedule time will be different.
+	if(((int.Parse(conf_dt.ToString("HH"))>22 && int.Parse(conf_dt.ToString("HH"))<4) || (int.Parse(conf_dt.ToString("HH"))>14 && int.Parse(conf_dt.ToString("HH"))<18)) && Page.bulk_pro_contents=="0")
+	{
+		PageData["period_range"]=+30; //+30
+        File.WriteAllText(Page.bulk_pro_filename,"1");
+	}
+
+    if(Page.bulk_pro_contents=="1")
+    {
+        PageData["period_range"]=+30; //+30
+    }
+
+    //Process (1,0) stock items or not
+    PageData["process_stock_items"]=1; //1-Yes, 0-No
+
+    //Auto Delete log entry to reset process (no hours from the start time of last log)
+    PageData["auto_delete_limit"]=8;
+
+    //To slow down process of M3 load on server
+    PageData["m3_downlaod_limit_hrs"]=0;
+
+    //To reset the status to 0 when status is below 35 and quantity is at exempted limit (1.5% on bom requirement)
+    //User: Rao/Lalith
+    PageData["auto_reset_status"]=1; //Is required to process auto reset (1 is YES)
+    PageData["auto_reset_cats"]="'STRIM','PTRIM'";
+    PageData["auto_reset_status_code_limit"]=35;
+    PageData["auto_reset_perc_limit"]=1.5;
+
+    //Email alert period range (5 days)
+    PageData["email_alert_period1"]=+5;
+
+    //Pages to be excluded in auto process
+    //note please modify SP SFCS_SYNC_AFTER_REM_UP_SCH
+    //Please exlcude PRJ_RMW_0001_FSP_LIVE_SYNC_AFT_REM_UPDATE.cshtml string in SP Filter query
+    PageData["exclude_auto_pro_pages"]="'PRJ_RMW_0001_P_0019_FSP_LIVE_SYNC.cshtml','PRJ_RMW_0001_A_0022_ALR2.cshtml','PRJ_RMW_0001_A_0023_ALR4.cshtml','PRJ_RMW_0001_A_0024_ALR5.cshtml','PRJ_RMW_0001_A_0025_ALR6.cshtml','PRJ_RMW_0001_FSP_LIVE_SYNC_AFT_REM_UPDATE.cshtml','PRJ_RMW_0001_A_0034_ALR7.cshtml','PRJ_RMW_0001_A_0035_ALR8.cshtml'";
+
+    //Email Alerts recipients List
+    
+    //ALERT MAIL 1
+    PageData["email_alr1_to"]="ictsysalert@brandix.com";
+    PageData["email_alr1_cc"]="";
+    PageData["email_alr1_bcc"]="BAIVSOperationalTeam@brandix.com,kirang@brandix.com,kirang@brandix.com";
+    PageData["email_alr1_priority"]="High";
+
+    //ALERT MAIL 2 & 3 (AS 2)
+
+    PageData["email_alr2_to"]="ictsysalert@brandix.com";
+    PageData["email_alr2_cc"]="";
+    PageData["email_alr2_bcc"]="BAI1ManufacturingTeam@brandix.com,BAI1ManagementTeam@brandix.com,SenthooranS@brandix.com,DeshanSe@brandix.com,SamadaraP@brandix.com,LalithB@brandix.com,LilanthaW@brandix.com,UdayaD@brandix.com,GoviL@brandix.com,duminduw@brandix.com,thilinil@brandix.com,shamila@brandix.com,NuwanN@brandix.com,Oshadeed@brandix.com,RenukaR@brandix.com,BAIVSOperationalTeam@brandix.com,BELVSSourcing@brandix.com,kirang@brandix.com,kirang@brandix.com,DinithiWe@brandix.com";
+    PageData["email_alr2_priority"]="High";
+
+    //ALERT MAIL 6
+
+    PageData["email_alr6_to"]="ictsysalert@brandix.com";
+    PageData["email_alr6_cc"]="";
+    PageData["email_alr6_bcc"]="BELVSSourcing@brandix.com,BAIVSOperationalTeam@brandix.com,kirang@brandix.com,kirang@brandix.com";
+    PageData["email_alr6_priority"]="High";
+
+    //ALERT MAIL 4
+
+    PageData["email_alr4_to"]="ictsysalert@brandix.com";
+    PageData["email_alr4_cc"]="";
+    PageData["email_alr4_bcc"]="BAIVSOperationalTeam@brandix.com,kirang@brandix.com,kirang@brandix.com";
+    PageData["email_alr4_priority"]="High";
+
+    //ALERT MAIL 5
+
+    PageData["email_alr5_to"]="ictsysalert@brandix.com";
+    PageData["email_alr5_cc"]="";
+    PageData["email_alr5_bcc"]="BAIVSOperationalTeam@brandix.com,kirang@brandix.com,kirang@brandix.com";
+    PageData["email_alr5_priority"]="High";
+
+    //ALERT LOG 
+
+    PageData["email_alrlog_to"]="ictsysalert@brandix.com";
+    PageData["email_alrlog_cc"]="";
+    PageData["email_alrlog_bcc"]="kirang@brandix.com,muralim@brandix.com,kishorek@brandix.com,bai1supplychainteam@brandix.com";
+    PageData["email_alrlog_priority"]="High";
+
+    //ALERT MAIL 7 : To send status 35 aler mail
+
+    PageData["email_alr7_to"]="ictsysalert@brandix.com";
+    PageData["email_alr7_cc"]="";
+    PageData["email_alr7_bcc"]="BAIVSOperationalTeam@brandix.com,kirang@brandix.com,kirang@brandix.com";
+    PageData["email_alr7_priority"]="High";
+    PageData["supplier_alr7_filter_list"]="'OCEAN INDIA PVT LTD','SHORE 2 SHORE','PIONEER ELASTIC (HONG KONG) LTD','VARDHMAN YARNS AND THREADS LTD'";
+
+    //ALERT MAIL 8 : To send status of trim/cc charts
+
+    PageData["email_alr8_to"]="ictsysalert@brandix.com";
+    PageData["email_alr8_cc"]="";
+    PageData["email_alr8_bcc"]="GayanL@brandix.com,BAI1SupplyChainTeam@brandix.com,DeshanSe@brandix.com,thilinil@brandix.com,KavindraD@brandix.com,shamila@brandix.com,SanjayaP@brandix.com,Deshapriyat@brandix.com,RuvishaniD@brandix.com,IshankaNa@brandix.com,Surangak@brandix.com,RajanaA@brandix.com,NirmalR@brandix.com,KavindraD@brandix.com,kirang@brandix.com,kirang@brandix.com,DinithiWe@brandix.com";
+    PageData["email_alr8_priority"]="High";
+}
+
+
+@{
+    
+    //From Address Update
+
+    WebMail.From = "Shop Floor System Alert <ictsysalert@brandix.com>";
+
+    //Style Sheet String
+
+    PageData["mail_alert_css_format1"]=@"body
+    {
+	    font-family:calibri;
+	    font-size:12px;
+    }
+
+    #bodymsg
+    {
+        color:#0011EE;
+        font-size: 12px;
+        font-family:calibri;
+    }
+
+    #ajax-panel table tr
+    {
+	    border: 1px solid #999999;
+	    text-align: right;
+	    white-space:nowrap;
+        font-family:calibri;
+	    font-size:12px;
+
+    }
+
+    #ajax-panel table td
+    {
+	    border: 1px solid #999999;
+	    text-align: right;
+        white-space:nowrap;
+        font-family:calibri;
+	    font-size:12px;
+        vertical-align: top;
+    }
+
+
+    #ajax-panel table td.lef
+    {
+	    border: 1px solid #999999;
+	    text-align: left;
+        white-space:nowrap;
+        font-family:calibri;
+	    font-size:12px;
+        vertical-align: top;
+    }
+
+    #ajax-panel table td.cen
+    {
+	    border: 1px solid #999999;
+	    text-align: center;
+        white-space:nowrap;
+        font-family:calibri;
+	    font-size:12px;
+        vertical-align: top;
+    }
+
+    #ajax-panel table th
+    {
+	    border: 1px solid #999999;
+	    text-align: center;
+        background-color: #29759c;
+	    color: #fff;
+        white-space:nowrap; 
+	    padding-left: 5px;
+	    padding-right: 5px;
+        font-family:calibri;
+	    font-size:12px;
+    }
+
+    #ajax-panel table{
+	    white-space:nowrap; 
+	    border-collapse:collapse;
+        font-family:calibri;
+	    font-size:12px;
+    }
+    
+    #page_heading{
+    width: 100%;
+    height: 25px;
+    color: WHITE;
+    background-color: #555555;
+    z-index: -999;
+    font-family:calibri;
+	border-left: 10px solid red;
+  
+    }
+
+    #page_heading span{
+        font-size:18px;  
+    }
+    
+    ";
+}
+

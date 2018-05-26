@@ -1,0 +1,238 @@
+﻿<!-- 
+
+Page Description: This is email alert page : ALR2
+
+-->
+<!-- Includes-->
+
+
+<!-- User Define Functions-->
+@functions {
+    // To set the background color of cell for single window summary sheet
+    string FSP_STATUS_CODE_CELL_BG(string cust_code)
+    {
+        var msg = "bgcolor=";
+        switch(cust_code)
+        {
+            case "Available":
+            {
+                msg+="#33FF33";
+                break;
+            }
+            case "50":
+            {
+                msg+="#FFFF22";
+                break;
+            }
+            case "45":
+            {
+                msg+="#33CCEE";
+                break;
+            }
+            case "35":
+            {
+                msg+="#FF66CC";
+                break;
+            }
+            case "20":
+            {
+                msg+="#CCCCCC";
+                break;
+            }
+            case "10":
+            {
+                msg+="#CCCCCC";
+                break;
+            }
+            case "Excempted":
+            {
+                msg+="#99AAEE";
+                break;
+            }
+            case "Not Updated":
+            {
+                msg+="#99AAEE";
+                break;
+            }
+        }
+        return msg;
+    }
+}
+
+
+
+
+@{
+    db_object db_class=new db_object();
+    String mail_message="";
+    DateTime d = DateTime.Now;
+    var items = Page.buyerdivision.Split(new[]{';'});
+    string edate="";
+    string sdate="";
+    string buyer="";
+    string item="";
+    double passper=0;
+
+    }    
+            
+@{
+    mail_message=@"
+    <!DOCTYPE html PUBLIC -//W3C//DTD XHTML 1.0 Transitional//EN"" http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
+
+    <html lang=""en"">
+        <head>
+            <meta charset=""utf-8"" />
+            <title>"+Page.page_title+": Alert 8</title>";
+
+            mail_message+="<style>"+Page.mail_alert_css_format1+"</style>";
+        mail_message+=@"</head>
+        <body>
+    <div id=""ajax-panel"">";
+
+
+            
+                        
+}
+            
+
+
+@{
+    
+    //Block 1 Mail Message
+
+    sdate=d.AddBusinessDays(+1).ToString("yyyy-MM-dd").ToString();
+    edate=d.AddBusinessDays(+1).ToString("yyyy-MM-dd").ToString();
+}
+            
+            
+@{ 
+            
+//Block 2 mail message
+    string date_up_limit=d.AddBusinessDays((int)Page.email_alert_period1).ToString("yyyy-MM-dd").ToString();
+                
+    edate=date_up_limit;
+
+            
+            
+    mail_message+=@"<span id=""bodymsg"">Dear Associates, <br/><br/>Please find the below TRIM Card/CC Chart availability status summary till "+edate+" and update the status ASAP.<br/><br/>Status Legend: 0- File Not Uploaded, 10-File Uploaded, 20-File Revised, 30-Rejected, 40-Approved.</span> ";
+    //foreach(string item in items)
+    for(int i=1;i<items.Length;i++)
+    {
+        item=items[i];
+        var result_set_pending1=db_class.show_result("DBS_RMW_0001","exec [DBS_RMW_0001].[dbo].[S_0001_016_SP_REP_FR5]  @sdate='',@edate='"+edate+"',@buyer='"+item+"'");
+        double total_count=db_class.queries_count();
+
+        var result_set_pending2=db_class.show_result("DBS_RMW_0001","exec [DBS_RMW_0001].[dbo].[S_0001_016_SP_REP_FR5]  @sdate='',@edate='"+edate+"',@buyer='"+item+"',@showonlypendingtrcc=1");
+        double pending_count=db_class.queries_count();
+
+        if(total_count>0 && pending_count>0)
+        {
+            passper=Math.Round(100-((pending_count/total_count)*100),0);
+        mail_message+=@"<br/><br/><div id=""page_heading""><span><b>"+item+":&nbsp; <font color=\"#00FF00\">"+passper+"%</font></b></span><br/>Status Pending/Total: "+pending_count+"/"+total_count+"<br/></div><br/>";
+
+        mail_message+=@"<table  id=""tablefilter"" cellpadding=""0"" cellspacing=""0"" width=""100%"">
+        <thead>
+        <tr>
+            <th>Buyer<br/>Division</th>
+                   
+                    
+            <th>Style</th>
+            <th>Schedule</th>
+            <th>Color</th>
+            <th>Production<br/>Start Date</th>
+            <th>Ex-Factory<br/>Date</th>
+            <th>Planned<br/>Module</th>
+
+            <th>CC Chart Status</th>
+            <th>Trim Card Status</th>
+              
+        </tr>
+        </thead>
+        <tbody>";
+               
+        //Select to be prepared bom details from FR Pool View
+        var result_set=db_class.show_result("DBS_RMW_0001","exec [DBS_RMW_0001].[dbo].[S_0001_016_SP_REP_FR5]  @sdate='',@edate='"+edate+"',@buyer='"+item+"',@showonlypendingtrcc=1");    
+                             
+        foreach(var record in result_set)
+        {             
+                  
+            mail_message+="<tr>";
+                        
+                    var bgcolor="";                    
+                                           
+
+                    mail_message+="<td class=\"lef\" "+bgcolor+">"+record.sfcs_buyer_div+"</td>";
+                         
+                    mail_message+="<td class=\"lef\" "+bgcolor+">"+record.style+"</td>";
+                    mail_message+="<td class=\"cen\" "+bgcolor+">"+record.schedule+"</td>";
+                    mail_message+="<td class=\"lef\" "+bgcolor+">"+record.color+"</td>";
+        
+                    mail_message+="<td class=\"cen\" "+bgcolor+">"+record.production_date+"</td>";
+                    mail_message+="<td class=\"cen\" "+bgcolor+">"+record.delivery_date+"</td>";
+                    mail_message+="<td class=\"lef\" "+bgcolor+">"+record.grouped_module+"</td>";
+                    mail_message+="<td class=\"cen\" "+bgcolor+">"+record.cc_status+"</td>";
+                    mail_message+="<td class=\"lef\" "+bgcolor+">"+record.tr_status+"</td>";
+                           
+                        
+            mail_message+="</tr>";
+        } 
+             
+            mail_message+=@"</tbody>
+                        </table>";
+        }
+    }
+    
+    
+    mail_message+=@"</div>"; 
+
+    mail_message+=App.email_sign;
+
+    mail_message+=@"</body></html>"; 
+    
+    
+    //@Html.Raw(mail_message); 
+
+    // Send email
+
+    try { 
+
+    if(Request.QueryString["report"]=="1")
+    {
+        @Html.Raw(mail_message); 
+    }
+    else
+    {
+        //subject: Page.page_title+" "+d.ToString("yyyy-MM-dd").ToString(),
+
+        WebMail.Send(to: Page.email_alr8_to,
+        subject: "BAI FSP TRIM Card/CC Chart Availability Status",
+        cc: Page.email_alr8_cc,
+        bcc: Page.email_alr8_bcc,
+        priority:Page.email_alr8_priority,
+        body: mail_message,
+        isBodyHtml:true); 
+
+        //To update in Alerts Track
+        d = DateTime.Now;
+        db_class.exe_queries("DBS_RMW_0001","insert into [DBS_RMW_0001].[dbo].[T_0001_010_EXE_LOG] (page_name,start_time,end_time,log_user) values('"+Page.g_page_name+"','"+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"','"+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"','"+Page.g_log_user+"')");
+
+        <script> setTimeout("CloseWindow()",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script>
+    }
+
+    } 
+    catch (Exception ex) { 
+
+        <text> 
+            <b>The email was <em>not</em> sent.</b> 
+            The code in the ProcessFile page must provide an 
+            SMTP server name, a user name, a password, and 
+            a "from" address.  
+        </text>
+    }   
+
+                 
+}
+        
+        
+
+   

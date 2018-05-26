@@ -1,0 +1,30 @@
+﻿@{
+    string schedule="";
+    schedule=Request["schedule"];
+    
+    Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+    Response.AddHeader("content-disposition", "attachment;filename=FSP_BOM_Details_"+schedule+".xls");
+    var db = Database.Open("BEK_DBS_RMW_0001");
+    var books = db.Query("SELECT PROC_GRP,GMT_COLOUR,MATERIAL_ITEM,ITEM_DESCRIPTION,MAT_COLOUR,MAT_SIZE,CONSUMPTION,REQUIRED_,ISSUED,BAL_TO_ISSUE from [BEK_DBS_RMW_0001].[dbo].[T_0001_001_M3BOMPOOL_BACKUP] where schedule="+schedule);
+    var grid = new WebGrid(books, canSort:false, canPage:false);
+}
+
+<h2>FSP RM Forecast - BOM Details</h2>
+<h3>Schedule: @(schedule)</h3>
+@grid.GetHtml(  
+            tableStyle : "table",
+            alternatingRowStyle : "alternate",
+            headerStyle : "header",
+                columns : grid.Columns(
+                    grid.Column("PROC_GRP", header: "PROC_GRP"),
+                    grid.Column("GMT_COLOUR", header: "GMT_COLOUR"),
+                    grid.Column("MATERIAL_ITEM", header: "MATERIAL_ITEM"),
+                    grid.Column("ITEM_DESCRIPTION", header: "ITEM_DESCRIPTION"),
+                    grid.Column("MAT_COLOUR", header: "MAT_COLOUR"),
+                    grid.Column("MAT_SIZE", header: "MAT_SIZE"),
+                    grid.Column("CONSUMPTION", header: "CONSUMPTION"),
+                    grid.Column("REQUIRED_", header: "REQUIRED_"),
+                    grid.Column("ISSUED", header: "ISSUED"),
+                    grid.Column("BAL_TO_ISSUE", header: "BAL_TO_ISSUE")
+                )
+            )

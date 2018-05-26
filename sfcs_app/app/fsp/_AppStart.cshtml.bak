@@ -1,0 +1,13 @@
+﻿@{
+   
+        WebMail.SmtpServer = "10.227.19.18";
+        WebMail.SmtpPort = 25;
+        WebMail.UserName = "bainetalert";
+        WebMail.Password = "pass@123";
+        //WebMail.From = "bainetalerts@brandix.com"; //Customized at Individual Page
+
+        //Email Signature
+
+        AppState["email_sign"] = "<br/><br/> Message Sent Via: http://bainet";
+        AppState["host_name_space"]="BAINet";
+}

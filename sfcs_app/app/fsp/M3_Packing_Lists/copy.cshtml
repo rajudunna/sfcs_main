@@ -1,0 +1,80 @@
+<html>
+<head>
+<!-- This file is to copy Picking list from remote server to local webserver and facilitate the same for an access. -->
+
+<script language="javascript" type="text/javascript">
+<!--
+function popitup(url) {
+	newwindow=window.open(url,'name','height=400,width=650,top=23,left=100');
+	if (window.focus) {newwindows.title="M3 Picking List"; newwindow.focus()}
+	return false;
+}
+</script>
+
+<style>
+    body{
+        font-family: Arial;        
+    }    
+    
+</style>
+</head>
+
+<body>
+<h3>M3 Picking List : Quick Search</h3>
+<form>
+Picking List #:<input name="num" size="20"> &nbsp;&nbsp; <input type="submit" name="submit" value="Click to Open" >
+
+</form>
+    
+
+@{
+
+    
+    if(Request["num"]!=null)
+    {
+        var num=Request["num"];
+
+        string sourceDir = @"\\10.227.40.36\movex\bal";
+        string destDir = @"c:\wserver\wamp\www\m3_packing_list";
+
+        //Deletes all older files
+        Directory.GetFiles(destDir)
+         .Select(f => new FileInfo(f))
+         .Where(f => f.LastAccessTime < DateTime.Now.AddDays(-3))
+         .ToList()
+         .ForEach(f => f.Delete());
+        //Deletes all older files
+    
+        var file = Directory.GetFiles(destDir, "*"+num+"*.*",SearchOption.AllDirectories).FirstOrDefault();
+    
+        if(file==null)
+        {
+
+                var r = Directory.GetFiles(sourceDir, "*"+num+"*.*"); //Replace this part with your read from notepad file
+    
+                foreach (var s in r)
+                {
+                    var sourceFile = new FileInfo(s);
+                    sourceFile.CopyTo(destDir + "\\" + s.Replace(sourceDir, string.Empty));
+                }
+
+                @(Html.Raw("<h3>Picking List #  "+num+"</h3>"));
+                var filenames = String.Join(", ",Directory.GetFiles(destDir, "*"+num+"*.*").Select(filename =>Path.GetFileName(filename)).ToArray());
+            @(Html.Raw("<br/><br/><font color=\"blue\"><a href=\"#\" onclick=\"popitup('http://bainet:8080/m3_packing_list/"+filenames+"')\" >Click to Open "+filenames+"</a></font>"));            
+                
+        }
+        else
+        {
+            @(Html.Raw("<h3>Picking List #  "+num+"</h3>"));
+            var filenames = String.Join(", ",Directory.GetFiles(destDir, "*"+num+"*.*").Select(filename =>Path.GetFileName(filename)).ToArray());
+            @(Html.Raw("<br/><br/><font color=\"blue\"><a href=\"#\" onclick=\"popitup('http://bainet:8080/m3_packing_list/"+filenames+"')\" >Click to Open "+filenames+"</a></font>"));
+
+        }
+      
+    }
+
+}
+
+</body>
+
+</html>

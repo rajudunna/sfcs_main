@@ -1,0 +1,85 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Ajax File Uploader</title>
+
+<script src="jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="jquery.form.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function()
+{
+
+var options = {
+ beforeSubmit: function()
+ {
+ // pre submit callback
+ $("#progress").show();
+ $("#result").html("");
+ $("#percent").html("0%");
+ },
+ uploadProgress: function(event, position, total, percentComplete)
+ {
+ //during submission
+ $("#bar").width(percentComplete+'%');
+ $("#percent").html(percentComplete+'%');
+
+ },
+ success: function()
+ {
+ //post submit call back
+ $("#progress-bar").addClass("progress progress-success progress-striped");
+ $(".bar").css("width","100%");
+ $(".percent").html('100%');
+
+},
+ complete: function(response)
+ {
+
+if(response.responseText=="Invalid File"){
+ $("#progress-bar").hide();
+ $("#result").html("<font color='red'>"+response.responseText+"</font>");}
+ else{
+ $("#progress-bar").show();
+ $("#result").html(response.responseText);
+ }
+
+ },
+ error: function()
+ {
+ $("#result").html("<font color='red'> ERROR: unable to upload files</font>");
+
+}
+
+};
+
+$("#itform").ajaxForm(options);
+
+});
+// If File is not selected.
+var file_selected = false;
+function showNoFile() {
+ if(!file_selected) {
+ alert('No file selected!');
+ return false;
+ }
+else{
+return true;
+}
+}
+
+
+</script>
+</head>
+<body>
+<form id="itform" onsubmit='return showNoFile();' action="upload.php" method="post" enctype="multipart/form-data">
+<input type="file" onchange="file_selected = true;" name="myfile">
+<input type="submit" class="btn btn-success" value="Click Me To Upload">
+</form>
+<div id="percent"></div>
+<div id="progress-bar">
+<div class="bar" style="width: 0%"></div>
+</div>
+
+
+</body>
+</html> 

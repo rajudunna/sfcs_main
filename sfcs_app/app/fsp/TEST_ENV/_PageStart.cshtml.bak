@@ -1,0 +1,49 @@
+﻿@{
+   //Page Start Configurations will be reside here
+  
+   //Global Variable
+
+    PageData["g_log_user"] = Request.LogonUserIdentity.Name.ToString();  //Login User Name
+    PageData["g_page_name"] = Path.GetFileName(this.Request.PhysicalPath); //File Name
+
+    //CSS File Include
+    PageData["scripts_include_head"]="SCRIPTS_INCLUDE_HEAD.cshtml";
+    PageData["scripts_include_tail"]="SCRIPTS_INCLUDE_TAIL.cshtml";
+
+    //Global Buyer Divisions
+    PageData["buyerdivision"]=";DIM;GLAMOR;IU;LBI;LOGO;M&S;PINK";
+
+     db_object db_class=new db_object();
+
+    String last_process_pageid="";
+    DateTime last_process_status=DateTime.MinValue;
+    
+    
+     var result_set=db_class.show_result("DBS_RMW_0001","select top 1 *  from [DBS_RMW_0001].[dbo].T_0001_010_EXE_LOG order by log_id desc");            
+                           
+        foreach(var record in result_set)
+        { 
+            last_process_pageid=record.page_name;
+            last_process_status=record.start_time ?? DateTime.MinValue;
+        }
+
+	DateTime stime=last_process_status;	
+	DateTime etime=new DateTime(2010, 05, 12, 13, 15, 00);
+
+	var hours = (int)Math.Abs((etime - stime).TotalHours);
+    
+	@("NEW DIFF: "+hours);
+
+    
+
+    var rlist = new List<string>();
+    rlist.Add("Value1");
+    rlist.Add("Value2");
+
+    PageData["rlist"]=rlist;
+    
+}
+
+
+
+  

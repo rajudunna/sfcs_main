@@ -1,0 +1,107 @@
+﻿<!-- 
+
+Page Description: This is first page to show day wise with buyer division filtering
+
+-->
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>FR Plan with PSD</title>
+
+        @RenderPage(Page.scripts_include_head)
+
+        <script>
+            function local_redirect(page_id, sdate, edate, buyer,item_code)
+            {
+                $().redirect(page_id, { 'sdate': sdate, 'edate': edate, 'buyer':buyer,'item_code':item_code });
+            }
+        </script>
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+         }    
+            <table>
+                <tr>
+                    <th>Production<br/>Start Date</th>
+                    <th>Sum of<br/>Style</th>
+                    <th>Sum of<br/>Schedule</th>
+                    <th>MO Status</th>
+                    <th>Lay Plan <br/>Prepare Status</th>
+                    <th>Stock</th>
+                    <th>50</th>
+                    <th>45</th>
+                    <th>35</th>
+                    <th>20</th>
+                    <th>10</th>
+                    <th>Excempted</th>
+                    <th>Completed</th>
+                    <th>Pending<br/>to Update</th>
+                </tr>
+          @{ 
+                string sdate="";
+                string edate="";
+                string buyer="";
+                string item_code="";
+
+                if(Request["sdate"]!=null){
+                    sdate=Request["sdate"];
+                }
+                if(Request["edate"]!=null){
+                    edate=Request["edate"];
+                }
+                if(Request["buyer"]!=null){
+                    buyer=Request["buyer"];
+                }
+                if(Request["item_code"]!=null){
+                    item_code=Request["item_code"];
+                }
+
+                DateTime d = DateTime.Now;
+                string date_up_limit=d.AddDays(Page.report_period_range).ToString("yyyy-MM-dd").ToString();
+                
+                if(DateTime.Parse(edate)>DateTime.Parse(date_up_limit))
+                {
+                    edate=date_up_limit;
+                }
+
+
+                //Select to be prepared bom details from FR Pool View
+                var result_set=db_class.show_result("DBS_RMW_0001","exec [DBS_RMW_0001].[dbo].[S_0001_012_SP_REP_FR1]  @sdate='"+sdate+"',@edate='"+edate+"',@buyer='"+buyer+"',@item_code='"+item_code+"'");      
+             
+                foreach(var record in result_set)
+                {             
+                    
+                    var schedule_grouped=record.schedule_grouped;
+                    
+                    <tr>
+                        <td><span class="redirectpage" onclick="local_redirect('PRJ_RMW_0001_S_0011_REP_FORMAT_2.cshtml','@record.production_date','@record.production_date','@buyer','@item_code')">@record.production_date</span></td>
+                        <td >@record.style_count</td>
+                        <td>@record.schedule_count</td>
+                        
+                        <td>@(db_class.show_value("DBS_RMW_0001","select SUM(val) as value from (select distinct schedule, cast(isnull(sfcs_mo_status,0) as int) as val from [DBS_RMW_0001].[dbo].[V_0001_0005_FR_BOM_TRACK_REP] where schedule in ('"+schedule_grouped.Replace(",","','")+"')) as temp"))</td>
+
+                        <td>@(db_class.show_value("DBS_RMW_0001","select SUM(val) as value from (select distinct schedule, cast(isnull(sfcs_lay_pre_status,0) as int) as val from [DBS_RMW_0001].[dbo].[V_0001_0005_FR_BOM_TRACK_REP] where schedule in ('"+schedule_grouped.Replace(",","','")+"')) as temp"))</td>
+                                                
+                        
+
+                        <td @Html.Raw(record.stock>0?"bgcolor=\"#33FF33\"":"")>@Html.Raw(record.stock>0?record.stock:"")</td>
+                        <td @Html.Raw(record.status_50>0?"bgcolor=\"#FFFF22\"":"")>@Html.Raw(record.status_50>0?record.status_50:"")</td>
+                        <td @Html.Raw(record.status_45>0?"bgcolor=\"#33CCEE\"":"")>@Html.Raw(record.status_45>0?record.status_45:"")</td>
+                        <td @Html.Raw(record.status_35>0?"bgcolor=\"#FF66CC\"":"")>@Html.Raw(record.status_35>0?record.status_35:"")</td>
+                        <td @Html.Raw(record.status_20>0?"bgcolor=\"#CCCCCC\"":"")>@Html.Raw(record.status_20>0?record.status_20:"")</td>
+                        <td @Html.Raw(record.status_10>0?"bgcolor=\"#CCCCCC\"":"")>@Html.Raw(record.status_10>0?record.status_10:"")</td>
+                        <td @Html.Raw(record.excempted>0?"bgcolor=\"#99AAEE\"":"")>@Html.Raw(record.excempted>0?record.excempted:"")</td>
+                        <td @Html.Raw(record.completed>0?"bgcolor=\"#99AAEE\"":"")>@Html.Raw(record.completed>0?record.completed:"")</td>
+                        <td @Html.Raw(record.not_updated>0?"bgcolor=\"#DDDDDD\"":"")>@Html.Raw(record.not_updated>0?record.not_updated:"")</td>
+                    </tr>
+                } 
+               
+            }
+        </table>  
+    </body>
+</html>

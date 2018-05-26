@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	 @RenderPage(Page.scripts_include_head)
+	<script type="text/javascript">
+     $(document).ready(function ()
+     {
+         $("#myButton").click(function ()
+         {
+
+             $("#content").html("");
+
+             $.ajax({
+                 cache: false,
+                 type: 'POST',
+                 url: 'PRJ_RMW_0001_P_0016_REP_FORMAT_5.cshtml',
+                 data: $("#myForm").serialize() + '&rando=' + Math.random(),
+                 beforeSend: function ()
+                 {
+                     // this is where we append a loading image
+                     $("#myForm").hide();
+                     $('#ajax-panel').html('<div class="loading"><img src="/images/loading/animated_loading.gif" alt="Loading..." /></div>');
+                 },
+                 success: function (response)
+                 {
+                     $("#myForm").show();
+                     $('#ajax-panel').empty();
+                     $("#ajax-panel").html(response);
+                 },
+                 error: function (response)
+                 {
+                     // failed request; give feedback to user
+                     $("#myForm").show();
+                     $('#ajax-panel').html('<p class="error"><strong>Oops!</strong> Try that again in a few moments.</p>');
+                 }
+
+             });
+         });
+     });
+
+     $(window).bind('beforeunload', function ()
+     {
+         $.blockUI();
+     });
+
+	</script>
+
+    <!-- Table Filter -->
+
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/tablefilter_all_min.js")" language="javascript" type="text/javascript"></script>
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility/TFExt_ColsVisibility.js")" language="javascript" type="text/javascript"></script>
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/filtergrid.css")" rel="stylesheet" type="text/css" id="demo_style">
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility//TFExt_ColsVisibility.css")" rel="stylesheet" type="text/css" id="ColsVisibilityStyle">
+
+    <style>
+        #tablefilter {
+            font-size: 12px;
+        }
+        
+    </style>
+
+</head>
+<body>
+<div class="panel panel-primary">
+<!-- To Show Current Progress-->
+<div id="load_tweets"></div>
+<!-- To Show Current Progress-->
+<div class="panel-heading"><b>@{@Page.page_title;}: Single Window Summary</b><span style="float: right"> @{@Html.Raw(Page.help_link);} </span></div>
+<!-- <div id="page_heading"><span style="float: left"><h3>@{@Page.page_title;}: Single Window Summary</h3></span><span style="float: right"> @{@Html.Raw(Page.help_link);} </span></div> -->
+<!-- index.html -->
+<div class="panel-body" id="form" style="float: left">
+<form id="myForm" style="float: left"> 
+	<div class="form-inline">
+		<div class="form-group">
+			Start Date: <input type="text" class="form-control" name="sdate" size=8 id="sdate" value=""  onclick="javascript:NewCssCal('sdate','yyyyMMdd')">
+		</div>
+		<div class="form-group">
+			End Date: <input type="text" class="form-control" name="edate" size=8 id="edate" value="" onclick="javascript:NewCssCal('edate','yyyyMMdd')">
+		</div>
+		<div class="form-group">
+			Buyer Division:
+			<select name="buyer" class="form-control" id="select">
+			@{
+				var items = Page.buyerdivision.Split(new[]{';'});
+				var items_title = Page.buyerdivision_title.Split(new[]{';'});
+				for(int i=0;i<items.Length;i++)
+				{
+					@Html.Raw("<option value='"+items[i]+"'>"+items_title[i]+"</option>");
+				}
+			}
+			</select>
+		</div>
+	<div class="form-group">	
+	Show Only Pendings Items: <input type="checkbox" id="show_pendings" name="show_pendings" value="1" checked="checked" />
+    Highlight Excempted Schedules <font color=red fontsize=12>(&#9830;)</font>: <input type="checkbox" id="highlight_excempted" name="highlight_excempted" value="1" onclick="alert('This option may take little more time to generate a report.')"/>	
+	<input type="button" class="btn btn-primary" id="myButton" value="Filter"/>
+	</div>
+</div>	
+</form>
+</div></br></br></br></br>
+
+<div id="ajax-panel" class="table-responsive">
+
+</div>
+</div>
+
+</body>
+</html>

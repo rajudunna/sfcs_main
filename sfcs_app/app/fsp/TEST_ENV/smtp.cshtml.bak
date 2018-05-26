@@ -1,0 +1,24 @@
+@{
+   
+        WebMail.SmtpServer = "10.227.19.18";
+        WebMail.SmtpPort = 25;
+        WebMail.UserName = "baiict";
+        WebMail.Password = "bai@ict";
+        WebMail.From = "bainetalerts@brandix.com";
+
+         //var filesList = new string [] { HttpContext.Current.Server.MapPath("new.cshtml"), HttpContext.Current.Server.MapPath("bday.jpg") };
+         var filesList = new string [] { HttpContext.Current.Server.MapPath("new.cshtml")};
+
+         //@HttpContext.Current.Server.MapPath(".");
+         @Request.Url.GetLeftPart(UriPartial.Authority);
+         @Href("bday.jpg");
+
+        // Send email
+         WebMail.Send(to: "kirang@brandix.com",
+            subject: "Help request from - ",
+            body: "<html><head><style>body {color:blue;}</style><script>function check(){ alert(\"hi\");}</script></head><body><h2>Kiran</h2> <span onclick=\"check()\">click</span><img src=\""+Request.Url.GetLeftPart(UriPartial.Authority)+Href("bday.jpg")+"\"></body></html>",isBodyHtml:true,
+            filesToAttach: filesList
+        );
+        
+   
+}

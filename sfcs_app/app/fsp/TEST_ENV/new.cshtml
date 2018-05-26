@@ -1,0 +1,39 @@
+@{
+
+db_object db_class=new db_object();
+/*
+ var result_set2=db_class.show_result("BEK_DBS_RMW_0001","exec [BEK_DBS_RMW_0001].dbo.m3bel_rmmacro_sp @style='G3216L3'");
+
+@db_class.queries_count();
+                   
+
+ foreach(var result_val in result_set2)
+                   {
+                       //if(result_val.WAREHOUSE==Page.wh_code)
+                        {
+                            
+@result_val.PROJECTED_BALANCE;
+                        }
+                   }
+*/
+ DateTime d = DateTime.Now;
+
+ //@d;
+
+   string date_up_limit=d.AddBusinessDays(-19).ToString("yyyy-MM-dd").ToString();
+   @date_up_limit;
+
+                 udf_functions udf_class=new udf_functions();
+
+                 @udf_class.FN_FSP_STATUS_CODE_CELL_BG("45");
+
+
+
+        udf_class.FN_REM_UPDATE("0",null,"TEST1-2013-08-27 15:15:08/kirang",null,"BRANDIXLK\\KiranG",6801);
+    
+        String userData="Test";
+        var dataFile = Server.MapPath("~/App_Data/data.txt");
+        File.AppendAllText (@dataFile, userData);
+
+}
+

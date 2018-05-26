@@ -1,0 +1,222 @@
+﻿<!-- 
+
+Page Description: This is first page to show day wise with buyer division filtering
+
+-->
+
+
+<!DOCTYPE html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- Mirrored from tablefilter.free.fr/cols-manager.htm by HTTrack Website Copier/3.x [XR&CO'2010], Mon, 29 Apr 2013 07:04:59 GMT -->
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta charset="utf-8" />
+        <title>FR Plan with Detailed Summary</title>
+
+        @RenderPage(Page.scripts_include_head)
+
+        <script>
+            function local_redirect(page_id, schedule)
+            {
+                var filter;
+                filter = "";
+                if (document.getElementById("show_pendings").checked)
+                {
+                    filter = '&show_pendings=1';
+                }
+                //$().redirect(page_id, { 'schedule': schedule});
+                basicPopup(page_id + '?schedule=' + schedule+filter);
+            }
+        </script>
+
+    <!-- Table Filter -->
+
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/tablefilter_all_min.js")" language="javascript" type="text/javascript"></script>
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility/TFExt_ColsVisibility.js")" language="javascript" type="text/javascript"></script>
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/filtergrid.css")" rel="stylesheet" type="text/css" id="demo_style">
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility//TFExt_ColsVisibility.css")" rel="stylesheet" type="text/css" id="ColsVisibilityStyle">
+
+    <style>
+        #tablefilter {
+            font-size: 12px;
+        }
+        
+    </style>
+
+    <!-- Table Filter -->
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+         }    
+            <span id="spnColMng"></span>
+            <table id="tablefilter" cellpadding="0" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th rowspan="2">Buyer Division</th>
+                    <th rowspan="2">Style</th>
+                    <th rowspan="2">Schedule</th>
+                    <th rowspan="2">Color</th>
+                    <th rowspan="2">Order Qty</th>
+                    <th rowspan="2">Output Qty</th>
+                    <th rowspan="2">Production<br/>Start Date</th>
+                    <th rowspan="2">Ex-Factory<br/>Date</th>
+                    <th colspan="3">Fabric</th>
+                    <th colspan="3">Sewing Trims</th>
+                    <th colspan="3">Packing Trims</th>
+                    <th rowspan="2">Overall<br/>Status</th>
+                </tr>
+
+                <tr>
+                    <th>Item Code</th>
+                    <th>Status</th>
+                    <th>Plan-IH-Date</th>
+                    <th>Item Code</th>
+                    <th>Status</th>
+                    <th>Plan-IH-Date</th>
+                    <th>Item Code</th>
+                    <th>Status</th>
+                    <th>Plan-IH-Date</th>
+                </tr>
+                </thead>
+                <tbody>
+          @{ 
+
+                string sdate="";
+                string edate="";
+                string buyer="";
+                string style="";
+                string item_code="";
+                string show_pendings="";
+
+                if(Request["sdate"]!=null){
+                    sdate=Request["sdate"];
+                }
+                if(Request["edate"]!=null){
+                    edate=Request["edate"];
+                }
+                if(Request["buyer"]!=null){
+                    buyer=Request["buyer"];
+                }
+                if(Request["style"]!=null){
+                    style=Request["style"];
+                }
+                if(Request["item_code"]!=null){
+                    item_code=Request["item_code"];
+                }
+                if(Request["show_pendings"]!=null){
+                    show_pendings=Request["show_pendings"];
+                }
+
+                DateTime d = DateTime.Now;
+                string date_up_limit=d.AddDays(Page.report_period_range).ToString("yyyy-MM-dd").ToString();
+                
+                if(DateTime.Parse(edate)>DateTime.Parse(date_up_limit))
+                {
+                    edate=date_up_limit;
+                }
+
+                
+                //Select to be prepared bom details from FR Pool View
+                var result_set=db_class.show_result("DBS_RMW_0001","exec [DBS_RMW_0001].[dbo].[S_0001_015_SP_REP_FR4]  @sdate='"+sdate+"',@edate='"+edate+"',@buyer='"+buyer+"',@show_pendings='"+@show_pendings+"',@item_code='"+@item_code+"',@style='"+@style+"'");                         
+                var rep_line_str="<br />";
+                foreach(var record in result_set)
+                {             
+                    <tr>
+                        @{
+                            var bgcolor="bgcolor=#33FF33";                    
+                            if(record.overall_status=="FAIL")
+                            {
+                                bgcolor="bgcolor=#FFFFFF";
+                            }
+                        }
+
+                        <td @bgcolor class="lef">@record.sfcs_buyer_div</td>
+                        <td @bgcolor class="lef">@record.style</td>
+                        <td @bgcolor><span class="redirectpage" onclick="local_redirect('PRJ_RMW_0001_S_0012_REP_FORMAT_3.cshtml','@record.schedule')">@record.schedule</span></td>
+                        <td @bgcolor class="lef">@record.color_grouped</td>
+                        <td @bgcolor>@record.sfcs_order_qty</td>
+                        <td @bgcolor>@record.sfcs_out_qty</td>
+                        <td @bgcolor>@record.production_date</td>
+                        <td @bgcolor>@record.delivery_date</td>
+                        <td @bgcolor class="lef">@Html.Raw(record.FAB_bom_material_item==null ? "":record.FAB_bom_material_item.Replace(",",rep_line_str))</td>
+                        <td @bgcolor>@Html.Raw(record.FAB_bom_status==null ? "":record.FAB_bom_status.Replace(",",rep_line_str))</td>
+                        <td @bgcolor>@Html.Raw(record.FAB_pl_ih_date==null ? "":record.FAB_pl_ih_date.Replace(",",rep_line_str))</td>
+                        <td @bgcolor class="lef">@Html.Raw(record.STRIM_bom_material_item==null ? "":record.STRIM_bom_material_item.Replace(",",rep_line_str))</td>
+                        <td @bgcolor>@Html.Raw(record.STRIM_bom_status==null ? "":record.STRIM_bom_status.Replace(",",rep_line_str))</td>
+                        <td @bgcolor>@Html.Raw(record.STRIM_pl_ih_date==null ? "":record.STRIM_pl_ih_date.Replace(",",rep_line_str))</td>               
+                        <td @bgcolor class="lef">@Html.Raw(record.PTRIM_bom_material_item==null ? "":record.PTRIM_bom_material_item.Replace(",",rep_line_str))</td>
+                        <td @bgcolor>@Html.Raw(record.PTRIM_bom_status==null ? "":record.PTRIM_bom_status.Replace(",",rep_line_str))</td>
+                        <td @bgcolor>@Html.Raw(record.PTRIM_pl_ih_date==null ? "":record.PTRIM_pl_ih_date.Replace(",",rep_line_str))</td>
+                                                                
+                        <td @bgcolor>@record.overall_status</td>        
+                    </tr>
+                }
+               
+            }
+        </tbody>
+        </table> 
+        
+        <script language="javascript" type="text/javascript">
+        //<![CDATA[	
+	        var props = {
+		        paging: false,
+		        sort: true,
+		        sort_config: {
+			        sort_types:['String','String','String','String','String','String','US','US','US']
+		        },
+		        remember_grid_values: false,
+		        alternate_rows: true,
+		        rows_counter: true,
+		        btn_reset: true,
+		        btn_reset_text: "Clear",
+		        status_bar: true,
+		        col_0: "select",
+		        col_1: "select",
+		        col_2: "select",
+		        display_all_text: "< Show all >",
+
+		
+		        /*** Extensions manager ***/
+		        extensions: { 
+						        /*** Columns Visibility Manager extension load ***/	
+						        name:['ColsVisibility'], 
+						        src:['~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility/TFExt_ColsVisibility.js'], 
+						        description:['Columns visibility manager'], 
+						        initialize:[function(o){o.SetColsVisibility();}] 
+					        },
+					
+		        /*** Columns Visibility Manager extension properties ***/
+		        showHide_cols_tick_to_hide: false,
+                btn_showHide_cols_html: '<button>Columns manager ▼</button>',  
+                btn_showHide_cols_close_html: '<button>Close</button>',  
+                showHide_cols_text: 'Check options to hide columns: ',
+                btn_showHide_cols_target_id: 'spnColMng', 
+                showHide_cols_at_start: [],
+		        showHide_cols_text: 'Columns: ',
+                showHide_cols_enable_hover: false,
+		        showHide_enable_tick_all: true 
+
+               /* showHide_cols_tick_to_hide: false,  
+                btn_showHide_cols_target_id: 'spnColMng',  
+                showHide_cols_at_start: [],  
+                btn_showHide_cols_html: '<button>Columns manager ▼</button>',  
+                btn_showHide_cols_close_html: '<button>Close</button>',  
+                showHide_cols_text: 'Check options to hide columns: ',  
+                showHide_cols_cont_css_class: 'colsMngContainer',  
+                showHide_cols_enable_hover: false,  
+                on_before_open_cols_manager: hideIESelects,  
+                on_after_close_cols_manager: showIESelects */
+
+	        }
+	        setFilterGrid("tablefilter",2,props);
+        //]]>
+        </script> 
+    </body>
+</html>

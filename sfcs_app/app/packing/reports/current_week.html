@@ -1,0 +1,106 @@
+
+<html>
+<head>
+<script type="text/javascript" src="/sfcs/includes/js/jquery.min.js" ></script>
+
+<script type="text/javascript" src="/sfcs/includes/js/table2CSV.js" ></script>
+<script>
+	function downloadFile(fileName, urlData) {
+	    var aLink = document.createElement('a');
+	    aLink.download = fileName;
+	    aLink.href = urlData;
+	    var event = new MouseEvent('click');
+	    aLink.dispatchEvent(event);
+	   }
+	function getCSVData() {
+		var data = $('#example').table2CSV({delivery: 'value',filename: 'current_week.csv'});
+        downloadFile('current_week.csv', 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data));
+
+	}
+</script>
+<style>
+body
+{
+	font-family:calibri;
+	font-size:12px;
+}
+
+table tr
+{
+	border: 1px solid black;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table td.lef
+{
+	border: 1px solid black;
+	text-align: left;
+white-space:nowrap; 
+}
+table th
+{
+	border: 1px solid black;
+	text-align: center;
+    	background-color: #29759c;
+	color: WHITE;
+white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+}
+
+
+}
+
+}
+</style>
+
+
+</head>
+<body>
+<div class="panel panel-primary">
+<div class="panel-body">
+<h2><b>LU:2018-05-25 06:27:18</b></h2><form action="export_excel1.php" method ="post" > 
+<input type="hidden" name="csv_text" id="csv_text">
+<input type="button" class="btn btn-xs btn-success" value="Export to Excel" onclick="getCSVData()">
+</form><div  class="table-responsive"><table id="example" table align="left" class="table table-bordered"><tr>
+	<th>Division</th>
+	<th>FG Status</th>
+	<th>Ex-Factory</th>
+	<th>Style</th>
+	<th>Schedule</th>
+	<th>Color</th>
+	<th>Section</th>
+	<th>Size</th>
+	<th>Total Order <br/>Quantity</th>
+	<th>Total Cut <br/>Quantity</th>
+	<th>Total Input <br/>Quantity</th>
+	<th>Total Sewing Out <br/>Quantity</th>
+	<th>Total FG <br/>Quantity</th>
+	<th>Total FCA <br/>Quantity</th><th>Total Shipped <br/>Quantity</th>
+	<th>Rejected <br/>Quantity</th>
+	<th>Sample <br/>Quantity</th>
+	<th>Good Panel <br/>Quantity</th>
+	<th>Out of Ratio <br/>Quantity</th>
+	<th>Total Missing<br/>Panels</th>
+	<th class="total" style='background-color:#29759C;'>Sewing <br/>Missing</th>
+	<th class="total" style='background-color:#29759C;'>Panel Room <br/>Missing</th>
+	<th class="total" style='background-color:#29759C;'>Cutting <br/>Missing</th>
+</tr><tr><td class="lef">BEL_VS_Ladies_VSS_Pink                  </td><td class="lef">RM</td><td>2018-05-22</td><td class="lef"><a href="../pop_report.php?style=P181391V       &schedule=517232&color=U18 TAHPCH C001 43MA          " onclick="Popup=window.open('../pop_report.php?style=P181391V       &schedule=517232&color=U18 TAHPCH C001 43MA          ','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">P181391V       </a></td><td>517232</td><td class="lef">U18 TAHPCH C001 43MA          </td><td>2,3</td><td>XS</td><td>6324</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td><td></td><td>0</td><td></td><td>0</td><td>0</td><td></td><td>0</td></tr><tr><td class="lef">BEL_VS_Ladies_VSS_Pink                  </td><td class="lef">RM</td><td>2018-05-22</td><td class="lef"><a href="../pop_report.php?style=P181391V       &schedule=517232&color=U18 TAHPCH C001 43MA          " onclick="Popup=window.open('../pop_report.php?style=P181391V       &schedule=517232&color=U18 TAHPCH C001 43MA          ','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">P181391V       </a></td><td>517232</td><td class="lef">U18 TAHPCH C001 43MA          </td><td>2,3</td><td>S</td><td>12569</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td><td></td><td>0</td><td></td><td>0</td><td>0</td><td></td><td>0</td></tr><tr><td class="lef">BEL_VS_Ladies_VSS_Pink                  </td><td class="lef">RM</td><td>2018-05-22</td><td class="lef"><a href="../pop_report.php?style=P181391V       &schedule=517232&color=U18 TAHPCH C001 43MA          " onclick="Popup=window.open('../pop_report.php?style=P181391V       &schedule=517232&color=U18 TAHPCH C001 43MA          ','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">P181391V       </a></td><td>517232</td><td class="lef">U18 TAHPCH C001 43MA          </td><td>2,3</td><td>M</td><td>22468</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td><td></td><td>0</td><td></td><td>0</td><td>0</td><td></td><td>0</td></tr><tr><td class="lef">BEL_VS_Ladies_VSS_Pink                  </td><td class="lef">RM</td><td>2018-05-22</td><td class="lef"><a href="../pop_report.php?style=P181391V       &schedule=517232&color=U18 TAHPCH C001 43MA          " onclick="Popup=window.open('../pop_report.php?style=P181391V       &schedule=517232&color=U18 TAHPCH C001 43MA          ','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">P181391V       </a></td><td>517232</td><td class="lef">U18 TAHPCH C001 43MA          </td><td>2,3</td><td>L</td><td>13759</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td><td></td><td>0</td><td></td><td>0</td><td>0</td><td></td><td>0</td></tr></table><div>
+
+
+
+

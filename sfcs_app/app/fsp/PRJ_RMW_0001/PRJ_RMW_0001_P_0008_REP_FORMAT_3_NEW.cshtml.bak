@@ -1,0 +1,447 @@
+﻿<!-- 
+
+Page Description: This is first page to show day wise with buyer division filtering
+
+-->
+
+<!-- User Define Functions-->
+@functions {
+
+        // To set the background color of cell for single window summary sheet
+        string FSP_STATUS_CODE_CELL_BG(string cust_code)
+        {
+            var msg = "bgcolor=";
+            switch(cust_code)
+            {
+                
+                case "Available":
+                {
+                    msg+="#33FF33";
+                    break;
+                }
+
+                case "1":
+                {
+                    msg+="#33FF33";
+                    break;
+                }
+
+
+                case "Not Available":
+                {
+                    msg+="RED";
+                    break;
+                }
+
+                 case "No Plan":
+                {
+                    msg+="BLACK";
+                    break;
+                }
+
+                case "50":
+                {
+                    msg+="#FFFF22";
+                    break;
+                }
+                case "45":
+                {
+                    msg+="#33CCEE";
+                    break;
+                }
+                case "35":
+                {
+                    msg+="#FF66CC";
+                    break;
+                }
+                case "20":
+                {
+                    msg+="#CCCCCC";
+                    break;
+                }
+                case "10":
+                {
+                    msg+="#CCCCCC";
+                    break;
+                }
+                case "Excempted":
+                {
+                    msg+="#99AAEE";
+                    break;
+                }
+                case "Not Updated":
+                {
+                    msg+="#99AAEE";
+                    break;
+                }
+            }
+            return msg;
+        }
+
+
+      }
+
+
+
+<!DOCTYPE html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- Mirrored from tablefilter.free.fr/cols-manager.htm by HTTrack Website Copier/3.x [XR&CO'2010], Mon, 29 Apr 2013 07:04:59 GMT -->
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta charset="utf-8" />
+        <title>FR Plan with BOM Level Breakup for given schedule/color</title>
+
+       @RenderPage(Page.scripts_include_head)
+    <!-- Onscreen Edit-->
+        <script>
+            function update_com(x) {
+                var BID = document.getElementById("BID" + x).innerHTML; //Status Code Change
+                var PIH = document.getElementById("PIH" + x).innerHTML; //Plan IN House Date
+                var REM = document.getElementById("REM" + x).innerHTML; //Remarks
+
+                document.getElementById("BID" + x).innerHTML = "<input type='text' id='TXTBID" + x + "' value='" + BID + "' onchange='if(this.value!=0) { this.value=" + BID + "; }' style='border:none; background-color: #FF66EE;' onkeypress='validate(event)'>";
+                document.getElementById("PIH" + x).innerHTML = "<input type='text' id='TXTPIH" + x + "' value='" + PIH + "' style='border:none; background-color: yellow;' readonly=true onclick=\"javascript:NewCssCal('TXTPIH" + x + "','yyyyMMdd','dropdown',true,'24')\">";
+                document.getElementById("REM" + x).innerHTML = "<input type='text' id='TXTREM" + x + "' value='" + REM + "' style='border:none; background-color: yellow;'><br/>";
+
+                document.getElementById("CON" + x).innerHTML = "<span onClick='save_com(" + x + ")'>Save</span>";
+
+
+            }
+
+            function save_com(x) {
+
+                var BID = document.getElementById("TXTBID" + x).value; //Status Code Change
+                var PIH = document.getElementById("TXTPIH" + x).value; //Plan IN House Date
+                var REM = document.getElementById("TXTREM" + x).value; //Remarks 
+                var M3BOMID = document.getElementById("M3BOMID" + x).innerHTML; //M3 REF BOM ID
+                
+
+                $.ajax({
+                    cache: false,
+                    type: 'POST',
+                    url: 'PRJ_RMW_0001_P_0015_REM_UPDATE.cshtml',
+                    data: "M3BOMID=" + M3BOMID + "&BOMTID=" + x + "&BID=" + BID + "&PIH=" + PIH + "&REM=" + REM + '&rando=' + Math.random(),
+                    beforeSend: function () {
+                        document.getElementById("CON" + x).innerHTML = "<span'>Saving...</span>";
+                    },
+                    success: function (response) {
+                        //Saving request
+                        document.getElementById("CON" + x).innerHTML = "<span onClick='update_com(" + x + ")'>Edit</span>";
+                        document.getElementById("BID" + x).innerHTML = BID;
+                        document.getElementById("PIH" + x).innerHTML = PIH;
+                        document.getElementById("REM" + x).innerHTML = REM;
+                        
+                    },
+                    error: function (response) {
+                        // failed request; give feedback to user
+                        document.getElementById("CON" + x).innerHTML = "<span onClick='save_com(" + x + ")'>Save</span>";
+                    }
+
+                });
+            }
+
+            //TO allow only numerics
+            function validate(evt) {
+              var theEvent = evt || window.event;
+              var key = theEvent.keyCode || theEvent.which;
+              key = String.fromCharCode( key );
+              var regex = /[0-9]|\./;
+              if( !regex.test(key) ) {
+                theEvent.returnValue = false;
+                if(theEvent.preventDefault) theEvent.preventDefault();
+              }
+            }
+
+             $(window).bind('beforeunload', function ()
+             {
+                 $.blockUI();
+             });
+        </script>
+    <!-- Onscreen Edit-->
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+         }    
+           
+            <div style="visibility: hidden"><a class="tooltippage" id="clickme" href="#" rel="PRJ_RMW_0001_P_0014_POP_BOM_REM_TRACK.cshtml" title="Status Track"></a></div>
+            
+			<table><tr><td><span id="spnColMng"></span></td><td><!-- Export to Excel -->
+			@{/*OLD VERSION 
+            <form action="export_excel.php" method ="post" > 
+			<input type="hidden" name="csv_text" id="csv_text">
+			<input type="hidden" name="schedule" id="schedule" value="@(@Request["schedule"])">
+			<input type="submit" value="Export to Excel" onclick="getCSVData()">
+			</form>
+            */}
+            <form action="export_to_excel.cshtml" method ="post" >
+                <input type="hidden" name="schedule" id="schedule" value="@(@Request["schedule"])">
+                <input type="submit" value="Export to Excel">
+            </form>
+			<!-- Export to Excel --></td></tr></table>
+			@{
+       
+                string schedule="";
+                string show_pendings="";
+               
+                if(Request["schedule"]!=null){
+                    schedule=Request["schedule"];
+                }
+                if(Request["show_pendings"]!=null){
+                    show_pendings=Request["show_pendings"];
+                }
+            }
+			
+
+            <table id="tablefilter" cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Product Group</th>
+                    <th>Color</th>
+                    <th>Item Code</th>
+                    <th>Material Item</th>
+                    <th>Item Description</th>
+                    <th>Material Color</th>
+                    <th>Size</th>
+					<th>Consumption</th>
+                    <th>Required</th>
+                    <th>Issued</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                    <th>PO No</th>
+                    <th>Supplier</th>
+                    <th>Mode</th>
+                    <th>M3 Plan IH Date</th>
+                    <th>Arrival Date</th>
+                    <th>Expected IH Date</th>
+                    <th>Revised Status</th>
+                    <th>Remarks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th>Control</th>
+
+                     <!--
+                    New Code for day wise plan
+                    -->
+                    @{
+                        //Date
+                        var result_set_new=db_class.show_result("DBS_RMW_0001","select distinct CONVERT(VARCHAR(11),production_date,6) as production_date from [DBS_RMW_0001].[dbo].[T_0001_002_FRPLAN] where  schedule='"+schedule+"' order by production_date");  
+                               
+                        foreach(var record in result_set_new)
+                        {   
+                            <th>@(record.production_date)</th>
+                        }          
+                  
+                    }
+                </tr>
+                </thead>
+                <tbody>
+          @{ 
+                
+                
+                //Select to be prepared bom details from FR Pool View
+                var result_set=db_class.show_result("DBS_RMW_0001","exec [DBS_RMW_0001].[dbo].[S_0001_014_SP_REP_FR3] @schedule='"+schedule+"',@show_pendings='"+show_pendings+"'");
+                
+                foreach(var record in result_set)
+                {             
+                    var highlight_color="";
+                    int met_status_code=0;
+
+                    if(record.bom_status>1)
+                    {
+                        highlight_color="#CCBBDD";
+                    }
+                    
+                    <tr bgcolor="@highlight_color">
+                        <td class="lef">@record.proc_grp</td>
+                        <td class="lef">@record.color</td>
+                        <td class="lef">@record.custom_item_code</td>
+                        <td class="lef">@record.bom_material_item</td>
+                        <td class="lef">@record.item_description</td>
+                        <td class="lef">@record.mat_colour</td>
+                        <td class="lef">@record.mat_size</td>
+						<td class="lef">@record.consumption</td>
+                        <td>@record.bom_req_qty</td>
+                        <td>@record.bom_issued_qty</td>
+                        <td>@record.bom_balance</td>
+
+                        @{
+                        if(record.proc_grp=="FAB")
+                        {
+                            met_status_code=record.fab_status;
+                        }
+
+                        if(record.proc_grp=="STRIM")
+                        {
+                            met_status_code=record.strim_status;
+                        }
+
+                        if(record.proc_grp=="PTRIM")
+                        {
+                            met_status_code=record.ptrim_status;
+                        }
+                        }
+                        
+                        @if(record.bom_status>1 && record.bom_balance>0)
+                        {
+                            <td><a class="tooltippage" id="clickme" href="#" rel="PRJ_RMW_0001_P_0014_POP_BOM_REM_TRACK
+.cshtml?bomtid=@record.bom_tid&balance=@record.bom_balance&showpo=1" title="Status Track of @record.bom_material_item">@record.bom_status</a></td>
+                        }
+                        else
+                        {
+                            if(record.bom_balance>0)
+                            {
+                                <td>@((record.bom_status==null)?"Not Updated":record.bom_status)</td>
+                            }
+                            else
+                            {
+                                if(record.bom_balance<=0)
+                            	{
+                                	<td>N/A</td>
+                            	}
+				else
+				{
+					<td>Not Updated</td>	
+				}				
+                            }
+                        }
+                        <td class="lef">@record.po_no</td>
+                        <td class="lef">@record.supplier</td>
+                        <td class="lef">@record.mode</td>
+                        <td class="lef">@record.pl_ih_date</td>
+                        <td class="lef">@record.arrival_date</td>
+                        <td class="lef">
+                            <span id="PIH@(record.bom_tid)" style="width:100%">@record.bom_man_p_ih_date_master</span> 
+                        </td>
+                        <td>
+                            <span id="BID@(record.bom_tid)" style="width:100%">@record.bom_status</span>
+                        </td> 
+                        <td class="lef">
+                            <span id="REM@(record.bom_tid)" style="width:100%"></span>
+				<span>@Html.Raw((record.master_remarks_grouped!=null?record.master_remarks_grouped.Replace("Break_Tag","<br/>"):record.bom_remarks_master))</span>
+                        </td> 
+                        <td>
+                            <span id="M3BOMID@(record.bom_tid)" style="visibility: hidden;">@record.m3bompool_tid_ref</span>
+                            <span id="CON@(record.bom_tid)">
+                                <span onClick="update_com(@(record.bom_tid))">Edit</span>
+                            </span>
+                        </td>
+
+                        @{
+                        //Date
+                        var result_set_new2=db_class.show_result("DBS_RMW_0001","select distinct  CONVERT(VARCHAR(26), production_date, 23) as production_date from [DBS_RMW_0001].[dbo].[T_0001_002_FRPLAN] where  schedule='"+schedule+"' order by production_date");  
+                         
+                        foreach(var recordnew in result_set_new2)
+                        {   
+                            
+                                var result_set_new223=db_class.show_result("DBS_RMW_0001",@"select                             
+                            case when min("+@record.proc_grp.Substring(0,2)+"_status)=1 then 'Available' when  min("+@record.proc_grp.Substring(0,2)+"_status)=0 then '"+met_status_code+"' when min("+@record.proc_grp.Substring(0,2)+"_status) is null then 'No Plan' end as met_status from [dbo].[T_0001_002_FRPLAN] where schedule='"+@record.schedule+"' and color='"+@record.color+"' and production_date='"+@recordnew.production_date+"'");  
+                          
+                          
+                          
+                           {
+                               foreach(var recordnew23 in result_set_new223)
+                                {  
+                                  
+                                   
+                                   {
+                                       
+                                       
+                                       <td  @FSP_STATUS_CODE_CELL_BG(recordnew23.met_status)>@record.proc_grp.Substring(0,1)</td>
+                                        
+                                        
+                                       
+                                  
+                                   }
+                                    
+                                }
+                                }
+                        }
+                           
+                        }
+
+                    </tr>
+                }
+               
+            }
+        </tbody>
+        </table>
+
+        <script language="javascript" type="text/javascript">
+        //<![CDATA[	
+	        var props = {
+		        paging: false,
+		        sort: true,
+		        sort_config: {
+			        sort_types:['String','String','String','String','String','String','US','US','US']
+		        },
+		        remember_grid_values: false,
+		        alternate_rows: true,
+		        rows_counter: true,
+		        btn_reset: true,
+		        btn_reset_text: "Clear",
+		        status_bar: true,
+		        col_0: "select",
+                col_2: "select",
+		        col_11: "select",
+		        col_13: "select",
+                col_14: "select",
+                col_18: "select",
+		        display_all_text: "< Show all >",
+		
+		        /*** Extensions manager ***/
+		        extensions: { 
+						        /*** Columns Visibility Manager extension load ***/	
+						        name:['ColsVisibility'], 
+						        src:['~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility/TFExt_ColsVisibility.js'], 
+						        description:['Columns visibility manager'], 
+						        initialize:[function(o){o.SetColsVisibility();}] 
+					        },
+					
+		        /*** Columns Visibility Manager extension properties ***/
+		        showHide_cols_tick_to_hide: false,
+                btn_showHide_cols_html: '<button>Columns manager ▼</button>',  
+                btn_showHide_cols_close_html: '<button>Close</button>',  
+                showHide_cols_text: 'Check options to hide columns: ',
+                btn_showHide_cols_target_id: 'spnColMng', 
+                /* showHide_cols_at_start: [1,3,4,5,10,11,12], */
+		        showHide_cols_text: 'Columns: ',
+                showHide_cols_enable_hover: false,
+		        showHide_enable_tick_all: true 
+
+               /* showHide_cols_tick_to_hide: false,  
+                btn_showHide_cols_target_id: 'spnColMng',  
+                showHide_cols_at_start: [],  
+                btn_showHide_cols_html: '<button>Columns manager ▼</button>',  
+                btn_showHide_cols_close_html: '<button>Close</button>',  
+                showHide_cols_text: 'Check options to hide columns: ',  
+                showHide_cols_cont_css_class: 'colsMngContainer',  
+                showHide_cols_enable_hover: false,  
+                on_before_open_cols_manager: hideIESelects,  
+                on_after_close_cols_manager: showIESelects */
+
+	        }
+	        setFilterGrid("tablefilter",props);
+        //]]>
+        </script>
+		
+		<!-- Export to Excel -->
+		<script>
+		
+			function getCSVData(){
+			 $.unblockUI();
+			 var csv_value=$('#tablefilter').table2CSV({delivery:'value'});
+			 $("#csv_text").val(csv_value);
+			 
+			}
+		</script>
+		<!-- Export to Excel -->
+
+    </body>
+</html>
+
+@{
+    @RenderPage(Page.scripts_include_tail)
+}

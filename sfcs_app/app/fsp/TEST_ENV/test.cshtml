@@ -1,0 +1,79 @@
+﻿@{
+                                                          
+    @(Environment.CurrentDirectory);<br/>
+    @Page.g_log_user;
+    @Page.g_pagename;
+
+var check1=0;
+    DateTime d= DateTime.Now;
+
+    String last_process_pageid;
+     DateTime last_process_status=DateTime.MinValue;
+      <br/> @("NEWOne:"+last_process_status); <br/><br/>
+
+   
+
+    @(d.ToString("yyyy-MM-dd HH:mm:ss").ToString());
+      //@(d.AddDays(-3).ToString("dd-MMM-yyyy").ToString());
+
+       db_object db_class=new db_object();
+       var count=1;   
+       
+       var result_set=db_class.show_result("BEK_DBS_RMW_0001","select top 1 *  from [BEK_DBS_RMW_0001].[dbo].T_0001_010_EXE_LOG where log_id=42 order by log_id desc");            
+                           
+        foreach(var record in result_set)
+        { 
+            last_process_pageid=record.page_name;
+            //last_process_status=record.end_time;
+            last_process_status = record.end_time ?? DateTime.MinValue;
+        }  
+        
+        if(last_process_status!=DateTime.MinValue)
+        {
+            @("!!!!!!!!!!!!!!!!!!OK");
+        }
+       
+        check1=1;
+        db_class.exe_queries("BEK_DBS_RMW_0001","IF OBJECT_ID('dbo.T_0001_017_TEMP_FR_POOL', 'U') IS NOT NULL  DROP TABLE dbo.T_0001_017_TEMP_FR_POOL");
+      /* do{
+       var result_set11=db_class.show_result("BEK_DBS_RMW_0001","select * from [BEK_DBS_RMW_0001].[dbo].[T_0001_009_TEMP_UNQ_STYLES] where status=0");
+                count=db_class.queries_count();
+            }while(count>0);
+                @("Count="+count); */
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	 @RenderPage(Page.scripts_include_head)
+
+        <title></title>
+
+    <script>
+        function test(){
+
+            $().redirect('PRJ_RMW_0001_S_0012_REP_FORMAT_3.cshtml', {'schedule': '110289', 'arg2': 'value2'});
+
+        
+
+       
+}
+    </script>
+    </head>
+    <body>
+        <span onclick="test()">New</span>
+
+        @{
+           // Response.Redirect("PRJ_RMW_0001_S_0012_REP_FORMAT_3.cshtml");
+            
+        if(check1==1){
+            
+            <script>window.location="PRJ_RMW_0001_S_0012_REP_FORMAT_3.cshtml";</script>
+            <script> setTimeout("CloseWindow()",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script> 
+        }
+
+    }
+    </body>
+</html>

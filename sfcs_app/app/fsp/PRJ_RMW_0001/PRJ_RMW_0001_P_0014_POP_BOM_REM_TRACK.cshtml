@@ -1,0 +1,108 @@
+﻿<!-- 
+
+Page Description: This is first page to show day wise with buyer division filtering
+
+-->
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>POP BOM Remarks Track</title>
+
+        @RenderPage(Page.scripts_include_head)
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+         }    
+         <div id="ajax-panel">
+            <table>
+                <tr>
+                    <th>Status</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Cummulative</th>
+                    <th>PO #</th>
+                </tr>
+          @{ 
+                string bomtid="";
+                string balance="";
+                string showpo="";
+               
+                if(Request["bomtid"]!=null){
+                    bomtid=Request["bomtid"];
+                }
+                if(Request["balance"]!=null){
+                    balance=Request["balance"];
+                }
+
+                if(Request["showpo"]!=null){
+                    showpo=Request["showpo"];
+                }
+
+                @("RID:"+bomtid);
+                //Select to be prepared bom details from FR Pool View
+                //var result_set=db_class.show_result("BEK_DBS_RMW_0001","SELECT bom_status,bom_remarks,m3bompool_tid_ref,[BEK_DBS_RMW_0001].[dbo].m3_status_code_face(bom_status) as m3_status_face, PO_NO, (SELECT SUM(cast(isnull(bom_remarks,0) as decimal(15,4))) FROM [BEK_DBS_RMW_0001].[dbo].[T_0001_005_REM_REF] WHERE bom_tid_ref=t.bom_tid_ref and rem_tid>=t.rem_tid) AS CumulativeSum FROM [BEK_DBS_RMW_0001].[dbo].[T_0001_005_REM_REF] t where bom_tid_ref="+bomtid+" order by rem_tid desc ");      
+                var result_set=db_class.show_result("BEK_DBS_RMW_0001","SELECT bom_status,bom_remarks,m3bompool_tid_ref,[BEK_DBS_RMW_0001].[dbo].m3_status_code_face(bom_status) as m3_status_face, PO_NO FROM [BEK_DBS_RMW_0001].[dbo].[T_0001_005_REM_REF] t where bom_tid_ref="+bomtid+" and bom_log_user is null order by rem_tid desc ");
+                decimal CumulativeSum=0;
+                foreach(var record in result_set)
+                {             
+                    CumulativeSum+=decimal.Parse(record.bom_remarks);
+                    <tr>
+                        <td >@record.bom_status</td>
+                        <td >@record.m3_status_face</td>
+                        <td >@record.bom_remarks</td>
+                        <td >@CumulativeSum</td>
+                        @{
+                            if(record.m3bompool_tid_ref>0 && showpo=="1")
+                            {
+                                <td>@record.PO_NO</td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        }
+                    </tr>
+                    if(CumulativeSum>=decimal.Parse(balance))
+                    {
+                        break;
+                    }
+                } 
+               
+            }
+        </table>
+
+        <h3>Top 5 BOM Remarks Track</h3>
+
+             <table>
+                <tr>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                    <th>Committed Time</th>
+                    <th>Updated by</th>
+                    <th>Updated time</th>
+                </tr>
+                @{
+                   
+                    var result_set1=db_class.show_result("BEK_DBS_RMW_0001","select top 5 bom_status,bom_remarks,bom_man_p_ih_date,bom_log_user,bom_log_time from [BEK_DBS_RMW_0001].[dbo].[T_0001_005_REM_REF] where bom_log_user is not null and bom_tid_ref="+bomtid+" order by rem_tid desc");      
+             
+                    foreach(var record in result_set1)
+                    {  
+                        <tr>
+                            <td>@record.bom_status</td>
+                            <td>@record.bom_remarks</td>
+                            <td>@record.bom_man_p_ih_date</td>
+                            <td>@record.bom_log_user</td>
+                            <td>@record.bom_log_time</td>
+                        </tr>
+                    }
+                }
+             </table>
+
+       </div>  
+    </body>
+</html>

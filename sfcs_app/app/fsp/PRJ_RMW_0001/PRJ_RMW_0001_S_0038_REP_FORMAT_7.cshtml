@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	 @RenderPage(Page.scripts_include_head)
+	<script type="text/javascript">
+     $(document).ready(function ()
+     {
+         $("#myButton").click(function ()
+         {
+
+             $("#content").html("");
+
+             $.ajax({
+                 cache: false,
+                 type: 'POST',
+                 url: 'PRJ_RMW_0001_P_0037_REP_FORMAT_7.cshtml',
+                 data: $("#myForm").serialize() + '&rando='+Math.random(),
+                 beforeSend: function ()
+                 {
+                     // this is where we append a loading image
+                     $("#myForm").hide();
+                     $('#ajax-panel').html('<div class="loading"><img src="/images/loading/animated_loading.gif" alt="Loading..." /></div>');
+                 },
+                 success: function (response)
+                 {
+                     $("#myForm").show();
+                     $('#ajax-panel').empty();
+                     $("#ajax-panel").html(response);
+                 },
+                 error: function (response)
+                 {
+                     // failed request; give feedback to user
+                     $("#myForm").show();
+                     $('#ajax-panel').html('<p class="error"><strong>Oops!</strong> Try that again in a few moments.</p>');
+                 }
+
+             });
+         });
+     });
+
+     $(window).bind('beforeunload', function ()
+     {
+         //$.blockUI();
+     });
+	</script>
+
+    <!-- Table Filter -->
+
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/tablefilter_all_min.js")" language="javascript" type="text/javascript"></script>
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility/TFExt_ColsVisibility.js")" language="javascript" type="text/javascript"></script>
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/filtergrid.css")" rel="stylesheet" type="text/css" id="demo_style">
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility//TFExt_ColsVisibility.css")" rel="stylesheet" type="text/css" id="ColsVisibilityStyle">
+
+    <style>
+        #tablefilter {
+            font-size: 12px;
+        }
+        
+    </style>
+
+</head>
+<body>
+<!-- To Show Current Progress-->
+<div id="load_tweets"></div>
+<!-- To Show Current Progress-->
+
+<div id="page_heading"><div id="page_heading"><span style="float: left"><h3>@{@Page.page_title;}: MRP Summary</h3></span><span style="float: right"> @{@Html.Raw(Page.help_link);} </span></div></div>
+<!-- index.html -->
+<div id="form">
+<form id="myForm"> 
+Style: <input type="text" name="style" id="style" value="@Request["style"]">
+Schedule: <input type="text" name="schedule" id="schedule" value="@Request["schedule"]">
+Material Item: <input type="text" name="materialitem" id="materialitem" value="@Request["materialitem"]">
+
+Start Date: <input type="text" name="sdate" id="sdate" value="@Request["sdate"]"  onclick="javascript:NewCssCal('sdate','yyyyMMdd')">
+End Date: <input type="text" name="edate" id="edate" value="@Request["edate"]" onclick="javascript:NewCssCal('edate','yyyyMMdd')">
+
+Product Group:
+    <select name="material" id="select">
+        @{
+            var items = Page.buyerdivision.Split(new[]{';'});
+            var items_title = Page.buyerdivision_title.Split(new[]{';'});
+
+			items = Page.material.Split(new[]{';'});
+            items_title = Page.material_title.Split(new[]{';'});
+            for(int i=0;i<items.Length;i++)
+            {
+                @Html.Raw("<option value='"+items[i]+"'>"+items_title[i]+"</option>");
+            }
+        }
+    </select>
+
+
+<input type="button" id="myButton" value="Filter"/>
+</form>
+</div>
+
+<div id="ajax-panel">
+@{
+    if(!Request["schedule"].IsEmpty())
+	{
+        //@RenderPage("PRJ_RMW_0001_P_0008_REP_FORMAT_3.cshtml");
+    }
+}
+
+</div>
+
+</body>
+</html>

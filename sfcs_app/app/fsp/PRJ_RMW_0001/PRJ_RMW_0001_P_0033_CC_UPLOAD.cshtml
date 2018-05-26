@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+
+<!-- 
+Change Request # 127 - KiranG 2014-07-25
+Added new validation to disable submit button, until file is selected.
+-->
+
+
+<html lang="en">
+<head>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<title>File Upload Form</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	 @RenderPage(Page.scripts_include_head)
+        
+    <script type="text/javascript">
+        var Checker = {
+            Extensions: ["pdf","mht"],
+
+            Validate: function (objid)
+            {
+                return jQuery.inArray(objid.value.substr(objid.value.length - 3, 3), Checker.Extensions) > -1;
+            }
+        };
+
+        $(document).ready(function ()
+        {
+
+            $('input:file').change(
+            function(){
+                if ($(this).val()) {
+                    $('input:submit').attr('disabled',false);
+                    // or, as has been pointed out elsewhere:
+                    // $('input:submit').removeAttr('disabled'); 
+                } 
+            }
+            );
+
+            $('#submitbtn').click(function ()
+            {
+                if (Checker.Validate($('#selectFile')[0]))
+                {
+                    //alert("OK, we can submit!");
+                    document.getElementById("submitbtn").style.visibility = "hidden";
+                    document.getElementById("pleasewait").style.display = "";
+                    document.getElementById("approvebtn").style.visibility = "hidden";
+                    document.getElementById("rejectbtn").style.visibility = "hidden";
+                    
+                    return true;
+                } else
+                {
+                    alert("This file type is not supported. \n Supported file types are: "
+                    + Checker.Extensions.join(", "));
+                    return false;
+                }
+            });
+
+            $('#approvebtn').click(function ()
+            {
+                document.getElementById("pleasewait").style.display = "";
+                document.getElementById("approvebtn").style.visibility = "hidden";
+                document.getElementById("rejectbtn").style.visibility = "hidden";
+                document.getElementById("submitbtn").style.visibility = "hidden";
+                return true;
+            });
+
+            $('#rejectbtn').click(function ()
+            {
+                document.getElementById("pleasewait").style.display = "";
+                document.getElementById("approvebtn").style.visibility = "hidden";
+                document.getElementById("rejectbtn").style.visibility = "hidden";
+                document.getElementById("submitbtn").style.visibility = "hidden";
+                return true;
+            });
+        });
+</script>
+</head>
+<body>
+
+        <div id="page_heading"><span style="float: left"><h3>@{@Page.page_title;}: File Upload Form</h3></span><span style="float: right"> @{@Html.Raw(Page.help_link);} </span></div>
+
+        @{
+            string schedule="";
+            string style="";
+            string color="";
+            string fr_pool_tid="";
+            string status="";
+            string call_type="";
+            string file_id="";
+               
+            if(Request["schedule"]!=null){
+                schedule=Request["schedule"];
+            }
+            if(Request["style"]!=null){
+                style=Request["style"];
+            }
+            if(Request["color"]!=null){
+                color=Request["color"];
+            }
+            if(Request["fr_pool_tid"]!=null){
+                fr_pool_tid=Request["fr_pool_tid"];
+            }
+            if(Request["status"]!=null){
+                status=Request["status"];
+            }
+            if(Request["call_type"]!=null){
+                call_type=Request["call_type"];
+            }
+            if(Request["file_id"]!=null){
+                file_id=Request["file_id"];
+            }
+
+        }
+    
+    	
+<form class="uploadform" method="post" enctype="multipart/form-data" action='PRJ_RMW_0001_P_0033_CC_UPLOAD_PROCESS.cshtml'>
+<table style="font-size: 15px;">
+    <tr><td><b>Style</b></td><td>:</td><td>@style</td><td rowspan="3" style="padding-left: 100px; padding-right: 100px; border: 1px solid red;"><font size="50">@call_type</font></td></tr>
+    <tr><td><b>Schedule</b></td><td>:</td><td>@schedule</td></tr>
+    <tr><td><b>Color</b></td><td>:</td><td>@color</td></tr>
+</table>
+
+
+ <br/>
+Select the @call_type: <input type="file" name="imagefile" id="selectFile" /><br/><br/>
+<input type="checkbox" name="apply_all_colors" value="1"/> (Y/N) : Apply to All Colors in a Schedule<br/>
+<input type="checkbox" name="apply_all_styles" value="1"/> (Y/N) : Apply to All Schedule/Colors of Style<br/>
+<input type="checkbox" name="apply_all_styles_colors" value="1"/> (Y/N) : Apply to All Schedules of Style/Color<br/><br/>
+<input type="checkbox" name="auto_approve" value="1"/> (Y/N) : Auto Approve this file<br/><br/>
+<input type="submit" value="Submit" name="submitbtn" id="submitbtn" disabled>
+<input type="hidden" name="style" value="@style" />
+<input type="hidden" name="schedule" value="@schedule" />
+<input type="hidden" name="color" value="@color" />
+<input type="hidden" name="status" value="@status" />
+<input type="hidden" name="call_type" value="@call_type" />
+<input type="hidden" name="fr_pool_tid" value="@fr_pool_tid" />
+<input type="hidden" name="file_id" value="@file_id" />
+
+
+    @{
+        if(status=="10" || status=="20")
+        {
+            @Html.Raw("<br/><br/><br/><h3>Approval Form:</h3>");
+            <input type="checkbox" name="review_all_status" value="1"/> @("(Y/N) : Apply to All Styles/Schedule-Colors");
+            @Html.Raw("<br/><br/>");
+            @Html.Raw("Remarks:"); <input type="text" name="review_remarks" value="" size="28"/>
+            @Html.Raw("<br/><br/>");
+            <input type="submit" value="Approve" name="reviewbtn" id="approvebtn"> 
+            <input type="submit" value="Reject" name="reviewbtn" id="rejectbtn">    
+        }
+    }    
+</form>
+
+<span id="pleasewait" style="display: none;"><h2><font color="red">Please wait...</font></h2></span>
+
+@{
+    db_object db_class=new db_object();
+}
+    <h3>History:</h3>
+    <div id="ajax-panel">
+    <table>
+    <thead>
+    <tr>
+        <th>File Name</th>
+        <th>File Type</th>
+        <th>File Comments</th>
+        <th>Remarks</th>
+    </tr>
+    </thead>
+    <tbody>
+    @{
+        if(file_id.Length>0)
+        {
+            var result_set=db_class.show_result("BEK_DBS_RMW_0001","select [file_name],replace([file_upload_comments],'STATUS','<br/>STATUS') as [file_upload_comments],[file_type],[file_comments] from [BEK_DBS_RMW_0001].[dbo].[T_0001_019_TR_CC_FILE_REF] where file_id="+file_id);      
+                
+            foreach(var record in result_set)
+            {
+                <tr>
+                    <td>@record.file_name</td>
+                    <td>@record.file_type</td>
+                    <td class="lef">@Html.Raw(record.file_upload_comments)</td>
+                    <td>@record.file_comments</td>
+                </tr>
+            }
+    
+        }      
+    }
+    </tbody>
+    </table>
+    </div>
+</body>
+</html>

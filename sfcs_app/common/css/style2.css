@@ -1,0 +1,51 @@
+body
+{
+	background-color: WHITE;
+	font-weight: bold;
+	font-size: 12pt;
+	color: BLACK;
+	line-height: 15pt;
+	font-style: normal;
+	font-family: "Calibri", Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+
+th
+{
+	background-color: RED;
+	color: WHITE;
+	padding: 10px;
+white-space:nowrap; 
+
+}
+
+td
+{
+	background-color: WHITE;
+	color: BLACK;
+
+	padding: 1px;
+white-space:nowrap; 
+}
+
+tr.total
+{
+font-weight: bold;
+white-space:nowrap; 
+}
+
+tr.total td
+{
+
+white-space:nowrap;
+color: BLACK;
+background-color: YELLOW;	
+padding: 5px;
+}
+
+
+table
+{
+border-collapse:collapse;
+white-space:nowrap; 
+}

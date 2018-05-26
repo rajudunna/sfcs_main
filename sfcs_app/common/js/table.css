@@ -1,0 +1,31 @@
+table tr
+{
+	border: 1px solid black;
+	text-align: left;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid black;
+	text-align: left;
+	white-space:nowrap; 
+
+}
+
+table th
+{
+	border: 1px solid black;
+	text-align: center;
+    	background-color: #29759c;
+	color: WHITE;
+	white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+}

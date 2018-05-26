@@ -1,0 +1,62 @@
+﻿<!-- 
+
+Page Description: This page is to update remarks
+
+-->
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>FR Plan Update & FR POOL Creation Processor</title>
+    </head>
+    <body>
+        @{
+            String BID=""; //Status
+            String PIH=""; //Plan in House Date
+            String REM=""; //Remarks
+            int BOMTID=0; //Bom TID
+            String M3BOMID=""; //M3 BOM REF
+
+            BID=Request["BID"];
+            PIH=Request["PIH"];
+            REM=Request["REM"];
+            BOMTID=Int32.Parse(Request["BOMTID"]);
+            M3BOMID=Request["M3BOMID"];
+
+            udf_functions udf_class=new udf_functions();
+            udf_class.FN_REM_UPDATE(BID,PIH,REM,BOMTID,M3BOMID,Page.g_log_user);
+            
+            //Old Version and the same in trasfered to function.
+            /*
+            BID=Request["BID"];
+            PIH=(Request["PIH"]==""?"NULL":"'"+Request["PIH"]+"'");
+            REM=Request["REM"];
+            BOMTID=Int32.Parse(Request["BOMTID"]);
+            M3BOMID=(Request["M3BOMID"]==""?"NULL":Request["M3BOMID"]);
+                                    
+            db_object db_class=new db_object();
+
+            //To update remarks
+           db_class.exe_queries("DBS_RMW_0001","insert into [DBS_RMW_0001].[dbo].[T_0001_005_REM_REF] (bom_tid_ref,bom_status,bom_remarks,bom_man_p_ih_date,bom_log_user,m3bompool_tid_ref) values("+BOMTID+",'"+BID+"','"+REM+"',"+PIH+",'"+Page.g_log_user+"',"+M3BOMID+")");
+                       
+           var Linsertid=db_class.last_insert_id();
+
+           DateTime d = DateTime.Now;
+
+           String log_user=Page.g_log_user;
+           
+           db_class.exe_queries("DBS_RMW_0001","update [DBS_RMW_0001].[dbo].[T_0001_004_BOM_POOL] set bom_rem_tid_ref="+Linsertid+",bom_remarks_master='"+REM+"-"+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"/"+log_user.Replace(@"BRANDIXLK\",@"")+"',bom_man_p_ih_date_master="+PIH+" where bom_tid="+BOMTID);
+           
+           if(BID=="0")
+           {
+                var schedule=db_class.show_value("DBS_RMW_0001","select schedule as value from [DBS_RMW_0001].[dbo].[V_0001_0005_FR_BOM_TRACK_REP] where bom_tid="+BOMTID);
+
+                db_class.exe_queries("DBS_RMW_0001","exec [DBS_RMW_0001].[dbo].[UPDATE_BULK_REM] @schedule_in='"+schedule+"'");
+           }         
+           */
+        }
+    </body>
+</html>

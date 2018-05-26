@@ -1,0 +1,407 @@
+﻿<!-- 
+
+Page Description: This is first page to show day wise with buyer division filtering
+
+-->
+
+<!-- User Define Functions-->
+@functions {
+
+        // To set the background color of cell for single window summary sheet
+        string FSP_SUMMARY_CODE_CELL_BG(int count,int custom_status_stock,int custom_status_above_stock,int custom_status_date_check)
+        {
+            if(count>0)
+            {
+                var msg = "bgcolor=";
+
+                if(custom_status_above_stock>0)
+                {
+                    if(custom_status_above_stock>=35 && custom_status_above_stock<=45)
+                    {
+                        if(custom_status_date_check==0)
+                        {
+                             msg+="#FFFF44"; //Yellow
+                        }
+                        else
+                        {
+                            msg+="#FF6655"; //RED
+                        }
+                    }
+                    else
+                    {
+                         if(custom_status_above_stock>=50)
+                         {
+                              msg+="#33FF33"; //GREEN
+                         }
+                         else
+                         {
+                             msg+="#FF6655"; //RED
+                         }
+                         
+                    }
+                }
+                else
+                {
+                     msg+="#33FF33"; //GREEN
+                }
+                return msg;
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>FR Plan with PSD</title>
+
+        @RenderPage(Page.scripts_include_head)
+
+        <script>
+            function local_redirect(page_id, sdate,edate,style,show_pendings)
+            {
+                
+                var filter;
+                filter = "";
+                if (show_pendings==1)
+                {
+                    filter = '&show_pendings=1';
+                }
+
+                basicPopup(page_id + '?sdate=' + sdate+'&edate='+edate+'&style='+style+filter);
+            }
+        </script>
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+
+            string sdate="";
+            string edate="";
+            string buyer="";
+            string item_code="";
+            string material="";
+
+            if(Request["sdate"]!=null){
+                sdate=Request["sdate"];
+            }
+            if(Request["edate"]!=null){
+                edate=Request["edate"];
+            }
+            if(Request["buyer"]!=null){
+                buyer=Request["buyer"];
+            }
+            if(Request["item_code"]!=null){
+                item_code=Request["item_code"];
+            }
+            if(Request["material"]!=null){
+                material=Request["material"];
+            }
+
+            //Initialization
+            var query="";
+
+            DateTime d = DateTime.Now;
+            string start_time=d.ToString("yyyyMMddHHmmss").ToString();
+			
+			//To limit reporting period
+			string date_up_limit=d.AddDays(Page.report_period_range).ToString("yyyy-MM-dd").ToString();
+                
+            if(DateTime.Parse(edate)>DateTime.Parse(date_up_limit))
+            {
+                edate=date_up_limit;
+            }
+
+            var temp_table_name="[TEMP_REP_TBL_POOL].[dbo].PRJ_RMW_0001_RAMESH_"+start_time;
+            var temp_table_name_2=temp_table_name+"_2";
+
+            query="select * into "+temp_table_name+" from [BEK_DBS_RMW_0001].[dbo].[V_0001_0005_FR_BOM_TRACK_REP] where custom_item_code is not null";
+            db_class.exe_queries("BEK_DBS_RMW_0001",query);
+
+            query=@"select custom_item_code,style,production_date,isnull(cast(count(*) as int),0) as count
+    ,isnull(cast(min(case when bom_status=1 OR bom_status=0 then bom_status end) as int),0) as custom_status_stock 
+    ,isnull(cast(min(case when bom_status>1 and bom_balance>0 then bom_status end) as int),0) as custom_status_above_stock 
+    ,min(case when bom_status>1 and bom_balance>0 then PL_IH_DATE end) as custom_status_date 
+    ,isnull(cast(min(case when (bom_status between 35 and 45) and PL_IH_DATE>replace(production_date,'-','') and bom_balance>0 then 1 else 0 end) as int),0) as custom_status_date_check
+    into "+temp_table_name_2+" from  "+temp_table_name+"  where production_date between '"+sdate+"' and '"+edate+"'  group by style,production_date,custom_item_code";
+            db_class.exe_queries("BEK_DBS_RMW_0001",query);
+                         
+            //To Extract Unique Item Code Categories
+            query="select custom_item_code from  "+temp_table_name+"  where 1=1  ";
+            
+            query+=" and (production_date between '"+sdate+"' and '"+edate+"')";
+            
+            if(buyer!=""){
+                 query+=" and custom_style in ('"+buyer+"')";
+            }
+
+            if(material!=""){
+                 query+=" and PROC_GRP in ('"+material+"')";
+            }
+
+            if(item_code!=""){
+                 query+=" and custom_item_code in ('"+item_code+"')";
+            }
+
+
+            query+=" group by custom_item_code";
+
+            query+=@" order by case custom_item_code  
+                 WHEN 'BF' THEN 1
+                 WHEN 'WK' THEN 2
+                 WHEN 'WN' THEN 3
+                 WHEN 'LC' THEN 4
+                 WHEN 'EL' THEN 5
+                 WHEN 'TH' THEN 6
+                 WHEN 'LB' THEN 7
+                 WHEN 'BE' THEN 8
+                 WHEN 'BT' THEN 9
+                 WHEN 'EY' THEN 10
+                 WHEN 'FK' THEN 11
+                 WHEN 'IL' THEN 12
+                 WHEN 'MF' THEN 13
+                 WHEN 'RI' THEN 14
+                 WHEN 'RN' THEN 15
+                 WHEN 'SP' THEN 16
+                 WHEN 'CT' THEN 17
+                 WHEN 'PT' THEN 18
+                 WHEN 'PB' THEN 19
+                 WHEN 'TP' THEN 20
+                 WHEN 'BC' THEN 21
+                 WHEN 'BD' THEN 22
+                 WHEN 'BR' THEN 23
+                 WHEN 'BX' THEN 24
+                 WHEN 'CP' THEN 25
+                 WHEN 'DV' THEN 26
+                 WHEN 'FT' THEN 27
+                 WHEN 'GM' THEN 28
+                 WHEN 'HB' THEN 29
+                 WHEN 'HC' THEN 30
+                 WHEN 'HG' THEN 31
+                 WHEN 'HT' THEN 32
+                 WHEN 'IN' THEN 33
+                 WHEN 'LL' THEN 34
+                 WHEN 'MT' THEN 35
+                 WHEN 'PA' THEN 36
+                 WHEN 'PL' THEN 37
+                 WHEN 'PV' THEN 38
+                 WHEN 'RB' THEN 39
+                 WHEN 'ST' THEN 40
+                 WHEN 'SW' THEN 41
+                 WHEN 'SZ' THEN 42
+                 WHEN 'TA' THEN 43
+                 WHEN 'TG' THEN 44
+                 WHEN 'TU' THEN 45
+                 WHEN 'WP' THEN 46
+                 WHEN 'PP' THEN 47
+                 WHEN 'SE' THEN 48
+                 WHEN 'SC' THEN 49
+                ELSE 50 END";
+            
+            var result_set=db_class.show_result("BEK_DBS_RMW_0001",query);    
+
+            List <string> items_codes=new List<string>();
+
+           
+            foreach(var record in result_set)
+            {                
+                items_codes.Add(record.custom_item_code);
+                
+            }
+
+            //To Extract Unique Production Dates
+            query=@"select distinct cast(week_code as varchar(5)) as week_code,production_date=STUFF((SELECT ','+cast(production_date as varchar(10)) FROM "+temp_table_name+" WHERE week_code=A.week_code and (production_date between '"+sdate+"' and '"+edate+"') group by production_date order by production_date FOR XML PATH('')) , 1 , 1 , '' ),production_date_count=(SELECT cast(count(distinct production_date) as int) FROM "+temp_table_name+" WHERE week_code=A.week_code and (production_date between '"+sdate+"' and '"+edate+"'))from  "+temp_table_name+" A  where 1=1";
+            
+            query+=" and (production_date between '"+sdate+"' and '"+edate+"')";
+            
+            if(buyer!=""){
+                 query+=" and custom_style in ('"+buyer+"')";
+            }
+
+            query+=" order by production_date";
+            
+
+            result_set=db_class.show_result("BEK_DBS_RMW_0001",query);    
+
+            List <string> production_dates=new List<string>();
+            List <int> production_dates_count=new List<int>();
+            List <string> production_week=new List<string>();
+  
+            foreach(var record in result_set)
+            {                
+                production_dates.Add(record.production_date);
+                production_dates_count.Add(record.production_date_count);
+                production_week.Add(record.week_code);
+            }
+
+            //To Extract Unique Styles
+			
+			string query_add="";
+			
+			query_add+=" and (production_date between '"+sdate+"' and '"+edate+"')";
+            
+            if(buyer!=""){
+                 query_add+=" and custom_style in ('"+buyer+"')";
+            }
+			
+            query=@"select distinct style,custom_style,sfcs_buyer_div,
+			Substring((Select ', ' + cast(week_code as varchar) From "+temp_table_name+" B where B.style=A.style "+query_add+" group by week_code order by week_code  For XML Path('')),2,8000) As week_code from  "+temp_table_name+" A where 1=1  ";
+            
+            query+=query_add;
+
+            query+=" order by week_code,custom_style,style";
+
+            result_set=db_class.show_result("BEK_DBS_RMW_0001",query);    
+
+            List <string> styles=new List<string>();
+            List <string> custom_styles=new List<string>();
+            List <string> custom_buyers=new List<string>();
+            List <string> week_code=new List<string>();
+
+            foreach(var record in result_set)
+            {                
+                styles.Add(record.style);
+                custom_styles.Add(record.custom_style);
+                custom_buyers.Add(record.sfcs_buyer_div);
+                week_code.Add(record.week_code);
+            }
+
+      
+         }
+
+        <table>
+                <tr>
+                    <th rowspan="3">Week #</th>
+                    <th rowspan="3">Style</th>
+                    <th rowspan="3">Style Group</th>
+                    <th rowspan="3">Buyer Division</th>
+                    @{
+                        for(int i=0;i<production_week.Count;i++)
+                        {
+                           <th colspan="@(production_dates_count[i]*items_codes.Count)"> @("Week # "+production_week[i]) </th>
+                        }
+                    }
+                </tr>
+
+                <tr>
+                    @{
+                        var item_codes_trace = Page.item_codes.Split(new[]{';'});
+                        var item_codes_title_trace = Page.item_codes_title.Split(new[]{';'});
+
+                        for(int i=0;i<production_week.Count;i++)
+                        {
+                            for(int j=0;j<items_codes.Count;j++)
+                            {                                
+                                
+                                if(((IList<string>)item_codes_trace).Contains(items_codes[j]))
+                                {
+                                    int index_val=Array.IndexOf(item_codes_trace,items_codes[j]);
+
+                                    <th colspan="@(production_dates_count[i])"> @(item_codes_title_trace[index_val]) </th>
+                                }
+                                else
+                                {
+                                    <th colspan="@(production_dates_count[i])"> @(items_codes[j]) </th>
+                                }
+                                
+                            }                            
+                        }
+                    }
+                
+                </tr>
+
+                <tr>
+                    @{
+                        for(int i=0;i<production_week.Count;i++)
+                        {
+                            for(int j=0;j<items_codes.Count;j++)
+                            {
+                                var production_date_item=production_dates[i].Split(',');
+                                for(int m=0;m<production_dates_count[i];m++)
+                                {
+                                    
+                                    <th> @(production_date_item[m].Substring(5).Replace("-","/")) </th>
+                                }
+                            }                            
+                        }
+                    }
+                
+                </tr>
+
+              
+                    
+                    @for(int m=0;m<styles.Count;m++)
+                    {
+                        <tr>
+                        
+                        <td class="lef">@(week_code[m])</td>                       
+                        <td class="lef"><span class="redirectpage" onclick="local_redirect('PRJ_RMW_0001_S_0013_REP_FORMAT_4.cshtml','@sdate','@edate','@styles[m]',0)">@styles[m]</span>
+                        </td>
+                        <td class="lef">@(custom_styles[m])</td>
+                        <td class="lef">@(custom_buyers[m])</td>
+
+                            @for(int ii=0;ii<production_week.Count;ii++)
+                            {
+                                for(int jj=0;jj<items_codes.Count;jj++)
+                                {   
+                                    
+                                    
+                                    var production_date_item_new=production_dates[ii].Split(new[]{','});
+                                    for(int mm=0;mm<production_dates_count[ii];mm++)
+                                    {
+                                        /*query=@"select 
+                                        isnull(cast(count(*) as int),0) as count
+    ,isnull(cast(min(case when custom_status=1 OR custom_status=0 then custom_status end) as int),0) as custom_status_stock 
+    ,isnull(cast(min(case when custom_status>1 then custom_status end) as int),0) as custom_status_above_stock 
+    ,min(case when custom_status>1 then PL_IH_DATE end) as custom_status_date 
+    ,isnull(cast(min(case when (custom_status between 35 and 45) and PL_IH_DATE>replace(production_date,'-','') then 1 else 0 end) as int),0) as custom_status_date_check
+    from  "+temp_table_name+"  where style='"+styles[m]+"' and custom_item_code='"+items_codes[jj]+"' and production_date='"+production_date_item_new[mm]+"'";*/
+                                        query=@"select 
+                                        count
+    ,custom_status_stock 
+    ,custom_status_above_stock 
+    ,custom_status_date 
+    ,custom_status_date_check
+    from  "+temp_table_name_2+"  where style='"+styles[m]+"' and custom_item_code='"+items_codes[jj]+"' and production_date='"+production_date_item_new[mm]+"'";
+
+                                        result_set=db_class.show_result("BEK_DBS_RMW_0001",query);
+                                        if(db_class.queries_count()>0)
+                                        {
+                                            foreach(var record in result_set)
+                                            {
+                                                @(Html.Raw("<td "+FSP_SUMMARY_CODE_CELL_BG(record.count,record.custom_status_stock,record.custom_status_above_stock,record.custom_status_date_check)+"><a style=\"text-decoration:none;\" href=\"#\" title=\""+styles[m]+"/"+items_codes[jj]+"/"+production_date_item_new[mm]+"\">"+(record.custom_status_above_stock==0?"&nbsp;":"<span class=\"redirectpage\" onclick=\"local_redirect('PRJ_RMW_0001_S_0013_REP_FORMAT_4.cshtml','"+production_date_item_new[mm]+"','"+production_date_item_new[mm]+"','"+@styles[m]+"',1)\">"+record.custom_status_above_stock+"</span>")+"</a></td>"));
+                                           
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @(Html.Raw("<td></td>"));
+                                        }
+                                        
+                                    }
+                                    Array.Clear(production_date_item_new,0,production_date_item_new.Length);
+                                    
+                                }
+                            }
+                
+                        </tr>
+                    }
+                    
+                 
+            
+         </table>
+          @{
+               query="drop table "+temp_table_name;
+               db_class.exe_queries("BEK_DBS_RMW_0001",query);      
+
+               query="drop table "+temp_table_name_2;
+               db_class.exe_queries("BEK_DBS_RMW_0001",query);   
+          }
+    </body>
+</html>

@@ -1,0 +1,12 @@
+﻿@{
+
+string bulk_pro_filename=System.AppDomain.CurrentDomain.BaseDirectory+"PRJ_RMW_0001\\bulk_process.txt";
+string bulk_pro_contents=File.ReadAllText(bulk_pro_filename);
+@(bulk_pro_contents);
+//String fileName = Path.combine(System.Deployment.Application.ApplicationDeployment.CurrentDeployment.DataDirectory,"foo.txt");
+@(System.AppDomain.CurrentDomain.BaseDirectory+"PRJ_RMW_0001\\foo.txt");
+//File.WriteAllText(filename,"1");
+
+Page.g_log_user=30;
+@Page.g_log_user;
+}

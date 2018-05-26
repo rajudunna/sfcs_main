@@ -1,0 +1,162 @@
+﻿<!-- 
+
+Page Description: This is email alert page : ALR5
+
+-->
+<!-- Includes-->
+
+
+
+@{
+    db_object db_class=new db_object();
+    String mail_message="";
+    String status_code="45";
+    DateTime d = DateTime.Now;
+
+    String edate;
+}    
+            
+@{
+    mail_message=@"
+    <!DOCTYPE html PUBLIC -//W3C//DTD XHTML 1.0 Transitional//EN"" http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
+
+    <html lang=""en"">
+        <head>
+            <meta charset=""utf-8"" />
+            <title>"+Page.page_title+": Alert 5</title>";
+
+            mail_message+="<style>"+Page.mail_alert_css_format1+"</style>";
+        mail_message+=@"</head>
+        <body>
+    <div id=""ajax-panel"">";
+            
+                        
+}
+            
+
+
+@{
+    
+    //Block 1 Mail Message
+
+    edate=d.AddBusinessDays(+3).ToString("yyyy-MM-dd").ToString();
+
+
+    mail_message+=@"<span id=""bodymsg"">Dear Associates,<br/><br/> Please find the below summary of RM pendings for status "+status_code+" items till "+edate+" PSD.</span><br/><br/>";
+
+    
+    mail_message+=@"<h3></h3><table  id=""tablefilter"" cellpadding=""0"" cellspacing=""0"">
+    <thead>
+    <tr>
+        <th>Style</th>
+        <th>Schedule</th>
+        <th>Color</th>
+        <th>PSD Date</th>
+        <th>Product Group</th>
+        <th>Item Description</th>           
+        <th>Material Item</th>
+        <th>Quantity Pending </th>
+        <th>Plan IH Date</th>        
+        <th>Comments</th>
+    </tr>
+    </thead>
+    <tbody>";
+
+
+    var result_set=db_class.show_result("DBS_RMW_0001",@"SELECT [style]
+      ,[schedule]
+      ,[color]
+      ,replace(convert(varchar(10),production_date,111),'/','-')  as production_date
+      ,[PROC_GRP]
+      ,[ITEM_DESCRIPTION]
+      ,[bom_material_item]
+      ,[bom_remarks]
+      ,[bom_man_p_ih_date_master]
+      ,[bom_remarks_master]
+  FROM [DBS_RMW_0001].[dbo].[V_0001_0006_REM_CUMM_POOL] where production_date<='"+edate+"' and  bom_status="+status_code+" and (cumulative>0 or cumulative is null) and bom_balance>0 and prod_status!=1 order by production_date,schedule,proc_grp");
+    //To relay message only when count is more.
+    var record_count=db_class.queries_count();
+    foreach(var record in result_set)
+    {  
+            mail_message+="<tr>";
+            mail_message+="<td class=\"lef\">"+record.style+"</td>";
+            mail_message+="<td class=\"lef\">"+record.schedule+"</td>";
+            mail_message+="<td class=\"lef\">"+record.color+"</td>";
+            mail_message+="<td class=\"lef\">"+record.production_date+"</td>";
+            mail_message+="<td class=\"lef\">"+record.proc_grp+"</td>";
+            mail_message+="<td class=\"lef\">"+record.ITEM_DESCRIPTION+"</td>";
+            mail_message+="<td class=\"lef\">"+record.bom_material_item+"</td>";
+            mail_message+="<td>"+record.bom_remarks+"</td>";
+            mail_message+="<td>"+record.bom_man_p_ih_date_master+"</td>";
+            mail_message+="<td>"+record.bom_remarks_master+"</td>";
+            mail_message+="</tr>";
+    }
+    mail_message+=@"</tbody></table>";
+}
+
+
+            
+            
+@{ 
+            
+
+    
+    mail_message+=@"</div>"; 
+
+    mail_message+=App.email_sign;
+
+    mail_message+=@"</body></html>"; 
+    
+    if(record_count>0)
+    {
+        //@Html.Raw(mail_message); 
+    }
+    
+
+    // Send email
+
+    try { 
+    if(record_count>0)
+    {
+        if(Request.QueryString["report"]=="1")
+        {
+            @Html.Raw(mail_message); 
+        }
+        else
+        {
+            //subject: "BAI RM Priority (Status-"+status_code+") "+d.ToString("yyyy-MM-dd").ToString(),
+
+            WebMail.Send(to: Page.email_alr5_to,
+            subject: "BAI RM Priority (Status-"+status_code+")",
+            cc: Page.email_alr5_cc,
+            bcc: Page.email_alr5_bcc,
+            priority:Page.email_alr5_priority,
+            body: mail_message,
+            isBodyHtml:true); 
+
+            //To update in Alerts Track
+            d = DateTime.Now;
+            db_class.exe_queries("DBS_RMW_0001","insert into [DBS_RMW_0001].[dbo].[T_0001_010_EXE_LOG] (page_name,start_time,end_time,log_user) values('"+Page.g_page_name+"','"+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"','"+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"','"+Page.g_log_user+"')"); 
+
+        }
+     }
+
+    <script> setTimeout("CloseWindow()",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script> 
+
+    } 
+    catch (Exception ex) { 
+
+        <text> 
+            <b>The email was <em>not</em> sent.</b> 
+            The code in the ProcessFile page must provide an 
+            SMTP server name, a user name, a password, and 
+            a "from" address.  
+        </text>
+    }   
+
+                 
+}
+        
+        
+
+   

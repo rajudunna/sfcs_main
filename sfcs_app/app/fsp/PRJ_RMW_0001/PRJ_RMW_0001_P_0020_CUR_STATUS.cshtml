@@ -1,0 +1,55 @@
+﻿@{
+    db_object db_class=new db_object();
+    
+    string page_name="";
+    int end_time=0;
+    DateTime lu=DateTime.MinValue;
+    var result_sety=db_class.show_result("BEK_DBS_RMW_0001","select top 1 page_name,case when end_time is null then 0 else 1 end as end_time  from [BEK_DBS_RMW_0001].[dbo].T_0001_010_EXE_LOG order by log_id desc");                    
+    foreach(var recordvaly in result_sety)
+    {
+        page_name=recordvaly.page_name;
+        end_time=recordvaly.end_time;
+    }
+
+    if(end_time==0)
+    {
+        var result_setyy=db_class.show_result("BEK_DBS_RMW_0001","select top 1 end_time from [BEK_DBS_RMW_0001].[dbo].T_0001_010_EXE_LOG where page_name='PRJ_RMW_0001_P_0005_BOM_REM_UPDATE.cshtml'  and end_time is not null order by log_id desc");                    
+        var queries_count=db_class.queries_count();
+        if(queries_count>0)
+        {
+            foreach(var recordvalyy in result_setyy)
+            {
+                lu=recordvalyy.end_time ?? DateTime.MinValue;
+            }
+        }
+
+        if(lu!=DateTime.MinValue)
+        {
+             //Disabled on request, since user are confused
+             //<font color=blue>@("LU:"+lu)</font>
+        }
+       
+    }
+    else
+    {
+        var result_setyy=db_class.show_result("BEK_DBS_RMW_0001","select top 1 end_time from [BEK_DBS_RMW_0001].[dbo].T_0001_010_EXE_LOG where page_name='PRJ_RMW_0001_P_0005_BOM_REM_UPDATE.cshtml'  and end_time is not null order by log_id desc");                    
+        var queries_count=db_class.queries_count();
+        if(queries_count>0)
+        {
+            foreach(var recordvalyy in result_setyy)
+            {
+                lu=recordvalyy.end_time ?? DateTime.MinValue;
+            }
+        }
+
+		
+
+        if(lu!=DateTime.MinValue)
+        {
+            //Disabled on request, since user are confused 
+            //<font color=blue>@("LU:"+lu)</font>
+        }
+    }
+  
+}
+

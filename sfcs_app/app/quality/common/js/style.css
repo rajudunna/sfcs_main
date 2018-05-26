@@ -1,0 +1,143 @@
+body
+{
+	background-color: WHITE;
+	font-weight: bold;
+	font-size: 12pt;
+	color: BLACK;
+	line-height: 15pt;
+	font-style: normal;
+	font-family: "Calibri", Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+
+/* th
+{
+	background-color: RED;
+	color: WHITE;
+ border: 1px solid #660000; 
+	padding: 10px;
+white-space:nowrap; 
+
+}
+
+td
+{
+	background-color: WHITE;
+	color: BLACK;
+ border: 1px solid #660000; 
+	padding: 1px;
+white-space:nowrap; 
+}
+ 
+tr.total
+{
+font-weight: bold;
+white-space:nowrap; 
+}
+
+tr.total td
+{
+
+white-space:nowrap;
+color: BLACK;
+background-color: YELLOW;	
+padding: 5px;
+} */
+
+
+table
+{
+border-collapse:collapse;
+white-space:nowrap; 
+}
+
+/* tr.info
+{
+font-weight: bold;
+white-space:nowrap; 
+}
+
+tr.info td
+{
+
+white-space:nowrap;
+color: WHITE;
+background-color: BLUE;	
+padding: 5px;
+} */
+
+.heading
+{
+	padding-left: 10px;
+	padding-right: 10px;
+	font-weight:bold;
+}
+
+.heading2
+{
+	padding-left: 10px;
+	padding-right: 10px;
+	font-weight:bold;
+	background-color: YELLOW;
+	 border: 1px solid #660000; 
+	 	 white-space:nowrap; 
+}
+
+.content
+{
+	padding-left: 10px;
+	padding-right: 20px;
+}
+
+.title
+{
+	padding-left: 20px;
+	padding-right: 20px;
+	font-weight:bold;
+	 border: 1px solid #660000; 
+}
+
+.sizes
+{
+	text-align:center;
+ border: 1px solid #660000; 	
+}
+
+.none
+{
+	 border: 1px solid WHITE;
+}
+
+.all
+{
+	
+ border: 1px solid #660000; 
+}
+
+.b1
+{
+	 border: 1px solid #660000;
+	 white-space:nowrap; 
+	 	padding-left: 10px;
+	padding-right: 10px;
+}
+
+
+th
+{
+	background-color: #29759C;
+	color: WHITE;
+border: 1px solid #660000;
+	padding: 10px;
+white-space:nowrap; 
+
+}
+
+td
+{
+	background-color: WHITE;
+	color: BLACK;
+border: 1px solid #660000;
+	padding: 1px;
+white-space:nowrap; 
+}

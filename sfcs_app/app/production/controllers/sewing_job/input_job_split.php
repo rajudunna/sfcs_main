@@ -1,0 +1,71 @@
+<?php 
+    // include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
+    // //require_once('phplogin/auth.php');
+    // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
+    // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+    // include("../../../common/config/dbconf.php");
+    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+    include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    $view_access=user_acl("SFCS_0117",$username,1,$group_id_sfcs);
+?>
+
+<title>Sewing Job Split</title>
+<?php 
+    // include("header_scripts.php"); 
+    // include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/production/common/config/header_scripts.php");
+    // include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/production/common/config/menu_content.php");
+    include("..".getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
+    include("..".getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R'));
+?>
+
+<div class="panel panel-primary"><div class="panel-heading">Sewing Jobs Split</div><div class="panel-body">
+<?php
+    if($username=="hasithada" or $username=="" or $username=="sfcsproject1" or $username=="chathurikap")
+    {
+        ?>
+        <form name="input" method="post" action="?r=<?= $_GET['r'] ?>">
+        <div class="row">
+        <div class="col-md-4">       
+        <?php
+            echo '<label>Enter Schedule No : </label>
+            <input type="text" class="integer form-control" required name="schedule" value=""></div><br/>
+            <div clas="col-md-4"><input type="submit" name="submit" value="Split" class="btn btn-success"></div>'; 
+            }else{
+                echo "$username You are not authorised to use this inteface!!";
+            }
+        
+         echo '</div></form><br/>';
+        ?>
+
+<?php
+
+if(isset($_POST['submit']))
+{
+    $schedule=$_POST['schedule'];
+    // $unconditional_remove=$_POST['unconditional_remove'];
+    $sql="SELECT DISTINCT input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '$schedule%' ORDER BY input_job_no*1";
+    // echo $sql;
+    $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $rowcount=mysqli_num_rows($sql_result);
+    if ($rowcount>0) 
+    {
+	    echo "<div style='width:400px;'>";
+	    echo "<span style='color:black;text-weight:bold;'>Select Sewing Job Number You want To Split: </span><br><br>";
+	    while($sql_row=mysqli_fetch_array($sql_result))
+	    {
+	        $input_job_no=$sql_row['input_job_no'];
+	        $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
+	        echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no' class='btn btn-warning btn-xs' style='width:3em;'>".$input_job_no."</a>"."                ";
+	    }
+	    echo "</div>";
+    } else {
+    	echo '<div class="alert alert-danger">
+			  <strong>Warning!</strong> No Sewing Jobs Available for this Schedule Number.
+			</div>';
+    }
+}
+?>
+</div>
+</div>

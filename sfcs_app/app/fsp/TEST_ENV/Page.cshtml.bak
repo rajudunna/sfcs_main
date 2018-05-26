@@ -1,0 +1,121 @@
+﻿@functions {
+
+        // Pass a user name to this method.
+        string FSP_STATUS_CODE_CELL_BG(string cust_code)
+        {
+            var msg = "bgcolor=";
+            switch(cust_code)
+            {
+                case "Available":
+                {
+                    msg+="#33FF33";
+                    break;
+                }
+                case "50":
+                {
+                    msg+="#FFFF22";
+                    break;
+                }
+                case "45":
+                {
+                    msg+="#33CCEE";
+                    break;
+                }
+                case "35":
+                {
+                    msg+="#FF66CC";
+                    break;
+                }
+                case "20":
+                {
+                    msg+="#CCCCCC";
+                    break;
+                }
+                case "10":
+                {
+                    msg+="#CCCCCC";
+                    break;
+                }
+                case "Excempted":
+                {
+                    msg+="#99AAEE";
+                    break;
+                }
+                case "Not Updated":
+                {
+                    msg+="#99AAEE";
+                    break;
+                }
+            }
+            return msg;
+        }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <form name="filter" method="post">
+            <input type="text" name="sdate" value="">
+            <input type="submit" name="submit" value="Filter">
+        </form>
+
+        @{
+            if(!Request["id"].IsEmpty())
+            {
+                @("yes");
+            }
+            
+            if(Request["submit"]!=null){
+                var sdate=Request["sdate"];
+                var edate=Request["sdate"];
+                @RenderPage("PRJ_RMW_0001_P_0006_REP_FORMAT_1.cshtml", new {sdate=sdate,edate=edate});
+                                                                     
+            }
+            
+
+        }
+    </body>
+</html>
+
+@{
+
+//@Html.ActionLink("Alle", "Index", "Products", new { id = null }) 
+
+//Construct : Class Object
+            db_object db_class=new db_object();
+int exe_switch=0;
+            int count=db_class.show_value("DBS_RMW_0001","select count(*) as value from [DBS_RMW_0001].[dbo].[T_0001_010_EXE_LOG] where CONVERT(VARCHAR(10),[end_time],101)=CONVERT(VARCHAR(10),GETDATE(),101) and page_name='PRJ_RMW_0001_P_0005_BOM_REM_UPDATE.cshtml'");
+            if((count%2)==0)
+            {
+                exe_switch=1;
+            }
+            @(exe_switch);
+
+                         db_class.exe_queries("DBS_RMW_0001","select * into [DBS_RMW_0001].[dbo].[TEMP] from [DBS_RMW_0001].[dbo].[V_0001_0001_FRPLAN_POOL]");
+
+            //Check varialble to make map existing values with new values.
+            var check=0;
+
+            if(db_class.last_insert_id()>0)
+            {
+                check=1;
+            }
+            @(check);
+}
+
+<table>
+
+<tr>
+@{
+    var testval="Available";   
+
+}
+<td @FSP_STATUS_CODE_CELL_BG(testval)>New</td>
+
+</tr>
+</table>

@@ -1,0 +1,60 @@
+﻿<!-- 
+
+Page Description: This is email alert page : ALR1
+
+-->
+<!-- Includes-->
+
+
+
+@{
+    String mail_message="";
+
+    mail_message=@"
+    <!DOCTYPE html>
+
+    <html lang=""en"">
+        <head>
+            <meta charset=""utf-8"" />
+            <title>FR Plan Summary</title>";
+
+    mail_message+="<style>"+Page.mail_alert_css_format1+"</style>";
+    mail_message+=@"</head>
+        <body>";
+
+    mail_message+=@"<span id=""bodymsg"">Dear Associates,<br/><br/>
+    
+    The 2 week FR plan schedules has been updated for "+Page.page_title+" Module in "+App.host_name_space+".</span>";
+
+    mail_message+=App.email_sign;
+    mail_message+=@"</body>
+                    </html>"; 
+
+
+
+    //@Html.Raw(mail_message); 
+
+    // Send email
+
+    try { 
+
+    WebMail.Send(to: Page.email_alr1_to,
+    subject: "FR Plan Update Status",
+    cc: Page.email_alr1_cc,
+    bcc: Page.email_alr1_bcc,
+    priority:Page.email_alr1_priority,
+    body: mail_message,
+    isBodyHtml:true);
+    } 
+    catch (Exception ex) { 
+
+        <text> 
+            <b>The email was <em>not</em> sent.</b> 
+            The code in the ProcessFile page must provide an 
+            SMTP server name, a user name, a password, and 
+            a "from" address.  
+        </text>
+    }             
+                        
+}
+         

@@ -1,0 +1,156 @@
+﻿<html>
+<head>
+<title>File Upload Process</title>
+</head>
+<body>
+
+
+@{
+      db_object db_class=new db_object();
+      DateTime d = DateTime.Now;
+
+      string schedule="";
+      string style="";
+      string color="";
+      string fr_pool_tid="";
+      int status=0;
+      string call_type="";
+      string apply_all_colors="";
+      string apply_all_styles="";
+      string apply_all_styles_colors="";
+      string file_id="";
+      string review_all_status="";
+      string review_remarks="";
+      string auto_approve="";
+
+      schedule=Request["schedule"];
+      style=Request["style"];
+      color=Request["color"];
+      fr_pool_tid=Request["fr_pool_tid"];
+      status=Int32.Parse(Request["status"]);
+      call_type=Request["call_type"];
+      apply_all_colors=Request["apply_all_colors"];
+      apply_all_styles=Request["apply_all_styles"];
+      apply_all_styles_colors=Request["apply_all_styles_colors"];
+      review_all_status=Request["review_all_status"];
+      file_id=Request["file_id"];
+      review_remarks=Request["review_remarks"];
+      auto_approve=Request["auto_approve"];
+
+
+      if(status>=10)
+      {
+          status=20;
+      }
+      else
+      {
+          status=10;
+      }
+
+	  var fileSavePath = "";
+      var uploadedFile = Request.Files[0];
+      var fileName = Path.GetFileName(uploadedFile.FileName);
+      var fileExt = Path.GetExtension(uploadedFile.FileName);
+
+
+      var query_add="";
+      if(call_type=="CC Chart")
+      {
+          query_add="cc_";          
+      }
+      else
+      {
+          query_add="tr_";          
+      }
+
+      if(Request.Params["submitbtn"]=="Submit")
+      {
+          db_class.exe_queries("BEK_DBS_RMW_0001","insert into [BEK_DBS_RMW_0001].[dbo].[T_0001_019_TR_CC_FILE_REF] (file_name,file_upload_comments,file_type,file_comments) values('"+fileName+"','"+"STATUS:"+status+"/UPLOAD/"+Page.g_log_user+'/'+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"','"+call_type+"','"+"SCH:"+schedule+(apply_all_colors=="1"?"ALL_COLORS":"")+(apply_all_styles=="1"?"ALL_STYLES":"")+"')");
+                             
+          var Linsertid=db_class.last_insert_id();
+
+          db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set "+query_add+"fid="+Linsertid+", "+query_add+"status="+status+" where fr_pool_tid="+fr_pool_tid);
+
+          if(apply_all_colors=="1")
+          {
+              db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set "+query_add+"fid="+Linsertid+", "+query_add+"status="+status+" where fr_pool_tid in (select fr_pool_tid from [BEK_DBS_RMW_0001].[dbo].[V_0001_0001_FRPLAN_POOL] where schedule='"+schedule+"')");
+          }
+
+          if(apply_all_styles=="1")
+          {
+              db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set "+query_add+"fid="+Linsertid+", "+query_add+"status="+status+" where fr_pool_tid in (select fr_pool_tid from [BEK_DBS_RMW_0001].[dbo].[V_0001_0001_FRPLAN_POOL] where style='"+style+"')");
+          }
+
+          if(apply_all_styles_colors=="1")
+          {
+              db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set "+query_add+"fid="+Linsertid+", "+query_add+"status="+status+" where fr_pool_tid in (select fr_pool_tid from [BEK_DBS_RMW_0001].[dbo].[V_0001_0001_FRPLAN_POOL] where style='"+style+"' and color='"+color+"')");
+          }
+
+          status=40;
+          if(auto_approve=="1")
+          {
+              db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set "+query_add+"status=40 where "+query_add+"fid="+Linsertid);
+
+              db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_019_TR_CC_FILE_REF] set file_upload_comments=file_upload_comments+'"+"STATUS:"+status+"/APPROVED/ALL/"+Page.g_log_user+'/'+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"' where file_id="+Linsertid);
+                            
+          }
+
+          fileSavePath = Server.MapPath("file_uploads/" + Linsertid+fileExt);
+          uploadedFile.SaveAs(fileSavePath);
+     }
+     else
+     {
+        if(Request.Params["reviewbtn"]=="Approve")
+        {
+            status=40;
+            if(review_all_status=="1")
+            {
+                db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set "+query_add+"status=40 where "+query_add+"fid="+file_id);
+
+                 db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_019_TR_CC_FILE_REF] set file_upload_comments=file_upload_comments+'"+"STATUS:"+status+"/APPROVED/ALL/"+Page.g_log_user+'/'+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"' where file_id="+file_id);
+                            
+            }
+            else
+            {
+                db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set "+query_add+"status=40 where fr_pool_tid="+fr_pool_tid);
+                db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_019_TR_CC_FILE_REF] set file_upload_comments=file_upload_comments+'"+"STATUS:"+status+"/APPROVED/SINGLE/"+Page.g_log_user+'/'+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"' where file_id="+file_id);
+               
+            }
+        }
+        if(Request.Params["reviewbtn"]=="Reject")
+        {
+            status=30;
+            if(review_all_status=="1")
+            {
+                db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set "+query_add+"status=30 where "+query_add+"fid="+file_id);
+                db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_019_TR_CC_FILE_REF] set file_upload_comments=file_upload_comments+'"+"STATUS:"+status+"/REJECTED/ALL/REM:"+review_remarks+"/"+Page.g_log_user+'/'+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"' where file_id="+file_id);
+               
+            }
+            else
+            {
+                db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_003_FR_POOL] set "+query_add+"status=30 where fr_pool_tid="+fr_pool_tid);
+                db_class.exe_queries("BEK_DBS_RMW_0001","update [BEK_DBS_RMW_0001].[dbo].[T_0001_019_TR_CC_FILE_REF] set file_upload_comments=file_upload_comments+'"+"STATUS:"+status+"/REJECTED/SINGLE/REM:"+review_remarks+"/"+Page.g_log_user+'/'+d.ToString("yyyy-MM-dd HH:mm:ss").ToString()+"' where file_id="+file_id);
+         
+            }
+        }
+
+     }
+}
+
+<script>
+        //To Transfer message to Parent Window
+        //function CloseMySelf(sender) 
+        {
+        try {
+            //window.opener.HandlePopupResult(sender.getAttribute("result"));
+            window.opener.HandlePopupResult(@fr_pool_tid);
+        }
+        catch (err) {}
+        window.close();
+        //return false;
+        }
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,188 @@
+﻿<!-- 
+
+Page Description: This is first page to show day wise with buyer division filtering
+
+http://bainet:8001/prj_rmw_0001/job_sheet.cshtml?color='Night Shade','Print1'&schedule=201307&sizeset=12$400*14$1500,12$400*14$1500
+
+-->
+
+
+<!DOCTYPE html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- Mirrored from tablefilter.free.fr/cols-manager.htm by HTTrack Website Copier/3.x [XR&CO'2010], Mon, 29 Apr 2013 07:04:59 GMT -->
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta charset="utf-8" />
+        <title>BAI Job Sheet</title>
+         @RenderPage(Page.scripts_include_head)
+       
+
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+         }    
+          
+            
+			
+			
+            <div id="ajax-panel">
+
+            <h2>Job Wise Sewing and Packing Trim Requirement Report - BAI</h2>
+
+            @{
+                 string schedule="";
+                string color="";
+                string sizeset="";
+                string style="";
+                string job="";
+               
+                if(Request["schedule"]!=null){
+                    schedule=Request["schedule"];
+                }
+                if(Request["color"]!=null){
+                    color=Request["color"];
+                }
+                if(Request["sizeset"]!=null){
+                    sizeset=Request["sizeset"];
+                }
+                if(Request["style"]!=null){
+                    style=Request["style"];
+                }
+                if(Request["job"]!=null){
+                    job=Request["job"];
+                }
+
+   
+                string[] sizeset_list=null;
+                int m;
+                int x;
+                string[] temp_val=null;
+                string temp_table_name;
+                DateTime d;
+                string add_query;
+            }
+
+            <table>
+                <tr><th>Style</th><td>:</td><td class="lef">@(style)</td></tr>
+                <tr><th>Schedule</th><td>:</td><td class="lef">@(schedule)</td></tr>
+                <tr><th>Job #</th><td>:</td><td class="lef">@(job)</td></tr>
+                <tr><th>Colors</th><td>:</td><td class="lef">@(color)</td></tr>
+            </table>
+            <br/>
+            <table id="tablefilter" cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Product Group</th>
+                    <th>Color</th>
+                    <th>Material Item</th>
+                    <th>Item Description</th>
+                    <th>Material Color</th>
+                    <th>Size</th>
+					<th>Consumption</th>
+                    <th>Wastage</th>
+                    <th>Req. with wastage</th>
+                    <th>Req. without wastage</th>
+                    <th>UOM</th>
+                </tr>
+                </thead>
+                <tbody>
+          @{ 
+               
+            var color_list=color.Split(',');           
+            var size_groups=sizeset.Split(',');
+
+            for(x=0;x<color_list.Length;x++)
+            {
+                //Temp Table
+                d = DateTime.Now;
+                temp_table_name="[TEMP_REP_TBL_POOL].[dbo].PRJ_RMW_0001_"+Page.g_log_user_short+"_"+d.ToString("yyyyMMddHHmmss").ToString();
+                db_class.exe_queries("DBS_RMW_0001",@"create table "+temp_table_name+" (job_quantity int,job_size varchar(30))");
+
+                sizeset_list=size_groups[x].Split('*');
+                for(m=0;m<sizeset_list.Length;m++)
+                {
+                    temp_val=sizeset_list[m].Split('$');
+                    db_class.exe_queries("DBS_RMW_0001",@"insert into "+temp_table_name+" (job_size,job_quantity) values ('"+temp_val[0]+"',"+temp_val[1]+")");
+                }
+
+                add_query="";
+                add_query=" and GMT_COLOUR in ("+color_list[x]+")";
+
+                //Select to be prepared bom details from FR Pool View
+                var result_set=db_class.show_result("DBS_RMW_0001",@"SELECT 
+                max(PROC_GRP) as PROC_GRP,
+                max(GMT_COLOUR) as GMT_COLOUR,
+                max(MATERIAL_ITEM) as MATERIAL_ITEM,
+                max(ITEM_DESCRIPTION) as ITEM_DESCRIPTION,
+                max(MAT_COLOUR) as MAT_COLOUR,
+                max(ltrim(rtrim((MAT_SIZE+(case when LEN(MAT_SIZE)=0 OR MAT_SIZE IS null then GMT_SIZE ELSE '' END))))) as MAT_SIZE,
+count(DISTINCT ltrim(rtrim((MAT_SIZE+(case when LEN(MAT_SIZE)=0 OR MAT_SIZE IS null then GMT_SIZE ELSE '' END))))) as COUNT_SIZE,
+                max(CONSUMPTION) as CONSUMPTION,
+                max(REQUIRED_) as REQUIRED_,
+                max(ISSUED) as ISSUED,
+                max(BAL_TO_ISSUE) as BAL_TO_ISSUE,
+                max(CO_QTY) as CO_QTY,
+                max(WASTAGE) as WASTAGE,
+                round(sum(CONSUMPTION*job_quantity),2) as without_wastage,
+                round(sum(case when cast(WASTAGE as float)>0 then (CONSUMPTION+((CONSUMPTION*cast(WASTAGE as float))/100))*job_quantity else (CONSUMPTION*job_quantity) end),2) as with_wastage,
+                max(UOM) as UOM from [DBS_RMW_0001].[dbo].[T_0001_001_M3BOMPOOL_BACKUP] inner join "+temp_table_name+" on ltrim(rtrim((MAT_SIZE+(case when LEN(MAT_SIZE)=0 OR MAT_SIZE IS null then GMT_SIZE ELSE '' END))))=job_size where 1=1 and schedule="+schedule+add_query+" and proc_grp in ('PTRIM','STRIM') group by GMT_COLOUR,MATERIAL_ITEM order by gmt_colour,proc_grp desc");
+
+                string sku_code="";
+                
+                foreach(var record in result_set)
+                {             
+                    var highlight_color="";
+
+                    if(sku_code!=record.PROC_GRP)
+                    {
+                        if(record.PROC_GRP=="PTRIM")
+                        {
+                            <tr><th>Packing Trims</th></tr>
+                            sku_code=record.PROC_GRP;
+                        }
+                        else
+                        {
+                            <tr><th>Sewing Trims</th></tr>
+                            sku_code=record.PROC_GRP;
+                        }
+                    }
+                  
+                    <tr bgcolor="@highlight_color">
+                        <td class="lef">@record.PROC_GRP</td>
+                        <td class="lef">@record.GMT_COLOUR</td>
+                        <td class="lef">@record.MATERIAL_ITEM</td>
+                        <td class="lef">@record.ITEM_DESCRIPTION</td>
+                        <td class="lef">@record.MAT_COLOUR</td>
+                        <td class="lef">@(record.COUNT_SIZE>1?@"":@record.MAT_SIZE)</td>
+                        <td class="ret">@record.CONSUMPTION</td>
+						
+                    
+                        <td class="ret">@record.WASTAGE</td>
+                        <td class="ret">@(Math.Round(record.with_wastage,2))</td>
+                        <td class="ret">@(Math.Round(record.without_wastage,2))</td>
+
+                        <td class="ret">@record.UOM</td>
+                        
+                    </tr>
+                }
+
+                //Temp Table
+                db_class.exe_queries("DBS_RMW_0001",@"drop table "+temp_table_name);
+            }
+               
+            }
+        </tbody>
+        </table>
+        </div>
+
+    </body>
+</html>
+
+@{
+    @RenderPage(Page.scripts_include_tail)
+}

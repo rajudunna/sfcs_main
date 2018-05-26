@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	 @RenderPage(Page.scripts_include_head)
+	<script type="text/javascript">
+     $(document).ready(function ()
+     {
+         $("#myButton").click(function ()
+         {
+
+             $("#content").html("");
+
+             $.ajax({
+                 cache: false,
+                 type: 'POST',
+                 url: 'PRJ_RMW_0001_P_0008_REP_FORMAT_3.cshtml',
+                 data: $("#myForm").serialize() + '&rando='+Math.random(),
+                 beforeSend: function ()
+                 {
+                     // this is where we append a loading image
+                     $("#myForm").hide();
+                     $('#ajax-panel').html('<div class="loading"><img src="/images/loading/animated_loading.gif" alt="Loading..." /></div>');
+                 },
+                 success: function (response)
+                 {
+                     $("#myForm").show();
+                     $('#ajax-panel').empty();
+                     $("#ajax-panel").html(response);
+                 },
+                 error: function (response)
+                 {
+                     // failed request; give feedback to user
+                     $("#myForm").show();
+                     $('#ajax-panel').html('<p class="error"><strong>Oops!</strong> Try that again in a few moments.</p>');
+                 }
+
+             });
+         });
+     });
+
+     $(window).bind('beforeunload', function ()
+     {
+         //$.blockUI();
+     });
+	 </script>
+	 <script type="text/javascript">
+	 function validateQty(event) 
+		{
+			event = (event) ? event : window.event;
+			var charCode = (event.which) ? event.which : event.keyCode;
+			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+				return false;
+			}
+			return true;
+		}
+	</script>
+
+    <!-- Table Filter -->
+
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/tablefilter_all_min.js")" language="javascript" type="text/javascript"></script>
+    <script src="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility/TFExt_ColsVisibility.js")" language="javascript" type="text/javascript"></script>
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/filtergrid.css")" rel="stylesheet" type="text/css" id="demo_style">
+
+    <link href="@Href("~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility//TFExt_ColsVisibility.css")" rel="stylesheet" type="text/css" id="ColsVisibilityStyle">
+
+    <style>
+        #tablefilter {
+            font-size: 12px;
+        }
+        
+    </style>
+
+</head>
+<body>
+<div class="panel panel-primary">
+<!-- To Show Current Progress-->
+<div id="load_tweets"></div>
+<!-- To Show Current Progress-->
+<div class="panel-heading"><b>@{@Page.page_title;}: Schedule BOM Summary</b></div>
+<!-- <div id="page_heading"><div id="page_heading"><span style="float: left"><h3>@{@Page.page_title;}: Schedule BOM Summary</h3></span><span style="float: right"> @{@Html.Raw(Page.help_link);} </span></div></div> -->
+<!-- index.html -->
+<div class="panel-body" id="form">
+<form id="myForm"> 
+<div class="form-inline">
+		<div class="form-group">
+			Schedule: <input type="text" size="4" min="0" class="form-control" onkeypress="return validateQty(event);" name="schedule" id="schedule" value="@Request["schedule"]">
+		Show Only Pendings Items: <input type="checkbox" name="show_pendings" value="1" checked="checked" />
+		</div>
+		<div class="form-group">
+		<input type="button" id="myButton" class="btn btn-primary" value="Filter"/>
+		</div>
+</div>
+</form>
+</div>
+
+<div id="ajax-panel" class="table-responsive">
+@{
+    if(!Request["schedule"].IsEmpty()){
+        @RenderPage("PRJ_RMW_0001_P_0008_REP_FORMAT_3.cshtml");
+    }
+}
+
+</div>
+</div>
+</body>
+</html>

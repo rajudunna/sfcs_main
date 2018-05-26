@@ -1,0 +1,281 @@
+﻿<!-- 
+
+Page Description: This is first page to show day wise with buyer division filtering
+
+-->
+
+
+<!DOCTYPE html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- Mirrored from tablefilter.free.fr/cols-manager.htm by HTTrack Website Copier/3.x [XR&CO'2010], Mon, 29 Apr 2013 07:04:59 GMT -->
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta charset="utf-8" />
+        <title>FR Plan with BOM Level Breakup for given schedule/color</title>
+
+       
+    <!-- Onscreen Edit-->
+        <script>
+            function update_com(x) {
+                var BID = document.getElementById("BID" + x).innerHTML; //Status Code Change
+                var PIH = document.getElementById("PIH" + x).innerHTML; //Plan IN House Date
+                var REM = document.getElementById("REM" + x).innerHTML; //Remarks
+
+                document.getElementById("BID" + x).innerHTML = "<input type='text' id='TXTBID" + x + "' value='" + BID + "' onchange='if(this.value!=0) { this.value=" + BID + "; }' style='border:none; background-color: #FF66EE;' onkeypress='validate(event)'>";
+                document.getElementById("PIH" + x).innerHTML = "<input type='text' id='TXTPIH" + x + "' value='" + PIH + "' style='border:none; background-color: yellow;' readonly=true onclick=\"javascript:NewCssCal('TXTPIH" + x + "','yyyyMMdd','dropdown',true,'24')\">";
+                document.getElementById("REM" + x).innerHTML = "<input type='text' id='TXTREM" + x + "' value='" + REM + "' style='border:none; background-color: yellow;'>";
+
+                document.getElementById("CON" + x).innerHTML = "<span onClick='save_com(" + x + ")'>Save</span>";
+
+
+            }
+
+            function save_com(x) {
+
+                var BID = document.getElementById("TXTBID" + x).value; //Status Code Change
+                var PIH = document.getElementById("TXTPIH" + x).value; //Plan IN House Date
+                var REM = document.getElementById("TXTREM" + x).value; //Remarks 
+                var M3BOMID = document.getElementById("M3BOMID" + x).innerHTML; //M3 REF BOM ID
+                
+
+                $.ajax({
+                    cache: false,
+                    type: 'POST',
+                    url: 'PRJ_RMW_0001_P_0015_REM_UPDATE.cshtml',
+                    data: "M3BOMID=" + M3BOMID + "&BOMTID=" + x + "&BID=" + BID + "&PIH=" + PIH + "&REM=" + REM + '&rando=' + Math.random(),
+                    beforeSend: function () {
+                        document.getElementById("CON" + x).innerHTML = "<span'>Saving...</span>";
+                    },
+                    success: function (response) {
+                        //Saving request
+                        document.getElementById("CON" + x).innerHTML = "<span onClick='update_com(" + x + ")'>Edit</span>";
+                        document.getElementById("BID" + x).innerHTML = BID;
+                        document.getElementById("PIH" + x).innerHTML = PIH;
+                        document.getElementById("REM" + x).innerHTML = REM;
+                        
+                    },
+                    error: function (response) {
+                        // failed request; give feedback to user
+                        document.getElementById("CON" + x).innerHTML = "<span onClick='save_com(" + x + ")'>Save</span>";
+                    }
+
+                });
+            }
+
+            //TO allow only numerics
+            function validate(evt) {
+              var theEvent = evt || window.event;
+              var key = theEvent.keyCode || theEvent.which;
+              key = String.fromCharCode( key );
+              var regex = /[0-9]|\./;
+              if( !regex.test(key) ) {
+                theEvent.returnValue = false;
+                if(theEvent.preventDefault) theEvent.preventDefault();
+              }
+            }
+
+        </script>
+    <!-- Onscreen Edit-->
+    </head>
+    <body>
+        @{
+            db_object db_class=new db_object();
+         }    
+           
+            <div style="visibility: hidden"><a class="tooltippage" id="clickme" href="#" rel="PRJ_RMW_0001_P_0014_POP_BOM_REM_TRACK.cshtml" title="Status Track"></a></div>
+            
+			<table><tr><td><span id="spnColMng"></span></td><td><!-- Export to Excel -->
+			@{/*OLD VERSION 
+            <form action="export_excel.php" method ="post" > 
+			<input type="hidden" name="csv_text" id="csv_text">
+			<input type="hidden" name="schedule" id="schedule" value="@(@Request["schedule"])">
+			<input type="submit" value="Export to Excel" onclick="getCSVData()">
+			</form>
+            */}
+			<!-- DISABLED
+            <form action="export_to_excel.cshtml" method ="post" >
+                <input type="hidden" name="schedule" id="schedule" value="@(@Request["schedule"])">
+                <input type="submit" value="Export to Excel">
+            </form>
+			-->
+			<!-- Export to Excel --></td></tr></table>
+			
+			
+
+            <table id="tablefilter" cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Week</th>
+					<th>PSD</th>
+                    <th>Style</th>
+                    <th>Schedule</th>
+                    <th>Color</th>
+                    <th>Product Group</th>
+                    <th>Material Item Code</th>
+                    <th>Item Description</th>
+					<th>Material Color</th>
+                    <th>Required</th>
+                    <th>Issued</th>
+                    <th>Balance</th>
+                    <th>Allocated</th>
+					<th>Allocation Status</th>
+					<th>Material Status</th>
+                    <th>PO Number</th>
+                    <th>Plan IH Date</th>
+                    <th>Supplier</th>
+                    <th>Arrival Date</th>
+                    <th>PO Date</th>
+                    <th>XMill Date</th>
+					<th>PO Quantity</th>
+					<th>Expected/TR Quantity</th>
+					<th>Mode</th>
+                </tr>
+                </thead>
+                <tbody>
+          @{ 
+                string schedule="";
+                string style="";
+				string sdate="";
+                string edate="";
+				string materialitem="";
+                string material="";
+               
+                if(Request["schedule"]!=null){
+                    schedule=Request["schedule"];
+                }
+				if(Request["style"]!=null){
+                    style=Request["style"];
+                }
+				if(Request["sdate"]!=null){
+                    sdate=Request["sdate"];
+                }
+				if(Request["edate"]!=null){
+                    edate=Request["edate"];
+                }
+				if(Request["materialitem"]!=null){
+                    materialitem=Request["materialitem"];
+                }
+				if(Request["material"]!=null){
+                    material=Request["material"];
+                }
+                
+                
+                //Select to be prepared bom details from FR Pool View
+                var result_set=db_class.show_result("DBS_RMW_0001","exec [DBS_RMW_0001].[dbo].[FSP_MRP] @prod_grp='"+material+"',@sdate='"+sdate+"',@edate='"+edate+"',@style='"+style+"', @schedule='"+schedule+"',@material_item='"+materialitem+"'");
+                
+				foreach(var record in result_set)
+                {             
+                   
+                    <tr>
+                        <td class="lef">@record.week</td>
+                        <td class="lef">@record.production_date</td>
+                        <td class="lef">@record.style</td>
+                        <td class="lef">@record.schedule</td>
+                        <td class="lef">@record.color</td>
+                        <td class="lef">@record.PROC_GRP</td>
+                        <td class="lef">@record.bom_material_item</td>
+						<td class="lef">@record.ITEM_DESCRIPTION</td>
+						<td class="lef">@record.MAT_COL</td>
+                        <td>@record.bom_req_qty</td>
+                        <td>@record.bom_issued_qty</td>
+                        <td>@record.bom_balance</td>
+						<td>@record.bom_remarks</td>
+                        <td class="lef">@record.bom_status</td>
+                        <td class="lef">@record.SEQ</td>
+                        <td class="lef">@record.PO_NO</td>
+                        <td class="lef">@record.pl_ih_date</td>
+                        <td class="lef">@record.supplier</td>   
+						<td class="lef">@record.arrival_date</td>   
+						<td class="lef">@record.PO_DATE</td>   
+						<td class="lef">@record.XMILL_DATE</td>   
+						<td class="lef">@record.PO_QTY</td>
+						<td class="lef">@record.EXP_QTY</td>
+						<td class="lef">@record.MODE</td>
+                    </tr>
+
+                }
+               
+            }
+        </tbody>
+        </table>
+		<!--
+        <script language="javascript" type="text/javascript">
+        //<![CDATA[	
+	        var props = {
+		        paging: false,
+		        sort: true,
+		        sort_config: {
+			        sort_types:['String','String','String','String','String','String','US','US','US']
+		        },
+		        remember_grid_values: false,
+		        alternate_rows: true,
+		        rows_counter: true,
+		        btn_reset: true,
+		        btn_reset_text: "Clear",
+		        status_bar: true,
+		        col_0: "select",
+                col_2: "select",
+		        col_11: "select",
+		        col_13: "select",
+                col_14: "select",
+                col_18: "select",
+		        display_all_text: "< Show all >",
+		
+		        /*** Extensions manager ***/
+		        extensions: { 
+						        /*** Columns Visibility Manager extension load ***/	
+						        name:['ColsVisibility'], 
+						        src:['~/scripts/TableFilter_EN/TableFilter/TFExt_ColsVisibility/TFExt_ColsVisibility/TFExt_ColsVisibility.js'], 
+						        description:['Columns visibility manager'], 
+						        initialize:[function(o){o.SetColsVisibility();}] 
+					        },
+					
+		        /*** Columns Visibility Manager extension properties ***/
+		        showHide_cols_tick_to_hide: false,
+                btn_showHide_cols_html: '<button>Columns manager ▼</button>',  
+                btn_showHide_cols_close_html: '<button>Close</button>',  
+                showHide_cols_text: 'Check options to hide columns: ',
+                btn_showHide_cols_target_id: 'spnColMng', 
+                /* showHide_cols_at_start: [1,3,4,5,10,11,12], */
+		        showHide_cols_text: 'Columns: ',
+                showHide_cols_enable_hover: false,
+		        showHide_enable_tick_all: true 
+
+               /* showHide_cols_tick_to_hide: false,  
+                btn_showHide_cols_target_id: 'spnColMng',  
+                showHide_cols_at_start: [],  
+                btn_showHide_cols_html: '<button>Columns manager ▼</button>',  
+                btn_showHide_cols_close_html: '<button>Close</button>',  
+                showHide_cols_text: 'Check options to hide columns: ',  
+                showHide_cols_cont_css_class: 'colsMngContainer',  
+                showHide_cols_enable_hover: false,  
+                on_before_open_cols_manager: hideIESelects,  
+                on_after_close_cols_manager: showIESelects */
+
+	        }
+	        setFilterGrid("tablefilter",props);
+        //]]>
+        </script>
+		-->
+		<!-- Export to Excel -->
+		<script>
+		
+			function getCSVData(){
+			 $.unblockUI();
+			 var csv_value=$('#tablefilter').table2CSV({delivery:'value'});
+			 $("#csv_text").val(csv_value);
+			 
+			}
+		</script>
+		<!-- Export to Excel -->
+
+    </body>
+</html>
+
+@{
+    @RenderPage(Page.scripts_include_tail)
+}
