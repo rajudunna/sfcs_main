@@ -39,13 +39,13 @@ include('dbconf.php');
 				$linkq2q= explode('?',$parent['link_location']);
 				$full_path_url = $linkq2q[0];
 				$get_vars_data = (isset($linkq2q[1]) && $linkq2q[1]!='') ? '&'.$linkq2q[1] : '';
-				if(base64_encode($full_path_url) == $_GET['r'] || (isset($_SESSION['link']) && $_SESSION['link'] == base64_encode($full_path_url))){
-				$list = '<li class=\'current-page\'><a href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
+				if(base64_encode("/".explode('/',$_SERVER['PHP_SELF'])[1].$full_path_url) == $_GET['r'] || (isset($_SESSION['link']) && $_SESSION['link'] == base64_encode("/".explode('/',$_SERVER['PHP_SELF'])[1].$full_path_url))){
+				$list = '<li class=\'current-page\'><a href="?r='.base64_encode("/".explode('/',$_SERVER['PHP_SELF'])[1].$full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div></li>';
-					$_SESSION['link'] = base64_encode($full_path_url);
+					$_SESSION['link'] = base64_encode("/".explode('/',$_SERVER['PHP_SELF'])[1].$full_path_url);
 					
 				}else{
-					$list = '<li><a href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
+					$list = '<li><a href="?r='.base64_encode("/".explode('/',$_SERVER['PHP_SELF'])[1].$full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div>
 				</li>';
 				}
@@ -116,12 +116,12 @@ include('dbconf.php');
     $list = "";
     
     GLOBAL $menu_table_name;
-	//GLOBAL $link;
-	$database="central_administration_sfcs";
-    $user= 'baiall';
-    $password='baiall';
-    $host= '192.168.0.110';
-    $link = mysqli_connect($host,$user,$password,$database,"3323");
+	GLOBAL $link;
+	// $database="central_administration_sfcs";
+    // $user= 'baiall';
+    // $password='baiall';
+    // $host= '192.168.0.110';
+    // $link = mysqli_connect($host,$user,$password,$database,"3323");
     $sql = "SELECT * FROM tbl_menu_list WHERE (parent_id = 0 OR parent_id IS NULL) and link_status=1 and fk_group_id=".$x." order by link_description";
     $qry = mysqli_query($link, $sql) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//$qry = mysqli_query($GLOBALS["___mysqli_ston"], $sql);

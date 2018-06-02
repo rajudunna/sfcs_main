@@ -1,7 +1,7 @@
 <div class="col-md-3 left_col">
     <div class="left_col scroll-view">
     <div class="navbar nav_title" style="border: 0;">
-        <a href="index.php" class="site_title"><img src="favicon.ico" alt="Logo" height="40" width="40">  <span>Brandix</span></a>
+        <a href="index.php" class="site_title"><img src="images/favicon.ico" alt="Logo" height="40" width="40">  <span>Brandix</span></a>
     </div>
     <div class="clearfix"></div>
     <!-- sidebar menu -->
