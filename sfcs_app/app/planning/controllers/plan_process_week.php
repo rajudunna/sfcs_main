@@ -76,7 +76,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		//if($fastreact_plan_id>=0)
 		{
 		
-			$sql2="insert into $bai_pro4.$shipfast_sum (shipment_plan_id,fastreact_plan_id,plan_start_date,plan_comp_date) values ($ship_tid,$fastreact_plan_id,\"$production_start_date\",\"$production_end_date\")";
+			$sql2="insert into $bai_pro4.shipfast_sum (shipment_plan_id,fastreact_plan_id,plan_start_date,plan_comp_date) values ($ship_tid,$fastreact_plan_id,\"$production_start_date\",\"$production_end_date\")";
 			echo $sql2."<br/>";
 			mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
@@ -92,7 +92,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				$size=$sql_row1['size'];
-				$qty=$sql_row1['qty'];
+				$qty=$sql_row1['qty'];	
 				
 				if($qty>0 and strlen($size)>0)
 				{
@@ -122,8 +122,8 @@ echo $sql2."<br/>";
 				}
 								
 				$sql3="update $bai_pro4.shipfast_sum set ".$sec_db[$i]."=$qty where tid=$iLastid";
-				//echo $sql3."<br/>";
-				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// echo $sql3."<br/>";
+				mysqli_query($link, $sql3) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
 		// else

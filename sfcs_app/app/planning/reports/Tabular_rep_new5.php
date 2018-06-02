@@ -1,7 +1,8 @@
 <?php
 include('../'.getFullURL($_GET['r'],"order_status_buffer.php",'R'));
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0043",$username,1,$group_id_sfcs); 
 
 ?>
@@ -76,8 +77,8 @@ function uncheckall()
 }
 
 </script>
-<link rel="stylesheet" type="text/css" media="all" href="<?= getFullURLLevel($_GET['r'],'reports/jsdatepick-calendar/jsDatePick_ltr.min.css',0,'R'); ?>" />
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'reports/jsdatepick-calendar/jsDatePick.min.1.3.js',0,'R'); ?>"></script>
+<link rel="stylesheet" type="text/css" media="all" href="<?= getFullURLLevel($_GET['r'],'common/js/jsdatepick-calendar/jsDatePick_ltr.min.css',1,'R'); ?>" />
+<!--<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'reports/jsdatepick-calendar/jsDatePick.min.1.3.js',0,'R'); ?>"></script>-->
 <script type="text/javascript">
 	window.onload = function()
 	{
@@ -93,14 +94,14 @@ function uncheckall()
 		});
 	};
 </script>
-<script language="javascript" type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'styles/dropdowntabs.js','R') ?>"></script>
-<link rel="stylesheet" href="<?= '../'.getFullURL($_GET['r'],'styles/ddcolortabs.css','R') ?>" type="text/css" media="all" />
+<script language="javascript" type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R') ?>"></script>
+<link rel="stylesheet" href="<?= '../'.getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R') ?>" type="text/css" media="all" />
 
-<link href="<?= '../'.getFullURL($_GET['r'],'table_style.css','R') ?>" rel="stylesheet" type="text/css" />
+<link href="<?= '../'.getFullURLLevel($_GET['r'],'common/css/table_style.css',3,'R') ?>" rel="stylesheet" type="text/css" />
 
 <!--<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'jquery-1.3.2.js','R') ?>" ></script>-->
-<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'table2CSV.js','R') ?>" ></script>
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+<script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css'3,'R'); ?>" rel="stylesheet" type="text/css" />
 </head>
 <div class='panel panel-primary'><div class='panel-heading'><h3>Order Status Report</h3></div><div class='panel-body'>
 <form method="POST" name="test" action="?r=<?php echo $_GET['r'];?>">

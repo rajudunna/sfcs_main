@@ -2,7 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>FCA Status Update - Approve All Form</title>
-<?php include("header_script.php"); ?>
+<?php  
+include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+?>
+
+
+
+
+
 <style>
 body
 {
@@ -43,7 +51,7 @@ body
     </script>
 </head>
 <body onpageshow="if (event.persisted) noBack();" onkeydown="return showKeyCode(event)">
-<?php include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php"); 
+<?php 
 
 $style=$_GET['style'];
 $schedule=$_GET['schedule'];
@@ -100,8 +108,9 @@ else
 }
 
 
-//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",200); function Redirect() {  location.href = \"pending.php\"; }</script>";
-echo "<script type=\"text/javascript\"> window.close(); </script>";
+$url1=getFullURL($_GET['r'],'pending.php','N');
+	echo "<h2><font color=\"green\">Successfully Updated!</font></h2>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
 ?>
 
 

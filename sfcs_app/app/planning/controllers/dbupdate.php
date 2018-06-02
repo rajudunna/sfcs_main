@@ -9,7 +9,7 @@
 <body>
 <?php 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");?>
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
 
 <?php 
 	error_reporting(E_ALL ^ E_NOTICE);
@@ -32,14 +32,19 @@ $filename = $_POST['id'];
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 // Connect to mysql server
-($GLOBALS["___mysqli_ston"] = mysqli_connect($mysql_host,  $mysql_username,  $mysql_password)) or die('Error connecting to mysql server: ' . mysqli_error($GLOBALS["___mysqli_ston"]));
+
+($GLOBALS["___mysqli_ston"] = mysqli_connect($host,  $user,  $pass,$bai_pro4)) or die('Error connecting to mysql server: ' . mysqli_error($GLOBALS["___mysqli_ston"]));
 // Select database
 mysqli_select_db($link, $bai_pro4) or die('Error selecting mysql database: ' . mysqli_error($GLOBALS["___mysqli_ston"]));
 
 // Temporary variable, used to store current query
 $templine = '';
 // Read in entire file
-$lines = file($filename);
+$file_path  = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'weekly_delivery_plan/'.$filename,0,'R');
+$lines = file($file_path);
+// require $file_path;
+// $lines = fopen($file_path,"r");
+
 // Loop through each line
 foreach ($lines as $line_num => $line) {
 	// Only continue if it's not a comment

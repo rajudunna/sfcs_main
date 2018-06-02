@@ -62,7 +62,7 @@ body
 </style>
 <body onload="focus_box()">
 <div class='panel panel-primary'>
-<div class='panel-heading'>Online Barcode Scaning</div>
+<div class='panel-heading'>Online Barcode Scanning</div>
 <div class='panel-body'>
 <div class=' text-left '><h4><span class="label label-success">T-OUT</span></h4></div>
 
@@ -291,14 +291,14 @@ if(isset($_POST['check2']))
 <!-- <input type="text" value="" name="cartonid">onkeydown="document.input.submit();" -->
 <!--<textarea name="cartonid" rows="2" cols="15" onkeydown="document.input.submit();" ></textarea>-->
 <div class='form-group col-md-3'>
-<input type="text" name="cartonid" class='form-control'  onkeyup="document.input.submit();" value="" id='docket'>
+<input type="text" name="cartonid" class='form-control integer'  onkeyup="document.input.submit();" value="" id='docket'>
 <!--<input type="text" size="19" value="" onkeydown="document.input.submit();"  name="cartonid"><br/>-->
 </div>
 </div>
 <div class="row">
 <div class='form-group col-md-3'>
 <label>Manual Entry:</label>
-<input type="text" id='carton2' class='form-control integer' size="19" value="<?php if($_GET["code"] > 0){echo $_GET["code"];} ?>"  name="cartonid2"><br/>
+<input type="text" id='carton2' class='form-control alpha' size="19" value="<?php if($_GET["code"] > 0){echo $_GET["code"];} ?>"  name="cartonid2"><br/>
 </div>
 <?php 
 

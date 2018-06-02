@@ -247,7 +247,8 @@ else
 echo "</select></div>";
 
 echo "<div class=\"col-md-4\"><br/><br/><input class=\"btn btn-sm btn-primary\" type=\"submit\" value=\"Show\" name=\"submit\" id='sub' disabled ></div></div>";	
-
+$sql_mods[]=1;
+$sql_mods[]=2;
 if($schedule>0)
 {
 	//$sql="SELECT GROUP_CONCAT(sec_mods) as mods FROM sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";

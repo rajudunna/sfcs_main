@@ -49,7 +49,7 @@ else
 {
 	$division="-1";
 }
-
+$Page_Id='SFCS_0057';
 
 ?>
 
@@ -126,6 +126,8 @@ if(isset($_POST['show']) || isset($_GET['show']))
 	$result=mysqli_query($link, $sql) or die("Error=".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count=mysqli_num_rows($result);
 	if($count > 0){
+		$flag=true;
+		echo "<div id='main_div'>";
 		echo "<div class='table-responsive'>";
 		echo "<table cellspacing=\"0\" id=\"table1\" class='table table-striped jambo_table bulk_action' border=1  >";	
 		echo "<tr class='headings'><th>Complaint No</th><th>Complaint Category</th><th>Report No</th><th>Product Category</th><th>Complaint Type</th><th>Request Date</th><th>Request User</th><th>Supplier Name</th><th>Buyer Name</th><th>Item Desc</th><th>Item Codes</th><th>Item Colors</th><th>Batch No</th><th>Invoice No</th><th>PO No</th><th>Lot#</th><th>Purchase Width</th><th>Actual Width</th><th>Purchase GSM</th><th>Actual GSM</th><th>Inspected Qty</th><th>Reject Roll Qty</th><th>Length Short Qty</th><th>Total Replacement Required</th><th>UOM</th><th>Complaint Remarks</th><th>Supplier Approved Date</th><th>Replacement Category</th><th>Supplier Remarks</th><th>Claim Note No</th></th><th>New Invoice No</th><th>Supplier Replace Approved Qty</th><th>Supplier Claim Approved Qty</th><th>Credit Note No</th><th>Complaint Status</th><th>Print</th><th>Mail Status</th>";
@@ -238,17 +240,17 @@ if(isset($_POST['show']) || isset($_GET['show']))
 				{
 					if($complaint_status == 0)
 					{   
-						echo "<td><a class='btn btn-sm btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Waiting</a></td>";
+						echo "<td><a class='btn btn-xs btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Waiting</a></td>";
 					}
 					else if($complaint_status == 1)
 					{
-						echo "<td><a class='btn btn-sm btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Not Agreed</a></td>";
+						echo "<td><a class='btn btn-xs btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Not Agreed</a></td>";
 
 						
 					}
 					else if($complaint_status == 2)
 					{
-					echo "<td><a href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Hold</a></td>";
+					echo "<td><a class='btn btn-xs btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Hold</a></td>";
 
 					}
 					else if($complaint_status == 3)
@@ -262,12 +264,12 @@ if(isset($_POST['show']) || isset($_GET['show']))
 					}
 					$url=getFullURL($_GET['r'],'Supplier_Print_PDF.php','N');
 					
-					echo "<td><a class='btn btn-sm btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"retur popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
+					echo "<td><a class='btn btn-xs btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"retur popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
 				
 					if($mail_status == 0)
 					{
 						$url_mail = $url."&sno=$complaint_no&status=0&sdate=$startdate&edate=$enddate&stat=$status&bat=$batch";
-						echo "<td><a id='mail_button' class='btn btn-sm btn-warning' href=\"$url_mail\" onclic=\"return popitup('$url&sno=$complaint_no&status=0')\">Not Sent</a></td>";
+						echo "<td><a id='mail_button' class='btn btn-xs btn-warning' href=\"$url_mail\" onclic=\"return popitup('$url&sno=$complaint_no&status=0')\">Not Sent</a></td>";
 					}
 					else
 					{
@@ -297,7 +299,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 							echo "<td>Not Agreed</td>";
 						}
 						
-						echo "<td><a class='btn btn-sm btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"return popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
+						echo "<td><a class='btn btn-xs btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"return popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
 						
 						if($mail_status == 0)
 						{
@@ -321,7 +323,15 @@ if(isset($_POST['show']) || isset($_GET['show']))
 			}
 		}
 		echo "</table>";
-		echo "</div>";
+		echo "</div></div>";
+	}
+	else
+	{
+		$flag=false;
+	}
+	if(!$flag){
+		echo "<script>sweetAlert('No Data Found','','warning');
+		$('#main_div').hide()</script>";
 	}
 }
 

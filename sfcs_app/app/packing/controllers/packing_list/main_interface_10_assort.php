@@ -122,7 +122,7 @@
 			echo "<input type=\"hidden\" name=\"color\" value=\"$col_des\">";
 			echo "<tr>";
 			echo "<td>".$col_des."</td>
-			  <td><input type=\"text\" readonly name=\"packpcs[]\" size=8 value=\"1\" class=\"form-control\"></td>";
+			  <td><input type=\"text\" name=\"packpcs[]\" size=8 value=\"1\" class=\"form-control\"></td>";
 			$o_total =0;
 			foreach($tot_sizes as $key=>$value)
 			{
@@ -216,24 +216,17 @@ if(isset($_POST['submit']))
 		$packing_method=check_style($sql_row2['packing_method']);
 	}
 
-	if(substr($style,0,1)=="M") // Exception for M&S
+	if(array_sum($packpcs)==$packing_method)
 	{
-		$url = getFullURL($_GET['r'],'packing_list_gen_assort.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }</script>";
+		$url = getFullURL($_GET['r'],'packing_list_gen_assort.php','N');			
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&assortcolor=$assort_color_check&style=$style&schedule=$schedule&packpcs=$packpcs_check\"; }</script>";
 	}
 	else
 	{
-		if(array_sum($packpcs)==$packing_method)
-		{
-			$url = getFullURL($_GET['r'],'packing_list_gen_assort.php','N');			
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&assortcolor=$assort_color_check&style=$style&schedule=$schedule&packpcs=$packpcs_check\"; }</script>";
-		}
-		else
-		{
-			echo '<div class="alert alert-warning" role="alert">Please check packing pcs quantity.</div>';
-			//echo "Please check packing pcs quantity.";
-		}
+		echo '<div class="alert alert-warning" role="alert">Please check packing pcs quantity.</div>';
+		//echo "Please check packing pcs quantity.";
 	}
+	
 
 }
 

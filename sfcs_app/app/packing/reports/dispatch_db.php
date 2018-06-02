@@ -35,9 +35,7 @@ th,td{
 		}
 
 		$row_count = 0;
-		echo "<div class='row'><div class='col-md-10 table-responsive' style='max-height:600px;overflow:auto;'>";
-		echo "<table class='table table-bordered'>";
-		echo "<tr class='info'><th>Dispatch No</th><th>Date</th><th>Party</th><th>Vehicle Details</th><th>Status</th><th>Exit Time</th></tr>";
+		
 		$sql="select * from $bai_pro3.disp_db dd
 			  left join $bai_pro3.party_db pt on dd.party=pt.pid 
 			  where month(dd.create_date)=month(\"$date\") 
@@ -49,6 +47,11 @@ th,td{
 		$pre_count=0;
 		$pri_count=0;
 		$dis_count=0;
+		if($num_sch > 0)
+		{
+		echo "<div class='row'><div class='col-md-10 table-responsive' style='max-height:600px;overflow:auto;'>";
+		echo "<table class='table table-bordered'>";
+		echo "<tr class='info'><th>Dispatch No</th><th>Date</th><th>Party</th><th>Vehicle Details</th><th>Status</th><th>Exit Time</th></tr>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$row_count++;
@@ -102,9 +105,14 @@ th,td{
 					<u>Quick Stats</u><br/>".str_pad($num_sch,3,0,STR_PAD_LEFT)." : Prepared</br>".str_pad($pri_count,3,0,STR_PAD_LEFT)." : Printed<br/>".str_pad($dis_count,3,0,STR_PAD_LEFT)." : Dispatched</div>";
 		}
 		echo "</div>";
+		}
+		else
+		{
+			echo "<script>swal('No Data Found.','','warning');</script>";		
+		}
 		?>
 
-
+	
   </div>
 </div>
 </div>

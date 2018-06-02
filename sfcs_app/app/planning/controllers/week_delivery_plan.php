@@ -214,7 +214,7 @@ if($from_date=="" or $to_date=="")
 		<?php
 			echo "<option value=\"ALL\" selected >ALL</option>";
 			//$sqly="select distinct(buyer_div) from plan_modules";
-			$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
+			$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 			//echo $sqly."<br>";
 			// mysqli_query($link, $sqly) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -569,23 +569,24 @@ mysqli_query($link, $sql) or exit("Sql Error-6".mysqli_error($GLOBALS["___mysqli
 $sql="insert into $bai_pro4.week_delivery_plan_ref_temp select * from bai_pro4.week_delivery_plan_ref $query";
 mysqli_query($link, $sql) or exit("Sql Error-7".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="insert into $bai_pro4.week_delivery_plan_temp select * from week_delivery_plan where ref_id in (select ref_id from bai_pro4.week_delivery_plan_ref_temp $query)";
+$sql="insert into $bai_pro4.week_delivery_plan_temp select * from $bai_pro4.week_delivery_plan where ref_id in (select ref_id from $bai_pro4.week_delivery_plan_ref_temp $query)";
+
 mysqli_query($link, $sql) or exit("Sql Error-8".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="insert into $bai_pro4.shipment_plan_ref_view select * from shipment_plan_ref where ship_tid in (select shipment_plan_id from week_delivery_plan_temp)";
+$sql="insert into $bai_pro4.shipment_plan_ref_view select * from $bai_pro4.shipment_plan_ref where ship_tid in (select shipment_plan_id from $bai_pro4.week_delivery_plan_temp)";
 mysqli_query($link, $sql) or exit("Sql Error-9".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$table_ref3="shipment_plan_ref_view";
+$table_ref3="$bai_pro4.shipment_plan_ref_view";
 
-$table_ref="week_delivery_plan_ref_temp";
-$table_ref2="week_delivery_plan";
+$table_ref="$bai_pro4.week_delivery_plan_ref_temp";
+$table_ref2="$bai_pro4.week_delivery_plan";
 
 
 //TEMP Tables
 
 $x=1;
 //$sql="select * from week_delivery_plan where shipment_plan_id in (select ship_tid from week_delivery_plan_ref $query)";
-$sql="select * from $table_ref2 where ref_id in (select ref_id from bai_pro4.$table_ref $query)";
+$sql="select * from $table_ref2 where ref_id in (select ref_id from $table_ref $query)";
 
 //echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error-10".mysqli_error($GLOBALS["___mysqli_ston"]));

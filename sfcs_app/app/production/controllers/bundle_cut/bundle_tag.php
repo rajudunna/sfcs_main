@@ -1,11 +1,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" src="js/datetimepicker_css.js"></script>
-<link rel="stylesheet" type="text/css" href="js/style.css">
-<link rel="stylesheet" type="text/css" href="table.css">
-<style type="text/css">
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',4,'R')?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',4,'R')?>"></script>
+<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',4,'R')?>">
+<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/table.css',4,'R')?>">
+<!---<style type="text/css">
 #div-1a {
  position:absolute;
  top:65px;
@@ -40,9 +40,10 @@ div.tools{ margin:5px; }
 div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
 .mytable th{ background-color:#29759c; color:#FFF; padding:2px; solid #ccc; white-space: nowrap;}
 td{ padding:2px; white-space: nowrap;}
-</style>
-<script language="javascript" type="text/javascript" src="TableFilter_EN/actb.js"></script><!-- External script -->
-<script language="javascript" type="text/javascript" src="TableFilter_EN/tablefilter.js"></script>
+</style>--->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',4,'R')?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R')?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/filtergrid.css',4,'R')?>"></script>
 
 
 
@@ -114,13 +115,17 @@ if (keycode < '48' || keycode > '57')
 </head>
 
 <body>
-<div id="page_heading"><span style="float: left"><h3>Bundle Split</h3></span><span style="float: right"><b></b>&nbsp;</span></div>
+<div class="panel panel-primary">
+<div class="panel-heading">Bundle Split</div>
+<div class="panel-body">
+<!---<div id="page_heading"><span style="float: left"><h3>Bundle Split</h3></span><span style="float: right"><b></b>&nbsp;</span></div>--->
 <?php 
 $authorized=array('bhargavg'); 
-include($_SERVER['DOCUMENT_ROOT']."/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 $view_access=user_acl("SFCS_0270",$username,1,$group_id_sfcs);
-include("dbconf.php");
+// include("dbconf.php");
 ?>
 
 <?php
@@ -132,23 +137,25 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 ?>
 
-<form name="mini_order_report" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" onsubmit=" return check_val();">
+<form name="mini_order_report" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post" onsubmit=" return check_val();">
 <br>
-<table><tr>
-			<th>Provide the Docket Number:</th><th><input type="text" value="<?php if(isset($_POST['show'])>0){echo $_POST['doc_no'];}?>" name="doc_no" id="doc_no"></th>
-			<th><input type="submit" value="Show" name="show"></th>
-		</tr></table> 
+<div class='col-md-3 col-sm-3 col-xs-12'>
+	Provide the Docket Number:<input type="text" class="form-control" value="<?php if(isset($_POST['show'])>0){echo $_POST['doc_no'];}?>" name="doc_no" id="doc_no">
+</div>
+<div class='col-md-3 col-sm-3 col-xs-12' style='margin-top: 18px;'>
+	<input type="submit" value="Show" class="btn btn-primary" name="show">
+</div>
 <form>
 
 <?php
 if(isset($_POST['show']))
 {
 	$doc_no=$_POST['doc_no'];
-	$status=echo_title("brandix_bts.tbl_miniorder_data","count(*)","docket_number",$doc_no,$link);
-	$print_status=echo_title("brandix_bts.tbl_miniorder_data","count(*)","mini_order_status='1' and docket_number",$doc_no,$link);
+	$status=echo_title("$brandix_bts.tbl_miniorder_data","count(*)","docket_number",$doc_no,$link);
+	$print_status=echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_status='1' and docket_number",$doc_no,$link);
 	//$schedule_code=$_POST['schedule'];
-	$check_club_c = echo_title("bai_pro3.plandoc_stat_log","org_doc_no","doc_no",$doc_no,$link);
-	$check_club_p = echo_title("bai_pro3.plandoc_stat_log","count(*)","org_doc_no",$doc_no,$link);
+	$check_club_c = echo_title("$bai_pro3.plandoc_stat_log","org_doc_no","doc_no",$doc_no,$link);
+	$check_club_p = echo_title("$bai_pro3.plandoc_stat_log","count(*)","org_doc_no",$doc_no,$link);
 	//$sch_check="J".$schedule;
 	//$check_club = echo_title("bai_pro3.bai_orders_db_confirm","count(*)","order_joins",$sch_check,$link);
 	if($check_club_c==0 && $check_club_p==0)
@@ -157,29 +164,29 @@ if(isset($_POST['show']))
 		{
 			if($print_status == 0)
 			{
-				$sql="select * from brandix_bts.bundle_transactions_20_repeat where bundle_id in (select bundle_number from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."')";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$rows=mysqli_num_rows($sql_result);	
+				$sql="select * from $brandix_bts.bundle_transactions_20_repeat where bundle_id in (select bundle_number from $brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."')";
+				$sql_result=mysql_query($sql,$link) or exit("Sql Error--1".mysql_error());
+				$rows=mysql_num_rows($sql_result);	
 				if($rows>0)
 				{
-					echo "<h2>Already scanning started.. You can't split the bundle size...!</h2>";
+					echo "<script>swal('Already scanning started','You cant split the bundle size','warning');</script>";
 				}
 				else
 				{
 					?>
 					<form  action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" >
 					<?php
-					echo "<table border=1px><tr><th> Docket Number </th> <th>Cut Number</th><th>Bundle Quantity</th><th>Split Values</th><th>Shade Values</th><th>Control</th></tr>";
-					$sql="select * from brandix_bts.tbl_cut_master where doc_num='".$doc_no."'";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($row2=mysqli_fetch_array($sql_result))
+					echo "<table class='table table-bordered'><tr><th> Docket Number </th> <th>Cut Number</th><th>Bundle Quantity</th><th>Split Values</th><th>Shade Values</th><th>Control</th></tr>";
+					$sql="select * from $brandix_bts.tbl_cut_master where doc_num='".$doc_no."'";
+					$sql_result=mysql_query($sql,$link) or exit("Sql Error--1".mysql_error());
+					while($row2=mysql_fetch_array($sql_result))
 					{
 						echo "<tr><td>".$doc_no."</td><td>".$row2['cut_num']."</td>";
 						echo "<td>".$row2['planned_plies']."</td>";
 						echo "<td> * Seperate with comma (,) <input type='text' value='' name='split_qty'><input type='hidden' value=\"$doc_no\" name='doc_no'></td>";
 						echo "<td> * Seperate with comma (,) <input type='text' value='' name='split_shade'></td>";
 						echo "<td>";
-						echo "<input type=\"submit\" value=\"Split\" name=\"split\" id=\"generate\" onclick=\"document.getElementById('generate').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
+						echo "<input type=\"submit\" value=\"Split\" class=\"btn btn-primary\" name=\"split\" id=\"generate\" onclick=\"document.getElementById('generate').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
 						echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait..Mini orders Generating.<h5></span></td>";
 						
 						echo "</tr>";
@@ -193,17 +200,17 @@ if(isset($_POST['show']))
 			}
 			else
 			{
-				echo "<h2>Bundle tickets already printed ...!</h2>";
+				echo "<script>swal('Bundle tickets already printed','','warning'); </script>";
 			}
 		}
 		else
 		{
-			echo "<h2>Mini order not created...!</h2>";
+			echo "<script>swal('Mini order not created','','warning'); </script>";
 		}
 	}
 	else
 	{
-		echo "<h2>Clubbed docket not eligible to split..!</h2>";
+		echo "<script>swal('Clubbed docket not eligible to split','','warning');</script>";
 	}
 }
 if(isset($_POST['split']))
@@ -211,26 +218,26 @@ if(isset($_POST['split']))
 	$doc_no=$_POST['doc_no'];
 	$split_qty=$_POST['split_qty'];
 	$shades = $_POST['split_shade'];
-	$pre_rand=echo_title("brandix_bts.tbl_miniorder_data","group_concat(distinct split_status)","docket_number",$doc_no,$link);
+	$pre_rand=echo_title("$brandix_bts.tbl_miniorder_data","group_concat(distinct split_status)","docket_number",$doc_no,$link);
 	//echo $pre_rand."<br>.";
 	$rand_no=rand(10,100).date('h').date('i').date('s');
 	//echo $doc_no."--".$split_qty."<br>";
 	$split_val=explode(",",$split_qty);
 	$shade_val=explode(",",$shades);
 	//echo sizeof($split_val)."<br>";
-	$bundle_size=echo_title("brandix_bts.tbl_cut_master","planned_plies","doc_num",$doc_no,$link);
+	$bundle_size=echo_title("$brandix_bts.tbl_cut_master","planned_plies","doc_num",$doc_no,$link);
 	//echo array_sum($split_val)."==".$bundle_size."<br>";
 	if(array_sum($split_val)==$bundle_size && sizeof($split_val)==sizeof($shade_val))
 	{
 		
-		$insertMiniOrderdataLog="INSERT INTO tbl_miniorder_data_qty_split_log(user_name,quantity,docket_number,shade) VALUES ('".$username."','".$split_qty."','".$doc_no."','".$shades."')";
-		$result4 = mysqli_query($link, $insertMiniOrderdataLog) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$insertMiniOrderdataLog="INSERT INTO $brandix_bts.tbl_miniorder_data_qty_split_log(user_name,quantity,docket_number,shade) VALUES ('".$username."','".$split_qty."','".$doc_no."','".$shades."')";
+		$result4 = mysql_query($insertMiniOrderdataLog,$link) or ("Sql error".mysql_error());
 		
-		$cut_num=echo_title("brandix_bts.tbl_miniorder_data","cut_num","docket_number",$doc_no,$link);
-		$mini_order_ref=echo_title("brandix_bts.tbl_miniorder_data","mini_order_ref","docket_number",$doc_no,$link);
-		$min_order_num=echo_title("brandix_bts.tbl_miniorder_data","mini_order_num","docket_number",$doc_no,$link);
-		$parent_id=echo_title("brandix_bts.tbl_cut_master","id","doc_num",$doc_no,$link);
-		$bundle_number=echo_title("brandix_bts.tbl_miniorder_data","max(bundle_number)+1","1",1,$link);
+		$cut_num=echo_title("$brandix_bts.tbl_miniorder_data","cut_num","docket_number",$doc_no,$link);
+		$mini_order_ref=echo_title("$brandix_bts.tbl_miniorder_data","mini_order_ref","docket_number",$doc_no,$link);
+		$min_order_num=echo_title("$brandix_bts.tbl_miniorder_data","mini_order_num","docket_number",$doc_no,$link);
+		$parent_id=echo_title("$brandix_bts.tbl_cut_master","id","doc_num",$doc_no,$link);
+		$bundle_number=echo_title("$brandix_bts.tbl_miniorder_data","max(bundle_number)+1","1",1,$link);
 		if($bundle_number>0)
 		{
 			$bundle_number=$bundle_number;
@@ -242,10 +249,10 @@ if(isset($_POST['split']))
 		
 		$date_time=date('Y-m-d h:i:s'); 
 		//$date_time=date("Y-m-d h:i:s");
-		$sql="select * from brandix_bts.tbl_cut_size_master where parent_id='".$parent_id."'";
+		$sql="select * from $brandix_bts.tbl_cut_size_master where parent_id='".$parent_id."'";
 		//secho $sql."<br>";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($row2=mysqli_fetch_array($sql_result))
+		$sql_result=mysql_query($sql,$link) or exit("Sql Error--1".mysql_error());
+		while($row2=mysql_fetch_array($sql_result))
 		{
 			//echo $row2['ref_size_name']."--".$row2['quantity']."<br>";
 			for($i=0;$i<$row2['quantity'];$i++)
@@ -255,39 +262,42 @@ if(isset($_POST['split']))
 					//echo $split_val[$j]."<br>";
 					if($split_val[$j]>0)
 					{
-						$insertMiniOrderdata="INSERT INTO tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority,split_status,split_shade) VALUES ('".$date_time."','".$mini_order_ref."','".$min_order_num."','".$cut_num."','".$row2['color']."','".$row2['ref_size_name']."','".$bundle_number."','".$split_val[$j]."','".$doc_no."','".$min_order_num."','".$rand_no."','".$shade_val[$j]."')";
+						$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority,split_status,split_shade) VALUES ('".$date_time."','".$mini_order_ref."','".$min_order_num."','".$cut_num."','".$row2['color']."','".$row2['ref_size_name']."','".$bundle_number."','".$split_val[$j]."','".$doc_no."','".$min_order_num."','".$rand_no."','".$shade_val[$j]."')";
 						//echo $insertMiniOrderdata."<bR>";
-						$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$result3=mysql_query($insertMiniOrderdata,$link) or ("Sql error".mysql_error());
 						$bundle_number++;
 					}
 				}
 			}
 		}
-		$sql="delete from brandix_bts_uat.view_set_1_snap where bundle_transactions_20_repeat_bundle_id in (select bundle_number from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand.")))";
-		$result3=mysqli_query($link, $sql) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="delete from $brandix_bts_uat.view_set_1_snap where bundle_transactions_20_repeat_bundle_id in (select bundle_number from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand.")))";
+		$result3=mysql_query($sql,$link) or ("Sql error".mysql_error());
 		//echo $sql."<bR>";
-		$sql="delete from brandix_bts_uat.view_set_snap_1_tbl where tbl_miniorder_data_bundle_number in (select bundle_number from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand."))";
-		$result3=mysqli_query($link, $sql) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="delete from $brandix_bts_uat.view_set_snap_1_tbl where tbl_miniorder_data_bundle_number in (select bundle_number from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand."))";
+		$result3=mysql_query($sql,$link) or ("Sql error".mysql_error());
 		//echo $sql."<bR>";
-		$sql="delete from brandix_bts_uat.view_set_3_snap where tbl_miniorder_data_bundle_number in (select bundle_number from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand."))";
-		$result3=mysqli_query($link, $sql) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="delete from $brandix_bts_uat.view_set_3_snap where tbl_miniorder_data_bundle_number in (select bundle_number from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand."))";
+		$result3=mysql_query($sql,$link) or ("Sql error".mysql_error());
 		//echo $sql."<bR>";
-		$sql="delete from brandix_bts_uat.bundle_transactions_20_repeat_virtual_snap_ini_bundles where bundle_id in (select bundle_number from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand."))";
-		$result3=mysqli_query($GLOBALS["___mysqli_ston"], $sql) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="delete from $brandix_bts_uat.bundle_transactions_20_repeat_virtual_snap_ini_bundles where bundle_id in (select bundle_number from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand."))";
+		$result3=mysql_query($sql) or ("Sql error".mysql_error());
 		//echo $sql."<bR>";
-		$sql="delete from brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand.")";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="delete from $brandix_bts.tbl_miniorder_data where docket_number='".$doc_no."' and split_status in (".$pre_rand.")";
+		$sql_result=mysql_query($sql,$link) or exit("Sql Error--1".mysql_error());
 		echo "<h2>Bundle Splitting has been completed.</h2>";
 		//header("Location:bundle_tag.php");
 	}
 	else
 	{
-		echo "<h2>Mentioned Split quantity is not equal to the Actual Bundle Quantity..!</h2>";
+		echo "<script>swal('Mentioned Split quantity is not equal to the Actual Bundle Quantity','','warning');</script>";
 	}	
 
 }
-?>		
-<style>
+?>	
+</div>
+</div>
+</body>	
+<!---<style>
 
 #table1 {
   display: inline-table;
@@ -302,4 +312,4 @@ div#table_div {
 margin-left:8%;
 margin-bottom:2%;
 }
-</style>
+</style>--->

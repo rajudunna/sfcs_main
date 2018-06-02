@@ -75,11 +75,10 @@ for (var i = 0; i < document.input2.lot_no.value.length; i++) {
 </script>
 
 
-
-<link href="<?= getFullURLLevel($_GET['r'],'common/css/style2.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
+<!--
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/style2.css',3,'R'); ?>" rel="stylesheet" type="text/css" />-->
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check2.js',1,'R'); ?>"></script>
-<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_style.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
-
+<!--<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_style.css',3,'R'); ?>" rel="stylesheet" type="text/css" /> -->
 <br/>
 
 <div class="panel panel-primary">
@@ -88,8 +87,8 @@ for (var i = 0; i < document.input2.lot_no.value.length; i++) {
 
 <form method="post" name="input" enctype="multipart/form-data" action="index.php?r=<?= $_GET['r']; ?>" >
 	<table class="table table-bordered">
-		<tr><td style="background-color: #EEE;">User Define Style</td><td style="background-color: #EEE;">:</td><td style="background-color: #EEE;"> <?php echo $style_id; ?></td></tr>
-		<tr><td style="background-color: #EEE;">Module Count</td><td style="background-color: #EEE;">:</td><td style="background-color: #EEE;"><input type="number" onkeyup='verify(event)' style="border:1px solid #999999;" id='mod_count' name="mod_count" size="8" value="<?php echo $mod_count; ?>"></td></tr>
+		<tr><td style="background-color: #EEE;"><b>User Define Style</b></td><td style="background-color: #EEE;">:</td><td style="background-color: #EEE;"> <?php echo $style_id; ?></td></tr>
+		<tr><td style="background-color: #EEE;"><b>Module Count</b></td><td style="background-color: #EEE;">:</td><td style="background-color: #EEE;"><input type="text" class="integer" onkeyup='verify(event)' style="border:1px solid #999999;" id='mod_count' name="mod_count" size="8" value="<?php echo $mod_count; ?>"></td></tr>
 		<tr><td style="background-color: #EEE;"><input type="checkbox" name="option"  id="option" onclick="enableButton();">Enable</td><td style="background-color: #EEE;"></td><td style="background-color: #EEE;">
 		<input type = "Submit" class="btn btn-success" Name = "update" id ="update" onclick ="return check_mod()"  VALUE = "Update" disabled></td></tr>
 		<input type="hidden" name="style_id" value="<?php echo $style_id; ?>">

@@ -1,0 +1,50 @@
+
+<style>
+  p{
+    color:black;
+  }
+  table{
+    color:black;
+    text-align:center;
+  }
+  th {
+    background-color: #003366;
+    color:white;
+  }
+</style>
+
+<div class='panel panel-primary'>
+    <div class='panel-heading'>EXTRA SHIPMENT ACHIEVEMENT</div>
+    <div class='panel-body'>
+      <p>Actual Achievement % = (((Cut Quantity / Customer Order Quantity)*100)-100) - Loss%.</p>
+      <p>Production Loss % = (Input Quantity - Output Quantity)/Input Quantity * 100.</p>
+      <p>Target Achievement % = (Customer Order Quantity / Committed Ship Qty) * 100.</p>
+      <p>Extra Shipment Achievement Completed Schedules Count = Actual Achievement % &gt; Target Achievement %</p>
+      <p>Extra Shipment Achievement Color Indication=Actual Achievement % / Target Achievement %.</p>
+      <br/>
+      <div class='col-md-5'>
+        <table class='table table-bordered'>
+          <tr>
+            <th>EXTRA SHIPMENT ACHIEVEMENT</th>
+            <th>COLOR INDICATION</th>
+          </tr> 
+          <tr>
+            <td>0% - 25%</td>
+            <td style='background-color:red;'>RED</td>
+          </tr>
+          <tr>
+            <td>26% - 60%</td>
+            <td style='background-color:orange;'>ORANGE</td>
+          </tr>
+          <tr>
+            <td>61% - 85%</td>
+            <td style='background-color:yellow;'>YELLOW</td>
+          </tr>  
+          <tr>
+            <td>ABOVE > 85%</td>
+            <td style='background-color:green;'>GREEN</td>
+          </tr>  
+        </table>
+      </div>
+ </div>
+ </div> 

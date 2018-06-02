@@ -1,6 +1,7 @@
 <?php 
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include("../".getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R'));
+$Page_Id='SFCS_0053';
 ?>
 <script>
 
@@ -68,8 +69,15 @@ function enableButton()
 {
 	var txtrejtot=document.getElementById('txtrejtot').value;
 	var txtlenshrtqty=document.getElementById("txtlenshrtqty").value;
-
-	if(txtrejtot >= 0)
+	var txtrejtot1=document.getElementById("txtrejtot1").value;
+	
+	if(Number(txtrejtot) > Number(txtrejtot1))
+	{
+			sweetAlert('Rejected Total Cannot Enter More Than Actual Rejected Total ','','warning');
+			document.getElementById('txtrejtot').value = txtrejtot1; 
+			return false;
+	}
+	else if(txtrejtot > 0)
 	{
 		    var x = document.getElementsByName("txtindrejqty[]");
 			
@@ -272,6 +280,7 @@ if(isset($_POST['show']))
 			
 			$rejqty=0;
 			$sql4="select SUM(qty_rec) AS recv_qty,SUM(partial_appr_qty) AS rejqty,roll_status as sts from $bai_rm_pj1.store_in where roll_status in ('1','2') and lot_no in ('".$lot_no_ref."') group by tid";	
+			// echo $sql4;
 			$result4=mysqli_query($link, $sql4) or die("Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row4=mysqli_fetch_array($result4))
 			{
@@ -383,7 +392,7 @@ if(isset($_POST['show']))
 			echo "<tr>";
 			echo "<th class=\"style2\">Sample Inspected Qty</th><td><input type=\"text\" class=\"form-control float\"  size=10 name=\"txtinspqty\" value=\"0\" /></td>";
 			echo "<th class=\"style2\">Rejected Total</th>";
-			echo "<td><input type=\"text\" class=\"form-control float\"  size=10 name=\"txtrejtot\" id=\"txtrejtot\"  value=\"".(round($rejqty,2)-$reject_roll_qty_sum)."\" />";
+			echo "<td><input type=\"text\" class=\"form-control float\"  size=10 name=\"txtrejtot\" id=\"txtrejtot\"  value=\"".(round($rejqty,2)-$reject_roll_qty_sum)."\" /><input type=\"hidden\" class=\"form-control float\"  size=10 name=\"txtrejtot1\" id=\"txtrejtot1\"  value=\"".(round($rejqty,2)-$reject_roll_qty_sum)."\" />";
 			echo "</td>";
 			echo "<th>Replacement Qty</th>";
 			echo "<td><input type=\"text\" class=\"form-control float\"  size=10  name=\"txtlenshrtqty\" id=\"txtlenshrtqty\" readOnly=\"true\" value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /></td>";

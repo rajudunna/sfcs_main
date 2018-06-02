@@ -5,7 +5,7 @@
 function pop(url1)
 {
 //window.close();
-var url = 'http://localhost/sfcs_app/app/quality/controllers/pending.php';
+var url = 'http://192.168.0.110:8084/sfcs_app/app/quality/controllers/pending.php';
 console.log(url);
 window.open(url,'PopupName','toolbar=no,statusbar=yes,menubar=yes,location=no,scrollbars=yes,resizable=yes,width=775,height=700');
 }

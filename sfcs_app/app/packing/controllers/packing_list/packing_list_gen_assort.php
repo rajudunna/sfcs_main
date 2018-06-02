@@ -7100,9 +7100,9 @@ $ex_s50=($c_s50-$o_s50);
  }
  }
 
- 	$sql="update $bai_pro3.bai_orders_db set carton_id=$carton_id where order_tid=\"$order_tid\"";
+ 	$sql="update $bai_pro3.bai_orders_db set carton_id='$carton_id' where order_tid=\"$order_tid\"";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql="update $bai_pro3.bai_orders_db_confirm set carton_id=$carton_id where order_tid=\"$order_tid\"";
+	$sql="update $bai_pro3.bai_orders_db_confirm set carton_id='$carton_id' where order_tid=\"$order_tid\"";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 }

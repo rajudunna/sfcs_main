@@ -67,7 +67,7 @@ hza.style.display = state;
 </script>  
 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" />   -->
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/header_scripts.php',4,'R'));  ?>
+<?php include("../".getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>	
 
 
@@ -1671,25 +1671,25 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$check_new1=1;
 	}
 	
-	//echo $cuttable_qty_new."-".$order_qty_new."<br/>";
+//	echo $cuttable_qty_new."-".$order_qty_new."<br/>";
 	
 	if($allocation_qty_new>=$order_qty_new) // changed on 2010-12-02 on dumindu request
 	{
 		$check_new2=1;
 	}
 	
-	//echo $mk_count."-".$ratio_sum_new."<br/>";
+//	echo $allocation_qty_new."-".$order_qty_new."<br/>";
 	if($mk_count>=$ratio_sum_new && $mk_count!=0)
 	{
 		$check_new3=1;
 	}
 		
-	//echo $doc_sum."-".$order_qty_new."<br/>";
+	//echo $mk_count."-".$ratio_sum_new."<br/>";
 	if(($doc_sum>=$order_qty_new)) // changed on 2010-12-02 on dumindu request
 	{
 		$check_new4=1;
 	}		
-	
+	//echo $doc_sum."-".$order_qty_new;
 	
 	echo "<tr class=\"  \">";
 	echo "<td class=\"  \"><center>".$category_new."</center></td>";
@@ -1714,14 +1714,24 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+
+		$path= getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	}
 	
 		//echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-warning\" href=\"$path\" onclick=\"return popitup("."'".$path."'".")\">Print Cut Plan</a>";} else {echo $wrong_icon;} "</center></td>";
 
-	echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-info\" href=\"$path\" onclick=\"return popitup("."'".$path."'".")\">View Cut Plan</a>";} else {echo $wrong_icon;} "</center></td>";
+	echo "<td class=\"  \"><center>";
+	if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){
+		echo "<a class=\"btn btn-xs btn-info\" href=\"$path\" onclick=\"return popitup("."'".$path."'".")\">View Cut Plan</a>";
+	} 
+	else{
+		echo $wrong_icon;
+	} 
+	echo "</center></td>";
 	if((in_array(strtolower($username),$authorized2)) && $facility=='AIP')
 	{
-	echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-info\" href=\"$path1\" onclick=\"return popitup("."'".$path1."'".")\">View Fabric Cut Plan</a>";} else {echo $wrong_icon;} "</center></td>";
+	echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-info\" href=\"$path1\" onclick=\"return popitup("."'".$path1."'".")\">View Fabric Cut Plan</a>";} else {echo $wrong_icon;} echo "</center></td>";
 	}
 	//$red_url = getFullURL($_GET['r'], "doc_view_form.php","N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new";
 	//$pop_url = getFullURL($_GET['r'],"doc_view_form.php","R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new";

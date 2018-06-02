@@ -25,24 +25,25 @@ Changes Log:
 <?php 
 include('../'.getFullURLLevel($_GET['r'],'/common/config/config.php',4,'R'));
 //echo getFullURLLevel($_GET['r'],'/common/config/config.php',4,'R');
-include("../".getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
+// include("../".getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
 
 <?php 
 error_reporting(E_ALL ^ E_NOTICE);
 ?>
 
 <?php 
-if(!isset($_SESSION)) { session_start(); }
+// if(!isset($_SESSION)) { session_start(); }
 
 if(!isset($_POST['upload'])) { 
-echo ' <form name="upload" enctype="multipart/form-data" method="POST" action="index.php?r='.$_GET['r'].'"> 
+echo ' <form name="upload" enctype="multipart/form-data" method="POST" action="index.php?r='.$_GET['r'].'" accept=".txt"> 
 <div class="panel panel-primary" style="height:150px;">
 	<div class="panel-heading">Data Upload</div>
 	<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-3" style="padding-left: 35px;">
 					<br/>
-					<label>Choose File Location:</label> <input type="file" class="form-control-file" name="file" size="25" value="" required></input>
+					<label>Choose File Location:(.txt file)</label> 
+					<input type="file" class="form-control-file" accept=".txt" name="file" size="25" value="" required></input>
 				</div>
 				<div class="col-sm-3">
 					<br/><br/>
@@ -76,7 +77,8 @@ echo ' <form name="update" method="POST" action="'.getFullURL($_GET["r"],"dbupda
 		<div class="panel-body">
 			<dv class="row">
 				<div class="col-sm-3" style="padding-left: 35px;">
-					<label><strong>File ID:</strong></label> <input type="text" class="form-control" name="id" size="25" value='.$filename.'>
+					<label><strong>File ID:</strong></label> 
+					<input type="text" class="form-control" name="id" size="25" value='.$filename.'>
 				</div>
 				<div class="col-sm-3">
 					<br/>

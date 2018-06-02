@@ -22,12 +22,13 @@ div.day-number    { background:#ffffff; padding:1px; color:#000000; font-weight:
 /* shared */
 td.calendar-day, td.calendar-day-np { width:5px; padding:5px; border-bottom:1px solid #999; border-right:1px solid #999; }
 </style>
-<?php echo '<link href="'.getFullURLLevel($_GET['r'],'common/sfcs_style.css',3,'R').'" rel="stylesheet" type="text/css" />'; ?>	
+<?php echo '<link href="'.getFullURLLevel($_GET['r'],'common/sfcs_style.css',2,'R').'" rel="stylesheet" type="text/css" />'; ?>	
 </head>
 <body>
 <?php 
 set_time_limit(6000000);
-include '..'.getFullURL($_GET['r'],"data.php",'R'); 
+include ($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],"dashboards/controllers/PLD_Dashboard/sah_monthly_status/data.php",2,'R')); 
+
 // include('data.php');
 include '..'.getFullURL($_GET['r'],"header.php",'R');
 // include('header.php');
@@ -45,7 +46,7 @@ include '..'.getFullURL($_GET['r'],"header.php",'R');
   $year=date("Y");
 
   // include '..'.getFullURL($_GET['r'],"data.php",'R');
-  include('data.php');
+  
   /* draw table */
   $calendar = '<table  cellpadding="0" cellspacing="0" class="calendar">';
 
@@ -75,7 +76,6 @@ include '..'.getFullURL($_GET['r'],"header.php",'R');
 	// $days_count=str_pad($list_day,2,'0',STR_PAD_LEFT);
 	// $day_checks=date("Y-m")."-".$days_count;
 	// echo $day_checks."</br>";
-	// var_dump($date1)."</br>";
 	if(in_array($list_day,$date1))
 	{	
 		$status="checked=yes";
@@ -84,7 +84,7 @@ include '..'.getFullURL($_GET['r'],"header.php",'R');
 	{
 		$status="";
 	}
-
+	
     $calendar.= '<td class="calendar-day">';
       /* add in the day number */
       $calendar.= '<div class="day-number"><input type="checkbox" '.$status.' name="'.$list_day.'" value="'.$list_day.'" />'.$list_day.'</div>';

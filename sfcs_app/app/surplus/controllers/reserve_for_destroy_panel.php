@@ -3,14 +3,14 @@
 	include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-	
+	$Page_Id = 'SFCS_0404';
 	// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	// $username=strtolower($username_list[1]);
 	// $view_access=user_acl("SFCS_0176",$username,1,$group_id_sfcs);
 
 ?>
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R'); ?>"></script>
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R'); ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 
 <style>
 
@@ -335,7 +335,6 @@ if(isset($_POST['schsbt']))
 	}
 
 	$sql1="select * from $bai_pro3.bai_qms_location_db where location_type=0 and qms_location_id like 'INT%'and active_status=0 and qms_cur_qty<qms_location_cap order by qms_location_id,qms_cur_qty desc,order_by desc";
-	// echo "<br><br>".$sql;
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{	
@@ -410,7 +409,6 @@ if(isset($_POST['schsbt']))
 				$table.="<td>".$sql_row['qms_size']."</td>";
 				
 				$table.="<td>".($sql_row['qms_qty']-$resr_qty)."<input type='hidden' name='qty[$x]' id='qty[$x]'  value='".($sql_row['qms_qty']-$resr_qty)."' onchange='if(this.value<0 || this.value>".($sql_row['qms_qty']-$resr_qty).") { this.value=0; sweetAlert('Please enter correct value','','warning'); }'></td>";
-				
 				$table.="<td bgcolor='FF7777'><input type='text' class='float' size='10' name='int_dest_qty[$x]' id='int_dest_qty[$x]' 
 						  value='0' 
 						   onkeyup='if(this.value<0 || this.value>".($sql_row['qms_qty']-$resr_qty).") { this.value=0; sweetAlert('Please enter correct value','','warning');  }'></td>";
@@ -420,7 +418,6 @@ if(isset($_POST['schsbt']))
 					$table.="<option value='".$location_id1[$i]."'>".$location_title1[$i]."</option>";
 				}
 				$table.="</select></td>";
-				
 				$title="";
 				switch($sql_row['qms_tran_type'])
 				{
@@ -484,11 +481,11 @@ if(isset($_POST['schsbt']))
 			else
 			{
 				$sql2="UPDATE $bai_pro3.bai_qms_db SET location_id='RESRV4DES' WHERE qms_tid='".$sql_row['qms_tid']."'";
-				echo "<br>22.".$sql2."<br>";
+				// echo "<br>22.".$sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$sql2="UPDATE $bai_pro3.bai_qms_location_db SET qms_cur_qty=qms_cur_qty+".$resr_qty." WHERE qms_location_id='".$sql_row['location_id']."'";
-				echo "<br>23.".$sql2."<br>";
+				// echo "<br>23.".$sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}else{
@@ -542,7 +539,6 @@ if(isset($_POST['schsbt']))
 <script language="javascript" type="text/javascript">
 //<![CDATA[
 	var fnsFilters = {
-	
 	rows_counter: false,
 	sort_select: true,
 	btn_reset: true,
@@ -562,10 +558,6 @@ if(isset($_POST['schsbt']))
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
 	});
 	//]]>
-	
-
-
-
 </script>
 
 </body>

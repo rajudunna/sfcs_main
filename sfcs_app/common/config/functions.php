@@ -53,7 +53,7 @@ function leading_zeros($value, $places)
 	return $output;
 }
 
-function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link11)
+function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link)
 {
 	include('config.php');
 	$ims = substr($ims_size2,1);
@@ -69,16 +69,20 @@ function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$li
 		{
 			$sql23="select title_size_$ims_size2 as size_val,title_flag from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
 		}
-		$sql_result=mysqli_query($link11, $sql23) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//echo $sql23."<br>";
+		$sql_result=mysqli_query($link, $sql23) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 				$size_val=$sql_row['size_val'];
 				$flag = $sql_row['title_flag'];
 	    }
 			
-		if($flag==1){
+		if($flag==1)
+		{	
 			return $size_val;
-		}else{
+		}
+		else
+		{
 			return $ims_size2;
 		}		
 	}
@@ -142,5 +146,95 @@ function stat_check2($x_stat)
 		return "<font color=GREEN>CONFIRM</font>";
 	}
 }
-?>
+function div_by_zero($arg)
+{
+	$arg1=1;
+	if($arg==0 or $arg=='0' or $arg=='')
+	{
+		$arg1=1;
+	}
+	else
+	{
+		$arg1=$arg;
+	}
+	return $arg1;
+}
 
+
+function partial_cut_color($doc_no,$link)
+{
+	
+	// start for partial Cutting 
+	$sql12="select p_plies,a_plies from bai_pro3.plandoc_stat_log where doc_no in('$doc_no')";
+	$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".$sql12.mysqli_error($GLOBALS["___mysqli_ston"]));
+	$input_count=mysqli_num_rows($sql_result12);
+	while($sql_row11=mysqli_fetch_array($sql_result12))
+	{
+		$p_plies=$sql_row11['p_plies'];
+		$a_plies=$sql_row11['a_plies'];
+	}
+	//echo "<br/>actual plies= ".$p_plies;
+	//echo "cutting Plies=".$a_plies;
+	
+	$avil_plies= $p_plies - $a_plies;
+	// echo "availabale plies =".$avil_plies; 
+	if($avil_plies > 0)
+	{
+		$id="orange";
+	} 
+		
+	// for input qty	
+		
+	$sql2="SELECT (p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty FROM plandoc_stat_log WHERE doc_no=$doc_no";	
+	$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row2=mysqli_fetch_array($result2))
+	{
+		$cutting_total=$row2["qty"];
+	}
+
+	if($cutting_total>0 )
+	{
+		
+		//KIRANG added ims_mod_no>=0
+		$sql13="select sum(ims_qty)as sum_ims_qty from bai_pro3.ims_log where ims_doc_no in('$doc_no') and ims_mod_no>0";
+		$sql_result13=mysqli_query($link, $sql13) or exit("Sql Error".$sql13.mysqli_error($GLOBALS["___mysqli_ston"]));
+		$input_count=mysqli_num_rows($sql_result13);
+		while($sql_row13=mysqli_fetch_array($sql_result13))
+		{
+			$ims_qty=$sql_row13['sum_ims_qty'];
+		}
+		
+		$sql14="select sum(ims_qty)as sum_ims_bac_qty from bai_pro3.ims_log_backup where ims_doc_no in('$doc_no') and ims_mod_no>0";
+		$sql_result14=mysqli_query($link, $sql14) or exit("Sql Error".$sql13.mysqli_error($GLOBALS["___mysqli_ston"]));
+		$input_count=mysqli_num_rows($sql_result14);
+		while($sql_row14=mysqli_fetch_array($sql_result14))
+		{
+			$ims_bac_qty=$sql_row14['sum_ims_bac_qty'];
+		}
+		
+		$total_input_qty=$ims_qty+$ims_bac_qty;
+		
+		if( ($cutting_total - $total_input_qty > 0 ) && $total_input_qty>0 )
+		{
+			$id="orange";
+		}
+	}		
+	return $id;	
+			
+	// close for partial cutting
+}
+
+
+echo "<script language=\"javascript\" type=\"text/javascript\">
+        function popitup(url) {
+            newwindow=window.open(url,"."'"."name"."'".",'"."scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0"."'".");
+            if (window.focus) {newwindow.focus()}
+            return false;
+        }
+        function popitup2(url) {
+            newwindow=window.open(url,"."'"."name"."'".",'"."scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0"."'".");
+            if (window.focus) {newwindow.focus()}
+            return false;
+        }
+    </script>";
+?>

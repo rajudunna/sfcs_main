@@ -2,13 +2,15 @@
 	include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+	$Page_Id = 'SFCS_0402';
 	// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	// $username=strtolower($username_list[1]);
 	// $view_access=user_acl("SFCS_0175",$username,1,$group_id_sfcs);
 ?>
 
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R'); ?>"></script>
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R'); ?>"></script>
+<?php echo '<link href="'.getFullURLLevel($_GET['r'],'/common/css/sfcs_styles.css',3,'R').'" rel="stylesheet" type="text/css" />'; ?>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 
 
 <script>
@@ -184,12 +186,11 @@ echo '</div>';
 <script language="javascript" type="text/javascript">
 	$('#reset_table1').addClass('btn btn-warning');
 	var fnsFilters = {
-	
-	rows_counter: true,
-	sort_select: true,
-	btn_reset: true,
-	alternate_rows: true,
-	btn_reset_text: "Clear",
+		rows_counter: true,
+		sort_select: true,
+		btn_reset: true,
+		alternate_rows: true,
+		btn_reset_text: "Clear",
 	col_operation: { 
 						id: ["table1Tot1"],
 						col: [6],  

@@ -219,8 +219,8 @@ table{
 
 }
 </style>
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'TableFilter_EN/tablefilter.js','R')?>"></script>
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'TableFilter_EN/filtergrid.css','R')?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'common/css/TableFilter_EN/filtergrid.css',3,'R')?>"></script>
 <script>
 function dodisablenew()
 {
@@ -263,7 +263,7 @@ jQuery(document).ready(function()
 <div class="panel-body">
 <?php
 	// include("../dbconf3.php");
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf3.php',1,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 ?>
 
 <?php
@@ -289,7 +289,7 @@ $pending=$_POST['pending'];
 <label>Buyer Division: </label><select name="division" class="select2_single form-control">
 <option value='All' <?php if($division=="All"){ echo "selected"; } ?> >All</option>
 <?php 
-$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
+$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 // echo $sqly."<br>";
 
 mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -386,7 +386,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		 $order_div_ref='';
 	}	
 	
-	$sql_res="select * from weekly_cap_reasons where category=1";
+	$sql_res="select * from $bai_pro4.weekly_cap_reasons where category=1";
 	// echo $sql_res."<br>";
 	$sql_result_res=mysqli_query($link, $sql_res) or exit("Sql Error".$sql_res."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_res=mysqli_fetch_array($sql_result_res))
@@ -439,27 +439,27 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 	//TEMP Tables
 
-	$sql="Truncate week_delivery_plan_ref_temp";
+	$sql="Truncate $bai_pro4.week_delivery_plan_ref_temp";
 	// echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="Truncate week_delivery_plan_temp";
+	$sql="Truncate $bai_pro4.week_delivery_plan_temp";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="Truncate shipment_plan_ref_view";
+	$sql="Truncate $bai_pro4.shipment_plan_ref_view";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into week_delivery_plan_ref_temp select * from bai_pro4.week_delivery_plan_ref $query";
+	$sql="insert into $bai_pro4.week_delivery_plan_ref_temp select * from bai_pro4.week_delivery_plan_ref $query";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into week_delivery_plan_temp select * from week_delivery_plan where ref_id in (select ref_id from bai_pro4.week_delivery_plan_ref_temp $query)";
+	$sql="insert into $bai_pro4.week_delivery_plan_temp select * from week_delivery_plan where ref_id in (select ref_id from $bai_pro4.week_delivery_plan_ref_temp $query)";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into shipment_plan_ref_view select * from shipment_plan_ref where ship_tid in (select shipment_plan_id from week_delivery_plan_temp)";
+	$sql="insert into $bai_pro4.shipment_plan_ref_view select * from shipment_plan_ref where ship_tid in (select shipment_plan_id from week_delivery_plan_temp)";
 	mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$table_ref3="shipment_plan_ref_view";
@@ -698,7 +698,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			
 			
 			//Start Need to capture plan and actual modules based on schedule number
-			$sql12 = "select GROUP_CONCAT(DISTINCT plan_module) as module from bai_pro3.plandoc_stat_log where order_tid like '% $schedule_no%'";
+			$sql12 = "select GROUP_CONCAT(DISTINCT plan_module) as module from $bai_pro3.plandoc_stat_log where order_tid like '% $schedule_no%'";
 			//$plan_mod = array();
 			// echo $sql12;
 			$query12 = mysqli_query($link, $sql12) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -715,7 +715,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			{
 				$plan_mod = 0;
 			}
-			$sql13 = "SELECT GROUP_CONCAT(DISTINCT bac_no) as bac_no FROM bai_pro.bai_log_buf where delivery = '$schedule_no' and bac_qty>0";
+			$sql13 = "SELECT GROUP_CONCAT(DISTINCT bac_no) as bac_no FROM $bai_pro.bai_log_buf where delivery = '$schedule_no' and bac_qty>0";
 			//$act_mod = array();
 			$query13 = mysqli_query($link, $sql13) or die("Sql Error 13".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -735,7 +735,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 		// open data from production review for cut%
 		$CID=0;
-		$sql1z="select * from bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and purwidth>0";
+		$sql1z="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and purwidth>0";
 		// echo "<br>".$sql1z."<br>";
 		mysqli_query($link, $sql1z) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1z=mysqli_query($link, $sql1z) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -744,7 +744,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			$CID=$sql_row1z['tid'];
 		}
 
-		$sqlc="SELECT cuttable_percent as cutper from bai_pro3.cuttable_stat_log where cat_id=$CID";
+		$sqlc="SELECT cuttable_percent as cutper from $bai_pro3.cuttable_stat_log where cat_id=$CID";
 		//echo $sqlc;
 		$sql_resultc=mysqli_query($link, $sqlc) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowc=mysqli_fetch_array($sql_resultc))
@@ -753,17 +753,17 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			//echo "cut_per=".$cut_per;
 		}
 
-		$sqla="select * from bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+		$sqla="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 		$sql_resulta=mysqli_query($link, $sqla) or exit("Sql Error51".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_confirma=mysqli_num_rows($sql_resulta);
 
 		if($sql_num_confirma>0)
 		{
-			$sqlza="select * from bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+			$sqlza="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 		}
 		else
 		{
-			$sqlza="select * from bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+			$sqlza="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 		}
 		// echo "<br>4=".$sqlza."<br>";
 		mysqli_query($link, $sqlza) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -930,7 +930,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		if(date("Y-m-d")>"2011-12-11")
 		{
 			$embl_tag="";
-			$sql1="select order_embl_a,order_embl_e from bai_pro3.bai_orders_db where order_del_no=\"$schedule_no\"";
+			$sql1="select order_embl_a,order_embl_e from $bai_pro3.bai_orders_db where order_del_no=\"$schedule_no\"";
 			mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -954,7 +954,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 		{
 
-		$sql1="select * from bai_pro4.$table_ref  where ship_tid=$shipment_plan_id";
+		$sql1="select * from $bai_pro4.$table_ref  where ship_tid=$shipment_plan_id";
 		//echo "<br>".$sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -1017,7 +1017,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 		//DISPATCH
 
-			$sql1="select ship_qty from bai_pro2.style_status_summ where sch_no=\"$schedule_no\"";
+			$sql1="select ship_qty from $bai_pro2.style_status_summ where sch_no=\"$schedule_no\"";
 			//echo $sql1."<br>";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -1055,7 +1055,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 			//CR#930 //Fetching the color code of selected reason.
 			$color_code_ref1="#FFFFFF";
-			$sql_res1="select * from weekly_cap_reasons where sno=\"".$remarks[0]."\"";
+			$sql_res1="select * from $bai_pro4.weekly_cap_reasons where sno=\"".$remarks[0]."\"";
 			//echo $sql_res1."<br>";
 			$sql_result_res1=mysqli_query($link, $sql_res1) or exit("Sql Error".$sql_res1."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row_res1=mysqli_fetch_array($sql_result_res1))
@@ -1094,7 +1094,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		{
 			//CR#930 //Displaying the Reasons List to Users for selecting the appropriate reason of the schedule.
 			$reason_ref2="";
-			$sql_res2="select * from weekly_cap_reasons where sno=\"".$remarks[0]."\"";
+			$sql_res2="select * from $bai_pro4.weekly_cap_reasons where sno=\"".$remarks[0]."\"";
 			//echo $sql_res1."<br>";
 			$sql_result_res2=mysqli_query($link, $sql_res2) or exit("Sql Error".$sql_res2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row_res2=mysqli_fetch_array($sql_result_res2))
@@ -1197,7 +1197,8 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 </div>
 </div>
-
+</div>
+</div>
 
 
 

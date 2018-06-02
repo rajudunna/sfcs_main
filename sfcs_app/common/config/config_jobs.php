@@ -38,7 +38,7 @@ $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 ?>
 <?php
-$path="C:/xampp/htdocs/sfcs_app";
+$path="C:/xampp/htdocs/sfcs_app/app";
 
 $mail_to_test='kalyan@schemaxtech.com, bhargavg@schemaxtech.com, rameshk@schemaxtech.com,ravindranath.yrr@gmail.com';
 $header_from='From: Shop Floor System Alert <ravindranath.yrr35@gmail.com>';

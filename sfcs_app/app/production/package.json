@@ -1,0 +1,89 @@
+{ 
+    "name" : "Production",
+    "version" : "1.0",
+    "description" : "",
+    "operations" :
+    {
+        "PROD01" : {
+            "folder" : "bundle_cut",
+            "description" : "In this we can create mini orders based on the cut jobs as bundle level",
+            "menus" : {
+                "Additional Cut Miniorder" : "bundle_cut/additional_mini_create.php",
+                "Bundle Tag Reprint" : "bundle_cut/reprint_ticket_status.php",
+                "Bundle Split" : "bundle_cut/bundle_tag.php",
+                "Bundle Ticket Print" : "bundle_cut/bundle_ticket.php",
+                "Bundle Operation" : "bundle_cut/bundle_scan_form.php",
+                "Bundle Deletion" : "bundle_cut/bundle_deletion.php",
+                "Bundle Ticket Session" : "bundle_cut/bundle_ticket_control.php",
+                "Create Mini Orders" : "bundle_cut/mini_order_create.php",
+                "Mini Order Delete" : "bundle_cut/mini_order_deletion.php",
+                "MRN Confirm" : "bundle_cut/bundle_ticket_mrn.php",
+                "Recut Miniorder Creation" : "bundle_cut/recut_mini_create.php",
+                "Reorder Synchronization" : "bundle_cut/orders_sync_v2.php",
+                "Session Restore" : "bundle_cut/session_restore.php"
+            }
+        },
+        "PROD02" : {
+			  "folder" : "bundle_mul",
+			  "description" : "",
+			  "menus" : {
+				  "Reorder Synchronization" : "bundle_mul/orders_sync_v2.php",
+				  "Add Cartons" : "bundle_mul/carton_ratio.php",
+				  "Create Mini Orders" : "bundle_mul/mini_order_create.php",
+				  "Session Restore" : "bundle_mul/session_restore.php",
+				  "Mini Order Delete" : "bundle_mul/mini_order_deletion.php",
+				  "Additional Cut Miniorder" : "bundle_mul/additional_mini_create.php",
+				  "Recut Miniorder Creation" : "bundle_mul/recut_mini_create.php",
+				  "Bundle Ticket Print" : "bundle_mul/bundle_ticket.php",
+				  "Bundle Tag Reprint" : "bundle_mul/reprint_ticket_status.php",
+				  "Bundle Ticket Session" : "bundle_mul/bundle_ticket_control.php",
+				  "Bundle Operation" : "bundle_mul/bundle_scan_form.php",
+				  "Bundle Deletion" : "bundle_mul/bundle_deletion.php",
+				  "Bundle Allocation" : "bundle_mul/bundle_allocation.php",
+				  "Miniorder Priority" : "bundle_mul/mini_order_priority.php"
+			  }
+        },
+        "PROD03" : {
+            "folder" : "sewing_job",
+            "description" : "",
+            "menus" : {
+                "Create Sewing Jobs" : "sewing_job/sewing_job_create.php",
+                "Add Carton Properties" : "sewing_job/carton_ratio.php",
+                "Delete Sewing Jobs" : "sewing_job/delete_sewing_jobs.php",
+                "Orders Re-Sync" : "sewing_job/orders_sync_v1.php",
+                "Sewing Jobs Split" : "sewing_job/input_job_split.php",
+                "Operation Mapping" : "sewing_job/sewing_job_scaning/bundle_operations.php",
+                "Operations Master" : "sewing_job/sewing_job_scaning/operations_creation.php",
+                "Bundle Operations Report" : "sewing_job/sewing_job_scaning/bundle_operations_report.php",
+                "Garments Sending" : "sewing_job/sewing_job_scaning/send_quantity_report.php",
+                "Garment Receiving" : "sewing_job/sewing_job_scaning/received_quantity_update.php",
+                "Sewing job Scanning" : "sewing_job/sewing_job_scaning/pre_input_job_scanning.php",
+                "Sewing Job Reversal Scanning" : "sewing_job/sewing_job_scaning/inputjob_reversal_scan.php"
+            }
+        },
+        "PROD04" : {
+            "folder" : "sewing_orders",
+            "description" : "",
+            "menus" : {
+                "Operations Mapping" : "sewing_job/sewing_job_scaning/bundle_operations.php",
+                "Operations Master" : "sewing_job/sewing_job_scaning/operations_creation.php",
+                "Bundle Opeartions Report" : "sewing_orders/bundle_operations_report.php",
+                "Garment Sending" : "sewing_job/sewing_job_scaning/send_quantity_report.php",
+                "Garment Receiving" : "sewing_job/sewing_job_scaning/received_quantity_update.php",
+                "Bundle Generation" : "sewing_orders/form.php",
+                "Bundle Scanning-Panels" : "sewing_orders/pre_bundle_scanning.php",
+                "Bundle Barcode Print" : "sewing_orders/bundle_creation_data_report_now.php",
+                "Bundle Operations Dashboard" : "sewing_orders/component_wise_bundle_qty.php",
+                "Create Sewing Orders" : "sewing_orders/sewing_orders_form.php",
+                "View Sewing Orders" : "sewing_orders/sewing_orders_view.php",
+                "Bundles Reversal Scanning" : "sewing_orders/bundle_reversal_scanning.php",
+                "Update Missing Panels" : "sewing_orders/adding_bundle_recovery_panels.php",
+                "Bundles with Missing Panels" : "sewing_orders/showing_good_panels_list.php",
+            }
+        },
+    }
+
+    "menus" : { 
+
+    }
+}

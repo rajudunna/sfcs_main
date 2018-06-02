@@ -12,7 +12,7 @@ function check_docket(e){
 	var d = document.getElementById('cartonid').value;
 	var m = document.getElementById('cartonid2').value;
 	if(m=='' && d ==''){
-		sweetAlert('Please fill docket or label no ','','warning');
+		sweetAlert('Please Enter Location ','','warning');
 		e.preventDefault();
 		return false;
 	}
@@ -106,7 +106,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			if(is_numeric(substr($code,0,1)))
 			{
 				$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
-				echo "<br/>".$sql."<br/>";
+				//echo "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql);
 				if(mysqli_num_rows($sql_result)>0)
 				{

@@ -1,0 +1,63 @@
+body
+{
+	font-family: Trebuchet MS;
+	font-size: 14px;
+}
+
+table
+{
+border-collapse:collapse;
+white-space:nowrap;
+tr.total
+{
+font-weight: bold;
+white-space:nowrap; 
+}
+
+table
+{
+border-collapse:collapse;
+white-space:nowrap;
+font-size: 12pt; 
+}
+}
+
+th
+{
+	background-color: RED;
+	color: WHITE;
+border: 1px solid #660000;
+	padding: 10px;
+white-space:nowrap; 
+
+}
+
+td
+{
+	background-color: WHITE;
+	color: BLACK;
+border: 1px solid #660000;
+	padding: 1px;
+white-space:nowrap; 
+}
+
+td.date
+{
+	background-color: WHITE;
+	color: BLACK;
+border: 1px solid #660000;
+	padding: 5px;
+white-space:nowrap;
+text-align:center;
+}
+
+
+td.style
+{
+	background-color: YELLOW;
+	color: BLACK;
+border: 1px solid #660000;
+	padding: 2px;
+white-space:nowrap; 
+font-weight: bold;
+}

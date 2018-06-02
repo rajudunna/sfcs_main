@@ -1,7 +1,7 @@
 
 
 <?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?>
-<?php include('../'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
+<?php include('../'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
 <?php
 
   function m3_job_exists_check($doc_no,$operation,$joins_checkbox)
@@ -3943,7 +3943,8 @@ $ex_s01=($c_s01-$o_s01);
  	$t=0;
  	$colspan=" colspan='2'";
 	
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and cat_ref='$cat_ref' and remarks=\"Pilot\" order by acutno";
+$sql="select * from $bai_pro3.plandoc_stat_log where order_tid = '$order_tid' and cat_ref='$cat_ref' and remarks=\"Pilot\" order by acutno";
+//echo $sql;
 // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error104".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -4151,8 +4152,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 			  	  echo "<td class=xl9214270 colspan='2' style='border-top:none'>Pilot($cutno)</td>";
 			
-			  
-			  echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none'>".ims_sizes($order_tid,'','','',$sizes_db[$m],$link)."</td>";
+				// echo $order_tid;
+				// echo $sizes_db[$m];
+				//echo "functoin result".ims_sizes($order_tid,'','','',$sizes_db[$m],$link);
+			 echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none'>".ims_sizes($order_tid,'','','',$sizes_db[$m],$link)."</td>";
 			   echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none'>".$qty_db[$m]."</td>";
 			  echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none'>$docketno</td>";
 			  echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none' $colspan>";

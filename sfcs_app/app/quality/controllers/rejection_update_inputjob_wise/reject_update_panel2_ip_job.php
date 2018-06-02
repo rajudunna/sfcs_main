@@ -230,11 +230,12 @@ xmlhttp.onreadystatechange=function()
     {
     	//document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
 		//document.getElementById("11").innerHTML=xmlhttp.responseText;
-		//alert(xmlhttp.responseText);
+		// alert(xmlhttp.responseText);
 		
 		if(str==1)
 		{
 			var result=xmlhttp.responseText.split("$");
+			console.log(result);
 			document.getElementById(result[0].trim()).innerHTML=result[1];
 			var result=xmlhttp.responseText.split("$");
 			document.getElementById(result[2].trim()).innerHTML=result[3];			
@@ -242,6 +243,7 @@ xmlhttp.onreadystatechange=function()
 		else
 		{
 			var result=xmlhttp.responseText.split("$");
+			console.log(result);
 			document.getElementById(result[0].trim()).innerHTML=result[1];
 			var result=xmlhttp.responseText.split("$");
 			document.getElementById(result[2].trim()).innerHTML=result[3];
@@ -254,15 +256,18 @@ var get_url = '<?= getFullURLLevel($_GET['r'],'getuser2.php',0,'R'); ?>';
 switch(str)
 {
 	case 1:
+	    console.log('1');
 		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
 		xmlhttp.send();
 		break;
 	case 2:
+	    console.log('2');
 		val=document.input["schedule["+x+"]"].value+"$"+val;
 		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
 		xmlhttp.send();
 		break;
 	case 3:
+         console.log('3');
 		//val=document.input["style["+x+"]"].value+"$"+document.input["schedule["+x+"]"].value+"$"+document.input["color["+x+"]"].value+"$"+val;
 		val=document.getElementById("style["+x+"]").value+"$"+document.getElementById("schedule["+x+"]").value+"$"+document.getElementById("color["+x+"]").value+"$"+val;
 		//alert(val);
@@ -270,6 +275,7 @@ switch(str)
 		xmlhttp.send();
 		break;
 	case 4:
+	      console.log('4');
 		//val=document.input["style["+x+"]"].value+"$"+document.input["schedule["+x+"]"].value+"$"+document.input["color["+x+"]"].value+"$"+document.input["job["+x+"]"].value+"$"+val;
 		val=document.getElementById("style["+x+"]").value+"$"+document.getElementById("schedule["+x+"]").value+"$"+document.getElementById("color["+x+"]").value+"$"+document.getElementById("job["+x+"]").value+"$"+val;
 		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
@@ -277,6 +283,7 @@ switch(str)
 		break;	
 		
 	case 5:
+	     console.log('5');
 		//val=document.input["style["+x+"]"].value+"$"+document.input["schedule["+x+"]"].value+"$"+document.input["color["+x+"]"].value+"$"+document.input["job["+x+"]"].value+"$"+val;
 		val=document.getElementById("style["+x+"]").value+"$"+document.getElementById("schedule["+x+"]").value+"$"+document.getElementById("color["+x+"]").value+"$"+document.getElementById("job["+x+"]").value+"$"+document.getElementById("size["+x+"]").value+"$"+val;
 		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);

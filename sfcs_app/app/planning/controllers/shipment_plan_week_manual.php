@@ -72,7 +72,7 @@ set_time_limit(0);
 /* $sql3="TRUNCATE TABLE shipment_plan";
 mysql_query($sql3,$link) or exit("Sql Error".mysql_error()); */
 
-$sql3="update shipment_plan set cw_check=0"; // This is to track current week shipment plan entries available in db to avoid revised exfact and easy filter for week plan.
+$sql3="update $bai_pro4.shipment_plan set cw_check=0"; // This is to track current week shipment plan entries available in db to avoid revised exfact and easy filter for week plan.
 mysqli_query($link, $sql3) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $style_code[]=array();
 $schedule_code[]=array();
@@ -160,8 +160,8 @@ for($k=0;$k<sizeof($color_code);$k++)
 			// echo $sql3."<br/>";
 			mysqli_query($link, $sql3) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql3="update $bai_pro4.shipment_plan set order_no=\"$ORDER_NO\",delivery_no=$DELIVERY_NO,del_status=\"$DEL_STATUS\",mpo=\"$MPO\",cpo=\"$CPO\",buyer=\"$BUYER\",product=\"$PRODUCT\",buyer_division=\"$BUYER_DIVISION\",style=\"$STYLE\",schedule_no=\"$SCHEDULE_NO\",color=\"$COLOR\",size=\"$size_code\",z_feature=\"$Z_FEATURE\",ord_qty=$ORD_QTY,ex_factory_date=\"$date_code\",mode=\"$MODE\",destination=\"$DESTINATION\",packing_method=\"$PACKING_METHOD\",fob_price_per_piece=$FOB_PRICE_PER_PIECE,cm_value=$CM_VALUE,ssc_code=\"$ssc_code\",week_code=$weekcode,ssc_code_new=\"$ssc_code_new\",order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h, cw_check=1 where ssc_code_week_plan=\"$ssc_code_new".$size_code.$DELIVERY_NO."\"";
-			// echo $sql3."<br/>";
+			$sql3="update $bai_pro4.shipment_plan set order_no=\"$ORDER_NO\",delivery_no=$DELIVERY_NO,del_status=\"$DEL_STATUS\",mpo=\"$MPO\",cpo="."'".str_replace('"',' ',$CPO)."'".",buyer="."'".str_replace('"',' ',$BUYER)."'".",product="."'".str_replace('"',' ',$PRODUCT)."'".",buyer_division=\"$BUYER_DIVISION\",style=\"$STYLE\",schedule_no=\"$SCHEDULE_NO\",color=\"$COLOR\",size=\"$size_code\",z_feature=\"$Z_FEATURE\",ord_qty=$ORD_QTY,ex_factory_date=\"$date_code\",mode=\"$MODE\",destination=\"$DESTINATION\",packing_method=\"$PACKING_METHOD\",fob_price_per_piece=$FOB_PRICE_PER_PIECE,cm_value=$CM_VALUE,ssc_code=\"$ssc_code\",week_code=$weekcode,ssc_code_new=\"$ssc_code_new\",order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h, cw_check=1 where ssc_code_week_plan=\"$ssc_code_new".$size_code.$DELIVERY_NO."\"";
+			echo $sql3."<br/>";
 			mysqli_query($link, $sql3) or exit("Sql Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}	

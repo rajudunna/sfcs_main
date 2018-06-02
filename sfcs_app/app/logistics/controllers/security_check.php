@@ -62,7 +62,7 @@ function checkandupdate()
 			<form name="test" action="index.php?r=<?= $_GET['r'] ?>" method="post" enctype="multipart/form data">
 				<div class="row">
 					<div class="col-sm-2 right big"><label>Enter Dispatch Number : </label></div>
-					<div class='col-sm-2'><input class='form-control' type="text" name="note_no" value=""></div>
+					<div class='col-sm-2'><input class='form-control integer' type="text" name="note_no" value=""></div>
 					<div class='col-sm-1'><input class='btn btn-success' type="Submit" name="submit" Value="Submit" id="submitbtn" onclick="javascript:checkandupdate();"></div>
 				</div>
 			</form>

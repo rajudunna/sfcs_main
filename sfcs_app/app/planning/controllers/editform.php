@@ -18,19 +18,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/conf
 	
 ?>
 
-<!-- <script type="text/javascript">
-$(document).ready(function() {
-	$('#userdefinedstyle').on('keydown',function(e){
-		var val = $('#userdefinedstyle').val();
-		var k = e.which;
-		if(k < 48 || k > 57){
-			sweetAlert('Please enter valid user defined style','','warning');
-			$('#userdefinedstyle').val('');
-		}
-	});
-});
 
-</script> -->
 
 
 </script>
@@ -48,17 +36,7 @@ function enableButton()
 }
 
 
-jQuery(document).ready(function($){
-   $('#userdefinedstyle').keypress(function (e) {
-       var regex = new RegExp("^[0-9\]+$");
-       var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-       if (regex.test(str)) {
-           return true;
-       }
-       e.preventDefault();
-       return false;
-   });
-});
+
 
 
 </script>
@@ -90,8 +68,12 @@ for (var i = 0; i < document.input.lot_no.value.length; i++) {
 
 <form  method="post" name="input"  action="index.php?r=<?= $_GET['r']; ?>">
 <table class="table table-bordered">
-<tr><td>Movex Style</td><td>:</td><td><?php echo $style; ?></td></tr>
-<tr><td>User Define Style</td><td>:</td><td> <input type="text" name="style_id" size="20" value="<?php echo $style_id; ?>" id='userdefinedstyle' class='formcontroll'></td></tr>
+<tr><td><b>Movex Style</b></td><td>:</td><td><?php echo $style; ?></td></tr>
+<tr>
+<td><b>User Define Style</b></td>
+<td>:</td>
+<td> <input type="text" name="style_id" size="20" class="alpha" value="<?php echo $style_id; ?>" id='userdefinedstyle'></td>
+</tr>
 <!--Added select criteria for buyer idetity of movex style updatig-->
 <!-- <tr><td>Buyer Style</td><td>:</td><td>
 	<select name="bsty" id="bsty">

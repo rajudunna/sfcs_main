@@ -79,7 +79,7 @@ if(isset($_POST['cartonid']))
 	
 	$sql="select * from $bai_pro3.packing_summary where tid='$cartonid'";
 	// echo $sql;
-	mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
+	// mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error11".mysqli_error());
 	$count=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -93,6 +93,10 @@ if(isset($_POST['cartonid']))
 		$schedule=$sql_row['order_del_no'];
 	}
 	
+	$sql2="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\"";
+	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error12".mysqli_error());
+	$color_count=mysqli_num_rows($sql_result2);
+		
 	if(strlen($schedule)==0)
 	{
 		echo "";
@@ -149,7 +153,8 @@ if(isset($_POST['cartonid']))
 	
 	//ADDED GLAMOUR BUYER ON 2012-03-29
 	//REASON: BUYER NOT ASSIGNED HERE FOR GLAMOUR
-	if(($buyer_div=="K" or $buyer_div=="P" or $buyer_div=="L" or $buyer_div=="O" or $buyer_div=="G" or $buyer_div=="S") and $check_control==0)  // For BAI1 Buyers
+	// if(($buyer_div=="K" or $buyer_div=="P" or $buyer_div=="L" or $buyer_div=="O" or $buyer_div=="G" or $buyer_div=="S") and $check_control==0)  // For BAI1 Buyers
+	if($color_count==1)
 	{
 		echo '<div class="col-md-6"><form name="input" method="post" action="'.getFullURL($_GET['r'],'partial_breakup.php','N').'">
 		<input type="hidden" value="'.$cartonid.'" name="cartonid">
@@ -162,7 +167,8 @@ if(isset($_POST['cartonid']))
 		<div class="col-md-3"><input type="submit" name="update" value="update" id="submit" class="btn btn-primary" style="margin-top:22px;"></div></div>
 		</form></div><br><br>';
 	}
-	if(($buyer_div=="D" or $buyer_div=="M" or $buyer_div=="C" or $buyer_div=="T" or $buyer_div=="E") and $check_control==0)  // For BAI2 Buyers
+	// if(($buyer_div=="D" or $buyer_div=="M" or $buyer_div=="C" or $buyer_div=="T" or $buyer_div=="E") and $check_control==0)  // For BAI2 Buyers
+	else
 	{
 	
 		$sql="select group_concat(tid) as \"tid\", remarks, sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where doc_no_ref=\"$doc_no_ref\"";

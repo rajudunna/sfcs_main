@@ -2,16 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <?php  
-include("header.php"); 
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0235",$username,1,$group_id_sfcs); 
 ?>
 
 <html>
 <head>
 <title>IPS Allocation status</title>
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/tablefilter.js',0,'R')?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
 
 <!--<script language="javascript" type="text/javascript" src="TableFilter_EN/tablefilter.js"></script>-->
 
@@ -37,7 +38,7 @@ $view_access=user_acl("SFCS_0235",$username,1,$group_id_sfcs);
 	}
 </script>
 
-<link href="<?= getFullURLLevel($_GET['r'],'styles/sfcs_styles.css',4,'R'); ?>" rel="stylesheet" type="text/css" />
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',4,'R'); ?>" rel="stylesheet" type="text/css" />
 
 </head>
 <body>
@@ -80,7 +81,7 @@ if(isset($_POST['show']))
 	echo "<div class='table table-responsive'>
 		    <table border='1px' id='table1' class='table table-bordered' >
 			<tr class='success'><th>Style</th><th>Schedule</th><th>Color</th><th>Total Jobs</th><th>Planned Jobs(Completed)</th><th>Planned Jobs(Pending)</th><th>Cuts Completed</th></tr>";
-	$sql1="select distinct order_tid,count(doc_no) as cuts from order_cat_doc_mk_mix where date between '".$s_date."' and '".$e_date."' group by order_tid";
+	$sql1="select distinct order_tid,count(doc_no) as cuts from $bai_pro3.order_cat_doc_mk_mix where date between '".$s_date."' and '".$e_date."' group by order_tid";
 	// echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error1--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
@@ -90,7 +91,7 @@ if(isset($_POST['show']))
 	}
 	for($i=0;$i<sizeof($order_tid);$i++)
 	{
-		$sql11="select * from bai_orders_db where order_tid='$order_tid[$i]'";
+		$sql11="select * from $bai_pro3.bai_orders_db where order_tid='$order_tid[$i]'";
 		$result11=mysqli_query($link, $sql11) or exit("Sql Error--11".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row11=mysqli_fetch_array($result11))
 		{
@@ -99,7 +100,7 @@ if(isset($_POST['show']))
 			$schedule=$row11['order_del_no'];
 			$color=$row11['order_col_des'];
 		}
-		$sql2="select doc_no,pcutno from order_cat_doc_mk_mix where order_tid='$order_tid[$i]' and plan_module is not null and act_cut_status='' order by doc_no";
+		$sql2="select doc_no,pcutno from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid[$i]' and plan_module is not null and act_cut_status='' order by doc_no";
 		$result2=mysqli_query($link, $sql2) or exit("Sql Error--2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$count=mysqli_num_rows($result2);
 		$jj=0;
@@ -126,7 +127,7 @@ if(isset($_POST['show']))
 			}
 		}
 		$j=0;
-		$sql3="select doc_no,pcutno from order_cat_doc_mk_mix where order_tid='$order_tid[$i]' and (plan_module is null or plan_module='') order by doc_no";
+		$sql3="select doc_no,pcutno from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid[$i]' and (plan_module is null or plan_module='') order by doc_no";
 		$result3=mysqli_query($link, $sql3) or exit("Sql Error--3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$count=mysqli_num_rows($result3);
 		$jj=0;
@@ -152,7 +153,7 @@ if(isset($_POST['show']))
 			}
 			
 		}
-		$sql4="select doc_no,pcutno from order_cat_doc_mk_mix where order_tid='$order_tid[$i]' and act_cut_status='DONE' order by doc_no";
+		$sql4="select doc_no,pcutno from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid[$i]' and act_cut_status='DONE' order by doc_no";
 		$j=0;
 		$result4=mysqli_query($link, $sql4) or exit("Sql Error--4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$count=mysqli_num_rows($result4);

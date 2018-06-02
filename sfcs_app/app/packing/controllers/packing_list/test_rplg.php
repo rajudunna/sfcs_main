@@ -44,7 +44,7 @@
 	//$sql="select distinct order_style_no from bai_orders_db_confirm where order_tid in (select order_tid from plandoc_stat_log)";
 	//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 	//{
-		$sql="select distinct order_style_no from $bai_pro3.order_cat_doc_mix  where left(order_style_no,1) in (".$global_style_codes.") order by order_style_no";	
+		$sql="select distinct order_style_no from $bai_pro3.order_cat_doc_mix order by order_style_no";	
 	//}
 		mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));

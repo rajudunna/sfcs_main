@@ -2,7 +2,7 @@
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-
+$Page_Id='SFCS_0055';
   ?>
 
 <script type="text/javascript">

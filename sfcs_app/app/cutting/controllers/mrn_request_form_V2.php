@@ -193,21 +193,34 @@ input
 
 function dodisable()
 {
-enableButton();
+	//enableButton();
+
 document.getElementById('process_message').style.visibility="hidden";
 }
 
 
 function enableButton() 
 {
-	if(document.getElementById('option').checked)
-	{
-		document.getElementById('update').disabled='';
-	} 
-	else 
-	{
-		document.getElementById('update').disabled='true';
+	var ele = document.getElementsByClassName('quantities');
+
+	for(var i=0;i<ele.length;i++){
+		if(ele[i].value > 0){
+			var clr = document.getElementById('item_color'+i).value;
+			var desc = document.getElementById('item_desc'+i).value;
+			var code = document.getElementById('item_code'+i).value;
+			var rem = document.getElementById('remarks'+i).value;
+			if( clr=='' || desc =='' || code =='' || rem==''){
+				swal('Fill all the Fields','','warning');
+				document.getElementById('update').disabled=true;
+				return false;
+			}
+			
+		}
 	}
+	if(document.getElementById('option').checked == true)
+		document.getElementById('update').disabled=false;
+	else
+		document.getElementById('update').disabled=true;
 }
 
 function button_disable()
@@ -217,7 +230,7 @@ function button_disable()
 	document.getElementById('update').style.visibility="hidden";
 }
 </script>
-<body onload="dodisable();">
+<body>
 
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>MRN Request Form</b></div>
@@ -247,7 +260,8 @@ function button_disable()
 			//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 			//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 			//{
-				$sql="select distinct order_style_no from $bai_pro3.bai_orders_db where left(order_style_no,1) in (".$global_style_codes.")";	
+				$sql="select distinct order_style_no from $bai_pro3.bai_orders_db";	
+				//Removed the condition " IN $global_style_codes"  array in the query 
 			//}
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -597,13 +611,13 @@ function button_disable()
 			}
 
 			//echo $lot_ref."<br>";
-
 			//When M3 offline comment this
-
-			$sql="select distinct rand_track_id from $bai_rm_pj2.mrn_track where style=\"$inp_1\" and schedule=\"$inp_2\" and color=\"$inp_3\"";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-			echo "Style: <b>$inp_1</b> | Schedule: <b>$inp_2</b> | Total requests from this schedule: <b>".mysqli_num_rows($sql_result)."</b><br/>";
+			$sql="select rand_track_id from $bai_rm_pj2.mrn_track where style='$inp_1' and schedule='$inp_2' 
+				   group by rand_track_id";
+			//echo $sql;
+			$sql_res = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($sql));
+			$cnt = mysqli_num_rows($sql_res);
+			echo "Style: <b>$inp_1</b> | Schedule: <b>$inp_2</b> | Total requests from this schedule: <b>".$cnt."</b><br/>";
 
 			echo "<br><br>Available Quantity To Apply Under Fabric Requirement=".$available_qty_req."<input type=\"hidden\" id='avl_qty' size=5 value=\"".$available_qty_req."\"/><br><br>Reserved Qty=<input type=\"text\" name=\"trowst\" size=5 id=\"trowst\" value=\"0\">";
 
@@ -614,17 +628,17 @@ function button_disable()
 			echo '<div style=\"overflow:scroll;\" class="table-responsive">
 			<table id="table1" class="table table-bordered">';
 			echo "<tr class='tblheading'>
-			<th>Product Group</th>
-			<th>Item</th>
-			<th>Item Description</th>
-			<th>Color</th>
-			<th bgcolor=\"red\">Price</th>
-			<th>BOM Qty</th>
-			<th>Issued Qty</th>
-			<th>Required Qty</th>
-			<th>UOM</th>
-			<th>Reason</th>
-			<th>Remarks</th>
+				<th>Product Group</th>
+				<th>Item</th>
+				<th>Item Description</th>
+				<th>Color</th>
+				<th bgcolor=\"red\">Price</th>
+				<th>BOM Qty</th>
+				<th>Issued Qty</th>
+				<th>Required Qty</th>
+				<th>UOM</th>
+				<th>Reason</th>
+				<th>Remarks</th>
 			</tr>";
 			$check=0;
 
@@ -636,9 +650,9 @@ function button_disable()
 
 			for($x=0;$x<10;$x++)
 			{
-				$z1=$z1+1;
-				
+				$z1=$z1+1;	
 				$check=1;
+				echo "<input type=\"hidden\" name=\"price[]\" value=\"0\">";
 				echo "<tr bgcolor='$bgcolor'>";
 				
 				//echo "<td>$proc_grp</td>";
@@ -646,17 +660,17 @@ function button_disable()
 				//echo "<td>$item_description</td>";
 				
 				//When M3 offline uncomment this
-				echo "<td><select name=\"product[]\"><option value='STRIM'>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
-				echo "<td><input type=\"text\" name=\"item_code[]\" value=\"\" style=\"background-color:#66FFCC;\"></td>";
-				echo "<td><input type=\"text\" name=\"item_desc[]\" value=\"\" style=\"background-color:#66FFCC;\"></td>";
-				echo "<td><input type=\"text\" name=\"co[]\" value=\"\" style=\"background-color:#66FFCC;\"></td>"; 
+				echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
+				echo "<td><input type=\"text\" name=\"item_code[]\" id='item_code$x' value=\"\" style=\"background-color:#66FFCC;\"></td>";
+				echo "<td><input type=\"text\" name=\"item_desc[]\" id='item_desc$x' value=\"\" style=\"background-color:#66FFCC;\"></td>";
+				echo "<td><input type=\"text\" name=\"co[]\" id='item_color$x' value=\"\" style=\"background-color:#66FFCC;\"></td>"; 
 				
 				echo "<td></td>";
 				echo "<td></td>";
 				echo "<td></td>";
 				//echo "<td>".round($req_qty,2)."</td>";
 				//echo "<td>".round($iss_qty,2)."</td>";
-				echo "<td><input style=\"background-color:#66FFCC;\" type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value<0) { this.value=0; alert('Please enter correct value.'); }\" ".$validation_ref_text." id=\"qty_$z1\"  onfocus=\"this.focus();this.select();\" name=\"qty[]\">";
+				echo "<td><input style=\"background-color:#66FFCC;\" class='integer quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value<0) { this.value=0; alert('Please enter correct value.'); }\" ".$validation_ref_text." id=\"qty_$z1\"  onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
 			
 			//When M3 offline comment this (Key word: When M3)
 				/* echo "<input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"$proc_grp\">
@@ -667,18 +681,24 @@ function button_disable()
 				
 				//When M3 offline comment this (Key word: When M3)
 				echo "<td><select name=\"uom[]\"><option value='PCS'>PCS</option><option value='$fab_uom'>$fab_uom</option></select></td>";
-				
-				echo "
-				<input type=\"hidden\" name=\"price[]\" value=\"0\">
-				</td>";
 				//echo "<td>$uom</td>";
+				$reason_id_db = array();
+				$reason_code_db = array();
+				$sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row=mysqli_fetch_array($sql_result))
+				{
+					$reason_id_db[]=$sql_row['reason_tid'];
+					$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
+				}
+
 				echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" ".$validation_ref_select." >";
 				for($i=1;$i<sizeof($reason_code_db);$i++)
 				{
 					echo "<option value=\"".$reason_id_db[$i]."\">".$reason_code_db[$i]."</option>";
 				}
 				echo "</select></td>";
-				echo "<td><input type=\"text\" value=\"\" name=\"remarks[]\" style=\"background-color:#66FFCC;\"></td>";
+				echo "<td><input type=\"text\" value=\"\" name=\"remarks[]\" id='remarks$x' style=\"background-color:#66FFCC;\"></td>";
 				echo "</tr>";
 			}
 
@@ -700,10 +720,11 @@ function button_disable()
 				}
 				echo "</select></div>";
 
-			echo '<div class="col-md-3"><input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
-			echo "&nbsp;&nbsp;<input type=\"submit\" style='margin-top:18px;' class='btn btn-success' id=\"update\" name=\"update\" value=\"Submit Request\" onclick=\"javascript:button_disable();\">";
+			echo '<div class="col-md-3"><input type="checkbox" name="option"  id="option" 
+					onclick="return enableButton();">Enable';
+			echo "&nbsp;&nbsp;<input type=\"submit\" style='margin-top:18px;' disabled class='btn btn-success' id=\"update\" name=\"update\" value=\"Submit Request\" onclick=\"javascript:button_disable();\">";
 			echo "</div></form><br>";	
-			echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font></h2></div>';
+			//echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font></h2></div>';
 			}
 			//When M3 offline uncomment this
 			//odbc_close($connect); 
@@ -712,11 +733,16 @@ function button_disable()
 
 
 			<script language="javascript" type="text/javascript">
-			//<![CDATA[
-			var MyTableFilter = {  exact_match: false,
-			col_0: "select"}
+				var MyTableFilter = {  
+					exact_match: false,
+					//col_0:'select'
+				}
 				setFilterGrid( "table1", MyTableFilter );
-			//]]>
+				// $(document).ready(function(){
+				// 	$('#flt0_table1').append('<option value="STRIM">STRIM</option>');
+				// 	$('#flt0_table1').append('<option value="PTRIM">TRIM</option>');
+				// 	$('#flt0_table1').append('<option value="FAB">TRIM</option>');
+				// });
 			</script>
 			</div>
 		</div>

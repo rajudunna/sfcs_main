@@ -3,6 +3,7 @@
 	include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+	$Page_Id = 'SFCS_0403';
 	// $view_access=user_acl("SFCS_0172",$username,1,$group_id_sfcs);
 
 ?>
@@ -201,7 +202,7 @@ function enable_button()
 											$x++;
 											}	
 									}
-										echo '<tr><td colspan=5>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
+										// echo '<tr><td colspan=5>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
 										$table='</tbody></table></div>';
 										echo $table;
 										// echo '<input type="checkbox" name="enable" id="enable" onclick="enable_button()">Enable<input type="submit" name="confirm" value="Confirm Destroy" id="add" disabled="true" onclick="enable_button()">';
@@ -224,7 +225,7 @@ function enable_button()
 	</div>
 </div>
 
-
+<!-- 
 <script language="javascript" type="text/javascript">
 	var fnsFilters = {
 	
@@ -243,7 +244,7 @@ function enable_button()
 	rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]	
 	};
 	setFilterGrid("table1",fnsFilters);
-</script>
+</script> -->
 
 
 

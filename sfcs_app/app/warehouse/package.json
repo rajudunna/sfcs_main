@@ -1,0 +1,24 @@
+{ 
+"name" : "warehouse",
+"version" : "1.0",
+"description" : "This module is using for updating rolls/trims details and locations",
+	 "menus" : {
+	  "Sticker Report Upload Tool" : "Sync_Sticker_Report_BAINet.xlsm",
+	  "Update RM Recieving" :"insert_v1.php",
+	  "Delete RM Recieving" :"entry_delete.php",
+	  "Location Labels" :"add_newlocation.php",
+	  "Online Barcode Scanning" :"index.php",
+	  "Location Transfer" :"location_transfer.php",
+	  "Fabric Issuing Track" :"fab_issue_track_V2.php",
+	  "RM Manual Request Form" :"test.php",
+	  
+	  "(AMT)MRN Transaction Log" :"mrn_form_log.php",
+	  "Fabric Issued Track" :"fab_iss_track_details_V4.php",
+	  "GRN Quick Search" :"quick_search.php",
+	  "GRN to Production Pendings" :"grn_reconcile.php",
+	  "M3 Sticker Report" :"m3_sticker_report.php",
+	  "RM Manual Transactions Log" :"manual_form_log.php",
+	  "RM Stock Report" :"report_new.html",
+	}
+  
+ }

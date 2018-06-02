@@ -1,5 +1,5 @@
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include("../../../../common/config/config_ajax.php");
 
 if(isset($_GET['q']))
 {
@@ -380,62 +380,7 @@ switch($q)
 				$size48 = $sql_row['title_size_s48'];
 				$size49 = $sql_row['title_size_s49'];
 				$size50 = $sql_row['title_size_s50'];
-				$flag = $sql_row1['title_flag'];
-				/*
-				if($flag==0)
-				{
-					$size01 = 's01';
-					$size02 = 's02';
-					$size03 = 's03';
-					$size04 = 's04';
-					$size05 = 's05';
-					$size06 = 's06';
-					$size07 = 's07';
-					$size08 = 's08';
-					$size09 = 's09';
-					$size10 = 's10';
-					$size11 = 's11';
-					$size12 = 's12';
-					$size13 = 's13';
-					$size14 = 's14';
-					$size15 = 's15';
-					$size16 = 's16';
-					$size17 = 's17';
-					$size18 = 's18';
-					$size19 = 's19';
-					$size20 = 's20';
-					$size21 = 's21';
-					$size22 = 's22';
-					$size23 = 's23';
-					$size24 = 's24';
-					$size25 = 's25';
-					$size26 = 's26';
-					$size27 = 's27';
-					$size28 = 's28';
-					$size29 = 's29';
-					$size30 = 's30';
-					$size31 = 's31';
-					$size32 = 's32';
-					$size33 = 's33';
-					$size34 = 's34';
-					$size35 = 's35';
-					$size36 = 's36';
-					$size37 = 's37';
-					$size38 = 's38';
-					$size39 = 's39';
-					$size40 = 's40';
-					$size41 = 's41';
-					$size42 = 's42';
-					$size43 = 's43';
-					$size44 = 's44';
-					$size45 = 's45';
-					$size46 = 's46';
-					$size47 = 's47';
-					$size48 = 's48';
-					$size49 = 's49';
-					$size50 = 's50';
-				}
-				*/
+				
 			}
 			$sql="select order_tid,a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,a_s01,a_s02,a_s03,a_s04,a_s05,a_s06,a_s07,a_s08,a_s09,a_s10,a_s11,a_s12,a_s13,a_s14,a_s15,a_s16,a_s17,a_s18,a_s19,a_s20,a_s21,a_s22,a_s23,a_s24,a_s25,a_s26,a_s27,a_s28,a_s29,a_s30,a_s31,a_s32,a_s33,a_s34,a_s35,a_s36,a_s37,a_s38,a_s39,a_s40,a_s41,a_s42,a_s43,a_s44,a_s45,a_s46,a_s47,a_s48,a_s49,a_s50 from $bai_pro3.plandoc_stat_log where doc_no=\"".substr($temp[3],1,10)."\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

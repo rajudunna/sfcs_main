@@ -9,14 +9,31 @@ Description: Here AQL team will be update Garments Rejected status.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>FCA Status Update - Reject Form</title>
-<?php include("header_script.php"); 
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");?>
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
+
+<?php  
+
+include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+?>
 <style>
 body
 {
 	font-family: Trebuchet MS;
 }
 </style>
+<script>
+ function AcceptOnlyNumbers(event) 
+{
+event = (event) ? event : window.event;
+var charCode = (event.which) ? event.which : event.keyCode;
+if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+return false;
+}
+return true;
+}
+
+</script>
 
 <script>
 
@@ -60,7 +77,6 @@ function button_disable()
 }
 </script>
 
-
 <script type="text/javascript" language="javascript">
     window.onload = function () {
         noBack();
@@ -95,9 +111,26 @@ function button_disable()
     </script>
 </head>
 <body onload="dodisable();" onpageshow="if (event.persisted) noBack();" onkeydown="return showKeyCode(event)">
-<div style='background-color:#398fe5;margin-right:600pt;'><h4>Rejects Update Panel</h4></div>
+<div class='panel panel-primary'>
+	<div class='panel-heading'>Rejects Update Panel</div>
+	<div class='panel-body'>
+	<?php
+	if(isset($_GET['style'])){
+		$style=$_GET['style'];
+		$schedule=$_GET['schedule'];
+		$color=$_GET['color'];
+		$audit_pending=$_GET['audit_pending'];
+	}
+?>
 
-<form name="test" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form data">
+<?php $url = getFullURL($_GET['r'],'pending.php','N');
+      $url = $url."&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending";
+?>
+<div class='row'>
+	<a href='<?= $url ?>' class='pull-right btn btn-danger'>Go Back</a>
+</div>	
+
+<form name="test" action="<?php echo $_GET['r']; ?>" method="post" enctype="multipart/form data">
 <?php 
 
 
@@ -115,10 +148,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
  
 if(isset($_GET['style']))
 {
-$style=$_GET['style'];
-$schedule=$_GET['schedule'];
-$color=$_GET['color'];
-$audit_pending=$_GET['audit_pending'];
+
 
 echo "<br/>Style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; $style <br/>";
 echo "Schedule:&nbsp;$schedule";
@@ -127,7 +157,8 @@ if($color!='0')
 echo "<br/>color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;".$color."";
 }
 
-echo "<br/><br/><table>";
+echo "<br/><br/>";
+echo "<table class='table table-bordered'>";
 echo "<tr><th>Size</th><th>Available Qty</th><th>Module Qty</th><th>Module</th><th>Reject Qty</th><th>Reason Code</th></tr>";
 $x=0;
 
@@ -159,8 +190,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$mod_exp1='';
 		$mod_exp2='';
 		$mod_exp2="<select name=\"m".$sql_row['size_code']."[]\" size=\"4\" multiple>";
-		mysqli_query($link_new, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result2=mysqli_query($link_new, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
 			$sizeqty=$sql_row2['sizes'];
@@ -172,7 +203,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		echo "<td>".$mod_exp1."</td>";
 		echo "<td>".$mod_exp2."</td>";
-		echo "<td><input type=\"text\" name=\"qty[$x]\" value=\"0\" onchange='if(this.value>$qty) { alert(\"Wrong Qty\"); this.value=0; } if(this.value<0) { alert(\"Wrong Qty\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\"></td>";
+		echo "<td><input type=\"text\" onkeypress=\"return AcceptOnlyNumbers(event);\" name=\"qty[$x]\" value=\"0\" onchange='if(this.value>$qty) { alert(\"Wrong Qty\"); this.value=0; } if(this.value<0) { alert(\"Wrong Qty\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\"></td>";
 		echo "<td><select name=\"".$sql_row['size_code']."[]\" size=\"5\" multiple>";
 		for($i=0;$i<sizeof($reason_id);$i++)
 		{
@@ -200,7 +231,8 @@ echo '<div id="process_message"><h2><font color="red">Please wait while updating
 echo "</form>";
 }
 ?>
-
+</div><!-- panel body-->
+</div><!-- panel -->
 
 
 </body>
@@ -246,9 +278,11 @@ if(isset($_POST['update']))
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}
+	$url1=getFullURL($_GET['r'],'pending.php','N');
 	echo "<h2><font color=\"green\">Successfully Updated!</font></h2>";
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"pending.php\"; }</script>";
-	echo "<script type=\"text/javascript\"> window.close(); </script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
+	//echo "<script type=\"text/javascript\"> window.close(); </script>";
+	
 }
 
 

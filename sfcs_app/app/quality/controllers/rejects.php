@@ -6,7 +6,13 @@ Description: Here AQL team will be update Garments Rejected status.
 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<?php include("header_script.php"); ?>
+<?php  
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
+?>
+
+
+<link rel="stylesheet" type="text/css" href="<?= include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/app/quality/common/js/style.css"); ?>">
 <style>
 body
 {

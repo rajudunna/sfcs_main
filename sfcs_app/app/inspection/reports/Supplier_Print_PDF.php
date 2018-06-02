@@ -1582,30 +1582,36 @@ tags will be replaced.-->
 	$htmlstr.="<td height=26 colspan=$colspan class=xl794315 style='height:20.1pt;border-left:none'></td>";
  }
  
- $htmlstr.="<tr height=24 style='mso-height-source:userset;height:18.0pt'>
-  <td height=24 class=xl664315 style='height:18.0pt;border-top:none'>SUPPLIER</td>
-  <td class=xl1084315 style='border-top:none;border-left:none'>
-  <form method=post action=\"Supplier_Claim_Log_Form.php\">".$supplier_name."</td>
-  </form>
-  <td class=xl654315 style='border-top:none;border-left:none'>PO#</td>
-  <td class=xl1014315 width=112 style='border-top:none;border-left:none;
-  width:84pt'>".$reject_po_no."</td>
+ $htmlstr.="
+
+  <tr height=24 style='mso-height-source:userset;height:18.0pt'>
+  <td height=24 class=xl644315 style='height:18.0pt;border-top:none'>SUPPLIER</td>
+  <td colspan=5 class=xl714315 width=826 style='border-right:1.0pt solid black;
+  border-left:none;width:620pt'><b>".$supplier_name."</b></td>
+ </tr>
+  <tr height=24 style='mso-height-source:userset;height:18.0pt'>
+  <td height=24 class=xl654315 style='height:18.0pt;border-top:none'>PO#</td>
+  <td class=xl1004315 width=169 style='border-top:none;border-left:none;
+  width:127pt'>".$reject_po_no."</td>
   <td class=xl664315 style='border-top:none;border-left:none'>INVOICE #</td>
-  <td class=xl1034315 width=239 style='border-top:none;border-left:none;
-  width:179pt'>".$invoice_no."</td>
+  <td colspan=3 class=xl1054315 style='border-right:1.0pt solid black;
+  border-left:none'>".$invoice_no."</td>
  </tr>
+  <tr height=24 style='mso-height-source:userset;height:18.0pt'>
+  <td height=24 class=xl644315 style='height:18.0pt;border-top:none'>BUYER</td>
+  <td colspan=5 class=xl714315 width=826 style='border-right:1.0pt solid black;
+  border-left:none;width:620pt'><b>".$buyer_name."</b></td>
+ </tr>
+
  <tr height=24 style='mso-height-source:userset;height:18.0pt'>
-  <td height=24 class=xl804315 style='height:18.0pt;border-top:none'>BUYER</td>
-  <td class=xl1084315 style='border-top:none;border-left:none'>
-  <form method=post action=\"Supplier_Claim_Log_Form.php\">".$buyer_name."</td>
-  </form>
-  <td class=xl654315 style='border-top:none;border-left:none'>SKU #</td>
-  <td class=xl1084315 width=112 style='border-top:none;border-left:none;
-  width:84pt'>".$reject_item_codes."</td>
+  <td height=24 class=xl654315 style='height:18.0pt;border-top:none'>SKU #</td>
+  <td class=xl1004315 width=169 style='border-top:none;border-left:none;
+  width:127pt'>".$reject_item_codes."</td>
   <td class=xl664315 style='border-top:none;border-left:none'>COLOR</td>
-  <td class=xl1044315 width=239 style='border-top:none;border-left:none;
-  width:179pt'>".$reject_item_color."</td>
+  <td colspan=3 class=xl1054315 style='border-right:1.0pt solid black;
+  border-left:none'>".$reject_item_color."</td>
  </tr>
+
  <tr height=24 style='mso-height-source:userset;height:18.0pt'>
   <td height=24 class=xl654315 style='height:18.0pt;border-top:none'>BATCH #</td>
   <td class=xl1004315 width=169 style='border-top:none;border-left:none;

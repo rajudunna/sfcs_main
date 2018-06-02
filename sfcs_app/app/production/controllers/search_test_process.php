@@ -217,13 +217,15 @@ if(isset($_POST['request']))
 		
 		
 		echo "<h2><font color=\"green\"><b>Successfully Completed.</b></font></h2>";
+		// echo "<script>swal('Successfully Completed','','success');</script>";
 	}
 	else
 	{
 		echo "<h2><font color=\"red\"><b>No Categories were selected.</b></font></h2>";
 	}
-	
-	// header("Location:search_test.php");
+	$url=getFullURLLevel($_GET['r'],'search_test.php',0,'N');
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"$url\"; }</script>";
+	// header("Location:$url");
 	// exit();
 }
 
@@ -301,10 +303,12 @@ if(isset($_POST['search']))
 	$categories="";
 	$sql="select tid,category from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and length(category)>0";
 	//echo $sql;
+	$y=0;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$categories.="<input type=\"checkbox\" name=\"cat[]\" value=\"".$sql_row['tid']."-".$sql_row['category']."\">".$sql_row['category']."<br/>";
+		$categories.="<input type=\"checkbox\" name=\"cat[]\" id='cat_$y' value=\"".$sql_row['tid']."-".$sql_row['category']."\">".$sql_row['category']."<br/>";
+		$y=$y+1;
 	}
 	
 	
@@ -600,6 +604,9 @@ if(isset($_POST['search']))
 		}
 	}
 	//echo "<br>".sizeof($qms_size)."-".$bal;
+	$x1=0;
+	$i=1;
+	// var_dump($qms_qty);
 	if(sizeof($qms_size)>0)
 	{
 		$table="<table class='table table-bordered table-striped'>";
@@ -615,22 +622,17 @@ if(isset($_POST['search']))
 			{
 				$validate_1="onchange=\"if(check1(this.value,".$qms_qty[$i].")==1010) { this.value=".$qms_qty[$i]."; }\"";
 			}
-			$table.= "<td><div class='row'><div class='col-md-3'><input type=\"text\" class='form-control' name=\"qty[]\" value=\"".$qms_qty[$i]."\" size=\"5\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" autocomplete=\"off\" onkeypress=\"return isNum(event)\" $validate_1></div></td></tr>";
+			$table.= "<td><div class='row'><div class='col-md-3'><input type=\"text\" class='form-control' name=\"qty[]\" id='qty_$i' value=\"".$qms_qty[$i]."\" size=\"5\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" autocomplete=\"off\" onkeypress=\"return isNum(event)\" $validate_1></div></td></tr>";
+			$x1 = $x1+1;
 		}
 		$table.="</table><div id=\"button1\">
-		
+		<input type='hidden' id='count' value='$x1'>
 		<span id=\"msg\" style=\"display:none;\">Please Wait...</span>
 		<div class='col-md-2'><br/>
-		<input type=\"submit\" value=\"Create Request\" class='btn btn-success' name=\"request\" id=\"request\" onsubmit=\"document.getElementById('request').style.display='none'; document.getElementById('msg').style.display='';\">
-		<br/></br></div><br/>
-		</div>";
-		
+		<input type=\"submit\" value=\"Create Request\" class='btn btn-success' name=\"request\" id=\"request\" onsubmit=\"document.getElementById('request').style.display='none'; document.getElementById('msg').style.display='';\" onclick ='return check_reasons($y)'>
+		<br/></br></div><br/></div>";
 		//echo $table;
 	}
-	
-	
-	
-	
 	echo "<div style='overflow:auto;max-height:800px;'>
 	<table class='table table-bordered table-striped'>
 	<tr>
@@ -690,4 +692,32 @@ td{
 	text-align:left;
 }
 </style>
-
+<script>
+	function check_reasons(cat_count){
+		var count = document.getElementById('count');
+		var total = 0;
+		var val;
+		for(var i = 0;i<Number(count);i++){
+			val = parseFloat(document.getElementById('qty_'+i).value);
+			if(val = ""){
+				val = 0;
+			}else{
+				val = val;
+			}
+			total += val;
+		}
+		if(total == 0){
+			for(var j =0; j<Number(cat_count);j++){
+				var check_val = document.getElementById('cat_'+j).checked;
+			}
+			alert(check_val);
+			sweetAlert('NRP should be greater than ZERO','','warning');
+			return false;
+		}else{
+			
+		}
+		
+		return true;
+		
+	}
+</script>

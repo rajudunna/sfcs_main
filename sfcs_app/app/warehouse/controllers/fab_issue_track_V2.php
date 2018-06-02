@@ -225,7 +225,7 @@ Please Select : <select name="cat" class="select2_single form-control">
 </select>
 </div>
 <div class='col-md-3 col-sm-3 col-xs-12'>
-Docket/Recut Number:<i style="color:red">*</i><input type="text"  name="doc" onkeypress="return validateQty(event);" class="form-control" value="<?= $docket001 ?>" size="6"/ required> 
+Docket/Recut Number:<i style="color:red"></i><input type="text"  name="doc" onkeypress="return validateQty(event);" class="form-control" value="<?= $docket001 ?>" size="6"/ required> 
 </div>
 <div class='col-md-3 col-sm-3 col-xs-12'>
 <input type="submit" class="btn btn-success confirm-submit" value="Search" id="submit" name="submit" style="margin-top: 19px;"/>
@@ -327,7 +327,7 @@ if(isset($_POST["submit"]) or $flag==1)
 		}
 		
 		$sql1="select doc_no,plan_lot_ref,lastup from $table where doc_no=\"".$docket."\"";
-		//echo $sql1."sdsd";
+		// echo $sql1;
 		$result1=mysqli_query($link, $sql1) or die("Error1234 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$doc_rows = mysqli_num_rows($result1);
 		

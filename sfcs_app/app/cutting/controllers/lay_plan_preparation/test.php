@@ -47,7 +47,7 @@ $(document).ready(function() {
 		if(style == null && schedule == null){
 			sweetAlert('Please Select Style and Schedule','','warning');
 		}
-		else if(schedule == ''){
+		else if(schedule == null){
 			sweetAlert('Please Select Schedule','','warning');
 			document.getElementById("submit").disabled = true;
 		}

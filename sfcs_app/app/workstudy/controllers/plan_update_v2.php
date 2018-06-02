@@ -22,7 +22,9 @@ input
 	border: none;
 	background-color:none;
 }
-
+.hidet{
+	display:none;
+}
 </style>
 <script>
 var option = document.getElementById('option');
@@ -110,14 +112,14 @@ function markchange(x)
 	//Added Validation for updating couple number between 1 to 6
 	if(couple_a[x].value < 1 || couple_a[x].value > 6)
 	{
-		alert("Enter Correct Value Between 1 To 6");
+		swal("Enter Correct Value Between 1 To 6","","warning");
 		couple_a[x].value=1;
 	}
 	
 	//Added Validation for updating couple number between 1 to 6
 	if(couple_b[x].value < 1 || couple_b[x].value > 6)
 	{
-		alert("Enter Correct Value Between 1 To 6");
+		swal("Enter Correct Value Between 1 To 6","","warning");
 		couple_b[x].value=1;
 	}
 	
@@ -364,7 +366,7 @@ $max_allowed_date=date("Y-m-d");
 	
 	echo '></div><br/></td><td colspan=14><strong>Plan Update Panel</strong></td></tr>
 	
-	<tr><th>Module</th>	<th>Section</th><th>Style</th><th>SMV</th><th>NOP</th><th>ADD/Eff%</th><th>Team A <br/>Plan Eff</th><th>Team A <br/>Plan Pro</th>
+	<tr><th>Module</th>	<th class="hidet">Section</th><th class="hidet">Style</th><th class="hidet">SMV</th><th class="hidet">NOP</th><th class="hidet">ADD/Eff%</th><th>Team A <br/>Plan Eff</th><th>Team A <br/>Plan Pro</th>
 	<th>Team A <br/>Plan Clock Hours</th>
 	<th>Team A <br/>Plan SAH</th>
 	<th>Team A <br/>Plan Hours</th><th>Team A <br/>Plan Couple</th><th>Fixed <br/>NOP</th><th>SMV</th><th>NOP</th><th>Team B <br/>Plan Eff</th>	<th>Team B <br/>Plan Pro</th>
@@ -437,13 +439,13 @@ $max_allowed_date=date("Y-m-d");
 			}
 			echo "<tr>";
 			echo '<td bgcolor=\"#99FFDD\" style="color: #FFFFFF">'.$module.'<input type="hidden" name="module[]" value="'.$module.'"></td>';
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test(event, this.name)" name="section[]" value="'.$sec_no.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_alpha_numeric(event, this.name)" name="style[]" value="'.$bac_style.'" size="3" onChange="markchange('.$x.')" id="alpha_style"></td>';
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" value="'.$nop.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#000000\"><input type="text" onkeyup="return pop_test(event, this.name)" name="plan_eff_ex[]" value="'.$plan_eff_ex.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_a[]" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" '.$bgcolor_tag.' name="pro_a[]" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="section[]" value="'.$sec_no.'" size="3" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_alpha_numeric(event, this.name)" name="style[]" value="'.$bac_style.'" size="3" onChange="markchange('.$x.')" id="alpha_style"></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#000000\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="plan_eff_ex[]" value="'.$plan_eff_ex.'" size="3" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_a[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" '.$bgcolor_tag.' name="pro_a[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
 			
 			echo '<td bgcolor=\"#fa1212\"><input type="text" onkeyup="return pop_test(event, this.name)" name="clh_a[]" value="'.$plan_clh.'" size="4" onChange="markchange('.$x.')"></td>';
 			
@@ -451,8 +453,8 @@ $max_allowed_date=date("Y-m-d");
 			
 			
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="hrs_a[]" value="'.$act_hours.'" size="4" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="couple_a[]" value="'.$couple.'" size="4" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor="#FFAA00"><input type="text" onkeyup="return pop_test(event, this.name)" name="fix_nop_a[]" value="'.$fix_nop.'" size="4" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="couple_a[]" class="integer" value="'.$couple.'" size="4" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor="#FFAA00"><input type="text" onkeyup="return pop_test(event, this.name)" name="fix_nop_a[]" class="integer" value="'.$fix_nop.'" size="4" onChange="markchange('.$x.')"></td>';
 		}
 		
 		if($shift=="B")
@@ -463,9 +465,9 @@ $max_allowed_date=date("Y-m-d");
 				$couple=1;
 			}
 			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv1[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop1[]" value="'.$nop.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FF88\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_b[]" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FF88\"><input type="text" '.$bgcolor_tag.' onkeyup="return pop_test(event, this.name)" name="pro_b[]" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" onkeyup="return pop_test(event, this.name)" name="nop1[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FF88\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_b[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FF88\"><input type="text" '.$bgcolor_tag.' onkeyup="return pop_test(event, this.name)" name="pro_b[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
 			
 			echo '<td bgcolor=\"#fa1212\"><input type="text" onkeyup="return pop_test(event, this.name)" name="clh_b[]" value="'.$plan_clh.'" size="4" onChange="markchange('.$x.')"></td>';
 			
@@ -473,8 +475,8 @@ $max_allowed_date=date("Y-m-d");
 			
 			
 			echo '<td bgcolor=\"#99FF88\"><input type="text" onkeyup="return pop_test(event, this.name)" name="hrs_b[]" value="'.$act_hours.'" size="4" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FF88\"><input type="text" onkeyup="return pop_test(event, this.name)" name="couple_b[]" value="'.$couple.'" size="4" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor="#CC66CC"><input type="text" onkeyup="return pop_test(event, this.name)" name="fix_nop_b[]" value="'.$fix_nop.'" size="4" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FF88\"><input type="text" onkeyup="return pop_test(event, this.name)" name="couple_b[]" class="integer" value="'.$couple.'" size="4" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor="#CC66CC"><input type="text" onkeyup="return pop_test(event, this.name)" name="fix_nop_b[]" class="integer" value="'.$fix_nop.'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#99FF88\"><input type="text"  name="remarks[]" value="'.$remarks.'" size="15" onChange="markchange('.$x.')"><input type="hidden" name="check[]" value=""></td>';
 			echo "</tr>";
 			$x++;
@@ -568,14 +570,17 @@ if(isset($_POST['update']))
 		}
 	}
 	
-	$myFile = "log/".date("Y_m_d")."update_track.html";
+	$myFile = date("Y_m_d")."update_track.html";
+	echo $myFile;
 	$fh = fopen($myFile, 'a') or die("<span style='color:red;'><center>can't open file</center></span>");
 	$stringData = $note;
 	fwrite($fh, $stringData);
 	//Writing file
 	
-	echo "<h2><font color=\"green\">Successfully Updated.</font></h2>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"plan_update_v2.php\"; }</script>";
+	// echo "<h2><font color=\"green\">Successfully Updated.</font></h2>";
+	echo "<script>swal('Successfully Updated','','success');</script>";
+	$url=getFullURL($_GET['r'],'plan_update_v2.php','N');
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"$url\"; }</script>";
 }
 
 ?>

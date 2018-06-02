@@ -6,8 +6,9 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'header.php','R'));
 //2015-12-15/kirang/SR#32892081 /Issue: Recut quantity not adding to the count showing for panel form schedules. Fix:getting the values from audit log which has reported successfully under PS,PR operation. 
 
 //2015-06-10/kirang/SR#85030991 /Issue: vartion in value due to taking backup of data of m3_bulk_ops_rep_db.m3_sfcs_tran_log to m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup. Fix:getting the values from m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup table also and adding to the actual table. 
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0216",$username,1,$group_id_sfcs);
 // include("header.php");
 ?>
@@ -40,10 +41,10 @@ th{ background-color:#29759C; color:#FFF; padding:2px; border:1px solid #ccc; }
 td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; white-space:nowrap;}
 </style>
 -->
-<script type="text/javascript" src="<?= getFullURL($_GET['r'],'TableFilter_EN/filtergrid.css','R'); ?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/css/TableFilter_EN/filtergrid.css',3,'R'); ?>"></script>
 <!--<link href="style_new.css" rel="stylesheet" type="text/css" />-->
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'TableFilter_EN/tablefilter.js','R'); ?>"></script>
-<SCRIPT LANGUAGE="Javascript" SRC="<?= getFullURLLevel($_GET['r'],'Production_Live_Chart/backup/fusion_charts/FusionCharts.js',1,'R'); ?>"></SCRIPT>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/css/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<SCRIPT LANGUAGE="Javascript" SRC="<?= getFullURLLevel($_GET['r'],'common/js/FusionCharts.js',1,'R'); ?>"></SCRIPT>
 
 <!--<link rel="stylesheet" type="text/css" media="all" href="/sfcs/projects/Beta/movex_rep/reports/jsdatepick-calendar/jsDatePick_ltr.min.css" />
 <script type="text/javascript" src="/sfcs/projects/Beta/movex_rep/reports/jsdatepick-calendar/jsDatePick.min.1.3.js"></script>-->
@@ -66,7 +67,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 
 
 <!--<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'datetimepicker_css.js',0,'R'); ?>"></script>-->
-<link href=" <?= getFullURLLevel($_GET['r'],'styles/sfcs_styles.css',4,'R'); ?>" rel="stylesheet" type="text/css" />
+<link href=" <?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 
 <script>
 // function verify(e){
@@ -155,14 +156,14 @@ if(isset($_POST["submit"]))
 			</tr>";
 	$row_count = 0;
 	
-	$sqlt="SELECT distinct SCHEDULE FROM bai_emb_db where date(del_date) between \"".$sdate."\" and \"".$edate."\" ORDER BY description,psd";
+	$sqlt="SELECT distinct SCHEDULE FROM $bai_pro3.bai_emb_db where date(del_date) between \"".$sdate."\" and \"".$edate."\" ORDER BY description,psd";
 	// echo $sqlt."<br>";
 	$sql_resultt=mysqli_query($link, $sqlt) or exit("Sql Errort".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowt=mysqli_fetch_array($sql_resultt))
 	{
 		
 		$emb_sch=$sql_rowt["SCHEDULE"];
-		$sql="select * from bai_orders_db_confirm where  (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h) > 0 and order_del_no=".$emb_sch."";
+		$sql="select * from $bai_pro3.bai_orders_db_confirm where  (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h) > 0 and order_del_no=".$emb_sch."";
 		// echo $sql."<br>";
 		// mysqli_query($link, $sql) or exit("Sql Error".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -183,7 +184,7 @@ if(isset($_POST["submit"]))
 			$form="";
 			$garmnet_details="";
 			$garmnet_desc="";
-			$sql1="SELECT SCHEDULE,GROUP_CONCAT(DISTINCT SUBSTRING(color_size, 1, LENGTH(trim(color_size))-2)) AS gpdl,GROUP_CONCAT(DISTINCT description) AS des,DATE(psd) AS psd,DATE_SUB(DATE(psd),INTERVAL 6 DAY) AS pilot FROM bai_emb_db WHERE SCHEDULE=\"".$order_del_no."\"";
+			$sql1="SELECT SCHEDULE,GROUP_CONCAT(DISTINCT SUBSTRING(color_size, 1, LENGTH(trim(color_size))-2)) AS gpdl,GROUP_CONCAT(DISTINCT description) AS des,DATE(psd) AS psd,DATE_SUB(DATE(psd),INTERVAL 6 DAY) AS pilot FROM $bai_pro3.bai_emb_db WHERE SCHEDULE=\"".$order_del_no."\"";
 			// echo $sql1."<br>";
 			// mysqli_query($link, $sql1) or exit("Sql Error".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -195,7 +196,7 @@ if(isset($_POST["submit"]))
 				$pilot=$sql_row1["pilot"];
 			}
 			
-			$sql11="SELECT GROUP_CONCAT(\"'\",SUBSTRING(color_size, 1, LENGTH(trim(color_size))-2),\"'\") AS des FROM bai_emb_db WHERE SCHEDULE=\"".$order_del_no."\"";
+			$sql11="SELECT GROUP_CONCAT(\"'\",SUBSTRING(color_size, 1, LENGTH(trim(color_size))-2),\"'\") AS des FROM $bai_pro3.bai_emb_db WHERE SCHEDULE=\"".$order_del_no."\"";
 			// echo $sql1."<br>";
 			// mysqli_query($link, $sql11) or exit("Sql Error".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -204,7 +205,7 @@ if(isset($_POST["submit"]))
 				$garmnet_desc_ref=$sql_row11["des"];
 			}
 			
-			$sql13="SELECT GROUP_CONCAT(DISTINCT SCHEDULE) AS sch,min(DATE(psd)) AS psd FROM bai_emb_db WHERE SUBSTRING(color_size, 1, LENGTH(trim(color_size))-2) in (".$garmnet_desc_ref.")"; 
+			$sql13="SELECT GROUP_CONCAT(DISTINCT SCHEDULE) AS sch,min(DATE(psd)) AS psd FROM $bai_pro3.bai_emb_db WHERE SUBSTRING(color_size, 1, LENGTH(trim(color_size))-2) in (".$garmnet_desc_ref.")"; 
 			// echo $order_del_no."-".$sql13."<br>";
 			// mysqli_query($link, $sql13) or exit("Sql Error".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result13=mysqli_query($link, $sql13) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -216,7 +217,7 @@ if(isset($_POST["submit"]))
 			
 			$order_tid_ref=array();
 			$order_tid_ref2=array();
-			$sql131="SELECT REPLACE(order_tid,\" \",\"\") as order_tid FROM bai_orders_db WHERE order_del_no IN (".$sch_ref.")"; 
+			$sql131="SELECT REPLACE(order_tid,\" \",\"\") as order_tid FROM $bai_pro3.bai_orders_db WHERE order_del_no IN (".$sch_ref.")"; 
 			//echo $sql131."<br>";
 			// mysqli_query($link, $sql131) or exit("Sql Error".$sql131."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result131=mysqli_query($link, $sql131) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -233,7 +234,7 @@ if(isset($_POST["submit"]))
 			$order_tid_ref_implode=implode(",",$order_tid_ref);
 			//echo $order_tid_ref_implode."<br>";
 			
-			$sql23="select group_concat(tid) as cat_tid from cat_stat_log where REPLACE(order_tid,\" \",\"\") in (".$order_tid_ref_implode.") and category in (\"Body\",\"Front\")";
+			$sql23="select group_concat(tid) as cat_tid from $bai_pro3.cat_stat_log where REPLACE(order_tid,\" \",\"\") in (".$order_tid_ref_implode.") and category in (\"Body\",\"Front\")";
 			//echo $sql23."<br>";
 			// mysqli_query($link, $sql23) or exit("Sql Error".$sql23."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result23=mysqli_query($link, $sql23) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -243,7 +244,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$doc_remarks1=array();
-			$sql41="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s06+p_s08+p_s10+p_s12+p_s14+p_s16+p_s18+p_s20+p_s22+p_s24+p_s26+p_s28+p_s30)*a_plies AS doc_qty,doc_no,remarks FROM plandoc_stat_log WHERE cat_ref in (".$cat_ref2.") and act_cut_status=\"DONE\" GROUP BY doc_no";
+			$sql41="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s06+p_s08+p_s10+p_s12+p_s14+p_s16+p_s18+p_s20+p_s22+p_s24+p_s26+p_s28+p_s30)*a_plies AS doc_qty,doc_no,remarks FROM $bai_pro3.plandoc_stat_log WHERE cat_ref in (".$cat_ref2.") and act_cut_status=\"DONE\" GROUP BY doc_no";
 			//echo $order_del_no."-".$sql4."<br>";
 			$result41=mysqli_query($link, $sql41) or exit("Sql Error4".$sql41."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row41=mysqli_fetch_array($result41))
@@ -251,7 +252,7 @@ if(isset($_POST["submit"]))
 				$doc_remarks1[]=$row41["remarks"];
 			}
 			
-			$sql3="select group_concat(tid) as cat_tid from cat_stat_log where order_tid=\"".$order_tid."\" and category in (\"Body\",\"Front\")";
+			$sql3="select group_concat(tid) as cat_tid from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and category in (\"Body\",\"Front\")";
 			// mysqli_query($link, $sql3) or exit("Sql Error".$sql3."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -263,7 +264,7 @@ if(isset($_POST["submit"]))
 			$cut_total_qty=0;
 			
 			$doc_remarks=array();
-			$sql4="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s06+p_s08+p_s10+p_s12+p_s14+p_s16+p_s18+p_s20+p_s22+p_s24+p_s26+p_s28+p_s30)*a_plies AS doc_qty,doc_no,remarks FROM plandoc_stat_log WHERE cat_ref in (".$cat_ref.") and act_cut_status=\"DONE\" GROUP BY doc_no";
+			$sql4="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s06+p_s08+p_s10+p_s12+p_s14+p_s16+p_s18+p_s20+p_s22+p_s24+p_s26+p_s28+p_s30)*a_plies AS doc_qty,doc_no,remarks FROM $bai_pro3.plandoc_stat_log WHERE cat_ref in (".$cat_ref.") and act_cut_status=\"DONE\" GROUP BY doc_no";
 			//echo $order_del_no."-".$sql4."<br>";
 			$result4=mysqli_query($link, $sql4) or exit("Sql Error4".$sql4."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row4=mysqli_fetch_array($result4))
@@ -273,7 +274,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$recut_total_qty=0;
-			$sql5="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='cut' and sfcs_status in (30,60)";
+			$sql5="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='cut' and sfcs_status in (30,60)";
 			
 			$result5=mysqli_query($link, $sql5) or exit("Sql Error5".$sql5."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row5=mysqli_fetch_array($result5))
@@ -282,7 +283,7 @@ if(isset($_POST["submit"]))
 			
 			}
 			
-			$sql5_backup="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='cut' and sfcs_status in (30,60)";
+			$sql5_backup="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='cut' and sfcs_status in (30,60)";
 			
 			$result5_backup=mysqli_query($link, $sql5_backup) or exit("Sql Error5".$sql5_backup."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row5_backup=mysqli_fetch_array($result5_backup))
@@ -295,7 +296,7 @@ if(isset($_POST["submit"]))
 			
 			
 			$recut_total_print_input_qty=0;
-			$sql6="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='PS' and sfcs_status in (30,60)";
+			$sql6="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='PS' and sfcs_status in (30,60)";
 			
 			$result6=mysqli_query($link, $sql6) or exit("Sql Error6".$sql6."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row6=mysqli_fetch_array($result6))
@@ -305,7 +306,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			
-			$sql6_backup="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='PS' and sfcs_status in (30,60)";
+			$sql6_backup="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='PS' and sfcs_status in (30,60)";
 			
 			$result6_backup=mysqli_query($link, $sql6_backup) or exit("Sql Error6".$sql6_backup."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row6_backup=mysqli_fetch_array($result6_backup))
@@ -318,7 +319,7 @@ if(isset($_POST["submit"]))
 			
 			
 			$recut_total_input_qty=0;
-			$sql6="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='SIN' and sfcs_status in (30,60)";
+			$sql6="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='SIN' and sfcs_status in (30,60)";
 			
 			$result6=mysqli_query($link, $sql6) or exit("Sql Error6".$sql6."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row6=mysqli_fetch_array($result6))
@@ -327,7 +328,7 @@ if(isset($_POST["submit"]))
 			
 			}
 			
-			$sql6_backup="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='SIN' and sfcs_status in (30,60)";
+			$sql6_backup="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='SIN' and sfcs_status in (30,60)";
 			
 			$result6_backup=mysqli_query($link, $sql6_backup) or exit("Sql Error6".$sql6_backup."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row6_backup=mysqli_fetch_array($result6_backup))
@@ -340,7 +341,7 @@ if(isset($_POST["submit"]))
 			$recut_total_input_qty=$recut_total_input_qty+$recut_total_input_qty_backup;
 			
 			$recut_total_output_qty=0;
-			$sql7="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='SOT' and sfcs_status in (30,60)";
+			$sql7="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='SOT' and sfcs_status in (30,60)";
 			
 			$result7=mysqli_query($link, $sql7) or exit("Sql Error7".$sql7."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row7=mysqli_fetch_array($result7))
@@ -350,7 +351,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			
-			$sql7_backup="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='SOT' and sfcs_status in (30,60)";
+			$sql7_backup="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='SOT' and sfcs_status in (30,60)";
 			
 			$result7_backup=mysqli_query($link, $sql7_backup) or exit("Sql Error7".$sql7_backup."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row7_backup=mysqli_fetch_array($result7_backup))
@@ -362,7 +363,7 @@ if(isset($_POST["submit"]))
 			$recut_total_output_qty=$recut_total_output_qty+$recut_total_output_qty_backup;
 			
 			$recut_total_print_output_qty=0;
-			$sql8="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='PR' and sfcs_status in (30,60)";
+			$sql8="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='PR' and sfcs_status in (30,60)";
 			
 			$result8=mysqli_query($link, $sql8) or exit("Sql Error8".$sql8."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row8=mysqli_fetch_array($result8))
@@ -371,7 +372,7 @@ if(isset($_POST["submit"]))
 			
 			}
 			
-			$sql8_backup="SELECT sum(sfcs_qty) as qty FROM m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='PR' and sfcs_status in (30,60)";
+			$sql8_backup="SELECT sum(sfcs_qty) as qty FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where sfcs_schedule=".$order_del_no." and sfcs_job_no like '%R%' and m3_op_des='PR' and sfcs_status in (30,60)";
 			
 			$result8_backup=mysqli_query($link, $sql8_backup) or exit("Sql Error8".$sql8_backup."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row8_backup=mysqli_fetch_array($result8_backup))
@@ -402,7 +403,7 @@ if(isset($_POST["submit"]))
 			$emb_panel_out1=0;
 			
 			
-			$sql2x="select COALESCE(SUM(ims_qty),0) as in_qty,COALESCE(SUM(ims_pro_qty),0) as out_qty from bai_pro3.ims_log where ims_cid in (".$cat_ref.")  and ims_mod_no > 0";
+			$sql2x="select COALESCE(SUM(ims_qty),0) as in_qty,COALESCE(SUM(ims_pro_qty),0) as out_qty from $bai_pro3.ims_log where ims_cid in (".$cat_ref.")  and ims_mod_no > 0";
 			//echo $order_del_no."-".$sql2x."<br>";
 			$sql_result2x=mysqli_query($link, $sql2x) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2x=mysqli_fetch_array($sql_result2x))
@@ -411,7 +412,7 @@ if(isset($_POST["submit"]))
 				$sewing_out_qty=$sql_row2x["out_qty"];					
 			}
 			
-			$sql2xx="select COALESCE(SUM(ims_qty),0) as in_qty,COALESCE(SUM(ims_pro_qty),0) as out_qty from bai_pro3.ims_log_backup where ims_cid in (".$cat_ref.") and ims_mod_no > 0";
+			$sql2xx="select COALESCE(SUM(ims_qty),0) as in_qty,COALESCE(SUM(ims_pro_qty),0) as out_qty from $bai_pro3.ims_log_backup where ims_cid in (".$cat_ref.") and ims_mod_no > 0";
 			//echo $order_del_no."-".$sql2xx."<br>";
 			$sql_result2xx=mysqli_query($link, $sql2xx) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2xx=mysqli_fetch_array($sql_result2xx))
@@ -420,28 +421,28 @@ if(isset($_POST["submit"]))
 				$sewing_out_qty1=$sql_row2xx["out_qty"];					
 			}
 			
-			$sql3="SELECT COALESCE(SUM(ims_qty),0) AS emb_in FROM ims_log where ims_cid in (".$cat_ref.") AND ims_mod_no <= 0";
+			$sql3="SELECT COALESCE(SUM(ims_qty),0) AS emb_in FROM $bai_pro3.ims_log where ims_cid in (".$cat_ref.") AND ims_mod_no <= 0";
 			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row3=mysqli_fetch_array($sql_result3))
 			{
 				$emb_panel_in=$sql_row3["emb_in"];
 			}
 			
-			$sql3x="SELECT COALESCE(SUM(ims_qty),0) AS emb_in FROM ims_log_backup where ims_cid in (".$cat_ref.") AND ims_mod_no <= 0";
+			$sql3x="SELECT COALESCE(SUM(ims_qty),0) AS emb_in FROM $bai_pro3.ims_log_backup where ims_cid in (".$cat_ref.") AND ims_mod_no <= 0";
 			$sql_result3x=mysqli_query($link, $sql3x) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row3x=mysqli_fetch_array($sql_result3x))
 			{
 				$emb_panel_in1=$sql_row3x["emb_in"];
 			}
 			
-			$sql3="SELECT COALESCE(SUM(ims_qty),0) AS emb_in FROM ims_log where ims_cid in (".$cat_ref.") AND ims_status IN (\"EPC\")";
+			$sql3="SELECT COALESCE(SUM(ims_qty),0) AS emb_in FROM $bai_pro3.ims_log where ims_cid in (".$cat_ref.") AND ims_status IN (\"EPC\")";
 			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row3=mysqli_fetch_array($sql_result3))
 			{
 				$emb_panel_out=$sql_row3["emb_in"];
 			}
 			
-			$sql3x="SELECT COALESCE(SUM(ims_qty),0) AS emb_in FROM ims_log_backup where ims_cid in (".$cat_ref.") AND ims_status IN (\"EPC\")";
+			$sql3x="SELECT COALESCE(SUM(ims_qty),0) AS emb_in FROM $bai_pro3.ims_log_backup where ims_cid in (".$cat_ref.") AND ims_status IN (\"EPC\")";
 			$sql_result3x=mysqli_query($link, $sql3x) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row3x=mysqli_fetch_array($sql_result3x))
 			{
@@ -449,7 +450,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$scanned_qty=0;
-			$sql321="SELECT COALESCE(SUM(carton_act_qty),0) as scan_qty FROM packing_summary where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$order_col_des."\" and status=\"DONE\"";
+			$sql321="SELECT COALESCE(SUM(carton_act_qty),0) as scan_qty FROM $bai_pro3.packing_summary where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$order_col_des."\" and status=\"DONE\"";
 			$sql_result321=mysqli_query($link, $sql321) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row321=mysqli_fetch_array($sql_result321))
 			{
@@ -457,7 +458,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$emb_garment_in=0;
-			$sql32="SELECT COALESCE(SUM(carton_act_qty),0) as emb_in FROM packing_summary where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$order_col_des."\" and status in (\"EGR\",\"EGC\",\"EGI\")";
+			$sql32="SELECT COALESCE(SUM(carton_act_qty),0) as emb_in FROM $bai_pro3.packing_summary where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$order_col_des."\" and status in (\"EGR\",\"EGC\",\"EGI\")";
 			$sql_result32=mysqli_query($link, $sql32) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row32=mysqli_fetch_array($sql_result32))
 			{
@@ -465,7 +466,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$emb_garment_in1=0;
-			$sql4="select COALESCE(sum(qms_qty),0) as qty from bai_emb_excess_db WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\"";
+			$sql4="select COALESCE(sum(qms_qty),0) as qty from $bai_pro3.bai_emb_excess_db WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\"";
 			$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error4 =".$sql4."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row4=mysqli_fetch_array($sql_result4))
 			{
@@ -473,7 +474,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$emb_garment_out=0;
-			$sql32x="SELECT COALESCE(SUM(carton_act_qty),0) as emb_out FROM packing_summary where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$order_col_des."\" and status in (\"EGI\")";
+			$sql32x="SELECT COALESCE(SUM(carton_act_qty),0) as emb_out FROM $bai_pro3.packing_summary where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$order_col_des."\" and status in (\"EGI\")";
 			$sql_result32x=mysqli_query($link, $sql32x) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row32x=mysqli_fetch_array($sql_result32x))
 			{
@@ -481,7 +482,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$emb_garment_out1=0;
-			$sql4="select COALESCE(sum(qms_qty),0) as qty from bai_qms_db WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\" and qms_tran_type=5 and remarks=\"ENP\"";
+			$sql4="select COALESCE(sum(qms_qty),0) as qty from $bai_pro3.bai_qms_db WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\" and qms_tran_type=5 and remarks=\"ENP\"";
 			$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error4 =".$sql4."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row4=mysqli_fetch_array($sql_result4))
 			{
@@ -489,7 +490,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$rejection_qty=0;
-			$sql4="select COALESCE(sum(qms_qty),0) as qty from bai_qms_db WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\" and SUBSTRING_INDEX(remarks,'-',1)=\"ENP\" AND qms_tran_type=3";
+			$sql4="select COALESCE(sum(qms_qty),0) as qty from $bai_pro3.bai_qms_db WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\" and SUBSTRING_INDEX(remarks,'-',1)=\"ENP\" AND qms_tran_type=3";
 			$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error4 =".$sql4."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row4=mysqli_fetch_array($sql_result4))
 			{
@@ -497,7 +498,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$rejection_qty1=0;
-			$sql41="select COALESCE(sum(qms_qty),0) as qty from bai_qms_db_archive WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\" and SUBSTRING_INDEX(remarks,'-',1)=\"ENP\" AND qms_tran_type=3";
+			$sql41="select COALESCE(sum(qms_qty),0) as qty from $bai_pro3.bai_qms_db_archive WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\" and SUBSTRING_INDEX(remarks,'-',1)=\"ENP\" AND qms_tran_type=3";
 			$sql_result41=mysqli_query($link, $sql41) or exit("Sql Error4 =".$sql41."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row41=mysqli_fetch_array($sql_result41))
 			{
@@ -505,7 +506,7 @@ if(isset($_POST["submit"]))
 			}
 			
 			$good_exc_qty=0;
-			$sql4x="select COALESCE(sum(qms_qty),0) as qty from bai_qms_db WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\" and remarks=\"FG\" AND qms_tran_type=5";
+			$sql4x="select COALESCE(sum(qms_qty),0) as qty from $bai_pro3.bai_qms_db WHERE qms_schedule=\"".$order_del_no."\" and qms_color=\"".$order_col_des."\" and remarks=\"FG\" AND qms_tran_type=5";
 			$sql_result4x=mysqli_query($link, $sql4x) or exit("Sql Error4 =".$sql4."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row4x=mysqli_fetch_array($sql_result4x))
 			{
@@ -542,7 +543,7 @@ if(isset($_POST["submit"]))
 			if($style_letter == "M")
 			{
 				//$buyer_id="M&S";
-				$sql="select * from bai_orders_db where order_del_no=\"".$style."\" AND order_div LIKE \"%T61%\"";
+				$sql="select * from $bai_pro3.bai_orders_db where order_del_no=\"".$style."\" AND order_div LIKE \"%T61%\"";
 				// echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or mysqli_error("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				//IF COUNT OF T61 STYLE > 0 STYLE CODE IS MS-T61 ELSE STYLE CODE IS MS-T14

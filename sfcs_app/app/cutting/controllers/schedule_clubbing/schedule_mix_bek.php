@@ -64,7 +64,7 @@ function check_all()
 	//var color=document.getElementById('color').value;
 	if(style=='NIL' || sch=='NIL')
 	{
-		sweetAlert('Please Enter style and Schedule','','warning');
+		sweetAlert('Please Select Schedule','','warning');
 		return false;
 	}
 	else
@@ -77,7 +77,7 @@ function check_sch()
 	var style=document.getElementById('style').value;
 	if(style=='NIL' )
 	{
-		sweetAlert('Please Enter Style First','','warning');
+		sweetAlert('Please Select Style First','','warning');
 		return false;
 	}
 	else
@@ -373,7 +373,7 @@ if(isset($_POST['submit']))
 			    echo "<h3>Clubbed Schedule Details</h3>"; 
 			    while($sql_row452=mysqli_fetch_array($sql_result452)) 
                 { 
-                    echo "<table class=\"table table-bordered\"><tr><th>Style </th><th>Schedule No</th><th>Color</th><th> Original Colours</th>"; 
+                    echo "<table class=\"table table-bordered\"><tr><th>Style </th><th>Schedule No</th><th>New Color</th><th> Original Colours</th>"; 
                     for($kl=0;$kl<sizeof($sizes_array);$kl++) 
                     { 
                         if($sql_row452["title_size_".$sizes_array[$kl].""]<>'') 
@@ -385,14 +385,19 @@ if(isset($_POST['submit']))
                     echo "</tr>"; 
 					$order_joinss=substr($sql_row452["order_col_des"],-1);
                     echo "<tr><td>".$sql_row452["order_style_no"]."</td><td>".$sql_row452["order_del_no"]."</td><td>".$sql_row452["order_col_des"]."</td>"; 
-                    $sql453="select group_concat(order_col_des)  as org_col  from $bai_pro3.bai_pro3.bai_orders_db_confirm where order_joins='".$order_joinss."' and order_del_no=\"".$schedule."\""; 
+                    $sql453="select order_col_des as org_col  from $bai_pro3.bai_orders_db_confirm where order_joins='".$order_joinss."' and order_del_no=\"".$schedule."\""; 
 					//echo $sql453."<br>";
-                    $sql_result453=mysqli_query($link, $sql453) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"])); 
+					$old_colors = array();
+                    $sql_result453=mysqli_query($link, $sql453) or die("Error6.7".$sql452.mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row453=mysqli_fetch_array($sql_result453)) 
-                    {         
-                        echo "<td>".$sql_row453["org_col"]."</td>"; 
-                    } 
-                    //echo "</tr>"; 
+                    {    
+                    	$old_colors[] = $sql_row453["org_col"];
+                    }
+                    echo '<td>';
+                    for ($i=0; $i < sizeof($old_colors); $i++) { 
+                    	echo $old_colors[$i].'<br>';
+                    }
+                    echo "</td>"; 
                      
                     for($kll=0;$kll<sizeof($sizes_code_tmp);$kll++) 
                     { 
@@ -463,7 +468,7 @@ if(isset($_POST['fix']))
 	//echo  $unique_orginal_sizes1."--".$unique_sizes1."<br>";
     $unique_orginal_sizes_explode1=explode(",",$unique_orginal_sizes1); 
     $unique_sizes_explode1=explode(",",$unique_sizes1); 
-    if(sizeof($selected)>=1) 
+    if(sizeof($selected)>1) 
     { 
 		$sql23="select max(order_joins) as maxorder from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" "; 
         $sql_result23=mysqli_query($link, $sql23) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -497,13 +502,13 @@ if(isset($_POST['fix']))
 			 
 			$sql17="SELECT order_tid,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_col_des IN 
 			('".implode("','",$selected)."') AND order_del_no='$schedule') GROUP BY order_tid ORDER BY cnt DESC LIMIT 1"; 
-			$sql_result17=mysqli_query($link, $sql17) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			$sql_result17=mysqli_query($link, $sql17) or exit("Sql Error C".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row17=mysqli_fetch_array($sql_result17)) 
 			{ 
 				$order_tid=$sql_row17['order_tid'];
-				$sql11="SELECT * from $bai_pro3.bai_pro3.bai_orders_db where order_tid='$order_tid'"; 
+				$sql11="SELECT * from $bai_pro3.bai_orders_db where order_tid='$order_tid'"; 
 				//echo $sql."<br><br>"; 
-				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error B".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row11=mysqli_fetch_array($sql_result11)) 
 				{ 
 					$order_col_dess=$sql_row11['order_col_des'];
@@ -512,7 +517,7 @@ if(isset($_POST['fix']))
 			}
 			$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'"; 
 			// echo $sql."<br><br>"; 
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
 				//echo $tid."<br>"; 
@@ -547,8 +552,7 @@ if(isset($_POST['fix']))
                 { 
                     
 					//echo $unique_orginal_sizes_explode1[$q11]."----".$unique_sizes_explode1[$q21]."<br>";
-					$sql611="select sum(order_s_".$unique_sizes_explode1[$q21].") as order_qty,title_size_".$unique_sizes_explode1[$q21]." as size, 
-                    order_del_no,order_col_des from $bai_pro3.bai_orders_db where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\" group by order_col_des";     
+					$sql611="select sum(order_s_".$unique_sizes_explode1[$q21].") as order_qty,title_size_".$unique_sizes_explode1[$q21]." as size, order_del_no,order_col_des from $bai_pro3.bai_orders_db where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\" group by order_col_des";     
                    // echo "<br>Query".$q11."-".$q21."=".$sql611."<br>"; 
                     $result611=mysqli_query($link, $sql611) or die("Error3 = ".$sql611.mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($row611=mysqli_fetch_array($result611)) 
@@ -575,8 +579,8 @@ if(isset($_POST['fix']))
                 } 
                  
             } 
-			echo "<table class='table table-bordered'><tr><th>Style	</th><th>Schedule No</th><th>New Colour</th></tr>"; 
-			echo "<tr><td>".$style."</td><td>".$schedule."</td><td>".$cols."</td></tr></table>";
+			// echo "<table class='table table-bordered'><tr><th>Style	</th><th>Schedule No</th><th>New Colour</th></tr>"; 
+			// echo "<tr><td>".$style."</td><td>".$schedule."</td><td>".$cols."</td></tr></table>";
             // echo "<h2>Style: $style</h2>"; 
             // echo "<h2>Schedule: $schedule</h2>"; 
             // echo "<h2>New Colour: $cols</h2>"; 
@@ -586,12 +590,12 @@ if(isset($_POST['fix']))
             // echo "<h2>Successfully Completed.</h2>";     
              
             $sql451="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des=\"".$cols."\""; 
-            $sql_result451=mysqli_query($link, $sql451) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"])); 
+            $sql_result451=mysqli_query($link, $sql451) or die("Error963".$sql451.mysqli_error($GLOBALS["___mysqli_ston"])); 
             if(mysqli_num_rows($sql_result451)>0) 
             { 
                 while($sql_row451=mysqli_fetch_array($sql_result451)) 
                 { 
-                    echo "<table class='table table-bordered'><tr><th>Style	</th><th>Schedule No</th><th>Colour</th><th>Original Colours</th>"; 
+                    echo "<table class='table table-bordered'><tr><th>Style	</th><th>Schedule No</th><th>New Colour</th><th>Original Colours</th>"; 
                     for($kk=0;$kk<sizeof($sizes_array);$kk++) 
                     { 
                         if($sql_row451["title_size_".$sizes_array[$kk].""]<>'') 
@@ -601,13 +605,20 @@ if(isset($_POST['fix']))
                         }             
                     } 
                     echo "</tr>"; 
+                    $old_colors1 = array();
                     echo "<tr><td>".$sql_row451["order_style_no"]."</td><td>".$sql_row451["order_del_no"]."</td><td>".$sql_row451["order_col_des"]."</td>"; 
-                    $sql457="select group_concat(order_col_des) as order_col from $bai_pro3.bai_orders_db_confirm where order_joins='".$maxorder."' and order_col_des in ('".implode("','",$selected)."')"; 
-                    $sql_result457=mysqli_query($link, $sql457) or die("Error".$sql457.mysqli_error($GLOBALS["___mysqli_ston"])); 
+                    $sql457="select order_col_des as order_col from $bai_pro3.bai_orders_db_confirm where order_joins='".$maxorder."' and order_col_des in ('".implode("','",$selected)."')"; 
+                    $sql_result457=mysqli_query($link, $sql457) or die("Error47".$sql457.mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row457=mysqli_fetch_array($sql_result457)) 
-                    {         
-                        echo "<td>".$sql_row457["order_col"]."</td>"; 
-                    } 
+                    {      
+                    	$old_colors1[] = $sql_row457["order_col"];   
+                        // echo "<td>".$sql_row457["order_col"]."</td>"; 
+                    }
+                    echo '<td>';
+                    for ($i=0; $i < sizeof($old_colors1); $i++) { 
+                    	echo $old_colors1[$i].'<br>';
+                    }
+                    echo "</td>"; 
                     for($kkk=0;$kkk<sizeof($sizes_code_tmp);$kkk++) 
                     { 
                         echo "<td>".$sql_row451["order_s_".$sizes_code_tmp[$kkk].""]."</td>"; 
@@ -629,7 +640,7 @@ if(isset($_POST['fix']))
 
         $sql45="select * from $bai_pro3.orders_club_schedule where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
         //echo $sql45."<br>"; 
-        $sql_result45=mysqli_query($link, $sql45) or die("Error".$sql45.mysqli_error($GLOBALS["___mysqli_ston"])); 
+        $sql_result45=mysqli_query($link, $sql45) or die("Error14".$sql45.mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row45=mysqli_fetch_array($sql_result45)) 
         { 
             $order_del_no_ref=$sql_row45["order_del_no"]; 
@@ -648,11 +659,11 @@ if(isset($_POST['fix']))
                 //echo $original_size_code_ref_explode[$i1]."<br>"; 
                 $sql46="update $bai_pro3.bai_orders_db set order_s_".$original_size_code_ref_explode[$i1]."='".$order_qty_ref_explode[$i1]."',old_order_s_".$original_size_code_ref_explode[$i1]."='".$order_qty_ref_explode[$i1]."',title_size_".$original_size_code_ref_explode[$i1]."=\"".$size_code_ref_explode[$i1]."\" where order_del_no=\"".$order_del_no_ref."\" and order_col_des=\"".$order_col_des_ref."\" and destination=\"".$destination_ref."\""; 
                 //echo $sql46."<br>"; 
-                mysqli_query($link, $sql46) or die("Error".$sql46.mysqli_error($GLOBALS["___mysqli_ston"])); 
+                mysqli_query($link, $sql46) or die("Error1111".$sql46.mysqli_error($GLOBALS["___mysqli_ston"])); 
                  
                 $sql47="update $bai_pro3.bai_orders_db_confirm set order_s_".$original_size_code_ref_explode[$i1]."='".$order_qty_ref_explode[$i1]."',old_order_s_".$original_size_code_ref_explode[$i1]."='".$order_qty_ref_explode[$i1]."',title_size_".$original_size_code_ref_explode[$i1]."=\"".$size_code_ref_explode[$i1]."\" where order_del_no=\"".$order_del_no_ref."\" and order_col_des=\"".$order_col_des_ref."\" and destination=\"".$destination_ref."\""; 
                 //echo $sql47."<br>"; 
-               mysqli_query($link, $sql47) or die("Error".$sql47.mysqli_error($GLOBALS["___mysqli_ston"])); 
+               mysqli_query($link, $sql47) or die("Error11".$sql47.mysqli_error($GLOBALS["___mysqli_ston"])); 
             } 
              
         } 
@@ -661,11 +672,9 @@ if(isset($_POST['fix']))
     { 
         // echo "Please select more than one schedule for clubbing."; 
         echo "<script type=\"text/javascript\"> 
-                        sweetAlert('Please select more than one schedule for clubbing.','','warning');
+                        sweetAlert('You cannot proceed Schedule Clubbing with One Colour.','','warning');
                     </script>"; 
-    } 
-     
-         
+    }      
      
 } 
 

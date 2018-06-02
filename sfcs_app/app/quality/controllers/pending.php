@@ -5,48 +5,18 @@ Description: Here AQL team will be update Garments Approve or Rejected status.
 
 -->
 <?php
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
-// include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-// include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
+include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 $view_access=user_acl("SFCS_0140",$username,1,$group_id_sfcs);
 //include("security1.php");
 ?>
 <html>
 <head>
 <title>FCA Status Update </title>
-<style type="text/css" media="screen">
 
-/*====================================================
-	- HTML Table Filter stylesheet
-=====================================================*/
-
-/*====================================================
-	- General html elements
-=====================================================*/
-body{ 
-	margin:15px; padding:15px; border:1px solid #666;
-	font-family:Arial, Helvetica, sans-serif; font-size:88%; 
-}
-h2{ margin-top: 50px; }
-caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
-pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1px solid #ccc;  }
-.mytable{
-	width:100%; font-size:12px;
-	border:1px solid #ccc;
-}
-th{ background-color:#29759c; color:#FFF; padding:2px; border:1px solid #ccc; }
-td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
-</style>
-
-
-<script src="../../../common/js/jquery.min.js"></script>
-
-<link rel="stylesheet" href="../common/css/boot_css/bootstrap.css" type="text/css" media="all" />
-<link rel="stylesheet" href="../common/css/boot_css/bootstrap.min.css" type="text/css" media="all" />
-<link rel="stylesheet" href="../common/css/boot_css/bootstrap-theme.css" type="text/css" media="all" />
-<link rel="stylesheet" href="../common/css/boot_css/bootstrap-theme.min.css" type="text/css" media="all" />
 
 
 
@@ -107,23 +77,30 @@ function firstbox()
 <div class="panel panel-primary">
 <div class="panel-heading">FCA Pending List</div>
 <div class="panel-body">
-<form name="test" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+<form name="test" method="post" action="<?php $_GET['r']; ?>">
 
-Schedule No: <input type="text" size=5  id="schedule" name='schedule'
+<div class='col-md-3'>
+  <label>Schedule No:</label>
+  <input type="text" class='form-control integer' size=5  id="schedule" name='schedule'
   onblur="javascript:  show_content(schedule);" value="" required>
-
-<span id='show_content'></span>
-<input type="submit" name="filter" value="Show" class="btn btn-primary" id='btn' style='display: none'> 
+</div>
+<div class='col-md-4'>
+  <span id='show_content'></span>
+</div>
+<div class='col-md-1'>
+	<label><br/></label>
+	<input type="submit" name="filter" value="Show" class="btn btn-primary" id='btn' style='display: none'>
+</div> 
 </form>
 
-
+<?php $url=getFullURL($_GET['r'],'pending_ajax.php','R') ?>
 <script type='text/javascript'>
 function show_content(schedule, colors)
 {
 	var get_schedule_id=$(schedule).val();
 	// alert(get_schedule_id);
 	if(get_schedule_id != '') {
-		$.post('pending_ajax.php',{get_id:get_schedule_id, color: colors},function(result)
+		$.post('<?= $url ?>',{get_id:get_schedule_id, color: colors},function(result)
 		{
 			$("#show_content").html(result);
 			$('#btn').show();
@@ -136,11 +113,16 @@ function show_content(schedule, colors)
 
 <?php
 
-if(isset($_POST['schedule']) or isset($_POST['filter']))
+if(isset($_POST['schedule']) or isset($_POST['filter']) or isset($_GET['schedule']))
 {
-$schedule=$_POST['schedule'];
-
-$color= $_POST['color'];
+    if(isset($_POST['schedule'])){
+		$schedule=$_POST['schedule'];
+		$color= $_POST['color'];
+	}
+	if(isset($_GET['schedule'])){
+		$schedule=$_GET['schedule'];
+		$color = $_GET['color'];
+	}
 
 // echo " <br/> schedule=".$schedule;
 
@@ -158,8 +140,12 @@ $no_of_rows = mysqli_num_rows($sql_result);
 if($no_of_rows > 0) {
 	echo "<table id=\"table1\" cellspacing=\"0\" class=\"table table-bordered\">";
 	echo "<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Audit Pending</th><th>Re-Check Pending</th><th>Controls</th><th>Controls</th><th>Controls</th></tr>";
+    $url1=getFullURL($_GET['r'],'recheck.php','N');
+    $url2=getFullURL($_GET['r'],'approve.php','N');
+    $url3=getFullURL($_GET['r'],'rejects_v2.php','N');
+    $url4=getFullURL($_GET['r'],'approve_all.php','N');
 
-	while($sql_row=mysqli_fetch_array($sql_result))
+ 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$style=$sql_row['order_style_no'];
 		$schedule=$sql_row['order_del_no'];
@@ -169,15 +155,16 @@ if($no_of_rows > 0) {
 		
 		echo "<tr><td>$style</td><td>$schedule</td><td>$color_val</td><td>$audit_pending</td>";
 		
+
 		if($recheck<0)
 		{
 			if($color=='0')
 			{
-			echo "<td><a href=\"recheck.php?style=$style&schedule=$schedule&color=0\">$recheck</a></td>";
+			echo "<td><a href=\"$url1&style=$style&schedule=$schedule&color=0\">$recheck</a></td>";
 			}
 			else
 			{
-			echo "<td><a href=\"recheck.php?style=$style&schedule=$schedule&color=$color\">$recheck</a></td>";
+			echo "<td><a href=\"$url1&style=$style&schedule=$schedule&color=$color\">$recheck</a></td>";
 			}
 		}
 		else
@@ -191,15 +178,15 @@ if($no_of_rows > 0) {
 		{
 			if($color=='0')
 			{
-			echo "<td><a href=\"approve.php?style=$style&schedule=$schedule&audit_pending=$audit_pending&color=0\">Update Approved</a></td>";
-			echo "<td><a href=\"rejects_v2.php?style=$style&schedule=$schedule&audit_pending=$audit_pending&color=0\">Update Rejected</a></td>";
-			echo "<td><a href=\"approve_all.php?style=$style&schedule=$schedule&audit_pending=$audit_pending&recheck=$recheck&color=0\">Approve All</a></td>";
+			echo "<td><a href=\"$url2&style=$style&schedule=$schedule&audit_pending=$audit_pending&color=0\">Update Approved</a></td>";
+			echo "<td><a href=\"$url3&style=$style&schedule=$schedule&audit_pending=$audit_pending&color=0\">Update Rejected</a></td>";
+			echo "<td><a href=\"$url4&style=$style&schedule=$schedule&audit_pending=$audit_pending&recheck=$recheck&color=0\">Approve All</a></td>";
 			}
 			else
 			{
-			echo "<td><a href=\"approve.php?style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending\">Update Approved</a></td>";
-			echo "<td><a href=\"rejects_v2.php?style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending\">Update Rejected</a></td>";
-			echo "<td><a href=\"approve_all.php?style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending&recheck=$recheck\">Approve All</a></td>";
+			echo "<td><a href=\"$url2&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending\">Update Approved</a></td>";
+			echo "<td><a href=\"$url3&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending\">Update Rejected</a></td>";
+			echo "<td><a href=\"$url4&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending&recheck=$recheck\">Approve All</a></td>";
 			}
 		}
 		else

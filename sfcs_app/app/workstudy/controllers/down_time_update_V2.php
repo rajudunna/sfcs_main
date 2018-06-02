@@ -30,8 +30,7 @@ function GetValueFromChild(tmp)
 {
 	//var result=tmp.split("$"); 
   //  document.getElementById("reason_code_" + result[0]).value = result[1];
-	
-	var result=tmp.split("$"); 
+	var result=tmp.split("$");
 	//var x=result[1];
 	//var l_time=document.getElementById("l_" + x).value;
     document.getElementById("reason_code_" + result[0]).value = result[1];
@@ -409,9 +408,8 @@ for($i=0;$i<=10;$i++)
 	echo "</select></p></div></td>";
 	// Ticket #742482 / In Down time update panel get the data from down_reasons table against the departwise  
 	// echo "<td><input type=\"text\" class=\"form-control\" name=\"reason_code[$i]\" id=\"reason_code_$i\" value=\"0\" readonly size=3 class=\"form-control\"><br><button onclick=\"box($i)\" class='btn btn-info btn-xs'>Select Reason</button></div></td>"; 
-	echo "<td><input type=\"text\" class=\"form-control\" name=\"reason_code[$i]\" id=\"reason_code_$i\" value=\"0\" readonly size=3><span onclick=\"box($i)\" class='btn btn-info btn-xs'>Select Reason</sapn></td>"; 
-
-
+	echo "<td><input type=\"text\" class=\"form-control\" name=\"reason_code[$i]\" readonly id=\"reason_code_$i\" size=3><span onclick=\"box($i)\" class='btn btn-info btn-xs'>Select Reason</sapn></td>"; 
+		
 	echo '<td><input type="text" class="form-control" name="reason['.$i.']" value="" size="20" class="form-control"></td>';
 
 	echo "<td><select name=\"source[$i]\" class=\"form-control\">
@@ -425,7 +423,7 @@ for($i=0;$i<=10;$i++)
 ?>
 </table></div>
 <br>
-<input type="submit" name="submit" value="Submit" onclick="document.getElementById('submit').style.display='none';document.getElementById('msg').style.display='';" class="btn btn-primary pull-right"/>
+<input type="submit" name="submit" value="Submit" onclick = 'return check_reasons(<?= $i ?>)' class="btn btn-primary pull-right"/>
 
 <span id="msg" style="display:none;">Please Wait..</span>
 </form>
@@ -541,3 +539,43 @@ if(isset($_POST["submit"]))
 
 </div>
 </div>
+
+<script>
+function check_reasons(count){
+		for(var i = 0;i<Number(count);i++){
+		var val = document.getElementById('reason_code_'+i).value;
+		// var nop = document.getElementById('nop_'+i).value;
+		var stime = document.getElementById("s_" + i).value;
+		var etime = document.getElementById("r_" + i).value;
+		var totlostmin = document.getElementById("l_" + i).value;
+		// alert(totlostmin);
+		// console.log(val);
+		// if(nop == 0 || nop == "")
+		// {
+			// swal('nop should be greater than 0','','warning');
+			// return false;
+		// }
+		// if(stime == 0 || etime == 0)
+		// {
+			// swal('Please select start time and end time','','warning');
+			// return false;
+		// }
+		// if(val == 0 )
+		// {
+			// swal('Please select atleast one Reason','','warning');
+			// return false;
+		// }
+
+		if(totlostmin > 0 && val == '')
+		{
+			swal('Please select atleast one Reason','','warning');
+			return false;
+		}
+		
+	}
+	
+	return true;
+	
+}
+
+</script>

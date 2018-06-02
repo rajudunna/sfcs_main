@@ -3,7 +3,6 @@
 
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-
 //echo "DB : ".$bai_rm_pj1;exit;
 	//getting Location name
 	if(isset($_GET['loc_id'])){
@@ -100,7 +99,7 @@ include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'))
 			}
 
 		}
-$url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlabels.php',3,'R');
+$url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 	echo '<div class="panel panel-primary">';
 			echo "<div class='panel-heading'>";
 				echo"<span style=\"float\"><strong>Fabric/Trims Locations</strong></a></span>";

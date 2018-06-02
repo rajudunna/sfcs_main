@@ -1,8 +1,8 @@
-<?php include ("dbconf2.php"); ?>
+
 <?php
 
 set_time_limit(2000);
-include ("dbconf.php");
+include ($_SERVER['DOCUMENT_ROOT'],'common/config/config.php',3,'R');
 
 
 $order_status_buffer="temp_pool_db.".$username.date("YmdHis")."_"."order_status_buffer";

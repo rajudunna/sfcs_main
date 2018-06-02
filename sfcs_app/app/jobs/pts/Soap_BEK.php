@@ -187,7 +187,7 @@ set_time_limit(6000000);
 					$m3_sfcs_tran_log_id = (int)$m3_sfcs_tran_log_id["m3_sfcs_tran_log_id"];
 					if($Error == "TRUE"){
 						$Success_ids[] =  $m3_sfcs_tran_log_id;
-						$sql = "UPDATE m3_sfcs_tran_log SET m3_error_code='$Error',sfcs_status=30 WHERE sfcs_tid=$m3_sfcs_tran_log_id";
+						$sql = "UPDATE  $m3_bulk_ops_rep_db.m3_sfcs_tran_log SET m3_error_code='$Error',sfcs_status=30 WHERE sfcs_tid=$m3_sfcs_tran_log_id";
 					}else{
 						$Error_ids[] =  $m3_sfcs_tran_log_id;
 						$sql = "UPDATE $m3_bulk_ops_rep_db.m3_sfcs_tran_log SET m3_error_code='$Error',sfcs_status=40 WHERE sfcs_tid=$m3_sfcs_tran_log_id";

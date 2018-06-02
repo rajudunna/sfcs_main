@@ -2,11 +2,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<title>Extra Shipment Details Report</title>
+<!--<title>Extra Shipment Details Report</title>-->
 <meta name="" content="">
 <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
 
-<script type="text/javascript" src="<?= '..'.getFullURL($_GET['r'],'datetimepicker_css.js','R') ?>"></script>
+<!--<script type="text/javascript" src="<?= '..'.getFullURL($_GET['r'],'datetimepicker_css.js','R') ?>"></script>-->
 <script type="text/javascript">
 	function check_date()
     {
@@ -25,7 +25,7 @@
 /*====================================================
 	- HTML Table Filter stylesheet
 =====================================================*/
-@import "<?= '../'.getFullURL($_GET['r'],'TableFilter_EN/filtergrid.css','R') ?>";
+@import "<?= '../'.getFullURLLevel($_GET['r'],'common/css/TableFilter_EN/filtergrid.css',3,'R') ?>";
 
 /*====================================================
 	- General html elements
@@ -41,11 +41,12 @@ pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1
 th{ background-color:#29759C; color:#FFF; padding:2px; border:1px solid #ccc; }
 td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; white-space:nowrap;}
 </style>
-<script language="javascript" type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'TableFilter_EN/tablefilter.js','R') ?>"></script>
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+<script language="javascript" type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R') ?>"></script>
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 </head>
 <div class='panel panel-primary'><div class='panel-heading'><h3 class='panel-title'>Extra Shipment Details Report</h3></div><div class='panel-body'>
-<?php include '../'.getFullURL($_GET['r'],"header1.php",'R');?>
+<?php 
+// include '../'.getFullURL($_GET['r'],"header1_extra_shipment_details.php",'R');?>
 
 <?php
 
@@ -67,18 +68,18 @@ $dat1=$_POST["dat2"];
 </form>";
 
 $addon_headings="";
-$sql2="select * from bai_pro3.sections_db where sec_id>0";
+$sql2="select * from $bai_pro3.sections_db where sec_id>0";
 	// echo $sql2;
-	$sql_result2=mysqli_query($con2, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$addon_headings.="<th>SEC-".$sql_row2['sec_id']."<br/>Pending PCS</th>";	
 		$addon_headings.="<th>SEC-".$sql_row2['sec_id']."<br/>Lost Value</th>";	
 	}
 
-$week_del="select schedule_no,exfact_date from $database1.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
+$week_del="select schedule_no,exfact_date from $bai_pro2.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
 // echo $week_del."<br>";
-$sql_result=mysqli_query($con2, $week_del) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link,$week_del) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 $count_rows=mysqli_num_rows($sql_result);
 if($count_rows > 0){
 	echo "<br><div class='table-responsive'>";
@@ -132,9 +133,9 @@ if($count_rows > 0){
 		$total_sch=implode(",",$schdules);
 
 
-	$week_del="select schedule_no,exfact_date from $database1.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
+	$week_del="select schedule_no,exfact_date from $bai_pro2.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
 	// echo $week_del."<br>";
-	$sql_result=mysqli_query($con2, $week_del) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $week_del) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -144,9 +145,9 @@ if($count_rows > 0){
 	}
 
 
-	$sql="select * from $database.bai_orders_db_confirm where order_del_no in ($total_sch) and order_no=\"1\" order by order_del_no";
+	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) and order_no=\"1\" order by order_del_no";
 	// echo $sql."<br>";
-	$sql_result=mysqli_query($con, $sql) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$slnum = 1;
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -218,9 +219,9 @@ if($count_rows > 0){
 			
 			// calculate system yards for schedule
 			
-			$sql1="select tid,purwidth,catyy from $database.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and mo_status=\"Y\" and purwidth > 0";
+			$sql1="select tid,purwidth,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and mo_status=\"Y\" and purwidth > 0";
 			// echo $sql1."<br>";
-			$sql_result1=mysqli_query($con, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				$cat_tid=$sql_row1["tid"];
@@ -235,9 +236,9 @@ if($count_rows > 0){
 			//calculate yards for extar shipment
 			// $plies="";
 			// $allcate_tid="";
-			$sql2="SELECT tid,plies FROM $database.allocate_stat_log WHERE cat_ref=\"$cat_tid\" order by tid";
+			$sql2="SELECT tid,plies FROM $bai_pro3.allocate_stat_log WHERE cat_ref=\"$cat_tid\" order by tid";
 			// echo $sql2."<br>";
-			$sql_result2=mysqli_query($con, $sql2) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$allcate_tid[]=$sql_row2["tid"];
@@ -257,10 +258,10 @@ if($count_rows > 0){
 				$allcate_tid_implode=0;	
 			}
 			
-			$sql3="SELECT mklength FROM $database.maker_stat_log WHERE allocate_ref in ($allcate_tid_implode) ORDER BY allocate_ref";
+			$sql3="SELECT mklength FROM $bai_pro3.maker_stat_log WHERE allocate_ref in ($allcate_tid_implode) ORDER BY allocate_ref";
 			
 
-			$sql_result3=mysqli_query($con, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row3=mysqli_fetch_array($sql_result3))
 			{
 				$markereff[]=$sql_row3["mklength"];
@@ -310,9 +311,9 @@ if($count_rows > 0){
 			
 			//shipemet details
 		
-			$sql4="SELECT SUM($ship_title_sizes[$key001]) as shipped_qty FROM $database.ship_stat_log WHERE ship_schedule=\"$sch\" and ship_status=\"2\"";
+			$sql4="SELECT SUM($ship_title_sizes[$key001]) as shipped_qty FROM $bai_pro3.ship_stat_log WHERE ship_schedule=\"$sch\" and ship_status=\"2\"";
 
-			$sql_result4=mysqli_query($con, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$total_rows=mysqli_num_rows($sql_result4);
 			while($sql_row00011 = mysqli_fetch_array($sql_result4))
 			{
@@ -324,9 +325,9 @@ if($count_rows > 0){
 			//M3 shipment quantity
 			if(($rowspan_for_shipqty-$key001) == $rowspan_for_shipqty)
 			{
-				$sql5="SELECT SUM(ship_qty) FROM $database1.style_status_summ WHERE sch_no=\"$sch\"";
+				$sql5="SELECT SUM(ship_qty) FROM $bai_pro2.style_status_summ WHERE sch_no=\"$sch\"";
 				// echo $sql5."<br>";
-				$sql_result5=mysqli_query($con1, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$total_rows1=mysqli_num_rows($sql_result5);
 				while($sql_row5=mysqli_fetch_array($sql_result5))
 				{
@@ -337,9 +338,9 @@ if($count_rows > 0){
 			
 			echo "<td style=\"background:$id;\">".$ext_qty."</td>";
 			
-			$sql2="select distinct(fob_price_per_piece) from $database2.shipment_plan_ref where schedule_no=\"$sch\"";
+			$sql2="select distinct(fob_price_per_piece) from $bai_pro4.shipment_plan_ref where schedule_no=\"$sch\"";
 			// echo $sql2;
-			$sql_result2=mysqli_query($con2, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$fob=$sql_row2["fob_price_per_piece"];		
@@ -401,16 +402,16 @@ if($count_rows > 0){
 			echo $total;
 			
 			$prod_balances=0;
-			$sql2="select * from bai_pro3.sections_db where sec_id>0";
+			$sql2="select * from $bai_pro3.sections_db where sec_id>0";
 			//echo $sql2;
-			$sql_result2=mysqli_query($con2, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$sec_mods=$sql_row2['sec_mods'];
 				
-				$sql2xy="select sum(balance) as balance from (select sum((ims_qty-ims_pro_qty)) as balance from bai_pro3.ims_log where ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB') union select sum((ims_qty-ims_pro_qty)) as balance from bai_pro3.ims_log_backup where ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB')) as t";
+				$sql2xy="select sum(balance) as balance from (select sum((ims_qty-ims_pro_qty)) as balance from bai_pro3.ims_log where ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB') union select sum((ims_qty-ims_pro_qty)) as balance from $bai_pro3.ims_log_backup where ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB')) as t";
 				// echo $sql2xy;
-				$sql_result2xy=mysqli_query($con2, $sql2xy) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result2xy=mysqli_query($link, $sql2xy) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2xy=mysqli_fetch_array($sql_result2xy))
 				{
 					echo "<td style=\"background:$id;\">".$sql_row2xy['balance']."</td>";

@@ -64,13 +64,13 @@ if($j==1)
 	echo "<tr>";
 }
 
-$sql121="select distinct week(log_date) as wkno from $bai_pro3.bai_qms_db_reason_track WHERE QMS_TID IN (SELECT QMS_TID FROM bai_qms_db WHERE log_date between \"$sdate\" and \"$edate\" AND qms_tran_type=3 AND SUBSTRING_INDEX(SUBSTRING_INDEX(remarks,'-',2),'-',-1) in ($team)) AND qms_reason IN ($reason_codes) and log_date between \"$sdate\" and \"$edate\"";
+$sql121="select distinct week(log_date) as wkno from $bai_pro3.bai_qms_db_reason_track WHERE QMS_TID IN (SELECT QMS_TID FROM $bai_pro3.bai_qms_db WHERE log_date between \"$sdate\" and \"$edate\" AND qms_tran_type=3 AND SUBSTRING_INDEX(SUBSTRING_INDEX(remarks,'-',2),'-',-1) in ($team)) AND qms_reason IN ($reason_codes) and log_date between \"$sdate\" and \"$edate\"";
 $sql_result121=mysqli_query($link, $sql121) or exit("Sql Error".$sql121.mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row121=mysqli_fetch_array($sql_result121))
 {
 $wkno=$sql_row121['wkno'];
 
-$sql12="SELECT SUM(qms_qty) as qty,WEEK(log_date)+1 as wkno FROM $bai_pro3.bai_qms_db_reason_track WHERE QMS_TID IN (SELECT QMS_TID FROM bai_qms_db WHERE log_date between \"$sdate\" and \"$edate\" AND qms_tran_type=3 AND SUBSTRING_INDEX(SUBSTRING_INDEX(remarks,'-',2),'-',-1) in (".$team.")) AND qms_reason IN ($reason_codes) and week(log_date)=\"$wkno\" and qms_reason=\"$defect\" and supplier=\"".$supplier_name."\" and log_date between \"$sdate\" and \"$edate\" GROUP BY WEEK(log_date) order by WEEK(log_date)+0";
+$sql12="SELECT SUM(qms_qty) as qty,WEEK(log_date)+1 as wkno FROM $bai_pro3.bai_qms_db_reason_track WHERE QMS_TID IN (SELECT QMS_TID FROM $bai_pro3.bai_qms_db WHERE log_date between \"$sdate\" and \"$edate\" AND qms_tran_type=3 AND SUBSTRING_INDEX(SUBSTRING_INDEX(remarks,'-',2),'-',-1) in (".$team.")) AND qms_reason IN ($reason_codes) and week(log_date)=\"$wkno\" and qms_reason=\"$defect\" and supplier=\"".$supplier_name."\" and log_date between \"$sdate\" and \"$edate\" GROUP BY WEEK(log_date) order by WEEK(log_date)+0";
 //echo $sql12."<br>"; 
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".$sql12.mysqli_error($GLOBALS["___mysqli_ston"]));
 //echo $wkno."-".mysql_num_rows($sql_result12)."-".$defect."<br>";

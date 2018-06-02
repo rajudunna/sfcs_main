@@ -15,7 +15,7 @@ $path_destrcution = getFullURLLevel($_GET['r'],'common/images/destruction_photos
 $path_style_level = getFullURLLevel($_GET['r'],'common/images/destruction_photos_style_level',1,'R');
 
 //These below are not part of sfcs ui they are out of ui.So manuak path
-$image_path = getFullURLLevel($_GET['r'],'common/images',1,'R');;
-$newname    =  getFullURLLevel($_GET['r'],'common/images',1,'R');;
-$thumb_name =  getFullURLLevel($_GET['r'],'common/images',1,'R');;
+$image_path =  $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/images',1,'R').'/';
+$newname    =  $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/images',1,'R');
+$thumb_name =  $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/images',1,'R');
 ?>

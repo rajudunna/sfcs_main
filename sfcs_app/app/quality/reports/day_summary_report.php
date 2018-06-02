@@ -1,6 +1,7 @@
 <?php
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 $view_access=user_acl("SFCS_0053",$username,1,$group_id_sfcs); 
 ?>
 <?php
@@ -72,11 +73,13 @@ else
 					$edate=$_POST['edate'];
 					$buyer=$_POST["division"];
 					// echo $buyer;
-
+              
 					
 					if($buyer=="All")
 					{
 						$sql="select * from $bai_pro3.bai_qms_day_report where log_date between \"$sdate\" and \"$edate\"";
+
+
 					}
 					// else if($buyer=="VS")
 					// {

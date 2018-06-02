@@ -146,6 +146,8 @@ if(isset($_POST['update']))
 			$sql2="delete from $bai_rm_pj1.supplier_performance_track where tid='".trim($batch_ref[$i])."-".$month_ref[$i]."'";
 		
 			mysqli_query($link, $sql2) or exit("Sql Error1".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
+			mysqli_query($link, $sql) or exit("Sql Error3".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+			
 		
 		}
 		else

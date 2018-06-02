@@ -861,10 +861,15 @@ if(isset($_POST['submit']))
 				
 			}
 		}
-		echo " <div class='alert alert-success alert-dismissible'>
-				<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
-				<strong>Success!</strong> Successfully Splitting Completed.
-				</div>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&color=$color&style=$style&schedule=$order_del_no\";
+			}
+		</script>";
+		// echo " <div class='alert alert-success alert-dismissible'>
+		// 		<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+		// 		<strong>Success!</strong> Successfully Splitting Completed.
+		// 		</div>";
 	} 
 	else 
 	{ 		

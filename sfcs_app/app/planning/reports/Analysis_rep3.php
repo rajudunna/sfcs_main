@@ -10,17 +10,18 @@
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 // $username=strtolower($username_list[1]);
 $username="sfcsproject1";
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0039",$username,1,$group_id_sfcs); 
 $authorized_users=user_acl("SFCS_0039",$username,7,$group_id_sfcs);
- include ('../'.getFullURL($_GET['r'],"dbconf2.php",'R'));
+ // include ('../'.getFullURL($_GET['r'],"dbconf2.php",'R'));
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <title>Balance Sheet</title>
 <head>
-<script language="javascript" type="text/javascript" src="../<?= getFullURL($_GET['r'],'styles/dropdowntabs.js','R') ?>"></script>
+<script language="javascript" type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R') ?>"></script>
 <link rel="stylesheet" href="../<?= getFullURL($_GET['r'],'styles/ddcolortabs.css','R') ?>" type="text/css" media="all" />
 <!-- <link href="../<?= getFullURL($_GET['r'],'table_style.css','R') ?>" rel="stylesheet" type="text/css" /> -->
 <script type="text/javascript" src="../<?= getFullURL($_GET['r'],'datetimepicker_css.js','R') ?>"></script>
@@ -28,13 +29,13 @@ $authorized_users=user_acl("SFCS_0039",$username,7,$group_id_sfcs);
 <!-- <script type="text/javascript" src="../<?= getFullURL($_GET['r'],'scripts/showhidecolumns/jquery-1.2.2.pack.js','R') ?>"></script> -->
 
 
-<script type="text/javascript" src="../<?= getFullURL($_GET['r'],'scripts/showhidecolumns/chili.js','R') ?>"></script>
-<script type="text/javascript" src="../<?= getFullURL($_GET['r'],'scripts/showhidecolumns/jquery.cookie.js','R') ?>"></script>
-<script type="text/javascript" src="../<?= getFullURL($_GET['r'],'scripts/showhidecolumns/jquery.clickmenu.pack.js','R') ?>"></script>
-<script type="text/javascript" src="../<?= getFullURL($_GET['r'],'scripts/showhidecolumns/jquery.columnmanager.js','R') ?>"></script>
+<script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/showhidecolumns/chili.js',1,'R') ?>"></script>
+<script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/showhidecolumns/jquery.cookie.js',1,'R') ?>"></script>
+<script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/showhidecolumns/jquery.clickmenu.pack.js',1,'R') ?>"></script>
+<script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/showhidecolumns/jquery.columnmanager.js',1,'R') ?>"></script>
 
 
-<script type="text/javascript" src="../<?= getFullURL($_GET['r'],'table2CSV.js','R') ?>" ></script>
+<script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'table2CSV.js',1,'R') ?>" ></script>
 
 <script>
 
@@ -95,7 +96,7 @@ function check_date()
 /*====================================================
 	- HTML Table Filter stylesheet
 =====================================================*/
-@import "<?= '../'.getFullURL($_GET['r'],'TableFilter_EN/filtergrid.css','R') ?>";
+@import "<?= $_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'common/css/TableFilter_EN/filtergrid.css',3,'R') ?>";
 
 /*====================================================
 	- General html elements
@@ -147,7 +148,7 @@ th{
 
 //To Convert week to date
 function weeknumber_v2 ($y, $w) {
-include ('../'.getFullURL($_GET['r'],"dbconf2.php",'R'));
+// include ('../'.getFullURL($_GET['r'],"dbconf2.php",'R'));
    $sql="select STR_TO_DATE('$y$w Friday', '%X%V %W') as week";
    //	echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -335,9 +336,9 @@ $year_add_query2=" and exfact_date between \"".$sdate."\" and \"".$edate."\" ";
 				if(strlen($buyer_div) >0)
 				{
 					// $query_add=" where left(style_no,1) in ($buyer_div) $year_add_query2";
-					$query_add="where schedule_no in (SELECT order_del_no FROM bai_pro3.bai_orders_db WHERE order_div IN (SELECT buyer_name FROM bai_pro2.buyer_codes WHERE buyer_name IN ('".str_replace(",","','",$buyer_div)."')))";
+					$query_add="where schedule_no in (SELECT order_del_no FROM bai_pro3.bai_orders_db WHERE order_div IN (SELECT buyer_name FROM $bai_pro2.buyer_codes WHERE buyer_name IN ('".str_replace(",","','",$buyer_div)."')))";
 					
-					$sql="select distinct style_id from bai_pro2.shipment_plan $query_add order by style_id";
+					$sql="select distinct style_id from $bai_pro2.shipment_plan $query_add order by style_id";
 					
 					//echo "<option value=\"".$style_name."\" selected>".$style_name."-".$sql."</option>";	
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -394,10 +395,10 @@ $style_status_summ="temp_pool_db.".$username.date("YmdHis")."_"."style_status_su
 $style_status_summ_today="style_status_summ_today";
 $ssc_code_temp="temp_pool_db.".$username.date("YmdHis")."_"."ssc_code_temp";
 
-$sql="create TEMPORARY table $style_status_summ ENGINE = MyISAM select * from bai_pro2.style_status_summ_live ";
+$sql="create TEMPORARY table $style_status_summ ENGINE = MyISAM select * from $bai_pro2.style_status_summ_live ";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="create TEMPORARY table $ssc_code_temp ENGINE = MyISAM select * from bai_pro2.ssc_code_temp ";
+$sql="create TEMPORARY table $ssc_code_temp ENGINE = MyISAM select * from $bai_pro2.ssc_code_temp ";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $start_date=$_POST["sdate"];
@@ -422,7 +423,7 @@ $january=($year_code)."-01-31";
 $december=($year_code-1)."-12-01";
 
 $t=0;
-$sql="select distinct week(bac_date)+1 as week_code from bai_pro.bai_log_buf where bac_date between \"".$december."\" and \"".$january."\" group by week(bac_date) order by bac_date,week(bac_date)";
+$sql="select distinct week(bac_date)+1 as week_code from $bai_pro.bai_log_buf where bac_date between \"".$december."\" and \"".$january."\" group by week(bac_date) order by bac_date,week(bac_date)";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

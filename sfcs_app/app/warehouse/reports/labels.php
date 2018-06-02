@@ -1,6 +1,6 @@
 <?php
-	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include("../".getFullURLLevel($_GET['r'],'common/css/functions.php',1,'R'));
+	//include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include("../".getFullURLLevel($_GET['r'],'common/php/functions.php',1,'R'));
 	require_once __DIR__ . '/vendor/autoload.php';
 	$mpdf = new \Mpdf\Mpdf([
         'mode' => 'utf-8', 
@@ -12,6 +12,8 @@
 <?php $lot_no=$_GET['lot_no']; ?>
 
 <?php
+echo"hiiiiiii";
+	//include("../".getFullURLLevel($_GET['r'],'/common/config/config.php',3,'R'));
 $html ='
 <html>
 <head>

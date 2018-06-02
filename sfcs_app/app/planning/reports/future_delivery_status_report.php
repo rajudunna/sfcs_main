@@ -1,7 +1,8 @@
 <?php 
 //CR#886/ kirang / 2015-03-17 / Future Delivery status Report. - To Track the future deliveries.
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 //$view_access=user_acl("SFCS_0100",$username,1,$group_id_sfcs); 
 
 
@@ -30,9 +31,9 @@ function div_by_zero($arg)
 <!--<link href="style.css" rel="stylesheet" type="text/css" />-->
 <!--<script type="text/javascript" src="datetimepicker_css.js"></script>
 <script language="javascript" type="text/javascript" src="TableFilter_EN/tablefilter.js"></script>-->
-<?php echo '<link href="'.getFullURL($_GET['r'],'/sfcs/styles/sfcs_styles.css','R').'" rel="stylesheet" type="text/css" />'; ?>
-<script type="text/javascript" src="<?= getFullURL($_GET['r'],'datetimepicker_css.js','R')?>"></script>
-<script type="text/javascript" src="<?= getFullURL($_GET['r'],'TableFilter_EN/tablefilter.js','R')?>"></script>
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R') ?>" rel="stylesheet" type="text/css" />
+<!--<script type="text/javascript" src="<?= getFullURL($_GET['r'],'datetimepicker_css.js','R')?>"></script>-->
+<script type="text/javascript" src="<?= getFullURL($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
 
 
 </head>
@@ -44,7 +45,7 @@ function div_by_zero($arg)
 <!--<div id="page_heading" style="left: 500px;"	><span style="float"><h3>Future Delivery Status Report</h3></span></div>-->
 <?php
 $table_flag = false;
-	$sql="select * from bai_pro3.sections_db where sec_id>0";
+	$sql="select * from $bai_pro3.sections_db where sec_id>0";
 	$result=mysqli_query($link, $sql) or die ("sql error--s".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
     $section=array();   
     while($sql_row=mysqli_fetch_array($result))
@@ -54,10 +55,10 @@ $table_flag = false;
 	$iii=1;
 	$numberofsecs=strtotime( "next monday" );
 	$next_mon=date('Y-m-d', $numberofsecs);
-	$ims_log="bai_pro3.ims_log";
-	$ims_log_backup="bai_pro3.ims_log_backup";
-	$orders_db="bai_pro3.bai_orders_db";
-	$bai_orders_db_confirm="bai_pro3.bai_orders_db";
+	$ims_log="$bai_pro3.ims_log";
+	$ims_log_backup="$bai_pro3.ims_log_backup";
+	$orders_db="$bai_pro3.bai_orders_db";
+	$bai_orders_db_confirm="$bai_pro3.bai_orders_db";
 //	$section1=array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
 //	$section2=array(17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32);
 //	$section3=array(33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48);
@@ -187,7 +188,7 @@ $table_flag = false;
 			{
 				$customer='LBI';
 			}
-			$sql2="select tid from bai_pro3.cat_stat_log where order_tid='".$order_tid."' and category in ('body','front')";
+			$sql2="select tid from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and category in ('body','front')";
 			$result2=mysqli_query($link, $sql2) or die("sql error--2".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($result2)>0)
 			{ 
@@ -195,7 +196,7 @@ $table_flag = false;
 				{
 					$cat_ref=$row1["tid"];
 				}
-				$sql3="select * from bai_pro3.plandoc_stat_log where cat_ref='".$cat_ref."'";
+				$sql3="select * from $bai_pro3.plandoc_stat_log where cat_ref='".$cat_ref."'";
 				$result3=mysqli_query($link, $sql3) or die("sql error--3".$sql3.mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql31="select * from bai_pro3.plandoc_stat_log where cat_ref='".$cat_ref."' and act_cut_issue_status='DONE' "; 
 				$result31=mysqli_query($link, $sql31) or die("sql error--31".$sql31.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -324,8 +325,8 @@ $table_flag = false;
 						if(sizeof($doc_no)>0)
 						{
 							$query1=implode(",",$doc_no);
-							$sql5="select * from bai_pro3.pac_stat_log where doc_no in ($query1)"; 
-							$sql51="select * from bai_pro3.pac_stat_log where doc_no in ($query1) and status='Done'"; 
+							$sql5="select * from $bai_pro3.pac_stat_log where doc_no in ($query1)"; 
+							$sql51="select * from $bai_pro3.pac_stat_log where doc_no in ($query1) and status='Done'"; 
 							
 							//echo $sql5."</br>"; 
 							//echo $sql51."</br>"; 
@@ -352,7 +353,7 @@ $table_flag = false;
 					{
 						$status="Sewing";
 					}	
-					$sql14="select max(bac_date) as date1 from bai_pro.bai_log where delivery='".$schedule."' and bac_qty>0";
+					$sql14="select max(bac_date) as date1 from $bai_pro.bai_log where delivery='".$schedule."' and bac_qty>0";
 					$result14=mysqli_query($link, $sql14) or die("sql error--PED--".$sql14.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row11=mysqli_fetch_array($result14))
 					{

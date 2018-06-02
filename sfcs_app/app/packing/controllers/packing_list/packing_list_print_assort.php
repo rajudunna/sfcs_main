@@ -1,5 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
-<?php include('../../common/php/functions.php'); ?>
+<?php include('../../../../common/config/functions.php'); ?>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 
 <?php
@@ -462,7 +462,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 	if(array_sum($order_qtys)!=$sql_row['carton_act_qty'])
 	{
-		$url = getFullURL($_GET['r'],'error.php','N');
+		$url = 'error.php';
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
 	}
 }

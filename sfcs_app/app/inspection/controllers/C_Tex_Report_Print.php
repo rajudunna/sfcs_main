@@ -1796,6 +1796,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$pts=$sql_row['pts'];
 	$fallout=$sql_row['fallout'];
 	$skew=$sql_row['skew'];
+	$consumption=$sql_row['consumption'];
 	$skew_cat=$sql_row['skew_cat'];
 	$shrink_l=$sql_row['shrink_l'];
 	$shrink_w=$sql_row['shrink_w'];
@@ -1892,10 +1893,10 @@ tags will be replaced.-->
  <col class=xl11024082 width=68 span=7 style='mso-width-source:userset;
  mso-width-alt:2486;width:51pt'>
  <tr height=25 style='mso-height-source:userset;height:18.75pt'>
-  <td colspan=13 height=25 class=xl12524082 dir=LTR width=1126
+  <td colspan=10 height=25 class=xl12524082 dir=LTR width=1126
   style='height:18.75pt;width:845pt'><a name="RANGE!A1:P19">Color
   Classification Report - Roll Details</a></td>
-  <td colspan=3 height=25 class=xl12524082x dir=LTR width=1126
+  <td colspan=6 height=25 class=xl12524082x dir=LTR width=1126
   style='height:18.75pt;width:845pt'><?php echo $code; ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
@@ -1924,7 +1925,7 @@ tags will be replaced.-->
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;
   border-top:none;width:60pt'>Consumption<span style='mso-spacerun:yes'></span></td>
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;
-  width:98pt'></td>
+  width:98pt'><?php echo $consumption; ?></td>
   <td colspan=7 class=xl12224082 style='border-right:.5pt solid black;
   border-left:none'>Inspection Summary</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
@@ -2121,12 +2122,12 @@ tags will be replaced.-->
   Width</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>No<br>of Joins</td>
   <td class=xl13324082 dir=LTR width=99 style='border-left:none;width:74pt'>Width  Deviation</td>
-  <td class=xl13324082 dir=LTR colspan=1 width=77 style='border-left:none;width:58pt'>Lot  No</td>
+  <td class=xl13324082 dir=LTR colspan=2 width=77 style='border-left:none;width:58pt'>Lot  No</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Length</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Width</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Group</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Roll Remarks</td>
-  <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:130pt'>Rejection Reason</td>
+  <td class=xl13324082 dir=LTR colspan=8 width=68 style='border-left:none;width:130pt'>Rejection Reason</td>
  </tr>
  
  <?php
@@ -2222,12 +2223,12 @@ if($num_check>0)
 	  <td class=xl12824082 style='border-left:none'>".$temp[6]."</td>
 	  <td class=xl12824082 style='border-left:none'>".$temp[8]."</td>
 	  <td class=xl12824082 style='border-left:none'>".round(($temp[6]-$temp[5]),2)."</td>
-	  <td class=xl12824082 colspan=1 align=right style='border-left:none'>".$temp[7]."</td>
+	  <td class=xl12824082 colspan=2 align=right style='border-left:none'>".$temp[7]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[11]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[12]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[13]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
-	  <td class=xl12824082 colspan=2  width=98 style='border-left:none;width:130pt'>";
+	  <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
 
 	  			$reject_reason_query="select * from $bai_rm_pj1.reject_reasons ";
 				$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2262,6 +2263,8 @@ if($num_check>0)
   <td class=xl11024082></td>
   <td class=xl11024082></td>
  </tr>
+ </table>
+ <table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1050pt'>
  <tr class=xl11924082 height=40 style='height:30.0pt'>
   <td height=40 class=xl7324082 width=80 style='height:30.0pt;width:60pt'>Total
   Rolls</td>
@@ -2275,7 +2278,7 @@ if($num_check>0)
     Ticket Width</td>
   <td class=xl7524082 width=64 style='border-left:none;width:48pt'><span
   style='mso-spacerun:yes'></span>Average<br>C-Tex Width</td>
-  <td class=xl7524082 width=99 style='border-left:none;width:74pt'>Width<br>
+  <td class=xl7524082 width=99 style='border-left:none;width:74pt'>Average Width<br>
     Deviation</td>
   <td class=xl7624082 width=77 style='border-left:none;width:58pt'>Lot<br>
     <span style='mso-spacerun:yes'></span>Numbers</td>

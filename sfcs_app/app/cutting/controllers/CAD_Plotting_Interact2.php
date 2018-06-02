@@ -381,7 +381,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							echo "<input type='hidden' name='doc_ref' value='".$doc_no."' style='color:red;'>";
 							echo "</form></center></td>";
 							
-				echo "</tr>";
+				            echo "</tr>";
 						}
 					}
 					else
@@ -401,7 +401,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							}
 							//echo "<td>N/A</td><td><a href=\"cad_plotting_interact2.php?doc_selected=".$doc_no."\">Edit-".$min_width."-".$system_width."</a></td>";
 							
-				echo "</tr>";
+				        echo "</tr>";
 						}
 
 					}

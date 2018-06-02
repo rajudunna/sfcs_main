@@ -11,7 +11,7 @@ $view_access=user_acl("SFCS_0087",$username,1,$group_id_sfcs);
 <form method="post" name="input" action="#">
 <div class="row">
 <div class="col-sm-3">
-Enter Docket Number: <input type="text" name="docket_id" class="form-control" onkeypress="return IsNumeric(event);" size=15>
+Enter Docket Number: <input type="text" name="docket_id" class="form-control integer" size=15>
 <span id="error" style="color: Red; display: none"></span>
 <script type="text/javascript">
 	var specialKeys = new Array();

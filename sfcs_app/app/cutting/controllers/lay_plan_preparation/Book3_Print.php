@@ -5,11 +5,12 @@ This amendement was done based on the confirmation to issue excess (1%) material
 //Binding Consumption / YY Calculation //20151016-KIRANG-Imported Binding inclusive concept.
 -->
 
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php //include("../".getFullURLLevel($_GET['r'], "dbconf.php", "1", "R").""); ?>
 <?php //include("../".getFullURLLevel($_GET['r'], "", "1", "R").""); ?>
 <?php include('../../../../common/config/config.php'); ?>
 <?php //include("../".getFullURL($_GET['r'], "", "R").""); ?>
-<?php include('../../../../common/php/functions.php'); ?>
+<?php include('../../../../common/config/functions.php'); ?>
 <?php
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];	
@@ -412,6 +413,7 @@ $a_s50=$sql_row['a_s50'];
 	if($category=='Body' || $category=='Front')
 	{
 		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		// echo $sql2;
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows=mysqli_num_rows($sql_result2);
 		if($rows > 0)
@@ -419,7 +421,6 @@ $a_s50=$sql_row['a_s50'];
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$binding_con = $sql_row2['binding_con'];
-				// echo $binding_con;
 				$bind_con= $binding_con *($a_ratio_tot*$plies);
 			}
 		}
@@ -3165,6 +3166,8 @@ $tkt_width[]=$sql_row['ref6'];
  <td height=20 class=xl674118 style='height:15.0pt'></td>
  <!--<td rowspan="2" colspan="15" class=xl764118 style='border-bottom:.5pt solid black;'>-->
  <?php
+ $roll_length = array();
+ $roll_det = array();
  $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=$doc_id AND doc_type='normal' GROUP BY ref4";
  $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row123=mysqli_fetch_array($sql_result123))

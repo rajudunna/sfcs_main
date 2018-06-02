@@ -1209,8 +1209,8 @@ for($i=0;$i<sizeof($order_qtys);$i++)
 		}
 		//Error Correction
 	
-		//$available_qty=$pass_qtys[$i]-$ship_qtys[$i];
-		$available_qty=$fg_qtys[$i]-$ship_qtys[$i];
+		$available_qty=$pass_qtys[$i]-$ship_qtys[$i];
+		// $available_qty=$fg_qtys[$i]-$ship_qtys[$i];
 		
 		$size_value[$i]=ims_sizes('',$schedule_no,$style_no,$color_no,strtoupper($sizes[$i]),$link);
 		

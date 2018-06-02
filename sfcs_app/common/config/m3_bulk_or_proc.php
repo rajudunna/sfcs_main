@@ -249,20 +249,20 @@ function know_order_status($schedule,$color,$sfcs_size,$link)
 function construct_connection()
 {
 	//$_SESSION['intra_user_name']="";
-	$server_soft=$_SERVER['SERVER_SOFTWARE'];
+	// $server_soft=$_SERVER['SERVER_SOFTWARE'];
 	
-	if(substr($server_soft,0,13)=="Apache/2.2.22")
-	{
-		$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-		$username=strtolower($username_list[1]);
-		//$_SESSION['intra_user_name']=$username;
-	}
-	else
-	{
-		list($domain,$username) = explode('[\]',$_SERVER['AUTH_USER'],2);
-		$username=strtolower($username);
-		//$_SESSION['intra_user_name']=$username;
-	}
+	// if(substr($server_soft,0,13)=="Apache/2.2.22")
+	// {
+	// 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+	// 	$username=strtolower($username_list[1]);
+	// 	//$_SESSION['intra_user_name']=$username;
+	// }
+	// else
+	// {
+	// 	list($domain,$username) = explode('[\]',$_SERVER['AUTH_USER'],2);
+	// 	$username=strtolower($username);
+	// 	//$_SESSION['intra_user_name']=$username;
+	// }
 	
 	$host_adr_m3or=know_my_config('mysqlhost');
 	$host_adr_un_m3or=know_my_config('mysqlun');

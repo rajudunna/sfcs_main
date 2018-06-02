@@ -1,9 +1,10 @@
 <?php
 ini_set('max_execution_time',0);
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/M3_BULK_OR/ims_size.php"); 
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-include('../'.getFullURLLevel($_GET['r'],'dbweeklyreport_conf.php',1,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/M3_BULK_OR/ims_size.php"); 
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+// include('../'.getFullURLLevel($_GET['r'],'dbweeklyreport_conf.php',1,'R'));
 
 // $view_access=user_acl("SFCS_0040",$username,1,$group_id_sfcs);
 // var_dump($sizes_array);
@@ -295,7 +296,7 @@ $pending=$_POST['pending'];
   <?php
 			  
 				
-$sql='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
+$sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -410,7 +411,7 @@ echo '</thead><tbody>';
 
 $x=1;
 //$sql="select * from week_delivery_plan where shipment_plan_id in (select ship_tid from week_delivery_plan_ref $query)";
-$sql="select * from week_delivery_plan where ref_id in (select ref_id from bai_pro4.week_delivery_plan_ref $query) limit 50";
+$sql="select * from $bai_pro4.week_delivery_plan where ref_id in (select ref_id from $bai_pro4.week_delivery_plan_ref $query) limit 50";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -516,7 +517,7 @@ $plan_total=$actu_sec1+$actu_sec2+$actu_sec3+$actu_sec4+$actu_sec5+$actu_sec6+$a
 
 $order_total=0;
 
-$sql1="select * from shipment_plan_ref where ship_tid=$shipment_plan_id";
+$sql1="select * from $bai_pro4.shipment_plan_ref where ship_tid=$shipment_plan_id";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
@@ -547,7 +548,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$week_code=$sql_row1['week_code'];
 	$status=$sql_row1['status'];
 
-	$size_sql="select * from bai_pro3.bai_orders_db_confirm where order_style_no = '".$style."' and order_del_no = '".$schedule_no."' and order_col_des = '".$color."'";
+	$size_sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no = '".$style."' and order_del_no = '".$schedule_no."' and order_col_des = '".$color."'";
 	// echo $size_sql;
 	// mysqli_query($link, $size_sql) or exit("Size Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result_size=mysqli_query($link, $size_sql) or exit("Size Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -568,7 +569,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 if(date("Y-m-d")>"2011-12-11")
 {
 	$embl_tag="";
-	$sql1="select order_embl_a,order_embl_e from bai_pro3.bai_orders_db where order_del_no=\"$schedule_no\"";
+	$sql1="select order_embl_a,order_embl_e from $bai_pro3.bai_orders_db where order_del_no=\"$schedule_no\"";
 	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -593,7 +594,7 @@ $order_total=$sql_row['original_order_qty'];
 //Status
 {
 
-$sql1="select * from bai_pro4.week_delivery_plan_ref  where ship_tid=$shipment_plan_id";
+$sql1="select * from $bai_pro4.week_delivery_plan_ref  where ship_tid=$shipment_plan_id";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
@@ -645,7 +646,7 @@ if($status=="FG" and $internal_audited>=$fgqty)
 
 //DISPATCH
 
-	$sql1="select ship_qty from bai_pro2.style_status_summ where sch_no=\"$schedule_no\"";
+	$sql1="select ship_qty from $bai_pro2.style_status_summ where sch_no=\"$schedule_no\"";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{

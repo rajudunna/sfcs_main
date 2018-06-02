@@ -55,10 +55,10 @@ $().ready(function() {
 });
 </script> -->
 <title>Stock In Edit Form</title>
-<link rel="stylesheet" href="<?= '../'.getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',1,'R'); ?>" type="text/css" media="all" />
+<link rel="stylesheet" href="<?= '../'.getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
   <script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
   
-<script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/check.js',3,'R');?>"></script>
+<script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/check.js',1,'R');?>"></script>
 <script type="text/javascript">
 jQuery(document).ready(function($){
    $('#course').keypress(function (e) {

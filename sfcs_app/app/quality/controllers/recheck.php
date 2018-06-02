@@ -1,6 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<?php include("header_script.php"); ?>
+
+<?php  
+include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+?>
+
+
+
 <style>
 body
 {
@@ -28,7 +35,9 @@ function enableButton()
 		document.getElementById('update').disabled='true';
 	}
 }
-
+window.onload = function(e){ 
+	document.getElementById('update').disabled='true';
+}
 function button_disable()
 {
 	document.getElementById('process_message').style.visibility="visible";
@@ -38,13 +47,26 @@ function button_disable()
 </script>
 
 </head>
-<body onload="dodisable();">
-<h2>Re-Check Update Panel</h2>
-<?php include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+<body onload="dodisable();" class='container' style='margin-top:10px'>
+<div class='panel panel-primary'><div class='panel-heading'><h3 class='panel-title'>Re-Check Update Panel</div><div class='panel-body'>
+<?php
+	if(isset($_GET['style'])){
+		$style=$_GET['style'];
+		$schedule=$_GET['schedule'];
+		$color=$_GET['color'];
+		$audit_pending=$_GET['audit_pending'];
+	}
+?>
 
-$style=$_GET['style'];
-$schedule=$_GET['schedule'];
-$color=$_GET['color'];
+<?php $url = getFullURL($_GET['r'],'pending.php','N');
+      $url = $url."&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending";
+?>
+<div class='row'>
+	<a href='<?= $url ?>' class='pull-right btn btn-danger'>Go Back</a>
+</div>	
+<!--<h2>Re-Check Update Panel</h2>-->
+<?php 
+
 echo "Style: $style <br/>";
 echo "Schedule: $schedule <br/>";
 if($color!='0')
@@ -52,7 +74,7 @@ if($color!='0')
 echo "<br/>  color:".$color."<br/>";
 }
 
-echo "<form name=\"apply\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">";
+echo "<form name=\"apply\" method=\"post\" action=\"".$_GET['r']."\">";
 echo "<table>";
 echo "<tr><th>Size</th><th>Rejected Qty</th><th>Pass Qty</th></tr>";
 $x=0;
@@ -74,12 +96,13 @@ $x++;
 }
 echo "</table>";
 echo "<input type=\"hidden\" name=\"style_new\" value=\"$style\"><input type=\"hidden\" name=\"schedule_new\" value=\"$schedule\"> <input type=\"hidden\" name=\"color_new\" value=\"$color\">";
-echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
-echo "<input type=\"submit\" name=\"update\" value=\"Update\" onclick=\"javascript:button_disable();\">";
+echo '<br/><input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
+echo "<input type=\"submit\" class='btn btn-primary' name=\"update\" value=\"Update\" id='update'>";
 
-echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font></h2></div>';
+//echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font></h2></div>';
 echo "</form>";
 ?>
+</div></div>
 </body>
 </html>
 
@@ -120,8 +143,8 @@ if(isset($_POST['update']))
 		}
 	}
 	echo "<h2><font color=\"green\">Successfully Updated!</font></h2>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"pending.php\"; }</script>";
-}
+	$url1=getFullURL($_GET['r'],'pending.php','N');
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
 
 
 

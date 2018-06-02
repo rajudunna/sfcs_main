@@ -1,7 +1,8 @@
 <?php
-include("dbconf.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0042",$username,1,$group_id_sfcs);
 ?>
 
@@ -31,8 +32,8 @@ function getDaysInBetween($start, $end) {
 
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<script language="javascript" type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'styles/dropdowntabs.js',1,'R') ?>"></script>
-		<link rel="stylesheet" href="<?= '../'.getFullURLLevel($_GET['r'],'styles/ddcolortabs.css',1,'R') ?>" type="text/css" media="all" />
+		<script language="javascript" type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R') ?>"></script>
+		<link rel="stylesheet" href="<?= '../'.getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R') ?>" type="text/css" media="all" />
 		
 <style>
 body
@@ -93,13 +94,14 @@ table{
 float:right;
 }
 </style>
-<?php include('../'.getFullURL($_GET['r'],"dbconf5.php",'R')); ?>
+<?php 
+// include('../'.getFullURL($_GET['r'],"dbconf5.php",'R')); ?>
 
-<link rel="stylesheet" type="text/css" media="all" href="<?= '../'.getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick_ltr.min.css','R') ?>" />
-<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick.min.1.3.js','R') ?>"></script>
-<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'datetimepicker_css.js','R') ?>"></script>
+<link rel="stylesheet" type="text/css" media="all" href="<?= '../'.getFullURLLevel($_GET['r'],'jsdatepick-calendar/jsDatePick_ltr.min.css',3,'R') ?>" />
+<!--<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick.min.1.3.js','R') ?>"></script>
+<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'datetimepicker_css.js','R') ?>"></script>-->
 
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 </head>
 <div class='panel panel-primary'>
 <div class='panel-heading'>
@@ -128,7 +130,7 @@ $edate=$_POST['dat2'];
 </div>
 
 <input class='btn btn-primary'  type="submit" id="submit" name="submit" value="submit" onclick="return verify_date()"  style="margin-top:22px;" />
-<a href="<?= getFullURL($_GET['r'],'frplan_vs_output_analysis_sunday.php','N') ?>" style="margin-top:22px;" class="btn btn-warning">History</a>
+<a href="<?= getFullURLLevel($_GET['r'],'frplan_vs_output_analysis_sunday.php',0,'N') ?>" style="margin-top:22px;" class="btn btn-warning">History</a>
 
 </div>
 </form>
@@ -175,7 +177,7 @@ if(isset($_POST['submit']))
 
 	$mod_count=array();
 	$sql="select module,count(module) as count from (SELECT group_code,bai_pro4.uExtractNumberFromString(style) as style,module,
-	".implode(",",$query_code)." FROM bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style) as t group by module";
+	".implode(",",$query_code)." FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style) as t group by module";
 	// echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -186,7 +188,7 @@ if(isset($_POST['submit']))
 	$mod_chk=0;
 	$sql="SELECT group_code,bai_pro4.uExtractNumberFromString(style) as style,module,
 	".implode(",",$query_code)."
-	FROM bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style";
+	FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style";
 	// echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -201,7 +203,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			
 			//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
+			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
 			// echo $sql1."<br>";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -294,7 +296,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 {
 		//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
+			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{

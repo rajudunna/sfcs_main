@@ -362,14 +362,15 @@ if(isset($_POST['submit']))
 		$cat_ref_id=$sql_row["cat_ref"];
 		for($k=0;$k<sizeof($sizes);$k++)
 		{
-			$acut[]=$sql_row[$sizes_array[$i]];
+			// echo $sizes_array[$k];
+			$acut[]=$sql_row[$sizes_array[$k]];
 		}
 		
 		//if($sql_row['s50']>0) { $acut[]=$sql_row['s50'];}
 	}
 	// echo array_sum($acut);
-	var_dump($acut);
-	if(array_sum($acut) >= 0){
+	// var_dump($acut);
+	if(array_sum($acut) == 0){
 		echo '<script>sweetAlert("There is no excess cut for selected style, schedule and color.")
 					.then((value) => {
 						window.location.href = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
@@ -446,10 +447,10 @@ if(isset($_POST['submit']))
 			// if($qty[$i]>0)
 			// {
 				if($acut[$i] > $qty[$i]){
-					echo "<th><input type=\"text\" value=\"".($acut[$i]-$qty[$i])."\" name=\"qty[]\" id=\"update_qty_$i\" class='form-control' onchange=\"qty_update(".($acut[$i]-$qty[$i]).", $i)\"></th>";
+					echo "<th><input type=\"text\" value=\"".($acut[$i]-$qty[$i])."\" name=\"qty[]\" id=\"update_qty_$i\" class='form-control integer' onchange=\"qty_update(".($acut[$i]-$qty[$i]).", $i)\"></th>";
 					// echo "<th>".($acut[$i]-$qty[$i])."</th>";
 				}else{
-					echo "<th><input type=\"text\" value=\"0\" name=\"qty[]\" class='form-control' id=\"update_qty_$i\" onchange=\"qty_update(0, $i)\"></th>";
+					echo "<th><input type=\"text\" value=\"0\" name=\"qty[]\" class='form-control integer' id=\"update_qty_$i\" onchange=\"qty_update(0, $i)\"></th>";
 					
 					// echo "<th>0</th>";
 				}

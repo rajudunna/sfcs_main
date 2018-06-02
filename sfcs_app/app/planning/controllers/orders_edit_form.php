@@ -285,7 +285,7 @@ if(isset($_POST['submit']))
 	if($count1 > 0)
 	{
 		echo "<div class=\"col-sm-12\"><h4 align=left style='color:red;'>
-			  <span class=\"label label-warning\">Cut Plan Already Generated</span></h4></div>";
+			  <span class=\"label label-warning\">Order Quantity already Updated</span></h4></div>";
 		
 		// echo "<table class=\"table table-striped jambo_table bulk_action\">";
 		// echo "<thread><tr><th>Style</th><td>$style</td></tr></thread>";

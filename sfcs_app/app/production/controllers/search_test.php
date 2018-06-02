@@ -312,7 +312,7 @@ echo "</select></div>";
 
 <?php
 echo "<div class='col-md-1'><label>Module:</label> ";
-echo "<select name=\"module\" id=\"module\" class='form-control'>";
+echo "<select name=\"module\" id=\"module\" class='form-control' style=\"width: 86px;\">";
 echo "<option value=\"NIL\">NIL</option>";
 // Ticket #883457 give the Authorization to Cutting, Emblishment and Top Module Selection for restrict the cutting operation in Recut from the production people.
 if(in_array(strtolower($username),$authorized))

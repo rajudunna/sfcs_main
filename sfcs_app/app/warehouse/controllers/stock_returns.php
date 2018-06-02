@@ -49,21 +49,21 @@ function validateQty(event)
 	return true;
 }
 
-function isNumberKey(evt)
+function isNumberKey(evt,issued_qty)
 {
-	var charCode = (evt.which) ? evt.which : evt.keyCode;
-	if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
-	{
+	var myVal = event.target.value;
+	if(myVal > issued_qty){
+		event.target.value = myVal.substring(0,myVal.length-1)
 		return false;
 	}
 	return true;
 }
 </script>
 
-  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',1,'R'); ?>" type="text/css" media="all" />
+  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
-  <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',3,'R');  ?>"></script>
-  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/page_style.css',1,'R'); ?>" type="text/css" media="all" />
+  <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R');  ?>"></script>
+  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/page_style.css',3,'R'); ?>" type="text/css" media="all" />
 <!-- <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?> -->
 
 
@@ -212,8 +212,10 @@ $sql="select * from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
+
 while($sql_row=mysqli_fetch_array($sql_result))
 {
+	
 	$tid=$sql_row['tid'];
 	$location=$sql_row['ref1'];
 	$box=$sql_row['ref2'];
@@ -224,8 +226,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	echo "<tr>";
 		echo "<td>$location</td><td>$box</td><td>$available</td><td>$qty_issued</td>";
-		echo '<td><input type="text" class="form-control" data-toggle="datepicker"  name="date[]" value="'.date("Y-m-d").'" readonly></td>';
-		echo '<td><input type="text" class="form-control" name="qty_return[]" value="" onkeypress="return isNumberKey(event);" onchange="if(check2(this.value)==1010){ this.value=0;}"></td>';
+		echo '<td><input type="text" class="form-control" name="date[]" value="'.date("Y-m-d").'" readonly></td>';
+		echo '<td><input type="text" class="form-control integer" name="qty_return[]" value="" id="return_qty'.$count.'" onkeypress="return isNumberKey(event,'.$qty_issued.');" onkeyup="return isNumberKey(event,'.$qty_issued.');" onchange="if(check2(this.value)==1010){ this.value=0;}"></td>';
 		echo '<td><input type="text" class="form-control" name="remarks[]" value="">';
 		echo '<input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="status[]" value="'.$status.'"></td>';
 	echo "</tr>";	

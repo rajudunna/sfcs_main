@@ -94,12 +94,12 @@
 	?>
 
 	<?php
-		$sql2="select * from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" 
-			   and order_col_des=\"$color\"";
+		$sql2="select * from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 		mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check2=mysqli_num_rows($sql_result2);
 		$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -180,6 +180,7 @@
 				  <div id="div10" style="display: none;">';
 			echo "<div class='panel panel-primary'><div class='panel-body'>";
 			include("main_interface_10_assort.php"); 
+			// echo $radio;
 			echo '</div></div></div>'; 
 		}
 	?>

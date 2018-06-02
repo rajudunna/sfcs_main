@@ -137,7 +137,7 @@ function disp(x)
 	//alert("test");
 	//alert(x);
 	document.getElementById("qty["+x+"]").style.backgroundColor="red";
-	//document.getElementById("demos"+x).style.backgroundColor="red";
+	document.getElementById("demos"+x).style.backgroundColor="red";
 	
 	//document.getElementById("test["+x+"]").value=0;
 	//val=document.input["ref["+x+"]"].value;
@@ -153,13 +153,13 @@ function disp(x)
 	//alert(shift);
 	job=document.getElementById("job["+x+"]").value;
 	//alert(job);
-	//forms=document.getElementById("form["+x+"]").value;
+	forms=document.getElementById("form["+x+"]").value;
     qty=document.getElementById("qty["+x+"]").value;
 	//alert(qty);
 	modno=document.getElementById("mods["+x+"]").value;
 	//alert(modno);
 	
-//	document.getElementById("modules["+x+"]").value=document.getElementById("mods["+x+"]").value;;
+	document.getElementById("modules["+x+"]").value=document.getElementById("mods["+x+"]").value;;
 	
 	//alert(size+"-"+job+"-"+forms+"-"+color+"-"+style+"-"+schedule+"-"+modno);
 	//alert(qty);
@@ -179,7 +179,7 @@ function disp(x)
 	{
 		//alert('Test');
 		document.getElementById("qty["+x+"]").style.backgroundColor="red";
-		//document.getElementById("test["+x+"]").value=0;
+		document.getElementById("test["+x+"]").value=0;
 		
 		if(style.length>0 && schedule.length>0 && color.length>0 && size.length>0 && job.length>0 && modno!=0 && shift!=0)
 		{
@@ -187,7 +187,7 @@ function disp(x)
 			if(qty==breakup)
 			{
 				document.getElementById("qty["+x+"]").style.backgroundColor="green";
-				//document.getElementById("test["+x+"]").value=1;
+				document.getElementById("test["+x+"]").value=1;
 			}
 		}
 		else
@@ -195,17 +195,17 @@ function disp(x)
 			alert("Please fill all the required details");
 			
 			document.getElementById("qty["+x+"]").value=0;
-			//document.getElementById("demo"+x).style.backgroundColor="red";
-			//document.getElementById("demos"+x).style.backgroundColor="red";
-			//document.getElementById("test["+x+"]").value=0;
+			document.getElementById("demo"+x).style.backgroundColor="red";
+			document.getElementById("demos"+x).style.backgroundColor="red";
+			document.getElementById("test["+x+"]").value=0;
 			
 		}		
 	}
 	else
 	{
-		//document.getElementById("demo"+x).style.backgroundColor="red";
-		//document.getElementById("demos"+x).style.backgroundColor="red";
-		//document.getElementById("test["+x+"]").value=0;
+		document.getElementById("demo"+x).style.backgroundColor="red";
+		document.getElementById("demos"+x).style.backgroundColor="red";
+		document.getElementById("test["+x+"]").value=0;
 	}
 	
 }
@@ -278,7 +278,7 @@ xmlhttp.onreadystatechange=function()
     {
     	//document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
 		//document.getElementById("11").innerHTML=xmlhttp.responseText;
-		//alert(xmlhttp.responseText);
+		// alert(xmlhttp.responseText);
 		
 		if(str==1)
 		{
@@ -298,35 +298,36 @@ xmlhttp.onreadystatechange=function()
 	}
   }
 //alert(str); 
+var get_url = '<?= getFullURLLevel($_GET['r'],'getuser2.php',0,'R'); ?>';
 switch(str)
 {
 	case 1:
-		xmlhttp.open("GET","getuser2.php?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
+		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
 		xmlhttp.send();
 		break;
 	case 2:
 		val=document.input["schedule["+x+"]"].value+"$"+val;
-		xmlhttp.open("GET","getuser2.php?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
+		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
 		xmlhttp.send();
 		break;
 	case 3:
 		//val=document.input["style["+x+"]"].value+"$"+document.input["schedule["+x+"]"].value+"$"+document.input["color["+x+"]"].value+"$"+val;
 		val=document.getElementById("style["+x+"]").value+"$"+document.getElementById("schedule["+x+"]").value+"$"+document.getElementById("color["+x+"]").value+"$"+val;
 		//alert(val);
-		xmlhttp.open("GET","getuser2.php?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
+		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
 		xmlhttp.send();
 		break;
 	case 4:
 		//val=document.input["style["+x+"]"].value+"$"+document.input["schedule["+x+"]"].value+"$"+document.input["color["+x+"]"].value+"$"+document.input["job["+x+"]"].value+"$"+val;
 		val=document.getElementById("style["+x+"]").value+"$"+document.getElementById("schedule["+x+"]").value+"$"+document.getElementById("color["+x+"]").value+"$"+document.getElementById("job["+x+"]").value+"$"+val;
-		xmlhttp.open("GET","getuser2.php?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
+		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
 		xmlhttp.send();
 		break;	
 		
 	case 5:
 		//val=document.input["style["+x+"]"].value+"$"+document.input["schedule["+x+"]"].value+"$"+document.input["color["+x+"]"].value+"$"+document.input["job["+x+"]"].value+"$"+val;
 		val=document.getElementById("style["+x+"]").value+"$"+document.getElementById("schedule["+x+"]").value+"$"+document.getElementById("color["+x+"]").value+"$"+document.getElementById("job["+x+"]").value+"$"+document.getElementById("size["+x+"]").value+"$"+val;
-		xmlhttp.open("GET","getuser2.php?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
+		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
 		xmlhttp.send();
 		break;
 		
@@ -334,7 +335,7 @@ switch(str)
 		val=document.input["style["+x+"]"].value+"$"+document.input["schedule["+x+"]"].value+"$"+document.input["color["+x+"]"].value+"$"+document.input["job["+x+"]"].value+"$"+document.getElementById("size["+x+"]").value+"$"+document.getElementById("mods["+x+"]").value+"$"+val;
 		//val=document.getElementById("mods["+x+"]").value+"$"+document.getElementById("color["+x+"]").value+"$"+document.getElementById("job["+x+"]").value+"$"+document.getElementById("size["+x+"]").value+"$"+val;
 		//alert(val);
-		xmlhttp.open("GET","getuser2.php?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
+		xmlhttp.open("GET",get_url+"?qq="+str+"&x="+x+"&y="+y+"&val="+val+"&rand="+Math.random(),true);
 		xmlhttp.send();
 		break;
 			
@@ -453,8 +454,11 @@ for($i=0;$i<15;$i++)
   //To identify the form of the garment		
   echo "<td><select name=\"form[$i]\" onchange=\"showUser(6,$i,1,this.value)\"><option value=\"0\">Select</option><option value=\"P\">Panel</option><option value=\"G\">Garment</option></select></td>";
   
-  echo "<td class=xl11531661 style='border-left:none' id='$i"."6'>
-  </td>";
+  // echo "<td class=xl11531661 style='border-left:none' id='$i"."6'>
+  // </td>";
+  echo "<td class=xl11531661 style='border-left:none' >
+  <input type=\"hidden\" id=\"modules[$i]\" style=\"border-style:none;\" name=\"modules[$i]\" size=\"5\" value=\"\">
+  <input type=\"text\" id=\"qty[$i]\" class=\"integer\" style=\"border-style:none;\" name=\"qty[$i]\" size=\"5\" value=\"\" onkeyup='verify_alpha(event)' onchange=\"disp($i)\"> <input type=\"hidden\" id=\"test[$i]\" name=\"test[$i]\" value=\"0\"></td>";
   
   for($m=0;$m<sizeof($rejections_array);$m++)
   {

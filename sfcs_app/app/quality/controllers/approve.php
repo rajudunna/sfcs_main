@@ -7,8 +7,10 @@ Description: Here AQL team will be update Garments Approve status.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>FCA Status Update - Approve Form</title>
-<?php include("header_script.php"); 
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
+<?php  
+include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 ?>
 
 
@@ -83,18 +85,28 @@ function button_disable()
     </script>
 </head>
 <body onload="dodisable();" onpageshow="if (event.persisted) noBack();" onkeydown="return showKeyCode(event)">
-<div style='background-color:#398fe5;margin-right:600pt;'><h4><center>Approve Some Update Panel</center></h4></div>
+<div class="panel panel-primary">
+<div class="panel-heading">Approve Some Update Panel</div>
+<div class="panel-body">
+<?php
+	if(isset($_GET['style'])){
+		$style=$_GET['style'];
+		$schedule=$_GET['schedule'];
+		$color=$_GET['color'];
+		$audit_pending=$_GET['audit_pending'];
+	}
+?>
 
-
-
+<?php $url = getFullURL($_GET['r'],'pending.php','N');
+      $url = $url."&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending";
+?>
+<div class='row'>
+	<a href='<?= $url ?>' class='pull-right btn btn-danger'>Go Back</a>
+</div>
 <form name="test" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form data">
 <?php 
 if(isset($_GET['style']))
 {
-$style=$_GET['style'];
-$schedule=$_GET['schedule'];
-$color=$_GET['color'];
-$audit_pending=$_GET['audit_pending'];
 
 echo "Style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;".$style;
 echo "<br/> Schedule:&nbsp;".$schedule ;
@@ -126,7 +138,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$size_value=ims_sizes('',$sql_row['order_del_no'],$sql_row['order_style_no'],$sql_row['order_col_des'],strtoupper($sql_row['size_code']),$link);
 	if($qty>0)
 	{
-		echo "<tr><td>".$size_value."</td><td>$qty</td><td><input type=\"text\" name=\"qty[$x]\" value=\"0\" size=\"10\" onchange='if(this.value>$qty) { alert(\"Wrong Qty\"); this.value=0; } if(this.value<0) { alert(\"Wrong Qty\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\"></td>";
+		echo "<tr><td>".$size_value."</td><td>$qty</td><td><input type=\"text\" id=\"quantity\"  name=\"qty[$x]\" value=\"0\" size=\"10\"
+		 onchange='if(this.value>$qty) 
+		{ alert(\"Approve Quantity must not be greater than Available Quantity\"); this.value=0; } if(this.value<0) { alert(\"Please enter Valid Data\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\"></td>";
 		echo "</tr>";
 		$x++;
 	}
@@ -141,7 +155,8 @@ echo "</form>";
 }
 ?>
 
-
+</div>
+</div>
 
 </body>
 </html>
@@ -161,8 +176,8 @@ if(isset($_POST['update']))
 	$color_new=$_POST['color_new'];
 	$size=$_POST['size'];
 	$qty=$_POST['qty'];
-	echo sizeof($qty)."size<br>";
-	echo "<br/>color=".$color_new;
+	//echo sizeof($qty)."size<br>";
+	//echo "<br/>color=".$color_new;
 	 
 	/*if($color_new=='0')
 	{
@@ -196,7 +211,7 @@ if(isset($_POST['update']))
 		if($qty[$i]>0)
 		{
 			$sql="insert into $bai_pro3.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i]."\",\"".$username."\",\"".$qty[$i]."\")";
-			echo "<br/>query1=".$sql;
+			//echo "<br/>query1=".$sql;
 			mysqli_query($link, $sql) or exit("Sql Error".$sql);
 		}
 	}
@@ -210,16 +225,30 @@ if(isset($_POST['update']))
 		{
 			$sql1="insert into $bai_pro3.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs,color) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i1]."\",\"".$username."\",\"".$qty[$i1]."\",\"".$color_new."\")";
 			//$sql1="insert into fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\", tran_type=1, size=\"".$size[$i1]."\", done_by=\"$username\", pcs=\"".$qty[$i1]."\"";
-			echo "<br/>query2=".$sql1;
+			//echo "<br/>query2=".$sql1;
 			mysqli_query($link, $sql1) or exit("Sql Error2".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}
 	}
+	$url1=getFullURL($_GET['r'],'pending.php','N');
 	echo "<h2><font color=\"green\">Successfully Updated!</font></h2>";
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"pending.php\"; }</script>";
-	echo "<script type=\"text/javascript\"> window.close(); </script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
 }
 
 
 
 ?>
+<script>
+$(document).ready(function () {
+  //called when key is pressed in textbox
+
+ $("#quantity").keypress(function (e) {
+	//alert("Hello world");
+	if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+        //display error message
+       // $("#errmsg").html("Digits Only").show().fadeOut("slow");
+               return false;
+    }
+   });
+});
+</script>

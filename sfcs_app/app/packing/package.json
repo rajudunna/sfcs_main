@@ -1,0 +1,25 @@
+{ 
+"name" : "cutting",
+"version" : "1.0",
+"description" : "",
+   "menus" : : {
+  "Sewing Out View" : "/sewing_out_view.php",
+  "Update Carton Quantities" : "/carton_create.php",
+  "Packing List Generation" : "/packing_list/test.php",
+  "Delete Ratio Mapping" : "/packing_list/delete_ratio_mapping.php",
+  "Ration Packing List Mapping" : "/packing_list/ratio_mapping.php",
+  "Ratio Packing List Generation" : "/packing_list/test_rplg.php",
+  "Data Upload" : "/data_update/upload_ac.php",
+  "Delete Packing List" : "/packing_list/delete_wrong_packing_lists.php",
+  "Carton Check-In" : "/packing_check_point_handover_select.php",
+  "Split Lables" : "/partial_breakup.php",
+  "Bug Solutions" : "/bug_solution.php",
+  "FG Stock Reversal Form" : "/cpk_reversal.php",
+  "Excess Garments Entry Form" : "/emb_or_new.php",
+  "Excess Garment Receiving" : "/fg_or_new.php",
+  "Reserve For Dispatch" : "/test.php",
+  "CTPAT" : "/index.php",
+ 
+  }
+  
+  }

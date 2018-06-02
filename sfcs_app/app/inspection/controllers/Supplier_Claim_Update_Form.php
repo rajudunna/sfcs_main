@@ -14,6 +14,17 @@ th, td
 
 function enableButton() 
 {
+	var txtsuprepqty1=document.getElementById('txtsuprepqty1').value;
+	var comp_status_code=document.getElementById('comp_status_code').value;
+	// alert(comp_status_code);
+	if(Number(comp_status_code)==3)
+	{
+		if(Number(txtsuprepqty1) > 0)
+		{	
+			sweetAlert('Previously Supplier Replacement Agreed Qty Updated','','info');
+
+		}
+	}
 	if(document.getElementById('option').checked)
 	{
 		document.getElementById('submitx').disabled='';
@@ -66,7 +77,7 @@ else
 	
 	echo "<div class='table-responsive'><table cellspacing=\"0\" id=\"table2\" class=\"table table-striped jambo_table bulk_action\" border=1>";	
 	echo "<thead><tr><th>Complaint No</th><th>Product Category</th><th>Complaint Category</th><th>Request Date</th><th>Request User</th><th>Supplier Name</th><th>Buyer Name</th><th>Reject Item Codes</th><th>Reject Item Colors</th><th>Batch No</th><th>PO No</th><th>Lot No</th><th>Reject Roll Qty</th><th>Reject Len Qty</th>
-<th>UOM</th><th>Complaint Remarks</th></tr></thead>";
+<th>UOM</th><th>Supplier Replace Approved Qty</th><th>Supplier Claim Approved Qty</th><th>Complaint Remarks</th></tr></thead>";
 
 	$sql="select * from $bai_rm_pj1.inspection_complaint_db where complaint_no=\"".$comaplint_no."\"";
 	
@@ -98,9 +109,10 @@ else
 		$comaplint_remarks=$row["complaint_remarks"];
 		$supplier_claim_no=$row["supplier_claim_no"];
 		$supplier_credit_no=$_row["supplier_credit_no"];
+
 		
 		echo "<tr>";
-		echo "<td>$complaint_no</td><td>$product_categoy</td><td>$complaint_category</td><td>$req_date</td><td>$complaint_raised_by</td><td>$supplier_name</td><td>$buyer_name</td><td>$reject_item_codes</td><td>$reject_item_color</td><td>$reject_batch_no</td><td>$reject_po_no</td><td>$reject_lot_no</td><td>$reject_roll_qty</td><td>$reject_len_qty</td><td>$uom</td><td>$comaplint_remarks</td></tr>";
+		echo "<td>$complaint_no</td><td>$product_categoy</td><td>$complaint_category</td><td>$req_date</td><td>$complaint_raised_by</td><td>$supplier_name</td><td>$buyer_name</td><td>$reject_item_codes</td><td>$reject_item_color</td><td>$reject_batch_no</td><td>$reject_po_no</td><td>$reject_lot_no</td><td>$reject_roll_qty</td><td>$reject_len_qty</td><td>$uom</td><td>$supplier_replace_approved_qty</td><td>$supplier_claim_approved_qty</td><td>$comaplint_remarks</td></tr>";
 	}
 	
 	if(strlen($supplier_approved_date) > 0)
@@ -155,6 +167,7 @@ else
 	{	
 		
 		if($i==$status_comp){
+
 			echo "<option value=\"".$i."\" selected>".$comaplint_status_codes[$i]."</option>";
 			
 		}else{
@@ -179,10 +192,10 @@ else
 	echo "<tr>";
 	echo "<th class=\"style1\">Supplier Remarks</th><td><textarea class=\"form-control\" name=\"txtsupremarks\" rows=\"4\" cols=\"20\">$supplier_remarks</textarea></td>";
 	echo "<th class=\"style2\">New Invoice No</th><td><input class=\"form-control alpha\" type=\"text\" name=\"txtnewinv\" id=\"txtnewinv\" value=\"$new_invoice_no\" /></td>";
-	echo "<th class='fixed'>Supplier Replacement Agreed <br/>Qty</th><td><input class=\"form-control float\" type=\"text\" name=\"txtsuprepqty\"  id=\"txtsuprepqty\" value=\"$supplier_replace_approved_qty\" onkeyup=\"validateqty()\"/></td>";
+	echo "<th class='fixed'>Supplier Replacement Agreed <br/>Qty</th><td><input class=\"form-control float\" type=\"text\" name=\"txtsuprepqty\"  id=\"txtsuprepqty\" value=\"".$supplier_replace_approved_qty."\" onkeyup=\"validateqty()\"/><input type=\"hidden\" name=\"txtsuprepqty1\"  id=\"txtsuprepqty1\" value=\"".$supplier_replace_approved_qty."\"/></td>";
 	echo "</tr>";
 	echo "<tr>";
-	echo "<th>Supplier Credit Agreed Qty</th><td><input class=\"form-control float\" type=\"text\" name=\"txtsupcrdqty\"  id=\"txtsupcrdqty\" value=\"$supplier_claim_approved_qty\" onkeyup=\"validateqty()\"/></td>";
+	echo "<th>Supplier Credit Agreed Qty</th><td><input class=\"form-control float\" type=\"text\" name=\"txtsupcrdqty\"  id=\"txtsupcrdqty\" value=\"".$supplier_claim_approved_qty."\" onkeyup=\"validateqty()\"/><input type=\"hidden\" name=\"txtsupcrdqty1\"  id=\"txtsupcrdqty1\" value=\"".$supplier_claim_approved_qty."\"/></td>";
 	echo "<th>Supplier Credit Note No</th><td><input class=\"form-control alpha\" type=\"text\" name=\"txtsupcrdno\" id=\"txtsupcrdno\" value=\"$supplier_credit_no\" /></td>";
 	echo "<th class='fixed'>Claim Note No</th><td><input class=\"form-control alpha\" type=\"text\" name=\"txtsupclmno\" id='claim_note_no' value=\"$supplier_claim_no\" /></td>";
 	
@@ -255,6 +268,9 @@ function validateqty()
 	// alert("hiiii");
 	var supagreedqty=document.getElementById("txtsuprepqty").value;
 	var supcredagreqty=document.getElementById("txtsupcrdqty").value;
+	// var txtsuprepqty1=document.getElementById("txtsuprepqty1").value;
+	// var txtsupcrdqty1=document.getElementById("txtsupcrdqty1").value;
+
 	var tot=Number(supagreedqty)+Number(supcredagreqty);
 	
 	var rejlenqty='<?php echo $reject_len_qty;?>';
@@ -264,7 +280,7 @@ function validateqty()
 	
 	if(tot > tot1)	
 	{
-		sweetAlert("You cant enter more than Reject Len and Reject Roll Qty","","warning");
+		sweetAlert("You cannot enter more than Reject Len and Reject Roll Qty","","warning");
 		document.getElementById("txtsuprepqty").value="0";
 	    document.getElementById("txtsupcrdqty").value="0";
 	}

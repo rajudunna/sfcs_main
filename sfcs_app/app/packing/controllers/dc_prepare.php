@@ -50,7 +50,7 @@
 		</div>
 		<div class='panel-body'>		
 			<form name="input" method="post" action="<?php echo '?r='.$_GET['r']; ?>">
-				<?php include(getFullURLLevel($_GET['r'], 'common/config/config.php', 3, 'R')); 
+				<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 					if(isset($_POST['prepare']));
 					if(1)
 					{
@@ -75,8 +75,9 @@
 							
 							$sql="select ship_style,ship_schedule,ship_color,coalesce(sum(ship_cartons),0) as \"ship_cartons\", coalesce(sum(ship_s_xs),0) as \"ship_s_xs\",coalesce(sum(ship_s_s),0) as \"ship_s_s\",coalesce(sum(ship_s_m),0) as \"ship_s_m\",coalesce(sum(ship_s_l),0) as \"ship_s_l\",coalesce(sum(ship_s_xl),0) as \"ship_s_xl\",coalesce(sum(ship_s_xxl),0) as \"ship_s_xxl\",coalesce(sum(ship_s_xxxl),0) as \"ship_s_xxxl\",coalesce(sum(ship_s_s01),0) as \"ship_s_s01\"
 								,coalesce(sum(ship_s_s02),0) as \"ship_s_s02\",coalesce(sum(ship_s_s03),0) as \"ship_s_s03\",coalesce(sum(ship_s_s04),0) as \"ship_s_s04\",coalesce(sum(ship_s_s05),0) as \"ship_s_s05\",coalesce(sum(ship_s_s06),0) as \"ship_s_s06\",coalesce(sum(ship_s_s07),0) as \"ship_s_s07\",coalesce(sum(ship_s_s08),0) as \"ship_s_s08\",coalesce(sum(ship_s_s09),0) as \"ship_s_s09\",coalesce(sum(ship_s_s10),0) as \"ship_s_s10\",coalesce(sum(ship_s_s11),0) as \"ship_s_s11\",coalesce(sum(ship_s_s12),0) as \"ship_s_s12\",coalesce(sum(ship_s_s13),0) as \"ship_s_s13\",coalesce(sum(ship_s_s14),0) as \"ship_s_s14\",coalesce(sum(ship_s_s15),0) as \"ship_s_s15\",coalesce(sum(ship_s_s16),0) as \"ship_s_s16\",coalesce(sum(ship_s_s17),0) as \"ship_s_s17\",coalesce(sum(ship_s_s18),0) as \"ship_s_s18\",coalesce(sum(ship_s_s19),0) as \"ship_s_s19\",coalesce(sum(ship_s_s20),0) as \"ship_s_s20\",coalesce(sum(ship_s_s21),0) as \"ship_s_s21\",coalesce(sum(ship_s_s22),0) as \"ship_s_s22\",coalesce(sum(ship_s_s23),0) as \"ship_s_s23\",coalesce(sum(ship_s_s24),0) as \"ship_s_s24\",coalesce(sum(ship_s_s25),0) as \"ship_s_s25\",coalesce(sum(ship_s_s26),0) as \"ship_s_s26\",coalesce(sum(ship_s_s27),0) as \"ship_s_s27\",coalesce(sum(ship_s_s28),0) as \"ship_s_s28\",coalesce(sum(ship_s_s29),0) as \"ship_s_s29\",coalesce(sum(ship_s_s30),0) as \"ship_s_s30\",coalesce(sum(ship_s_s31),0) as \"ship_s_s31\",coalesce(sum(ship_s_s32),0) as \"ship_s_s32\",coalesce(sum(ship_s_s33),0) as \"ship_s_s33\",coalesce(sum(ship_s_s34),0) as \"ship_s_s34\",coalesce(sum(ship_s_s35),0) as \"ship_s_s35\",coalesce(sum(ship_s_s36),0) as \"ship_s_s36\",coalesce(sum(ship_s_s37),0) as \"ship_s_s37\",coalesce(sum(ship_s_s38),0) as \"ship_s_s38\",coalesce(sum(ship_s_s39),0) as \"ship_s_s39\",coalesce(sum(ship_s_s40),0) as \"ship_s_s40\",coalesce(sum(ship_s_s41),0) as \"ship_s_s41\",coalesce(sum(ship_s_s42),0) as \"ship_s_s42\",coalesce(sum(ship_s_s43),0) as \"ship_s_s43\",coalesce(sum(ship_s_s44),0) as \"ship_s_s44\",coalesce(sum(ship_s_s45),0) as \"ship_s_s45\",coalesce(sum(ship_s_s46),0) as \"ship_s_s46\",coalesce(sum(ship_s_s47),0) as \"ship_s_s47\",coalesce(sum(ship_s_s48),0) as \"ship_s_s48\",coalesce(sum(ship_s_s49),0) as \"ship_s_s49\",coalesce(sum(ship_s_s50),0) as \"ship_s_s50\" from $bai_pro3.ship_stat_log where ship_status=1 and ship_tid in (".implode(",",$sel).") group by ship_schedule order by ship_schedule";
-							mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							// echo $sql."<br>";
+							$sql_result=mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$num_sch=mysqli_num_rows($sql_result);
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
