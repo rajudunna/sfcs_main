@@ -164,7 +164,7 @@ if(mysqli_num_rows($sql_result)>0) {
 			echo $table;
 			$y++;
 	}
-	echo '<tr><td colspan=6>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
+	echo '<tr><td colspan=6>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td><td></tr>';
 	$table='</tbody>
 	</table>
 	</div>';

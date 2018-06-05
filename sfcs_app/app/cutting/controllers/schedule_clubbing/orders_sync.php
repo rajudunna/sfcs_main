@@ -38,11 +38,11 @@ td{ padding:2px; white-space: nowrap;}
 </style>
 <?php
 include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
-$view_access=user_acl("SFCS_0279",$username,1,$group_id_sfcs);
+// error_reporting(0);
 ?>
-
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 
+// error_reporting(0);
+?>
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
 
 </head>
@@ -74,13 +74,6 @@ bai_pro3.bai_orders_db_confirm.bts_status
   $color=$_GET['color'];
   $style=$_GET['style'];
   $schedule=$_GET['schedule'];
-  $order_tid_query = "SELECT order_tid FROM $bai_pro3.`bai_orders_db` WHERE order_del_no='".$schedule."' AND order_col_des='".$color."' AND order_style_no='".$style."'";
-  // echo $order_tid_query;
-  $order_tid_result=mysqli_query($link, $order_tid_query) or ("Sql error777".mysqli_error($GLOBALS["___mysqli_ston"]));
-  while($result=mysqli_fetch_array($order_tid_result))
-  {
-  	$order_tid=$result['order_tid'];
-  }
 
   $bai_orders_db_confirm='';$bai_orders_db='';$plandoc_stat_log='';
   for($j=0;$j<sizeof($sizes_array);$j++)
@@ -93,7 +86,7 @@ bai_pro3.bai_orders_db_confirm.bts_status
   $query1=substr($bai_orders_db,0,-1);
   $query2=substr($plandoc_stat_log,0,-1);
 
-	$sql="SELECT bai_orders_db_confirm.*,$query AS confirm_order_quantity,bai_orders_db.order_tid,$query1 AS order_quantity,plandoc_stat_log.order_tid,SUM(($query2)*plandoc_stat_log.p_plies) AS plan_quantity,bai_orders_db_confirm.bts_status FROM $bai_pro3.bai_orders_db_confirm as  bai_orders_db_confirm	LEFT JOIN $bai_pro3.bai_orders_db  as bai_orders_db ON bai_orders_db.order_tid=bai_orders_db_confirm.order_tid	LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.order_tid='".$order_tid."' AND bai_orders_db_confirm.order_joins not in ('1','2') AND plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid GROUP BY bai_orders_db_confirm.order_tid, bai_orders_db_confirm.order_col_des";
+	$sql="SELECT bai_orders_db_confirm.*,$query AS confirm_order_quantity,bai_orders_db.order_tid,$query1 AS order_quantity,plandoc_stat_log.order_tid,SUM(($query2)*plandoc_stat_log.p_plies) AS plan_quantity,bai_orders_db_confirm.bts_status FROM $bai_pro3.bai_orders_db_confirm as  bai_orders_db_confirm	LEFT JOIN $bai_pro3.bai_orders_db  as bai_orders_db ON bai_orders_db.order_tid=bai_orders_db_confirm.order_tid	LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.order_joins not in ('1','2') AND plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid GROUP BY bai_orders_db_confirm.order_tid, bai_orders_db_confirm.order_col_des";
 	//HAVING plan_quantity>=confirm_order_quantity"; //this will validate whether layplan has > order quantity or not
 	echo $sql."</br>";
 	$result=mysqli_query($link, $sql) or ("Sql error777".mysqli_error($GLOBALS["___mysqli_ston"]));

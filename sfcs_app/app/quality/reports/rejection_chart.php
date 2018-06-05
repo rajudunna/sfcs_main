@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<script src="https://cdn.ovo.ua/pub/fusioncharts/fusioncharts.js"></script> 
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/FusionCharts.js',3,'R'); ?>"></script> 
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/highcharts.js',3,'R'); ?>"></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/exporting.js',3,'R'); ?>"></script>
 <?php 
 error_reporting(0);
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
@@ -26,6 +26,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 
 $sql="select * from $bai_rm_pj1.inspection_supplier_db where product_code=\"Fabric\"";
+// echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("inspection_supplier_db Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -64,17 +65,15 @@ else
 	$supplier_list1[]="All";
 }
 
-
 ?>
 
 <html>
 <head>
 
-
-<!--<script type="text/javascript" src="jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="jquery.min.js"></script>
 <script src="https://cdn.ovo.ua/pub/fusioncharts/fusioncharts.js"></script> 
 <script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>-->
 
 <style>
 body
@@ -116,20 +115,19 @@ table{
 	font-size:12px;
 }
 
-
 }
 
 }
 </style>
-
 </head>
+
 <body>
 <div class="panel panel panel-primary">
 <div class="panel-heading">Daily Rejection Analysis Charts</div>
 <div class="panel-body">
 <!--<div id="page_heading"><span><h3>Daily Rejection Analysis Charts</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
 <div class="col-md-12">
-<form name="input" method="post" action="<?php echo getFullURL($_GET['r'],'rejection_chart.php',N); ?>">
+<form name="input" method="post" action="<?php echo getFullURL($_GET['r'],'rejection_chart.php','N'); ?>">
 <div class="col-md-2">
 <label>Start Date </label>
 <input id="demo1"  class="form-control" type="text" data-toggle='datepicker' name="sdate" size="8" value="<?php if(isset($_POST['sdate'])) { echo $_POST['sdate']; } else { echo date("Y-m-d"); } ?>"> </div>
@@ -246,8 +244,8 @@ if(isset($_POST['filter']))
 			$reasons_list[]=$t;
 		}
 	}
-	
 	$sql_out="select sum(bac_qty) as qty from $bai_pro.bai_log_buf where bac_date between \"".$sdate."\" and \"".$edate."\"";
+	//echo $sql_out;
 	$sql_result_out=mysqli_query($link, $sql_out) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_out=mysqli_fetch_array($sql_result_out))
 	{
@@ -273,6 +271,7 @@ if(isset($_POST['filter']))
 			$supplier_ref[]=",'".$suppliers_list[$i]."'";
 		}
 	}
+	
 	$reasons_list_ref=array();
 	if($reasons_list)
 	{

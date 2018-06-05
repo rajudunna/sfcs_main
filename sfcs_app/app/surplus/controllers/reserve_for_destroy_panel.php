@@ -367,7 +367,7 @@ if(isset($_POST['schsbt']))
 	$table ="<br/><div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'>";	
 	$table.=" <table class='table table-bordered' id='table1'>";
 	$table.="<thead>";
-	$table.="<tr class='success'>";
+	$table.="<tr>";
 	$table.='<th>SNo</th>';
 	$table.="<th>Style</th>";
 	$table.="<th>Schedule</th>";
@@ -539,18 +539,18 @@ if(isset($_POST['schsbt']))
 <script language="javascript" type="text/javascript">
 //<![CDATA[
 	var fnsFilters = {
-	rows_counter: false,
-	sort_select: true,
-	btn_reset: true,
-	alternate_rows: true,
-	btn_reset_text: "Clear",
-	col_operation: { 
-						id: ["table1Tot1"],
-						col: [5],  
-						operation: ["sum"],
-						decimal_precision: [1],
-						write_method: ["innerHTML"] 
-					},
+		rows_counter: false,
+		sort_select: true,
+		btn_reset: true,
+		alternate_rows: true,
+		btn_reset_text: "Clear",
+		col_operation: { 
+							id: ["table1Tot1"],
+							col: [5],  
+							operation: ["sum"],
+							decimal_precision: [1],
+							write_method: ["innerHTML"] 
+						},
 	rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]	
 	};
 	 setFilterGrid("table1",fnsFilters);

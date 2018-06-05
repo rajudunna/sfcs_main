@@ -9,7 +9,7 @@ if(isset($_POST['importSubmit'])){
     $fname = $_FILES["file"]["name"];
     $chk_ext1 = explode(".",$fname);
     // $csvMimes = array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain');
-	$csvMimes = array('xlsx','csv');
+	$csvMimes = array('csv');
 
 	// echo $_FILES['file']['name']."@@@".$_FILES['file']['type'];
 	// die();
@@ -78,10 +78,10 @@ if(isset($_POST['importSubmit'])){
                 $url = getFullURL($_GET['r'],'upload_fr.php','N');
                 echo "<script>
                         sweetAlert('Oops','File Already Exists','error')
-                        setTimeout(redirect(),4000);
-                        function redirect(){
+                        setTimeout(
+                        function(){
                             location.href = ' $url ';
-                        }
+                        },3000);
                         </script>";
                 exit();
             }
@@ -91,20 +91,33 @@ if(isset($_POST['importSubmit'])){
                 $path_new="../".getFullURL($_GET['r'],"uploads/$new_filename","R");
                 move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
                 echo "<script>sweetAlert('OK','file Uploaded Sucessfully','success')</script>";
+                $url = getFullURL($_GET['r'],'upload_fr.php','N');
+                echo "<script>
+                        sweetAlert('Oops','File Already Exists','error')
+                        setTimeout(
+                        function(){
+                            location.href = ' $url ';
+                        },3000);
+                        </script>";
             }
             fclose($csvFile);
-			 echo "<div class='alert alert-success'>
-                                  <strong>Success!</strong> FR Data Successfully Inserted.
-                   </div>";
+			// echo "<div class='alert alert-success'>
+            //                      <strong>Success!</strong> FR Data Successfully Inserted.
+            //       </div>";
             // $qstring = '?status=succ';
         }else{
             // $qstring = '?status=err';
         }
     }else{
         echo "<script>sweetAlert('Oops','Invalid File','error')</script>";
-        // echo "<div class='alert alert-danger'>
-            // <strong>Success!</strong> FR Data Successfully Inserted.
-            // </div>";
+        $url = getFullURL($_GET['r'],'upload_fr.php','N');
+        echo "<script>
+                sweetAlert('Oops','File Already Exists','error')
+                setTimeout(
+                function(){
+                    location.href = ' $url ';
+                },3000);
+            </script>";
       
     }
 

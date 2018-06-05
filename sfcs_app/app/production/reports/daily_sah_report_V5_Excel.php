@@ -568,8 +568,8 @@ tags will be replaced.-->
 
 if(isset($_POST["submit"]))
 {
-	echo "<hr/>";
-include"header.php";
+ echo "<hr/>";
+ include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 $sHTML_Content='<html><head><style id="SAH -JUN_13441_Styles">
 <!--table
@@ -1092,14 +1092,14 @@ function div_by_zero($arg)
 include("../".getFullURLLevel($_GET['r'],'Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php',1,'R')); 
 //include("../Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php");
 
-$sql7=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT COUNT(DISTINCT DATE) as days FROM grand_rep WHERE (DATE between \"$dat\" and \"$dat1\") and dayname(date)<>'Sunday'");
+$sql7=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT COUNT(DISTINCT DATE) as days FROM $bai_pro.grand_rep WHERE (DATE between \"$dat\" and \"$dat1\") and dayname(date)<>'Sunday'");
 while($rows7=mysqli_fetch_array($sql7))
 {
 	$days=$rows7["days"];
 	//$sHTML_Content.="<td rowspan=2 class=xl6527942 width=64 style='width:48pt'>".$rows7["COUNT(DISTINCT DATE)"]."</td>";
 }
 
-$sql7=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(act_sth) as sah FROM grand_rep WHERE DATE=\"".$dat1."\"");
+$sql7=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(act_sth) as sah FROM $bai_pro.grand_rep WHERE DATE=\"".$dat1."\"");
 while($rows7=mysqli_fetch_array($sql7))
 {
 	$today_sah=$rows7["sah"];
@@ -1192,7 +1192,7 @@ $sHTML_Content.="<div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel
  <tr height=36 style='mso-height-source:userset;height:27.0pt'>
   <td colspan=2 rowspan=2 height=57 class=xl10213441 style='height:42.75pt'>DATE</td>
   <td rowspan=2 class=xl9913441 style='border-top:none'><span
-  style='mso-spacerun:yes'>�</span>PLAN SAH</td>
+  style='mso-spacerun:yes'></span>PLAN SAH</td>
   <td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
   %</td>
@@ -1203,7 +1203,7 @@ $sHTML_Content.="<div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel
   SAH loss</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Production loss</td>
   <td rowspan=2 class=xl9913441 style='border-top:none'><span
-  style='mso-spacerun:yes'>�</span>PLAN SAH</td>
+  style='mso-spacerun:yes'></span>PLAN SAH</td>
   <td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
   %</td>
@@ -1214,7 +1214,7 @@ $sHTML_Content.="<div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel
   SAH loss</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Production loss</td>
   <td rowspan=2 class=xl9913441 style='border-top:none'><span
-  style='mso-spacerun:yes'>�</span>PLAN SAH</td>
+  style='mso-spacerun:yes'></span>PLAN SAH</td>
   <td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
   %</td>
@@ -1225,7 +1225,7 @@ $sHTML_Content.="<div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel
   SAH loss</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Production loss</td>
   <td rowspan=2 class=xl9913441 style='border-top:none'><span
-  style='mso-spacerun:yes'>�</span>PLAN SAH</td>
+  style='mso-spacerun:yes'></span>PLAN SAH</td>
   <td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
   %</td>
@@ -1236,7 +1236,7 @@ $sHTML_Content.="<div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel
   SAH loss</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Production loss</td>
   <td rowspan=2 class=xl9913441 style='border-top:none'><span
-  style='mso-spacerun:yes'>�</span>PLAN SAH</td>
+  style='mso-spacerun:yes'></span>PLAN SAH</td>
   <td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
   %</td>
@@ -1247,7 +1247,7 @@ $sHTML_Content.="<div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel
   SAH loss</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Production loss</td>
   <td rowspan=2 class=xl9913441 style='border-top:none'><span
-  style='mso-spacerun:yes'>�</span>PLAN SAH</td>
+  style='mso-spacerun:yes'></span>PLAN SAH</td>
   <td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
   %</td>
@@ -1258,7 +1258,7 @@ $sHTML_Content.="<div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel
   SAH loss</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Production loss</td>
   <td rowspan=2 class=xl9913441 style='border-top:none'><span
-  style='mso-spacerun:yes'>�</span>PLAN SAH</td>
+  style='mso-spacerun:yes'></span>PLAN SAH</td>
   <td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
   <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
   %</td>
@@ -1349,7 +1349,7 @@ $sHTML_Content.="<div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel
  $vs_sah_plan="246163";
  $ms_sah_plan="91610";
  
-$sql_vs="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from grand_rep where (buyer like \"%VS Logo%\" or buyer like \"%VS Pink%\" or buyer like \"%Glamour%\") and date between \"$dat\" and \"$dat1\"";
+$sql_vs="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where (buyer like \"%VS Logo%\" or buyer like \"%VS Pink%\" or buyer like \"%Glamour%\") and date between \"$dat\" and \"$dat1\"";
 //echo $sql_vs;
 $result_vs=mysqli_query($link, $sql_vs) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_vs=mysqli_fetch_array($result_vs))
@@ -1357,7 +1357,7 @@ while($row_vs=mysqli_fetch_array($result_vs))
 	$vs_act_sah=$row_vs["act"];
 }
 
-$sql_ms="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from grand_rep where (buyer like \"%M&S%\") and date between \"$dat\" and \"$dat1\"";
+$sql_ms="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where (buyer like \"%M&S%\") and date between \"$dat\" and \"$dat1\"";
 //echo $sql_ms;
 $result_ms=mysqli_query($link, $sql_ms) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_ms=mysqli_fetch_array($result_ms))
@@ -1365,7 +1365,7 @@ while($row_ms=mysqli_fetch_array($result_ms))
 	$ms_act_sah=$row_ms["act"];
 }
 
-$sql_vs_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from grand_rep where (buyer like \"%VS Logo%\" or buyer like \"%VS Pink%\" or buyer like \"%Glamour%\") and date=\"$dat1\"";
+$sql_vs_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where (buyer like \"%VS Logo%\" or buyer like \"%VS Pink%\" or buyer like \"%Glamour%\") and date=\"$dat1\"";
 //echo $sql_vs;
 $result_vs_today=mysqli_query($link, $sql_vs_today) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_vs_today=mysqli_fetch_array($result_vs_today))
@@ -1373,7 +1373,7 @@ while($row_vs_today=mysqli_fetch_array($result_vs_today))
 	$vs_act_sah_today=$row_vs_today["act"];
 }
 
-$sql_ms_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from grand_rep where (buyer like \"%M&S%\") and date=\"$dat1\"";
+$sql_ms_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where (buyer like \"%M&S%\") and date=\"$dat1\"";
 //echo $sql_ms;
 $result_ms_today=mysqli_query($link, $sql_ms_today) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_ms_today=mysqli_fetch_array($result_ms_today))
@@ -1382,7 +1382,7 @@ while($row_ms_today=mysqli_fetch_array($result_ms_today))
 }
  
  
-$sql_dat=mysqli_query($GLOBALS["___mysqli_ston"], "select distinct date from grand_rep where date between \"$dat\" and \"$dat1\" order by date");
+$sql_dat=mysqli_query($GLOBALS["___mysqli_ston"], "select distinct date from $bai_pro.grand_rep where date between \"$dat\" and \"$dat1\" order by date");
 while($row=mysqli_fetch_array($sql_dat))
 {
   $date = $row['date']; 
@@ -1394,7 +1394,7 @@ while($row=mysqli_fetch_array($sql_dat))
   for($i=1;$i<=7;$i++)
   {	
 	
-	  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM grand_rep WHERE DATE=\"".$row["date"]."\" AND section=\"$i\" group by module,shift order by module");	 
+	  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE DATE=\"".$row["date"]."\" AND section=\"$i\" group by module,shift order by module");	 
       while($rows=mysqli_fetch_array($sql))
 	  {
 			$plan_sah=$plan_sah+round($rows["plan"],0);
@@ -1417,14 +1417,29 @@ while($row=mysqli_fetch_array($sql_dat))
 	  }
 	  if($i!=7 and $plan_sah!=0)	  
 	  {
-	  $sHTML_Content.="<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($plan_sah_a+$plan_sah_b,0)."</td>";
-	  $sHTML_Content.="<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($act_sah_a,0)."</td>";
-	  $sHTML_Content.="<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_b,0)."</td>";
-	  $sHTML_Content.="<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_a+$act_sah_b,0)."</td>";
-	  $sHTML_Content.="<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b)/$plan_sah)*100,1)."%</td>";
-	  $sHTML_Content.="<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b)/$plan_clh)*100,1)."%</td>";
+		  $sHTML_Content.="<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($plan_sah_a+$plan_sah_b,0)."</td>";
+		  $sHTML_Content.="<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($act_sah_a,0)."</td>";
+		  $sHTML_Content.="<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_b,0)."</td>";
+		  $sHTML_Content.="<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_a+$act_sah_b,0)."</td>";
+		  if($plan_sah > 0)
+		  {
+			$sHTML_Content.="<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b)/$plan_sah)*100,1)."%</td>";
+		  }
+		  else
+		  {
+			$sHTML_Content.="<td class=xl10713441 style='border-top:none;border-left:none'>0%</td>";
+		  }
+		  
+		  if($plan_sah > 0)
+		  {
+			$sHTML_Content.="<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b)/$plan_clh)*100,1)."%</td>";
+		  }
+		  else
+		  {
+			$sHTML_Content.="<td class=xl10713441 style='border-top:none;border-left:none'>0%</td>";
+		  }		  
 	  }
-	  $sql1="select mod_no,dtime,shift,plan_eff from down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and source=1 and remarks!=\"Open capacity\"";
+	  $sql1="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and source=1 and remarks!=\"Open capacity\"";
 	  $result1=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	  while($row1=mysqli_fetch_array($result1))
 	  {
@@ -1434,7 +1449,7 @@ while($row=mysqli_fetch_array($sql_dat))
 			 $plan_eff_down=round($row1["plan_eff"],0);
 			 if($plan_eff_down > 0)
 			 {
-			 	$sql2="select plan_eff from down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
+			 	$sql2="select plan_eff from $bai_pro.down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
 				 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2=mysqli_fetch_array($result2))
 				 {
@@ -1443,7 +1458,7 @@ while($row=mysqli_fetch_array($sql_dat))
 			 }
 			 else
 			 {
-			 	 $sql2="select plan_eff from pro_plan where sec_no=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
+			 	 $sql2="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
 				 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2=mysqli_fetch_array($result2))
 				 {
@@ -1451,13 +1466,13 @@ while($row=mysqli_fetch_array($sql_dat))
 				 } 
 				 if($plan_eff ==0)
 				 {
-				 	$sql2="SELECT MAX(DATE) as max_date FROM pro_plan WHERE plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
+				 	$sql2="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
 		//echo $sql2;
 					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
 						$max_date=$sql_row2["max_date"];
-						$sql21="SELECT plan_eff FROM pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
+						$sql21="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
 						//echo $sql2;
 						$sql_result21=mysqli_query($link, $sql21) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row21=mysqli_fetch_array($sql_result21))
@@ -1478,7 +1493,7 @@ while($row=mysqli_fetch_array($sql_dat))
 	  }
 	  $total_ext_sah=$total_ext_sah+round($ext_sah_loss_total,2);	 
 	  
-	  $sql1x="select mod_no,dtime,shift,plan_eff from down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and source=1 and remarks=\"Open capacity\"";
+	  $sql1x="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and source=1 and remarks=\"Open capacity\"";
 	  $result1x=mysqli_query($link, $sql1x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	  while($row1x=mysqli_fetch_array($result1x))
 	  {
@@ -1488,7 +1503,7 @@ while($row=mysqli_fetch_array($sql_dat))
 			 $plan_eff_downx=round($row1x["plan_eff"],0);
 			 if($plan_eff_downx > 0)
 			 {
-			 	$sql2x="select plan_eff from down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
+			 	$sql2x="select plan_eff from $bai_pro.down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
 				 $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2x=mysqli_fetch_array($result2x))
 				 {
@@ -1497,7 +1512,7 @@ while($row=mysqli_fetch_array($sql_dat))
 			 }
 			 else
 			 {
-			 	 $sql2x="select plan_eff from pro_plan where sec_no=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
+			 	 $sql2x="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
 				 $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2x=mysqli_fetch_array($result2x))
 				 {
@@ -1505,13 +1520,13 @@ while($row=mysqli_fetch_array($sql_dat))
 				 } 
 				 if($plan_effx ==0)
 				 {
-				 	$sql2x="SELECT MAX(DATE) as max_date FROM pro_plan WHERE plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
+				 	$sql2x="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
 		//echo $sql2;
 					$sql_result2x=mysqli_query($link, $sql2x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2x=mysqli_fetch_array($sql_result2x))
 					{
 						$max_datex=$sql_row2x["max_date"];
-						$sql21x="SELECT plan_eff FROM pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_datex."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
+						$sql21x="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_datex."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
 						//echo $sql2;
 						$sql_result21x=mysqli_query($link, $sql21x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row21x=mysqli_fetch_array($sql_result21x))
@@ -1530,7 +1545,7 @@ while($row=mysqli_fetch_array($sql_dat))
 	  //$sHTML_Content.="<td class=xl10813441 style='border-top:none;border-left:none'>".round($ext_sah_loss_total,2)."</td>";
 	  $total_ext_sahx=$total_ext_sahx+round($ext_sah_loss_totalx,2);	  
 	  
-	  $sql11="select mod_no,dtime,shift,plan_eff from down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and source=0 order by mod_no,shift";
+	  $sql11="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where section=\"".$i."\" and date=\"".$row["date"]."\" and source=0 order by mod_no,shift";
 	  //echo $sql11."<br>";
 	  $result11=mysqli_query($link, $sql11) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	  while($row11=mysqli_fetch_array($result11))
@@ -1541,7 +1556,7 @@ while($row=mysqli_fetch_array($sql_dat))
 		$plan_eff1=$row11["plan_eff"];
 		if($plan_eff1 == 0)
 		{
-			$sql21="select plan_eff from pro_plan where sec_no=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no1."\" and shift=\"".$shift1."\" ";
+			$sql21="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no1."\" and shift=\"".$shift1."\" ";
 			//echo $sql21."<br>";
 			$result21=mysqli_query($link, $sql21) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row21=mysqli_fetch_array($result21))
@@ -1562,7 +1577,7 @@ while($row=mysqli_fetch_array($sql_dat))
 	  $plan_sah=0; $act_sah=0; $plan_clh=0; $act_sah_a=0; $act_sah_b=0; $int_sah_loss_total=0; $ext_sah_loss_total=0; $ext_sah_loss_totalx=0; $plan_sah_a=0; $plan_sah_b=0;
   }	
   
-  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM grand_rep WHERE DATE=\"".$row["date"]."\" group by module,shift order by module");
+  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE DATE=\"".$row["date"]."\" group by module,shift order by module");
   while($rows=mysqli_fetch_array($sql))
   {
 		$plan_sah_sec=$plan_sah_sec+$rows["plan"];
@@ -1588,10 +1603,26 @@ while($row=mysqli_fetch_array($sql_dat))
   $sHTML_Content.="<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($plan_sah_sec_a+$plan_sah_sec_b,0)."</td>
   <td class=xl10513441 style='border-top:none;border-left:none'>".number_format($act_sah_sec_a,0)."</td>
   <td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_sec_b,0)."</td>
-  <td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_sec,0)."</td>
-  <td class=xl10713441 style='border-top:none;border-left:none'>".round(($act_sah_sec/$plan_sah_sec)*100,1)."%</td>
-  <td class=xl10713441 style='border-top:none;border-left:none'>".round(($act_sah_sec/$plan_clh_sec)*100,1)."%</td>
-  <td class=xl10813441 style='border-top:none;border-left:none'>".round($total_ext_sah+$total_ext_sahx,2)."</td>
+  <td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_sec,0)."</td>";
+  if($plan_sah_sec > 0)
+  {
+	 $sHTML_Content.="<td class=xl10713441 style='border-top:none;border-left:none'>".round(($act_sah_sec/$plan_sah_sec)*100,1)."%</td>";
+  }
+  else
+  {
+	 $sHTML_Content.="<td class=xl10713441 style='border-top:none;border-left:none'>0%</td>";
+  }
+  
+  if($plan_sah_sec > 0)
+  {
+	 $sHTML_Content.=" <td class=xl10713441 style='border-top:none;border-left:none'>".round(($act_sah_sec/$plan_clh_sec)*100,1)."%</td>";
+  }
+  else
+  {
+	 $sHTML_Content.="<td class=xl10713441 style='border-top:none;border-left:none'>0%</td>";
+  }
+ 
+   $sHTML_Content.="<td class=xl10813441 style='border-top:none;border-left:none'>".round($total_ext_sah+$total_ext_sahx,2)."</td>
   <td class=xl10813441 style='border-top:none;border-left:none'>".round($total_int_sah,2)."</td>
   <td class=xl10813441 style='border-top:none;border-left:none'>".round($plan_sah_sec_a+$plan_sah_sec_b-$act_sah_sec-($total_ext_sah+$total_ext_sahx)-$total_int_sah,2)."</td>
  </tr>";
@@ -1608,7 +1639,7 @@ $sHTML_Content.="<tr height=27 style='mso-height-source:userset;height:20.25pt'>
 for($i2=1;$i2<=7;$i2++)
 {	
 
-  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM grand_rep WHERE DATE between \"".$dat."\" and \"".$dat1."\" AND section=\"".$i2."\" group by date,module,shift order by date,module");
+  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE DATE between \"".$dat."\" and \"".$dat1."\" AND section=\"".$i2."\" group by date,module,shift order by date,module");
   while($rows=mysqli_fetch_array($sql))
   {
 		$plan_sah_fac=$plan_sah_fac+round($rows["plan"],0);
@@ -1641,10 +1672,25 @@ for($i2=1;$i2<=7;$i2++)
   $sHTML_Content.="<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac_a,0)."</td>";
   $sHTML_Content.="<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac_b,0)."</td>";
   $sHTML_Content.="<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac,0)."</td>";
-  $sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>".round(($act_sah_fac/$plan_sah_fac)*100,1)."%</td>";
-  $sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>".round(($act_sah_fac/$plan_clh_fac)*100,1)."%</td>";
+  if($plan_sah_fac > 0)
+  {
+	 $sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>".round(($act_sah_fac/$plan_sah_fac)*100,1)."%</td>";
   }
-   $sql13="select mod_no,dtime,shift,date,plan_eff from down_log where section=\"".$i2."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks!=\"Open capacity\"";
+  else
+  {
+	 $sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>0%</td>";
+  }
+	if($plan_clh_fac > 0)
+	{
+		 $sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>".round(($act_sah_fac/$plan_clh_fac)*100,1)."%</td>";
+	}
+	else
+	{
+		 $sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>0%</td>";
+	}
+ 
+  }
+   $sql13="select mod_no,dtime,shift,date,plan_eff from $bai_pro.down_log where section=\"".$i2."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks!=\"Open capacity\"";
  // echo $sql13;
   $result13=mysqli_query($link, $sql13) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
   while($row13=mysqli_fetch_array($result13))
@@ -1656,7 +1702,7 @@ for($i2=1;$i2<=7;$i2++)
 		 $plan_eff_down1=round($row13["plan_eff"],0);
 		 if($plan_eff_down1 > 0)
 		 {
-		 	$sql23="select plan_eff from down_log where section=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";
+		 	$sql23="select plan_eff from $bai_pro.down_log where section=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";
 			 $result23=mysqli_query($link, $sql23) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23=mysqli_fetch_array($result23))
 			 {
@@ -1665,7 +1711,7 @@ for($i2=1;$i2<=7;$i2++)
 		 }
 		 else
 		 {
-		 	 $sql23="select plan_eff from pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	//echo $sql23."<br>";	
+		 	 $sql23="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	//echo $sql23."<br>";	
 			 $result23=mysqli_query($link, $sql23) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23=mysqli_fetch_array($result23))
 			 {
@@ -1673,13 +1719,13 @@ for($i2=1;$i2<=7;$i2++)
 			 } 
 			 if($plan_eff3 ==0)
 			 {
-			 	$sql23="SELECT MAX(DATE) as max_date FROM pro_plan WHERE plan_eff > 0 AND DATE <= \"".$dates3."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
+			 	$sql23="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$dates3."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
 	//echo $sql2;
 				$sql_result23=mysqli_query($link, $sql23) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row23=mysqli_fetch_array($sql_result23))
 				{
 					$max_date1=$sql_row23["max_date"];
-					$sql213="SELECT plan_eff FROM pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date1."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
+					$sql213="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date1."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
 					//echo $sql2;
 					$sql_result213=mysqli_query($link, $sql213) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row213=mysqli_fetch_array($sql_result213))
@@ -1690,7 +1736,7 @@ for($i2=1;$i2<=7;$i2++)
 				}	
 			 }
 		 }
-		 /*$sql23="select plan_eff from pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	 //echo $sql23;	
+		 /*$sql23="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	 //echo $sql23;	
 		 $result23=mysql_query($sql23,$link) or die("Error = ".mysql_error());
 		 while($row23=mysql_fetch_array($result23))
 		 {
@@ -1708,7 +1754,7 @@ for($i2=1;$i2<=7;$i2++)
   
   
   
- $sql13s="select mod_no,dtime,shift,date,plan_eff from down_log where section=\"".$i2."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks=\"Open capacity\" order by mod_no,shift";
+ $sql13s="select mod_no,dtime,shift,date,plan_eff from $bai_pro.down_log where section=\"".$i2."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks=\"Open capacity\" order by mod_no,shift";
  // echo $sql13;
   $result13s=mysqli_query($link, $sql13s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
   while($row13s=mysqli_fetch_array($result13s))
@@ -1720,7 +1766,7 @@ for($i2=1;$i2<=7;$i2++)
 		 $plan_eff_down1s=round($row13s["plan_eff"],0);
 		 if($plan_eff_down1s > 0)
 		 {
-		 	$sql23s="select plan_eff from down_log where section=\"".$i2."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";
+		 	$sql23s="select plan_eff from $bai_pro.down_log where section=\"".$i2."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";
 			//echo $sql23s."<br>";
 			 $result23s=mysqli_query($link, $sql23s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23s=mysqli_fetch_array($result23s))
@@ -1730,7 +1776,7 @@ for($i2=1;$i2<=7;$i2++)
 		 }
 		 else
 		 {
-		 	 $sql23s="select plan_eff from pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";	//echo $sql23s."<br>";	
+		 	 $sql23s="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";	//echo $sql23s."<br>";	
 			 $result23s=mysqli_query($link, $sql23s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23s=mysqli_fetch_array($result23s))
 			 {
@@ -1738,13 +1784,13 @@ for($i2=1;$i2<=7;$i2++)
 			 } 
 			 if($plan_eff3s == 0)
 			 {
-			 	$sql23s="SELECT MAX(DATE) as max_date FROM pro_plan WHERE plan_eff > 0 AND DATE <= \"".$dates3s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";
+			 	$sql23s="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$dates3s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";
 				//echo $sql2;
 				$sql_result23s=mysqli_query($link, $sql23s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row23s=mysqli_fetch_array($sql_result23s))
 				{
 					$max_date1s=$sql_row23s["max_date"];
-					$sql213s="SELECT plan_eff FROM pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date1s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";		//echo $sql2;
+					$sql213s="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date1s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";		//echo $sql2;
 					$sql_result213s=mysqli_query($link, $sql213s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row213s=mysqli_fetch_array($sql_result213s))
 					{
@@ -1754,7 +1800,7 @@ for($i2=1;$i2<=7;$i2++)
 				}	
 			 }
 		 }
-		/* $sql23="select plan_eff from pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	 //echo $sql23;	
+		/* $sql23="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	 //echo $sql23;	
 		 $result23=mysql_query($sql23,$link) or die("Error = ".mysql_error());
 		 while($row23=mysql_fetch_array($result23))
 		 {
@@ -1773,7 +1819,7 @@ for($i2=1;$i2<=7;$i2++)
   
   
   
-  $sql113="select mod_no,dtime,shift,date from down_log where section=\"".$i2."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=0 order by date,mod_no,shift";
+  $sql113="select mod_no,dtime,shift,date from $bai_pro.down_log where section=\"".$i2."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=0 order by date,mod_no,shift";
   $result113=mysqli_query($link, $sql113) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
   while($row113=mysqli_fetch_array($result113))
   {
@@ -1781,7 +1827,7 @@ for($i2=1;$i2<=7;$i2++)
 		 $dtime13=$row113["dtime"]/60;
 		 $shift13=$row113["shift"];
 		 $dates13=$row113["date"];
-		 $sql213="select plan_eff from pro_plan where sec_no=\"".$i2."\" and date=\"".$dates13."\" and mod_no=\"".$mod_no13."\" and shift=\"".$shift13."\" ";
+		 $sql213="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i2."\" and date=\"".$dates13."\" and mod_no=\"".$mod_no13."\" and shift=\"".$shift13."\" ";
 		 //echo $sql213."-".$dtime13."<br>";
 		 $result213=mysqli_query($link, $sql213) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		 while($row213=mysqli_fetch_array($result213))
@@ -1804,7 +1850,7 @@ for($i2=1;$i2<=7;$i2++)
   
 }
 
-$sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM grand_rep WHERE DATE between \"".$dat."\" and \"".$dat1."\" group by date,module,shift order by date,module ");
+$sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE DATE between \"".$dat."\" and \"".$dat1."\" group by date,module,shift order by date,module ");
 while($rows=mysqli_fetch_array($sql))
 {
 	$total_plan_sah_fac=$total_plan_sah_fac+round($rows["plan"],0);
@@ -1830,10 +1876,25 @@ $eff_array[]=round(($total_act_sah_fac/$total_plan_sah_fac)*100,1);
   $sHTML_Content.="<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_plan_sah_fac,0)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac_a,0)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac_b,0)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac,0)."</td>
-  <td class=xl9813441 style='border-top:none;border-left:none'>".round(($total_act_sah_fac/$total_plan_sah_fac)*100,1)."%</td>
-  <td class=xl9813441 style='border-top:none;border-left:none'>".round(($total_act_sah_fac/$total_plan_clh_fac)*100,1)."%</td>
-  <td class=xl9713441 style='border-top:none;border-left:none'>".round($total_ext_sah1+$total_ext_sah1s,2)."</td>
+  <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac,0)."</td>";
+  if($total_plan_sah_fac > 0)
+  {
+	$sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>".round(($total_act_sah_fac/$total_plan_sah_fac)*100,1)."%</td>";
+  }
+  else
+  {
+	$sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>0%</td>";
+  }
+   if($total_plan_clh_fac > 0)
+  {
+	$sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>".round(($total_act_sah_fac/$total_plan_clh_fac)*100,1)."%</td>";
+  }
+  else
+  {
+	$sHTML_Content.="<td class=xl9813441 style='border-top:none;border-left:none'>0%</td>";
+  }
+  
+ $sHTML_Content.=" <td class=xl9713441 style='border-top:none;border-left:none'>".round($total_ext_sah1+$total_ext_sah1s,2)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none'>".round($total_int_sah1,2)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none'>".round($total_plan_sah_fac-$total_act_sah_fac-($total_ext_sah1+$total_ext_sah1s)-$total_int_sah1,2)."</td>
   </tr>";
@@ -2046,8 +2107,6 @@ $(function () {
  
   <td colspan=3 rowspan=1 class=xl9413441>No of Days</td>
   <td rowspan=1 class=xl9113441>".$days."</td>
- <td rowspan=1 class=xl9113441>VS</td>
-  <td rowspan=1 class=xl9113441>M&S</td>
   <td class=xl1513441></td>
   <td class=xl1513441></td>
  </tr>
@@ -2056,8 +2115,6 @@ $(function () {
   
   <td colspan=3 rowspan=1 class=xl9413441>Budgeted SAH / Month</td>
   <td rowspan=1 class=xl9013441 style='border-top:none'>".number_format($fac_plan)."</td>
- <td rowspan=1 class=xl9013441 style='border-top:none'>".number_format($vs_sah_plan)."</td>
-  <td rowspan=1 class=xl9013441 style='border-top:none'>".number_format($ms_sah_plan)."</td>
   <td class=xl1513441></td>
   <td class=xl1513441></td>
  </tr>
@@ -2066,8 +2123,6 @@ $(function () {
 
   <td colspan=3 rowspan=1 class=xl9413441>Today SAH</td>
   <td rowspan=1 class=xl9213441 style='border-top:none'>".number_format($today_sah)."</td>
-  <td rowspan=1 class=xl9213441 style='border-top:none'>".number_format($vs_act_sah_today)."</td>
-   <td rowspan=1 class=xl9213441 style='border-top:none'>".number_format($ms_act_sah_today)."</td>
   <td class=xl1513441></td>
   <td class=xl1513441></td>
  </tr>
@@ -2075,10 +2130,8 @@ $(function () {
   <td height=21 class=xl8513441 style='height:2.75pt'></td>
 
   <td colspan=3 rowspan=1 class=xl9413441>Avg SAH achieved<span
-  style='mso-spacerun:yes'>�</span></td>
+  style='mso-spacerun:yes'></span></td>
   <td rowspan=1 class=xl9013441 style='border-top:none'>".number_format(round($total_act_sah/$days,0))."</td>
-   <td rowspan=1 class=xl9013441 style='border-top:none'>".number_format(round($vs_act_sah/$days,0))."</td>
-   <td rowspan=1 class=xl9013441 style='border-top:none'>".number_format(round($ms_act_sah/$days,0))."</td>
   <td class=xl1513441></td>
   <td class=xl1513441></td>
  </tr>
@@ -2087,8 +2140,6 @@ $(function () {
 
   <td colspan=3 rowspan=1 class=xl9413441>SAH required</td>
   <td rowspan=1 class=xl9013441 style='border-top:none'>".number_format(($fac_plan-$total_act_sah)/(sizeof($date1)-$days))." </td>
-  <td rowspan=1 class=xl9013441 style='border-top:none'>".number_format(($vs_sah_plan-$vs_act_sah)/(sizeof($date1)-$days))." </td>
-  <td rowspan=1 class=xl9013441 style='border-top:none'>".number_format(($ms_sah_plan-$ms_act_sah)/(sizeof($date1)-$days))." </td>
   <td class=xl1513441></td>
   <td class=xl1513441></td>
  </tr>

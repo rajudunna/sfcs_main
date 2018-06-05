@@ -844,8 +844,8 @@ tags will be replaced.-->
 		$myFile = "mail_tran_log.txt";
 	$fh = fopen($myFile, 'a') or die("can't open file");
 	
-	$sql="select * from $bai_pro3.disp_db where disp_note_no='$note_no' and exit_date='' and status=2";
-	//echo $sql;
+	$sql="select * from $bai_pro3.disp_db where disp_note_no='$note_no' and (exit_date IS NULL OR exit_date = '') and status=2";
+
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//var_dump($sql_result);
 	//die();

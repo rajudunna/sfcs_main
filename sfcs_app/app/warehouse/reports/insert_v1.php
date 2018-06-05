@@ -246,7 +246,8 @@ if ($batch_no=='') {
 } else {
 	$bat=$batch_no;
 }
-$url=  getFullURL($_GET['r'],'labels.php','N');
+$url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/labels.php',3,'R');
+//getFullURL($_GET['r'],'labels.php','N');
 echo '<form name="test" id="myForm" action="'.getFullURL($_GET['r'],'data_v1.php','N').'" method="post" enctype="multipart/form-data">';
 echo "<div class='panel panel-default'>
 		<div class='panel-body'>

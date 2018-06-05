@@ -180,12 +180,12 @@ include '..'.getFullURL($_GET['r'],"header.php",'R');
   /* final row */
   $calendar1.= '</tr></table>';
 
-  $calendar2= '<br/><table style="background-color: #EEEEEE;"><tr><th class=xl636519>Monthly FAC Capacity SAH</th><th>:</th><td><input type="textbox" name="facmsh" style="border=1px solid #999999;" size="8" onkeypress="return IsNumeric(event);" value="'.$fac_plan_sah.'"/></td></tr>';
+  $calendar2= '<br/><table style="background-color: #EEEEEE;"><tr><th class=xl636519>Monthly FAC Capacity SAH</th><th>:</th><td><input type="textbox" class="integer" name="facmsh" style="border=1px solid #999999;" size="8" onkeypres="return IsNumeric(event);" value="'.$fac_plan_sah.'"/></td></tr>';
 	
-   $calendar2.= '<tr><th class=xl636519>Monthly FAC SAH</th><th>:</th><td><input type="textbox" name="msh" style="border=1px solid #999999;" size="8" onkeypress="return IsNumeric(event);" value="'.$fac_plan.'"/></td></tr>';
-  $calendar2.= '<tr><th class=xl636519>Monthly VS SAH</th><th>:</th><td><input type="textbox" name="vssah" onkeypress="return IsNumeric(event);" style="border=1px solid #999999;" size="8" value="'.$vs_plan.'"/></td></tr>';
+   $calendar2.= '<tr><th class=xl636519>Monthly FAC SAH</th><th>:</th><td><input class="integer" type="textbox" name="msh" style="border=1px solid #999999;" size="8" onkeypres="return IsNumeric(event);" value="'.$fac_plan.'"/></td></tr>';
+  $calendar2.= '<tr><th class=xl636519>Monthly VS SAH</th><th>:</th><td><input class="integer" type="textbox" name="vssah" onkeypres="return IsNumeric(event);" style="border=1px solid #999999;" size="8" value="'.$vs_plan.'"/></td></tr>';
   
-  $calendar2.= '<tr><th class=xl636519>Monthly MS SAH</th><th>:</th><td><input type="textbox" name="mssah" onkeypress="return IsNumeric(event);" style="border=1px solid #999999;" size="8" value="'.$ms_plan.'"/></td></tr>';
+  $calendar2.= '<tr><th class=xl636519>Monthly MS SAH</th><th>:</th><td><input class="integer" type="textbox" name="mssah" onkeypres="return IsNumeric(event);" style="border=1px solid #999999;" size="8" value="'.$ms_plan.'"/></td></tr>';
   
   //2015-06-02 / kirang / service request #121226 / Section Wise Plan SAH update interface access  
   $section_array=array();
@@ -195,7 +195,7 @@ include '..'.getFullURL($_GET['r'],"header.php",'R');
   while($row_hods=mysqli_fetch_array($sql_result_hod))
   {
 		$section_array[]=$row_hods["sec_id"];
-		$calendar2.='<tr><th class=xl636519>Section - '.$row_hods["sec_id"].'</th><th>:</th><td><input type="textbox" name="section_'.$row_hods["sec_id"].'" style="border=1px solid #999999;" onkeypress="return IsNumeric(event);" size="8" value="'.$plan_sah_mod[($row_hods["sec_id"]-1)].'"/></td></tr>';
+		$calendar2.='<tr><th class=xl636519>Section - '.$row_hods["sec_id"].'</th><th>:</th><td><input type="textbox" name="section_'.$row_hods["sec_id"].'" class="integer" style="border=1px solid #999999;" onkeypres="return IsNumeric(event);" size="8" value="'.$plan_sah_mod[($row_hods["sec_id"]-1)].'"/></td></tr>';
   } 
   $calendar2.= '<br/></table><table><tr><td><br/><input type="submit" value="Save" name="submit" class="btn btn-primary"></td></tr></table>';
 

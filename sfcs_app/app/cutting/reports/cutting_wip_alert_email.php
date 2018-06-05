@@ -11,7 +11,7 @@ $view_access=user_acl("SFCS_0008",$username,1,$group_id_sfcs);
 ?>
 <?php
 $message= '';
-function div_by_zero($arg)
+function div_by_zero1($arg)
 {
 	$arg1=1;
 	if($arg==0 or $arg=='0' or $arg=='')
@@ -248,16 +248,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					}
 				}
 				echo $module."-".$add."<br/>"; */
-				$res=$wip/div_by_zero($plan_tgt);
+				$res=$wip/div_by_zero1($plan_tgt);
 				$wip1=round(($res),0);
 				
 				if($plan_tgt>0)
 				{
-					$message.= "<tr><td>$section</td><td>$module</td><td>".$sql_row1['style']."</td><td>".$sql_row1['schedule']."</td><td>".$sql_row1['color']."</td><td>".$sql_row1['jobs']."</td><td>$total1</td><td >$total</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero($plan_tgt)),0)."</td><td>".round(($total/div_by_zero($plan_tgt)),0)."</td><td>".date("Y-m-d H",strtotime($date)+(60*60*round(($total/$plan_tgt)+$add,0))).":00</td><td>$wip</td><td>$wip1</td></tr>";
+					$message.= "<tr><td>$section</td><td>$module</td><td>".$sql_row1['style']."</td><td>".$sql_row1['schedule']."</td><td>".$sql_row1['color']."</td><td>".$sql_row1['jobs']."</td><td>$total1</td><td >$total</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>".round(($total/div_by_zero1($plan_tgt)),0)."</td><td>".date("Y-m-d H",strtotime($date)+(60*60*round(($total/$plan_tgt)+$add,0))).":00</td><td>$wip</td><td>$wip1</td></tr>";
 				}
 				else
 				{
-					$message.= "<tr><td>$section</td><td>$module</td><td>".$sql_row1['style']."</td><td>".$sql_row1['schedule']."</td><td>".$sql_row1['color']."</td><td>".$sql_row1['jobs']."</td><td>$total1</td><td>$total</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero($plan_tgt)),0)."</td><td>0</td><td>".date("Y-m-d H",strtotime($date)+(60*60*1)).":00</td><td>$wip</td><td>$wip1</td></tr>";
+					$message.= "<tr><td>$section</td><td>$module</td><td>".$sql_row1['style']."</td><td>".$sql_row1['schedule']."</td><td>".$sql_row1['color']."</td><td>".$sql_row1['jobs']."</td><td>$total1</td><td>$total</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>0</td><td>".date("Y-m-d H",strtotime($date)+(60*60*1)).":00</td><td>$wip</td><td>$wip1</td></tr>";
 				}
 			}
 		}
@@ -324,9 +324,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					}	
 				}
 			$total1=$total15+$total16;
-			$res=$wip/div_by_zero($plan_tgt);
+			$res=$wip/div_by_zero1($plan_tgt);
 			$wip1=round(($res),0);			
-			$message.= "<tr><th align=left>$section</th><th align=left>$module</th><td></td><td></td><td></td><td></td><td>$total1</td><td>0</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero($plan_tgt)),0)."</td><td>0</td><td>Critical</td><td>$wip</td><td>$wip1</td></tr>";
+			$message.= "<tr><th align=left>$section</th><th align=left>$module</th><td></td><td></td><td></td><td></td><td>$total1</td><td>0</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>0</td><td>Critical</td><td>$wip</td><td>$wip1</td></tr>";
 		}
 	}
 }

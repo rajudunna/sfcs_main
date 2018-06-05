@@ -3,7 +3,8 @@
 -->
 <?php 
 //include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'dbconf.php','R') ); 
-include(getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); 
+include("../../../common/config/config.php"); 
+error_reporting(0);
 $disp_id=$_GET['disp_id'];
 
 $sql="select * from $bai_pro3.disp_db left join party_db on disp_db.party=party_db.pid where disp_db.disp_note_no=$disp_id";
@@ -550,7 +551,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=2 rowspan=4 class=xl7026062 ><img src="bai_logo.jpg" width="50" height="70"></td>
+  <td colspan=2 rowspan=4 class=xl7026062 ><img src="../../../common/images/bai_logo.jpg" width="50" height="70"></td>
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala </td>
   <td class=xl662606></td>
   <td class=xl742606>CUSTOMER COPY</td>
@@ -1107,7 +1108,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=2 rowspan=4 class=xl7026062 ><img src="bai_logo.jpg" width="50" height="70"></td>
+  <td colspan=2 rowspan=4 class=xl7026062 ><img src="../../../common/images/bai_logo.jpg" width="50" height="70"></td>
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
   <td class=xl662606></td>
   <td class=xl742606>FG COPY</td>
@@ -1668,7 +1669,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=2 rowspan=4 class=xl7026062 ><img src="bai_logo.jpg" width="50" height="70"></td>
+  <td colspan=2 rowspan=4 class=xl7026062 ><img src="../../../common/images/bai_logo.jpg" width="50" height="70"></td>
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
   <td class=xl662606></td>
   <td class=xl742606>LOGISTICS COPY</td>
@@ -2224,7 +2225,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=2 rowspan=4 class=xl7026062 ><img src="bai_logo.jpg" width="50" height="70"></td>
+  <td colspan=2 rowspan=4 class=xl7026062 ><img src="../../../common/images/bai_logo.jpg" width="50" height="70"></td>
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
   <td class=xl662606></td>
   <td class=xl742606>SECURITY COPY</td>

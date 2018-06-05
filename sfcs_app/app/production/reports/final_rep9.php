@@ -1,14 +1,13 @@
 <?php
 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf2.php',1,'R'));
+ include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 ?>
 
 <html>
 <head>
 
-<script language="javascript" type="text/javascript" src="../datetimepicker_css.js"></script>
 
-<script language="javascript" type="text/javascript" src="../styles/dropdowntabs.js"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
 </head>
 <body>
 <div class="panel panel-primary">
@@ -40,9 +39,9 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf2.php',1,'R'
 
 		$i=1;
 		$total;
-		$sql="select * from bai_log where bac_no=$mod and bac_date=\"$date\" order by bac_lastup";
+		$sql="select * from $bai_pro.bai_log where bac_no=$mod and bac_date=\"$date\" order by bac_lastup";
 		// echo $sql;
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		while($sql_row=mysqli_fetch_array($sql_result))

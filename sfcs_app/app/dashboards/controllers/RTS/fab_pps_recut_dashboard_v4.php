@@ -1170,7 +1170,7 @@ window.onload = startBlink;
 							}
 
 							$path1 =  getFullURL($_GET['r'],'cad_pop_details.php','N');
-							// $path2 =  getFullURL($_GET['r'],'fab_pop_details_recut_v2.php','N');
+							 $path2 =  getFullURL($_GET['r'],'fab_pop_details_recut_v2.php','N');
 					
 							switch($test)
 							{
@@ -1193,7 +1193,7 @@ window.onload = startBlink;
 										{
 											$id="lgreen";
 										}
-									$path=$path1."&doc_no=$rec_doc_no";
+									$path=$path2."&doc_no=$rec_doc_no";
 									break;
 								}
 								case "TTFFFF":

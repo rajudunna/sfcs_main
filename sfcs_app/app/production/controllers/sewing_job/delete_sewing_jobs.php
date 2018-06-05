@@ -214,7 +214,7 @@ if(isset($_POST['submit']))
             // echo "input_job_no_random".$input_job_no_random.'<br>'; 
             $delete_plan_dashbrd_qry="DELETE FROM $bai_pro3.plan_dashboard WHERE doc_no in($doc_no)"; 
             // echo $delete_plan_dashboard_qry."<br>"; 
-            mysqli_query($link, $delete_plan_dashbrd_qry) or exit("Sql Error delete_plan_dashbrd_qry==".$delete_plan_dashbrd_qry); 
+            mysqli_query($link, $delete_plan_dashbrd_qry) or exit("Sql Error delete_plan_dashbrd_qry"); 
              
             $delete_plan_input_qry="DELETE FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref like  \"".$schedule."%\""; 
             // echo $delete_plan_input_qry."<br>"; 

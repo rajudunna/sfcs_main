@@ -27,7 +27,7 @@ function verify_num(t){
 	include("..".getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 	// include("../../../../../common/config/config_ajax.php");
 // error_reporting (0);
-$qry_get_product_style = "SELECT id,style FROM $brandix_bts.tbl_style_ops_master group by style";
+$qry_get_product_style = "SELECT id,style FROM $brandix_bts.tbl_style_ops_master  where style != '' group by style";
 // echo $qry_get_product_style;
 $result = $link->query($qry_get_product_style);
 $qry_get_operation_name = "SELECT id,operation_name,default_operation,operation_code FROM $brandix_bts.tbl_orders_ops_ref";
@@ -105,58 +105,64 @@ $result_oper2 = $link->query($qry_get_suppliers);
 				<input type="hidden" name="operation_name_seq" id="operation_name_seq">
 				<input type="hidden" name="operation_name_comp" id="operation_name_comp">
 				<input type="hidden" name="dep_flag" id="dep_flag">
-				<label for="style">Operation Name <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>		      
-						<select class="form-control" id="oper_name" name="style" >
-							<option value='0'>Select Operation Name</option>
-							<?php				    	
-								if ($result_oper->num_rows > 0) {
-									while($row = $result_oper->fetch_assoc()) {
-									$row_value = $row['operation_name']."(".$row['operation_code'].")";
-										echo "<option value='".$row['id']."'>".$row_value."</option>";
-									}
-								} else {
-									echo "<option value=''>No Data Found..</option>";
-								}
-							?>
-						</select>
-						<label for="inputsm" hidden='true'>Is M3 Operation? <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-						<input type="hidden" id="oper_def1" type="text">
-						<label for="inputsm" hidden='true'>Operation Code <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-						<input type="hidden" id="oper_code1" type="text" hidden='true'>
-						<label for="inputsm">M3 SMV <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field">
-						<!-- <font color='red'>*</font></span> -->
-						</label>
-						<input class="form-control input-sm float" id="m3_smv1" type="text">
-						<label for="title" id='m3_smv_label'>Select M3-SMV: <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-						<select name="m3_smv" id='m3_smv' class='form-contro'>
-						<option value='0'>Select M3-SMV</option>
-						</select>
-						<br/>
-						<label for="style">Embellishment Supplier</label>		      
-						<select class="form-control" id="supplier2" name="supplier" >
-							<option value='0'>Select Supplier</option>
-							<?php				    	
-								if ($result_oper1->num_rows > 0) {
-									while($row = $result_oper1->fetch_assoc()) {
-									//$row_value = $row['operation_name']."(".$row['operation_code'].")";
-										echo "<option value='".$row['id']."'>".$row['supplier_name']."</option>";
-									}
-								} else {
-									echo "<option value=''>No Data Found..</option>";
-								}
-							?>
-						</select><br>
-			<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-			<label class="radio-inline"><input type="radio" name="optradio2" value ="Yes" id='optradio2' onclick="autooperseq1()">Yes</label>
-			<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()">No</label><br><br>
-			<label>Operation sequence <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-			<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)'>
-			<label>Dependency Operation</label>
-			<input class="form-control input-sm integer" id="oper_depe2" type="text">
-			<label>Component <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></label>
-			<input class="form-control input-sm" id="component2" type="text">
-			<label></label><br/>
-			<button class="btn btn-primary btn-sm" id='add-row1'>Add Manual Operation </button>
+			<div class="row">
+				<div class = "col-sm-12">
+						<label for="style">Operation Name <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+						</br>				
+								<select id="oper_name" style="width:100%;">
+									<option value='0'>Select Operation Name</option>
+									<?php				    	
+										if ($result_oper->num_rows > 0) {
+											while($row = $result_oper->fetch_assoc()) {
+											$row_value = $row['operation_name']."(".$row['operation_code'].")";
+												echo "<option value='".$row['id']."'>".$row_value."</option>";
+											}
+										} else {
+											echo "<option value=''>No Data Found..</option>";
+										}
+									?>
+								</select>
+								<label for="inputsm" hidden='true'>Is M3 Operation? <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+								<input type="hidden" id="oper_def1" type="text">
+								<label for="inputsm" hidden='true'>Operation Code <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label></br>
+								<input type="hidden" id="oper_code1" type="text" hidden='true'>
+								<label for="inputsm">M3 SMV <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field">
+								<!-- <font color='red'>*</font></span> -->
+								</label>
+								<input class="form-control input-sm float" id="m3_smv1" type="text">
+								<label for="title" id='m3_smv_label'>Select M3-SMV: <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+								<select name="m3_smv" id='m3_smv' class='form-contro'>
+								<option value='0'>Select M3-SMV</option>
+								</select>
+								<br/>
+								<label for="style">Embellishment Supplier</label>
+								</br>
+								<select  id="supplier2" style="width:100%;">
+									<option value='0'>Select Supplier</option>
+									<?php				    	
+										if ($result_oper1->num_rows > 0) {
+											while($row = $result_oper1->fetch_assoc()) {
+											//$row_value = $row['operation_name']."(".$row['operation_code'].")";
+												echo "<option value='".$row['id']."'>".$row['supplier_name']."</option>";
+											}
+										} else {
+											echo "<option value=''>No Data Found..</option>";
+										}
+									?>
+								</select><br></br>
+					<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+					<label class="radio-inline"><input type="radio" name="optradio2" value ="Yes" id='optradio2' onclick="autooperseq1()">Yes</label>
+					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()">No</label><br><br>
+					<label>Operation Group <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)'>
+					<label>Next Operation</label>
+					<input class="form-control input-sm integer" id="oper_depe2" type="text">
+					<label>Component <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></label>
+					<input class="form-control input-sm" id="component2" type="text">
+					<label></label><br/>
+					<button class="btn btn-primary btn-sm" id='add-row1'>Add Manual Operation </button>
+				</div>
+			</div>
 		</div>
     </div>
       
@@ -202,7 +208,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
         </div>
         <div class="modal-body">
 			<label for="style">Embellishment Supplier</label>		      
-						<select class="form-control" id="supplier" name="supplier" >
+						<select id="supplier" name="supplier" style="width:100%">
 							<option value='0'>Select Supplier</option>
 							<?php				    	
 								if ($result_oper2->num_rows > 0) {
@@ -214,17 +220,17 @@ $result_oper2 = $link->query($qry_get_suppliers);
 									echo "<option value=''>No Data Found..</option>";
 								}
 							?>
-						</select><br>
+						</select></br></br>
 			<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 			<label class="radio-inline"><input type="radio" name="optradio" value ="Yes" id='Yes' onclick="autooperseq1()">Yes</label>
 			<label class="radio-inline"><input type="radio" name="optradio" value = "No" id= 'None' onclick="autooperseq()">No</label><br><br>
-			<label>Operation sequence <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+			<label>Operation Group <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 			<input class="form-control input-sm integer" id="oper_seq1" type="text"  onchange='verify_num_seq2(this)'>
-			<label>Dependency Operation</label>
+			<label>Next Operation</label>
 			<input class="form-control input-sm integer" id="oper_depe1" type="text">
 			<label>Component <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></label>
 			<input class="form-control input-sm" id="component1" type="text">
-			<br>
+			<br></br></br>
 			<button class="btn btn-primary btn-sm" id="edit">Update</button>
 		</div>
     </div>
@@ -249,6 +255,9 @@ $("#clear").click(function(){
 $(document).ready(function(){
 	$('#m3_smv').hide();
 	$('#loading-image').hide();
+	$('#oper_name').select2();
+	$('#supplier2').select2();
+	$('#supplier').select2();
 	$("#oper_name").change(function()
 	{
 			//var url = "getdata()";
@@ -318,7 +327,7 @@ $(document).ready(function(){
 						{
 							var data = jQuery.parseJSON(response);
 							console.log(data.length);
-							var markup = "<table class = 'table table-striped' id='dynamic_table'><tbody><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Sequence</th><th>Is M3 Operation?</th><th>M3_SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Dependency Operations</th><th>Component</th><th>Controls</th><th><button type='button' class='btn btn-info btn-sm particular' id='particular' onclick='value_edition();'><i class='fa fa-plus-square' aria-hidden='true'></i></button></th></tr></thead><tbody>";
+							var markup = "<table class = 'table table-striped' id='dynamic_table'><tbody><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Group</th><th>Is M3 Operation?</th><th>M3_SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Next Operations</th><th>Component</th><th>Controls</th><th><button type='button' class='btn btn-info btn-sm particular' id='particular' onclick='value_edition();'>Add Manual Operation</i></button></th></tr></thead><tbody>";
 							$("#dynamic_table1").append(markup);
 							for(var i=0;i<data.length;i++)
 							{
@@ -486,7 +495,7 @@ $(document).ready(function(){
 		}
 		if($('#oper_seq2').val() == '')
 		{
-			sweetAlert("Please Enter Operation Sequence","","warning");
+			sweetAlert("Please Enter Operation Group","","warning");
 			flag = 0;
 		}
 		if($('#component2').val() == '' && $("input:radio[name=optradio2]:checked").val() == 'Yes')
@@ -538,7 +547,7 @@ $(document).ready(function(){
 							//console.log(response);
 							if(response == 'None')
 							{
-								sweetAlert("Please eneter valid dependency Operation.","","warning");
+								sweetAlert("Please eneter valid Next Operation.","","warning");
 							}
 							else if(response == '')
 							{
@@ -663,7 +672,7 @@ $("#edit").click(function()
 	var style = "'"+style+"'";
 	if(oper_seq == '')
 	{
-		sweetAlert("Please Enter Operation Sequence","","warning");
+		sweetAlert("Please Enter Operation Group","","warning");
 		flag = 0;
 	}
 	if($("input:radio[name=optradio]:checked").val() == undefined)
@@ -711,7 +720,7 @@ $("#edit").click(function()
 					}
 					else
 					{
-						sweetAlert("Please Enter Valid dependency operation.","","warning");
+						sweetAlert("Please Enter Valid Next operation.","","warning");
 						$('#oper_depe1').val('');
 					}
 			
@@ -745,7 +754,7 @@ function sequence_checking_per_edit()
 							//alert(response);
 							if(response == 0)
 							{
-								sweetAlert("The Operation Already exists for this sequence.","","warning");
+								sweetAlert("The Operation Already exists for this Group.","","warning");
 								$('#oper_seq1').val(document.getElementById('operation_name_seq').value);
 								$('#component1').val(document.getElementById('operation_name_comp').value);
 								document.getElementById('component1').readOnly=true;
@@ -802,7 +811,7 @@ function sequence_checking_per()
 							{
 								if(response_validate == 1)
 								{
-									sweetAlert("Operation Name Already in list for this sequence.","","warning");
+									sweetAlert("Operation Name Already in list for this Group.","","warning");
 									$('#oper_name').val(0);
 									$("#oper_code1").val('');
 									$("#oper_def1").val('');
@@ -831,7 +840,7 @@ $('#oper_depe2').change(function()
 	var seq = $('#oper_seq2').val();
 	if(seq == '')
 	{
-		sweetAlert("Please Enter Operation Sequence First","","warning");
+		sweetAlert("Please Enter Operation Group First","","warning");
 		$('#oper_depe2').val('');
 		flag = 0;
 	}
@@ -853,7 +862,7 @@ $('#oper_depe2').change(function()
 								//alert(seq);
 								if(seq != 0)
 								{
-									sweetAlert("You are already allocated dependency operation for this sequence","","warning");
+									sweetAlert("You are already allocated Next operation for this Group","","warning");
 									$('#oper_depe2').val('');
 								}
 								
@@ -872,7 +881,7 @@ $('#oper_depe1').change(function()
 		var flag = 1
 		if(seq == '')
 		{
-			sweetAlert("Please Enter Operation Sequence First","","warning");
+			sweetAlert("Please Enter Operation Group First","","warning");
 			$('#oper_depe1').val('');
 			flag = 0;
 		}
@@ -894,7 +903,7 @@ $('#oper_depe1').change(function()
 								{
 									if(seq != 0 && oper_dep_value != '')
 									{
-										sweetAlert("You are already allocated dependency operation for this sequence","","warning");
+										sweetAlert("You are already allocated Next operation for this Group","","warning");
 										$('#oper_depe1').val('');
 									}
 									
@@ -1052,11 +1061,11 @@ function default_oper(value,btn)
 					}
 					else if(response == 3)
 					{
-						sweetAlert("You can't delete this operation because this operation using as dependency operation.","","warning");
+						sweetAlert("You can't delete this operation because this operation using as Next operation.","","warning");
 					}
 					else
 					{
-						sweetAlert("You can't delete this operation because this sequence already sent for scanning.","","warning");
+						sweetAlert("You can't delete this operation because this Group already sent for scanning.","","warning");
 					}
 				}
 		});
@@ -1092,7 +1101,7 @@ function myfunctionedit(val,id)
 			{
 				if(response == 2)
 				{
-					sweetAlert("You can't Edit this operation because this operation sequence already sent for scanning.","","warning");
+					sweetAlert("You can't Edit this operation because this operation Group already sent for scanning.","","warning");
 					flag=0;
 				}
 				else

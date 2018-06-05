@@ -141,7 +141,7 @@ if(isset($_POST['flag_validation']))
 										</tbody>
 											<tr id='repeat_tr' hidden='true'>
 												<td>
-												<select class="form-control" id="style" name="reason[]">
+												<select id="reason_drop" class="form-control" id="style" name="reason[]">
 													<option value=''>Select Reason</option>
 													<?php				    	
 														if ($result_rejections->num_rows > 0) {
@@ -174,6 +174,8 @@ if(isset($_POST['flag_validation']))
 <script>
 $(document).ready(function() 
 {
+	//$('#rejec_reasons').select2();
+	// $('#reason_drop').select2();
 	
 	$('#job_number').focus();
 	$('#loading-image').hide();
@@ -223,7 +225,7 @@ $(document).ready(function()
 					// $("#dynamic_table1").append(form);
 					var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
 					$("#dynamic_table1").append(btn);
-					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th>Status</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th>Remarks</th><th>Rejected Qty.</th><th>Rejection quantity</th></tr></thead><tbody>";
+					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th>Status</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th>Remarks</th><th>Rejected Qty.</th><th>Rejection quantity</th></tr></thead><tbody>";
 					var flagelem = "<input type='hidden' name='flag' id='flag' value='"+flag+"'>";
 					$("#dynamic_table1").append(markup);
 					$("#dynamic_table1").append(btn);

@@ -4,6 +4,7 @@
 -->
 <?php
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 $view_access=user_acl("SFCS_0052",$username,1,$group_id_sfcs); 
 
@@ -46,8 +47,8 @@ $view_access=user_acl("SFCS_0052",$username,1,$group_id_sfcs);
  td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; } */
 
 </style>
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'common/js/TableFilter_EN/actb.js','3','R'); ?>"></script><!-- External script -->
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'common/js/TableFilter_EN/tablefilter.js','3','R'); ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js','3','R'); ?>"></script>
 <script type="text/javascript">
 	function verify_date()
   {
@@ -122,7 +123,7 @@ if(isset($_POST['submit']))
 $sec_db=array();
 $sec_no=array();
 $sql="select sec_mods,sec_id from $bai_pro3.sections_db where sec_id>0";
-//echo $sql;
+// echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -145,7 +146,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 // var_dump($sql_result);
 if(mysqli_num_rows($sql_result)> 0) {
 
-	echo '<div class="table-responsive"><table id="table1"  class="table table-bordered" >';
+	echo '<div class="table-responsive"><table id="table_one"  class="table table-bordered" >';
 	echo "<tr class='tblheading'><th>Date</th><th>Modules</th><th>Section</th><th>Style</th><th>Schedule</th><th>Size</th><th>Reason</th><th>Updated By</th></tr>";
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -203,13 +204,9 @@ if(mysqli_num_rows($sql_result)> 0) {
 					sort_select: true,
 					loader: true
 				};
-	setFilterGrid( "table1",table2_Props );
+	setFilterGrid( "table_one",table2_Props );
 //]]>		
 </script>
-
-
-
-
 </div></div>
 </body>
 </html>

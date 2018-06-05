@@ -4,10 +4,12 @@
 <?php include('../'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
 <?php
 
-  function m3_job_exists_check($doc_no,$operation,$joins_checkbox)
+  function m3_job_exists_check($doc_no,$operation1,$joins_checkbox)
   {
-	    include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    $sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no='".$doc_no."' and m3_op_des='$operation'";
+	  include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	  //echo $operation1;
+	   
+    $sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no='".$doc_no."' and m3_op_des='".$operation1."'";
 	//echo $sql;
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error1.6".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($sql_result)==0 && $joins_checkbox==2)
@@ -18,7 +20,7 @@
 		{
 			$original_docs=$sql_row['doc_no'];
 		}
-		$sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no IN (".$original_docs.") and m3_op_des='$operation'";
+		$sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no IN (".$original_docs.") and m3_op_des='$operation1'";
 		$sql_result11=mysqli_query($link, $sql) or exit("Sql Error1.9".mysqli_error($GLOBALS["___mysqli_ston"]));
 		return mysqli_num_rows($sql_result11);
 	}

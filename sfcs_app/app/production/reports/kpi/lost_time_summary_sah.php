@@ -63,7 +63,7 @@ include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 				   }
 				?>
 <div class="panel panel-primary">
-<div class="panel-heading">Last Hour Summary Report - SAH-<?php 
+<div class="panel-heading">Lost Hour Summary Report - SAH-<?php 
 if($frdate==$frdate1){
   echo $frdate;
   }else{

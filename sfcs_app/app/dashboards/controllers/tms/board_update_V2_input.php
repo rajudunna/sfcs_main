@@ -9,7 +9,7 @@ Changes Log:
 <?php
 set_time_limit(2000);
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("functions.php"); 
+include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 $section_no=$_GET['section_no'];
 ?>
 
@@ -41,11 +41,12 @@ $section_no=$_GET['section_no'];
 
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="page_style.css" />
+<!--
+<link rel="stylesheet" type="text/css" href="page_style.css" />-->
 <title>Board Update</title>
 
 
-<style>
+<!--<style>
 body
 {
 	font-family: Century Gothic;
@@ -299,22 +300,32 @@ border: 1px solid black;
   text-decoration:none;
   background-color: black;
 }
-</style>
+</style>-->
 </head>
 
 <body>
-<h2><font color="blue">Input Job Plan Details</font></h2>
+<div class="panel panel-primary">
+	<div class="panel-heading">Input Job Plan Details</div>
+	<div class="panel-body">
+		<?php
+		echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"blue\">Please wait while preparing dashboard...</font></h1></center></div>";
+		ob_end_flush();
+		flush();
+		usleep(1);
+		
+		?>
+		<div class="table table-responsive">
+		<table class="table table-bordered">
+			<tr>
+			<th colspan=10 >Production Plan for Section -<?= $section_no; ?></th>
+			<th colspan=20 >Date :<?= date('Y-m-d H:i'); ?></th>
+			</tr>
+			<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th></th><th>Priority 2</th><th></th><th>Priority 3</th><th></th><th>Priority 4</th><th></th><th>Priority 5</th><th></th><th>Priority 6</th><th></th><th>Priority 7</th><th></th><th>Priority 8</th><th></th><th>Priority 9</th><th></th><th>Priority 10</th><th></th><th>Priority 11</th><th></th><th>Priority 12</th><th></th><th>Priority 13</th><th></th><th>Priority 14</th><th></th></tr>
 <?php
-echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"blue\">Please wait while preparing dashboard...</font></h1></center></div>";
-	
-	ob_end_flush();
-	flush();
-	usleep(1);
 
-echo "<table>";
-echo "<tr><th style='background-color:#29759C;' colspan=10 >Production Plan for Section - $section_no</th><th style='background-color:#29759C;' colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
+// echo "<tr><th colspan=10 >Production Plan for Section - $section_no</th><th style='background-color:#29759C;' colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
 //echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Remarks</th><th>Priority 2</th><th>Remarks</th><th>Priority 3</th><th>Remarks</th><th>Priority 4</th><th>Remarks</th><th>Priority 5</th><th>Remarks</th><th>Priority 6</th><th>Remarks</th><th>Priority 7</th><th>Remarks</th><th>Priority 8</th><th>Remarks</th><th>Priority 9</th><th>Remarks</th><th>Priority 10</th><th>Remarks</th><th>Priority 11</th><th>Remarks</th><th>Priority 12</th><th>Remarks</th><th>Priority 13</th><th>Remarks</th><th>Priority 14</th><th>Remarks</th></tr>";
-echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th></th><th>Priority 2</th><th></th><th>Priority 3</th><th></th><th>Priority 4</th><th></th><th>Priority 5</th><th></th><th>Priority 6</th><th></th><th>Priority 7</th><th></th><th>Priority 8</th><th></th><th>Priority 9</th><th></th><th>Priority 10</th><th></th><th>Priority 11</th><th></th><th>Priority 12</th><th></th><th>Priority 13</th><th></th><th>Priority 14</th><th></th></tr>";
+// echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th></th><th>Priority 2</th><th></th><th>Priority 3</th><th></th><th>Priority 4</th><th></th><th>Priority 5</th><th></th><th>Priority 6</th><th></th><th>Priority 7</th><th></th><th>Priority 8</th><th></th><th>Priority 9</th><th></th><th>Priority 10</th><th></th><th>Priority 11</th><th></th><th>Priority 12</th><th></th><th>Priority 13</th><th></th><th>Priority 14</th><th></th></tr>";
 $newtempname="plan_doc_summ_input_".$username;
 
 $sql="DROP TABLE IF EXISTS $temp_pool_db.$newtempname";
@@ -628,8 +639,11 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 	}
 }
 
-echo "</table>";
+// echo "</table>";
 ?>
+	</table></div>
+	</div>
+</div>
 </body>
 <script>
 	document.getElementById("msg").style.display="none";		

@@ -899,7 +899,7 @@ if(isset($_POST['allocate']))
 				
 				if(strlen($tag)>0)
 				{
-					echo "<img src=\"images/lock.png\"> $tag";
+					echo "<img src=\"lock.png\"> $tag";
 				}
 				echo "</td>";
 				

@@ -117,7 +117,7 @@
 $old_xs=0;$old_s=0;$old_m=0;$old_l=0;$old_xl=0;$old_xxl=0;$old_xxxl=0;
 $o_xs=0;$o_s=0;$o_m=0;$o_l=0;$o_xl=0;$o_xxl=0;$o_xxxl=0;
 
-$old = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=$schedule";
+$old = "select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=$schedule";
 $old_result=mysqli_query($link, $old) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($old_row=mysqli_fetch_array($old_result)) {
 		$old_s_s01+=$old_row['old_order_s_s01'];
@@ -183,17 +183,17 @@ while ($old_row=mysqli_fetch_array($old_result)) {
 	$old_total=$old_xs+$old_s+$old_m+$old_l+$old_xl+$old_xxl+$old_xxxl+$old_s_s01+$old_s_s02+$old_s_s03+$old_s_s04+$old_s_s05+$old_s_s06+$old_s_s07+$old_s_s08+$old_s_s09+$old_s_s10+$old_s_s11+$old_s_s12+$old_s_s13+$old_s_s14+$old_s_s15+$old_s_s16+$old_s_s17+$old_s_s18+$old_s_s19+$old_s_s20+$old_s_s21+$old_s_s22+$old_s_s23+$old_s_s24+$old_s_s25+$old_s_s26+$old_s_s27+$old_s_s28+$old_s_s29+$old_s_s30+$old_s_s31+$old_s_s32+$old_s_s33+$old_s_s34+$old_s_s35+$old_s_s36+$old_s_s37+$old_s_s38+$old_s_s39+$old_s_s40+$old_s_s41+$old_s_s42+$old_s_s43+$old_s_s44+$old_s_s45+$old_s_s46+$old_s_s47+$old_s_s48+$old_s_s49+$old_s_s50;
 }
 
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=$schedule";
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=$schedule";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_confirm=mysqli_num_rows($sql_result);
 
 if($sql_num_confirm>0)
 {
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=$schedule";
+	$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=$schedule";
 }
 else
 {
-	$sql="select * from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=$schedule";
+	$sql="select * from $bai_pro3.bai_orders_db where $filter_joins order_style_no=\"$style\" and order_del_no=$schedule";
 }
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

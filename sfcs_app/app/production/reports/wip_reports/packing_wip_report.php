@@ -6,13 +6,11 @@ $view_access=user_acl("SFCS_0019",$username,1,$group_id_sfcs);
 ?>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',4,'R') ?>"></script>
+<!---<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/css/table.css',4,'R'); ?>">
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',4,'R') ?>"></script>
-
 <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',4,'R'); ?>">
-
-<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/css/table.css',4,'R'); ?>">
-<!---<style type="text/css">
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',4,'R') ?>"></script>
+<style type="text/css">
 #div-1a {
  position:absolute;
  top:65px;
@@ -47,7 +45,7 @@ div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
 td{ padding:2px; width: 100px; white-space: nowrap;}
 
 </style>--->
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/actb.js',1,'R') ?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',4,'R') ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R') ?>"></script>
 <script language="javascript" type="text/javascript"></script>
 
@@ -60,7 +58,7 @@ td{ padding:2px; width: 100px; white-space: nowrap;}
 <?php
     set_time_limit(6000000);
 	//$msg="<table border='1px' class='mytable' id='table1'><tr><th>Schedule No</th><th>Doc No</th><th>Cut No</th><th>Scanned Qty</th><th>Unscanned Qty</th><th>Input</th><th>Output</th></tr>";
-	$msg="<table class='table table-bordered'  id='table1'><tr><th class='text-center'>Buyer Division</th><th class='text-center'>Style</th><th class='text-center'>CO</th><th class='text-center'>Schedule</th><th class='text-center'>Color</th><th class='text-center'>Packing WIP</th><th class='text-center'>EX-Factory</th></tr>";
+	$msg="<div class='table table-responsive'><table class='table table-bordered'  id='table1'><tr><th class='text-center'>Buyer Division</th><th class='text-center'>Style</th><th class='text-center'>CO</th><th class='text-center'>Schedule</th><th class='text-center'>Color</th><th class='text-center'>Packing WIP</th><th class='text-center'>EX-Factory</th></tr>";
 $sqlw="select distinct order_del_no as del_no FROM $bai_pro3.packing_summary WHERE date(lastup) >= \"2015-01-01\"";
 //echo $sqlw;
 $resultw=mysqli_query($link, $sqlw) or die("Sql error--1".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
@@ -184,7 +182,7 @@ while($roww=mysqli_fetch_array($resultw))
 		}	 
 	}
 }
-	$msg.="</table>";
+	$msg.="</table></div>";
 	echo $msg;
 ?>
 <script language="javascript" type="text/javascript">

@@ -47,15 +47,15 @@ function check_validate()
 	var selection=document.getElementById("issue_status").value;
 	var doc_tot=document.getElementById("doc_tot").value;
 	var alloc_doc=document.getElementById("alloc_doc").value;
-	console.log(total_req);
-	console.log(allocation);
+	// console.log(total_req);
+	// console.log(allocation);
 	if(0<allocation)
 		{
 			document.getElementById("submit").disabled=false;
 			if(total_req == allocation)
 			{
 				document.getElementById("submit").disabled=false;
-				document.getElementById('dvremark').style.display = "block";
+				document.getElementById('dvremark').style.display = "none";
 				//console.log("Total and alloc eq");
 			}
 			else if(total_req < allocation)
@@ -129,8 +129,8 @@ function validate_but()
 		//alert('check');
 		var total_require=parseInt(document.getElementById("tot_req").value);
 		var allocation_require=parseInt(document.getElementById("alloc_qty").value);
-		// console.log(total_require);
-		// console.log(allocation_require);
+		console.log("Total Req : " +total_require);
+		console.log(allocation_require);
 		var str_text=document.getElementById("remarks").value;
 		var ii=str_text.length;
 		//alert(str_text.trim());
@@ -175,6 +175,7 @@ $pop_restriction=$_GET['pop_restriction'];
 $group_docs=$_GET['group_docs'];
 //echo $group_docs;
 ?>
+
 
 <?php
 
@@ -320,6 +321,10 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$act_cut_no=$sql_row1['acutno'];
 	$cut_no_ref=$sql_row1['acutno'];
 	$order_id_ref=$sql_row1['order_tid'];
+	/* $order_id_ref1 = explode(" ",$sql_row1['order_tid']);
+	echo $order_id_ref1[0];
+	echo $order_id_ref1[7]; */
+	//var_dump($order_id_ref1);
 	$style_ref=$sql_row1['order_style_no'];
 	// echo $style_ref." is style-ref";
 	$del_ref=$sql_row1['order_del_no'];
@@ -665,7 +670,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 		
 ?>
 
-<form method="post" action="<?php echo $_SERVER['php_self']; ?>" onsubmit=" return validate_but();">
+<form method="post" onsubmit=" return validate_but();">
 <table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
 <?php
 if($fabric_status!="5" && $fabric_status!="1")
@@ -731,10 +736,11 @@ if(isset($_POST['submit']))
 	$reason=$_POST['remarks'];
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
-	//echo $reason."<br>";
-	//echo $group_docs."<br>";
-	//echo sizeof($group_docs)."<br>";
-	//echo "Alloc_docketd--".$alloc_docket."--total allocted--".$doc_tot."--issue_status--".$issue_status."--total_docket--".sizeof($group_docs)."--reasno---".$reason."--style--".$style."--scheudle--".$schedule."<br>";
+	// echo $reason."<br>";
+	// echo $group_docs."<br>";
+	// echo sizeof($group_docs)."<br>";
+	// echo "Alloc_docketd--".$alloc_docket."--total allocted--".$doc_tot."--issue_status--".$issue_status."--total_docket--".sizeof($group_docs)."--reasno---".$reason."--style--".$style."--scheudle--".$schedule."<br>";
+	
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{
@@ -788,21 +794,17 @@ if(isset($_POST['submit']))
 					//echo "2";
 					//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
 					$sql22="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
-					//echo $sql22."<br>";
 					mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and cutno='".$doc_no_loc."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";
 				    //echo $sql211."<br>"; 
 					$sql_result211=mysqli_query($link, $sql211) or exit("Sql Error--211: $sql211".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result211);
-					//echo "no of rows=".$sql_num_check."<br/>";
 					if($sql_num_check==0)
 					{
 						$sql23="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,cutno,date,updated_by,remarks,log_stamp) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".$doc_no_loc."','".date("Y-m-d")."','".$username."','".$reason."','".date("Y-m-d H:i:s")."')";
-						//echo $sql23."<br>";
 						mysqli_query($link, $sql23) or exit("Sql Error----4".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 					$sql24="update $bai_rm_pj1.fabric_cad_allocation set status=2 where tran_pin=\"$tran_pin\"";
-					//echo $sql24."<br>";
 					mysqli_query($link, $sql24) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
 					//echo "<h3>Status: <font color=green>Success!</font> $code</h3>";
@@ -864,10 +866,13 @@ if(isset($_POST['submit']))
 				mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		//}
-	
-			
-
-echo "<script type=\"text/javascript\"> window.close(); </script>";
+		
+		$php_self = explode('/',$_SERVER['PHP_SELF']);
+		array_pop($php_self);
+		$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+		$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/sfcsui1/index.php?r=".$url_r;
+		echo"<script>location.href = '".$url."';</script>"; 
+		
 }
 ?>
 

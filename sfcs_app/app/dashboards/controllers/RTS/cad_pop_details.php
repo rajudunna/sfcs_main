@@ -1,15 +1,4 @@
-<!--
-changes log:
 
-2014-05-29/kirang/Ticket 854380 : Add "nagendral"(RM- fabric) user in $authorized array for Recut Dashboard green colour box access.
-
-2014-09-08/kirang/ service request #403866 : add veerabalajiv at case: 2
-
-2014-11-26/kirang/ service request #688614 : add veerabalajiv at case: 2
-
-2016-07-20/ kirang / Service Request: #72293706: Need to remove the Veerabalajiv user for Re cut approving at case: 2
-
--->
 <?php
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
@@ -336,7 +325,8 @@ echo "</table>";
 	}
 	
 	echo "<table class='table table-bordered'><tr class='tblheading' style='color:white;'><th>Category</th><th>Control</th><th>Print Status</th></tr>";
-$sql1="SELECT recut_v2.plan_lot_ref,recut_v2.cat_ref,recut_v2.print_status,recut_v2.doc_no,cat_stat_log.category from $bai_pro3.recut_v2 left join cat_stat_log on recut_v2.cat_ref=cat_stat_log.tid  where recut_v2.order_tid=\"$order_id_ref\" and recut_v2.acutno=$cut_no_ref";
+$sql1="SELECT recut_v2.plan_lot_ref,recut_v2.cat_ref,recut_v2.print_status,recut_v2.doc_no,cat_stat_log.category from $bai_pro3.recut_v2 left join $bai_pro3.cat_stat_log on recut_v2.cat_ref=cat_stat_log.tid  where recut_v2.order_tid=\"$order_id_ref\" and recut_v2.acutno=$cut_no_ref";
+//`echo $sql1;
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);

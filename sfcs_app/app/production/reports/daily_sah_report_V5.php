@@ -1213,8 +1213,8 @@ for (var i = 0; i < value.length; i++) {
         <input type="text" name="edat" id="edat" class="form-control" data-toggle="datepicker" size=8 onchange="return verify_date();" value="<?php  if(isset($_POST['edat'])) { echo $_POST['edat']; } else { echo date("Y-m-d"); } ?>"/>
     </div>
     <div class="col-md-2">
-        <label>Excepted Sections</label>
-        <input type="text" name="exp_sec" id="exp_sec"  class="form-control" value="5" size="6" onkeyup="abc(this.value)" onblur="abc(this.value)" />
+        <!-- <label>Excepted Sections</label> -->
+        <input type="hidden" name="exp_sec" id="exp_sec"  class="form-control" value="-1" size="6" onkeyup="abc(this.value)" onblur="abc(this.value)" />
     </div>
     <input type="submit" value="Show" name="submit" id="submit" onclick="return verify_date();"  class="btn btn-info" style="margin-top:22px;">
     <a href="<?= getFullURL($_GET['r'],'daily_sah_report_v6.php','N'); ?>" class="btn btn-warning" style="margin-top:22px;">Buyer Wise SAH Report</a>

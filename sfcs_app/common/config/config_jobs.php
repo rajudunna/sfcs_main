@@ -5,7 +5,7 @@ $username="sfcsproject1";
 $remove_user_name = true; // set false for static username removing 
 
 //SFCS Db Configurations
-$host="192.168.0.110:3323";
+$host="192.168.0.110:3326";
 $user="baiall";
 $pass="baiall";
 

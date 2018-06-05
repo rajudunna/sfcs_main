@@ -98,7 +98,7 @@ if(isset($_POST['submit']))
 {
 	echo "<hr/>";
 	$sdate=$_POST['sdate'];
-	$filename="../".getFullURL($_GET['r'],"FR_Plan/$sdate.htm","R");
+	$filename="../".getFullURL($_GET['r'],"$sdate.htm","R");
 
 	
 	if(date('D', strtotime($sdate))=="Sun")

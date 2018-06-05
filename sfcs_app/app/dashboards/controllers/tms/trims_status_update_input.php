@@ -2,8 +2,9 @@
 Revised CSS files for interface standardization,Add the Validation on trims status.-->
 
 <?php
+error_reporting(0);
 //include("header.php");
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 $username="sfcsproject1";

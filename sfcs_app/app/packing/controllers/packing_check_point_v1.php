@@ -615,6 +615,7 @@ echo $sql;
 		*/
 	
 		echo "<div class='col-md-8'><table class='table table-bordered'>";
+		echo "<tr><td><b>Docket No-Sticker No:</b></td><td>$cartonid</td></tr>";
 		echo "<tr><td><b>Style</b></td><td>$style</td></tr>";
 		echo "<tr><td><b>Schedule</b></td><td>$schedule</td></tr>";
 		echo "<tr><td><b>Color</b></td><td>$color</td></tr>";

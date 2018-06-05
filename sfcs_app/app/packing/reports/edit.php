@@ -82,8 +82,10 @@ return $ext;
 if(!in_array($username,$edit_users))
 {
 	//header("location:maintenance.php");
-	echo 'THE PAGE IS UNDER MAINTAINACE';
-	die();
+	//echo 'THE PAGE IS UNDER MAINTAINACE';
+	//die();
+	echo '<b><font color=red size=4>You do not have acces to view this page</font></b>';
+	exit();
 }
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -93,85 +95,72 @@ if(!in_array($username,$edit_users))
 <meta name="" content="">
 <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
 <style type="text/css" media="screen">
+td{ color : #000}
 
-/*====================================================
-	- HTML Table Filter stylesheet
-=====================================================*/
-@import "TableFilter_EN/filtergrid.css";
-
-/*====================================================
-	- General html elements
-=====================================================*/
-body{ 
-	margin:15px; padding:15px; border:0px solid #666;
-	font-family:Trebuchet MS, Helvetica, sans-serif; font-size:88%; 
-}
-h2{ margin-top: 50px; }
-caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
-pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1px solid #ccc;  }
-.mytable1{
-	font-size:12px;
-}
-th{ background-color:#29759C; color:#FFF; padding:2px; border:1px solid #ccc; }
-td{ padding:3px; border-bottom:0px solid #ccc; border-right:0px solid #ccc; }
 </style>
 </head>
 <body>
+	<div class='panel panel-primary'>
+		<div class='panel-heading'>Edit</div>
+		<div class='panel-body'>
+				<form method="post" enctype="multipart/form-data">
+					<div class='col-sm-6'>
+					<table class='table table-bordered table-responsive'>
+					<tr>
+						<td class='info'>Container</td>
+						<td>
+							<select class='form-control' name="con">
+								<option value="1">Empty</option>
+								<option value="2">Half</option>
+								<option value="3">Full</option>
+								<option value="4">Closed</option>
+								<option value="5">Sealed</option>
+								<option value="6">Seal #</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+					</tr>
+					<tr>
+					</tr>
+					<tr>
+					</tr>
+					<tr>
+					<td class='info'>Seal No</td>
+					<td><input class='form-control integer' required type="text" name="sno"/></td>
+					</tr>
+					<tr>
+					</tr>
+					<tr>
+					<td class='info'>Photo</td>
+					<td>
+					<input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+					<input name="userfile" type="file" id="userfile" required accept='image/*'>
+					</td>
+					</tr>
 
-<form method="post" enctype="multipart/form-data">
-<table width="350" border="0" cellpadding="1" cellspacing="1" class="box" style="background-color: #EEEEEE;">
-<tr>
-<th>Container</th>
-<td>
-<select name="con">
-<option value="1">Empty</option>
-<option value="2">Half</option>
-<option value="3">Full</option>
-<option value="4">Closed</option>
-<option value="5">Sealed</option>
-<option value="6">Seal #</option>
-</select>
-</td>
-</tr>
-<tr>
-</tr>
-<tr>
-</tr>
-<tr>
-</tr>
-<tr>
-<th>Seal No</th>
-<td><input type="text" name="sno"/></td>
-</tr>
-<tr>
-</tr>
-<tr>
-<th>Photo</th>
-<td width="246">
-<input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-<input name="userfile" type="file" id="userfile">
-</td>
-</tr>
+					<tr>
+						<td colspan='2'>
+							<div class='col-sm-3'></div>
+						<?php
+						if(in_array($username,$edit_users))
+						{
 
-<tr>
-<td></td>
-<td width="80">
+							echo '<input name="upload" type="submit" class="btn btn-success btn-sm" id="upload" value="Upload"></td>';
+						}
+						else
+						{
+							echo "You are not authorized to edit";	
+						}
 
-<?php
-if(in_array($username,$edit_users))
-{
-
-	echo '<input name="upload" type="submit" class="box" id="upload" value="Upload"></td>';
-}
-else
-{
-	echo "You are not authorized to edit";	
-}
-
-?>
-</tr>
-</table>
-</form>
+						?>
+						</td>
+					</tr>
+					</table>
+					</div>
+				</form>
+			</div>
+		</div>
 </body>
 </html>
 
@@ -191,6 +180,21 @@ $fileType = $_FILES['userfile']['type'];
 $con=$_POST['con'];
 $sno=$_POST['sno'];
 
+	$url = getFullURL($_GET['r'],'edit.php','N');
+	$query = "select * from $bai_pack.upload where sealno = '$sno' ";
+	$res = mysqli_query($link,$query);
+	if(mysqli_num_rows($res) == 0){
+		echo "<script>
+		    swal('The seal no do not exist..','Try with another','error');
+			setTimeout(
+			function(){
+				location.href = '$url';
+			},3000);
+
+		</script>";
+		exit();
+
+	}
 //echo $con;
 
 $fp      = fopen($tmpName, 'r');
@@ -314,8 +318,13 @@ else
 	//Please mention the clear details
 }
 
-
-
-echo "<br>File uploaded Successfully<br>";
+$url = getFullURL($_GET['r'],'main.php','N');
+echo "<script>
+		swal('image uploaded successfully','','success');
+		setTimeout(
+		function(){
+			location.href = '$url';
+		},2000);
+	</script>";
 }
 ?>	

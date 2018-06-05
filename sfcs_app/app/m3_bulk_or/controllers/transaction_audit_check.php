@@ -4,94 +4,7 @@
 </style>
 <!-- <script language="javascript" type="text/javascript" src="TableFilter_EN/tablefilter.js"></script> -->
 <!-- <script language="javascript" type="text/javascript" src="TableFilter_EN/actb.js"></script>External script -->
-<style>
-body
-{
-	font-family:calibri;
-	font-size:12px;
-}
 
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    background-color: #29759c;
-	color: WHITE;
-	white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
-</style>
-
-
-<style type="text/css">
-
-.ds_box {
-	background-color: #FFF;
-	border: 1px solid #000;
-	position: absolute;
-	z-index: 32767;
-}
-
-.ds_tbl {
-	background-color: #FFF;
-}
-
-.ds_head {
-	background-color: #333;
-	color: #FFF;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 13px;
-	font-weight: bold;
-	text-align: center;
-	letter-spacing: 2px;
-}
-
-.ds_subhead {
-	background-color: #CCC;
-	color: #000;
-	font-size: 12px;
-	font-weight: bold;
-	text-align: center;
-	font-family: Arial, Helvetica, sans-serif;
-	width: 32px;
-}
-
-.ds_cell {
-	background-color: #EEE;
-	color: #000;
-	font-size: 13px;
-	text-align: center;
-	font-family: Arial, Helvetica, sans-serif;
-	padding: 5px;
-	cursor: pointer;
-}
-
-.ds_cell:hover {
-	background-color: #F3F3F3;
-} /* This hover code won't work for IE */
-
-</style>
 <?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 <div class="panel panel-primary">
 	<div class="panel-heading">Quick Transaction Audit</div>
@@ -229,7 +142,12 @@ if(isset($_POST['submit']))
 echo "<br/><hr/><u>Status Legend:</u> 0-Created, 10-Validated, 15-Confirmed, 16-Reconfirmed, 20-M3 Log Created,  30- Success, 40-Failed, 50-Manually Updated, 60-Success Archived, 70-Failed Archived, 90-Ignored<br/><u>M3 Operation Description:</u> LAY-Laying, CUT-Cutting, SIN-Sewing In, SOT-Sewing Out, CPK-Carton Packing, <b>Embellishment:</b> PS-Panel Form Sent , PR-Panel Form Received, ASPS-Garment Form Sent, ASPR-Garment Form Received ";
 
 echo "<div style='max-height:600px;overflow-y:scroll;max-width:1200px;'><table id=\"table111\" border=1 class='table table-bordered table-responsive'>";
-echo "<tr><th>Transaction ID</th><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>SFCS Size Code</th><th>M3 Size Code</th><th>Status</th><th>MO Number</th><th>M3 Operation Code</th><th>SFCS Job #</th><th>Docket #</th><th>Reported Qty</th><th>Rejection Reasons</th><th>Remarks</th><th>Log User</th><th>Log Time</th><th>Module #</th><th>Shift</th><th>M3 Operation Des.</th><th>SFCS Tran. Ref. ID</th><th>M3 Error Code</th>
+echo "<tr class='danger'><th>Transaction ID</th>
+		  <th class='aut'>Date</th><th>Style</th><th>Schedule</th><th class='aut'>Color</th>
+		  <th>SFCS Size Code</th><th>M3 Size Code</th>
+		  <th>Status</th><th>MO Number</th><th>M3 Operation Code</th><th>SFCS Job #</th><th>Docket #</th>
+		  <th>Reported Qty</th><th>Rejection Reasons</th><th>Remarks</th><th>Log User</th><th>Log Time</th>
+		  <th>Module #</th><th>Shift</th><th>M3 Operation Des.</th><th>SFCS Tran. Ref. ID</th><th>M3 Error Code</th>
 </tr>";
 
 $sql="select * from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where 1=1 ".(strlen($schedule)>0?" and sfcs_schedule in ($schedule)":"").(strlen($sdate)>0?" and sfcs_date='$sdate'":"").($status>=0?" and sfcs_status='$status'":"").(strlen($opscode)>0?" and m3_op_des='$opscode'":"")." union select * from $m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup where 1=1 ".(strlen($schedule)>0?" and sfcs_schedule in ($schedule)":"").(strlen($sdate)>0?" and sfcs_date='$sdate'":"").($status>=0?" and sfcs_status='$status'":"").(strlen($opscode)>0?" and m3_op_des='$opscode'":"") ;
@@ -579,3 +497,10 @@ function ds_onclick(d, m, y) {
 </script>
 </div>
 </div>
+
+<style>
+th,td{
+	max-width  :500px;
+	min-width  : 120px;
+}
+</style>

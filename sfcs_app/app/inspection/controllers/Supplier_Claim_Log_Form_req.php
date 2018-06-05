@@ -31,7 +31,6 @@ while ($row1=mysqli_fetch_array($count))
 	
 		echo "</tr></thead>";
 		$sql11="select * from $bai_rm_pj1.inspection_complaint_db where reject_batch_no = \"".$batch_no."\" OR reject_inv_no=\"".$batch_no."\"";
-		// echo $sql11."<br>";
 		$result11=mysqli_query($link, $sql11) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 			while($row=mysqli_fetch_array($result11))

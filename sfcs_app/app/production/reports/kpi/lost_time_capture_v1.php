@@ -132,7 +132,7 @@ table tr:hover td {
 				   }
 				?>
 				<div class="panel panel-primary">
-<div class="panel-heading">Last Hour Capturing Report <?php  echo $frdate;  ?></div>
+<div class="panel-heading">Lost Hour Capturing Report <?php  echo $frdate;  ?></div>
 <div class="panel-body">
 				<form action='index.php' method='GET'>
 				<br>

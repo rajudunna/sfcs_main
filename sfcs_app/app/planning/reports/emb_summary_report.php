@@ -128,7 +128,7 @@ Ex-factory End Date:
 
 if(isset($_POST["submit"]))
 {
-	$sdate=$_POST["dat1"];
+	$sdate=$_POST["date1"];
 	$edate=$_POST["dat2"];
 	
 	//echo $sdate."-".$edate."<br>";

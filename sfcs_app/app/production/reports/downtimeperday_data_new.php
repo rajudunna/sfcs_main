@@ -177,10 +177,10 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 				}
 			}
 			
-			$sql6="select sum(dtime) from $bai_pro.down_deps where date between \"$start\" and \"$end\" and section=\"$sec[$i]\" and mod_no=\"$rows2[module]\" and shift in ($shift)";
+			$sql6="select sum(dtime) from $bai_pro.down_log where date between \"$start\" and \"$end\" and section=\"$sec[$i]\" and mod_no=\"$rows2[module]\" and shift in ($shift)";
 				//echo $sql6."<br>";
-			mysqli_query($link, $sql6) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		    $row6=mysqli_query($link, $sql6) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			mysqli_query($link, $sql6) or exit("Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		    $row6=mysqli_query($link, $sql6) or exit("Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($rows6=mysqli_fetch_array($row6))
 			{
 				echo "<td>".round($rows6["sum(dtime)"]/60,0)."</td>";

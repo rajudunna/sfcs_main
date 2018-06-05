@@ -694,30 +694,37 @@ td{
 </style>
 <script>
 	function check_reasons(cat_count){
-		var count = document.getElementById('count');
+		var count = document.getElementById('count').value;
 		var total = 0;
 		var val;
-		for(var i = 0;i<Number(count);i++){
+		for(var i = 0;i<parseInt(count);i++){
 			val = parseFloat(document.getElementById('qty_'+i).value);
-			if(val = ""){
+			if(val == " "){
 				val = 0;
 			}else{
 				val = val;
 			}
-			total += val;
+			total+= val;
 		}
+		var check_val = [];
+		// alert(total);
 		if(total == 0){
-			for(var j =0; j<Number(cat_count);j++){
-				var check_val = document.getElementById('cat_'+j).checked;
-			}
-			alert(check_val);
 			sweetAlert('NRP should be greater than ZERO','','warning');
 			return false;
 		}else{
-			
+			for(var j =0; j<Number(cat_count);j++){
+				check_val[j] = document.getElementById('cat_'+j).checked;
+			}
+			const check_t = 'true';
+			const ary_in = check_t.includes(check_val);
+			// alert(ary_in);
+			if(ary_in == false){
+				sweetAlert('Please Select atleast one category','','warning');
+				return false;
+			}else{
+				// return true;
+			}
 		}
-		
 		return true;
-		
 	}
 </script>

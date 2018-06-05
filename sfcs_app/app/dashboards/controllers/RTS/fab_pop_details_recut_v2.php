@@ -187,7 +187,9 @@ changes log:
 	$group_docs=$_GET['group_docs'];
 ?>
 
-<link rel="stylesheet" type="text/css" href="page_style.css" />
+<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/css/page_style.css',2,'R'); ?>" />
+
+
 
 <style>
 body
@@ -396,16 +398,16 @@ th
 			$type=2; // For normal recut
 		}
 
-		$path="getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N')";
+		$path=getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N');
 		if(substr($style_ref,0,1)!="P" or substr($style_ref,0,1)!="K" or substr($style_ref,0,1)!="L" or substr($style_ref,0,1)!="O" )
 		{
 			if($mns_status>0)
 			{
-				$path="getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N')";  // For M&S Men Briefs
+				$path=getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N');  // For M&S Men Briefs
 			}
 			else
 			{
-				$path="getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'N')"; // FOR M&S Ladies Briefs
+				$path=getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'N'); // FOR M&S Ladies Briefs
 			}
 			
 		}
@@ -416,11 +418,11 @@ th
 			{
 				if($mns_status>0)
 				{
-					$path="getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N')";  // For M&S Men Briefs
+					$path=getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N');  // For M&S Men Briefs
 				}
 				else
 				{
-					$path="getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'N')"; // FOR M&S Ladies Briefs
+					$path=getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'N'); // FOR M&S Ladies Briefs
 				}
 			}
 			

@@ -1896,7 +1896,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;
   width:98pt'><?php if(in_array($username,$auth_to_modify)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"number\" step=\"any\" class=\"textbox\" id=\"consumption\" name=\"consumption\" min=\"0\" value='".$consumption."' />"; } else { echo $consumption; }?></td>
   <td colspan=7 class=xl12224082 style='border-right:.5pt solid black;
-  border-left:none'>Inspection Summery</td>
+  border-left:none'>Inspection Summary</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Supplier</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;

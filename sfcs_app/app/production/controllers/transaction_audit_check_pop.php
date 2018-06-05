@@ -151,7 +151,7 @@ if(isset($_POST['submit']))
 {
 	$schedule=$_POST['schedule'];
 	$col=$_POST['color'];
-
+	
 	$sqla="select *  FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no =$schedule";
 	$sql_result=mysqli_query($link, $sqla) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
@@ -159,8 +159,8 @@ if(isset($_POST['submit']))
 	{
 	 
 
-	
-	
+	if($col!='')
+	{
 	
 	
 	//Date 2013-11-25/Ticket#100078/ Added Carton Track and AOD details
@@ -348,7 +348,7 @@ echo "<div class='panel panel-primary'>";
 echo "<div class='panel-heading'>Input & Output Log</div>";
 echo "<div class='panel-body'>";
 
-echo "<div class='table-responsive'><table class=\"table table-bordered\">";
+echo "<div class='table-responsive'><table class=\"table table-bordered table111\" id=\"table111\">";
 echo "<tr><th>Input Date</th><th>Layplan ID</th><th>Dockete</th><th>Module</th><th>Shift</th><th>Size</th><th>Input Qty</th><th>Output Qty</th><th>Status</th><th>Bai Log Ref</th><th>Last Update</th><th>Remarks</th><th>Style</th><th>Schedule</th><th>Color</th><th>IMS Tid</th><th>Random Track</th></tr>";
 
 $sql="select * from $bai_pro3.ims_log where ims_schedule=\"$schedule\" and ims_color='$col'";
@@ -447,7 +447,7 @@ echo "<div class='panel panel-primary'>";
 echo "<div class='panel-heading'>Finished Log</div>";
 echo "<div class='panel-body'>";
 
-echo "<div class='table-responsive'><table class=\"table table-bordered\">";
+echo "<div class='table-responsive'><table class=\"table table-bordered table1111\" id=\"table1111\">";
 echo "<tr><th>Docket</th><th>Docket Ref</th><th>TID</th><th>Size</th><th>Remarks</th><th>Status</th><th>Last Updated</th><th>Carton Act Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
 $packing_tid_list=array();
 $sql="select * from $bai_pro3.packing_summary where order_del_no=\"$schedule\" and order_col_des='$col' order by size_code,carton_act_qty desc,tid";
@@ -563,12 +563,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 echo "</table></div>";
 echo "</div></div>";
 echo "</table></div>";
+	}
+	else
+	{
+		echo "<script>swal('Please Select Color','','warning');</script>";
+	}
 }
 else
-	{
-		echo "<script>sweetAlert('Invalid Schedule No ','','warning')</script>";
-		
-	}
+{
+	echo "<script>sweetAlert('Invalid Schedule No ','','warning')</script>";	
+}
 
 ?>
 <script language="javascript" type="text/javascript">

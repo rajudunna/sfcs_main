@@ -1,6 +1,7 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+
 //KiranG - 2015-09-02 : passing link as parameter in update_m3_or function to avoid missing user name.
 ?>
 <style>
@@ -18,13 +19,13 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 	//function to update M3 Bulk OR
 	function update_m3_or($doc_no,$plies,$operation,$old_plies,$link)
 	{
-		//include("dbconf.php"); 
-		//include("functions.php"); 
-		
+		global $m3_bulk_ops_rep_db;
 		$size_code_db=array('xs','s','m','l','xl','xxl','xxxl','s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50');
+		
 		$size_qty=array();
 		
 		$sql="select * from $bai_pro3.order_cat_doc_mix where doc_no=\"$doc_no\" and category in ('Body','Front')"; //20110911
+	
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -93,7 +94,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 			$a_plies=$sql_row['a_plies'];
 			$act_cut_status=$sql_row['act_cut_status'];
 		}
-		
+	
 			
 		//double entry checkdate
 		$dcheck=0;
@@ -140,6 +141,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 
 		if($other_docs>0 and $dcheck==0)
 		{
+			
 			for($i=0;$i<sizeof($size_code_db);$i++)
 			{				
 				
@@ -172,6 +174,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 				}
 			}
 		}
+		
 		
 		
 			//KiranG - 20160128 changed the sequence of the below query from prior to after passing the m3 bulk operation log.
@@ -207,7 +210,6 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 			// echo '<script>alert("NOT inserted into m3_tran_log")</script>';
 			return "FALSE";
 		}
-		
 	}
 
 ?>
@@ -235,9 +237,8 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 		$old_plies=$_POST['old_plies'];
 		//Roll Table Logic --Satish 21/12/2017
 		$roledata = $_POST['inputdata'];
-		$newratio = $_POST['newratio'];
-	
-
+		$newratio = $_POST['newratio'];	
+		
 		//locations Logic -- Satish 23/11/2017
 
 		$query = "SELECT * FROM $bai_pro3.`plandoc_stat_log` WHERE doc_no=$input_doc_no";
@@ -423,6 +424,8 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 			}	
 			*/
 			$ret=update_m3_or($input_doc_no,$plies,'CUT',$old_plies,$link);
+			
+			
 			if($ret=="TRUE")
 			{	
 				//Logic for Location mapping -- Satish 23/11/2017		
@@ -646,7 +649,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 							echo "<a class='btn btn-warning' href='".getFullURL($_GET['r'],'doc_track_panel.php','N')."'><< Go back to Cut quantity reporting screen</a>";
 							die();
 						}
-					}					
+					}				
 				}else{
 					$get_locations = "select * from $bai_pro3.locations where filled_qty = 0";
 					$location_result=mysqli_query($link, $get_locations) or exit("Sql Error at finding locations".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -790,6 +793,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 
 
 	function updateRoleData($roledata,$link){
+		global $bai_rm_pj1;
 		if(sizeof($roledata)>0){
 			foreach ($roledata as $key => $role) {
 				$updating_role_data="update $bai_rm_pj1.fabric_cad_allocation set plies='".$role['roleplies']."',nbits='".$role['nbits']."',shade='".$role['shade']."' where tran_pin=".$role['tran_pin'];
@@ -1292,7 +1296,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 
 					if(count(array_unique($success_doc_nos)) > 0){
 						$doc_nos = implode(",",array_unique($success_doc_nos));
-						$update_sql = "update bai_pro3.plandoc_stat_log set act_movement_status='DONE' where doc_no IN (".$doc_nos.")";
+						$update_sql = "update $bai_pro3.plandoc_stat_log set act_movement_status='DONE' where doc_no IN (".$doc_nos.")";
 						$result = mysqli_query($link, $update_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 					

@@ -382,67 +382,67 @@ switch($q)
 				$size50 = $sql_row['title_size_s50'];
 				
 			}
-			$sql="select order_tid,a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,a_s01,a_s02,a_s03,a_s04,a_s05,a_s06,a_s07,a_s08,a_s09,a_s10,a_s11,a_s12,a_s13,a_s14,a_s15,a_s16,a_s17,a_s18,a_s19,a_s20,a_s21,a_s22,a_s23,a_s24,a_s25,a_s26,a_s27,a_s28,a_s29,a_s30,a_s31,a_s32,a_s33,a_s34,a_s35,a_s36,a_s37,a_s38,a_s39,a_s40,a_s41,a_s42,a_s43,a_s44,a_s45,a_s46,a_s47,a_s48,a_s49,a_s50 from $bai_pro3.plandoc_stat_log where doc_no=\"".substr($temp[3],1,10)."\"";
+			$sql="select order_tid,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50 from $bai_pro3.plandoc_stat_log where doc_no=\"".substr($temp[3],1,10)."\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
-				if($sql_row['a_xs']>0) { $sizes[]=str_replace("a_","","a_xs");$title_sizes[]='XS';}
-				if($sql_row['a_s']>0) { $sizes[]=str_replace("a_","","a_s");$title_sizes[]='S';}	
-				if($sql_row['a_m']>0) { $sizes[]=str_replace("a_","","a_m");$title_sizes[]='M';}	
-				if($sql_row['a_l']>0) { $sizes[]=str_replace("a_","","a_l");$title_sizes[]='L';}	
-				if($sql_row['a_xl']>0) { $sizes[]=str_replace("a_","","a_xl");$title_sizes[]='XL';}	
-				if($sql_row['a_xxl']>0) { $sizes[]=str_replace("a_","","a_xxl");$title_sizes[]='XXL';}	
-				if($sql_row['a_xxxl']>0) { $sizes[]=str_replace("a_","","a_xxxl");$title_sizes[]='XXXL';}
-				if($sql_row['a_s01']>0) { $sizes[]=str_replace("a_","","a_s01");$title_sizes[]=$size01;}
-				if($sql_row['a_s02']>0) { $sizes[]=str_replace("a_","","a_s02");$title_sizes[]=$size02;}
-				if($sql_row['a_s03']>0) { $sizes[]=str_replace("a_","","a_s03");$title_sizes[]=$size03;}
-				if($sql_row['a_s04']>0) { $sizes[]=str_replace("a_","","a_s04");$title_sizes[]=$size04;}
-				if($sql_row['a_s05']>0) { $sizes[]=str_replace("a_","","a_s05");$title_sizes[]=$size05;}
-				if($sql_row['a_s06']>0) { $sizes[]=str_replace("a_","","a_s06");$title_sizes[]=$size06;}
-				if($sql_row['a_s07']>0) { $sizes[]=str_replace("a_","","a_s07");$title_sizes[]=$size07;}
-				if($sql_row['a_s08']>0) { $sizes[]=str_replace("a_","","a_s08");$title_sizes[]=$size08;}
-				if($sql_row['a_s09']>0) { $sizes[]=str_replace("a_","","a_s09");$title_sizes[]=$size09;}
-				if($sql_row['a_s10']>0) { $sizes[]=str_replace("a_","","a_s10");$title_sizes[]=$size10;}
-				if($sql_row['a_s11']>0) { $sizes[]=str_replace("a_","","a_s11");$title_sizes[]=$size11;}
-				if($sql_row['a_s12']>0) { $sizes[]=str_replace("a_","","a_s12");$title_sizes[]=$size12;}
-				if($sql_row['a_s13']>0) { $sizes[]=str_replace("a_","","a_s13");$title_sizes[]=$size13;}
-				if($sql_row['a_s14']>0) { $sizes[]=str_replace("a_","","a_s14");$title_sizes[]=$size14;}
-				if($sql_row['a_s15']>0) { $sizes[]=str_replace("a_","","a_s15");$title_sizes[]=$size15;}
-				if($sql_row['a_s16']>0) { $sizes[]=str_replace("a_","","a_s16");$title_sizes[]=$size16;}
-				if($sql_row['a_s17']>0) { $sizes[]=str_replace("a_","","a_s17");$title_sizes[]=$size17;}
-				if($sql_row['a_s18']>0) { $sizes[]=str_replace("a_","","a_s18");$title_sizes[]=$size18;}
-				if($sql_row['a_s19']>0) { $sizes[]=str_replace("a_","","a_s19");$title_sizes[]=$size19;}
-				if($sql_row['a_s20']>0) { $sizes[]=str_replace("a_","","a_s20");$title_sizes[]=$size20;}
-				if($sql_row['a_s21']>0) { $sizes[]=str_replace("a_","","a_s21");$title_sizes[]=$size21;}
-				if($sql_row['a_s22']>0) { $sizes[]=str_replace("a_","","a_s22");$title_sizes[]=$size22;}
-				if($sql_row['a_s23']>0) { $sizes[]=str_replace("a_","","a_s23");$title_sizes[]=$size23;}
-				if($sql_row['a_s24']>0) { $sizes[]=str_replace("a_","","a_s24");$title_sizes[]=$size24;}
-				if($sql_row['a_s25']>0) { $sizes[]=str_replace("a_","","a_s25");$title_sizes[]=$size25;}
-				if($sql_row['a_s26']>0) { $sizes[]=str_replace("a_","","a_s26");$title_sizes[]=$size26;}
-				if($sql_row['a_s27']>0) { $sizes[]=str_replace("a_","","a_s27");$title_sizes[]=$size27;}
-				if($sql_row['a_s28']>0) { $sizes[]=str_replace("a_","","a_s28");$title_sizes[]=$size28;}
-				if($sql_row['a_s29']>0) { $sizes[]=str_replace("a_","","a_s29");$title_sizes[]=$size29;}
-				if($sql_row['a_s30']>0) { $sizes[]=str_replace("a_","","a_s30");$title_sizes[]=$size30;}
-				if($sql_row['a_s31']>0) { $sizes[]=str_replace("a_","","a_s31");$title_sizes[]=$size31;}
-				if($sql_row['a_s32']>0) { $sizes[]=str_replace("a_","","a_s32");$title_sizes[]=$size32;}
-				if($sql_row['a_s33']>0) { $sizes[]=str_replace("a_","","a_s33");$title_sizes[]=$size33;}
-				if($sql_row['a_s34']>0) { $sizes[]=str_replace("a_","","a_s34");$title_sizes[]=$size34;}
-				if($sql_row['a_s35']>0) { $sizes[]=str_replace("a_","","a_s35");$title_sizes[]=$size35;}
-				if($sql_row['a_s36']>0) { $sizes[]=str_replace("a_","","a_s36");$title_sizes[]=$size36;}
-				if($sql_row['a_s37']>0) { $sizes[]=str_replace("a_","","a_s37");$title_sizes[]=$size37;}
-				if($sql_row['a_s38']>0) { $sizes[]=str_replace("a_","","a_s38");$title_sizes[]=$size38;}
-				if($sql_row['a_s39']>0) { $sizes[]=str_replace("a_","","a_s39");$title_sizes[]=$size39;}
-				if($sql_row['a_s40']>0) { $sizes[]=str_replace("a_","","a_s40");$title_sizes[]=$size40;}
-				if($sql_row['a_s41']>0) { $sizes[]=str_replace("a_","","a_s41");$title_sizes[]=$size41;}
-				if($sql_row['a_s42']>0) { $sizes[]=str_replace("a_","","a_s42");$title_sizes[]=$size42;}
-				if($sql_row['a_s43']>0) { $sizes[]=str_replace("a_","","a_s43");$title_sizes[]=$size43;}
-				if($sql_row['a_s44']>0) { $sizes[]=str_replace("a_","","a_s44");$title_sizes[]=$size44;}
-				if($sql_row['a_s45']>0) { $sizes[]=str_replace("a_","","a_s45");$title_sizes[]=$size45;}
-				if($sql_row['a_s46']>0) { $sizes[]=str_replace("a_","","a_s46");$title_sizes[]=$size46;}
-				if($sql_row['a_s47']>0) { $sizes[]=str_replace("a_","","a_s47");$title_sizes[]=$size47;}
-				if($sql_row['a_s48']>0) { $sizes[]=str_replace("a_","","a_s48");$title_sizes[]=$size48;}
-				if($sql_row['a_s49']>0) { $sizes[]=str_replace("a_","","a_s49");$title_sizes[]=$size49;}
-				if($sql_row['a_s50']>0) { $sizes[]=str_replace("a_","","a_s50");$title_sizes[]=$size50;}
+				if($sql_row['p_xs']>0) { $sizes[]=str_replace("p_","","p_xs");$title_sizes[]='XS';}
+				if($sql_row['p_s']>0) { $sizes[]=str_replace("p_","","p_s");$title_sizes[]='S';}	
+				if($sql_row['p_m']>0) { $sizes[]=str_replace("p_","","p_m");$title_sizes[]='M';}	
+				if($sql_row['p_l']>0) { $sizes[]=str_replace("p_","","p_l");$title_sizes[]='L';}	
+				if($sql_row['p_xl']>0) { $sizes[]=str_replace("p_","","p_xl");$title_sizes[]='XL';}	
+				if($sql_row['p_xxl']>0) { $sizes[]=str_replace("p_","","p_xxl");$title_sizes[]='XXL';}	
+				if($sql_row['p_xxxl']>0) { $sizes[]=str_replace("p_","","p_xxxl");$title_sizes[]='XXXL';}
+				if($sql_row['p_s01']>0) { $sizes[]=str_replace("p_","","p_s01");$title_sizes[]=$size01;}
+				if($sql_row['p_s02']>0) { $sizes[]=str_replace("p_","","p_s02");$title_sizes[]=$size02;}
+				if($sql_row['p_s03']>0) { $sizes[]=str_replace("p_","","p_s03");$title_sizes[]=$size03;}
+				if($sql_row['p_s04']>0) { $sizes[]=str_replace("p_","","p_s04");$title_sizes[]=$size04;}
+				if($sql_row['p_s05']>0) { $sizes[]=str_replace("p_","","p_s05");$title_sizes[]=$size05;}
+				if($sql_row['p_s06']>0) { $sizes[]=str_replace("p_","","p_s06");$title_sizes[]=$size06;}
+				if($sql_row['p_s07']>0) { $sizes[]=str_replace("p_","","p_s07");$title_sizes[]=$size07;}
+				if($sql_row['p_s08']>0) { $sizes[]=str_replace("p_","","p_s08");$title_sizes[]=$size08;}
+				if($sql_row['p_s09']>0) { $sizes[]=str_replace("p_","","p_s09");$title_sizes[]=$size09;}
+				if($sql_row['p_s10']>0) { $sizes[]=str_replace("p_","","p_s10");$title_sizes[]=$size10;}
+				if($sql_row['p_s11']>0) { $sizes[]=str_replace("p_","","p_s11");$title_sizes[]=$size11;}
+				if($sql_row['p_s12']>0) { $sizes[]=str_replace("p_","","p_s12");$title_sizes[]=$size12;}
+				if($sql_row['p_s13']>0) { $sizes[]=str_replace("p_","","p_s13");$title_sizes[]=$size13;}
+				if($sql_row['p_s14']>0) { $sizes[]=str_replace("p_","","p_s14");$title_sizes[]=$size14;}
+				if($sql_row['p_s15']>0) { $sizes[]=str_replace("p_","","p_s15");$title_sizes[]=$size15;}
+				if($sql_row['p_s16']>0) { $sizes[]=str_replace("p_","","p_s16");$title_sizes[]=$size16;}
+				if($sql_row['p_s17']>0) { $sizes[]=str_replace("p_","","p_s17");$title_sizes[]=$size17;}
+				if($sql_row['p_s18']>0) { $sizes[]=str_replace("p_","","p_s18");$title_sizes[]=$size18;}
+				if($sql_row['p_s19']>0) { $sizes[]=str_replace("p_","","p_s19");$title_sizes[]=$size19;}
+				if($sql_row['p_s20']>0) { $sizes[]=str_replace("p_","","p_s20");$title_sizes[]=$size20;}
+				if($sql_row['p_s21']>0) { $sizes[]=str_replace("p_","","p_s21");$title_sizes[]=$size21;}
+				if($sql_row['p_s22']>0) { $sizes[]=str_replace("p_","","p_s22");$title_sizes[]=$size22;}
+				if($sql_row['p_s23']>0) { $sizes[]=str_replace("p_","","p_s23");$title_sizes[]=$size23;}
+				if($sql_row['p_s24']>0) { $sizes[]=str_replace("p_","","p_s24");$title_sizes[]=$size24;}
+				if($sql_row['p_s25']>0) { $sizes[]=str_replace("p_","","p_s25");$title_sizes[]=$size25;}
+				if($sql_row['p_s26']>0) { $sizes[]=str_replace("p_","","p_s26");$title_sizes[]=$size26;}
+				if($sql_row['p_s27']>0) { $sizes[]=str_replace("p_","","p_s27");$title_sizes[]=$size27;}
+				if($sql_row['p_s28']>0) { $sizes[]=str_replace("p_","","p_s28");$title_sizes[]=$size28;}
+				if($sql_row['p_s29']>0) { $sizes[]=str_replace("p_","","p_s29");$title_sizes[]=$size29;}
+				if($sql_row['p_s30']>0) { $sizes[]=str_replace("p_","","p_s30");$title_sizes[]=$size30;}
+				if($sql_row['p_s31']>0) { $sizes[]=str_replace("p_","","p_s31");$title_sizes[]=$size31;}
+				if($sql_row['p_s32']>0) { $sizes[]=str_replace("p_","","p_s32");$title_sizes[]=$size32;}
+				if($sql_row['p_s33']>0) { $sizes[]=str_replace("p_","","p_s33");$title_sizes[]=$size33;}
+				if($sql_row['p_s34']>0) { $sizes[]=str_replace("p_","","p_s34");$title_sizes[]=$size34;}
+				if($sql_row['p_s35']>0) { $sizes[]=str_replace("p_","","p_s35");$title_sizes[]=$size35;}
+				if($sql_row['p_s36']>0) { $sizes[]=str_replace("p_","","p_s36");$title_sizes[]=$size36;}
+				if($sql_row['p_s37']>0) { $sizes[]=str_replace("p_","","p_s37");$title_sizes[]=$size37;}
+				if($sql_row['p_s38']>0) { $sizes[]=str_replace("p_","","p_s38");$title_sizes[]=$size38;}
+				if($sql_row['p_s39']>0) { $sizes[]=str_replace("p_","","p_s39");$title_sizes[]=$size39;}
+				if($sql_row['p_s40']>0) { $sizes[]=str_replace("p_","","p_s40");$title_sizes[]=$size40;}
+				if($sql_row['p_s41']>0) { $sizes[]=str_replace("p_","","p_s41");$title_sizes[]=$size41;}
+				if($sql_row['p_s42']>0) { $sizes[]=str_replace("p_","","p_s42");$title_sizes[]=$size42;}
+				if($sql_row['p_s43']>0) { $sizes[]=str_replace("p_","","p_s43");$title_sizes[]=$size43;}
+				if($sql_row['p_s44']>0) { $sizes[]=str_replace("p_","","p_s44");$title_sizes[]=$size44;}
+				if($sql_row['p_s45']>0) { $sizes[]=str_replace("p_","","p_s45");$title_sizes[]=$size45;}
+				if($sql_row['p_s46']>0) { $sizes[]=str_replace("p_","","p_s46");$title_sizes[]=$size46;}
+				if($sql_row['p_s47']>0) { $sizes[]=str_replace("p_","","p_s47");$title_sizes[]=$size47;}
+				if($sql_row['p_s48']>0) { $sizes[]=str_replace("p_","","p_s48");$title_sizes[]=$size48;}
+				if($sql_row['p_s49']>0) { $sizes[]=str_replace("p_","","p_s49");$title_sizes[]=$size49;}
+				if($sql_row['p_s50']>0) { $sizes[]=str_replace("p_","","p_s50");$title_sizes[]=$size50;}
 				
 			}
 			

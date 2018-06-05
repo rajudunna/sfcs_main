@@ -132,7 +132,7 @@ echo '<br>
                         {
                             //echo $sql_row['input_job_no'];
                             //echo "<a href=\"Print_Doc_new_input.php?order_tid=$order_tid&&schedule=".$sql_row['order_del_no']."&&job_no=".$sql_row['input_job_no']."\" onclick=\"return popitup('Print_Doc_new_input.php?order_tid=$order_tid&&schedule=".$sql_row['order_del_no']."&&schedule=".$sql_row['order_del_no']."&&job_no=".$sql_row['input_job_no']."')\">".$sql_row['input_job_no']."</a>";
-                            // if($username=="chathurangad" or $username=="saroasa" or $username=="buddhikam" or $username=="sfcsproject2" or $username=="ber_databasesvc" or $username=="samilac")
+                            // if($username=="chathurangad" or $username=="sfcsproject1" or $username=="buddhikam" or $username=="sfcsproject2" or $username=="ber_databasesvc" or $username=="samilac")
                             {
                                 $url4 = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
 

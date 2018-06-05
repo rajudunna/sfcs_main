@@ -40,7 +40,7 @@ $assort_docket_db=array();
 
 <?php
 //Added code for avoiding the duplication of packing lists.
-$sql_group1="select tid from $bai_pro3.packing_summary where order_del_no=\"$schedule\"";
+$sql_group1="select tid from $bai_pro3.packing_summary where order_del_no=\"$schedule\" ";
 $sql_result_group1=mysqli_query($link, $sql_group1) or exit("Sql Error11=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_rows=mysqli_num_rows($sql_result_group1);
 if($sql_rows > 0)
@@ -53,8 +53,8 @@ if($sql_rows > 0)
 for($mm=0;$mm<sizeof($packpcs);$mm++)
 {
 
-$sql_group="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"".$assortcolor[$mm]."\"";
-//// echo $sql_group;
+$sql_group="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"".$assortcolor[$mm]."\"";
+// echo $sql_group;
 // mysqli_query($link, $sql_group) or exit("Sql Error12=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result_group=mysqli_query($link, $sql_group) or exit("Sql Error12=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row_group=mysqli_fetch_array($sql_result_group))
@@ -74,18 +74,18 @@ while($sql_row_group=mysqli_fetch_array($sql_result_group))
 	
 
 
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_tid=\"$order_tid\"";
 //// echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_confirm=mysqli_num_rows($sql_result);
 
 if($sql_num_confirm>0)
 {
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+	$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_tid=\"$order_tid\"";
 }
 else
 {
-	$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+	$sql="select * from $bai_pro3.bai_orders_db where $filter_joins order_tid=\"$order_tid\"";
 }
 
 mysqli_query($link, $sql) or exit("Sql Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -178,19 +178,6 @@ $join_xs=0;
 $join_s=0;
 $join_schedule="";
 $join_check=0;
-if($order_joins!="0")
-{
-	$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_joins\"";
-	mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$join_xs=$sql_row['order_s_xs'];
-		$join_s=$sql_row['order_s_s'];
-		$join_schedule=$sql_row['order_del_no'].chr($sql_row['color_code']);
-	}
-	$join_check=1;
-}
 
 	
 //$sql="select * from cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
@@ -317,7 +304,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$newyy=$newyy+($mk_new_length*$new_plies);
 	}
 	
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+	$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_tid=\"$order_tid\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_confirm=mysqli_num_rows($sql_result);
 	
@@ -573,13 +560,13 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 $sql_num_=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$a_xs=$sql_row['a_xs'];
-	$a_s=$sql_row['a_s'];
-	$a_m=$sql_row['a_m'];
-	$a_l=$sql_row['a_l'];
-	$a_xl=$sql_row['a_xl'];
-	$a_xxl=$sql_row['a_xxl'];
-	$a_xxxl=$sql_row['a_xxxl'];
+	$a_xs=$sql_row['p_xs'];
+	$a_s=$sql_row['p_s'];
+	$a_m=$sql_row['p_m'];
+	$a_l=$sql_row['p_l'];
+	$a_xl=$sql_row['p_xl'];
+	$a_xxl=$sql_row['p_xxl'];
+	$a_xxxl=$sql_row['p_xxxl'];
 	$cutno=$sql_row['acutno'];
 	$plies=$sql_row['p_plies']; //20110911
 	$docketno=$sql_row['doc_no'];
@@ -588,56 +575,56 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	$assort_docket_db[]=$docketno;
 	
-$a_s01=$sql_row['a_s01'];
-$a_s02=$sql_row['a_s02'];
-$a_s03=$sql_row['a_s03'];
-$a_s04=$sql_row['a_s04'];
-$a_s05=$sql_row['a_s05'];
-$a_s06=$sql_row['a_s06'];
-$a_s07=$sql_row['a_s07'];
-$a_s08=$sql_row['a_s08'];
-$a_s09=$sql_row['a_s09'];
-$a_s10=$sql_row['a_s10'];
-$a_s11=$sql_row['a_s11'];
-$a_s12=$sql_row['a_s12'];
-$a_s13=$sql_row['a_s13'];
-$a_s14=$sql_row['a_s14'];
-$a_s15=$sql_row['a_s15'];
-$a_s16=$sql_row['a_s16'];
-$a_s17=$sql_row['a_s17'];
-$a_s18=$sql_row['a_s18'];
-$a_s19=$sql_row['a_s19'];
-$a_s20=$sql_row['a_s20'];
-$a_s21=$sql_row['a_s21'];
-$a_s22=$sql_row['a_s22'];
-$a_s23=$sql_row['a_s23'];
-$a_s24=$sql_row['a_s24'];
-$a_s25=$sql_row['a_s25'];
-$a_s26=$sql_row['a_s26'];
-$a_s27=$sql_row['a_s27'];
-$a_s28=$sql_row['a_s28'];
-$a_s29=$sql_row['a_s29'];
-$a_s30=$sql_row['a_s30'];
-$a_s31=$sql_row['a_s31'];
-$a_s32=$sql_row['a_s32'];
-$a_s33=$sql_row['a_s33'];
-$a_s34=$sql_row['a_s34'];
-$a_s35=$sql_row['a_s35'];
-$a_s36=$sql_row['a_s36'];
-$a_s37=$sql_row['a_s37'];
-$a_s38=$sql_row['a_s38'];
-$a_s39=$sql_row['a_s39'];
-$a_s40=$sql_row['a_s40'];
-$a_s41=$sql_row['a_s41'];
-$a_s42=$sql_row['a_s42'];
-$a_s43=$sql_row['a_s43'];
-$a_s44=$sql_row['a_s44'];
-$a_s45=$sql_row['a_s45'];
-$a_s46=$sql_row['a_s46'];
-$a_s47=$sql_row['a_s47'];
-$a_s48=$sql_row['a_s48'];
-$a_s49=$sql_row['a_s49'];
-$a_s50=$sql_row['a_s50'];
+$a_s01=$sql_row['p_s01'];
+$a_s02=$sql_row['p_s02'];
+$a_s03=$sql_row['p_s03'];
+$a_s04=$sql_row['p_s04'];
+$a_s05=$sql_row['p_s05'];
+$a_s06=$sql_row['p_s06'];
+$a_s07=$sql_row['p_s07'];
+$a_s08=$sql_row['p_s08'];
+$a_s09=$sql_row['p_s09'];
+$a_s10=$sql_row['p_s10'];
+$a_s11=$sql_row['p_s11'];
+$a_s12=$sql_row['p_s12'];
+$a_s13=$sql_row['p_s13'];
+$a_s14=$sql_row['p_s14'];
+$a_s15=$sql_row['p_s15'];
+$a_s16=$sql_row['p_s16'];
+$a_s17=$sql_row['p_s17'];
+$a_s18=$sql_row['p_s18'];
+$a_s19=$sql_row['p_s19'];
+$a_s20=$sql_row['p_s20'];
+$a_s21=$sql_row['p_s21'];
+$a_s22=$sql_row['p_s22'];
+$a_s23=$sql_row['p_s23'];
+$a_s24=$sql_row['p_s24'];
+$a_s25=$sql_row['p_s25'];
+$a_s26=$sql_row['p_s26'];
+$a_s27=$sql_row['p_s27'];
+$a_s28=$sql_row['p_s28'];
+$a_s29=$sql_row['p_s29'];
+$a_s30=$sql_row['p_s30'];
+$a_s31=$sql_row['p_s31'];
+$a_s32=$sql_row['p_s32'];
+$a_s33=$sql_row['p_s33'];
+$a_s34=$sql_row['p_s34'];
+$a_s35=$sql_row['p_s35'];
+$a_s36=$sql_row['p_s36'];
+$a_s37=$sql_row['p_s37'];
+$a_s38=$sql_row['p_s38'];
+$a_s39=$sql_row['p_s39'];
+$a_s40=$sql_row['p_s40'];
+$a_s41=$sql_row['p_s41'];
+$a_s42=$sql_row['p_s42'];
+$a_s43=$sql_row['p_s43'];
+$a_s44=$sql_row['p_s44'];
+$a_s45=$sql_row['p_s45'];
+$a_s46=$sql_row['p_s46'];
+$a_s47=$sql_row['p_s47'];
+$a_s48=$sql_row['p_s48'];
+$a_s49=$sql_row['p_s49'];
+$a_s50=$sql_row['p_s50'];
 
 	
 	$a_xs_tot=$a_xs_tot+($a_xs*$plies);
@@ -7100,10 +7087,14 @@ $ex_s50=($c_s50-$o_s50);
  }
  }
 
- 	$sql="update $bai_pro3.bai_orders_db set carton_id='$carton_id' where order_tid=\"$order_tid\"";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql="update $bai_pro3.bai_orders_db_confirm set carton_id='$carton_id' where order_tid=\"$order_tid\"";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+  $sql="update $bai_pro3.bai_orders_db set carton_id='$carton_id' where order_tid=\"$order_tid\"";
+ // echo $sql."<br>";
+  mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+  
+  $sql1="update $bai_pro3.bai_orders_db_confirm set carton_id='$carton_id' where order_tid=\"$order_tid\"";
+  //echo $sql1."<br>";
+  mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 }
 }
@@ -7115,7 +7106,7 @@ $ex_s50=($c_s50-$o_s50);
 <?php
 
 
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=$schedule";
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=$schedule";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -7192,7 +7183,7 @@ $style=$_GET['style'];
 $schedule=$_GET['schedule'];
 
 
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=$schedule";
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=$schedule";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -7371,7 +7362,7 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 		// // echo $pack_assort_pcs."<br/>";
 		
 		$sql="select * from $bai_pro3.pac_stat_log where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\"";
-		// // echo $sql."<br/>";
+		//echo $sql."<br/>";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$total_docs=mysqli_num_rows($sql_result);
@@ -7386,8 +7377,8 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 			{
 				// // echo $packpcs[$j]."<br/>";
 				$temp_pack_qty=$pack_assort_pcs*$packpcs[$j];
-				$sql="select * from $bai_pro3.packing_summary where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\" and order_col_des=\"".$assortcolor[$j]."\" and carton_act_qty=".($pack_assort_pcs*$packpcs[$j])." limit 1";
- // // echo $sql."<br/>";
+				$sql="select * from $bai_pro3.packing_summary where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\" and order_col_des=\"".$assortcolor[$j]."\" and carton_act_qty=".($pack_assort_pcs*$packpcs[$j])."";
+ //echo $sql."<br/>";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$temp_check=mysqli_num_rows($sql_result);
@@ -7402,7 +7393,7 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 				if($total_docs>0 and $temp_check==0)
 				{
 					$sql="select sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\" and order_col_des=\"".$assortcolor[$j]."\"";
- 					// // echo $sql."<br/>";
+ 					//echo $sql."<br/>";
 					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -7415,7 +7406,7 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 						do
 						{
 						 	$sql="select * from $bai_pro3.packing_summary where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\" and order_col_des=\"".$assortcolor[$j]."\" limit 1";
-	 						// // echo $sql."<br/>";
+	 						//echo $sql."<br/>";
 							mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row=mysqli_fetch_array($sql_result))
@@ -7448,7 +7439,7 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 					else
 					{
 						$sql="select * from $bai_pro3.packing_summary where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\" and order_col_des=\"".$assortcolor[$j]."\"";
- 						// // echo $sql."<br/>";
+ 					//	echo $sql."<br/>";
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
@@ -7479,7 +7470,7 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 		</div>';
 	$url= getFullURLLevel($_GET['r'],'test.php',0,'N');
 	echo "<script type=\"text/javascript\"> 
-			setTimeout(\"Redirect()\",3000); 
+			setTimeout(\"Redirect()\",500); 
 			function Redirect() {  
 				location.href = \"$url\" 
 			}

@@ -38,13 +38,19 @@ function verify_date(){
 	if(to_date < from_date){
 		$('#edate').val($('#sdate').val());
 		sweetAlert('End Week must not be less than Start Week','','warning');
-		return;
+		return false;
+	}
+	if(to_date > 53 || from_date > 53){
+		$('#sdate').val(0);
+		$('#edate').val(0);
+		sweetAlert('Week should not exceed 53','','warning');
+		return false;
 	}
 	if(to_date <0 || from_date<0){
 		sweetAlert('Weeks Must not be negative','','warning');
 		$('#sdate').val(1);
 		$('#edate').val(1);
-		return;
+		return false;
 	}
 
 }
@@ -92,11 +98,11 @@ function verify_year(){
 		<form action="<?php echo $form_action ?>" method="POST">
 			<div class='col-sm-2 form-group'>
 				<label for='sdat'>Week Start </label>
-				<input class='form-control' type="number" id='sdate' name="sdat"  onkeydown='return limit_date(event)' onchange=verify_date() placeholder='00' >
+				<input class='form-control integer' type="text" id='sdate' name="sdat"  onkeydown='return limit_date(event)' placeholder='00' >
 			</div>
 			<div class='col-sm-2 form-group'>
 				<label for='edat'>Week End </label>
-				<input class='form-control' type="number" id='edate' name="edat"  onkeydown='return limit_date(event)' onchange=verify_date() placeholder='00' >
+				<input class='form-control integer' type="text" id='edate' name="edat"  onkeydown='return limit_date(event)'placeholder='00' >
 			</div>
 			<div class='col-sm-2 form-group'>
 				<label for='year'>Year </label>
@@ -104,7 +110,7 @@ function verify_year(){
 			</div>
 			<div class='col-sm-2 form-group'>
 				<label for='cat'>Criteria </label>
-				<select class='form-control' name="cat" id='cat'>
+				<select class='form-control' name="cat" id='cat' required>
 					<option value="0">Select</option>
 					<option value="1">Reported Date</option>
 					<option value="2">Ex-Factory Date</option>
@@ -116,7 +122,8 @@ function verify_year(){
 			</div>
 			<div class='col-sm-1'>
 				<br>
-				<input class='btn btn-success' type="submit" id='submit' name="submit" value="submit" onclick="verify(event)" >
+				<input class='btn btn-success' type="submit" id='submit' name="submit" value="submit" 
+				     onclick="return verify_date()" >
 			</div>
 		</form>
 <?php

@@ -1,8 +1,9 @@
-<?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
-<?php include('../../common/php/functions.php'); ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/js/mpdf50/mpdf.php'); ?>
-<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
-<?php //require_once '../../../../../common/js/mpdf50/mpdf.php'; ?>
+<?php 
+include("../../config/config.php");
+include("../../config/functions.php");
+require_once 'vendor/autoload.php';
+$mpdf = new \Mpdf\Mpdf();
+?>
 
 <?php
 	$order_tid=$_GET['order_tid'];
@@ -536,9 +537,8 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 //==============================================================
 
 
-$mpdf = new mPDF('',array(63.5,25.0),0,'',0,0,0,0,0,0,'P'); 
-$mpdf->WriteHTML($html);
-$mpdf->Output(); 
+$mpdf->WriteHTML($html); 
+$mpdf->Output();
 
 exit;
 

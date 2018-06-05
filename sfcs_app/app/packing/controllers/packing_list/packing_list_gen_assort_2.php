@@ -21,20 +21,21 @@
 	$assortcolor_title=$assortcolor;
 	$label_title=$packpcs_title."*".$assortcolor_title;
 
-	echo $label_title;
+	//echo $label_title;
 
 
-	echo "Packs:</br>";
+	//echo "Packs:</br>";
 	for($i=0;$i<sizeof($packpcs);$i++)
 	{
-		echo $packpcs[$i]."-".$assortcolor."<br/>";
+	//	echo $packpcs[$i]."-".$assortcolor."<br/>";
 	}
 
 
 	$sum_of_assort_pcs=array_sum($packpcs);
 	$assort_docket_db=array();
-
-	echo $sum_of_assort_pcs."<br/>";
+// echo die();
+// exit();
+	//echo $sum_of_assort_pcs."<br/>";
 ?>
 
 <?php
@@ -51,7 +52,7 @@
 	for($mm=0;$mm<sizeof($packpcs);$mm++)
 	{
 		$sql_group="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"".$assortcolor."\"";
-		echo $sql_group;
+		//echo $sql_group;
 		mysqli_query($link, $sql_group) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result_group=mysqli_query($link, $sql_group) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row_group=mysqli_fetch_array($sql_result_group))
@@ -74,12 +75,12 @@
 
 			if($sql_num_confirm>0)
 			{
-				$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\" 
+				$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_tid=\"$order_tid\" 
 				     and order_col_des=\"".$assortcolor."\"";
 			}
 			else
 			{
-				$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\" 
+				$sql="select * from $bai_pro3.bai_orders_db where $filter_joins  order_tid=\"$order_tid\" 
 					  and order_col_des=\"".$assortcolor."\"";
 			}
 
@@ -159,8 +160,8 @@
 			}
 
 			//Assortment
-			echo "Color:".$color."<br/>";
-			echo "Assort Color:".$assortcolor."<br/>";
+		//	echo "Color:".$color."<br/>";
+		//	echo "Assort Color:".$assortcolor."<br/>";
 			//echo "Key:".array_search($color,$assortcolor);
 
 			//$assort_pcs=$packpcs[array_search($color,$assortcolor)];
@@ -169,23 +170,10 @@
 			$join_s=0;
 			$join_schedule="";
 			$join_check=0;
-			if($order_joins!="0")
-			{
-				$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_joins\"";
-				mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$join_xs=$sql_row['order_s_xs'];
-					$join_s=$sql_row['order_s_s'];
-					$join_schedule=$sql_row['order_del_no'].chr($sql_row['color_code']);
-				}
-				$join_check=1;
-			}
-				
+			
 			//$sql="select * from cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
 			$sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
-			echo $sql."<br>";
+			//echo $sql."<br>";
 			mysqli_query($link, $sql) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_=mysqli_num_rows($sql_result);
@@ -207,7 +195,7 @@
 			}
 
 			$sql="select * from $bai_pro3.cuttable_stat_log where cat_id=$cid and order_tid=\"$order_tid\"";
-			echo $sql;
+			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -403,13 +391,13 @@
 		$carton_s50=($sql_row['s50']/$sum_of_assort_pcs)*$assort_pcs;
 	}
 
-	echo $carton_xs."<br/>";
-	echo $carton_s."<br/>";
-	echo $carton_m."<br/>";
-	echo $carton_l."<br/>";
-	echo $carton_xl."<br/>";
-	echo $carton_xxl."<br/>";
-	echo $carton_xxxl."<br/>"; 
+	// echo $carton_xs."<br/>";
+	// echo $carton_s."<br/>";
+	// echo $carton_m."<br/>";
+	// echo $carton_l."<br/>";
+	// echo $carton_xl."<br/>";
+	// echo $carton_xxl."<br/>";
+	// echo $carton_xxxl."<br/>"; 
  	$a_xs_tot=0;
 	$a_s_tot=0;
 	$a_m_tot=0;
@@ -543,20 +531,20 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	
 //$sql="select * from plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\" order by acutno";
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref order by acutno";
-echo $sql;
+$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref='$cat_ref' order by acutno";
+//echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$a_xs=$sql_row['a_xs'];
-	$a_s=$sql_row['a_s'];
-	$a_m=$sql_row['a_m'];
-	$a_l=$sql_row['a_l'];
-	$a_xl=$sql_row['a_xl'];
-	$a_xxl=$sql_row['a_xxl'];
-	$a_xxxl=$sql_row['a_xxxl'];
+	$a_xs=$sql_row['p_xs'];
+	$a_s=$sql_row['p_s'];
+	$a_m=$sql_row['p_m'];
+	$a_l=$sql_row['p_l'];
+	$a_xl=$sql_row['p_xl'];
+	$a_xxl=$sql_row['p_xxl'];
+	$a_xxxl=$sql_row['p_xxxl'];
 	$cutno=$sql_row['acutno'];
 	$plies=$sql_row['p_plies']; //20110911
 	$docketno=$sql_row['doc_no'];
@@ -565,56 +553,56 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	$assort_docket_db[]=$docketno;
 	
-	$a_s01=$sql_row['a_s01'];
-	$a_s02=$sql_row['a_s02'];
-	$a_s03=$sql_row['a_s03'];
-	$a_s04=$sql_row['a_s04'];
-	$a_s05=$sql_row['a_s05'];
-	$a_s06=$sql_row['a_s06'];
-	$a_s07=$sql_row['a_s07'];
-	$a_s08=$sql_row['a_s08'];
-	$a_s09=$sql_row['a_s09'];
-	$a_s10=$sql_row['a_s10'];
-	$a_s11=$sql_row['a_s11'];
-	$a_s12=$sql_row['a_s12'];
-	$a_s13=$sql_row['a_s13'];
-	$a_s14=$sql_row['a_s14'];
-	$a_s15=$sql_row['a_s15'];
-	$a_s16=$sql_row['a_s16'];
-	$a_s17=$sql_row['a_s17'];
-	$a_s18=$sql_row['a_s18'];
-	$a_s19=$sql_row['a_s19'];
-	$a_s20=$sql_row['a_s20'];
-	$a_s21=$sql_row['a_s21'];
-	$a_s22=$sql_row['a_s22'];
-	$a_s23=$sql_row['a_s23'];
-	$a_s24=$sql_row['a_s24'];
-	$a_s25=$sql_row['a_s25'];
-	$a_s26=$sql_row['a_s26'];
-	$a_s27=$sql_row['a_s27'];
-	$a_s28=$sql_row['a_s28'];
-	$a_s29=$sql_row['a_s29'];
-	$a_s30=$sql_row['a_s30'];
-	$a_s31=$sql_row['a_s31'];
-	$a_s32=$sql_row['a_s32'];
-	$a_s33=$sql_row['a_s33'];
-	$a_s34=$sql_row['a_s34'];
-	$a_s35=$sql_row['a_s35'];
-	$a_s36=$sql_row['a_s36'];
-	$a_s37=$sql_row['a_s37'];
-	$a_s38=$sql_row['a_s38'];
-	$a_s39=$sql_row['a_s39'];
-	$a_s40=$sql_row['a_s40'];
-	$a_s41=$sql_row['a_s41'];
-	$a_s42=$sql_row['a_s42'];
-	$a_s43=$sql_row['a_s43'];
-	$a_s44=$sql_row['a_s44'];
-	$a_s45=$sql_row['a_s45'];
-	$a_s46=$sql_row['a_s46'];
-	$a_s47=$sql_row['a_s47'];
-	$a_s48=$sql_row['a_s48'];
-	$a_s49=$sql_row['a_s49'];
-	$a_s50=$sql_row['a_s50'];
+	$a_s01=$sql_row['p_s01'];
+	$a_s02=$sql_row['p_s02'];
+	$a_s03=$sql_row['p_s03'];
+	$a_s04=$sql_row['p_s04'];
+	$a_s05=$sql_row['p_s05'];
+	$a_s06=$sql_row['p_s06'];
+	$a_s07=$sql_row['p_s07'];
+	$a_s08=$sql_row['p_s08'];
+	$a_s09=$sql_row['p_s09'];
+	$a_s10=$sql_row['p_s10'];
+	$a_s11=$sql_row['p_s11'];
+	$a_s12=$sql_row['p_s12'];
+	$a_s13=$sql_row['p_s13'];
+	$a_s14=$sql_row['p_s14'];
+	$a_s15=$sql_row['p_s15'];
+	$a_s16=$sql_row['p_s16'];
+	$a_s17=$sql_row['p_s17'];
+	$a_s18=$sql_row['p_s18'];
+	$a_s19=$sql_row['p_s19'];
+	$a_s20=$sql_row['p_s20'];
+	$a_s21=$sql_row['p_s21'];
+	$a_s22=$sql_row['p_s22'];
+	$a_s23=$sql_row['p_s23'];
+	$a_s24=$sql_row['p_s24'];
+	$a_s25=$sql_row['p_s25'];
+	$a_s26=$sql_row['p_s26'];
+	$a_s27=$sql_row['p_s27'];
+	$a_s28=$sql_row['p_s28'];
+	$a_s29=$sql_row['p_s29'];
+	$a_s30=$sql_row['p_s30'];
+	$a_s31=$sql_row['p_s31'];
+	$a_s32=$sql_row['p_s32'];
+	$a_s33=$sql_row['p_s33'];
+	$a_s34=$sql_row['p_s34'];
+	$a_s35=$sql_row['p_s35'];
+	$a_s36=$sql_row['p_s36'];
+	$a_s37=$sql_row['p_s37'];
+	$a_s38=$sql_row['p_s38'];
+	$a_s39=$sql_row['p_s39'];
+	$a_s40=$sql_row['p_s40'];
+	$a_s41=$sql_row['p_s41'];
+	$a_s42=$sql_row['p_s42'];
+	$a_s43=$sql_row['p_s43'];
+	$a_s44=$sql_row['p_s44'];
+	$a_s45=$sql_row['p_s45'];
+	$a_s46=$sql_row['p_s46'];
+	$a_s47=$sql_row['p_s47'];
+	$a_s48=$sql_row['p_s48'];
+	$a_s49=$sql_row['p_s49'];
+	$a_s50=$sql_row['p_s50'];
 	$a_xs_tot=$a_xs_tot+($a_xs*$plies);
 	$a_s_tot=$a_s_tot+($a_s*$plies);
 	$a_m_tot=$a_m_tot+($a_m*$plies);
@@ -7234,11 +7222,11 @@ $assortcolor=explode(",",$_GET['assortcolor']);
 */
 $assortcolor=$_GET['assortcolor'];
 $sum_of_assort_pcs=array_sum($packpcs);
-echo $sum_of_assort_pcs;
+//echo $sum_of_assort_pcs;
 
 for($i=0;$i<sizeof($packpcs);$i++)
 {
-	echo $packpcs[$i]."<br/>";
+	//echo $packpcs[$i]."<br/>";
 }
 
 
@@ -7319,7 +7307,7 @@ $tid_db=array();
 $pack=implode(",",$assort_docket_db);
 //echo "<br>Pack = ".$pack."<br>";
 $sql="select * from $bai_pro3.pac_stat_log where doc_no in (".implode(",",$assort_docket_db).")";
-echo $sql."<br>";
+//echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -7335,15 +7323,15 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 	if($order_qty_db[$i]>0)
 	{
 		$pack_assort_pcs=$carton_qty_db[$i]/$sum_of_assort_pcs;
-		echo $pack_assort_pcs."<br/>";
+		//echo $pack_assort_pcs."<br/>";
 		
 		$sql="select * from $bai_pro3.pac_stat_log where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\"";
-		echo $sql."<br/>";
+		//echo $sql."<br/>";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$total_docs=mysqli_num_rows($sql_result);
 		
-		echo "TOTAL DOCs:$total_docs";
+	//	echo "TOTAL DOCs:$total_docs";
 	
 		do
 		{
@@ -7351,10 +7339,10 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 			$temp_docs=array();
 			for($j=0;$j<sizeof($assortcolor);$j++)
 			{
-				echo $packpcs[$j]."<br/>";
+				//echo $packpcs[$j]."<br/>";
 				$temp_pack_qty=$pack_assort_pcs*$packpcs[$j];
 				$sql="select * from $bai_pro3.packing_summary where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\" and order_col_des=\"".$assortcolor."\" and carton_act_qty=".($pack_assort_pcs*$packpcs[$j])." limit 1";
- echo $sql."<br/>";
+ //echo $sql."<br/>";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$temp_check=mysqli_num_rows($sql_result);
@@ -7369,7 +7357,7 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 				if($total_docs>0 and $temp_check==0)
 				{
 					$sql="select sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\" and order_col_des=\"".$assortcolor."\"";
- 					echo $sql."<br/>";
+ 					//echo $sql."<br/>";
 					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -7382,7 +7370,7 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 						do
 						{
 						 	$sql="select * from $bai_pro3.packing_summary where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\" and order_col_des=\"".$assortcolor."\" limit 1";
-	 						echo $sql."<br/>";
+	 					//	echo $sql."<br/>";
 							mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row=mysqli_fetch_array($sql_result))
@@ -7396,11 +7384,11 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 								{
 									$diff=$sql_row['carton_act_qty']-$temp_pack_qty;
 									$sql1="update $bai_pro3.pac_stat_log set carton_act_qty=$temp_pack_qty where tid=".$sql_row['tid'];
-									echo $sql1."<br/>";
+									//echo $sql1."<br/>";
 									mysqli_query($link, $sql1) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
 									$sql1="insert into $bai_pro3.pac_stat_log (doc_no,remarks,doc_no_ref,size_code,carton_no,carton_mode,carton_act_qty) values (".$sql_row['doc_no'].",\"".$sql_row['remarks']."\",\"".$sql_row['doc_no']."\",\"".$sql_row['size_code']."\",".($sql_row['carton_no']+1).",\"P\",$diff)";
-									echo $sql1."<br/>";
+									//echo $sql1."<br/>";
 									mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 									$tid_db[]=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 									$total_docs++;
@@ -7414,7 +7402,7 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 					else
 					{
 						$sql="select * from $bai_pro3.packing_summary where tid in (".implode(",",array_diff($tid_db,$completed_tid)).") and size_code=\"".$sizes_db[$i]."\" and order_col_des=\"".$assortcolor."\"";
- 						echo $sql."<br/>";
+ 						//echo $sql."<br/>";
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
@@ -7430,10 +7418,10 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 			}
 			
 			$sql="update $bai_pro3.pac_stat_log set doc_no_ref=\"".implode(",",$temp_docs)."\" where tid in(".implode(",",$temp_tid).")";
-			echo $sql."<br/>";
+		//	echo $sql."<br/>";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			echo "TOTAL DOCs AFTER:$total_docs";
+			//echo "TOTAL DOCs AFTER:$total_docs";
 			
 		}while($total_docs>0);
 		
@@ -7445,7 +7433,9 @@ for($i=0;$i<sizeof($order_qty_db);$i++)
 
 
 <?php
-	
+	echo '<div class="alert alert-success">
+		  <strong>Success!</strong> Packing List SuccessFully Generated.
+		</div>';
 	$url= getFullURLLevel($_GET['r'],'test.php',0,'N');
 	echo "<script type=\"text/javascript\"> 
 				setTimeout(\"Redirect()\",3000); 

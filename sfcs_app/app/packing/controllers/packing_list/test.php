@@ -120,8 +120,7 @@
 	?>
 
 	<?php
-		$sql1="select count(order_col_des) as col_cnt from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-		
+		$sql1="select count(order_col_des) as col_cnt from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";		
 		mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result1);
@@ -129,12 +128,19 @@
 			{
 				$color_count=$sql_row1['col_cnt'];
 			}
+			$sql12="select count(order_col_des) as col_cnts from $bai_pro3.packing_summary where order_del_no=\"$schedule\"";		
+			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_num_check=mysqli_num_rows($sql_result12);
+			while($sql_row12=mysqli_fetch_array($sql_result12))
+			{
+				$check_stat=$sql_row12['col_cnts'];
+			}
 		echo "<div class='form-group'>&nbsp;&nbsp;
 			  <label>Select Color  :</label>&nbsp;&nbsp;
 			  <select name=\"color\" id=\"color\" onchange=\"thirdbox();\" onclick=\"return check_style_sch();\" 
 			  class=\"form-control\">";
 
-		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and 
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and 
 			  order_del_no=\"$schedule\"";
 
 		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -165,10 +171,10 @@
 		echo "<input type=\"hidden\" name=\"sel_color\" value=\"".$sel_color."\" />";
 		if($color=='0')
 		{
-			$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+			$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 			
 		}else{
-			$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+			$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 		}
 		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -209,7 +215,7 @@
 	{
 		if($schedule>0)
 		{
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins  order_del_no=\"$schedule\"";
 			mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -323,7 +329,7 @@
 	}else{
 		if($schedule>0)
 		{	
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_col_des=\"$sel_color\"";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_del_no=\"$schedule\" and order_col_des=\"$sel_color\"";
 			mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -410,9 +416,9 @@
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$done_count=mysqli_num_rows($sql_result);
 			
-			//echo "Carton Qty:".$tot_carton_qty."<br/>";
-			//echo "Order Qty:".$total_order_qtys."<br/>";
-			//echo "Scanned:".$done_count."<br/>";
+			// echo "Carton Qty:".$tot_carton_qty."<br/>";
+			// echo "Order Qty:".$total_order_qtys."<br/>";
+			// echo "Scanned:".$done_count."<br/>";
 			
 			if(($total_order_qtys!=$tot_carton_qty) and $tot_carton_qty!=0 and $done_count==0)
 			{
@@ -442,62 +448,33 @@ if(isset($_POST['submit']))
 	$sel_color=$_POST['sel_color'];
 	$schedule=$_POST['schedule'];
 	
-	$sql="select order_div,count(order_col_des) as color_count from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" ";
-	mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if($sel_color=='0')
+	{
+		$sql="select order_div,count(order_col_des) as color_count from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+	}
+	else
+	{
+		$sql="select order_div,count(order_col_des) as color_count from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
+	}
+	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$customer=$sql_row['order_div'];
 		$color_count=$sql_row['color_count'];
 	}
-	$customer=substr($customer,0,((strlen($customer)-2)*-1));
-
-	if($sel_color=="0" && $color_count>=2)
+	
+	if($color_count==1)
 	{
-		//echo "color value==0";
-		$sql1="select order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" limit 1 ";
-		//echo "query=".$sql1;
-		mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_num_check=mysqli_num_rows($sql_result1);
-		while($sql_row1=mysqli_fetch_array($sql_result1))
-		{
-			$ord_col=$sql_row1['order_col_des'];
-		}
-		switch ($customer)
-		{				
-			
-			default:
-			{
-				$url = getFullURL($_GET['r'],'main_interface_assort.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&color=$ord_col&style=$style&schedule=$schedule\"; }</script>";
-				break;
-			}
-		}	
+		$url = getFullURL($_GET['r'],'main_interface_assort_2.php','N');
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&color=$color&style=$style&schedule=$schedule\"; }</script>";
 	}
-
 	else
-	{			
-		switch ($customer)
-		{	
-			default:
-			{
-			   if($color_count==1)
-				{
-				$url = getFullURL($_GET['r'],'main_interface_assort.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&color=$color&style=$style&schedule=$schedule\"; }</script>";
-				}
-				else
-				{
-				$url = getFullURL($_GET['r'],'main_interface_assort_2.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&style=$style&schedule=$schedule&color=$sel_color\"; }</script>";
-				}
-				break;
-			}
-		}
-			
+	{
+		$url = getFullURL($_GET['r'],'main_interface_assort.php','N');
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&style=$style&schedule=$schedule&color=$sel_color\"; }</script>";
 	}
+			
 	
 }
 

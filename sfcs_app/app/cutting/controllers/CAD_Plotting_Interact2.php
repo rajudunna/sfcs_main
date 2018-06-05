@@ -297,33 +297,40 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 					
 					$mns_status=$sql_row1['xs']+$sql_row1['s']+$sql_row1['m']+$sql_row1['l']+$sql_row1['xl']+$sql_row1['xxl']+$sql_row1['xxxl'];
 						
-					// $path="".getFullURLLevel($_GET['r'], "cut_plan_new_ms/new_doc_gen/Book3_print.php", "2", "N")."";
-					$path="http://localhost:8084/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/Book3_print.php";
+					$path=getFullURLLevel($_GET['r'], 'Book3_print.php',0,'N');
+					// echo $path;
+					// $path="http://localhost:8084/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/Book3_print.php";
 					if($style_code!="P" or $style_code!="K" or $style_code!="L" or $style_code!="O")
 					{
 						if($mns_status>0)
 						{
 							// $path="".getFullURLLevel($_GET['r'], "cut_plan_new_ms/new_doc_gen/Book3_print.php", "2", "N")."";  // For M&S Men Briefs
-							$path="http://localhost/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/Book3_print.php";
+							// $path="http://localhost/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/Book3_print.php";
+							$path=getFullURLLevel($_GET['r'], 'Book3_print.php',0,'N');
 							if($clubbing>=1)
 							{
 								// $path="".getFullURLLevel($_GET['r'], "cut_plan_new_ms/new_doc_gen/color_club_docket_print.php", "2", "N")."&cat_title=$category&clubbing=$clubbing&cut_no=$cutno";
-								$path="http://localhost/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/color_club_docket_print.php?cat_title=$category&clubbing=$clubbing&cut_no=$cutno";
+								// $path="http://localhost/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/color_club_docket_print.php?cat_title=$category&clubbing=$clubbing&cut_no=$cutno";
+								$path=getFullURLLevel($_GET['r'], 'Book3_print.php', 0, 'N')."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$cutno;
 							}
 						}
 						else
 						{
 							// $path="".getFullURLLevel($_GET['r'], "cut_plan_new_ms/new_doc_gen/Book3_print.php", "2", "N").""; // FOR M&S Ladies Briefs
-							$path="http://localhost/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/Book3_print.php";
+							// $path="http://localhost/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/Book3_print.php";
+							$path=getFullURLLevel($_GET['r'], 'Book3_print.php',0, 'N');
 							if($clubbing>=1)
 							{
 								// $path="".getFullURLLevel($_GET['r'], "cut_plan_new_ms/new_doc_gen/color_club_docket_print.php", "2", "N")."&cat_title=$category&clubbing=$clubbing&cut_no=$cutno";
-								$path="http://localhost/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/color_club_docket_print.php?cat_title=$category&clubbing=$clubbing&cut_no=$cutno";
+								// $path="http://localhost/sfcs/projects/beta/cut_plan_new_ms/new_doc_gen/color_club_docket_print.php?cat_title=$category&clubbing=$clubbing&cut_no=$cutno";
+								$path=getFullURLLevel($_GET['r'], 'Book3_print.php', 0, 'N')."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$cutno;
+								
+								// $path=getFullURLLevel($_GET['r'],'Book3_print.php', 0, 'R').'?cat_title='.$category.'&clubbing='.$clubbing'&cut_no='.$cutno;
 							}
 						}		
 					}
 					
-					$tab= "<tr><td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</a>";
+					$tab= "<tr><td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</a>";
 					
 					$sql1x="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where length(plan_lot_ref)>0 and lastup=\"0000-00-00 00:00:00\" and act_cut_status<>\"DONE\" and fabric_status=5 and order_tid='".$sql_row1['order_tid']."' and doc_no not in ($doc_no) and print_status>'2013-01-01' and acutno=$cutno";
 					//echo $sql1;
