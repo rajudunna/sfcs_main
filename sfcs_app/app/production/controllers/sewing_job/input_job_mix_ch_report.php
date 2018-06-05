@@ -1,6 +1,6 @@
 
 <?php
-
+error_reporting(0);
 $schedule1=$schedule;
 // echo $schedule.'<br>';
 // echo $schedule1.'<br>';
@@ -28,17 +28,17 @@ if(mysqli_num_rows($sql_result)>0)
     }
 }
 
-$url1 = getFullURLLevel($_GET['r'],'production_planning/print_input_sheet.php',1,'N');
-$url2 = getFullURLLevel($_GET['r'],'production_planning/print_input_sheet_mm.php',1,'N');
+$url1 = getFullURLLevel($_GET['r'],'print_input_sheet.php',0,'N');
+$url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'N');
 
 echo '<br>
 <div class="panel panel-primary panel-body">
 
     <div class="row">';
        
-        echo "<a class='btn btn-warning' href='$url1&schedule=$schedule' onclick=\"return popitup_new('$url1&schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Job Wise</a>      ";
+        echo "<a class='btn btn-warning' href='$url1&schedule=$schedule' onclick=\"return popitup2('$url1&schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Job Wise</a>      ";
 
-        echo "<a class='btn btn-warning' href='$url2&schedule=$schedule' onclick=\"return popitup_new('$url2&schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Split Wise</a><br><br>";
+        echo "<a class='btn btn-warning' href='$url2&schedule=$schedule' onclick=\"return popitup2('$url2&schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Split Wise</a><br><br>";
 
     echo '</div>';
 
@@ -132,12 +132,12 @@ echo '<br>
                         {
                             //echo $sql_row['input_job_no'];
                             //echo "<a href=\"Print_Doc_new_input.php?order_tid=$order_tid&&schedule=".$sql_row['order_del_no']."&&job_no=".$sql_row['input_job_no']."\" onclick=\"return popitup('Print_Doc_new_input.php?order_tid=$order_tid&&schedule=".$sql_row['order_del_no']."&&schedule=".$sql_row['order_del_no']."&&job_no=".$sql_row['input_job_no']."')\">".$sql_row['input_job_no']."</a>";
-                            // if($username=="chathurangad" or $username=="saroasa" or $username=="buddhikam" or $username=="sfcsproject2" or $username=="ber_databasesvc" or $username=="samilac")
+                            // if($username=="chathurangad" or $username=="sfcsproject1" or $username=="buddhikam" or $username=="sfcsproject2" or $username=="ber_databasesvc" or $username=="samilac")
                             {
-                                $url4 = getFullURLLevel($_GET['r'],'production_planning/new_job_sheet3.php',1,'N');
+                                $url4 = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
 
                                 // echo "<a target='_blank' class='btn btn-info btn-sm' href='".$url4."&jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']." onclick=\"return popitup_new(".$url4."&jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\">Job Sheet-".$sql_row['input_job_no']."</a><br>";
-                                echo "<a target='_blank' class='btn btn-info btn-sm' href='$dns_adr/sfcs/projects/Beta/production_planning/new_job_sheet3.php?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']." onclick=\"return popitup_new(".$url4."&jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\">Job Sheet-".$sql_row['input_job_no']."</a><br>";
+                                echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\">Job Sheet-".$sql_row['input_job_no']."</a><br>";
                             }
                             // else
                             // {

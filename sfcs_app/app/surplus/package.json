@@ -1,0 +1,12 @@
+{ 
+"name" : "surplus",
+"version" : "1.0",
+"description" : "This module is using for location mapping for the excess and rejected garments/panels",
+	 "menus" : {
+	  "Location Map" : "location_map.php",
+	  "Location Update" :"location_update.php",
+	  "Reserve for Audit/Internal Destroy" :"reserve_for_destroy_panel.php",
+	  "Confirm Internal Destroy" :"confirm_destroy_internal.php",
+	  }
+  
+  }

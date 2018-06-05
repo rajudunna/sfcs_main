@@ -82,7 +82,7 @@ function isNumber(evt) {
   <!-- <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/page_style.css',1,'R'); ?>" type="text/css" media="all" /> -->
   <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',1,'R'); ?>" type="text/css" media="all" />
   <script type="text/javascript" src="<?=  getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
-  <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',3,'R');  ?>"></script>
+  <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R');  ?>"></script>
 <!-- Allow Only Numbers-->
 
 <script type="text/javascript">
@@ -145,7 +145,7 @@ function isNumberKey(evt)
 //echo "Host : ".$host;
 if(isset($_POST['submit']))
 {	
-	$sql="select lot_no from bai_rm_pj1.sticker_report where lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
+	$sql="select lot_no from $bai_rm_pj1.sticker_report where lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
 	$sql_result=mysqli_query($link, $sql);
 	// echo $sql.'<br>';
 	// echo "Rows".mysql_num_rows($sql_result);
@@ -246,7 +246,8 @@ if ($batch_no=='') {
 } else {
 	$bat=$batch_no;
 }
-$url=  getFullURL($_GET['r'],'/mpdf7/labels.php','R');
+$url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/labels.php',3,'R');
+//getFullURL($_GET['r'],'labels.php','N');
 echo '<form name="test" id="myForm" action="'.getFullURL($_GET['r'],'data_v1.php','N').'" method="post" enctype="multipart/form-data">';
 echo "<div class='panel panel-default'>
 		<div class='panel-body'>

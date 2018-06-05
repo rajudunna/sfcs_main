@@ -12,7 +12,7 @@ Change Log:
 
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R')); 
+ 
 //$view_access=user_acl("SFCS_0056",$username,1,$group_id_sfcs); 
 ?>
 
@@ -275,6 +275,7 @@ if(isset($_POST['search']))
 		$trim_tot=0;
 		$mac_tot=0;
 		$sql="select sum(act_out) as \"output\", sum(rework_qty) as \"rework\", group_concat(distinct module) as \"module\",section from $bai_pro.grand_rep where section in (1,2,3,4,5,6,7,8) and date between \"$sdate\" and \"$edate\" and shift in ($team) group by section";
+		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{

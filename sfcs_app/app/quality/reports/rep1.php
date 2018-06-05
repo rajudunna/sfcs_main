@@ -168,8 +168,9 @@ if(isset($_POST['filter']))
 				
 				$roll_ids=array();
 				$roll_ids[]=-1;
-				$sql_roll_ids="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE DOC_NO in (".$doc_ref.") ORDER BY DOC_NO";
-				// echo "<br>".$sql_roll_ids."<br>";
+				
+				$sql_roll_ids="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE DOC_NO in ('".$doc_ref."') ORDER BY DOC_NO";
+				 //echo "<br>".$sql_roll_ids."<br>";
 				$sql_result_roll_ids=mysqli_query($link, $sql_roll_ids) or exit("Sql Error43".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_roll_ids=mysqli_fetch_array($sql_result_roll_ids))
 				{
@@ -206,7 +207,7 @@ if(isset($_POST['filter']))
 					}
 					
 					$sql_lots1="select distinct lot_no as lot_no from $bai_rm_pj1.store_in_backup where tid in (".implode(",",$roll_ids).")";
-					// echo "<br>".$sql_lots."<br>";
+					 //echo "<br>".$sql_lots."<br>";
 					$sql_result_lots1=mysqli_query($link, $sql_lots1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row_lots1=mysqli_fetch_array($sql_result_lots1))
 					{
@@ -221,7 +222,7 @@ if(isset($_POST['filter']))
 				if(sizeof($lot_nos) > 1)
 				{
 					$sql_sup="select group_concat(distinct item_name) as item_name,group_concat(distinct supplier) as sup,group_concat(distinct batch_no) as batch_no from $bai_rm_pj1.sticker_report where lot_no in ('".implode("','",$lot_nos)."')";
-					// echo "<br>".$sql_sup."<br>";
+					 //echo "<br>".$sql_sup."<br>";
 					$sql_result_sup=mysqli_query($link, $sql_sup) or exit("$sql_sup Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row_sup=mysqli_fetch_array($sql_result_sup))
 					{

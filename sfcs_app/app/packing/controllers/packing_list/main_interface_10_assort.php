@@ -87,56 +87,38 @@
 
 	if($cut_total_qty >= $o_total)
 	{
-
-	$sql4="select * from $bai_pro3.packing_summary where order_del_no=\"$schedule\"";
-	$sql_result4=mysqli_query($link, $sql4) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$rowsy=mysqli_num_rows($sql_result4);
-
+		$sql4="select * from $bai_pro3.packing_summary where order_del_no=\"$schedule\"";
+		$sql_result4=mysqli_query($link, $sql4) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$rowsy=mysqli_num_rows($sql_result4);
 		if($sql_num_check>=1)
 		{
 			if($carton_id==0 || $rowsy==0)
 			{
-			echo "<input type=\"hidden\" name=\"cartonid\" value=\"\"><input type=\"hidden\" name=\"order_tid\" value=\"$tran_order_tid\"><input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
-
-			echo "<input type=\"hidden\" name=\"style\" value=\"$style\">
-			<input type=\"hidden\" name=\"schedule\" value=\"$schedule\">";
-
-			echo "<div class='table-responsive'><table class='table table-bordered'>
-			<tr class='tblheading'>
-			<th>Color</th>";	
-			echo "<th>Assortment pcs in Pack</th>";
-			foreach($final_size_values as $key=>$value)
-			{
-				echo "<th>$key</th>";
-			}	
-			echo "<th>Total</th>
-			</tr>";
-			// $sql2="select * from bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-			// echo $sql2;
-			// mysqli_query($link, $sql2) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
-			// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
-			// while($sql_row2=mysqli_fetch_array($sql_result2))
-			// {
-			$col_des=$color;	
-			//$o_total=($o_s_xs+$o_s_s+$o_s_m+$o_s_l+$o_s_xl+$o_s_xxl+$o_s_xxxl+$o_s_s01+$o_s_s02+$o_s_s03+$o_s_s04+$o_s_s05+$o_s_s06+$o_s_s07+$o_s_s08+$o_s_s09+$o_s_s10+$o_s_s11+$o_s_s12+$o_s_s13+$o_s_s14+$o_s_s15+$o_s_s16+$o_s_s17+$o_s_s18+$o_s_s19+$o_s_s20+$o_s_s21+$o_s_s22+$o_s_s23+$o_s_s24+$o_s_s25+$o_s_s26+$o_s_s27+$o_s_s28+$o_s_s29+$o_s_s30+$o_s_s31+$o_s_s32+$o_s_s33+$o_s_s34+$o_s_s35+$o_s_s36+$o_s_s37+$o_s_s38+$o_s_s39+$o_s_s40+$o_s_s41+$o_s_s42+$o_s_s43+$o_s_s44+$o_s_s45+$o_s_s46+$o_s_s47+$o_s_s48+$o_s_s49+$o_s_s50);
-			echo "<input type=\"hidden\" name=\"color\" value=\"$col_des\">";
-			echo "<tr>";
-			echo "<td>".$col_des."</td>
-			  <td><input type=\"text\" readonly name=\"packpcs[]\" size=8 value=\"1\" class=\"form-control\"></td>";
-			$o_total =0;
-			foreach($tot_sizes as $key=>$value)
-			{
-				// $pre = "order_s_".$key;
-				// $value = $sql_row2[$pre];
-				$o_total += $value;
-				echo "<td>$value</td>";
-			}
-			echo "<td class=\"sizes\">".$o_total."</td></tr>";
-			echo "</tr>";
-			// }
-			echo "</table></div></br>";
-			echo "<input type=\"submit\" name=\"submit\" value=\"Generate Packing List\" class=\"btn btn-primary\" onclick=\"return validate_form();\">";
-			//echo "<a href=\"packing/packing_list_gen.php?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create\">Please generate Packing List</a>";
+				echo "<input type=\"hidden\" name=\"cartonid\" value=\"\"><input type=\"hidden\" name=\"order_tid\" value=\"$tran_order_tid\"><input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
+				echo "<input type=\"hidden\" name=\"style\" value=\"$style\">
+				<input type=\"hidden\" name=\"schedule\" value=\"$schedule\">";
+				$col_des=$color;	
+				echo "<table class='table table-bordered'><tr class='tblheading'><th>Color</th><th>Assortment pcs in Pack</th>";
+				foreach($final_size_values as $key=>$value)
+				{
+					echo "<th>$key</th>";
+				}
+				echo "<th >Total</th></tr>";
+				$sql2="select * from bai_orders_db_confirm where $filter_joins order_del_no=\"$schedule\"";
+				$sql_result2=mysqli_query($link,$sql2) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row2=mysqli_fetch_array($sql_result2))
+				{
+					$o_total=0;
+					echo "<tr><td>".$sql_row2['order_col_des']."</td><td><input type=\"text\" name=\"packpcs[]\" value=\"1\"><input type=\"hidden\" name=\"assort_color[]\" value=\"".$sql_row2['order_col_des']."\"></td>";
+					foreach($filtering_function as $key=>$value)
+					{
+						echo "<td class=\"sizes\">".$sql_row2["order_s_".$key.""]."</td>";
+						$o_total+=$sql_row2["order_s_".$key.""];
+					}					
+					echo "<td class=\"sizes\">".$o_total."</td></tr>";
+				}
+				echo "</table>";
+				echo "<input type=\"submit\" name=\"submit\" value=\"Generate Packing List\" class=\"btn btn-primary\" onclick=\"return validate_form();\">";
 			}
 			else
 			{
@@ -146,17 +128,16 @@
 				echo "</div><div class='col-md-2'><a class=\"btn btn-warning btn-xs\" href=\"$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule\" onclick=\"return popitup("."'"."$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>  Carton Track</a></div></div>";
 				if($carton_print_status!=1)
 				{
-					$url = getFullURLLevel($_GET['r'],'reports/pdfs/labels_assort_v2.php',2,'R');
+					$url = getFullURLLevel($_GET['r'],'common/lib/mpdf7/labels_assort_v2.php',4,'R');
 					echo "<div class='row'><div class='col-md-2'><a class=\"btn btn-warning btn-xs\" href=\"$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule\" onclick=\"return popitup("."'"."$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>  Print Labels 4\"x2\"</a><br/>";
-					$url = getFullURLLevel($_GET['r'],'reports/pdfs/labels_assort_v1.php',2,'R');
+					$url = getFullURLLevel($_GET['r'],'common/lib/mpdf7/labels_assort_v1.php',4,'R');
 					echo "</div><div class='col-md-2'><a class=\"btn btn-warning btn-xs\" href=\"$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule\" onclick=\"return popitup("."'"."$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>  Print Labels 2.5\"x1\"</a><br/>";
-					$url = getFullURLLevel($_GET['r'],'reports/pdfs/labels_assort_track.php','R');
-					echo "</div><div class='col-md-2'><a class=\"btn btn-warning btn-xs\" href=\"$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule\" onclick=\"return popitup("."'"."$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>  Track Labels 2.5\"x1\"</a><br/></div></div>";
-				}else{
+					$url = getFullURLLevel($_GET['r'],'reports/pdfs/labels_assort_track_2.php','R');
+					echo "</div><div class='col-md-2' style='display:none;'><a class=\"btn btn-warning btn-xs\" href=\"$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule\" onclick=\"return popitup("."'"."$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>  Track Labels 2.5\"x1\"</a><br/></div></div>";
+				}
+				else
+				{
 					echo '<div class="alert alert-warning" role="alert">Carton Labels are already generated!!</div><br/>';
-					//echo "Carton Labels are already generated!! <br/>";
-					//echo "<a href=\"labels/mpdf7/examples/labels_assort_v1.php?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule\" onclick=\"return popitup("."'"."labels/mpdf7/examples/labels_assort_v1.php?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\">Print Labels 2.5\"x1\"</a><br/>";
-					//echo "<a href=\"labels/mpdf7/examples/labels_assort_track.php?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule\" onclick=\"return popitup("."'"."labels/mpdf7/examples/labels_assort_track.php?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\">Track Labels 2.5\"x1\"</a><br/>";
 				}
 			}
 		}
@@ -183,7 +164,7 @@ if(isset($_POST['submit']))
 	$packpcs=$_POST['packpcs'];
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
-
+	//$color_ref=$_POST['color'];
 	$packpcs_new=array();
 	for($i=0;$i<sizeof($packpcs);$i++)
 	{
@@ -198,16 +179,17 @@ if(isset($_POST['submit']))
 	// 	$assort_color_new[]=$assort_color[$i1];	
 	// }
 
-	$sql4="select order_col_des from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\"";
-	// echo $sql4."<br>";
+	//$sql4="select order_col_des from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"".$color_ref."\"";
+	$sql4="select order_col_des from $bai_pro3.bai_orders_db_confirm where $filter_joins order_del_no=\"$schedule\"";
+	//echo $sql4."<br>";
 	$sql_result4=mysqli_query($link, $sql4) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$rowsy=mysqli_fetch_array($sql_result4);
+	while($rowsy=mysqli_fetch_array($sql_result4))
 	{
 		$assort_color_new[]=$rowsy["order_col_des"];	
 	}
 
 	$assort_color_check=implode(",",$assort_color_new);
-	// echo "COlor=".$assort_color_check."<br>";
+	//echo "COlor=".$assort_color_check."<br>";
 	$sql2="select packing_method from $bai_pro3.carton_qty_chart where id='$cartonid'";
 	// mysqli_query($link, $sql2) or exit("Sql Errorg".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Errorh".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -215,25 +197,18 @@ if(isset($_POST['submit']))
 	{
 		$packing_method=check_style($sql_row2['packing_method']);
 	}
-
-	if(substr($style,0,1)=="M") // Exception for M&S
+	//echo $assort_color_check."<br>";
+	if(array_sum($packpcs)==$packing_method)
 	{
-		$url = getFullURL($_GET['r'],'packing_list_gen_assort.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }</script>";
+		$url = getFullURL($_GET['r'],'packing_list_gen_assort.php','N');			
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&assortcolor=$assort_color_check&style=$style&schedule=$schedule&packpcs=$packpcs_check\"; }</script>";
 	}
 	else
 	{
-		if(array_sum($packpcs)==$packing_method)
-		{
-			$url = getFullURL($_GET['r'],'packing_list_gen_assort.php','N');			
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&assortcolor=$assort_color_check&style=$style&schedule=$schedule&packpcs=$packpcs_check\"; }</script>";
-		}
-		else
-		{
-			echo '<div class="alert alert-warning" role="alert">Please check packing pcs quantity.</div>';
-			//echo "Please check packing pcs quantity.";
-		}
+		echo '<div class="alert alert-warning" role="alert">Please check packing pcs quantity.</div>';
+		//echo "Please check packing pcs quantity.";
 	}
+	
 
 }
 

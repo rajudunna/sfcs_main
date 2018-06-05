@@ -135,20 +135,20 @@ if(isset($_POST['submit']))
         // echo "<br>".$Mini_order_count; 
         if ($Mini_order_count>0)  
         {
-            // $sql5="select id from $brandix_bts.tbl_carton_ref where ref_order_num='$sch_ref'"; 
-            // //echo $sql5."</br>"; 
-            // //mysql_query($sql5,$link) or exit("Sql Error".mysql_error()); 
-            // $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error test".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            // //echo "count ".mysql_num_rows($sql_result5)."</br>"; 
-            // if(mysqli_num_rows($sql_result5)>0){ 
-            //     while($sql_row5=mysqli_fetch_array($sql_result5)) 
-            //     { 
-            //         $crt_ref=$sql_row5["id"]; 
-            //     } 
-            //     $sql2="delete from $brandix_bts.tbl_carton_size_ref where parent_id in (".$crt_ref.")"; 
-            //     //echo $crt_ref."-".$sql2."<br>"; 
-            //     mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            // } 
+            $sql5="select id from $brandix_bts.tbl_carton_ref where ref_order_num='$sch_ref'"; 
+            //echo $sql5."</br>"; 
+            //mysql_query($sql5,$link) or exit("Sql Error".mysql_error()); 
+            $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error test".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            //echo "count ".mysql_num_rows($sql_result5)."</br>"; 
+            if(mysqli_num_rows($sql_result5)>0){ 
+                while($sql_row5=mysqli_fetch_array($sql_result5)) 
+                { 
+                    $crt_ref=$sql_row5["id"]; 
+                } 
+                $sql2="delete from $brandix_bts.tbl_carton_size_ref where parent_id in (".$crt_ref.")"; 
+                //echo $crt_ref."-".$sql2."<br>"; 
+                mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            } 
              
              
             // $sql5="update $bai_pro3.bai_orders_db_confirm set bts_status=0 where order_del_no='$schedule'"; 
@@ -179,9 +179,9 @@ if(isset($_POST['submit']))
             // $sql_result21=mysqli_query($link, $sql21)or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"])); 
             // if(mysqli_num_rows($sql_result21) > 0) 
             // { 
-            //     $sql2="delete from $brandix_bts.tbl_carton_ref where ref_order_num in (".$sch_ref.")"; 
-            //     //echo $sql2."<br>"; 
-            //     mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                $sql2="delete from $brandix_bts.tbl_carton_ref where ref_order_num in (".$sch_ref.")"; 
+                //echo $sql2."<br>"; 
+                mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
             // } 
              
 
@@ -203,7 +203,7 @@ if(isset($_POST['submit']))
              
             // get data from pac stat log to delete data from plan dashboard and plan dashboard input 
             $pac_stat_qry="select concat(group_concat(doc_no),0) as doc_no,concat(group_concat(input_job_no_random),0) as input_job_no_random from $bai_pro3.pac_stat_log_input_job where tid in($tid)"; 
-            // echo $pac_stat_qry."</br>"; 
+            //echo $pac_stat_qry."</br>"; 
             $pac_stat_result=mysqli_query($link, $pac_stat_qry) or exit("Sql Error pac_stat_qry".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($pac_stat_res=mysqli_fetch_array($pac_stat_result)) 
             { 
@@ -214,9 +214,9 @@ if(isset($_POST['submit']))
             // echo "input_job_no_random".$input_job_no_random.'<br>'; 
             $delete_plan_dashbrd_qry="DELETE FROM $bai_pro3.plan_dashboard WHERE doc_no in($doc_no)"; 
             // echo $delete_plan_dashboard_qry."<br>"; 
-            mysqli_query($link, $delete_plan_dashbrd_qry) or exit("Sql Error delete_plan_dashbrd_qry".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            mysqli_query($link, $delete_plan_dashbrd_qry) or exit("Sql Error delete_plan_dashbrd_qry"); 
              
-            $delete_plan_input_qry="DELETE FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref in($input_job_no_random)"; 
+            $delete_plan_input_qry="DELETE FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref like  \"".$schedule."%\""; 
             // echo $delete_plan_input_qry."<br>"; 
             mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry".mysqli_error($GLOBALS["___mysqli_ston"])); 
              

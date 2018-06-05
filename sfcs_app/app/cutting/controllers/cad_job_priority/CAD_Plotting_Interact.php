@@ -308,16 +308,17 @@ else
 </div>
 <?php
 
-$sql1="select fabric_status,order_tid,print_status,cat_ref,allocate_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where length(plan_lot_ref)>0 and lastup=\"0000-00-00 00:00:00\" and act_cut_status<>\"DONE\"";
-//echo $sql1;
+$sql1="select fabric_status,order_tid,print_status,cat_ref,allocate_ref,doc_no, plan_lot_ref,cat_ref,order_tid
+      from $bai_pro3.plandoc_stat_log 
+       where LENGTH(plan_lot_ref)>0 and lastup='0000-00-00 00:00:00' and act_cut_status<>'DONE'";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+//echo mysqli_num_rows($sql_result1);
 echo "<div class='col-sm-12' style='max-height:600px;overflow-x:scroll;overflow-y:scroll'>";
 echo "<table id=\"table1\" border=1 class=\"table table-bordered\">";
 echo "<tr class='info'><th>Docket ID</th><th>Buyer Code</th><th>Docket Print Date</th><th>New Width</th><th>Controls</th></tr>";
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
-
+   // var_dump($sql_row1);
 	$doc_no=$sql_row1['doc_no'];
 	$style_code=substr($sql_row1['order_tid'],0,1);
 	$cat_ref=$sql_row1['cat_ref'];
@@ -327,37 +328,16 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$print_date=$sql_row1['print_status'];
 	$fabric_status=$sql_row1['fabric_status'];
 	
-	$mns_status=$sql_row1['xs']+$sql_row1['s']+$sql_row1['m']+$sql_row1['l']+$sql_row1['xl']+$sql_row1['xxl']+$sql_row1['xxxl'];
 	$path = getFullURLLevel($_GET['r'],'Book3_print.php',0,'N');
-	//$path="../../cut_plan_new/new_doc_gen/Book3_print.php";
-	if($style_code!="P" or $style_code!="K" or $style_code!="L" or $style_code!="O")
-	{
-		if($mns_status>0)
-		{
-			$path = getFullURLLevel($_GET['r'],'Book3_print.php',0,'N');
-			//$path="../../cut_plan_new/new_doc_gen/Book3_print.php";  // For M&S Men Briefs
-		}
-		else
-		{
-			$path = getFullURLLevel($_GET['r'],'Book3_print.php',0,'N');
-			//$path="../../cut_plan_new_ms/new_doc_gen/Book3_print.php"; // FOR M&S Ladies Briefs
-		}		
-	}
-	
 	$tab= "<tr><td><a href=\"$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class='fa fa-print'></i>".$sql_row1['doc_no']."</td>";
 	
 	$tab.= "<td>$buyer_code</td>";
 	$tab.= "<td>$print_date</td>";
-
-//echo "<td>".str_replace(";","<br/>",$sql_row['plan_lot_ref'])."</td>";
-
-//echo "<td><a href=\"cad_plotting_interact.php?doc_no=".$sql_row['doc_no']."\">Completed</td>";
-
-	//$sql="update plandoc_stat_log set lastup=\"".date("Y-m-d")."\" where doc_no=".$_GET['doc_no'];
-	//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 		
 	$sql="select mk_ref,act_cut_status,order_tid,cat_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no;
+    //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    //echo 'test-1 : '.mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$mk_ref=$sql_row['mk_ref'];
@@ -367,7 +347,9 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	}
 	
 	$sql="select purwidth,category from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+    //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    //echo 'test-2 : '.mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$purwidth=(float)$sql_row['purwidth'];
@@ -375,13 +357,14 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	}
 	
 	$min_width=0;
-	$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_no." and doc_type=\"normal\"";
+	$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no='$doc_no' and doc_type=\"normal\"";
 	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    //echo 'test-3 : '.mysqli_num_rows($sql_result);
 	while($sql_row1x=mysqli_fetch_array($sql_result))
 	{
 		$system_width=(float)$sql_row1x['width'];
-				
+		//$min_width=$system_width;		
 		if($min_width==0)
 		{
 			$min_width=$system_width;
@@ -401,12 +384,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		if(mysqli_num_rows($sql_result)==0 or $system_width==NULL)
 		{
-			/* echo "<td>N/A</td><td><form name='test' method='post' action='".$_SERVER['PHP_SELF']."'>";
-			echo " <input type='submit' name='clear' value='Clear & Update'>";
-			echo "<input type='hidden' name='doc_ref' value='".$doc_no."' style='color:red;'>";
-			echo "</form></td>"; 
-			echo "</tr>";
-			*/
+			
 		}
 		else
 		{
@@ -422,20 +400,11 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		if((mysqli_num_rows($sql_result)==0 or $system_width==NULL ))
 		{
-			//echo "<td>N/A</td><td><a href=\"cad_plotting_interact.php?doc_selected=".$doc_no."\">Edit</a></td>";
-			
-
-			//echo "</tr>";
-						
-
 			echo "</tr>";
 		}
 		else
 		{
-			//echo $min_width."-".$purwidth."-".$print_date."-".$fabric_status."<br>";
-			//if($min_width!=$purwidth  and $print_date>"2013-03-07" and $fabric_status==5 and ($category=="Body" or $category=="Front"))
-			//Change was made on category to display all category priorties - 20131018
-			if($min_width!=$purwidth  and $print_date>"2013-10-17" and $fabric_status==5 and ($category!="Binding Secondary" and $category!="Body Binding" and $category!="Binding" and $category!="Gusset"))
+			if($min_width!=$purwidth  and $fabric_status==5 and ($category!="Binding Secondary" and $category!="Body Binding" and $category!="Binding" and $category!="Gusset"))
 			{
 				echo $tab;
 				$url = getFullURL($_GET['r'],'cad_plotting_interact.php','N');

@@ -359,7 +359,7 @@ function check_all()
 					<input class="btn btn-success" type="submit" id="submit" name="submit" value="Filter" onclick="return check_all();" />
 				</div>
 			</div>
-			<span class="pull-left" style="color: red">*<strong>Note:</strong> Please select required fields to enable Filter button.</span>
+			<!--<span class="pull-left" style="color: red">*<strong>Note:</strong> Please select required fields to enable Filter button.</span> -->
 		</form>
 		<hr>
 

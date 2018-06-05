@@ -3,8 +3,8 @@
 //include("security1.php");
 include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
-$view_access=user_acl("SFCS_0073",$username,1,$group_id_sfcs);
-$duplicate_print_users=user_acl("SFCS_0073",$username,7,$group_id_sfcs);
+//$view_access=user_acl("SFCS_0073",$username,1,$group_id_sfcs);
+//$duplicate_print_users=user_acl("SFCS_0073",$username,7,$group_id_sfcs);
 //$duplicate_print_users=array("santhoshbo","kishorek","sarojiniv","chirikis","kirang");
 ?>
 
@@ -48,7 +48,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 </style>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R');?>"></script><!-- External script -->
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/css/TableFilter_EN/tablefilter.js',3,'R');?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R');?>"></script>
 
 <Link rel='alternate' media='print' href=null>
 
@@ -106,6 +106,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 			<div class="panel panel-primary panel-body">
 				<div class="col-md-12">
 					<?php
+                        $row_count = 0;
 						// include("dbconf.php"); 	
 						$link1 = getFullURL($_GET['r'],'mrn_form_log.php','N');
 						// var_dump($link1);
@@ -180,7 +181,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 						1-Request; 2-Approved; 3-Rejected; 4-Informed/On Progress; 5-Sourcing Updated; 6-Canceled; 7-Doc Printed, 8-Doc Issued, 9-Doc Closed
 						*/
 						
-						echo "<tr class='tblheading'><th>Date</th>	<th>Style</th>	<th>Schedule</th><th>CutNo</th>	<th>Color</th>	<th>Product</th><th>M3 Item Code</th><th>M3 Item Description</th><th>Reason</th><th>Remarks</th><th>Remarks Popup</th><th>Updated Remarks</th><th>Requested Qty</th><th>UOM</th><th>Approved Qty</th><th>Issued Qty</th> <th>Status</th><th>Req. From</th><th>App Date</th><th>App. by</th><th>Updated Date</th><th>Updated by</th><th>Issued Date</th><th>Issued by</th><th>Section</th><th>Request Ref.</th><th>Control</th><th>Cost $</th></tr>";
+						echo "<tr class='tblheading' id='heading_table'><th>Date</th>	<th>Style</th>	<th>Schedule</th><th>CutNo</th>	<th>Color</th>	<th>Product</th><th>M3 Item Code</th><th>M3 Item Description</th><th>Reason</th><th>Remarks</th><th>Remarks Popup</th><th>Updated Remarks</th><th>Requested Qty</th><th>UOM</th><th>Approved Qty</th><th>Issued Qty</th> <th>Status</th><th>Req. From</th><th>App Date</th><th>App. by</th><th>Updated Date</th><th>Updated by</th><th>Issued Date</th><th>Issued by</th><th>Section</th><th>Request Ref.</th><th>Control</th><th>Cost $</th></tr>";
 
 
 						if($_GET['status_filter']>=0)
@@ -202,6 +203,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
+                            $row_count++;
 							$tid=$sql_row['rand_track_id'];
 							$ref_tid=$sql_row['tid'];
 							$colors=$sql_row['color'];
@@ -407,13 +409,18 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								echo "</tr>";
 						}
 						echo "</table>";
+						 if($row_count == 0){
+                            echo "<div><font color='red' size='5'>No Data Found</font></div>";
+                          }
 						}
 						else
 						{
 							echo "Please select the filter type.";
 						}
 						}
-
+                        
+                    
+                       
 						?>
 
 				</div>

@@ -9,6 +9,7 @@
 			$today=$_POST['date'];
 			//$today="1986-03-28";
 			$sql="INSERT INTO $bai_pro.pro_atten  (atten_id,DATE,avail_A,jumpers,absent_A, absent_B, module, remarks) VALUES ('".$today."-".$mod_names[$i]."','".$today."','".$_POST['pr'.$i]."','".$_POST['ju'.$i]."','".$_POST['abf'.$i]."','".$_POST['abnf'.$i]."','$mod_names[$i]','-')";
+			//echo $sql;
 
 			//mysqli_query($link, $sql) or exit("<div class='panel panel-default' style='color:RED'><center><h3><b>Sql Error - </b>".mysqli_error($GLOBALS["___mysqli_ston"])."</h3></center></div>");
 			mysqli_query($link, $sql) or exit("<div class='alert alert-danger' style='color:white'><center><h3><b>The Attendance Is Already Updated For the Selected Date.</b></h3></center></div>");

@@ -5,17 +5,19 @@ $start_week=$_GET['week_start'];
 $end_week=$_GET['week_end'];
 $style_id=$_GET['style_id'];
 //echo $color_code;
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 ?>
 
 <html>
 <head>
 <TITLE>Movex Analytica - POPUP REPORT</TITLE>
-<script language="javascript" type="text/javascript" src="styles/dropdowntabs.js"></script>
-<link rel="stylesheet" href="styles/ddcolortabs.css" type="text/css" media="all" />
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
 <link href="table_style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<?php include ("dbconf_pop.php"); ?>
+<?php 
+// include ("dbconf_pop.php"); ?>
 
 <span><h2>Order Status - POP REPORT</h2></span>
 
@@ -23,7 +25,7 @@ $style_id=$_GET['style_id'];
 
 //Table Name Spaces
 //To Identify shipment plan table
-$sql="select distinct style_id from shipment_plan order by style_id";
+$sql="select distinct style_id from $bai_pro2.shipment_plan order by style_id";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_rows=mysqli_num_rows($sql_result);
 //echo $sql_num_rows;
@@ -112,7 +114,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$sql1="select act_cut,act_in,output,act_fg,act_ship from bai_pro3.bai_orders_db_confirm where order_style_no=\"".$sql_row['style']."\" and order_del_no=\"".$sql_row['sch_no']."\" and order_col_des=\"".$sql_row['color']."\"";
+		$sql1="select act_cut,act_in,output,act_fg,act_ship from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$sql_row['style']."\" and order_del_no=\"".$sql_row['sch_no']."\" and order_col_des=\"".$sql_row['color']."\"";
 		//echo $sql1."<br>";
 		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -126,7 +128,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 		}
 	}	
 
-	$sql1="select * from shipment_plan where ssc_code=\"$ssc_code\"";
+	$sql1="select * from $bai_pro2.shipment_plan where ssc_code=\"$ssc_code\"";
 	//echo $sql1."<br>";
 	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

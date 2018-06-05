@@ -36,6 +36,10 @@ div.block
 		}
 		return true;
 	}
+	function val_excess_qty(id)
+	{
+		console.log($('#'+id).val());
+	}
 
 	function setPliesPerCut()
 	{
@@ -739,7 +743,7 @@ echo "<tr><th>Max Plies per cut</th><th>:</th><td style=\"color: #000000\"><inpu
 echo "</table></div>";
 
 echo "<div class='col-md-6'><table class=\"table table-bordered\">";
-echo "<thead><tr><td><center>Sizes</center></td><td><center>Allocated Qty</center></td><td><center>Completed</center></td><td><center>Balance</center></td><td><center>Ratio</center></td></tr></thead>";
+echo "<thead><tr><td><center>Sizes</center></td><td><center>Allocated Qty</center></td><td><center>Completed</center></td><td><center>Excess/Less</center></td><td><center>Ratio</center></td></tr></thead>";
 $count = sizeof($s_tit);
 for($s=0;$s<sizeof($s_tit);$s++)
 	{	
@@ -751,7 +755,7 @@ for($s=0;$s<sizeof($s_tit);$s++)
 		<td><center>".$$code."</center></td>
 		<td><center>".$$code1."</center></td>
 		<td><center>".($$code1-$$code)."</center></td>
-		<td><center><input class=\"form-control\" type=\"number\" $flag onkeydown='return verify_num(event);' onkeypress='return validateQty(event);' name=\"in_s".$sizes_code[$s]."\" value=\"\" pattern='^[0-9]+\.?[0-9]*$' size=\"10\" min='1' id='ratioQty$s' \></center></td>
+		<td><center><input class=\"form-control\" type=\"number\" $flag onkeydown='return verify_num(event);' onkeypress='return validateQty(event);' onchange='val_excess_qty(\"ratioQty$s\")' name=\"in_s".$sizes_code[$s]."\" value=\"\" pattern='^[0-9]+\.?[0-9]*$' size=\"10\" min='1' id='ratioQty$s' \></center></td>
 		</tr>";
 		// onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"
 	}

@@ -1,8 +1,8 @@
 <?php
 
-include("dbconf.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0045",$username,1,$group_id_sfcs); 
 ?>
 
@@ -24,12 +24,12 @@ $view_access=user_acl("SFCS_0045",$username,1,$group_id_sfcs);
     }
 
 </script>
-	<script type="text/javascript" src="<?= getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick.min.1.3.js','R')?>"></script>
-	<script type="text/javascript" src="<?= getFullURL($_GET['r'],'../styles/dropdowntabs.js','R')?>"></script>
-    <?php echo '<link href="'.getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick_ltr.min.css','R').'" rel="stylesheet" type="text/css" />'; ?>
-        <?php echo '<link href="'.getFullURL($_GET['r'],'../styles/ddcolortabs.css','R').'" rel="stylesheet" type="text/css" />'; ?>
+	<!--<script type="text/javascript" src="<?= getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick.min.1.3.js','R')?>"></script>-->
+	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R')?>"></script>
+   <link href="<?= getFullURLLevel($_GET['r'],'common/css/jsDatePick_ltr.min.css',1,'R') ?>" rel="stylesheet" type="text/css" />
+       <link href="<?= getFullURL($_GET['r'],'common/css/ddcolortabs.css',3,'R') ?>" rel="stylesheet" type="text/css" />
 
-<link href="<?= getFullURLLevel($_GET['r'],'styles/sfcs_styles.css',4,'R'); ?>" rel="stylesheet" type="text/css" />
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 
 
 <div class="panel panel-primary">
@@ -54,7 +54,7 @@ Section:
 <?php
 echo "<select name=\"section\" class=\"form-control\">";
     echo "<option value=\"0\">All</option>";
-	$sql="SELECT sec_id as secid FROM bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
+	$sql="SELECT sec_id as secid FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
 	$result17=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result17))
 	{
@@ -90,7 +90,7 @@ if($section!=0)
 	$criteria=" and section=".$section;
 }
 $module_db=array();
-$sql_new1="select distinct module from grand_rep where date between \"$sdate\" and \"$edate\" $criteria order by module*1";
+$sql_new1="select distinct module from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" $criteria order by module*1";
 $sql_result_new1=mysqli_query($link, $sql_new1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row_new1=mysqli_fetch_array($sql_result_new1))
 {
@@ -138,7 +138,7 @@ echo "</tr>";
 $table.="</tr>";
 
 
-$sql222_new="select distinct date from grand_rep where date between \"$sdate\" and \"$edate\" order by date";
+$sql222_new="select distinct date from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by date";
 //mysql_query($sql222_new,$link) or exit("Sql Error".mysql_error());
 $sql_result222_new=mysqli_query($link, $sql222_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
@@ -170,7 +170,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$check=0;
 		}
 		
-		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from grand_rep where date=\"$date\" and module=$mod group by module";
+		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from $bai_pro.grand_rep where date=\"$date\" and module=$mod group by module";
 		//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))

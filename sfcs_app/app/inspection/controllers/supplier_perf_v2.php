@@ -3,7 +3,7 @@
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include("../".getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
 include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-
+$Page_Id='SFCS_0054';
 ?>
 
 <?php  
@@ -165,7 +165,6 @@ for($i=0;$i<sizeof($supplier_code);$i++)
 
 if(isset($_POST['filter']))
 {
-	echo "<hr/>";
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
 	$batch_obj=$_POST["batch_obj"];
@@ -237,7 +236,8 @@ if(isset($_POST['filter']))
 	
 	$url=getFullURL($_GET['r'],'supplier_per_charts.php','N');
 	$url1=getFullURLLevel($_GET['r'],'reports/supplier_perf_v2_report.php',1,'N');
-	
+	echo "<div id='main_div'>";
+	echo "<hr/>";
 	echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a>";
 	
 	include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'supplier_perf_summary.php','R'));
@@ -263,8 +263,9 @@ if(isset($_POST['filter']))
 	//echo "</br> Supplier Qry :".$sql."<br>";
 
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-
+$flag=false;
 if(mysqli_num_rows($sql_result) > 0){
+	$flag=true;
 
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -808,10 +809,13 @@ if(mysqli_num_rows($sql_result) > 0){
 	echo "</table></div></div><br>";
 
 	echo "<input type=\"checkbox\" name=\"option\"  id=\"option\" height= \"21px\" onclick=\"javascript:enableButton();\">Enable<input type=\"submit\" id=\"update\" name=\"update\" class=\"btn btn-success\" value=\"Update\">";
-	echo "</form>";
+	echo "</form></div>";
 }
 	
-	
+	if(!$flag){
+		echo "<script>sweetAlert('No Data Found','','warning');
+		$('#main_div').hide()</script>";
+	}
 }
 
 

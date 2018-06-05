@@ -1,0 +1,1 @@
+<?php echo "<chart palette='1'  winColor='00CC33' lossColor='FF0000' caption='1-12' showValue='0' subcaption='' canvasLeftMargin='70'><dataset><set value='w' /><set value='w' /><set value='w' /><set value='w' /><set value='w' /><set value='w' /><set value='w' /><set value='w' /><set value='w' /><set value='w' /><set value='w' /><set value='w' /></dataset></chart>"; ?>

@@ -1925,10 +1925,10 @@ tags will be replaced.-->
  <col class=xl11024082 width=68 span=7 style='mso-width-source:userset;
  mso-width-alt:2486;width:51pt'>
  <tr height=25 style='mso-height-source:userset;height:18.75pt'>
-  <td colspan=13 height=25 class=xl12524082 dir=LTR width=1126
+  <td colspan=10 height=25 class=xl12524082 dir=LTR width=1126
   style='height:18.75pt;width:845pt'><a name="RANGE!A1:P19">Color
   Classification Report - Roll Details</a></td>
-  <td colspan=3 height=25 class=xl12524082x dir=LTR width=1126
+  <td colspan=6 height=25 class=xl12524082x dir=LTR width=1126
   style='height:18.75pt;width:845pt'><?php echo $code; ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>

@@ -2107,12 +2107,25 @@ tags will be replaced.-->
   <td class=xl11824082></td>
   <td class=xl11824082></td>
  </tr>
+ <?php 
+ if($num_rows>0 and $print_check==0 and $inspection_check==1) 
+ {
+ 	$print_report=1;
+ }
+ else
+ {
+ 	$print_report=0;
+ }
+ 
+ ?>
  <tr height=28 style='mso-height-source:userset;height:21.0pt'>
   <td colspan=12 rowspan=3 height=84 class=xl8424082 style='border-right:1.0pt solid black;
   border-bottom:1.0pt solid black;height:63.0pt'><textarea onchange="change_head(1,this.name)" class="textspace req_man" id="sp_rem"  name="sp_rem"><?php echo $sp_rem; ?></textarea></td>
   <td class=xl11024082></td>
-   <td class=xl11024082 colspan=2 rowspan=2><?php if($num_rows>0 and $print_check==0 and $inspection_check==1) 
-   	{ echo '<h3><center><a class="btn btn-warning btn-xs" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
+   <td class=xl11024082 colspan=2 rowspan=2><?php
+   echo '<input type="hidden" id="print_report"  name="print_report" value="'.$print_report.'">';
+    if($print_report>0) 
+   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
   
  <td class=xl11024082></td> 
  </tr>
@@ -2126,8 +2139,7 @@ tags will be replaced.-->
   <td height=28 class=xl11024082 style='height:40.0pt'></td>
   <td class=xl11024082 colspan=3>
   <?php
-  
-  if($num_rows>0 or $inspection_check==0 or $status==0)
+if($num_rows>0 or $inspection_check==0 or $status==0)
   {
   	
   	echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
@@ -2322,24 +2334,29 @@ tags will be replaced.-->
 	  	
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
 	  		$reject_reason_query="select * FROM $bai_rm_pj1.reject_reasons ";
-			$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row1=mysqli_fetch_array($reject_reasons))
-			{
-				if ($temp[15] == $row1['tid']) 
-				{
-					echo $row1["reject_desc"];
-				}
-			}
-			
+			// $reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($row1=mysqli_fetch_array($reject_reasons))
+			// {
+			// 	if ($temp[15] == $row1['tid']) 
+			// 	{
+			// 		echo $row1["reject_desc"];
+			// 	}
+			// }
+
+	if($temp[10] == 1 || $temp[10] == 2){
+		$style = '';
+	}else{
+		$style = 'style=display:none'; 
+	}
 	  echo "
-	  	<select name=\"rejection_reason[$i]\"  class='listbox rej_reason' id='rejection_reason[$i]' onchange='change_body(2,this.name,$i)' style='display:none'>
+	  	<select name=\"rejection_reason[$i]\"  class='listbox rej_reason rej_reason_select2' id='rejection_reason[$i]' onchange='change_body(2,this.name,$i)' ".$style.">
 	  			<option value='' selected >NIL</option>";
 				$reject_reasons2=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	    		while($row1=mysqli_fetch_array($reject_reasons2))
 	    		{
 					if ($temp[15] == $row1['tid']) 
 					{
-						echo "<option value=".$row1['tid'].">".$row1["reject_desc"]."</option>";
+						echo "<option value=".$row1['tid']." selected>".$row1["reject_desc"]."</option>";
 					} 
 					else 
 					{
@@ -2397,7 +2414,7 @@ echo '</form>';
   <td class=xl7524082 width=68 style='border-left:none;width:51pt'>Length  Deviation</td>
   <td class=xl7524082 width=64 style='border-left:none;width:48pt'>Average  Ticket Width</td>
   <td class=xl7524082 width=64 style='border-left:none;width:48pt'>Average  C-Tex Width</td>
-  <td class=xl7524082 width=99 style='border-left:none;width:74pt'>Width  Deviation</td>
+  <td class=xl7524082 width=99 style='border-left:none;width:74pt'>Average Width  Deviation</td>
   <td class=xl7624082 width=77 style='border-left:none;width:58pt;border-right:1pt solid'>Lot  Numbers</td>
   <!-- <td class=xl7724082 dir=LTR width=68 style='width:51pt'>Group</td> -->
   
@@ -2588,6 +2605,8 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 		}
 		
 		$sql="update $bai_rm_pj1.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\" where batch_ref=\"$lot_no_new\"";
+		// echo "Upadte Qry :".$sql;
+		// exit;
 		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 	}
@@ -2606,6 +2625,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$ele_tid=$_POST['ele_tid'];
 	$ele_check=$_POST['ele_check'];
 	$tot_elements=$_POST['tot_elements'];
+		$ele_t_length=$_POST['ele_t_length'];
 	$ele_c_length=$_POST['ele_c_length'];
 	$ele_t_width=$_POST['ele_t_width'];
 	$ele_c_width=$_POST['ele_c_width'];	
@@ -2633,8 +2653,23 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			{
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}
-			$sql="update $bai_rm_pj1.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
-			mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if($partial_rej_qty[$i]>0)// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
+			{
+				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason)
+				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\"
+				  FROM $bai_rm_pj1.store_in WHERE tid=".$ele_tid[$i];
+				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
+				   	//
+				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
+				  $sql1="update $bai_rm_pj1.store_in set rejection_reason='', qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks='', roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+			}
+			else
+			{
+				$sql="update $bai_rm_pj1.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 		}
 	}
 
@@ -2664,6 +2699,49 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 
 function enableButton() 
 {
+	// var print_report=document.getElementById('print_report').value;
+	// alert(print_report);
+	// if(Number(print_report) >0)
+	// {
+	// 	sweetAlert('Cannot Modify After Inspection','','warning');
+	// 	document.getElementById('put').disabled='true';
+	// }
+	var ele;
+	var counter_man = 0;
+		ele = document.getElementsByClassName('rej_reason');
+		for(var i=0;i<ele.length;i++){
+			var v = $('#rejection_reason\\['+i+'\\]');
+			v.removeClass('mandate');
+			if($('#roll_status\\['+i+'\\]').val() == 1 || $('#roll_status\\['+i+'\\]').val() == 2)
+			{
+				if(v.val() == '' || v.val().length < 1 )
+				{
+					v.addClass('mandate');
+					counter_man++;
+				}
+				if($('#roll_status\\['+i+'\\]').val() == 2){
+					var v = $('#ele_par_length\\['+i+'\\]');
+
+				
+					if(v.val() == 0){
+					v.addClass('mandate');
+						
+						counter_man++;
+					}
+				}
+			}
+
+		}
+
+		if(counter_man > 0)
+		{
+			counter_man = 0;
+			sweetAlert('Please Fill below fields having red box','','warning');
+			document.getElementById('put').disabled = 'true';
+			document.getElementById('option').checked = false;
+			return;
+		}
+
 	if(document.getElementById('option').checked)
 	{
 		document.getElementById('put').disabled='';
@@ -2678,108 +2756,117 @@ function enableButton()
 function enableButton1() 
 {
     var rowcount = document.getElementById("rowcount").value;
-    if (document.getElementById('option1').checked)
-    {
-        document.getElementById('confirm').disabled = '';
+ //    var print_report=document.getElementById('print_report').value;
+	// if(Number(print_report) >0)
+	// {
+	// 	sweetAlert('Cannot Modify After Inspection','','warning');
+	// 	document.getElementById('put').disabled='true';
+	// }
+	// else{
+	    if (document.getElementById('option1').checked)
+	    {
+	        document.getElementById('confirm').disabled = '';
 
-    } 
-    else 
-    {
-        document.getElementById('confirm').disabled = 'true';
-    }
-    var j = 0;
+	    } 
+	    else 
+	    {
+	        document.getElementById('confirm').disabled = 'true';
+	    }
+	    var j = 0;
 
-    for (var i = 0; i < rowcount; i++) 
-    {
-        if (parseFloat(document.input["ele_c_length[" + i + "]"].value) > 0) 
-        {
-            j = j + 0;
-        }
-        else 
-        {
-            j = j + 1;
-        }
+	    for (var i = 0; i < rowcount; i++) 
+	    {
+	        if (parseFloat(document.input["ele_c_length[" + i + "]"].value) > 0) 
+	        {
+	            j = j + 0;
+	        }
+	        else 
+	        {
+	            j = j + 1;
+	        }
 
-        if (parseInt((document.input["ele_shade[" + i + "]"].value).length) > 0) 
-        {
-            j = j + 0;
-        } 
-        else 
-        {
-            j = j + 1;
-        }
-
-        if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
-        {
-            j = j + 0;
-        } 
-        else 
-        {
-            j = j + 1;
-        }
-        var roll_status = document.input["roll_status[" + i + "]"].value;
-        if ((Number(roll_status)==1 || Number(roll_status)==2) )
-        {
-        	var rejection_reason = document.input["rejection_reason[" + i + "]"].value;
-        	if(rejection_reason!='NIL')
-        	{
-            	j = j + 0;
+	        if (parseInt((document.input["ele_shade[" + i + "]"].value).length) > 0) 
+	        {
+	            j = j + 0;
 	        } 
 	        else 
 	        {
 	            j = j + 1;
 	        }
-        }
-    }
-    if (parseInt(j) > 0) 
-    {
-        document.getElementById('confirm').disabled = 'true';
-        sweetAlert('Please Fill All The Required Fields Before You Confirm','','warning');
-        document.getElementById('option1').checked = false;
-    }
-	
-	var counter_man = 0;
-	var classes = ['req_man','ctex_len','ticket_wid','ctex_wid','shade_grp','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
-	var ele;
-	for(var j=0;j<classes.length;j++){
-		var ele = document.getElementsByClassName(classes[j]);
-		for(var i=0;i<ele.length;i++)
-		{
-			console.log(ele[i].value);
-			ele[i].classList.remove('mandate');
-			if(ele[i].value == '' || ele[i].value.length < 1 )
-			{
-			    ele[i].classList.add('mandate');
-				counter_man++;
-			}
-		}
-	}
-	ele = document.getElementsByClassName('rej_reason');
-	for(var i=0;i<ele.length;i++){
-		var v = $('#rejection_reason\\['+i+'\\]');
-		v.removeClass('mandate');
-		if($('#roll_status\\['+i+'\\]').val() == 1 )
-		{
-			if(v.val() == '' || v.val().length < 1 )
-			{
-				v.addClass('mandate');
-				counter_man++;
-			}
-		}
-	}
 
-	if(counter_man > 0)
-	{
-		counter_man = 0;
-		sweetAlert('Please Fill All The Required Fields box Before You Confirm!','','warning');
-		document.getElementById('confirm').disabled = 'true';
-		document.getElementById('option1').checked = false;
-	}
+	        if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
+	        {
+	            j = j + 0;
+	        } 
+	        else 
+	        {
+	            j = j + 1;
+	        }
+	        var roll_status = document.input["roll_status[" + i + "]"].value;
+	        if ((Number(roll_status)==1 || Number(roll_status)==2) )
+	        {
+	        	var rejection_reason = document.input["rejection_reason[" + i + "]"].value;
+	        	if(rejection_reason!='NIL')
+	        	{
+	            	j = j + 0;
+		        } 
+		        else 
+		        {
+		            j = j + 1;
+		        }
+	        }
+	    }
+	    if (parseInt(j) > 0) 
+	    {
+	        document.getElementById('confirm').disabled = 'true';
+	        sweetAlert('Please Fill All The Required Fields Before You Confirm','','warning');
+	        document.getElementById('option1').checked = false;
+	    }
+		
+		var counter_man = 0;
+		var classes = ['req_man','ctex_len','ticket_wid','ctex_wid','shade_grp','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
+		var ele;
+		for(var j=0;j<classes.length;j++){
+			var ele = document.getElementsByClassName(classes[j]);
+			for(var i=0;i<ele.length;i++)
+			{
+				console.log(ele[i].value);
+				ele[i].classList.remove('mandate');
+				if(ele[i].value == '' || ele[i].value.length < 1 )
+				{
+				    ele[i].classList.add('mandate');
+					counter_man++;
+				}
+			}
+		}
+		ele = document.getElementsByClassName('rej_reason');
+		for(var i=0;i<ele.length;i++){
+			var v = $('#rejection_reason\\['+i+'\\]');
+			v.removeClass('mandate');
+			if($('#roll_status\\['+i+'\\]').val() == 1 )
+			{
+				if(v.val() == '' || v.val().length < 1 )
+				{
+					v.addClass('mandate');
+					counter_man++;
+				}
+			}
+		}
+
+		if(counter_man > 0)
+		{
+			counter_man = 0;
+			sweetAlert('Please Fill All The Required Fields box Before You Confirm!','','warning');
+			document.getElementById('confirm').disabled = 'true';
+			document.getElementById('option1').checked = false;
+		}
+	// }
 
 }
 
 $(document).ready(function()
 {
+ 
 	console.log($('#ele_shade\\[0\\]').val());	
 });
 
@@ -2874,6 +2961,13 @@ function fill(x,t,e)
 
 function change_body(x,y,z)
 {
+	if(document.getElementById('roll_status['+z+']').value == 1){
+		document.getElementById('ele_par_length['+z+']').readOnly = true;
+	}
+	if(document.getElementById('roll_status['+z+']').value != 1){
+		document.getElementById('ele_par_length['+z+']').readOnly = false;
+	}
+	
 	document.input["ele_check["+z+"]"].value=1;
 	document.getElementById(y).style.background="#FFCCFF";
 

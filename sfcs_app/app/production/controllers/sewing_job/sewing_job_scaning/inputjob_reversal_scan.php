@@ -187,7 +187,7 @@ if(isset($_POST['formSubmit']))
 	//var_dump($bundle_no);
 	foreach($ids as $key=>$value)
 	{
-		$fetching_id_qry = "select id,recevied_qty from bundle_creation_data where bundle_number = $bundle_no[$key] and operation_id = $operation_id";
+		$fetching_id_qry = "select id,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number = $bundle_no[$key] and operation_id = $operation_id";
 		$result_fetching_id_qry = $link->query($fetching_id_qry)  or exit('query error in updating1');
 		while($row = $result_fetching_id_qry->fetch_assoc()) 
 		{
@@ -195,18 +195,18 @@ if(isset($_POST['formSubmit']))
 			$rec_qty = $row['recevied_qty'];
 		}
 		$act_rec_qty = $rec_qty - $reversalval[$key];
-		$update_present_qry = "update brandix_bts.bundle_creation_data  set recevied_qty = $act_rec_qty where id = $id";
+		$update_present_qry = "update $brandix_bts.bundle_creation_data  set recevied_qty = $act_rec_qty where id = $id";
 		$result_query = $link->query($update_present_qry) or exit('query error in updating2');
 		if($post_code)
 		{
-			$update_post_ops_code_qry = "update brandix_bts.bundle_creation_data set send_qty = $act_rec_qty where id=$post_code[$key]";
+			$update_post_ops_code_qry = "update $brandix_bts.bundle_creation_data set send_qty = $act_rec_qty where id=$post_code[$key]";
 			//echo $update_post_ops_code_qry;
 			$result_query_post = $link->query($update_post_ops_code_qry) or exit('query error in updating3');
 		}
 	}
 	if($ops_dep != 0)
 	{
-		$dep_ops_array_qry_raw = "select operation_code from brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and ops_dependency='$ops_dep'";
+		$dep_ops_array_qry_raw = "select operation_code from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and ops_dependency='$ops_dep'";
 		//echo $dep_ops_array_qry_raw;
 		$result_dep_ops_array_qry_raw = $link->query($dep_ops_array_qry_raw) or exit('query error in updating 4');
 		while($row = $result_dep_ops_array_qry_raw->fetch_assoc()) 
@@ -220,14 +220,14 @@ if(isset($_POST['formSubmit']))
 		//echo "working";
 		foreach($bundle_no as $key=>$value)
 		{
-			$pre_send_qty_qry = 'select min(recevied_qty)as recieved_qty from brandix_bts.bundle_creation_data where bundle_number ="'.$bundle_no[$key].'" and operation_id in ('.implode(",",$dep_ops_codes).')';
+			$pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ='".$bundle_no[$key]."' and operation_id in (".implode(',',$dep_ops_codes).")";
 			//echo $pre_send_qty_qry;
 			$result_pre_send_qty = $link->query($pre_send_qty_qry) or exit('query error in updating 5');
 			while($row = $result_pre_send_qty->fetch_assoc()) 
 			{
 				$pre_recieved_qty = $row['recieved_qty'];
 			}
-			$query_post_dep = 'UPDATE brandix_bts.bundle_creation_data SET `send_qty` = "'.$pre_recieved_qty.'", `scanned_date`="'. date('Y-m-d').'" where bundle_number ="'.$bundle_no[$key].'" and operation_id = '.$ops_dep;
+			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$bundle_no[$key]."' and operation_id = ".$ops_dep;
 			//echo $query_post_dep;
 			$result_query = $link->query($query_post_dep) or exit('query error in updating6');
 			
@@ -237,7 +237,7 @@ if(isset($_POST['formSubmit']))
 	foreach($ids as $key=>$value)
 	{
 		//echo "working";
-		$retriving_data = "select * from bundle_creation_data where bundle_number = $bundle_no[$key] and operation_id = $operation_id";
+		$retriving_data = "select * from $brandix_bts.bundle_creation_data where bundle_number = $bundle_no[$key] and operation_id = $operation_id";
 	//	echo $retriving_data;
 		$result_retriving_data = $link->query($retriving_data) or exit('query error in updating 7');
 		while($row = $result_retriving_data->fetch_assoc()) 
@@ -255,7 +255,7 @@ if(isset($_POST['formSubmit']))
 			$b_in_job_qty = $row['original_qty'];
 			$b_a_cut_no = $row['cut_number'];
 		}
-		$ops_name_qry = "select operation_name from brandix_bts.tbl_orders_ops_ref where operation_code = $b_op_id";
+		$ops_name_qry = "select operation_name from $brandix_bts.tbl_orders_ops_ref where operation_code = $b_op_id";
 		$result_ops_name_qry = $link->query($ops_name_qry) or exit('query error in updating 8');
 		//var_dump($result_ops_name_qry);
 		while($row_ops = $result_ops_name_qry->fetch_assoc()) 
@@ -269,7 +269,7 @@ if(isset($_POST['formSubmit']))
 		$b_doc_num = $doc_no[$key];
 		$r_qty_array = '-'.$reversalval[$key];
 		$b_tid = $bundle_no[$key];
-		$m3_bulk_bundle_insert = "INSERT INTO m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_remarks,sfcs_log_user,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,m3_error_code) VALUES";
+		$m3_bulk_bundle_insert = "INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_remarks,sfcs_log_user,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,m3_error_code) VALUES";
 		$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'. $size_id.'","'. $b_sizes.'","'.$b_doc_num.'","'.$r_qty_array.'","","'.$remarks.'","'.$username.'","'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid.'",""),';
 		//echo $m3_bulk_bundle_insert;
 		if(substr($m3_bulk_bundle_insert, -1) == ',')
@@ -280,7 +280,7 @@ if(isset($_POST['formSubmit']))
 		{
 			$final_query100 = $m3_bulk_bundle_insert;
 		}
-		$dep_ops_array_qry = "select default_operration from brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$b_colors' and operation_code='$b_op_id'";
+		$dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$b_colors' and operation_code='$b_op_id'";
 		$result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
 		while($row = $result_dep_ops_array_qry->fetch_assoc()) 
 		{
@@ -290,7 +290,7 @@ if(isset($_POST['formSubmit']))
 		{
 			$rej_insert_result100 = $link->query($final_query100) or exit('data error');
 		}
-		$bulk_insert_temp = 'INSERT INTO brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES';
+		$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
 		$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$size_id.'","'. $b_sizes.'","'. $sfcs_smv.'","'.$b_tid.'","'.$b_in_job_qty.'","'.$b_in_job_qty.'","'.$r_qty_array.'","0","0","'. $b_op_id.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$remarks.'"),';
 		//echo $bulk_insert_temp;
 		if(substr($bulk_insert_temp, -1) == ',')

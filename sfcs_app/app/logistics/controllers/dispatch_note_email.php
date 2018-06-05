@@ -45,10 +45,16 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/conf
 $disp_id=$_REQUEST['note_no'];
 $note_no=$_REQUEST['note_no'];
 
-$sql="select * from $bai_pro3.disp_db left join party_db on disp_db.party=party_db.pid where disp_db.disp_note_no=$disp_id";
+$sql="select * from $bai_pro3.disp_db left join party_db on disp_db.party=party_db.pid where disp_db.disp_note_no='$disp_id'";
 
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    if(mysqli_num_rows($sql_result) == 0){
+        $url = getFullURL($_GET['r'],'security_check.php','N');
+        echo "<script>swal('Docket do not exist','please try another','warning')
+                    window.location.href='$url';</script>";
+    
+    }
 $party_details=array();
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -838,8 +844,8 @@ tags will be replaced.-->
 		$myFile = "mail_tran_log.txt";
 	$fh = fopen($myFile, 'a') or die("can't open file");
 	
-	$sql="select * from disp_db where disp_note_no=$note_no and exit_date='' and status=2";
-	//echo $sql;
+	$sql="select * from $bai_pro3.disp_db where disp_note_no='$note_no' and (exit_date IS NULL OR exit_date = '') and status=2";
+
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//var_dump($sql_result);
 	//die();

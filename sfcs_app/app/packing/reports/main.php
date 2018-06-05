@@ -4,7 +4,7 @@
 <?php include('../'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
 
 <?php 
-    $table_filter = getFullURLLevel($_GET['r'],'common/js/tablefilter_en/table_filter.js',3,'R');
+    $table_filter = getFullURLLevel($_GET['r'],'common/js/TableFilter/tablefilter.js',3,'R');
     $view_access = user_acl("SFCS_0033",$username,1,$group_id_sfcs); 
     $image_path = getFullURLLevel($_GET['r'],'common/images',1,'R').'/'; 
 ?>
@@ -172,15 +172,9 @@ $x++;
 <script language="javascript" type="text/javascript">
 	var table3Filters = {
 	    col_1: "select",
-		sort_select: true,
-		alternate_rows: true,
-		loader_text: "Filtering data...",
-		loader: true,
-		rows_counter: true,
-		display_all_text: "Display all"
-		//col_width: ["15px","135px","80px","70px","80px","135px","150px","90px","40px",null];
+  
 	}
-	// setFilterGrid("table_3",table3Filters);
+	//setFilterGrid("table_3",table3Filters);
 </script> 
 </body>
 </div>

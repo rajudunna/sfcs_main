@@ -202,8 +202,8 @@ if(isset($_POST["submit"]))
 	echo "<table id=\"table1\" class=\"table table-bordered\">";
 	echo "<tr class='danger'><th>Docket</th><th>Docket Ref</th><th>TID</th><th>Size</th><th>Remarks</th><th>Status</th><th>Last Updated</th><th>Carton Act Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
 	$packing_tid_list=array();
-	$sql="select * from bai_pro3.packing_summary where tid in (select tid from bai_pro3.pac_stat_log where scan_date between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and status=\"DONE\" order by scan_date)";
-	// echo "<br>".$sql."<br>";
+	$sql="select * from $bai_pro3.packing_summary where tid in (select tid from $bai_pro3.pac_stat_log where scan_date between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and status=\"DONE\" order by scan_date)";
+	//echo "<br>".$sql."<br>";
 	// mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 	if(mysqli_num_rows($sql_result))

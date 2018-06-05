@@ -5,7 +5,7 @@ $username="sfcsproject1";
 $remove_user_name = true; // set false for static username removing 
 
 //SFCS Db Configurations
-$host="192.168.0.110:3323";
+$host="192.168.0.110:3326";
 $user="baiall";
 $pass="baiall";
 
@@ -38,7 +38,7 @@ $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 ?>
 <?php
-$path="C:/xampp/htdocs/sfcs_app";
+$path="C:/xampp/htdocs/sfcs_app/app";
 
 $mail_to_test='kalyan@schemaxtech.com, bhargavg@schemaxtech.com, rameshk@schemaxtech.com,ravindranath.yrr@gmail.com';
 $header_from='From: Shop Floor System Alert <ravindranath.yrr35@gmail.com>';

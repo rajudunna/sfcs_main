@@ -127,7 +127,7 @@ if(isset($_POST['flag_validation']))
 				                <div class="panel-body">
 						           	<div class="form-group col-md-4" id="res">
 			                            <label>No of Reasons:</label>
-					                	<input type="text" onkeypress="return validateQty(event);" name="no_reason" min=0 id="reason" class="form-control" placeholder="Enter no of reasons"/>
+					                	<input type="text" onkeypress="return validateQty(event);" name="no_reason" min=0 id="reason" class="form-control"  onchange="validating_with_qty()" placeholder="Enter no of reasons"/>
 					                </div>
 		                            <table class="table table-bordered" id='reson_dynamic_table' width="100" style="height: 50px; overflow-y: scroll;">
 		                            	<thead>
@@ -141,7 +141,7 @@ if(isset($_POST['flag_validation']))
 										</tbody>
 											<tr id='repeat_tr' hidden='true'>
 												<td>
-												<select class="form-control" id="style" name="reason[]">
+												<select id="reason_drop" class="form-control" id="style" name="reason[]">
 													<option value=''>Select Reason</option>
 													<?php				    	
 														if ($result_rejections->num_rows > 0) {
@@ -154,7 +154,7 @@ if(isset($_POST['flag_validation']))
 													?>
 												</select>
 												</td>
-												<td><input class='form-control input-sm qty integer' id='quantity'  name='quantity[]' class='qty_class' onchange='validating_cumulative()'></td>
+												<td><input class='form-control input-sm  integer' id='quantity'  name='quantity[]' onkeypress="return validateQty(event);" onchange='validating_cumulative()'></td>
 											</tr>
 		                            </table>
 		                        </div>
@@ -174,6 +174,8 @@ if(isset($_POST['flag_validation']))
 <script>
 $(document).ready(function() 
 {
+	//$('#rejec_reasons').select2();
+	// $('#reason_drop').select2();
 	
 	$('#job_number').focus();
 	$('#loading-image').hide();
@@ -223,7 +225,7 @@ $(document).ready(function()
 					// $("#dynamic_table1").append(form);
 					var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
 					$("#dynamic_table1").append(btn);
-					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th>Status</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th>Remarks</th><th>Rejected Qty.</th><th>Rejection quantity</th></tr></thead><tbody>";
+					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th>Status</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th>Remarks</th><th>Rejected Qty.</th><th>Rejection quantity</th></tr></thead><tbody>";
 					var flagelem = "<input type='hidden' name='flag' id='flag' value='"+flag+"'>";
 					$("#dynamic_table1").append(markup);
 					$("#dynamic_table1").append(btn);
@@ -321,7 +323,18 @@ function rejections_capture(val)
 	}		
 }
 $("#reason").change(function(){
-	$("#tablebody").html('');
+	var tot = $('#changed_rej').val();
+	var result = $('#reason').val();
+	console.log(tot);
+	console.log(result);
+	if(result > tot)
+	{
+		sweetAlert("","No. Of reasons should not greater than rejection quantity","error");
+		$('#reason').val(0);
+	}
+	else
+	{
+		$("#tablebody").html('');
 		var res = $("#reason").val();
 		for(var i=1;i<=res;i++)
 		{
@@ -329,8 +342,9 @@ $("#reason").change(function(){
 			console.log(html_markup);
 			$("#tablebody").append(html_markup);
 		}
+	}
+	
 });
-
 function validating_cumulative()
 {
 	var result = 0;
@@ -517,6 +531,7 @@ $('input[type=submit]').click(function() {
 </script>	
 
 <script>
+
 function validating()
 {
 	console.log("working");
@@ -614,7 +629,7 @@ function validating()
 		//var_dump($ops_dep_ary);
 		if($ops_dep_ary[0] != null)
 		{
-			$ops_seq_qrs = 'select ops_sequence from $brandix_bts.tbl_style_ops_master WHERE style="'.$b_style.'" AND color = "'.$b_colors[0].'" AND operation_code in ('.implode(",",$ops_dep_ary).')';
+			$ops_seq_qrs = "select ops_sequence from $brandix_bts.tbl_style_ops_master WHERE style='".$b_style."' AND color = '".$b_colors[0]."' AND operation_code in (".implode(',',$ops_dep_ary).")";
 			//echo $ops_seq_qrs;
 			$result_ops_seq_qrs = $link->query($ops_seq_qrs);
 			while($row = $result_ops_seq_qrs->fetch_assoc()) 
@@ -627,7 +642,7 @@ function validating()
 			$ops_seq_dep[] = $ops_seq;
 		}
 		
-		$pre_ops_check = 'select operation_code,ops_sequence from $brandix_bts.tbl_style_ops_master where style="'.$b_style.'" and color = "'.$b_colors[0].'" and (ops_sequence = '.$ops_seq.' or ops_sequence in  ('.implode(",",$ops_seq_dep).'))';
+		$pre_ops_check = "select operation_code,ops_sequence from $brandix_bts.tbl_style_ops_master where style='".$b_style."' and color = '".$b_colors[0]."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep)."))";
 		//echo $pre_ops_check;
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
@@ -652,11 +667,11 @@ function validating()
 		}
 		foreach($pre_ops_code as $index => $op_code){
 			if($op_code != $b_op_id){
-				$b_query[$op_code] = 'INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES';
+				$b_query[$op_code] = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES";
 
 				// temp table data query
 
-				$b_query_temp[$op_code] = 'INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES';
+				$b_query_temp[$op_code] = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES";
 			}
 		}
 
@@ -670,9 +685,9 @@ function validating()
 			// (`qms_style`, `qms_schedule`,`qms_color`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`, `remarks`, `doc_no`, `input_job_no`)
 			
 
-			$bulk_insert = 'INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`mapped_color`) VALUES';
+			$bulk_insert = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`mapped_color`) VALUES";
 			// temp table data insertion query.........
-			$bulk_insert_temp = 'INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES';
+			$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
 
 			// $bulk_insert_post = $bulk_insert;
 			$bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks` ,`ref1`, `doc_no`,`input_job_no`,`operation_id`) VALUES";
@@ -765,6 +780,7 @@ function validating()
 				}else{
 					$final_query_001 = $query;
 				}
+				echo $final_query_001;
 				$bundle_creation_result_001 = $link->query($final_query_001);
 			}
 
@@ -789,7 +805,7 @@ function validating()
 			}else{
 				$final_query_000_temp = $bulk_insert_temp;
 			}
-			// echo $bulk_insert.'<br>';
+			//echo $bulk_insert.'<br>';
 			$bundle_creation_result_temp = $link->query($final_query_000_temp);
 			//$bundle_creation_post_result = $link->query($bulk_insert_post);
 			//echo $bulk_insert_rej;
@@ -845,9 +861,9 @@ function validating()
 					{
 						$sfcs_smv = $row_ops['smv'];
 					}
-					$bulk_insert_post = 'INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES';
+					$bulk_insert_post = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES";
 
-					$bulk_insert_post_temp = 'INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES';
+					$bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
 
 					$remarks_code = "";
 					// echo $tid.'<br>';
@@ -886,7 +902,7 @@ function validating()
 						$final_rej_qty = $b_old_rej_qty[$key] + $b_rej_qty[$key];
 						$left_over_qty = $b_in_job_qty[$key] - $final_rep_qty - $final_rej_qty;
 						if($schedule_count){
-							$query = 'UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= "'.$final_rep_qty.'", `rejected_qty`="'. $final_rej_qty.'", `left_over`= "'.$left_over_qty.'" , `scanned_date`="'. date('Y-m-d').'" where bundle_number ="'.$b_tid[$key].'" and operation_id = '.$b_op_id;
+							$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$b_op_id;
 							
 							$result_query = $link->query($query) or exit('query error in updating');
 						}else{
@@ -908,12 +924,12 @@ function validating()
 
 						if($post_ops_code != null)
 						{
-							$query_post = 'UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = "'.$final_rep_qty.'", `scanned_date`="'. date('Y-m-d').'" where bundle_number ="'.$b_tid[$key].'" and operation_id = '.$post_ops_code;
+							$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$post_ops_code;
 							$result_query = $link->query($query_post) or exit('query error in updating');
 						}
 						if($ops_dep)
 						{
-							$pre_send_qty_qry = 'select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ="'.$b_tid[$key].'" and operation_id in ('.implode(",",$dep_ops_codes).')';
+							$pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ='".$b_tid[$key]."' and operation_id in (".implode(',',$dep_ops_codes).")";
 							//echo $pre_send_qty_qry;
 							$result_pre_send_qty = $link->query($pre_send_qty_qry);
 							while($row = $result_pre_send_qty->fetch_assoc()) 
@@ -921,7 +937,7 @@ function validating()
 								$pre_recieved_qty = $row['recieved_qty'];
 							}
 
-							$query_post_dep = 'UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = "'.$pre_recieved_qty.'", `scanned_date`="'. date('Y-m-d').'" where bundle_number ="'.$b_tid[$key].'" and operation_id = '.$ops_dep;
+							$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$ops_dep;
 
 							$result_query = $link->query($query_post_dep) or exit('query error in updating');
 					
@@ -954,7 +970,7 @@ function validating()
 				// $sql_message = 'Data Updated Successfully';
 			}
 		}
-		 echo "<script>$('#storingfomr').submit()</script>";
+		echo "<script>$('#storingfomr').submit()</script>";
 	}
 ?>
 	

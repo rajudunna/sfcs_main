@@ -1,13 +1,15 @@
 
 
 <?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?>
-<?php include('../'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
+<?php include('../'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
 <?php
 
-  function m3_job_exists_check($doc_no,$operation,$joins_checkbox)
+  function m3_job_exists_check($doc_no,$operation1,$joins_checkbox)
   {
-	    include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    $sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no='".$doc_no."' and m3_op_des='$operation'";
+	  include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	  //echo $operation1;
+	   
+    $sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no='".$doc_no."' and m3_op_des='".$operation1."'";
 	//echo $sql;
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error1.6".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($sql_result)==0 && $joins_checkbox==2)
@@ -18,7 +20,7 @@
 		{
 			$original_docs=$sql_row['doc_no'];
 		}
-		$sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no IN (".$original_docs.") and m3_op_des='$operation'";
+		$sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no IN (".$original_docs.") and m3_op_des='$operation1'";
 		$sql_result11=mysqli_query($link, $sql) or exit("Sql Error1.9".mysqli_error($GLOBALS["___mysqli_ston"]));
 		return mysqli_num_rows($sql_result11);
 	}
@@ -3943,7 +3945,8 @@ $ex_s01=($c_s01-$o_s01);
  	$t=0;
  	$colspan=" colspan='2'";
 	
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and cat_ref='$cat_ref' and remarks=\"Pilot\" order by acutno";
+$sql="select * from $bai_pro3.plandoc_stat_log where order_tid = '$order_tid' and cat_ref='$cat_ref' and remarks=\"Pilot\" order by acutno";
+//echo $sql;
 // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error104".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -4151,8 +4154,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 			  	  echo "<td class=xl9214270 colspan='2' style='border-top:none'>Pilot($cutno)</td>";
 			
-			  
-			  echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none'>".ims_sizes($order_tid,'','','',$sizes_db[$m],$link)."</td>";
+				// echo $order_tid;
+				// echo $sizes_db[$m];
+				//echo "functoin result".ims_sizes($order_tid,'','','',$sizes_db[$m],$link);
+			 echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none'>".ims_sizes($order_tid,'','','',$sizes_db[$m],$link)."</td>";
 			   echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none'>".$qty_db[$m]."</td>";
 			  echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none'>$docketno</td>";
 			  echo "<td class=xl9214270 colspan='2' style='border-top:none;border-left:none' $colspan>";

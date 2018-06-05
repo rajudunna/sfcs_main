@@ -1,21 +1,15 @@
 <?php
-include('../'.getFullURL($_GET['r'],"order_status_buffer.php",'R'));
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'order_status_buffer.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0043",$username,1,$group_id_sfcs); 
 
 ?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
 <?php
 error_reporting(0);
 set_time_limit(2000);
-
 ?>
-
-
-
 <html>
 <head>
 
@@ -31,7 +25,7 @@ color:black;
 padding-left: 5px;
 padding-right: 5px;
 }
-</style>	
+</style>
 
 
 <SCRIPT>
@@ -76,8 +70,8 @@ function uncheckall()
 }
 
 </script>
-<link rel="stylesheet" type="text/css" media="all" href="<?= getFullURLLevel($_GET['r'],'reports/jsdatepick-calendar/jsDatePick_ltr.min.css',0,'R'); ?>" />
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'reports/jsdatepick-calendar/jsDatePick.min.1.3.js',0,'R'); ?>"></script>
+<!--<link rel="stylesheet" type="text/css" media="all" href="<?= getFullURLLevel($_GET['r'],'common/js/jsdatepick-calendar/jsDatePick_ltr.min.css',1,'R'); ?>" />
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'reports/jsdatepick-calendar/jsDatePick.min.1.3.js',0,'R'); ?>"></script>-->
 <script type="text/javascript">
 	window.onload = function()
 	{
@@ -93,16 +87,18 @@ function uncheckall()
 		});
 	};
 </script>
-<script language="javascript" type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'styles/dropdowntabs.js','R') ?>"></script>
-<link rel="stylesheet" href="<?= '../'.getFullURL($_GET['r'],'styles/ddcolortabs.css','R') ?>" type="text/css" media="all" />
+<script language="javascript" type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R') ?>"></script>
+<link rel="stylesheet" href="<?= '../'.getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R') ?>" type="text/css" media="all" />
+<!--<link href="<?= '../'.getFullURLLevel($_GET['r'],'common/css/table_style.css',3,'R') ?>" rel="stylesheet" type="text/css" />
 
-<link href="<?= '../'.getFullURL($_GET['r'],'table_style.css','R') ?>" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'jquery-1.3.2.js','R') ?>" ></script>
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />-->
+<script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
 
-<!--<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'jquery-1.3.2.js','R') ?>" ></script>-->
-<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'table2CSV.js','R') ?>" ></script>
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+
 </head>
-<div class='panel panel-primary'><div class='panel-heading'><h3>Order Status Report</h3></div><div class='panel-body'>
+
+<div class='panel panel-primary'><div class='panel-heading'>Order Status Report</div><div class='panel-body'>
 <form method="POST" name="test" action="?r=<?php echo $_GET['r'];?>">
 <?php
 	$style=$_POST['style'];
@@ -115,6 +111,7 @@ function uncheckall()
 	$from_date=$_POST['from_date'];
 	$to_date=$_POST['to_date'];
 	
+	echo $style."".$schedule."".$cpo;
 //NEW
 
 $cpo_code="";
@@ -149,8 +146,6 @@ $cpo_code="";
 	{
 		$schedule_code="'".$schedule[$i]."'".", ".$schedule_code;
 	}
-
-
 	
 	$color_code="";
 	for($i=0;$i<sizeof($color);$i++)
@@ -201,7 +196,7 @@ $cpo_code="";
 
 
 	
-	echo "<div class='table-responsive'><table class='table'>";
+	echo "<div class='table-responsive' id='main_content'><table class='table table-bordered'>";
 	echo "<tr class='tblheading'>";
 	echo "<td bgcolor=\"#66FF66\">CPO (".sizeof($cpo).")</td>";
 	echo "<td bgcolor=\"#66FF66\">Buyer Division (".sizeof($buyer_div).")</td>";
@@ -216,7 +211,8 @@ $cpo_code="";
 		echo "<td>";
 	echo '<div class="scroll">';
 	$sql="select distinct CPO from $order_status_buffer $criteria order by CPO";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$count = $mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$check=0;
@@ -242,7 +238,7 @@ $cpo_code="";
 	
 	
 	$sql="select distinct buyer_div from $order_status_buffer $criteria order by buyer_div";
-	
+	echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -426,6 +422,11 @@ $cpo_code="";
 </form>
 
 <?php
+
+	if($row_count == 0){
+			echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
+		}
+
 if(isset($_POST['submit1']))
 {
 	$style=$_POST['style'];
@@ -785,3 +786,16 @@ function getCSVData(){
 
 
 	
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -32,8 +32,8 @@ function verify_date(){
 	var to_date   = $('#edate').val();
 
 	if(from_date.length > 2 || to_date.length > 2){
-		$('#sdate').val(from_date.substr(0,2));
-		$('#edate').val(to_date.substr(0,2));
+		$('#sdate').val(0);
+		$('#edate').val(0);
 		sweetAlert('Only 2 digits are allowed','','info');
 	}
 
@@ -41,11 +41,20 @@ function verify_date(){
 	if(to_date < from_date){
 		$('#edate').val($('#sdate').val());
 		sweetAlert('End Week must not be less than Start Week','','warning');
+		return false;
+	}
+
+	if(to_date > 53 || from_date > 53){
+		$('#sdate').val(0);
+		$('#edate').val(0);
+		sweetAlert('Week should not exceed 53','','warning');
+		return false;
 	}
 	if(to_date <0 || from_date<0){
 		sweetAlert('Weeks Must not be negative','','warning');
 		$('#sdate').val(1);
 		$('#edate').val(1);
+		return false;
 	}
 }
 
@@ -87,11 +96,11 @@ function verify_year(){
 		<form action='?r=<?= $form_action ?>' method='POST'>
 			<div class='col-sm-2 form-group'>
 				<label for='sdat'>Week Start </label>
-				<input required class='form-control' type="number"  id='sdate'  onkeydown='return limit_date(event)' onchange='verify_date()' size='2' name="sdat" placeholder='00' >
+				<input required class='form-control integer' type="text"  id='sdate' onkeydow='return limit_date(event)' size='2' name="sdat" placeholder='0' >
 			</div>
 			<div class='col-sm-2 form-group'>
 				<label for='edat'>Week End </label>
-				<input required class='form-control' type="number"  id='edate'  onkeydown='return limit_date(event)' onchange='verify_date()' size='2' name="edat" placeholder='00'>
+				<input required class='form-control' type="text"  id='edate'  onkeydow='return limit_date(event)' size='2' name="edat" placeholder='1'>
 			</div>
 			<div class='col-sm-2 form-group'>
 				<label for='year'>Year </label>
@@ -99,7 +108,7 @@ function verify_year(){
 			</div>
 			<div class='col-sm-2 form-group'>
 				<label for='cat'>Criteria </label>
-				<select required class='form-control' name="cat">
+				<select required class='form-control' name="cat"  required>
 					<option value="0">Select</option>
 					<option value="1">Reported Date</option>
 					<option value="2">Ex-Factory Date</option>
@@ -111,7 +120,8 @@ function verify_year(){
 			</div>
 			<div class='col-sm-1'>
 				<br>
-				<input class='btn btn-warning' type="submit" name="submit" value="submit" onclick="document.getElementById('submit').style.display='none'; document.getElementById('msg').style.display='';" >
+				<input class='btn btn-warning' type="submit" name="submit" value="submit"
+				 onclick='return verify_date()' >
 			</div>
 		</form>
 <br><br>
@@ -314,10 +324,11 @@ for($i=0;$i<sizeof($schedules_array1);$i++) //----------------Main For Loop-----
 		}//closing while 2
 	}//closing while 1	
 }//---------------closing Main For loop-------------------------------------
-// if($row_count == 0){
-// 	echo "<center><b style='color:#ff0000'>No Data Found</b></center>";
-// }
+
 echo "</table>";
+if($row_count == 0){
+ 	echo "<center><b style='color:#ff0000'>No Data Found</b></center>";
+}
 
 if($username=="amulyap" or $username="kirang")
 {

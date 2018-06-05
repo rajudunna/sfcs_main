@@ -281,16 +281,15 @@ if($sql_num_check>0)
 			$status=$sql_row['status'];
 			$available=$qty_rec-$sql_row['qty_issued']+$sql_row['qty_ret'];
 
-			
 			echo "<tr>";
 			if($status==0)
 			{
 				echo "<td>$location</td><td>$box</td><td>$available</td>";
-				echo '<td><input type="text" class="form-control integer" name="qty_issued[]" value="" onchange="if(check1(this.value, '.$available.')==1010){ this.value=0;} "  ></td>';
+				echo '<td><input type="text" class="form-control float" name="qty_issued[]" value="" onchange="if(check1(this.value, '.$available.')==1010){ this.value=0;} "  ></td>';
 				
 				echo '<td><select name="n_location[]" class="select2_single form-control">';
 				echo "<option value=\"0\">Select Location</option>";
-				$sql1="select * from $bai_rm_pj1.location_db where status=1 order by location_id,sno";
+				$sql1="select * from $bai_rm_pj1.location_db where status=1 and location_id NOT IN ('".$location."') order by location_id,sno";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{

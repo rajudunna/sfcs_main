@@ -1,0 +1,184 @@
+
+
+
+
+
+
+
+<!-- To Disable Back Space-->
+<script language="JavaScript">
+
+<!--
+  javascript:window.history.forward(1);
+//-->
+</script>
+
+<!-- To Disable Right Click-->
+<script language="JavaScript">
+<!--
+
+//Disable right mouse click Script
+//By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
+//For full source code, visit http://www.dynamicdrive.com
+
+var message="Function Disabled!";
+
+///////////////////////////////////
+function clickIE4(){
+if (event.button==2){
+alert(message);
+return false;
+}
+}
+
+function clickNS4(e){
+if (document.layers||document.getElementById&&!document.all){
+if (e.which==2||e.which==3){
+alert(message);
+return false;
+}
+}
+}
+
+if (document.layers){
+document.captureEvents(Event.MOUSEDOWN);
+document.onmousedown=clickNS4;
+}
+else if (document.all&&!document.getElementById){
+document.onmousedown=clickIE4;
+}
+
+document.oncontextmenu=new Function("alert(message);return false")
+
+// --> 
+</script>
+
+<!-- Disable Selection -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+	<title>BAI BTS -POPUP :: Master Performance Reports</title>
+<style>
+	<style>
+body
+{
+	font-family:Arial;
+	font-size:12px;
+}
+
+table tr
+{
+	border: 1px solid black;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table th
+{
+	border: 1px solid black;
+	text-align: center;
+    	background-color: BLUE;
+	color: WHITE;
+white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+table td.new
+{
+	background-color: BLUE;
+	color: WHITE;
+}
+
+table{
+	font-family:Arial;
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+}
+
+
+h2
+{
+	font-family:Arial;
+}
+h1{
+	font-family:Arial;
+}
+h3{
+	font-family:Arial;
+}
+</style>
+
+<style rel="stylesheet" type="text/css">
+#div-1a {
+ position:absolute;
+ top:25px;
+ right:0;
+ width:auto;
+float:right;
+}
+</style>
+	
+
+<script src="js/jquery.min1.7.1.js"></script>
+<script src="ddtf.js"></script>
+
+
+<link rel="stylesheet" type="text/css" media="all" href="jsdatepick-calendar/jsDatePick_ltr.min.css" />
+<script type="text/javascript" src="jsdatepick-calendar/jsDatePick.min.1.3.js"></script>
+<script type="text/javascript" src="datetimepicker_css.js"></script>
+
+</head>
+<body>
+<h2>Day wise Performance Report</h2>
+
+<form method="POST" action="master_performance_report.php" name="input">
+
+<span id="msg"><center><br/><br/><br/><h1><font color="red">Please wait while preparing report...</font></h1></center></span>Start Date: <input id="demo1" onclick="javascript:NewCssCal('demo1','yyyymmdd','dropdown')" type="text" name="sdate" size="8" value="2018-05-26"> End Date: <input id="demo2" onclick="javascript:NewCssCal('demo2','yyyymmdd','dropdown')" type="text" size="8" name="edate" value="2018-05-26">
+Report Type:<select name="report_type">
+	<option value="1" >Day wise Style/Schedule/Color Performance</option>
+	<option value="2" >Day wise Style/Schedule/Color/Module/Shift Performance</option>	
+	<option value="3" >Day wise Bundle Performance</option>	
+	<option value="4" >Module wise Production WIP</option>	
+	<option value="5" Selected>Schedule wise Carton Pack WIP</option>	
+	<option value="6" >Style & Colour wise Inlay WIP</option>
+	<option value="7" >Style & Colour wise Embellishment Report</option>	
+	</select> 
+
+<input type="submit" name="submit" value="submit" onclick="document.getElementById('submit').style.display='none'; document.getElementById('msg').style.display='';"/>
+
+
+</form>
+
+<span id="msg" style="display:none;"><h4>Please Wait.. While Processing The Data..<h4></span>
+
+<h2>Schedule wise Carton Pack WIP </h2><h4>LU: 2018-26-05 18:30:01 </h4><h3></h3><table id='table_format'><tr><th>Style</th><th>Schedule</th><th>Country Block</th><th>Ratio</th><th>Order Cartons</th><th>Produced Cartons</th><th>FG Cartons</th><th>Packing Balances (PCS)</th><th>Packing Balances (Cartons)</th></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00730D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00730D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500252','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500252</span></td><td>CB7</td><td>14</td><td>1953</td><td>1796</td><td>1591</td><td>3621</td><td>205</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00730D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00730D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500255','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500255</span></td><td>CB4</td><td>14</td><td>3397</td><td>3276</td><td>2979</td><td>4814</td><td>297</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00730D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00730D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500256','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500256</span></td><td>CB8            </td><td>30</td><td>813</td><td>799</td><td>794</td><td>146</td><td>5</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00730D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00730D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500258','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500258</span></td><td>CB6</td><td>14</td><td>4490</td><td>104</td><td>0</td><td>5867</td><td>104</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y01528D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y01528D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500343','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500343</span></td><td>CB4-HU/S</td><td>14</td><td>2018</td><td>1968</td><td>1828</td><td>2347</td><td>140</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y01528D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y01528D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500346','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500346</span></td><td>CB8-OSDE</td><td>14</td><td>2936</td><td>2899</td><td>2851</td><td>656</td><td>48</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y01528D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y01528D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500347','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500347</span></td><td>CB1-DE-(</td><td>14</td><td>20495</td><td>17119</td><td>16696</td><td>9860</td><td>423</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y01208D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y01208D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500439','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500439</span></td><td>CB2-FR-(</td><td>48</td><td>1974</td><td>1908</td><td>1826</td><td>9207</td><td>82</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y01214D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y01214D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500598','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500598</span></td><td>CB5-ES/I</td><td>70</td><td>4794</td><td>3897</td><td>3483</td><td>49952</td><td>414</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y01218D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y01218D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=500608','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">500608</span></td><td>CB5-(BCN</td><td>48</td><td>3224</td><td>2090</td><td>1749</td><td>50626</td><td>341</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00790D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00790D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=501188','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">501188</span></td><td>CB1</td><td>16</td><td>20922</td><td>20158</td><td>19774</td><td>15292</td><td>384</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y01208D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y01208D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=518428','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">518428</span></td><td>CB5-ES-N</td><td>48</td><td>221</td><td>194</td><td>173</td><td>2136</td><td>21</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y01213D7       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y01213D7       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=518440','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">518440</span></td><td>CB5-ES-N</td><td>70</td><td>93</td><td>58</td><td>0</td><td>6428</td><td>58</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y97627M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y97627M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524762','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524762</span></td><td>CB8-OSCZ-(RTM) </td><td>48</td><td>45</td><td>45</td><td>0</td><td>2264</td><td>45</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y97627M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y97627M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524763','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524763</span></td><td>CB3-FI/SE-(RTM)</td><td>48</td><td>620</td><td>330</td><td>0</td><td>19617</td><td>330</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00571M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00571M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524769','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524769</span></td><td>CB6-DK-(</td><td>16</td><td>251</td><td>242</td><td>0</td><td>4037</td><td>242</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00571M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00571M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524770','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524770</span></td><td>CB1-DE-(</td><td>16</td><td>11955</td><td>11633</td><td>11031</td><td>12915</td><td>602</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00571M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00571M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524771','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524771</span></td><td>CB2-FR-(BCN)</td><td>16</td><td>3772</td><td>3220</td><td>380</td><td>49077</td><td>2840</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00613M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00613M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524776','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524776</span></td><td>CB5-IT-(KOP)</td><td>28</td><td>1413</td><td>1357</td><td>513</td><td>24247</td><td>844</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00563M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00563M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524779','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524779</span></td><td>CB4-SI-(</td><td>16</td><td>210</td><td>206</td><td>198</td><td>197</td><td>8</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00563M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00563M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524782','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524782</span></td><td>CB1-DE-(</td><td>16</td><td>8369</td><td>8247</td><td>7553</td><td>12183</td><td>694</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00563M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00563M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524783','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524783</span></td><td>CB5-IT-(BCN)</td><td>16</td><td>848</td><td>666</td><td>0</td><td>12099</td><td>666</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y02423M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y02423M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524785','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524785</span></td><td>CB7</td><td>12</td><td>401</td><td>397</td><td>0</td><td>4795</td><td>397</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y02423M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y02423M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524786','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524786</span></td><td>CB4</td><td>12</td><td>670</td><td>658</td><td>0</td><td>7936</td><td>658</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y02423M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y02423M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524787','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524787</span></td><td>CB3-A</td><td>12</td><td>1680</td><td>432</td><td>0</td><td>6370</td><td>432</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y02397M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y02397M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524798','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524798</span></td><td>CB1</td><td>12</td><td>19925</td><td>3362</td><td>0</td><td>41092</td><td>3362</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00683M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00683M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524799','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524799</span></td><td>CB6-DK-(RTM)</td><td>28</td><td>270</td><td>238</td><td>0</td><td>7425</td><td>238</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00683M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00683M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=524800','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">524800</span></td><td>CB1-DE-(RTM)</td><td>28</td><td>5466</td><td>306</td><td>0</td><td>16857</td><td>306</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y97143M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y97143M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=527425','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">527425</span></td><td>CB2-FR-(BCN)</td><td>48</td><td>2179</td><td>233</td><td>0</td><td>19924</td><td>233</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00683M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00683M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=527671','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">527671</span></td><td>CB7-RS/GR/CY-(K</td><td>28</td><td>498</td><td>491</td><td>449</td><td>1448</td><td>42</td></tr><tr><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?style=Y00683M8       ','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">Y00683M8       </span></td><td><span style="cursor: pointer; cursor: hand; color:blue;" onclick="Popup=window.open('popup.php?schedule=527672','Popup2','toolbar=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;">527672</span></td><td>CB2-FR-(RTM)</td><td>28</td><td>2108</td><td>2036</td><td>0</td><td>58376</td><td>2036</td></tr></table><script>
+jQuery('#table_format').ddTableFilter();
+</script>
+
+
+<div id="div-1a">
+<form  name="input" action="export_to_excel.php" method="post">
+<input type="hidden" name="table" value="<h2>Schedule wise Carton Pack WIP</h2><h4>LU: 2018-26-05 18:30:01 </h4><h3></h3><table id='table_format'><tr><th>Style</th><th>Schedule</th><th>Country Block</th><th>Ratio</th><th>Order Cartons</th><th>Produced Cartons</th><th>FG Cartons</th><th>Packing Balances (PCS)</th><th>Packing Balances (Cartons)</th></tr><tr><td>Y00730D7       </td><td>500252</td><td>CB7</td><td>14</td><td>1953</td><td>1796</td><td>1591</td><td>3621</td><td>205</td></tr><tr><td>Y00730D7       </td><td>500255</td><td>CB4</td><td>14</td><td>3397</td><td>3276</td><td>2979</td><td>4814</td><td>297</td></tr><tr><td>Y00730D7       </td><td>500256</td><td>CB8            </td><td>30</td><td>813</td><td>799</td><td>794</td><td>146</td><td>5</td></tr><tr><td>Y00730D7       </td><td>500258</td><td>CB6</td><td>14</td><td>4490</td><td>104</td><td>0</td><td>5867</td><td>104</td></tr><tr><td>Y01528D7       </td><td>500343</td><td>CB4-HU/S</td><td>14</td><td>2018</td><td>1968</td><td>1828</td><td>2347</td><td>140</td></tr><tr><td>Y01528D7       </td><td>500346</td><td>CB8-OSDE</td><td>14</td><td>2936</td><td>2899</td><td>2851</td><td>656</td><td>48</td></tr><tr><td>Y01528D7       </td><td>500347</td><td>CB1-DE-(</td><td>14</td><td>20495</td><td>17119</td><td>16696</td><td>9860</td><td>423</td></tr><tr><td>Y01208D7       </td><td>500439</td><td>CB2-FR-(</td><td>48</td><td>1974</td><td>1908</td><td>1826</td><td>9207</td><td>82</td></tr><tr><td>Y01214D7       </td><td>500598</td><td>CB5-ES/I</td><td>70</td><td>4794</td><td>3897</td><td>3483</td><td>49952</td><td>414</td></tr><tr><td>Y01218D7       </td><td>500608</td><td>CB5-(BCN</td><td>48</td><td>3224</td><td>2090</td><td>1749</td><td>50626</td><td>341</td></tr><tr><td>Y00790D7       </td><td>501188</td><td>CB1</td><td>16</td><td>20922</td><td>20158</td><td>19774</td><td>15292</td><td>384</td></tr><tr><td>Y01208D7       </td><td>518428</td><td>CB5-ES-N</td><td>48</td><td>221</td><td>194</td><td>173</td><td>2136</td><td>21</td></tr><tr><td>Y01213D7       </td><td>518440</td><td>CB5-ES-N</td><td>70</td><td>93</td><td>58</td><td>0</td><td>6428</td><td>58</td></tr><tr><td>Y97627M8       </td><td>524762</td><td>CB8-OSCZ-(RTM) </td><td>48</td><td>45</td><td>45</td><td>0</td><td>2264</td><td>45</td></tr><tr><td>Y97627M8       </td><td>524763</td><td>CB3-FI/SE-(RTM)</td><td>48</td><td>620</td><td>330</td><td>0</td><td>19617</td><td>330</td></tr><tr><td>Y00571M8       </td><td>524769</td><td>CB6-DK-(</td><td>16</td><td>251</td><td>242</td><td>0</td><td>4037</td><td>242</td></tr><tr><td>Y00571M8       </td><td>524770</td><td>CB1-DE-(</td><td>16</td><td>11955</td><td>11633</td><td>11031</td><td>12915</td><td>602</td></tr><tr><td>Y00571M8       </td><td>524771</td><td>CB2-FR-(BCN)</td><td>16</td><td>3772</td><td>3220</td><td>380</td><td>49077</td><td>2840</td></tr><tr><td>Y00613M8       </td><td>524776</td><td>CB5-IT-(KOP)</td><td>28</td><td>1413</td><td>1357</td><td>513</td><td>24247</td><td>844</td></tr><tr><td>Y00563M8       </td><td>524779</td><td>CB4-SI-(</td><td>16</td><td>210</td><td>206</td><td>198</td><td>197</td><td>8</td></tr><tr><td>Y00563M8       </td><td>524782</td><td>CB1-DE-(</td><td>16</td><td>8369</td><td>8247</td><td>7553</td><td>12183</td><td>694</td></tr><tr><td>Y00563M8       </td><td>524783</td><td>CB5-IT-(BCN)</td><td>16</td><td>848</td><td>666</td><td>0</td><td>12099</td><td>666</td></tr><tr><td>Y02423M8       </td><td>524785</td><td>CB7</td><td>12</td><td>401</td><td>397</td><td>0</td><td>4795</td><td>397</td></tr><tr><td>Y02423M8       </td><td>524786</td><td>CB4</td><td>12</td><td>670</td><td>658</td><td>0</td><td>7936</td><td>658</td></tr><tr><td>Y02423M8       </td><td>524787</td><td>CB3-A</td><td>12</td><td>1680</td><td>432</td><td>0</td><td>6370</td><td>432</td></tr><tr><td>Y02397M8       </td><td>524798</td><td>CB1</td><td>12</td><td>19925</td><td>3362</td><td>0</td><td>41092</td><td>3362</td></tr><tr><td>Y00683M8       </td><td>524799</td><td>CB6-DK-(RTM)</td><td>28</td><td>270</td><td>238</td><td>0</td><td>7425</td><td>238</td></tr><tr><td>Y00683M8       </td><td>524800</td><td>CB1-DE-(RTM)</td><td>28</td><td>5466</td><td>306</td><td>0</td><td>16857</td><td>306</td></tr><tr><td>Y97143M8       </td><td>527425</td><td>CB2-FR-(BCN)</td><td>48</td><td>2179</td><td>233</td><td>0</td><td>19924</td><td>233</td></tr><tr><td>Y00683M8       </td><td>527671</td><td>CB7-RS/GR/CY-(K</td><td>28</td><td>498</td><td>491</td><td>449</td><td>1448</td><td>42</td></tr><tr><td>Y00683M8       </td><td>527672</td><td>CB2-FR-(RTM)</td><td>28</td><td>2108</td><td>2036</td><td>0</td><td>58376</td><td>2036</td></tr></table>">
+<input type="hidden" name="file_name" value="Schedule_wise_Carton_Pack_WIP_20180526">
+<input type="submit" name="submit" value="Export to Excel">
+</form>
+</div>
+
+<script type="text/javascript">
+ 
+       document.getElementById("msg").style.display = 'none';
+</script>
+</body>
+</html>
+

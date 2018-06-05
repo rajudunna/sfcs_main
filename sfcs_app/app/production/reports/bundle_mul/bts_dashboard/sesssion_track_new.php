@@ -1,0 +1,1 @@
+<?php $current_session='on'; ?><?php $current_session='off'; ?>

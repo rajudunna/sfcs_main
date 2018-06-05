@@ -191,6 +191,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$pkg_no=$sql_row['pkg_no'];
 	$grn_date=$sql_row['grn_date'];
 	$uom=$sql_row['uom'];
+	$grn_type=$sql_row['grn_type'];
 	
 	$message="<font color=green><b>In Stock</b></font>";
 	if($sql_row['backup_status']==1)
@@ -322,7 +323,11 @@ echo "<div class='panel panel-default'>
 					}else{
 						echo "<a href=\"#\" class=\"btn btn-danger btn-xs\"><i class=\"fa fa-print\"></i>&nbsp;No Rolls Updated</a>";
 					}
-		echo "</div>
+					
+		echo "</div>";
+		echo "<div class='col-md-3'>
+					<b>GRN Type : </b>$grn_type
+			</div>
 			</div>
 		</div></div>";
 

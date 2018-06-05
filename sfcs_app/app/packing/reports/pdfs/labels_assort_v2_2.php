@@ -1,7 +1,7 @@
-<?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
-<?php include('../../common/php/functions.php'); ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/js/mpdf50/mpdf.php'); ?>
-<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
+<?php 
+include("../../config/config.php");
+include("../../config/functions.php");
+$mpdf = new \Mpdf\Mpdf();?>
 
 <?php
 $order_tid=$_GET['order_tid'];
@@ -596,11 +596,8 @@ $sql="update $bai_pro3.bai_orders_db_confirm set carton_print_status=1 where ord
 //==============================================================
 //echo '../'.getFullURLLevel($_GET['r'],'mpdf.php',1,'R');
 
-ob_end_clean();
-$mpdf=new mPDF('',array(101.6,50.8),0,'',0,0,0,0,0,0,'P'); 
-$mpdf->debug = true;
-$mpdf->WriteHTML($html);
-$mpdf->Output(); 
+$mpdf->WriteHTML($html); 
+$mpdf->Output();
 
 exit;
 

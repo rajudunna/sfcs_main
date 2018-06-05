@@ -3,10 +3,7 @@
 
 <?php 
 // include("header_scripts.php");  
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));   
-$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);  
+include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 ?> 
 
 <?php  
@@ -14,7 +11,10 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 //Add extrac cut quantities to first cut of first schedule 
 $add_excess_qty_to_first_sch=1; //0-Yes, 1-NO 
 ?> 
-<?php include("../".getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 
+// error_reporting(0);
+?>
+
 <script> 
 
 function firstbox() 
@@ -861,10 +861,15 @@ if(isset($_POST['submit']))
 				
 			}
 		}
-		echo " <div class='alert alert-success alert-dismissible'>
-				<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
-				<strong>Success!</strong> Successfully Splitting Completed.
-				</div>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&color=$color&style=$style&schedule=$order_del_no\";
+			}
+		</script>";
+		// echo " <div class='alert alert-success alert-dismissible'>
+		// 		<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+		// 		<strong>Success!</strong> Successfully Splitting Completed.
+		// 		</div>";
 	} 
 	else 
 	{ 		

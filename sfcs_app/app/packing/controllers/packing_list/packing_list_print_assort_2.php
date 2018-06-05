@@ -1,5 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
-<?php include('../../common/php/functions.php'); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');   ?>
+<?php//include('../../../../common/config/functions.php'); ?>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 
 <?php
@@ -286,7 +287,7 @@ $carton_qtys=array($carton_xs,$carton_s,$carton_m,$carton_l,$carton_xl,$carton_x
 //ERROR CHECK POINT
 
 $sql="select sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no=$delivery and order_col_des=\"$color\"";
-mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+// mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {

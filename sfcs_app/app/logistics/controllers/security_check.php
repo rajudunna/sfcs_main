@@ -48,12 +48,12 @@ $view_access=user_acl("SFCS_0106",$username,1,$group_id_sfcs);
 function checkandupdate()
 {
 	document.getElementById('submitbtn').style.visibility="hidden";
-	document.getElementById('process_message').style.visibility="visible";
+	//document.getElementById('process_message').style.visibility="visible";
 	
 }
 </script>
     
-<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font></h2></div>
+<div id="process_message" style='display:none'><h2><font color="red">Please wait while updating data!!!</font></h2></div>
 <div class='panel panel-primary'>
 		<div class='panel-heading'>
 			<b style='font-size : 13px'>Security Checkout Panel</b>
@@ -62,7 +62,7 @@ function checkandupdate()
 			<form name="test" action="index.php?r=<?= $_GET['r'] ?>" method="post" enctype="multipart/form data">
 				<div class="row">
 					<div class="col-sm-2 right big"><label>Enter Dispatch Number : </label></div>
-					<div class='col-sm-2'><input class='form-control' type="text" name="note_no" value=""></div>
+					<div class='col-sm-2'><input class='form-control integer' type="text" name="note_no" value=""></div>
 					<div class='col-sm-1'><input class='btn btn-success' type="Submit" name="submit" Value="Submit" id="submitbtn" onclick="javascript:checkandupdate();"></div>
 				</div>
 			</form>

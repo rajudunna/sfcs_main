@@ -91,6 +91,7 @@ if (newwindow.location && !newwindow.closed) {
 		<?php
 		$x=1; 
 		$sql="SELECT * FROM $bai_pro3.bai_qms_destroy_log order by qms_des_note_no";
+		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 		$url = getFullURLLevel($_GET['r'],'surplus_aod.php',0,'R');
 		while($sql_row=mysqli_fetch_array($sql_result))

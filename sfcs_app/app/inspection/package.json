@@ -1,0 +1,17 @@
+{ 
+"name" : "inspection",
+"version" : "1.0",
+"description" : "This module is using for inspection lot wise",
+	"menus" : {
+	  "Trims Inspection Update" : "trims_inspection_update.php",
+	  "Roll-Wise Fabric Inspection Update" :"C_Tex_Index.php",
+	  "Supplier Claim Request Form" :"Supplier_Claim_Request_Form.php",
+	  "Supplier Performance Report Update" :"supplier_perf_v2.php",
+	  
+	  "Inspection Report" :"C_Tex_Index_view.php",
+	  "Inspection Summary" :"Inspection_Report.php",
+	  "Supplier Claim Log" :"Supplier_Claim_Log_Form.php",
+	  "Supplier Performance Report" :"supplier_perf_v2_report.php",
+	  }
+  
+  }

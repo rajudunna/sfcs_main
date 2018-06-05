@@ -1,7 +1,7 @@
 <?php
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+// include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 $view_access=user_acl("SFCS_0051",$username,1,$group_id_sfcs); 
 // $rep3 = getFullURL($_GET['r'],'rep3.php','N'); 
 // echo $rep3;
@@ -130,12 +130,12 @@ function verify_date()
 <br/>
 <div class="row">
 	<!-- <div class="col-md-1"></div> -->
-	<div class="col-md-3">
+	<div class="col-sm-3">
 	<label>Select Style:</label>
 	<select name="style" onchange="firstbox();"  class="form-control">
 	<?php
 		$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm order by order_style_no";	
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -156,12 +156,12 @@ function verify_date()
 	?>
 	</select>
 	</div>
-	<div class="col-md-3">
+	<div class="col-sm-3">
 	<label>Select Schedule:</label>
 	<select name="schedule" onchange="secondbox();"  class="form-control">
 	<?php
 		$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" order by order_del_no";	
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -182,7 +182,7 @@ function verify_date()
 	?>
 	</select>
 	</div>
-	<div class="col-md-3">
+	<div class="col-sm-3">
 	<label>Select Color:</label>
 	<select name="color" onchange="thirdbox();"  class="form-control">
 	<?php
@@ -285,8 +285,6 @@ function verify_date()
 			{
 				$query_add=" and qms_color=\"$sch_color\" ";
 			}
-
-
 			$grand_vals=array();
 			for($i=0;$i<33;$i++) {	$grand_vals[$i]=0;	}
 			$grand_output=0;
@@ -302,7 +300,7 @@ function verify_date()
 				{
 					$sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand) and length(size)>0 group by delivery,color,size";
 				}
-				
+				echo $sql1;
 			}
 			if($choice==2)
 			{

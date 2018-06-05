@@ -1,6 +1,6 @@
 <?php 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
-include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 set_time_limit(2000);
 ?>
 
@@ -65,8 +65,9 @@ $end_date_w=date("Y-m-d",($end_date_w+(60*60*24*6)));
 
 <?php
 
-$sql="select shipment_plan_id, fastreact_plan_id, plan_sec1,plan_sec2,plan_sec3,plan_sec4,plan_sec5,plan_sec6 from $bai_pro4.shipfast_sum where shipment_plan_id in (select ship_tid from week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\")";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select shipment_plan_id, fastreact_plan_id, plan_sec1,plan_sec2,plan_sec3,plan_sec4,plan_sec5,plan_sec6 from $bai_pro4.shipfast_sum where shipment_plan_id in (select ship_tid from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\")";
+// echo $sql;
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$ship_tid=$sql_row['shipment_plan_id'];
@@ -79,7 +80,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sec6=$sql_row['plan_sec6'];
 	
 	$sql1="select plan_sec1,plan_sec2,plan_sec3,plan_sec4,plan_sec5,plan_sec6 from $bai_pro4.week_delivery_plan where shipment_plan_id=$ship_tid";
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		if($sec1>$sql_row1['plan_sec1']) { 	}
@@ -109,10 +110,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	
 	$sql1="update $bai_pro4.week_delivery_plan set plan_sec1=$sec1,plan_sec2=$sec2,plan_sec3=$sec3,plan_sec4=$sec4,plan_sec5=$sec5,plan_sec6=$sec6,fastreact_plan_id=$fast_id where shipment_plan_id=$ship_tid";
-$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 
-echo "<h2><font color=green>Successfully Updated.</font></h2>";
+echo "<script>sweetAlert('Successfully Updated.');</script>";
 $report = getFullURLLevel($_GET['r'],'report.php',0,'N');
 
 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = '$report' }</script>";

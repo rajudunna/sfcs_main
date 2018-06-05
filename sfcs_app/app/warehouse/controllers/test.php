@@ -9,20 +9,40 @@ include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 
 <?php //include("header_scripts.php"); ?>
 <script type="text/javascript">
-	function check_all()
+	function check_all(e)
 	{
+		//alert(e);
 		var style=document.getElementById('style').value;
 		var schedule=document.getElementById('schedule').value;
 		var color=document.getElementById('color').value;
-		if(style=='NIL' || schedule=='NIL' || color=='NIL')
+		if(style=='NIL')
 		{
-			sweetAlert('Please Select Style ,Schedule and Color','','warning');
+			sweetAlert('Please Select Style','','warning');
 			return false;
 		}
-		else
-		{
-			return true;
+		if(schedule=='NIL'){
+			sweetAlert('Please Select Schedule','','warning');
+			return false;
 		}
+		if(color=='NIL'){
+			sweetAlert('Please Select Color','','warning');
+			return false;
+		}
+		if(style !=='NIL' && schedule !=='NIL' && color !=='NIL'){
+			var count = 0;
+			for (var i = 0; i<20; i++) {
+				var item=document.getElementById('item'+i).value;
+				var qty=document.getElementById('qty'+i).value;
+				if(item == ''  || qty == ''){
+					count +=1;
+				}
+			}
+			if(count == 20){
+				swal('please enter atleast one row of data','','warning');
+				e.preventDefault();
+			}
+		}
+
 	}
 </script>
 <script>
@@ -41,9 +61,10 @@ function thirdbox()
 {
 	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
+
+
 </script>
-<link href="style.css" rel="stylesheet" type="text/css" />
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>	
+<!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->	
 
 <div class="panel panel-primary">
 <div class="panel-heading">Manual Item Allocation Form</div>
@@ -72,7 +93,7 @@ if(sizeof($color)>0)
 	echo "<table align=\"center\" class=\"table table-bordered\"><tr><th>Sno</th><th>M3 Item Code</th><th>Reason</th><th>Quantity</th></tr>";
 	for($i=0;$i<20;$i++)
 	{
-		echo "<tr><td>".($i+1)."</td><td><input type=\"text\" size=\"30\" name=\"item[]\" value=\"\"></td>";
+		echo "<tr><td>".($i+1)."</td><td><input type=\"text\" size=\"30\" name=\"item[]\" id=\"item$i\" value=\"\" class='notallow'></td>";
 		echo "<td><select  name=\"reason[]\" >
 		<option value=\"01 Error in item code in BOM\">01 Error in item code in BOM</option>
 		<option value=\"02 Invoice not received for GRN\">02 Invoice not received for GRN</option>
@@ -82,7 +103,7 @@ if(sizeof($color)>0)
 		<option value=\"06 Re-classification pending\">06 Re-classification pending</option>
 		<option value=\"07 Thread issuing extra for line minimums\">07 Thread issuing extra for line minimums</option>
 		</select></td>";
-		echo "<td><input type=\"text\" name=\"qty[]\" value=\"\"></td></tr>";
+		echo "<td><input type=\"text\" name=\"qty[]\" value=\"\" id='qty$i' class='integer swal'></td></tr>";
 		
 	}
 	echo '</table>';
@@ -241,7 +262,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$order_tid=$sql_row['order_tid'];
 	$customer=$sql_row['order_div'];
 }
-echo "<p align=\"right\"><input type=\"hidden\" name=\"division\" value=\"$customer\"><input type=\"submit\" class=\"btn btn-success\" value=\"Submit\" name=\"submit\" onclick=\"return check_all();\"></p>";
+echo "<p align=\"right\"><input type=\"hidden\" name=\"division\" value=\"$customer\"><input type=\"submit\" class=\"btn btn-success\" value=\"Submit\" name=\"submit\" onclick=\"return check_all(event);\"></p>";
 echo "</td></tr></table>";
 
 ?>
@@ -348,3 +369,17 @@ if(isset($_POST['submit']))
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
 }
 ?> 
+<script type="text/javascript">
+	
+$('.notallow').keyup(function()
+{
+	var yourInput = $(this).val();
+	re = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
+	var isSplChar = re.test(yourInput);
+	if(isSplChar)
+	{
+		var no_spl_char = yourInput.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+		$(this).val(no_spl_char);
+	}
+});
+</script>

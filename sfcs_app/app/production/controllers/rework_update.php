@@ -17,13 +17,13 @@ KiranG - CR# 121
 <?php 
 	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-    include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+    // include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 
 	//Due to sunday working.
 	$view_access=user_acl("SFCS_0169",$username,1,$group_id_sfcs);
 	$special_day_permissions=user_acl("SFCS_0169",$username,38,$group_id_sfcs);
 	$hod_acces_list=user_acl("SFCS_0169",$username,39,$group_id_sfcs);
-    include("../".getFullURLLevel($_GET['r'],'common/config/ims_size.php',3,'R'));
+    include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 	
 
 	$workstudy_limit="23.59";
@@ -80,82 +80,85 @@ table
 
 function firstbox()
 {
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&section="+document.select_module.select_section.value
+	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&section="+document.select_module.select_section.value
+}
+function second_box(){
+	var sdate = document.getElementById('sdate').value;
 }
 
 </script>
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',1,'R'); ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R'); ?>"></script>
-<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/js/ddcolortabs.css',1,'R'); ?>" type="text/css" media="all" />
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
 
 <script>
-	function GreaterDate(DtVal1, DtVal2)
-	{
-		var DtDiff;
-		Date1 = new Date(DtVal1);
-		Date2 = new Date(DtVal2);
-		DaysDiff = Math.floor((Date1.getTime() - Date2.getTime())/(1000*60*60*24));
-		if(DtDiff > 0)
-		return true;
-		else
-		return false;
-	}
+	// function GreaterDate(DtVal1, DtVal2)
+	// {
+		// var DtDiff;
+		// Date1 = new Date(DtVal1);
+		// Date2 = new Date(DtVal2);
+		// DaysDiff = Math.floor((Date1.getTime() - Date2.getTime())/(1000*60*60*24));
+		// if(DtDiff > 0)
+		// return true;
+		// else
+		// return false;
+	// }
 
-	function Lessdate(DtVal1, DtVal2)
-	{
-		var DtDiff;
-		Date1 = new Date(DtVal1);
-		Date2 = new Date(DtVal2);
-		DaysDiff = Math.floor((Date1.getTime() - Date2.getTime())/(1000*60*60*24));
-		//alert("DaysDiff ="+DaysDiff);
-		if(DtDiff <= 0)
-		return true;
-		else
-		return false;
-	}
+	// function Lessdate(DtVal1, DtVal2)
+	// {
+		// var DtDiff;
+		// Date1 = new Date(DtVal1);
+		// Date2 = new Date(DtVal2);
+		// DaysDiff = Math.floor((Date1.getTime() - Date2.getTime())/(1000*60*60*24));
+		// alert("DaysDiff ="+DaysDiff);
+		// if(DtDiff <= 0)
+		// return true;
+		// else
+		// return false;
+	// }
 
-	function EqualDate(DtVal1, DtVal2)
-	{
-		var DtDiff;
-		Date1 = new Date(DtVal1);
-		Date2 = new Date(DtVal2);
-		DtDiff = Math.floor((Date1.getTime() - Date2.getTime())/(1000*60*60*24));
-		if(DtDiff == 0)
-		return true;
-		else
-		return false;
-	}
+	// function EqualDate(DtVal1, DtVal2)
+	// {
+		// var DtDiff;
+		// Date1 = new Date(DtVal1);
+		// Date2 = new Date(DtVal2);
+		// DtDiff = Math.floor((Date1.getTime() - Date2.getTime())/(1000*60*60*24));
+		// if(DtDiff == 0)
+		// return true;
+		// else
+		// return false;
+	// }
 
-	function check_date(x,yy,xx,hh) //form date, allowed date, today date
-	{
+	// function check_date(x,yy,xx,hh) //form date, allowed date, today date
+	// {
 		
-		var d = new Date();
-		var curr_hour = d.getHours()+"."+d.getMinutes();
-		curr_hour=parseFloat(curr_hour);
-		hh=parseFloat(hh);
+		// var d = new Date();
+		// var curr_hour = d.getHours()+"."+d.getMinutes();
+		// curr_hour=parseFloat(curr_hour);
+		// hh=parseFloat(hh);
 					
-		if (x< yy)
-		{ 
-			sweetAlert("Pleae enter correct date","","warning");
-			document.test.date.value=xx;
-		}
-		if(x>xx)
-		{
-			sweetAlert("Pleae enter correct date","","warning");
-			document.test.date.value=xx;
-		}
+		// if (x< yy)
+		// { 
+			// sweetAlert("Pleae enter correct date","","warning");
+			// document.test.date.value=xx;
+		// }
+		// if(x>xx)
+		// {
+			// sweetAlert("Pleae enter correct date","","warning");
+			// document.test.date.value=xx;
+		// }
 		
-		if (x==yy && curr_hour<=hh)
-		{
+		// if (x==yy && curr_hour<=hh)
+		// {
 			
-		}
-		else
-		{
-			sweetAlert("You are not Authorized to Update Backdated Output.","","warning");
-			document.test.date.value=xx;
-		}
+		// }
+		// else
+		// {
+			// sweetAlert("You are not Authorized to Update Backdated Output.","","warning");
+			// document.test.date.value=xx;
+		// }
 		
-	}
+	// }
 	
     window.onload = function () 
 	{
@@ -300,16 +303,23 @@ function firstbox()
 	</script>
 </head>
 
+
 <body onload="dodisable();" onpageshow="if (event.persisted) noBack();" onkeydown="return showKeyCode(event)">
 <div class="panel panel-primary">
 <div class="panel-heading">Re-Work Capturing </div>
 <div class="panel-body">
 	<?php
-	    include("../".getFullURLLevel($_GET['r'],'common/php/rework_functions.php',1,'R'));
+	    // include("../".getFullURLLevel($_GET['r'],'common/php/rework_functions.php',1,'R'));
 		$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 		$username=strtolower($username_list[1]);
 
 		$section=$_GET['section'];
+		
+		if($_GET['sdate']){
+			$sdate = $_GET['sdate'];
+		}else{
+			$sdate = date("Y-m-d");
+		}
 		// $mod=$_POST['module'];
 		$module_ref=$_POST['module']; 
 		$shift=$_POST['shift'];
@@ -332,23 +342,28 @@ function firstbox()
 <!--<div id="page_heading"><span style="float"><h3>Rework Update Panel</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
 	<form action="#" method="POST" onSubmit="return validateThisFrom (this);" name="select_module" id="select_module">
 		<div class="col-sm-2"><?php 
+			
 			if(in_array($username,$hod_acces_list) or in_array($username,$special_day_permissions))
 			{
-				echo 'Date: <input type="text" data-toggle="datepicker" class="form-control" name="date" value="'.date("Y-m-d").'"  autocomplete="off">'; 
+				
+				echo "Date: <input type='text' data-toggle='datepicker' id='sdate' class='form-control' name='date' value='".$sdate."' onchange='second_box();' autocomplete='off'>"; 
+				
 			}
 			else
 			{
 				if($username=="kirang")
 				{
-					echo 'Date: <input type="text"  data-toggle="datepicker" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\',\'11\');" autocomplete="off">';
+					echo 'Date: <input type="text"  data-toggle="datepicker" id="sdate" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\',\'11\');" autocomplete="off">';
 				}
 				else if($username=="kirang")
 				{
-					echo 'Date: <input type="text"  data-toggle="datepicker" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\',\''.$workstudy_limit.'\');" autocomplete="off">';
+					// echo 'Date: <input type="text"  data-toggle="datepicker" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\',\''.$workstudy_limit.'\');" autocomplete="off">';
+					echo 'Date: <input type="text"  data-toggle="datepicker" id="sdate"  class="form-control" name="date" value="'.$sdate.'" size="10" autocomplete="off">';
 				}
 				else
 				{
-					echo 'Date: <input type="text"  data-toggle="datepicker" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\',\''.$user_limit.'\');" autocomplete="off">';
+					// echo 'Date: <input type="text"  data-toggle="datepicker" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\',\''.$user_limit.'\');" autocomplete="off">';
+					echo 'Date: <input type="text"  data-toggle="datepicker" id="sdate" class="form-control" name="date" value="'.$sdate.'" size="10" onchange="second_box();" autocomplete="off">';
 				} 
 			}
 		echo "</div>";
@@ -383,7 +398,7 @@ function firstbox()
 
 		echo "<div class='col-sm-2'>Module: <select name='module' class='form-control' id='module' onclick='check_section()'>";
 				echo "<option value='0'>Select Module</option>";
-		$sql="select group_concat(sec_mods) as \"sec_mods\" from $bai_pro3.sections_db where sec_id in ($section)";
+		$sql="select group_concat(sec_mods) as \"sec_mods\" from $bai_pro3.sections_db where sec_id in (\"$section\")";
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -456,7 +471,6 @@ if ($_POST['submit11'])
 		<input type="hidden" name="shift" value="<?php echo $_POST['shift']; ?>"> 		
 		<input type="hidden" name="zone_base" value="<?php echo $_POST['zone_base']; ?>"> 		
 				
-
 	<?php
 
 		echo '<div class="table-responsive"><table class="table table-bordered"		style="color:black; border: 1px solid red;">';
@@ -485,8 +499,8 @@ if ($_POST['submit11'])
 			$row_count = 0;
 			
 			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB')";
-			mysqli_query($link, $sql12) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result12=mysqli_query($link11, $sql12) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// mysqli_query($link, $sql12) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result12);
 			
 			if($sql_num_check>0)
@@ -631,11 +645,13 @@ if ($_POST['submit11'])
 			echo "<script>$(document).ready(function(){
 				      $('#option').css('display','none');
 			      });</script>";
+		}else{
+			echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
+			echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="">';
 		}
 	?>
 
-		<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable
-		<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="">
+		
 
 		<br/><br/>
 			<div id="process_message">

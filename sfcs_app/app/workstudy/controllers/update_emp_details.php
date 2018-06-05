@@ -64,7 +64,7 @@
 				<div class="row">
 					<div class="col-md-2">
 						<label>Date:</label>
-						<input type='text' data-toggle='datepicker' class="form-control" name='date' value='<?php echo $today;  ?>'>
+						<input type='text' class="form-control" name='date' value='<?php echo $today;  ?>' id="datepicker" readonly="true">
 					</div>
 				</div><br/><hr/><br/>
 				<div class="row">
@@ -94,7 +94,7 @@
 											<input type="text" value="0" onkeypress="return validateQty(event);" class="form-control" name="pr<?php echo $i; ?>">
 										</td>
 										<td>
-											<input type="text" value="0" onkeypress="return validateQty(event);" class="form-control" name="abf<?php echo $i; ?>">
+											<input type="text" value="0" onkeypress="return validateQty(event);" class="form-control" id="abf" name="abf<?php echo $i; ?>">
 										</td>
 										<td>
 											<input type="text" value="0" onkeypress="return validateQty(event);" class="form-control" name="abnf<?php echo $i; ?>">
@@ -110,7 +110,7 @@
 					<div class="row">
 					<br><br>
 						<div class="col-md-5"></div>
-						<div class="col-md-2"><input class="btn btn-success" type="submit" value="Submit"></div>
+						<div class="col-md-2"><input class="btn btn-success" type="submit" id="submit" value="Submit" disabled></div>
 					</div>	
 				</div>
 			</form>
@@ -119,3 +119,20 @@
 </div>
 </div> 
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('form')
+    .each(function(){
+        $(this).data('serialized', $(this).serialize())
+    })
+    .on('change input', function(){
+        $(this)             
+            .find('input:submit, button:submit')
+                .prop('disabled', $(this).serialize() == $(this).data('serialized'))
+        ;
+     })
+    .find('input:submit, button:submit')
+        .prop('disabled', true);
+    });
+
+</script>

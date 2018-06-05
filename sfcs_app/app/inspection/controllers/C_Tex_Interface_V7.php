@@ -21,7 +21,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <style>
 .textbox{
 	background-color:#99ff88;
-	width:124px;
+	width:100%;
 	border:none;
 	color:black;
 	height:100%;
@@ -1896,7 +1896,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;
   width:98pt'><?php if(in_array($username,$auth_to_modify)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"number\" step=\"any\" class=\"textbox\" id=\"consumption\" name=\"consumption\" min=\"0\" value='".$consumption."' />"; } else { echo $consumption; }?></td>
   <td colspan=7 class=xl12224082 style='border-right:.5pt solid black;
-  border-left:none'>Inspection Summery</td>
+  border-left:none'>Inspection Summary</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Supplier</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
@@ -2028,7 +2028,7 @@ tags will be replaced.-->
   <td class=xl9324082 dir=LTR width=77 style='border-top:none;border-left:none;  width:58pt'>L%</td>
   <td class=xl9424082 dir=LTR width=68 style='border-top:none;border-left:none;  width:51pt'>W%</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='width:102pt'>Actual  Width</td>
-  <td colspan=4 class=xl13524082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox" id="act_width" name="act_width" value="'.$act_width.'"  />';} else { echo $act_width; } ?> </td>
+  <td colspan=4 class=xl13524082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float" id="act_width" name="act_width" value="'.$act_width.'"  />';} else { echo $act_width; } ?> </td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9824082 dir=LTR width=80 style='height:20.1pt;
@@ -2044,11 +2044,11 @@ tags will be replaced.-->
  
   if($gmt_way=="" or $gmt_way==0)
  {
- 	echo "<option value='0' selected></option>";
+ 	echo "<option value='0' selected disabled>please select</option>";
  }
  else
  {
- 	echo "<option value='0'></option>";
+ 	echo "<option value='0' selected disabled>please select</option>";
  }
  
  if($gmt_way==1)
@@ -2128,7 +2128,7 @@ tags will be replaced.-->
   <td colspan=12 rowspan=3 height=84 class=xl8424082 style='border-right:1.0pt solid black;
   border-bottom:1.0pt solid black;height:63.0pt'><textarea onchange="change_head(1,this.name)" class="textspace" id="sp_rem" name="sp_rem"><?php echo $sp_rem; ?></textarea></td>
   <td class=xl11024082></td>
-   <td class=xl11024082 colspan=2 rowspan=2><?php if($num_rows>0 and $print_check==0 and $inspection_check==1)   { echo '<h3><center><a href="C_Tex_Report_Print.php?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
+   <td class=xl11024082 colspan=2 rowspan=2><?php if($num_rows>0 and $print_check==0 and $inspection_check==1)   { echo '<h3><center><a class="btn btn-warning btn-xs" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
   
  <td class=xl11024082></td> 
  </tr>
@@ -2360,7 +2360,7 @@ tags will be replaced.-->
 		echo "</select>
 	  </td>
 
-	  <td class=xl12824082  style='border-left:none'><input class='textbox float' ".$readonly."   type='text' name='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>
+	  <td class=xl12824082  style='border-left:none'><input class='textbox float' ".$readonly."   type='text'  id='ele_par_length[$i]' name='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082 colspan=2 style='border-left:none'><input class='textbox float' ".$readonly."   type='text' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082 colspan=2 style='border-left:none'><input class='textbox float' ".$readonly."   type='text' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082 colspan=2 style='border-left:none'><input class='textbox character' ".$readonly."   type='text' name='shrinkage_group[$i]' value='".$temp[13]."' onchange='change_body(2,this.name,$i)'></td>
@@ -2403,7 +2403,7 @@ echo '</form>';
   <td class=xl7524082 width=68 style='border-left:none;width:51pt'>Length  Deviation</td>
   <td class=xl7524082 width=64 style='border-left:none;width:48pt'>Average  Ticket Width</td>
   <td class=xl7524082 width=64 style='border-left:none;width:48pt'>Average  C-Tex Width</td>
-  <td class=xl7524082 width=99 style='border-left:none;width:74pt'>Width  Deviation</td>
+  <td class=xl7524082 width=99 style='border-left:none;width:74pt'>Average Width  Deviation</td>
   <td class=xl7624082 width=77 style='border-left:none;width:58pt;border-right:1pt solid'>Lot  Numbers</td>
   <!-- <td class=xl7724082 dir=LTR width=68 style='width:51pt'>Group</td> -->
   
@@ -2745,6 +2745,13 @@ function fill(x)
 
 function change_body(x,y,z)
 {
+	if(document.getElementById('roll_status['+z+']').value == 1){
+		document.getElementById('ele_par_length['+z+']').readOnly = true;
+	}
+	if(document.getElementById('roll_status['+z+']').value != 1){
+		document.getElementById('ele_par_length['+z+']').readOnly = false;
+	}
+
 	document.input["ele_check["+z+"]"].value=1;
 	document.getElementById(y).style.background="#FFCCFF";
 	if(!isNaN(document.input["ele_c_length["+z+"]"].value))

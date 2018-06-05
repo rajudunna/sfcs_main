@@ -240,7 +240,7 @@ $(document).ready(function() {
     	var order_tid = style.concat(schedule, color);
     	//var order_tid = style+schedule+color;
 		var urlSubmit = "<?= getFullURLLevel($_GET['r'],'common/php/apicalls.php',1,'R'); ?>";  
-		var urlSubmit1 = "<?= getFullURLLevel($_GET['r'],'/common/php/panel_sequence_print.php',1,'R'); ?>"; 
+		var urlSubmit1 = "<?= getFullURLLevel($_GET['r'],'/common/lib/mpdf7/panel_sequence_print.php',3,'R'); ?>"; 
 	    $.ajax({
 	        url: urlSubmit,
 	        type: 'post',

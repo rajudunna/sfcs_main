@@ -1,6 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
-<?php include('../../common/php/functions.php'); ?>
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/js/mpdf7/vendor/autoload.php'; ?>
+<?php include('../../../../common/config/functions.php'); ?>
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/lib/mpdf7/vendor/autoload.php'; ?>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 
 <?php
@@ -485,7 +485,7 @@ $html.= '<tr><td colspan=2>Carton #:'.$node_detail[0].'</td><td>Size:</td><td  c
 $html.= '<div><table><tr><td align="middle">'.$node_detail[3].'</td><td colspan=3><barcode code="'.leading_zeros($node_detail[3],8).'" type="C39"/ height="0.50" size="0.80" text="1"></td></tr>';
 $html.= '<tr><td>Style:</td><td class="new_td">'.$style.'</td><td>Schedule:</td><td class="new_td3">'.$delivery.'</td></tr>';
 $html.= '<tr><td colspan=4>Color:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.substr($node_detail[5],0,100).'</td></tr>';
-$html.= '<tr><td>Assort:</td><td>'.$packing_method." ".$node_detail[1].'('.$node_detail[7].')'.'</td><td>Packs:</td><td>'.$node_detail[6].'</td></tr>';
+$html.= '<tr><td>Assort:</td><td>'.$packing_method." ".$node_detail[1].'('.$node_detail[7].')'.'</td><td>Packs:</td><td>'.round($node_detail[6],2).'</td></tr>';
 $html.= '<tr><td>Jobs:</td><td>'.implode(",",$job_nos).'</td><td>Size:</td><td>Qty:</td></tr>';
 $html.= '<tr><td>Carton #:</td><td>'.$node_detail[0].'</td><td  class="new_td2">'.$node_detail[4].'</td><td class="new_td2">'.$node_detail[2].'</td></tr>';
 

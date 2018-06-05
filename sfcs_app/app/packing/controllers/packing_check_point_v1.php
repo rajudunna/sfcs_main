@@ -615,11 +615,12 @@ echo $sql;
 		*/
 	
 		echo "<div class='col-md-8'><table class='table table-bordered'>";
+		echo "<tr><td><b>Docket No-Sticker No:</b></td><td>$cartonid</td></tr>";
 		echo "<tr><td><b>Style</b></td><td>$style</td></tr>";
 		echo "<tr><td><b>Schedule</b></td><td>$schedule</td></tr>";
 		echo "<tr><td><b>Color</b></td><td>$color</td></tr>";
 		echo "<tr><td><b>Job</b></td><td>".chr($color_code).leading_zeros($cutno,3)."</td></tr>";
-		$sql="SELECT title_size_s01 FROM $bai_pro3.bai_orders_db WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
+		$sql="SELECT title_size_".$size." FROM $bai_pro3.bai_orders_db WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$title_size = mysqli_fetch_row($sql_result);
 		echo "<tr><td><b>Size</b></td><td>".strtoupper($title_size[0])."</td></tr>";

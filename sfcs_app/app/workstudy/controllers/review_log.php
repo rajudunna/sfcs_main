@@ -149,18 +149,18 @@ if(isset($_GET['exec']))
 			}	
 			$i++;
 		}
-		$File = getFullURLLevel($_GET['r'],"data.php",0,'R');
+		$File = getFullURLLevel($_GET['r'],'dashboards/controllers/PLD_Dashboard/sah_monthly_status/data.php',2,'R');
 		//$File = str_replace("/","\","$File);
 		//echo implode('","',$all_dates)."<br>";
 		//echo $sec_sah."<br>";
 		//echo $File;exit;
 		//clearstatcache();
-		/*
+		
 		$fh = fopen($File, 'w') or die("Can't Open the File"); 
 		$stringData = "<?php ".$data_sym."date=array(".implode('","',$all_dates)."); ".$data_sym."half_date=array(".implode('","',$half_all_dates)."); ".$data_sym."date1=array(".implode('","',$all_dates1)."); ".$data_sym."half_date1=array(".implode('","',$half_all_dates1)."); ".$data_sym."fac_plan=\"".$fac_sah."\"; ".$data_sym."vs_plan=\"".$vs_value."\"; ".$data_sym."ms_plan=\"".$ms_value."\"; ".$data_sym."fac_plan_sah=\"".$fac_sah."\"; ".$data_sym."plan_sah_mod=array(".$sec_sah."); ?>";
 		fwrite($fh, $stringData);
 		fclose($fh);
-		*/
+		
 		
 	}
 }

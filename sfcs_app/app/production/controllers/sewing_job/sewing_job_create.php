@@ -338,7 +338,7 @@ td{ padding:2px; white-space: nowrap;}
 									$bundle_plie=0;
 									$mini_qty=$bundle_size*$bundle_plie*$carton_qty;
 								}
-								$o_colors = echo_title("$bai_pro3.bai_orders_db_confirm","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db_confirm.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
+								$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
 								$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$sch_id,$link);
 								$order_colors=explode(",",$o_colors);	
 								$planned_colors=explode(",",$p_colors);

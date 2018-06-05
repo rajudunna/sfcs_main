@@ -1,0 +1,165 @@
+
+
+
+
+
+
+<script type="text/javascript" src="/sfcs_app/common/js/jquery.min.js" ></script>
+
+<script type="text/javascript" src="/sfcs_app/common/js/tablefilter.js" ></script>
+
+<script src="jquery.columnmanager/jquery.columnmanager.js"></script>
+<link rel="stylesheet" type="text/css" href="jquery.columnmanager/clickmenu.css" />
+<script src="jquery.columnmanager/jquery.clickmenu.pack.js"></script>
+<style>
+/* #page_heading
+{
+    	width: 100%;
+	height: 25px;
+    	color: WHITE;
+    	background-color: #29759c;
+    	z-index: -999;
+    	font-family:Arial;
+    	font-size:15px;  
+    	margin-bottom: 10px;
+}
+
+#page_heading h3
+{
+	vertical-align: middle;
+	margin-left: 15px;
+	margin-bottom: 0;	
+	padding: 0px;
+}
+
+#page_heading img
+{
+	margin-top: 2px;
+    	margin-right: 15px;
+}
+
+body
+{
+	background-color: #EEEEEE;
+	font-family:arial;
+}
+
+.tblheading th
+{
+	background-color:#29759C;
+}
+
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+	background-color: white;
+}
+
+
+body
+{
+	font-family:calibri;
+	font-size:12px;
+}
+
+table tr
+{
+	border: 1px solid black;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+height:35px;
+}
+
+table th
+{
+	border: 1px solid black;
+	text-align: center;
+    	background-color: #29759C;
+	color: WHITE;
+white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+
+
+
+
+
+.BG {
+background-image:url(Diag.gif);
+background-repeat:no-repeat;/*dont know if you want this to repeat, ur choice.*/
+} */
+
+</style>
+
+
+<body>
+<div class="panel panel-primary">
+<div class="panel-heading">Critical Rejection Report</div>
+<div class="panel-body">
+
+<h4><span class='label label-primary'>Rejection Percentage - Above 0.4% Period From&nbsp;2018-05-28&nbsp;&nbsp;To&nbsp;&nbsp;2018-06-02</span></h4><h4><span class='label label-warning'>2018-06-01 13:48:40</span></h4><div class="table-responsive"> <table class="table table-bordered"><tr class='tblheading' >
+	<th rowspan=3>Ex factory date</th>
+	<th rowspan=3>Schedule</th>
+	<th rowspan=3>Style</th>
+	<th rowspan=3>Color</th>
+	<th rowspan=3>Order Qty</th>
+	<th rowspan=3>Sewing Out</th>
+	<th rowspan=3 width=45>Reject<br/> Out</th>
+	<th colspan=8>Fabric</th>
+	<th colspan=3>Cutting</th>
+	<th colspan=11>Sewing</th>
+	<th colspan=3>Machine Damages</th>
+	<th colspan=8>Embellishment</th>
+</tr><tr>
+	<th width=45>Miss</th>	<th width=45>Fabric </th>	<th width=45>Slub</th>	<th width=45 >Foreign </th>	<th width=45>Stain </th>	<th width=45>Color </th> <th width=45> Heat </th> <th width=45> Trim </th>	<th width=45 >Panel</th> <th  width=45>Stain</th>		<th width=45>Strip</th>	<th width=45>Cut</th> <th  width=45>Heat</th>	<th  width=45> M'ment </th>  <th  width=45> Un </th> <th width=45>Shape </th>	<th width=45>Shape</th>	<th width=45 >Shape </th>	<th width=45>Stain </th>	<th width=45>With</th> <th width=45>Trim</th>  <th width=45>Sewing</th>  <th width=45>Cut</th>   <th width=45>Slip</th>  <th width=45>Oil</th> <th width=45>Others</th>  <th width=45>Foil</th>  <th width=45>Embroidery</th> <th width=45>Print</th>  <th width=45>Sequence</th>  <th width=45>Bead</th>  <th width=45>Dye</th>  <th width=45>Wash</th>
+
+</tr><tr>
+	<th>Yarn</th>	<th>Holes</th>	<th></th>	<th>Yarn</th>	<th>Mark </th>	<th>Shade</th> <th> seal </th> <th></th>	<th>Un-Even</th> <th>Mark</th>		<th>Match</th>	<th>Dmg</th> <th>Seal</th> <th>out</th>	 <th>Even</th><th>OutLeg </th>	<th>Outwaist</th>	<th>Out</th>	<th>Mark </th>	<th>OutLabel</th> <th>Shortage</th> <th>Excess</th> <th>Holes</th> <th>Stitch's</th> <th>Marks</th> <th>EMB</th> <th>Defects</th> <th></th>  <th></th> <th></th><th></th><th></th><th></th>
+
+</tr></table></div><h2><span class='label label-primary'>Summary of Details</span></h2><div class="table-responsive"> <table id="tableone" cellspacing="0" class="mytable table table-bordered"><tr class='tblheading' >
+	<th  class='filter'>Ex_factory</th>
+	<th  class='filter'>Schedule</th>
+	<th  class='filter'>Style</th>
+	<th  class='filter'>Color</th>
+	
+	<th  class='filter'>Section</th>
+	<th  class='filter'>Module</th>
+	<th  class='filter'>Order <br/> Qty</th>
+	<th  class='filter'>Sewing <br/> Out</th>
+	<th  class='filter'>Rejection <br/> Out</th>
+	<th  class='filter'>Rej %</th>
+	<th  class='filter'>Fabric <br/> Damages</th>
+	<th  class='filter'> % </th>
+	<th  class='filter'>Cutting <br/> Damages</th>
+	<th  class='filter'> % </th>
+	<th  class='filter'>Sewing <br/> Damages</th>
+	<th  class='filter'> % </th>
+	<th  class='filter'>Machine <br/> Damages</th>
+	<th  class='filter'> % </th>
+	<th  class='filter'>Embl <br/> Damages</th>
+	<th  class='filter'> % </th> </tr></table></div>	<script language="javascript" type="text/javascript">
+//<![CDATA[
+var table2Filters = {
+		btn: true,
+		loader: true,
+		loader_text: "Filtering data...",
+		sort_select: true,
+		exact_match: true,
+		rows_counter: true,
+		btn_reset: true
+		
+	}
+	setFilterGrid("tableone",0,table2Filters);
+	
+//]]>
+</script>

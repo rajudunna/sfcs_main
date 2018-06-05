@@ -10,9 +10,8 @@ if(!(in_array(strtolower($username),$authorized)))
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 
 include("../".getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
-include("../".getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 // $view_access=user_acl("SFCS_0122",$username,1,$group_id_sfcs); 
-include("../".getFullURLLevel($_GET['r'], "common/config/ims_size.php", 3, "R"));
+include("../".getFullURLLevel($_GET['r'], "common/config/functions.php", 3, "R"));
 // include(getFullURL($_GET['r'],'header_script.php','R')); 
 
 ?>
@@ -499,12 +498,12 @@ if(isset($_POST['submit']))
 
 if($color_x=='0')
 {
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\"";	
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\"";	
 }	
 
 else
 {
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and order_col_des=\"$color_x\"";	
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and order_col_des=\"$color_x\"";	
 }
 	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -904,7 +903,8 @@ else
 , SUM(IF(size=\"s44\" and tran_type=2,pcs,0)) as \"fail_s44\", SUM(IF(size=\"s45\" and tran_type=2,pcs,0)) as \"fail_s45\", SUM(IF(size=\"s46\" and tran_type=2,pcs,0)) as \"fail_s46\", SUM(IF(size=\"s47\" and tran_type=2,pcs,0)) as \"fail_s47\", SUM(IF(size=\"s48\" and tran_type=2,pcs,0)) as \"fail_s48\"
 , SUM(IF(size=\"s49\" and tran_type=2,pcs,0)) as \"fail_s49\", SUM(IF(size=\"s50\" and tran_type=2,pcs,0)) as \"fail_s50\" from $bai_pro3.fca_audit_fail_db where style=\"$style_x\" and schedule=\"$schedule_x\" and color=\"$color_x\"";
 }
-	mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -1209,8 +1209,8 @@ for($i=0;$i<sizeof($order_qtys);$i++)
 		}
 		//Error Correction
 	
-		//$available_qty=$pass_qtys[$i]-$ship_qtys[$i];
-		$available_qty=$fg_qtys[$i]-$ship_qtys[$i];
+		$available_qty=$pass_qtys[$i]-$ship_qtys[$i];
+		// $available_qty=$fg_qtys[$i]-$ship_qtys[$i];
 		
 		$size_value[$i]=ims_sizes('',$schedule_no,$style_no,$color_no,strtoupper($sizes[$i]),$link);
 		

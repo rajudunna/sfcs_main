@@ -307,17 +307,29 @@ while($sql_row23=mysqli_fetch_array($sql_result23))
 // 	}
 // }
 //echo "<div class='panel panel-primary'><div class='panel-body'>";
-// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-// 		function Redirect() {
-// 			sweetAlert('Successfully Generated','','success');
-// 			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "1", "N")."&color=$color&style=$style&schedule=$schedule\";
-// 			}
-// 		</script>";
-echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+$order_joins_check="SELECT order_joins FROM $bai_pro3.`bai_orders_db` WHERE order_tid='".$tran_order_tid."'";
+$order_joins_result=mysqli_query($link, $order_joins_check) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($order_joins_result))
+{
+	$order_joins=$sql_row['order_joins'];
+}
+if ($order_joins>'0' or $order_joins>0) {
+  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
-			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$tran_order_tid&color=$color&style=$style&schedule=$schedule\";
+			sweetAlert('Successfully Generated','','success');
+			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
 			}
 		</script>";
+} else {
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+			function Redirect() {
+				location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$tran_order_tid&color=$color&style=$style&schedule=$schedule\";
+				}
+			</script>";
+}
+
+
+	
 //echo "<a href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "1", "N")."&color=$color&style=$style&schedule=$schedule\" class='btn btn-warning btn-sm'>Click here to Go Back</a>";
 
 // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";

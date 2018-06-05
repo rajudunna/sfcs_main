@@ -3,11 +3,11 @@ Ticket #742482/ popup window for Down time reasons
 -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<link rel="stylesheet" type="text/css" href="../common/js/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../../../common/css/bootstrap.min.css">
 <title>Downtime Reasons</title>    
 
-		<script type="text/javascript" src="TableFilter/jquery.min1.7.1.js"></script>	
-		<script type="text/javascript" language="javascript" src="TableFilter/tablefilter.js"></script> 
+		<script type="text/javascript" src="../../../common/js/TableFilter/jquery.min1.7.1.js"></script>	
+		<script type="text/javascript" language="javascript" src="../../../common/js/TableFilter/tablefilter.js"></script> 
 <body>
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');

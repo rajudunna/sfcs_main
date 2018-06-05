@@ -51,7 +51,10 @@ if(!isset($_SESSION)) { session_start(); }
 <div class="row">
 <div class="col-sm-3">
 <label>Choose File Location: </label>
-<input type="file" name="file" size="25" id="file" value="" class="form-control" required></div>
+<input type="file" name="file" size="25" id="file" value="" accept=".txt" class="form-control" required><br>
+<label class="label label-danger">Note :</label>&nbsp;<label class="label label-primary">Upload only .txt format files.</label>
+</div>
+
 <div class="col-sm-3">
 <input type="submit" name="upload" value="Upload" class="btn btn-primary" style="margin-top: 22px;"> 
 </div>
@@ -88,8 +91,10 @@ if(isset($_POST['upload']))
 				
 				move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
 
-				echo "<div class='alert alert-success'>File Upload is Successful.</div>"; 
+				echo "<div class='alert alert-success'>File Upload is Successful.</div>";
+				echo $filename;
 ?>
+				
 				<form name="update" method="POST" action="<?php echo getFullURLLevel($_GET['r'], "dbupdate.php", 0,"N"); ?>"> 
 				File ID: <input type="text" name="id" size="25" value='<?=$filename; ?>'>
 				<input type="submit" name="update" value="Update" class="btn btn-primary"> 

@@ -42,7 +42,7 @@ function verify_spec(t,e){
 	var qty = document.getElementById(id);
 
 	if( !(qty.value.match(c)) && qty.value!=null){
-		sweetAlert('Please Enter Valid Pattern Version','','warning');
+		sweetAlert('Please Enter Pattern Version','','warning');
 		qty.value = 0;
 		return false;
 	}
@@ -69,14 +69,7 @@ function enableButton()
 <body onload="javascript:dodisable();">
 
 <?php //include("../menu_content.php"); ?>
-<div class="panel panel-primary">
-<div class="panel-heading">Order Category Classification FORM</div>
-<div class="panel-body">
-
-<form method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_cat_edit_form.php", "N"); ?>">
-
-
-<?php
+<?php 
 $cat_tid=$_GET['cat_tid'];
 //echo "Hello".$cat_tid;
 $sql="select order_tid from $bai_pro3.cat_stat_log where tid='$cat_tid'";
@@ -92,6 +85,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$schedule=$sql_row['order_del_no'];
 	}
 }
+echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><<<<< Click here to Go Back</a></div></br></br>"; ?>
+<div class="panel panel-primary">
+<div class="panel-heading">Order Category Classification FORM</div>
+<div class="panel-body">
+
+<form method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_cat_edit_form.php", "N"); ?>">
+
+
+<?php
+
 
 // echo "<div class=\"col-sm-12 row\">";
 // echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "1", "N" )."&color=".$color."&style=".$style."&schedule=".$schedule."\"><<<<< Click here to Go Back</a></div>";
@@ -206,28 +209,6 @@ if(isset($_POST['Update']))
 	$validation_sql1 = mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_row1=mysqli_fetch_row($validation_sql1);
 	$flag=1;
-	if($sql_row1[0] != $in_cat){
-		while($sql_row=mysqli_fetch_array($validation_sql))
-		{
-			$cat= $sql_row['category'];
-			if($cat == $in_cat)
-			{
-				echo "<script>sweetAlert('Category Already selected. Please Select Other.','','warning');</script>";
-				$flag=0;
-			}
-		}
-	}	
-	if($flag==1)
-	{
-		$lupdate=date("Y-m-d H:i:s");
-		$sql="update $bai_pro3.cat_stat_log set date=\"$in_date\", category=\"$in_cat\", purwidth=$in_width, patt_ver=\"$patt_ver\", gmtway=\"$gmt_way\",  strip_match=\"$strip_match\", gusset_sep=\"$guess_sep\", remarks=\"$remarks\", lastup=\"$lupdate\" where tid=$cat_tid";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			//$location="Location: report.php?tran_order_tid=$o_id";
-				
-			//header( $location );
-	}
-	
-
 	$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -241,22 +222,53 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 
 }
-
+	if($sql_row1[0] != $in_cat){
+		while($sql_row=mysqli_fetch_array($validation_sql))
+		{
+			$cat= $sql_row['category'];
+			if($cat == $in_cat)
+			{
+				//echo "<script>swal('Category Already selected. Please Select Other.','','warning');</script>";
+				echo "<script>swal('Category Already selected. Please Select Other.')
+				.then((value) => {
+						location.href = '".getFullURLLevel($_GET['r'], "order_cat_edit_form.php", "0", "N")."&cat_tid=".$cat_tid."&style=".$style."&schedule=".$schedule."&color=".$color."'; 
+				});
+				</script>";
+				$flag=0;
+				//die();
+			}
+		}
+	}	
+	if($flag==1)
+	{
+		$lupdate=date("Y-m-d H:i:s");
+		$sql="update $bai_pro3.cat_stat_log set date=\"$in_date\", category=\"$in_cat\", purwidth=$in_width, patt_ver=\"$patt_ver\", gmtway=\"$gmt_way\",  strip_match=\"$strip_match\", gusset_sep=\"$guess_sep\", remarks=\"$remarks\", lastup=\"$lupdate\" where tid=$cat_tid";
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//$location="Location: report.php?tran_order_tid=$o_id";
+				
+			//header( $location );
+	}
 //To auto confirm orders based on initial operation to avoid size mixup.
 $order_tid=$tran_order_tid;
-
 $sql="select order_del_no from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
-
+//echo $sql_num_check;
 if($sql_num_check==0)
 {
 	$sql="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
 	//$sql_num_confirm=mysql_num_rows($sql_result);
 }
+if($flag == 1)
+{
 	echo "<script>swal('Order category Updated Successfully','','success')</script>";
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+}
+	
 	
 }
 

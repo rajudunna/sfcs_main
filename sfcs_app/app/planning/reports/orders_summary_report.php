@@ -2,19 +2,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <?php 
-include("dbconf.php"); 
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0044",$username,1,$group_id_sfcs);
 ?>
 
 
 <html>
 <head>
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'Alpha/anu/incentives/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'Alpha/anu/incentives/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/incentives/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 <!-- <script type="text/javascript" src="<?= getFullURL($_GET['r'],'jquery-1.3.2.js','R')?>"></script> -->
-<script type="text/javascript" src="<?= getFullURL($_GET['r'],'table2CSV.js','R')?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R')?>"></script>
 <!-- <script type="text/javascript" src="<?= getFullURL($_GET['r'],'datetimepicker_css.js','R')?>"></script> -->
 
 
@@ -79,7 +80,7 @@ if(isset($_POST['filter']))
 	
 	if(strlen($sch)==0 and $colorgroup==1)
 	{
-		$sql="select order_date,order_style_no,order_del_no,group_concat(trim(both from order_col_des)) as order_col_des, sum($order) as orderqty, sum(output) as output,sum(act_cut) as act_cut,sum(act_in) as act_in,sum(act_fg) as act_fg,sum(act_fca) as act_fca,sum(act_ship) as act_ship, priority from bai_orders_db_confirm where order_date between '$sdate' and '$edate' group by order_del_no union select order_date,order_style_no,order_del_no,group_concat(trim(both from order_col_des)) as order_col_des, sum($order) as orderqty, sum(output) as output,sum(act_cut) as act_cut,sum(act_in) as act_in,sum(act_fg) as act_fg,sum(act_fca) as act_fca,sum(act_ship) as act_ship, priority from bai_orders_db_confirm_archive where order_date between '$sdate' and '$edate' group by order_del_no";
+		$sql="select order_date,order_style_no,order_del_no,group_concat(trim(both from order_col_des)) as order_col_des, sum($order) as orderqty, sum(output) as output,sum(act_cut) as act_cut,sum(act_in) as act_in,sum(act_fg) as act_fg,sum(act_fca) as act_fca,sum(act_ship) as act_ship, priority from bai_orders_db_confirm where order_date between '$sdate' and '$edate' group by order_del_no union select order_date,order_style_no,order_del_no,group_concat(trim(both from order_col_des)) as order_col_des, sum($order) as orderqty, sum(output) as output,sum(act_cut) as act_cut,sum(act_in) as act_in,sum(act_fg) as act_fg,sum(act_fca) as act_fca,sum(act_ship) as act_ship, priority from $bai_pro3.bai_orders_db_confirm_archive where order_date between '$sdate' and '$edate' group by order_del_no";
 	}
 
 

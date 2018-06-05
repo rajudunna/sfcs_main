@@ -83,23 +83,17 @@
 		}else{
 			$schedule=$_GET['schedule'];
 		}
-
-		if(isset($_POST['color']))
-		{
-			$color=$_POST['color'];
-		}else{
-			$color=$_GET['color'];
-		}
+		
 
 	?>
 
 	<?php
-		$sql2="select * from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" 
-			   and order_col_des=\"$color\"";
+		$sql2="select * from $bai_pro3.bai_orders_db where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 		mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check2=mysqli_num_rows($sql_result2);
-		$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+		$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -132,7 +126,7 @@
 		echo "<td class=\"heading\">Date</td><td>:</td><td class=\"content\">$order_date</td><td class=\"heading\">Division</td><td>:</td><td class=\"content\">$order_div</td><td class=\"heading\">PO</td><td>:</td><td class=\"content\">$order_po</td><td class=\"heading\">Packing Method</td><td>:</td><td class=\"content\">$packing_method</td>";
 		echo "</tr>";
 		echo "<tr>";
-		echo "<td class=\"heading\">Style</td><td>:</td><td class=\"content\">$style</td><td class=\"heading\">Schedule</td><td>:</td><td class=\"content\">".$schedule.chr($color_code)."</td><td class=\"heading\">Color</td><td>:</td><td class=\"content\">$color</td><td class=\"heading\">User Style ID</td><td>:</td><td class=\"content\">$style_id</td>";
+		echo "<td class=\"heading\">Style</td><td>:</td><td class=\"content\">$style</td><td class=\"heading\">Schedule</td><td>:</td><td class=\"content\">".$schedule.chr($color_code)."</td><td class=\"heading\">Color</td><td>:</td><td class=\"content\">ALL</td><td class=\"heading\">User Style ID</td><td>:</td><td class=\"content\">$style_id</td>";
 		echo "</tr>";
 		echo "</table>";
 		echo "</tr>";
@@ -180,6 +174,7 @@
 				  <div id="div10" style="display: none;">';
 			echo "<div class='panel panel-primary'><div class='panel-body'>";
 			include("main_interface_10_assort.php"); 
+			// echo $radio;
 			echo '</div></div></div>'; 
 		}
 	?>

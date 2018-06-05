@@ -5,7 +5,7 @@
 <title>Delivery Schedule</title>
 <?php 
 // include("dbconf.php"); 
-include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'dbconf.php','R'));
+include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 $test="0";
 $status_cut="Cut Finish";
@@ -18,13 +18,13 @@ $today=Date('Y-m-d', strtotime("-2 days"));
 
 ?>
 <link href="main.css" rel="stylesheet" type="text/css" />
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'TableFilter_EN/actb.js','R')?>"></script><!-- External script -->
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'TableFilter_EN/tablefilter.js','R')?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R')?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
 
 <!--
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'tooltip/jquery.tipTip.js','R')?>"></script>
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'tooltip/jquery.tipTip.minified.js','R')?>"></script>-->
-<link href="<?= getFullURL($_GET['r'],'tooltip/tipTip.css','R')?>" rel="stylesheet" type="text/css" />
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.tipTip.js',1,'R')?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.tipTip.minified.js',1,'R')?>"></script>-->
+<link href="<?= getFullURLLevel($_GET['r'],'common/js/tipTip.css',1,'R')?>" rel="stylesheet" type="text/css" />
 
 	<script type="text/javascript">
 		$(function(){
@@ -93,7 +93,7 @@ $today=Date('Y-m-d', strtotime("-2 days"));
 
 
 
-$sql_schedule="SELECT 	* FROM `bai_pro3`.`temp_delivery_schedule` WHERE ex_date BETWEEN \"$today\" and \"$endday\" AND `status` not in ('Completed' , 'Short shipped') GROUP BY ex_date ,`schedule`   order by ex_date ASC	";
+$sql_schedule="SELECT 	* FROM $bai_pro3.`temp_delivery_schedule` WHERE ex_date BETWEEN \"$today\" and \"$endday\" AND `status` not in ('Completed' , 'Short shipped') GROUP BY ex_date ,`schedule`   order by ex_date ASC	";
 
 	$sql_schedule_result=mysqli_query($link, $sql_schedule) or exit ("Sql Error in Order QTY2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_schedule_result);
@@ -126,7 +126,7 @@ $sql_schedule="SELECT 	* FROM `bai_pro3`.`temp_delivery_schedule` WHERE ex_date 
 		$comnt="";
 		$comnt_user="";
 		
-		$que1="SELECT mode from bai_pro2.deliver_mode where order_del='$schedule_no'";
+		$que1="SELECT mode from $bai_pro2.deliver_mode where order_del='$schedule_no'";
 		$que1_result=mysqli_query($link, $que1) or exit ("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($que1_row=mysqli_fetch_array($que1_result))
 			{ 
@@ -136,7 +136,7 @@ $sql_schedule="SELECT 	* FROM `bai_pro3`.`temp_delivery_schedule` WHERE ex_date 
 				$mode="";
 			}
 			
-		$que2="SELECT team from bai_pro2.fr_data where schedule='$schedule_no'";
+		$que2="SELECT team from $bai_pro2.fr_data where schedule='$schedule_no'";
 		$que2_result=mysqli_query($link, $que2) or exit ("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($que2_row=mysqli_fetch_array($que2_result))
 			{ 
@@ -145,7 +145,7 @@ $sql_schedule="SELECT 	* FROM `bai_pro3`.`temp_delivery_schedule` WHERE ex_date 
 		else{
 				$fr_team="Not Planned";
 			}
-		$sql_cmnt="SELECT * FROM bai_pro3.tbl_comment WHERE sch_no='$schedule_no'";
+		$sql_cmnt="SELECT * FROM $bai_pro3.tbl_comment WHERE sch_no='$schedule_no'";
 //echo $sql_schedule;
 	mysqli_query($link, $sql_cmnt) or exit ("Sql Error in CMNT QTY1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_cmnt_result=mysqli_query($link, $sql_cmnt) or exit ("Sql Error in CMNT QTY2".mysqli_error($GLOBALS["___mysqli_ston"]));

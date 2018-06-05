@@ -11,7 +11,7 @@ $view_access=user_acl("SFCS_0087",$username,1,$group_id_sfcs);
 <form method="post" name="input" action="#">
 <div class="row">
 <div class="col-sm-3">
-Enter Docket Number: <input type="text" name="docket_id" class="form-control" onkeypress="return IsNumeric(event);" size=15>
+Enter Docket Number: <input type="text" name="docket_id" class="form-control integer" size=15>
 <span id="error" style="color: Red; display: none"></span>
 <script type="text/javascript">
 	var specialKeys = new Array();
@@ -64,13 +64,13 @@ if(isset($_POST['submit']))
 					$fabric_status=$sql_row['fabric_status'];
 					if($valnew=='1')
 					{	
-						$sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=$docket_id and m3_op_des='LAY'"; 
+						$sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=$docket_id and m3_op_des='LAY'";				
 						$result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$val_check=mysqli_num_rows($result);
 					}
 					else
 					{
-						$sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where m3_op_des='LAY' and sfcs_doc_no in (select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no='$docket_id')"; 
+						$sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where m3_op_des='LAY' and sfcs_doc_no in (select doc_no from $bai_pro3.plandoc_stat_log where doc_no='$docket_id')"; 						
 						$result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$val_check=mysqli_num_rows($result);
 					}

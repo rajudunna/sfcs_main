@@ -9,14 +9,11 @@ Date: 2014-01-29
 Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status) 
 --> 
 
-<?php  
-
-include('../'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',4,'R'));
-include('../'.getFullURLLevel($_GET['r'],'/common/config/group_def.php',4,'R'));  
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-$view_access=user_acl("SFCS_0091",$username,1,$group_id_sfcs);  
+<?php    
+include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
 // include("header.php"); 
 ?> 
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php 
 
 function echo_title($table_name,$field,$compare,$key,$link) 
@@ -72,7 +69,7 @@ function myfunction ()
     //alert(val.length); 
     if(val.length<5 || val1.length<=5) 
     { 
-        sweetAlert('Please fill the Reason','','warning'); 
+        sweetAlert('Please enter valid Reason','','warning'); 
         return false; 
     } 
      
@@ -131,7 +128,7 @@ function myfunction ()
     //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != ''))  
     //{ 
         $sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_joins='0'";
-		echo $sql;
+		//echo $sql;
     //} 
     mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -307,7 +304,8 @@ if(isset($_POST["submit"]))
                         mysqli_query($link, $sql9) or die("Error=9".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         //echo $sql9."<br>"; 
                          
-                        $sql121="insert ignore into $bai_pro3.lay_plan_delete_track(tid,schedule_no,col_desc,reason,log_time,username) values('$order_tid[$i]','$schedule_no[$i]','$col_desc[$i]','$reason','$date','$username')"; 
+                        $sql121="insert ignore into $bai_pro3.lay_plan_delete_track(tid,schedule_no,col_desc,reason,log_time,username) values('$order_tid[$i]','$schedule_no[$i]','$col_desc[$i]','$reason','$date','$username')";
+						//echo $sql121;
                         mysqli_query($link, $sql121) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         //echo $sql121."<br>"; 
                     } 
@@ -334,30 +332,39 @@ if(isset($_POST["submit"]))
                      
                     if($schedule_id!=0) 
                     { 
-                        $docket_t=array();
-						$sql88="select * from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\""; 
+                       // $docket_t=array();
+                        $sql88="select * from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\""; 
+                        // echo $sql88;
+                        // die();
                         $result88=mysqli_query($link, $sql88) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         //echo $sql88."<br>"; 
                         if(mysqli_num_rows($result88)>0) 
                         { 
-                            $sql881="select * from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\""; 
+                            
+                            $sql881="select GROUP_CONCAT(doc_no) from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\""; 
 							$result88=mysqli_query($link, $sql88) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							while($row88=mysqli_fetch_array($result88)) 
                             { 
-                                $docket_t[]=$row88['doc_no']; 
+								//echo $row88['doc_no'];
+                               $docket_t =$row88['doc_no']; 
                             } 
-                            $dockets=explode(",", $docket_t); 
+							$dockets = $docket_t;
+                           // $dockets=explode(",", $docket_t); 
+							//var_dump($dockets);
                             $sql102="delete from $brandix_bts.tbl_cut_size_master where parent_id in (select id from $brandix_bts.tbl_cut_master where doc_num in (".$dockets."))"; 
-                            mysqli_query($link, $sql102) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
                             //echo $sql102."<br>"; 
+                            mysqli_query($link, $sql102) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                           
                              
                             $sql103="delete from $brandix_bts.tbl_cut_master where doc_num in (".$dockets.")"; 
+                            //echo $sql103."<br>";
                             mysqli_query($link, $sql103) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                            //echo $sql103."<br>"; 
+                            
                              
                             $sql101="delete from $brandix_bts.tbl_orders_sizes_master where parent_id=".$schedule_id." and order_col_des='".$col_desc[$i]."'"; 
-                            mysqli_query($link, $sql101) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
                             //echo $sql101."<br>"; 
+                            mysqli_query($link, $sql101) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                            
                         }     
                                          
                     } 

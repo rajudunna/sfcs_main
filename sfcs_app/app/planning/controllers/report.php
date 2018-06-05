@@ -164,7 +164,7 @@ $week_delivery_plan = getFullURL($_GET['r'],'week_delivery_plan.php','N');
 echo '<div class="row col-md-12">';
 echo "<a href='$week_delivery_plan' class='col-xs-3 col-xs btn btn-info'>Delivery Schedule Week Plan</a> ";
 //echo '<a href="'.$dns_adr2.'/projects/beta/visionair/shipment_plan_week.php">Update Shipment Plan</a> | ';
-$sync_plan_fr = getFullURLLevel($_GET['r'],'../sync_plan_fr.php',0,'N');
+$sync_plan_fr = getFullURLLevel($_GET['r'],'sync_plan_fr.php',0,'N');
 echo "<a href='$sync_plan_fr' class='col-xs-3 btn btn-info'>Sync. With Plan and FR</a>";
 echo '</div>';
 // echo '<div class="row">';

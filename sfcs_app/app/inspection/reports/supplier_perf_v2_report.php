@@ -5,6 +5,7 @@
 <?php
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+$Page_Id='SFCS_0058';
 ?>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FusionCharts.js',3,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FusionChartsExportComponent.js',3,'R'); ?>"></script>
@@ -74,7 +75,7 @@ if(isset($_POST['filter']))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result) > 0)
 	{
-		include("../".getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
+		// include("../".getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
 		
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -208,3 +209,13 @@ if(isset($_POST['filter']))
 </div>
 </div>
 </div>
+
+<script>
+
+$(document).ready(function(){
+	$('#reset_table1').addClass('btn');
+	$('#reset_table1').addClass('btn-warning');
+	$('#reset_table1').css({'width':'100px'});
+})
+
+</script>

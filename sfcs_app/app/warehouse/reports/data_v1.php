@@ -1,11 +1,11 @@
 <?php
-	require_once('phplogin/auth.php');
+	//require_once('phplogin/auth.php');
 ?>
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+
 
 
 <?php
-
+include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 if(!empty($_POST['put']) && isset($_POST['put']))
 {
 	$lot_no=$_POST['lot_no'];
@@ -25,6 +25,8 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 			$file_name[].=$query_result1['upload_file'];
 		}
 		$url = getFullURL($_GET['r'],'insert_v1.php','N');
+		//echo $url;
+		//die();
 		$convert=$_POST['convert'];
 		$date=$_POST['date'];
 		$ref1=$_POST['ref1'];

@@ -1,8 +1,3 @@
-
-<script src="https://cdn.ovo.ua/pub/fusioncharts/fusioncharts.js"></script> 
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-
 <?php
 include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
@@ -14,6 +9,9 @@ $view_access=user_acl("SFCS_0055",$username,1,$group_id_sfcs);
 $reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
 
 ?>
+<script src="https://cdn.ovo.ua/pub/fusioncharts/fusioncharts.js"></script> 
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
 
 <script>
 function verify_date(e){
@@ -134,13 +132,13 @@ if(isset($_POST['filter']))
 		{
 			if($selected==1)
 			{	
-				// echo 'welcome 1';
+				 //echo 'welcome 1';
 				include("rejection_chart_reason_sup.php");
 			}
 
 			if($selected==2)
 			{
-				// echo 'welcome 2';
+				 //echo 'welcome 2';
 				include("rejection_chart_reason_sup_week.php");
 				include("rejection_chart_reason_sup_week_v2.php");
 			}

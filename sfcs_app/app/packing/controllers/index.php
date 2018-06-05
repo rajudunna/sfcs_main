@@ -8,6 +8,7 @@
 
 <?php 
 	$view_access=user_acl("SFCS_0114",$username,1,$group_id_sfcs);
+	echo $image_path;
 	//echo $image_path;
 ?>
 
@@ -250,6 +251,7 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 	</div>	
 </div>	
 
+<?php $url = getFullURLLevel($_GET['r'],'common/php/check_seal_no.php',1,'R'); ?>
 <script>
 	function verify_image(t){
 		var id = t.id;
@@ -262,7 +264,7 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 		}
 	}	
 	$('#sno').on('change',function(){
-		var url = "<?php echo getFullURL($_GET['r'],'check_seal_no.php','R'); ?>";
+		var url = "<?php echo $url ?>";
 		var sno = $(this).val();
 		$.ajax({
 			type:"POST",
@@ -400,7 +402,7 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 					//we will give an unique name, for example the time in unix time format
 					$image_name=time().'.'.$extension;
 					//the new name will be containing the full path where will be stored (images folder)
-					// $image_path = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'images',0,'R').'/';
+					//$image_path = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'images',0,'R').'/';
 
 					$append = date('h').date('i').date('s').date('d').date('m').date('y');
 					$newname = $append.'1'.$fileName;
@@ -432,7 +434,7 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 					else
 					{
 					// the new thumbnail image will be placed in images/thumbs/ folder
-					$thumb_name=$_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'images',0,'R').'/'.$newname;
+					//$thumb_name=$_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'images',0,'R').'/'.$newname;
 					
 					// call the function that will create the thumbnail. The function will get as parameters
 					//the image name, the thumbnail name and the width and height desired for the thumbnail
@@ -462,9 +464,9 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 			else
 			{
 				$query = "INSERT INTO $bai_pack.upload(name,size,type,name1,size1,type1,name2,size2,type2,name3,size3,type3,name4,size4,type4,name5,size5,type5,container,vecno,sealno,dat,carton,user) VALUES ('$fileName','$fileSize','$fileType','$fileName1','$fileSize1','$fileType1','$fileName2','$fileSize2','$fileType2','$fileName3','$fileSize3','$fileType3','$fileName4','$fileSize4','$fileType4','$fileName5','$fileSize5','$fileType5','1','$vno','$sno','$date','$cno','$user')";
-			//echo $query;
+			
 			}
-
+			// echo $query;
 			if(!mysqli_query($link, $query))
 			{
 				echo "Error = ".mysqli_error($GLOBALS["___mysqli_ston"]);

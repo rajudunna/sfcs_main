@@ -1,0 +1,40 @@
+{ 
+  "name" : "Quality",
+  "version" : "1.0",
+  "description" : "",
+  "operations" :
+  {
+  "QA01" : 
+  {
+  "folder" : "rejection_update_cutjob_wise",
+  "description" : "",
+  "menus" : 
+  {
+  "Rejection Update" : "rejection_update_cutjob_wise/reject_update_panel2.php",
+  }
+  },
+  "QA02" : 
+  {
+  "folder" : "rejection_update_inputjob_wise",
+  "description" : "",
+  "menus" : 
+  {
+  "Rejection Update(Input Job Wise)" : "rejection_update_inputjob_wise/reject_update_panel2_ip_job.php",
+  }
+  }
+  }
+  
+  "menus" : { 
+  "Sample Requirement Confirmation" : "ship_sample_input.php",
+  "Panel Receiving" : "test.php",
+  "Samples Update" : "sample_room.php",
+  "Rejection Reversal Form" : "qms_2.php",
+  "Samples Update (IMS)" : "sample_room_ims.php",
+  "Shipment Sample Update (CIF)" : "ship_sample_room_ims.php",
+  "FCA Status Update" : "pending_form.php",
+  "Additional Panel Module Input Update Form" : "material_issue_process.php",
+  "Additional Panel Destroy Track" : "reserve_pcs.php",
+  "Additional Panel Track" : "available_pcs_v2.php"
+  }
+  
+  }

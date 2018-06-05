@@ -1,5 +1,5 @@
 <?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
-<?php include(getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
+<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
 <?php //include("menu_content.php");   This file has no content that was beign used ?>
 
 <div class="panel panel-primary">
@@ -46,7 +46,7 @@ if(isset($_POST['submit']))
 	echo "<hr>";
 	$schedule=$_POST['schedule'];
 	
-	$quer="SELECT * FROM $bai_pro3.pac_sawing_out WHERE schedule='$schedule'";
+	$quer="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule'";
 	$quer_result=mysqli_query($link, $quer) or exit("Sql Error98 $quer".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rowq=mysqli_fetch_array($quer_result);
 	
@@ -68,14 +68,14 @@ if(isset($_POST['submit2']))
 	$schedule=$_POST['schedule'];
 	//echo $schedule;
 
-	$quer="SELECT * FROM $bai_pro3.pac_stat_log_new WHERE schedule='$schedule'";
+	$quer="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule'";
 	//echo $quer;
 	$quer_result=mysqli_query($link, $quer) or exit("Sql Error98 $quer".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rowq=mysqli_fetch_array($quer_result);
 
 	if($rowq){
 		$url = getFullURL($_GET['r'],'sawing_out_list_1.php','N');
-		echo $url;
+		//echo $url;
 		echo '<script type="text/javascript">
 				window.location = "'.$url.'&schedule='.$schedule.'"
 		  	  </script>'; 

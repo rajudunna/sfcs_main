@@ -60,7 +60,7 @@ echo ' <form name="upload" enctype="multipart/form-data" method="POST" action="i
 <div class="col-sm-4">
 <label>Choose File: </label> <input type="file" name="file" class="form-control" size="25" value="" accept=".csv" required> (Only CSV files and file name without spaces. Example: Plan_2016_Nov.csv)
 </div></br><div class="col-sm-4"><input type="submit" class="btn btn-primary" name="upload" value="Upload" ';
-echo " id=\"add\" onclick=\"document.getElementById('add').style.display='none';  document.getElementById('msg').style.display='';\"";
+echo " id=\"add\" onclick=\"hide()\"";
 echo ' > </div></div>
 </form> '; 
 } 
@@ -92,10 +92,9 @@ if(strlen($filename)>0)
 	$redirect = explode('?r=',$action_var);
 	echo ' <form name="update" method="GET" action="index.php"> 
 	<input type="hidden" name="r" value='.$redirect[1].'>
-	<div class="row"><div class="col-sm-3"><label>Process File ID: </label><input type="text" class="form-control" name="id" size="25" value='.$filename.'>
+	<div class="row"><div class="col-sm-3"><label>Process File ID: </label><input type="text" class="form-control" name="id" size="25" value='.$filename.' id="ile">
 	<input type="hidden" name="date" value="'.date('Y-m-d', strtotime('+1 month', strtotime($date))).'">
-	<input type="submit" name="update" class="btn btn-primary" value="Update" ';
-echo " id=\"add\" onclick=\"document.getElementById('add').style.display='none'; document.getElementById('msg').style.display='';\"";	
+	<input type="submit" name="update" class="btn btn-primary" value="Update" id="add" onclick="hide()">';	
 	echo '> </div></div>
 	</form> ';
 }
@@ -119,3 +118,14 @@ echo '<span id="msg" style="display:none;"><h2>Please Wait...</h2></span>';
 </div></div>
 </body>
 </html>
+
+<script>
+    function hide(){
+        if(document.getElementById('file').value == NULL){
+                
+        }else{
+            document.getElementById('add').display = 'none';
+        }
+    }
+</script>
+

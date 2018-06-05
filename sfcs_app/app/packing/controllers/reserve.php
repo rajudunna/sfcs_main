@@ -1,6 +1,6 @@
 <?php
 
-include(getFullURLLevel($_GET['r'], 'common/config/config.php', 3, 'R')); 
+include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3, 'R')); 
 
 if(isset($_POST['hold']))
 {
@@ -33,7 +33,7 @@ if(isset($_POST['hold']))
 		{
 			$sql="insert into $bai_pro3.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"$color_new\",ship_status=\"1\",ship_remarks=\"$rmks\",ship_cartons=".abs($crts).",".implode(",",$query);
 		}
-		//echo "<br/> query=".$sql;
+		//echo "<br/> query=".$sql;;
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	$url = getFullURL($_GET['r'],'test.php','N');

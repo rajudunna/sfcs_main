@@ -124,7 +124,7 @@
 
 	
 <div class="panel panel-primary">
-	<div class="panel-heading"><strong>Sewing Ratios</strong></div>
+	<div class="panel-heading"><strong>Sewing Job Ratios</strong></div>
 	<div class="panel-body">
 	
 		<div class="col-md-12">
@@ -236,7 +236,7 @@
 												if($carton_qty>0){	$value='value='.$carton_qty.'';	}
 												else{	$value='value=0';	}								
 												echo "
-												<th >Carton Total:</th>
+												<th >Ratio Total:</th>
 												<th ><input type=\"text\"  oncopy='return false' onpaste='return false' class=\"form-control\" ".$value." id=\"carton_tot\" readonly=true name=\"carton_tot\" onmouseover=\"check_sum1();\"> </th>";
 									
 											?>

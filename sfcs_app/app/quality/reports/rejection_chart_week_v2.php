@@ -11,7 +11,9 @@ while($sql_row1z=mysqli_fetch_array($sql_result1z))
 
 $qtyz=array();	
 $qtyz2=array();	
-
+echo "<div style='display:none;'>";
+echo $sql1z;
+echo "</div>";
 for($iz1=0;$iz1<sizeof($supplier_namez);$iz1++)
 {
 	$sql11z="SELECT * FROM $bai_pro3.bai_qms_db_reason_track WHERE supplier='".$supplier_namez[$iz1]."' AND qms_reason in (".$reasons_list_ref.") and log_date   between \"".$sdate."\" and \"".$edate."\"";

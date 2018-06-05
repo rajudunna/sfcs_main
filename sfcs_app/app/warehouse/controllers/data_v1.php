@@ -57,11 +57,14 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 				  
 		$filename = explode(".",$_FILES['file']['name']);		
 		$upload_file= $filename[0];
-			
+		//echo $upload_file;	
+		//die();
 		if (in_array($upload_file, $file_name))
 		{
 			echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>Upload File Name : (".$upload_file.") Already Existed</font></h1></center></div>";
-			echo "<div id=\"msg\"><a href='".getFullURL($_GET['r'],'insert_v1.php')."'><center><br/><br/><br/><h3><font color='blue'>Back to Stock In Screen</font></h3></center></a></div>";
+			echo "<div id=\"msg\"><a href='".getFullURL($_GET['r'],'insert_v1.php','N')."'><center><br/><br/><br/><h3><font color='blue'>Back to Stock In Screen</font></h3></center></a></div>";
+			//echo .getFullURL($_GET['r'],'insert_v1.php').;
+			//die();
 		}
 		else
 		{	
@@ -114,15 +117,18 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					}
 					else
 					{
+						
+						
 						$sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						fclose($handle);
 						// echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>Stock Updated Successfully.... Please Wait</font></h1></center></div>";
-
+                          
 						$ext = $filename[1]; // get the extension of the file
 						$newname = "$upload_file"."."."$ext";
-						$path_new="../".getFullURL($_GET['r'],"Upload_files/$newname","R");
+						$path_new=$_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],"Upload_files/$newname","R");
+						 //echo $path_new;
 						move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
-
+                 
 					//	echo "<script>sweetAlert('Stock Updated Successfully...','Please Wait','success')</script>";
 					echo "<script>
 						swal({

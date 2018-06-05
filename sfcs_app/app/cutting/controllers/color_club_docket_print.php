@@ -42,37 +42,18 @@ $mk_files=array();
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-// var_dump($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$order_del_no=$sql_row['order_del_no'];
 	$flag=$sql_row['title_flag'];
-	$size06 = $sql_row['title_size_s06'];
-	$size08 = $sql_row['title_size_s08'];
-	$size10 = $sql_row['title_size_s10'];
-	$size12 = $sql_row['title_size_s12'];
-	$size14 = $sql_row['title_size_s14'];
-	$size16 = $sql_row['title_size_s16'];
-	$size18 = $sql_row['title_size_s18'];
-	$size20 = $sql_row['title_size_s20'];
-	$size22 = $sql_row['title_size_s22'];
-	$size24 = $sql_row['title_size_s24'];
-	$size26 = $sql_row['title_size_s26'];
-	$size28 = $sql_row['title_size_s28'];
-	$size30 = $sql_row['title_size_s30'];
-	$flag = $sql_row['title_flag'];
-	
-	if($flag==0)
+	for($i=0;$i<sizeof($sizes_array);$i++)
 	{
-	$size06='s06'; $size08='s08'; $size10='s10'; $size12='s12'; $size14='s14'; $size16='s16'; $size18='s18'; $size20='s20'; $size22='s22'; $size24='s24'; $size26='s26'; $size28='s28'; $size30='s30';
+		if($sql_row["title_size_".$sizes_array[$i].""]<>'')
+		{
+			$sizes_tit=$sql_row["title_size_".$sizes_array[$i].""];
+		}
 	}
 }
-
-
-$sizes=array("xs","s","m","l","xl","xxl","xxxl","$size06","$size08","$size10","$size12","$size14","$size16","$size18","$size20","$size22","$size24","$size26","$size28","$size30");
-
-
 $sql="select *,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where clubbing=$clubbing and pcutno=$cut_no and category=\"$cat_title\" and order_del_no=$order_del_no and clubbing>0";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -89,7 +70,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$mklength=$sql_row['mklength'];
 	//if(substr($style,0,1)=="M") 
 	$savings=$sql_row['savings'];
-{ $extra=round((($sql_row['material_req'])*$savings),2); } 
+	{ $extra=round((($sql_row['material_req'])*$savings),2); } 
 	$met_req[]=$sql_row['material_req']+$extra;
 	$plies[]=$sql_row['p_plies'];
 	$docs[]=$sql_row['doc_no'];
@@ -98,27 +79,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$plan_module=$sql_row['plan_module'];
 	$remarks=$sql_row['remarks'];
 	$mk_files[]=$sql_row['mk_file'];
-		
-	$qty[]=$sql_row['p_xs'];
-	$qty[]=$sql_row['p_s'];
-	$qty[]=$sql_row['p_m'];
-	$qty[]=$sql_row['p_l'];
-	$qty[]=$sql_row['p_xl'];
-	$qty[]=$sql_row['p_xxl'];
-	$qty[]=$sql_row['p_xxxl'];
-	$qty[]=$sql_row['p_s06'];
-	$qty[]=$sql_row['p_s08'];
-	$qty[]=$sql_row['p_s10'];
-	$qty[]=$sql_row['p_s12'];
-	$qty[]=$sql_row['p_s14'];
-	$qty[]=$sql_row['p_s16'];
-	$qty[]=$sql_row['p_s18'];
-	$qty[]=$sql_row['p_s20'];
-	$qty[]=$sql_row['p_s22'];
-	$qty[]=$sql_row['p_s24'];
-	$qty[]=$sql_row['p_s26'];
-	$qty[]=$sql_row['p_s28'];
-	$qty[]=$sql_row['p_s30'];
+	for($i=0;$i<sizeof($sizes_tit);$i++)
+	{
+		$qty=$sql_row["p_".$sizes_array[$i].""];
+	}	
 	
 	$mk_ref=$sql_row['mk_ref'];
 	$allocate_ref=$sql_row['allocate_ref'];
@@ -145,12 +109,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$col_des=$sql_row['col_des'];
 }
 
-//echo implode(",",$docs);
-
-//$sql="select min(roll_width) as width from bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
-
 $idocs = "'" . implode ( "', '", $docs ) . "'";
-
 
 $sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no in ($idocs) and doc_type=\"normal\"";
  // echo $sql;
@@ -160,7 +119,6 @@ $sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation whe
 		$system_width=round($sql_row1x['width'],2);
 	}
 	$actwidth=$system_width;
-
 $sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
 //echo $sql22;
 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1654,12 +1612,12 @@ tags will be replaced.-->
   echo "<th $style_css>Job</th>";
   echo "<th $style_css>Doc.ID</th>";
   
-  for($i=0;$i<sizeof($sizes);$i++)
+  for($i=0;$i<sizeof($sizes_tit);$i++)
   {
-  	if($qty[$i]>0)
-	{
-		echo "<th $style_css>".$sizes[$i]."</th>";
-	}
+  	//if($qty[$i]>0)
+	//{
+		echo "<th $style_css>".$sizes_tit[$i]."</th>";
+	//}
   }
   
   echo "<th $style_css>Plies</th>";
@@ -1674,12 +1632,12 @@ tags will be replaced.-->
 	  echo "<td $style_css>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
 	  echo "<td $style_css>".$docs[$j]."</td>";
 	  
-	  for($i=0;$i<sizeof($sizes);$i++)
+	  for($i=0;$i<sizeof($sizes_tit);$i++)
 	  {
-	  	if($qty[$i]>0)
-		{
+	  	// if($qty[$i]>0)
+		// {
 			echo "<td $style_css>".$qty[$i]."</td>";
-		}
+		//}
 	  }
 	  
 	  echo "<td $style_css>".$plies[$j]."</td>";
@@ -1694,12 +1652,12 @@ tags will be replaced.-->
   //echo "<th>Job</th>";
   //echo "<th>Doc.ID</th>";
   
-  for($i=0;$i<sizeof($sizes);$i++)
+  for($i=0;$i<sizeof($sizes_tit);$i++)
   {
-  	if($qty[$i]>0)
-	{
+  	// if($qty[$i]>0)
+	// {
 		echo "<th $style_css>".($qty[$i]*array_sum($plies))."</th>";
-	}
+	//}
   }
   
   echo "<th $style_css>".((array_sum($qty)/sizeof($color_codes))*array_sum($plies))."</th>";
