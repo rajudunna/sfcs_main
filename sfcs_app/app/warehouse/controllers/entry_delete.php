@@ -13,18 +13,18 @@ Change log:
 
 <?php 	
     $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-	include('../'.$url);
+	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 ?>
 <?php 	
 	$url = getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R');
-	include('../'.$url); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
 ?>
 
 <?php
 $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-include('../'.$url);
+include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-include('../'.$url); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
 $view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
 $authorised_user=user_acl("SFCS_0147",$username,7,$group_id_sfcs);
 /*

@@ -1,7 +1,7 @@
 
 <?php 
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-include('../'.$url); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
 ?>
 
 

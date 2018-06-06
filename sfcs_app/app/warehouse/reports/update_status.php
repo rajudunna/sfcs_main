@@ -6,7 +6,7 @@ $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=$username_list[1];
 
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-include('../'.$url);
+include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 
 $tid=$_GET['tid'];
 $check=$_GET['check'];

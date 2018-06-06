@@ -2,7 +2,7 @@
 	set_time_limit(50000);
 	// require_once('phplogin/auth.php');
 	$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-	include('../'.$url);
+	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 ?>
 
 
