@@ -27,8 +27,9 @@ include "template/helper.php";
     if(isset($_GET['r']) && $_GET['r']!=''){
         $get_file_path = getFILE($_GET['r']);
         if($get_file_path){
-            if($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html')
-                include($get_file_path['path']);
+            if($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html'){                           
+                include($_SERVER["DOCUMENT_ROOT"].$get_file_path['path']);
+            }
             else{
                 if($get_file_path['type'] == 'xlsm'){
                     echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Click here to dowload Tool</a>";
@@ -89,7 +90,21 @@ $('[data-toggle="datepicker"]').datepicker(
                 format: 'yyyy-mm-dd',
                 autoHide: true,
             }).attr("readonly","true").css({"background-color": "#fff"});
+
+/*$.ajaxSetup({
+    beforeSend: function(jqXHR, settings) {
+
+        // Only GET Method
+       settings.url=settings.url.replace("http://","");
+        settings.url = "http://localhost/"+settings.url
+     
+
+    },
+    
+});*/
 </script>
+
+
 
 
 

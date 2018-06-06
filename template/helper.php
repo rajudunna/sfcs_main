@@ -12,10 +12,9 @@ function getFILE($li){
 	// echo $li;
     $li = base64_decode($li);
      //echo $li;
-        $path = "..".trim($li);
-		//echo $path;
+        $path = trim($li);
     if($li != ''){
-        if(file_exists($path)){
+        if(file_exists($_SERVER["DOCUMENT_ROOT"].$path)){
             $type = pathinfo($path);
             if($type['extension'] == 'php' || $type['extension'] == 'htm' || $type['extension'] == 'html')
                 return ['path'=>$path,'type'=>$type['extension']];
@@ -83,7 +82,7 @@ function getFullURL($r,$filename,$type){
     if($type == 'N')
         return getURL($file)['url'];
     else
-        return rtrim($file,'/');;
+        return rtrim($file,'/');
 }
 
 /*
@@ -97,6 +96,7 @@ function getFullURL($r,$filename,$type){
 */
 function getFullURLLevel($r,$filename,$level,$type){
     $base = getBASE($r)['base'];
+   
     $con_base = explode('/',$base);
     for($i=0;$i<$level;$i++){
         array_pop($con_base);
@@ -104,10 +104,12 @@ function getFullURLLevel($r,$filename,$level,$type){
     $base = implode('/',$con_base);
     $filename = rtrim($filename,"/");
     $file = $base."/".$filename;
-    if($type == 'N')
+    if($type == 'N'){
         return getURL($file)['url'];
-    else
+    }
+    else{
         return rtrim($file,'/');
+    }
 }
 
 ?>

@@ -1,6 +1,5 @@
 <?php
-error_reporting(0);
-
+//error_reporting(0);
 if(isset($_GET['style']) && empty($_GET['schedule']))
 {
 	$style = $_GET['style'];
