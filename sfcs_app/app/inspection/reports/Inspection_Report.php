@@ -1,8 +1,8 @@
  <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-include("../".getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
 error_reporting(0);
 ?>
 
@@ -268,7 +268,7 @@ if(isset($_POST['submit']))
 					if($print_check==0 and $num_rows>0 and in_array($buyer,$selected_buyer))
 					{
 						$flag = true;
-						include("../".getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
+						include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
 
 						sort($scount_temp); //to sort shade groups
 						if($num_rows>0)

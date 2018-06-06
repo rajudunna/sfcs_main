@@ -121,7 +121,7 @@ function check_sch_sty()
 <div class="panel-heading">Schedule Clubing Clear Panel</div>
 <div class="panel-body">
 <div>
-<?php include("../".getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R'));?> 
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R'));?> 
 <?php 
 $style=$_GET['style']; 
 $schedule=$_GET['schedule'];  

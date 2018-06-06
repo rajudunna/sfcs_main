@@ -31,7 +31,7 @@ WebBrowser1.outerHTML = "";
 } 
 </script> 
 <?php 
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 //include("header.php"); 
 include("functions.php"); 
 

@@ -11,10 +11,10 @@ Ticket #: #684040-kirang/2014-06-04 :
 Ticket #: #684040-kirang/2015-06-18 // Changed the logic for count the number of rolls a batch.
 
 -->
-<?php //include("../".getFullURLLevel($_GET['r'], "dbconf2.php", "2", "R").""); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "dbconf2.php", "2", "R").""); ?>
 <?php include("../../dbconf2.php")?>
 <?php include("../../functions.php")?>
-<?php //include("../".getFullURLLevel($_GET['r'], "functions.php", "2", "R")."");
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "functions.php", "2", "R")."");
 include("../mpdf.php");
 
 $mpdf=new mPDF('','A4',0,'',10,10,10,10,0,0,'P'); 
@@ -1779,7 +1779,7 @@ echo $htmlstr;
 
 //==============================================================
 //==============================================================
-//include("../".getFullURLLevel($_GET['r'], "mpdf.php", "1", "R")."");
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "mpdf.php", "1", "R")."");
 
 //$mpdf->Output(); 
  

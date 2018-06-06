@@ -2,8 +2,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'/common/php/menu_content.php',1,'R'));
-include("../".getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/menu_content.php',1,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
 //include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'header_scripts.php','R'));
 // $view_access=user_acl("SFCS_0007",$username,1,$group_id_sfcs); 
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');

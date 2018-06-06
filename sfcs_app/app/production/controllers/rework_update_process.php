@@ -49,10 +49,10 @@ Kirang/20150307 added validation to avoid additional output.
     
 <body onpageshow="if (event.persisted) noBack();" onkeydown="return showKeyCode(event)">
 
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
 <?php 
 //To validate the output entries
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));	
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));	
 ?>
 
 <div id="wait" ><h2><font color="red">Please wait while processing the data...</font></h2></div>

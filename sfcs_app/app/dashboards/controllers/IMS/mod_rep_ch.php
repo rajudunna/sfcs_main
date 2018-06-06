@@ -9,8 +9,8 @@ error_reporting(-1);
 ini_set('display_errors', 'On');
 ?>
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 ?>
 
 

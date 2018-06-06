@@ -16,8 +16,8 @@ CR# 375 / kirang - 2014-12-22 / Submit validation for enable and disable button
 -->
 
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 
 $View_access=user_acl("SFCS_0143",$username,1,$group_id_sfcs);
 
@@ -28,7 +28,7 @@ $View_access=user_acl("SFCS_0143",$username,1,$group_id_sfcs);
 //Rejection Reasons with Keys Db
 $rejections_fileds_array=array("Fabric_Miss Yarn","Fabric_Fabric Holes","Fabric_Slub","Fabric_F.Yarn","Fabric_Stain Mark","Fabric_Color Shade","Fabric_Heat Seal","Fabric_Trim","Cutting_Panel Un-Even","Cutting_Stain Mark","Cutting_Strip Match","Sewing_Cut Damage","Sewing_Heat Seal","Sewing_M' ment Out",
 "Sewing_Un Even","Sewing_Shape Out Leg","Sewing_Shape Out waist","Sewing_Shape Out","Sewing_Stain Mark","Sewing_With out Label","Sewing_Trim shortage",
-"Sewing_Sewing Excess","Machine Damages_Cut Holes","Machine Damages_Slip Stitch’s","Machine Damages_Oil Marks","Embellishment_Others EMB",
+"Sewing_Sewing Excess","Machine Damages_Cut Holes","Machine Damages_Slip Stitchï¿½s","Machine Damages_Oil Marks","Embellishment_Others EMB",
 "Embellishment_Foil Defects","Embellishment_Embroidery","Embellishment_Print","Embellishment_Sequence","Embellishment_Bead",
 "Embellishment_Dye","Embellishment_wash");
 
@@ -42,7 +42,7 @@ $garment_codes=array("GA","GB","GC","GD","GE","GF","GL","GB","GG","GH","GI","GK"
 
 //Rejection Reasons
 $rejections_array=array("Fabric_Miss Yarn"=>"0","Fabric_Fabric Holes"=>"1","Fabric_Slub"=>"2","Fabric_F.Yarn"=>"3","Fabric_Stain Mark"=>"4","Fabric_Color Shade"=>"5","Fabric_Heat Seal"=>"15","Fabric_Trim"=>"16","Cutting_Panel Un-Even"=>"6","Cutting_Stain Mark"=>"7","Cutting_Strip Match"=>"8","Sewing_Cut Damage"=>"9","Sewing_Heat Seal"=>"11","Sewing_M' ment Out"=>"12","Sewing_Un Even"=>"17","Sewing_Shape Out Leg"=>"18","Sewing_Shape Out waist"=>"19","Sewing_Shape Out"=>"13","Sewing_Stain Mark"=>"10","Sewing_With out Label"=>"20","Sewing_Trim shortage"=>"21","Sewing_Sewing Excess"=>"22","Machine Damages_Cut Holes"=>"23",
-"Machine Damages_Slip Stitch’s"=>"24","Machine Damages_Oil Marks"=>"25","Embellishment_Others EMB"=>"14","Embellishment_Foil Defects"=>"26","Embellishment_Embroidery"=>"27","Embellishment_Print"=>"28","Embellishment_Sequence"=>"29","Embellishment_Bead"=>"30","Embellishment_Dye"=>"31",
+"Machine Damages_Slip Stitchï¿½s"=>"24","Machine Damages_Oil Marks"=>"25","Embellishment_Others EMB"=>"14","Embellishment_Foil Defects"=>"26","Embellishment_Embroidery"=>"27","Embellishment_Print"=>"28","Embellishment_Sequence"=>"29","Embellishment_Bead"=>"30","Embellishment_Dye"=>"31",
 "Embellishment_wash"=>"32");
 
 $rej_val=array(0,1,2,3,4,5,15,16,6,7,8,9,11,12,17,18,19,13,10,20,21,22,23,24,25,14,26,27,28,29,30,31,32);

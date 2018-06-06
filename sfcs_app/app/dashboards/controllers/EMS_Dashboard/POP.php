@@ -1,7 +1,7 @@
 <?php
 set_time_limit(2000);
 ?>
-<?php include("../".getFullURLLevel($_GET['r'],'dbconf.php',2,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',2,'R')); ?>
 <?php include("functions2.php"); ?>
 
 <title>POP - IMS Track Panel</title>

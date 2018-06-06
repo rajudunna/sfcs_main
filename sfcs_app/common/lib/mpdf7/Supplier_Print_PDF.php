@@ -11,7 +11,7 @@ Ticket #: #684040-kirang/2014-06-04 :
 Ticket #: #684040-kirang/2015-06-18 // Changed the logic for count the number of rolls a batch.
 
 -->
-<?php //include("../".getFullURLLevel($_GET['r'], "dbconf2.php", "2", "R").""); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "dbconf2.php", "2", "R").""); ?>
 ;
 <?php include(getFullURLLevel($_GET['r'],'dbconf2.php',1,'R')); ?>
 <?php include(getFullURLLevel($_GET['r'],'functions.php',1,'R')); 

@@ -51,7 +51,7 @@ function email_attachment($to_email, $email, $subject,$our_email_name, $our_emai
 
 
 <?php	
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 
 $date=date("Y-m-d");
 echo $ref_no;

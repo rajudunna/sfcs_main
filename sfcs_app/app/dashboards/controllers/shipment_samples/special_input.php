@@ -1,6 +1,6 @@
 <?php //include("../../dbconf.php");
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); ?>
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); ?>
 
 
 <?php

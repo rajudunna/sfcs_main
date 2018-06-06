@@ -6,8 +6,8 @@ This amendement was done based on the confirmation to issue excess (1%) material
 -->
 
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
-<?php //include("../".getFullURLLevel($_GET['r'], "dbconf.php", "1", "R").""); ?>
-<?php //include("../".getFullURLLevel($_GET['r'], "", "1", "R").""); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "dbconf.php", "1", "R").""); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "", "1", "R").""); ?>
 <?php include('../../../../common/config/config.php'); ?>
 <?php //include("../".getFullURL($_GET['r'], "", "R").""); ?>
 <?php include('../../../../common/config/functions.php'); ?>

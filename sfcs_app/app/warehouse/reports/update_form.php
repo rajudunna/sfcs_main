@@ -129,7 +129,7 @@ function validateQty(event)
 
 		<?php 
 		include("menu_include.php");
-		include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 		<?php //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);?>
 
 <?php

@@ -454,7 +454,7 @@ window.onload = startBlink;
 
 <body>
 <?php 
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include("../".getFullURL($_GET['r'],"functions.php",'R'));?>
 <script language="JavaScript">
 <!--
@@ -524,7 +524,7 @@ mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli
 		</div>
 <div class="form-group">		
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 // Ticket #424781 Disply buyer division from the database level plan_module table
 echo '&nbsp;&nbsp;Buyer Division :
 <select name="view_div" id="view_div" class="form-control" onchange="redirect_view()">';

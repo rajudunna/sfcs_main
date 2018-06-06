@@ -37,7 +37,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 
 <?php
 
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 error_reporting(0);
 $start=$_GET['dat1'];
 $end=$_GET['dat2'];

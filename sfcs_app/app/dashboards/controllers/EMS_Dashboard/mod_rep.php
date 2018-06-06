@@ -9,7 +9,7 @@ Ticket#45927327 kirang/Date:24-12-2015/Applying user_acl to give access for inpu
 set_time_limit(2000);
 ?>
 <?php
- include("../".getFullURLLevel($_GET['r'],'dbconf.php',2,'R'));
+ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',2,'R'));
  //include("../../dbconf.php"); ?>
 <?php include("functions2.php"); 
 include($_SERVER['DOCUMENT_ROOT']."/sfcs/M3_Bulk_OR/ims_size.php");

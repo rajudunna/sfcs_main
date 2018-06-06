@@ -8,8 +8,8 @@ user names taken from the database level
 -->
 <?php
 //$author_id_db=array("kirang","manojm","sridevik","kirang","kirang","thilinapa","kirang","kirang");
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
  
 $view_access=user_acl("SFCS_0146",$username,1,$group_id_sfcs); 
 
@@ -35,7 +35,7 @@ else
 */
 function dateDiffsql($link,$start,$end)
 {
-	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	$sql="select distinct bac_date from $bai_pro.bai_log_buf where bac_date<='$start' and bac_date>='$end'";
 
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -170,7 +170,7 @@ function show(){
 <body onload="dodisable()">
 
 <?php 
-include("../".getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',3,'R'));
  
 ?>
 

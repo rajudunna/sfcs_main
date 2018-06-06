@@ -1,8 +1,8 @@
 <?php
 // Need to show summary of batches and update the log time for fully filled batches. Total Batches || Updated Batches || Pending Batches || Passed Batches || Failed Batches
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-include("../".getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 $Page_Id='SFCS_0054';
 ?>
 

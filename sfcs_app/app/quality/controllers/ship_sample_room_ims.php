@@ -1,8 +1,8 @@
 
 
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
 $view_access=user_acl("SFCS_0239",$username,1,$group_id_sfcs); 
@@ -27,7 +27,7 @@ else
 */
 function dateDiffsql($link,$start,$end)
 {
-	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	$sql="select distinct bac_date from $bai_pro.bai_log_buf where bac_date<='$start' and bac_date>='$end'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
@@ -140,7 +140,7 @@ div.tools input{ background-color:#f4f4f4; border:2px outset #f4f4f4; margin:2px
 <body>
 
 <?php 
-include("../".getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',3,'R'));
  
 $row_count = 0;
 ?>

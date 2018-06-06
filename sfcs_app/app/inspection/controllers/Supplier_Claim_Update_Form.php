@@ -58,7 +58,7 @@ function button_disable()
 <?php
 echo '<div class="panel-heading">Supplier Claim Update Form</div>';
 echo "<div class=\"panel-body\">";
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 
 ?>	
 <?php

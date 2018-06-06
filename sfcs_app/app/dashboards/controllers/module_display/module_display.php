@@ -1,5 +1,5 @@
 <html>
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="refresh" content="180">

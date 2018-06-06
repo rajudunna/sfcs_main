@@ -50,7 +50,7 @@
 		</div>
 		<div class='panel-body'>		
 			<form name="input" method="post" action="<?php echo '?r='.$_GET['r']; ?>">
-				<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
+				<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 					if(isset($_POST['prepare']));
 					if(1)
 					{

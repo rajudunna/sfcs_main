@@ -1,5 +1,5 @@
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); ?>
 
 <?php
 $order_tid=$_GET['order_tid'];
@@ -2104,7 +2104,7 @@ ZTEucG5nUEsFBgAAAAAGAAYAhAEAAMMOAAAAAA==
   <td rowspan=2 class=xl9615551 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl9615551 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><span style='mso-spacerun:yes'> </span></td>
+  border-top:none;width:48pt'><span style='mso-spacerun:yes'>ï¿½</span></td>
   <td rowspan=2 class=xl9615551 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl9615551 width=64 style='border-bottom:.5pt solid black;

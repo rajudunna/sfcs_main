@@ -1,10 +1,10 @@
 <?php
-	include("../".getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
-	include("../".getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 	// $view_access=user_acl("SFCS_0123",$username,1,$group_id_sfcs); 
 ?>
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
-<?php include("../".getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R')); 
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R')); 
 include("../".getFullURL($_GET['r'], "sesssion_track.php", 'R'));
 //Exemption Handling
 if($session_login_fg_carton_scan==1)
@@ -16,7 +16,7 @@ $current_session_user = 'appalarajun';
 $packing_summary_tmp_v3="temp_pool_db.packing_summary_tmp_v3_$current_session_user";
 ?>
 
-	<?php include("../".getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R')); ?>
+	<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R')); ?>
 	<!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
 	<script>
 	function checkx(x,y)
@@ -54,9 +54,9 @@ $packing_summary_tmp_v3="temp_pool_db.packing_summary_tmp_v3_$current_session_us
 	</script>
 </head>
 <body>
-<?php //include("../".getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); ?>
 
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Partial Carton Lable Creation Form</div>

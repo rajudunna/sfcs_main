@@ -1,6 +1,6 @@
 <?php
 //include("header.php");
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 $schedule=$_GET['schedule'];
 // $schedule='469623';
 $style=$_GET['style'];

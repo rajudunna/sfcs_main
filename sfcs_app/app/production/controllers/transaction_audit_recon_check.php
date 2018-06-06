@@ -9,8 +9,8 @@
 //08-09-2016/SR#18628309/Removed $sample_in_qty from missing garment calculation as per mail at 30/08/2016 3:57 PM (subject:IMS removed)
 
 //27-10-2016/SR#76898083/ calculating shipment sample and samples in noraml input column in reconciliation
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/ims_size.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/ims_size.php',3,'R'));
 ?>
 <?php
 

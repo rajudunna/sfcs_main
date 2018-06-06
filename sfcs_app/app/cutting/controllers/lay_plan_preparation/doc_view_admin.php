@@ -31,7 +31,7 @@ return false;
 
 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
-<?php include("../".getFullURLLevel($_GET['r'],'/common/config/header_scripts.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/header_scripts.php',4,'R'));?>
 
 <div class="panel panel-primary">
 

@@ -4,7 +4,7 @@ kirang / 2015-12-18 / Service Request#13345467 // Need MRN Duplicate Print Optio
 
 -->
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $mrn_id=$_GET["tid"];
 //Print Status
 if($_GET["print_status"]==1)

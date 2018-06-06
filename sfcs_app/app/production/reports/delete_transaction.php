@@ -19,8 +19,8 @@ body{
 </style>
 
 <?php 
-include("../".getFullURLLevel($_GET['r'],'dbconf2.php',1,'R'));
-include("../".getFullURLLevel($_GET['r'],'dbconf3.php',1,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf2.php',1,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf3.php',1,'R'));
 
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);

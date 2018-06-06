@@ -2,8 +2,8 @@
 
 //Ticket #941086 / Date : 2014-03-21 / Due to color changing from yellow to green due to removing the job from fabric_priorities
 
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));	
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));	
 
 	$list=$_POST['listOfItems'];
 	////echo $list."<br>";

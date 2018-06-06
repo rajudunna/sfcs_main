@@ -90,7 +90,7 @@ th
 	<div class="panel panel-primary">
 
 		<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
-		<?php //include("../".getFullURLLevel($_GET['r'], "dbconf3.php", "1", "R").""); ?>
+		<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "dbconf3.php", "1", "R").""); ?>
 
 		<?php
 			$sdate=$_POST['sdate'];

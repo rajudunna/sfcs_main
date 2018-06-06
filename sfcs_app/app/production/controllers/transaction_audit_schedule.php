@@ -1,7 +1,7 @@
 <?php
 //Date 2013-11-25/Ticket#100078/ Added Carton Track and AOD details
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/ims_size.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/ims_size.php',3,'R'));
 ?>
 <html>
 <head>

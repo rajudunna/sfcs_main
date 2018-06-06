@@ -1,6 +1,6 @@
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 $view_access=user_acl("SFCS_0207",$username,1,$group_id_sfcs);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

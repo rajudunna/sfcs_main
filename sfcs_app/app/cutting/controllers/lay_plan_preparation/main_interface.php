@@ -67,12 +67,12 @@ hza.style.display = state;
 </script>  
 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" />   -->
-<?php include("../".getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>	
 
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <?php
 
@@ -1789,7 +1789,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		</div>
 		<div id="recut_details" class="panel-collapse collapse-in">
 			<div class="panel-body">
-				<?php include("../".getFullURLLevel($_GET['r'], "recut_stat_v3.php", "0", "R")); ?>
+				<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "recut_stat_v3.php", "0", "R")); ?>
 			</div>
 		</div>
 	</div>

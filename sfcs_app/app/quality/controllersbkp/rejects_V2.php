@@ -13,8 +13,8 @@ Description: Here AQL team will be update Garments Rejected status.
 
 <?php  
 
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 ?>
 <style>
 body

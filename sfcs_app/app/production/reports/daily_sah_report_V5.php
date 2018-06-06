@@ -1277,7 +1277,7 @@ function div_by_zero($arg)
 	return $arg1;
 }
 
-include("../".getFullURLLevel($_GET['r'],'/Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php',1,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php',1,'R'));
 $days_fac=2;
 $days=0;
 $half_days=0;

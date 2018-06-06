@@ -7,8 +7,8 @@ Changes Log:
 
 -->
 <?phP
-include("../".getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
-include("../".getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 $view_access=user_acl("SFCS_0038",$username,1,$group_id_sfcs);
 $authorized=user_acl("SFCS_0038",$username,7,$group_id_sfcs);
 $fca_authorized=user_acl("SFCS_0038",$username,50,$group_id_sfcs);

@@ -1089,7 +1089,7 @@ function div_by_zero($arg)
 }
 
 
-include("../".getFullURLLevel($_GET['r'],'Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php',1,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php',1,'R')); 
 //include("../Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php");
 
 $sql7=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT COUNT(DISTINCT DATE) as days FROM $bai_pro.grand_rep WHERE (DATE between \"$dat\" and \"$dat1\") and dayname(date)<>'Sunday'");

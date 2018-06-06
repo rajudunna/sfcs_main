@@ -163,9 +163,9 @@ changes log:
 </script>
 
 <?php
-     include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-    include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 	//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	$username=$username_list[1];

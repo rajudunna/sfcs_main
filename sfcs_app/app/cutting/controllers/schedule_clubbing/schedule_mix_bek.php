@@ -115,7 +115,7 @@ function check_sch_sty()
 <div class="panel-heading">Schedule Clubbing Panel - Ratio Pack</div>
 <div class="panel-body">
 <div>
-<?php include("../".getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
 <?php 
 error_reporting(E_ERROR | E_PARSE);
 

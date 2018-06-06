@@ -5,10 +5,10 @@ $double_modules=array("11","54","64");
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
 set_time_limit(2000);
-include("../".getFullURLLevel($_GET['r'],'dbconf.php',2,'R')); 
-include("../".getFullURLLevel($_GET['r'],'functions2.php',0,'R')); 
-include("../".getFullURLLevel($_GET['r'],'header_scripts.php',0,'R'));
-include("../".getFullURLLevel($_GET['r'],'menu_content.php',2,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',2,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions2.php',0,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'header_scripts.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php',2,'R'));
 ?>
 
 

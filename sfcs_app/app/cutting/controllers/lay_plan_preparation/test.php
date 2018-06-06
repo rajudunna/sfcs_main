@@ -12,7 +12,7 @@ $view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
 ?>
 
 
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <script>
 

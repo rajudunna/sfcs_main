@@ -91,8 +91,8 @@ $(document).ready(function() {
 </style>
 
 
-<?php include("../".getFullURLLevel($_GET['r'],'/common/config/header_scripts.php',1,'R')); ?>
-<?php include("../".getFullURLLevel($_GET['r'],'/common/config/menu_content.php',1,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/header_scripts.php',1,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/menu_content.php',1,'R')); ?>
 
 <?php
 $style=$_GET['style'];
