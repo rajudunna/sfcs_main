@@ -193,7 +193,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 								echo"<td>".$s_no."</td>";
 								echo"<td>".$value['category']."</td>";
 								echo"<td>".$value['location_id']."</td>";
-								echo"<td style='background:".$color."'>".$loc_status."</td>";
+								echo"<td style='background:".$color."'>".$loc_status."</td>";								
 								echo"<td><a style='color:white' href='".getFullURL($_GET['r'],'add_newlocation.php','N')."&action=Update&category=$category&status=$loc_status&loc_id=".$value['sno']."' class='btn btn-primary submitbtn'><i class='fa fa-edit'></i> Edit</a></td>";
 							echo"</tr>";
 						}
