@@ -41,7 +41,7 @@ jQuery(document).ready(function($){
     <body>
         <?php 
             error_reporting(0);             
-            include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+            include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
                 $sqlQuery = "SELECT * FROM $bai_pro3.locations";
 				$sqlData = mysqli_query($link, $sqlQuery) or exit("Problem picking the locations from database/".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $locationData = array();

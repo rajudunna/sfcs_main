@@ -23,7 +23,7 @@ if($session_login_fg_carton_scan==1)
 ?>
 
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') ); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') ); ?>
 	<script>
 	function checkx(x,y)
 	{
@@ -67,7 +67,7 @@ if($session_login_fg_carton_scan==1)
 	}
 </script>
 <body>
-<?php //include('../'.getFullURL($_GET['r'],'menu_content.php','R') );  ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php','R') );  ?>
 
 <?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
 

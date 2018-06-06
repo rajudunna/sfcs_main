@@ -133,7 +133,7 @@ $().ready(function() {
 
 <div class='panel panel-primary'><div class='panel-heading'>Location Transfer Form</div><div class='panel-body'>
 
-<!-- <?php include('../'.getFullURL($_GET['r'],'menu_content.php','R')); ?> -->
+<!-- <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php','R')); ?> -->
 
 
 <form method="post" name="input2" action="<?= getFullURL($_GET['r'],'location_transfer.php','N') ?>">

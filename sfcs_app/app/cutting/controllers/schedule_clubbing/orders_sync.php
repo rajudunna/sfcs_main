@@ -37,7 +37,7 @@ div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
 td{ padding:2px; white-space: nowrap;}
 </style>
 <?php
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 // error_reporting(0);
 ?>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 

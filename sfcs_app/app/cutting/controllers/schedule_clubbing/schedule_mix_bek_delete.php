@@ -1,9 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"> 
 <head> 
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?> 
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?> 
 <?php  
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
 // $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs); 
 ?> 
 <?php 

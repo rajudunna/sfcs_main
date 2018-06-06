@@ -11,8 +11,8 @@ Chnaged the Data type from int to decimal for Capturing Actual Width in points m
 
 
 <?php
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];
 $doc_id=$_GET['doc_id'];

@@ -7,8 +7,8 @@ Changes Log:
 -->
 <?php
 set_time_limit(2000);
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 $section_no=$_GET['section_no'];
 $board_update_V2_url = getFullURLLevel($_GET['r'],'board_update_V2.php',0,'R');
 header("Location:$board_update_V2_url?section_no=$section_no");

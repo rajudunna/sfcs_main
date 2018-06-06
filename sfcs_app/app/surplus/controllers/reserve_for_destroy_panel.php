@@ -1,8 +1,8 @@
 <?php
 	
-	include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-	include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 	$Page_Id = 'SFCS_0404';
 	// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	// $username=strtolower($username_list[1]);

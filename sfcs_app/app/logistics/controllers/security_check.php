@@ -112,7 +112,7 @@ if(isset($_POST['submit']) or isset($_GET['note_no']))
 ?>
 
 
-<?php include('../'.getFullURLLevel($_GET['r'],'dispatch_db_include.php',0,'R') ); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dispatch_db_include.php',0,'R') ); ?>
 	</div>
 </div>
 </div>

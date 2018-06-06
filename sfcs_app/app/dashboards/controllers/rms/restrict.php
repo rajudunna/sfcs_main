@@ -1,5 +1,5 @@
 <?php
-	include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 $group_docs=$_GET['group_docs'];
 
 echo "<h2>You are not authorised to use this page.</h2><Br/><Br/>";

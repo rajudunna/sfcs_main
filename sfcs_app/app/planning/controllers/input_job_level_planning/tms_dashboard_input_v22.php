@@ -304,7 +304,7 @@ $authorized=array("sfcsproject1");//Job Loading
 $authorized1=array("sfcsproject1");
 
 set_time_limit(200000);
-// include('../'.getFullURL($_GET['r'],"header.php",'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],"header.php",'R')); 
 include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 ?>
 

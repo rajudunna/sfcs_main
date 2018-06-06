@@ -1,4 +1,4 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 // $username=$username_list[1];
 ?>
@@ -89,7 +89,7 @@ th
 
 	<div class="panel panel-primary">
 
-		<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+		<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 		<?php //include("../".getFullURLLevel($_GET['r'], "dbconf3.php", "1", "R").""); ?>
 
 		<?php

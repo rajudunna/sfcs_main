@@ -167,8 +167,8 @@ changes log:
 	//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	$username=$username_list[1];
-	include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
-	include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
 	$view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
 	$authorized=user_acl("SFCS_0197",$username,7,$group_id_sfcs);
 	//$authorized=array("kirang","harikrishnar","fazlulr","himapriyag","sfcsproject1","chandrasekharko","herambaj","kishorek","kirang","sarojiniv","kirang","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","dharmarajua","bhupalv","varalakshmik","eswarraok","babjim","ramunaidus","nagendral","sivaramakrishnat","gowthamis","rajinig","revathil","lovarajub","ramud","sivark","kirang","kirang");
@@ -182,8 +182,8 @@ changes log:
 
 <?php
 	set_time_limit(2000);
-	include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-	include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 	$doc_no=$_GET['doc_no'];
 	$pop_restriction=$_GET['pop_restriction'];
 	$group_docs=$_GET['group_docs'];

@@ -209,7 +209,7 @@ if(isset($_POST['clear']))
 
 <meta http-equiv="refresh" content="60"> 
 <?php 
-include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R')); 
 ?>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R');?>"></script><!-- External script -->

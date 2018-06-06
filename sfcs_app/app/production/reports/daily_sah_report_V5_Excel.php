@@ -569,7 +569,7 @@ tags will be replaced.-->
 if(isset($_POST["submit"]))
 {
  echo "<hr/>";
- include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 $sHTML_Content='<html><head><style id="SAH -JUN_13441_Styles">
 <!--table

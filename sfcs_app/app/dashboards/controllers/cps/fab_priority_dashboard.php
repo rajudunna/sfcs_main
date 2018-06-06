@@ -28,10 +28,10 @@ jQuery(document).ready(function($){
 
 
 <?php
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
 // include("dbconf.php"); 
 // include("functions.php"); 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
@@ -1660,7 +1660,7 @@ document.getElementById()
 <div style="clear: both;"> </div>
 </br>
 <?php
-include('../'.getFullURLLevel($_GET['r'],'cps.htm',0,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'cps.htm',0,'R')); 
 ?>
 <!-- </body>
 </html> -->

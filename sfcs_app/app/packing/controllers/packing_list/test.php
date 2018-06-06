@@ -1,7 +1,7 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	      ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));	  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));	  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	      ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));	  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));	  ?>
 <?php //include("menu_content.php"); This file was not used here ?>
 
 <script>

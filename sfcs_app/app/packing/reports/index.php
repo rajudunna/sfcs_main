@@ -1,7 +1,7 @@
 <title>Weekly Delivery Dashboard - Packing</title>
 <?php
 // include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'header.php',0,'R'));
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $table_filter = getFullURL($_GET['r'],'TableFilter_EN/tablefilter.js','R');
 ?>
 

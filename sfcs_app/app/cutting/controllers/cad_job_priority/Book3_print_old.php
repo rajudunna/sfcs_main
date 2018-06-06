@@ -6,8 +6,8 @@ This amendement was done based on the confirmation to issue excess (1%) material
 
 -->
 
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R')); ?>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 
 <?php
@@ -1100,8 +1100,8 @@ WebBrowser1.outerHTML = "";
 <script src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/jquery-barcode-2.0.1.js',2,'R')?>">
 <?php
 
-// include('../'.getFullURLLevel($_GET['r'],'common/js/jquery-1.3.2.js',2,'R'));
-// include('../'.getFullURLLevel($_GET['r'],'common/js/jquery-barcode-2.0.1.js',2,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery-1.3.2.js',2,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery-barcode-2.0.1.js',2,'R'));
 ?>
 </head>
 

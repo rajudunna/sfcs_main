@@ -35,8 +35,8 @@ $authorized=array("kirang","rameshk","chathurangad","minuram","buddhikam","indik
 
 <?php
 set_time_limit(200000);
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function($){
@@ -1238,6 +1238,6 @@ if((in_array(strtolower($username),$authorized)))
 <div class="row">
 <?php
 // include(getFullURL($_GET['r'],'include_legends_rms.php','N'));
-include('../'.getFullURLLevel($_GET['r'],'include_legends_rms.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'include_legends_rms.php',0,'R'));
 ?>
 </div>

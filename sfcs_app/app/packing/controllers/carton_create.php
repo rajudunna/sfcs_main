@@ -1,7 +1,7 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php //include('../'.getFullURLLevel($_GET['r'],'functions.php',1,'R')); This file is included but not at all used?>
-<?php //include('../'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); This file is included but not at all used?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R')); This file is included but not at all used?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); This file is included but not at all used?>
 
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>Carton Qty Create</b></div>

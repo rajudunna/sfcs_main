@@ -11,10 +11,10 @@ Changes Log:
 set_time_limit(2000);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
-// include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-// include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 // echo $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php';
-// include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 $section_no=$_GET['section_no'];
 ?>
 

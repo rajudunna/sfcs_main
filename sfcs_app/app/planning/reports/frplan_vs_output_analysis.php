@@ -95,7 +95,7 @@ float:right;
 }
 </style>
 <?php 
-// include('../'.getFullURL($_GET['r'],"dbconf5.php",'R')); ?>
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],"dbconf5.php",'R')); ?>
 
 <link rel="stylesheet" type="text/css" media="all" href="<?= '../'.getFullURLLevel($_GET['r'],'jsdatepick-calendar/jsDatePick_ltr.min.css',3,'R') ?>" />
 <!--<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick.min.1.3.js','R') ?>"></script>
