@@ -1,5 +1,5 @@
 <?php 
-    // include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
+    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
     // //require_once('phplogin/auth.php');
     // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
     // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");

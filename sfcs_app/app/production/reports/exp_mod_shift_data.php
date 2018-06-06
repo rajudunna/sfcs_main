@@ -30,7 +30,7 @@ td {
 <?php
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'exp_mod_main.php',0,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'exp_mod_main.php',0,'R')); 
 
 
 $start=$_GET['dat1'];

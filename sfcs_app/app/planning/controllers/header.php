@@ -1,6 +1,6 @@
 <?php
-// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'sfcs/server/db_hosts.php',7,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'sfcs/server/db_hosts.php',7,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 // Turn off all error reporting
 error_reporting(0);
 // Report simple running errors

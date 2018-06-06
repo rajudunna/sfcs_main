@@ -56,12 +56,12 @@ td{ padding:2px; white-space: nowrap;}
 <div class="panel-body">
 <!---<div id="page_heading"><span style="float: left"><h3>Mini Order Generation-Additional Cut</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>--->
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 set_time_limit(30000000);
 // include("dbconf.php");
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'session_track.php',0,'N'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'session_track.php',0,'N'));
 // include("session_track.php");
 $style_id=$_GET['style_id'];	
 $order_id=$_GET['sch_id'];

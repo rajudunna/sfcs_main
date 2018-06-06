@@ -5,7 +5,7 @@
 <!-- <script language="javascript" type="text/javascript" src="TableFilter_EN/tablefilter.js"></script> -->
 <!-- <script language="javascript" type="text/javascript" src="TableFilter_EN/actb.js"></script>External script -->
 
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 <div class="panel panel-primary">
 	<div class="panel-heading">Quick Transaction Audit</div>
 	<div class="panel-body">

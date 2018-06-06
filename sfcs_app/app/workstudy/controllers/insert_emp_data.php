@@ -1,5 +1,5 @@
 <?php
-		include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 		//$view_emp_data = getFullURLLevel($_GET['r'],'view_emp_data.php',0,'N'); 
 	 	$view_emp_data = getFullURLLevel($_GET['r'],'view_emp_data.php',0,'N');	
 		for($i=0 ; $i<40 ; $i++)

@@ -401,7 +401,7 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 					//we will give an unique name, for example the time in unix time format
 					$image_name=time().'.'.$extension;
 					//the new name will be containing the full path where will be stored (images folder)
-					//$image_path = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'images',0,'R').'/';
+					//$image_path = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'images',0,'R').'/';
 
 					$append = date('h').date('i').date('s').date('d').date('m').date('y');
 					$newname = $append.'1'.$fileName;
@@ -433,7 +433,7 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 					else
 					{
 					// the new thumbnail image will be placed in images/thumbs/ folder
-					//$thumb_name=$_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'images',0,'R').'/'.$newname;
+					//$thumb_name=$_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'images',0,'R').'/'.$newname;
 					
 					// call the function that will create the thumbnail. The function will get as parameters
 					//the image name, the thumbnail name and the width and height desired for the thumbnail

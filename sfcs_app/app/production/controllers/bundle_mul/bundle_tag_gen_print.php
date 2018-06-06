@@ -4,8 +4,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <?php
 $global_path = getFullURLLevel($_GET['r'],'',4,'R');
 include($_SERVER['DOCUMENT_ROOT'].$global_path."/common/config/config.php");
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'bundle_tag_code.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'bundle_tag_code.php',0,'R'));
 
 // include("dbconf.php");
 // include("bundle_tag_code.php");

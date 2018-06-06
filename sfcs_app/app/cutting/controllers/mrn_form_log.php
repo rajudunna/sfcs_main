@@ -1,8 +1,8 @@
 
 <?php 
 //include("security1.php");
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 //$view_access=user_acl("SFCS_0073",$username,1,$group_id_sfcs);
 //$duplicate_print_users=user_acl("SFCS_0073",$username,7,$group_id_sfcs);
 //$duplicate_print_users=array("santhoshbo","kishorek","sarojiniv","chirikis","kirang");
@@ -100,7 +100,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 	<div class="panel-body">
 
 			<?php 
-			include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/php/menu_include.php',1,'R'));?>
+			include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/menu_include.php',1,'R'));?>
 			<?php //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);?>
 
 			<div class="panel panel-primary panel-body">

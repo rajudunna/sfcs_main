@@ -201,7 +201,7 @@ $mpdf->WriteHTML($html);
 $mpdf->Output();
 
 
-// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'mpdf.php',1,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'mpdf.php',1,'R'));
 // $mpdf=new mPDF('',array(101.6,50.8),0,'',3,0,0,0,0,0,'P');
 // $mpdf->WriteHTML($html);
 // $mpdf->Output(); 

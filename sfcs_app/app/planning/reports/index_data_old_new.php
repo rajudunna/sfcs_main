@@ -47,7 +47,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 <div class='panel panel-primary'><div class='panel-heading'><h3 class='panel-title'>Extra Shipment Details Report</h3></div><div class='panel-body'>
 <?php 
 // include '../'.getFullURL($_GET['r'],"header1_extra_shipment_details.php",'R');
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 ?>
 <?php

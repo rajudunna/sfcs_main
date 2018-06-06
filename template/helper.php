@@ -62,7 +62,7 @@ function getBASE($li){
     $li = base64_decode($li);
     $b = explode('/',$li);
     unset($b[count($b)-1]);
-    // $b=array_filter($b);
+    $b=array_filter($b);
     $base = implode('/',$b);
     return ['path'=>$li,'base'=>$base];
 }

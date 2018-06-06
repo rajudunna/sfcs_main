@@ -11,7 +11,7 @@ set_time_limit(100000);
 <body>
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 
 $sql3="INSERT IGNORE INTO $bai_pro4.SHIPMENT_PLAN(order_no, delivery_no, del_status, mpo, cpo, buyer, product, buyer_division, style, schedule_no, color, size, z_feature, ord_qty, ex_factory_date, MODE, destination, packing_method, fob_price_per_piece, cm_value, ssc_code, week_code, STATUS, ssc_code_new, order_embl_a, order_embl_b, order_embl_c, order_embl_d, order_embl_e, order_embl_f, order_embl_g, order_embl_h, ssc_code_week_plan, cw_check) SELECT Customer_Order_No,Customer_Order_No AS A1,CO_Line_Status,MPO,CPO,Buyer,Product,Buyer_Division,Style_No,Schedule_No,Colour,CONCAT('size_',LOWER(Size)),ZFeature,Order_Qty,DATE_FORMAT(Ex_Factory,'%Y-%m-%d') AS Ex_Factory,MODE,Destination,Packing_Method,FOB_Price_per_piece,0,CONCAT(Style_No,Schedule_No,Colour,'-',Ex_Factory),WEEK(DATE_FORMAT(Ex_Factory,'%Y-%m-%d')) AS WEEK_NO,0,CONCAT(Style_No,Schedule_No,Colour),EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,CONCAT(Style_No,Schedule_No,Colour,CONCAT('size_',Size),Ex_Factory),1 FROM m3_inputs.shipment_plan";
 echo $sql3;

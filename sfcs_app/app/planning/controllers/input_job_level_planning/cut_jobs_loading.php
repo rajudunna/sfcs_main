@@ -1,5 +1,5 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);

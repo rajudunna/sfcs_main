@@ -305,7 +305,7 @@ $authorized1=array("sfcsproject1");
 
 set_time_limit(200000);
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],"header.php",'R')); 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 ?>
 
 <!DOCTYPE html>
@@ -434,7 +434,7 @@ window.onload = startBlink;
 <body>
 
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 ?>
 <script language="JavaScript">
 

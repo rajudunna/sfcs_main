@@ -238,7 +238,7 @@ if(isset($_POST['clear']))
 <!-- <html>
 <head>
 <meta http-equiv="refresh" content="60">  -->
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'header_scripts.php',1,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'header_scripts.php',1,'R')); ?>
 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" />
 

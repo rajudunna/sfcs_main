@@ -30,7 +30,7 @@ Revised CSS files for interface standardization,Add the Validation on trims stat
 <?php
 
 // include("header.php");
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 // $username=strtolower($username_list[1]);
@@ -182,7 +182,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 <body>
 <form action="input_status_update_input.php" method="POST">
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
 
 <?php
 

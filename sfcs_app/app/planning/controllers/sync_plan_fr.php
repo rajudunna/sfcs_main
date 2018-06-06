@@ -24,7 +24,7 @@ $end_date_w=date("Y-m-d",($end_date_w+(60*60*24*6)));
 ?>
 
 <?php
-// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
 ?>
 
 

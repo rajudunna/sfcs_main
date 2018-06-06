@@ -6,7 +6,7 @@
 <div class="panel-heading">View Plan Efficiency</div>
 <div class="panel-body">
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 ?>
 

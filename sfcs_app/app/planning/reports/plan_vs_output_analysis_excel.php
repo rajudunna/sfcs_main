@@ -53,7 +53,7 @@ table{
 <body>
 
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $database="bai_pro";
 $user=$host_adr_un;
 $password=$host_adr_pw;

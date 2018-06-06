@@ -263,7 +263,7 @@ jQuery(document).ready(function()
 <div class="panel-body">
 <?php
 	// include("../dbconf3.php");
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 ?>
 
 <?php

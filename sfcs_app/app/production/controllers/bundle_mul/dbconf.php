@@ -1,5 +1,5 @@
 <?php
-// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'',4,'R'));
 //error_reporting(0);
 //error_reporting(E_ERROR | E_WARNING | E_PARSE);
 

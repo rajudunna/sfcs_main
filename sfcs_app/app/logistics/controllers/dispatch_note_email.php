@@ -1,7 +1,7 @@
 <?php 
 // Service Request #99034864/ 2016-07-06 /  Need to replace the bharatk user name instead of the vasudevav user, 
 // naiduy instead of pradeepse. 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 ?>
 
 <html>

@@ -2965,7 +2965,7 @@ if(isset($_POST['submit']))
 
 
 // For Grand Eff Calculation
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'grand_Eff_for_daily.php',0,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_Eff_for_daily.php',0,'R'));
 
 //to fasten system
 
@@ -4018,12 +4018,12 @@ if(isset($_POST['submit']))
 
 			if($x_sec==sizeof($section_array))
 			{
-				include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
+				include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
 				
 				if(sizeof($section_array) > 1)
 				{	
 					
-					include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'Eff_report33_excel_new_buyer.php',0,'R'));
+					include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'Eff_report33_excel_new_buyer.php',0,'R'));
 					
 				}
 				

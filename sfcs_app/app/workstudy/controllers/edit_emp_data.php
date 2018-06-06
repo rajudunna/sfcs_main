@@ -31,8 +31,8 @@ table{
 }
 </style>
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-   // include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'header_scripts.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+   // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'header_scripts.php',0,'R'));
    // $edit_emp_data = getFullURL($_GET['r'],'edit_emp_data.php','N'); 
 	$view_emp_data = getFullURLLevel($_GET['r'],'view_emp_data.php',0,'N');	
      
