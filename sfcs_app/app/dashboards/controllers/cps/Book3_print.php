@@ -5,8 +5,8 @@ This amendement was done based on the confirmation to issue excess (1%) material
 //Binding Consumption / YY Calculation //20151016-KIRANG-Imported Binding inclusive concept.
 -->
 
-<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "dbconf.php", "1", "R").""); ?>
-<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "", "1", "R").""); ?>
+<?php //include("../".getFullURLLevel($_GET['r'], "dbconf.php", "1", "R").""); ?>
+<?php //include("../".getFullURLLevel($_GET['r'], "", "1", "R").""); ?>
 <?php //include("../dbconf.php"); ?>
 <?php //include("../".getFullURL($_GET['r'], "", "R").""); ?>
 <?php //include("functions.php"); ?>
