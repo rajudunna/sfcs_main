@@ -743,7 +743,7 @@ echo "<tr><th>Max Plies per cut</th><th>:</th><td style=\"color: #000000\"><inpu
 echo "</table></div>";
 
 echo "<div class='col-md-6'><table class=\"table table-bordered\">";
-echo "<thead><tr><td><center>Sizes</center></td><td><center>Allocated Qty</center></td><td><center>Completed</center></td><td><center>Excess/Less</center></td><td><center>Ratio</center></td></tr></thead>";
+echo "<thead><tr><td><center>Sizes</center></td><td><center>Requested Qty</center></td><td><center>Ratio Prepared Qty</center></td><td><center>Excess/Less</center></td><td><center>Ratio</center></td></tr></thead>";
 $count = sizeof($s_tit);
 for($s=0;$s<sizeof($s_tit);$s++)
 	{	
