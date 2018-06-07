@@ -5,11 +5,23 @@ $username="sfcsproject1";
 $remove_user_name = true; // set false for static username removing 
 
 //SFCS Db Configurations
-$host="192.168.0.110:3326";
+$host="10.227.220.238:3326";
 $user="baiall";
 $pass="baiall";
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+// Schedules Operations Capturing
+$serverName = "GD-SQL-UAT";
+$uid = "SFCS_BIA_FF";
+$pwd = "Ba@rUpr6";
+$databasename="BELMasterUAT";
+//material requirement in week_del_mail_v2
+$server="GD-RPTSQL";
+$database="M3_BEL";
+$userid="BAIMacroReaders";
+$passwrd="BAI@macrosm3";
+
 //To Facilitate SFCS Filters
 $global_facility_code="'N02'";
 $facility_code='EKG';
@@ -38,10 +50,10 @@ $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 ?>
 <?php
-$path="C:/xampp/htdocs/sfcs_app/app";
+$path="C:/xampp/htdocs/sfcs_main/sfcs_app/app";
 
 $mail_to_test='kalyan@schemaxtech.com, bhargavg@schemaxtech.com, rameshk@schemaxtech.com,ravindranath.yrr@gmail.com';
-$header_from='From: Shop Floor System Alert <ravindranath.yrr35@gmail.com>';
+$header_from='From: Shop Floor System Alert <ictsysalert@brandix.com>';
 $order_summary_report="ravindranath.yrr@gmail.com,ravindranath.yellapu@gmail.com";
 $mrn_mail="ravindranath.yrr@gmail.com,ravindranath.yellapu@gmail.com";
 $inspection_rep_email="ravindranath.yrr@gmail.com,ravindranath.yellapu@gmail.com";
@@ -55,7 +67,7 @@ $transaction_audit_alert="ravindranath.yrr@gmail.com,ravindranath.yellapu@gmail.
 $week_del_mail_v2="ravindranath.yrr@gmail.com,ravindranath.yellapu@gmail.com";
 $SAH_Countdown_alert=array("ravindranath.yrr@gmail.com,saiyateesh@gmail.com, yateesh603@gmail.com");
 $line_wip_track="ravindranath.yrr@gmail.com,ravindranath.yellapu@gmail.com";
-$pop_pending_list_mail="ravindranath.yrr@gmail.com,ravindranath.yellapu@gmail.com";
+$pop_pending_list_mail="rajud@brandix.com,rajud@schemaxtech.com,ravindranath.yrr@gmail.com,ravindranath.yellapu@gmail.com";
 $Aod_gate_pass="ravindranath.yrr@gmail.com,ravindranath.yellapu@gmail.com";
 ?>
 

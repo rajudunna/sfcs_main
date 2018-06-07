@@ -57,7 +57,7 @@ table{
 
 
 <?php
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 $text.='<h3>Daily Plan Achievement Report</h3>';
 

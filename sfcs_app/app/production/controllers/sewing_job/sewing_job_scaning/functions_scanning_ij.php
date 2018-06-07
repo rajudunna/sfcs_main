@@ -11,7 +11,7 @@ if(isset($_GET['variable']))
 function getscheduledata($variable)
 {
 	// include("dbconf1.php");
-	// include("..".getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	// include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include("../../../../../common/config/config.php");
 
 	$query_get_schedule_data= "SELECT order_del_no as schedule FROM $bai_pro3.packing_summary_input group by schedule";

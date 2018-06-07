@@ -2,7 +2,7 @@
 <body>
 <?php
 // include("dbconf.php");
-	include("..".getFullURLLevel($_GET['r'],'common/config/config_ajax.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',5,'R'));
 // error_reporting (0);
 
 $url = getFullURL($_GET['r'],'scan_input_jobs.php','N');

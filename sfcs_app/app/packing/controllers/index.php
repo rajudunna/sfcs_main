@@ -8,7 +8,7 @@
 
 <?php 
 	$view_access=user_acl("SFCS_0114",$username,1,$group_id_sfcs);
-	echo $image_path;
+	//echo $image_path;
 	//echo $image_path;
 ?>
 

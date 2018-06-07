@@ -1,7 +1,7 @@
 <?php
 $start_timestamp = microtime(true);
 set_time_limit(6000000);
-    include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+    include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
     
 	include('Soap_Op_Update_bek.php');
 	require ('SoapWsdlClasses.php');
