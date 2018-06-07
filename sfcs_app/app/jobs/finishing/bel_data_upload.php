@@ -2,7 +2,7 @@
 <?php
 //Ticket #809580 KiranG 20140604 Module number considered as integer where floating number is converted to integer as per OPU requirements.
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 //set_time_limit(50000);
 set_time_limit(0);

@@ -7,7 +7,7 @@ SFCS_PRO_Quality_Rej_Update_Size_wise
 $start_timestamp = microtime(true);
 // Start output buffering
 ob_start();
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 set_time_limit(1600000);
 
