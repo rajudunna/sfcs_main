@@ -31,6 +31,7 @@ include ($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],"dashboards/co
 
 // include('data.php');
 include '..'.getFullURL($_GET['r'],"header.php",'R');
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 // include('header.php');
 ?>
 <div class="panel panel-primary">
