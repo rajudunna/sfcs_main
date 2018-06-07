@@ -231,7 +231,8 @@ function quantity(t) {
             for (i = 0; i < 100; i++)
 
                 balance = Number(balance) - Number(document.test["qty[" + i + "]"].value);
-            document.getElementById('balance_new11').value = balance;
+            document.getElementById('balance_new11').value = balance.toFixed(2);
+            document.getElementById('balance_new11_qty').value = balance.toFixed(2);
             return;
         }
         if (temp > 0) {
@@ -244,6 +245,7 @@ function quantity(t) {
         sweetAlert("Can't Fill excess Quantity", '', 'warning');
     }
     document.getElementById('balance_new11').value = $total_qty.toFixed(2);
+    document.getElementById('balance_new11_qty').value = $total_qty.toFixed(2);
 }
 
 
