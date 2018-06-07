@@ -3,7 +3,7 @@
 
 //SFCS_PRO_SI_WED_OUTPUT_Details
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 include("mail_config.php");
 		
 

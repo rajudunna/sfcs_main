@@ -1,5 +1,5 @@
 <?php
-    include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+    include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 	set_time_limit(6000000);
 	
 	// $sql = "select * from $m3_bulk_ops_rep_db.m3_sfcs_tran_log WHERE sfcs_status IN (0,40) order by sfcs_tid*1 limit 500";

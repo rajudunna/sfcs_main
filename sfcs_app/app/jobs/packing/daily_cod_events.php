@@ -1,6 +1,6 @@
 <?php 
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 $yesterday=date("Y-m-d",strtotime("-1 day")); 
 //$yesterday="2012-03-04"; 

@@ -3,7 +3,7 @@
 
 <?php  
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 error_reporting(0);
 $cache_date="previous_week";
