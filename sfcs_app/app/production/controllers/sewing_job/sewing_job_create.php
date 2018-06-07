@@ -384,7 +384,23 @@ td{ padding:2px; white-space: nowrap;}
 													echo "<td rowspan=$val class='col-md-3'><select id=\"cart_method\" class='form-control' name=\"cart_method\" >";
 													for($j=0;$j<sizeof($operation);$j++)
 													{
-														echo "<option value=\"".$j."\" >".$operation[$j]."</option>";
+														if ($val>1)
+														{
+															if ($j == '1' or $j == '4' or $j == '5')
+															{
+																$disabled='disabled';
+															} else {
+																$disabled='';
+															}
+														} elseif ($val == 1) {
+															if ($j == '1' or $j == '4' or $j == '5')
+															{
+																$disabled='';
+															} else {
+																$disabled='disabled';
+															}
+														}
+														echo "<option value=\"".$j."\" $disabled>".$operation[$j]."</option>";
 													}
 													echo "</select></td>";
 											
