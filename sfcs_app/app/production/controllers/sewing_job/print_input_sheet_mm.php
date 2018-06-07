@@ -49,7 +49,7 @@ WebBrowser1.outerHTML = "";
 <body onload="printpr();"> 
 <?php 
     // include("dbconf.php"); 
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 
     $schedule=$_GET["schedule"]; 
 

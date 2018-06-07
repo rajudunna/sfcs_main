@@ -1,6 +1,6 @@
 <?php
 // include("dbconf.php");
-	include("..".getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 // error_reporting (0);
 
 $url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');

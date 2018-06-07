@@ -79,8 +79,8 @@
 </div>
 <?php
 	// include("dbconf.php");
-	include("..".getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-	include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	$operation_name = "";
 	$default_operation = "";
 	$operation_code = "";
