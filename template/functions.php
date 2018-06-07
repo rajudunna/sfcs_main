@@ -39,7 +39,7 @@ include('dbconf.php');
 				$linkq2q= explode('?',$parent['link_location']);
 				$full_path_url = $linkq2q[0];
 				$get_vars_data = (isset($linkq2q[1]) && $linkq2q[1]!='') ? '&'.$linkq2q[1] : '';
-				if(base64_encode("/".$full_path_url) == $_GET['r'] || (isset($_SESSION['link']) && $_SESSION['link'] == base64_encode("/".explode('/',$_SERVER['DOCUMENT_ROOT'])[3].$full_path_url))){
+				if(base64_encode($full_path_url) == $_GET['r'] || (isset($_SESSION['link']) && $_SESSION['link'] == base64_encode($full_path_url))){
 				$list = '<li class=\'current-page\'><a href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div></li>';
 					$_SESSION['link'] = base64_encode($full_path_url);
