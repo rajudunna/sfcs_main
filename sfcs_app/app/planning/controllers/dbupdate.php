@@ -151,7 +151,7 @@ $message.="</body></html>";
 
 
 //MAIL UPDATE
-$url2=getFullURLLevel($_GET['r'],'plan_process_week.php',1,'N');
+$url2=getFullURLLevel($_GET['r'],'plan_process_week.php',0,'N');
 // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$dns_adr3/projects/beta/visionair/plan_process_week.php\"; }</script>";
 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url2\"; }</script>";
 
