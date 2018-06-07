@@ -98,7 +98,7 @@ $end_date=max($dates);
 $url = getFullURL($_GET['r'],'current_week_V2.php','N');
 $current_week = getFullURL($_GET['r'],'current_week_V2.php','N');
 $next_week = getFullURL($_GET['r'],'next_week_V2.php','N');
-$summary =  '..'.getFullURL($_GET['r'],'summary_v2.php','R');
+$summary =  getFullURL($_GET['r'],'summary_v2.php','R');
 $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
 ?>
 <form method="post" name="input" action="<?php echo $url;?>">

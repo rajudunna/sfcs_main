@@ -104,7 +104,7 @@ table{
 <body>";
 ?>
 <?php 
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 
 $message.='<div id="page_heading"><span style="float: left"><h3>M3 Bulk Operation Failed Entries</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>';

@@ -422,7 +422,7 @@ function check_pack()
 	}
 	if(Number(tot_qty) <= 0)
 	{
-		sweetAlert("Please enter atlease one size sample","","warning");
+		sweetAlert("Please enter atleast one size sample","","warning");
 		//swal('Please Enter Any size quantity','','warning');
 		return false;
 	}

@@ -2,14 +2,14 @@
 $start_timestamp = microtime(true);
 
 include("m3_process_ses_track.php");
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 $time_diff=(int)date("YmdH")-$log_time;
 
 set_time_limit(6000000);
 
 function check_style($string)
 {
-	include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+	include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 	$check=0;
 	for ($index=0;$index<strlen($string);$index++) {
     	if(isNumber($string[$index]))

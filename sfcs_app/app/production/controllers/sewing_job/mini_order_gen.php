@@ -32,8 +32,8 @@ td{ padding:2px; white-space: nowrap;}
 <?php
 set_time_limit(30000000);
 // include("dbconf.php");
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include("session_track.php");
 $status="";
 if($status == '' || $status == '1')

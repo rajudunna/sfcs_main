@@ -4,7 +4,7 @@
 $start_timestamp = microtime(true);
 set_time_limit(90000);
 error_reporting(0);
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 $sql="select * FROM bai_rm_pj1.store_in_weekly_backup WHERE SUBSTRING_INDEX(sticker_qty,\".\",1)=SUBSTRING_INDEX(grn_qty,\".\",1)";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

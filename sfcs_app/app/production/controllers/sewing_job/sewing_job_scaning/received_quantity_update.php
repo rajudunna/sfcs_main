@@ -23,7 +23,7 @@
 </head>
 <body>
 <?php
-include("..".getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
+include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 
 $qry_get_product_style = "SELECT id,style FROM $brandix_bts.bundle_creation_data GROUP BY style";
 $qery_rejection_resons = "select * from bai_pro3.bai_qms_rejection_reason";

@@ -8,13 +8,13 @@
     include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/production/common/config/header_scripts.php");
     include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/production/common/config/menu_content.php");
 
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/dbconf.php',2,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/dbconf.php',2,'R'));
 
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 
     Add Carton Properties:
     http://localhost//sfcsui/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvY2FydG9uX3JhdGlvLnBocA==
