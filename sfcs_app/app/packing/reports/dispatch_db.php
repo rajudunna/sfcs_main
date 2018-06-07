@@ -57,7 +57,7 @@ th,td{
 			$row_count++;
 			$disp_note_no = $sql_row['disp_note_no'];
 			$url = $_GET['r']."&disp_id=".$disp_note_no;
-			$popup_url = '..'.getFullURL($_GET['r'],"dispatch_note.php",'R');
+			$popup_url = getFullURL($_GET['r'],"dispatch_note.php",'R');
 			echo "<tr>";
 			echo "<td>
 				<a class='btn btn-success btn-sm' href='index.php?r=$url' 

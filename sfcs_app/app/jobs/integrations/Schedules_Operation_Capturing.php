@@ -1,20 +1,20 @@
 <?php 
 $start_timestamp = microtime(true);
 
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
-
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+set_time_limit(1000000);
 /* Connect to the local server using Windows Authentication and
 specify the AdventureWorks database as the database in use. */
-$serverName = "GD-SQL-UAT";
-/* Get UID and PWD from application-specific files.  */
-$uid = "SFCS_BIA_FF";
-$pwd = "Ba@rUpr6";
-$BELMasterUAT="BELMasterUAT";
-$connectionInfo = array( "DRIVER={SQL Server};","UID"=>$uid,"PWD"=>$pwd,"Database"=>$BELMasterUAT);
+// $serverName = "GD-SQL-UAT";
+// /* Get UID and PWD from application-specific files.  */
+// $uid = "SFCS_BIA_FF";
+// $pwd = "Ba@rUpr6";
+// $databasename="BELMasterUAT";
+$connectionInfo = array( "DRIVER={SQL Server};","UID"=>$uid,"PWD"=>$pwd,"Database"=>$databasename);
 ?>
 
 <?php
-$connect = odbc_connect("Driver={SQL Server Native Client 10.0};Server=$serverName;Database=$BELMasterUAT;", "SFCS_BIA_FF","Ba@rUpr6");
+$connect = odbc_connect("Driver={SQL Server Native Client 11.0};Server=$serverName;Database=$databasename;", $uid,$pwd);
 $schedule_from="400001";
 $schedule_to="600000";
 $default_operations=array("100","101","129","130");
@@ -22,7 +22,7 @@ $default_operations=array("100","101","129","130");
 $sql22="truncate table $bai_pro3.schedule_oprations_master_backup";
 mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql21="insert into $bai_pro3.schedule_oprations_master_backup select * from schedule_oprations_master";
+$sql21="insert into $bai_pro3.schedule_oprations_master_backup select * from $bai_pro3.schedule_oprations_master";
 mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sql2="truncate table $bai_pro3.schedule_oprations_master";

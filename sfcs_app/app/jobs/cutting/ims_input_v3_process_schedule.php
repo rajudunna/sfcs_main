@@ -57,9 +57,9 @@ if($log_time==0 or $time_diff>1)
 <body onpageshow="if (event.persisted) noBack();" onkeydown="return showKeyCode(event)">
 
 <?php 
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
-include('C:\xampp\htdocs\sfcs_app\common\config\m3_bulk_or_proc.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\m3_bulk_or_proc.php');
 	?>
 
 <?php
