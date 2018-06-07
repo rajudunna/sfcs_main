@@ -870,7 +870,7 @@ if(isset($_POST['submit']))
 		$php_self = explode('/',$_SERVER['PHP_SELF']);
 		array_pop($php_self);
 		$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-		$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/sfcsui1/index.php?r=".$url_r;
+		$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
 		echo"<script>location.href = '".$url."';</script>"; 
 		
 }
