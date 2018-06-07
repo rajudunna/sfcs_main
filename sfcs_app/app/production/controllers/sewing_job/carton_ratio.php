@@ -105,10 +105,10 @@
 </script>
 
 <?php
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
-	include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 
 	if(isset($_POST['style']))
 	{

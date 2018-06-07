@@ -1,11 +1,11 @@
 <?php
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
     $view_access=user_acl("SFCS_0318",$username,1,$group_id_sfcs); 
 
-    // include("..".getFullURLLevel($_GET['r'],'common/config/dbconf.php',2,'R'));
-    // include("..".getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
+    // include(getFullURLLevel($_GET['r'],'common/config/dbconf.php',2,'R'));
+    // include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
 
 ?> 
 <script type="text/javascript"> 

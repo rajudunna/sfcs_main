@@ -210,10 +210,10 @@ td{ padding:2px; white-space: nowrap;}
 <?php 
 	$authorized=array('bhargavg');
 	// include("../../../common/config/dbconf.php");
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs);
 
 	error_reporting(0);

@@ -9,8 +9,8 @@
 </head>
 <body>
 <?php
-	include("..".getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-	include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	$query_select = "select * from $brandix_bts.tbl_orders_ops_ref";
 	$res_do_num=mysqli_query($link,$query_select);
 	echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
