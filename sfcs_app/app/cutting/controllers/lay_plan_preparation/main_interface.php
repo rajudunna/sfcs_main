@@ -1535,23 +1535,23 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				<div id="cut_plan" class="panel-collapse collapse-in">
 					<div class="panel-body">
 <?php
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
-$view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
-$authorized2=user_acl("SFCS_0215",$username,50,$group_id_sfcs); //  RM Fabric 
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
+// $view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
+// $authorized2=user_acl("SFCS_0215",$username,50,$group_id_sfcs); //  RM Fabric 
 
 
-include("dbconf.php");
+// include("dbconf.php");
 
-if($_SERVER['SERVER_NAME']=="bainet")
-{
-	$facility='AIN';
-}
+// if($_SERVER['SERVER_NAME']=="bainet")
+// {
+// 	$facility='AIN';
+// }
 
-if($_SERVER['SERVER_NAME']=="bai2net")
-{
-	$facility='AIP';
-}
+// if($_SERVER['SERVER_NAME']=="bai2net")
+// {
+// 	$facility='AIP';
+// }
 
 $username_list=array();
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -1705,7 +1705,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>"; if($check_new3==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	echo "<td class=\"  \"><center>"; if($check_new4==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	
-	 $path="..".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	//$path="http://localhost/sfcs/projects/Beta/cut_plan_new_ms/new_doc_gen/Book1_print.php";
 
 	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";

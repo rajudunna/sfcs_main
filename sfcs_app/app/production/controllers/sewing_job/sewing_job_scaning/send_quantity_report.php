@@ -37,7 +37,7 @@
 </head>
 <body>
 <?php
-include("..".getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
+include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 $qry_get_product_style = "SELECT id,style FROM $brandix_bts.bundle_creation_data GROUP BY style";
 $result = $link->query($qry_get_product_style);
 ?>
