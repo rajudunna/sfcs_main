@@ -1535,23 +1535,23 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				<div id="cut_plan" class="panel-collapse collapse-in">
 					<div class="panel-body">
 <?php
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
-$view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
-$authorized2=user_acl("SFCS_0215",$username,50,$group_id_sfcs); //  RM Fabric 
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
+// $view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
+// $authorized2=user_acl("SFCS_0215",$username,50,$group_id_sfcs); //  RM Fabric 
 
 
-include("dbconf.php");
+// include("dbconf.php");
 
-if($_SERVER['SERVER_NAME']=="bainet")
-{
-	$facility='AIN';
-}
+// if($_SERVER['SERVER_NAME']=="bainet")
+// {
+// 	$facility='AIN';
+// }
 
-if($_SERVER['SERVER_NAME']=="bai2net")
-{
-	$facility='AIP';
-}
+// if($_SERVER['SERVER_NAME']=="bai2net")
+// {
+// 	$facility='AIP';
+// }
 
 $username_list=array();
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
