@@ -14,31 +14,12 @@ $view_access=user_acl("SFCS_0046",$username,1,$group_id_sfcs);
 
 <html>
 <head>
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'../common/js/dropdowntabs.js',3,'R')?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R')?>"></script>
 <link href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 <link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 
-<!--<link href="'.getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick_ltr.min.css','R').'" rel="stylesheet" type="text/css" />
-<!-- <script type="text/javascript" src="<?= getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick.min.1.3.js','R')?>"></script> -->
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
 <script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
-
-<script type="text/javascript">
-	window.onload = function()
-	{
-		new JsDatePick({
-			useMode:2,
-			target:"demo1",
-			dateFormat:"%Y-%m-%d"
-		});
-		new JsDatePick({
-			useMode:2,
-			target:"demo2",
-			dateFormat:"%Y-%m-%d"
-		});
-	};
-</script>
-<!--<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />-->
 </head>
 
 <body>
@@ -78,8 +59,7 @@ Section: <select name="module" class="form-control">
 	
 }*/
 $sql="SELECT GROUP_CONCAT(sec_id) as mods FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
-//echo $sql;
-$result7=mysqli_query($link11, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+$result7=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($result7))
 {
 	$sql_mod=$sql_row["mods"];
