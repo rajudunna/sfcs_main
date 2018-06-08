@@ -28,17 +28,17 @@ if(mysqli_num_rows($sql_result)>0)
     }
 }
 
-$url1 = getFullURLLevel($_GET['r'],'print_input_sheet.php',0,'N');
-$url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'N');
+$url1 = getFullURLLevel($_GET['r'],'print_input_sheet.php',0,'R');
+$url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'R');
 
 echo '<br>
 <div class="panel panel-primary panel-body">
 
     <div class="row">';
        
-        echo "<a class='btn btn-warning' href='$url1&schedule=$schedule' onclick=\"return popitup2('$url1&schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Job Wise</a>      ";
+        echo "<a class='btn btn-warning' href='$url1?schedule=$schedule' onclick=\"return popitup2('$url1?schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Job Wise</a>      ";
 
-        echo "<a class='btn btn-warning' href='$url2&schedule=$schedule' onclick=\"return popitup2('$url2&schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Split Wise</a><br><br>";
+        echo "<a class='btn btn-warning' href='$url2?schedule=$schedule' onclick=\"return popitup2('$url2?schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Split Wise</a><br><br>";
 
     echo '</div>';
 
