@@ -182,7 +182,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 shift=".str_replace('"','*',$shift)."&module=$module&hour_from=$hour_from&hour_to=$hour_to'>
 	<input type='submit' name='submit1' class='btn btn-info' value='Export to Excel'></a></right>";*/
 $sql="select * from $bai_pro3.sections_db where sec_id=$module";
-$sql_result=mysqli_query($link11, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+//echo $sql;
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error211".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$module=$sql_row['sec_mods'];
