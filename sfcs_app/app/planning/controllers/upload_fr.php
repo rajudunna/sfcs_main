@@ -22,7 +22,7 @@ session_start();
 <form action="<?= getFullURL($_GET['r'],'importData.php','N'); ?>" method="post" enctype="multipart/form-data" id="importFrm"> 
 <div class="row">
 	<div class='col-md-3'>
-	<label>Choose File Location: </label><input type="file" name="file" class="form-control" accept=".xlsx,.csv" size="25" value="" required/><br><br>
+	<label>Choose File Location: </label><input type="file" name="file" class="form-control" accept=".csv" size="25" value="" required/><br><br>
 	<label class="label label-danger">Note :</label>&nbsp;<label class="label label-primary">Upload only .csv format files.</label>
 	</div>
 	<div class='col-md-3'>
