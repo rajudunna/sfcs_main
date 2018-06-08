@@ -1,7 +1,7 @@
 <?php
 function user_acl($page_id,$user_name,$fn_id,$group_id)
 {	
-	include('config.php');
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$name=array();
 	$view_id=1;
 	$view=0;
