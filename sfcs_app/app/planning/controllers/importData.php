@@ -111,7 +111,7 @@ if(isset($_POST['importSubmit'])){
         //echo "<script>sweetAlert('Oops','Invalid File','error')</script>";
         $url = getFullURL($_GET['r'],'upload_fr.php','N');
         echo "<script>
-                sweetAlert('Oops','Invalid File','error')
+                sweetAlert('Oops','Please Update .CSV File','error')
                 setTimeout(
                 function(){
                     location.href = ' $url ';
