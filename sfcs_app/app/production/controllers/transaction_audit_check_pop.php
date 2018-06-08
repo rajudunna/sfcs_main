@@ -70,7 +70,7 @@ function myfunction()
 
 <body> 
 <div class="panel panel-primary">
-<div class="panel-heading">Production Review</div> 
+<div class="panel-heading">Output Verification</div> 
 <div class="panel-body">
 <?php 
     if(isset($_GET['schedule'])) 
