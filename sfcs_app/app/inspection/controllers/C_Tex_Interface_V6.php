@@ -2653,7 +2653,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			{
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}
-			if($partial_rej_qty[$i]>0)// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
+			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]>$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
 			{
 				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason)
 				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\"
@@ -2984,7 +2984,8 @@ function change_body(x,y,z)
 
 	if (document.input["roll_status["+z+"]"].value == 2)
 	{
-		if(parseFloat(document.input["ele_t_length["+z+"]"].value) >= parseFloat(document.input["ele_par_length["+z+"]"].value))
+		
+		if(parseFloat(document.input["ele_t_length["+z+"]"].value) > parseFloat(document.input["ele_par_length["+z+"]"].value))
 		{
 			document.input["ele_par_length["+z+"]"].value=document.input["ele_par_length["+z+"]"].value;
 		}

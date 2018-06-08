@@ -105,8 +105,9 @@ if(isset($_GET['tid']))
 	$locationid=$_GET['location'];
 	$qms_qty=$_GET['qms_qty1'];
 	//Insert selected row into table deleted table
-	$sql1="insert ignore into $bai_pro3.bai_qms_db_deleted select * from bai_qms_db where qms_tid='".$tid_ref."' ";
-	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	$sql1="insert ignore into $bai_pro3.bai_qms_db_deleted select * from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
+
+	$result1=mysqli_query($link, $sql1) or die("Sql error1".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	//reduce qty from location table based on location
 	if($locationid != null) {
 		$sql3="update $bai_pro3.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty) where qms_location_id='".$locationid."'";
