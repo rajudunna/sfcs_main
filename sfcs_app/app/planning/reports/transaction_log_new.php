@@ -1,13 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
 
 <?php 
-// 2015-05-14/ kirang/ Service Request #441213 / Adding Size 30 and set the Module Sequence in Daily Production Status Report
-// include("dbconf.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
+
 $view_access=user_acl("SFCS_0046",$username,1,$group_id_sfcs); 
 ?>
 <?php include(getFullURLLevel($_GET['r'],'functions2_production_status_report.php',0,'R')); ?>
@@ -182,13 +177,12 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 shift=".str_replace('"','*',$shift)."&module=$module&hour_from=$hour_from&hour_to=$hour_to'>
 	<input type='submit' name='submit1' class='btn btn-info' value='Export to Excel'></a></right>";*/
 $sql="select * from $bai_pro3.sections_db where sec_id=$module";
-<<<<<<< HEAD
+
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-=======
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error211".mysqli_error($GLOBALS["___mysqli_ston"]));
->>>>>>> 2c9a7ad9a134dbd89cc30acf6a71363a727362e5
+
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$module=$sql_row['sec_mods'];
