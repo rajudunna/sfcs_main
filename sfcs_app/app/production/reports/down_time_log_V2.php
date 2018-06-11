@@ -2,8 +2,8 @@
 Add columns in that table like start time and end time
 -->
 <?php
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 //$view_access=user_acl("SFCS_0063",$username,1,$group_id_sfcs); //1
 //Date:04-04-2016/SR#23509616/kirang/code changed to get access from central administration 
 //$authorised_access=user_acl("SFCS_0063",$username,7,$group_id_sfcs); //2
@@ -94,8 +94,9 @@ echo "<tr style='background-color:#337ab7;color:white;'>
 
 
 $sql="select * from $bai_pro.down_log where month(date)=month(\"$date\") and year(date)=year(\"$date\") order by date, shift, mod_no*1";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//echo $sql;
+
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$tid=$sql_row['tid'];
@@ -109,7 +110,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	if($reason_code > 0)
 	{
 		$sql3="select * from $bai_pro.down_reason where sno=$reason_code";
-		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".$sql3.mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error2".$sql3.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row3=mysqli_fetch_array($sql_result3))
 		{
 			$down_machine=$sql_row3["down_machine"];
@@ -143,8 +144,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	//added newly based on anu's requirement
 	$sql1="select * from $bai_pro.down_deps where dep_id=".$sql_row['department'];
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		$dep_name=$sql_row1['dep_name'];
