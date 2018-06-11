@@ -131,6 +131,7 @@ if(isset($_POST['submit']))
 		echo "<tr><td>Item Description</td><td>:</td><td>$item_desc</td></tr>";
 		echo "<tr><td>Item Name</td><td>:</td><td>$item_name</td></tr>";
 		echo "<tr><td>Product</td><td>:</td><td>$product_group</td></tr>";
+		echo "<tr><td>Qty Recieved</td><td>:</td><td>$rec_qty</td></tr>";
 		echo "<tr><td>GRN Date</td><td>:</td><td>$grn_date</td></tr>";
 		
 		echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'entry_delete.php','N').'">';
@@ -138,13 +139,13 @@ if(isset($_POST['submit']))
 		
 		if(in_array($username,$authorised_user))
 		{
-			echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none"; ></td></tr>';
+			echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none"; ></td></tr>';
 		}
 		else
 		{
 			if($qty_rec>0 and $qty_issued==0 and $qty_ret==0 and strlen($ref1)==0 and strlen($ref4)==0)
 			{				
-				echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none";></td></tr>';
+				echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none";></td></tr>';
 			}	
 		}
 		echo '</form>';
@@ -153,7 +154,7 @@ if(isset($_POST['submit']))
 	else
 	{
 		//echo "<table class='table table-bordered'><tr class='danger'><td>Details not available, please enter label id.</td></tr></table>";
-		echo "<script>swal('please enter valid label id.','','warning')</script>";
+		echo "<script>sweetAlert('please enter valid label id.','','warning')</script>";
 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
 	}
@@ -178,9 +179,9 @@ if(isset($_POST['delete']))
 	
 	if((int)$issued_qty > 0){
 	
-		echo "<script>swal('Quantity is issued already','you should not delete it','warning');</script>";
+		echo "<script>sweetAlert('Quantity is issued already','you should not delete it','warning');</script>";
 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500); function Redirect() {  location.href = \"$url\"; }</script>";
 	
 	}else{
 		$sql="insert into $bai_rm_pj1.store_in_deleted select * from $bai_rm_pj1.store_in where tid=".$lid;
@@ -241,9 +242,9 @@ if(isset($_POST['delete']))
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		// echo "<table class='table table-bordered'><tr class='success'><td>Label Id Successfully Deleted</td></tr></table>";
-		echo "<script>swal('Label id Successfully Deleted','','success');</script>";
+		echo "<script>sweetAlert('Label id Successfully Deleted','','success');</script>";
 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
 	}
 }
 
@@ -317,7 +318,7 @@ if(isset($_POST['submit2']))
 			Please Wait
 			</div>';
 			echo '<input type="hidden" value="'.$lot_no.'" name="lot_no"><input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable<input type="submit" value="Delete" name="put" id="put" onclick="return check_reason();"
-			 class="btn btn-danger btn-sm" />';
+			 class="btn btn-danger btn-sm confirm-submit" />';
 			//  onclick="javascript:button_disable();"
 
 			echo "</td></tr>";
@@ -334,9 +335,9 @@ if(isset($_POST['submit2']))
 		// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"$url\"; }</script>";
 
 		//echo "<table class='table table-bordered'><tr class='danger'><td>Details not available, please enter lot no.</td></tr></table>";
-		echo "<script>swal('please enter valid lot no','','warning')</script>";
+		echo "<script>sweetAlert('please enter valid lot no','','warning')</script>";
         $url = getFullURL($_GET['r'],'entry_delete.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"$url\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
 
 	}
 
@@ -431,13 +432,13 @@ if(isset($_POST['put']))
 			if($check==1 and $num7>0)
 			{
 				//echo "<h2><font color=green>Lot number deleted successfully</font></h2>";
-				echo "<script>swal('Lot Number Deleted Successfully','','Success')</script>";
+				echo "<script>sweetAlert('Lot Number Deleted Successfully','','Success')</script>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
 			}				
 			else
 			{
-				echo "<script>swal('Unable To Delete','Please Cross Check Details','error')</script>";
+				echo "<script>sweetAlert('Unable To Delete','Please Cross Check Details','error')</script>";
 				//echo "<h2><font color=red>Transaction un-successful, please cross check the details.</font></h2>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = \"$url\"; }</script>";
@@ -479,24 +480,22 @@ if(isset($_POST['put']))
 					if($num5==$num6)
 					{
 						$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
-			 			// "<br/>".$sql7;
-			 
 						$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$num7=mysqli_affected_rows($link);
 					}
 				
 				}	
 			
-				echo "<script>swal('Successfully Updated','','success')</script>";
+				echo "<script>sweetAlert('Successfully Updated','','success')</script>";
 				echo "<h2><font color=green>Successfully Updated!!</font></h2>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
 			}
 		}																																													
 	}
 	else
 	{
-		echo "<script>swal('Deletion Cant Possible',' Because total issued quantity and total returned quantity is not equal for this lot number','error');</script>";
+		echo "<script>sweetAlert('Deletion Cant Possible',' Because total issued quantity and total returned quantity is not equal for this lot number','error');</script>";
 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",5000); function Redirect() {  location.href = \"$url\"; }</script>";
 		//echo "<table class='table table-bordered'><tr class='danger'><td style='text-align:center;'>Deletion Can't Possible. Because total issued quantity and total returned quantity is not equal for this lot number</td></tr></table>";

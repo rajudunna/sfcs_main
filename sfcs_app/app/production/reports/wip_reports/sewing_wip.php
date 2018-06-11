@@ -40,7 +40,7 @@ echo "<table class='table table-bordered' id='table1'><tr><th>Buyer Division</th
 
 $sql="select sum(ims_qty) as ims_qty,sum(ims_pro_qty) as ims_pro_qty,ims_style,ims_schedule,ims_color,ims_mod_no from $bai_pro3.ims_log where ims_date >= \"2015-01-01\" and ims_qty!=ims_pro_qty and ims_mod_no > 0 group by ims_style,ims_schedule,ims_color,ims_mod_no order by ims_doc_no";
 
-$result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+$result=mysqli_query($link, $sql) or die("Error=1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
 	$ims_style=$row["ims_style"];
@@ -49,12 +49,12 @@ while($row=mysqli_fetch_array($result))
 	$ims_mod_no=$row["ims_mod_no"];
 	$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$ims_schedule."\" and order_col_des=\"".$ims_color."\"";
 	//echo $sql1;
-	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result1=mysqli_query($link, $sql1) or die("Error=2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($result1)==0)
 	{
 		$sql1="select * from $bai_pro3.bai_orders_db_confirm_archive where order_del_no=\"".$ims_schedule."\" and order_col_des=\"".$ims_color."\"";
 	}
-	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result1=mysqli_query($link, $sql1) or die("Error=3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
 		$order_tid=$row1["order_tid"];
@@ -62,12 +62,12 @@ while($row=mysqli_fetch_array($result))
 	
 	$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
 	//echo $sql1;
-	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result1=mysqli_query($link, $sql1) or die("Error=4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($result1)==0)
 	{
 		$sql1="select * from $bai_pro3.bai_orders_db_confirm_archive where order_tid=\"".$order_tid."\"";
 	}
-	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result1=mysqli_query($link, $sql1) or die("Error=5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
 		$buyer=$row1["order_div"];
@@ -78,8 +78,8 @@ while($row=mysqli_fetch_array($result))
 	}
 	$section="";
 	
-	$sql_sec="select * from $bai_pro3.bai_pro3.sections_db where sec_id > 0";
-	$result_sec=mysqli_query($link, $sql_sec) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_sec="select * from $bai_pro3.sections_db where sec_id > 0";
+	$result_sec=mysqli_query($link, $sql_sec) or die("Error=6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_sec=mysqli_fetch_array($result_sec))
 	{
 		$section_ref=$row_sec["sec_id"];

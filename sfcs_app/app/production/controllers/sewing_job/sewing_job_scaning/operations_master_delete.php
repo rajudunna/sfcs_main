@@ -1,6 +1,6 @@
 <?php
-	include("..".getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-	include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	
 	if (isset($_GET['del_id'])) 
 	{

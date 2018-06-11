@@ -1,9 +1,9 @@
 <head>
  <?php 
  error_reporting(0);
-include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
  $view_access=user_acl("SFCS_0025",$username,1,$group_id_sfcs); 
  ?>
 <LINK href="<?= getFullURLLevel($_GET['r'],'style.css',1,'R'); ?>" rel="stylesheet" type="text/css">

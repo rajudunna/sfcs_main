@@ -12,8 +12,8 @@
 <div class="panel-body">
 <?php
 
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+      include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 error_reporting(0);
 
 echo "<form action=".getFullURL($_GET['r'],'downtimeperday_data_new.php','N')." method=\"post\" id=\"non-printable\">

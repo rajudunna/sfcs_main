@@ -9,7 +9,6 @@ $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gaya
 <html>
 <head>
 <META HTTP-EQUIV="refresh" content="900" URL="tms_dashboard_input.php">
-<link rel="stylesheet" href="styles/bootstrap.min.css">
 <style type="text/css">
 	body{
 		font-family: Trebuchet MS, Lucida Sans Unicode, Arial, sans-serif;	/* Font to use */
@@ -579,7 +578,7 @@ $code_db=explode("*",$code);
 		<img src='images/heading3.gif'>
 	</div> -->
 	<div id="dhtmlgoodies_listOfItems">
-		<div>
+		<div class="table table-responsive" style="height: 500px;">
 			<p>Jobs</p>		
 		<ul id="allItems">
 		
@@ -654,7 +653,7 @@ $code_db=explode("*",$code);
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
 		
-			echo "<div style=\"width:121px;\" align=\"center\"><h4>SEC - $section</h4>";
+			echo "<div style=\"width:135px;height:500px;\" align=\"center\" class=\"table table-responsive\"><h4>SEC - $section</h4>";
 		
 			$mods=array();
 			$mods=explode(",",$section_mods);
@@ -774,23 +773,25 @@ $code_db=explode("*",$code);
 		}
 		
 		// FOR COMPLETED CUTS
-		echo "<div id=\"new\" style=\"float:left;	margin-right:10px;	margin-bottom:10px;	margin-top:0px;	border:1px solid #999;width: 120px;	width/* */:/**/120px;	
-		width: /**/120px;\" align=\"center\">
-		<p style=\"margin:0px; padding:0px;		font-weight:bold;	background-color:#3170A8;	color:#FFF;	margin-bottom:5px;\">Completed</p>
-		<table class='table table-bordered'>";
+		//commenting the completed divs from here 
+		//NOTE: DONOT COMMENT THE DIV BECAUSE, IF WE COMMENT IT, THE REST OF THE DIV'S WILL DISTURB
+		echo "<div id=\"new\" style=\" display:none;float:left;	margin-right:10px;	margin-bottom:10px;	margin-top:0px;	border:1px solid #999;width: 120px;	width/* */:/**/120px;	
+		// width: /**/120px;\" align=\"center\">
+		// <p style=\"margin:0px; padding:0px;		font-weight:bold;	background-color:#3170A8;	color:#FFF;	margin-bottom:5px;\">Completed</p>
+		// <table class='table table-bordered'>";
 
 			
-		/**/$sql1="SELECT input_job_no as acutno from $bai_pro3.plan_doc_summ_input where order_del_no=$schedule and input_job_input_status(act_cut_issue_status)=\"DONE\" order by input_job_no";
+		// /**/$sql1="SELECT input_job_no as acutno from $bai_pro3.plan_doc_summ_input where order_del_no=$schedule and input_job_input_status(act_cut_issue_status)=\"DONE\" order by input_job_no";
 		//echo $sql1;
-		mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1=mysqli_fetch_array($sql_result1))
-		{
-			echo '<tr id=\"new1\" style="background-color:green;  color:white;"><strong>'.chr($color_code).leading_zeros($sql_row1['acutno'],3).'</strong></tr>';
-		} 
-		echo '</table>';
+		// mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row1=mysqli_fetch_array($sql_result1))
+		// {
+			// echo '<tr id=\"new1\" style="background-color:green;  color:white;"><strong>'.chr($color_code).leading_zeros($sql_row1['acutno'],3).'</strong></tr>';
+		// } 
+		// echo '</table>';
 		echo "</div>";
-		
+		//completed the commented div
 		$sql="DROP TABLE IF EXISTS $temp_table_name";
 		//echo $sql."<br/>";
 		mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));

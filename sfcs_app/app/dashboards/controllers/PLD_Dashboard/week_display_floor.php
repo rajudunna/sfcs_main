@@ -12,7 +12,7 @@ $end_date_w=$start_date_w+(60*60*24*6); // define sunday
 $start_date_w=date("Y-m-d",$start_date_w);
 $end_date_w=date("Y-m-d",$end_date_w);
 
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 // $dns_adr="http://".$_SERVER['HTTP_HOST'];
 $rurl = getFullURLLevel($_GET['r'],'Dash_Board_new.php',0,'N');
 ?>

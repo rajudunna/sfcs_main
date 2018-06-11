@@ -6,7 +6,7 @@
 <?php
 
 $user_manual  = getFullURL($_GET['r'],'Surplus_User_Manual.docx','R');
-$path_destrcution = $_SERVER['DOCUMENT_ROOT'].$path_destrcution;
+$path_destrcution = $_SERVER['DOCUMENT_ROOT'].'/'.$path_destrcution;
 //define a maxim size for the uploaded images
 define ("MAX_SIZE","10000000");
 // define the width and height for the thumbnail

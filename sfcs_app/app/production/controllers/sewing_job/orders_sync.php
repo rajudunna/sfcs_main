@@ -40,10 +40,10 @@ div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
 td{ padding:2px; white-space: nowrap;}
 </style>
 <?php
-include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
-include("..".getFullURLLevel($_GET['r'],'common/config/dbconf.php',2,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/dbconf.php',2,'R'));
 $view_access=user_acl("SFCS_0279",$username,1,$group_id_sfcs);
 ?>
 
