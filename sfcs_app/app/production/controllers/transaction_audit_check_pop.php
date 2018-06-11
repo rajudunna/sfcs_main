@@ -27,15 +27,8 @@ Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status)
 var flag = 0;
 
 function firstbox(){ 
-    var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     var schedule = document.getElementById('schedule');
-        if( format.test(schedule.value) ){
-            sweetAlert('No special Characters Allowed','','warning');
-            schedule.value = '';
-            return;
-        }else{
-            window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+schedule.value;
-        }
+    window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+schedule.value;
 } 
 
 function secondbox() { 
@@ -56,7 +49,7 @@ function myfunction()
         return false; 
     }
     //alert(val.length); 
-    if(val.length<5 || val.length<=5) 
+    if(val.length<5) 
     { 
         sweetAlert('Please enter valid schedule','','warning'); 
         return false; 
@@ -105,7 +98,7 @@ function myfunction()
     <div class="col-sm-12">
     <div class="row">
     <div class="col-sm-3">Enter Schedule 
-    <input type="text" required class="form-control input-sm integer" name="schedule" id='schedule' onblur="firstbox();" size=8 value="<?php  if(isset($_POST['schedule'])) { echo $_POST['schedule']; } elseif(isset($_GET['schedule'])) { echo $_GET['schedule']; } ?> "></td></div>
+    <input type="text" class="form-control input-sm integer" name="schedule" id='schedule' onblur="firstbox();" size=8 value="<?php  if(isset($_POST['schedule'])) { echo $_POST['schedule']; } elseif(isset($_GET['schedule'])) { echo $_GET['schedule']; } ?>"></td></div>
             
 
     <?php 
@@ -140,7 +133,7 @@ function myfunction()
     echo "</select></div><br>"; 
 ?> 
 
-<div class = "col-sm-3"><input type="button" class = "btn btn-primary" value="Show" 
+<div class = "col-sm-3"><input type="submit" class = "btn btn-primary" value="Show" 
 	onclick= "return myfunction()"  id="submit" name="submit"  /></div>
 </form> 
 </div></div>

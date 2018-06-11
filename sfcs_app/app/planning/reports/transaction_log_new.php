@@ -182,7 +182,13 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 shift=".str_replace('"','*',$shift)."&module=$module&hour_from=$hour_from&hour_to=$hour_to'>
 	<input type='submit' name='submit1' class='btn btn-info' value='Export to Excel'></a></right>";*/
 $sql="select * from $bai_pro3.sections_db where sec_id=$module";
-$sql_result=mysqli_query($link11, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+<<<<<<< HEAD
+// echo $sql;
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+=======
+//echo $sql;
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error211".mysqli_error($GLOBALS["___mysqli_ston"]));
+>>>>>>> 2c9a7ad9a134dbd89cc30acf6a71363a727362e5
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$module=$sql_row['sec_mods'];
@@ -277,7 +283,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 		$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
 		// echo $sql1."<br>";
-		$sql_result2=mysqli_query($link11, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result2=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result2))
 		{
 			$order_tid=$sql_row1['order_tid'];
@@ -286,7 +292,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		if(mysqli_num_rows($sql_result2)==0){
 			$sql1="select * from $bai_pro3.plandoc_stat_log_archive where doc_no=$doc_no";
-			$sql_result1=mysqli_query($link11, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				$order_tid=$sql_row1['order_tid'];
@@ -298,7 +304,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		//added new code for getting data from archive table of orders
 		$sql12="select order_style_no,order_del_no,order_col_des,color_code,style_id from $bai_pro3.bai_orders_db where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\"";
 		// echo $sql12."<br>";
-		$sql_result12=mysqli_query($link11, $sql12) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_no_rows=mysqli_num_rows($sql_result12);
 		
 		$table="bai_orders_db";
@@ -310,7 +316,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$sql1="select order_style_no,order_del_no,order_col_des,color_code,style_id from $table where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\" ";
 		//echo $sql1."<br>";
 
-		$sql_result1=mysqli_query($link11, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$style=$sql_row1['order_style_no'];
@@ -331,7 +337,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$getting_title_size = "select $finalized_title_size from bai_orders_db where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\"";
 			// echo $getting_title_size;
 			// mysqli_query($link11, $getting_title_size) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result001=mysqli_query($link11, $getting_title_size) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result001=mysqli_query($link, $getting_title_size) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_result_fetch = mysqli_fetch_array($sql_result001)){
 				$finalized_title_size_value = $sql_result_fetch[$finalized_title_size];
 			}

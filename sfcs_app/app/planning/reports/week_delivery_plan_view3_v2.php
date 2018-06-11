@@ -451,15 +451,15 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into $bai_pro4.week_delivery_plan_ref_temp select * from bai_pro4.week_delivery_plan_ref $query";
+	$sql="insert into $bai_pro4.week_delivery_plan_ref_temp select * from $bai_pro4.week_delivery_plan_ref $query";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into $bai_pro4.week_delivery_plan_temp select * from week_delivery_plan where ref_id in (select ref_id from $bai_pro4.week_delivery_plan_ref_temp $query)";
+	$sql="insert into $bai_pro4.week_delivery_plan_temp select * from $bai_pro4.week_delivery_plan where ref_id in (select ref_id from $bai_pro4.week_delivery_plan_ref_temp $query)";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into $bai_pro4.shipment_plan_ref_view select * from shipment_plan_ref where ship_tid in (select shipment_plan_id from week_delivery_plan_temp)";
+	$sql="insert into $bai_pro4.shipment_plan_ref_view select * from $bai_pro4.shipment_plan_ref where ship_tid in (select shipment_plan_id from $bai_pro4.week_delivery_plan_temp)";
 	mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$table_ref3="shipment_plan_ref_view";
@@ -471,7 +471,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 
 	$x=1;
-	$sql="select * from $table_ref2 where ref_id in (select ref_id from bai_pro4.$table_ref $query) order by ref_id+0";
+	$sql="select * from $bai_pro4.$table_ref2 where ref_id in (select ref_id from $bai_pro4.$table_ref $query) order by ref_id+0";
 	 //echo $sql."<br>";
 	mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
