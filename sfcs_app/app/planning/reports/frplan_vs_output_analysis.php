@@ -366,7 +366,7 @@ $table.="</table>";
 ?>
 
 <div id="div-1a">
-<form  name="input1" action="<?= '../'.getFullURL($_GET['r'],'plan_vs_output_analysis_excel.php','R') ?>" method="post">
+<form  name="input1" action="<?= getFullURLLevel($_GET['r'],'plan_vs_output_analysis_excel.php',0,'R') ?>" method="post">
 
 <input type="hidden" name="table" value="<?php echo $table; ?>">
 <input type="submit" name="submit1" class='btn btn-info pull-right' value="Export to Excel">
