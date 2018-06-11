@@ -867,6 +867,7 @@ if(isset($_POST['submit']))
 			}
 		//}
 		
+		//this is for after allocating article redirect to cps dashboard.removed sfcsui
 		$php_self = explode('/',$_SERVER['PHP_SELF']);
 		array_pop($php_self);
 		$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
