@@ -61,7 +61,7 @@ $plant_name = 'Brandix Essentials Ltd - Koggala';
 $group_id_sfcs=8;
 $group_id_Main=5;
 
-$plant_name = "Q01";
+// $plant_name = "Koggala";
 
 //Central Administration Menu Access
 $central_administration_sfcs='central_administration_sfcs';
