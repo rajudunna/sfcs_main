@@ -61,70 +61,13 @@ else
 // 		selectFirst: false
 // 	});
 // });
-
-
-function isNumber(evt) {
-		var charCode = (evt.which) ? evt.which : evt.keyCode;
-		if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57) )
-		{
-			// if (charCode == 46 && evt.srcElement.value.split('.').length>1) 
-			{
-				return false; 
-			}
-		}
-		return true;
-	}
 </script>
 
-  <title>Stock In Form (NEW)</title>
 
-  <!-- <link rel="stylesheet" href="<?= getBASE($_GET['r'])['base'].'/includes/page_style.css'; ?>" type="text/css" media="all" /> -->
   <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R'); ?>"></script>
-<!-- Allow Only Numbers-->
 
-<script type="text/javascript">
-//Function to allow only numbers to textbox
-function validate(event)
-{
-	event = (event) ? event : window.event;
-	var charCode = (event.which) ? event.which : event.keyCode;
-	if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-		return false;
-	}
-	return true;
-}
-</script>
-
-
-<script type="text/javascript">
-//Function to allow only numbers to textbox
-function validate2(key)
-{
-	//getting key code of pressed key
-	var keycode = (key.which) ? key.which : key.keyCode;
-	var phn = document.getElementById('txtPhn');
-	//comparing pressed keycodes
-	if ((keycode < 48 || keycode > 57 ) && (keycode<42 || keycode>43) && (keycode<65 || keycode>90))
-	{
-		return false;
-	}
-
-}
-
-function isNumberKey(evt)
-{
-	var charCode = (evt.which) ? evt.which : evt.keyCode;
-	if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
-	{
-		return false;
-	}
-	return true;
-}
-</script>
-
-<!-- Allow only Numbers -->
 
 <style>
 #leftcolumn { /* width: 300px; */ margin-left:5px;float: right; }
@@ -133,15 +76,13 @@ function isNumberKey(evt)
 .clear { clear: both;}
 
 </style>
-<!-- <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
-</head> -->
+
 <body onload="dodisable();">
-<?php include("menu_content.php"); ?>
+
 <?php include("stock_in.php"); ?>
 
 <?php
-include("dbconf.php");
-//echo "Host : ".$host;
+
 if(isset($_POST['submit']))
 {	
 	$sql="select lot_no from $bai_rm_pj1.sticker_report where lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
