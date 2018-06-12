@@ -223,7 +223,7 @@ $(document).ready(function()
 					document.getElementById('module').value = response['module'];
 					// var form = '<form action="<?php echo $_GET['r']?>" method="post">';
 					// $("#dynamic_table1").append(form);
-					var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
+					var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="return check_pack();"><input type="hidden" id="count_of_data" value='+data.length+'></div>';
 					$("#dynamic_table1").append(btn);
 					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th>Status</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th>Remarks</th><th>Rejected Qty.</th><th>Rejection quantity</th></tr></thead><tbody>";
 					var flagelem = "<input type='hidden' name='flag' id='flag' value='"+flag+"'>";
@@ -531,12 +531,42 @@ $('input[type=submit]').click(function() {
 </script>	
 
 <script>
-
+function check_pack()
+{
+	var count = document.getElementById('count_of_data').value;
+	// var qty = document.getElementById('pack').value;
+	// var status = document.getElementById('status').value;
+	var tot_qty = 0;
+	var tot_rej_qty = 0;
+	for(var i=0; i<count; i++)
+	{
+		var variable = i+"reporting";
+		var qty_cnt = document.getElementById(variable).value;
+		tot_qty += Number(qty_cnt);
+	}
+	for(var i=0; i<count; i++)
+	{
+		var variable_rej = i+"rejections";
+		var qty_rej_cnt = document.getElementById(variable_rej).value;
+		tot_rej_qty += Number(qty_rej_cnt);
+	}
+	if(Number(tot_qty) <= 0 && Number(tot_rej_qty) <= 0)
+	{
+		sweetAlert("Please enter atleast one size quantity","","warning");
+		//swal('Please Enter Any size quantity','','warning');
+		return false;
+	}
+	else
+	{
+		$('.submission').hide();
+		return true;
+	}
+}
 function validating()
 {
 	console.log("working");
 	//document.getElementByClassName('submission').style.visibility = 'hidden';
-	$('.submission').hide();
+	
 }
 </script>
 
