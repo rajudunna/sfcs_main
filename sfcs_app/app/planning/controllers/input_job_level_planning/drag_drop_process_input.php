@@ -200,10 +200,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			
 			$remove_docs=array();
 			if($items[1] == ''){
-				$items[1] = "' '";
+				$items[1] = "";
 			}
-			$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where input_job_input_status(".$items[1].")=\"DONE\"";
-			// echo $sqlx;
+			$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
+			 input_job_input_status('".$items[1]."')=\"DONE\"";
+			//echo $sqlx;
 			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{
@@ -215,7 +216,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			
 			$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
 			//echo $sqlx.";<br>";
-			//mysql_query($sqlx,$link) or exit("Sql Error12".mysql_error());
+			mysql_query($sqlx,$link) or exit("Sql Error12".mysql_error());
 				
 			}
 		}
@@ -244,7 +245,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"tms_dashboard_input_v22.php\"; }</script>";
 		$path = getFullURLLevel($_GET['r'],'tms_dashboard_input_v22.php',0,'N');
 		
-		echo"<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1); function Redirect() 
-		{  location.href = '$path'; }</script>";
+		echo"<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1); function Redirect() { location.href = '$path'; }</script>";
 
 ?>
