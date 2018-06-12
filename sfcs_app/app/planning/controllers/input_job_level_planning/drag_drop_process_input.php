@@ -172,10 +172,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 						{
 							$sqlx12="update $bai_pro3.plandoc_stat_log set plan_module=".$items[0]." where doc_no='".$org_doc_no."'";
 							//echo $sqlx1.";<br>";
-							mysqli_query($link, $sqlx12) or exit("Sql Error62".mysqli_error($GLOBALS["___mysqli_ston"]));
+							mysqli_query($link, $sqlx12) or exit("Sql Error62.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$sqlx12="update $bai_pro3.plandoc_stat_log set plan_module=".$items[0]." where doc_no='".$org_doc_no."'";
 							//echo $sqlx1.";<br>";
-							mysqli_query($link, $sqlx12) or exit("Sql Error62".mysqli_error($GLOBALS["___mysqli_ston"]));
+							mysqli_query($link, $sqlx12) or exit("Sql Error62.2".mysqli_error($GLOBALS["___mysqli_ston"]));
 							//echo "Test---<br>";
 						}
 						else
@@ -183,7 +183,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							//echo "Test---1<br>";
 							$sqlx12="update $bai_pro3.plandoc_stat_log set plan_module=".$items[0]." where doc_no='".$org_doc_no."'";
 							///echo $sqlx1.";<br>";
-							mysqli_query($link, $sqlx12) or exit("Sql Error62".mysqli_error($GLOBALS["___mysqli_ston"]));
+							mysqli_query($link, $sqlx12) or exit("Sql Error62.3".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}						
 					
 					}		
@@ -205,7 +205,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
 			 input_job_input_status('".$items[1]."')=\"DONE\"";
 			//echo $sqlx;
-			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{
 				$remove_docs[]="'".$sql_rowx['doc_no']."'";
@@ -216,7 +216,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			
 			$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
 			//echo $sqlx.";<br>";
-			mysql_query($sqlx,$link) or exit("Sql Error12".mysql_error());
+			mysqli_query($link, $sqlx) or exit("Sql Error11.2");
+			// mysql_query($link,$sqlx) or exit("Sql Error12".mysql_error());
 				
 			}
 		}
