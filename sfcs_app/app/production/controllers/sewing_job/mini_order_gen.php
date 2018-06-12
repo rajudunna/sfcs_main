@@ -119,7 +119,7 @@ if($status == '' || $status == '1')
 			$tbl_cut_master_id=echo_title("$brandix_bts.tbl_cut_master","GROUP_CONCAT(id)","ref_order_num",$schedule_id,$link);
 			// echo $schedule."-".$schedule_id."-".$tbl_cut_master_id."<br>";
 
-			$sql1="select ref_size_name as size,color FROM $brandix_bts.tbl_cut_size_master WHERE parent_id IN ("."'".$tbl_cut_master_id."'".") GROUP BY ref_size_name,color";
+			$sql1="select ref_size_name as size,color FROM $brandix_bts.tbl_cut_size_master WHERE parent_id IN (".$tbl_cut_master_id.") GROUP BY ref_size_name,color";
 			
 			$result1=mysqli_query($link, $sql1) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($result1))
@@ -320,7 +320,7 @@ if($status == '' || $status == '1')
 			$tbl_cut_master_id=echo_title("$brandix_bts.tbl_cut_master","GROUP_CONCAT(id)","ref_order_num",$schedule_id,$link);
 			//echo $schedule."-".$schedule_id."-".$tbl_cut_master_id."<br>";
 
-			$sql1="select ref_size_name as size,color FROM $brandix_bts.tbl_cut_size_master WHERE parent_id IN ("."'".$tbl_cut_master_id."'".") GROUP BY ref_size_name,color";
+			$sql1="select ref_size_name as size,color FROM $brandix_bts.tbl_cut_size_master WHERE parent_id IN (".$tbl_cut_master_id.") GROUP BY ref_size_name,color";
 			//echo $sql1."<br>";
 			$result1=mysqli_query($link, $sql1) or die ("Error1.2=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($result1))

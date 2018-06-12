@@ -14,8 +14,8 @@ Ticket #516359.
 //service request #474467 /2014-12-24 / kirang / Modification on efficiency report for M&S styles (put MS instead of M&S)
  -->
  <?php 
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+          include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	$view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
 	$final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
 ?>

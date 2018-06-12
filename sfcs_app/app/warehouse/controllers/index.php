@@ -123,8 +123,18 @@ body
 						}
 						else
 						{
-						echo "<h2>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h2>";
+							$sql2="select * from $bai_rm_pj1.store_in where tid=\"$code\" ";
+							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($sql_result2)>0)
+							{
+								echo "<h2>Status  : $code-<span class='label label-info'>Label Already Scanned</span> </h2>";
+							}
+							else
+							{
 
+							echo "<h2>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h2>";
+
+							}
 						}
 						// echo "<h2>Status: <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
 						//echo "<button id='back' onclick='back()' class='btn btn-warning'><< Go back</button>";
@@ -177,8 +187,18 @@ body
 						}
 						else
 						{
-						echo "<h2>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h2>";
+							$sql2="select * from $bai_rm_pj1.store_in where tid=\"$code\" ";
+							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($sql_result2)>0)
+							{
+								echo "<h2>Status  : $code-<span class='label label-info'>Label Already Scanned</span> </h2>";
+							}
+							else
+							{
 
+							echo "<h2>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h2>";
+
+							}
 						}
 						// echo "<h2>Status  : <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
 						// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"".getFullURL($_GET['r'],'return.php','N')."&location=$location&code=$code\"; }</script>";
