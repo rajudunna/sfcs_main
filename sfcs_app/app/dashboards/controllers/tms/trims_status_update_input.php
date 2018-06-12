@@ -74,9 +74,6 @@ function doc_in_status($link,$result_type,$size,$doc_no,$input_ref)
 
 
 ?>
-<html>
-
-<head>
 <title>Trims Status Update Form</title>
 <script>
 function popitup(url) {
@@ -334,7 +331,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 		echo "<td><input type=\"hidden\" name=\"input_cat_ref[]\" value=\"".$sql_row['cat_ref']."\"><input type=\"hidden\" name=\"input_cut_no_ref[]\" value=\"".$sql_row['acutno']."\"><input type=\"hidden\" name=\"input_doc_no[]\" value=\"".$sql_row['doc_no']."\"><input type=\"hidden\" name=\"input_job_no_ref[]\" value=\"".$sql_row['input_job_no']."\">".$sql_row['acutno']."<input type=\"hidden\" name=\"input_qty[]\" $textbox_disable value=\"0\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
 		// echo "<td><input type=\"hidden\" name=\"input_job_no_ref[]\" value=\"".$sql_row['input_job_no']."\">".$sql_row['input_job_no']."</td>";
 		echo "<td>".$sql_row['destination']."</td>";
-		echo "<td><input type=\"hidden\" name=\"input_size[]\" value=\"".$sql_row['size_code']."\">".$sql_row['size_code']."</td>";
+		echo "<td><input type=\"hidden\" name=\"input_size[]\" value=\"".$sql_row['size_code']."\">".strtoupper($sql_row['size_code'])."</td>";
 		echo "<td>".$sql_row['carton_act_qty']."</td>";
 		// echo "<td>".$inputqty."</td>";
 		// echo "<td>".$balance."</td>";
