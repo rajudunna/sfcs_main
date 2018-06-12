@@ -566,7 +566,7 @@ function validating()
 		$b_shift = $_POST['shift'];
 		$b_old_rep_qty = $_POST['old_rep_qty'];
 		$b_old_rej_qty = $_POST['old_rej_qty'];
-		
+		$flag_decision = false;
 		// RejectionS (bai_qms_db)
 		$r_reasons=$_POST['reason_data'];
 		$r_qty=$_POST['qty_data'];
@@ -743,6 +743,7 @@ function validating()
 				//m3 operations............. 
 				if($b_rep_qty[$key] > 0) {
 					$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'.$b_doc_num[$key].'","'.$b_rep_qty[$key].'","","'.$b_remarks[$key].'","'.$username.'","'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid[$key].'",""),';
+					$flag_decision = true;
 				}
 				//$bulk_insert_post .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'. $b_sizes[$key].'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","0","0","'.$left_over_qty.'","'. $ops_post.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'")';
 				$count = 1;
@@ -780,7 +781,7 @@ function validating()
 				}else{
 					$final_query_001 = $query;
 				}
-				echo $final_query_001;
+				//echo $final_query_001;
 				$bundle_creation_result_001 = $link->query($final_query_001);
 			}
 
@@ -819,7 +820,7 @@ function validating()
 			}
 			//echo $m3_bulk_bundle_insert;
 			
-			if(strtolower($is_m3) == 'yes'){
+			if(strtolower($is_m3) == 'yes' && $flag_decision){
 				if(substr($m3_bulk_bundle_insert, -1) == ','){
 					$final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
 				}else{
@@ -879,7 +880,10 @@ function validating()
 					if($r_qty[$tid] != null && $r_reasons[$tid] != null){
 						$r_qty_array = explode(',',$r_qty[$tid]);
 						$r_reasons_array = explode(',',$r_reasons[$tid]);
-
+						if(sizeof($r_qty_array)>0)
+						{
+							$flag_decision = true;
+						}
 						foreach ($r_qty_array as $index => $r_qnty) {
 							//m3 operations............. 
 							$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'. $b_size_code[$key].'","'. $b_sizes[$key].'","'.$b_doc_num[$key].'","'.$r_qty_array[$index].'","'.$r_reasons_array[$index].'","'.$b_remarks[$key].'","'.$username.'","'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid[$key].'",""),';
@@ -913,6 +917,7 @@ function validating()
 						//m3 operations............. 
 						if($b_rep_qty[$key] > 0){
 							$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'. $b_size_code[$key].'","'. $b_sizes[$key].'","'.$b_doc_num[$key].'","'.$b_rep_qty[$key].'","","'.$b_remarks[$key].'","'.$username.'","'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid[$key].'",""),';
+							$flag_decision = true;
 						}
 
 						if($b_rep_qty[$key] > 0 || $b_rej_qty[$key] > 0){
@@ -957,7 +962,7 @@ function validating()
 					}
 					$rej_insert_result = $link->query($final_query) or exit('data error');
 				}
-				if(strtolower($is_m3) == 'yes'){
+				if(strtolower($is_m3) == 'yes' && $flag_decision){
 					if(substr($m3_bulk_bundle_insert, -1) == ','){
 						$final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
 					}else{
