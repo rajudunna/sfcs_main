@@ -182,7 +182,7 @@ echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"fir
 	$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ $criteria";	
 	echo $sql;
 //}
-mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+// mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -217,7 +217,7 @@ echo "</select>";
 	$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\"";	
 //}
 echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" id='schedule'>";
-mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+// mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -260,7 +260,7 @@ if($clubbing>0)
 //echo $sql;
 
 //}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -295,7 +295,7 @@ $code="";
 
 $sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and doc_no not in (select doc_no from plan_dashboard) and (a_plies<>p_plies or act_cut_issue_status='') order by doc_no";
 //echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 //docketno-colorcode cutno-cut_status
@@ -306,7 +306,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" order by doc_no";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 //docketno-colorcode cutno-cut_status
@@ -342,7 +342,7 @@ if($sql_num_check>0)
 	echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
 	echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
 	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
-	echo "<input type=\"submit\" value=\"submit\" name=\"submit\" id='sub' disabled class='btn btn-success'>";	
+	echo "<input type=\"submit\" value=\"Submit\" name=\"submit\" id='sub' disabled class='btn btn-success'>";	
 }
 else
 {
@@ -404,6 +404,7 @@ if($floor_set_count>0)
 <?php
 if(isset($_POST['submit']))
 {
+	echo "<br><br><center><h2><font color=\"green\">Please Wait...</font></h2></center>";
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
 	//$module=$_POST['modules'];
@@ -460,9 +461,9 @@ if(isset($_POST['submit']))
 	}
 	
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop_input_job.php?style=$style&schedule=$schedule&code=$code\"; }</script>";
-	echo("<script>window.open('".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&code=$code');</script>");
-	// echo "<script>window.location = 'drag_drop_input_job.php?style=$style&schedule=$schedule&code=$code&module=$module';</script>";
-	echo "<script>window.close ();</script>";
+	// echo("<script>window.open('".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&code=$code');</script>");
+	echo "<script>window.location = '".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&code=$code';</script>";
+	// echo "<script>window.close ();</script>";
 	
 	}
 ?> 
