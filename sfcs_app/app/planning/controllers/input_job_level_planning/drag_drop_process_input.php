@@ -198,36 +198,30 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				}
 			}
 			
-			$remove_docs=array();
-			if($items[1] == ''){
-				$items[1] = "";
-			}
-			$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
-			 input_job_input_status('".$items[1]."')=\"DONE\"";
-			//echo $sqlx;
-			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_rowx=mysqli_fetch_array($sql_resultx))
-			{
-				$remove_docs[]="'".$sql_rowx['doc_no']."'";
-			}
 			
-			if(sizeof($remove_docs)>0)
-			{
-			
-			$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
-			//echo $sqlx.";<br>";
-			mysqli_query($link, $sqlx) or exit("Sql Error11.2");
-			// mysql_query($link,$sqlx) or exit("Sql Error12".mysql_error());
-				
-			}
 		}
 	}
 	
 	// remove docs
-		
-	//remove docs
-	//Update dashboard information after limited period
+	$remove_docs=array();
+	$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
+	input_job_input_status(input_job_no_random)=\"DONE\"";
+	//echo $sqlx;
+	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_rowx=mysqli_fetch_array($sql_resultx))
+	{
+		$remove_docs[]="'".$sql_rowx['doc_no']."'";
+	}
 	
+	if(sizeof($remove_docs)>0)
+	{	
+		$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
+		//echo $sqlx.";<br>";
+		mysqli_query($link, $sqlx) or exit("Sql Error11.2");
+		// mysql_query($link,$sqlx) or exit("Sql Error12".mysql_error());	
+	}
+
+	//Update dashboard information after limited period
 	{
 		$hour=date("H.i");
 		////echo $hour;
