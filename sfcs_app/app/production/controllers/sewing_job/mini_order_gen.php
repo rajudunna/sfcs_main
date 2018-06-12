@@ -39,6 +39,8 @@ $status="";
 if($status == '' || $status == '1')
 {
 	$mini_order_ref=$_GET['id'];
+	$style_ori=$_GET['style'];
+	$schedule_ori=$_GET['schedule'];
 	$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$mini_order_ref,$link);
 	
 	if($bundle>0)
@@ -292,7 +294,7 @@ if($status == '' || $status == '1')
 
 			// header("Location:mini_order_gen_cut_ss.php?id=$mini_order_ref&mode=$carton_method");
 
-			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_ss.php',0,'N')."&id=$mini_order_ref&mode=$carton_method';</script>");
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_ss.php',0,'N')."&id=$mini_order_ref&mode=$carton_method&style=$style_ori&schedule=$schedule_ori';</script>");
 		}
 		if($carton_method == '2')
 		{
@@ -459,7 +461,7 @@ if($status == '' || $status == '1')
 				
 			}
 			// header("Location:mini_order_gen_cut_ms.php?id=$mini_order_ref&mode=$carton_method");
-			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_ms.php',0,'N')."&id=$mini_order_ref&mode=$carton_method';</script>");
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_ms.php',0,'N')."&id=$mini_order_ref&mode=$carton_method&style=$style_ori&schedule=$schedule_ori';</script>");
 			// echo("<script>location.href = 'mini_order_gen_cut_ms.php?id=$mini_order_ref&mode=$carton_method';</script>");
 		}
 
@@ -591,7 +593,7 @@ if($status == '' || $status == '1')
 			}
 			// header("Location:mini_order_gen_cut_mm.php?id=$mini_order_ref&mode=$carton_method");
 
-			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_mm.php',0,'N')."&id=$mini_order_ref&mode=$carton_method';</script>");
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_mm.php',0,'N')."&id=$mini_order_ref&mode=$carton_method&style=$style_ori&schedule=$schedule_ori';</script>");
 			// echo("<script>location.href = 'mini_order_gen_cut_mm.php?id=$mini_order_ref&mode=$carton_method';</script>");
 		}
 
@@ -753,8 +755,8 @@ if($status == '' || $status == '1')
 			}
 			// header("Location:mini_order_gen_cut_smr.php?id=$mini_order_ref&mode=$carton_method");
 			// $url5 = getFullURL($_GET['r'],'mini_order_gen_cut_smr.php','N');
-			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_smr.php',0,'N')."&id=$mini_order_ref&mode=$carton_method';</script>");
-			// echo("<script>location.href = '".$url5."&id=$mini_order_ref&mode=$carton_method';</script>");
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_smr.php',0,'N')."&id=$mini_order_ref&mode=$carton_method&style=$style_ori&schedule=$schedule_ori';</script>");
+			// echo("<script>location.href = '".$url5."&id=$mini_order_ref&mode=$carton_method&style=$style_ori&schedule=$schedule_ori';</script>");
 		}
 
 		if($carton_method == '-1')
@@ -883,7 +885,7 @@ if($status == '' || $status == '1')
 								}
 						
 							}
-							echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_ss.php',0,'N')."&id=$mini_order_ref&mode=$carton_method';</script>");
+							echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_ss.php',0,'N')."&id=$mini_order_ref&mode=$carton_method&style=$style_ori&schedule=$schedule_ori';</script>");
 							// echo("<script>location.href = 'mini_order_gen_cut_ss.php?id=$mini_order_ref&mode=$carton_method';</script>");
 						}
 					}else{

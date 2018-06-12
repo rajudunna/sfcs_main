@@ -293,13 +293,15 @@ td{ padding:2px; white-space: nowrap;}
 			<div class="col-md-12">
 				
 				<?php
-				if(isset($_POST['submit']))
+				if(isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule']))
 				{	
-
-					// echo "Style</br>";
-					$style_id=$_POST['style'];
-					$sch_id=$_POST['schedule'];
-					//echo $style."<bR>";
+					if ($_GET['style'] and $_GET['schedule']) {
+						$style_id=$_GET['style'];
+						$sch_id=$_GET['schedule'];
+					} else if ($_POST['style'] and $_POST['schedule']){
+						$style_id=$_POST['style'];
+						$sch_id=$_POST['schedule'];	
+					}
 					if ($style_id =='NIL' or $sch_id =='NIL') 
 					{						
 						echo " ";
@@ -384,19 +386,16 @@ td{ padding:2px; white-space: nowrap;}
 													echo "<td rowspan=$val class='col-md-3'><select id=\"cart_method\" class='form-control' name=\"cart_method\" >";
 													for($j=0;$j<sizeof($operation);$j++)
 													{
+														$disabled='';
 														if ($val>1)
 														{
 															if ($j == '1' or $j == '4' or $j == '5')
 															{
 																$disabled='disabled';
-															} else {
-																$disabled='';
 															}
 														} elseif ($val == 1) {
-															if ($j == '1' or $j == '4' or $j == '5')
+															if ($j == '2' or $j == '3')
 															{
-																$disabled='';
-															} else {
 																$disabled='disabled';
 															}
 														}
@@ -487,7 +486,7 @@ td{ padding:2px; white-space: nowrap;}
 					echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
 					// header("Location:mini_order_gen.php?id=$id");
 					$url5 = getFullURLLevel($_GET['r'],'mini_order_gen.php',0,'N');
-					echo("<script>location.href = '".$url5."&id=$id';</script>");
+					echo("<script>location.href = '".$url5."&id=$id&style=$style&schedule=$scheudle';</script>");
 				}
 				?> 
 		</div>
