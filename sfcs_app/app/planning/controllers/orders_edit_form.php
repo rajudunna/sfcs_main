@@ -649,7 +649,7 @@ if(isset($_POST['submit']))
 		
 		echo "<tr>
 		<th class=\"column-title\">Excess %</th>
-		<td class=\"  \"><input type=\"textbox\" style='border=\"0px\"' class=\"form-control input-sm integer\" id=\"ext\"  name=\"ext\" value=\"0\" size=\"4\" onKeyUp=\"
+		<td class=\"  \"><input type=\"textbox\" style='border=\"0px\"' class=\"form-control input-sm float\" id=\"ext\"  name=\"ext\" value=\"0\" size=\"4\" onKeyUp=\"
 		document.f3.s01.value=Math.round(parseInt(document.f3.s011.value)+parseFloat(document.f3.s011.value*document.f3.ext.value/100));
 		document.f3.s02.value=Math.round(parseInt(document.f3.s021.value)+parseFloat(document.f3.s021.value*document.f3.ext.value/100));
 		document.f3.s03.value=Math.round(parseInt(document.f3.s031.value)+parseFloat(document.f3.s031.value*document.f3.ext.value/100));
@@ -1107,7 +1107,7 @@ if(isset($_POST['submit']))
 							  <td><center>".${"size".$i}."</center></td>
 							  <td><center>".${"s".$i}."</center></td>
 							  <td><center>".${"s".$i._old}."</center></td>
-							  <td><center><input type=\"text\" style='border=\"0px\"' name=\"s".$i."ext\" value=\"0\" size=\"4\" class=\"form-control input-sm integer\" 
+							  <td><center><input type=\"text\" style='border=\"0px\"' name=\"s".$i."ext\" value=\"0\" size=\"4\" class=\"form-control input-sm float\" 
 									  onKeyUp=\"
 												  if(event.keyCode == 9) 
 												  		return; 
