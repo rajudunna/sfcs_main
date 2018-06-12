@@ -455,7 +455,8 @@ window.onload = startBlink;
 <body>
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURL($_GET['r'],"functions.php",'R'));?>
+include('functions.php');
+?>
 <script language="JavaScript">
 <!--
 
@@ -635,11 +636,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
 			$mods[]=$sql_row1d["modx"];
 		}
-		$url_path = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'N');
+		$url_path = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'R');
 		echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;">';
 		echo "<p>";
 		echo "<table>";
-		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('".$url_path."&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+	
+		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url_path?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
 		
 		//For Section level blinking
 		$blink_minimum=0;
@@ -668,9 +670,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			
 			echo "<tr class=\"bottom\">";
-			echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" title=\"WIP : $wip[$module]\" 
-			onclick=\"Popup=window.open('board_update_V2_input_bigsize.php?mod=$module"."','Popup','toolbar=no,location=no,status=no,menubar=yes,scrollbars=yes,resizable=yes, width=1200,height=750, top=23'); if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
-			$id="yash";
+			echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
+			 if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
+			//  onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/board_update_V2_input.php?mod=$module&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=yes,scrollbars=yes,resizable=yes, width=1200,height=750, top=23');
+			 $id="yash";
 			$y=0;
 			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
 			//echo $sql;
@@ -780,7 +783,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}		
 			}
 			//echo substr($style,0,1);
-			echo substr($buyer_div,0,1);
+			// echo substr($buyer_div,0,1);
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -802,7 +805,8 @@ if((in_array(strtolower($username),$authorized)))
 ?>
 <div style="clear: both;"> </div>
 <?php
-include "../".getFullURL($_GET['r'],"include_legends_tms.php",'R');
+include('include_legends_tms.php');
 ?>
+<br/>	
 </body>
 </html> 
