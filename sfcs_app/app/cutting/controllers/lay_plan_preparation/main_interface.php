@@ -498,19 +498,19 @@ if ($sql_result) {
      }
      else {
         //echo mysql_num_rows($sql_result);
-		
+		//          <th class=\"column-title\"><center>Strip Match</th>
+		//			<th class=\"column-title\"><center>Gusset Seperation</th>
+		//			<th class=\"column-title\"><center>One GMT One Way</th>
 				echo "<table class=\"table table-bordered\"><thead><tr class=\"\">
-					<th class=\"column-title\"><center>TID</center></th>
 					<th class=\"column-title\"><center>Date</th>
 					<th class=\"column-title\"><center>Category</th>
 					<th class=\"column-title\"><center>CAT YY</th>
 					<th class=\"column-title\"><center>Color Code</th>
 					<th class=\"column-title\"><center>Fabric Code</th>
-					<th class=\"column-title\"><center>Fabric Description</th>
+					<th class=\"column-title\" style='word-wrap: break-word;'><center>Fabric Description</th>
 					<th class=\"column-title\"><center>Pur Width</th>
-					<th class=\"column-title\"><center>One GMT One Way</th>
-					<th class=\"column-title\"><center>Strip Match</th>
-					<th class=\"column-title\"><center>Gusset Seperation</th>
+				
+					
 					<th class=\"column-title\"><center>Pattern Version</th>
 					<th class=\"column-title\"><center>MO status</th>
 					<th class=\"column-title\"><center>Controls</th>
@@ -522,22 +522,20 @@ if ($sql_result) {
 				$date_cat = '-';
 			}
 			echo "<tr class=\"  \">";
-			echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
+			//echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
 			echo "<td class=\"  \"><center>".$date_cat."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['category']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['catyy']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['col_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['compo_no']."</center></td>";
-			echo "<td class=\"  \"><center>".$sql_row['fab_des']."</center></td>";
+			echo "<td class=\"  \" style='word-wrap: break-word;'><center>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
 			//echo $sql_row['tid']."</br>";
-			if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+	//		if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
-			if($sql_row['strip_match']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+	//		if($sql_row['strip_match']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
-			if($sql_row['gusset_sep']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
-
-
+	//		if($sql_row['gusset_sep']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
 			echo "<td class=\"  \"><center>".$sql_row['patt_ver']."</center></td>";
 			
@@ -903,8 +901,8 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 $sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">
-	  <thead><tr><th class=\"column-title\">
-			<center>TID</center></th><th class=\"column-title\"><center>Category REF</center></th>
+	  <thead><tr>
+			<th class=\"column-title\"><center>Category REF</center></th>
 			<th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Cuttable</center></th>
 			<th class=\"column-title\"><center>Allocated</center></center></th><th class=\"column-title\"><center>Excess /Shortage </center></th>
 			
@@ -984,7 +982,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 
 	echo "<tr>";
-	echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
+	//echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
 	echo "<td class=\"  \"><center>".$sql_row['cat_id']."</center></td>";
 	
 	$cat_id_new=$sql_row['cat_id'];
@@ -1145,7 +1143,7 @@ $sql_num_check=mysqli_num_rows($sql_result);
 
 if($flag== 1)
 {
-	echo "<div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th class=\"column-title\"><center>TID</center></th><th class=\"column-title\"><center>Allocate REF</center></th><th class=\"column-title\"><center>Ratio</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Total Plies</center></th><th class=\"column-title\"><center>Max Plies/Cut</center></th>";
+	echo "<div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th class=\"column-title\"><center>Allocate REF</center></th><th class=\"column-title\"><center>Ratio</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Total Plies</center></th><th class=\"column-title\"><center>Max Plies/Cut</center></th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
 		echo " <th class=\"column-title\"><center>".$s_tit[$sizes_code[$s]]."</center></th>";
@@ -1154,7 +1152,7 @@ if($flag== 1)
 }
 else
 {
-	echo "<div class=\"table-responsive\"><table class=\"table table-bordered\"><center><thead><tr><th class=\"column-title\"><center>TID</center></th><th class=\"column-title\"><center>Allocate REF</center></th><th class=\"column-title\"><center>Ratio#</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Total Plies</center></th>
+	echo "<div class=\"table-responsive\"><table class=\"table table-bordered\"><center><thead><tr><th class=\"column-title\"><center>Allocate REF</center></th><th class=\"column-title\"><center>Ratio#</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Total Plies</center></th>
 	<th class=\"column-title\"><center>01</center></th><th class=\"column-title\"><center>02</center></th><th class=\"column-title\"><center>03</center></th><th class=\"column-title\"><center>04</center></th><th class=\"column-title\"><center>05</center></th><th class=\"column-title\"><center>06</center></th><th class=\"column-title\"><center>07</center></th><th class=\"column-title\"><center>08</center></th><th class=\"column-title\"><center>09</center></th><th class=\"column-title\"><center>10</center></th><th class=\"column-title\"><center>11</center></th><th class=\"column-title\"><center>12</center></th><th class=\"column-title\"><center>13</center></th><th class=\"column-title\"><center>14</center></th><th class=\"column-title\"><center>15</center></th><th class=\"column-title\"><center>16</center></th><th class=\"column-title\"><center>17</center></th><th class=\"column-title\"><center>18</center></th><th class=\"column-title\"><center>19</center></th><th class=\"column-title\"><center>20</center></th><th class=\"column-title\"><center>21</center></th><th class=\"column-title\"><center>22</center></th><th class=\"column-title\"><center>23</center></th><th class=\"column-title\"><center>24</center></th><th class=\"column-title\"><center>25</center></th><th class=\"column-title\"><center>26</center></th><th class=\"column-title\"><center>27</center></th><th class=\"column-title\"><center>28</center></th><th class=\"column-title\"><center>29</center></th><th class=\"column-title\"><center>30</center></th><th class=\"column-title\"><center>31</center></th><th class=\"column-title\"><center>32</center></th><th class=\"column-title\"><center>33</center></th><th class=\"column-title\"><center>34</center></th><th class=\"column-title\"><center>35</center></th><th class=\"column-title\"><center>36</center></th><th class=\"column-title\"><center>37</center></th><th class=\"column-title\"><center>38</center></th><th class=\"column-title\"><center>39</center></th><th class=\"column-title\"><center>40</center></th><th class=\"column-title\"><center>41</center></th><th class=\"column-title\"><center>42</center></th><th class=\"column-title\"><center>43</center></th><th class=\"column-title\"><center>44</center></th><th class=\"column-title\"><center>45</center></th><th class=\"column-title\"><center>46</center></th><th class=\"column-title\"><center>47</center></th><th class=\"column-title\"><center>48</center></th><th class=\"column-title\"><center>49</center></th><th class=\"column-title\"><center>50</center></th>
 	<th class=\"column-title\"><center>Ratio Total</center></th><th class=\"column-title\"><center>Controls</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead>";
 }
@@ -1164,7 +1162,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$mk_status=$sql_row['mk_status'];
 	
 	$check_id=$sql_row['cuttable_ref'];
-	echo "<tr><td class=\"  \"><center>".$sql_row['tid']."</center></td><td class=\"  \"><center>".$check_id."</center></td><td class=\"  \"><center>".$sql_row['ratio']."</center></td>";
+	echo "<tr>";
+	// echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
+	echo "<td class=\" \"><center>".$check_id."</center></td><td class=\"  \"><center>".$sql_row['ratio']."</center></td>";
 	
 	$cat_ref=$sql_row['cat_ref'];
 	$sql2="select * from $bai_pro3.cat_stat_log where tid=$cat_ref order by catyy DESC";
@@ -1250,13 +1250,13 @@ else
 echo "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
 echo "</tr>";
 }
-echo "<tr><td colspan=5> Total Planned Quantity</center><td>";
+echo "<tr><td colspan=4> Total Planned Quantity</center><td>";
 for($s=0;$s<sizeof($s_tit);$s++)
 {
 	echo "<td class=\"  \"><center>$tot_size[$s]</center></td>";
 }	
 echo "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><tdclass=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
-echo "<tr><td colspan=5>Excess / Less <td>";
+echo "<tr><td colspan=4>Excess / Less <td>";
 for($s=0;$s<sizeof($s_tit);$s++)
 {
 	//$temp="cuttable_".$sizes_array[$s];

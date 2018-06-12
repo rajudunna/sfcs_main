@@ -28,14 +28,18 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">
 	  <thead><tr><th class=\"column-title\"><center>Marker Ref</center></th>
-		  <th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>TID</center></th>
-		  <th class=\"column-title\"><center>Cat_ID</center></th><th class=\"column-title\"><center>Allocate_REF</center></th>
-		  <th class=\"column-title\"><center>Marker Length</center></th><th class=\"column-title\"><center>Marker EFF%</center></th>
-		  <th class=\"column-title\"><center>Version</center></th><th class=\"column-title\"><center>Controls</center></th>
-		  <th class=\"column-title\"><center>Delete Control</center></th>
-		  <th class=\"column-title\"><center>Overall Saving</center></th>
-		  <th class=\"column-title\"><center>CAD Consumption</center></th>
-		  <th class=\"column-title\"><center>Used Meters</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead>";
+		  <th class=\"column-title\"><center>Category</center></th>";
+
+	//	  <th class=\"column-title\"><center>TID</center></th>
+	//	  <th class=\"column-title\"><center>Cat_ID</center></th>
+	//	  <th class=\"column-title\"><center>Allocate_REF</center></th>
+echo "		  
+		<th class=\"column-title\"><center>Marker Length</center></th><th class=\"column-title\"><center>Marker EFF%</center></th>
+		<th class=\"column-title\"><center>Version</center></th><th class=\"column-title\"><center>Controls</center></th>
+		<th class=\"column-title\"><center>Delete Control</center></th>
+		<th class=\"column-title\"><center>Overall Saving</center></th>
+		<th class=\"column-title\"><center>CAD Consumption</center></th>
+		<th class=\"column-title\"><center>Used Meters</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead>";
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -76,9 +80,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<tr class=\"  \">";
 	echo "<td class=\"  \"><center>".$mk_ref1."</center></td>";
 	echo "<td class=\"  \"><center>".$category1."</center></td>";
-	echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
-	echo "<td class=\"  \"><center>".$sql_row['cat_ref']."</center></td>";
-	echo "<td class=\"  \"><center>".$cuttable_ref1."</center></td>";
+	// echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
+	// echo "<td class=\"  \"><center>".$sql_row['cat_ref']."</center></td>";
+	// echo "<td class=\"  \"><center>".$cuttable_ref1."</center></td>";
 	echo "<td class=\"  \"><center>".$mklength1."</center></td>";
 	
 	echo "<td class=\"  \"><center>".$mkeff1."</center></td>";
@@ -87,11 +91,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	if($mk_ref1==0)
 	{
 		echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1\">Create</a>";
-
-echo " | <a class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
-
-
-
+	//	echo " | <a class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
 	}
 	else
 	{
@@ -99,15 +99,12 @@ echo " | <a class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "re
 		{
 			//echo "<td class=\"b1\">Docket Generation Completed</td>";
 			//Changed to allow pilot to update pilot details even after the docket generation. - KK 2012-05-03
-			
 			echo "<td class=\"  \"><center>
 					<a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1&lock_status=1\">Edit</a>";
-
 		}
 		else{
-				echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Edit</a>";
-
-				echo " | <a id='revise_form' class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
+			echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Edit</a>";
+			echo " | <a id='revise_form' class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
 		}
 	}	
 	$sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid1\" and mk_ref=$mk_ref1 ";
@@ -121,19 +118,17 @@ echo " | <a class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "re
 		echo "<td class=\"  \"><center>Lay plan Prepared";		
 	}	
 	
-		$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 ";
+	$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 ";
 	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
-	{
-		
+	{	
 		if($sql_row2['pliespercut']>0)
 		{			
 			$cutcount1=ceil($sql_row2['plies']/$sql_row2['pliespercut']);
 		}
 				
 		$totalplies1=$sql_row2['allocate_s01']+$sql_row2['allocate_s02']+$sql_row2['allocate_s03']+$sql_row2['allocate_s04']+$sql_row2['allocate_s05']+$sql_row2['allocate_s06']+$sql_row2['allocate_s07']+$sql_row2['allocate_s08']+$sql_row2['allocate_s09']+$sql_row2['allocate_s10']+$sql_row2['allocate_s11']+$sql_row2['allocate_s12']+$sql_row2['allocate_s13']+$sql_row2['allocate_s14']+$sql_row2['allocate_s15']+$sql_row2['allocate_s16']+$sql_row2['allocate_s17']+$sql_row2['allocate_s18']+$sql_row2['allocate_s19']+$sql_row2['allocate_s20']+$sql_row2['allocate_s21']+$sql_row2['allocate_s22']+$sql_row2['allocate_s23']+$sql_row2['allocate_s24']+$sql_row2['allocate_s25']+$sql_row2['allocate_s26']+$sql_row2['allocate_s27']+$sql_row2['allocate_s28']+$sql_row2['allocate_s29']+$sql_row2['allocate_s30']+$sql_row2['allocate_s31']+$sql_row2['allocate_s32']+$sql_row2['allocate_s33']+$sql_row2['allocate_s34']+$sql_row2['allocate_s35']+$sql_row2['allocate_s36']+$sql_row2['allocate_s37']+$sql_row2['allocate_s38']+$sql_row2['allocate_s39']+$sql_row2['allocate_s40']+$sql_row2['allocate_s41']+$sql_row2['allocate_s42']+$sql_row2['allocate_s43']+$sql_row2['allocate_s44']+$sql_row2['allocate_s45']+$sql_row2['allocate_s46']+$sql_row2['allocate_s47']+$sql_row2['allocate_s48']+$sql_row2['allocate_s49']+$sql_row2['allocate_s50'];
-
 	}
 	
 	
