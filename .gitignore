@@ -1,4 +1,9 @@
 /.xlsx
 .xlsa
+
+/sfcs_app/common/config/config.php
+/sfcs_app/common/config/config_ajax.php
+/sfcs_app/common/config/config_jobs.php
+/template/db_conf.php
 /.jpg
 .jpg
