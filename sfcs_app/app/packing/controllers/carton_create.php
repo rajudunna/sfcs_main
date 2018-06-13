@@ -160,9 +160,9 @@
 						if($sizes[$i]!=''){
 							$id_count++;
 							if($sz_qty>0){
-								echo "<td><input type=\"text\" class='form-control float' size=3 name='".$hds."' value=\"0\"  id=\"size$id_count\"  required  onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td>";
+								echo "<td><input type=\"text\" class='form-control float' size=3 name='".$hds."' value=\"0\"  id=\"size$id_count\"  required  onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" onchange='validating_mul(\"$id_count\")'></td>";
 							}else{
-								echo "<td><input type=\"text\" class='form-control float' required size=3 name='".$hds."' value=\"0\" id=\"size$id_count\"   ></td>";
+								echo "<td><input type=\"text\" class='form-control float' required size=3 name='".$hds."' value=\"0\" id=\"size$id_count\" onchange='validating_mul(\"$id_count\")'></td>";
 							}
 							$count++;
 							
@@ -430,6 +430,23 @@
 		else
 		{
 			return true;
+		}
+	}
+	function validating_mul(id)
+	{
+		var pre = 'size'+id;
+		var pre_element = document.getElementById(pre).value;
+		var pack_method = document.getElementById('pack').value;
+		if(pack_method == '')
+		{
+			sweetAlert("","Please enter pack method First.","warning");
+			document.getElementById(pre).value = 0;
+		}
+		var reminder = Number(pack_method) % Number(pre_element);
+		if(reminder != 0)
+		{
+			sweetAlert("","Quantity should be multiples of Pack Method.","warning");
+			document.getElementById(pre).value = 0;
 		}
 	}
 </script>

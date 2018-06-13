@@ -3,7 +3,7 @@
 <?php
 //load the database configuration file
 
-include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 
 ?>
 <!-- <html lang="en"> -->
