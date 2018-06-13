@@ -8,7 +8,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R')); ?>
 
 <div class="panel panel-primary">
-<div class="panel-heading">Cut Status Reporting</div>
+<div class="panel-heading">Cut Quantity Reporting</div>
 <div class="panel-body">
 <?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); ?>
 <!-- <div id="page_heading"><span style="float"><h3>Production Input Planning Dashboard</h3></span><span style= "float: right; margin-top: -20px"></span></div> -->
