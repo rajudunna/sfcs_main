@@ -943,7 +943,7 @@ if(isset($_POST['submit3']))
 		
 	}
 }else{
-		echo "<script>sweetAlert('Requested Docket doesnt exist.Please Contact your planner','','warning')</script>";
+		echo "<script>sweetAlert('CID number doesnt exist','','warning')</script>";
 		// echo "<div class='col-sm-12'>";
 		// echo "<div class='alert alert-danger'><b>Please enter valid Docket Reference.</b></div>";
 		// echo "</div>";

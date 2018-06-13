@@ -38,7 +38,14 @@ div.block
 	}
 	function val_excess_qty(id)
 	{
-		console.log($('#'+id).val());
+		var present = 'ratioQty'+id;
+		console.log(document.getElementById(present).value);
+		if(document.getElementById(present).value == '')
+		{
+			document.getElementById(present).value = 0;
+		}			
+	
+		
 	}
 
 	function setPliesPerCut()
@@ -752,10 +759,10 @@ for($s=0;$s<sizeof($s_tit);$s++)
 		$flag = ($$code == 0)?'readonly':'';
 		echo "<tr>
 		<td><center>".$s_tit[$sizes_code[$s]]."</center></td>
-		<td><center>".$$code."</center></td>
-		<td><center>".$$code1."</center></td>
+		<td><center id='req_qty$s'>".$$code."</center></td>
+		<td><center id='prepared_qty$s'>".$$code1."</center></td>	
 		<td><center>".($$code1-$$code)."</center></td>
-		<td><center><input class=\"form-control\" type=\"number\" $flag onkeydown='return verify_num(event);' onkeypress='return validateQty(event);' onchange='val_excess_qty(\"ratioQty$s\")' name=\"in_s".$sizes_code[$s]."\" value=\"\" pattern='^[0-9]+\.?[0-9]*$' size=\"10\" min='1' id='ratioQty$s' \></center></td>
+		<td><center><input class=\"form-control\" value = \"0\" type=\"number\" $flag onkeydown='return verify_num(event);' onkeypress='return validateQty(event);' onchange='val_excess_qty(\"$s\")' name=\"in_s".$sizes_code[$s]."\" value=\"\" pattern='^[0-9]+\.?[0-9]*$' size=\"10\" min='0'  id='ratioQty$s' required\></center></td>
 		</tr>";
 		// onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"
 	}
@@ -1201,18 +1208,48 @@ function ratioQty(t,e){
 }
 
 function check(){
+	// for(var i=0; i<count; i++){
+		// if($('#ratioQty'+i).val() != ""){
+			// j += 1;
+			//console.log($('#ratioQty'+i).val());
+		// }
+		//console.log($('#ratioQty'+i).val());
+	// }
+	// if(j == 0){
+		// sweetAlert('Error','Please fill atleast 1 ratio feild and that should be equal or more than 0','error');
+		
+	// }
 	var count = '<?= $count; ?>';
 	var j = 0;
-	for(var i=0; i<count; i++){
-		if($('#ratioQty'+i).val() != "" && $('#ratioQty'+i).val() > 0){
-			j += 1;
-			// console.log($('#ratioQty'+i).val());
+	for(var i=0; i<count; i++)
+	{
+		var id = i;
+		var rep = 'req_qty'+id;
+		var rev = 'prepared_qty'+id;
+		console.log(rev);
+		var present = 'ratioQty'+id;
+		//console.log(rev);
+		var reported_qty_validation = document.getElementById(rep).innerHTML;
+		console.log(reported_qty_validation);
+		var reverting_qty = document.getElementById(rev).innerHTML;
+		console.log(reverting_qty);
+		if(Number(document.getElementById(present).value) != 0)
+		{
+			if(Number(reported_qty_validation) <= Number(reverting_qty))
+			{
+				j = 1;
+				document.getElementById(present).value = 0;
+				break;
+			}
 		}
-		// console.log($('#ratioQty'+i).val());
 	}
-	if(j == 0){
-		sweetAlert('Error','Please fill atleast 1 ratio feild and that should be more than 0','error');
+	if(j == 1)
+	{
+		sweetAlert('','Ratio preparing quantity is more than requested quantity.','error');
 		return false;
 	}
+	
+	
+	
 }
 </script>
