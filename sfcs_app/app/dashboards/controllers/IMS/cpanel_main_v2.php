@@ -409,7 +409,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
         ?></span> -->
                 <div style="float:left;padding-left:25px;">
                 
-                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,i.ims_color,i.ims_schedule,i.rand_track, p.acutno,i.ims_date FROM $bai_pro3.ims_log i,plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no GROUP BY ims_doc_no";
+                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,i.ims_color,i.ims_schedule,i.rand_track, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date FROM $bai_pro3.ims_log i,plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no GROUP BY ims_doc_no";
         //$sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_color,ims_schedule,rand_track  FROM ims_log WHERE ims_mod_no='$module' GROUP BY ims_doc_no"
         mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -425,20 +425,24 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $color_name=$sql_rowred['ims_color'];   // color
             $schedul_no=$sql_rowred['ims_schedule'];  // schedul no
             $rand_track=$sql_rowred['rand_track'];
+            $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
             $cut_no=$sql_rowred['acutno'];
-            
+            $inputno=$sql_rowred['inputjobno'];
+            $inputjobnorand=$sql_rowred['inputjobnorand'];
             $total_qty=$total_qty+$input_qty;
             $total_out=$total_out+$output_qty;
             $input_date=$sql_rowred['ims_date'];
           ?>
                   
-                  <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'pop_red_box_details.php','R');?>?module=<?php echo $module; ?>&docket=<?php echo $docket_no; ?>', 'myPop1',800,600);"  title="
+                  <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'pop_red_box_details.php','R');?>?module=<?php echo $module; ?>&docket=<?php echo $rand_track;?>&input_job_rand=<?php echo $inputjobnorand; ?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
                   Docket No : <?php echo $docket_no."<br/>"; ?>
-                  Cut No : <?php echo "A00".$cut_no."<br/>"; ?>
+                  Job No : <?php echo"J". $inputno."<br/>"; ?>
+                  Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
                   Input Date : <?php echo $input_date."<br/>"; ?>
+                  <?php echo "-------------------------</br>"; ?>
                   Total Input :<?php echo $input_qty."<br/>"; ?>
                   Total Output:<?php echo $output_qty."<br/>"; ?>
                   <?php echo "Balance : ".($input_qty - $output_qty); ?>
