@@ -53,7 +53,7 @@ Start Date <input id="demo1"  class="form-control" style="width: 150px;  display
  End Date <input id="demo2" class="form-control" style="width: 150px;  display: inline-block;" type="text" data-toggle="datepicker"  onchange="return verify_date();" size="8" name="edate" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>">
 <input type="checkbox"  value="1" name="excemptflag">Excempt Inspection/Relaxation Results
 &nbsp;&nbsp;
-<input type="submit" name="filter" class="btn btn-success" onchange="return verify_date();" value="Filter">
+<input type="submit" name="filter" class="btn btn-success" onclick="return verify_date();" value="Filter">
 </form>
 <?php
 
@@ -62,7 +62,8 @@ if(isset($_POST['filter']))
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
 	
-	echo "<hr/><div class='table-responsive' style='height:500px;'>";
+	echo "<div id='main_div' class='table-responsive' style='height:500px;'>";
+	echo "<hr/>";
 	$table="<table id='table1' class='table table-bordered'>";
 	$table.="<tr class = 'headings'>";
 	$table.="<th>RECORD #</th><th>WEEK #</th><th>ENTRY NO</th><th>INVOICE NO & DATE</th><th>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th><th>SWATCHES RECEIVED FROM (SUPPLIER/WH)</th><th>INSPECTED DATE</th><th>RELEASED DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th><th>M3 LOT#</th><th>PO</th><th>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th>
@@ -75,6 +76,7 @@ if(isset($_POST['filter']))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result) > 0)
 	{
+		$flag=true;
 		// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
 		
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -183,9 +185,12 @@ if(isset($_POST['filter']))
 	}
 	else
 	{
-		echo  "<script>sweetAlert('There is no data to display','','error')</script>";
+		$flag=false;
 	}
-	
+	if(!$flag){
+		echo "<script>sweetAlert('No Data Found','','warning');
+		$('#main_div').hide()</script>";
+	}
 }
 
 ?>
