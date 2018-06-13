@@ -528,8 +528,9 @@ while($row4=mysqli_fetch_array($resultcheck))
 }
 
 // To take number of JOBs in IMS dashboard
-//$sqlcheckims="SELECT COUNT(DISTINCT input_job_rand_no_ref) AS Job_Count FROM $bai_pro3.ims_log WHERE ims_mod_no=\"$module_no\"";
-$sqlcheckims="SELECT COUNT(DISTINCT input_job_no_random_ref) AS Job_Count FROM bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 OR input_trims_status IS NULL OR input_panel_status!=2 OR input_panel_status IS NULL) AND input_module='$module_no'";
+$sqlcheckims="SELECT COUNT(DISTINCT input_job_rand_no_ref) AS Job_Count FROM $bai_pro3.ims_log WHERE ims_mod_no=\"$module_no\"";
+//echo $sqlcheckims; 
+//$sqlcheckims="SELECT COUNT(DISTINCT input_job_no_random_ref) AS Job_Count FROM bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 OR input_trims_status IS NULL OR input_panel_status!=2 OR input_panel_status IS NULL) AND input_module='$module_no'";
 $resultcheckims=mysqli_query($link, $sqlcheckims) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row5=mysqli_fetch_array($resultcheckims))
 {
