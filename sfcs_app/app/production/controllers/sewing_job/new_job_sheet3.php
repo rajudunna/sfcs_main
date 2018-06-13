@@ -18,7 +18,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 include("../../../../common/config/config.php");
 include("../../../../common/config/functions.php");
 error_reporting(0);
-$ssql122="select     `serial_no`    from     $bai_pro3.`tbl_serial_number` "; 
+$ssql122="select serial_no  from  $bai_pro3.`tbl_serial_number` "; 
      
     $result122=mysqli_query($link, $ssql122) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row122=mysqli_fetch_array($result122)) 
@@ -140,14 +140,22 @@ while($row1w=mysqli_fetch_array($result1w))
     $po_no=$row1w["po_no"]; 
     $del_date=$row1w["order_date"]; 
     $packing_method=$row1w["pac"]; 
-}     
+}
+
+// $po_query="SELECT VPO_NO AS po_no FROM $m3_inputs.order_details WHERE SCHEDULE=\"".$schedule."\" LIMIT 1"; 
+// // echo $po_query; 
+// $po_result=mysqli_query($link, $po_query) or exit("Sql Error12.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// while($row1w=mysqli_fetch_array($po_result)) 
+// { 
+//     $po_no=$row1w["po_no"];
+// }     
 
 //Start - To take color wise total Job qty  
 $job1_qty=array(); 
 $job1_color=array(); 
 $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,input_job_no_random"; 
 //echo $ssql12;     
-    $result12=mysqli_query($link, $ssql12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $result12=mysqli_query($link, $ssql12) or exit("Sql Error12.2".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
         $job_total=$row12["job_tot"]; 
@@ -5231,7 +5239,7 @@ table
     white-space:nowrap;} 
 </style> 
 </head> 
-<button onclick="myFunction()">Print Job Sheet</button>
+<center><button onclick="myFunction()">Print Job Sheet</button></center>
 
 <script>
 function myFunction() {

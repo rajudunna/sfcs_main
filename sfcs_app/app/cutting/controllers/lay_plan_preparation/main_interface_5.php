@@ -27,12 +27,13 @@ $sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_ti
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">
-	  <thead><tr><th class=\"column-title\"><center>Marker Ref</center></th>
+	  <thead><tr>
 		  <th class=\"column-title\"><center>Category</center></th>";
 
 	//	  <th class=\"column-title\"><center>TID</center></th>
 	//	  <th class=\"column-title\"><center>Cat_ID</center></th>
 	//	  <th class=\"column-title\"><center>Allocate_REF</center></th>
+	//    <th class=\"column-title\"><center>Marker Ref</center></th>
 echo "		  
 		<th class=\"column-title\"><center>Marker Length</center></th><th class=\"column-title\"><center>Marker EFF%</center></th>
 		<th class=\"column-title\"><center>Version</center></th><th class=\"column-title\"><center>Controls</center></th>
@@ -78,7 +79,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 
 	echo "<tr class=\"  \">";
-	echo "<td class=\"  \"><center>".$mk_ref1."</center></td>";
+	//echo "<td class=\"  \"><center>".$mk_ref1."</center></td>";
 	echo "<td class=\"  \"><center>".$category1."</center></td>";
 	// echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
 	// echo "<td class=\"  \"><center>".$sql_row['cat_ref']."</center></td>";

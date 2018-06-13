@@ -52,7 +52,7 @@ function printPage(printContent) {
 			</script>";
 	} else {
 		?>
-		<a href="javascript:void(0);" onClick="printPage(printsection.innerHTML)" class="btn btn-warning">Print</a><br><br>
+		<br><center><a href="javascript:void(0);" onClick="printPage(printsection.innerHTML)" class="btn btn-warning">Print</a></center><br>
 		<div id="printsection">
 			<div class="panel panel-primary">
 				<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>
@@ -67,7 +67,7 @@ function printPage(printContent) {
 							$schs_array1[]=$row["sch"];
 						}
 
-						$operation=array("","Single Colour & Single Size","Multi Colour & Single Size","Multi Colour & Multi Size","Single Colour & Multi Size(Non Ratio Pack)","Single Colour & Multi Size(Ratio Pack)");
+						// $operation=array("","Single Colour & Single Size","Multi Colour & Single Size","Multi Colour & Multi Size","Single Colour & Multi Size(Non Ratio Pack)","Single Colour & Multi Size(Ratio Pack)");
 
 						$sql2="select distinct packing_mode as mode from $bai_pro3.packing_summary_input where order_del_no in (".$schedule.") ";
 						$result2=mysqli_query($link, $sql2) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -106,29 +106,29 @@ function printPage(printContent) {
 					?>
 
 					<div style="float:left">
-						<table class='table table-bordered' style="font-size:11px;font-family:verdana;text-align:left;">
+						<table class='table table-bordered' border="1" style="font-size:11px;font-family:verdana;text-align:left;">
 						<tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr>
 						<tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr>
 						<tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr>
 						<tr><th>Input Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr>
 						</table>
-					</div><br>
+					</div><br><br>
 
 					<?php
 						// Display Sample QTY - 05-11-2014 - ChathurangaD
-						$sqlr="SELECT remarks from $bai_pro3.bai_orders_db_remarks where order_tid in (SELECT order_tid from bai_orders_db where order_del_no in (".$schedule.")) ";
-						//echo $sqlr;
+						$sqlr="SELECT remarks from $bai_pro3.bai_orders_db_remarks where order_tid in (SELECT order_tid from $bai_pro3.bai_orders_db where order_del_no in (".$schedule.")) ";
+						// echo $sqlr;
 						$resultr=mysqli_query($link, $sqlr) or die("Errorr4 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($row=mysqli_fetch_array($resultr))
 						{
 							$sampleqty = $row["remarks"];  
-							$result =  preg_replace('/[^0-9\-]/','', $sampleqty);   
-							$sampleqty = $result;
+							// $result =  preg_replace('/[^0-9\-]/','', $sampleqty);   
+							// $sampleqty = $result;
 
 							if($sampleqty == '') {
 								$sampleqty = "N/A";
 							} 
-							echo "<table class=\"gridtable\" align=\"center\" style=\"margin-bottom:2px;font-size:14px;\">";
+							echo "<table border=\"1\" class=\"gridtable\" align=\"center\" style=\"margin-bottom:2px;font-size:14px;\">";
 							echo "<tr>";
 							echo "<th>Sample Job</th><td>$sampleqty</td></tr></table>";
 						}
@@ -168,8 +168,8 @@ function printPage(printContent) {
 						echo "<div class='row'>";
 						echo "<div class='col-md-12'>";
 						echo "<div class='table-responsive'>";
-						echo "<table class=\"gridtable\">"; 
-						echo "<table class=\"table table-bordered\">";
+						echo "<table border='1' class=\"gridtable\">"; 
+						echo "<table border='1' class=\"table table-bordered\">";
 						echo "<tr><thead>";
 						echo "<th>Style</th>";
 						echo "<th>PO#</th>";
@@ -221,6 +221,15 @@ function printPage(printContent) {
 									$del_date=$sql_row2["order_date"];
 									$vpo=$sql_row2["vpo"];
 								}
+
+								// $vpo_po_query="select shipment_plan.Customer_Order_No, order_details.VPO_NO FROM $m3_inputs.order_details,$m3_inputs.shipment_plan WHERE order_details.Schedule=shipment_plan.Schedule_No AND order_details.Schedule=$schedule";
+								// // echo $vpo_po_query;
+								// $vpo_po_result=mysqli_query($link, $vpo_po_query) or die("Error while getting VPO and PO numbers");
+								// while($row1w=mysqli_fetch_array($vpo_po_result))
+								// {
+								// 	$po=$row1w["Customer_Order_No"];
+								// 	$vpo=$row1w["VPO_NO"];
+								// }
 
 								$sql_cut="select group_concat(distinct acutno) as cut, sum(carton_act_qty) as totqty from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."'";
 								//echo $sql_cut;

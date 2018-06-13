@@ -213,6 +213,7 @@ if(isset($_GET['val']))
 			$rand_track=$sql_row['rand_track'];
 			
 			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC";
+			//echo $sql12;
 			mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -322,7 +323,7 @@ if(isset($_GET['val']))
 				{
 					echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>".$sql_row12['tid']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
-					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";
+					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";
 					echo "<td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 					echo $quality_log_row;
 				

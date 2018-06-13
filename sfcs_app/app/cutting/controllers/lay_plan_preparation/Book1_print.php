@@ -19,7 +19,9 @@ $clubbing = $_GET['clubbing'];
 
 
 <?php 
+   $remarks_x = '';
    $sql="select * from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\""; 
+  // echo $sql;
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
@@ -1750,6 +1752,20 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td height=11 class=xl6513019 style='height:8.25pt'></td> 
   <?php for($i=0;$i<32;$i++) echo "<td class=xl6613019></td>"; ?> 
  </tr> 
+
+ <?php
+    echo "<tr height=23 style='mso-height-source:userset;height:17.25pt'>"; 
+    if(strlen($remarks_x)>0) 
+    { 
+        echo "<td></td><td colspan=4 style='border-top:1px solid black' class=xl7313019 colspan=15 align=left><strong>Remarks:&nbsp;&nbsp;$remarks_x</strong></td>"; 
+    } 
+    else 
+    { 
+        echo "<td></td><td colspan='3' class='xl7313019' colspan=2 align=left></td>"; 
+    } 
+    echo "</tr>";
+ ?>
+ <tr height=23 style='mso-height-source:userset;height:17.25pt'><td></td></tr>
  <?php 
  //echo "Test---".sizeof($c_s)."<br>"; 
  if(sizeof($size)<20) 
@@ -1846,7 +1862,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     for($i=0;$i<sizeof($size);$i++) 
     { 
     //echo $i."-".$i."--".$c_s[$i]."<br>"; 
-    echo "<td class=xl6813019>".$o_s[$i]."</td>"; 
+    echo "<td class=xl6813019 style='text-align:left'>".$o_s[$i]."</td>"; 
     } 
   echo "<td class=xl7513019> $order_total</td>"; 
 
@@ -2248,7 +2264,6 @@ else
  } 
  ?> 
 
-  
  <tr class=xl6513019 height=12 style='mso-height-source:userset;height:9.0pt'> 
   <td height=12 class=xl6513019 style='height:9.0pt'></td> 
   <td class=xl7213019 width=70 style='width:53pt'></td> 
@@ -2297,14 +2312,14 @@ else
       echo "<td class=xl8113019>$join_s08</td>"; 
       echo "<td class=xl8113019 style='border-left:none'>$join_s10</td>"; 
       echo "<td class=xl8113019 style='border-left:none'>SCH#</td>"; 
-     echo "<td class=xl8113019 style='border-left:none'>$join_schedule</td>"; 
+      echo "<td class=xl8113019 style='border-left:none'>$join_schedule</td>"; 
   } 
   else 
   { 
       echo "<td class=xl8113019>&nbsp;</td>"; 
       echo "<td class=xl8113019 style='border-left:none'>&nbsp;</td>"; 
       echo "<td class=xl8113019 style='border-left:none'>&nbsp;</td>"; 
-     echo "<td class=xl8113019 style='border-left:none'>&nbsp;</td>"; 
+      echo "<td class=xl8113019 style='border-left:none'>&nbsp;</td>"; 
   } 
    
   ?> 
@@ -2392,17 +2407,17 @@ else
   <td class=xl6513019></td> 
    
   <?php 
-   
-    
+  
   if(strlen($remarks_x)>0) 
   { 
-      echo "<td class=xl6513019 colspan=15 align=left><strong>Remarks: $remarks_x</strong></td>"; 
+      echo "<td colspan='31' class=xl6513019 colspan=15 align=left><strong>Remarks: $remarks_x</strong></td>"; 
   } 
   else 
   { 
-      echo "<td class=xl6513019 colspan=2 align=left></td>"; 
+      echo "<td class='xl6513019' colspan=2 align=left></td>"; 
   } 
-  
+
+
    if(($emb_a+$emb_b+$emb_c+$emb_d+$emb_e+$emb_f)>0)  
   { 
      
