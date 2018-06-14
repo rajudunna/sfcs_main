@@ -83,53 +83,50 @@ function div_by_zero($arg)
 <head>
 
 <style>
-body
+/* body
 {
 	font-family:calibri;
 	font-size:12px;
-}
+} */
 
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
+/* // table tr
+// {
+// 	border: 1px solid black;
+// 	text-align: right;
+// 	white-space:nowrap; 
+// }
 
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-white-space:nowrap; 
-}
+// table td
+// {
+// 	border: 1px solid black;
+// 	text-align: right;
+// white-space:nowrap; 
+// }
 
-table td.lef
-{
-	border: 1px solid black;
-	text-align: left;
-white-space:nowrap; 
-}
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    	background-color: BLUE;
-	color: WHITE;
-white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
+// table td.lef
+// {
+// 	border: 1px solid black;
+// 	text-align: left;
+// white-space:nowrap; 
+// }
+// table th
+// {
+// 	border: 1px solid black;
+// 	text-align: center;
+//     	background-color: BLUE;
+// 	color: WHITE;
+// white-space:nowrap; 
+// 	padding-left: 5px;
+// 	padding-right: 5px;
+// }
 
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
+// table{
+// 	white-space:nowrap; 
+// 	border-collapse:collapse;
+// 	font-size:12px;
+// } */
 
 
-}
-
-}
 </style>
 
 
@@ -157,7 +154,7 @@ $packing_summary="bai_pro3.packing_summary";
 	echo "<br/><br/><br/><br/><br/><br/><h3>LU:".date("Y-m-d H:i:s")."</h3>";
 	
 	echo "<div class=\"table-responsive\"><table id=\"example1\" class=\"table table-bordered\">";
-	echo "<tr class='tblheading'>
+	echo "<tr class='tblheading info'>
 	<th>Ex-Factory Date</th>
 	<th>Delivery</th>
 	<th>Style</th>
@@ -644,7 +641,7 @@ $old_order1[]=$sql_rowxx['old_order_s_s50'];
 
 echo "</table></div>";
 
-echo "<div class='col-md-4 col-sm-offset-8' style='margin-top:-530px;position:relative'><u>Quick Stats</u><table class=\"table table-bordered\"><tr><td>Pink </td><td>$pink_stock</td></tr><tr><td>Logo</td><td>$logo_stock</td></tr><tr><td>M&S</td><td>$mns_stock</td></tr><tr><td><strong>Total</strong></td><td><strong>$balance</strong></td></tr></table></div>";
+echo "<div class='col-md-4 col-sm-offset-8' style='margin-top:-580px;position:relative'><u>Quick Stats</u><table class=\"table table-bordered\"><tr><td>Pink </td><td>$pink_stock</td></tr><tr><td>Logo</td><td>$logo_stock</td></tr><tr><td>M&S</td><td>$mns_stock</td></tr><tr><td><strong>Total</strong></td><td><strong>$balance</strong></td></tr></table></div>";
 ?>
 </div></div>
 
