@@ -6,7 +6,7 @@
 <?php 
     $table_filter = getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R');
     $view_access = user_acl("SFCS_0033",$username,1,$group_id_sfcs); 
-    $image_path = getFullURLLevel($_GET['r'],'common/images',1,'R').'/'; 
+    $image_path = getFullURLLevel($_GET['r'],'common/images/actual',1,'R').'/'; 
 ?>
 
 

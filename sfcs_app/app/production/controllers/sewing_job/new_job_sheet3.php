@@ -18,7 +18,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 include("../../../../common/config/config.php");
 include("../../../../common/config/functions.php");
 error_reporting(0);
-$ssql122="select     `serial_no`    from     $bai_pro3.`tbl_serial_number` "; 
+$ssql122="select serial_no  from  $bai_pro3.`tbl_serial_number` "; 
      
     $result122=mysqli_query($link, $ssql122) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row122=mysqli_fetch_array($result122)) 
@@ -129,7 +129,7 @@ $ssql15="SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_
         $team_number=$row15["input_module"]; 
     } 
     if ($team_number=='') {
-        $team_number='No Module Assigned';
+        $team_number='No Module <br>Assigned';
     }
 
 $sql1w="select group_concat(distinct order_date) as order_date,group_concat(distinct vpo) as po_no,group_concat(packing_method) as pac from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\""; 
@@ -140,14 +140,22 @@ while($row1w=mysqli_fetch_array($result1w))
     $po_no=$row1w["po_no"]; 
     $del_date=$row1w["order_date"]; 
     $packing_method=$row1w["pac"]; 
-}     
+}
+
+// $po_query="SELECT VPO_NO AS po_no FROM $m3_inputs.order_details WHERE SCHEDULE=\"".$schedule."\" LIMIT 1"; 
+// // echo $po_query; 
+// $po_result=mysqli_query($link, $po_query) or exit("Sql Error12.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// while($row1w=mysqli_fetch_array($po_result)) 
+// { 
+//     $po_no=$row1w["po_no"];
+// }     
 
 //Start - To take color wise total Job qty  
 $job1_qty=array(); 
 $job1_color=array(); 
 $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,input_job_no_random"; 
 //echo $ssql12;     
-    $result12=mysqli_query($link, $ssql12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $result12=mysqli_query($link, $ssql12) or exit("Sql Error12.2".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
         $job_total=$row12["job_tot"]; 
@@ -5231,11 +5239,19 @@ table
     white-space:nowrap;} 
 </style> 
 </head> 
-<button onclick="myFunction()">Print Job Sheet</button>
+<center><button onClick="printdiv('print_this');">Print Job Sheet</button></center>
 
 <script>
-function myFunction() {
+function printdiv(printpage) {
+    // window.print();
+    var headstr = "<html><head><title></title></head><body>";
+    var footstr = "</body>";
+    var newstr = document.all.item(printpage).innerHTML;
+    var oldstr = document.body.innerHTML;
+    document.body.innerHTML = headstr+newstr+footstr;
     window.print();
+    document.body.innerHTML = oldstr;
+    return false;
 }
 </script>
 <body> 
@@ -5248,50 +5264,29 @@ tags will be replaced.-->
 <!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD --> 
 <!-----------------------------> 
 
-<div id="Copy of Job Wise Garment Reconciliation Sheet (002)_32351" align=center x:publishsource="Excel"> 
+<div id="print_this" align=center x:publishsource="Excel"> 
 
-<table border=0 cellpadding=0 cellspacing=0 width=1390 class=xl6532351 
- style='border-collapse:collapse;table-layout:fixed;width:1046pt'> 
- <col class=xl6532351 width=89 style='mso-width-source:userset;mso-width-alt: 
- 3254;width:67pt'> 
- <col class=xl6532351 width=2 style='mso-width-source:userset;mso-width-alt: 
- 73;width:2pt'> 
- <col class=xl6532351 width=59 span=2 style='mso-width-source:userset; 
- mso-width-alt:2157;width:44pt'> 
- <col class=xl6532351 width=45 span=7 style='mso-width-source:userset; 
- mso-width-alt:1645;width:34pt'> 
- <col class=xl6532351 width=44 style='mso-width-source:userset;mso-width-alt: 
- 1609;width:33pt'> 
- <col class=xl6532351 width=49 style='mso-width-source:userset;mso-width-alt: 
- 1792;width:37pt'> 
- <col class=xl6532351 width=48 style='mso-width-source:userset;mso-width-alt: 
- 1755;width:36pt'> 
- <col class=xl6532351 width=62 style='mso-width-source:userset;mso-width-alt: 
- 2267;width:47pt'> 
- <col class=xl6532351 width=3 style='mso-width-source:userset;mso-width-alt: 
- 109;width:2pt'> 
- <col class=xl6532351 width=82 style='mso-width-source:userset;mso-width-alt: 
- 2998;width:62pt'> 
- <col class=xl6532351 width=4 style='mso-width-source:userset;mso-width-alt: 
- 146;width:3pt'> 
- <col class=xl6532351 width=51 style='mso-width-source:userset;mso-width-alt: 
- 1865;width:38pt'> 
- <col class=xl6632351 width=44 span=3 style='mso-width-source:userset; 
- mso-width-alt:1609;width:33pt'> 
- <col class=xl6632351 width=59 style='mso-width-source:userset;mso-width-alt: 
- 2157;width:44pt'> 
- <col class=xl6632351 width=46 style='mso-width-source:userset;mso-width-alt: 
- 1682;width:35pt'> 
- <col class=xl6532351 width=51 style='mso-width-source:userset;mso-width-alt: 
- 1865;width:38pt'> 
- <col class=xl6532351 width=45 style='mso-width-source:userset;mso-width-alt: 
- 1645;width:34pt'> 
- <col class=xl6532351 width=58 style='mso-width-source:userset;mso-width-alt: 
- 2121;width:44pt'> 
- <col class=xl6532351 width=40 span=2 style='mso-width-source:userset; 
- mso-width-alt:1462;width:30pt'> 
- <col class=xl6532351 width=52 style='mso-width-source:userset;mso-width-alt: 
- 1901;width:39pt'> 
+<table border=0 cellpadding=0 cellspacing=0 width=1390 class=xl6532351  style='border-collapse:collapse;table-layout:fixed;width:1046pt'> 
+ <col class=xl6532351 width=89 style='mso-width-source:userset;mso-width-alt:  3254;width:67pt'> 
+ <col class=xl6532351 width=2 style='mso-width-source:userset;mso-width-alt:  73;width:2pt'> 
+ <col class=xl6532351 width=59 span=2 style='mso-width-source:userset;  mso-width-alt:2157;width:44pt'> 
+ <col class=xl6532351 width=45 span=7 style='mso-width-source:userset;  mso-width-alt:1645;width:34pt'> 
+ <col class=xl6532351 width=44 style='mso-width-source:userset;mso-width-alt:  1609;width:33pt'> 
+ <col class=xl6532351 width=49 style='mso-width-source:userset;mso-width-alt:  1792;width:37pt'> 
+ <col class=xl6532351 width=48 style='mso-width-source:userset;mso-width-alt:  1755;width:36pt'> 
+ <col class=xl6532351 width=62 style='mso-width-source:userset;mso-width-alt:  2267;width:47pt'> 
+ <col class=xl6532351 width=3 style='mso-width-source:userset;mso-width-alt:  109;width:2pt'> 
+ <col class=xl6532351 width=82 style='mso-width-source:userset;mso-width-alt: 2998;width:62pt'> 
+ <col class=xl6532351 width=4 style='mso-width-source:userset;mso-width-alt:  146;width:3pt'> 
+ <col class=xl6532351 width=51 style='mso-width-source:userset;mso-width-alt: 1865;width:38pt'> 
+ <col class=xl6632351 width=44 span=3 style='mso-width-source:userset;  mso-width-alt:1609;width:33pt'> 
+ <col class=xl6632351 width=59 style='mso-width-source:userset;mso-width-alt:  2157;width:44pt'> 
+ <col class=xl6632351 width=46 style='mso-width-source:userset;mso-width-alt:  1682;width:35pt'> 
+ <col class=xl6532351 width=51 style='mso-width-source:userset;mso-width-alt:  1865;width:38pt'> 
+ <col class=xl6532351 width=45 style='mso-width-source:userset;mso-width-alt:  1645;width:34pt'> 
+ <col class=xl6532351 width=58 style='mso-width-source:userset;mso-width-alt:  2121;width:44pt'> 
+ <col class=xl6532351 width=40 span=2 style='mso-width-source:userset;  mso-width-alt:1462;width:30pt'> 
+ <col class=xl6532351 width=52 style='mso-width-source:userset;mso-width-alt:  1901;width:39pt'> 
  <tr height=20 style='height:15.0pt'> 
   <td height=20 class=xl6532351 width=89 style='height:15.0pt;width:67pt'></td> 
   <td class=xl6532351 width=2 style='width:2pt'></td> 
@@ -5367,16 +5362,12 @@ tags will be replaced.-->
         /* ]]> */ 
 </script> 
   <span style='mso-spacerun:yes'></span></td> 
-  <td colspan=2 rowspan=2 class=xl26432351 style='border-right:1.0pt solid black; 
-  border-bottom:1.0pt solid black'>&nbsp;</td> 
-  <td colspan=2 class=xl26832351 width=103 style='border-right:1.0pt solid black; 
-  border-left:none;width:78pt'>Version No : 003</td> 
-  <td colspan=3 class=xl28032351 width=132 style='border-right:1.0pt solid black; 
-  border-left:none;width:99pt'><?php echo date("Y-m-d"); ?></td> 
+  <td colspan=2 rowspan=2 class=xl26432351 style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black'>&nbsp;</td> 
+  <td colspan=2 class=xl26832351 width=103 style='border-right:1.0pt solid black;   border-left:none;width:78pt'>Version No : 003</td> 
+  <td colspan=3 class=xl28032351 width=132 style='border-right:1.0pt solid black;   border-left:none;width:99pt'><?php echo date("Y-m-d"); ?></td> 
  </tr> 
  <tr class=xl13432351 height=30 style='mso-height-source:userset;height:22.5pt'> 
-  <td colspan=4 height=30 class=xl23232351 style='border-right:1.0pt solid black; 
-  height:22.5pt'><?php echo $plant_name; ?></td> 
+  <td colspan=4 height=30 class=xl23232351 style='border-right:1.0pt solid black;   height:22.5pt'><?php echo $plant_name; ?></td> 
   <?php  date_default_timezone_set("Asia/Colombo");  ?> 
   <td class=xl13632351 colspan=2 style='border-top:none;border-left:none'>Issued Date</td> 
   <td colspan=3 class=xl28332351 style='border-right:1.0pt solid black'> 
@@ -5395,7 +5386,6 @@ tags will be replaced.-->
     if($is_original=="0") 
     { 
         echo "(Original)"; 
-         
         $sqljj="INSERT INTO $bai_pro3.printed_job_sheet    (doc_no,printed_time) VALUES    ('".$doc."','".$o_printed_date."')"; 
         mysqli_query($link, $sqljj) or exit("Sql Errorjj".mysqli_error($GLOBALS["___mysqli_ston"])); 
     } 
@@ -5408,51 +5398,37 @@ tags will be replaced.-->
  </tr> 
  <tr height=38 style='mso-height-source:userset;height:28.5pt'> 
   <td height=38 class=xl13332351 style='height:28.5pt'>Style No:</td> 
-  <td colspan=3 class=xl25232351 style='border-right:1.0pt solid black; 
-  border-left:none'><b><?php echo  $style; ?></b><span style='mso-spacerun:yes'></span></td> 
-  <td colspan=2 class=xl21932351 style='border-right:.5pt solid black; 
-  border-left:none'>Shedule No:</td> 
-  <td colspan=3 class=xl20032351 style='border-right:1.0pt solid black; 
-  border-left:none'><b><?php echo  $schedule; ?></b></td> 
-  <td colspan=2 class=xl22132351 width=90 style='border-right:.5pt solid black; 
-  width:68pt'>PO No:</td> 
+  <td colspan=3 class=xl25232351 style='border-right:1.0pt solid black; border-left:none'><b><?php echo $style; ?></b><span style='mso-spacerun:yes'></span></td> 
+  <td colspan=2 class=xl21932351 style='border-right:.5pt solid black;   border-left:none'>Shedule No:</td> 
+  <td colspan=3 class=xl20032351 style='border-right:1.0pt solid black;  border-left:none'><b><?php echo  $schedule; ?></b></td> 
+  <td colspan=2 class=xl22132351 width=90 style='border-right:.5pt solid black;   width:68pt'>PO No:</td> 
   <td colspan=2 class=xl22332351 width=93 style='border-left:none;width:70pt'><b><?php echo $po_no; ?></b><span 
   style='mso-spacerun:yes'></span></td> 
   <td colspan=2 class=xl21932351>Country</td> 
-  <td colspan=3 class=xl19532351 width=89 style='border-right:1.0pt solid black; 
-  width:67pt'><b><?php echo  substr($destination_list, 0, -1); ?></b><span style='mso-spacerun:yes'> </span></td> 
-  <td colspan=2 class=xl19832351 width=95 style='border-left:none;width:71pt'>Delivery 
-  Date</td> 
+  <td colspan=3 class=xl19532351 width=89 style='border-right:1.0pt solid black; width:67pt'><b><?php echo  substr($destination_list, 0, -1); ?></b><span style='mso-spacerun:yes'> </span></td> 
+  <td colspan=2 class=xl19832351 width=95 style='border-left:none;width:71pt'>Delivery Date</td> 
   <td colspan=2 class=xl25532351 width=88 style='width:66pt'><b><?php echo $del_date; ?></b></td> 
   <td class=xl13232351 width=59 style='border-top:none;width:44pt'>Ctn range</td> 
-  <td colspan=2 class=xl25732351 width=97 style='border-right:1.0pt solid black; 
-  border-left:none;width:73pt'></td> 
-  <td colspan=2 class=xl25932351 width=103 style='border-right:1.0pt solid black; 
-  border-left:none;width:78pt'>Barcode ID</td> 
-  <td colspan=3 class=xl26132351 style='border-right:1.0pt solid black; 
-  border-left:none'><?php echo  $doc;   ?></td> 
+  <td colspan=2 class=xl25732351 width=97 style='border-right:1.0pt solid black;   border-left:none;width:73pt'></td> 
+  <td colspan=2 class=xl25932351 width=103 style='border-right:1.0pt solid black;   border-left:none;width:78pt'>Barcode ID</td> 
+  <td colspan=3 class=xl26132351 style='border-right:1.0pt solid black; border-left:none'><?php echo  $doc;   ?></td> 
  </tr> 
  <tr height=38 style='mso-height-source:userset;height:28.5pt'> 
   <td height=38 class=xl13132351 style='height:28.5pt'>Line</td> 
-  <td colspan=3 class=xl20032351 style='border-right:1.0pt solid black; 
-  border-left:none'><?php   echo $team_number; ?></td> 
+  <td colspan=3 class=xl20032351 style='border-right:1.0pt solid black;   border-left:none'><?php   echo $team_number; ?></td> 
   <td colspan=2 class=xl13132351 style='border-left:none'>Job No:</td> 
-  <td colspan=3 class=xl24832351 style='border-right:1.0pt solid black; 
-  border-left:none'><b>J00<?PHP echo $jobno;?></b></td> 
+  <td colspan=3 class=xl24832351 style='border-right:1.0pt solid black;   border-left:none'><b>J00<?PHP echo $jobno;?></b></td> 
   <td colspan=2 class=xl24932351>Cut No:</td> 
   <td colspan=2 class=xl25032351 width=93 style='border-left:none;width:70pt'><center><?php echo $cut_no_list;?></center></td> 
   <td colspan=2 class=xl13132351 style='border-right:1.0pt solid black'>Job Qty</td> 
-  <td colspan=3 class=xl23632351 width=89 style='border-right:1.0pt solid black; 
-  border-left:none;width:67pt'><?php echo $job_total_qty; ?></td> 
+  <td colspan=3 class=xl23632351 width=89 style='border-right:1.0pt solid black; border-left:none;width:67pt'><?php echo $job_total_qty; ?></td> 
   <td colspan=2 class=xl23932351 style='border-left:none'>No of Carton</td> 
   <td class=xl13032351 style='border-top:none'>Full</td> 
   <td colspan=2 class=xl22832351 style='border-left:none'></td> 
   <td class=xl12932351 style='border-top:none;border-left:none'>Odd</td> 
   <td class=xl12832351 style='border-top:none;border-left:none'></td> 
-  <td colspan=2 class=xl23632351 width=103 style='border-right:1.0pt solid black; 
-  border-left:none;width:78pt'>Garment per Packs</td> 
-  <td colspan=3 class=xl28632351 width=132 style='border-right:1.0pt solid black; 
-  border-left:none;width:99pt'><?php echo $packing_method; ?></td> 
+  <td colspan=2 class=xl23632351 width=103 style='border-right:1.0pt solid black; border-left:none;width:78pt'>Garment per Packs</td> 
+  <td colspan=3 class=xl28632351 width=132 style='border-right:1.0pt solid black; border-left:none;width:99pt'><?php echo $packing_method; ?></td> 
  </tr> 
  <tr height=28 style='mso-height-source:userset;height:21.0pt'> 
   <td height=28 class=xl12732351 style='height:21.0pt'>Cutting</td> 
@@ -5464,18 +5440,15 @@ tags will be replaced.-->
   <td colspan=12 class=xl22532351 style='border-right:1.0pt solid black'>Packing</td> 
  </tr> 
  <tr height=28 style='mso-height-source:userset;height:21.0pt'> 
-  <td rowspan=2 height=101 class=xl20932351 width=89 style='border-bottom:1.0pt solid black; 
-  height:75.75pt;width:67pt'>Color<span style='mso-spacerun:yes'> </span></td> 
+  <td rowspan=2 height=101 class=xl20932351 width=89 style='border-bottom:1.0pt solid black; height:75.75pt;width:67pt'>Color<span style='mso-spacerun:yes'> </span></td> 
   <td class=xl12232351 width=2 style='width:2pt'>&nbsp;</td> 
-  <td colspan=2 class=xl21132351 width=118 style='border-right:1.0pt solid black; 
-  border-left:none;width:88pt'>Sewing In<span style='mso-spacerun:yes'> </span></td> 
+  <td colspan=2 class=xl21132351 width=118 style='border-right:1.0pt solid black; border-left:none;width:88pt'>Sewing In<span style='mso-spacerun:yes'> </span></td> 
   <td colspan=10 class=xl21232351>Hourly Sewing Out</td> 
   <td rowspan=2 class=xl21532351 style='border-top:none'>Total</td> 
   <td class=xl12132351 style='border-left:none'>&nbsp;</td> 
   <td rowspan=2 class=xl21732351>Reject</td> 
   <td class=xl12032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
-  <td colspan=12 class=xl20332351 width=574 style='border-right:1.0pt solid black; 
-  width:431pt'>Carton Packing</td> 
+  <td colspan=12 class=xl20332351 width=574 style='border-right:1.0pt solid black; width:431pt'>Carton Packing</td> 
  </tr> 
  <tr height=73 style='mso-height-source:userset;height:54.75pt'> 
   <td height=73 class=xl11932351 width=2 style='height:54.75pt;width:2pt'>&nbsp;</td> 
@@ -5493,27 +5466,17 @@ tags will be replaced.-->
   <td class=xl11532351 style='border-top:none;border-left:none'>10</td> 
   <td class=xl11432351 style='border-left:none'>&nbsp;</td> 
   <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
-  <td class=xl11232351 width=51 style='border-top:none;width:38pt'>Ctn <br> 
-    Number</td> 
-  <td class=xl11132351 width=44 style='border-top:none;border-left:none; 
-  width:33pt'>Size</td> 
-  <td class=xl11132351 width=44 style='border-top:none;border-left:none; 
-  width:33pt'>Qty</td> 
+  <td class=xl11232351 width=51 style='border-top:none;width:38pt'>Ctn <br>Number</td> 
+  <td class=xl11132351 width=44 style='border-top:none;border-left:none; width:33pt'>Size</td> 
+  <td class=xl11132351 width=44 style='border-top:none;border-left:none; width:33pt'>Qty</td> 
   <td class=xl11032351 width=44 style='border-top:none;width:33pt'>Sign</td> 
-  <td class=xl11232351 width=59 style='border-top:none;border-left:none; 
-  width:44pt'>Ctn <br> 
-    Number</td> 
-  <td class=xl11132351 width=46 style='border-top:none;border-left:none; 
-  width:35pt'>Size</td> 
-  <td class=xl11132351 width=51 style='border-top:none;border-left:none; 
-  width:38pt'>Qty</td> 
+  <td class=xl11232351 width=59 style='border-top:none;border-left:none; width:44pt'>Ctn <br> Number</td> 
+  <td class=xl11132351 width=46 style='border-top:none;border-left:none; width:35pt'>Size</td> 
+  <td class=xl11132351 width=51 style='border-top:none;border-left:none; width:38pt'>Qty</td> 
   <td class=xl11332351 width=45 style='border-top:none;width:34pt'>Sign</td> 
-  <td class=xl11232351 width=58 style='border-top:none;width:44pt'>Ctn <br> 
-    Number</td> 
-  <td class=xl11132351 width=40 style='border-top:none;border-left:none; 
-  width:30pt'>Size</td> 
-  <td class=xl11132351 width=40 style='border-top:none;border-left:none; 
-  width:30pt'>Qty</td> 
+  <td class=xl11232351 width=58 style='border-top:none;width:44pt'>Ctn <br> Number</td> 
+  <td class=xl11132351 width=40 style='border-top:none;border-left:none; width:30pt'>Size</td> 
+  <td class=xl11132351 width=40 style='border-top:none;border-left:none; width:30pt'>Qty</td> 
   <td class=xl11032351 width=52 style='border-top:none;width:39pt'>Sign</td> 
  </tr> 
   <?php  
@@ -5590,13 +5553,10 @@ tags will be replaced.-->
   
   
  <tr height=48 style='mso-height-source:userset;height:36.0pt'> 
-  <td rowspan=2 height=96 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; 
-  height:72.0pt;border-top:none;width:67pt'>&nbsp;</td> 
+  <td rowspan=2 height=96 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; height:72.0pt;border-top:none;width:67pt'>&nbsp;</td> 
   <td class=xl9532351 style='border-left:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl18232351 style='border-bottom:1.0pt solid black; 
-  border-top:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl18432351 width=59 style='border-bottom:1.0pt solid black; 
-  border-top:none;width:44pt'>&nbsp;</td> 
+  <td rowspan=2 class=xl18232351 style='border-bottom:1.0pt solid black; border-top:none'>&nbsp;</td> 
+  <td rowspan=2 class=xl18432351 width=59 style='border-bottom:1.0pt solid black; border-top:none;width:44pt'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5607,11 +5567,9 @@ tags will be replaced.-->
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; 
-  border-top:none'>&nbsp;</td> 
+  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
   <td class=xl9232351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; 
-  border-top:none'>&nbsp;</td> 
+  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
   <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
   <td colspan=12 class=xl29532351 style='border-right:1.0pt solid black'>&nbsp;</td> 
  </tr> 
@@ -5629,27 +5587,18 @@ tags will be replaced.-->
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl9432351 style='border-left:none'>&nbsp;</td> 
   <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
-  <td colspan=2 rowspan=2 class=xl29832351 width=95 style='border-right:1.0pt solid black; 
-  border-bottom:1.0pt solid black;width:71pt'>&nbsp;</td> 
-  <td rowspan=2 class=xl27032351 width=44 style='border-bottom:.5pt solid black; 
-  width:33pt'><span 
+  <td colspan=2 rowspan=2 class=xl29832351 width=95 style='border-right:1.0pt solid black; border-bottom:1.0pt solid black;width:71pt'>&nbsp;</td> 
+  <td rowspan=2 class=xl27032351 width=44 style='border-bottom:.5pt solid black; width:33pt'><span 
   style='mso-spacerun:yes'></span></td> 
-  <td rowspan=2 class=xl27032351 width=44 style='border-bottom:.5pt solid black; 
-  width:33pt'>&nbsp;</td> 
-  <td rowspan=2 class=xl27032351 width=59 style='border-bottom:.5pt solid black; 
-  width:44pt'>&nbsp;</td> 
-  <td rowspan=2 class=xl27032351 width=46 style='border-bottom:.5pt solid black; 
-  width:35pt'>&nbsp;</td> 
-  <td rowspan=2 class=xl27032351 width=51 style='border-bottom:.5pt solid black; 
-  width:38pt'>&nbsp;</td> 
-  <td colspan=2 rowspan=2 class=xl27232351 width=103 style='border-right:.5pt solid black; 
-  border-bottom:.5pt solid black;width:78pt'>System Updated By</td> 
-  <td colspan=3 rowspan=2 class=xl27232351 width=132 style='border-right:1.0pt solid black; 
-  border-bottom:.5pt solid black;width:99pt'>Cut Collected By</td> 
+  <td rowspan=2 class=xl27032351 width=44 style='border-bottom:.5pt solid black; width:33pt'>&nbsp;</td> 
+  <td rowspan=2 class=xl27032351 width=59 style='border-bottom:.5pt solid black; width:44pt'>&nbsp;</td> 
+  <td rowspan=2 class=xl27032351 width=46 style='border-bottom:.5pt solid black; width:35pt'>&nbsp;</td> 
+  <td rowspan=2 class=xl27032351 width=51 style='border-bottom:.5pt solid black; width:38pt'>&nbsp;</td> 
+  <td colspan=2 rowspan=2 class=xl27232351 width=103 style='border-right:.5pt solid black; border-bottom:.5pt solid black;width:78pt'>System Updated By</td> 
+  <td colspan=3 rowspan=2 class=xl27232351 width=132 style='border-right:1.0pt solid black; border-bottom:.5pt solid black;width:99pt'>Cut Collected By</td> 
  </tr> 
  <tr height=33 style='mso-height-source:userset;height:24.95pt'> 
-  <td rowspan=2 height=81 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; 
-  height:60.95pt;border-top:none;width:67pt'>&nbsp;</td> 
+  <td rowspan=2 height=81 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; height:60.95pt;border-top:none;width:67pt'>&nbsp;</td> 
   <td class=xl9332351>&nbsp;</td> 
   <td rowspan=2 class=xl18232351 style='border-top:none'>&nbsp;</td> 
   <td rowspan=2 class=xl18432351 width=59 style='border-top:none;width:44pt'>&nbsp;</td> 
@@ -5663,11 +5612,9 @@ tags will be replaced.-->
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; 
-  border-top:none'>&nbsp;</td> 
+  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
   <td class=xl9232351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; 
-  border-top:none'>&nbsp;</td> 
+  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
   <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
  </tr> 
  <tr height=48 style='mso-height-source:userset;height:36.0pt'> 
@@ -5685,28 +5632,19 @@ tags will be replaced.-->
   <td class=xl8432351 style='border-left:none'>&nbsp;</td> 
   <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
   <td colspan=2 class=xl29332351 style='border-right:.5pt solid black'>&nbsp;</td> 
-  <td class=xl8932351 width=44 style='border-top:none;border-left:none; 
-  width:33pt'>&nbsp;</td> 
-  <td class=xl8932351 width=44 style='border-top:none;border-left:none; 
-  width:33pt'>&nbsp;</td> 
-  <td class=xl8932351 width=59 style='border-top:none;border-left:none; 
-  width:44pt'>&nbsp;</td> 
-  <td class=xl8932351 width=46 style='border-top:none;border-left:none; 
-  width:35pt'>&nbsp;</td> 
-  <td class=xl8932351 width=51 style='border-top:none;border-left:none; 
-  width:38pt'>&nbsp;</td> 
-  <td colspan=2 class=xl28932351 width=103 style='border-right:.5pt solid black; 
-  border-left:none;width:78pt'>&nbsp;</td> 
-  <td colspan=3 class=xl28932351 width=132 style='border-right:.5pt solid black; 
-  border-left:none;width:78pt'>&nbsp;</td> 
+  <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
+  <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
+  <td class=xl8932351 width=59 style='border-top:none;border-left:none; width:44pt'>&nbsp;</td> 
+  <td class=xl8932351 width=46 style='border-top:none;border-left:none; width:35pt'>&nbsp;</td> 
+  <td class=xl8932351 width=51 style='border-top:none;border-left:none; width:38pt'>&nbsp;</td> 
+  <td colspan=2 class=xl28932351 width=103 style='border-right:.5pt solid black; border-left:none;width:78pt'>&nbsp;</td> 
+  <td colspan=3 class=xl28932351 width=132 style='border-right:.5pt solid black; border-left:none;width:78pt'>&nbsp;</td> 
  </tr> 
  <tr height=33 style='mso-height-source:userset;height:24.95pt'> 
-  <td rowspan=2 height=66 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; 
-  height:49.9pt;border-top:none;width:67pt'>&nbsp;</td> 
+  <td rowspan=2 height=66 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; height:49.9pt;border-top:none;width:67pt'>&nbsp;</td> 
   <td class=xl8132351>&nbsp;</td> 
   <td rowspan=2 class=xl17332351 style='border-bottom:1.0pt solid black'>&nbsp;</td> 
-  <td rowspan=2 class=xl17532351 width=59 style='border-bottom:1.0pt solid black; 
-  width:44pt'>&nbsp;</td> 
+  <td rowspan=2 class=xl17532351 width=59 style='border-bottom:1.0pt solid black; width:44pt'>&nbsp;</td> 
   <td class=xl8832351 style='border-top:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5717,27 +5655,18 @@ tags will be replaced.-->
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; 
-  border-top:none'>&nbsp;</td> 
+  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
   <td class=xl8432351 style='border-left:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; 
-  border-top:none'>&nbsp;</td> 
+  <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
   <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
   <td colspan=2 class=xl29332351 style='border-right:.5pt solid black'>&nbsp;</td> 
-  <td class=xl8932351 width=44 style='border-top:none;border-left:none; 
-  width:33pt'>&nbsp;</td> 
-  <td class=xl8932351 width=44 style='border-top:none;border-left:none; 
-  width:33pt'>&nbsp;</td> 
-  <td class=xl8932351 width=59 style='border-top:none;border-left:none; 
-  width:44pt'>&nbsp;</td> 
-  <td class=xl8932351 width=46 style='border-top:none;border-left:none; 
-  width:35pt'>&nbsp;</td> 
-  <td class=xl8932351 width=51 style='border-top:none;border-left:none; 
-  width:38pt'>&nbsp;</td> 
-  <td colspan=2 class=xl28932351 width=103 style='border-right:.5pt solid black; 
-  border-left:none;width:78pt'>&nbsp;</td> 
-  <td colspan=3 class=xl28932351 width=132 style='border-right:1.0pt solid black; 
-  border-left:none;width:99pt'>&nbsp;</td> 
+  <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
+  <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
+  <td class=xl8932351 width=59 style='border-top:none;border-left:none; width:44pt'>&nbsp;</td> 
+  <td class=xl8932351 width=46 style='border-top:none;border-left:none; width:35pt'>&nbsp;</td> 
+  <td class=xl8932351 width=51 style='border-top:none;border-left:none; width:38pt'>&nbsp;</td> 
+  <td colspan=2 class=xl28932351 width=103 style='border-right:.5pt solid black; border-left:none;width:78pt'>&nbsp;</td> 
+  <td colspan=3 class=xl28932351 width=132 style='border-right:1.0pt solid black; border-left:none;width:99pt'>&nbsp;</td> 
  </tr> 
  <tr height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td height=33 class=xl8132351 style='height:24.95pt'>&nbsp;</td> 
@@ -5754,28 +5683,19 @@ tags will be replaced.-->
   <td class=xl8432351 style='border-left:none'>&nbsp;</td> 
   <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
   <td colspan=2 class=xl29332351 style='border-right:.5pt solid black'>&nbsp;</td> 
-  <td class=xl8932351 width=44 style='border-top:none;border-left:none; 
-  width:33pt'>&nbsp;</td> 
-  <td class=xl8932351 width=44 style='border-top:none;border-left:none; 
-  width:33pt'>&nbsp;</td> 
-  <td class=xl8932351 width=59 style='border-top:none;border-left:none; 
-  width:44pt'>&nbsp;</td> 
-  <td class=xl8932351 width=46 style='border-top:none;border-left:none; 
-  width:35pt'>&nbsp;</td> 
-  <td class=xl8932351 width=51 style='border-top:none;border-left:none; 
-  width:38pt'>&nbsp;</td> 
-  <td colspan=2 class=xl28932351 width=103 style='border-right:.5pt solid black; 
-  border-left:none;width:78pt'>&nbsp;</td> 
+  <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
+  <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
+  <td class=xl8932351 width=59 style='border-top:none;border-left:none; width:44pt'>&nbsp;</td> 
+  <td class=xl8932351 width=46 style='border-top:none;border-left:none; width:35pt'>&nbsp;</td> 
+  <td class=xl8932351 width=51 style='border-top:none;border-left:none; width:38pt'>&nbsp;</td> 
+  <td colspan=2 class=xl28932351 width=103 style='border-right:.5pt solid black; border-left:none;width:78pt'>&nbsp;</td> 
   <td colspan=3 class=xl28932351 width=132 style='border-right:.5pt solid black;width:99pt'></td> 
  </tr> 
  <tr class=xl7432351 height=33 style='mso-height-source:userset;height:24.95pt'> 
-  <td rowspan=2 height=66 class=xl19032351 style='border-bottom:1.0pt solid black; 
-  height:49.9pt;border-top:none'>&nbsp;</td> 
+  <td rowspan=2 height=66 class=xl19032351 style='border-bottom:1.0pt solid black; height:49.9pt;border-top:none'>&nbsp;</td> 
   <td class=xl8132351>&nbsp;</td> 
-  <td rowspan=2 class=xl18632351 width=59 style='border-bottom:1.0pt solid black; 
-  border-top:none;width:44pt'>&nbsp;</td> 
-  <td rowspan=2 class=xl18832351 width=59 style='border-bottom:1.0pt solid black; 
-  border-top:none;width:44pt'>&nbsp;</td> 
+  <td rowspan=2 class=xl18632351 width=59 style='border-bottom:1.0pt solid black; border-top:none;width:44pt'>&nbsp;</td> 
+  <td rowspan=2 class=xl18832351 width=59 style='border-bottom:1.0pt solid black; border-top:none;width:44pt'>&nbsp;</td> 
   <td class=xl8832351 style='border-top:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5789,18 +5709,15 @@ tags will be replaced.-->
   <td class=xl8532351 width=62 style='width:47pt'>&nbsp;</td> 
   <td class=xl8432351 style='border-left:none'>&nbsp;</td> 
   <td class=xl8332351 width=82 style='border-left:none;width:62pt'>&nbsp;</td> 
-  <td rowspan=2 class=xl20632351 width=4 style='border-bottom:1.0pt solid black; 
-  width:3pt'>&nbsp;</td> 
+  <td rowspan=2 class=xl20632351 width=4 style='border-bottom:1.0pt solid black; width:3pt'>&nbsp;</td> 
   <td colspan=2 class=xl29332351 style='border-right:.5pt solid black'>&nbsp;</td> 
   <td class=xl8232351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8232351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8232351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8232351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8232351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td colspan=2 class=xl28932351 width=103 style='border-right:.5pt solid black; 
-  border-left:none;width:78pt'>&nbsp;</td> 
-  <td colspan=3 class=xl28932351 width=132 style='border-right:1.0pt solid black; 
-  width:99pt'></td> 
+  <td colspan=2 class=xl28932351 width=103 style='border-right:.5pt solid black; border-left:none;width:78pt'>&nbsp;</td> 
+  <td colspan=3 class=xl28932351 width=132 style='border-right:1.0pt solid black; width:99pt'></td> 
  </tr> 
  <tr class=xl7432351 height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td height=33 class=xl8132351 style='height:24.95pt'>&nbsp;</td> 
@@ -5827,24 +5744,16 @@ tags will be replaced.-->
  </tr> 
  <tr class=xl6532351 height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td colspan=12 rowspan=2 height=66 class=xl30632351 style='height:49.9pt'>Comments:</td> 
-  <td colspan=2 rowspan=2 class=xl31032351 width=97 style='border-right:1.0pt solid black; 
-  width:73pt'>..............................<br> 
+  <td colspan=2 rowspan=2 class=xl31032351 width=97 style='border-right:1.0pt solid black; width:73pt'>..............................<br> 
     Recoder</td> 
-  <td rowspan=2 class=xl17932351 width=62 style='width:47pt'>...................<br> 
-    Supervisor</td> 
+  <td rowspan=2 class=xl17932351 width=62 style='width:47pt'>...................<br> Supervisor</td> 
   <td class=xl7332351 style='border-top:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl17932351 width=82 style='width:62pt'>........................<br> 
-    Inline QC</td> 
+  <td rowspan=2 class=xl17932351 width=82 style='width:62pt'>........................<br> Inline QC</td> 
   <td class=xl6532351></td> 
-  <td colspan=4 rowspan=2 class=xl14232351 width=183 style='border-bottom:1.0pt solid black; 
-  width:137pt'>Production Supervisor<br> 
-    <br><br> 
-    .....................................</td> 
-  <td colspan=5 rowspan=2 class=xl14232351 width=259 style='border-right:1.0pt solid black; 
-  border-bottom:.5pt solid black;width:195pt'>Section Incharge<br> 
-    <br><br>...............................................................</td> 
-  <td colspan=3 rowspan=4 class=xl14832351 width=132 style='border-right:1.0pt solid black; 
-  border-bottom:1.0pt solid black;width:99pt'>
+  <td colspan=4 rowspan=2 class=xl14232351 width=183 style='border-bottom:1.0pt solid black; width:137pt'>Production Supervisor<br> 
+    <br><br> .....................................</td> 
+  <td colspan=5 rowspan=2 class=xl14232351 width=259 style='border-right:1.0pt solid black; border-bottom:.5pt solid black;width:195pt'>Section Incharge<br> <br><br>...............................................................</td> 
+  <td colspan=3 rowspan=4 class=xl14832351 width=132 style='border-right:1.0pt solid black; border-bottom:1.0pt solid black;width:99pt'>
     Job No:J00<?PHP echo $jobno;?><br> 
     Job Completed<br> 
     <br><br><br><br>.....................................<br> 
@@ -5862,16 +5771,11 @@ tags will be replaced.-->
   <td class=xl7232351 style='border-left:none'>( +)</td> 
   <td colspan=4 class=xl7232351 style='border-left:none'>Replacement In</td> 
   <td class=xl7232351 style='border-left:none'>( - )</td> 
-  <td colspan=4 class=xl7232351 style='border-right:1.0pt solid black; 
-  border-left:none'>Carton packing</td> 
+  <td colspan=4 class=xl7232351 style='border-right:1.0pt solid black; border-left:none'>Carton packing</td> 
   <td class=xl7132351>&nbsp;</td> 
-  <td class=xl7032351 style='border-top:none'><font class="font632351">.</font><font 
-  class="font532351">=</font></td> 
-  <td colspan=3 class=xl16132351 style='border-right:1.0pt solid black'>Zero 
-  (0)</td> 
-  <td colspan=5 rowspan=2 class=xl16432351 width=259 style='border-right:1.0pt solid black; 
-  border-bottom:1.0pt solid black;width:195pt'>Surplus Cordinator<br> 
-    <br><br>...............................................................</td> 
+  <td class=xl7032351 style='border-top:none'><font class="font632351">.</font><font class="font532351">=</font></td> 
+  <td colspan=3 class=xl16132351 style='border-right:1.0pt solid black'>Zero (0)</td> 
+  <td colspan=5 rowspan=2 class=xl16432351 width=259 style='border-right:1.0pt solid black; border-bottom:1.0pt solid black;width:195pt'>Surplus Cordinator<br> <br><br>...............................................................</td> 
  </tr> 
  <tr height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td colspan=3 height=33 class=xl17032351 style='height:24.95pt'>................................................</td> 
@@ -5880,8 +5784,7 @@ tags will be replaced.-->
   <td class=xl6932351 style='border-top:none;border-left:none'>( +)</td> 
   <td colspan=4 class=xl13732351 style='border-left:none'>.....................................................</td> 
   <td class=xl6932351 style='border-top:none;border-left:none'>( - )</td> 
-  <td colspan=4 class=xl13732351 style='border-right:1.0pt solid black; 
-  border-left:none'>............................................................</td> 
+  <td colspan=4 class=xl13732351 style='border-right:1.0pt solid black; border-left:none'>............................................................</td> 
   <td class=xl6832351 style='border-top:none'>&nbsp;</td> 
   <td class=xl6732351><font class="font632351">.</font><font class="font532351">=</font></td> 
   <td colspan=3 class=xl13932351 style='border-right:1.0pt solid black'>...........................</td> 

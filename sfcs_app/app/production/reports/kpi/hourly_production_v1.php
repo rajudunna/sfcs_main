@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <?php
 //load the database configuration file
-include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 ?>
 
   <!-- <title>Hourly Production Report</title> -->
@@ -119,13 +119,15 @@ table td:first-child {
 		<input type='text' data-toggle="datepicker" class="form-control" value='<?php echo $frdate;  ?>' name='pro_date' id='pro_date' readonly>
 		</div><br/>
 		<div class="col-sm-1">
-		<input type='submit' class="btn btn-primary" value='Filter'>
+		<input type='submit' class="btn btn-primary" value='Filter' name='submit'>
 		</div>
 	</form>
   <!--<center><h2 style="color:#880e4f;"><b><i>Hourly Production Report - <?php  echo $frdate;  ?></i></b></h2></center>-->
   <hr>
    
    <?php
+   if(isset($_GET['submit']))
+{
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
 	// echo $sql;
 	$res=mysqli_query($link,$sql); 
@@ -265,51 +267,8 @@ table td:first-child {
 	<div class="table-responsive">
   <table class="table table-bordered">
  
-    <thead>
-	
-      <!-- <tr style="background-color:#286090;color:white;"> -->
-	  <tr style="background:#6995d6;color:white;">
-        <th>Team</th>
-        <th>NOP</th>
-        <th>Style</th>
-		<th style='display:none;'>Sch</th>
-		<th>FR Plan</th>
-		<th>Forecast</th>
-		<th>SMV</th>
-		<th>Hours</th>
-		<th>Target <br>PCS/Hr</th>
-		
-		<th rowspan="2">8.30</th>
-		<th>9.30</th>
-		<th>10.30</th>
-		<th>11.30</th>
-		<th>12.30</th>
-		<th>1.30</th>
-		<th>2.30</th>
-		<th>3.30</th>
-		<th>4.30</th>
-		<th>5.30</th>
-		<th>6.30</th>
-		<th>Total Pcs</th>
-		<th>Scanned Pcs</th>
-		<th>Scanned SAH</th>
-		<th>FR SAH</th>
-		<th>Forecast SAH</th>
-		<th>Actual SAH</th>
-		<th>SAH Diff</th>
-		<th>Plan Eff</th>
-		<th>Act Eff</th>
-		<th style="display:none;">Act Pcs</th>
-		<th>Balance Pcs</th>
-		<th>Hit rate</th>
-		<th>Request Pcs/Hr</th>
-		<th>Team</th>
-		
-      </tr>
-    </thead>
-	
-    <tbody>
-	<?php  while($row=mysqli_fetch_array($res)){ 
+    
+	<?php  if($row=mysqli_fetch_array($res)){ 
 		
 	 // echo $frdate;
     $date=$row['frdate'];
@@ -393,7 +352,50 @@ table td:first-child {
 	
 	
 	?>
+	<thead>
 	
+	<!-- <tr style="background-color:#286090;color:white;"> -->
+	<tr style="background:#6995d6;color:white;">
+	  <th>Team</th>
+	  <th>NOP</th>
+	  <th>Style</th>
+	  <th style='display:none;'>Sch</th>
+	  <th>FR Plan</th>
+	  <th>Forecast</th>
+	  <th>SMV</th>
+	  <th>Hours</th>
+	  <th>Target <br>PCS/Hr</th>
+	  
+	  <th rowspan="2">8.30</th>
+	  <th>9.30</th>
+	  <th>10.30</th>
+	  <th>11.30</th>
+	  <th>12.30</th>
+	  <th>1.30</th>
+	  <th>2.30</th>
+	  <th>3.30</th>
+	  <th>4.30</th>
+	  <th>5.30</th>
+	  <th>6.30</th>
+	  <th>Total Pcs</th>
+	  <th>Scanned Pcs</th>
+	  <th>Scanned SAH</th>
+	  <th>FR SAH</th>
+	  <th>Forecast SAH</th>
+	  <th>Actual SAH</th>
+	  <th>SAH Diff</th>
+	  <th>Plan Eff</th>
+	  <th>Act Eff</th>
+	  <th style="display:none;">Act Pcs</th>
+	  <th>Balance Pcs</th>
+	  <th>Hit rate</th>
+	  <th>Request Pcs/Hr</th>
+	  <th>Team</th>
+	  
+	</tr>
+  </thead>
+  
+  <tbody>
 	<tr style="border-bottom:2px solid black;">
 			<td><?php  echo $team;  ?></td>
 			<td><?php  echo $nop;  ?></td>
@@ -1341,7 +1343,10 @@ table td:first-child {
 	$act_eff=0;
 	
 	
-	} ?>
+	}else{
+		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
+	}
+}	?>
       
 			</tbody>
 			</table>

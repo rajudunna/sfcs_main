@@ -71,6 +71,7 @@ function make_thumb($img_name,$filename,$new_w,$new_h)
 	imagejpeg($dst_img,$filename);
 
 	//destroys source and destination images.
+
 	imagedestroy($dst_img);
 	imagedestroy($src_img);
 }
@@ -324,35 +325,35 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 			echo "<script>sweetAlert('Please Upload All Images','','info') </script>";
 
 		} else {
-			$fp      = fopen($tmpName, 'r');
-			$content = fread($fp, filesize($tmpName));
-			$content = addslashes($content);
-			fclose($fp);
+			// $fp      = fopen($tmpName, 'r');
+			// $content = fread($fp, filesize($tmpName));
+			// $content = addslashes($content);
+			// fclose($fp);
 
-			$fp1      = fopen($tmpName1, 'r');
-			$content1 = fread($fp1, filesize($tmpName1));
-			$content1 = addslashes($content1);
-			fclose($fp1);
+			// $fp1      = fopen($tmpName1, 'r');
+			// $content1 = fread($fp1, filesize($tmpName1));
+			// $content1 = addslashes($content1);
+			// fclose($fp1);
 
-			$fp2      = fopen($tmpName2, 'r');
-			$content2 = fread($fp2, filesize($tmpName2));
-			$content2 = addslashes($content2);
-			fclose($fp2);
+			// $fp2      = fopen($tmpName2, 'r');
+			// $content2 = fread($fp2, filesize($tmpName2));
+			// $content2 = addslashes($content2);
+			// fclose($fp2);
 
-			$fp3      = fopen($tmpName3, 'r');
-			$content3 = fread($fp3, filesize($tmpName3));
-			$content3 = addslashes($content3);
-			fclose($fp3);
+			// $fp3      = fopen($tmpName3, 'r');
+			// $content3 = fread($fp3, filesize($tmpName3));
+			// $content3 = addslashes($content3);
+			// fclose($fp3);
 
-			$fp4      = fopen($tmpName4, 'r');
-			$content4 = fread($fp4, filesize($tmpName4));
-			$content4 = addslashes($content4);
-			fclose($fp4);
+			// $fp4      = fopen($tmpName4, 'r');
+			// $content4 = fread($fp4, filesize($tmpName4));
+			// $content4 = addslashes($content4);
+			// fclose($fp4);
 
-			$fp5      = fopen($tmpName5, 'r');
-			$content5 = fread($fp5, filesize($tmpName5));
-			$content5 = addslashes($content5);
-			fclose($fp5);
+			// $fp5      = fopen($tmpName5, 'r');
+			// $content5 = fread($fp5, filesize($tmpName5));
+			// $content5 = addslashes($content5);
+			// fclose($fp5);
 
 			if(!get_magic_quotes_gpc()){
 			    $fileName = addslashes($fileName);
@@ -403,25 +404,25 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 					$image_name=time().'.'.$extension;
 					//the new name will be containing the full path where will be stored (images folder)
 					//$image_path = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'images',0,'R').'/';
-
+					$actual_img_path = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/images/actual',1,'R').'/';
 					$append = date('h').date('i').date('s').date('d').date('m').date('y');
 					$newname = $append.'1'.$fileName;
-					$copied = copy($_FILES['userfile']['tmp_name'], $newname);
+					$copied = copy($_FILES['userfile']['tmp_name'], $actual_img_path.$newname);
 				
 					$newname1= $append.'2'.$fileName1;
-					$copied1 = copy($_FILES['userfile1']['tmp_name'], $newname1);
+					$copied1 = copy($_FILES['userfile1']['tmp_name'], $actual_img_path.$newname1);
 				
 					$newname2= $append.'3'.$fileName2;
-					$copied2 = copy($_FILES['userfile2']['tmp_name'], $newname2);
+					$copied2 = copy($_FILES['userfile2']['tmp_name'], $actual_img_path.$newname2);
 				
 					$newname3= $append.'4'.$fileName3;
-					$copied3 = copy($_FILES['userfile3']['tmp_name'], $newname3);
+					$copied3 = copy($_FILES['userfile3']['tmp_name'], $actual_img_path.$newname3);
 
 					$newname4= $append.'5'.$fileName4;
-					$copied4 = copy($_FILES['userfile4']['tmp_name'], $newname4);
+					$copied4 = copy($_FILES['userfile4']['tmp_name'], $actual_img_path.$newname4);
 
 					$newname5= $append.'6'.$fileName5;
-					$copied5 = copy($_FILES['userfile5']['tmp_name'], $newname5);
+					$copied5 = copy($_FILES['userfile5']['tmp_name'], $actual_img_path.$newname5);
 
 					
 
@@ -439,22 +440,22 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 					// call the function that will create the thumbnail. The function will get as parameters
 					//the image name, the thumbnail name and the width and height desired for the thumbnail
 					$thumb_name= trim($image_path.$newname);
-					$thumb=make_thumb($newname,$thumb_name,WIDTH,HEIGHT);
+					$thumb=make_thumb($actual_img_path.$newname,$thumb_name,WIDTH,HEIGHT);
 
 					$thumb_name1= trim($image_path.$newname1);
-					$thumb=make_thumb($newname1,$thumb_name1,WIDTH,HEIGHT);
+					$thumb=make_thumb($actual_img_path.$newname1,$thumb_name1,WIDTH,HEIGHT);
 
 					$thumb_name2= trim($image_path.$newname2);
-					$thumb=make_thumb($newname2,$thumb_name2,WIDTH,HEIGHT);
+					$thumb=make_thumb($actual_img_path.$newname2,$thumb_name2,WIDTH,HEIGHT);
 
 					$thumb_name3= trim($image_path.$newname3);
-					$thumb=make_thumb($newname3,$thumb_name3,WIDTH,HEIGHT);
+					$thumb=make_thumb($actual_img_path.$newname3,$thumb_name3,WIDTH,HEIGHT);
 
 					$thumb_name4= trim($image_path.$newname4);
-					$thumb=make_thumb($newname4,$thumb_name4,WIDTH,HEIGHT);
+					$thumb=make_thumb($actual_img_path.$newname4,$thumb_name4,WIDTH,HEIGHT);
 
 					$thumb_name5= trim($image_path.$newname5);
-					$thumb=make_thumb($newname5,$thumb_name5,WIDTH,HEIGHT);
+					$thumb=make_thumb($actual_img_path.$newname5,$thumb_name5,WIDTH,HEIGHT);
 					}} 
 				}
 

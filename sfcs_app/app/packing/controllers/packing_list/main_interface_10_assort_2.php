@@ -31,7 +31,7 @@
 			}
 			echo "<tr>";
 			echo "<td><input type=\"radio\" name=\"radiobutton[]\" value=\"".$sql_row['id']."\" onClick=\"gotolink(".$sql_row['id'].")\"></td>";
-			echo "<td>".$sql_row['packing_method']."</td>";
+			echo "<td>".$sql_row['packing_method']." ".$sql_row['pack_methods']."</td>";
 			foreach($tot_sizes as $key=>$value)
 			{
 					// if($filtering_function[$key] != null){

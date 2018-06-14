@@ -42,6 +42,8 @@ set_time_limit(30000000);
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 $mini_order_ref=$_GET["id"];
 $packing_mode=$_GET["mode"];
+	$style_ori=$_GET['style'];
+	$schedule_ori=$_GET['schedule'];
 $id_array=array();
 if ($packing_mode=='4') {
   echo "<h2>Single Color & Multi Size (Non Ratio Pack) Carton Method</h2>";
@@ -193,7 +195,7 @@ echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
 echo "<script>
 			setTimeout(redirect(),5000);
 			function redirect(){
-		        location.href = '".$btn_url."';
+		        location.href = '".$btn_url."&style=$style_ori&schedule=$schedule_ori';
 			}</script>";
 // echo "</table></div>";
 ?>

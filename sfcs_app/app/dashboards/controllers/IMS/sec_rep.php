@@ -52,14 +52,14 @@ table
 }
 .new td
 {
-	border: 1px solid red;
+	border: 1px solid #337ab7;
 	white-space:nowrap;
 	border-collapse:collapse;
 }
 
 .new th
 {
-	border: 1px solid red;
+	border: 1px solid #337ab7;
 	white-space:nowrap;
 	border-collapse:collapse;
 }
@@ -161,10 +161,10 @@ if(isset($_GET['val']))
 		$modules=explode(",",$sec_mods);
 		
 	
-		echo '<div style="max-height:600px;overflow-y:scroll;"><table style="color:black; border: 1px solid red;" class="table table-bordered">';
-		echo "<tr class=\"new\" style='background-color:#FF0000'><th>Module</th><th>Bundle No</th>";
+		echo '<div style="max-height:600px;overflow-y:scroll;"><table style="color:black; border: 1px solid #337ab7;" class="table table-bordered">';
+		echo "<tr class=\"new\" style='background-color:#337ab7'><th>Module</th><th>Bundle No</th>";
 		//echo "<th>CID</th><th>DOC#</th>";
-		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th><th>Input Remarks</th><th>Ex-Factory</th><th>Rejected</th><th>Good Garments</th><th>Total</th><th width='150'>Remarks</th><th>Age</th><th>WIP</th></tr>";
+		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Input Job No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th><th>Input Remarks</th><th>Ex-Factory</th><th>Rejected</th><th>Good Garments</th><th>Total</th><th width='150'>Remarks</th><th>Age</th><th>WIP</th></tr>";
 		
 		$toggle=0;
 		$j=1;
@@ -213,6 +213,7 @@ if(isset($_GET['val']))
 			$rand_track=$sql_row['rand_track'];
 			
 			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC";
+			//echo $sql12;
 			mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -224,6 +225,7 @@ if(isset($_GET['val']))
 				$ims_doc_no=$sql_row12['ims_doc_no'];
 				$ims_size=$sql_row12['ims_size'];
 				$ims_size2=substr($ims_size,2);
+				$inputjobno=$sql_row12['input_job_no_ref'];
 			
 				$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0";
 				mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -298,7 +300,7 @@ if(isset($_GET['val']))
 				{
 					echo "<td>".$sql_row12['bai_pro_ref']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
-					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";				
+					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";				
 					echo "<td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 					echo $quality_log_row;
 					if(in_array($username,$auth_to_modify))
@@ -321,7 +323,7 @@ if(isset($_GET['val']))
 				{
 					echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>".$sql_row12['tid']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
-					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";
+					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";
 					echo "<td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 					echo $quality_log_row;
 				
