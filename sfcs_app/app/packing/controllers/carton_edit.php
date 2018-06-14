@@ -26,6 +26,7 @@
 			$buyer=$sql_row['buyer_identity'];
 			$pack=$sql_row['packing_method'];
 		    $schedule = $sql_row['user_schedule'];
+			$p_method=$sql_row['pack_methods'];
 			$xs=$sql_row['xs'];
 			$s=$sql_row['s'];
 			$m=$sql_row['m'];
@@ -114,7 +115,7 @@
 
 		echo '<div class="table-responsive" style="overflow-y:scroll;max-height:600px;">';
 		echo '<table id="table1" class="table table-hover table-bordered">';
-		echo "<tr class='danger'><th>Style</th><th>Schedule</th><th>Pack Method</th>";
+		echo "<tr class='danger'><th>Style</th><th>Schedule</th><th>Pack Quantity</th><th>Pack Method</th>";
 		for($i=0;$i<50;$i++)
 		{
 			if($in_size != ''){
@@ -246,6 +247,12 @@
 
 		echo "<td>";
 		echo "<input type=\"text\" class='integer' size=\"10\" value=\"$pack\" class=\"alpha\" name=\"pack\"> </td>";
+		echo "<td><select name=\"pack_methods\" id=\"pack_methods\" class='form-control'>";
+		echo "<option value=\"\">Select Pack Method</option>";
+		foreach($pack_methods as $P => $pack_method){				
+			echo "<option value='$P'";if(strtolower($P) === strtolower($p_method)){echo "selected";} echo ">$pack_method</option>";
+		}
+		echo "</select></td>";
 
 //echo "<input type=\"hidden\" size=3  name=\"s01\" value=\"$s01\"><input type=\"hidden\" size=3  name=\"s02\" value=\"$s02\"><input type=\"hidden\" size=3  name=\"s03\" value=\"$s03\"><input type=\"hidden\" size=3  name=\"s04\" value=\"$s04\"><input type=\"hidden\" size=3  name=\"s05\" value=\"$s05\"><input type=\"hidden\" size=3  name=\"s06\" value=\"$s06\"><input type=\"hidden\" size=3  name=\"s07\" value=\"$s07\"><input type=\"hidden\" size=3  name=\"s08\" value=\"$s08\"><input type=\"hidden\" size=3  name=\"s09\" value=\"$s09\"><input type=\"hidden\" size=3  name=\"s10\" value=\"$s10\"><input type=\"hidden\" size=3  name=\"s11\" value=\"$s11\"><input type=\"hidden\" size=3  name=\"s12\" value=\"$s12\"><input type=\"hidden\" size=3  name=\"s13\" value=\"$s13\"><input type=\"hidden\" size=3  name=\"s14\" value=\"$s14\"><input type=\"hidden\" size=3  name=\"s15\" value=\"$s15\"><input type=\"hidden\" size=3  name=\"s16\" value=\"$s16\"><input type=\"hidden\" size=3  name=\"s17\" value=\"$s17\"><input type=\"hidden\" size=3  name=\"s18\" value=\"$s18\"><input type=\"hidden\" size=3  name=\"s19\" value=\"$s19\"><input type=\"hidden\" size=3  name=\"s20\" value=\"$s20\"><input type=\"hidden\" size=3  name=\"s21\" value=\"$s21\"><input type=\"hidden\" size=3  name=\"s22\" value=\"$s22\"><input type=\"hidden\" size=3  name=\"s23\" value=\"$s23\"><input type=\"hidden\" size=3  name=\"s24\" value=\"$s24\"><input type=\"hidden\" size=3  name=\"s25\" value=\"$s25\"><input type=\"hidden\" size=3  name=\"s26\" value=\"$s26\"><input type=\"hidden\" size=3  name=\"s27\" value=\"$s27\"><input type=\"hidden\" size=3  name=\"s28\" value=\"$s28\"><input type=\"hidden\" size=3  name=\"s29\" value=\"$s29\"><input type=\"hidden\" size=3  name=\"s30\" value=\"$s30\"><input type=\"hidden\" size=3  name=\"s31\" value=\"$s31\"><input type=\"hidden\" size=3  name=\"s32\" value=\"$s32\"><input type=\"hidden\" size=3  name=\"s33\" value=\"$s33\"><input type=\"hidden\" size=3  name=\"s34\" value=\"$s34\"><input type=\"hidden\" size=3  name=\"s35\" value=\"$s35\"><input type=\"hidden\" size=3  name=\"s36\" value=\"$s36\"><input type=\"hidden\" size=3  name=\"s37\" value=\"$s37\"><input type=\"hidden\" size=3  name=\"s38\" value=\"$s38\"><input type=\"hidden\" size=3  name=\"s39\" value=\"$s39\"><input type=\"hidden\" size=3  name=\"s40\" value=\"$s40\"><input type=\"hidden\" size=3  name=\"s41\" value=\"$s41\"><input type=\"hidden\" size=3  name=\"s42\" value=\"$s42\"><input type=\"hidden\" size=3  name=\"s43\" value=\"$s43\"><input type=\"hidden\" size=3  name=\"s44\" value=\"$s44\"><input type=\"hidden\" size=3  name=\"s45\" value=\"$s45\"><input type=\"hidden\" size=3  name=\"s46\" value=\"$s46\"><input type=\"hidden\" size=3  name=\"s47\" value=\"$s47\"><input type=\"hidden\" size=3  name=\"s48\" value=\"$s48\"><input type=\"hidden\" size=3  name=\"s49\" value=\"$s49\"><input type=\"hidden\" size=3  name=\"s50\" value=\"$s50\">";
 //var_dump($size);
@@ -291,6 +298,7 @@ if(isset($_POST['submit']))
 	$buyer=$_POST['buyer'];
 	$pack=$_POST['pack'];
 	$status=$_POST['status'];
+	$pack_methods=$_POST['pack_methods'];
 	$id=$_POST['id'];
 	
 	$xs=0;
@@ -428,8 +436,8 @@ if(isset($_POST['submit']))
 	// }
 	
 	$date=date("Y-m-d");
-	//buyer=\"$buyer_name\"
-	$sql="update carton_qty_chart set user_style=\"$style\",buyer_identity=\"$buyer\",packing_method=\"$pack\",xs=$xs,s=$s,m=$m,l=$l,xl=$xl,xxl=$xxl,xxxl=$xxxl,s01='$s01',s02='$s02',s03='$s03',s04='$s04',s05='$s05',s06='$s06',s07='$s07',s08='$s08',s09='$s09',s10='$s10',s11='$s11',s12='$s12',s13='$s13',s14='$s14',s15='$s15',s16='$s16',s17='$s17',s18='$s18',s19='$s19',s20='$s20',s21='$s21',s22='$s22',s23='$s23',s24='$s24',s25='$s25',s26='$s26',s27='$s27',s28='$s28',s29='$s29',s30='$s30',s31='$s31',s32='$s32',s33='$s33',s34='$s34',s35='$s35',s36='$s36',s37='$s37',s38='$s38',s39='$s39',s40='$s40',s41='$s41',s42='$s42',s43='$s43',s44='$s44',s45='$s45',s46='$s46',s47='$s47',s48='$s48',s49='$s49',s50='$s50',date=\"$date\",status=$status,track_qty=$track_qty,srp_qty=$srp_qty where id=$id";
+	//buyer=\"$buyer_name\"	
+	$sql="update carton_qty_chart set user_style=\"$style\",buyer_identity=\"$buyer\",packing_method=\"$pack\",pack_methods=\"$pack_methods\",xs=$xs,s=$s,m=$m,l=$l,xl=$xl,xxl=$xxl,xxxl=$xxxl,s01='$s01',s02='$s02',s03='$s03',s04='$s04',s05='$s05',s06='$s06',s07='$s07',s08='$s08',s09='$s09',s10='$s10',s11='$s11',s12='$s12',s13='$s13',s14='$s14',s15='$s15',s16='$s16',s17='$s17',s18='$s18',s19='$s19',s20='$s20',s21='$s21',s22='$s22',s23='$s23',s24='$s24',s25='$s25',s26='$s26',s27='$s27',s28='$s28',s29='$s29',s30='$s30',s31='$s31',s32='$s32',s33='$s33',s34='$s34',s35='$s35',s36='$s36',s37='$s37',s38='$s38',s39='$s39',s40='$s40',s41='$s41',s42='$s42',s43='$s43',s44='$s44',s45='$s45',s46='$s46',s47='$s47',s48='$s48',s49='$s49',s50='$s50',date=\"$date\",status=$status,track_qty=$track_qty,srp_qty=$srp_qty where id=$id";
 	
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	

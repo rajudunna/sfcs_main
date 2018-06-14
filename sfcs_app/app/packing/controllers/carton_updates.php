@@ -37,7 +37,7 @@
 		echo "<div class='table-responsive' style='overflow-y:scroll;max-height:600px;'>";
 		echo '<table id="table1" class="mytable table table-hover table-bordered">';
 		echo "<tr class='tblheading danger'>
-				 <th>Style</th><th>Schedule</th><th>Pack Method</th><th>Size</th><th>Quantity</th>
+				 <th>Style</th><th>Schedule</th><th>Pack Quantity</th><th>Pack Method</th><th>Size</th><th>Quantity</th>
 				 <th>Status</th><th>Track Label Qty</th><th>SRP Qty</th><th>Control</th></tr>";
 
 		//$sql="select * from carton_qty_chart";
@@ -76,6 +76,7 @@
 					echo "<td>".$schedule."</td>";
 					// echo "<td>".$sql_row['buyer']."</td>";
 					echo "<td>".$sql_row['packing_method']."</td>";	
+					echo "<td>".ucwords($sql_row['pack_methods'])."</td>";	
 					$get_color = "SELECT title_size_".$key1." FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='".$sql_row['user_schedule']."' LIMIT 1";			
 					$sql_color=mysqli_query($link, $get_color);
 					$sql_num_check1=mysqli_num_rows($sql_color);
