@@ -1,6 +1,6 @@
 
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
  $view_access=user_acl("SFCS_0026",$username,1,$group_id_sfcs);
@@ -24,7 +24,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <label>To Date: </label><input type="text" class="form-control" data-toggle='datepicker' name="tdate" size="8" id="demo2" value="<?php  if(isset($_POST['tdate'])) { echo $_POST['tdate']; } else { echo date("Y-m-d"); } ?>" >
 </div>
 <div class="col-md-3 form-group">
-<input type="submit" name="submit" value="Show" class="btn btn-primary" style="margin-top:22px;">
+<input type="submit" name="submit" value="Show" class="btn btn-primary" style="margin-top:22px;"  onclick="return verify_date()">
 </div>
 </div>
 </form>
@@ -37,19 +37,23 @@ if(isset($_POST['submit']))
 	$tdate=$_POST['tdate'];
 	
 	echo "<hr/><div class='table-responsive'><table class=\"table table-bordered\">";
-	echo "<tr>";
-	echo "<th>Date</th>";
-	echo "<th>Pink %</th>";
-	echo "<th>Logo %</th>";
-	echo "<th>M&S %</th>";
-	echo "</tr>";
+	
 	
 	$sql="select rep_date,sum(if(parameter='A1001',value,0)) as pink, sum(if(parameter='A1002',value,0)) as logo, sum(if(parameter='A1003',value,0)) as ms from $bai_kpi.kpi_tracking where rep_date between \"$fdate\" and \"$tdate\" group by rep_date";
 	// echo $sql;
 
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
+	
+	if($sql_row=mysqli_fetch_array($sql_result))
 	{
+
+
+		echo "<tr>";
+	echo "<th>Date</th>";
+	echo "<th>Pink %</th>";
+	echo "<th>Logo %</th>";
+	echo "<th>M&S %</th>";
+	echo "</tr>";
 		echo "<tr>";
 		echo "<td>".$sql_row['rep_date']."</td>";
 		echo "<td>".round($sql_row['pink'],0)."</td>";
@@ -57,10 +61,48 @@ if(isset($_POST['submit']))
 		echo "<td>".round($sql_row['ms'],0)."</td>";
 		echo "</tr>";
 	}
-	
+	else{
+		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
+	}
 	echo "</table></div>";
 }
 ?>
 
 </div>
 </div>
+<script >
+function verify_date()
+{
+	var val1 = $('#demo1').val();
+	var val2 = $('#demo2').val();
+	// d1 = new Date(val1);
+	// d2 = new Date(val2);
+	if(val1 > val2){
+		sweetAlert('Start Date Should  be less than End Date','','warning');
+		return false;
+	}
+	else
+	{
+	    return true;
+	}
+}
+
+// <script language="javascript" type="text/javascript">
+//<![CDATA[	
+	var table2_Props = 	{					
+					// col_1: "select",
+					// col_2: "select",
+					// col_3: "select",
+					display_all_text: " [ Show all ] ",
+					btn_reset: true,
+					bnt_reset_text: "Clear all ",
+					rows_counter: true,
+					rows_counter_text: "Total Rows: ",
+					alternate_rows: true,
+					sort_select: true,
+					loader: true
+				};
+	setFilterGrid( "table_one",table2_Props );
+//]]>		
+// </script>
+</script>

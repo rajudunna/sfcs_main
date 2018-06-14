@@ -367,7 +367,7 @@ echo "<table class='table'>";
 	echo "<th>Input Job</th>";
 	echo "<th>Destination</th>";
 	echo "<th>Size</th>";
-	// echo "<th>Allocated Quantity</th>";
+	echo "<th>Job Quantity</th>";
 	// echo "<th>Issued Quantity</th>";
 	// echo "<th>Balance to Issue Quantity</th>";
 	// echo "<th>Allowed Quantity</th>";
@@ -406,7 +406,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($G
 		$balance=($sql_row['carton_act_qty']-$inputqty);
 		$allowedqty=0;
 	  // echo $cutqty."-".$inputqty."-".$imsinputqty."-".$sql_row['carton_act_qty']."<br>";
-		
+		$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$sql_row['order_col_des']."' and order_del_no",$sql_row['order_del_no'],$link);
 		if(($cutqty-$imsinputqty)>=$balance)
 		{
 			$allowedqty=$balance;
@@ -425,12 +425,12 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($G
 		//echo "<td>".$sql_row['order_del_no']."</td>";
 		echo "<td><input type=\"hidden\" name=\"order_del_no[]\" value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</td>";
 		echo "<td><input type=\"hidden\" name=\"input_color[]\" value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</td>";
-		echo "<td><input type=\"hidden\" name=\"input_cat_ref[]\" value=\"".$sql_row['cat_ref']."\"><input type=\"hidden\" name=\"input_cut_no_ref[]\" value=\"".$sql_row['acutno']."\"><input type=\"hidden\" name=\"input_doc_no[]\" value=\"".$sql_row['doc_no']."\">".leading_zeros($sql_row['acutno'],3)."</td>";
+		echo "<td><input type=\"hidden\" name=\"input_cat_ref[]\" value=\"".$sql_row['cat_ref']."\"><input type=\"hidden\" name=\"input_cut_no_ref[]\" value=\"".$sql_row['acutno']."\"><input type=\"hidden\" name=\"input_doc_no[]\" value=\"".$sql_row['doc_no']."\">".chr($color_code).leading_zeros($sql_row['acutno'],3)."</td>";
 		echo "<td><input type=\"hidden\" name=\"input_job_no_ref[]\" value=\"".$sql_row['input_job_no']."\">".$sql_row['input_job_no']."</td>";
 		//echo "<td>".$sql_row['destination']."</td>";
 		echo "<td><input type=\"hidden\" name=\"destination[]\" value=\"".$sql_row['destination']."\">".$sql_row['destination']."</td>";
 		echo "<td><input type=\"hidden\" name=\"input_size[]\" value=\"".$sql_row['size_code']."\">".strtoupper($sql_row['size_code'])."</td>";
-		// echo "<td>".$sql_row['carton_act_qty']."</td>";
+		echo "<td>".$sql_row['carton_act_qty']."</td>";
 		// echo "<td>".$inputqty."</td>";
 		// echo "<td>".$balance."</td>";
 	
