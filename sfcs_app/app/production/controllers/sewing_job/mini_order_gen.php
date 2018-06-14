@@ -600,7 +600,7 @@ if($status == '' || $status == '1')
 		if($carton_method == '5')
 		{
 			// echo "<a href=\"sewing_job_create.php\">Click Here to Back</a>";
-			echo "<h3>Multi Color & Multi Size Carton Method</h3>";
+			echo "<h3>Single Color & Multi Size (Ratio Pack) Carton Method</h3>";
 			echo "<br><div class='alert alert-warning'>Data Saving under process Please wait.....</div>";
 			// echo "<table class='table table-striped table-bordered'>";
 			// echo "<thead><th>Carton No</th><th>Cut Number</th><th>Color</th><th>Size</th><th>Bundle Number</th><th>Quantity</th><th>Docket Number</th></thead>";
@@ -623,7 +623,6 @@ if($status == '' || $status == '1')
 			//$l=1;
 			$get_carton_detail_query="SELECT color,ref_size_name,quantity FROM $brandix_bts.tbl_carton_size_ref where parent_id in(select id from $brandix_bts.tbl_carton_ref where ref_order_num=$schedule_id and style_code=$style_id) group by color,ref_size_name ORDER BY color,ref_size_name";
 			// echo $get_carton_detail_query."<br>";
-
 			$result2=mysqli_query($link, $get_carton_detail_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($carton=mysqli_fetch_array($result2))
 			{
@@ -644,107 +643,106 @@ if($status == '' || $status == '1')
 				if($size_code!='' && $order_qty_col_size!='')
 				{
 					$order_tid=$style.$schedule.$color;
-				$sql2="SELECT cut_master.cat_ref FROM $brandix_bts.tbl_cut_master AS cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master AS cut_sizes ON cut_master.id=cut_sizes.parent_id WHERE cut_master.style_id='".$style_id."' AND cut_master.product_schedule='".$schedule."' AND cut_sizes.color='".$color."'	AND cut_sizes.ref_size_name='".$size."' GROUP BY cut_master.cat_ref limit 1";
-				$result12=mysqli_query($link, $sql2) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($rw=mysqli_fetch_array($result12))
-				{
-					$cat_ref=$rw['cat_ref'];
-				}
-
-				//$cut_alloc=echo_title("$bai_pro3.cuttable_stat_log","cuttable_s_$size_code","cat_ref='".$cat_ref."' and order_tid",$order_tid,$link);
-				$cut_alloc=echo_title("$bai_pro3.allocate_stat_log","SUM(allocate_".$size_code."*plies)","cat_ref='".$cat_ref."' and order_tid",$order_tid,$link);
-				$diff_qty=$cut_alloc-$order_qty_col_size;
-				$diff_qty_cfirm=$cut_alloc-$order_qty_col_size;
-				// echo "Cut=".$cut_alloc."-".$size_code."-".$order_qty_col_size."<br><br>";
-				$sql23="SELECT cut_master.cat_ref,cut_master.cut_num,cut_sizes.id,`cut_master`.`planned_plies`,cut_master.actual_plies,cut_sizes.quantity,cut_master.planned_plies*cut_sizes.quantity AS total_cut_quantity,cut_master.doc_num as docket_number,sizes.size_name as size_title,cut_master.col_code	FROM $brandix_bts.tbl_cut_master as cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master as cut_sizes ON cut_master.id=cut_sizes.parent_id left join $brandix_bts.tbl_orders_size_ref as sizes on sizes.id=cut_sizes.ref_size_name WHERE cut_master.style_id=$style_id AND cut_master.product_schedule='$schedule' AND cut_sizes.color='$color' and cut_sizes.ref_size_name=$size order by cut_master.cut_num";
-				// echo "QUE=".$sql23."<br><br>";
-
-				$result23=mysqli_query($link, $sql23) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$temp_qty=0;
-				while($sql_row=mysqli_fetch_array($result23))
-				{
-					$cut_num=$sql_row['cut_num'];
-					$color_code=$sql_row['col_code'];
-					$ratio=$sql_row['quantity'];
-					$total_cut_qty=$sql_row['total_cut_quantity'];
-					$bundle_quantity=$total_cut_qty;
-
-					$ratio1=0;
-					if($cut_num==1)
+					$sql2="SELECT cut_master.cat_ref FROM $brandix_bts.tbl_cut_master AS cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master AS cut_sizes ON cut_master.id=cut_sizes.parent_id WHERE cut_master.style_id='".$style_id."' AND cut_master.product_schedule='".$schedule."' AND cut_sizes.color='".$color."'	AND cut_sizes.ref_size_name='".$size."' GROUP BY cut_master.cat_ref limit 1";
+					$result12=mysqli_query($link, $sql2) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($rw=mysqli_fetch_array($result12))
 					{
-						$ratio1=$ratio;
+						$cat_ref=$rw['cat_ref'];
 					}
 
-					$sql233="select max(extra_plies) as extra_plies from $bai_pro3.allocate_stat_log where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\")";
-					$result233=mysqli_query($link, $sql233) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row233=mysqli_fetch_array($result233))
-					{
-						$extra_plies=$sql_row233["extra_plies"];
-					}
+					//$cut_alloc=echo_title("$bai_pro3.cuttable_stat_log","cuttable_s_$size_code","cat_ref='".$cat_ref."' and order_tid",$order_tid,$link);
+					$cut_alloc=echo_title("$bai_pro3.allocate_stat_log","SUM(allocate_".$size_code."*plies)","cat_ref='".$cat_ref."' and order_tid",$order_tid,$link);
+					$diff_qty=$cut_alloc-$order_qty_col_size;
+					$diff_qty_cfirm=$cut_alloc-$order_qty_col_size;
+					// echo "Cut=".$cut_alloc."-".$size_code."-".$order_qty_col_size."<br><br>";
+					$sql23="SELECT cut_master.cat_ref,cut_master.cut_num,cut_sizes.id,`cut_master`.`planned_plies`,cut_master.actual_plies,cut_sizes.quantity,cut_master.planned_plies*cut_sizes.quantity AS total_cut_quantity,cut_master.doc_num as docket_number,sizes.size_name as size_title,cut_master.col_code	FROM $brandix_bts.tbl_cut_master as cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master as cut_sizes ON cut_master.id=cut_sizes.parent_id left join $brandix_bts.tbl_orders_size_ref as sizes on sizes.id=cut_sizes.ref_size_name WHERE cut_master.style_id=$style_id AND cut_master.product_schedule='$schedule' AND cut_sizes.color='$color' and cut_sizes.ref_size_name=$size order by cut_master.cut_num";
+					// echo "QUE=".$sql23."<br><br>";
 
-					$sql232="SELECT min(cut_master.cut_num) as min_cut FROM $brandix_bts.tbl_cut_master as cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master as cut_sizes ON cut_master.id=cut_sizes.parent_id left join $brandix_bts.tbl_orders_size_ref as sizes on sizes.id=cut_sizes.ref_size_name WHERE cut_master.style_id=$style_id AND cut_master.product_schedule='$schedule' AND cut_sizes.color='$color' and cut_sizes.ref_size_name=$size AND cut_master.planned_plies*cut_sizes.quantity > ".($extra_plies*$ratio1)."";
-					//echo $sql232."<br>";
-					$result232=mysqli_query($link, $sql232) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row232=mysqli_fetch_array($result232))
+					$result23=mysqli_query($link, $sql23) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$temp_qty=0;
+					while($sql_row=mysqli_fetch_array($result23))
 					{
-						$min_cut=$sql_row232["min_cut"];
-					}
-					$diff_qty=$diff_qty-($extra_plies*$ratio1);
-					$sno=$sno+1;
+						$cut_num=$sql_row['cut_num'];
+						$color_code=$sql_row['col_code'];
+						$ratio=$sql_row['quantity'];
+						$total_cut_qty=$sql_row['total_cut_quantity'];
+						$bundle_quantity=$total_cut_qty;
 
-					if($cut_num==$min_cut)
-					{
-						$bundle_quantity=$bundle_quantity-($extra_plies*$ratio1);
-						// echo "<tr><td>0.$cut_num.1</td><td>".chr($color_code).leading_zeros(0,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".$extra_plies." / ".$ratio1." /".$extra_plies*$ratio1."</td><td>".$sql_row['docket_number']."</td></tr>";
-						$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."',0,'".$cut_num."','".$color."','".$size."','".$bundle_number."','".$extra_plies*$ratio1."','".$sql_row['docket_number']."',0)";
-						$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					}
-
-					if($diff_qty>0)
-					{
-						if($bundle_quantity>=$diff_qty)
+						$ratio1=0;
+						if($cut_num==1)
 						{
-							// echo "<tr><td>".$sno."</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".$diff_qty."</td><td>".$sql_row['docket_number']."</td></tr>";
-							$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."',0,'".$cut_num."','".$color."','".$size."','".$bundle_number."','".$diff_qty."','".$sql_row['docket_number']."',0)";
-							// echo "Que0=".$insertMiniOrderdata."<br>";
+							$ratio1=$ratio;
+						}
+
+						$sql233="select max(extra_plies) as extra_plies from $bai_pro3.allocate_stat_log where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\")";
+						$result233=mysqli_query($link, $sql233) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row233=mysqli_fetch_array($result233))
+						{
+							$extra_plies=$sql_row233["extra_plies"];
+						}
+
+						$sql232="SELECT min(cut_master.cut_num) as min_cut FROM $brandix_bts.tbl_cut_master as cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master as cut_sizes ON cut_master.id=cut_sizes.parent_id left join $brandix_bts.tbl_orders_size_ref as sizes on sizes.id=cut_sizes.ref_size_name WHERE cut_master.style_id=$style_id AND cut_master.product_schedule='$schedule' AND cut_sizes.color='$color' and cut_sizes.ref_size_name=$size AND cut_master.planned_plies*cut_sizes.quantity > ".($extra_plies*$ratio1)."";
+						//echo $sql232."<br>";
+						$result232=mysqli_query($link, $sql232) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row232=mysqli_fetch_array($result232))
+						{
+							$min_cut=$sql_row232["min_cut"];
+						}
+						$diff_qty=$diff_qty-($extra_plies*$ratio1);
+						$sno=$sno+1;
+
+						if($cut_num==$min_cut)
+						{
+							$bundle_quantity=$bundle_quantity-($extra_plies*$ratio1);
+							// echo "<tr><td>0.$cut_num.1</td><td>".chr($color_code).leading_zeros(0,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".$extra_plies." / ".$ratio1." /".$extra_plies*$ratio1."</td><td>".$sql_row['docket_number']."</td></tr>";
+							$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."',0,'".$cut_num."','".$color."','".$size."','".$bundle_number."','".$extra_plies*$ratio1."','".$sql_row['docket_number']."',0)";
 							$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$bundle_number++;
-							if(($bundle_quantity-$diff_qty)>0)
+						}
+
+						if($diff_qty>0)
+						{
+							if($bundle_quantity>=$diff_qty)
 							{
-								// echo "<tr><td>".$sno."</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".($bundle_quantity-$diff_qty)."</td><td>".$sql_row['docket_number']."</td></tr>";
-								$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."','".$sno."','".$cut_num."','".$color."','".$size."','".$bundle_number."','".($bundle_quantity-$diff_qty)."','".$sql_row['docket_number']."','".$sno."')";
-								// echo "Que1=".$insertMiniOrderdata."<br>";
+								// echo "<tr><td>".$sno."</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".$diff_qty."</td><td>".$sql_row['docket_number']."</td></tr>";
+								$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."',0,'".$cut_num."','".$color."','".$size."','".$bundle_number."','".$diff_qty."','".$sql_row['docket_number']."',0)";
+								// echo "Que0=".$insertMiniOrderdata."<br>";
 								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$bundle_number++;
+								if(($bundle_quantity-$diff_qty)>0)
+								{
+									// echo "<tr><td>".$sno."</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".($bundle_quantity-$diff_qty)."</td><td>".$sql_row['docket_number']."</td></tr>";
+									$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."','".$sno."','".$cut_num."','".$color."','".$size."','".$bundle_number."','".($bundle_quantity-$diff_qty)."','".$sql_row['docket_number']."','".$sno."')";
+									// echo "Que1=".$insertMiniOrderdata."<br>";
+									$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								}
+								$diff_qty=0;
 							}
-							$diff_qty=0;
+							else
+							{
+								// echo "<tr><td>0</td><td>".chr($color_code).leading_zeros(0,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".$bundle_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
+								$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."',0,'".$cut_num."','".$color."','".$size."','".$bundle_number."','".$bundle_quantity."','".$sql_row['docket_number']."','0')";
+								// echo "Que2=".$insertMiniOrderdata."<br>";
+								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$bundle_number++;
+								$diff_qty-=$bundle_quantity;
+							}
 						}
 						else
 						{
-							// echo "<tr><td>0</td><td>".chr($color_code).leading_zeros(0,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".$bundle_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
-							$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."',0,'".$cut_num."','".$color."','".$size."','".$bundle_number."','".$bundle_quantity."','".$sql_row['docket_number']."','0')";
-							// echo "Que2=".$insertMiniOrderdata."<br>";
-							$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$bundle_number++;
-							$diff_qty-=$bundle_quantity;
+								if($temp_qty>=$carton_ratio)
+								{
+									$sno++;
+									$temp_qty=0;
+								}
+								$temp_qty+=$bundle_quantity;
+								// echo "<tr><td>".$sno."</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".$bundle_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
+
+								$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."','".$sno."','".$cut_num."','".$color."','".$size."','".$bundle_number."','".$bundle_quantity."','".$sql_row['docket_number']."','".$sno."')";
+								// echo "Que3=".$insertMiniOrderdata."<br>";
+								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$bundle_number++;
 						}
 					}
-					else
-					{
-							if($temp_qty>=$carton_ratio)
-							{
-								$sno++;
-								$temp_qty=0;
-							}
-							$temp_qty+=$bundle_quantity;
-							// echo "<tr><td>".$sno."</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$sql_row['size_title']."</td><td>".$bundle_number."</td><td>".$bundle_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
-
-							$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".$date_time."','".$mini_order_ref."','".$sno."','".$cut_num."','".$color."','".$size."','".$bundle_number."','".$bundle_quantity."','".$sql_row['docket_number']."','".$sno."')";
-							// echo "Que3=".$insertMiniOrderdata."<br>";
-							$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$bundle_number++;
-					}
-				}
-
 				}else{
 					echo "<script>
 							var url = '".getFullURLLevel($_GET['r'],'sewing_job_create.php',0,'N')."';
@@ -753,10 +751,7 @@ if($status == '' || $status == '1')
 				}
 				
 			}
-			// header("Location:mini_order_gen_cut_smr.php?id=$mini_order_ref&mode=$carton_method");
-			// $url5 = getFullURL($_GET['r'],'mini_order_gen_cut_smr.php','N');
 			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mini_order_gen_cut_smr.php',0,'N')."&id=$mini_order_ref&mode=$carton_method&style=$style_ori&schedule=$schedule_ori';</script>");
-			// echo("<script>location.href = '".$url5."&id=$mini_order_ref&mode=$carton_method&style=$style_ori&schedule=$schedule_ori';</script>");
 		}
 
 		if($carton_method == '-1')
