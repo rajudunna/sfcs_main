@@ -92,7 +92,7 @@ function verify_year(){
 <body>
 <div class='panel panel-primary'>
 	<div class='panel-heading'>
-		<b>Out Of Ratio Reported</b>
+		<b>Out Of Ratio Report</b>
 	</div>
 	<div class='panel-body'>
 		<form action="<?php echo $form_action ?>" method="POST">
