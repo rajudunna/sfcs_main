@@ -300,7 +300,7 @@ if(isset($_POST['submit']))
 	$status=$_POST['status'];
 	$pack_methods=$_POST['pack_methods'];
 	$id=$_POST['id'];
-	
+
 	$xs=0;
 	$s=0;
 	$m=0;
@@ -308,56 +308,63 @@ if(isset($_POST['submit']))
 	$xl=0;
 	$xxl=0;
 	$xxxl=0;
-	$s01=$_POST['s01'];
-	$s02=$_POST['s02'];
-	$s03=$_POST['s03'];
-	$s04=$_POST['s04'];
-	$s05=$_POST['s05'];
-	$s06=$_POST['s06'];
-	$s07=$_POST['s07'];
-	$s08=$_POST['s08'];
-	$s09=$_POST['s09'];
-	$s10=$_POST['s10'];
-	$s11=$_POST['s11'];
-	$s12=$_POST['s12'];
-	$s13=$_POST['s13'];
-	$s14=$_POST['s14'];
-	$s15=$_POST['s15'];
-	$s16=$_POST['s16'];
-	$s17=$_POST['s17'];
-	$s18=$_POST['s18'];
-	$s19=$_POST['s19'];
-	$s20=$_POST['s20'];
-	$s21=$_POST['s21'];
-	$s22=$_POST['s22'];
-	$s23=$_POST['s23'];
-	$s24=$_POST['s24'];
-	$s25=$_POST['s25'];
-	$s26=$_POST['s26'];
-	$s27=$_POST['s27'];
-	$s28=$_POST['s28'];
-	$s29=$_POST['s29'];
-	$s30=$_POST['s30'];
-	$s31=$_POST['s31'];
-	$s32=$_POST['s32'];
-	$s33=$_POST['s33'];
-	$s34=$_POST['s34'];
-	$s35=$_POST['s35'];
-	$s36=$_POST['s36'];
-	$s37=$_POST['s37'];
-	$s38=$_POST['s38'];
-	$s39=$_POST['s39'];
-	$s40=$_POST['s40'];
-	$s41=$_POST['s41'];
-	$s42=$_POST['s42'];
-	$s43=$_POST['s43'];
-	$s44=$_POST['s44'];
-	$s45=$_POST['s45'];
-	$s46=$_POST['s46'];
-	$s47=$_POST['s47'];
-	$s48=$_POST['s48'];
-	$s49=$_POST['s49'];
-	$s50=$_POST['s50'];
+	$sql="select * from $bai_pro3.carton_qty_chart where id='$id'";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$s01=(isset($_POST['s01']))?$_POST['s01']:$sql_row['s01'];
+		$s02=(isset($_POST['s02']))?$_POST['s02']:$sql_row['s02'];
+		$s03=(isset($_POST['s03']))?$_POST['s03']:$sql_row['s03'];	
+		$s04=(isset($_POST['s04']))?$_POST['s04']:$sql_row['s04'];
+		$s05=(isset($_POST['s05']))?$_POST['s05']:$sql_row['s05'];
+		$s06=(isset($_POST['s06']))?$_POST['s06']:$sql_row['s06'];
+		$s07=(isset($_POST['s07']))?$_POST['s07']:$sql_row['s07'];
+		$s08=(isset($_POST['s08']))?$_POST['s08']:$sql_row['s08'];
+		$s09=(isset($_POST['s09']))?$_POST['s09']:$sql_row['s09'];
+		$s10=(isset($_POST['s10']))?$_POST['s10']:$sql_row['s10'];
+		$s11=(isset($_POST['s11']))?$_POST['s11']:$sql_row['s11'];
+		$s12=(isset($_POST['s12']))?$_POST['s12']:$sql_row['s12'];
+		$s13=(isset($_POST['s13']))?$_POST['s13']:$sql_row['s13'];
+		$s14=(isset($_POST['s14']))?$_POST['s14']:$sql_row['s14'];
+		$s15=(isset($_POST['s15']))?$_POST['s15']:$sql_row['s15'];
+		$s16=(isset($_POST['s16']))?$_POST['s16']:$sql_row['s16'];
+		$s17=(isset($_POST['s17']))?$_POST['s17']:$sql_row['s17'];
+		$s18=(isset($_POST['s18']))?$_POST['s18']:$sql_row['s18'];
+		$s19=(isset($_POST['s19']))?$_POST['s19']:$sql_row['s19'];
+		$s20=(isset($_POST['s20']))?$_POST['s20']:$sql_row['s20'];
+		$s21=(isset($_POST['s21']))?$_POST['s21']:$sql_row['s21'];
+		$s22=(isset($_POST['s22']))?$_POST['s22']:$sql_row['s22'];
+		$s23=(isset($_POST['s23']))?$_POST['s23']:$sql_row['s23'];
+		$s24=(isset($_POST['s24']))?$_POST['s24']:$sql_row['s24'];
+		$s25=(isset($_POST['s25']))?$_POST['s25']:$sql_row['s25'];
+		$s26=(isset($_POST['s26']))?$_POST['s26']:$sql_row['s26'];
+		$s27=(isset($_POST['s27']))?$_POST['s27']:$sql_row['s27'];
+		$s28=(isset($_POST['s28']))?$_POST['s28']:$sql_row['s28'];
+		$s29=(isset($_POST['s29']))?$_POST['s29']:$sql_row['s29'];
+		$s30=(isset($_POST['s30']))?$_POST['s30']:$sql_row['s30'];
+		$s31=(isset($_POST['s31']))?$_POST['s31']:$sql_row['s31'];
+		$s32=(isset($_POST['s32']))?$_POST['s32']:$sql_row['s32'];
+		$s33=(isset($_POST['s33']))?$_POST['s33']:$sql_row['s33'];
+		$s34=(isset($_POST['s34']))?$_POST['s34']:$sql_row['s34'];
+		$s35=(isset($_POST['s35']))?$_POST['s35']:$sql_row['s35'];
+		$s36=(isset($_POST['s36']))?$_POST['s36']:$sql_row['s36'];
+		$s37=(isset($_POST['s37']))?$_POST['s37']:$sql_row['s37'];
+		$s38=(isset($_POST['s38']))?$_POST['s38']:$sql_row['s38'];
+		$s39=(isset($_POST['s39']))?$_POST['s39']:$sql_row['s39'];
+		$s40=(isset($_POST['s40']))?$_POST['s40']:$sql_row['s40'];
+		$s41=(isset($_POST['s41']))?$_POST['s41']:$sql_row['s41'];
+		$s42=(isset($_POST['s42']))?$_POST['s42']:$sql_row['s42'];
+		$s43=(isset($_POST['s43']))?$_POST['s43']:$sql_row['s43'];
+		$s44=(isset($_POST['s44']))?$_POST['s44']:$sql_row['s44'];
+		$s45=(isset($_POST['s45']))?$_POST['s45']:$sql_row['s45'];
+		$s46=(isset($_POST['s46']))?$_POST['s46']:$sql_row['s46'];
+		$s47=(isset($_POST['s47']))?$_POST['s47']:$sql_row['s47'];
+		$s48=(isset($_POST['s48']))?$_POST['s48']:$sql_row['s48'];
+		$s49=(isset($_POST['s49']))?$_POST['s49']:$sql_row['s49'];
+		$s50=(isset($_POST['s50']))?$_POST['s50']:$sql_row['s50'];
+
+	}
+
 
 	$track_qty=$_POST['track_qty'];
 	$srp_qty=$_POST['srp_qty'];
@@ -441,7 +448,7 @@ if(isset($_POST['submit']))
 	
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$path = getFullURL($_GET['r'],'carton_create.php','N');
+	$path = getFullURL($_GET['r'],'carton_updates.php','N');
 	echo "<script type=\"text/javascript\"> 
 			setTimeout(\"Redirect()\",0); 
 			sweetAlert('Carton Quantities Updated Successfully','','success');
