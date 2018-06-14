@@ -439,21 +439,21 @@
 			return true;
 		}
 	}
-	function validating_mul(id)
-	{
-		var pre = 'size'+id;
-		var pre_element = document.getElementById(pre).value;
-		var pack_method = document.getElementById('pack').value;
-		if(pack_method == '')
-		{
-			sweetAlert("","Please enter pack method First.","warning");
-			document.getElementById(pre).value = 0;
-		}
-		var reminder = Number(pack_method) % Number(pre_element);
-		if(reminder != 0)
-		{
-			sweetAlert("","Quantity should be multiples of Pack Method.","warning");
-			document.getElementById(pre).value = 0;
-		}
-	}
+	// function validating_mul(id)
+	// {
+	// 	var pre = 'size'+id;
+	// 	var pre_element = document.getElementById(pre).value;
+	// 	var pack_method = document.getElementById('pack').value;
+	// 	if(pack_method == '')
+	// 	{
+	// 		sweetAlert("","Please enter pack method First.","warning");
+	// 		document.getElementById(pre).value = 0;
+	// 	}
+	// 	var reminder = Number(pack_method) % Number(pre_element);
+	// 	if(reminder != 0)
+	// 	{
+	// 		sweetAlert("","Quantity should be multiples of Pack Method.","warning");
+	// 		document.getElementById(pre).value = 0;
+	// 	}
+	// }
 </script>
