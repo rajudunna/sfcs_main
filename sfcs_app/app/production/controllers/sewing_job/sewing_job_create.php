@@ -369,7 +369,7 @@ td{ padding:2px; white-space: nowrap;}
 									<table class='table table-bordered'>
 										<thead class=\"primary\">
 											<tr>
-												<th >Schedule</th><th>Total Colors</th><th>Planned Colors</th><th>Carton Method</th><th >Pack Quantity</th><th >Sewing Job Multiples</th><th>Sewing Job Quantity</th><th>Control</th>
+												<th >Schedule</th><th>Total Colors</th><th>Planned Colors</th><th>Carton Method</th><th >Pack Quantity</th><th style=\"display:none;\">Sewing Job Multiples</th><th>Sewing Job Quantity</th><th>Control</th>
 											</tr>
 										</thead>";
 											echo "<tr><td rowspan=$val>$schedule</td>";
@@ -405,7 +405,7 @@ td{ padding:2px; white-space: nowrap;}
 											
 													
 													echo "<td rowspan=$val><input type=\"hidden\" value=\"$carton_qty\" id=\"carton_qty\" name=\"carton_qty\" ><input type=\"text\" class='integer form-control' value=\"$bundle_plie\" id=\"bundle_plies\" name=\"bundle_plies\" onkeyup=\"validate();\" $status></td>
-													<td rowspan=$val><input type=\"text\" class='integer form-control' value=\"$bundle_size\" id=\"bundle_per_size\" name=\"bundle_per_size\" onkeyup=\"validate();\" $status></td>
+													<td style=\"display:none;\" rowspan=$val><input type=\"text\" class='integer form-control' value=\"$bundle_size\" id=\"bundle_per_size\" name=\"bundle_per_size\" onkeyup=\"validate();\" $status></td>
 													<td rowspan=$val><input type=\"text\" class='integer form-control' value=\"$mini_qty\" id=\"mini_order_qty\" name=\"mini_order_qty\" onkeyup=\"tot_sum()\" readonly></td>";
 													if($ii==1)
 													{
