@@ -826,7 +826,7 @@ $author_id_db=array("kirang","baiadmn","bainet","kirang");
 					echo "<td class=\"lef\">".$sql_row['buyer_division']."</td>";
 					echo "<td class=\"lef\">".$status_title."</td>";
 					echo "<td>".$sql_row['ex_factory_date_new']."</td>";
-					echo "<td class=\"lef\">".$sql_row['style']."</a></td>";
+					echo "<td class=\"lef\"><a href='pop_report.php?style='$style'&schedule='$schedule'&color='$color'>".$sql_row['style']."</a></td>";
 					echo "<td>".$sql_row['schedule_no']."</td>";
 					echo "<td class=\"lef\">".$sql_row['color']."</td>";
 					echo "<td>".substr($sql_row['sections'],0,-1)."</td>";

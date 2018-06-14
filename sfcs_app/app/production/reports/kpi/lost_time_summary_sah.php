@@ -79,7 +79,7 @@ echo $frdate.' - '.$frdate1;
 <div class="col-sm-3">
 To Date :<input type='text' width="40" class="form-control" data-toggle='datepicker' value='<?php echo $frdate1;  ?>' name='pro_date1' id='demo2'>
 </div>
-				<input type='submit' class="btn btn-primary" style='margin-top: 16px;' onclick='return verify_date()' value='Filter'>
+				<input type='submit' class="btn btn-primary" style='margin-top: 16px;' onclick='return verify_date()' value='Filter' name='submit'>
 				</form>
   <!--<center><h2 style="color:#4a148c;"><b><i>Lost Hour Summary Report - SAH- <?php 
 if($frdate==$frdate1){
@@ -90,6 +90,7 @@ echo $frdate.' - '.$frdate1;
   <hr>
    
    <?php
+   if(isset($_GET['submit'])){
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate BETWEEN '$frdate' AND '$frdate1' GROUP BY team ORDER BY team*1";
     //echo $sql;
 	$res=mysqli_query($link,$sql); 
@@ -331,7 +332,9 @@ margin: 0 0 0 0;'><td> $dept</td><td> $sout1</td><td>$dsah2</td></tr>";
 	}
 	else{
 		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
-	} ?>
+	}
+	
+}?>
       
     </tbody>
   </table></div><hr>
