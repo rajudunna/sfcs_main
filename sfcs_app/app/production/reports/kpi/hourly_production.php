@@ -50,7 +50,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 				<input type='text' data-toggle="datepicker" value='<?php echo $frdate;  ?>' name='pro_date' class='form-control' readonly>
 				</div></br>
 				<div class='col-sm-3>'>
-					<input type='submit' value='Filter' class='btn btn-primary'>
+					<input type='submit' value='Filter' class='btn btn-primary' name='submit'>
 				</div></div>
 				</form>
 				<!-- </div> -->
@@ -58,6 +58,8 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
   <hr>
    
    <?php
+     if(isset($_GET['submit']))
+	 {
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
      //echo $sql;
 	$res=mysqli_query($link,$sql); 
@@ -725,7 +727,9 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	}
 	else{
 		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
-	} ?>
+	} 
+	
+}?>
       
 			</tbody>
 			</table>

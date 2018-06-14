@@ -141,12 +141,13 @@ table tr:hover td {
 				Date : <input type='text' data-toggle='datepicker' class='form-control' width="40" value='<?php echo $frdate;  ?>' name='pro_date'>
 				</div></br>
 				<div class="col-sm-3">
-				<input type='submit' class="btn btn-primary" value='Filter'></div>
+				<input type='submit' class="btn btn-primary" value='Filter' name='submit'></div>
 				</form>
   <!-- <center><h2 style="color:#4a148c;"><b><i>Lost Hour Capturing Report - <?php  //echo $frdate;  ?></i></b></h2></center> -->
   <hr>
    
    <?php
+   if(isset($_GET['submit'])){
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
     //echo $sql;
 	$res=mysqli_query($link,$sql); 
@@ -513,7 +514,9 @@ table tr:hover td {
 	else
 	{
 		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
-	} ?>
+	} 
+	
+}?>
       
     </tbody>
   </table></div>

@@ -90,12 +90,14 @@ echo $frdate.' - '.$frdate1;
 			To Date:	<input type='text' width="40" data-toggle='datepicker' class="form-control" value='<?php echo $frdate1;  ?>' name='pro_date1' id='demo2'>
 				</div>
 				<div class='col-md-3'>
-					<input type='submit' class="btn btn-success" style='margin-top: 16px;' onclick='return verify_date()' value='Filter'>
+					<input type='submit' class="btn btn-success" style='margin-top: 16px;' onclick='return verify_date()' value='Filter' name='submit'>
 				</div>
 				</form>
 
    
    <?php
+
+if(isset($_GET['submit'])){
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate BETWEEN '$frdate' AND '$frdate1' GROUP BY team ORDER BY team*1";
     // echo $sql;
 	$res=mysqli_query($link,$sql); 
@@ -247,7 +249,12 @@ echo $frdate.' - '.$frdate1;
 	}
 	else{
 		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
-	} ?>
+	} 
+	
+}
+	
+	
+	?>
       
     </tbody>
   </table></div>
