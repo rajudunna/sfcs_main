@@ -399,9 +399,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
                 <a href="#" data-toggle="tooltip" title="M-<?php echo $module; ?> WIP :  <?php echo $sql_rowwip['WIP']; 
         $wip='0';
         $wip=$sql_rowwip['WIP'];
-        ?>" class="red-tooltip"><?php echo $module; ?></a>
-				<?php } ?>
-				<!-- onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep_ch.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);" -->
+        ?>" class="red-tooltip" onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep_ch.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);"><?php echo $module; ?></a>
+        <?php } ?>
+               
                 </div>  <!-- module number DIV END -->
                 <!-- <span class="classic">M-<?php echo $module; ?> WIP :  <?php echo $sql_rowwip['WIP']; 
         $wip='0';
