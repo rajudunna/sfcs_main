@@ -5,9 +5,10 @@ ini_set('max_execution_time', 30000);
 if(!isset($_GET['r'])){
     unset($_SESSION['link']);
 }
+include "template/helper.php";
 include "template/header.php";
 include "template/sidemenu.php";
-include "template/helper.php";
+
 ?>
 
 <link rel="stylesheet" href="assets/css/datepicker.css" />

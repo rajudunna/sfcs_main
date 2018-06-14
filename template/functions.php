@@ -1,5 +1,5 @@
 <?php
-include('dbconf.php');
+//include('dbconf.php');
   function hasChild($parent_id)
   {
 	GLOBAL $menu_table_name;
@@ -39,6 +39,8 @@ include('dbconf.php');
 				$linkq2q= explode('?',$parent['link_location']);
 				$full_path_url = $linkq2q[0];
 				$get_vars_data = (isset($linkq2q[1]) && $linkq2q[1]!='') ? '&'.$linkq2q[1] : '';
+				//var_dump(hasmenupermission());die();
+			if(in_array($parent['menu_pid'],hasmenupermission())){
 				if(base64_encode($full_path_url) == $_GET['r'] || (isset($_SESSION['link']) && $_SESSION['link'] == base64_encode($full_path_url))){
 				$list = '<li class=\'current-page\'><a href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div></li>';
@@ -49,6 +51,9 @@ include('dbconf.php');
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div>
 				</li>';
 				}
+			}else{
+				$list = "";
+			}
 				
 				// $list = '<li><a  href="'.$parent['link_location'].'" target="main" alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				// <div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div>
