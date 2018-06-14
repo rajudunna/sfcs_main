@@ -2,7 +2,7 @@
 <?php ini_set('max_execution_time', 360); ?>
 <?php
 //load the database configuration file
-include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 ?>
   <title>Lost Time Summary Report</title>
   <meta charset="utf-8">
@@ -73,13 +73,13 @@ echo $frdate.' - '.$frdate1;
 				<form action='index.php' method='GET'>
 				<br>
 <input type='hidden' name='r' value='<?= $_GET["r"]; ?>'>
-				<div class="col-sm-3">
-				Date : <input type='text' data-toggle='datepicker' class="form-control" width="40" value='<?php echo $frdate;  ?>' name='pro_date'>
-</div>				<br/>
+	<div class="col-sm-3">
+		From Date : <input type='text' data-toggle='datepicker' class="form-control" width="40" value='<?php echo $frdate;  ?>' name='pro_date' id='demo1'>
+    </div>				
 <div class="col-sm-3">
-<input type='text' width="40" class="form-control" data-toggle='datepicker' value='<?php echo $frdate1;  ?>' name='pro_date1'>
+To Date :<input type='text' width="40" class="form-control" data-toggle='datepicker' value='<?php echo $frdate1;  ?>' name='pro_date1' id='demo2'>
 </div>
-				<input type='submit' class="btn btn-primary" value='Filter'>
+				<input type='submit' class="btn btn-primary" style='margin-top: 16px;' onclick='return verify_date()' value='Filter' name='submit'>
 				</form>
   <!--<center><h2 style="color:#4a148c;"><b><i>Lost Hour Summary Report - SAH- <?php 
 if($frdate==$frdate1){
@@ -90,6 +90,7 @@ echo $frdate.' - '.$frdate1;
   <hr>
    
    <?php
+   if(isset($_GET['submit'])){
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate BETWEEN '$frdate' AND '$frdate1' GROUP BY team ORDER BY team*1";
     //echo $sql;
 	$res=mysqli_query($link,$sql); 
@@ -103,7 +104,36 @@ echo $frdate.' - '.$frdate1;
    ?>
 	<div class="table-responsive">
   <table class="table table-bordered">
-    <thead>
+    
+	<?php  if($row=mysqli_fetch_array($res)){ 
+		
+	 // echo $frdate;
+    $date=$row['frdate'];
+	//echo $date;
+	$newDate = date("Y-m-d", strtotime($date));
+	//echo $newDate.'<br>';
+	
+	$team=$row['team'];
+	
+	
+	$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data WHERE frdate BETWEEN '$frdate' AND '$frdate1' AND team='$team'";
+	$res3=mysqli_query($link,$sql3);
+	
+	
+	
+	$sql4="SELECT SUM(qty) AS qty FROM $bai_pro3.line_forecast where date BETWEEN '$frdate' AND '$frdate1' AND module='$team'";
+	$res4=mysqli_query($link,$sql4);
+	$res5=mysqli_query($link,$sql4);
+	
+	$sql6="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate BETWEEN '$frdate' AND '$frdate1' AND team='$team'";
+	$res6=mysqli_query($link,$sql6);
+	$row6=mysqli_fetch_array($res6);
+	$line_smv=$row6['smv'];
+	
+	
+	
+	?>
+	<thead>
 	<tr  style="background:#6995d6;color:white;">
         <th colspan='4'></th>
 		<?php   
@@ -148,34 +178,6 @@ echo $frdate.' - '.$frdate1;
    
     </thead>
     <tbody>
-	<?php  while($row=mysqli_fetch_array($res)){ 
-		
-	 // echo $frdate;
-    $date=$row['frdate'];
-	//echo $date;
-	$newDate = date("Y-m-d", strtotime($date));
-	//echo $newDate.'<br>';
-	
-	$team=$row['team'];
-	
-	
-	$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data WHERE frdate BETWEEN '$frdate' AND '$frdate1' AND team='$team'";
-	$res3=mysqli_query($link,$sql3);
-	
-	
-	
-	$sql4="SELECT SUM(qty) AS qty FROM $bai_pro3.line_forecast where date BETWEEN '$frdate' AND '$frdate1' AND module='$team'";
-	$res4=mysqli_query($link,$sql4);
-	$res5=mysqli_query($link,$sql4);
-	
-	$sql6="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate BETWEEN '$frdate' AND '$frdate1' AND team='$team'";
-	$res6=mysqli_query($link,$sql6);
-	$row6=mysqli_fetch_array($res6);
-	$line_smv=$row6['smv'];
-	
-	
-	
-	?>
 	<?php
 	echo '<tr>
 		<td>'.$team.'</td>
@@ -281,17 +283,14 @@ echo $frdate.' - '.$frdate1;
 	
 	<?php
 	}
-	} ?>
-      
-    </tbody>
-  </table></div><hr>
-  <br><br>
-  <div class='col-md-6'>
+	
+	
+	echo"<div class='col-md-6'>
   <table class='table table-bordered'>
-  <tr style="background-color:#6995d6;color:white;"><td>Department</td><td>Total Qty</td><td>Total SAH</td></tr>
-  
-  <?php  
+  <tr style='background-color:#6995d6;color:white;'><td>Department</td><td>Total Qty</td><td>Total SAH</td></tr>";
+   
   $query1="SELECT distinct rdept FROM $bai_pro2.downtime_reason WHERE code !='N'";
+ // echo $query1;
 	$result1=mysqli_query($link,$query1);
      while($row=mysqli_fetch_array($resultx)){
 	$dept=$row['rdept'];
@@ -318,12 +317,27 @@ echo $frdate.' - '.$frdate1;
 	$rout=mysqli_fetch_array($res2);
 	$sout1=$rout['sout'];
 	
-  ?>
-  <tr style="height : 20px;
-margin: 0 0 0 0;"><td><?php  echo $dept;  ?></td><td><?php  echo $sout1;  ?></td><td><?php  echo round($dsah1);  ?></td></tr>
-  <?php   }   ?>
+  $dsah2=round($dsah1);
+  echo"<tr style='height : 20px;
+margin: 0 0 0 0;'><td> $dept</td><td> $sout1</td><td>$dsah2</td></tr>";
+     }   
   
-  </table></div>
+  echo"</table></div>
+  <br><br>";
+  
+	
+	
+
+	
+	}
+	else{
+		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
+	}
+	
+}?>
+      
+    </tbody>
+  </table></div><hr>
   <br><br>
   
   
@@ -331,3 +345,39 @@ margin: 0 0 0 0;"><td><?php  echo $dept;  ?></td><td><?php  echo $sout1;  ?></td
 </div></div></div>
 
 </body>
+<script >
+function verify_date()
+{
+	var val1 = $('#demo1').val();
+	var val2 = $('#demo2').val();
+	// d1 = new Date(val1);
+	// d2 = new Date(val2);
+	if(val1 > val2){
+		sweetAlert('Start Date Should  be less than End Date','','warning');
+		return false;
+	}
+	else
+	{
+	    return true;
+	}
+}
+
+// <script language="javascript" type="text/javascript">
+//<![CDATA[	
+	var table2_Props = 	{					
+					// col_1: "select",
+					// col_2: "select",
+					// col_3: "select",
+					display_all_text: " [ Show all ] ",
+					btn_reset: true,
+					bnt_reset_text: "Clear all ",
+					rows_counter: true,
+					rows_counter_text: "Total Rows: ",
+					alternate_rows: true,
+					sort_select: true,
+					loader: true
+				};
+	setFilterGrid( "table_one",table2_Props );
+//]]>		
+// </script>
+</script>

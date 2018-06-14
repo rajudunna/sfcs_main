@@ -101,7 +101,7 @@ function printPage(printContent) {
             ?> 
 
             <div style="float:left"> 
-                <table class='table table-bordered' style="font-size:11px;font-family:verdana;text-align:left;"> 
+                <table class='table table-bordered' border="1" style="font-size:11px;font-family:verdana;text-align:left;"> 
                 <tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr> 
                 <tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr> 
                 <tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr> 
@@ -126,7 +126,7 @@ function printPage(printContent) {
                     $sampleqty = "N/A";
                 } 
             
-                echo "<table class=\"gridtable\" align=\"center\" style=\"margin-bottom:2px;font-size:14px;\">"; 
+                echo "<table border='1' class=\"gridtable\" align=\"center\" style=\"margin-bottom:2px;font-size:14px;\">"; 
                 echo "<tr>"; 
                 echo "<th>Sample Job</th><td>$sampleqty</td></tr></table>"; 
             } 
@@ -296,8 +296,8 @@ function printPage(printContent) {
             echo "<div class='row'>";
             echo "<div  class='col-md-12' >";
     		echo "<div class='table-responsive'>";
-            echo "<table class=\"gridtable\">"; 
-            echo "<table class=\"table table-bordered\">";
+            echo "<table border='1' class=\"gridtable\">"; 
+            echo "<table border='1' class=\"table table-bordered\">";
             echo "<tr>"; 
             echo "<th>Style</th>"; 
             echo "<th>PO#</th>"; 
