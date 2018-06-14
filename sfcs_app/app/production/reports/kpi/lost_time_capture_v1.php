@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
 //load the database configuration file
-include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 // echo getFullURLLevel($_GET['r'],'lost_time_capture.php',0,'R');
 ?>
 <html lang="en">
@@ -134,16 +134,16 @@ table tr:hover td {
 				<div class="panel panel-primary">
 <div class="panel-heading">Lost Hour Capturing Report <?php  echo $frdate;  ?></div>
 <div class="panel-body">
-				<form action='index.php' method='GET'>
+				<form action="" method='GET'>
 				<br>
-				<input type='hidden' name='r' value="<?= base64_encode(getFullURLLevel($_GET['r'],'lost_time_capture_v1.php',0,'R')) ?>">
+				<input type='hidden' name='r' value="<?= base64_encode('/'.getFullURLLevel($_GET['r'],'lost_time_capture_v1.php',0,'R')) ?>">
 				<div class="col-sm-3">
 				Date : <input type='text' data-toggle='datepicker' class='form-control' width="40" value='<?php echo $frdate;  ?>' name='pro_date'>
 				</div></br>
 				<div class="col-sm-3">
 				<input type='submit' class="btn btn-primary" value='Filter'></div>
 				</form>
-  <center><h2 style="color:#4a148c;"><b><i>Lost Hour Capturing Report - <?php  echo $frdate;  ?></i></b></h2></center>
+  <!-- <center><h2 style="color:#4a148c;"><b><i>Lost Hour Capturing Report - <?php  //echo $frdate;  ?></i></b></h2></center> -->
   <hr>
    
    <?php
@@ -151,7 +151,7 @@ table tr:hover td {
     //echo $sql;
 	$res=mysqli_query($link,$sql); 
 	$i=0; 
-
+	 
 	//variables get for factory summary----------------------------------------
 	$sumfrqty=$sumfrqty1=$sumfrqty2=$sumfrplanqty=0;
 	$tout1=$tout2=$tout3=$tout4=$tout5=$tout6=$tout7=$tout8=$tout9=$tout10=$tout11="";
@@ -159,53 +159,8 @@ table tr:hover td {
    ?>
 <div class="table-responsive">
   <table class="table table-bordered">
-    <thead>
-	<tr style="background-color:#ec407a;display:none;">
-        <th colspan="12"></th>
-		<th style="border:1px solid #ec407a;">Time</th>
-		<th colspan="17" style="border:1px solid #ec407a;"></th>
-      </tr>
-      <tr style="background-color:#6995d6;color:white">
-        <th>Team</th>
-        
-        <th>Style</th>
-		<th style="display:none;">Sch</th>
-		<th>FR Plan</th>
-		<th>Forecast</th>
-		
-		<th>Planned <br> Status</th>
-		<th>Reason</th>
-		<th>Pcs</th>
-		
-		<th rowspan="2">8.30 A.M.</th>
-		<th>Pcs</th>
-		<th>9.30 A.M.</th>
-		<th>Pcs</th>
-		<th>10.30 A.M</th>
-		<th>Pcs</th>
-		<th>11.30 A.M</th>
-		<th>Pcs</th>
-		<th>12.30 P.M.</th>
-		<th>Pcs</th>
-		<th>1.30 P.M.</th>
-		<th>Pcs</th>
-		<th>2.30 P.M.</th>
-		<th>Pcs</th>
-		<th>3.30 P.M.</th>
-		<th>Pcs</th>
-		<th>4.30 P.M.</th>
-		<th>Pcs</th>
-		<th>5.30 P.M.</th>
-		<th>Pcs</th>
-		<th>6.30 P.M.</th>
-		<th>Pcs</th>
-	
-		
-		
-      </tr>
-    </thead>
-    <tbody>
-	<?php  while($row=mysqli_fetch_array($res)){ 
+    
+	<?php  if($row=mysqli_fetch_array($res)){ 
 		
 	 // echo $frdate;
     $date=$row['frdate'];
@@ -296,6 +251,52 @@ table tr:hover td {
 	
 	
 	?>
+	<thead>
+	<tr style="background-color:#ec407a;display:none;">
+        <th colspan="12"></th>
+		<th style="border:1px solid #ec407a;">Time</th>
+		<th colspan="17" style="border:1px solid #ec407a;"></th>
+      </tr>
+      <tr style="background-color:#6995d6;color:white">
+        <th>Team</th>
+        
+        <th>Style</th>
+		<th style="display:none;">Sch</th>
+		<th>FR Plan</th>
+		<th>Forecast</th>
+		
+		<th>Planned <br> Status</th>
+		<th>Reason</th>
+		<th>Pcs</th>
+		
+		<th rowspan="2">8.30 A.M.</th>
+		<th>Pcs</th>
+		<th>9.30 A.M.</th>
+		<th>Pcs</th>
+		<th>10.30 A.M</th>
+		<th>Pcs</th>
+		<th>11.30 A.M</th>
+		<th>Pcs</th>
+		<th>12.30 P.M.</th>
+		<th>Pcs</th>
+		<th>1.30 P.M.</th>
+		<th>Pcs</th>
+		<th>2.30 P.M.</th>
+		<th>Pcs</th>
+		<th>3.30 P.M.</th>
+		<th>Pcs</th>
+		<th>4.30 P.M.</th>
+		<th>Pcs</th>
+		<th>5.30 P.M.</th>
+		<th>Pcs</th>
+		<th>6.30 P.M.</th>
+		<th>Pcs</th>
+	
+		
+		
+      </tr>
+    </thead>
+    <tbody>
 	<?php
 	echo '<tr style="border-bottom:2px solid black;">
 		<td>'.$team.'</td>
@@ -508,6 +509,10 @@ table tr:hover td {
 	$act_eff=0;
 	
 	
+	}
+	else
+	{
+		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
 	} ?>
       
     </tbody>
