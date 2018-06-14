@@ -238,7 +238,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	}	
 	echo "<h2 style='color:blue'>Sucessfully Updated... <br/> Please wait while redirect to IPS Dashboard....</h2>";
 			// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"tms_dashboard_input_v22.php\"; }</script>";
-		$path = getFullURLLevel($_GET['r'],'tms_dashboard_input_v22.php',0,'N');
+		$path = getFullURLLevel($_GET['r'],'dashboards/controllers/IPS/tms_dashboard_input_v22.php',3,'N');
 		
 		echo"<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1); function Redirect() { location.href = '$path'; }</script>";
 
