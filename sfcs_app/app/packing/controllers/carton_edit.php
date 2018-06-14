@@ -117,9 +117,16 @@
 		echo "<tr class='danger'><th>Style</th><th>Schedule</th><th>Pack Method</th>";
 		for($i=0;$i<50;$i++)
 		{
-			if($size[$i] !='' && $size[$i] == "$in_size"){
-				echo "<th>".$size[$i]."</th>";
+			if($in_size != ''){
+				if($size[$i] !='' && $size[$i] == "$in_size"){
+					echo "<th>".$size[$i]."</th>";
+				}
+			}else{
+				if($size[$i] !=''){
+					echo "<th>".$size[$i]."</th>";
+				}
 			}
+			
 		}
 		echo "<th>Status</th><th>Track Label Qty</th><th>SRP Qty</th></tr>";
 		echo "<tr>";
@@ -244,10 +251,18 @@
 //var_dump($size);
 		for($i=0;$i<50;$i++)
 		{	
-			if($size[$i] !='' && $size[$i] == "$in_size"){	
-				$val = 's'.str_pad($i+1,2, "0", STR_PAD_LEFT);
-				echo "<td><input  type=\"text\" size=3 class=\"integer\"  name=".$val." value=".$$val."></td>";		
+			if($in_size != ''){
+				if($size[$i] !='' && $size[$i] == "$in_size"){	
+					$val = 's'.str_pad($i+1,2, "0", STR_PAD_LEFT);
+					echo "<td><input  type=\"text\" size=3 class=\"integer\"  name=".$val." value=".$$val."></td>";		
+				}
+			}else{
+				if($size[$i] !=''){	
+					$val = 's'.str_pad($i+1,2, "0", STR_PAD_LEFT);
+					echo "<td><input  type=\"text\" size=3 class=\"integer\"  name=".$val." value=".$$val."></td>";		
+				}
 			}
+			
 		}
 //echo "<td><input  type=\"text\" size=3  name=\"s01\" value=\"$s01\"></td><td><input  type=\"text\" size=3  name=\"s02\" value=\"$s02\"></td><td><input  type=\"text\" size=3  name=\"s03\" value=\"$s03\"></td><td><input  type=\"text\" size=3  name=\"s04\" value=\"$s04\"></td><td><input  type=\"text\" size=3  name=\"s05\" value=\"$s05\"></td><td><input  type=\"text\" size=3  name=\"s06\" value=\"$s06\"></td><td><input  type=\"text\" size=3  name=\"s07\" value=\"$s07\"></td><td><input  type=\"text\" size=3  name=\"s08\" value=\"$s08\"></td><td><input  type=\"text\" size=3  name=\"s09\" value=\"$s09\"></td><td><input  type=\"text\" size=3  name=\"s10\" value=\"$s10\"></td><td><input  type=\"text\" size=3  name=\"s11\" value=\"$s11\"></td><td><input  type=\"text\" size=3  name=\"s12\" value=\"$s12\"></td><td><input  type=\"text\" size=3  name=\"s13\" value=\"$s13\"></td><td><input  type=\"text\" size=3  name=\"s14\" value=\"$s14\"></td><td><input  type=\"text\" size=3  name=\"s15\" value=\"$s15\"></td><td><input  type=\"text\" size=3  name=\"s16\" value=\"$s16\"></td><td><input  type=\"text\" size=3  name=\"s17\" value=\"$s17\"></td><td><input  type=\"text\" size=3  name=\"s18\" value=\"$s18\"></td><td><input  type=\"text\" size=3  name=\"s19\" value=\"$s19\"></td><td><input  type=\"text\" size=3  name=\"s20\" value=\"$s20\"></td><td><input  type=\"text\" size=3  name=\"s21\" value=\"$s21\"></td><td><input  type=\"text\" size=3  name=\"s22\" value=\"$s22\"></td><td><input  type=\"text\" size=3  name=\"s23\" value=\"$s23\"></td><td><input  type=\"text\" size=3  name=\"s24\" value=\"$s24\"></td><td><input  type=\"text\" size=3  name=\"s25\" value=\"$s25\"></td><td><input  type=\"text\" size=3  name=\"s26\" value=\"$s26\"></td><td><input  type=\"text\" size=3  name=\"s27\" value=\"$s27\"></td><td><input  type=\"text\" size=3  name=\"s28\" value=\"$s28\"></td><td><input  type=\"text\" size=3  name=\"s29\" value=\"$s29\"></td><td><input  type=\"text\" size=3  name=\"s30\" value=\"$s30\"></td><td><input  type=\"text\" size=3  name=\"s31\" value=\"$s31\"></td><td><input  type=\"text\" size=3  name=\"s32\" value=\"$s32\"></td><td><input  type=\"text\" size=3  name=\"s33\" value=\"$s33\"></td><td><input  type=\"text\" size=3  name=\"s34\" value=\"$s34\"></td><td><input  type=\"text\" size=3  name=\"s35\" value=\"$s35\"></td><td><input  type=\"text\" size=3  name=\"s36\" value=\"$s36\"></td><td><input  type=\"text\" size=3  name=\"s37\" value=\"$s37\"></td><td><input  type=\"text\" size=3  name=\"s38\" value=\"$s38\"></td><td><input  type=\"text\" size=3  name=\"s39\" value=\"$s39\"></td><td><input  type=\"text\" size=3  name=\"s40\" value=\"$s40\"></td><td><input  type=\"text\" size=3  name=\"s41\" value=\"$s41\"></td><td><input  type=\"text\" size=3  name=\"s42\" value=\"$s42\"></td><td><input  type=\"text\" size=3  name=\"s43\" value=\"$s43\"></td><td><input  type=\"text\" size=3  name=\"s44\" value=\"$s44\"></td><td><input  type=\"text\" size=3  name=\"s45\" value=\"$s45\"></td><td><input  type=\"text\" size=3  name=\"s46\" value=\"$s46\"></td><td><input  type=\"text\" size=3  name=\"s47\" value=\"$s47\"></td><td><input  type=\"text\" size=3  name=\"s48\" value=\"$s48\"></td><td><input  type=\"text\" size=3  name=\"s49\" value=\"$s49\"></td><td><input  type=\"text\" size=3  name=\"s50\" value=\"$s50\"></td>";
 
