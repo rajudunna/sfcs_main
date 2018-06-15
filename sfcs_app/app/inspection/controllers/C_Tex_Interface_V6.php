@@ -2699,13 +2699,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 
 function enableButton() 
 {
-	// var print_report=document.getElementById('print_report').value;
-	// alert(print_report);
-	// if(Number(print_report) >0)
-	// {
-	// 	sweetAlert('Cannot Modify After Inspection','','warning');
-	// 	document.getElementById('put').disabled='true';
-	// }
+
 	var ele;
 	var counter_man = 0;
 		ele = document.getElementsByClassName('rej_reason');
@@ -2756,13 +2750,7 @@ function enableButton()
 function enableButton1() 
 {
     var rowcount = document.getElementById("rowcount").value;
- //    var print_report=document.getElementById('print_report').value;
-	// if(Number(print_report) >0)
-	// {
-	// 	sweetAlert('Cannot Modify After Inspection','','warning');
-	// 	document.getElementById('put').disabled='true';
-	// }
-	// else{
+ 
 	    if (document.getElementById('option1').checked)
 	    {
 	        document.getElementById('confirm').disabled = '';
@@ -2789,11 +2777,18 @@ function enableButton1()
 	        {
 	            j = j + 0;
 	        } 
-	        else 
+	        else
 	        {
-	            j = j + 1;
+	        	if($('input[name="ele_shade[' + i + ']"]').is('[readonly]'))
+	        	{
+	    		 	j = j + 0;
+	    		}
+	    		 else
+	        	{
+	        		j = j + 1;
+	        	}
 	        }
-
+	       
 	        if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
 	        {
 	            j = j + 0;
@@ -2824,13 +2819,12 @@ function enableButton1()
 	    }
 		
 		var counter_man = 0;
-		var classes = ['req_man','ctex_len','ticket_wid','ctex_wid','shade_grp','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
+		var classes = ['req_man','ctex_len','ticket_wid','ctex_wid','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
 		var ele;
 		for(var j=0;j<classes.length;j++){
 			var ele = document.getElementsByClassName(classes[j]);
 			for(var i=0;i<ele.length;i++)
 			{
-				console.log(ele[i].value);
 				ele[i].classList.remove('mandate');
 				if(ele[i].value == '' || ele[i].value.length < 1 )
 				{
@@ -2852,6 +2846,24 @@ function enableButton1()
 				}
 			}
 		}
+		shade_grp = document.getElementsByClassName('shade_grp');
+		for(var i=0;i<shade_grp.length;i++){
+			var v = $('#ele_shade\\['+i+'\\]');
+
+			v.removeClass('mandate');
+			if($('#ele_shade\\['+i+'\\]').val() == '')
+			{
+				if($('input[name="ele_shade[' + i + ']"]').is('[readonly]'))
+				{
+					v.removeClass('mandate');
+				}
+				else
+				{
+					v.addClass('mandate');
+					counter_man++;
+				}
+			}
+		}
 
 		if(counter_man > 0)
 		{
@@ -2864,11 +2876,7 @@ function enableButton1()
 
 }
 
-$(document).ready(function()
-{
- 
-	console.log($('#ele_shade\\[0\\]').val());	
-});
+
 
 function Subtract(qnty) 
 {
