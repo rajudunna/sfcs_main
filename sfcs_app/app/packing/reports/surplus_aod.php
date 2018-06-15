@@ -935,8 +935,8 @@ cy9tZWRpYS9pbWFnZTEuanBlZ1BLBQYAAAAABgAGAIUBAAAsHgAAAAA=
   </v:shape><![endif]--><![if !vml]><span style='mso-ignore:vglayout;
   position:absolute;z-index:1;margin-left:68px;margin-top:10px;width:50px;
   height:70px'><img width=50 height=70
-  src="http://localhost/sfcs_app/common/images/bai_logo.jpg"
-  alt="http://localhost/sfcs_app/common/images/bai_logo.jpg" v:shapes="Picture_x0020_1"></span><![endif]><span
+  src="/sfcs_app/common/images/bai_logo.jpg"
+  alt="Brandix " v:shapes="Picture_x0020_1"></span><![endif]><span
   style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>
    <tr>
