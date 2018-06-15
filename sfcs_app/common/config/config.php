@@ -88,4 +88,6 @@ mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mys
 $operation=array("Please Select","Single Colour & Single Size","Multi Colour & Single Size","Multi Colour & Multi Size","Single Colour & Multi Size(Non Ratio Pack)","Single Colour & Multi Size(Ratio Pack)");
 
 $filter_joins="order_joins not in (1,2) and ";
+
+$pack_methods = ['pcs'=>'Pcs','packs'=>'Packs','hangers'=>'Hangers'];
 ?>

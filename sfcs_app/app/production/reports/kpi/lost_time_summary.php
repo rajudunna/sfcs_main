@@ -3,7 +3,7 @@
 <?php
 //load the database configuration file
 
-include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 
 ?>
 <!-- <html lang="en"> -->
@@ -76,25 +76,28 @@ if($frdate==$frdate1){
   }else{
 echo $frdate.' - '.$frdate1;
 }  ?>
+
 </div>
 <div class="panel-body">
 				
 				<form action="index.php" method='GET'>
 				<input type='hidden' name='r' value='<?= $_GET["r"]; ?>'>
 				<br>
-				<div class='col-md-3 col-sm-3 col-xs-12'>
-					<input type='text' width="40" data-toggle='datepicker' class="form-control" value='<?php echo $frdate;  ?>' name='pro_date'>
+				<div class='col-md-3'>
+			From Date:		<input type='text' width="40" data-toggle='datepicker' class="form-control" value='<?php echo $frdate;  ?>' name='pro_date' id='demo1'>
 				</div>
-				<div class='col-md-3 col-sm-3 col-xs-12'>
-					<input type='text' width="40" data-toggle='datepicker' class="form-control" value='<?php echo $frdate1;  ?>' name='pro_date1'>
+				<div class='col-md-3'>
+			To Date:	<input type='text' width="40" data-toggle='datepicker' class="form-control" value='<?php echo $frdate1;  ?>' name='pro_date1' id='demo2'>
 				</div>
-				<div class='col-md-3 col-sm-3 col-xs-12'>
-					<input type='submit' class="btn btn-success" value='Filter'>
+				<div class='col-md-3'>
+					<input type='submit' class="btn btn-success" style='margin-top: 16px;' onclick='return verify_date()' value='Filter' name='submit'>
 				</div>
 				</form>
 
    
    <?php
+
+if(isset($_GET['submit'])){
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate BETWEEN '$frdate' AND '$frdate1' GROUP BY team ORDER BY team*1";
     // echo $sql;
 	$res=mysqli_query($link,$sql); 
@@ -112,7 +115,31 @@ echo $frdate.' - '.$frdate1;
    ?>
 <div class='table table-responsive'>
   <table class="table table-bordered">
-    <thead>
+
+	<?php  if($row=mysqli_fetch_array($res)){ 
+		
+	 // echo $frdate;
+    $date=$row['frdate'];
+	//echo $date;
+	$newDate = date("Y-m-d", strtotime($date));
+	//echo $newDate.'<br>';
+	
+	$team=$row['team'];
+	
+	
+	$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data WHERE frdate BETWEEN '$frdate' AND '$frdate1' AND team='$team'";
+	// echo $sql3;
+	$res3=mysqli_query($link,$sql3);
+	
+	$sql4="SELECT SUM(qty) AS qty FROM $bai_pro3.line_forecast where date BETWEEN '$frdate' AND '$frdate1' AND module='$team'";
+	$res4=mysqli_query($link,$sql4);
+	$res5=mysqli_query($link,$sql4);
+	
+	
+	
+	
+	?>
+	    <thead>
 	<!-- <tr style="background-color:#039be5;color:white;"> -->
 	<tr style="background:#6995d6;color:white;">
         <th colspan='4'></th>
@@ -156,29 +183,6 @@ echo $frdate.' - '.$frdate1;
    
     </thead>
     <tbody>
-	<?php  while($row=mysqli_fetch_array($res)){ 
-		
-	 // echo $frdate;
-    $date=$row['frdate'];
-	//echo $date;
-	$newDate = date("Y-m-d", strtotime($date));
-	//echo $newDate.'<br>';
-	
-	$team=$row['team'];
-	
-	
-	$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data WHERE frdate BETWEEN '$frdate' AND '$frdate1' AND team='$team'";
-	// echo $sql3;
-	$res3=mysqli_query($link,$sql3);
-	
-	$sql4="SELECT SUM(qty) AS qty FROM $bai_pro3.line_forecast where date BETWEEN '$frdate' AND '$frdate1' AND module='$team'";
-	$res4=mysqli_query($link,$sql4);
-	$res5=mysqli_query($link,$sql4);
-	
-	
-	
-	
-	?>
 	<?php
 	// echo '<tr style="border-bottom:2px solid black;">
 	echo '<tr>
@@ -217,26 +221,10 @@ echo $frdate.' - '.$frdate1;
 	
 	</tr>
 	
-	
-	
-	
-	
-	<?php    
-	
-	
-	} ?>
-      
-    </tbody>
-  </table></div>
-  <br><br>
-<?php	
-
-
-?>
-  <div class='col-md-6'>
+	<div class='col-md-6'>
+  
   <table class="table table-bordered" >
   <tr style="background: #6995d6;color:white;"><th>Department</th><th>Total Qty</th></tr>
-  
   <?php  while($row=mysqli_fetch_array($resultx)){
 	$dept=$row['rdept'];
 	$query="SELECT SUM(output_qty) AS sout FROM $bai_pro2.hourly_downtime_reason WHERE rdept='$dept' AND date BETWEEN '$frdate' AND '$frdate1'";
@@ -252,6 +240,30 @@ echo $frdate.' - '.$frdate1;
   
   </table></div>
   <br><br>
+	
+	
+	
+	<?php    
+	
+	
+	}
+	else{
+		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
+	} 
+	
+}
+	
+	
+	?>
+      
+    </tbody>
+  </table></div>
+  <br><br>
+<?php	
+
+
+?>
+ 
   
   
   
@@ -261,3 +273,39 @@ echo $frdate.' - '.$frdate1;
 </div>
 </body>
 <!-- </html> -->
+<script >
+function verify_date()
+{
+	var val1 = $('#demo1').val();
+	var val2 = $('#demo2').val();
+	// d1 = new Date(val1);
+	// d2 = new Date(val2);
+	if(val1 > val2){
+		sweetAlert('Start Date Should  be less than End Date','','warning');
+		return false;
+	}
+	else
+	{
+	    return true;
+	}
+}
+
+// <script language="javascript" type="text/javascript">
+//<![CDATA[	
+	var table2_Props = 	{					
+					// col_1: "select",
+					// col_2: "select",
+					// col_3: "select",
+					display_all_text: " [ Show all ] ",
+					btn_reset: true,
+					bnt_reset_text: "Clear all ",
+					rows_counter: true,
+					rows_counter_text: "Total Rows: ",
+					alternate_rows: true,
+					sort_select: true,
+					loader: true
+				};
+	setFilterGrid( "table_one",table2_Props );
+//]]>		
+// </script>
+</script>

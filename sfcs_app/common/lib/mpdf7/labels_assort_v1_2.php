@@ -492,7 +492,7 @@ $html.= '<tr><td colspan=2>Carton #:'.$node_detail[0].'</td><td>Size:</td><td  c
 $html.= '<div><table><tr><td align="middle">'.$node_detail[3].'</td><td colspan=3><barcode code="'.leading_zeros($node_detail[3],8).'" type="C39"/ height="0.50" size="0.80" text="1"></td></tr>';
 $html.= '<tr><td>Style:</td><td class="new_td">'.$style.'</td><td>Schedule:</td><td class="new_td3">'.$delivery.'</td></tr>';
 $html.= '<tr><td colspan=4>Color:  <font size=2>'.substr($node_detail[5],0,100).'</font></td></tr>';
-$html.= '<tr><td>Assort:</td><td><font size=2>'.$packing_method." ".$node_detail[1].'('.$node_detail[7].')'.'</font></td><td>Packs:</td><td>'.$node_detail[6].'</td></tr>';
+$html.= '<tr><td>Assort:</td><td><font size=2>'.$packing_method." ".$node_detail[1].'('.$node_detail[7].')'.'</font></td><td>Packs:</td><td>'.round($node_detail[6]).'</td></tr>';
 $html.= '<tr><td>Jobs:</td><td><font size=2>'.implode(",",$job_nos).'</font></td><td>Size:</td><td>Qty:</td></tr>';
 $html.= '<tr><td>Carton #:</td><td>'.$node_detail[0].'</td><td  class="new_td2">'.$node_detail[4].'</td><td class="new_td2">'.$node_detail[2].'</td></tr>';
 
@@ -537,7 +537,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 
 $mpdf = new \Mpdf\Mpdf([
 	'mode' => 'utf-8', 
-	'format' => [42, 78], 
+	'format' => [45, 80], 
 	'orientation' => 'L'
 ]); 
 $mpdf->WriteHTML($html);

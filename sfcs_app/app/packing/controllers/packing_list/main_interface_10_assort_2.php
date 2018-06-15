@@ -31,7 +31,7 @@
 			}
 			echo "<tr>";
 			echo "<td><input type=\"radio\" name=\"radiobutton[]\" value=\"".$sql_row['id']."\" onClick=\"gotolink(".$sql_row['id'].")\"></td>";
-			echo "<td>".$sql_row['packing_method']."</td>";
+			echo "<td>".$sql_row['packing_method']." ".$sql_row['pack_methods']."</td>";
 			foreach($tot_sizes as $key=>$value)
 			{
 					// if($filtering_function[$key] != null){
@@ -184,39 +184,44 @@ if(isset($_POST['submit']))
 	$assort_color_check=implode(",",$assort_color_new);
 	*/
 	$assort_color_check=$color;
+	if($cartonid >0){
 	$sql2="select packing_method from $bai_pro3.carton_qty_chart where id=$cartonid";
-	mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
-	{
-		$packing_method=check_style($sql_row2['packing_method']);
+	$no_of_records=mysqli_num_rows($sql_result2);
+	
+		while($sql_row2=mysqli_fetch_array($sql_result2))
+		{
+			$packing_method=check_style($sql_row2['packing_method']);
+		}
+		
+		
+		
+		/* if(substr($style,0,1)=="L" or substr($style,0,1)=="O" or substr($style,0,1)=="P" or substr($style,0,1)=="K") // Exception for VS
+		{
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"packing/packing_list_gen_assort.php?order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }</script>";
+		} */
+		
+		
+		// if(substr($style,0,1)=="M" or substr($style,0,1)=="H" ) // Exception for M&S
+		// {
+			// $url = getFullURL($_GET['r'],'packing_list_gen_assort_2.php','N');
+			// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&color=$color&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }</script>";
+		// }
+		// else
+		// {
+			if(array_sum($packpcs)==$packing_method)
+			{
+				$url = getFullURL($_GET['r'],'packing_list_gen_assort_2.php','N');
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&color=$color&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }</script>";
+			}
+			else
+			{
+				echo '<div class="alert alert-warning" role="alert">Please check packing pcs quantity.</div>';
+			}
+		//}
+	}else{
+		echo '<div class="alert alert-warning" role="alert">Please select atleast one suggested carton quantity.</div>';
 	}
-	
-	
-	
-	/* if(substr($style,0,1)=="L" or substr($style,0,1)=="O" or substr($style,0,1)=="P" or substr($style,0,1)=="K") // Exception for VS
-	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"packing/packing_list_gen_assort.php?order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }</script>";
-	} */
-	
-	
-	// if(substr($style,0,1)=="M" or substr($style,0,1)=="H" ) // Exception for M&S
-	// {
-		// $url = getFullURL($_GET['r'],'packing_list_gen_assort_2.php','N');
-		// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&color=$color&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }</script>";
-	// }
-	// else
-	// {
-		if(array_sum($packpcs)==$packing_method)
-		{
-			$url = getFullURL($_GET['r'],'packing_list_gen_assort_2.php','N');
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&color=$color&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }</script>";
-		}
-		else
-		{
-			echo '<div class="alert alert-warning" role="alert">Please check packing pcs quantity.</div>';
-		}
-	//}
 	
 
 }

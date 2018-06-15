@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
 //load the database configuration file
-include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 ?>
   <title>Lost Time Capturing Report</title>
   <meta charset="utf-8">
@@ -137,13 +137,14 @@ table tr:hover td {
 	<input type='text' data-toggle="datepicker" class="form-control" value='<?php echo $frdate;  ?>' name='pro_date' id='pro_date' readonly>
 	</div><br/>
 	<div class="col-sm-1">
-	<input type='submit' class="btn btn-primary" value='Filter'>
+	<input type='submit' class="btn btn-primary" value='Filter' name='submit'>
 	</div>
 </form>
   <!--<center><h2 style="color:#4a148c;"><b><i>Lost Hour Capturing Report - <?php  echo $frdate;  ?></i></b></h2></center>-->
   <hr>
    
    <?php
+   if(isset($_GET['submit'])){
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
     // echo $sql;
 	$res=mysqli_query($link,$sql); 
@@ -155,49 +156,8 @@ table tr:hover td {
 	
    ?>
 <div style='overflow:scroll;max-height:800px;max-width:1200px;'>
-  <table class="table table-bordered table-responsive">
-	<tr style="background-color:#ec407a;display:none;">
-        <th colspan="12"></th>
-		<th style="border:1px solid #ec407a;">Time</th>
-		<th colspan="17" style="border:1px solid #ec407a;"></th>
-      </tr>
-      <tr style="background:#6995d6;color:white;">
-        <th>Team</th>
-        
-        <th>Style</th>
-		<th style="display:none;">Sch</th>
-		<th>FR Plan</th>
-		<th>Forecast</th>
-		
-		<th>Planned <br> Status</th>
-		<th>Reason</th>
-		<th>Pcs</th>
-		
-		<th>8.30 A.M.</th>
-		<th>Pcs</th>
-		<th>9.30 A.M.</th>
-		<th>Pcs</th>
-		<th>10.30 A.M</th>
-		<th>Pcs</th>
-		<th>11.30 A.M</th>
-		<th>Pcs</th>
-		<th>12.30 P.M.</th>
-		<th>Pcs</th>
-		<th>1.30 P.M.</th>
-		<th>Pcs</th>
-		<th>2.30 P.M.</th>
-		<th>Pcs</th>
-		<th>3.30 P.M.</th>
-		<th>Pcs</th>
-		<th>4.30 P.M.</th>
-		<th>Pcs</th>
-		<th>5.30 P.M.</th>
-		<th>Pcs</th>
-		<th>6.30 P.M.</th>
-		<th>Pcs</th>
-		<th>Action</th>
-      </tr>
-	<?php  while($row=mysqli_fetch_array($res)){ 
+  
+	<?php  if($row=mysqli_fetch_array($res)){ 
 		
 	 // echo $frdate;
     $date=$row['frdate'];
@@ -290,6 +250,48 @@ table tr:hover td {
 	
 	
 	?>
+	<table class="table table-bordered table-responsive">
+	<tr style="background-color:#ec407a;display:none;">
+        <th colspan="12"></th>
+		<th style="border:1px solid #ec407a;">Time</th>
+		<th colspan="17" style="border:1px solid #ec407a;"></th>
+      </tr>
+      <tr style="background:#6995d6;color:white;">
+        <th>Team</th>
+        
+        <th>Style</th>
+		<th style="display:none;">Sch</th>
+		<th>FR Plan</th>
+		<th>Forecast</th>
+		
+		<th>Planned <br> Status</th>
+		<th>Reason</th>
+		<th>Pcs</th>
+		
+		<th>8.30 A.M.</th>
+		<th>Pcs</th>
+		<th>9.30 A.M.</th>
+		<th>Pcs</th>
+		<th>10.30 A.M</th>
+		<th>Pcs</th>
+		<th>11.30 A.M</th>
+		<th>Pcs</th>
+		<th>12.30 P.M.</th>
+		<th>Pcs</th>
+		<th>1.30 P.M.</th>
+		<th>Pcs</th>
+		<th>2.30 P.M.</th>
+		<th>Pcs</th>
+		<th>3.30 P.M.</th>
+		<th>Pcs</th>
+		<th>4.30 P.M.</th>
+		<th>Pcs</th>
+		<th>5.30 P.M.</th>
+		<th>Pcs</th>
+		<th>6.30 P.M.</th>
+		<th>Pcs</th>
+		<th>Action</th>
+      </tr>
 	<?php
 	echo '<tr style="border-bottom:2px solid black;">
 		<td>'.$team.'</td>
@@ -458,7 +460,12 @@ table tr:hover td {
 	$act_eff=0;
 	
 	
-	} ?>
+	} else{
+		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
+	}
+}
+	
+	?>
       
   </table>
 </div>
