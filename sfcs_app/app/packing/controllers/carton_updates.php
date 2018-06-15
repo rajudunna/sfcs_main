@@ -5,6 +5,8 @@
 <?php // include('..'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); This file is not used here?>
 <?php // include('..'.getFullURLLevel($_GET['r'],'functions.php',1,'R')); This file is not used here?>
 
+<script language="javascript" type="text/javascript" src='sfcs_app/common/js/TableFilter_EN/tablefilter.js'></script>
+
 <?php
 
 	$view_access=user_acl("SFCS_0124",$username,1,$group_id_sfcs);
@@ -22,9 +24,7 @@
 	}
 ?>
 
-<script language="javascript" type="text/javascript" 
-		src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/tablefilter_en/table_filter.js',3,'R'); ?>">
-</script>
+
 
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>Create Carton Quantities</b></div>
@@ -112,5 +112,8 @@ var table6_Props = 	{
 					};
 	setFilterGrid( "table1",table6_Props );
 
+$(document).ready(function(){
+	$('#reset_table1').addClass('btn btn-warning');
+});
 
 </script>
