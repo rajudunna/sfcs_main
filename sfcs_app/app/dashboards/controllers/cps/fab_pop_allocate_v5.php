@@ -212,20 +212,52 @@ function none(){
 var initial_count=0
 var check_count = 0;
 var srgp;
-function check_qty2(x,m,n)
+var srgp1;
+var doc_count = 0;
+var verifier = 0;
+function check_qty2(x,m,n,doc)
 {	
 //PLEASE DO NOT MODIFY THE ORDER OF ANY OF THE BELOW STATEMENTS OF THIS FUNCTION
 	////  code for shrinkage validation
+	
+	if(doc_count==0){
+		old_doc = doc;
+		doc_count++;
+	}
+	if(old_doc != doc){
+		initial_count = 0;
+		doc_count = 0;
+		verifier = 0;
+		sr_id1 = m.substr(3);
+		srgp1 = document.getElementById('srgp'+sr_id1).value; 
+		console.log('Not equal '+doc+' new doc'+old_doc);
+	}
+	
 	if(initial_count == 0){
 		console.log('entered');
-		var sr_id = m.substr(3);
-		srgp = document.getElementById('srgp'+sr_id).value;
+		var chks = document.getElementsByName('chk'+doc+'[]');
+		for(var i=0;i<chks.length;i++){
+			if(chks[i].checked){
+				verifier++;
+				var sr_id2 = chks[i].id.substr(3);
+				srgp = document.getElementById('srgp'+sr_id2).value;
+			}
+			console.log('old = '+srgp+' new = '+srgp1);
+			if(verifier>1){
+				verifier=0;
+				if(srgp != srgp1){
+					swal('Shrinkage group is not unique','','error');
+					document.getElementById(m).checked = false;
+					return;
+				}
+			}
+		}
+	
 	}
 	////  code for shrinkage validation
 
 	if(document.getElementById(m).checked)
 	{
-		console.log('clicked');
 		//////  code for shrinkage validation
 		if(Number(initial_count)==1){
 			// console.log('innnnn');
@@ -236,7 +268,7 @@ function check_qty2(x,m,n)
 			// console.log('len '+srgp.length);
 			if(srgp.length > 0){
 				if(srgp != srgp1){
-					swal('SHrinkage group is not unique','','error');
+					swal('Shrinkage group is not unique','','error');
 					document.getElementById(m).checked = false;
 					return;
 				}else{
@@ -256,6 +288,7 @@ function check_qty2(x,m,n)
 		////  code for shrinkage validation
 		srgp='';
 		check_count--;
+		verifier=0;
 		////  code for shrinkage validation
 		var xx="tr"+m;
 		document.getElementById(xx).style.backgroundColor = n;
@@ -264,9 +297,9 @@ function check_qty2(x,m,n)
 	if(initial_count == 0){
 		initial_count++;
 	}
-	var doc_chk = document.getElementById('doc_chk').value;
+	//var doc_chk = document.getElementById('doc_chk').value;
 	//console.log(doc_chk+' docket');
-	var chks = document.getElementsByName('chk'+doc_chk+'[]');
+	var chks = document.getElementsByName('chk'+doc+'[]');
 	var coun = 0;
 	for(var i=0;i<chks.length;i++){
 		if(chks[i].checked){
@@ -859,7 +892,7 @@ if(isset($_POST['allocate']))
 			
 			if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
 			{
-				echo "<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color')\">";
+				echo "<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
 				echo "<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
 				echo "<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
 				echo "<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
@@ -895,13 +928,12 @@ if(isset($_POST['allocate']))
 				}
 				
 				//To release for some time
-				echo "<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color')\">";
+				echo "<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
 				//echo "<input type=\"hidden\" id=\"chk$doc_ref$j\" name=\"chk".$doc1_ref."[]\" value=\"0\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color')\">";
 				echo "<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
 				echo "<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
 				echo "<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
 				echo "<input type=\"hidden\" name=\"issued_new".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
-				echo "<input type='hidden' value='$doc_ref' id='doc_chk'>";
 				
 				if(strlen($tag)>0)
 				{
@@ -919,9 +951,8 @@ if(isset($_POST['allocate']))
 		}//Allow only for selected lots/docs
 		
 		//Table to show all list of available items
-		
+		echo "<input type='hidden' value='$doc_ref' id='doc_chk'>";
 	}
-	
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\" onclick=\"check_qty(".sizeof($doc).")\">";
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\">";
 	if ($row_count == '') {
