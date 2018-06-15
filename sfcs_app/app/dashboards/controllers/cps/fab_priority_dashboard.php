@@ -59,7 +59,7 @@ set_time_limit(200000);
   <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
 <!-- <head> -->
 <title>CPS Dashboard</title>
-<!-- <link rel="stylesheet" href="styles/bootstrap.min.css"> -->
+<link rel="stylesheet" href="../../../../common/css/bootstrap.min.css">
 <?php
 $hour=date("H.i");
 echo '<META HTTP-EQUIV="refresh" content="120">';
@@ -73,8 +73,8 @@ if(($hour>=7.45 and $hour<=10.45) or ($hour>=12.30 and $hour<=14.00) or ($hour>=
 } 
 */
 ?>
-<!--<script type="text/javascript" src="jquery.js"></script>
-<script type='text/javascript' src='jquery-1.6.2.js'></script>-->
+<script type="text/javascript" src="../../../../common/js/jquery.js"></script>
+<!-- <script type='text/javascript' src='jquery-1.6.2.js'></script> -->
 <!--Ticket #177328  Add the java script for Text blinking -->
 <script type="text/javascript">
  <!--
@@ -557,6 +557,8 @@ height: 25px;
 </style>
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; 
 ?>
+<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/common/js/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+
 <SCRIPT>
 <!--
 function doBlink() {
