@@ -100,8 +100,8 @@ Ticket #: #684040-RameshK/2014-05-26 : To raise compalint for rejected RM materi
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.4/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" href="/sfcs/projects/boot_css/bootstrap.css">
+<script src="/sfcs_app/common/js/sweetalert.min.js"></script>
 
-<script src="/sfcs/includes/js/sweetalert.min.js"></script>
 <script>
 /* 	$(document).ready(function() {
 		$('#example').DataTable( {
@@ -217,22 +217,23 @@ function check_qty2(x,m,n)
 //PLEASE DO NOT MODIFY THE ORDER OF ANY OF THE BELOW STATEMENTS OF THIS FUNCTION
 	////  code for shrinkage validation
 	if(initial_count == 0){
+		console.log('entered');
 		var sr_id = m.substr(3);
 		srgp = document.getElementById('srgp'+sr_id).value;
 	}
 	////  code for shrinkage validation
 
-
 	if(document.getElementById(m).checked)
 	{
+		console.log('clicked');
 		//////  code for shrinkage validation
 		if(Number(initial_count)==1){
-			console.log('innnnn');
+			// console.log('innnnn');
 			var sr_id1 = m.substr(3);
 			srgp1 = document.getElementById('srgp'+sr_id1).value;
-			console.log('now = '+srgp1);
-			console.log('old = '+srgp);
-			console.log('len '+srgp.length);
+			// console.log('now = '+srgp1);
+			// console.log('old = '+srgp);
+			// console.log('len '+srgp.length);
 			if(srgp.length > 0){
 				if(srgp != srgp1){
 					swal('SHrinkage group is not unique','','error');
@@ -241,6 +242,8 @@ function check_qty2(x,m,n)
 				}else{
 					srgp = srgp1;
 				}
+			}else{
+				// console.log('lesser');
 			}
 		}
 		check_count++;
@@ -261,7 +264,9 @@ function check_qty2(x,m,n)
 	if(initial_count == 0){
 		initial_count++;
 	}
-	var chks = document.getElementsByName('chk19[]');
+	var doc_chk = document.getElementById('doc_chk').value;
+	//console.log(doc_chk+' docket');
+	var chks = document.getElementsByName('chk'+doc_chk+'[]');
 	var coun = 0;
 	for(var i=0;i<chks.length;i++){
 		if(chks[i].checked){
@@ -270,11 +275,11 @@ function check_qty2(x,m,n)
 		}else{
 			coun++;
 		}
-		}
+	}
 	if(coun == chks.length){
 		initial_count = 0;
 	}	
-	console.log('check_count '+check_count);
+	// console.log('check_count '+check_count);
 	////  code for shrinkage validation
 ///////////////////////SHRINKAGE VALIDATION ENDS	
 	var check=0;
@@ -851,7 +856,7 @@ if(isset($_POST['allocate']))
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";
 
-
+			
 			if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
 			{
 				echo "<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color')\">";
@@ -896,6 +901,7 @@ if(isset($_POST['allocate']))
 				echo "<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
 				echo "<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
 				echo "<input type=\"hidden\" name=\"issued_new".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
+				echo "<input type='hidden' value='$doc_ref' id='doc_chk'>";
 				
 				if(strlen($tag)>0)
 				{
