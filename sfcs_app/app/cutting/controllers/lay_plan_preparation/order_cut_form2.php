@@ -68,7 +68,7 @@ function verify_con(e){
 function percent_cal()
 {
     
-	var x=parseInt(document.input.cuttable_percent.value);
+	var x=parseFloat(document.input.cuttable_percent.value);
 	if(isNaN(x)){
 		// alert();
 		var x = 0;
