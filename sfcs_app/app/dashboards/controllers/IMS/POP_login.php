@@ -1,4 +1,5 @@
 <?php 
+error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 //include("../../dbconf.php"); 
 
@@ -57,15 +58,16 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	if($sql_num_check>0)	
 	{
 		//Restrict Module Transfer for selected users only.
-		$url = getFullURLLevel($_GET['r'],'ims_edit_process_v1.php',0,'N');
-		echo $url;
-		die();
+
+		// $url = getFullURLLevel($_GET['r'],'ims_edit_process_v1.php',0,'N');
+		// echo $url;
+		// die();
 		if(isset($_POST['radio']) and $option_val1=="input_transfer")
 		{
 			
 			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); 
 			       function Redirect() {  
-			       	   location.href = \"$url&tid=$tid&module=$module_ref\"; 
+			       	   location.href = \"ims_edit_process_v1.php?tid=$tid&module=$module_ref\"; 
 			       	}
 			      </script>";
 			

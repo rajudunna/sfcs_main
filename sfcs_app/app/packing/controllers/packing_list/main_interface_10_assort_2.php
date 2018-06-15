@@ -7,6 +7,7 @@
 	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error00".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
+	
 	$x=0;
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -67,56 +68,59 @@
 	if($cut_total_qty >= $o_total)
 	{
 		$sql4="select * from $bai_pro3.packing_summary where order_del_no=\"$schedule\" and order_col_des= \"$color\"";
+		// echo $sql4."<br>";
 		$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rowsy=mysqli_num_rows($sql_result4);
-		//echo "</table></br>";
-		if($sql_num_check>=1)
+		// echo "$sql_num_check";
+		if($sql_num_check>=1 or $sql_num_rows1 > 0)
 		{
-		
-			if($carton_id==0 || $rowsy==0)
+			if($rowsy==0)
 			{
-				echo "<input type=\"hidden\" name=\"cartonid\" value=\"\"><input type=\"hidden\" name=\"order_tid\" value=\"$tran_order_tid\"><input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
-				echo "<input type=\"hidden\" name=\"style\" value=\"$style\">
-				<input type=\"hidden\" name=\"schedule\" value=\"$schedule\">
-				<input type=\"hidden\" name=\"color\" value=\"$color\">
-				<input type=\"hidden\" name=\"style_id\" value=\"$style_id\">";
-				echo "<div class='table-responsive'><table class='table table-bordered'>
-				<tr class='tblheading'>
-				<th>Color</th>";	
-				echo "<th>Assortment pcs in Pack</th>";
-				foreach($final_size_values as $key=>$value)
-					{
-						echo "<th>$key</th>";
-					}
-				echo "<th>Total</th>
-				</tr>";
-				// $sql2="select * from bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-				// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// while($sql_row2=mysqli_fetch_array($sql_result2))
-				// {
-				$col_des=$color;	
-				//$o_total=($o_s_xs+$o_s_s+$o_s_m+$o_s_l+$o_s_xl+$o_s_xxl+$o_s_xxxl+$o_s_s01+$o_s_s02+$o_s_s03+$o_s_s04+$o_s_s05+$o_s_s06+$o_s_s07+$o_s_s08+$o_s_s09+$o_s_s10+$o_s_s11+$o_s_s12+$o_s_s13+$o_s_s14+$o_s_s15+$o_s_s16+$o_s_s17+$o_s_s18+$o_s_s19+$o_s_s20+$o_s_s21+$o_s_s22+$o_s_s23+$o_s_s24+$o_s_s25+$o_s_s26+$o_s_s27+$o_s_s28+$o_s_s29+$o_s_s30+$o_s_s31+$o_s_s32+$o_s_s33+$o_s_s34+$o_s_s35+$o_s_s36+$o_s_s37+$o_s_s38+$o_s_s39+$o_s_s40+$o_s_s41+$o_s_s42+$o_s_s43+$o_s_s44+$o_s_s45+$o_s_s46+$o_s_s47+$o_s_s48+$o_s_s49+$o_s_s50);
-				echo "<input type=\"hidden\" name=\"color\" value=\"$col_des\">";
-				echo "<tr>";
-				echo "<td>".$col_des."</td>
-					  <td><input type=\"text\" name=\"packpcs[]\" value=\"1\" class=\"form-control\"><input type=\"hidden\" name=\"assort_color\" value=\"\" class=\"form-control\"></td>";
-				$o_total =0;
-				foreach($tot_sizes as $key=>$value)
+				if($carton_id==0)
 				{
-					// $pre = "order_s_".$key;
-					// $value = $sql_row2[$pre]; 
-					$o_total += $value;
-					echo "<td>$value</td>";
-					//echo "<td></td>";
+					echo "<input type=\"hidden\" name=\"cartonid\" value=\"\"><input type=\"hidden\" name=\"order_tid\" value=\"$tran_order_tid\"><input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
+					echo "<input type=\"hidden\" name=\"style\" value=\"$style\">
+					<input type=\"hidden\" name=\"schedule\" value=\"$schedule\">
+					<input type=\"hidden\" name=\"color\" value=\"$color\">
+					<input type=\"hidden\" name=\"style_id\" value=\"$style_id\">";
+					echo "<div class='table-responsive'><table class='table table-bordered'>
+					<tr class='tblheading'>
+					<th>Color</th>";	
+					echo "<th>Assortment pcs in Pack</th>";
+					foreach($final_size_values as $key=>$value)
+						{
+							echo "<th>$key</th>";
+						}
+					echo "<th>Total</th>
+					</tr>";
+					// $sql2="select * from bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+					// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// while($sql_row2=mysqli_fetch_array($sql_result2))
+					// {
+					$col_des=$color;	
+					//$o_total=($o_s_xs+$o_s_s+$o_s_m+$o_s_l+$o_s_xl+$o_s_xxl+$o_s_xxxl+$o_s_s01+$o_s_s02+$o_s_s03+$o_s_s04+$o_s_s05+$o_s_s06+$o_s_s07+$o_s_s08+$o_s_s09+$o_s_s10+$o_s_s11+$o_s_s12+$o_s_s13+$o_s_s14+$o_s_s15+$o_s_s16+$o_s_s17+$o_s_s18+$o_s_s19+$o_s_s20+$o_s_s21+$o_s_s22+$o_s_s23+$o_s_s24+$o_s_s25+$o_s_s26+$o_s_s27+$o_s_s28+$o_s_s29+$o_s_s30+$o_s_s31+$o_s_s32+$o_s_s33+$o_s_s34+$o_s_s35+$o_s_s36+$o_s_s37+$o_s_s38+$o_s_s39+$o_s_s40+$o_s_s41+$o_s_s42+$o_s_s43+$o_s_s44+$o_s_s45+$o_s_s46+$o_s_s47+$o_s_s48+$o_s_s49+$o_s_s50);
+					echo "<input type=\"hidden\" name=\"color\" value=\"$col_des\">";
+					echo "<tr>";
+					echo "<td>".$col_des."</td>
+						  <td><input type=\"text\" name=\"packpcs[]\" value=\"1\" class=\"form-control focus\"><input type=\"hidden\" name=\"assort_color\" value=\"\" class=\"form-control\"></td>";
+					$o_total =0;
+					foreach($tot_sizes as $key=>$value)
+					{
+						// $pre = "order_s_".$key;
+						// $value = $sql_row2[$pre]; 
+						$o_total += $value;
+						echo "<td>$value</td>";
+						//echo "<td></td>";
+					}
+					echo "<td class=\"sizes\">".$o_total."</td></tr>";
+					echo "</tr>";
+					// }
+					echo "</table></div></br>";
+					
+					echo "<input type=\"submit\" name=\"submit\" value=\"Generate Packing List\" class=\"btn btn-primary\">";
+					//echo "<a href=\"packing/packing_list_gen.php?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create\">Please generate Packing List</a>";
 				}
-				echo "<td class=\"sizes\">".$o_total."</td></tr>";
-				echo "</tr>";
-				// }
-				echo "</table></div></br>";
-				
-				echo "<input type=\"submit\" name=\"submit\" value=\"Generate Packing List\" class=\"btn btn-primary\">";
-				//echo "<a href=\"packing/packing_list_gen.php?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create\">Please generate Packing List</a>";
 			}
 			else
 			{
@@ -216,11 +220,17 @@ if(isset($_POST['submit']))
 			}
 			else
 			{
-				echo '<div class="alert alert-warning" role="alert">Please check packing pcs quantity.</div>';
+				echo '<div class="alert alert-warning" role="alert" id="textBoxError">Please check packing pcs quantity.</div>
+				<script>document.getElementById("div10").style.display = "block";
+				document.getElementById("processing").style.display = "none";
+				</script>';
 			}
 		//}
 	}else{
-		echo '<div class="alert alert-warning" role="alert">Please select atleast one suggested carton quantity.</div>';
+		echo '<div class="alert alert-warning" role="alert" id="radioError">Please select atleast one suggested carton quantity.</div>
+		<script>document.getElementById("div10").style.display = "block";
+		document.getElementById("processing").style.display = "none";
+		</script>';
 	}
 	
 
