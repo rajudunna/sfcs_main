@@ -171,7 +171,7 @@
 
 		if($_POST['submit'])
 		{
-			echo "<h1><font color=\"red\">Please wait while processing data!</font></h1>";
+			echo "<span id='processing'><h1><font color=\"red\">Please wait while processing data!</font></h1></span>";
 		}
 
 		$sql="select * from $bai_pro3.carton_qty_chart where user_style='$style_id'";
