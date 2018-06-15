@@ -6,6 +6,7 @@ set_time_limit(2000);
 <?php  
 $module=$_GET['module'];
 $docket=$_GET['docket'];
+$input_job_rand=$_GET['input_job_rand'];
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -83,7 +84,7 @@ td
 
 
 <?php
-$sqljob="SELECT SUM(carton_act_qty) AS Job_tot,input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random=\"$docket\"";
+$sqljob="SELECT SUM(carton_act_qty) AS Job_tot,input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random=\"$input_job_rand\"";
 mysqli_query($link, $sqljob) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_job=mysqli_query($link, $sqljob) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_job=mysqli_fetch_array($sql_job);
@@ -149,6 +150,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$schedule_code=$sql_docket['ims_schedule'];
 	$color=$sql_row['ims_color'];
 	$size_title_qry="select $title_size as title from $bai_pro3.bai_orders_db_confirm where order_style_no='$style_code' and order_del_no='$schedule_code' and  order_col_des='$color'";
+	//echo $size_title_qry; 
 	$size_title_result=mysqli_query($link, $size_title_qry) or exit("Sql Error size_title_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($size_title_res=mysqli_fetch_array($size_title_result))
 	{ 

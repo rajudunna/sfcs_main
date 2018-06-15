@@ -52,7 +52,6 @@ function active_update()
 </head>
 
 <body>
-<!---<div id="page_heading"><span style="float"><h3>Sample Room - Sample Schedules Confirmation Form</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>--->
 
 <?php 
 // include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'menu_content.php','R')); 
@@ -276,6 +275,7 @@ if(isset($_POST['submit']))
 			// 	}
 			// }
 		}
+
 		if($flag == 1)
 		{
 		//	$sizes=array("XS","s","M","L","XL","XXL","XXXL");
@@ -288,6 +288,13 @@ if(isset($_POST['submit']))
 			// $title_sizes=$act_sizes;
 			// recent comment
 		}
+		// $sql="select remarks from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		// //echo $sql;
+		// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row=mysqli_fetch_array($sql_result))
+		// {	
+		// 	$remarks=$sql_row['remarks'];
+		// }
 		//echo "<p style='margin-top: 52px;'>Input for Order TID: <font color='green'>$order_tid </font></p>";
 		echo "<table class=table table-bordered><tr><th>Style : $style</th><th>Schedule : $schedule </th><th>Color : $color</th></tr></table>";
 		
@@ -299,6 +306,8 @@ if(isset($_POST['submit']))
 		{	
 			$count++;
 		}
+
+
 		
 		if($count==0)
 		{
@@ -325,6 +334,24 @@ if(isset($_POST['submit']))
 		}
 		else
 		{
+			echo "<form name=\"test1\" method=\"post\" action=\"".getURL(getBASE($_GET['r'])['path'])['url']."\">";
+			echo "<table class='table table-striped'><tr><th>Sizes</th><td></td><th>Sample</th></tr>";
+			// echo sizeof($filtered_title_sizes);
+			$i=0;
+			foreach ($filtered_title_sizes as $sizekey => $sizevalue) {
+
+				$exist_size=get_sp_samle_order_db($order_tid,$sizevalue,"SAMPLE");
+
+				echo "<tr><td><input type=\"hidden\" name=\"sizes[$i]\"  value=\"".$sizevalue."\" size=\"5\" class=\"form-control col-md-3 col-xs-12\">".$sizevalue."</td><td>:</td>
+					<td><input type=\"text\"  name=\"samp_input[$i]\" readonly=\"true\" value=\"$exist_size\" id= \"$i\" size=\"5\" class=\"form-control col-md-3 col-xs-12 integer\"></td>";
+				echo "</tr>";
+				
+				$i++;
+			}
+			echo "<input type='hidden' name='order_tid' value='$order_tid'>";
+			echo "<input type='hidden' name='count' id='count' value='$i'>";
+			echo "</table></form>";
+
 			echo "<br/><br/><font color='red'>Lay plan generation is done. So you can't edit samples details.</font>";
 		}
 	}else{
@@ -422,7 +449,7 @@ function check_pack()
 	}
 	if(Number(tot_qty) <= 0)
 	{
-		sweetAlert("Please enter atlease one size sample","","warning");
+		sweetAlert("Please enter atleast one size sample","","warning");
 		//swal('Please Enter Any size quantity','','warning');
 		return false;
 	}

@@ -27,15 +27,8 @@ Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status)
 var flag = 0;
 
 function firstbox(){ 
-    var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     var schedule = document.getElementById('schedule');
-        if( format.test(schedule.value) ){
-            sweetAlert('No special Characters Allowed','','warning');
-            schedule.value = '';
-            return;
-        }else{
-            window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+schedule.value;
-        }
+    window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+schedule.value;
 } 
 
 function secondbox() { 
@@ -47,16 +40,16 @@ function verify_sch(){
         sweetAlert('Please Enter Schedule','','warning');
 }
 
-function myfunction () 
+function myfunction() 
 { 
-    var val=document.getElementById('reason_code').value; 
-    var val1=document.getElementById('schedule').value; 
-    if(val1.length < 1){
+    //var val = document.getElementById('reason_code').value; 
+    var val= $('#schedule').val();
+    if(val.length < 1){
         sweetAlert('Please fill the Schedule','','warning'); 
         return false; 
     }
     //alert(val.length); 
-    if(val.length<5 || val1.length<=5) 
+    if(val.length<5) 
     { 
         sweetAlert('Please enter valid schedule','','warning'); 
         return false; 
@@ -70,7 +63,7 @@ function myfunction ()
 
 <body> 
 <div class="panel panel-primary">
-<div class="panel-heading">Production Review</div> 
+<div class="panel-heading">Output Verification</div> 
 <div class="panel-body">
 <?php 
     if(isset($_GET['schedule'])) 
@@ -101,7 +94,7 @@ function myfunction ()
 
     ?> 
     
-    <form name="test" action="index.php?r=<?php echo $_GET['r'];?>" method="post" onsubmit= "return myfunction();">
+    <form name="test" action="index.php?r=<?php echo $_GET['r'];?>" method="post" >
     <div class="col-sm-12">
     <div class="row">
     <div class="col-sm-3">Enter Schedule 
@@ -140,7 +133,8 @@ function myfunction ()
     echo "</select></div><br>"; 
 ?> 
 
-<div class = "col-sm-3"><input type="submit" class = "btn btn-primary" value="Show" id="submit" name="submit" /></div>
+<div class = "col-sm-3"><input type="submit" class = "btn btn-primary" value="Show" 
+	onclick= "return myfunction()"  id="submit" name="submit"  /></div>
 </form> 
 </div></div>
 

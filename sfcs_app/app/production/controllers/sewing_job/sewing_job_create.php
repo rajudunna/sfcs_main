@@ -210,10 +210,10 @@ td{ padding:2px; white-space: nowrap;}
 <?php 
 	$authorized=array('bhargavg');
 	// include("../../../common/config/dbconf.php");
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs);
 
 	error_reporting(0);
@@ -293,13 +293,15 @@ td{ padding:2px; white-space: nowrap;}
 			<div class="col-md-12">
 				
 				<?php
-				if(isset($_POST['submit']))
+				if(isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule']))
 				{	
-
-					// echo "Style</br>";
-					$style_id=$_POST['style'];
-					$sch_id=$_POST['schedule'];
-					//echo $style."<bR>";
+					if ($_GET['style'] and $_GET['schedule']) {
+						$style_id=$_GET['style'];
+						$sch_id=$_GET['schedule'];
+					} else if ($_POST['style'] and $_POST['schedule']){
+						$style_id=$_POST['style'];
+						$sch_id=$_POST['schedule'];	
+					}
 					if ($style_id =='NIL' or $sch_id =='NIL') 
 					{						
 						echo " ";
@@ -367,7 +369,7 @@ td{ padding:2px; white-space: nowrap;}
 									<table class='table table-bordered'>
 										<thead class=\"primary\">
 											<tr>
-												<th >Schedule</th><th>Total Colors</th><th>Planned Colors</th><th>Carton Method</th><th >Pack Quantity</th><th >Sewing Job Multiples</th><th>Sewing Job Quantity</th><th>Control</th>
+												<th >Schedule</th><th>Total Colors</th><th>Planned Colors</th><th>Carton Method</th><th >Pack Quantity</th><th style=\"display:none;\">Sewing Job Multiples</th><th>Sewing Job Quantity</th><th>Control</th>
 											</tr>
 										</thead>";
 											echo "<tr><td rowspan=$val>$schedule</td>";
@@ -384,13 +386,26 @@ td{ padding:2px; white-space: nowrap;}
 													echo "<td rowspan=$val class='col-md-3'><select id=\"cart_method\" class='form-control' name=\"cart_method\" >";
 													for($j=0;$j<sizeof($operation);$j++)
 													{
-														echo "<option value=\"".$j."\" >".$operation[$j]."</option>";
+														$disabled='';
+														if ($val>1)
+														{
+															if ($j == '1' or $j == '4' or $j == '5')
+															{
+																$disabled='disabled';
+															}
+														} elseif ($val == 1) {
+															if ($j == '2' or $j == '3')
+															{
+																$disabled='disabled';
+															}
+														}
+														echo "<option value=\"".$j."\" $disabled>".$operation[$j]."</option>";
 													}
 													echo "</select></td>";
 											
 													
 													echo "<td rowspan=$val><input type=\"hidden\" value=\"$carton_qty\" id=\"carton_qty\" name=\"carton_qty\" ><input type=\"text\" class='integer form-control' value=\"$bundle_plie\" id=\"bundle_plies\" name=\"bundle_plies\" onkeyup=\"validate();\" $status></td>
-													<td rowspan=$val><input type=\"text\" class='integer form-control' value=\"$bundle_size\" id=\"bundle_per_size\" name=\"bundle_per_size\" onkeyup=\"validate();\" $status></td>
+													<td style=\"display:none;\" rowspan=$val><input type=\"text\" class='integer form-control' value=\"$bundle_size\" id=\"bundle_per_size\" name=\"bundle_per_size\" onkeyup=\"validate();\" $status></td>
 													<td rowspan=$val><input type=\"text\" class='integer form-control' value=\"$mini_qty\" id=\"mini_order_qty\" name=\"mini_order_qty\" onkeyup=\"tot_sum()\" readonly></td>";
 													if($ii==1)
 													{
@@ -471,7 +486,7 @@ td{ padding:2px; white-space: nowrap;}
 					echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
 					// header("Location:mini_order_gen.php?id=$id");
 					$url5 = getFullURLLevel($_GET['r'],'mini_order_gen.php',0,'N');
-					echo("<script>location.href = '".$url5."&id=$id';</script>");
+					echo("<script>location.href = '".$url5."&id=$id&style=$style&schedule=$scheudle';</script>");
 				}
 				?> 
 		</div>

@@ -2653,7 +2653,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			{
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}
-			if($partial_rej_qty[$i]>0)// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
+			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]>$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
 			{
 				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason)
 				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\"
@@ -2699,13 +2699,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 
 function enableButton() 
 {
-	// var print_report=document.getElementById('print_report').value;
-	// alert(print_report);
-	// if(Number(print_report) >0)
-	// {
-	// 	sweetAlert('Cannot Modify After Inspection','','warning');
-	// 	document.getElementById('put').disabled='true';
-	// }
+
 	var ele;
 	var counter_man = 0;
 		ele = document.getElementsByClassName('rej_reason');
@@ -2756,13 +2750,7 @@ function enableButton()
 function enableButton1() 
 {
     var rowcount = document.getElementById("rowcount").value;
- //    var print_report=document.getElementById('print_report').value;
-	// if(Number(print_report) >0)
-	// {
-	// 	sweetAlert('Cannot Modify After Inspection','','warning');
-	// 	document.getElementById('put').disabled='true';
-	// }
-	// else{
+ 
 	    if (document.getElementById('option1').checked)
 	    {
 	        document.getElementById('confirm').disabled = '';
@@ -2789,11 +2777,18 @@ function enableButton1()
 	        {
 	            j = j + 0;
 	        } 
-	        else 
+	        else
 	        {
-	            j = j + 1;
+	        	if($('input[name="ele_shade[' + i + ']"]').is('[readonly]'))
+	        	{
+	    		 	j = j + 0;
+	    		}
+	    		 else
+	        	{
+	        		j = j + 1;
+	        	}
 	        }
-
+	       
 	        if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
 	        {
 	            j = j + 0;
@@ -2824,13 +2819,12 @@ function enableButton1()
 	    }
 		
 		var counter_man = 0;
-		var classes = ['req_man','ctex_len','ticket_wid','ctex_wid','shade_grp','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
+		var classes = ['req_man','ctex_len','ticket_wid','ctex_wid','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
 		var ele;
 		for(var j=0;j<classes.length;j++){
 			var ele = document.getElementsByClassName(classes[j]);
 			for(var i=0;i<ele.length;i++)
 			{
-				console.log(ele[i].value);
 				ele[i].classList.remove('mandate');
 				if(ele[i].value == '' || ele[i].value.length < 1 )
 				{
@@ -2852,6 +2846,24 @@ function enableButton1()
 				}
 			}
 		}
+		shade_grp = document.getElementsByClassName('shade_grp');
+		for(var i=0;i<shade_grp.length;i++){
+			var v = $('#ele_shade\\['+i+'\\]');
+
+			v.removeClass('mandate');
+			if($('#ele_shade\\['+i+'\\]').val() == '')
+			{
+				if($('input[name="ele_shade[' + i + ']"]').is('[readonly]'))
+				{
+					v.removeClass('mandate');
+				}
+				else
+				{
+					v.addClass('mandate');
+					counter_man++;
+				}
+			}
+		}
 
 		if(counter_man > 0)
 		{
@@ -2864,11 +2876,7 @@ function enableButton1()
 
 }
 
-$(document).ready(function()
-{
- 
-	console.log($('#ele_shade\\[0\\]').val());	
-});
+
 
 function Subtract(qnty) 
 {
@@ -2984,7 +2992,8 @@ function change_body(x,y,z)
 
 	if (document.input["roll_status["+z+"]"].value == 2)
 	{
-		if(parseFloat(document.input["ele_t_length["+z+"]"].value) >= parseFloat(document.input["ele_par_length["+z+"]"].value))
+		
+		if(parseFloat(document.input["ele_t_length["+z+"]"].value) > parseFloat(document.input["ele_par_length["+z+"]"].value))
 		{
 			document.input["ele_par_length["+z+"]"].value=document.input["ele_par_length["+z+"]"].value;
 		}

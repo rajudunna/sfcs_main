@@ -68,7 +68,7 @@ function verify_con(e){
 function percent_cal()
 {
     
-	var x=parseInt(document.input.cuttable_percent.value);
+	var x=parseFloat(document.input.cuttable_percent.value);
 	if(isNaN(x)){
 		// alert();
 		var x = 0;
@@ -874,12 +874,12 @@ $url = getFullURL($_GET['r'],'order_cut_process.php','N');
 //echo $url;
 echo "<form method=\"post\" name=\"input\" action=\"$url\">";
 echo "<div class=\"row\"><div class=\"col-md-4\"><label>Cutting Excess:(%)</label>
-	  <input class='form-control integer' type='text'   
+	  <input class='form-control float' type='text'   
 	  onkeyup='return verify_num(this,event)' required 
 	  id='excess' name='cuttable_percent' size='2' onfocus=\"if(this.value==0){this.value=''}\" 
 	  value='0' onKeydown='return verify_num(this,event)'></div>";
 echo "<div class=\"col-md-4\"><label>Cutting Wastage:(%)</label>
-	  <input class='form-control integer' type='text' id='waste' 
+	  <input class='form-control float' type='text' id='waste' 
 	   onkeyup='return verify_num(this,event)' required name='cuttable_wastage' value='0' size='2'></div></div>";
 
 echo "<hr/><table class=\"table table-bordered\">";

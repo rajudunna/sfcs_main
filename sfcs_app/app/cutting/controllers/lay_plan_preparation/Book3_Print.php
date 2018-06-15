@@ -2004,7 +2004,7 @@ WebBrowser1.outerHTML = "";
 <script src="../../common/js/jquery-barcode-2.0.1.js"></script>
 </head>
 
-<body onload="printpr();">
+<body onload="printp();">
 
 <script language="JavaScript">
 <!--

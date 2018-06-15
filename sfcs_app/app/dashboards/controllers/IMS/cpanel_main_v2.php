@@ -399,9 +399,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
                 <a href="#" data-toggle="tooltip" title="M-<?php echo $module; ?> WIP :  <?php echo $sql_rowwip['WIP']; 
         $wip='0';
         $wip=$sql_rowwip['WIP'];
-        ?>" class="red-tooltip"><?php echo $module; ?></a>
-				<?php } ?>
-				<!-- onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep_ch.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);" -->
+        ?>" class="red-tooltip" onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);"><?php echo $module; ?></a>
+        <?php } ?>
+               
                 </div>  <!-- module number DIV END -->
                 <!-- <span class="classic">M-<?php echo $module; ?> WIP :  <?php echo $sql_rowwip['WIP']; 
         $wip='0';
@@ -409,7 +409,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
         ?></span> -->
                 <div style="float:left;padding-left:25px;">
                 
-                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,i.ims_color,i.ims_schedule,i.rand_track, p.acutno,i.ims_date FROM $bai_pro3.ims_log i,plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no GROUP BY ims_doc_no";
+                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,i.ims_color,i.ims_schedule,i.rand_track, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date FROM $bai_pro3.ims_log i,plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no GROUP BY ims_doc_no,inputjobnorand";
+               // echo $sqlred;
         //$sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_color,ims_schedule,rand_track  FROM ims_log WHERE ims_mod_no='$module' GROUP BY ims_doc_no"
         mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -425,20 +426,24 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $color_name=$sql_rowred['ims_color'];   // color
             $schedul_no=$sql_rowred['ims_schedule'];  // schedul no
             $rand_track=$sql_rowred['rand_track'];
+            $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
             $cut_no=$sql_rowred['acutno'];
-            
+            $inputno=$sql_rowred['inputjobno'];
+            $inputjobnorand=$sql_rowred['inputjobnorand'];
             $total_qty=$total_qty+$input_qty;
             $total_out=$total_out+$output_qty;
             $input_date=$sql_rowred['ims_date'];
           ?>
                   
-                  <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'pop_red_box_details.php','R');?>?module=<?php echo $module; ?>&docket=<?php echo $docket_no; ?>', 'myPop1',800,600);"  title="
+                  <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'pop_red_box_details.php','R');?>?module=<?php echo $module; ?>&docket=<?php echo $rand_track;?>&input_job_rand=<?php echo $inputjobnorand; ?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
                   Docket No : <?php echo $docket_no."<br/>"; ?>
-                  Cut No : <?php echo "A00".$cut_no."<br/>"; ?>
+                  Job No : <?php echo"J". $inputno."<br/>"; ?>
+                  Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
                   Input Date : <?php echo $input_date."<br/>"; ?>
+                  <?php echo "-------------------------</br>"; ?>
                   Total Input :<?php echo $input_qty."<br/>"; ?>
                   Total Output:<?php echo $output_qty."<br/>"; ?>
                   <?php echo "Balance : ".($input_qty - $output_qty); ?>
@@ -476,115 +481,115 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 <!-- ADDED NEW -->
              <?php
-                  $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module='$module' and act_cut_issue_status<>\"DONE\" order by priority limit 1";
-            $sql_result1=mysqli_query($link,$sql1) or exit("Sql Error".mysqli_error());
-            $sql_num_check=mysqli_num_rows($sql_result1);
-            while($sql_row1=mysqli_fetch_array($sql_result1)){
-                    $cut_new=$sql_row1['act_cut_status'];
-              $cut_input_new=$sql_row1['act_cut_issue_status'];
-              $rm_new=strtolower(chop($sql_row1['rm_date']));
-              $rm_update_new=strtolower(chop($sql_row1['rm_date']));
-              $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
-              $doc_no=$sql_row1['doc_no'];
-              $order_tid=$sql_row1['order_tid'];
-              //$fabric_status=$sql_row1['fabric_status'];
-              $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
+            //       $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module='$module' and act_cut_issue_status<>\"DONE\" order by priority limit 1";
+            // $sql_result1=mysqli_query($link,$sql1) or exit("Sql Error".mysqli_error());
+            // $sql_num_check=mysqli_num_rows($sql_result1);
+            // while($sql_row1=mysqli_fetch_array($sql_result1)){
+            //         $cut_new=$sql_row1['act_cut_status'];
+            //   $cut_input_new=$sql_row1['act_cut_issue_status'];
+            //   $rm_new=strtolower(chop($sql_row1['rm_date']));
+            //   $rm_update_new=strtolower(chop($sql_row1['rm_date']));
+            //   $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
+            //   $doc_no=$sql_row1['doc_no'];
+            //   $order_tid=$sql_row1['order_tid'];
+            //   //$fabric_status=$sql_row1['fabric_status'];
+            //   $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
 
-              $style=$sql_row1['order_style_no'];
-              $schedule=$sql_row1['order_del_no'];
-              $color=$sql_row1['order_col_des'];
-              $total_qty=$sql_row1['total'];
+            //   $style=$sql_row1['order_style_no'];
+            //   $schedule=$sql_row1['order_del_no'];
+            //   $color=$sql_row1['order_col_des'];
+            //   $total_qty=$sql_row1['total'];
               
-              $cut_no=$sql_row1['acutno'];
-              $color_code=$sql_row1['color_code'];
-              $log_time=$sql_row1['log_time'];
-              $emb_stat=$sql_row1['emb_stat'];
+            //   $cut_no=$sql_row1['acutno'];
+            //   $color_code=$sql_row1['color_code'];
+            //   $log_time=$sql_row1['log_time'];
+            //   $emb_stat=$sql_row1['emb_stat'];
               
               
-              $sql11="select sum(ims_pro_qty) as \"bac_qty\", sum(emb) as \"emb_sum\" from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
-              mysqli_query($link,$sql11) or exit("Sql Error".mysqli_error());
+            //   $sql11="select sum(ims_pro_qty) as \"bac_qty\", sum(emb) as \"emb_sum\" from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
+            //   mysqli_query($link,$sql11) or exit("Sql Error".mysqli_error());
               
-              $sql_result11=mysqli_query($link,$sql11) or exit("Sql Error".mysqli_error());
-              $input_count=mysqli_num_rows($sql_result11);
-              while($sql_row11=mysqli_fetch_array($sql_result11))
-              {
-                $output=$sql_row11['bac_qty'];
-                $emb_sum=$sql_row11['emb_sum'];
-                if($emb_sum==NULL)
-                {
-                  $input_count=0;
-                }
-              } 
+            //   $sql_result11=mysqli_query($link,$sql11) or exit("Sql Error".mysqli_error());
+            //   $input_count=mysqli_num_rows($sql_result11);
+            //   while($sql_row11=mysqli_fetch_array($sql_result11))
+            //   {
+            //     $output=$sql_row11['bac_qty'];
+            //     $emb_sum=$sql_row11['emb_sum'];
+            //     if($emb_sum==NULL)
+            //     {
+            //       $input_count=0;
+            //     }
+            //   } 
             
-                if($cut_new=="DONE"){ $cut_new="T";} else { $cut_new="F"; }
-                if($rm_update_new==""){ $rm_update_new="F"; } else { $rm_update_new="T"; }
-                if($rm_new=="0000-00-00 00:00:00" or $rm_new=="") { $rm_new="F"; } else { $rm_new="T";  }
-                if($input_temp==1) { $input_temp="T"; } else { $input_temp="F"; }
-                if($cut_input_new=="DONE") { $cut_input_new="T";  } else { $cut_input_new="F"; }
+            //     if($cut_new=="DONE"){ $cut_new="T";} else { $cut_new="F"; }
+            //     if($rm_update_new==""){ $rm_update_new="F"; } else { $rm_update_new="T"; }
+            //     if($rm_new=="0000-00-00 00:00:00" or $rm_new=="") { $rm_new="F"; } else { $rm_new="T";  }
+            //     if($input_temp==1) { $input_temp="T"; } else { $input_temp="F"; }
+            //     if($cut_input_new=="DONE") { $cut_input_new="T";  } else { $cut_input_new="F"; }
                 
-                $check_string=$cut_new.$rm_update_new.$rm_new.$input_temp.$cut_input_new;
-                $rem="Nil";
+            //     $check_string=$cut_new.$rm_update_new.$rm_new.$input_temp.$cut_input_new;
+            //     $rem="Nil";
                 
-                //NEW FSP
-                if($fabric_status!=5)
-                {
-                  $fabric_status=$sql_row1['ft_status'];
-                }
-                //NEW FSP
+            //     //NEW FSP
+            //     if($fabric_status!=5)
+            //     {
+            //       $fabric_status=$sql_row1['ft_status'];
+            //     }
+            //     //NEW FSP
               
-                if($cut_new=="T"){
-                  $id="blue";
-                }
+            //     if($cut_new=="T"){
+            //       $id="blue";
+            //     }
               
-                $title=str_pad("Style:".$style,80).str_pad("Schedule:".$schedule,80).str_pad("Color:".$color,80).str_pad("Job_No:".chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3),80).str_pad("Total_Qty:".$total_qty,80).str_pad("Log_Time:".$log_time,80).str_pad("Remarks:".$rem,80);
+            //     $title=str_pad("Style:".$style,80).str_pad("Schedule:".$schedule,80).str_pad("Color:".$color,80).str_pad("Job_No:".chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3),80).str_pad("Total_Qty:".$total_qty,80).str_pad("Log_Time:".$log_time,80).str_pad("Remarks:".$rem,80);
 
-                //Embellishment Tracking
-                if($emb_sum=="")
-                {
-                  $emb_sum=0;
-                }
-                if($input_count=="")
-                {
-                  $input_count=0;
-                }
-                $emb_stat_title="";
-                //echo $emb_stat."-".$emb_sum."-".$input_count."$";
-                if(($emb_stat==1 or $emb_stat==3) and $emb_sum>0)
-                {
-                  $emb_stat_title="<font color=black size=2>X</font>";
-                }
-                else
-                {
-                  if(($emb_stat==1 or $emb_stat==3) and $emb_sum==0 and $input_count>0)
-                  {
-                    $emb_stat_title="<font color=black size=2>&#8730;</font>";
-                  }
-                  else
-                  {
-                    if(($emb_stat==1 or $emb_stat==3))
-                    {
-                      $emb_stat_title="<font color=black size=2>X</font>";
-                    }
-                  }
-                }
-                //echo $emb_sum;
-                //Embellishment Tracking
+            //     //Embellishment Tracking
+            //     if($emb_sum=="")
+            //     {
+            //       $emb_sum=0;
+            //     }
+            //     if($input_count=="")
+            //     {
+            //       $input_count=0;
+            //     }
+            //     $emb_stat_title="";
+            //     //echo $emb_stat."-".$emb_sum."-".$input_count."$";
+            //     if(($emb_stat==1 or $emb_stat==3) and $emb_sum>0)
+            //     {
+            //       $emb_stat_title="<font color=black size=2>X</font>";
+            //     }
+            //     else
+            //     {
+            //       if(($emb_stat==1 or $emb_stat==3) and $emb_sum==0 and $input_count>0)
+            //       {
+            //         $emb_stat_title="<font color=black size=2>&#8730;</font>";
+            //       }
+            //       else
+            //       {
+            //         if(($emb_stat==1 or $emb_stat==3))
+            //         {
+            //           $emb_stat_title="<font color=black size=2>X</font>";
+            //         }
+            //       }
+            //     }
+            //     //echo $emb_sum;
+            //     //Embellishment Tracking
                 
-                $sql11="select trims_status from $bai_pro3.trims_dashboard where doc_ref=$doc_no";
-                $sql_result11=mysqli_query($link,$sql11) or exit("Sql Error".mysqli_error());
-                while($sql_row11=mysqli_fetch_array($sql_result11))
-                {
-                  $trims_status=$sql_row11['trims_status']; 
-                }
+            //     $sql11="select trims_status from $bai_pro3.trims_dashboard where doc_ref=$doc_no";
+            //     $sql_result11=mysqli_query($link,$sql11) or exit("Sql Error".mysqli_error());
+            //     while($sql_row11=mysqli_fetch_array($sql_result11))
+            //     {
+            //       $trims_status=$sql_row11['trims_status']; 
+            //     }
                 
-                $add_css="behavior: url(border-radius-ie8.htc);  border-radius: 10px;";
-                if($trims_status>0){
-                  $add_css="";
-                }
-            }
-                    if($id=="blue"){
-                  echo "<div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; $add_css\" title=\"$title\" >$emb_stat_title</div>"; 
-                  }
+            //     $add_css="behavior: url(border-radius-ie8.htc);  border-radius: 10px;";
+            //     if($trims_status>0){
+            //       $add_css="";
+            //     }
+            // }
+            //         if($id=="blue"){
+            //       echo "<div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; $add_css\" title=\"$title\" >$emb_stat_title</div>"; 
+            //       }
              
             ?>
 <!--  ENDED NEW  -->

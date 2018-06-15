@@ -47,10 +47,10 @@ if(isset($_POST['importSubmit'])){
                                 $link->query("UPDATE $bai_pro2.fr_data SET team = '".$line[1]."', style = '".$line[4]."', smv = '".$line[5]."',fr_qty = '".$line[7]."',hours = '".$hours."',schedule = '".$line[2]."', color = '".$line[3]."' WHERE frdate ='".$newDate."' AND team='".$line[1]."' AND style='".$line[4]."' AND schedule = '".$line[2]."' AND color = '".$line[3]."'");
             					// echo "UPDATE fr_data SET team = '".$line[1]."', style = '".$line[4]."', smv = '".$line[5]."',fr_qty = '".$line[7]."',hours = '".$hours."',schedule = '".$line[2]."', color = '".$line[3]."' WHERE frdate ='".$newDate."' AND team='".$line[1]."' AND style='".$line[4]."' AND schedule = '".$line[2]."' AND color = '".$line[3]."'";
             					// echo "</br>";
-                               
-                                echo "<div class='alert alert-success'>
-                                  <strong>Success!</strong> FR Data Successfully Updated .
-                                </div>";
+                
+                                // echo "<div class='alert alert-success'>
+                                //   <strong>Success!</strong> FR Data Successfully Updated .
+                                // </div>";
 
                             }
                         }
@@ -93,7 +93,6 @@ if(isset($_POST['importSubmit'])){
                 echo "<script>sweetAlert('OK','file Uploaded Sucessfully','success')</script>";
                 $url = getFullURL($_GET['r'],'upload_fr.php','N');
                 echo "<script>
-                        sweetAlert('Oops','File Already Exists','error')
                         setTimeout(
                         function(){
                             location.href = ' $url ';
@@ -109,10 +108,10 @@ if(isset($_POST['importSubmit'])){
             // $qstring = '?status=err';
         }
     }else{
-        echo "<script>sweetAlert('Oops','Invalid File','error')</script>";
+        //echo "<script>sweetAlert('Oops','Invalid File','error')</script>";
         $url = getFullURL($_GET['r'],'upload_fr.php','N');
         echo "<script>
-                sweetAlert('Oops','File Already Exists','error')
+                sweetAlert('Oops','Please Update .CSV File','error')
                 setTimeout(
                 function(){
                     location.href = ' $url ';

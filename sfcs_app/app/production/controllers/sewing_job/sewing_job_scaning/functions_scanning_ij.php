@@ -11,7 +11,7 @@ if(isset($_GET['variable']))
 function getscheduledata($variable)
 {
 	// include("dbconf1.php");
-	// include("..".getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	// include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include("../../../../../common/config/config.php");
 
 	$query_get_schedule_data= "SELECT order_del_no as schedule FROM $bai_pro3.packing_summary_input group by schedule";
@@ -213,8 +213,20 @@ function getjobdetails($job_number)
 		}
 		$result_array['flag'] = $flag;
 	}
-	 $select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = $job_number[0]";
-	 $result_select_modudle_qry = $link->query($select_modudle_qry);
+	$select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = $job_number[0]";
+	$result_select_modudle_qry = $link->query($select_modudle_qry);
+	
+	if(mysqli_num_rows($result_select_modudle_qry)==0)
+	{
+		$select_modudle_qry1 = "select ims_mod_no as input_module from $bai_pro3.ims_log where input_job_rand_no_ref = $job_number[0] limit 1";
+		$result_select_modudle_qry = $link->query($select_modudle_qry1);
+	}
+	else if(mysqli_num_rows($result_select_modudle_qry)==0)
+	{	
+		$select_modudle_qry2 = "select ims_mod_no as input_module from $bai_pro3.ims_log_backup where input_job_rand_no_ref = $job_number[0] limit 1";
+		$result_select_modudle_qry = $link->query($select_modudle_qry2);
+	}
+	
 	while($row = $result_select_modudle_qry->fetch_assoc()) 
 	{
 		$result_array['module'] = $row['input_module'];

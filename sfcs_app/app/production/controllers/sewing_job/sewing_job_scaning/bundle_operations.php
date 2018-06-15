@@ -22,9 +22,9 @@ function verify_num(t){
 <?php
 //code by Srinu
 // include("dbconf.php");
-	// include("..".getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-	// include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
-	include("..".getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
+	// include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	// include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 	// include("../../../../../common/config/config_ajax.php");
 // error_reporting (0);
 $qry_get_product_style = "SELECT id,style FROM $brandix_bts.tbl_style_ops_master  where style != '' group by style";

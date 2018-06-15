@@ -2,14 +2,14 @@
 $start_timestamp = microtime(true);
 
 include("m3_process_ses_track.php");
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 $time_diff=(int)date("YmdH")-$log_time;
 
 set_time_limit(6000000);
 
 function check_style($string)
 {
-	include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+	include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 	$check=0;
 	for ($index=0;$index<strlen($string);$index++) {
     	if(isNumber($string[$index]))
@@ -300,8 +300,15 @@ $username="ber_databasesvc";
 						$sql3="update $bai_pro3.bai_orders_db set order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h where order_tid=\"$ssc_code\" and (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h)=0";
 						mysqli_query($link, $sql3) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if($flag==1)
-						{			
-							$sql31="update $bai_pro3.bai_orders_db set packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
+						{	
+							$vpo_query="select VPO_NO from $m3_inputs.order_details where GMT_Color=\"$color\" and Schedule=\"$sch_no\" and Style=\"$style\"";
+							// echo $vpo_no."<br>";
+							$vpo_result=mysqli_query($link, $vpo_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row3=mysqli_fetch_array($vpo_result))
+							{		
+								$vpo=$sql_row3['VPO_NO'];
+							}
+							$sql31="update $bai_pro3.bai_orders_db set vpo=\"$vpo\", packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
 							// echo $sql31."<br>";
 							mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$size_ref=$size_ref+1;

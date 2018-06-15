@@ -111,7 +111,6 @@ function uncheckall()
 	$from_date=$_POST['from_date'];
 	$to_date=$_POST['to_date'];
 	
-	echo $style."".$schedule."".$cpo;
 //NEW
 
 $cpo_code="";

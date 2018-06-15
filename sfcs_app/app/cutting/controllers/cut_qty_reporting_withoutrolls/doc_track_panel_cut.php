@@ -6,7 +6,7 @@ $view_access=user_acl("SFCS_0087",$username,1,$group_id_sfcs);
 ?>
 <body>
 <div class="panel panel-primary">
-<div class="panel-heading">Cut Status Reporting</div>
+<div class="panel-heading">Cut Quantity Reporting (Without Roll)</div>
 <div class="panel-body">
 <form method="post" name="input" action="#">
 <div class="row">
@@ -173,7 +173,7 @@ if(isset($_POST['submit']))
 							else
 							{
 								$create_url= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
-								echo "<td><a href=".$create_url."&doc_no=$doc_no>Update</a></td>";
+								echo "<td><a class='btn btn-sm btn-warning' href=".$create_url."&doc_no=$doc_no>Update</a></td>";
 							}
 						}
 						else
@@ -192,7 +192,7 @@ if(isset($_POST['submit']))
 						else
 						{
 							$create_url_11= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
-							echo "<td><a href=".$create_url_11."&doc_no=$doc_no>Update</a></td>";
+							echo "<td><a class='btn btn-sm btn-warning' href=".$create_url_11."&doc_no=$doc_no>Update</a></td>";
 						}
 					}
 

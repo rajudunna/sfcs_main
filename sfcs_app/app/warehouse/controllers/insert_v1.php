@@ -61,70 +61,13 @@ else
 // 		selectFirst: false
 // 	});
 // });
-
-
-function isNumber(evt) {
-		var charCode = (evt.which) ? evt.which : evt.keyCode;
-		if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57) )
-		{
-			// if (charCode == 46 && evt.srcElement.value.split('.').length>1) 
-			{
-				return false; 
-			}
-		}
-		return true;
-	}
 </script>
 
-  <title>Stock In Form (NEW)</title>
 
-  <!-- <link rel="stylesheet" href="<?= getBASE($_GET['r'])['base'].'/includes/page_style.css'; ?>" type="text/css" media="all" /> -->
   <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R'); ?>"></script>
-<!-- Allow Only Numbers-->
 
-<script type="text/javascript">
-//Function to allow only numbers to textbox
-function validate(event)
-{
-	event = (event) ? event : window.event;
-	var charCode = (event.which) ? event.which : event.keyCode;
-	if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-		return false;
-	}
-	return true;
-}
-</script>
-
-
-<script type="text/javascript">
-//Function to allow only numbers to textbox
-function validate2(key)
-{
-	//getting key code of pressed key
-	var keycode = (key.which) ? key.which : key.keyCode;
-	var phn = document.getElementById('txtPhn');
-	//comparing pressed keycodes
-	if ((keycode < 48 || keycode > 57 ) && (keycode<42 || keycode>43) && (keycode<65 || keycode>90))
-	{
-		return false;
-	}
-
-}
-
-function isNumberKey(evt)
-{
-	var charCode = (evt.which) ? evt.which : evt.keyCode;
-	if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
-	{
-		return false;
-	}
-	return true;
-}
-</script>
-
-<!-- Allow only Numbers -->
 
 <style>
 #leftcolumn { /* width: 300px; */ margin-left:5px;float: right; }
@@ -133,15 +76,13 @@ function isNumberKey(evt)
 .clear { clear: both;}
 
 </style>
-<!-- <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
-</head> -->
+
 <body onload="dodisable();">
-<?php include("menu_content.php"); ?>
+
 <?php include("stock_in.php"); ?>
 
 <?php
-include("dbconf.php");
-//echo "Host : ".$host;
+
 if(isset($_POST['submit']))
 {	
 	$sql="select lot_no from $bai_rm_pj1.sticker_report where lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
@@ -564,7 +505,7 @@ for($i=0; $i<sizeof($labels);$i++)
 
 echo "</tr>";
 
-	
+$counter = 0;
 for($j=0;$j<100;$j++)
 {
 	echo "<tr>";
@@ -573,14 +514,31 @@ for($j=0;$j<100;$j++)
 		if($labels[$i] != null){
 			if($names[$i]=="qty")
 			{
+				$counter++;
 				// <b>'.$uoe.'</b>
 				//echo '<td><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" value="" onchange="if(check3(this.value,'.$diff.','.$j.",'qty[]'".')==1010){ this.value=0;}">'.$uoe.'</td>';
-				echo '<td><div class="col-md-6 col-md-offset-3"><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" id=name="'.$names[$i].'['.$j.']" value="" onChange="quantity(this);" class="form-control float"></div></td>';
+				echo '<td><div class="col-md-6 col-md-offset-3">
+				<input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" id=name="'.$names[$i].'['.$j.']" 
+				value="" onChange="quantity(this);" class="form-control float">
+				</div>';
+
+				if($counter == 1){
+					echo "
+					<div class='col-md-3' id='parent'>
+						<div id='floater'><b class='label label-info'>Balance Qty :</b> 
+						<input type='number' name='balance_new11_qty' id='balance_new11_qty' readonly='readonly' value='".$diff."' style='width: 80px;border:0px;color:red'>
+						</div>
+					</div>";
+				}
+				echo '</td>';
 			}
 			else
 			{
 				// echo '<td><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" value=""  onkeypress="return validate2(event)"></td>';	
-				echo '<td><div class="col-md-6 col-md-offset-3"><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']"  value="" class="form-control float" onChange="verify_dup_box_no(this)"/></div></td>';	
+				echo '<td><div class="col-md-6 col-md-offset-3">
+				<input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']"  
+				value="" class="form-control float" onChange="verify_dup_box_no(this)"/>
+				</div></td>';	
 			}
 		}
 	}
@@ -603,6 +561,21 @@ echo '</form></div>';
 <script>	
 $(document).ready(function()
 {	
+	$(window).scroll(function(){
+		var h = $('#floater').offset().top;
+		var p = $('#parent').offset().top;
+		h = (h - $(window).scrollTop());//actual scrolling div
+		p = (p - $(window).scrollTop());//refference scrolling div to manipulate scrollling div
+	
+		if(h < 50){
+			$('#floater').addClass('sticky');	
+		}
+		if(p>0){
+			$('#floater').removeClass('sticky');
+		}
+	});
+
+
 	$('#upload').hide();
 	$('#selectsearch1').change(function()
 	{
@@ -633,3 +606,16 @@ $(document).ready(function()
 
 
 </script>
+
+<style>
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+.actual {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+</style>

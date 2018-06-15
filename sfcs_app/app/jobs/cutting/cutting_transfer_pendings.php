@@ -3,7 +3,7 @@
 <head>  
 <?php 
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 $cache_date="Cutting_2_1Room_Transfer_Pendings"; 
 $cachefile = $cache_date."html"; 
@@ -223,7 +223,7 @@ $(document).ready(function() {
 <?php 
 
 
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
   
      
      

@@ -105,10 +105,10 @@
 </script>
 
 <?php
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
-	include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 
 	if(isset($_POST['style']))
 	{
@@ -178,11 +178,19 @@
 
 				
 			<?php
-				if (isset($_POST["submit"]))
+				if (isset($_POST["submit"]) or ($_GET['style'] and $_GET['schedule']))
 				{
-					$style_code=$_POST['style'];
-					$schedule=$_POST['schedule'];
-					// echo $style_code.'<br>';
+					if ($_GET['style'] and $_GET['schedule']) {
+						$style_code=$_GET['style'];
+						$schedule=$_GET['schedule'];
+					} else if ($_POST['style'] and $_POST['schedule']){
+						$style_code=$_POST['style'];
+						$schedule=$_POST['schedule'];	
+					}
+
+					// $style_code=$_POST['style'];
+					// $schedule=$_POST['schedule'];
+					// echo $style_code.'<br>';s
 					// echo $schedule;
 					if ($style_code =='NIL' or $schedule =='NIL')
 					{
@@ -336,10 +344,14 @@
 					}
 				}
 
-				
+				$carton_ratio = getFullURLLevel($_GET['r'],'carton_ratio.php',0,'N');
 				// echo "<br><br><br><br><div class='alert alert-success'>Data Saved Successfully</div>";
 				echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURL($_GET['r'], "carton_ratio.php", "N")."\"; }</script>";	
+					echo "<script>
+						setTimeout(redirect(),3000);
+						function redirect(){
+							location.href = '".$carton_ratio."&style=$style_id&schedule=$schedule_id';
+						}</script>";	
 			}
 		?>
 		

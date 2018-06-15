@@ -1,7 +1,7 @@
 
 <?php  
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 error_reporting(0);
 $cache_date="current_week";
@@ -820,7 +820,7 @@ table{
 					echo "<td class=\"lef\">".$sql_row['buyer_division']."</td>";
 					echo "<td class=\"lef\">".$status_title."</td>";
 					echo "<td>".$sql_row['ex_factory_date_new']."</td>";
-					echo "<td class=\"lef\">".$sql_row['style']."</a></td>";
+					echo "<td class=\"lef\"><a href='pop_report.php?style='$style'&schedule='$schedule'&color='$color'>".$sql_row['style']."</a></td>";
 					echo "<td>".$sql_row['schedule_no']."</td>";
 					echo "<td class=\"lef\">".$sql_row['color']."</td>";
 					echo "<td>".substr($sql_row['sections'],0,-1)."</td>";
