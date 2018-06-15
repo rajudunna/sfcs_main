@@ -6,12 +6,14 @@ Ticket#45927327 Nareshb/Date:24-12-2015/Applying user_acl to give access for inp
 
 --> 
 <?php 
+
 error_reporting(0);
 ini_set('display_errors', 'On');
 set_time_limit(2000); 
 ?> 
 
 <?php 
+
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 //include($_SERVER['DOCUMENT_ROOT']."M3_Bulk_OR/ims_size.php"); 
@@ -19,13 +21,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 //include($_SERVER['DOCUMENT_ROOT']."server/group_def.php"); 
 //access for authorised user to transfer the input  
 //$auth_users=user_acl("SFCS_0203",$username,7,$group_id_sfcs);  
-$auth_users=array("rameshk","chathurangad","dinushapre"); 
+$auth_users=array("rameshk","chathurangad","dinushapre","$username"); 
 //access for power user to remove the input 
 //$auth_cut_users=user_acl("SFCS_0203",$username,22,$group_id_sfcs);  
-$auth_cut_users=array("rameshk","chathurangad","dinushapre"); 
+$auth_cut_users=array("rameshk","chathurangad","dinushapre","$username"); 
 //access for super user to report the sample room for cut panel input 
 //$auth_users_for_sample_cut_input=user_acl("SFCS_0203",$username,33,$group_id_sfcs); 
-$auth_users_for_sample_cut_input=array("rameshk","chathurangad","dinushapre"); 
+$auth_users_for_sample_cut_input=array("rameshk","chathurangad","dinushapre","$username"); 
 ?> 
 
 
@@ -143,7 +145,7 @@ table
         $module_ref=$_GET['module']; 
         $section_id=$_GET['section_id']; 
         //echo "<h2>Module - $module_ref Summary</h2>"; 
-        echo '<div id="page_heading"><span style="float: left"><h3>Module - '.$module_ref.' Summary</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>'; 
+        echo '<div id="page_heading"><span style=""><h3>Module - '.$module_ref.' Summary</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>'; 
         echo '<table style="color:black; border: 1px solid red;">'; 
         echo "<tr class=\"new\"><th>Select</th><th>Input Date</th><th>Exp. to Comp.</th><th>TID</th><th>Style</th><th>Schedule</th><th>Color</th>"; 
         //echo "<th>CID</th><th>DOC#</th>"; 
@@ -238,10 +240,11 @@ echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper(subs
 
     $auth_users=explode(",",$users); 
 */     
+
         if(in_array($username,$auth_users))         
         { 
-             
-        echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
+        //if it is required pls uncomment this     
+        // echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
          
         } 
 /*         
@@ -272,12 +275,12 @@ echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper(subs
 
 </form> 
 
-<h3>Request for Special Input</h3> 
+<!-- <h3>Request for Special Input</h3> 
 <form name="test_input" method="post" action="special_input.php"> 
 <input type="hidden" name="module" value="<?php echo $module_ref;  ?>"> 
 <input type="hidden" name="section" value="<?php echo $section_id;  ?>"> 
 
-<input type="submit" name="spreq" value="Create Special Input Box"> 
+<input type="submit" name="spreq" value="Create Special Input Box">  -->
 
 
 </form> 
