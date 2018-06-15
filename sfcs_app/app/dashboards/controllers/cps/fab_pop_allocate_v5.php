@@ -248,6 +248,8 @@ function check_qty2(x,m,n,doc)
 				if(srgp != srgp1){
 					swal('Shrinkage group is not unique','','error');
 					document.getElementById(m).checked = false;
+					var xx="tr"+m;
+					document.getElementById(xx).style.backgroundColor = '#fff';
 					return;
 				}
 			}
@@ -780,7 +782,7 @@ if(isset($_POST['allocate']))
 		
 		//To show stats
 		echo "<h3>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\"></span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h3>";
-		echo '<div class="table-responsive"><table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">';
+		echo '<div class="table-responsive"><table id="example" class="stripe row-border order-column dataTable" cellspacing="0" width="100%">';
 		
 		echo "<thead><tr id=\"$doc_ref\" bgcolor=\"RED\">";
 		echo "<th>Invoice No</th>";	
