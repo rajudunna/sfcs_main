@@ -242,9 +242,8 @@ echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper(subs
 */     
 
         if(in_array($username,$auth_users))         
-        { 
-        //if it is required pls uncomment this     
-        // echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
+        {   
+         echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
          
         } 
 /*         
