@@ -189,7 +189,7 @@ changes log:
 	$group_docs=$_GET['group_docs'];
 ?>
 
-<link rel="stylesheet" type="text/css" href="page_style.css" />
+<link rel="stylesheet" type="text/css" href="../../../../common/css/page_style.css" />
 
 <style>
 body

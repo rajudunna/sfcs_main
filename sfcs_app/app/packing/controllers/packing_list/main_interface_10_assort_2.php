@@ -103,7 +103,7 @@
 					echo "<input type=\"hidden\" name=\"color\" value=\"$col_des\">";
 					echo "<tr>";
 					echo "<td>".$col_des."</td>
-						  <td><input type=\"text\" name=\"packpcs[]\" value=\"1\" class=\"form-control\"><input type=\"hidden\" name=\"assort_color\" value=\"\" class=\"form-control\"></td>";
+						  <td><input type=\"text\" name=\"packpcs[]\" value=\"1\" class=\"form-control focus\"><input type=\"hidden\" name=\"assort_color\" value=\"\" class=\"form-control\"></td>";
 					$o_total =0;
 					foreach($tot_sizes as $key=>$value)
 					{
@@ -220,11 +220,17 @@ if(isset($_POST['submit']))
 			}
 			else
 			{
-				echo '<div class="alert alert-warning" role="alert">Please check packing pcs quantity.</div>';
+				echo '<div class="alert alert-warning" role="alert" id="textBoxError">Please check packing pcs quantity.</div>
+				<script>document.getElementById("div10").style.display = "block";
+				document.getElementById("processing").style.display = "none";
+				</script>';
 			}
 		//}
 	}else{
-		echo '<div class="alert alert-warning" role="alert">Please select atleast one suggested carton quantity.</div>';
+		echo '<div class="alert alert-warning" role="alert" id="radioError">Please select atleast one suggested carton quantity.</div>
+		<script>document.getElementById("div10").style.display = "block";
+		document.getElementById("processing").style.display = "none";
+		</script>';
 	}
 	
 
