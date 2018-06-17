@@ -1,5 +1,7 @@
 <?php
 //include('dbconf.php');
+//GLOBAL $happ;
+
   function hasChild($parent_id)
   {
 	GLOBAL $menu_table_name;
@@ -11,7 +13,7 @@
     return $rs['count'];
   }
   
-  function CategoryTree($list,$parent,$append)
+  function CategoryTree($list,$parent,$append,$happ)
   {
    	GLOBAL $menu_table_name;
 	GLOBAL $link;
@@ -39,8 +41,8 @@
 				$linkq2q= explode('?',$parent['link_location']);
 				$full_path_url = $linkq2q[0];
 				$get_vars_data = (isset($linkq2q[1]) && $linkq2q[1]!='') ? '&'.$linkq2q[1] : '';
-				//var_dump(hasmenupermission());die();
-			//if(in_array($parent['menu_pid'],hasmenupermission())){
+				//var_dump($happ);die();
+			if(in_array($parent['menu_pid'],$happ)){
 				if(base64_encode($full_path_url) == $_GET['r'] || (isset($_SESSION['link']) && $_SESSION['link'] == base64_encode($full_path_url))){
 				$list = '<li class=\'current-page\'><a href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div></li>';
@@ -51,9 +53,9 @@
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div>
 				</li>';
 				}
-			/*}else{
+			}else{
 				$list = "";
-			}*/
+			}
 				
 				// $list = '<li><a  href="'.$parent['link_location'].'" target="main" alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				// <div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div>
@@ -105,7 +107,7 @@
       $qry = mysqli_query($link, $sql);
       $child = mysqli_fetch_array($qry);
       do{
-        $list .= CategoryTree($list,$child,$append);
+        $list .= CategoryTree($list,$child,$append,$happ);
       }while($child = mysqli_fetch_array($qry));
       $list .= "</ul>";
     }
@@ -131,10 +133,11 @@
     $qry = mysqli_query($link, $sql) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//$qry = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     $parent = mysqli_fetch_array($qry);
-    $mainlist = "<li id=\"tree\"><a>";
+	$mainlist = "<li id=\"tree\"><a>";
+	$happ = hasmenupermission();
     do
 	{
-      $mainlist .= CategoryTree($list,$parent,$append = 0);
+      $mainlist .= CategoryTree($list,$parent,$append = 0,$happ);
     }while($parent = mysqli_fetch_array($qry));
     $list .= "</a></li>";
     return $mainlist;
