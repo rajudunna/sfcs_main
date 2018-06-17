@@ -19,6 +19,6 @@ $link = mysqli_connect("$host","$user","$password","$database",'3326');
   //echo "Failed to connect to MySQL: " . mysqli_connect_error();
   $link = Null;
   } 
-  
+  //testing dev master
 ?>
 
