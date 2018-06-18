@@ -75,7 +75,7 @@ function isNumberKey(evt,issued_qty)
 <?php 
 // echo '<!---<div id="page_heading"><span style="float: left"><h3>Update RM Returns </h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>--->';
 // include("menu_content.php"); 
-	include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'menu_content.php','R'));
+	// include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'menu_content.php','R'));
 ?>
 
 

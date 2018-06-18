@@ -313,8 +313,8 @@ if(isset($_POST['submit']))
 	}
 	
 	$table.="</table>";
-	
-	$app_message=$message.$table."<br/><br/> <a href=\"$dns_adr/projects/beta/rm_projects/BAI_RM_PJ2/update_status.php?tid=$rand&check=1\"><strong>Click here to update the status.</strong></a><br/><br/>".$message_f;
+	$url = getFullURLLevel($_GET['r'],'reports/update_status.php',1,'N');
+	$app_message=$message.$table."<br/><br/> <a href=\"$url&tid=$rand&check=1\"><strong>Click here to update the status.</strong></a><br/><br/>".$message_f;
 	$message.=$table.$message_f;
 	
 	

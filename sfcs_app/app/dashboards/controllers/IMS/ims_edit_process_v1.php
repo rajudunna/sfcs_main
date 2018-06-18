@@ -10,9 +10,11 @@
 <?php   
 $tid=$_GET['tid']; 
 $module=$_GET['module']; 
+error_reporting(0);
 ?> 
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 ?> 
 
 
@@ -86,19 +88,29 @@ body{
 <div class="panel-body">
 <table> 
 <form name="test" action="ims_edit_process_v1_process.php" method="post"> 
-<tr><td>TID</td><td>:</td><td> <?php echo $tid; ?><input type="hidden" name="tid" value="<?php echo $tid; ?>" size="15"></td> </tr> 
+<!-- <tr><td>TID</td><td>:</td><td> <?php echo $tid; ?><input type="hidden" name="tid" value="<?php // echo $tid; ?>" size="15"></td> </tr> -->
 <?php 
+
 
 $sql="select * from $bai_pro3.ims_log where tid=$tid"; 
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row=mysqli_fetch_array($sql_result)) 
 { 
+    $ims_schedule=$sql_row['ims_schedule'];
+	$ims_style=$sql_row['ims_style'];
+	$ims_color=$sql_row['ims_color'];
+    $ims_size=$sql_row['ims_size'];
+	$ims_size2=substr($ims_size,2);
+
+	
+    $size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
+	
     echo "<tr><td>Style</td><td>:</td><td>".$sql_row['ims_style']."</td></tr>"; 
     echo "<tr><td>Schedule</td><td>:</td><td>".$sql_row['ims_schedule']."</td></tr>"; 
     echo "<tr><td>Color</td><td>:</td><td>".$sql_row['ims_color']."</td></tr>"; 
     echo "<tr><td>Current Module</td><td>:</td><td>".$sql_row['ims_mod_no'].'<input type="hidden" name="current_mod" value="'.$sql_row['ims_mod_no'].'"  size="15">'."</td></tr>"; 
-    echo "<tr><td>Size</td><td>:</td><td>".strtoupper(substr($sql_row['ims_size'],2))."</td></tr>"; 
+    echo "<tr><td>Size</td><td>:</td><td>".strtoupper($size_value)."</td></tr>"; 
     echo "<tr><td>Input Qty</td><td>:</td><td>".$sql_row['ims_qty']."</td></tr>"; 
     echo "<tr><td>Produced Qty</td><td>:</td><td>".$sql_row['ims_pro_qty']."</td></tr>"; 
      
@@ -109,7 +121,23 @@ while($sql_row=mysqli_fetch_array($sql_result))
 ?> 
 <tr><td>Max Allowed Qty</td><td>:</td><td> <?php echo $allowed_qty; ?> <input type="hidden" name="allow_qty" value="<?php echo $allowed_qty; ?>"  size="15"></td></tr> 
 <tr><td>Enter New Qty</td><td>:</td><td> <input type="text" name="qty" value="0"  onchange="if(check(this.value, <?php echo $allowed_qty; ?>)==1010){ this.value=0;}" size="15"></td></tr> 
-<tr><td>Enter New Module No</td><td>:</td><td> <input type="text" name="mod" value=""  size="15"></td></tr> 
+<tr><td>Enter New Module No</td><td>:</td><td> 
+<?php
+echo "<select name=\"mod\" class=\" form-control\" >";
+
+$sql="select * from $bai_pro3.plan_modules";	
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+
+echo "<option value=\"NIL\" disabled selected>NIL</option>";
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	echo "<option value=\"".$sql_row['module_id']."\" >".$sql_row['module_id']."</option>";
+}
+
+echo "</select>";
+?>
+</td></tr> 
 <tr><td>Remarks</td><td>:</td><td> <input type="text" name="remarks" value="nil"></td></tr> 
 <?php 
 echo "<tr><td><input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable</td><td></td><td><INPUT TYPE = \"Submit\" Name = \"Update\" VALUE = \"Update\"></td></tr>"; 
