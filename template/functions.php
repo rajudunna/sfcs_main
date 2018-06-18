@@ -5,9 +5,9 @@
   function hasChild($parent_id)
   {
 	GLOBAL $menu_table_name;
-	GLOBAL $link;
+	GLOBAL $link_ui;
     $sql = "SELECT COUNT(*) as count FROM $menu_table_name WHERE parent_id = '" . $parent_id . "' and link_status=1 order by left(link_description,1)";
-    $qry = mysqli_query($link, $sql) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $qry = mysqli_query($link_ui, $sql) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//$qry = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     $rs = mysqli_fetch_array($qry);
     return $rs['count'];
@@ -16,7 +16,7 @@
   function CategoryTree($list,$parent,$append,$happ)
   {
    	GLOBAL $menu_table_name;
-	GLOBAL $link;
+	GLOBAL $link_ui;
 	//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	//$username=strtolower($username_list[1]);
 	//$auth_members=array();
@@ -104,7 +104,7 @@
      // $list .= "<ul class='child child".$append."'>";
 	  $list .= "<ul class='nav child_menu'>";
       $sql = "SELECT * FROM $menu_table_name WHERE parent_id = '".$parent['menu_pid']."'  and link_status=1 and link_visibility=1 order by link_tool_tip*1,left(link_description,1)";
-      $qry = mysqli_query($link, $sql);
+      $qry = mysqli_query($link_ui, $sql);
       $child = mysqli_fetch_array($qry);
       do{
         $list .= CategoryTree($list,$child,$append,$happ);
@@ -123,14 +123,14 @@
     $list = "";
     
     GLOBAL $menu_table_name;
-	GLOBAL $link;
+	GLOBAL $link_ui;
 	// $database="central_administration_sfcs";
     // $user= 'baiall';
     // $password='baiall';
     // $host= '192.168.0.110';
     // $link = mysqli_connect($host,$user,$password,$database,"3323");
     $sql = "SELECT * FROM tbl_menu_list WHERE (parent_id = 0 OR parent_id IS NULL) and link_status=1 and fk_group_id=".$x." order by link_description";
-    $qry = mysqli_query($link, $sql) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $qry = mysqli_query($link_ui, $sql) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//$qry = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     $parent = mysqli_fetch_array($qry);
 	$mainlist = "<li id=\"tree\"><a>";

@@ -49,7 +49,7 @@ include "template/sidemenu.php";
                     </div>
                 </div>";
         }
-    }elseif($link == Null){
+    }elseif($link_ui == Null){
         echo "<div class='col-sm-12'>
                     <br/><br/><br/>
                     <h1 class='text-warning text-center'><i class='fa fa-unlink'></i> Warning..</h1>

@@ -126,11 +126,11 @@ function getFullURLLevel($r,$filename,$level,$type){
 function hasmenupermission()
 {
     //$user = get_current_user();
-    $user = 'Sudheer';
-    GLOBAL $link;
+    $user = 'Chandu';
+    GLOBAL $link_ui;
     $query = "SELECT rbac_role_menu.menu_pid FROM rbac_role_menu LEFT JOIN rbac_users ON rbac_role_menu.roll_id=rbac_users.role_id WHERE rbac_users.user_name='".$user."'";
     
-    $res = mysqli_query($link, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $res = mysqli_query($link_ui, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
     $result = [];
     while($rm = mysqli_fetch_array($res)){
         $result[] = $rm['menu_pid'];
@@ -148,16 +148,16 @@ function hasmenupermission()
 */
 function haspermission($r){
     //$user = get_current_user();
-    $user = 'Sudheer';
-    GLOBAL $link;
+    $user = 'Chandu';
+    GLOBAL $link_ui;
     $r = base64_decode($r);
 
     $query = "SELECT rbac_role_menu_per.permission_id,rbac_permission.permission_name FROM rbac_role_menu_per LEFT JOIN rbac_role_menu ON rbac_role_menu_per.role_menu_id=rbac_role_menu.role_menu_id LEFT JOIN tbl_menu_list ON rbac_role_menu.menu_pid=tbl_menu_list.menu_pid LEFT JOIN rbac_users ON rbac_role_menu.roll_id = rbac_users.role_id LEFT JOIN rbac_permission ON rbac_role_menu_per.permission_id=rbac_permission.permission_id WHERE rbac_permission.status='active' and rbac_users.user_name='".$user."' AND tbl_menu_list.link_location='".$r."'";
 
-    $res = mysqli_query($link, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $res = mysqli_query($link_ui, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
     $result = [];
     while($rm = mysqli_fetch_array($res)){
-        $result[] = $rm['permission_name'];
+        $result[] = $rm['permission_id'];
     }
     if(count($result)==0){
         $p=explode('/',$r);
@@ -165,9 +165,9 @@ function haspermission($r){
         $ir = implode('/',$p);
         $query = "SELECT rbac_role_menu_per.permission_id,rbac_permission.permission_name FROM rbac_role_menu_per LEFT JOIN rbac_role_menu ON rbac_role_menu_per.role_menu_id=rbac_role_menu.role_menu_id LEFT JOIN tbl_menu_list ON rbac_role_menu.menu_pid=tbl_menu_list.menu_pid LEFT JOIN rbac_users ON rbac_role_menu.roll_id = rbac_users.role_id LEFT JOIN rbac_permission ON rbac_role_menu_per.permission_id=rbac_permission.permission_id WHERE rbac_permission.status='active' and rbac_users.user_name='".$user."' AND tbl_menu_list.link_location like '%".$ir."%' group by rbac_role_menu_per.permission_id";
 
-        $res = mysqli_query($link, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $res = mysqli_query($link_ui, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($rm = mysqli_fetch_array($res)){
-            $result[] = $rm['permission_name'];
+            $result[] = $rm['permission_id'];
         }
     }
     return $result;  

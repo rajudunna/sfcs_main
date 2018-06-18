@@ -1,5 +1,7 @@
+<?php
+var_dump(haspermission($_GET['r']));
 
-
+?>
 <!-- <script language="javascript" type="text/javascript" src="../styles/dropdowntabs.js"></script> -->
 <!-- <link rel="stylesheet" href="../styles/ddcolortabs.css" type="text/css" media="all" /> -->
 	
