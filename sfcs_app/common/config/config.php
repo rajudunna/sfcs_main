@@ -89,5 +89,10 @@ $operation=array("Please Select","Single Colour & Single Size","Multi Colour & S
 
 $filter_joins="order_joins not in (1,2) and ";
 
-$pack_methods = ['pcs'=>'Pcs','packs'=>'Packs','hangers'=>'Hangers'];
+$sql_query = "select * from $central_administration_sfcs.rbac_permission where status='active'";
+$res_query = mysqli_query($link, $sql_query);
+while($sql_row=mysqli_fetch_array($res_query))
+{
+	$$sql_row['permission_name'] = $sql_row['permission_id'];
+}
 ?>
