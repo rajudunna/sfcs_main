@@ -898,7 +898,7 @@ for($s=0;$s<sizeof($s_tit);$s++)
 		<td style='display:none;'><center>
 			<input class=\"form-control\" type=\"text\"  name=\"e_in_s".$sizes_code[$s]."\" onkeydown='return verify_num(event)'  required value=0 onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" onchange=\"ind_per_cal('".$sizes_code[$s]."')\"></center></td>
 		<td align='center'><div class='row'><div class='col-md-offset-4 col-md-4'><input type=\"hidden\" name=\"in_s".$sizes_code[$s]."_source\" value=".(abs($$code1-$$code)).">
-			<center><input class=\"form-control\" $flag type=\"text\" readonly  onkeydown='return verify_num(event)' name=\"in_s".$sizes_code[$s]."\" value=".$$code." size=\"10\"></center></div></div></td>
+			<center><input class=\"form-control\" $flag type=\"text\"  onkeydown='return verify_num(event)' name=\"in_s".$sizes_code[$s]."\" value=".$$code." size=\"10\"></center></div></div></td>
 		</tr>";
 		// onClick={this.value=".abs($$code1-$$code)."+".abs($$code1-$$code)."*parseInt(document.input.cuttable_percent.value)/100}
 	}

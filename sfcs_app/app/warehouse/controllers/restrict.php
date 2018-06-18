@@ -40,7 +40,7 @@ $().ready(function() {
 
 </head>
 <body onload="dodisable();">
-<?php include("menu_content.php"); ?>
+<!-- <?php include("menu_content.php"); ?> -->
 
 <?php
 

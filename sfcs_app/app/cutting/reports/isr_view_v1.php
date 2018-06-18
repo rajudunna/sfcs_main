@@ -171,7 +171,7 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 	//$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_style,ims_schedule,ims_color from ims_log where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_date";
 	
 	//sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_style,ims_schedule,ims_color from ims_log where ims_date between \"$from_date\" and \"$to_date\" and ims_mod_no>0 ORDER BY ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_date";  
-	$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref from $bai_pro3.ims_log where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 order by ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_date";
+	$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref from $bai_pro3.ims_log where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size";
 	//group by changed as a order by - Changed By Chathuranga
  	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
