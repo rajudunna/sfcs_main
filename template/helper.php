@@ -125,8 +125,7 @@ function getFullURLLevel($r,$filename,$level,$type){
 
 function hasmenupermission()
 {
-    //$user = get_current_user();
-    $user = 'Chandu';
+    $user = getrbac_user();
     GLOBAL $link_ui;
     $query = "SELECT rbac_role_menu.menu_pid FROM rbac_role_menu LEFT JOIN rbac_users ON rbac_role_menu.roll_id=rbac_users.role_id WHERE rbac_users.user_name='".$user."'";
     
@@ -139,16 +138,49 @@ function hasmenupermission()
 }
 
 /*
+    purpose : function to Give Permission to the user at screen view.
+    output : array of menu row ids.
+    ** By chandu **
+    created at : 14-06-2018.
+    updated at : 15-06-2018.
+*/
+
+function hasviewpermission($r)
+{
+    $user = getrbac_user();
+    GLOBAL $link_ui;
+    $r = base64_decode($r);
+
+    $query = "SELECT * FROM rbac_role_menu LEFT JOIN tbl_menu_list ON rbac_role_menu.menu_pid=tbl_menu_list.menu_pid LEFT JOIN rbac_users ON rbac_role_menu.roll_id = rbac_users.role_id WHERE rbac_users.user_name='".$user."' AND tbl_menu_list.link_location='".$r."'";
+
+    $res = mysqli_query($link_ui, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $result = false;
+    if(mysqli_num_rows($res)==0){
+        $p=explode('/',$r);
+        unset($p[count($p)-1]);
+        $ir = implode('/',$p);
+        $query = "SELECT * FROM rbac_role_menu LEFT JOIN tbl_menu_list ON rbac_role_menu.menu_pid=tbl_menu_list.menu_pid LEFT JOIN rbac_users ON rbac_role_menu.roll_id = rbac_users.role_id WHERE rbac_users.user_name='".$user."' AND tbl_menu_list.link_location like '%".$ir."%' ";
+
+        $res = mysqli_query($link_ui, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($res)>0){
+            $result = true;
+        }
+    }else{
+        $result = true;
+    }
+    return $result; 
+}
+
+/*
     purpose : function to Give Permission to the user page level.
     input : r value
     output : array of permission names.
     ** By chandu **
     created at : 14-06-2018.
-    updated at : 15-06-2018.
+    updated at : 17-06-2018.
 */
 function haspermission($r){
-    //$user = get_current_user();
-    $user = 'Chandu';
+    $user = getrbac_user();
     GLOBAL $link_ui;
     $r = base64_decode($r);
 
@@ -172,5 +204,20 @@ function haspermission($r){
     }
     return $result;  
 }
+
+/*
+    purpose : function to Give login user name.
+    output : String.
+    ** By chandu **
+    created at : 18-06-2018.
+    updated at : 18-06-2018.
+*/
+function getrbac_user(){
+    //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+    //$user=$username_list[1];
+    $user = 'Sudheer';
+    return $user;
+}
+
 
 ?>
