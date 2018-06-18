@@ -1,6 +1,6 @@
 <body style="overflow-x:scroll;">
 <?php
-
+//for testing dev master
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 //echo "DB : ".$bai_rm_pj1;exit;
