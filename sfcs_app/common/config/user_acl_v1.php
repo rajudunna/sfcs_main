@@ -9,7 +9,7 @@ function user_acl($page_id,$user_name,$fn_id,$group_id)
 	$sql_select="select sum(if(fn_id=".$fn_id.",1,0)) as 'controls_count', sum(if(fn_id=".$view_id.",1,0)) as 'view_control' from ".$central_administration_sfcs.".".$tbl_view_view_menu." where page_id='".$page_id."' and user_name='".$user_name."' and group_id=".$group_id;
 	$sql_result_select=mysqli_query($link, $sql_select) or exit($sql_select.'<br/>Error in Query'.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	 
+	 //add line for branch test
 	while($row_select=mysqli_fetch_array($sql_result_select))
 	{		
 		$view=$row_select['view_control'];
