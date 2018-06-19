@@ -134,7 +134,7 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 	{
 		$sql.=" and qms_schedule=$schedule";
 	}
-	
+	$sql .= " and raised > 0";
 	$sql.=" order by log_date,module";
 	
 	if($pch==1){
