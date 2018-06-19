@@ -781,15 +781,15 @@ $code_db=explode("*",$code);
 		width: /**/120px;\" align=\"center\">
 		<p style=\"margin:0px; padding:0px;		font-weight:bold;	background-color:#3170A8;	color:#FFF;	margin-bottom:5px;\">Completed</p>
 		<table class='table table-bordered'>";
-
 			
-		/**/$sql1="SELECT input_job_no as acutno from $bai_pro3.plan_doc_summ_input where order_del_no=$schedule and input_job_input_status(act_cut_issue_status)=\"DONE\" order by input_job_no";
+		/**/
+		$sql1="SELECT input_job_no as acutno from $bai_pro3.plan_doc_summ_input where order_del_no='$schedule' and input_job_input_status(input_job_no_random)=\"DONE\" order by input_job_no";
 		//echo $sql1;
-		mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
-			echo '<tr id=\"new1\" style="background-color:green;  color:white;"><strong>'.chr($color_code).leading_zeros($sql_row1['acutno'],3).'</strong></tr>';
+			echo '<tr id=\"new1\" style="background-color:green;  color:white;"><strong>J'.leading_zeros($sql_row1['acutno'],3).'</strong></tr>';
 		} 
 		echo '</table>';
 		echo "</div>";
