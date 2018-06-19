@@ -789,7 +789,7 @@ $code_db=explode("*",$code);
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
-			echo '<tr id=\"new1\" style="background-color:green;  color:white;"><strong>J'.leading_zeros($sql_row1['acutno'],3).'</strong></tr>';
+			echo '<tr id=\"new1\" style="background-color:green;  color:white;"><strong>J'.leading_zeros($sql_row1['acutno'],3).'</strong></tr><br>';
 		} 
 		echo '</table>';
 		echo "</div>";
