@@ -7,7 +7,7 @@ Changes Log:
 -->
 <?php
 // echo getFullURLLevel($_GET['r'],'server/db_hosts.php',3,'R');
-// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'server/db_hosts.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'server/db_hosts.php',3,'R'));
 // set_time_limit(2000);
 
 
@@ -34,7 +34,7 @@ function round_or_not($x,$y,$z)
 ?>
 
 
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 
 <?php 
 error_reporting(E_ALL ^ E_NOTICE);
@@ -47,7 +47,7 @@ $filename = $_GET['id'];
 $date=$_GET['date'];
 
 
-$uploaddir = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'uploads',0,'R'); 
+$uploaddir = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'uploads',0,'R'); 
 $filepath= "$uploaddir/$filename";
 
 $sql="truncate table $bai_pro.tbl_freez_plan_upload";

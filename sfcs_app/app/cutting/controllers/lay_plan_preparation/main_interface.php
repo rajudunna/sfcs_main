@@ -67,12 +67,12 @@ hza.style.display = state;
 </script>  
 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" />   -->
-<?php include("../".getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>	
 
 
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <?php
 
@@ -498,19 +498,19 @@ if ($sql_result) {
      }
      else {
         //echo mysql_num_rows($sql_result);
-		
+		//          <th class=\"column-title\"><center>Strip Match</th>
+		//			<th class=\"column-title\"><center>Gusset Seperation</th>
+		//			<th class=\"column-title\"><center>One GMT One Way</th>
 				echo "<table class=\"table table-bordered\"><thead><tr class=\"\">
-					<th class=\"column-title\"><center>TID</center></th>
 					<th class=\"column-title\"><center>Date</th>
 					<th class=\"column-title\"><center>Category</th>
 					<th class=\"column-title\"><center>CAT YY</th>
 					<th class=\"column-title\"><center>Color Code</th>
 					<th class=\"column-title\"><center>Fabric Code</th>
-					<th class=\"column-title\"><center>Fabric Description</th>
+					<th class=\"column-title\" style='word-wrap: break-word;'><center>Fabric Description</th>
 					<th class=\"column-title\"><center>Pur Width</th>
-					<th class=\"column-title\"><center>One GMT One Way</th>
-					<th class=\"column-title\"><center>Strip Match</th>
-					<th class=\"column-title\"><center>Gusset Seperation</th>
+				
+					
 					<th class=\"column-title\"><center>Pattern Version</th>
 					<th class=\"column-title\"><center>MO status</th>
 					<th class=\"column-title\"><center>Controls</th>
@@ -522,22 +522,20 @@ if ($sql_result) {
 				$date_cat = '-';
 			}
 			echo "<tr class=\"  \">";
-			echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
+			//echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
 			echo "<td class=\"  \"><center>".$date_cat."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['category']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['catyy']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['col_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['compo_no']."</center></td>";
-			echo "<td class=\"  \"><center>".$sql_row['fab_des']."</center></td>";
+			echo "<td class=\"  \" style='word-wrap: break-word;'><center>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
 			//echo $sql_row['tid']."</br>";
-			if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+	//		if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
-			if($sql_row['strip_match']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+	//		if($sql_row['strip_match']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
-			if($sql_row['gusset_sep']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
-
-
+	//		if($sql_row['gusset_sep']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
 			echo "<td class=\"  \"><center>".$sql_row['patt_ver']."</center></td>";
 			
@@ -714,7 +712,7 @@ mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_s
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">
-<thead><tr><th class=\"column-title\"><center>TID</center></th><th class=\"column-title\"><center>Date</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>One GMT One Way</center></th><th class=\"column-title\"><center>STATUS</center></th><th class=\"column-title\"><center>Controls</center></th></tr></thead>";
+<thead><tr><th class=\"column-title\"><center>Date</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>One GMT One Way</center></th><th class=\"column-title\"><center>STATUS</center></th><th class=\"column-title\"><center>Controls</center></th></tr></thead>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	
@@ -846,7 +844,7 @@ if($check2==1)
 	$check_id=$sql_row['tid'];
 
 	echo "<tr class=\"  \">";
-	echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
+//	echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
 	echo "<td class=\"  \"><center>".$sql_row['date']."</center></td>";
 	
 	echo "<td class=\"  \"><center>".$sql_row['category']."</center></td>";
@@ -903,8 +901,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 $sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">
-	  <thead><tr><th class=\"column-title\">
-			<center>TID</center></th><th class=\"column-title\"><center>Category REF</center></th>
+	  <thead><tr>
 			<th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Cuttable</center></th>
 			<th class=\"column-title\"><center>Allocated</center></center></th><th class=\"column-title\"><center>Excess /Shortage </center></th>
 			
@@ -984,8 +981,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 
 	echo "<tr>";
-	echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
-	echo "<td class=\"  \"><center>".$sql_row['cat_id']."</center></td>";
+	//echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
+	//echo "<td class=\"  \"><center>".$sql_row['cat_id']."</center></td>";
 	
 	$cat_id_new=$sql_row['cat_id'];
 	
@@ -1145,7 +1142,7 @@ $sql_num_check=mysqli_num_rows($sql_result);
 
 if($flag== 1)
 {
-	echo "<div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th class=\"column-title\"><center>TID</center></th><th class=\"column-title\"><center>Allocate REF</center></th><th class=\"column-title\"><center>Ratio</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Total Plies</center></th><th class=\"column-title\"><center>Max Plies/Cut</center></th>";
+	echo "<div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th class=\"column-title\"><center>Ratio</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Total Plies</center></th><th class=\"column-title\"><center>Max Plies/Cut</center></th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
 		echo " <th class=\"column-title\"><center>".$s_tit[$sizes_code[$s]]."</center></th>";
@@ -1154,7 +1151,7 @@ if($flag== 1)
 }
 else
 {
-	echo "<div class=\"table-responsive\"><table class=\"table table-bordered\"><center><thead><tr><th class=\"column-title\"><center>TID</center></th><th class=\"column-title\"><center>Allocate REF</center></th><th class=\"column-title\"><center>Ratio#</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Total Plies</center></th>
+	echo "<div class=\"table-responsive\"><table class=\"table table-bordered\"><center><thead><tr><th class=\"column-title\"><center>Ratio#</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Total Plies</center></th>
 	<th class=\"column-title\"><center>01</center></th><th class=\"column-title\"><center>02</center></th><th class=\"column-title\"><center>03</center></th><th class=\"column-title\"><center>04</center></th><th class=\"column-title\"><center>05</center></th><th class=\"column-title\"><center>06</center></th><th class=\"column-title\"><center>07</center></th><th class=\"column-title\"><center>08</center></th><th class=\"column-title\"><center>09</center></th><th class=\"column-title\"><center>10</center></th><th class=\"column-title\"><center>11</center></th><th class=\"column-title\"><center>12</center></th><th class=\"column-title\"><center>13</center></th><th class=\"column-title\"><center>14</center></th><th class=\"column-title\"><center>15</center></th><th class=\"column-title\"><center>16</center></th><th class=\"column-title\"><center>17</center></th><th class=\"column-title\"><center>18</center></th><th class=\"column-title\"><center>19</center></th><th class=\"column-title\"><center>20</center></th><th class=\"column-title\"><center>21</center></th><th class=\"column-title\"><center>22</center></th><th class=\"column-title\"><center>23</center></th><th class=\"column-title\"><center>24</center></th><th class=\"column-title\"><center>25</center></th><th class=\"column-title\"><center>26</center></th><th class=\"column-title\"><center>27</center></th><th class=\"column-title\"><center>28</center></th><th class=\"column-title\"><center>29</center></th><th class=\"column-title\"><center>30</center></th><th class=\"column-title\"><center>31</center></th><th class=\"column-title\"><center>32</center></th><th class=\"column-title\"><center>33</center></th><th class=\"column-title\"><center>34</center></th><th class=\"column-title\"><center>35</center></th><th class=\"column-title\"><center>36</center></th><th class=\"column-title\"><center>37</center></th><th class=\"column-title\"><center>38</center></th><th class=\"column-title\"><center>39</center></th><th class=\"column-title\"><center>40</center></th><th class=\"column-title\"><center>41</center></th><th class=\"column-title\"><center>42</center></th><th class=\"column-title\"><center>43</center></th><th class=\"column-title\"><center>44</center></th><th class=\"column-title\"><center>45</center></th><th class=\"column-title\"><center>46</center></th><th class=\"column-title\"><center>47</center></th><th class=\"column-title\"><center>48</center></th><th class=\"column-title\"><center>49</center></th><th class=\"column-title\"><center>50</center></th>
 	<th class=\"column-title\"><center>Ratio Total</center></th><th class=\"column-title\"><center>Controls</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead>";
 }
@@ -1164,7 +1161,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$mk_status=$sql_row['mk_status'];
 	
 	$check_id=$sql_row['cuttable_ref'];
-	echo "<tr><td class=\"  \"><center>".$sql_row['tid']."</center></td><td class=\"  \"><center>".$check_id."</center></td><td class=\"  \"><center>".$sql_row['ratio']."</center></td>";
+	echo "<tr>";
+	// echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
+	//echo "<td class=\" \"><center>".$check_id."</center></td>";
+	echo "<td class=\"  \"><center>".$sql_row['ratio']."</center></td>";
 	
 	$cat_ref=$sql_row['cat_ref'];
 	$sql2="select * from $bai_pro3.cat_stat_log where tid=$cat_ref order by catyy DESC";
@@ -1250,13 +1250,13 @@ else
 echo "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
 echo "</tr>";
 }
-echo "<tr><td colspan=5> Total Planned Quantity</center><td>";
+echo "<tr><td colspan=3> Total Planned Quantity</center><td>";
 for($s=0;$s<sizeof($s_tit);$s++)
 {
 	echo "<td class=\"  \"><center>$tot_size[$s]</center></td>";
 }	
 echo "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><tdclass=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
-echo "<tr><td colspan=5>Excess / Less <td>";
+echo "<tr><td colspan=3>Excess / Less <td>";
 for($s=0;$s<sizeof($s_tit);$s++)
 {
 	//$temp="cuttable_".$sizes_array[$s];
@@ -1326,7 +1326,8 @@ else{
 
 
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
-echo "<thead><tr><th class=\"column-title \"><center>Ref</center></th><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Overall Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
+//<th class=\"column-title \"><center>Ref</center></th>
+echo "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Overall Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
 
 $sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref > 0 order by allocate_ref";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1335,7 +1336,8 @@ $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$mkref=$sql_row['tid'];
-	echo "<tr><td class=\"  \"><center>".$mkref."</center></td>";
+	echo "<tr>";
+	// <td class=\"  \"><center>".$mkref."</center></td>";
 	$allocate_ref=$sql_row['allocate_ref'];
 	$cutcount=0;
 	$mklength=$sql_row['mklength'];
@@ -1535,23 +1537,23 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				<div id="cut_plan" class="panel-collapse collapse-in">
 					<div class="panel-body">
 <?php
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
-$view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
-$authorized2=user_acl("SFCS_0215",$username,50,$group_id_sfcs); //  RM Fabric 
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
+// $view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
+// $authorized2=user_acl("SFCS_0215",$username,50,$group_id_sfcs); //  RM Fabric 
 
 
-include("dbconf.php");
+// include("dbconf.php");
 
-if($_SERVER['SERVER_NAME']=="bainet")
-{
-	$facility='AIN';
-}
+// if($_SERVER['SERVER_NAME']=="bainet")
+// {
+// 	$facility='AIN';
+// }
 
-if($_SERVER['SERVER_NAME']=="bai2net")
-{
-	$facility='AIP';
-}
+// if($_SERVER['SERVER_NAME']=="bai2net")
+// {
+// 	$facility='AIP';
+// }
 
 $username_list=array();
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -1705,7 +1707,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>"; if($check_new3==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	echo "<td class=\"  \"><center>"; if($check_new4==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	
-	 $path="..".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	//$path="http://localhost/sfcs/projects/Beta/cut_plan_new_ms/new_doc_gen/Book1_print.php";
 
 	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
@@ -1789,7 +1791,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		</div>
 		<div id="recut_details" class="panel-collapse collapse-in">
 			<div class="panel-body">
-				<?php include("../".getFullURLLevel($_GET['r'], "recut_stat_v3.php", "0", "R")); ?>
+				<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "recut_stat_v3.php", "0", "R")); ?>
 			</div>
 		</div>
 	</div>

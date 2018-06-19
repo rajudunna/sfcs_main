@@ -9,8 +9,8 @@ This amendement was done based on the confirmation to issue excess (1%) material
 
 <?php
 
-		// include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-		// include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+		// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+		// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');		
 		$order_tid1=$_GET['order_tid'];

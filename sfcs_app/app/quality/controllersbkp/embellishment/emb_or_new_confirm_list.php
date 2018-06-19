@@ -1,8 +1,8 @@
 
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',4,'R'));
 $view_access=user_acl("SFCS_0218",$username,1,$group_id_sfcs); 
 $auth_users=user_acl("SFCS_0218",$username,7,$group_id_sfcs); 
 ?>
@@ -25,7 +25,7 @@ $auth_users=user_acl("SFCS_0218",$username,7,$group_id_sfcs);
 
 function dateDiffsql($link,$start,$end)
 {
-	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	$sql="select distinct bac_date from $bai_pro.bai_log_buf where bac_date<='$start' and bac_date>='$end'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	

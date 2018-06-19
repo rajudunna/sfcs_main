@@ -100,7 +100,7 @@ WebBrowser1.outerHTML = "";
 <!-- <a href="#" onClick="print(); return false;">click here to print this page</a> -->
 <?php 
 
-// include("../".getFullURLLevel($_GET['r'],'dbconf2.php',1,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf2.php',1,'R'));
 include("../../../../common/config/config.php");
 error_reporting(0);
  

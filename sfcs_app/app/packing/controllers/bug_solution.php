@@ -1,5 +1,5 @@
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 
 ?>
 <script>
@@ -46,12 +46,12 @@ function check_style($string)
 
 
 <link href="style.css" rel="stylesheet" type="text/css" />  
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') ); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') ); ?>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Enable Print Labels</div>
 <div class="panel-body">
-<?php //include('../'.getFullURL($_GET['r'],'menu_content.php','R') ); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php','R') ); ?>
 
 <?php
 

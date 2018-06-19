@@ -3,8 +3,8 @@
 Change Request # 120 -KiranG 2014-07-27
 Added function to show tool tip
 */
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."server/group_def.php");
 $view_access=user_acl("SFCS_0131",$username,1,$group_id_sfcs);
 $super_user=user_acl("SFCS_0131",$username,50,$group_id_sfcs);
@@ -636,8 +636,8 @@ document.forms["myForm"].submit();
 
 <?php
 // include("dbconf.php"); 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'functions.php',0,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'drag_drop_data_new.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',0,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'drag_drop_data_new.php',0,'R'));
 /*$style=$_GET['style'];
 $schedule=$_GET['schedule'];
 $color=$_GET['color'];

@@ -37,9 +37,9 @@ div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
 td{ padding:2px; white-space: nowrap;}
 </style>
 <?php
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 $view_access=user_acl("SFCS_0279",$username,1,$group_id_sfcs);
 ?>
 
@@ -325,6 +325,7 @@ bai_pro3.bai_orders_db_confirm.bts_status
   // $check1=100;
 	if($check1>0)
 	{
+		echo '<h3><font face="verdana" color="green">Please wait <br> Docket details are Synchronizing...</font></h3>';
 		while($r=mysqli_fetch_array($result))
 		{
 			$order_tid=$r['order_tid'];

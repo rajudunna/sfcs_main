@@ -1,12 +1,12 @@
 
 
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?>
-<?php include('../'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
 <?php
 
   function m3_job_exists_check($doc_no,$operation1,$joins_checkbox)
   {
-	  include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	  //echo $operation1;
 	   
     $sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no='".$doc_no."' and m3_op_des='".$operation1."'";

@@ -5,9 +5,10 @@ ini_set('max_execution_time', 30000);
 if(!isset($_GET['r'])){
     unset($_SESSION['link']);
 }
+include "template/helper.php";
 include "template/header.php";
 include "template/sidemenu.php";
-include "template/helper.php";
+
 ?>
 
 <link rel="stylesheet" href="assets/css/datepicker.css" />
@@ -25,29 +26,42 @@ include "template/helper.php";
 </div>"; -->
 <?php
     if(isset($_GET['r']) && $_GET['r']!=''){
-        $get_file_path = getFILE($_GET['r']);
-        if($get_file_path){
-            if($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html')
-                include($get_file_path['path']);
-            else{
-                if($get_file_path['type'] == 'xlsm'){
-                    echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Click here to dowload Tool</a>";
-                }else{
-                    echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Get ".$get_file_path['type']." file to click here..</a>";
+        if(hasviewpermission($_GET['r'])){
+            $get_file_path = getFILE($_GET['r']);
+            if($get_file_path){
+                if($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html'){                           
+                    include($_SERVER["DOCUMENT_ROOT"].$get_file_path['path']);
                 }
+                else{
+                    if($get_file_path['type'] == 'xlsm'){
+                        echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Click here to dowload Tool</a>";
+                    }else{
+                        echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Get ".$get_file_path['type']." file to click here..</a>";
+                    }
+                }
+            }elseif(isset($_GET['r'])){
+                echo "<div class='col-sm-12'>
+                        <div class='col-sm-6'><img src='images/error-page.png'></img></div>
+                        <div class='col-sm-6'>
+                            <br/><br/><br/>
+                            <h1 class='text-danger'><i class='fas fa-exclamation-triangle'></i> Error..</h1>
+                            <br/><br/><br/><br/>
+                            <h1 class='text-warning'>Page not found..</h1>
+                        </div>
+                    </div>";
             }
-        }elseif(isset($_GET['r'])){
+        }else{
             echo "<div class='col-sm-12'>
-                    <div class='col-sm-6'><img src='images/error-page.png'></img></div>
-                    <div class='col-sm-6'>
-                        <br/><br/><br/>
-                        <h1 class='text-danger'><i class='fas fa-exclamation-triangle'></i> Error..</h1>
-                        <br/><br/><br/><br/>
-                        <h1 class='text-warning'>Page not found..</h1>
+                    <div class='col-sm-4'><h1 style='font-size: 150px !important;margin: 68px 0px 0px 100px;' class='text-center text-warning'><i class='fa fa-user-times'></i></h1></div>
+                    <div class='col-sm-8'>
+                    <br/><br/><br/>
+                    <h1 class='text-danger text-center'><i class='fa fa-ban'></i> Restricted..</h1>
+                    <br/><br/><br/><br/>
+                    <h1 class='text-danger text-center'>unauthorized access..</h1>
                     </div>
-                </div>";
+            </div>";
         }
-    }elseif($link == Null){
+    }elseif($link_ui == Null){
         echo "<div class='col-sm-12'>
                     <br/><br/><br/>
                     <h1 class='text-warning text-center'><i class='fa fa-unlink'></i> Warning..</h1>
@@ -89,7 +103,21 @@ $('[data-toggle="datepicker"]').datepicker(
                 format: 'yyyy-mm-dd',
                 autoHide: true,
             }).attr("readonly","true").css({"background-color": "#fff"});
+
+/*$.ajaxSetup({
+    beforeSend: function(jqXHR, settings) {
+
+        // Only GET Method
+       settings.url=settings.url.replace("http://","");
+        settings.url = "http://localhost/"+settings.url
+     
+
+    },
+    
+});*/
 </script>
+
+
 
 
 

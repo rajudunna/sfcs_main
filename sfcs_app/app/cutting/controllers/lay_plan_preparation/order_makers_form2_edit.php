@@ -1,5 +1,5 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Marker Edit Form</div>
 <div class="panel-body">
@@ -328,36 +328,35 @@ while($sql_row22=mysqli_fetch_array($sql_result22))
 
 if($i==0)
 {
-	echo "<tr><td>Marker LENGTH</td><td>:</td><td><div class=\"col-sm-1\">".$sql_row22['marker_width']."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"> <div class=\"col-sm-4\"> <INPUT class=\"form-control float\" required type=\"text\" id='d1' name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\"></div></td></tr>";
-	
+	echo "<tr><td>Marker LENGTH</td><td>:</td><td><div class=\"col-sm-1\">".$sql_row22['marker_width']."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"> <div class=\"col-sm-4\"> <INPUT class=\"form-control float\" required type=\"text\" id='d1' name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\"></td></tr>";	
 }
 else
 {
-	echo "<tr><td>Marker LENGTH 2</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\" required id='d2' name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"></div> <div class=\"col-sm-4\"><INPUT type=\"text\" required class=\"form-control float\" title='Please enter numbers and decimals' id='d3' required name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker LENGTH 2</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"  id='d2' name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"></div> <div class=\"col-sm-4\"><INPUT type=\"text\"  class=\"form-control float\" title='Please enter numbers and decimals' id='d3'  name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\" ></div></td></tr>";
 }
 $i++;
 
 }
 if(mysqli_num_rows($sql_result22)==0)
 {
-	echo "<tr><div class=\"col-md-4\"><td>Marker LENGTH</td><td>:</td></div><td><div class=\"col-sm-1\">".$pur_width."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$pur_width."\"> <div class=\"col-sm-4\"><INPUT type=\"text\" pattern='^[0-9]+\.?[0-9]*$' required name=\"in_mklength[]\" value=\"".$mklength."\" size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 2</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\" id='d4' name=\"in_pwidth[]\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals' required value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control\" type=\"text\" name=\"in_mklength[]\" value=\"0\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals' required size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 3</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals' required type=\"text\" required  id='d5' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" required type=\"text\"  id='d9' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 4</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals' required type=\"text\"  required id='d6' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" required type=\"text\"  id='d10' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 5</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals' required type=\"text\" required id='d7' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" required type=\"text\"  id='d11' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 6</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals' required type=\"text\" required id='d8' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" required type=\"text\" id='d12' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+	echo "<tr><div class=\"col-md-4\"><td>Marker LENGTH</td><td>:</td></div><td><div class=\"col-sm-1\">".$pur_width."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$pur_width."\"> <div class=\"col-sm-4\"><INPUT type=\"text\" pattern='^[0-9]+\.?[0-9]*$'  name=\"in_mklength[]\" value=\"".$mklength."\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker LENGTH 2</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\" id='d4' name=\"in_pwidth[]\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control\" type=\"text\" name=\"in_mklength[]\" value=\"0\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker LENGTH 3</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\"   id='d5' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\"  type=\"text\"  id='d9' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker LENGTH 4</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\"   id='d6' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\"  type=\"text\"  id='d10' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker LENGTH 5</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\"  id='d7' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\"  type=\"text\"  id='d11' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker LENGTH 6</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\"  id='d8' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\"  type=\"text\" id='d12' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
 	
 }
 else
 {
 	for(;$i<6;$i++)
 	{
-		echo "<tr><td>Marker LENGTH ".($i+1)."</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\" required  title='Please enter numbers and decimals' required id='dd$i' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" title='Please enter numbers and decimals' required type=\"text\" id='de$i' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+		echo "<tr><td>Marker LENGTH ".($i+1)."</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"   title='Please enter numbers and decimals'  id='dd$i' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\" id='de$i' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
 	}
 }
 
-echo "<tr><td>Marker Efficiency</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"  id='d15' name=\"in_mkeff\" value=\"".$mkeff."\" size=\"10\" ></div><font color=red>* This is mandatory field</font></td></tr>";
-echo "<tr><td>Marker Version</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control alpha\"type=\"text \" required  id='d16' name=\"in_mkver\" value=\"".$mkver."\" size=\"10\" ></div> <font color=red>* This is mandatory field</font></td></tr>";
+echo "<tr><td>Marker Efficiency</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"  id='d15' name=\"in_mkeff\" value=\"".$mkeff."\" size=\"10\" required></div></div><font color=red>This is mandatory field</font></td></tr>";
+echo "<tr><td>Marker Version</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control alpha\"type=\"text \" required  id='d16' name=\"in_mkver\" value=\"".$mkver."\" size=\"10\" ></div> <font color=red>This is mandatory field</font></td></tr>";
 
 echo "<tr><td>Remarks (Marker File Name): </td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control alpha\" type=\"text\"  name=\"remarks\" value=\"".$mk_remarks."\"></div></td></tr>";
 echo "</table>";
@@ -370,19 +369,24 @@ echo "<input type=\"hidden\" name=\"mk_ref\" size=2 value=\"".$mk_ref."\">";
 
 // echo "</table></div>";
 //echo "<div class=\"col-sm-offset-8\"><input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable";
-echo "<input class=\"btn btn-sm btn-success \" onclick='return verify_null()' type = \"submit\" Name = \"update\" value = \"Update\"></div>";
+echo "<input class=\"btn btn-sm btn-success \" onclick='return verify_null()' type = \"submit\" Name = \"update\" value = \"Update\" id=\"update\"></div>";
 echo "</form>";
 ?>
 <script>
 function verify_null(){
 	var ver = document.getElementById('d16').value;
 	var eff =  document.getElementById('d15').value;
-	if(eff == '' || eff>100){
-		sweetAlert('Enter Marker Efficiency','','warning');
+	var mklen = document.getElementById('d1').value;
+	if(eff == '' || (eff>100 || eff<=0)){
+		sweetAlert('Please enter valid Marker Efficiency','','warning');
 		return false;
 	}
-	if(ver <=0 ){
-		sweetAlert('Marker Version is invalid','','warning');
+	if(ver <=0 || ver ==''){
+		sweetAlert('Please enter valid Marker Version','','warning');
+		return false;
+	}
+	if(mklen == ''|| mklen <=0){
+		sweetAlert('Please enter valid Marker Length','','warning');
 		return false;
 	}
 	return true;
@@ -542,7 +546,6 @@ function verify_spec(t,e){
 		return false;
 	}
 }
-
 
 
 </script>

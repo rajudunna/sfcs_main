@@ -1,4 +1,4 @@
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));  ?>
 <?php
 	//require_once('phplogin/auth.php');
 	if(date("Y-m-d") >= "2012-11-16")
@@ -11,8 +11,8 @@
 		$user_name="baiadmn";
 	}	
 $auth_to_modify=array("kirang","ravipu","sarojiniv","kirang","baiadmn","sfcsproject1");
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 //$view_access=user_acl("SFCS_0159",$username,1,$group_id_sfcs); 
 //$auth_to_modify=user_acl("SFCS_0159",$username,2,$group_id_sfcs);
 ?>
@@ -75,7 +75,7 @@ function isNumberKey(evt,issued_qty)
 <?php 
 // echo '<!---<div id="page_heading"><span style="float: left"><h3>Update RM Returns </h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>--->';
 // include("menu_content.php"); 
-	include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'menu_content.php','R'));
+	// include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'menu_content.php','R'));
 ?>
 
 

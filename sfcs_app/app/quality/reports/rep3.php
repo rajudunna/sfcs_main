@@ -1,7 +1,7 @@
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 $view_access=user_acl("SFCS_0051",$username,1,$group_id_sfcs); 
 // $rep3 = getFullURL($_GET['r'],'rep3.php','N'); 
 // echo $rep3;
@@ -289,6 +289,14 @@ function verify_date()
 			for($i=0;$i<33;$i++) {	$grand_vals[$i]=0;	}
 			$grand_output=0;
 			$grand_rejections=0;
+			if($sch_db_grand == 'NIL')
+			{
+				//exit('problem');
+				echo "<script>swal('Please Enter Schedule','','error');
+                      $('.tblheading').hide();
+				</script>";
+				exit();
+			}
 
 			if($choice==1)
 			{
@@ -300,7 +308,7 @@ function verify_date()
 				{
 					$sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand) and length(size)>0 group by delivery,color,size";
 				}
-				echo $sql1;
+				//echo $sql1;
 			}
 			if($choice==2)
 			{

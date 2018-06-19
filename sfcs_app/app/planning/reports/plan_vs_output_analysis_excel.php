@@ -1,3 +1,4 @@
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -53,14 +54,14 @@ table{
 <body>
 
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-$database="bai_pro";
-$user=$host_adr_un;
-$password=$host_adr_pw;
-$host=$host_adr;
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+// $database="bai_pro";
+// $user=$host_adr_un;
+// $password=$host_adr_pw;
+// $host=$host_adr;
 
-$link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $password)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-mysqli_select_db($link, $bai_pro) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
+// $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $password)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// mysqli_select_db($link, $bai_pro) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
 set_time_limit(2000); 
@@ -74,7 +75,6 @@ if(isset($_POST['submit1']))
 		header("Pragma: no-cache");
 		header("Expires: 0");
 		echo $table;
-	
 }
 
 ?>

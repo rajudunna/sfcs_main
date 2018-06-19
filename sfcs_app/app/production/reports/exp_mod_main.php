@@ -1,6 +1,6 @@
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $exp_mod_week_data_old = getFullURL($_GET["r"],"exp_mod_week_data_old.php","N");
 $exp_mod_shift_data = getFullURL($_GET["r"],"exp_mod_shift_data.php","N");
 $view_access=user_acl("SFCS_0072",$username,1,$group_id_sfcs); 

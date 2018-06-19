@@ -1,6 +1,6 @@
 <title>Surplus Destruction Process(In Detailed)</title>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	      ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	      ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
 
 <?php
 	$table_filter = getFullURLLevel($_GET['r'],'common/js/tablefilter_en/table_filter.js',3,'R');

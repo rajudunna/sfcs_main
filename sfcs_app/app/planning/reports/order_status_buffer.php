@@ -2,7 +2,7 @@
 <?php
 
 set_time_limit(2000);
-include ($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include ($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $order_status_buffer="bai_pro2.order_status_buffer";
 $style_status_summ="bai_pro2.style_status_summ";
 $shipment_plan_summ="bai_pro2.shipment_plan_summ";

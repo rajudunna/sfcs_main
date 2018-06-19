@@ -2,7 +2,7 @@
 2015-03-28/kirang/CR#930/Need To Incorporate the Planning default comments in the Weekly delivery Report.
 --!>
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 // $username=$username_list[1];
 $username="sfcsproject1";

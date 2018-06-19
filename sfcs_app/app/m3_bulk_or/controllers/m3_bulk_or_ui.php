@@ -1,10 +1,10 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 //KiranG 2015-10-12 : Added the validation at header level to close the page when it's in process state.
 //KiranG 2015-10-12 : Added the validation at header level to close the page when it's in process state.
 if(isset($_GET['createcsv'])){
 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'m3_process_ses_track.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'m3_process_ses_track.php',0,'R'));
 
 
 
@@ -81,7 +81,7 @@ div.tools input{ background-color:#f4f4f4; border:2px outset #f4f4f4; margin:2px
 
 <?php
 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'m3_bulk_or_proc.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'m3_bulk_or_proc.php',0,'R'));
 
 //Multi User Filter
 $filter_query_add="";
@@ -589,7 +589,7 @@ $time_diff=(int)date("YmdH")-$log_time;
 if($log_time==0 or $time_diff>1)
 {
 	// $myFile = "m3_process_ses_track.php";
-	$myFile = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'m3_process_ses_track.php',0,'R');
+	$myFile = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'m3_process_ses_track.php',0,'R');
 	$fh = fopen($myFile, 'w') or die("can't open file");
 	$stringData = "<?php $"."log_time=".(int)date("YmdH")."; ?>";
 	fwrite($fh, $stringData);

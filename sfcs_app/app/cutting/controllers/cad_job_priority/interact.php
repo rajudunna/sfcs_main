@@ -1,5 +1,5 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
 
 
 <!-- <meta http-equiv="cache-control" content="no-cache">
@@ -49,7 +49,7 @@ window.print();
 <div class="panel-heading">CAD Job Priority</div>
 <div class="panel-body">
 
-<?php include("../".getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
 <?php
 
 $sql="select * from $bai_pro3.allocate_stat_log where mk_status is NULL OR mk_status in (1,2,3) and (pliespercut+allocate_xs+allocate_s+allocate_m+allocate_l+allocate_xl+allocate_xxl+allocate_xxxl+plies+allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)>0 order by mk_status";

@@ -5,11 +5,11 @@ Description: We can allocate fabric based on the plan priority.
 
 Changes Log:
 -->
-
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php
 set_time_limit(2000);
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 $section_no=$_GET['section_no'];
 ?>
 
@@ -305,7 +305,7 @@ border: 1px solid black;
 
 <body>
 <div class="panel panel-primary">
-	<div class="panel-heading">Input Job Plan Details</div>
+	<div class="panel-heading">Input Job Plan Details</div><br/>
 	<div class="panel-body">
 		<?php
 		echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"blue\">Please wait while preparing dashboard...</font></h1></center></div>";
@@ -320,12 +320,12 @@ border: 1px solid black;
 			<th colspan=10 >Production Plan for Section -<?= $section_no; ?></th>
 			<th colspan=20 >Date :<?= date('Y-m-d H:i'); ?></th>
 			</tr>
-			<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th></th><th>Priority 2</th><th></th><th>Priority 3</th><th></th><th>Priority 4</th><th></th><th>Priority 5</th><th></th><th>Priority 6</th><th></th><th>Priority 7</th><th></th><th>Priority 8</th><th></th><th>Priority 9</th><th></th><th>Priority 10</th><th></th><th>Priority 11</th><th></th><th>Priority 12</th><th></th><th>Priority 13</th><th></th><th>Priority 14</th><th></th></tr>
+			<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Priority 2</th><th>Priority 3</th><th>Priority 4</th><th>Priority 5</th><th>Priority 6</th><th>Priority 7</th><th>Priority 8</th><th>Priority 9</th><th>Priority 10</th><th>Priority 11</th><th>Priority 12</th><th>Priority 13</th><th>Priority 14</th></tr>
 <?php
 
 // echo "<tr><th colspan=10 >Production Plan for Section - $section_no</th><th style='background-color:#29759C;' colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
 //echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Remarks</th><th>Priority 2</th><th>Remarks</th><th>Priority 3</th><th>Remarks</th><th>Priority 4</th><th>Remarks</th><th>Priority 5</th><th>Remarks</th><th>Priority 6</th><th>Remarks</th><th>Priority 7</th><th>Remarks</th><th>Priority 8</th><th>Remarks</th><th>Priority 9</th><th>Remarks</th><th>Priority 10</th><th>Remarks</th><th>Priority 11</th><th>Remarks</th><th>Priority 12</th><th>Remarks</th><th>Priority 13</th><th>Remarks</th><th>Priority 14</th><th>Remarks</th></tr>";
-// echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th></th><th>Priority 2</th><th></th><th>Priority 3</th><th></th><th>Priority 4</th><th></th><th>Priority 5</th><th></th><th>Priority 6</th><th></th><th>Priority 7</th><th></th><th>Priority 8</th><th></th><th>Priority 9</th><th></th><th>Priority 10</th><th></th><th>Priority 11</th><th></th><th>Priority 12</th><th></th><th>Priority 13</th><th></th><th>Priority 14</th><th></th></tr>";
+// echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Priority 2</th><th>Priority 3</th><th>Priority 4</th><th>Priority 5</th><th>Priority 6</th><th>Priority 7</th><th>Priority 8</th><th>Priority 9</th><th>Priority 10</th><th>Priority 11</th><th>Priority 12</th><th>Priority 13</th><th>Priority 14</th></tr>";
 $newtempname="plan_doc_summ_input_".$username;
 
 $sql="DROP TABLE IF EXISTS $temp_pool_db.$newtempname";
@@ -625,7 +625,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			
 			//echo "<td>"."Style:".$style."<br/>"."Schedule:".$schedule."<br/>"."Job:".chr($color_code).leading_zeros($cut_no,3)."<br/>"."Total Qty:".$total_qty."</td><td></td>";
 			//echo "<td>".$style."<br/><strong>".$schedule."<br/>J".leading_zeros($jobno,3)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location<Br/>B.L.: $bundle_location</br>Col:".strtoupper($id)."</br></td>";
-			echo "<td >".$style."<br/><strong>".$schedule."<br/>J".leading_zeros($jobno,3)."</strong><br/>".$total_qty."<br/>".implode(",",$club_c_code)."<br/>".$id."</td><td></td>";
+			echo "<td >".$style."<br/><strong>".$schedule."<br/>J".leading_zeros($jobno,3)."</strong><br/>".$total_qty."<br/>".implode(",",$club_c_code)."<br/>".$id."</td>";
 			
 			
 
@@ -633,7 +633,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 		
 		for($i=1;$i<=14-$sql_num_check;$i++)
 		{
-			echo "<td></td><td></td>";
+			echo "<td></td>";
 		}
 		echo "</tr>";
 	}
@@ -649,3 +649,22 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 	document.getElementById("msg").style.display="none";		
 </script>
 </html>
+<style type="text/css">
+	table{
+    border-collapse: collapse;
+}
+td {
+    background-color: WHITE;
+    color: BLACK;
+    border: 1px solid #660000;
+    padding: 1px;
+    white-space: nowrap;
+}
+th {
+	background-color: RED;
+    color: WHITE;
+    border: 1px solid #660000;
+    padding: 10px;
+    white-space: nowrap;
+}
+</style>

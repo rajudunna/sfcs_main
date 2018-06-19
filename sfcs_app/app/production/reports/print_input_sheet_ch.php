@@ -51,7 +51,7 @@ table.gridtable td {
 <body onload="printpr1();">
 
 	<?php
-		include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 		//$schedule=$_GET["schedule"];
 		$schedule=$_POST["schedule"];
 		//$schedule="399160"; //for testing

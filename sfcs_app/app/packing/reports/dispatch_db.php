@@ -1,8 +1,8 @@
 
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R') );  ?>
 <?php
 	$view_access=user_acl("SFCS_0030",$username,1,$group_id_sfcs); 
 ?>
@@ -57,7 +57,7 @@ th,td{
 			$row_count++;
 			$disp_note_no = $sql_row['disp_note_no'];
 			$url = $_GET['r']."&disp_id=".$disp_note_no;
-			$popup_url = '..'.getFullURL($_GET['r'],"dispatch_note.php",'R');
+			$popup_url = getFullURL($_GET['r'],"dispatch_note.php",'R');
 			echo "<tr>";
 			echo "<td>
 				<a class='btn btn-success btn-sm' href='index.php?r=$url' 

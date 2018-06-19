@@ -8,8 +8,8 @@ Changes:
 1)Change 01(line nos: 447,454): 2013-11-20/kirang/Ticket#445574/add the please wait option after submit the details.
 -->
 <?php
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $view_access=user_acl("SFCS_0141",$username,1,$group_id_sfcs);
 ?>
 
@@ -110,7 +110,7 @@ function validateQty(event, bal, pre_val)
 <body onload="dodisable()">
 
 <?php  
-include("../".getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',3,'R'));
 //include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/appcommon/config/m3_bulk_or_proc.php"); 
 ?>
 

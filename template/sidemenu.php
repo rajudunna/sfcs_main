@@ -31,7 +31,7 @@
 		<?php
             try{
                 include('dbconf.php');
-                if($link != Null){
+                if($link_ui != Null){
                     include("functions.php");
                     echo CategoryList(8);
                 }

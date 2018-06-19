@@ -4,12 +4,12 @@ create the interface for recut plot job priority.
 -->
 <?php 
 	// include("../dbconf.php"); 
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 ?>
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
 $view_access=user_acl("SFCS_0096",$username,1,$group_id_sfcs);
 	//require_once('../phplogin/auth2.php');
@@ -209,7 +209,7 @@ if(isset($_POST['clear']))
 
 <meta http-equiv="refresh" content="60"> 
 <?php 
-include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R')); 
 ?>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R');?>"></script><!-- External script -->

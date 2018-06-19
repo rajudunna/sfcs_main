@@ -1,6 +1,6 @@
 <?php
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 // include ("dbconf.php");
 set_time_limit(2000);
 

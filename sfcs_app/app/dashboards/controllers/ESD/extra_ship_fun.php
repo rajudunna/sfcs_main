@@ -5,7 +5,7 @@ kirang /1-18-2015: To avoid the division by Zero error
 <?php
 function ims_schedules($link,$section_mods)
 {
-	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	$sch_count=0;
 	$sql22="select count(distinct(ims_schedule)) as sum_sch from $bai_pro3.ims_log where ims_mod_no in ($section_mods)";
 		//echo $sql22;
@@ -22,7 +22,7 @@ function ims_schedules($link,$section_mods)
 
 function ims_schedules_input($link,$section_mods)
 {
-	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	$sel_sch=array();
 	$sql23="select distinct(ims_schedule) as dist_schedules from $bai_pro3.ims_log where ims_mod_no in ($section_mods)";
 	// echo $sql23 ."</br>";
@@ -326,7 +326,7 @@ function ims_schedules_input($link,$section_mods)
 
 function ims_schedules_input2($link,$section_mods,$schedule_no)
 {
-	    include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 		$ord_qty=0;
         $ext_ord_qty=0;
 		$ext_per_qty=0;

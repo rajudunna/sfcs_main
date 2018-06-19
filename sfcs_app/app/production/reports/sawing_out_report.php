@@ -1,5 +1,5 @@
 
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $sawing_out_excel = '..'.getFullURL($_GET['r'],'sawing_out_excel.php','R');?>
 <style>
 	th{

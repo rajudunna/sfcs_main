@@ -5,7 +5,7 @@ $start_week=$_GET['week_start'];
 $end_week=$_GET['week_end'];
 $style_id=$_GET['style_id'];
 //echo $color_code;
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 ?>
 
 <html>

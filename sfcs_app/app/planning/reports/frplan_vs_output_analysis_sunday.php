@@ -78,7 +78,7 @@ float:right;
 	<div class='panel-heading'>FR - Daily Plan Achievement Report</div>
 <div class='panel-body'>
 <?php 
-// include('../'.getFullURL($_GET['r'],"dbconf5.php",'R')); ?>
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],"dbconf5.php",'R')); ?>
 
 <form method="POST" action="?r=<?php echo $_GET['r'];?>" name="input">
 <div class="row">

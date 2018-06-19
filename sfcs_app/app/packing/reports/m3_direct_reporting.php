@@ -1,8 +1,8 @@
 <?php  
 
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));; 
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );
-include("../".getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));; 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 $view_access=user_acl("SFCS_0036",$username,1,$group_id_sfcs);
 $aut_users=user_acl("SFCS_0036",$username,7,$group_id_sfcs);
 ?>
@@ -207,6 +207,8 @@ for($i=0;$i<sizeof($size);$i++){
 	}	
 	if($status){
 		echo "<script>sweetAlert('Updated Successfully','','success')</script>";
+	}else{
+		echo "<script>sweetAlert('Unable to update','','error');</script>";
 	}
 }
 
@@ -1029,8 +1031,9 @@ echo "</tr>";
 					
 					echo"</td>";
 					echo "<td>".$already_reported."</td>";
-					
+					$disable_btn = false;	
 					if(!in_array($username,$aut_users)){
+						$disable_btn = true;
 						$check="readonly=\"true\"";
 						$value=$act_fca_new-$already_reported;
 					}else{
@@ -1077,7 +1080,9 @@ echo "</tr>";
 	}	
 	echo "</form>
 	</div>";
-
+	if($disable_btn){
+		echo "<br/><b style='color:red'>This user doesnt have access to update</b>";
+	}
 	if($row_count == 0)
 		echo "<script> $('#upd').attr('disabled', 'disabled'); </script>";
 }
@@ -1089,6 +1094,12 @@ echo "</tr>";
 </div>
 
 <?php
+
+if($disable_btn){
+	
+	echo "<script>document.getElementById('upd').disabled = true;</script>";
+}
+
 if(isset($_GET['color']))
 	echo "<script>document.getElementById('show').disabled = false;
 		  </script>";

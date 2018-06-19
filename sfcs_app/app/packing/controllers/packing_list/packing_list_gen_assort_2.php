@@ -1,6 +1,6 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	?>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
-<?php //include('../'.getFullURLLevel($_GET['r'],'functions.php',2,'R') ); This file contents was not used here ?>	
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',2,'R') ); This file contents was not used here ?>	
 
 <?php
 	$order_tid=$_GET['order_tid'];

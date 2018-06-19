@@ -322,8 +322,8 @@ $authorized=array("sfcsproject1");//Job Loading
 $authorized1=array("sfcsproject1");
 
 set_time_limit(200000);
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 
 ?>
 
@@ -892,7 +892,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				
 				$urll = getFullURLLevel($_GET["r"],'cut_jobs_loading.php',0,'N');
 				// echo $urll;
-				echo "<div id=\"\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\"><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('".$urll."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1200,height=800, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:15px;color:#000000;\"></font></a></div></div></div>";
+				echo "<div id=\"\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\"><a href=\"javascript:void(0)\" onclic=\"Popup=window.open('".$urll."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1200,height=800, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:15px;color:#000000;\"></font></a></div></div></div>";
 
 			}
 			else

@@ -1,5 +1,5 @@
 <?php
-// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'sfcs/server/db_hosts.php',7,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'sfcs/server/db_hosts.php',7,'R'));
 include("../../../../common/config/config.php");
 
 $dat=date("Y-m-d");

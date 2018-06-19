@@ -28,10 +28,10 @@ jQuery(document).ready(function($){
 
 
 <?php
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
 // include("dbconf.php"); 
 // include("functions.php"); 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
@@ -59,7 +59,7 @@ set_time_limit(200000);
   <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
 <!-- <head> -->
 <title>CPS Dashboard</title>
-<!-- <link rel="stylesheet" href="styles/bootstrap.min.css"> -->
+<link rel="stylesheet" href="../../../../common/css/bootstrap.min.css">
 <?php
 $hour=date("H.i");
 echo '<META HTTP-EQUIV="refresh" content="120">';
@@ -73,8 +73,8 @@ if(($hour>=7.45 and $hour<=10.45) or ($hour>=12.30 and $hour<=14.00) or ($hour>=
 } 
 */
 ?>
-<!--<script type="text/javascript" src="jquery.js"></script>
-<script type='text/javascript' src='jquery-1.6.2.js'></script>-->
+<script type="text/javascript" src="../../../../common/js/jquery.js"></script>
+<!-- <script type='text/javascript' src='jquery-1.6.2.js'></script> -->
 <!--Ticket #177328  Add the java script for Text blinking -->
 <script type="text/javascript">
  <!--
@@ -557,6 +557,8 @@ height: 25px;
 </style>
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; 
 ?>
+<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/common/js/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+
 <SCRIPT>
 <!--
 function doBlink() {
@@ -1321,7 +1323,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           // echo "Hash Color</br>";
           // edited by ram kumar
           // echo "fabric req :".$fabric_required."</br>";
-           //echo "total req :".$total_req_qty."</br>";
+          // echo "total req :".$total_req_qty."</br>";
 		   
 		  /*For testing logic changed*/ 
           if($fabric_required<=$total_req_qty){
@@ -1342,7 +1344,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }else{
               $id='orange';
               //Not Allowed
-            if($username=='sfcsproject1'){
+            if($username!='sfcsproject1'){
 
               //echo "orange : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>";
               if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
@@ -1660,7 +1662,7 @@ document.getElementById()
 <div style="clear: both;"> </div>
 </br>
 <?php
-include('../'.getFullURLLevel($_GET['r'],'cps.htm',0,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'cps.htm',0,'R')); 
 ?>
 <!-- </body>
 </html> -->

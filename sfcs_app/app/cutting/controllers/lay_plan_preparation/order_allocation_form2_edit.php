@@ -1,5 +1,5 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
 
 <style>
 div.block
@@ -46,9 +46,9 @@ function verify_num(t,e){
 <body>
 
 <div class="panel panel-primary">
-<div class="panel-heading">Order Allocation Form</div>
+<div class="panel-heading">Order Allocation Form edit</div>
 <div class="panel-body"> 
-<FORM method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_allocation_process_edit.php", "N"); ?>">
+<FORM method="post" name="input" onsubmit='return check()' action="<?php echo getFullURL($_GET['r'], "order_allocation_process_edit.php", "N"); ?>">
 <?php
 
 $check_id=$_GET['check_id'];
@@ -66,9 +66,9 @@ echo "<input type\"text\" name=\"cat_id\" value=\"".$cat_id."\" style=\"visibili
 
 //echo "<br/>";
 
-$sql="select * from bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
+mysqli_query($link, $sql) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error b".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -127,9 +127,9 @@ echo "</table>"; */
 
 /* NEW */
 
-$sql="select * from bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
+mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error c".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -307,18 +307,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 }
 
-$sql="select * from cat_stat_log where order_tid=\"$tran_order_tid\" and tid=$cat_id";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and tid=$cat_id";
+mysqli_query($link, $sql) or exit("Sql Error e".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error f".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 //echo "<table border=1><tr><td>TID</td><td>Date</td><td>Category</td><td>PurWidth</td><td>gmtway</td><td>STATUS</td><td>remarks</td></tr>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	
 $check=0;
-$sql2="select sum(cuttable_s_s01) as \"s01\", sum(cuttable_s_s02) as \"s02\", sum(cuttable_s_s03) as \"s03\", sum(cuttable_s_s04) as \"s04\", sum(cuttable_s_s05) as \"s05\", sum(cuttable_s_s06) as \"s06\", sum(cuttable_s_s07) as \"s07\", sum(cuttable_s_s08) as \"s08\", sum(cuttable_s_s09) as \"s09\", sum(cuttable_s_s10) as \"s10\", sum(cuttable_s_s11) as \"s11\", sum(cuttable_s_s12) as \"s12\", sum(cuttable_s_s13) as \"s13\", sum(cuttable_s_s14) as \"s14\", sum(cuttable_s_s15) as \"s15\", sum(cuttable_s_s16) as \"s16\", sum(cuttable_s_s17) as \"s17\", sum(cuttable_s_s18) as \"s18\", sum(cuttable_s_s19) as \"s19\", sum(cuttable_s_s20) as \"s20\", sum(cuttable_s_s21) as \"s21\", sum(cuttable_s_s22) as \"s22\", sum(cuttable_s_s23) as \"s23\", sum(cuttable_s_s24) as \"s24\", sum(cuttable_s_s25) as \"s25\", sum(cuttable_s_s26) as \"s26\", sum(cuttable_s_s27) as \"s27\", sum(cuttable_s_s28) as \"s28\", sum(cuttable_s_s29) as \"s29\", sum(cuttable_s_s30) as \"s30\", sum(cuttable_s_s31) as \"s31\", sum(cuttable_s_s32) as \"s32\", sum(cuttable_s_s33) as \"s33\", sum(cuttable_s_s34) as \"s34\", sum(cuttable_s_s35) as \"s35\", sum(cuttable_s_s36) as \"s36\", sum(cuttable_s_s37) as \"s37\", sum(cuttable_s_s38) as \"s38\", sum(cuttable_s_s39) as \"s39\", sum(cuttable_s_s40) as \"s40\", sum(cuttable_s_s41) as \"s41\", sum(cuttable_s_s42) as \"s42\", sum(cuttable_s_s43) as \"s43\", sum(cuttable_s_s44) as \"s44\", sum(cuttable_s_s45) as \"s45\", sum(cuttable_s_s46) as \"s46\", sum(cuttable_s_s47) as \"s47\", sum(cuttable_s_s48) as \"s48\", sum(cuttable_s_s49) as \"s49\", sum(cuttable_s_s50) as \"s50\" from cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=".$sql_row['tid'];
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql2="select sum(cuttable_s_s01) as \"s01\", sum(cuttable_s_s02) as \"s02\", sum(cuttable_s_s03) as \"s03\", sum(cuttable_s_s04) as \"s04\", sum(cuttable_s_s05) as \"s05\", sum(cuttable_s_s06) as \"s06\", sum(cuttable_s_s07) as \"s07\", sum(cuttable_s_s08) as \"s08\", sum(cuttable_s_s09) as \"s09\", sum(cuttable_s_s10) as \"s10\", sum(cuttable_s_s11) as \"s11\", sum(cuttable_s_s12) as \"s12\", sum(cuttable_s_s13) as \"s13\", sum(cuttable_s_s14) as \"s14\", sum(cuttable_s_s15) as \"s15\", sum(cuttable_s_s16) as \"s16\", sum(cuttable_s_s17) as \"s17\", sum(cuttable_s_s18) as \"s18\", sum(cuttable_s_s19) as \"s19\", sum(cuttable_s_s20) as \"s20\", sum(cuttable_s_s21) as \"s21\", sum(cuttable_s_s22) as \"s22\", sum(cuttable_s_s23) as \"s23\", sum(cuttable_s_s24) as \"s24\", sum(cuttable_s_s25) as \"s25\", sum(cuttable_s_s26) as \"s26\", sum(cuttable_s_s27) as \"s27\", sum(cuttable_s_s28) as \"s28\", sum(cuttable_s_s29) as \"s29\", sum(cuttable_s_s30) as \"s30\", sum(cuttable_s_s31) as \"s31\", sum(cuttable_s_s32) as \"s32\", sum(cuttable_s_s33) as \"s33\", sum(cuttable_s_s34) as \"s34\", sum(cuttable_s_s35) as \"s35\", sum(cuttable_s_s36) as \"s36\", sum(cuttable_s_s37) as \"s37\", sum(cuttable_s_s38) as \"s38\", sum(cuttable_s_s39) as \"s39\", sum(cuttable_s_s40) as \"s40\", sum(cuttable_s_s41) as \"s41\", sum(cuttable_s_s42) as \"s42\", sum(cuttable_s_s43) as \"s43\", sum(cuttable_s_s44) as \"s44\", sum(cuttable_s_s45) as \"s45\", sum(cuttable_s_s46) as \"s46\", sum(cuttable_s_s47) as \"s47\", sum(cuttable_s_s48) as \"s48\", sum(cuttable_s_s49) as \"s49\", sum(cuttable_s_s50) as \"s50\" from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=".$sql_row['tid'];
+mysqli_query($link, $sql2) or exit("Sql Error g".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
 {
@@ -507,9 +507,9 @@ $aoq_s50=0;
 
 
 
-$sql2="select sum(allocate_s01 * plies) as \"s01\", sum(allocate_s02 * plies) as \"s02\", sum(allocate_s03 * plies) as \"s03\", sum(allocate_s04 * plies) as \"s04\", sum(allocate_s05 * plies) as \"s05\", sum(allocate_s06 * plies) as \"s06\", sum(allocate_s07 * plies) as \"s07\", sum(allocate_s08 * plies) as \"s08\", sum(allocate_s09 * plies) as \"s09\", sum(allocate_s10 * plies) as \"s10\", sum(allocate_s11 * plies) as \"s11\", sum(allocate_s12 * plies) as \"s12\", sum(allocate_s13 * plies) as \"s13\", sum(allocate_s14 * plies) as \"s14\", sum(allocate_s15 * plies) as \"s15\", sum(allocate_s16 * plies) as \"s16\", sum(allocate_s17 * plies) as \"s17\", sum(allocate_s18 * plies) as \"s18\", sum(allocate_s19 * plies) as \"s19\", sum(allocate_s20 * plies) as \"s20\", sum(allocate_s21 * plies) as \"s21\", sum(allocate_s22 * plies) as \"s22\", sum(allocate_s23 * plies) as \"s23\", sum(allocate_s24 * plies) as \"s24\", sum(allocate_s25 * plies) as \"s25\", sum(allocate_s26 * plies) as \"s26\", sum(allocate_s27 * plies) as \"s27\", sum(allocate_s28 * plies) as \"s28\", sum(allocate_s29 * plies) as \"s29\", sum(allocate_s30 * plies) as \"s30\", sum(allocate_s31 * plies) as \"s31\", sum(allocate_s32 * plies) as \"s32\", sum(allocate_s33 * plies) as \"s33\", sum(allocate_s34 * plies) as \"s34\", sum(allocate_s35 * plies) as \"s35\", sum(allocate_s36 * plies) as \"s36\", sum(allocate_s37 * plies) as \"s37\", sum(allocate_s38 * plies) as \"s38\", sum(allocate_s39 * plies) as \"s39\", sum(allocate_s40 * plies) as \"s40\", sum(allocate_s41 * plies) as \"s41\", sum(allocate_s42 * plies) as \"s42\", sum(allocate_s43 * plies) as \"s43\", sum(allocate_s44 * plies) as \"s44\", sum(allocate_s45 * plies) as \"s45\", sum(allocate_s46 * plies) as \"s46\", sum(allocate_s47 * plies) as \"s47\", sum(allocate_s48 * plies) as \"s48\", sum(allocate_s49 * plies) as \"s49\", sum(allocate_s50 * plies) as \"s50\" from allocate_stat_log where order_tid=\"$tran_order_tid\" and cuttable_ref=$check_id";
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql2="select sum(allocate_s01 * plies) as \"s01\", sum(allocate_s02 * plies) as \"s02\", sum(allocate_s03 * plies) as \"s03\", sum(allocate_s04 * plies) as \"s04\", sum(allocate_s05 * plies) as \"s05\", sum(allocate_s06 * plies) as \"s06\", sum(allocate_s07 * plies) as \"s07\", sum(allocate_s08 * plies) as \"s08\", sum(allocate_s09 * plies) as \"s09\", sum(allocate_s10 * plies) as \"s10\", sum(allocate_s11 * plies) as \"s11\", sum(allocate_s12 * plies) as \"s12\", sum(allocate_s13 * plies) as \"s13\", sum(allocate_s14 * plies) as \"s14\", sum(allocate_s15 * plies) as \"s15\", sum(allocate_s16 * plies) as \"s16\", sum(allocate_s17 * plies) as \"s17\", sum(allocate_s18 * plies) as \"s18\", sum(allocate_s19 * plies) as \"s19\", sum(allocate_s20 * plies) as \"s20\", sum(allocate_s21 * plies) as \"s21\", sum(allocate_s22 * plies) as \"s22\", sum(allocate_s23 * plies) as \"s23\", sum(allocate_s24 * plies) as \"s24\", sum(allocate_s25 * plies) as \"s25\", sum(allocate_s26 * plies) as \"s26\", sum(allocate_s27 * plies) as \"s27\", sum(allocate_s28 * plies) as \"s28\", sum(allocate_s29 * plies) as \"s29\", sum(allocate_s30 * plies) as \"s30\", sum(allocate_s31 * plies) as \"s31\", sum(allocate_s32 * plies) as \"s32\", sum(allocate_s33 * plies) as \"s33\", sum(allocate_s34 * plies) as \"s34\", sum(allocate_s35 * plies) as \"s35\", sum(allocate_s36 * plies) as \"s36\", sum(allocate_s37 * plies) as \"s37\", sum(allocate_s38 * plies) as \"s38\", sum(allocate_s39 * plies) as \"s39\", sum(allocate_s40 * plies) as \"s40\", sum(allocate_s41 * plies) as \"s41\", sum(allocate_s42 * plies) as \"s42\", sum(allocate_s43 * plies) as \"s43\", sum(allocate_s44 * plies) as \"s44\", sum(allocate_s45 * plies) as \"s45\", sum(allocate_s46 * plies) as \"s46\", sum(allocate_s47 * plies) as \"s47\", sum(allocate_s48 * plies) as \"s48\", sum(allocate_s49 * plies) as \"s49\", sum(allocate_s50 * plies) as \"s50\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cuttable_ref=$check_id";
+mysqli_query($link, $sql2) or exit("Sql Error i".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error j".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check2=mysqli_num_rows($sql_result2);
 while($sql_row2=mysqli_fetch_array($sql_result2))
 {
@@ -617,9 +617,9 @@ $coq_s48=0;
 $coq_s49=0;
 $coq_s50=0;
 
-$sql="select sum(cuttable_s_s01) as \"s01\",sum(cuttable_s_s02) as \"s02\",sum(cuttable_s_s03) as \"s03\",sum(cuttable_s_s04) as \"s04\",sum(cuttable_s_s05) as \"s05\",sum(cuttable_s_s06) as \"s06\",sum(cuttable_s_s07) as \"s07\",sum(cuttable_s_s08) as \"s08\",sum(cuttable_s_s09) as \"s09\",sum(cuttable_s_s10) as \"s10\",sum(cuttable_s_s11) as \"s11\",sum(cuttable_s_s12) as \"s12\",sum(cuttable_s_s13) as \"s13\",sum(cuttable_s_s14) as \"s14\",sum(cuttable_s_s15) as \"s15\",sum(cuttable_s_s16) as \"s16\",sum(cuttable_s_s17) as \"s17\",sum(cuttable_s_s18) as \"s18\",sum(cuttable_s_s19) as \"s19\",sum(cuttable_s_s20) as \"s20\",sum(cuttable_s_s21) as \"s21\",sum(cuttable_s_s22) as \"s22\",sum(cuttable_s_s23) as \"s23\",sum(cuttable_s_s24) as \"s24\",sum(cuttable_s_s25) as \"s25\",sum(cuttable_s_s26) as \"s26\",sum(cuttable_s_s27) as \"s27\",sum(cuttable_s_s28) as \"s28\",sum(cuttable_s_s29) as \"s29\",sum(cuttable_s_s30) as \"s30\",sum(cuttable_s_s31) as \"s31\",sum(cuttable_s_s32) as \"s32\",sum(cuttable_s_s33) as \"s33\",sum(cuttable_s_s34) as \"s34\",sum(cuttable_s_s35) as \"s35\",sum(cuttable_s_s36) as \"s36\",sum(cuttable_s_s37) as \"s37\",sum(cuttable_s_s38) as \"s38\",sum(cuttable_s_s39) as \"s39\",sum(cuttable_s_s40) as \"s40\",sum(cuttable_s_s41) as \"s41\",sum(cuttable_s_s42) as \"s42\",sum(cuttable_s_s43) as \"s43\",sum(cuttable_s_s44) as \"s44\",sum(cuttable_s_s45) as \"s45\",sum(cuttable_s_s46) as \"s46\",sum(cuttable_s_s47) as \"s47\",sum(cuttable_s_s48) as \"s48\",sum(cuttable_s_s49) as \"s49\",sum(cuttable_s_s50) as \"s50\" from cuttable_stat_log where order_tid=\"$tran_order_tid\" and tid=$check_id";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select sum(cuttable_s_s01) as \"s01\",sum(cuttable_s_s02) as \"s02\",sum(cuttable_s_s03) as \"s03\",sum(cuttable_s_s04) as \"s04\",sum(cuttable_s_s05) as \"s05\",sum(cuttable_s_s06) as \"s06\",sum(cuttable_s_s07) as \"s07\",sum(cuttable_s_s08) as \"s08\",sum(cuttable_s_s09) as \"s09\",sum(cuttable_s_s10) as \"s10\",sum(cuttable_s_s11) as \"s11\",sum(cuttable_s_s12) as \"s12\",sum(cuttable_s_s13) as \"s13\",sum(cuttable_s_s14) as \"s14\",sum(cuttable_s_s15) as \"s15\",sum(cuttable_s_s16) as \"s16\",sum(cuttable_s_s17) as \"s17\",sum(cuttable_s_s18) as \"s18\",sum(cuttable_s_s19) as \"s19\",sum(cuttable_s_s20) as \"s20\",sum(cuttable_s_s21) as \"s21\",sum(cuttable_s_s22) as \"s22\",sum(cuttable_s_s23) as \"s23\",sum(cuttable_s_s24) as \"s24\",sum(cuttable_s_s25) as \"s25\",sum(cuttable_s_s26) as \"s26\",sum(cuttable_s_s27) as \"s27\",sum(cuttable_s_s28) as \"s28\",sum(cuttable_s_s29) as \"s29\",sum(cuttable_s_s30) as \"s30\",sum(cuttable_s_s31) as \"s31\",sum(cuttable_s_s32) as \"s32\",sum(cuttable_s_s33) as \"s33\",sum(cuttable_s_s34) as \"s34\",sum(cuttable_s_s35) as \"s35\",sum(cuttable_s_s36) as \"s36\",sum(cuttable_s_s37) as \"s37\",sum(cuttable_s_s38) as \"s38\",sum(cuttable_s_s39) as \"s39\",sum(cuttable_s_s40) as \"s40\",sum(cuttable_s_s41) as \"s41\",sum(cuttable_s_s42) as \"s42\",sum(cuttable_s_s43) as \"s43\",sum(cuttable_s_s44) as \"s44\",sum(cuttable_s_s45) as \"s45\",sum(cuttable_s_s46) as \"s46\",sum(cuttable_s_s47) as \"s47\",sum(cuttable_s_s48) as \"s48\",sum(cuttable_s_s49) as \"s49\",sum(cuttable_s_s50) as \"s50\" from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and tid=$check_id";
+mysqli_query($link, $sql) or exit("Sql Error k ".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error k ".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -676,9 +676,9 @@ $coq_s01=$sql_row['s01'];
 	$coq_s50=$sql_row['s50'];
 }
 
-$sql="select * from allocate_stat_log where cat_ref=$cat_id";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select * from $bai_pro3.allocate_stat_log where cat_ref=$cat_id";
+mysqli_query($link, $sql) or exit("Sql Error l".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error l".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 //echo "<table border=1><tr><td>TID</td><td>Ratio</td><td>No.of Cuts</td><td>Plies</td><td>Max Plies/Cut</td><td>XS</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>XXL</td><td>XXXL</td><td>Total</td></tr>";
@@ -697,9 +697,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 
 
-$sql="select * from allocate_stat_log where tid=$ref_id";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select * from $bai_pro3.allocate_stat_log where tid='$ref_id'";
+mysqli_query($link, $sql) or exit("Sql Error m".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error n".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -776,7 +776,7 @@ echo "</table>";
 
 echo "<table class=\"table table-bordered\">";
 echo "<thead><tr><td><center>Sizes</center></td><td><center>Requested Qty</center></td><td><center>Ratio Prepared Qty</center></td><td><center>Balance</center></td><td><center>Ratio</center></td></tr></thead>";
-
+$count = sizeof($s_tit);
 for($s=0;$s<sizeof($s_tit);$s++)
 	{	
 		$code= "aoq_s".$sizes_code[$s];
@@ -785,11 +785,12 @@ for($s=0;$s<sizeof($s_tit);$s++)
 		$flag = ($$code == 0)?'readonly':'';
 		echo "<tr>
 		<td><center>".$s_tit[$sizes_code[$s]]."</center></td>
-		<td><center>".$$code1."</center></td>
-		<td><center>".$$code."</center></td>
+		<td><center id='req_qty$s'>".$$code1."</center></td>
+		<td><center  id='prepared_qty$s'>".$$code."</center></td>
 		<td><center>".($$code-$$code1)."</center></td>
-		<td><center><INPUT type=\"text\" $flag name=\"in_s".$sizes_code[$s]."\" class=\"ratios integer\" id='in_s$sizes_code[$s]' required  value=\"".$$code3."\" size=\"10\"></center></td>
+		<td><center><INPUT type=\"text\" $flag name=\"in_s".$sizes_code[$s]."\" id='ratioQty$s' class=\"ratios integer\"  required  value=\"".$$code3."\" size=\"10\"></center></td>
 		</tr>";
+		//id='in_s$sizes_code[$s]'
 	}
 /*
 echo "<tr>
@@ -1208,6 +1209,7 @@ echo "<div class=\"col-md-4\">";
 echo "<INPUT class=\"btn btn-sm btn-primary \" onclick='return verify_num(this,event)' TYPE = \"submit\" id=\"update\" Name = \"Update\" VALUE = \"Update\"></div>";
 echo "</form>";
 echo "</div>";
+
 ?>
 
 </div>
@@ -1215,3 +1217,53 @@ echo "</div>";
 </div>
 </body>
 </html>
+
+
+<script>
+
+function check(){
+	// for(var i=0; i<count; i++){
+		// if($('#ratioQty'+i).val() != ""){
+			// j += 1;
+			//console.log($('#ratioQty'+i).val());
+		// }
+		//console.log($('#ratioQty'+i).val());
+	// }
+	// if(j == 0){
+		// sweetAlert('Error','Please fill atleast 1 ratio feild and that should be equal or more than 0','error');
+		
+	// }
+	var count = '<?= $count; ?>';
+	var j = 0;
+	for(var i=0; i<count; i++)
+	{
+		var id = i;
+		var rep = 'req_qty'+id;
+		var rev = 'prepared_qty'+id;
+		console.log(rev);
+		var present = 'ratioQty'+id;
+		//console.log(rev);
+		var reported_qty_validation = document.getElementById(rep).innerHTML;
+		console.log(reported_qty_validation);
+		var reverting_qty = document.getElementById(rev).innerHTML;
+		console.log(reverting_qty);
+		if(Number(document.getElementById(present).value) != 0)
+		{
+			if(Number(reported_qty_validation) <= Number(reverting_qty))
+			{
+				j = 1;
+				document.getElementById(present).value = 0;
+				break;
+			}
+		}
+	}
+	if(j == 1)
+	{
+		sweetAlert('','Ratio preparing quantity is more than requested quantity.','error');
+		return false;
+	}
+	
+	
+	
+}
+</script>

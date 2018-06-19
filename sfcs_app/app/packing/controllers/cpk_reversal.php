@@ -1,7 +1,7 @@
 
 <?php
-include("../".getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
-include("../".getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 
 ?>
 
@@ -10,8 +10,8 @@ include("../".getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R")
   
 </script>
 
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
-<?php include("../".getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R')); 
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R')); 
 include("../".getFullURL($_GET['r'], 'sesssion_track.php', 'R'));
 
 //Exemption Handling
@@ -23,7 +23,7 @@ if($session_login_fg_carton_scan==1)
 ?>
 
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') ); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') ); ?>
 	<script>
 	function checkx(x,y)
 	{
@@ -67,9 +67,9 @@ if($session_login_fg_carton_scan==1)
 	}
 </script>
 <body>
-<?php //include('../'.getFullURL($_GET['r'],'menu_content.php','R') );  ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php','R') );  ?>
 
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
 
 <div class="panel panel-primary">
 <div class="panel-heading">FG Stock Reversal Form</div>

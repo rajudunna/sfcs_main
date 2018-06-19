@@ -38,10 +38,12 @@ td{ padding:2px; white-space: nowrap;}
 <?php
 set_time_limit(30000000);
 // include("dbconf.php");
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 $mini_order_ref=$_GET["id"];
 $packing_mode=$_GET["mode"];
+	$style_ori=$_GET['style'];
+	$schedule_ori=$_GET['schedule'];
 $id_array=array();
 if ($packing_mode=='4') {
   echo "<h2>Single Color & Multi Size (Non Ratio Pack) Carton Method</h2>";
@@ -126,13 +128,13 @@ while($row1=mysqli_fetch_array($result1))
 			}while($quantity>=$input_job_limit);
 			if($quantity > 0)
 			{
-				$temp_qty[]=$row["cut_num"]."$".$size_code."$".$row["size"]."$".$quantity."$".$quantity."$".$docket_number."$".$destination;
+				$temp_qty[]=$row["cut_num"]."$".$size_code."$".$row["size"]."$".$quantity."$".$quantity."$".$docket_number."$".$destination."$".$size_code_ref;
 			}
 		}
 		else
 		{
 			//echo "2=".$row["quantity"]."<br>";
-			$temp_qty[]=$row["cut_num"]."$".$size_code."$".$row["size"]."$".$quantity."$".$quantity."$".$docket_number."$".$destination;
+			$temp_qty[]=$row["cut_num"]."$".$size_code."$".$row["size"]."$".$quantity."$".$quantity."$".$docket_number."$".$destination."$".$size_code_ref;
 		}
 	}
 	$input_job_no=$input_job_no+1;
@@ -163,7 +165,7 @@ while($row1=mysqli_fetch_array($result1))
 		// echo "2.4=".$i."=".$temp_qty_ref_explode[3]." / ".$quantity_cut_cum." / ".$input_job_limit."<br>";
 		// echo "<tr><td>".$temp_qty_ref_explode[0]."</td><td>".$temp_qty_ref_explode[1]."</td><td>".$temp_qty_ref_explode[2]."</td><td>".$temp_qty_ref_explode[3]."</td><td>".$temp_qty_ref_explode[4]."</td><td>".$input_job_no." / ".$quantity_cut_cum." / Per=".$quantity_cut_cum_per." / ".$input_job_limit."</td></tr>";
 		$rand=$schedule.date("ymdH").$input_job_no;
-		$sql1="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size) values(\"".$temp_qty_ref_explode[5]."\",\"".$temp_qty_ref_explode[1]."\",\"".$temp_qty_ref_explode[3]."\",\"".$input_job_no."\",\"".$rand."\",\"".$temp_qty_ref_explode[6]."\",\"".$packing_mode."\",\"".$size_code_ref."\")";
+		$sql1="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size) values(\"".$temp_qty_ref_explode[5]."\",\"".$temp_qty_ref_explode[1]."\",\"".$temp_qty_ref_explode[3]."\",\"".$input_job_no."\",\"".$rand."\",\"".$temp_qty_ref_explode[6]."\",\"".$packing_mode."\",\"".$temp_qty_ref_explode[7]."\")";
 		// echo $sql1."<br>";
 		mysqli_query($link, $sql1) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -193,7 +195,7 @@ echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
 echo "<script>
 			setTimeout(redirect(),5000);
 			function redirect(){
-		        location.href = '".$btn_url."';
+		        location.href = '".$btn_url."&style=$style_ori&schedule=$schedule_ori';
 			}</script>";
 // echo "</table></div>";
 ?>

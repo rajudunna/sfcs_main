@@ -9,8 +9,8 @@
 //CR #198 / 2014-12-18 / kirang / Taken the usernames from databse level
 
 //Service Request #930334 / 2015-01-12 / kirang / Added Remarks field for capturing the MER Packing List Remarks
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));	
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));	
 // $view_access=user_acl("SFCS_0173",$username,1,$group_id_sfcs);
 ?>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->

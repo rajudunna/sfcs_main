@@ -1,7 +1,7 @@
 <?php
 $start_timestamp = microtime(true);
 error_reporting(0);
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
  ?>
 
 <?php
@@ -221,7 +221,7 @@ $table.= "</tr>";
 				if($print_check==0 and $num_rows>0 and ($ctex_sum-$rec_qty)<0)
 			
 				{
-				include('C:\xampp\htdocs\sfcs_app\app\jobs\common\php\supplier_db.php');
+				include('C:\xampp\htdocs\sfcs_main\sfcs_app\app\jobs\common\php\supplier_db.php');
 
 				sort($scount_temp); //to sort shade groups
 				$avg_t_width=round($avg_t_width/$num_rows,2);

@@ -6,8 +6,8 @@ This amendement was done based on the confirmation to issue excess (1%) material
 -->
 
 
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); ?>
 <?php
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];	

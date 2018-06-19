@@ -1,6 +1,6 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	      ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	      ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
 
 <?php
 
@@ -92,7 +92,7 @@ function verify_year(){
 <body>
 <div class='panel panel-primary'>
 	<div class='panel-heading'>
-		<b>Out Of Ratio Reported</b>
+		<b>Out Of Ratio Report</b>
 	</div>
 	<div class='panel-body'>
 		<form action="<?php echo $form_action ?>" method="POST">

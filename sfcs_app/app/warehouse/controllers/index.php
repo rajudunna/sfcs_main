@@ -1,6 +1,6 @@
 <?php 
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 ?>
 
 <script>
@@ -26,10 +26,7 @@ body
 	font-family:arial;
 }
 </style>
-<!-- <?php 
-echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />';
- ?>
-</head> -->
+
 <body onload="focus_box()">
 <div class='panel panel-primary'>
 	<div class='panel-heading'>
@@ -75,14 +72,12 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 
 		?>
 
-	<!-- onkeydown="document.input.submit();" -->
 		<form name="input" method="post" action="?r=<?= $_GET['r'] ?>" enctype="multipart/form data">
 		<div class="row">
 		<div class="form-group col-md-3">
 		<input type="text" name="cartonid" id="cartonid" class="form-control" onkeyup="document.input.submit();"  value="">
 		</div>
 		</div>
-		<!-- <input type="text" size="19" value="" name="cartonid" onkeyup='check(this)' id="cartonid"> -->
 		<div class="row">
 		<div class="form-group col-md-3">
 		<label>Manual Entry: </label>
@@ -119,7 +114,29 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 						echo "<h2>Status: <span class='label label-success'>Success!</span> $code</h2>";
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"?r=".$_GET['r']."&location=$location\"; }</script>";
 					}else{
-						echo "<h2>Status: <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
+						$sql1="select * from $bai_rm_pj1.store_in_deleted where tid=\"$code\" ";
+						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sql_result1)>0)
+						{
+						echo "<h2>Status  : $code-<span class='label label-warning'>Label Deleted</span> </h2>";
+
+						}
+						else
+						{
+							$sql2="select * from $bai_rm_pj1.store_in where tid=\"$code\" ";
+							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($sql_result2)>0)
+							{
+								echo "<h2>Status  : $code-<span class='label label-info'>Label Already Scanned</span> </h2>";
+							}
+							else
+							{
+
+							echo "<h2>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h2>";
+
+							}
+						}
+						// echo "<h2>Status: <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
 						//echo "<button id='back' onclick='back()' class='btn btn-warning'><< Go back</button>";
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"".getFullURL($_GET['r'],'index.php','N')."&location=$location&code=$code\"; }</script>";
 						
@@ -161,7 +178,29 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 					}
 					else
 					{
-						echo "<h2>Status  : <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
+						$sql1="select * from $bai_rm_pj1.store_in_deleted where tid=\"$code\" ";
+						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sql_result1)>0)
+						{
+						echo "<h2>Status  : $code-<span class='label label-warning'>Label Deleted</span> </h2>";
+
+						}
+						else
+						{
+							$sql2="select * from $bai_rm_pj1.store_in where tid=\"$code\" ";
+							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($sql_result2)>0)
+							{
+								echo "<h2>Status  : $code-<span class='label label-info'>Label Already Scanned</span> </h2>";
+							}
+							else
+							{
+
+							echo "<h2>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h2>";
+
+							}
+						}
+						// echo "<h2>Status  : <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
 						// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"".getFullURL($_GET['r'],'return.php','N')."&location=$location&code=$code\"; }</script>";
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"".getFullURL($_GET['r'],'index.php','N')."&location=$location&code=$code\"; }</script>";
 					}

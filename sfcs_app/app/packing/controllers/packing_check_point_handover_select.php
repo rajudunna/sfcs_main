@@ -1,8 +1,8 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'session_track.php',0,'R') );    ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'session_track.php',0,'R') );    ?>
 <?php 
 //Date:2016-02-08/kirang/SR#64304318/Added Error mail function to the error part of sql queries 
 //Date:2016-02-12/kirang/SR#64304318/Added an array to Store the result of packing pending schedules and giving this as input in creating of temp tables. which reduce the query response time and avoid sql errors.

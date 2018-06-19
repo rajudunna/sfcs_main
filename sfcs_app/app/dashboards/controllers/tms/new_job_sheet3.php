@@ -31,7 +31,8 @@ WebBrowser1.outerHTML = "";
 } 
 </script> 
 <?php 
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+ERROR_REPORTING(0);
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 //include("header.php"); 
 include("functions.php"); 
 
@@ -5432,7 +5433,8 @@ AAAAAAAAAAAAAACHBwAAZHJzL21lZGlhL2ltYWdlMS5wbmdQSwUGAAAAAAYABgCEAQAA+wsAAAAA
   </v:shape><![endif]-->
     <![if !vml]>
         <span style='mso-ignore:vglayout; position:absolute;z-index:1;margin-left:6px;margin-top:2px;width:100px; height:30px'>
-            <img width=200% height=100% src="BEK_image1.png" alt="Bx-logo-[RGB]-S" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1">
+   
+            <img width=200% height=100% src='/sfcs_app/app/dashboards/common/images/BEK_image1.png' alt="Bx-logo-[RGB]-S" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1">
         </span>
     <![endif]>
     <span style='mso-ignore:vglayout2'> 

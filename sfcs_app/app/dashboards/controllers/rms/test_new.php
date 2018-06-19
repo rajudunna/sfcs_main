@@ -5,13 +5,13 @@
 
 <?php
 // include("dbconf.php"); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 //echo $username;
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
 $view_access=user_acl("SFCS_0131",$username,1,$group_id_sfcs);
 $authorized=user_acl("SFCS_0131",$username,7,$group_id_sfcs);
 $super_user=user_acl("SFCS_0131",$username,49,$group_id_sfcs);
@@ -97,7 +97,7 @@ function thirdbox()
 
 <?php 
 // include("functions.php");
-include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 
 ?>
 <?php

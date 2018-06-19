@@ -3,7 +3,7 @@ $url = getFullURL($_GET['r'],'mrn_request_form_V2.php','N');
 header("Location: ".$url);
 
 ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 <html>
 <head>
 
@@ -163,7 +163,7 @@ function button_disable()
 
 <form name="test" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/php/menu_include.php',1,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/menu_include.php',1,'R'));
 
 $style=$_GET['style'];
 	$schedule=$_GET['schedule']; 

@@ -33,12 +33,14 @@ td{ padding:2px; white-space: nowrap;}
 <?php 
 set_time_limit(30000000); 
 // include("dbconf.php"); 
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 $input_job_no=0; 
 $check=0; 
 $mini_order_ref=$_GET["id"]; 
 $packing_mode=$_GET["mode"]; 
+    $style_ori=$_GET['style'];
+    $schedule_ori=$_GET['schedule'];
 echo "<h2>Multi Color & Single Size Carton Method</h2>";
 $sql="select * from $brandix_bts.tbl_min_ord_ref where id=$mini_order_ref"; 
 //echo $sql."<br>"; 
@@ -155,7 +157,7 @@ echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
 echo "<script>
 			setTimeout(redirect(),5000);
 			function redirect(){
-		        location.href = '".$btn_url."';
+		        location.href = '".$btn_url."&style=$style_ori&schedule=$schedule_ori';
 			}</script>";
 // echo "</table></div>";
 ?> 

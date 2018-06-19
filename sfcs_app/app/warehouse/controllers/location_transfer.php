@@ -1,5 +1,5 @@
 <?php $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-	include('../'.$url); ?>
+	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); ?>
 <?php
 	// require_once('phplogin/auth.php');
 	if(date("Y-m-d") >= "2012-11-16")
@@ -13,9 +13,9 @@
 	}	
 //	$auth_to_modify=array("kirang","ravipu","sarojiniv","kirang","baiadmn","kirang");
 $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-include('../'.$url);
+include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-include('../'.$url);
+include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 $view_access=user_acl("SFCS_0150",$username,1,$group_id_sfcs); 
 $auth_to_modify=user_acl("SFCS_0150",$username,2,$group_id_sfcs); 	
 
@@ -24,31 +24,6 @@ $auth_to_modify=user_acl("SFCS_0150",$username,2,$group_id_sfcs);
 	//2 for completed
 ?>
 
-
-
-
-<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html  xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> -->
-
-<!-- <script type='text/javascript' src="<?= '../'.getFullURL($_GET['r'],'ajax-autocomplete/jquery.autocomplete.js','R') ?>"></script>
-<link rel="stylesheet" type="text/css" href="<?= '../'.getFullURL($_GET['r'],'ajax-autocomplete/jquery.autocomplete.css','R') ?>" /> -->
-
-<!-- <script type="text/javascript">
-$().ready(function() {
-	$("#course").autocomplete("<?= '../'.getFullURL($_GET['r'],'ajax-autocomplete/get_course_list.php','R') ?>", {
-		width: 260,
-		matchContains: true,
-		//mustMatch: true,
-		//minChars: 0,
-		//multiple: true,
-		//highlight: false,
-		//multipleSeparator: ",",
-		selectFirst: false
-	});
-});
-</script> -->
 <script type="text/javascript">
 
 	function testing()
@@ -128,12 +103,11 @@ $().ready(function() {
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R'); ?>"></script>
-<!-- <link rel="stylesheet" href="<?= '../'.getFullURL($_GET['r'],'includes/page_style.css','R') ?>" type="text/css" media="all" />
- -->
+
 
 <div class='panel panel-primary'><div class='panel-heading'>Location Transfer Form</div><div class='panel-body'>
 
-<!-- <?php include('../'.getFullURL($_GET['r'],'menu_content.php','R')); ?> -->
+
 
 
 <form method="post" name="input2" action="<?= getFullURL($_GET['r'],'location_transfer.php','N') ?>">

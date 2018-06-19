@@ -8,8 +8,8 @@ Changes Log:
 <?php 
 // echo getFullURLLevel($_GET['r'],'/styles/sfcs_styles.css',4,'N');
 
-// include('../'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',4,'R'));
-// include('../'.getFullURLLevel($_GET['r'],'/common/config/group_def.php',4,'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/group_def.php',4,'R')); 
 // $view_access=user_acl("SFCS_0090",$username,1,$group_id_sfcs); 
 ?>
 
@@ -19,9 +19,9 @@ Changes Log:
 <body>
 
 <?php 
-include('../'.getFullURLLevel($_GET['r'],'/common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/config.php',4,'R'));
 //echo getFullURLLevel($_GET['r'],'/common/config/config.php',4,'R');
-// include("../".getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
 
 <?php 
 error_reporting(E_ALL ^ E_NOTICE);

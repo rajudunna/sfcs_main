@@ -9,7 +9,7 @@
 <body>
 <?php 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
 
 <?php 
 	error_reporting(E_ALL ^ E_NOTICE);
@@ -40,7 +40,7 @@ mysqli_select_db($link, $bai_pro4) or die('Error selecting mysql database: ' . m
 // Temporary variable, used to store current query
 $templine = '';
 // Read in entire file
-$file_path  = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'weekly_delivery_plan/'.$filename,0,'R');
+$file_path  = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'weekly_delivery_plan/'.$filename,0,'R');
 $lines = file($file_path);
 // require $file_path;
 // $lines = fopen($file_path,"r");
@@ -151,7 +151,7 @@ $message.="</body></html>";
 
 
 //MAIL UPDATE
-$url2=getFullURLLevel($_GET['r'],'plan_process_week.php',1,'N');
+$url2=getFullURLLevel($_GET['r'],'plan_process_week.php',0,'N');
 // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$dns_adr3/projects/beta/visionair/plan_process_week.php\"; }</script>";
 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url2\"; }</script>";
 

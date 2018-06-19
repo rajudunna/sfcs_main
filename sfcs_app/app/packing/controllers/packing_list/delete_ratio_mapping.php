@@ -1,9 +1,9 @@
 
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R') );  ?>
-<?php //include('../'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R') ); this file is not being used here ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R') );  ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R') ); this file is not being used here ?>
 <?php $view_access=user_acl("SFCS_0243",$username,1,$group_id_sfcs); ?>
 
 

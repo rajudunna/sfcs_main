@@ -4,8 +4,8 @@ kirang/2014-07-28/ Service Request #974044: Add code for time based shift from H
 KiranG/201506-16 Service Request # 186661 : Added form submit button validation to show a message while processing form.
 -->
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
  ?>
 
 
@@ -16,7 +16,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 <script>
 	function validate(x,y)
 	{
-		if(x<0 || x>y) { alert("Please enter correct plies <="+y); return 1010;  }
+		if(x<0 || x>y) { sweetAlert('Please enter valid plies','','warning'); return 1010;  }
 	}
 
 </script>
@@ -24,12 +24,12 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 
 	<body onload="javascript:dodisable();">
 	<div class="panel panel-primary">
-	<div class="panel-heading">Cut Status Reporting</div>
+	<div class="panel-heading">Cut Quantity Reporting (Without Roll)</div>
 	<div class="panel-body">
 		<?php
 			$doc_no=$_GET['doc_no'];
 			echo "<div class=\"table-responsive\"><table class='table table-bordered'>";
-			echo "<tr>";
+			echo "<tr class='danger'>";
 			echo "<th>Doc ID</th><th>Cut No</th>";
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -84,7 +84,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 						
 				}
 				
-				echo "<th>Total</th><th>CUT STATUS</th><th>CUT ISSUE STATUS</th><th>Remarks</th>";
+				echo "<th>Total</th><th>Cut Status</th><th>Cut Issue Status</th><th>Remarks</th>";
 				echo "</tr>";
 				
 				for($s=0;$s<sizeof($sizes_code);$s++)
@@ -216,7 +216,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 			?>
 
 
-<h2>Input Entry Form</h2>  
+<h2><center><u>Input Entry Form</u></center></h2> <br>
 <FORM method="post" name="input" action="<?= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form1_process_cut.php',0,'N');?>">
 	<input type="hidden" name="doc_no" value="<?php echo $doc_no; ?>">
 	<?php
@@ -263,8 +263,8 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 					</select></div></td></tr>";
 			}
 			//echo "<tr><td>Doc Req</td><td>:</td><td>".($act_plies*$mklength)."</td></tr>";
-			echo "<tr><td>Docket Fabric Required</td><td>:</td><td align='center'><div class='col-sm-3'>".round($material,2)."</div></td></tr>";
-			// echo "<tr><td>Planned Plies</td><td>:</td><td>".$plies_check."</td></tr>";
+			echo "<tr><td>Docket Fabric Required</td><td>:</td><td align='left'><div class='col-sm-3'>".round($material,2)."</div></td></tr>";
+			echo "<tr><td>Planned Plies</td><td>:</td><td><div class='col-sm-1'>".$plies_check."</div></td></tr>";
 			echo "<tr><td>Cut Plies</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_plies\"  value=\"$old_plies\"><input type=\"number\" class='form-control' name=\"plies\"  min=0 value=\"$plies_check\" id=\"plies\" onchange=\"if(validate(this.value,$plies_check)==1010) { this.value=0; }\" pattern='^\d+(?:\.\d{1,2})?$'></div></td></tr>";
 			echo "<tr>
 					<td>Fabric Received</td>
@@ -274,7 +274,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 						<input type=\"number\" class='form-control'  min=0 name=\"fab_rec\" value=".round($material,2)." step=any>
 					</div></td>
 				</tr>";
-			echo "<tr><td>Fabric Returned</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_fab_ret\" value=\"$fab_returned\"><input type=\"number\" class='form-control'  min=0 pattern='^\d+(?:\.\d{1,2})?$'  name=\"fab_ret\" value=\"0\"></div>&nbsp;<div class='col-sm-2'> <b>To</b></div><div class='col-sm-4'> <select name=\"ret_to\" class='form-control'><option value=\"0\">Cutting</option><option value=\"1\">RM</option></select></div></td></tr>";
+			echo "<tr><td>Fabric Returned</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_fab_ret\" value=\"$fab_returned\"><input type=\"number\" class='form-control'  min=0 pattern='^\d+(?:\.\d{1,2})?$'  name=\"fab_ret\" value=\"0\"></div>&nbsp;<div class='col-sm-1'> <b>To</b></div><div class='col-sm-4'> <select name=\"ret_to\" class='form-control'><option value=\"0\">Cutting</option><option value=\"1\">RM</option></select></div></td></tr>";
 			echo "<tr><td>Damages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_damages\" value=\"$fab_damages\"><input type=\"number\" class='form-control' name=\"damages\"  min=0 pattern='^\d+(?:\.\d{1,2})?$'  value=\"0\"></div></td></tr>";
 			echo "<tr><td>Shortages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_shortages\" value=\"$fab_shortages\"><input type=\"number\" class='form-control' pattern='^\d+(?:\.\d{1,2})?$' name=\"shortages\"  min=0 value=\"0\"></div></td></tr>";
 
@@ -302,7 +302,12 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 		if($statusn==0)
 		{	
 	?>
-	<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable<input type = "submit" name = "update" value = "Update" class="btn btn-primary" id="update" onclick="document.getElementById('update').style.display='none'; document.getElementById('msg').style.display='';">
+	<div class='col-sm-1'>
+		<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable 
+	</div>
+	<div class='col-sm-2'>
+		<input type = "submit" name = "update" value = "Update" class="btn btn-primary" id="update" onclick="document.getElementById('update').style.display='none'; document.getElementById('msg').style.display='';">
+	</div>
 	<?php
 	}
 	else

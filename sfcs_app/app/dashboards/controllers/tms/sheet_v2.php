@@ -1,6 +1,6 @@
 <?php
 //include("header.php");
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 $schedule=$_GET['schedule'];
 // $schedule='469623';
 $style=$_GET['style'];
@@ -1037,7 +1037,7 @@ tags will be replaced.-->
   <td class=xl6330411></td>
   <td class=xl6330411></td>
  </tr>
- <tr height=42 style='height:31.5pt'>
+ <tr height=42 style='height:31.5pt;'>
   <td height=42 class=xl6330411 style='height:31.5pt'></td>
   <td colspan=2 class=xl9430411 dir=LTR width=149 style='width:112pt'>Item Code
   (SKU)</td>
@@ -1071,9 +1071,9 @@ tags will be replaced.-->
   <?php
   for($j=0;$j<sizeof($size_code);$j++)
   {
+	
 	$sql="select * from $bai_rm_pj1.cwh_to_rmwh_temp where schedule='".$schedule."' and color='".$color[$ii]."' and proc_grp='STRIM' and gmt_size='".$size_code[$j]."'";
 	//$sql="select * from bai_rm_pj1.cwh_to_rmwh where schedule='416100' and color='NATBL : NAUTICAL BLUE' and proc_grp='STRIM' and gmt_size='L' limit 1";
-	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($sql_result))
 	{

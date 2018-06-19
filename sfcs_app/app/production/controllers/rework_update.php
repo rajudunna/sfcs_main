@@ -15,15 +15,15 @@ KiranG - CR# 121
 -Added SMV and SMO value columns to avoid SMV/SMO missings.
 -->
 <?php 
-	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-    // include("../".getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 
 	//Due to sunday working.
 	$view_access=user_acl("SFCS_0169",$username,1,$group_id_sfcs);
 	$special_day_permissions=user_acl("SFCS_0169",$username,38,$group_id_sfcs);
 	$hod_acces_list=user_acl("SFCS_0169",$username,39,$group_id_sfcs);
-    include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 	
 
 	$workstudy_limit="23.59";
@@ -309,7 +309,7 @@ function second_box(){
 <div class="panel-heading">Re-Work Capturing </div>
 <div class="panel-body">
 	<?php
-	    // include("../".getFullURLLevel($_GET['r'],'common/php/rework_functions.php',1,'R'));
+	    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/rework_functions.php',1,'R'));
 		$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 		$username=strtolower($username_list[1]);
 

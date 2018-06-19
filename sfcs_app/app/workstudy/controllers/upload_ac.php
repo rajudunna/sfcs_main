@@ -1,7 +1,7 @@
 
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
 $view_access=user_acl("SFCS_0236",$username,1,$group_id_sfcs); //view
 $view_access=user_acl("SFCS_0236",$username,3,$group_id_sfcs);  //upload
@@ -70,7 +70,7 @@ else {
 // echo getFullURL($_GET['r'],'dbupdate.php','R');
 $action_var = getFullURL($_GET['r'],'dbupdate.php','N');
 
-$uploaddir = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'uploads',0,'R'); 
+$uploaddir = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'uploads',0,'R'); 
 $filename = $_FILES['file']['name']; 
 $filesize = $_FILES['file']['size']; 
 

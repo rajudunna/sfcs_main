@@ -311,7 +311,7 @@ function back_color(row_id,val)
 <?php 
 $global_path = getFullURLLevel($_GET['r'],'',4,'R');
 include($_SERVER['DOCUMENT_ROOT'].$global_path."/common/config/config.php");
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
 include($_SERVER['DOCUMENT_ROOT'].$global_path."/common/config/user_acl_v1.php");
 $view_access=user_acl("SFCS_0290",$username,1,$group_id_sfcs);
 ?>
@@ -718,7 +718,7 @@ if(isset($_POST['submit']))
 		//echo "<td><input type='text' name='mod_tot_cum' value='".$total_qty_cum."' readonly></td>";
 		echo "</tr>";
 		$data_sym="$";
-		$File = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'module.php',0,'R');
+		$File = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'module.php',0,'R');
 		$fh = fopen($File, 'w') or die("can't open file");
 		$stringData = "<?php ".$data_sym."style=\"".$style_code."\"; ".$data_sym."color_code=\"".$color_code."\"; ".$data_sym."schedule=\"".$schedule_code."\"; ".$data_sym."last_min=\"".$mini_order_num."\"; ".$data_sym."mini_order_ref=\"".$mini_order_ref."\"; ".$data_sym."module=\"".$code."\"; ?>";
 		fwrite($fh, $stringData);
@@ -742,7 +742,7 @@ if(isset($_POST['submit']))
 }
 if(isset($_GET['ops']))
 {
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'module.php',0,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'module.php',0,'R'));
 	
 	$bundle_tot=0;
 	$alloc_bund=0;
@@ -920,7 +920,7 @@ if(isset($_GET['ops']))
 		echo "<td><input type='text' class='form-control' id='mini_total' value='".$total_qty_min_c."' readonly></td>";
 		echo "</tr>";
 		$data_sym="$";
-		$File = $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'module.php',0,'R');
+		$File = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'module.php',0,'R');
 		$fh = fopen($File, 'w') or die("can't open file");
 		$stringData = "<?php ".$data_sym."style=\"".$style_code."\"; ".$data_sym."color_code=\"".$color_code."\"; ".$data_sym."schedule=\"".$schedule_code."\"; ".$data_sym."last_min=\"".$mini_order_num_las."\"; ".$data_sym."mini_order_ref=\"".$mini_order_ref."\"; ".$data_sym."module=\"".$code."\"; ?>";
 		fwrite($fh, $stringData);

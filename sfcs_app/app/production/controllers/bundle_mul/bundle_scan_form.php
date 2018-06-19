@@ -135,7 +135,7 @@ $shift=$_POST['shift'];
 $module=$_POST['module'];
 $global_path = getFullURLLevel($_GET['r'],'',4,'R');
 include($_SERVER['DOCUMENT_ROOT'].$global_path."/common/config/config.php");
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
 include($_SERVER['DOCUMENT_ROOT'].$global_path."/common/config/user_acl_v1.php");
 $view_access=user_acl("SFCS_0273",$username,1,$group_id_sfcs);
 $authorized=user_acl("SFCS_0273",$username,7,$group_id_sfcs);

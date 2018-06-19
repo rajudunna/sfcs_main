@@ -1,9 +1,9 @@
 <?php
 
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-$Page_Id='SFCS_0052';
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+$has_permission=haspermission($_GET['r']);
 ?>
 
 <div class="container" id='main'>
@@ -143,7 +143,19 @@ if(isset($_POST['submit1']))
 		$num_rows=mysqli_num_rows($sql_result);
 		if ($num_rows == 0)
 		{
-			echo "<script>sweetAlert('Invalid Lot Number','','warning')</script>";
+			$sql1="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no1)."\" and product_group not in ('Fabric')";
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$num_rows1=mysqli_num_rows($sql_result1);
+			if($num_rows1 > 0)
+			{
+				echo "<script>sweetAlert('You Entered Non-Fabric Lot Number','','warning')</script>";
+			}
+			else
+			{
+				 echo "<script>sweetAlert('Invalid Lot Number','','warning')</script>";
+			}
+
+			
 		}else
 		{
 			$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
@@ -158,6 +170,7 @@ if(isset($_POST['submit1']))
 	}
 	else
 	{
+
 		echo "<script>sweetAlert('GRN NOT COMPLETED FOR THIS LOT NUMBER : ".$lot_no1."','','warning');</script>";
 	}
 

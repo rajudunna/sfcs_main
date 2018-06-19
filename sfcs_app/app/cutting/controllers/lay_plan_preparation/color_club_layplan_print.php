@@ -29,10 +29,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$style=$sql_row['order_style_no'];
 	$schedule=$sql_row['order_del_no'];
 	$date=$sql_row['order_date'];
+
 	for($i=0;$i<sizeof($sizes_array);$i++)
 	{
 		if($sql_row["title_size_".$sizes_array[$i].""]<>'')
-		{
+		{	
 			$sizes_tit[]=$sql_row["title_size_".$sizes_array[$i].""];
 			$qty[]=$sql_row["order_s_".$sizes_array[$i].""];
 		}
@@ -41,18 +42,27 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	$old_order_total=array_sum($qty);
 }
+
 $sql = "select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule'";
 $result = mysqli_query($link, $sql) or exit("Sql Error2.1".mysqli_error());
 $i=0;
 $old_order_tot = array();
 while($sql_row = mysqli_fetch_array($result))
 {
-	$qtys[$i]=array($sql_row['order_s_xs'],$sql_row['order_s_s'],$sql_row['order_s_m'],$sql_row['order_s_l'],$sql_row['order_s_xl'],$sql_row['order_s_xxl'],$sql_row['order_s_xxxl'],$sql_row['order_s_s01'],$sql_row['order_s_s02'],$sql_row['order_s_s03'],$sql_row['order_s_s04'],$sql_row['order_s_s05'],$sql_row['order_s_s06'],$sql_row['order_s_s07'],$sql_row['order_s_s08'],$sql_row['order_s_s09'],$sql_row['order_s_s10'],$sql_row['order_s_s11'],$sql_row['order_s_s12'],$sql_row['order_s_s13'],$sql_row['order_s_s14'],$sql_row['order_s_s15'],$sql_row['order_s_s16'],$sql_row['order_s_s17'],$sql_row['order_s_s18'],$sql_row['order_s_s19'],$sql_row['order_s_s20'],$sql_row['order_s_s21'],$sql_row['order_s_s22'],$sql_row['order_s_s23'],$sql_row['order_s_s24'],$sql_row['order_s_s25'],$sql_row['order_s_s26'],$sql_row['order_s_s27'],$sql_row['order_s_s28'],$sql_row['order_s_s29'],$sql_row['order_s_s30'],$sql_row['order_s_s31'],$sql_row['order_s_s32'],$sql_row['order_s_s33'],$sql_row['order_s_s34'],$sql_row['order_s_s35'],$sql_row['order_s_s36'],$sql_row['order_s_s37'],$sql_row['order_s_s38'],$sql_row['order_s_s39'],$sql_row['order_s_s40'],$sql_row['order_s_s41'],$sql_row['order_s_s42'],$sql_row['order_s_s43'],$sql_row['order_s_s44'],$sql_row['order_s_s45'],$sql_row['order_s_s46'],$sql_row['order_s_s47'],$sql_row['order_s_s48'],$sql_row['order_s_s49'],$sql_row['order_s_s50']);
-	
+	//$qtys[$i]=array($sql_row['order_s_xs'],$sql_row['order_s_s'],$sql_row['order_s_m'],$sql_row['order_s_l'],$sql_row['order_s_xl'],$sql_row['order_s_xxl'],$sql_row['order_s_xxxl'],$sql_row['order_s_s01'],$sql_row['order_s_s02'],$sql_row['order_s_s03'],$sql_row['order_s_s04'],$sql_row['order_s_s05'],$sql_row['order_s_s06'],$sql_row['order_s_s07'],$sql_row['order_s_s08'],$sql_row['order_s_s09'],$sql_row['order_s_s10'],$sql_row['order_s_s11'],$sql_row['order_s_s12'],$sql_row['order_s_s13'],$sql_row['order_s_s14'],$sql_row['order_s_s15'],$sql_row['order_s_s16'],$sql_row['order_s_s17'],$sql_row['order_s_s18'],$sql_row['order_s_s19'],$sql_row['order_s_s20'],$sql_row['order_s_s21'],$sql_row['order_s_s22'],$sql_row['order_s_s23'],$sql_row['order_s_s24'],$sql_row['order_s_s25'],$sql_row['order_s_s26'],$sql_row['order_s_s27'],$sql_row['order_s_s28'],$sql_row['order_s_s29'],$sql_row['order_s_s30'],$sql_row['order_s_s31'],$sql_row['order_s_s32'],$sql_row['order_s_s33'],$sql_row['order_s_s34'],$sql_row['order_s_s35'],$sql_row['order_s_s36'],$sql_row['order_s_s37'],$sql_row['order_s_s38'],$sql_row['order_s_s39'],$sql_row['order_s_s40'],$sql_row['order_s_s41'],$sql_row['order_s_s42'],$sql_row['order_s_s43'],$sql_row['order_s_s44'],$sql_row['order_s_s45'],$sql_row['order_s_s46'],$sql_row['order_s_s47'],$sql_row['order_s_s48'],$sql_row['order_s_s49'],$sql_row['order_s_s50']);
+	$qtys[$i] = array();
+	for($c=0;$c<sizeof($sizes_array);$c++)
+	{
+		if(($sz = $sql_row['order_s_'.$sizes_array[$c]] ) > 0){
+			$qtys[$i]['order_s_'.$sizes_array[$c]] =  $sz;
+		}
+	}
 	$old_order_tot[$i]=array_sum($qtys[$i]);
 	$i++;
 }
+
 $c_=array();
+
 
 $sql="select sum(allocate_s01*plies) as \"cuttable_s_s01\",sum(allocate_s02*plies) as \"cuttable_s_s02\",sum(allocate_s03*plies) as \"cuttable_s_s03\",sum(allocate_s04*plies) as \"cuttable_s_s04\",sum(allocate_s05*plies) as \"cuttable_s_s05\",sum(allocate_s06*plies) as \"cuttable_s_s06\",sum(allocate_s07*plies) as \"cuttable_s_s07\",sum(allocate_s08*plies) as \"cuttable_s_s08\",sum(allocate_s09*plies) as \"cuttable_s_s09\",sum(allocate_s10*plies) as \"cuttable_s_s10\",sum(allocate_s11*plies) as \"cuttable_s_s11\",sum(allocate_s12*plies) as \"cuttable_s_s12\",sum(allocate_s13*plies) as \"cuttable_s_s13\",sum(allocate_s14*plies) as \"cuttable_s_s14\",sum(allocate_s15*plies) as \"cuttable_s_s15\",sum(allocate_s16*plies) as \"cuttable_s_s16\",sum(allocate_s17*plies) as \"cuttable_s_s17\",sum(allocate_s18*plies) as \"cuttable_s_s18\",sum(allocate_s19*plies) as \"cuttable_s_s19\",sum(allocate_s20*plies) as \"cuttable_s_s20\",sum(allocate_s21*plies) as \"cuttable_s_s21\",sum(allocate_s22*plies) as \"cuttable_s_s22\",sum(allocate_s23*plies) as \"cuttable_s_s23\",sum(allocate_s24*plies) as \"cuttable_s_s24\",sum(allocate_s25*plies) as \"cuttable_s_s25\",sum(allocate_s26*plies) as \"cuttable_s_s26\",sum(allocate_s27*plies) as \"cuttable_s_s27\",sum(allocate_s28*plies) as \"cuttable_s_s28\",sum(allocate_s29*plies) as \"cuttable_s_s29\",sum(allocate_s30*plies) as \"cuttable_s_s30\",sum(allocate_s31*plies) as \"cuttable_s_s31\",sum(allocate_s32*plies) as \"cuttable_s_s32\",sum(allocate_s33*plies) as \"cuttable_s_s33\",sum(allocate_s34*plies) as \"cuttable_s_s34\",sum(allocate_s35*plies) as \"cuttable_s_s35\",sum(allocate_s36*plies) as \"cuttable_s_s36\",sum(allocate_s37*plies) as \"cuttable_s_s37\",sum(allocate_s38*plies) as \"cuttable_s_s38\",sum(allocate_s39*plies) as \"cuttable_s_s39\",sum(allocate_s40*plies) as \"cuttable_s_s40\",sum(allocate_s41*plies) as \"cuttable_s_s41\",sum(allocate_s42*plies) as \"cuttable_s_s42\",sum(allocate_s43*plies) as \"cuttable_s_s43\",sum(allocate_s44*plies) as \"cuttable_s_s44\",sum(allocate_s45*plies) as \"cuttable_s_s45\",sum(allocate_s46*plies) as \"cuttable_s_s46\",sum(allocate_s47*plies) as \"cuttable_s_s47\",sum(allocate_s48*plies) as \"cuttable_s_s48\",sum(allocate_s49*plies) as \"cuttable_s_s49\",sum(allocate_s50*plies) as \"cuttable_s_s50\"
 from $bai_pro3.allocate_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref";
@@ -1384,11 +1394,10 @@ tags will be replaced.-->
 			$count_num++;
 		//}
    }
-  //echo "<th $style_css>Total</th>";
+  echo "<th $style_css>Total</th>";
   echo "</tr>";
   
   $sizes_count=0; //To count number of sizes
-  
   for($j=0;$j<sizeof($color_codes);$j++)
   {
 	  	echo "<tr>";
@@ -1396,9 +1405,10 @@ tags will be replaced.-->
 		echo "<th $style_css>".$color_codes[$j]."</th>";
 		for($i=0;$i<sizeof($sizes_tit);$i++)
 	  	{
-			if($qtys[$j][$i]>0)
+			if(($sz = $qtys[$j]['order_s_'.$sizes_array[$i]]) >0)
 			{
-				echo "<th $style_css>".$qtys[$j][$i]."</th>";
+				//echo "<th $style_css>".$qtys[$j][$i]."</th>";
+				echo "<th $style_css>$sz</th>";
 				$sizes_count++;
 			}
 		}

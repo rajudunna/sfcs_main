@@ -28,7 +28,7 @@ Changes Log:
 		header("Location:restrict.php?group_docs=".$_GET['group_docs']);
 	}
 
-	include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	if(isset($_POST['sdat'])) 
 	{ 
 		//echo $_POST['doc'];

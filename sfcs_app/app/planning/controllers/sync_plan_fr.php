@@ -1,6 +1,6 @@
 <?php 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 set_time_limit(2000);
 ?>
 
@@ -24,7 +24,7 @@ $end_date_w=date("Y-m-d",($end_date_w+(60*60*24*6)));
 ?>
 
 <?php
-// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
 ?>
 
 

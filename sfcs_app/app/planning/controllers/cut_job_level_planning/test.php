@@ -14,7 +14,7 @@ window.open(Site,'PopupName','toolbar=no,statusbar=yes,menubar=yes,location=no,s
 <!--<body onLoad="popup('test_new.php')"> -->
 <?php
 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'N'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'N'));
 
 ?>
 <body onLoad="<?php echo "popup('test_new.php')"; ?>">

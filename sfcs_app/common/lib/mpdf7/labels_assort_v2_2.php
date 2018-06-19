@@ -1,8 +1,8 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); ?>
 <?php require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/lib/mpdf7/vendor/autoload.php'; ?>
-<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
-
+<?php //ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
+<?php error_reporting(0); ?>
 <?php
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];
@@ -551,7 +551,7 @@ margin-top: 7px;
 		$html.= '<div><table><tr><td colspan=3><barcode code="'.leading_zeros($node_detail[3],8).'" type="C39"/ height="0.80" size="1.1" text="1"></td><td align="middle">'.$node_detail[3].'</td></tr>';
 		$html.= '<tr><td>Style:</td><td class="new_td">'.$style.'</td><td>Schedule:</td><td class="new_td3">'.$delivery.'</td></tr>';
 		$html.= '<tr><td colspan=4>Color:  <font size=3>'.$node_detail[5].'</font></td></tr>';
-		$html.= '<tr><td colspan=2>Assort:&nbsp;&nbsp;<font size=2>'.$packing_method." ".$node_detail[1].'('.$node_detail[7].')'.'</font></td><td>Packs:'.$node_detail[6].'</td><td class="new_td3">SRP:'.$string.'</td></tr>';
+		$html.= '<tr><td colspan=2>Assort:&nbsp;&nbsp;<font size=2>'.$packing_method." ".$node_detail[1].'('.$node_detail[7].')'.'</font></td><td>Packs:'.round($node_detail[6]).'</td><td class="new_td3">SRP:'.$string.'</td></tr>';
 		$html.= '<tr><td colspan=2>Jobs:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=3>'.implode(",",$job_nos).'</font></td><td>Size:<span new_td3>'.$node_detail[4].'</span></td><td>Qty:<span new_td3>'.$node_detail[2].'</span></td></tr>';
 		$html.= '<tr><td>Carton #:</td><td>'.$node_detail[0].'</td><td>MPO:</td><td>'.$mpo.'</td></tr>';
 
@@ -599,7 +599,7 @@ $sql="update $bai_pro3.bai_orders_db_confirm set carton_print_status=1 where ord
 ob_end_clean();
 $mpdf= new \Mpdf\Mpdf([
 	'mode' => 'utf-8', 
-	'format' => [50, 105], 
+	'format' => [50, 90], 
 	'orientation' => 'L'
 ]); 
 $mpdf->debug = true;

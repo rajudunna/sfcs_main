@@ -2,7 +2,7 @@
 
 if(isset($_POST['export']))
 {
-	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	
 	$location=$_POST['loc'];
 	$filename ="$location"."_StockRecon2012.xls";
 	$contents = "<h2>Stock Report: $location</h2>";

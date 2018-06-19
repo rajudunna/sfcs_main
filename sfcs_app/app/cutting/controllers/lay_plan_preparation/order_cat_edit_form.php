@@ -1,8 +1,8 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
 <?php  ?>
 
-<?php include("../".getFullURLLevel($_GET['r'],'/common/config/header_scripts.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/header_scripts.php',4,'R'));?>
 
 <script type="text/javascript" >
 function dodisable()
@@ -112,6 +112,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 //echo "<div class=\"col-sm-12\">";
 echo "<input type=\"hidden\" class=\"form-control\" name=\"order_tid\" value=\"".$sql_row['order_tid']."\">"; 
 echo "<input type=\"hidden\" class=\"form-control\" name=\"cat_tid\" value=\"".$cat_tid."\">";
+echo "<input type=\"hidden\" class=\"form-control\" name=\"col_des\" value=\"".$sql_row['col_des']."\">";
 //echo "</div>";
 
 echo "<div class=\"table-responsive\"><table class=\"table table-striped jambo_table bulk_action\"><tbody>";
@@ -198,14 +199,15 @@ if(isset($_POST['Update']))
 	$remarks=$_POST['remarks'];
 	$cat_tid=$_POST['cat_tid'];
 	$tran_order_tid=$_POST['order_tid'];
+	$col_des = $_POST['col_des'];
 	$validation_query_cat = "select order_tid from $bai_pro3.cat_stat_log where tid = '$cat_tid'";
 	$validation_result = mysqli_query($link, $validation_query_cat) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$result_validation_query_cat = mysqli_fetch_row($validation_result);
 	$order_tid_result = $result_validation_query_cat[0];
-	$sql =  "select tid,category from $bai_pro3.cat_stat_log where order_tid = '$order_tid_result'";
+	$sql =  "select tid,category from $bai_pro3.cat_stat_log where order_tid = '$order_tid_result' and col_des = '$col_des'";
 	$validation_sql = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql1 =  "select category from $bai_pro3.cat_stat_log where tid = '$cat_tid'";
+	$sql1 =  "select category from $bai_pro3.cat_stat_log where tid = '$cat_tid' and col_des = '$col_des' ";
 	$validation_sql1 = mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_row1=mysqli_fetch_row($validation_sql1);
 	$flag=1;

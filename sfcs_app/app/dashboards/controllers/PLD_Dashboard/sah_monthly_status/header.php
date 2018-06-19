@@ -1,5 +1,5 @@
 <?php
-// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'sfcs/server/db_hosts.php',7,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'sfcs/server/db_hosts.php',7,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
 // Turn off all error reporting
 error_reporting(0);

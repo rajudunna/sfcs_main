@@ -1201,7 +1201,7 @@ $dat1=$_POST["edat"];
 $date_explode=explode("-",$dat);
 $month=$date_explode[1];
 
-include("../".getFullURLLevel($_GET['r'],'/Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php',1,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php',1,'R'));
 /* include("../Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php"); */
 
 $days_fac=2;

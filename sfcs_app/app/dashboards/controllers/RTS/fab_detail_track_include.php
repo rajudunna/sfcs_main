@@ -4,7 +4,7 @@
 //Created function In this page with detDetails name and call this function in index_temp.php
 	function getDetails($cat,$docket)
 	{
-		include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 		// include('..'.getFullURL($_GET['r'],'dbconf.php','R'));
 		$total_issue_qty=0;		
 		echo "<table class='table tabel-bordered'>";

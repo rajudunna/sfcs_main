@@ -2,7 +2,7 @@
 	set_time_limit(50000);
 	// require_once('phplogin/auth.php');
 	$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-	include('../'.$url);
+	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 ?>
 
 
@@ -10,12 +10,10 @@
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R'); ?>"></script>
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R'); ?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/filtergrid.css',3,'R'); ?>" type="text/css" media="all" />
 
 
-
-
-<?php  include("menu_content.php"); ?>
 <?php  include("stock_in.php"); ?>
 <?php
 
@@ -71,10 +69,11 @@ if(isset($_POST['submit']) or isset($_GET['ref']))
 		echo "<div class='col-sm-12' style='overflow:scroll;max-height:700px;'>";		
 		echo '<hr><div class="table-responsive">
 				 <table id="table1" class="table table-bordered">
+				 <thead>
 				 <tr><th>Receiving #</th><th>Item</th><th>Item Name</th>
 					 <th>Item Description</th><th>Invoice #</th><th>PO #</th><th>Qty</th><th>Labeled</th><th>Lot#</th>
 					 <th>Batch #</th><th>Product</th><th>PKG No</th><th>GRN Date</th>
-				 </tr>';
+				 </tr></thead><tbody>';
 		//echo '<hr><div class="table-responsive"><table id="table1" class="table table-bordered"><tr><th>Receiving #</th><th>Item</th><th>Item Name</th><th>Item Description</th><th>Invoice #</th><th>PO #</th><th>Qty</th><th>Labeled</th><th>IN Qty</th><th>Box #</th><th>REF#</th><th>Lot#</th><th>Batch #</th><th>Product</th><th>PKG No</th><th>GRN Date</th></tr>';
 
 		// $sql1="select * from sticker_report where inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\"";
@@ -90,11 +89,9 @@ if(isset($_POST['submit']) or isset($_GET['ref']))
 			}
 			$url=  getFullURL($_GET['r'],'insert_v1.php','N');
 			echo "<tr><td><a href=\"$url&lot_no=".$sql_row1['lot_no']."\" class=\"btn btn-info btn-xs\">".$sql_row1['rec_no']."</a></td><td>".$sql_row1['item']."</td><td>".$sql_row1['item_name']."</td>
-				  <td>".rtrim($sql_row1['item_desc'],'/ ')."</td><td>".$sql_row1['inv_no']."</td><td>".$sql_row1['po_no']."</td><td>".$sql_row1['rec_qty']."</td><td>$in</td>";
+				  <td>".rtrim($sql_row1['item_desc'],'/ ')."</td><td>".$sql_row1['inv_no']."</td><td>".$sql_row1['po_no']."</td><td>".(float)$sql_row1['rec_qty']."</td><td>$in</td>";
 			//echo "<td><input type=\"text\" size=\"5\" name=\"qty[]\" onchange=\"if(check(this.value,".($sql_row1['rec_qty']-$in).")==1010) { this.value=0; }\" readonly></td><td><input type=\"text\" size=\"5\" name=\"box[]\"><td><input type=\"text\" size=\"5\" name=\"rmks[]\"><input type=\"hidden\" size=\"5\" name=\"lot_no[]\" value=\"".$sql_row1['lot_no']."\"></td>";
 			echo "<td>".$sql_row1['lot_no']."</td><td>".$sql_row1['batch_no']."</td><td>".$sql_row1['product_group']."</td><td>".$sql_row1['pkg_no']."</td><td>".$sql_row1['grn_date']."</td>";
-			
-
 			echo "</tr>";
 
 		}
@@ -103,7 +100,7 @@ if(isset($_POST['submit']) or isset($_GET['ref']))
 			<td></td><td></td><td></td><td></td><td></td>
 			<td id="table1Tot1" style="background-color:#FFFFCC;"></td>
 			<td></td><td></td><td></td><td></td><td></td><td></td>
-			</tr>';
+			</tr></tbody>';
 			
 		echo "</table></div>";
 		echo "</div>";
@@ -120,10 +117,9 @@ echo "</div></div></div>";
 
 <script language="javascript" type="text/javascript">
 //<![CDATA[
-
 var table2_Props = { 
-						btn_reset: true,  
-						btn_reset_text: "Reset Table Filters",				
+						// btn_reset: true,  
+						// btn_reset_text: "Reset Table Filters",
 						display_all_text: " [ Show all ] ",
 						sort_select: true,
 						// btn_reset : true,
@@ -133,12 +129,14 @@ var table2_Props = {
 									operation: ["sum"],
 									write_method: ["innerHTML","setValue"] 
 								},
-						rows_always_visible: [grabTag(grabEBI('table1'),"tr").length],
+						
+						//rows_always_visible: [grabTag(grabEBI('table1'),"tr").length],
 				};
 
 	setFilterGrid( "table1", table2_Props);
  	
 //]]>
+
 </script>
 
 

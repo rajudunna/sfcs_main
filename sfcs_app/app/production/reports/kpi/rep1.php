@@ -1,8 +1,8 @@
 
 <?php 
-include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
  $view_access=user_acl("SFCS_0027",$username,1,$group_id_sfcs); 
 ?>
 
@@ -34,7 +34,7 @@ include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
 		 </select>
 		 </div>
 <div class="col-md-3 form-group">
-<input type="submit" name="submit" value="Show" class="btn btn-primary" style="margin-top:22px;">
+<input type="submit" name="submit" value="Show" class="btn btn-primary" style="margin-top:22px;" onclick="return verify_date()">
 </div>
 </div>
 </form>
@@ -360,3 +360,39 @@ if(isset($_POST['submit']))
 ?>
 </div>
 </div>
+<script >
+function verify_date()
+{
+	var val1 = $('#demo1').val();
+	var val2 = $('#demo2').val();
+	// d1 = new Date(val1);
+	// d2 = new Date(val2);
+	if(val1 > val2){
+		sweetAlert('Start Date Should  be less than End Date','','warning');
+		return false;
+	}
+	else
+	{
+	    return true;
+	}
+}
+
+// <script language="javascript" type="text/javascript">
+//<![CDATA[	
+	var table2_Props = 	{					
+					// col_1: "select",
+					// col_2: "select",
+					// col_3: "select",
+					display_all_text: " [ Show all ] ",
+					btn_reset: true,
+					bnt_reset_text: "Clear all ",
+					rows_counter: true,
+					rows_counter_text: "Total Rows: ",
+					alternate_rows: true,
+					sort_select: true,
+					loader: true
+				};
+	setFilterGrid( "table_one",table2_Props );
+//]]>		
+// </script>
+</script>

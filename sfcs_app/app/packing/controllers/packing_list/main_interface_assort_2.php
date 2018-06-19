@@ -1,5 +1,5 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R') );  ?>
 <?php //include("menu_content.php"); This file was not used here ?>
 <?php //require_once('phplogin/auth.php'); This file contents was not used here?>
 
@@ -171,19 +171,28 @@
 
 		if($_POST['submit'])
 		{
-			echo "<h1><font color=\"red\">Please wait while processing data!</font></h1>";
+			echo "<span id='processing'><h1><font color=\"red\">Please wait while processing data!</font></h1></span>";
 		}
 
 		$sql="select * from $bai_pro3.carton_qty_chart where user_style='$style_id'";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_rows=mysqli_num_rows($sql_result);
-		if($sql_num_rows)
+		
+		$sql1="select * from $bai_pro3.ratio_input_update where schedule='$schedule'";
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_num_rows1=mysqli_num_rows($sql_result1);
+		
+		if($sql_num_rows > 0 or $sql_num_rows1>0)
 		{
 			echo '<a href="#" onclick="showhide('."'div10'".');" class="btn btn-info"><i class="fa fa-list"></i>Packing List</a>
 				  <div id="div10" style="display: none;">';
 			echo "<div class='panel panel-primary'><div class='panel-body'>";
 			include("main_interface_10_assort_2.php");
 			echo "</div></div></div>"; 
+		}
+		else
+		{
+			echo '<div class="alert alert-danger" role="alert">Please Update Carton Quantities</div>';
 		}
 
 	?>

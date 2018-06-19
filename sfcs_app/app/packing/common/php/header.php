@@ -1,5 +1,5 @@
 
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	   ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	   ?>
 
 <?php
 
@@ -15,7 +15,7 @@ $path_destrcution = getFullURLLevel($_GET['r'],'common/images/destruction_photos
 $path_style_level = getFullURLLevel($_GET['r'],'common/images/destruction_photos_style_level',1,'R');
 
 //These below are not part of sfcs ui they are out of ui.So manuak path
-$image_path =  $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/images',1,'R').'/';
-$newname    =  $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/images',1,'R');
-$thumb_name =  $_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/images',1,'R');
+$image_path =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/images',1,'R').'/';
+$newname    =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/images',1,'R');
+$thumb_name =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/images',1,'R');
 ?>

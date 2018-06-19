@@ -42,7 +42,7 @@ td{ padding:1px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 	<div class="panel-body">
 <?php
 $weeknumber=$_GET["weekno"];
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 $year =date("Y");
 $dates=array();
 for($day=1; $day<=7; $day++)

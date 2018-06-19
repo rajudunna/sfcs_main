@@ -2,8 +2,8 @@
 	//require_once('../phplogin/auth2.php');
 ?>
 <?php 
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 ?>
 
 <!-- <style>
@@ -47,7 +47,7 @@ table{
 
 
 </style> -->
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R')); ?>
 </head>
 
 <div class="panel panel-primary">

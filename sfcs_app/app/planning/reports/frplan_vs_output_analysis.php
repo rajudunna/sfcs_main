@@ -1,6 +1,6 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0042",$username,1,$group_id_sfcs);
@@ -95,7 +95,7 @@ float:right;
 }
 </style>
 <?php 
-// include('../'.getFullURL($_GET['r'],"dbconf5.php",'R')); ?>
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],"dbconf5.php",'R')); ?>
 
 <link rel="stylesheet" type="text/css" media="all" href="<?= '../'.getFullURLLevel($_GET['r'],'jsdatepick-calendar/jsDatePick_ltr.min.css',3,'R') ?>" />
 <!--<script type="text/javascript" src="<?= '../'.getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick.min.1.3.js','R') ?>"></script>
@@ -366,7 +366,7 @@ $table.="</table>";
 ?>
 
 <div id="div-1a">
-<form  name="input1" action="<?= '../'.getFullURL($_GET['r'],'plan_vs_output_analysis_excel.php','R') ?>" method="post">
+<form  name="input1" action="<?= getFullURLLevel($_GET['r'],'plan_vs_output_analysis_excel.php',0,'R') ?>" method="post">
 
 <input type="hidden" name="table" value="<?php echo $table; ?>">
 <input type="submit" name="submit1" class='btn btn-info pull-right' value="Export to Excel">

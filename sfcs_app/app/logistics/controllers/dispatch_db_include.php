@@ -1,5 +1,5 @@
 <?php 
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	 
 ?>
 <style>
 td,th{ color : #000 }
@@ -67,7 +67,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$disp_note_no = $sql_row['disp_note_no'];
 	$url = $_GET['r']."&disp_id=".$disp_note_no;
-	$popup_url = '..'.getFullURL($_GET['r'],"dispatch_note.php",'R');
+	$popup_url = getFullURL($_GET['r'],"dispatch_note.php",'R');
 	echo "<tr>
 			<td>
 				<a href='index.php?r=$url' 

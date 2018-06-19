@@ -1,4 +1,4 @@
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 <!-- <script src="https://code.jquery.com/jquery.min.js"></script> -->
 <link rel="stylesheet" href="<?=getFullURLLevel($_GET['r'],'common/lib/TableFilter_EN/filtergrid.css',3,'R');?>" type="text/css" media="all" />
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R');?>"></script><!-- External script -->
@@ -6,8 +6,8 @@
 
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions2.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions2.php',3,'R'));
 	$view_access=user_acl("SFCS_0095",$username,1,$group_id_sfcs); 
 	//require_once('../phplogin/auth2.php');
 	//Ticket # 118925 : Changed displayed widith from type (int) to (float
@@ -201,7 +201,7 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/func
 ?>
 
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R')); 
  ?>
 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->

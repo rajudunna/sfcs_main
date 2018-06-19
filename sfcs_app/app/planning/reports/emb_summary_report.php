@@ -6,8 +6,8 @@ include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'header.php','R'));
 //2015-12-15/kirang/SR#32892081 /Issue: Recut quantity not adding to the count showing for panel form schedules. Fix:getting the values from audit log which has reported successfully under PS,PR operation. 
 
 //2015-06-10/kirang/SR#85030991 /Issue: vartion in value due to taking backup of data of m3_bulk_ops_rep_db.m3_sfcs_tran_log to m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup. Fix:getting the values from m3_bulk_ops_rep_db.m3_sfcs_tran_log_backup table also and adding to the actual table. 
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 $view_access=user_acl("SFCS_0216",$username,1,$group_id_sfcs);
 // include("header.php");

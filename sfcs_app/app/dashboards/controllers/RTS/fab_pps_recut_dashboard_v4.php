@@ -16,9 +16,9 @@ Service Request #525434/ kirang/ 2014-01-10: Add the ordercut details in RTS das
 <?php
 
 	set_time_limit(200000);
-	include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-    include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
     $view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
 	$authorized=user_acl("SFCS_0197",$username,7,$group_id_sfcs); 
 

@@ -4,15 +4,15 @@ Service Request #861761 / kirang/ 2015-03-17  :  Add New buyer CK for Cut Plan g
  
 -->
 <?php
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 ?>
 <?php 
-include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 $view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
 ?>
 
 
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <script>
 
@@ -943,7 +943,7 @@ if(isset($_POST['submit3']))
 		
 	}
 }else{
-		echo "<script>sweetAlert('Requested Docket doesnt exist.Please Contact your planner','','warning')</script>";
+		echo "<script>sweetAlert('CID number doesnt exist','','warning')</script>";
 		// echo "<div class='col-sm-12'>";
 		// echo "<div class='alert alert-danger'><b>Please enter valid Docket Reference.</b></div>";
 		// echo "</div>";

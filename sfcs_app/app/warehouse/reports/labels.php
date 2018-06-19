@@ -1,6 +1,6 @@
 <?php
-	//include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include("../".getFullURLLevel($_GET['r'],'common/php/functions.php',1,'R'));
+	//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/functions.php',1,'R'));
 	require_once __DIR__ . '/vendor/autoload.php';
 	$mpdf = new \Mpdf\Mpdf([
         'mode' => 'utf-8', 
@@ -13,7 +13,7 @@
 
 <?php
 echo"hiiiiiii";
-	//include("../".getFullURLLevel($_GET['r'],'/common/config/config.php',3,'R'));
+	//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/config.php',3,'R'));
 $html ='
 <html>
 <head>
@@ -201,7 +201,7 @@ $mpdf->WriteHTML($html);
 $mpdf->Output();
 
 
-// include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'mpdf.php',1,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'mpdf.php',1,'R'));
 // $mpdf=new mPDF('',array(101.6,50.8),0,'',3,0,0,0,0,0,'P');
 // $mpdf->WriteHTML($html);
 // $mpdf->Output(); 

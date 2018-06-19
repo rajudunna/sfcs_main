@@ -95,7 +95,7 @@ function validateQty(event)
 <?php
 // echo getFullURLLevel($_GET['r'],'dbconf.php',0,'R');
 include($_SERVER['DOCUMENT_ROOT'].$global_path."/common/config/config.php");
-include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
 include($_SERVER['DOCUMENT_ROOT'].$global_path."/common/config/user_acl_v1.php");
 $view_access=user_acl("SFCS_0270",$username,1,$group_id_sfcs);
 

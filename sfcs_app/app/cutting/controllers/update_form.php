@@ -1,5 +1,7 @@
+<?php
+var_dump(haspermission($_GET['r']));
 
-
+?>
 <!-- <script language="javascript" type="text/javascript" src="../styles/dropdowntabs.js"></script> -->
 <!-- <link rel="stylesheet" href="../styles/ddcolortabs.css" type="text/css" media="all" /> -->
 	
@@ -128,9 +130,9 @@ function validateQty(event)
 	<div class="panel-body">
 
 		<?php 
-        include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/php/menu_include.php',1,'R'));
+        include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/menu_include.php',1,'R'));
         //common/php/menu_include.php
-		include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 		<?php //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);?>
 
 <?php

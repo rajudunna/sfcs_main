@@ -1411,6 +1411,7 @@ tags will be replaced.-->
  
 	$docs_db=array();
 	$cutno_db=array();
+	//echo 'color code'.$color_code;
 	$sql="select * from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=$schedule and order_col_des=\"$color\"";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1418,7 +1419,7 @@ tags will be replaced.-->
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$docs_db[]=$sql_row['doc_no'];
-		if(strlen($color_code)==1)
+		if(strlen(chr($color_code))==1)
 		{
 			$cutno_db[]=$sql_row['acutno'];
 		}
@@ -1433,7 +1434,8 @@ tags will be replaced.-->
 			$carton_nodes=array();
 			$x=1;
 			$sql="select status,min(tid) as \"tid\",doc_no,sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.pac_stat_log where doc_no in (".implode(",",$docs_db).") and size_code=\"".strtolower($size_titles_qry[$i])."\" group by doc_no_ref order by doc_no, carton_mode,carton_act_qty desc";
-			//echo $sql;
+			//echo 'Docket = '.$doc_no.' -- '.$docs_db.'-- array search '.array_search($doc_no,$docs_db).'<br/>';
+			//var_dump($cutno_db);
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -1441,7 +1443,7 @@ tags will be replaced.-->
 				$doc_no=$sql_row['doc_no'];
 				$carton_act_qty=$sql_row['carton_act_qty'];
 				$tid=$sql_row['tid'];
-				$carton_nodes[]=$x."-".$color_code.leading_zeros($cutno_db[array_search($doc_no,$docs_db)],3)."-".$carton_act_qty."-".$tid;
+				$carton_nodes[]=$x."-".chr($color_code).leading_zeros($cutno_db[array_search($doc_no,$docs_db)],3)."-".$carton_act_qty."-".$tid;
 				$x++;
 			}
 			

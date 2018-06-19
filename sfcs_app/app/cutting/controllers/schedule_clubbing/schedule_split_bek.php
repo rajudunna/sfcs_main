@@ -3,7 +3,7 @@
 
 <?php 
 // include("header_scripts.php");  
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 ?> 
 
 <?php  

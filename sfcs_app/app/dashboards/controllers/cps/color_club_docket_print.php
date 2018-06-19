@@ -11,8 +11,9 @@ Chnaged the Data type from int to decimal for Capturing Actual Width in points m
 
 
 <?php
-include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include('../'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+error_reporting(0);
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];
 $doc_id=$_GET['doc_id'];
@@ -124,7 +125,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// echo $sql;
+// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -142,6 +144,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$patt_ver=$sql_row['patt_ver'];
 	$col_des=$sql_row['col_des'];
 }
+
 
 //echo implode(",",$docs);
 
@@ -1409,9 +1412,6 @@ WebBrowser1.outerHTML = "";
 </script>
 
 
-<script src=<?= getFullURL($_GET['r'],'jquery-1.3.2.js','R'); ?>></script>
-<script src= <?= getFullURL($_GET['r'],'jquery-barcode-2.0.1.js','R'); ?>></script>
-
 </head>
 
 <body onload="printpr();">
@@ -1454,7 +1454,7 @@ tags will be replaced.-->
  </tr>
  <tr height=25 style='height:18.75pt'>
   <td height=25 class=xl6417319 style='height:18.75pt'></td>
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src=<?= getFullURL($_GET['r'],'bai_logo.jpg','R'); ?> width="120" height="60"></td>
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src='/sfcs_app/common/images/BAI_Logo.jpg' width="120" height="60"></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <!-- <td colspan=3 class=xl6617319>Cutting Docket</td> -->

@@ -9,9 +9,9 @@ Ticket#45927327 kirang/Date:24-12-2015/Applying user_acl to give access for inpu
 set_time_limit(2000);
 ?>
 
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 //access for authorised user to transfer the input 
 $auth_users=user_acl("SFCS_0203",$username,7,$group_id_sfcs);//1 
 //access for power user to remove the input

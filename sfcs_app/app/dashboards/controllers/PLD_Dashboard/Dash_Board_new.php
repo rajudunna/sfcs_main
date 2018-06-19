@@ -1,8 +1,8 @@
 <?php
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
     $view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs);
 ?>
 <?php
@@ -11,7 +11,7 @@
 //Changed the path
 
 //Please remember to change the host name`
-    include(getFullURLLevel($_GET['r'],'FusionCharts.php',0,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'FusionCharts.php',0,'R'));
 
 
 
@@ -770,7 +770,7 @@ $x++;
   <div id="monthsah">
   <?php //include"sah_monthly_status/vled_include_old.php";
 
-  include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'sah_monthly_status/vled_include.php',0,'R')); ?>
+  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'sah_monthly_status/vled_include.php',0,'R')); ?>
   </div>
 
   </td>
@@ -963,16 +963,16 @@ $x++;
 	myChart1.setDataURL("IU_Weeks/spark7_include_new_temp.php?randval=1019");
 	myChart1.render("chart129divc18");
    </script> -->
-   <?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'manpower_absenteeism/manpower_absenteeism_include.php',0,'R')); ?>
+   <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'manpower_absenteeism/manpower_absenteeism_include.php',0,'R')); ?>
   </td>
   <td class=xl6626515></td>
   <td colspan=3 rowspan=11 class=xl6326515 title="WIP">
-  <?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'number_boards/matric_include.php',0,'R')); ?>
-  <div id="matrix1"><?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'number_boards/matric_include1.php',0,'R')); ?></div>
+  <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'number_boards/matric_include.php',0,'R')); ?>
+  <div id="matrix1"><?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'number_boards/matric_include1.php',0,'R')); ?></div>
   </td>
   <td class=xl6626515></td>
   <td colspan=4 rowspan=11 class=xl6326515 title="MTD Achievement"> <?php //echo $table2; ?>
-  <div id="matrix2"><?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'number_boards/matric_include2.php',0,'R')); ?></div>
+  <div id="matrix2"><?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'number_boards/matric_include2.php',0,'R')); ?></div>
   </td>
   <td class=xl6626515></td>
  </tr>

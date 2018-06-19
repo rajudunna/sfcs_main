@@ -1,8 +1,8 @@
 <body style="overflow-x:scroll;">
 <?php
-
-include("../".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+//for testing dev master
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 //echo "DB : ".$bai_rm_pj1;exit;
 	//getting Location name
 	if(isset($_GET['loc_id'])){
@@ -32,7 +32,7 @@ include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'))
 			// echo "Flag Status :".$_POST['flag_status']."</br>";
 			$location_name=$_POST['loc_name'];
 			$location_status=$_POST['loc_status'];
-			$category=$_POST['category'];
+			$product=$_POST['product'];
 			if($_POST['flag_status']!=0){
 					//validation for existing record
 					$qry_valid="SELECT * FROM $bai_rm_pj1.location_db WHERE location_id='$location_name' and status='$location_status'";
@@ -64,7 +64,7 @@ include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'))
 
 							//update qry here
 							$sno=$_POST['flag_status'];
-							$qry_updateloc="UPDATE $bai_rm_pj1.location_db SET location_id=\"$location_name\",status=\"$location_status\",category=\"$category\" WHERE sno=".$sno;
+							$qry_updateloc="UPDATE $bai_rm_pj1.location_db SET location_id=\"$location_name\",status=\"$location_status\",product=\"$product\" WHERE sno=".$sno;
 							$update_locations=mysqli_query($link, $qry_updateloc) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							// $url = getFullURL($_GET['r'],'add_newlocation.php','N');
 							// header("Location: ".$url);
@@ -86,7 +86,7 @@ include("../".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'))
 					echo "<script>sweetAlert('Warning','Location Already Existed..','error')</script>";
 				}else{
 					//insert qry here
-					$qry_insertloc="INSERT INTO $bai_rm_pj1.location_db (location_id,STATUS,category) VALUES ('$location_name','$location_status','$category')";
+					$qry_insertloc="INSERT INTO $bai_rm_pj1.location_db (location_id,STATUS,product) VALUES ('$location_name','$location_status','$product')";
 					$update_locations=mysqli_query($link, $qry_insertloc) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					//$url = getFullURL($_GET['r'],'add_newlocation.php','N');
 					//header("Location: ".$url);
@@ -111,10 +111,10 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 				echo'<form method="post" action="?r='.$_GET["r"].'" name="buyer-form">';
 				echo "<div class='col-sm-12'>";
 					
-					if($_GET['category'] == "Fabric"){
+					if($_GET['product'] == "Fabric"){
 						$fabric = "selected";
 					}
-					if($_GET['category'] == "Trim"){
+					if($_GET['product'] == "Trim"){
 						$trim = "selected";
 					}
 					if($_GET['status'] == "Active"){
@@ -126,7 +126,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 					echo "<div class='pull-left' id='form'>";
 						echo'<div class="form-inline">';
 							echo'<div class="form-group">';
-								echo '<b>Category : </b><select class="form-control" name="category" id="category" required>
+								echo '<b>Category : </b><select class="form-control" name="product" id="product" required>
 									<option></option>
 									<option value="Fabric" '.$fabric.'>Fabric</option>
 									<option value="Trim" '.$trim.'>Trim</option>
@@ -188,13 +188,13 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 								$loc_status="In Active";
 								$color="#c30e0e57";
 							}
-							$category = $value['category'];
+							$product = $value['product'];
 							echo "<tr>";
 								echo"<td>".$s_no."</td>";
-								echo"<td>".$value['category']."</td>";
+								echo"<td>".$value['product']."</td>";
 								echo"<td>".$value['location_id']."</td>";
-								echo"<td style='background:".$color."'>".$loc_status."</td>";
-								echo"<td><a style='color:white' href='".getFullURL($_GET['r'],'add_newlocation.php','N')."&action=Update&category=$category&status=$loc_status&loc_id=".$value['sno']."' class='btn btn-primary submitbtn'><i class='fa fa-edit'></i> Edit</a></td>";
+								echo"<td style='background:".$color."'>".$loc_status."</td>";								
+								echo"<td><a style='color:white' href='".getFullURL($_GET['r'],'add_newlocation.php','N')."&action=Update&product=$product&status=$loc_status&loc_id=".$value['sno']."' class='btn btn-primary submitbtn'><i class='fa fa-edit'></i> Edit</a></td>";
 							echo"</tr>";
 						}
 						echo"</tbody>";

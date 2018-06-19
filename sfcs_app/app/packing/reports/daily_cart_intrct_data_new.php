@@ -1,9 +1,9 @@
 
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	      ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/ims_size.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	      ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/ims_size.php',1,'R') );  ?>
 
 <style>
 th,td{ color : #000;}
@@ -195,9 +195,8 @@ if(isset($_POST["submit"]))
 		$time_stamp1="PM";
 		$hour_to=$hour_to-12;
 	}
-	
+	echo "<div id='report'>";
 	echo "<h2><label>Selected Period :-</label> From : <span class='label label-success'>".$hour_from."".$time_stamp."</span> To : <span class='label label-success'>".$hour_to."".$time_stamp1."</h2></span>";
-	
 	echo "<div class='table-responsive' style='max-height:600px;overflow-y:scroll'>";
 	echo "<table id=\"table1\" class=\"table table-bordered\">";
 	echo "<tr class='danger'><th>Docket</th><th>Docket Ref</th><th>TID</th><th>Size</th><th>Remarks</th><th>Status</th><th>Last Updated</th><th>Carton Act Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
@@ -237,9 +236,12 @@ if(isset($_POST["submit"]))
 	}
 	else
 	{
-		echo "<script>sweetAlert('No Data Found','','info')</script>";
+		echo "<script>sweetAlert('No Data Found','','info')
+			    $('#report').hide();
+		 	  </script>";
 	}
 	echo "</table>
+	</div>
 	</div>";
 }
 

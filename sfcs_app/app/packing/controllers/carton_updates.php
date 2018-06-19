@@ -1,9 +1,11 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));	?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));	?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));	?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));	?>
 <?php // include('..'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); This file is not used here?>
 <?php // include('..'.getFullURLLevel($_GET['r'],'functions.php',1,'R')); This file is not used here?>
+
+<script language="javascript" type="text/javascript" src='sfcs_app/common/js/TableFilter_EN/tablefilter.js'></script>
 
 <?php
 
@@ -22,9 +24,7 @@
 	}
 ?>
 
-<script language="javascript" type="text/javascript" 
-		src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/tablefilter_en/table_filter.js',3,'R'); ?>">
-</script>
+
 
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>Create Carton Quantities</b></div>
@@ -37,7 +37,7 @@
 		echo "<div class='table-responsive' style='overflow-y:scroll;max-height:600px;'>";
 		echo '<table id="table1" class="mytable table table-hover table-bordered">';
 		echo "<tr class='tblheading danger'>
-				 <th>Style</th><th>Schedule</th><th>Pack Method</th><th>Size</th><th>Quantity</th>
+				 <th>Style</th><th>Schedule</th><th>Pack Quantity</th><th>Pack Method</th><th>Size</th><th>Quantity</th>
 				 <th>Status</th><th>Track Label Qty</th><th>SRP Qty</th><th>Control</th></tr>";
 
 		//$sql="select * from carton_qty_chart";
@@ -76,6 +76,7 @@
 					echo "<td>".$schedule."</td>";
 					// echo "<td>".$sql_row['buyer']."</td>";
 					echo "<td>".$sql_row['packing_method']."</td>";	
+					echo "<td>".ucwords($sql_row['pack_methods'])."</td>";	
 					$get_color = "SELECT title_size_".$key1." FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='".$sql_row['user_schedule']."' LIMIT 1";			
 					$sql_color=mysqli_query($link, $get_color);
 					$sql_num_check1=mysqli_num_rows($sql_color);
@@ -111,5 +112,8 @@ var table6_Props = 	{
 					};
 	setFilterGrid( "table1",table6_Props );
 
+$(document).ready(function(){
+	$('#reset_table1').addClass('btn btn-warning');
+});
 
 </script>

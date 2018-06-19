@@ -1,16 +1,16 @@
 <?php
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 	$view_access=user_acl("SFCS_0087",$username,1,$group_id_sfcs); 
 ?>
 
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R')); ?>
 
 <div class="panel panel-primary">
-<div class="panel-heading">Cut Status Reporting</div>
+<div class="panel-heading">Cut Quantity Reporting</div>
 <div class="panel-body">
-<?php //include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); ?>
 <!-- <div id="page_heading"><span style="float"><h3>Production Input Planning Dashboard</h3></span><span style= "float: right; margin-top: -20px"></span></div> -->
 
 <!--<div id="page_heading"><span style="float"><h3>Cut Status Reporting</h3></span><span style="float: right; margin-top:-20px"><b>?</b>&nbsp;</span></div>-->

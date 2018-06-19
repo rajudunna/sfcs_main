@@ -1,7 +1,7 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php
-include('../'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',4,'R'));
-include('../'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function($){
@@ -238,7 +238,7 @@ if(isset($_POST['clear']))
 <!-- <html>
 <head>
 <meta http-equiv="refresh" content="60">  -->
-<?php include($_SERVER['DOCUMENT_ROOT'].getFullURLLevel($_GET['r'],'header_scripts.php',1,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'header_scripts.php',1,'R')); ?>
 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" />
 

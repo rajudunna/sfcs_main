@@ -1,12 +1,12 @@
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	      ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	      ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
 
 <?php
 
 $user_manual  = getFullURL($_GET['r'],'Surplus_User_Manual.docx','R');
-$path_destrcution = $_SERVER['DOCUMENT_ROOT'].$path_destrcution;
+$path_destrcution = $_SERVER['DOCUMENT_ROOT'].'/'.$path_destrcution;
 //define a maxim size for the uploaded images
 define ("MAX_SIZE","10000000");
 // define the width and height for the thumbnail
