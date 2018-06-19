@@ -11,7 +11,7 @@ user names taken from the database level
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
  
- $has_perm=haspermission($_GET['r']);
+ //$has_perm=haspermission($_GET['r']);
 // $view_access=user_acl("SFCS_0146",$username,1,$group_id_sfcs); 
 
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -24,7 +24,7 @@ while($row=mysql_fetch_array($result))
 	$users=$row["auth_members"];
 }
 
-$auth_users=explode(",",$users);*/
+$auth_users=explode(",",$users);
 if(in_array($authorized,$has_perm))
 {
 	
@@ -34,7 +34,7 @@ else
 	$url = getFullURL($_GET['r'],'restricted.php','N');
 	header("Location:$url");
 }
-
+*/
 function dateDiffsql($link,$start,$end)
 {
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));

@@ -27,7 +27,7 @@ $reasons=array("Miss Yarn","Fabric Holes","Slub","F.Yarn","Stain Mark","Color Sh
 /* $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=$username_list[1];
 
-$authorized=array("kirang","bainet","baiadmn");*/
+$authorized=array("kirang","bainet","baiadmn");
 $url=getFullURL($_GET['r'],'restricted.php','N');
 
 if(!in_array($authorized,$has_perm))
@@ -37,7 +37,7 @@ if(!in_array($authorized,$has_perm))
 
 
 ?>
-
+*/
 <style type="text/css">
 
 td{

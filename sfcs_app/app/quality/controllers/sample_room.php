@@ -16,7 +16,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$View_access=user_acl("SFCS_0145",$username,1,$group_id_sfcs);
 ?>
 <?php
-$has_perm=haspermission($_GET['r']);
+//$has_perm=haspermission($_GET['r']);
 
 //$author_id_db=array("kirang","manojm","sridevik","kirang","kirang","thilinapa","kirang","kirang");
 
@@ -31,7 +31,7 @@ while($row=mysql_fetch_array($result))
 	$users=$row["auth_members"];
 }
 
-$auth_users=explode(",",$users);*/
+$auth_users=explode(",",$users);
 if(in_array($authorized,$has_perm))
 {
 	
@@ -41,7 +41,7 @@ else
 	$url = getFullURL($_GET['r'],'restricted.php','N');
 	header("Location:$url");
 }
-
+*/
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">

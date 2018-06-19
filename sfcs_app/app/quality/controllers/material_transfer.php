@@ -6,20 +6,20 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
-$has_perm=haspermission($_GET['r']);
+//$has_perm=haspermission($_GET['r']);
 //$view_access=user_acl("SFCS_0160",$username,1,$group_id_sfcs); 
 //$author_id_db=user_acl("SFCS_0160",$username,7,$group_id_sfcs);
 
 //$author_id_db=array("kirang","baiadmn","kirang","denakas","sandeepab","nihals","gayanl","kirang","kirang");
-$url=getFullURL($_GET['r'],'restricted.php','N');
-if(in_array($authorized,$has_perm))
-{
+// $url=getFullURL($_GET['r'],'restricted.php','N');
+// if(in_array($authorized,$has_perm))
+// {
 	
-}
-else
-{
-	header("Location:$url");
-}
+// }
+// else
+// {
+// 	header("Location:$url");
+// }
 ?>
 
 <script>
