@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 // $username=strtolower($username_list[1]);
 // $view_access=user_acl("SFCS_0239",$username,1,$group_id_sfcs); 
 
-$has_perm=haspermission($_GET['r']);
+//$has_perm=haspermission($_GET['r']);
 /*
 $sql="select * from menu_index where list_id=268";
 $result=mysql_query($sql,$link) or mysql_error("Error=".mysql_error());
@@ -16,7 +16,7 @@ while($row=mysql_fetch_array($result))
 	$users=$row["auth_members"];
 }
 
-$auth_users=explode(",",$users);*/
+$auth_users=explode(",",$users);
 if(in_array($authorized,$has_perm))
 {
 	
@@ -26,7 +26,7 @@ else
 	$url = getFullURL($_GET['r'],'restricted.php','N');
 	header("Location:$url");
 }
-
+*/
 function dateDiffsql($link,$start,$end)
 {
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));

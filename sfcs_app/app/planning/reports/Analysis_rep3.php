@@ -12,10 +12,12 @@
 $username="sfcsproject1";
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-$view_access=user_acl("SFCS_0039",$username,1,$group_id_sfcs); 
-$authorized_users=user_acl("SFCS_0039",$username,7,$group_id_sfcs);
- // include ('../'.getFullURL($_GET['r'],"dbconf2.php",'R'));
+
+//$view_access=user_acl("SFCS_0039",$username,1,$group_id_sfcs); 
+//$authorized_users=user_acl("SFCS_0039",$username,7,$group_id_sfcs);
+
+$has_perm=haspermission($_GET['r']);
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -377,7 +379,7 @@ $year_add_query2=" and exfact_date between \"".$sdate."\" and \"".$edate."\" ";
 				</div>
 			</div>
 				<?php
-					if(in_array($username,$authorized_users))
+					if(in_array($authorized,$has_perm))
 					{
 						//echo '<span id="msg" style="display:none;"><b><font color=\"blue\">Please Wait...</font></b></span>';
 						echo "<input class='btn btn-success' type=submit name=\"submit\" value=\"submit\" id=\"submit\" onClick='return check_style()' style='margin-top:22px;'>";

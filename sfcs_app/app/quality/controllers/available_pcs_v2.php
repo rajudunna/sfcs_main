@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
 
-$author_id_db=array("kirang","baiadmn","lakmalka","ramaraop","sarojinig","baiquality","kirang","sumudup","kirang","kirang");*/
+$author_id_db=array("kirang","baiadmn","lakmalka","ramaraop","sarojinig","baiquality","kirang","sumudup","kirang","kirang");
 $has_perm=haspermission($_GET['r']);
 if(in_array($authorized,$has_perm))
 {
@@ -18,7 +18,7 @@ else
 	$url = getFullURL($_GET['r'],'restricted.php','N');
 	header("Location:$url");
 }
-
+*/
 ?>
 
 <html>

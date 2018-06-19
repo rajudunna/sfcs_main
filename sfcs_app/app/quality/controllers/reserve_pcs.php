@@ -3,12 +3,12 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$has_perm=haspermission($_GET['r']);
+//$has_perm=haspermission($_GET['r']);
  //$view_access=user_acl("SFCS_0137",$username,1,$group_id_sfcs); 
 /*$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
 
-$author_id_db=array("kirang","baiadmn","lakmalka","deepthik","pavanik","ramaraop","sarojinig","baiquality","kirang","kirang","kirang");*/
+$author_id_db=array("kirang","baiadmn","lakmalka","deepthik","pavanik","ramaraop","sarojinig","baiquality","kirang","kirang","kirang");
 
 if(in_array($authorized,$has_perm))
 {
@@ -19,6 +19,7 @@ else
 	$url = getFullURL($_GET['r'],'restricted.php','N');
 	header("Location:$url");
 }
+*/
 ?>
 
 

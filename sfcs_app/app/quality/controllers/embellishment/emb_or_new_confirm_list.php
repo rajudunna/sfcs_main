@@ -5,7 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',4,'R'));
 //$view_access=user_acl("SFCS_0218",$username,1,$group_id_sfcs); 
 //$auth_users=user_acl("SFCS_0218",$username,7,$group_id_sfcs); 
-$has_perm=haspermission($_GET['r']);
+//$has_perm=haspermission($_GET['r']);
 ?>
 <?php
 //$auth_users=array("kirang","kirang","malleswararaog","varalaxmib","swatikumariv");
@@ -14,15 +14,15 @@ $has_perm=haspermission($_GET['r']);
 // $username=strtolower($username_list[1]);
 
 
-if(in_array($authorized,$has_perm))
-{
+// if(in_array($authorized,$has_perm))
+// {
 	
-}
-else
-{
-	$url = getFullURL($_GET['r'],'restricted.php','N');
-	header("Location:$url");
-}
+// }
+// else
+// {
+// 	$url = getFullURL($_GET['r'],'restricted.php','N');
+// 	header("Location:$url");
+// }
 
 function dateDiffsql($link,$start,$end)
 {
