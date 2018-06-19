@@ -150,6 +150,7 @@ function hasviewpermission($r)
     $user = getrbac_user();
     GLOBAL $link_ui;
     $r = base64_decode($r);
+    $r = "/".trim($r, "/");
 
     $query = "SELECT * FROM rbac_role_menu LEFT JOIN tbl_menu_list ON rbac_role_menu.menu_pid=tbl_menu_list.menu_pid LEFT JOIN rbac_users ON rbac_role_menu.roll_id = rbac_users.role_id WHERE rbac_users.user_name='".$user."' AND tbl_menu_list.link_location='".$r."'";
 
@@ -183,6 +184,7 @@ function haspermission($r){
     $user = getrbac_user();
     GLOBAL $link_ui;
     $r = base64_decode($r);
+    $r = "/".trim($r, "/");
 
     $query = "SELECT rbac_role_menu_per.permission_id,rbac_permission.permission_name FROM rbac_role_menu_per LEFT JOIN rbac_role_menu ON rbac_role_menu_per.role_menu_id=rbac_role_menu.role_menu_id LEFT JOIN tbl_menu_list ON rbac_role_menu.menu_pid=tbl_menu_list.menu_pid LEFT JOIN rbac_users ON rbac_role_menu.roll_id = rbac_users.role_id LEFT JOIN rbac_permission ON rbac_role_menu_per.permission_id=rbac_permission.permission_id WHERE rbac_permission.status='active' and rbac_users.user_name='".$user."' AND tbl_menu_list.link_location='".$r."'";
 
