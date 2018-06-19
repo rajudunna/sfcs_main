@@ -1,22 +1,24 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0139",$username,1,$group_id_sfcs);
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//$view_access=user_acl("SFCS_0139",$username,1,$group_id_sfcs);
 /*
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
 
-$author_id_db=array("kirang","baiadmn","lakmalka","ramaraop","sarojinig","baiquality","kirang","sumudup","kirang","kirang");
-if(in_array($username,$author_id_db))
+$author_id_db=array("kirang","baiadmn","lakmalka","ramaraop","sarojinig","baiquality","kirang","sumudup","kirang","kirang");*/
+$has_perm=haspermission($_GET['r']);
+if(in_array($authorized,$has_perm))
 {
 	
 }
 else
 {
-	header("Location:../restricted.php");
+	$url = getFullURL($_GET['r'],'restricted.php','N');
+	header("Location:$url");
 }
-*/
+
 ?>
 
 <html>

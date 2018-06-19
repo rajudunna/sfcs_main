@@ -10,12 +10,13 @@ user names taken from the database level
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',3,'R'));
 
-$View_access=user_acl("SFCS_0145",$username,1,$group_id_sfcs);
+//$View_access=user_acl("SFCS_0145",$username,1,$group_id_sfcs);
 ?>
 <?php
+$has_perm=haspermission($_GET['r']);
 
 //$author_id_db=array("kirang","manojm","sridevik","kirang","kirang","thilinapa","kirang","kirang");
 
@@ -30,16 +31,17 @@ while($row=mysql_fetch_array($result))
 	$users=$row["auth_members"];
 }
 
-$auth_users=explode(",",$users);
-if(in_array($username,$auth_users))
+$auth_users=explode(",",$users);*/
+if(in_array($authorized,$has_perm))
 {
 	
 }
 else
 {
-	header("Location:restricted.php");
+	$url = getFullURL($_GET['r'],'restricted.php','N');
+	header("Location:$url");
 }
-*/
+
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">

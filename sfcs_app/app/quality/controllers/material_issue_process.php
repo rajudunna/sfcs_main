@@ -1,12 +1,13 @@
 <?php
 //This interface is used to transfer material from one schedule to another.
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+    //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
    
+    $has_perm=haspermission($_GET['r']);
 
-	$view_access=user_acl("SFCS_0138",$username,1,$group_id_sfcs); 
-	$issue_rights=user_acl("SFCS_0138",$username,37,$group_id_sfcs); 
-	$delete_rights=user_acl("SFCS_0138",$username,4,$group_id_sfcs); 
+	//$view_access=user_acl("SFCS_0138",$username,1,$group_id_sfcs); 
+	// $issue_rights=user_acl("SFCS_0138",$username,37,$group_id_sfcs); 
+	// $delete_rights=user_acl("SFCS_0138",$username,4,$group_id_sfcs); 
 ?>
 
 <script>
@@ -152,11 +153,11 @@ if(isset($_POST['issue']) or isset($_POST['cancel']))
 		echo '</table></div>';
 		echo '<br/><br/>';
 		echo '<div class="row"><div class="col-md-4"></div><div class="col-md-2">';
-		if(in_array($username,$issue_rights)){
+		if(in_array($authorized,$has_perm)){
 			echo '<input class="btn btn-primary" type="submit" name="issue" value="Issue to Module">&nbsp;&nbsp;</div><div class="col-md-2">';	
 		}
 			
-		if(in_array($username,$delete_rights)){
+		if(in_array($delete,$has_perm)){
 			echo '<input class="btn btn-danger" type="submit" name="cancel" value="Delete Request"></div></div>';
 		}
 	
