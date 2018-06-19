@@ -14,12 +14,12 @@ function getscheduledata($variable)
 	// include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include("../../../../../common/config/config.php");
 
-	$query_get_schedule_data= "SELECT order_del_no as schedule FROM $bai_pro3.packing_summary_input group by schedule";
+	$query_get_schedule_data= "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref group by operation_code";
 	//echo $query_get_schedule_data;
 	$result = $link->query($query_get_schedule_data);
 	//$json = [];
    while($row = $result->fetch_assoc()){
-        $json[$row['schedule']] = $row['schedule'];
+        $json[$row['operation_code']] = $row['operation_name'];
    }
    echo json_encode($json);
 	
@@ -84,8 +84,20 @@ function getjobdetails($job_number)
 {
 	//var_dump($job_number);
 	$job_number = explode(",",$job_number);
+	$job_number[4]=$job_number[1];
 	include("../../../../../common/config/config.php");
-
+		$selecting_style_schedule_color_qry = "select order_style_no,order_del_no,order_col_des from $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]'";
+		//echo $selecting_style_schedule_color_qry;
+		$result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
+		while($row = $result_selecting_style_schedule_color_qry->fetch_assoc()) 
+		{
+			$job_number[1]= $row['order_style_no'];
+			$job_number[2]= $row['order_del_no'];
+			$job_number[3]= $row['order_col_des'];
+		}
+		$result_array['style'] = $job_number[1];
+		$result_array['schedule'] = $job_number[2];
+		$result_array['color_dis'] = $job_number[3];
 		$ops_dep_flag = 0;
 		$qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
 		$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
@@ -151,11 +163,21 @@ function getjobdetails($job_number)
 		$ops_seq_check = "select id,ops_sequence from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$job_number[3]' and operation_code='$job_number[4]'";
 		//echo $ops_seq_check;
 		$result_ops_seq_check = $link->query($ops_seq_check);
-		while($row = $result_ops_seq_check->fetch_assoc()) 
+		if($result_ops_seq_check->num_rows > 0)
 		{
-			$ops_seq = $row['ops_sequence'];
-			$seq_id = $row['id'];
+			while($row = $result_ops_seq_check->fetch_assoc()) 
+			{
+				$ops_seq = $row['ops_sequence'];
+				$seq_id = $row['id'];
+			}
 		}
+		else
+		{
+			$result_array['status'] = 'Invalid Operation for this input job number.Plese verify Operation Mapping.';
+			echo json_encode($result_array);
+			die();
+		}
+		
 		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$job_number[3]' and id < $seq_id and ops_sequence = $ops_seq";
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
