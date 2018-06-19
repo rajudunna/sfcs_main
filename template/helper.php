@@ -215,7 +215,7 @@ function haspermission($r){
 function getrbac_user(){
     //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
     //$user=$username_list[1];
-    $user = 'Chandu';
+    $user = 'Kiran';
     return $user;
 }
 

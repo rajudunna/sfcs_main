@@ -38,9 +38,10 @@ function thirdbox()
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
 $author_id_db=array("kirang");
-if(in_array($username,$author_id_db))
+$permission = hasviewpermission($_GET['r']);
+if(in_array($authorized,$permission))
 {
-	// echo '| <strong><a href="cut_to_ship3.php">Current Week Process</a></strong> | <strong> <a href="cut_to_ship33.php">Previous Week Process</a> </strong>';
+	echo '| <strong><a href="cut_to_ship3.php">Current Week Process</a></strong> | <strong> <a href="cut_to_ship33.php">Previous Week Process</a> </strong>';
 }
 
 ?>
