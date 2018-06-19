@@ -1,7 +1,7 @@
 <?php 
 //CR#886/ kirang / 2015-03-17 / Future Delivery status Report. - To Track the future deliveries.
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 //$view_access=user_acl("SFCS_0100",$username,1,$group_id_sfcs); 
 
