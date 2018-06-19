@@ -1,6 +1,11 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
+$has_permission=haspermission($url_r);
 error_reporting(0);
 ?>
 <?php
@@ -303,7 +308,7 @@ if(isset($_GET['val']))
 					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";				
 					echo "<td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 					echo $quality_log_row;
-					if(in_array($username,$auth_to_modify))
+					if(in_array($edit,$has_permission))
 					{
 						echo "<td><span id='I".$sql_row12['tid']."'></span><span id='M".$sql_row12['tid']."' style='width:100%' onclick='update_comm(".$sql_row12['tid'].");'>".$sql_row12['team_comm']."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
 					}
@@ -327,7 +332,7 @@ if(isset($_GET['val']))
 					echo "<td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 					echo $quality_log_row;
 				
-					if(in_array($username,$auth_to_modify))
+					if(in_array($edit,$haspermission))
 					{
 						echo "<td><span id='I".$sql_row12['tid']."'></span><span id='M".$sql_row12['tid']."' style='width:100%' onclick='update_comm(".$sql_row12['tid'].");'>".$sql_row12['team_comm']."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
 					}
