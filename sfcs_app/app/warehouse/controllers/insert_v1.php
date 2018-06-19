@@ -10,12 +10,14 @@ Change Log:
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 	// require_once('phplogin/auth.php');
 	ob_start();
+	$has_permission = haspermission($_GET['r']);
+	
 	// require_once "ajax-autocomplete/config.php";
-	$url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-	$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
-	$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+	// $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+	// $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
+	// $view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
 ?>
 
 <?php
@@ -33,15 +35,16 @@ while($row=mysql_fetch_array($result))
 }
 
 $auth_users=explode(",",$users);
-if(in_array($username,$auth_users))
+*/
+if(in_array($view,$has_permission))
 {
 	
-}
+} 
 else
 {
 	header("Location:restrict.php");		
 }
-*/
+
 ?>
 
 <!-- <script type="text/javascript" src="ajax-autocomplete/jquery.js"></script>
@@ -79,7 +82,9 @@ else
 
 <body onload="dodisable();">
 
-<?php include("stock_in.php"); ?>
+<?php 
+	include("stock_in.php"); 
+?>
 
 <?php
 

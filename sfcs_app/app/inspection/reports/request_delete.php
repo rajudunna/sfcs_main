@@ -1,3 +1,10 @@
+<?php
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
+
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+$has_permission=haspermission($_GET['r']);
+?>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 
 <script type="text/javascript">
@@ -12,26 +19,13 @@ function refreshAndClose() {
     window.close();
 }
 </script>
-
 </head>
 <body>
-<?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
-
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-?>
 <div class="panel panel-primary">
 <?php
-
 echo '<div class="panel-heading">Supplier Claim Delete Form</div>';
 echo '<div class="panel-body">';
-
-
-
 ?>
- 
 <?php
 
 $ref_no=$_GET["tid"];
@@ -43,7 +37,7 @@ $complaint_no=$_GET["complaint_no"];
 <th>UOM</th><th>Complaint Remarks</th><th>Supplier Approved Date</th><th>Replacement Category</th><th>Supplier Remarks</th><th>Claim Note No</th></th><th>New Invoice No</th><th>Supplier Replace Approved Qty</th>
 <th>Supplier Claim Approved Qty</th><th>Credit Note No</th><th>Complaint Status</th><th>Mail Status</th>";
 	
-	if(in_array($username,$super_users))
+	if(in_array($authorized,$has_permission))
 	{
 		echo "<th>Controls</th>";
 	}
@@ -145,7 +139,7 @@ $complaint_no=$_GET["complaint_no"];
 		
 		echo "<td>$supplier_remarks</td><td>$supplier_claim_no</td><td>$new_invoice_no</td><td>$supplier_replace_approved_qty</td><td>$supplier_claim_approved_qty</td><td>$supplier_claim_no</td>";
 		
-		if(in_array($username,$auth_users))
+		if(in_array($authorized,$has_permission))
 		{
 			if($complaint_status == 0)
 			{
@@ -216,7 +210,7 @@ $complaint_no=$_GET["complaint_no"];
 	    }	
 		
 		// $sHTML_Content .="<td bgcolor=\"$id\"><a class=\"btn btn-sm btn-primary\" href=\"".getFullURL($_GET['r'], "status_update.php", "N")."&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
-		if(in_array($username,$super_users))
+		if(in_array($authorized,$has_permission))
 		{
 			echo "<td><a class=\"btn btn-sm btn-primary\" href=\"".getFullURL($_GET['r'], "request_delete.php", "R")."&tid=$ref_no\"  onclick=\"return popitup('request_delete.php?tid=$ref_no')\">Delete</a></td>";
 		}
