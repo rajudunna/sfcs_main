@@ -1,9 +1,10 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
+$has_permission=haspermission($_GET['r']);
 
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
@@ -1875,16 +1876,16 @@ tags will be replaced.-->
   <td colspan=16 height=25 class=xl12524082 dir=LTR width=1126  style='height:18.75pt;width:845pt'><a name="RANGE!A1:P19">Trims Inspection Report - TRIMS</a></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
-  <td height=26 class=xl9524082 dir=LTR width=80 style='height:20.1pt;  width:60pt'>Buyer</td>
-  <td colspan=2 class=xl9624082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $buyer; ?></td>
+  <td height=26 class=xl9524082 dir=LTR width=80 style='height:20.1pt;  width:60pt'>Item Code</td>
+  <td colspan=2 class=xl9624082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $item; ?></td>
   <td colspan=2 rowspan=1 class=xl9624082 dir=LTR width=136 style='width:102pt'>Fabric  Description</td>
   <td colspan=5 rowspan=1 class=xl9624082 dir=LTR width=372 style='width:279pt'><?php echo $item_name; ?></td>  <td colspan=2 class=xl9624082 dir=LTR width=136 style='border-left:none;  width:102pt'>Batch No</td>
   <td colspan=4 class=xl9624082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php echo $batch_no; ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;
-  border-top:none;width:60pt'>Item Code</td>
-  <td colspan=9 class=xl9324082 dir=LTR  style='border-left:none;'><?php echo $item; ?></td>
+  border-top:none;width:60pt'>Buyer</td>
+  <td colspan=9 class=xl9324082 dir=LTR  style='border-left:none;'><?php echo $buyer; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Lot No</td>
   <td colspan=4 class=xl10024082 style='border-right:1.0pt solid black;
@@ -1894,7 +1895,7 @@ tags will be replaced.-->
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;
   border-top:none;width:60pt'>Consumption<span style='mso-spacerun:yes'></span></td>
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;
-  width:98pt'><?php if(in_array($username,$auth_to_modify)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"number\" step=\"any\" class=\"textbox\" id=\"consumption\" name=\"consumption\" min=\"0\" value='".$consumption."' />"; } else { echo $consumption; }?></td>
+  width:98pt'><?php if(in_array($authorized,$has_permission)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"number\" step=\"any\" class=\"textbox\" id=\"consumption\" name=\"consumption\" min=\"0\" value='".$consumption."' />"; } else { echo $consumption; }?></td>
   <td colspan=7 class=xl12224082 style='border-right:.5pt solid black;
   border-left:none'>Inspection Summary</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
@@ -1919,7 +1920,7 @@ tags will be replaced.-->
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;
   width:74pt'>PTS/100 Sq.Yd.</td>
   <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;
-  width:109pt'><?php if(in_array($username,$auth_to_modify)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"number\" step=\"any\" min=\"0\" class=\"textbox\" id=\"pts\" name=\"pts\" value='".$pts."' />"; } else { echo $pts; }?></td>
+  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"number\" step=\"any\" min=\"0\" class=\"textbox\" id=\"pts\" name=\"pts\" value='".$pts."' />"; } else { echo $pts; }?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Package</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
@@ -1933,16 +1934,16 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Qty Inspected</td>
   <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;
-  border-left:none;width:96pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" id="qty_insp" name="qty_insp" min="0" min="0" value="'.$qty_insp.'" >'; } else { echo $qty_insp; }?></td>
+  border-left:none;width:96pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" id="qty_insp" name="qty_insp" min="0" min="0" value="'.$qty_insp.'" >'; } else { echo $qty_insp; }?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;
   width:74pt'>Fallout</td>
   <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;
-  width:109pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" id="fallout" name="fallout" min="0" value="'.$fallout.'" >'; } else { echo $fallout; }?></td>
+  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" id="fallout" name="fallout" min="0" value="'.$fallout.'" >'; } else { echo $fallout; }?></td>
   
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;width:102pt'>Pur. GSM</td>
-  <td class=xl9324082 dir=LTR style='border-left:none; width:102pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)" size=4  type="number" step="any" class="textbox" id="pur_gsm" name="pur_gsm" min="0"  value="'.$pur_gsm.'" style="width: 64px;">'; } else { echo $pur_gsm; }?></td>
+  <td class=xl9324082 dir=LTR style='border-left:none; width:102pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" size=4  type="number" step="any" class="textbox" id="pur_gsm" name="pur_gsm" min="0"  value="'.$pur_gsm.'" style="width: 64px;">'; } else { echo $pur_gsm; }?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none; style="align:center;" width:102pt'>Act. GSM</td>
-  <td colspan=1 class=xl9324082 dir=LTR width=136 style='border-left:none; width:102pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)" size=4 type="number" step="any" class="textbox" id="act_gsm" name="act_gsm" min="0"  value="'.$act_gsm.'" style="width: 64px;" >'; } else { echo $act_gsm; }?></td>
+  <td colspan=1 class=xl9324082 dir=LTR width=136 style='border-left:none; width:102pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" size=4 type="number" step="any" class="textbox" id="act_gsm" name="act_gsm" min="0"  value="'.$act_gsm.'" style="width: 64px;" >'; } else { echo $act_gsm; }?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;
@@ -1960,7 +1961,7 @@ tags will be replaced.-->
 
 
   <?php 
- if(in_array($username,$auth_to_modify))
+ if(in_array($authorized,$has_permission))
  {
  echo "<select onchange='change_head(1,this.name)' name='skew_cat' class='listbox'>";
  if($skew_cat==1)
@@ -2013,11 +2014,11 @@ tags will be replaced.-->
  }  
     ?></td>
   <td colspan=2 class=xl9424082 dir=LTR width=145 style='border-right:.5pt solid black;
-  width:109pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" id="skew" name="skew" value="'.$skew.'" />'; } else { echo $skew; } ?></td>
+  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" id="skew" name="skew" value="'.$skew.'" />'; } else { echo $skew; } ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Purchase Width</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
-  border-left:none;width:204pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any"  class="textbox" id="pur_width" name="pur_width" value="'.$pur_width.'" />';} else { echo $pur_width; } ?></td>
+  border-left:none;width:204pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any"  class="textbox" id="pur_width" name="pur_width" value="'.$pur_width.'" />';} else { echo $pur_width; } ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>No of rolls</td>
@@ -2028,7 +2029,7 @@ tags will be replaced.-->
   <td class=xl9324082 dir=LTR width=77 style='border-top:none;border-left:none;  width:58pt'>L%</td>
   <td class=xl9424082 dir=LTR width=68 style='border-top:none;border-left:none;  width:51pt'>W%</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='width:102pt'>Actual  Width</td>
-  <td colspan=4 class=xl13524082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float" id="act_width" name="act_width" value="'.$act_width.'"  />';} else { echo $act_width; } ?> </td>
+  <td colspan=4 class=xl13524082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float" id="act_width" name="act_width" value="'.$act_width.'"  />';} else { echo $act_width; } ?> </td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9824082 dir=LTR width=80 style='height:20.1pt;
@@ -2038,7 +2039,7 @@ tags will be replaced.-->
   width:102pt'>Fabric Way</td>
   <td colspan=2 class=xl11424082 style='border-right:.5pt solid black;
   border-left:none'><?php 
- if(in_array($username,$auth_to_modify))
+ if(in_array($authorized,$has_permission))
  {
  echo "<select onchange='change_head(1,this.name)' id='gmt_way' name='gmt_way' class='listbox'>";
  
@@ -2102,8 +2103,8 @@ tags will be replaced.-->
 	 }
  }  
     ?></td>
-  <td class=xl11324082 style='border-top:none;border-left:none;'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" name="shrink_l" id="shrink_l" min="0" value="'.$shrink_l.'" style="width: 67px;"/>';  } else { echo $shrink_l; } ?> </td>
-  <td class=xl11424082 style='border-top:none;border-left:none' ><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" name="shrink_w" id="shrink_w" min="0" value="'.$shrink_w.'" style="width: 67px;" />';  } else { echo $shrink_w; } ?> </td>
+  <td class=xl11324082 style='border-top:none;border-left:none;'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" name="shrink_l" id="shrink_l" min="0" value="'.$shrink_l.'" style="width: 67px;"/>';  } else { echo $shrink_l; } ?> </td>
+  <td class=xl11424082 style='border-top:none;border-left:none' ><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="number" step="any" class="textbox" name="shrink_w" id="shrink_w" min="0" value="'.$shrink_w.'" style="width: 67px;" />';  } else { echo $shrink_w; } ?> </td>
   <td colspan=2 class=xl11324082>Invoice</td>
   <td colspan=4 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
  </tr>
@@ -2147,7 +2148,7 @@ tags will be replaced.-->
   {
   	
   	echo '<input type="hidden" name="lot_no" value="'.$lot_no.'">';
-	if(in_array($username,$auth_to_modify) or in_array($username,$shade_update_right))
+	if(in_array($authorized,$has_permission) or in_array($authorized,$has_permission))
 	{
 	//$update_access
 	
@@ -2258,7 +2259,7 @@ tags will be replaced.-->
 	}
 	
 	//for shade wise category
-	if(in_array($username,$auth_to_modify))
+	if(in_array($authorized,$has_permission))
 	{
 		if ($temp[16] > 0) {
 			$readonly = 'readonly';
@@ -2269,7 +2270,7 @@ tags will be replaced.-->
 			$dropdown_read = '';
 		}
 
-		if(!in_array($username,$shade_update_right))
+		if(!in_array($authorized,$has_permission))
 		{
 			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' name=\"ele_shade[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
 		}
@@ -2312,7 +2313,7 @@ tags will be replaced.-->
 
 	  <td class=xl12924082 colspan=2 align=center style='border-left:none'>".$temp[7]."</td>";
 	  
-	  if(in_array($username,$shade_update_right))
+	  if(in_array($authorized,$has_permission))
 	  {	  
 	    echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
 	    	<select name=\"roll_status[$i]\" onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
@@ -2622,7 +2623,7 @@ if($_POST['put'] || $_POST['confirm'])
 	$shrinkage_group = $_POST["shrinkage_group"];
 	$roll_remarks = $_POST["roll_remarks"];
 
-	if(in_array($username,$auth_to_modify))
+	if(in_array($authorized,$has_permission))
 	{
 		$ele_shade=$_POST['ele_shade'];
 	}
@@ -2632,7 +2633,7 @@ if($_POST['put'] || $_POST['confirm'])
 		if($ele_check[$i]>0)
 		{
 			$add_query="";
-			if(in_array($username,$shade_update_right))
+			if(in_array($authorized,$has_permission))
 			{
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}

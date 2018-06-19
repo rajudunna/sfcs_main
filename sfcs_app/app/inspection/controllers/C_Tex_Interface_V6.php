@@ -1,7 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R'));
 $has_permission=haspermission($_GET['r']);
 ?>
@@ -1667,7 +1667,7 @@ table
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
--->
+
 </style>
 
 </head>
@@ -2144,7 +2144,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   {
   	
   	echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
-	if(in_array($authorized,$has_permission) or in_array($authorizeLevel_1,$has_permission))
+	if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
 	{
 	//$update_access
 	
@@ -2264,7 +2264,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			$dropdown_read = '';
 		}
 
-		if(!in_array($authorizeLevel_1,$has_permission))
+		if(!in_array($authorized,$has_permission))
 		{
 			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
 		}
@@ -2310,7 +2310,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 
 	  <td class=xl12824082 colspan='2' style='border-left:none;width:100px'>".$temp[7]."</td>";
 	  
-	  if(in_array($authorizeLevel_1,$has_permission))
+	  if(in_array($authorized,$has_permission))
 	  {	  
 	    echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
 	    	<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
@@ -2650,7 +2650,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 		if($ele_check[$i]>0)
 		{
 			$add_query="";
-			if(in_array($authorizeLevel_1,$has_permission))
+			if(in_array($authorized,$has_permission))
 			{
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}

@@ -1,13 +1,14 @@
 <?php
 ini_set('max_execution_time',0);
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/M3_BULK_OR/ims_size.php"); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbweeklyreport_conf.php',1,'R'));
 
 // $view_access=user_acl("SFCS_0040",$username,1,$group_id_sfcs);
 // var_dump($sizes_array);
+$has_perm=haspermission($_GET['r']);
 ?>
 
 <?php
@@ -698,10 +699,10 @@ $order_total=$size_xs1+$size_s1+$size_m1+$size_l1+$size_xl1+$size_xxl1+$size_xxx
 
 //Restricted Editing for Packing Team
 
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
-$authorized=array("muralim","kirang","sureshn","sasidharch","edwinr","lilanku"); //For Packing
-$authorized2=array("muralim","kirang","baiuser");
+// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+// $username=$username_list[1];
+//$authorized=array("muralim","kirang","sureshn","sasidharch","edwinr","lilanku"); //For Packing
+// $authorized2=array("muralim","kirang","baiuser");
 
 if(strtolower($remarks[0])=="hold")
 {
@@ -735,7 +736,7 @@ if($order_total!=$actu_total)
 
 
 //Allowed only Packing team and timings to update between 8-10 and 4-6
-if(in_array(strtolower($username),$authorized) and ((date("H")<=10 and date("H")>=8) or (date("H")<=18 and date("H")>=16)))
+if((in_array($authorizeLevel_1,$has_perm)) and ((date("H")<=10 and date("H")>=8) or (date("H")<=18 and date("H")>=16)))
 {
 	
 	$edit_rem="<td class=\"editable\" rel=\"B$edit_ref\">".$remarks[1]."</td>";
@@ -747,7 +748,7 @@ else
 }
 
 
-if(!(in_array(strtolower($username),$authorized2)))
+if(!(in_array($authorizeLevel_2,$has_perm)))
 {
 	$edit_rem2="<td $highlight>".$remarks[2]."</td>";
 }

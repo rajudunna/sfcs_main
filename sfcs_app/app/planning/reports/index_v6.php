@@ -4,6 +4,7 @@
 <meta http-equiv="refresh" content="600" />
 <title>Delivery Schedule</title>
 <?php 
+$has_perm=haspermission($_GET['r']);
 // include("dbconf.php"); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
@@ -294,10 +295,10 @@ $sql_schedule="SELECT 	* FROM $bai_pro3.`temp_delivery_schedule` WHERE ex_date B
 	<?php 
 	 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 		// 	$username=strtolower($username_list[1]);
-	$username="sfcsproject1";
-			$super_user=array("hasithada","thusharako","thilinana","chathurangad","dinushapre","dineshp","harshanak","sfcsproject1");
+	// $username="sfcsproject1";
+			// $super_user=array("hasithada","thusharako","thilinana","chathurangad","dinushapre","dineshp","harshanak","sfcsproject1");
 							
-				if (in_array($username, $super_user)){  ?>
+				if (in_array($authorized,$has_perm)){  ?>
 				
 	  <a href="<?= getFullURL($_GET['r'],'comment_creation.php','N'); ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedule_no; ?>" ><img src="<?= getFullURL($_GET['r'],'images/memo.png','R');?>" width="32" height="32" border="0" /></a></td>
     <?php   } ?>
