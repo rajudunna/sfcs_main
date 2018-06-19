@@ -10,11 +10,12 @@
 	{
 		$user_name="baiadmn";
 	}	
-$auth_to_modify=array("kirang","ravipu","sarojiniv","kirang","baiadmn","sfcsproject1");
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+// $auth_to_modify=array("kirang","ravipu","sarojiniv","kirang","baiadmn","sfcsproject1");
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 //$view_access=user_acl("SFCS_0159",$username,1,$group_id_sfcs); 
 //$auth_to_modify=user_acl("SFCS_0159",$username,2,$group_id_sfcs);
+$has_permission = haspermission($_GET['r']);
 ?>
 
 
@@ -163,7 +164,7 @@ switch (trim($product_group))
 	case "Elastic":
 	{
 		echo "<th>Return Qty (MTR)</th><th>Remarks</th></tr>";
-		if(!in_array($username,$auth_to_modify))
+		if(!in_array($view,$has_permission))
 		{
 			header("Location: restrict.php");
 		}
@@ -172,7 +173,7 @@ switch (trim($product_group))
 	case "Lace":
 	{
 		echo "<th>Return Qty ($fab_uom)</th><th>Remarks</th></tr>";
-		if(!in_array($username,$auth_to_modify))
+		if(!in_array($view,$has_permission))
 		{
 			header("Location: restrict.php");
 		}
@@ -181,7 +182,7 @@ switch (trim($product_group))
 	case "Fabric":
 	{
 		echo "<th>Return Qty (MTR)</th><th>Remarks</th></tr>";
-		if(!in_array($username,$auth_to_modify))
+		if(!in_array($view,$has_permission))
 		{
 			header("Location: restrict.php");
 		}
@@ -190,7 +191,7 @@ switch (trim($product_group))
 	case "Thread":
 	{
 		echo "<th>Return Qty</th><th>Remarks</th></tr>";
-		if(!in_array($username,$auth_to_modify))
+		if(!in_array($view,$has_permission))
 		{
 			header("Location: restrict.php");
 		}
@@ -199,7 +200,7 @@ switch (trim($product_group))
 	default:
 	{
 		echo "<th>Return Qty</th><th>Remarks</th></tr>";
-		if(!in_array($username,$auth_to_modify))
+		if(!in_array($view,$has_permission))
 		{
 			header("Location: restrict.php");
 		}

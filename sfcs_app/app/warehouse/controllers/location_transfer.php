@@ -12,16 +12,17 @@
 		$user_name="baiadmn";
 	}	
 //	$auth_to_modify=array("kirang","ravipu","sarojiniv","kirang","baiadmn","kirang");
-$url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-$view_access=user_acl("SFCS_0150",$username,1,$group_id_sfcs); 
-$auth_to_modify=user_acl("SFCS_0150",$username,2,$group_id_sfcs); 	
+// $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
+// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+// $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
+// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+// $view_access=user_acl("SFCS_0150",$username,1,$group_id_sfcs); 
+// $auth_to_modify=user_acl("SFCS_0150",$username,2,$group_id_sfcs); 	
 
 	//0 for 
 	//1 for lock
 	//2 for completed
+	$has_permission = haspermission($_GET['r']);
 ?>
 
 <script type="text/javascript">
@@ -192,7 +193,7 @@ if($sql_num_check>0)
 		case "Elastic":
 		{
 			echo "<th>Transfer Qty (MTR)</th><th>New Location</th><th>Remarks</th></tr>";	
-			if(!in_array($username,$auth_to_modify))
+			if(!in_array($view,$has_permission))
 			{
 				$url = getFullURL($_GET[r],'restrict.php','N');
 				header("Location: ".$url);
@@ -202,7 +203,7 @@ if($sql_num_check>0)
 		case "Lace":
 		{
 			echo "<th>Transfer Qty ($fab_uom)</th><th>New Location</th><th>Remarks</th></tr>";
-			if(!in_array($username,$auth_to_modify))
+			if(!in_array($view,$has_permission))
 			{
 				$url = getFullURL($_GET[r],'restrict.php','N');
 				header("Location: ".$url);
@@ -212,7 +213,7 @@ if($sql_num_check>0)
 		case "Fabric":
 		{
 			echo "<th>Transfer Qty (YARDS)</th><th>New Location</th><th>Remarks</th></tr>";
-			if(!in_array($username,$auth_to_modify))
+			if(!in_array($view,$has_permission))
 			{
 				$url = getFullURL($_GET[r],'restrict.php','N');
 				header("Location: ".$url);
@@ -222,7 +223,7 @@ if($sql_num_check>0)
 		case "Thread":
 		{
 			echo "<th>Transfer Qty (CON) </th><th>New Location</th><th>Remarks</th></tr>";
-			if(!in_array($username,$auth_to_modify))
+			if(!in_array($view,$has_permission))
 			{
 				$url = getFullURL($_GET[r],'restrict.php','N');
 				header("Location: ".$url);
@@ -232,7 +233,7 @@ if($sql_num_check>0)
 		default:
 		{
 			echo "<th>Transfer Qty (CON) </th><th>New Location</th><th>Remarks</th></tr>";
-			if(!in_array($username,$auth_to_modify))
+			if(!in_array($view,$has_permission))
 			{
 				$url = getFullURL($_GET[r],'restrict.php','N');
 				header("Location: ".$url);
