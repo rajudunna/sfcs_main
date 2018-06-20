@@ -555,10 +555,10 @@ function validating_remarks_with_qty($validating_remarks)
 					if($check_flag != 1)
 					{
 						$act_rec_qty = $rec_qty - $row['rec_qty'];
-					}
-					if($act_rec_qty < 0)
-					{
-						$act_rec_qty = 0;
+						if($act_rec_qty < 0)
+						{
+							$act_rec_qty = 0;
+						}
 					}
 					else
 					{
