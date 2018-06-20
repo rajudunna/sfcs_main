@@ -14,7 +14,7 @@ function getscheduledata($variable)
 	// include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include("../../../../../common/config/config.php");
 
-	$query_get_schedule_data= "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref group by operation_code";
+	$query_get_schedule_data= "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15,200) group by operation_code order by operation_code";
 	//echo $query_get_schedule_data;
 	$result = $link->query($query_get_schedule_data);
 	//$json = [];
