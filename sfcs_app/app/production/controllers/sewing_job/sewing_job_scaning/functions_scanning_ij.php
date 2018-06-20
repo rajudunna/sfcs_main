@@ -530,7 +530,7 @@ function validating_remarks_with_qty($validating_remarks)
 		$result_qry_for_fetching_bal_to_report_qty_pre = $link->query($qry_for_fetching_bal_to_report_qty_pre);
 		if($result_qry_for_fetching_bal_to_report_qty_pre->num_rows > 0)
 		{
-			$qry_for_fetching_bal_to_report_qty_post = "select $send_qty-(SUM(recevied_qty)) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2] and remarks = '$validating_remarks[3]' order by bundle_number";
+			$qry_for_fetching_bal_to_report_qty_post = "select $send_qty-(SUM(recevied_qty)+SUM(rejected_qty)) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2] and remarks = '$validating_remarks[3]' order by bundle_number";
 			//echo $qry_for_fetching_bal_to_report_qty_post;
 			$result_qry_for_fetching_bal_to_report_qty_post = $link->query($qry_for_fetching_bal_to_report_qty_post);
 			while($row = $result_qry_for_fetching_bal_to_report_qty_post->fetch_assoc()) 
@@ -555,6 +555,10 @@ function validating_remarks_with_qty($validating_remarks)
 					if($check_flag != 1)
 					{
 						$act_rec_qty = $rec_qty - $row['rec_qty'];
+					}
+					if($act_rec_qty < 0)
+					{
+						$act_rec_qty = 0;
 					}
 					else
 					{
