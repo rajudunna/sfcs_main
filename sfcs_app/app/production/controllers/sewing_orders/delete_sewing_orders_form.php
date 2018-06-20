@@ -58,6 +58,7 @@
 <body>
 	<?php
 		include("dbconf.php");
+		$has_permission=haspermission($_GET['r']);
 		//include("generate_bundles.php");
 		/*getting style codes*/
 		$style_codes="SELECT DISTINCT trim(order_style_no) as order_style_no FROM bai_pro3.bai_orders_db_confirm";
@@ -289,7 +290,9 @@
 				echo "<thead class='thead-inverse'><tr class='table-active'><th>S.NO</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut Number</th><th>Sewing order Number</th>";
 				while($sew_orders=mysqli_fetch_array($sewing_orders_qry_result)){
 					$url="sewing_orders_delete_process.php?style_id=".$style."&schedule=".$schedule."&color=".$color."&cut_id=".$cut_num."&operation_code=".$operation_code."&sewing_order=".$sew_orders['sewing_order'];
-					echo "<tr><td>".$sno++."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$cut_num."</td><td>".$sew_orders['sewing_order']."</td><td><a href='".$url."' class='btn btn-danger' role='button'>Delete</a></td></tr>";
+					echo "<tr><td>".$sno++."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$cut_num."</td><td>".$sew_orders['sewing_order']."</td>";
+					if(in_array($delete,$has_permission)) {echo "<td><a href='".$url."' class='btn btn-danger' role='button'>Delete</a></td>";}
+					echo "</tr>";
 				}
 				echo "</table>";
 			}else{
