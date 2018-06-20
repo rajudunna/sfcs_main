@@ -1,3 +1,4 @@
+<?php $has_permission = haspermission($_GET['r']);?>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -5,6 +6,7 @@
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',4,'R')?>"></script>
 <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',4,'R')?>">
 <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/table.css',4,'R')?>">
+
 <!---<style type="text/css">
 #div-1a {
  position:absolute;
@@ -122,8 +124,8 @@ function openWin() {
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0277",$username,1,$group_id_sfcs);
-$authorized_ex=user_acl("SFCS_0277",$username,7,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0277",$username,1,$group_id_sfcs);
+// $authorized_ex=user_acl("SFCS_0277",$username,7,$group_id_sfcs);
 ?>
 
 <?php
@@ -206,7 +208,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 					else	
 					{
 						
-						if(in_array($username,$authorized_ex))	
+						if(in_array($authorized,$has_permission))	
 						{
 							$url=getFullURLLevel($_GET['r'],'additional_mini_gen.php',0,'N');
 							echo "<a href='$url&style_id=$style_id&schedule=$schedule&sch_id=$schedule_id' target='_blank'>Generate</a>";

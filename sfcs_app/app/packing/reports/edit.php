@@ -4,6 +4,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
 
 <?php
+$permission = hasviewpermission($_GET['r']);
 //define a maxim size for the uploaded images
 define ("MAX_SIZE","10000000");
 // define the width and height for the thumbnail
@@ -79,7 +80,7 @@ return $ext;
 <?php 
 
 
-if(!in_array($username,$edit_users))
+if(!in_array($edit,$permission))
 {
 	//header("location:maintenance.php");
 	//echo 'THE PAGE IS UNDER MAINTAINACE';
@@ -143,7 +144,7 @@ td{ color : #000}
 						<td colspan='2'>
 							<div class='col-sm-3'></div>
 						<?php
-						if(in_array($username,$edit_users))
+						if(in_array($edit,$permission))
 						{
 
 							echo '<input name="upload" type="submit" class="btn btn-success btn-sm" id="upload" value="Upload"></td>';

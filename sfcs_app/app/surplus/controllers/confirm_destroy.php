@@ -1,17 +1,18 @@
 <?php
 
-//This interface is used to confirm destory quantity.
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));	
+	// $view_access=user_acl("SFCS_0173",$username,1,$group_id_sfcs);
+	$has_permission=haspermission($_GET['r']);
 
-//Service Request# 319844 - KiranG/2014-08-26
-//Added location in group clause.
-
-//CR #198 / 2014-12-12 / kirang / To store the reserve locations cartons in remarks column in bai_qms_db details before destory not confirmation
-//CR #198 / 2014-12-18 / kirang / Taken the usernames from databse level
-
-//Service Request #930334 / 2015-01-12 / kirang / Added Remarks field for capturing the MER Packing List Remarks
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));	
-// $view_access=user_acl("SFCS_0173",$username,1,$group_id_sfcs);
+	if(in_array($authorized,$has_permission))
+	{
+		
+	}
+	else
+	{
+		header($_GET['r'],'restricted.php','N');
+	}
 ?>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>

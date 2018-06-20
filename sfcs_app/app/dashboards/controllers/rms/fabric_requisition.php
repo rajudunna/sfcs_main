@@ -12,20 +12,28 @@ Changes Log:
 // include($_SERVER['DOCUMENT_ROOT']."server/group_def.php");
 // $view_access=user_acl("SFCS_0208",$username,1,$group_id_sfcs);
 // $users=user_acl("SFCS_0208",$username,43,$group_id_sfcs);
+include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fabric_requisition.php");
+$has_permission=haspermission($url_r);
+
 ?>
 <?php
 
 	$username="sfcsproject1";
-	$users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
+	// $users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
 	//$mods=array();
 
-	if((in_array($username,$users)))
+	if((in_array($authorized,$has_permission)))
 	{
 		//echo "Names Exit";
 	}
 	else
 	{	
-		header("Location:restrict.php?group_docs=".$_GET['group_docs']);
+		// echo $_GET['r'];
+		header("Location:sfcs_app/app/dashboards/controllers/rms/restrict.php?group_docs=".$_GET['group_docs']);
+		// header($_GET['r'],'restrict.php','N');
 	}
 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 

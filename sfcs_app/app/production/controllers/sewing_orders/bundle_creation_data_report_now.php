@@ -118,7 +118,7 @@ else if(isset($_GET['style'])){
   <?php  
   // include("dbconf_new.php"); 
 include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-
+$has_permission=haspermission($_GET['r']);
   //$link  = mysqli_connect('localhost','root','','ff'); 
    
   ?> 

@@ -1,17 +1,5 @@
-<?php
-
-// include($_SERVER['DOCUMENT_ROOT']."bai1/server/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT']."bai1/server/group_def.php");
-// $view_access=user_acl("SFCS_0217",$username,1,$group_id_sfcs);
-// $auth_users=user_acl("SFCS_0217",$username,7,$group_id_sfcs);
-//$auth_users=array("kirang","srinivasaraog","sureshg","srinub","tharangam","lokeshk","sandhyaranik","sanyasiraog","dineshin","kirang","srinivasaraog","sureshg","srinub","tharangam","kirang","srinivasaraog","sureshg","srinub","tharangam","lokeshk","sandhyaranik","sanyasiraog","dineshin");
-?>
 
 <?php
-//if(!in_array($username,$auth_users))
-{
-	//header("Location: restricted.php");
-}
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 ?>
 

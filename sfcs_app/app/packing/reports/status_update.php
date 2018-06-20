@@ -44,7 +44,7 @@ td{ padding:1px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 
 //$tid=$_GET["tid"];
 //$schedule=$_GET["schedule"];
-
+$permission = hasviewpermission($_GET['r']);
 if(isset($_GET['schedule']))
 {
 	$schedule=$_GET['schedule'];
@@ -66,7 +66,7 @@ $spc_users=array("amulyap","kirang","kirang","duminduw","sureshn","baifg"); // f
 
 //$authorized=array("kirang","kirang","amulyap","edwinr","sasidharch","lilanku","sureshn","rajasekhark","baifg","eswarammae","lakshmik","prasadms","muralip","venkateshch","srinivasaraoro","ganesht","nagendrak");
 
-if(in_array($username,$fg_authorized))
+if(in_array($authorized,$permission))
 {
 	echo"<form action=\"status_update.php\" method=\"POST\">";
 	echo"<table><tr><th>Status</th><td><select name=\"sta\">";
@@ -76,7 +76,7 @@ if(in_array($username,$fg_authorized))
 	echo"<input type=\"submit\" name=\"submit2\" value=\"Update\" />";
 	echo"</form>";	
 }
-else if(in_array($username,$authorized))
+else if(in_array($authorized,$permission))
 {
 	echo"<form action=\"status_update.php\" method=\"POST\">";
 	echo"<table><tr><th>Status</th><td><select name=\"sta\">";
@@ -86,7 +86,7 @@ else if(in_array($username,$authorized))
 	echo"<input type=\"submit\" name=\"submit2\" value=\"Update\" />";
 	echo"</form>";	
 }
-else if(in_array($username,$spc_users))
+else if(in_array($authorized,$permission))
 {
 	echo"<form action=\"status_update.php\" method=\"POST\">";
 	echo"<table><tr><th>Status</th><td><select name=\"sta\">";
