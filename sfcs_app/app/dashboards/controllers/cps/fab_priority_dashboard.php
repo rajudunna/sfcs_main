@@ -9,6 +9,11 @@ Changes Log:
 -->
 <?php
 $double_modules=array();
+include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
+$has_permission=haspermission($url_r); 
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function($){
@@ -1646,7 +1651,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   echo '</div>';*/
   
   //To show section level priority only to RM-Fabric users only.
-  //if((in_array(strtolower($username),$authorized)))
+  if((in_array($authorized,$has_permission)))
   {
     echo "<script>";
     //echo "blink_new_priority('".implode(",",$blink_docs)."');";

@@ -18,11 +18,16 @@ Changes Log:
 Ticket #: #684040-RameshK/2014-05-26 : To raise compalint for rejected RM material
 
 -->
-<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
+<?php
+	include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	array_pop($php_self);
+	$url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5.php");
+	$has_permission=haspermission($url_r);
+?>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=11; IE=10;IE=9; IE=8; IE=7; IE=EDGE" />
-
 
 
 		<style>
@@ -438,7 +443,12 @@ $authorized=array("kirang","herambaj","kishorek","sarojiniv","ravipu","ramanav",
 if(!(in_array(strtolower($username),$authorized)))
 {
 	header("Location:restrict.php");
-}*/
+}
+*/
+if((in_array($authorized,$has_permission)))
+{
+	header($_GET['r'],'restrict.php','N');
+}
 
 echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing data...</font></h1></center></div>";
 	

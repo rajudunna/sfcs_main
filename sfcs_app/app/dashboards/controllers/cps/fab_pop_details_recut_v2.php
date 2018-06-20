@@ -6,7 +6,13 @@ changes log:
 2014-05-29/kirang/Ticket 854380 : Add "nagendral" user in $authorized array for recut dashboard green colour box access.
 2014-05-29/kirang/Service Request #370686: Add sivaramakrishnat in $authorized array For recut dashboard green colour box access
 -->
-
+<?php
+	include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	array_pop($php_self);
+	$url_r = base64_encode(implode('/',$php_self)."/fab_pop_details_recut_v2.php");
+	$has_permission=haspermission($url_r); 
+?>
 <script type="text/javascript">
 
 	function check_validate()
@@ -167,15 +173,15 @@ changes log:
 	//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	$username=$username_list[1];
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
-	$view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
-	$authorized=user_acl("SFCS_0197",$username,7,$group_id_sfcs);
+	// $view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
+	// $authorized=user_acl("SFCS_0197",$username,7,$group_id_sfcs);
 	//$authorized=array("kirang","harikrishnar","fazlulr","himapriyag","sfcsproject1","chandrasekharko","herambaj","kishorek","kirang","sarojiniv","kirang","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","dharmarajua","bhupalv","varalakshmik","eswarraok","babjim","ramunaidus","nagendral","sivaramakrishnat","gowthamis","rajinig","revathil","lovarajub","ramud","sivark","kirang","kirang");
 	//$authorized=array("kirang");
-	if(!(in_array(strtolower($username),$authorized)))
+	if(!(in_array($authorized,$has_permission)))
 	{
-		// header("Location:restrict.php");
+		header($_GET['r'],'restrict.php','N');
 	}
 
 ?>
@@ -289,7 +295,7 @@ th
 		echo "<th>Color</th>";
 		echo "<th>Job No</th>";
 		echo "</tr>";
-
+		
 		$sql1="SELECT * from $bai_pro3.recut_v2 where doc_no=$doc_no";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error:$sql1 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
