@@ -1819,7 +1819,7 @@ tags will be replaced.-->
 echo $htmlstr;
 
 
-email_attachment('ravindranath.yrr@gmail.com','Dear All, <br/><br/> Please Find The Material Complaint Sheet. <br></br>'.$htmlstr.' <br/><br/> Message Sent Via: http://beknet', 'Material Complaint Sheet Ref# '.$ref_no.'','Shop Floor System Alert','Claim_PDF_Files/'.$ref_no.'.pdf', $default_filetype='application/zip');
+email_attachment('yateesh603@gmail.com','Dear All, <br/><br/> Please Find The Material Complaint Sheet. <br></br>'.$htmlstr.' <br/><br/> Message Sent Via: http://beknet', 'Material Complaint Sheet Ref# '.$ref_no.'','Shop Floor System Alert','Claim_PDF_Files/'.$ref_no.'.pdf', $default_filetype='application/zip');
 	
 //echo "<script language=\"javascript\"> setTimeout(\"CloseWindow()\",0); function CloseWindow() { window.open('','_self',''); window.close(); }  </script>";
 

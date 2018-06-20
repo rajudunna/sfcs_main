@@ -4,18 +4,20 @@
 	// require_once('phplogin/auth.php');
 	ob_start();
 	// require_once "ajax-autocomplete/config.php";
-	$url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+	//$url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
+	//include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 	$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
-	$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+	//$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+	$has_permission=haspermission($_GET['r']);
+	//echo var_dump($has_permission);
 ?>
 
 
- <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
+ <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',4,'R'); ?>" type="text/css" media="all" />
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',4,'R'); ?>"></script>
 
- <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/filtergrid.css',3,'R'); ?>" type="text/css" media="all" />
+ <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/filtergrid.css',4,'R'); ?>" type="text/css" media="all" />
 
 <meta http-equiv="cache-control" content="no-cache">
 <!---<style type="text/css" media="screen">
@@ -51,8 +53,8 @@ table{
 }
 </style>--->
 
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R'); ?>"></script>
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R'); ?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',4,'R'); ?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',4,'R'); ?>"></script>
 
 <Link rel='alternate' media='print' href=null>
 <Script Language=JavaScript>
@@ -177,7 +179,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		case 2:
 		{
 		
-			if(in_array($tmp_username,$team))
+			//if(in_array($tmp_username,$team))
+			if(in_array($approve,$has_permission))
 			{
 				// echo "<td><a href=\"update_status.php?tid=$tid&check=2\">20 Approved</a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=2\">Approved</a></td>";
@@ -198,7 +201,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		case 4:
 		{
-			if(in_array($tmp_username,$team2))
+			if(in_array($authorized,$has_permission))
+			
+
 			{
 				// echo "<td><a href=\"update_status.php?tid=$tid&check=4\">40 Manually Issued</a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=4\">Manually Issued</a></td>";
@@ -212,7 +217,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		case 5:
 		{
-			if(in_array($tmp_username,$team))
+			if(in_array($authorized,$has_permission))
 			{
 				// echo "<td><a href=\"update_status.php?tid=$tid&check=5\">50 Sourcing Cleared </a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=5\">Sourcing Cleared </a></td>";
@@ -235,7 +240,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$sql_row['req_from']."</td>";
 	echo "<td>".$sql_row['app_by']."</td>";
 	
-	if($sql_row['app_date']=="0000-00-00 00:00:00" and $sql_row['status']==1 and in_array($username,$app_users))
+	if($sql_row['app_date']=="0000-00-00 00:00:00" and $sql_row['status']==1 and in_array($update,$has_permission))
 	{
 		echo "<td><a href=\"update_status.php?tid=$tid&check=1\">Update</a></td>";
 	}

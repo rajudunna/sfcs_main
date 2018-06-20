@@ -1,10 +1,11 @@
-
-<title>Supplier Claim Request Form</title>
+<?php
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+$has_permission=haspermission($_GET['r']);
+?>
 <head>
-
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
-
-
 <script type="text/javascript">
 function verify_date(){
 		var val1 = $('#demo1').val();
@@ -20,7 +21,6 @@ function verify_date(){
 		}
 }
 </script>
-
 <script language="javascript" type="text/javascript">
 function popitup(url) {
 	newwindow=window.open(url,'name','height=900,width=600,resizable=yes,scrollbars=yes');
@@ -31,16 +31,6 @@ function popitup(url) {
 </head>
 <body>
 <?php
- 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
-
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-
-	
-
-
 if(isset($_POST['selcompro']))
 {
 	$division=$_POST['selcompro'];
@@ -58,7 +48,7 @@ $Page_Id='SFCS_0057';
 <div class="panel-body">
 <div class="form-group">
 	<?php
-if(in_array($username,$auth_users))
+if(in_array($authorized,$has_permission))
 {
 	echo '<a class="btn btn-info btn-xs" href="'.getFullURLLevel($_GET["r"],"controllers/Supplier_Claim_Request_Form.php",1,"N").'">Request Form</a> | <a class="btn btn-info btn-xs" href="'.getFullURL($_GET["r"],"Supplier_Claim_Log_Form.php","N").'">Log</a> <hr>';
 }
@@ -132,7 +122,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 		echo "<table cellspacing=\"0\" id=\"table1\" class='table table-striped jambo_table bulk_action' border=1  >";	
 		echo "<tr class='headings'><th>Complaint No</th><th>Complaint Category</th><th>Report No</th><th>Product Category</th><th>Complaint Type</th><th>Request Date</th><th>Request User</th><th>Supplier Name</th><th>Buyer Name</th><th>Item Desc</th><th>Item Codes</th><th>Item Colors</th><th>Batch No</th><th>Invoice No</th><th>PO No</th><th>Lot#</th><th>Purchase Width</th><th>Actual Width</th><th>Purchase GSM</th><th>Actual GSM</th><th>Inspected Qty</th><th>Reject Roll Qty</th><th>Length Short Qty</th><th>Total Replacement Required</th><th>UOM</th><th>Complaint Remarks</th><th>Supplier Approved Date</th><th>Replacement Category</th><th>Supplier Remarks</th><th>Claim Note No</th></th><th>New Invoice No</th><th>Supplier Replace Approved Qty</th><th>Supplier Claim Approved Qty</th><th>Credit Note No</th><th>Complaint Status</th><th>Print</th><th>Mail Status</th>";
 		
-		if(in_array($username,$super_users))
+		if(in_array($authorized,$has_permission))
 		{
 			echo "<th>Controls</th>";
 		}
@@ -236,7 +226,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 				echo "<td>$supplier_remarks</td><td>$supplier_claim_no</td><td>$new_invoice_no</td>
 		<td>$supplier_replace_approved_qty</td><td>$supplier_claim_approved_qty</td><td>$supplier_claim_no</td>";
 				
-				if(in_array($username,$auth_users))
+				if(in_array($authorized,$has_permission))
 				{
 					if($complaint_status == 0)
 					{   
@@ -312,7 +302,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 				}	
 				// $url1=getFullURL($_GET['r'],'status_update.php','N');
 				// $sHTML_Content .="<td bgcolor=\"$id\"><a href=\"url1&tid=$ref_id&&schedule=$schedule\" onclic=\"return popitup('$url1&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
-				if(in_array($username,$super_users))
+				if(in_array($delete,$has_permission))
 				{
 					
 					$url2=getFullURL($_GET['r'],'request_delete.php','N');

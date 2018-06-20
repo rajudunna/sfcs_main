@@ -1537,28 +1537,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				<div id="cut_plan" class="panel-collapse collapse-in">
 					<div class="panel-body">
 <?php
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
-// $view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
-// $authorized2=user_acl("SFCS_0215",$username,50,$group_id_sfcs); //  RM Fabric 
 
-
-// include("dbconf.php");
-
-// if($_SERVER['SERVER_NAME']=="bainet")
-// {
-// 	$facility='AIN';
-// }
-
-// if($_SERVER['SERVER_NAME']=="bai2net")
-// {
-// 	$facility='AIP';
-// }
-
-$username_list=array();
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
-
+$permission = haspermission($_GET['r']);
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1580,7 +1560,7 @@ else{
 	echo "<th class=\"column-title\"><center>Docs</center></th>";
 	//echo "<th class=\"column-title\"><center>Cut Plan Print</center></th>";
 	echo "<th class=\"column-title\"><center>Cut Plan View</center></th>";
-	if((in_array(strtolower($username),$authorized2)) && $facility=='AIP')
+	if(in_array($authorized,$permission))
 	{
 	echo "<th class=\"column-title\"><center>Fabric Cut Plan</center></th>";
 	}
@@ -1731,7 +1711,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo $wrong_icon;
 	} 
 	echo "</center></td>";
-	if((in_array(strtolower($username),$authorized2)) && $facility=='AIP')
+	if(in_array($authorized,$permission))
 	{
 	echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-info\" href=\"$path1\" onclick=\"return popitup("."'".$path1."'".")\">View Fabric Cut Plan</a>";} else {echo $wrong_icon;} echo "</center></td>";
 	}
