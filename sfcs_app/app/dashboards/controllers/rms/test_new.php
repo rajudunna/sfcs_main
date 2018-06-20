@@ -10,21 +10,29 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 //echo $username;
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
-$view_access=user_acl("SFCS_0131",$username,1,$group_id_sfcs);
-$authorized=user_acl("SFCS_0131",$username,7,$group_id_sfcs);
-$super_user=user_acl("SFCS_0131",$username,49,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0131",$username,1,$group_id_sfcs);
+// $authorized=user_acl("SFCS_0131",$username,7,$group_id_sfcs);
+// $super_user=user_acl("SFCS_0131",$username,49,$group_id_sfcs);
 
 //$authorized=array("baiict","muralim","duminduw","rajanaa","sfcsproject1","nalakasb","ambhigapathyc","kiranm","ber_databasesvc","baiuser","bainet","srikanthb","ber_databasesvc","rajithago");// for RMS Dashboard allocation
 //$super_user=array("muralim","duminduw","ber_databasesvc","bainet","ber_databasesvc","rajanaa","baiict","nalakasb","kirang");
-if(!(in_array(strtolower($username),$authorized)))
+include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fabric_requisition.php");
+$has_permission=haspermission($url_r);
+echo count($has_permission);
+echo 'test.php';
+
+if(!(in_array($authorized,$has_permission)))
 {
-	//header("Location:restrict.php");
+	header($_GET['r'],'restricted.php','N');
 }
 else
 {
-	if(!(in_array(strtolower($username),$super_user)) or !(in_array(strtolower($username),$super_user)))
+	if(!(in_array($authorized,$has_permission)))
 	{
 		//New Implementation to restrict as per time lines to update Planning Board 20111211
 		$hour=date("H.i");
