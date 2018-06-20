@@ -207,14 +207,10 @@ td{ padding:2px; white-space: nowrap;}
 </script>
 
 
-<?php 
-	$authorized=array('bhargavg');
-	// include("../../../common/config/dbconf.php");
+<?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs);
+	$has_permission=haspermission($_GET['r']);
 
 	error_reporting(0);
 	// Report simple running errors
@@ -322,118 +318,124 @@ td{ padding:2px; white-space: nowrap;}
 						{
 							// echo "carton props added, You can proceed";
 							if($bundle==0)
-							{		
-								$sql="select * from $brandix_bts.tbl_min_ord_ref where ref_crt_schedule='".$sch_id."' and ref_product_style='".$style_id."'";
-								$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-								if(mysqli_num_rows($sql_result)>0)
+							{
+								if(in_array($authorized,$has_permission))
 								{
-									while($row=mysqli_fetch_array($sql_result))
+									$sql="select * from $brandix_bts.tbl_min_ord_ref where ref_crt_schedule='".$sch_id."' and ref_product_style='".$style_id."'";
+									$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+									if(mysqli_num_rows($sql_result)>0)
 									{
-										$bundle_size=$row['miximum_bundles_per_size'];
-										$bundle_plie=$row['max_bundle_qnty'];
-										$mini_qty=$row['mini_order_qnty'];
+										while($row=mysqli_fetch_array($sql_result))
+										{
+											$bundle_size=$row['miximum_bundles_per_size'];
+											$bundle_plie=$row['max_bundle_qnty'];
+											$mini_qty=$row['mini_order_qnty'];
+										}
 									}
-								}
-								else
-								{
-									$bundle_size=1;
-									$bundle_plie=0;
-									$mini_qty=$bundle_size*$bundle_plie*$carton_qty;
-								}
-								$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
-								$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$sch_id,$link);
-								$order_colors=explode(",",$o_colors);	
-								$planned_colors=explode(",",$p_colors);
-								$val=sizeof($order_colors);
-								$val1=sizeof($planned_colors);
-								// echo $val."--".$val1."<br>";
-								$ii=0;
-								if($val==$val1 )
-								{
-									$ii=1;
-								}
-								if($bundle==0)
-								{
-									$status='';
-								}
-								else
-								{
-									$status='readonly';
-								}
+									else
+									{
+										$bundle_size=1;
+										$bundle_plie=0;
+										$mini_qty=$bundle_size*$bundle_plie*$carton_qty;
+									}
+									$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
+									$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$sch_id,$link);
+									$order_colors=explode(",",$o_colors);	
+									$planned_colors=explode(",",$p_colors);
+									$val=sizeof($order_colors);
+									$val1=sizeof($planned_colors);
+									// echo $val."--".$val1."<br>";
+									$ii=0;
+									if($val==$val1 )
+									{
+										$ii=1;
+									}
+									if($bundle==0)
+									{
+										$status='';
+									}
+									else
+									{
+										$status='readonly';
+									}
 
-								echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_job_create.php','N').'">';
-								echo  "<input type=\"hidden\" value=\"$style_id\" id=\"style_id\" name=\"style_id\">";
-								echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
-					
-								echo " <br><div class='col-md-12'>
-									<table class='table table-bordered'>
-										<thead class=\"primary\">
-											<tr>
-												<th >Schedule</th><th>Total Colors</th><th>Planned Colors</th><th>Carton Method</th><th >Pack Quantity</th><th style=\"display:none;\">Sewing Job Multiples</th><th>Sewing Job Quantity</th><th>Control</th>
-											</tr>
-										</thead>";
-											echo "<tr><td rowspan=$val>$schedule</td>";
-											for($i=0;$i<sizeof($order_colors);$i++)
-											{
-												if($i!=0)
+									echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_job_create.php','N').'">';
+									echo  "<input type=\"hidden\" value=\"$style_id\" id=\"style_id\" name=\"style_id\">";
+									echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
+						
+									echo " <br><div class='col-md-12'>
+										<table class='table table-bordered'>
+											<thead class=\"primary\">
+												<tr>
+													<th >Schedule</th><th>Total Colors</th><th>Planned Colors</th><th>Carton Method</th><th >Pack Quantity</th><th style=\"display:none;\">Sewing Job Multiples</th><th>Sewing Job Quantity</th><th>Control</th>
+												</tr>
+											</thead>";
+												echo "<tr><td rowspan=$val>$schedule</td>";
+												for($i=0;$i<sizeof($order_colors);$i++)
 												{
-													echo "<tr>";
-												}
-												echo "<td>".$order_colors[$i]."</td>";
-												echo "<td>".$planned_colors[$i]."</td>";
-												if($i==0)
-												{
-													echo "<td rowspan=$val class='col-md-3'><select id=\"cart_method\" class='form-control' name=\"cart_method\" >";
-													for($j=0;$j<sizeof($operation);$j++)
+													if($i!=0)
 													{
-														$disabled='';
-														if ($val>1)
-														{
-															if ($j == '1' or $j == '4' or $j == '5')
-															{
-																$disabled='disabled';
-															}
-														} elseif ($val == 1) {
-															if ($j == '2' or $j == '3')
-															{
-																$disabled='disabled';
-															}
-														}
-														echo "<option value=\"".$j."\" $disabled>".$operation[$j]."</option>";
+														echo "<tr>";
 													}
-													echo "</select></td>";
-											
-													
-													echo "<td rowspan=$val><input type=\"hidden\" value=\"$carton_qty\" id=\"carton_qty\" name=\"carton_qty\" ><input type=\"text\" class='integer form-control' value=\"$bundle_plie\" id=\"bundle_plies\" name=\"bundle_plies\" onkeyup=\"validate();\" $status></td>
-													<td style=\"display:none;\" rowspan=$val><input type=\"text\" class='integer form-control' value=\"$bundle_size\" id=\"bundle_per_size\" name=\"bundle_per_size\" onkeyup=\"validate();\" $status></td>
-													<td rowspan=$val><input type=\"text\" class='integer form-control' value=\"$mini_qty\" id=\"mini_order_qty\" name=\"mini_order_qty\" onkeyup=\"tot_sum()\" readonly></td>";
-													if($ii==1)
+													echo "<td>".$order_colors[$i]."</td>";
+													echo "<td>".$planned_colors[$i]."</td>";
+													if($i==0)
 													{
-														if($bundle>0)
+														echo "<td rowspan=$val class='col-md-3'><select id=\"cart_method\" class='form-control' name=\"cart_method\" >";
+														for($j=0;$j<sizeof($operation);$j++)
 														{
-															echo "<td rowspan=$val>Sewing Job generation Completed.</td>";
+															$disabled='';
+															if ($val>1)
+															{
+																if ($j == '1' or $j == '4' or $j == '5')
+																{
+																	$disabled='disabled';
+																}
+															} elseif ($val == 1) {
+																if ($j == '2' or $j == '3')
+																{
+																	$disabled='disabled';
+																}
+															}
+															echo "<option value=\"".$j."\" $disabled>".$operation[$j]."</option>";
+														}
+														echo "</select></td>";
+												
+														
+														echo "<td rowspan=$val><input type=\"hidden\" value=\"$carton_qty\" id=\"carton_qty\" name=\"carton_qty\" ><input type=\"text\" class='integer form-control' value=\"$bundle_plie\" id=\"bundle_plies\" name=\"bundle_plies\" onkeyup=\"validate();\" $status></td>
+														<td style=\"display:none;\" rowspan=$val><input type=\"text\" class='integer form-control' value=\"$bundle_size\" id=\"bundle_per_size\" name=\"bundle_per_size\" onkeyup=\"validate();\" $status></td>
+														<td rowspan=$val><input type=\"text\" class='integer form-control' value=\"$mini_qty\" id=\"mini_order_qty\" name=\"mini_order_qty\" onkeyup=\"tot_sum()\" readonly></td>";
+														if($ii==1)
+														{
+															if($bundle>0)
+															{
+																echo "<td rowspan=$val>Sewing Job generation Completed.</td>";
+															}
+															else
+															{
+																echo "<td rowspan=$val><input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
+																echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait..Sewing Job Generating.<h5></span></td>";
+															}
 														}
 														else
 														{
-															echo "<td rowspan=$val><input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
-															echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait..Sewing Job Generating.<h5></span></td>";
-														}
+															echo "<td rowspan=$val>Some colors are Pending.</td>";
+														}			
+														echo "</tr>";
+															
 													}
 													else
 													{
-														echo "<td rowspan=$val>Some colors are Pending.</td>";
-													}			
-													echo "</tr>";
-														
+														echo "</tr>";
+													}
 												}
-												else
-												{
-													echo "</tr>";
-												}
-											}
-									echo "</table>";
-								echo "</div>";
-								echo "</form>";
+										echo "</table>";
+									echo "</div>";
+									echo "</form>";
+								} 
+								else {
+									echo "<br><div class='alert alert-danger'>You are Not Authorized to Generate Sewing Jobs</div>";
+								}
 							}
 														
 							if($bundle > 0)
