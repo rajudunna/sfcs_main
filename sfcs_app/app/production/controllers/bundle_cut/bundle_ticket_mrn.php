@@ -282,6 +282,7 @@ if(isset($_POST['submit']))
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//echo $sql1."<br>";
 		$rowcount=1;$i=1;$doc_no=array();
+		echo '<div class="table table-responsive">';
 		echo '<table class="table table-bordered">';
 		echo "<tr><th>S.No</th><th>Cut - Docket</th><th>Mini Order Number</th><th>Color - Bundles</th><th>Quantity</th><th>Control</th></tr>";
 		while($m=mysqli_fetch_array($sql_result1))
@@ -307,7 +308,7 @@ if(isset($_POST['submit']))
 				$docket=$m['doc_num'];
 				echo "<tr><td>".$rowcount."</td><td>".$m['cut_num']."-".$m['doc_num']."</td><td><b>".$row['mini_order_num']."</b></td><td><b>".$row['color']." - </b>".$row['bundles']."</td><td>".$row['qty']."</td>";
 				echo "<td>";
-				$sql1x="select * from `m3_bulk_ops_rep_db`.`m3_sfcs_mrn_log` where sfcs_style='$style' and  minord_no=".$row['mini_order_num']." and sfcs_schedule in (".implode(",",$schedule_temp).")";
+				$sql1x="select * from `$m3_bulk_ops_rep_db`.`m3_sfcs_mrn_log` where sfcs_style='$style' and  minord_no=".$row['mini_order_num']." and sfcs_schedule in (".implode(",",$schedule_temp).")";
 				//echo $sql1x."<br>";
 				$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				//$sched=array('505562','505563','505564','505565','505566','505567','505568','505569','516305','1803130728','1803133261');
@@ -350,6 +351,7 @@ if(isset($_POST['submit']))
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//echo $sql."<br>";
 		$rowcount=1;
+		echo '<div class="table table-responsive">';
 		echo '<table class="table table-bordered">';
 		echo "<tr><th>S.No</th><th>Cut - Docket</th><th>Mini Order Number</th><th>Color - Bundles</th><th>Quantity</th><th>Control</th></tr>";
 		//echo "<tr><th>S.No</th><th >Mini Order Number</th><th>Print</th></tr>";
@@ -360,7 +362,7 @@ if(isset($_POST['submit']))
 			//$sched=array('505562','505563','505564','505565','505566','505567','505568','505569','516305','1803130728','1803133261');
 			echo "<tr><td>".$rowcount."</td><td>".$m['cut_num']."-".$m['docket_number']."</td><td><b>".$m['mini_order_num']."</b></td><td><b>".$m['color']." - </b>".$m['bundles']."</td><td>".$m['qty']."</td><td>";			
 			//<td><b>".$m['mini_order_num']."</b>-Total Bundles-".$m['bundles']."</td><td>";
-			$sql1x="select * from `m3_bulk_ops_rep_db`.`m3_sfcs_mrn_log` where sfcs_style='$style' and  sfcs_schedule='$schedule' and minord_no=".$m['mini_order_num'];
+			$sql1x="select * from `$m3_bulk_ops_rep_db`.`m3_sfcs_mrn_log` where sfcs_style='$style' and  sfcs_schedule='$schedule' and minord_no=".$m['mini_order_num'];
 			$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 			if(mysqli_num_rows($sql_result1x)==0)
@@ -397,6 +399,7 @@ if(isset($_POST['submit']))
 			$rowcount++;
 		}
 		echo "</table>";
+		echo "</div>";
 	}
 }
 ?> 

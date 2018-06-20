@@ -155,8 +155,8 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 			$colors_planned=$l['planned_color'];
 			$col_count_planned=$l['col_count'];
 			//$planned_module=$l['plan_module'];
-			$query2="select group_concat(distinct trim(order_col_des) order by order_col_des) as colors, count(distinct order_col_des) as cnt from $brandix_bts.tbl_orders_sizes_master where parent_id in (select id from tbl_orders_master where product_schedule=".$schedule."  order by id asc)";
-			//echo $query2."<br>";exit;
+			$query2="select group_concat(distinct trim(order_col_des) order by order_col_des) as colors, count(distinct order_col_des) as cnt from $brandix_bts.tbl_orders_sizes_master where parent_id in (select id from $brandix_bts.tbl_orders_master where product_schedule=".$schedule."  order by id asc)";
+			// echo $query2."<br>";exit;
 			$result1=mysqli_query($link, $query2) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($l1=mysqli_fetch_array($result1))
 			{
@@ -164,7 +164,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 				$color_cnt_act=	$l1['cnt'];		
 			}
 			
-			$orders_query="select p.id as id,p.ref_product_style,s.product_style from $brandix_bts.tbl_orders_master as p left join tbl_orders_style_ref as s on s.id=p.ref_product_style where p.product_schedule=".$schedule." order by id limit 0,1";
+			$orders_query="select p.id as id,p.ref_product_style,s.product_style from $brandix_bts.tbl_orders_master as p left join $brandix_bts.tbl_orders_style_ref as s on s.id=p.ref_product_style where p.product_schedule=".$schedule." order by id limit 0,1";
 			//echo $orders_query."</br>";
 			$result1=mysqli_query($link, $orders_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($orders_result=mysqli_fetch_array($result1))
