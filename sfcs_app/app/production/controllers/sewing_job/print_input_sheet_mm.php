@@ -112,7 +112,7 @@ function printPage(printContent) {
                 <tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr> 
                 <tr><th>Input Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr> 
                 </table>        
-            </div> <br/> <br/>
+            </div><br><br>
             
             <?php 
             // Display Sample QTY - 05-11-2014 - ChathurangaD 
@@ -135,7 +135,7 @@ function printPage(printContent) {
                 echo "<tr>"; 
                 echo "<th>Sample Job</th><td>$sampleqty</td></tr></table>"; 
             } 
-
+            echo "<br>";
 
             // $sizes_array=array('s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50');
             // $sizes_array=array("xs","s","m","l","xl","xxl","xxxl","s06","s08","s10","s12","s14","s16","s18","s20","s22","s24","s26","s28","s30"); 
