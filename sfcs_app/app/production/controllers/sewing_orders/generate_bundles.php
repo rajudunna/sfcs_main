@@ -9,7 +9,7 @@
 
 <?php
 
-
+$has_permission=haspermission($_GET['r']);
 //generate_bundles('QCIFG001','426935','BLACK',1); 
 
 	

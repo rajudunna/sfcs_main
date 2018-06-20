@@ -24,6 +24,7 @@
 <body>
 <?php
 include("dbconf.php");
+$has_permission=haspermission($_GET['r']);
 error_reporting (0);
 $servername = $host_adr;
 $username = $host_adr_un;

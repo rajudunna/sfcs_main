@@ -14,9 +14,9 @@ Change Log:
 
 <?php	
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-	//$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+$has_permission=haspermission($_GET['r']);	//$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
 ?>
 
 <?php
@@ -33,8 +33,8 @@ while($row=mysql_fetch_array($result))
 	$users=$row["auth_members"];
 }
 
-$auth_users=explode(",",$users);
-if(in_array($username,$auth_users))
+$auth_users=explode(",",$users);*/
+if(in_array($authorized,$has_permission))
 {
 	
 }
@@ -42,7 +42,7 @@ else
 {
 	header("Location:restrict.php");		
 }
-*/
+
 ?>
 
 <!-- <script type="text/javascript" src="ajax-autocomplete/jquery.js"></script>

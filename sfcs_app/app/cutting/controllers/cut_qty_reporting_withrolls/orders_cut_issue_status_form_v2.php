@@ -468,15 +468,15 @@ else
             } 
         */ 
         
-    if(in_array($username,$special_users)) 
-    { 
-        echo "<tr><td>Shift</td><td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"shift\" required> 
-                <option value=\"A\">A</option> 
-                <option value=\"B\">B</option> 
-                </select></div></div></td></tr>"; 
-    } 
-    else 
-    { 
+    // if(in_array($username,$special_users)) 
+    // { 
+    //     echo "<tr><td>Shift</td><td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"shift\" required> 
+    //             <option value=\"A\">A</option> 
+    //             <option value=\"B\">B</option> 
+    //             </select></div></div></td></tr>"; 
+    // } 
+    // else 
+    // { 
         /*echo "<tr><td>Shift</td><td>:</td><td><select name=\"shift\"> 
     <option value=\"$shift_final\">$shift_final</option> 
     </select></td></tr>";*/ 
@@ -485,7 +485,7 @@ else
             <option value=\"A\">A</option> 
             <option value=\"B\">B</option> 
             </select></div></div></td></tr>"; 
-    } 
+    //} 
     echo "<tr><td>Do you want to create a new cut <br/>for the same ratio to remaining plies</td><td>:</td><td><div class='row'><div class='col-md-6'>
     <select class=\"form-control\" name=\"newratio\" id='new_ratio_drop'> 
     <option value=\"no\">No</option> 

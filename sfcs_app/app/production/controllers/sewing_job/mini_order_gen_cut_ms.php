@@ -35,6 +35,7 @@ set_time_limit(30000000);
 // include("dbconf.php"); 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    $has_permission=haspermission($_GET['r']);
 $input_job_no=0; 
 $check=0; 
 $mini_order_ref=$_GET["id"]; 
