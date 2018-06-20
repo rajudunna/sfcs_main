@@ -108,7 +108,7 @@ if(isset($_POST['submit']))
 	$doc_ref_update="update $bai_pro3.pac_stat_log set doc_no_ref=concat(doc_no,'-',tid) where schedule=".$schedule."";
 	mysqli_query($link,$doc_ref_update) or exit("Sql Error7 $query1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	url = getFullURL($_GET['r'],'sawing_out_list.php','N');
+	$url = getFullURL($_GET['r'],'sawing_out_list.php','N');
 	//echo $url;
 	echo '<script type="text/javascript">
 			window.location = "'.$url.'&schedule='.$schedule.'"
