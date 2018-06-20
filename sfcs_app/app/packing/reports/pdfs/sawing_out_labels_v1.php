@@ -1,7 +1,8 @@
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
-<?php include('../../common/php/functions.php'); ?>
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/js/mpdf7/vendor/autoload.php'; ?>
+<?php include('../../../../common/config/functions.php'); ?>
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/lib/mpdf7/vendor/autoload.php'; ?>
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php
 
 	$mpdf = new \Mpdf\Mpdf([
@@ -20,7 +21,7 @@
 	$rowq=mysqli_fetch_array($query_result);
 	$country=$rowq['destination'];
 
-	$sql="SELECT * FROM  $bai_pro3.pac_sawing_out where schedule='$schedule' AND input_job_number='$job_no'";
+	$sql="SELECT * FROM  $bai_pro3.pac_stat_log where schedule='$schedule' AND input_job_number='$job_no'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 ?>	
@@ -77,18 +78,26 @@
 		$doc=$tid;
 		$st=$rows['style'];
 		$color=$rows['color'];
-		$size=$rows['size'];
-		  $module=$rows['module'];
+		$size=$rows['size_code'];
+		$module=$rows['module'];
+
+		$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
+		// echo $sql;
+		$sql_result1=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($title_size = mysqli_fetch_array($sql_result1))
+		{	
+			// echo "size".$title_size["size"];
+			$title_size_ref=$title_size["size"];
+		}
+
 		 $html.= '<div><table><tr><td colspace="4"><barcode code="'.$doc.'" type="C39"/ height="0.80" size="1.1" text="1"></td><td></td></tr></table>
 		 
 		 <table><tr><td>Style:</td><td>'.$st.'</td><td>Barcode ID:</td><td>'.$doc.'</td></tr>
 		 <tr><td>Schedule:</td><td>'.$schedule.'</td><td>Module No:</td><td>'.$module.'</td></tr>
 		 <tr><td>Color:</td><td>'.$color.'</td><td>Country:</td><td>'.$country.'</td></tr>
 		 <tr><td>Job Number:</td><td>J0'.$job_no.'</td></tr>
-		 <tr><td>Size :</td><td>'.strtoupper($size).'</td></tr>
-		 <tr><td>Quantity</td><td>'.$rows['qty'].'</td></tr>
-		 <tr><td></td><td></td></tr>
-		 <tr><td></td><td></td></tr>
+		 <tr><td>Size :</td><td>'.strtoupper($title_size_ref).'</td>
+		 <td>Quantity</td><td>'.$rows['carton_act_qty'].'</td></tr>
 		 </table>					 
 		 </div>';
 	}
@@ -96,8 +105,14 @@
 			</body>
 		</html>';
 
-$mpdf->WriteHTML($html); 
-$mpdf->Output();
-exit();
+$mpdf = new \Mpdf\Mpdf([
+	'mode' => 'utf-8', 
+	'format' => [55, 95], 
+	'orientation' => 'L'
+]);
+$mpdf->WriteHTML($html);
+$mpdf->Output(); 
+
+exit;
 
 ?>

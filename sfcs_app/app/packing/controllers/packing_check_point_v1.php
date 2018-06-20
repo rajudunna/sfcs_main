@@ -245,7 +245,7 @@ while($count_row=mysqli_fetch_array($count_result)){
 
 if($count>0){
 
-	$sql="select plandoc_stat_log.doc_no as \"doc_no\",plandoc_stat_log.order_tid as \"order_tid\",plandoc_stat_log.acutno as \"acutno\",pac_stat_log.carton_act_qty as \"carton_act_qty\", pac_stat_log.status as \"status\", pac_stat_log.size_code as \"size_code\",pac_stat_log.doc_no_ref as \"doc_no_ref\" 
+	$sql="select plandoc_stat_log.doc_no as \"doc_no\",plandoc_stat_log.order_tid as \"order_tid\",plandoc_stat_log.acutno as \"acutno\",pac_stat_log.carton_act_qty as \"carton_act_qty\",pac_stat_log.input_job_number as \"input_job_number\",pac_stat_log.module as \"module\", pac_stat_log.status as \"status\", pac_stat_log.size_code as \"size_code\",pac_stat_log.doc_no_ref as \"doc_no_ref\" 
 	    from $bai_pro3.plandoc_stat_log,$bai_pro3.pac_stat_log where plandoc_stat_log.doc_no=pac_stat_log.doc_no 
 	    and tid=$cartonid";
 	//echo $sql;
@@ -261,6 +261,8 @@ if($count>0){
 		$cutno=$sql_row['acutno'];
 		$status=$sql_row['status'];//
 		$size=$sql_row['size_code'];//
+		$input_job_number=$sql_row['input_job_number'];//
+		$module=$sql_row['module'];//
 	}
 	$cartonid=$doc_no_ref;
 	$sql="select order_style_no,order_del_no,order_col_des,color_code,(order_embl_e+order_embl_f) as emb_status,ratio_packing_method from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
@@ -619,7 +621,9 @@ echo $sql;
 		echo "<tr><td><b>Style</b></td><td>$style</td></tr>";
 		echo "<tr><td><b>Schedule</b></td><td>$schedule</td></tr>";
 		echo "<tr><td><b>Color</b></td><td>$color</td></tr>";
-		echo "<tr><td><b>Job</b></td><td>".chr($color_code).leading_zeros($cutno,3)."</td></tr>";
+		echo "<tr><td><b>Cut Job</b></td><td>".chr($color_code).leading_zeros($cutno,3)."</td></tr>";
+		echo "<tr><td><b>Input Job</b></td><td>J".leading_zeros($input_job_number,3)."</td></tr>";
+		echo "<tr><td><b>Module</b></td><td>".$module."</td></tr>";
 		$sql="SELECT title_size_".$size." FROM $bai_pro3.bai_orders_db WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$title_size = mysqli_fetch_row($sql_result);
