@@ -26,7 +26,7 @@ function verify_num(t,e){
 		if(e.keyCode == 8){
 			return false;
 		}
-		var c = /^[0-9,]+$/;
+		var c = /^[0-9, ]+$/;
 		var id = t.id;
 		var n = document.getElementById(id);
 		if( !((n.value).match(c)) ){

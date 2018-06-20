@@ -5,27 +5,27 @@
 
 
 <script language='javascript'>
-	var state = 'none';
+	// var state = 'none';
 
-	function showhide(layer_ref) {
+	// function showhide(layer_ref) {
 
-		if (state == 'block') {
-			state = 'none';
-		}
-		else {
-			state = 'block';
-		}
-		if (document.all) { 
-			eval( "document.all." + layer_ref + ".style.display = state");
-		}
-		if (document.layers) { 
-			document.layers[layer_ref].display = state;
-		}
-		if (document.getElementById &&!document.all) {
-			hza = document.getElementById(layer_ref);
-			hza.style.display = state;
-		}
-	}
+	// 	if (state == 'block') {
+	// 		state = 'none';
+	// 	}
+	// 	else {
+	// 		state = 'block';
+	// 	}
+	// 	if (document.all) { 
+	// 		eval( "document.all." + layer_ref + ".style.display = state");
+	// 	}
+	// 	if (document.layers) { 
+	// 		document.layers[layer_ref].display = state;
+	// 	}
+	// 	if (document.getElementById &&!document.all) {
+	// 		hza = document.getElementById(layer_ref);
+	// 		hza.style.display = state;
+	// 	}
+	// }
 </script> 
 
 <script language="Javascript" type="text/javascript">
@@ -168,10 +168,10 @@
 		$sql_num_rows=mysqli_num_rows($sql_result);
 		if($sql_num_rows)
 		{
-			echo '<p>
-					<a href="#" onclick="showhide('."'div10'".');" class="btn btn-info"><i class="fa fa-list"></i> Packing List</a>
-				  </p>
-				  <div id="div10" style="display: none;">';
+			// echo '<p>
+			// 		<a href="#" onclick="showhide('."'div10'".');" class="btn btn-info"><i class="fa fa-list"></i> Packing List</a>
+			// 	  </p>
+			// 	  <div id="div10" style="display: none;">';
 			echo "<div class='panel panel-primary'><div class='panel-body'>";
 			include("main_interface_10_assort.php"); 
 			// echo $radio;
