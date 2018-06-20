@@ -434,7 +434,6 @@ function check_qty2(x,m,n,doc)
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>Fabric Allocation Panel</b></div>
 		<div class="panel-body">
-			
 <?php
 //Auto Selecting Based on Manual Decision.
 

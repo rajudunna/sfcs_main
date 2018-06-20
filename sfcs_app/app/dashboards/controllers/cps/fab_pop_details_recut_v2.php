@@ -183,7 +183,6 @@ changes log:
 	{
 		header($_GET['r'],'restrict.php','N');
 	}
-
 ?>
 
 <?php

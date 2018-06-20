@@ -35,14 +35,14 @@ jQuery(document).ready(function($){
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
 // include("dbconf.php"); 
 // include("functions.php"); 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-$view_access=user_acl("SFCS_0199",$username,1,$group_id_sfcs); 
-$authorized=user_acl("SFCS_0199",$username,7,$group_id_sfcs); 
+// $view_access=user_acl("SFCS_0199",$username,1,$group_id_sfcs); 
+// $authorized=user_acl("SFCS_0199",$username,7,$group_id_sfcs); 
 
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);

@@ -202,8 +202,9 @@ if(!(in_array($authorized,$has_permission)))
 {
 	header($_GET['r'],'restrict.php?group_docs=$group_docs','N');
 
-	//header("Location:restrict.php?group_docs=$group_docs");
 }
+
+	//header("Location:restrict.php?group_docs=$group_docs");
 
 ?>
 
