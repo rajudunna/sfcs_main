@@ -1,6 +1,6 @@
 
 
-<div class="panel panel-primary" style="height:150px;">
+<div class="panel panel-primary">
     <div class="panel-heading">All Permissions List</div>
 
         <div class="panel-body">  
@@ -16,14 +16,14 @@
 
                 if ($query_result->num_rows > 0) {
 
-                    echo "<table><tr><th>Permission Name</th><th>Permission Desciption</th></tr>";
+                    echo "<table class='table table-bordered'><tr><th>Permission Name</th><th>Permission Desciption</th></tr>";
                     // output data of each row
                     while($row = $query_result->fetch_assoc()) {
                         echo "<tr><td>".$row["permission_name"]."</td><td>".$row["permission_des"]."</td></tr>";
                     }
                     echo "</table>";
                 } else {
-                    echo "No Data Found";
+                    echo "<div class='alert alert-danger'>No Data Found</div>";
                 }
                 
                 $link->close();

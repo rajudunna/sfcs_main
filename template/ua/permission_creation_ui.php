@@ -1,6 +1,6 @@
 
 
-<div class="panel panel-primary" style="height:150px;">
+<div class="panel panel-primary">
 
     <div class="panel-heading">Permission Creation</div>
 
@@ -8,16 +8,18 @@
 
             <h2>Permission Creation</h2> 
 
-            <form name = "form1" action="permission_creation_ui.php" method = "post">    
-                <div class = "container">    
-                    <div class = "form_group">    
+            <form name = "form1" action="<?= getFullURL($_GET['r'],'permission_creation_ui.php','N'); ?>" method = "post">    
+                <div class = "row">    
+                    <div class = "form_group col-md-3">    
                         <label>Permission Name:</label>    
-                        <input type = "text" name = "pname" value = "" required/> 
+                        <input type = "text" name = "pname" value = "" class="form-control" required/> 
+                    </div>
+                    <div class = "form_group col-md-3">   
                         <label>Permission Desciption:</label>    
-                        <input type = "text" name = "pdes" value = ""/>   
+                        <input type = "text" name = "pdes" value = "" class="form-control" required/>   
                     </div>  
                     <div class='col-md-2'>
-                        <input type="submit" value="Save" name="submit" class="btn btn-primary">
+                        <input type="submit" value="Save" name="submit" class="btn btn-primary" style="margin-top:22px;">
                     </div>    
                 </div>    
             </form>   
@@ -43,12 +45,13 @@
                         
                         if ($query_result) {
                             echo "Permission created successfully";
-                            header("Location:permissions_list_view.php"); 
+                            $url = getFullURL($_GET['r'],'permissions_list_view.php','N');
+                            header("Location:$url"); 
                         } else {
                             echo "Error: " . $sql . "<br>" . $conn->error; 
                         }
                     }else{
-                        echo "Permission already exist";
+                        echo "<span class='label label-danger'>Permission already exist</span>";
                     }
                     
                     $link->close();
