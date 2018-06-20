@@ -1,4 +1,4 @@
-<style type="text/css">
+<!-- <style type="text/css">
 	table.gridtable {
 		font-family:arial;
 		font-size:12px;
@@ -24,11 +24,12 @@
 		border-color: #666666;
 		background-color: #ffffff;
 	}
-</style>
+
+</style> -->
+
 <script>
 function printPage(printContent) { 
-    var display_setting="toolbar=yes,menubar=yes,"; 
-    display_setting+="scrollbars=yes,width=650, height=600, left=100, top=25"; 
+    var display_setting="toolbar=yes,menubar=yes,scrollbars=yes,width=1050, height=600"; 
 
     var printpage=window.open("","",display_setting); 
     printpage.document.open(); 
@@ -54,6 +55,12 @@ function printPage(printContent) {
 		?>
 		<br><center><a href="javascript:void(0);" onClick="printPage(printsection.innerHTML)" class="btn btn-warning">Print</a></center><br>
 		<div id="printsection">
+			<style>
+				table, th, td {
+					border: 1px solid black;
+					border-collapse: collapse;
+				}
+			</style>
 			<div class="panel panel-primary">
 				<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>
 				<div class="panel-body">
@@ -106,14 +113,14 @@ function printPage(printContent) {
 					?>
 
 					<div style="float:left">
-						<table class='table table-bordered' border="1" style="font-size:11px;font-family:verdana;text-align:left;">
+						<table class='table table-bordered' style="font-size:11px;font-family:verdana;text-align:left;">
 						<tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr>
 						<tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr>
 						<tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr>
 						<tr><th>Input Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr>
 						</table>
 					</div><br><br>
-
+					<br>
 					<?php
 						// Display Sample QTY - 05-11-2014 - ChathurangaD
 						$sqlr="SELECT remarks from $bai_pro3.bai_orders_db_remarks where order_tid in (SELECT order_tid from $bai_pro3.bai_orders_db where order_del_no in (".$schedule.")) ";
@@ -128,11 +135,11 @@ function printPage(printContent) {
 							if($sampleqty == '') {
 								$sampleqty = "N/A";
 							} 
-							echo "<table border=\"1\" class=\"gridtable\" align=\"center\" style=\"margin-bottom:2px;font-size:14px;\">";
+							echo "<table class=\"gridtable\" align=\"center\" style=\"margin-bottom:2px;font-size:14px;\">";
 							echo "<tr>";
 							echo "<th>Sample Job</th><td>$sampleqty</td></tr></table>";
 						}
-
+						echo "<br>";
 						$sql="select distinct order_del_no as sch,order_div from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
 						$result=mysqli_query($link, $sql) or die("Error45 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($row=mysqli_fetch_array($result))
@@ -168,8 +175,8 @@ function printPage(printContent) {
 						echo "<div class='row'>";
 						echo "<div class='col-md-12'>";
 						echo "<div class='table-responsive'>";
-						echo "<table border='1' class=\"gridtable\">"; 
-						echo "<table border='1' class=\"table table-bordered\">";
+						echo "<table class=\"gridtable\">"; 
+						echo "<table class=\"table table-bordered\">";
 						echo "<tr><thead>";
 						echo "<th>Style</th>";
 						echo "<th>PO#</th>";
