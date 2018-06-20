@@ -62,7 +62,7 @@ $Page_Id='SFCS_0052';
 
 
 		$sql = "select distinct lot_no AS \"lot_ref_batch\" from $bai_rm_pj1.store_in 
-				WHERE lot_no IN(select DISTINCT lot_no from $bai_rm_pj1.sticker_report WHERE batch_no=\"".trim($lot_no)." and product_group ='Fabric' \") 
+				WHERE lot_no IN(select DISTINCT lot_no from $bai_rm_pj1.sticker_report WHERE batch_no=\"".trim($lot_no)."\" and product_group ='Fabric' ) 
 				GROUP BY lot_no";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num_rows=mysqli_num_rows($sql_result);

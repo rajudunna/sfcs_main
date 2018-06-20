@@ -1,7 +1,15 @@
+<style>
+	th,td{
+		text-align:center;
+	}
+</style>
 <?php
 
 	echo "<form name=\"input\" method=\"post\" action='#'>";
 	//echo "<form name=\"input\" method=\"post\" action=\"".getFullURL($_GET['r'],'main_interface_10_assort_2.php','N')."\">";
+	echo "<div id='loading' style='display:none;'><img src='sfcs_app/app/production/common/images/pleasewait.gif' style='margin-left:40%;'/></div>";
+	echo "<div id='errormsg' class='alert alert-warning' role='alert' style='display:none;'>Please check packing pcs quantity.</div>";
+	echo "<div id='errormsg1' class='alert alert-warning' role='alert' style='display:none;'>Please select at least one suggested carton quantity</div>";
 	echo "<h4><b>Suggested Carton Qty</b></h4><hr>";
 	$sql="select * from $bai_pro3.carton_qty_chart where user_style=\"$style_id\" and status=0";
 	//echo $sql."<br>";
@@ -9,6 +17,10 @@
 	$sql_num_check=mysqli_num_rows($sql_result);
 	
 	$x=0;
+	$sql4="select * from $bai_pro3.packing_summary where order_del_no=\"$schedule\" and order_col_des= \"$color\"";
+		// echo $sql4."<br>";
+	$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$rowsy1=mysqli_num_rows($sql_result4);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		foreach ($sizes_array as $key => $value)
@@ -20,9 +32,13 @@
 		
 		if($sql_row['packing_method'] != null){
 			if($x==0)
-			{
+			{				
+				echo "<div class='table-responsive'><table class='table table-bordered'><tr class='tblheading'>";
 				
-				echo "<div class='table-responsive'><table class='table table-bordered'><tr class='tblheading'><th style='width:10px;'>Select</th><th>Packing Method</th>";
+				if($rowsy1<=0){
+				echo "<th style='width:10px;'>Select</th>";
+				}
+				echo "<th>Packing Method</th>";
 				foreach($final_size_values as $key => $value)
 				{
 					echo "<th>$key</th>";
@@ -31,7 +47,9 @@
 				
 			}
 			echo "<tr>";
-			echo "<td><input type=\"radio\" name=\"radiobutton[]\" value=\"".$sql_row['id']."\" onClick=\"gotolink(".$sql_row['id'].")\"></td>";
+			if($rowsy1<=0){
+				echo "<td><input type=\"radio\" name=\"radiobutton[]\" value=\"".$sql_row['id']."\" onClick=\"gotolink(".$sql_row['id'].")\"></td>";
+			}
 			echo "<td>".$sql_row['packing_method']." ".$sql_row['pack_methods']."</td>";
 			foreach($tot_sizes as $key=>$value)
 			{
@@ -118,7 +136,7 @@
 					// }
 					echo "</table></div></br>";
 					
-					echo "<input type=\"submit\" name=\"submit\" value=\"Generate Packing List\" class=\"btn btn-primary\">";
+					echo "<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"Generate Packing List\" class=\"btn btn-primary\">";
 					//echo "<a href=\"packing/packing_list_gen.php?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create\">Please generate Packing List</a>";
 				}
 			}
@@ -216,30 +234,29 @@ if(isset($_POST['submit']))
 			if(array_sum($packpcs)==$packing_method)
 			{
 				$url = getFullURL($_GET['r'],'packing_list_gen_assort_2.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&color=$color&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&order_tid=$order_tid&cat_ref=$cat_ref&carton_id=$cartonid&style=$style&schedule=$schedule&color=$color&packpcs=$packpcs_check&assortcolor=$assort_color_check\"; }
+				</script>";
 			}
 			else
 			{
-				echo '<div class="alert alert-warning" role="alert" id="textBoxError">Please check packing pcs quantity.</div>
-				<script>document.getElementById("div10").style.display = "block";
-				document.getElementById("processing").style.display = "none";
-				</script>';
+				echo "<script>
+					document.getElementById('errormsg').style.display = 'block';
+					document.getElementById('loading').style.display = 'none';
+				</script>";
 			}
 		//}
 	}else{
-		echo '<div class="alert alert-warning" role="alert" id="radioError">Please select atleast one suggested carton quantity.</div>
-		<script>document.getElementById("div10").style.display = "block";
-		document.getElementById("processing").style.display = "none";
-		</script>';
+		echo "<script>
+			document.getElementById('errormsg1').style.display = 'block';
+			document.getElementById('loading').style.display = 'none';
+		</script>";
 	}
-	
 
 }
 
 ?>
-
-<style>
-	th,td{
-		text-align:center;
-	}
-</style>
+<script>
+$('#submit').click(function(){
+	document.getElementById('loading').style.display = 'block';
+});
+</script>

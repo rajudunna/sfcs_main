@@ -374,8 +374,16 @@ echo "<div class='panel panel-default'>
 		
 	</div><hr/>
 ";
-
+$order_qty_update_url = getFullUrlLevel($_GET['r'],'planning/controllers/orders_edit_form.php','3','N');
 echo "<div class=\"table-responsive\">";
+
+if($order_no == 0){
+	echo "<b style='color:red'>Note :  Extra Shipment details were no not updated for the above 'STYLE-$style, SCHEDULE-$schedule, COLOR-$color'</b><br>
+	<span>Go to </span><a href='$order_qty_update_url' class='btn btn-xs btn-info'> Order Quantity Update</a>";
+}else if($order_no ==1){
+	echo "<b style='color:#22dd10'>Note : Extra Shipment details are updated for the above 'STYLE-$style, SCHEDULE-$schedule, COLOR-$color'</b>";
+}
+
 echo "<table class=\"table table-bordered\">";
 
 if($flag==1)
@@ -393,6 +401,7 @@ if($flag==1)
 	echo "<th class=\"title\">Total</th>";
 	echo "</tr></thead>";
 }
+
 
 if($order_no>0)
 {

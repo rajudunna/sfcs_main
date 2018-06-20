@@ -4,26 +4,26 @@
 <?php //require_once('phplogin/auth.php'); This file contents was not used here?>
 
 <script language="javascript">
-	var state = 'none';
+	// var state = 'none';
 
-	function showhide(layer_ref) {
-		if (state == 'block') {
-			state = 'none';
-		}
-		else {
-			state = 'block';
-		}
-		if (document.all) {
-			eval( "document.all." + layer_ref + ".style.display = state");
-		}
-		if (document.layers) { 
-			document.layers[layer_ref].display = state;
-		}
-		if (document.getElementById &&!document.all) {
-			hza = document.getElementById(layer_ref);
-			hza.style.display = state;
-		}
-	}
+	// function showhide(layer_ref) {
+	// 	if (state == 'block') {
+	// 		state = 'none';
+	// 	}
+	// 	else {
+	// 		state = 'block';
+	// 	}
+	// 	if (document.all) {
+	// 		eval( "document.all." + layer_ref + ".style.display = state");
+	// 	}
+	// 	if (document.layers) { 
+	// 		document.layers[layer_ref].display = state;
+	// 	}
+	// 	if (document.getElementById &&!document.all) {
+	// 		hza = document.getElementById(layer_ref);
+	// 		hza.style.display = state;
+	// 	}
+	// }
 
 </script> 
 
@@ -167,13 +167,6 @@
 		{
 			$cat_ref=$sql_row['tid'];
 		}
-
-
-		if($_POST['submit'])
-		{
-			echo "<span id='processing'><h1><font color=\"red\">Please wait while processing data!</font></h1></span>";
-		}
-
 		$sql="select * from $bai_pro3.carton_qty_chart where user_style='$style_id'";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_rows=mysqli_num_rows($sql_result);
@@ -184,8 +177,8 @@
 		
 		if($sql_num_rows > 0 or $sql_num_rows1>0)
 		{
-			echo '<a href="#" onclick="showhide('."'div10'".');" class="btn btn-info"><i class="fa fa-list"></i>Packing List</a>
-				  <div id="div10" style="display: none;">';
+			//echo '<a href="#" onclick="showhide('."'div10'".');" class="btn btn-info"><i class="fa fa-list"></i>Packing List</a>
+				  //<div id="div10" style="display: none;">';
 			echo "<div class='panel panel-primary'><div class='panel-body'>";
 			include("main_interface_10_assort_2.php");
 			echo "</div></div></div>"; 
