@@ -264,7 +264,7 @@ echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper(subs
 
     $auth_cut_users=explode(",",$users); 
 */ 
-        if(in_array($authorized,$haspermission) 
+        if(in_array($authorized,$haspermission))
         { 
              
             echo "&nbsp;<input  title='click to transfer the input' type='radio' name = 'option' Id='option' value='input_transfer'> Input Transfer"; 
