@@ -19,7 +19,7 @@
 
 ?>
 
-<div class="panel panel-primary" style="height:150px;">
+<div class="panel panel-primary">
 
     <div class="panel-heading"><?php if(isset($_GET['rname'])){
                             echo 'Role Updation';
@@ -35,11 +35,11 @@
                             echo 'Role Creation';
                         } ?></h2> 
 
-            <form name = "form1" action="role_creation_updation_ui.php" method = "post">    
-                <div class = "container">    
-                    <div class = "form_group">    
+            <form name = "form1" action="<?= getFullURL($_GET['r'],'role_creation_updation_ui.php','N');?>" method = "post">    
+                <div class = "row">    
+                    <div class = "form_group col-md-3">    
                         <label>Role Name:</label>    
-                        <input type = "text" name = "rname" value = "<?= $rname ?>" required/>   
+                        <input type = "text" name = "rname" value = "<?= $rname ?>" class="form-control" required />   
                         <input type="hidden" name="roleid"  value="<?= $rid ?>"/>
                     </div>  
                     <div class='col-md-2'>
@@ -47,7 +47,7 @@
                             echo 'Update';
                         }else{
                             echo 'Save';
-                        } ?>" name="submit" class="btn btn-primary">
+                        } ?>" name="submit" class="btn btn-primary" style="margin-top:22px;">
                     </div>    
                 </div>    
             </form>  
@@ -56,7 +56,7 @@
                 if($error){
             ?>
 
-            <div id='alert'><div class=' alert alert-block alert-info fade in center'><?= $error ?></div></div>
+            <span class="label label-danger"><?= $error ?></span>
 
             <?php
                 }
@@ -86,13 +86,15 @@
                             
                             if ($query_result) {
                                 $_SESSION["errormsg"]='Role Name updated successfully';
-                                header("Location:roles_list_view.php"); 
+                                $url = getFullURL($_GET['r'],'roles_list_view.php','N');
+                                header("Location:".$url); 
                             } else {
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
                             }
                         }else{
                             $_SESSION["errormsg"]='Role Name already exist';
-                            header("Location:role_creation_updation_ui.php?rid=".$roleid."&rname=".$role_name);
+                            $url = getFullURL($_GET['r'],'role_creation_updation_ui.php','N');
+                            header("Location: $url&rid=".$roleid."&rname=".$role_name);
                         }
                         
                         $link->close();
@@ -110,13 +112,14 @@
                             $query_result = mysqli_query($link, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {
-                                header("Location:roles_list_view.php");
+                                $url = getFullURL($_GET['r'],'roles_list_view.php','N');
+                                header("Location:".$url); 
                                 echo "Role Name created successfully"; 
                             } else {
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
                             }
                         }else{
-                            echo "Role Name already exist";
+                            echo "<span class='label label-danger'>Role Name already exist</span>";
                         }
                         
                         $link->close();

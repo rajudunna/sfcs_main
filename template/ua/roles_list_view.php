@@ -12,7 +12,16 @@ if(isset($_SESSION["errormsg"])) {
 
 ?>
 
-<div class="panel panel-primary" style="height:150px;">
+<?php 
+    if($error){
+?>
+
+<div class='alert alert-info' align="center"><?= $error ?></div></div>
+
+<?php
+    }
+?>  
+<div class="panel panel-primary">
     <div class="panel-heading">All Roles List</div>
 
         <div class="panel-body">  
@@ -28,36 +37,28 @@ if(isset($_SESSION["errormsg"])) {
 
                 if ($query_result->num_rows > 0) {
 
-                    echo "<table><tr><th>Name</th><th>Action</th></tr>";
+                    echo "<table class='table table-bordered'><tr><th>Name</th><th>Action</th></tr>";
                     // output data of each row
                     while($row = $query_result->fetch_assoc()) {
                         $rid = $row["role_id"];
                         $rname = $row["role_name"];
                         
                         // $url = $_SERVER['DOCUMENT_ROOT'].'/ui/role_creation_ui?rname='.$row["role_name"];
+                        $url = getFullURL($_GET['r'],'role_creation_updation_ui.php','N');
                         echo "<tr>
                                 <td>".$row["role_name"]."</td>
-                                <td><a href='http://localhost/template/ua/role_creation_updation_ui.php?rid=$rid&rname=$rname'><button class='btn btn-sm btn-success'>Edit</button></td>
+                                <td><a href='$url&rid=$rid&rname=$rname'><button class='btn btn-sm btn-success'>Edit</button></td>
                             </tr>";
                     }
                     echo "</table>";
                 } else {
-                    echo "No Data Found";
+                    echo "<div class='alert alert-info' align='center'>No Data Found</div>";
                 }
                 
                 $link->close();
 
-            ?><br><br>
-
-             <?php 
-                if($error){
             ?>
 
-            <div id='alert'><div class=' alert alert-block alert-info fade in center'><?= $error ?></div></div>
-
-            <?php
-                }
-            ?>  
 
         </div> 
     </div> 

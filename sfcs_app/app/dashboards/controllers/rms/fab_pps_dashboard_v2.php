@@ -71,11 +71,19 @@ echo '<META HTTP-EQUIV="refresh" content="180">';
 {
 	echo '<META HTTP-EQUIV="refresh" content="120">';	
 } */
+// E:\xampp\htdocs\sfcs_main\template\helper.php
+
+include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
+$has_permission=haspermission($url_r); 
+
 ?>
 
 <?php
-$special_users=array("kirang","rameshk","chathurangad","minuram","buddhikam","sfcsproject1","saroasa");
-if(!in_array($username,$special_users))
+// $special_users=array("kirang","rameshk","chathurangad","minuram","buddhikam","sfcsproject1","saroasa");
+if(!in_array($authorized,$has_permission))
 {
 	echo '<script>
 	var ctrlPressed = false;
@@ -1110,9 +1118,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}						
 			else
 			{
-		    	$auth_users_to_req_cut_priority=array("kirang","chathurangad","buddhikam","gayancha","rameshk","sudathra","swarnakanthip","madavik","geethikak","minuram","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","jesikaa","saroasa","gayathirit","jeganathanj");
+		    	// $auth_users_to_req_cut_priority=array("kirang","chathurangad","buddhikam","gayancha","rameshk","sudathra","swarnakanthip","madavik","geethikak","minuram","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","jesikaa","saroasa","gayathirit","jeganathanj");
 				
-				if(in_array($username,$auth_users_to_req_cut_priority) and $id!="yellow" and $id!="blue")
+				if(in_array($authorized,$has_permission) and $id!="yellow" and $id!="blue")
 				{
 				$url1=getFullURL($_GET['r'],'fabric_requisition.php','N');
 				echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$iustyle $emb_stat_title</a>";
@@ -1137,8 +1145,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			else
 			{
 				
-		    	$auth_users_to_req_cut_priority=array("kirang","chathurangad","buddhikam","gayanch","rameshk","sudathra","swarnakanthip","madavik","geethikak","thejaw","minuram","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","jesikaa","saroasa","gayathirit","jeganathanj");
-				if(in_array($username,$auth_users_to_req_cut_priority) and $id!="yellow" and $id!="blue")
+		    	// $auth_users_to_req_cut_priority=array("kirang","chathurangad","buddhikam","gayanch","rameshk","sudathra","swarnakanthip","madavik","geethikak","thejaw","minuram","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","jesikaa","saroasa","gayathirit","jeganathanj");
+				if(in_array($authorized,$has_permission) and $id!="yellow" and $id!="blue")
 				{
 				$url1=getFullURL($_GET['r'],'fabric_requisition.php','N');
 				echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$emb_stat_title</a>";
@@ -1222,7 +1230,7 @@ while($sql_rowy=mysqli_fetch_array($sql_resulty))
 }
 	
 //To show section level priority only to RM-Fabric users only.
-if((in_array(strtolower($username),$authorized)))
+if((in_array($authorized,$has_permission)))
 {
 	//PLEASE UNCOMMENT THIS IF YOU WANT TO BLINK SOME SECTIONS FOR SPECIFIC LOGGED IN USERS DURING ON LOAD
 /*	echo "<script>
