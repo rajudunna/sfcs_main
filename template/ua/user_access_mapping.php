@@ -1,11 +1,7 @@
 
 
 
-
-
-
-
-    <div class="panel panel-primary" style="height:150px;">
+    <div class="panel panel-primary" ng-app="app" id="App2">
 
         <div class="panel-heading">Role Based Access Control System</div>
 
