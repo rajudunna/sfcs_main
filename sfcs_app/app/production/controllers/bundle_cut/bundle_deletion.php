@@ -1,3 +1,4 @@
+<?php $has_permission = haspermission($_GET['r']);?>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -114,8 +115,8 @@ return true;
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0274",$username,1,$group_id_sfcs);
-$authorized=user_acl("SFCS_0274",$username,7,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0274",$username,1,$group_id_sfcs);
+// $authorized=user_acl("SFCS_0274",$username,7,$group_id_sfcs);
 ?>
 
 <?php
@@ -150,7 +151,7 @@ $modules=array();
 </div>	
 	<?php
 	$url=getFullURLLevel($_GET['r'],'bundle_deletion.php',0,'N');
-	if(in_array($username,$authorized))
+	if(in_array($approve,$has_permission))
 	{
 		echo "<a href=\"$url&approve=1\" class=\"btn btn-success\">Click to Approve/Reject</a>&nbsp&nbsp&nbsp&nbsp";
 	}
