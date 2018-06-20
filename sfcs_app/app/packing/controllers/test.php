@@ -1,11 +1,12 @@
 <?php
 
 /*list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-$authorized=array("muralim","duminduw","rajanaa","kranthic","kirang");
-if(!(in_array(strtolower($username),$authorized)))
+$authorized=array("muralim","duminduw","rajanaa","kranthic","kirang");*/
+$permission = hasviewpermission($_GET['r']);
+if(!(in_array($authorized,$permission)))
 {
 	header("Location:restrict.php");
-}*/
+}
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 

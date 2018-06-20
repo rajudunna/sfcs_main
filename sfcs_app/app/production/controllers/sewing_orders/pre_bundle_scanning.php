@@ -18,6 +18,7 @@
 <?php
 include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 $url = getFullURL($_GET['r'],'scan_emb_bundles.php','N');
+$has_permission=haspermission($_GET['r']);
 $qry_get_product_style = "SELECT id,style FROM bundle_creation_data GROUP BY style";
 //echo $qry_get_product_style;
 $result = $link->query($qry_get_product_style);

@@ -61,7 +61,7 @@
 <?php
 
 include("dbconf.php");
-
+$has_permission=haspermission($_GET['r']);
 
 	$style = $_GET['style_id'];
 	$schedule = $_GET['schedule'];

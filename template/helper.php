@@ -147,7 +147,7 @@ function hasmenupermission()
 
 function hasviewpermission($r)
 {
-    $user = getrbac_user();
+    //$user = getrbac_user();
     GLOBAL $link_ui;
     $r = base64_decode($r);
     $r = "/".trim($r, "/");
@@ -181,7 +181,7 @@ function hasviewpermission($r)
     updated at : 17-06-2018.
 */
 function haspermission($r){
-    $user = getrbac_user();
+    //$user = getrbac_user();
     GLOBAL $link_ui;
     $r = base64_decode($r);
     $r = "/".trim($r, "/");
@@ -220,16 +220,6 @@ function getrbac_user(){
     $user = 'Kiran';
     return $user;
 }
-/*
-    purpose : Construct Menu Array.
-    output : array.
-    ** By chandu **
-    created at : 19-06-2018.
-    updated at : 19-06-2018.
-*/
 
-function construct_menu(){
-    
-}
 
 ?>

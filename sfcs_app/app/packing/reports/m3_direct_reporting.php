@@ -5,6 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 $view_access=user_acl("SFCS_0036",$username,1,$group_id_sfcs);
 $aut_users=user_acl("SFCS_0036",$username,7,$group_id_sfcs);
+$permission = hasviewpermission($_GET['r']);
 ?>
 
 <style>
@@ -44,7 +45,7 @@ function thirdbox()
 			$username=strtolower($username_list[1]);
 
 			$author_id_db=array("kirang");
-			if(in_array($username,$author_id_db))
+			if(in_array($authorized,$permission))
 			{
 				//echo '| <strong><a href="cut_to_ship3.php">Current Week Process</a></strong> | <strong> <a href="cut_to_ship33.php">Previous Week Process</a> </strong>';
 			}
@@ -1032,7 +1033,7 @@ echo "</tr>";
 					echo"</td>";
 					echo "<td>".$already_reported."</td>";
 					$disable_btn = false;	
-					if(!in_array($username,$aut_users)){
+					if(!in_array($authorized,$permission)){
 						$disable_btn = true;
 						$check="readonly=\"true\"";
 						$value=$act_fca_new-$already_reported;

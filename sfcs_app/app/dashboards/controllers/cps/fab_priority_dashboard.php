@@ -9,6 +9,11 @@ Changes Log:
 -->
 <?php
 $double_modules=array();
+include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
+$has_permission=haspermission($url_r); 
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function($){
@@ -30,14 +35,14 @@ jQuery(document).ready(function($){
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
 // include("dbconf.php"); 
 // include("functions.php"); 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-$view_access=user_acl("SFCS_0199",$username,1,$group_id_sfcs); 
-$authorized=user_acl("SFCS_0199",$username,7,$group_id_sfcs); 
+// $view_access=user_acl("SFCS_0199",$username,1,$group_id_sfcs); 
+// $authorized=user_acl("SFCS_0199",$username,7,$group_id_sfcs); 
 
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
@@ -1646,7 +1651,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   echo '</div>';*/
   
   //To show section level priority only to RM-Fabric users only.
-  //if((in_array(strtolower($username),$authorized)))
+  if((in_array($authorized,$has_permission)))
   {
     echo "<script>";
     //echo "blink_new_priority('".implode(",",$blink_docs)."');";

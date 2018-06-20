@@ -2,8 +2,9 @@
 <?php 
 //include("security1.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+$has_permission=haspermission($_GET['r']);
 //$view_access=user_acl("SFCS_0073",$username,1,$group_id_sfcs);
 //$duplicate_print_users=user_acl("SFCS_0073",$username,7,$group_id_sfcs);
 //$duplicate_print_users=array("santhoshbo","kishorek","sarojiniv","chirikis","kirang");
@@ -394,7 +395,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								case 9:
 								{
 									//echo "<td>Closed</td>";
-									if(in_array($username/* $duplicate_print_users */))
+									if(in_array($authorized,$has_permission))
 									{
 										echo "<td><a href=\"$link3&tid=$ref_tid&print_status=1\" onclick=\"return popitup('$link3&tid=$ref_tid&print_status=1')\"><button class='btn btn-success btn-xs'>Closed</button></a></td>";
 									}

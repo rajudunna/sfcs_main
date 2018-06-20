@@ -1,8 +1,7 @@
-
-<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php
+// include("dbconf.php");
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
-	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+
 $group_docs=$_GET['group_docs'];
 
 echo "<h2>You are not authorised to use this page.</h2><Br/><Br/>";
@@ -12,7 +11,6 @@ echo '<form name="test" method="post" action"'.$_SERVER['PHP_SELF'].'">';
 echo '<input type="hidden" name="group_docs" value="'.$group_docs.'">';
 
 echo '<select name="location">';
-
 echo "<option value='F-1'>F-1</option>";
 echo "<option value='F-2'>F-2</option>";
 echo "<option value='F-3'>F-3</option>";

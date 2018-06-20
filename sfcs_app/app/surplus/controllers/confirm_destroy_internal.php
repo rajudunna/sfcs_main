@@ -1,11 +1,20 @@
 <?php
 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 	$Page_Id = 'SFCS_0403';
 	// $view_access=user_acl("SFCS_0172",$username,1,$group_id_sfcs);
+	$has_permission=haspermission($_GET['r']);
 
+	if(in_array($authorized,$has_permission))
+	{
+		
+	}
+	else
+	{
+		header($_GET['r'],'restricted.php','N');
+	}
 ?>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->

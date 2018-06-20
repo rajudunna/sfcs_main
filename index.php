@@ -14,6 +14,7 @@ include "template/sidemenu.php";
 <link rel="stylesheet" href="assets/css/datepicker.css" />
 <script src="assets/js/datepicker.js"></script>
 <script src="template/helperjs.js"></script>
+<div ng-app="App">
 <div class="right_col" role="main">
 <div class="row">
 <div class="col-md-12 col-sm-12 col-xs-12" style="min-height:640px;">
@@ -85,6 +86,7 @@ include "template/sidemenu.php";
 </div>
 
 <!-- footer content -->
+</div>
 </div>
 <!-- <footer>
     <div class="pull-right">

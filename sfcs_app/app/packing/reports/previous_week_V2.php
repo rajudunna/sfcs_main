@@ -15,6 +15,7 @@ $fca_authorized=user_acl("SFCS_0038",$username,50,$group_id_sfcs);
 $fg_authorized=user_acl("SFCS_0038",$username,51,$group_id_sfcs);
 $spc_users=user_acl("SFCS_0038",$username,68,$group_id_sfcs);
 set_time_limit(6000000);
+$permission = hasviewpermission($_GET['r']);
 ?>
 <title>Weekly Delivery Dashboard - Packing</title>
 <!-- <head>
@@ -946,7 +947,7 @@ else
 			mysqli_query($link,$sql3xr) or die("Error21 = ".mysqli_error());
 		}
 		
-		if((in_array(strtolower($username),$authorized)))
+		if(in_array($authorized,$permission))
 		{	
 			if($status=="FCA" || $status=="FCA/P")
 			{		
@@ -978,7 +979,7 @@ else
 				$sHTML_Content .="</tr>";
 			}
 		}
-		else if((in_array(strtolower($username),$fca_authorized)))
+		else if(in_array($authorized,$permission))
 		{	
 			if($status=="Offered" || $status=="FCA/P" || $status=="FCA Fail")
 			{
@@ -1010,7 +1011,7 @@ else
 				$sHTML_Content .="</tr>";
 			}
 		}
-		else if((in_array(strtolower($username),$fg_authorized)))
+		else if(in_array($authorized,$permission))
 		{	
 			if(($status=="FG" && ($order_total_qty==$scan_total_qty)) || $status=="FG*")
 			{
@@ -1045,7 +1046,7 @@ else
 		else
 		{
 			$sHTML_Content .="<tr>";
-			if((in_array(strtolower($username),$spc_users)))
+			if(in_array($authorized,$permission))
 			{
 				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 			}

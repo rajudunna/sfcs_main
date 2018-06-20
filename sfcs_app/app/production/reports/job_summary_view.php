@@ -4,8 +4,8 @@
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
+// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+// $username=strtolower($username_list[1]);
 
 /*$author_id_db=array("kirang","chathurangad","dinushapre","sudathra","neilja","rameshk","gayanbu");
 if(in_array($username,$author_id_db))
