@@ -83,14 +83,24 @@
 			$tid=$rows['tid'];
 			$doc=$tid;
 			$st=$rows['style'];
-			 $module=$rows['module'];
+			$module=$rows['module'];
+
+			$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
+			// echo $sql;
+			$sql_result1=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($title_size = mysqli_fetch_array($sql_result1))
+			{	
+				// echo "size".$title_size["size"];
+				$title_size_ref=$title_size["size"];
+			}	
+
 			$html.= '<div><table><tr><td colspace="4"><barcode code="'.$doc.'" type="C39"/ height="0.80" size="1.1"
 				 text="1"></td><td></td></tr></table>
 				 <table><tr><td>Style:</td><td>'.$st.'</td><td>Barcode ID:</td><td>'.$doc.'</td></tr>
 				 <tr><td>Schedule:</td><td>'.$schedule.'</td><td>Module No:</td><td>'.$module.'</td></tr>
 				 <tr><td>Color:</td><td>'.$color.'</td><td>Country:</td><td>'.$country.'</td></tr>
 				 <tr><td>Job Number:</td><td>J0'.$job_no.'</td></tr>
-				 <tr><td>Size :</td><td>'.strtoupper($size).'</td></tr>
+				 <tr><td>Size :</td><td>'.strtoupper($title_size_ref).'</td></tr>
 				 <tr><td>Quantity</td><td>'.$rows['carton_act_qty'].'</td></tr>
 				 <tr><td></td><td></td></tr>
 				 <tr><td></td><td></td></tr>
