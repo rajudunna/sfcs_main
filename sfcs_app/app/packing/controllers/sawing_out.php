@@ -117,7 +117,7 @@ if(isset($_POST['submit']))
 	
 	}
 	else{
-	echo 'Schedule Already Processed';
+	echo '<script>swal("Schedule Already Processed","","warning")</script>';
 	
 	}
 	}
