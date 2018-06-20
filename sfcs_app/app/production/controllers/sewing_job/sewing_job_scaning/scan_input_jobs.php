@@ -1009,7 +1009,7 @@ function validating()
 				// $sql_message = 'Data Updated Successfully';
 			}
 		}
-		//echo "<script>$('#storingfomr').submit()</script>";
+		echo "<script>$('#storingfomr').submit()</script>";
 	}
 ?>
 	
