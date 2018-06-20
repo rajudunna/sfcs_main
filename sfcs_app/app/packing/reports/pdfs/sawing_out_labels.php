@@ -1,7 +1,8 @@
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
-<?php include('../../common/php/functions.php'); ?>
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/js/mpdf7/vendor/autoload.php'; ?>
+<?php include('../../../../common/config/functions.php'); ?>
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/lib/mpdf7/vendor/autoload.php'; ?>
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 
 
 <?php
@@ -31,7 +32,7 @@
 	$rowq=mysqli_fetch_array($query_result);
 	$country=$rowq['destination'];
 
-	$sql="SELECT * FROM $bai_pro3.pac_sawing_out where schedule='$schedule' AND color='$color' AND size='$size' AND input_job_number='$job_no'";
+	$sql="SELECT * FROM $bai_pro3.pac_stat_log where schedule='$schedule' AND color='$color' AND size_code='$size' AND input_job_number='$job_no'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$html = '
@@ -90,7 +91,7 @@
 				 <tr><td>Color:</td><td>'.$color.'</td><td>Country:</td><td>'.$country.'</td></tr>
 				 <tr><td>Job Number:</td><td>J0'.$job_no.'</td></tr>
 				 <tr><td>Size :</td><td>'.strtoupper($size).'</td></tr>
-				 <tr><td>Quantity</td><td>'.$rows['qty'].'</td></tr>
+				 <tr><td>Quantity</td><td>'.$rows['carton_act_qty'].'</td></tr>
 				 <tr><td></td><td></td></tr>
 				 <tr><td></td><td></td></tr>
 				 </table>					 

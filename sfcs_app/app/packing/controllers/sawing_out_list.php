@@ -24,8 +24,8 @@
 		<table class="table table-bordered">
 			<tr><th>Job Number</th><th>Color</th><th>Size</th><th>Module</th><th>Total Quantity</th><th>Action</th></tr>
 			<?php   
-				$sql1="SELECT tid,input_job_number,size,color,SUM(qty) AS tqty,qty,module FROM $bai_pro3.pac_sawing_out 
-					   where schedule='$schedule' GROUP BY input_job_number,size,color  ORDER BY input_job_number*1 ASC";
+				$sql1="SELECT tid,input_job_number,size_code,color,SUM(carton_act_qty) AS tqty,carton_act_qty,module FROM $bai_pro3.pac_stat_log where schedule='$schedule' GROUP BY input_job_number,size_code,color  ORDER BY input_job_number*1 ASC";
+				// echo $sql1."<br>";
 				$sql_result=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($rows=mysqli_fetch_array($sql_result)){
 					//echo $rows['input_job_number'].' '.$rows['color'].' '.$rows['size'].' '.$rows['tqty'].'<br>';
@@ -33,17 +33,26 @@
 					$tid=$rows['tid'];
 					$module=$rows['module'];
 					$color=$rows['color'];
-					$size=$rows['size'];
+					$size=$rows['size_code'];
 					$qty=$rows['qty'];
 			?>
 			<tr><td>
 				<?php 
 					$url = getFullURLLevel($_GET['r'],"reports/pdfs/sawing_out_labels_v1.php",1,'R');
-					echo "<a href=\"$url?tid=$tid&job_no=$input_job_no&schedule=$schedule\" target=\"_blank\" class=\"btn btn-warning btn-sm\" onclick=\"return popitup("."'"."$url?tid=$tid&job_no=$input_job_no&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>&nbsp;&nbsp;J0".$input_job_no."</a><br/>";		
+					echo "<a href=\"$url?tid=$tid&job_no=$input_job_no&schedule=$schedule\" target=\"_blank\" class=\"btn btn-warning btn-sm\" onclick=\"return popitup("."'"."$url?tid=$tid&job_no=$input_job_no&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>&nbsp;&nbsp;J0".$input_job_no."</a><br/>";	
+					
+					$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
+					// echo $sql;
+					$sql_result1=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($title_size = mysqli_fetch_array($sql_result1))
+					{	
+						// echo "size".$title_size["size"];
+						$title_size_ref=$title_size["size"];
+					}
 				?>
 				</td>
-				<td><?php echo $rows['color'];  ?></td>
-				<td><?php echo $rows['size'];   ?></td>
+				<td><?php echo $rows['color']; ?></td>
+				<td><?php echo strtoupper($title_size_ref) ?></td>
 				<td><?php echo $rows['module']; ?></td>
 				<td><?php echo $rows['tqty'];   ?></td>
 				<td>
