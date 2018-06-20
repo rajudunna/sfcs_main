@@ -26,6 +26,7 @@
 <body>
 <?php
 	include("dbconf.php");
+	$has_permission=haspermission($_GET['r']);
 ?>
 	<br>
 	<form name="bundle" method="POST" action="<?php $_SERVER['PHP_SELF'] ?>">

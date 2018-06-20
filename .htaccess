@@ -1,0 +1,25 @@
+Options +Indexes
+
+  AuthName "192.168.0.110"
+  AuthType SSPI
+  SSPIAuth On
+  SSPIAuthoritative On
+	#SSPIDomain "dc.schemaxtech.in"
+#SSPIOmitDomain On
+  SSPIOfferBasic On
+  #BEGIN VERY IMPORTANT prevents IE from dropping post requests
+  SSPIPerRequestAuth On
+  #END VERY IMPORTANT
+  require valid-user
+
+<ifModule mod_headers.c>
+    Header set Connection keep-alive
+</ifModule>
+
+
+AddType application/x-httpd-php5 .html .htm
+#AddType application/x-httpd-php .html .htm
+
+#php_value auto_prepend_file c:/wserver/wamp/www/bai1/security/secure_head.php
+#php_value auto_append_file c:/wserver/wamp/www/bai1/security/secure_foot.php
+	
