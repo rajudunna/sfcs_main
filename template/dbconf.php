@@ -19,8 +19,5 @@ $link_ui = mysqli_connect("$host","$user","$password","$database",'3326');
   //echo "Failed to connect to MySQL: " . mysqli_connect_error();
   $link_ui = Null;
   } 
-  //testing dev master
-  $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-  $user=$username=strtolower($username_list[1]);
 ?>
 
