@@ -292,12 +292,14 @@ switch($q)
 		$temp=array();
 		$temp=explode("$",$val);
 		$return="$x$y$<select id=\"job[$x]\" name=\"job[$x]\" onchange=\"showUser(4,$x,$y,this.value)\"><option value=\"\"></option>";
-		$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ('Body','Front') order by doc_no";
-		//echo $sql;
+		// $sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ('Body','Front') order by doc_no";
+		// echo $temp[1].'<br>';
+		$sql="SELECT doc_no, input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '%$temp[1]%' GROUP BY input_job_no*1";
+		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$return.='<option value="'.'D'.$sql_row['doc_no'].'">'.$sql_row['color_code'].$sql_row['acutno'].'</option>';
+			$return.='<option value="'.'D'.$sql_row['doc_no'].'">J'.$sql_row['input_job_no'].'</option>';
 		}
 		
 		$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_recut_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ('Body','Front') order by doc_no";

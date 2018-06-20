@@ -18,39 +18,6 @@ div.block
 
 <script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/check.js',2,'R')?>"></script>
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
-<script type="text/javascript">
-	function validateQty(event) 
-	{
-		event = (event) ? event : window.event;
-		var charCode = (event.which) ? event.which : event.keyCode;
-		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-			return false;
-		}
-		return true;
-	}
-
-
-function verify_null(){
-	var ver = document.getElementById('d16').value;
-	var eff =  document.getElementById('d15').value;
-	var mklen = document.getElementById('d1').value;
-	if(eff == '' || (eff>100 || eff<=0)){
-		sweetAlert('Please enter valid Marker Efficiency','','warning');
-		return false;
-	}
-	if(ver <=0 || ver ==''){
-		sweetAlert('Please enter valid Marker Version','','warning');
-		return false;
-	}
-	if(mklen == ''|| mklen <=0){
-		sweetAlert('Please enter valid Marker Length','','warning');
-		return false;
-	}
-	return true;
-}
-
-</script>
-
 
 <?php	
 $tran_order_tid=$_GET['tran_order_tid'];
@@ -400,7 +367,7 @@ echo "<tr>
 		<td>Marker LENGTH 1</td><td>:</td>
 		<input type=\"hidden\" name=\"in_pwidth[]\" value=\"$pur_width\">
 		<td>
-			<INPUT class=\"form-control float\" type=\"text\" title='Please enter numbers and decimals' required name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ><font color=red>This is mandatory field</font>
+			<INPUT class=\"form-control float\" type=\"text\" title='Please enter numbers and decimals' required name=\"in_mklength[]\" size=\"10\" id=\"mk_len\">
 		</td>
 		<td><b>Pur Width:</b> <label class='label label-primary'>$pur_width</label></td>
 	</tr>";
@@ -412,13 +379,11 @@ echo "<tr><td>Marker LENGTH 6</td><td>:</td><td><input class=\"form-control floa
 
 echo "<tr><td>Marker Efficiency</td>
 		  <td>:</td>
-		  <td colspan='2'><INPUT class=\"form-control float\" type=\"text\"  id='mk_eff' onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" name=\"in_mkeff\" value=\"0\" size=\"10\" required> 
-		  <font color=red>This is mandatory field</font>
+		  <td colspan='2'><INPUT class=\"form-control float\" type=\"text\"  id='mk_eff' name=\"in_mkeff\" size=\"10\" required>
 		  </td>
 	 </tr>";
 echo "<tr><td>Marker Version</td><td>:</td>
 	  <td colspan='2'><INPUT class=\"form-control alpha\" type=\"text\" name=\"in_mkver\" id='mk_ver' value=\"$patt_ver\" size=\"10\" required>
-	  <font color=red>This is mandatory field</font></td>
 	  </tr>";
 
 echo "<tr><td>Remarks (Marker File Name): </td><td>:</td><td colspan='2'><INPUT class=\"form-control alpha\" type=\"text\" name=\"remarks\" id='remarks' value=\"Nil\"></td></tr>";
@@ -559,3 +524,38 @@ if($num_rows>0)
 
 ?>
 </div></div>
+
+<script type="text/javascript">
+	function validateQty(event) 
+	{
+		event = (event) ? event : window.event;
+		var charCode = (event.which) ? event.which : event.keyCode;
+		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+			return false;
+		}
+		return true;
+	}
+
+
+function verify_null(){
+	var ver = document.getElementById('mk_ver').value;
+	var eff =  document.getElementById('mk_eff').value;
+	var mklen = document.getElementById('mk_len').value;
+	if(mklen == ''|| mklen <=0){
+		sweetAlert('Please enter valid Marker Length','','warning');
+		return false;
+	}
+	if(eff == '' || (eff>100 || eff<=0)){
+		sweetAlert('Please enter valid Marker Efficiency','','warning');
+		return false;
+	}
+	if(ver <=0 || ver ==''){
+		sweetAlert('Please enter valid Marker Version','','warning');
+		return false;
+	}
+	
+	return true;
+}
+
+</script>
+

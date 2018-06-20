@@ -46,7 +46,8 @@ if(isset($_POST['submit']))
 	echo "<hr>";
 	$schedule=$_POST['schedule'];
 	
-	$quer="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule'";
+	$quer="SELECT * FROM $bai_pro3.pac_stat_log WHERE schedule='$schedule'";
+	// echo $quer;
 	$quer_result=mysqli_query($link, $quer) or exit("Sql Error98 $quer".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rowq=mysqli_fetch_array($quer_result);
 	
@@ -68,7 +69,7 @@ if(isset($_POST['submit2']))
 	$schedule=$_POST['schedule'];
 	//echo $schedule;
 
-	$quer="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule'";
+	$quer="SELECT * FROM $bai_pro3.pac_stat_log WHERE schedule='$schedule'";
 	//echo $quer;
 	$quer_result=mysqli_query($link, $quer) or exit("Sql Error98 $quer".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rowq=mysqli_fetch_array($quer_result);
