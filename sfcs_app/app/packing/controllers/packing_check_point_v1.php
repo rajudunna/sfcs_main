@@ -326,99 +326,6 @@ if($count>0){
 	
 	//NEW
 	$style_code=substr($style,0,1);
-	//echo "<br/> style code: ".$style_code."<br/>";
-	/* Disabled due to available conditions KiranG - SR# 682004 // 20150514
-	if($style_code=="")
-	//Disabled - KiranG -2014-08-05 to accept carton based on M&S logic (TO meet the extra ship quantities from other jobs)
-	//if($style_code=="K" or $style_code=="P" or $style_code=="L" or $style_code=="O" or $style_code=="G")
-	{
-		//$sql="select coalesce(ims_pro_qty_cumm,0) as \"completed\" from $ims_log_packing_v3 where ims_style=\"$style\" and ims_schedule=$schedule and ims_color=\"$color\" and ims_size=\"a_$size\"";
-$sql="select coalesce(ims_pro_qty_cumm,0) as \"completed\" from $ims_log_packing_v3 where ims_style=\"$style\" and ims_schedule=$schedule and ims_color=\"$color\" and ims_size=\"a_$size\" and ims_doc_no=\"$doc_no\"";
-		//echo $sql;
-		mysql_query($sql,$link) or exit("Sql Error3".mysql_error());
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error3".mysql_error());
-		while($sql_row=mysql_fetch_array($sql_result))
-		{
-			$carton_qty_completed=$sql_row['completed'];
-		}
-		
-		//$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from ims_log where ims_style=\"$style\" and ims_schedule=$schedule and ims_color=\"$color\" and ims_size=\"a_$size\"";
-$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from ims_log where ims_style=\"$style\" and ims_schedule=$schedule and ims_color=\"$color\" and ims_size=\"a_$size\" and ims_doc_no=\"$doc_no\"";
- //echo $sql;
-		mysql_query($sql,$link) or exit("Sql Error4".mysql_error());
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error4".mysql_error());
-		while($sql_row=mysql_fetch_array($sql_result))
-		{
-			$carton_qty_completed+=$sql_row['completed'];
-		}
-		
-		/* //$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from ims_log_backup where ims_style=\"$style\" and ims_schedule=$schedule and ims_color=\"$color\" and ims_size=\"a_$size\"";
-echo $sql;
-		mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-		while($sql_row=mysql_fetch_array($sql_result))
-		{
-			$carton_qty_completed+=$sql_row['completed'];
-		} */
-		/* Disabled due to available conditions KiranG - SR# 682004 // 20150514
-		//$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from packing_summary where order_style_no=\"$style\" and order_del_no=$schedule and order_col_des=\"$color\" and status=\"DONE\" and size_code=\"$size\"";
-		$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $packing_summary_tmp_v3 where order_style_no=\"$style\" and order_del_no=$schedule and order_col_des=\"$color\" and status=\"DONE\" and size_code=\"$size\" and doc_no=\"$doc_no\"";
-		mysql_query($sql,$link) or exit("Sql Error5".mysql_error());
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error5".mysql_error());
-		while($sql_row=mysql_fetch_array($sql_result))
-		{
-			$received_qty=$sql_row['received'];
-		}
-//echo $sql;
-
-//NEW
-	
-		echo "<table>";
-		echo "<tr><td>Style:</td><td>$style</td></tr>";
-		echo "<tr><td>Schedule:</td><td>$schedule</td></tr>";
-		echo "<tr><td>Color:</td><td>$color</td></tr>";
-		echo "<tr><td>Job:</td><td>".chr($color_code).leading_zeros($cutno,3)."</td></tr>";
-		echo "<tr><td>Size:</td><td>".strtoupper($size)."</td></tr>";
-		echo "<tr><td>Carton Qty</td><td>$carton_qty</td></tr>";
-		if($status=="DONE")
-		{
-			echo "<tr><td>Status</td><td><font color=green>Received</font></td></tr>";
-			echo '<bgsound src="air_horn.wav" loop="false">';
-		}
-		else
-		{
-			//echo "Total Output Reported:$carton_qty_completed"."<br/>";
-			//echo "Carton Qty Received sofar:$received_qty"."<br/>";
-			//echo "Carton Qty :$carton_qty"."<br/>";
-			if($carton_qty_completed>=($carton_qty+$received_qty))
-			{
-				echo '<tr><td>Status</td><td><form name="input" method="post" action="'; echo $_SERVER['php_self']; echo '?>">
-				<input type="hidden" value="'.$cartonid.'" name="cartonid">
-				<input type="hidden" value="'.$doc_no.'" name="doc_no">
-				<input type="hidden" value="'.$doc_no_ref.'" name="doc_no_ref">
-				<input type="hidden" value="'.$size.'" name="size">
-				<input type="hidden" value="'.$schedule.'" name="schedule">
-				
-				<input type="submit" name="update" value="update">
-				</form></td></tr>';
-	
-				echo "<script>document.getElementById('update').click();</script>";
-			}
-			else
-			{
-				//NEW TO Track No Sufficient Qty
-				$sql="update pac_stat_log set disp_id=1 where tid=$cartonid";
-				mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-				//NEW To Track No Sufficient Qty
-				//echo "NEW To Track No Sufficient Qty";
-				echo "<tr><td>Status</td><td><font color=red>No Sufficient Qty</font></td></tr>";
-				echo '<bgsound src="red_alert.wav" loop="false">';
-			}
-		}
-		echo "</table>";
-
-	}
-	else */
 	{
 		
 		$flag=0; //Default OK and flag=1 is not OK
@@ -433,7 +340,6 @@ echo $sql;
 			//echo "pack=".$ratio_packing_method."<br>";
 			if($ratio_packing_method=='multiple')
 			{
-				//$sql="select coalesce(sum(ims_pro_qty_cumm),0) as \"completed\" from $ims_log_packing_v3 where ims_style=\"$style\" and ims_schedule=$schedule and ims_color=\"".$filter_color_codes[$m]."\" and ims_size=\"a_$size\" ";
 				$sql="select coalesce(sum(ims_pro_qty_cumm),0) as \"completed\" from $ims_log_packing_v3 where ims_style=\"$style\" and ims_schedule=$schedule";
 				// echo  "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -443,8 +349,6 @@ echo $sql;
 				}
 				
 				//echo "carton_qty_completed_ims_log_v3: ".$carton_qty_completed."<br/>";
-				
-				//$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from ims_log where ims_style=\"$style\" and ims_schedule=$schedule and ims_color=\"".$filter_color_codes[$m]."\" and ims_size=\"a_$size\" ";
 				$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from $bai_pro3.ims_log where ims_style=\"$style\" and ims_schedule=$schedule";
 				//echo  "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -454,10 +358,7 @@ echo $sql;
 				}
 				
 				//echo "carton_qty_completed_ims_log: ".$carton_qty_completed."<br/>";
-				
-				//$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $packing_summary_tmp_v3 where order_style_no=\"$style\" and order_del_no=$schedule and order_col_des=\"".$filter_color_codes[$m]."\" and status=\"DONE\" and size_code=\"$size\"";
-				//Disabled due to available conditions KiranG - SR# 682004 // 20150514
-				//$sql="select COALESCE(SUM(IF(STATUS='EGI',carton_act_qty,0)),0) as \"emb_received\",COALESCE(SUM(IF(STATUS='DONE',carton_act_qty,0)),0) as \"received\", SUM(carton_act_qty) AS \"pac_qty\" from $packing_summary_tmp_v3 where order_style_no=\"$style\" and order_del_no=$schedule and order_col_des=\"".$filter_color_codes[$m]."\" and size_code=\"$size\"";
+			
 				$sql="select COALESCE(SUM(IF(STATUS='EGI',carton_act_qty,0)),0) as \"emb_received\",COALESCE(SUM(IF(STATUS='DONE',carton_act_qty,0)),0) as \"received\", SUM(carton_act_qty) AS \"pac_qty\" from $packing_summary_tmp_v3 where order_style_no=\"$style\" and order_del_no=$schedule";
 				//echo  "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -476,7 +377,6 @@ echo $sql;
 				//Validation added to avoid scan out more than the output quantity - KiranG 20150527
 				$sout=0;
 				
-				//$sql="select COALESCE(SUM(size_s06+size_s08+size_s10+size_s12+size_s14+size_s16+size_s18+size_s20+size_s22+size_s24+size_s26+size_s28+size_s30),0) as sout from bai_pro.bai_log_buf where delivery=$schedule and color=\"".$filter_color_codes[$m]."\"";
 				$sql="select COALESCE(SUM(size_s01+size_s02+size_s03+size_s04+size_s05+size_s06+size_s07+size_s08+size_s09+size_s10+size_s11+size_s12+size_s13+size_s14+size_s15+size_s16+size_s17+size_s18+size_s19+size_s20+size_s22+size_s24+size_s26+size_s28+size_s30+size_s31+size_s32+size_s33+size_s34+size_s35+size_s36+size_s37+size_s38+size_s39+size_s40+size_s41+size_s42+size_s43+size_s44+size_s45+size_s46+size_s47+size_s48+size_s49+size_s50),0) as sout from $bai_pro.bai_log_buf where delivery=$schedule";
 				//echo  "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error82".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -507,9 +407,7 @@ echo $sql;
 				}
 				
 				//echo "carton_qty_completed_ims_log: ".$carton_qty_completed."<br/>";
-				
-				//$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $packing_summary_tmp_v3 where order_style_no=\"$style\" and order_del_no=$schedule and order_col_des=\"".$filter_color_codes[$m]."\" and status=\"DONE\" and size_code=\"$size\"";
-				//Disabled due to available conditions KiranG - SR# 682004 // 20150514
+
 				$sql="select COALESCE(SUM(IF(STATUS='EGI',carton_act_qty,0)),0) as \"emb_received\",COALESCE(SUM(IF(STATUS='DONE',carton_act_qty,0)),0) as \"received\", SUM(carton_act_qty) AS \"pac_qty\" from $packing_summary_tmp_v3 where order_style_no=\"$style\" and order_del_no=$schedule and order_col_des=\"".$filter_color_codes[$m]."\" and size_code=\"$size\"";
 				// echo  "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error83".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -540,41 +438,9 @@ echo $sql;
 			{
 				$carton_qty_completed=$sout;
 			}
-			//Validation added to avoid scan out more than the output quantity - KiranG 20150527
-			
-			//To Track Embellishment (Garment Form) Schedules // Kirang 20150516
-			// if($emb_status>0)
-			// {
-				// $carton_qty_completed=0;
-				// $carton_qty_completed=$received_qty+$emb_received;
-			// }
-			
-			//echo "<br/>emb carton_qty_completed:".$flag."-".$carton_qty_completed."<br/>";
-			//echo "<br/>pac qty:".$pac_qty."<br/>";
-			//echo "<br/>received qty:".$received_qty."<br/>";
-			//echo "<br/> result: ".$carton_qty_completed."--".$filter_cart_qty[$m]."--".$received_qty;
-			//
-			//echo "<br/>data=".$carton_qty_completed."--".$filter_cart_qty[$m]."--".$received_qty."--".$carton_qty_completed."--".$pac_qty."--".$flag."<br/>";
-			//
-			//added additional conditions KiranG - SR# 682004 // 20150514
 			if($carton_qty_completed>=($filter_cart_qty[$m]+$received_qty) and $carton_qty_completed>0 and $pac_qty>0 and $flag==0)
 			{
 				$flag=0;
-				//echo "<br/>success: Flag value= ".$flag."<br/>";
-				//to check embellishment completion status of carton //SR# 744925 - KiranG 20150617
-				// if($flag==0 and $emb_status>0)
-				// {
-					// if($status=="EGI")
-					// {
-						// $flag=0;
-					// }
-					// else
-					// {
-						// $flag=1;
-						// break;
-					// }
-				// }
-				//to check embellishment completion status of carton
 			}
 			else
 			{
@@ -583,38 +449,6 @@ echo $sql;
 				break;
 			}
 		}
-		
-		/* OLD VERSION where its not covering color wise details 
-		$sql="select coalesce(sum(ims_pro_qty_cumm),0) as \"completed\" from $ims_log_packing_v3 where ims_style=\"$style\" and ims_schedule=$schedule and ims_size=\"a_$size\"";
-		//echo $sql;
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error6".mysql_error());
-		while($sql_row=mysql_fetch_array($sql_result))
-		{
-			$carton_qty_completed=$sql_row['completed'];
-		}
-		
-		$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from ims_log where ims_style=\"$style\" and ims_schedule=$schedule and ims_size=\"a_$size\"";
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error7".mysql_error());
-		while($sql_row=mysql_fetch_array($sql_result))
-		{
-			$carton_qty_completed+=$sql_row['completed'];
-		}
-		
-		/*$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from ims_log_backup where ims_style=\"$style\" and ims_schedule=$schedule and ims_size=\"a_$size\"";
-		mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-		while($sql_row=mysql_fetch_array($sql_result))
-		{
-			$carton_qty_completed+=$sql_row['completed'];
-		}
-		
-		$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $packing_summary_tmp_v3 where order_style_no=\"$style\" and order_del_no=$schedule and status=\"DONE\" and size_code=\"$size\"";
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error8".mysql_error());
-		while($sql_row=mysql_fetch_array($sql_result))
-		{
-			$received_qty=$sql_row['received'];
-		}
-		*/
 	
 		echo "<div class='col-md-8'><table class='table table-bordered'>";
 		echo "<tr><td><b>Docket No-Sticker No:</b></td><td>$cartonid</td></tr>";
@@ -674,41 +508,7 @@ echo $sql;
 				//echo "2 query of flag2:".$sql1."<br/>";
 			}
 			
-			// $sql_result1=mysql_query($sql1,$link) or exit("Sql Error2".mysql_error());
-			// while($sql_row1=mysql_fetch_array($sql_result1))
-			// {
-				
-				// if($ratio_packing_method=='multiple')
-				// {
-					// echo $op_code."-,".$schedule."-,".$sql_row1['order_col_des']."-,".$sql_row1['scanned']."<br>";
-					// if($flag2==0 and m3_cpk_validation_multi_color('CPK',$op_code,$schedule,$sql_row1['order_col_des'],$cartonid,$sql_row1['scanned'])=="FALSE")
-					// {
-						// $flag2=1;
-						// break;
-					// }
-				// }
-				// else
-				// {
-					// if($flag2==0 and m3_cpk_validation('CPK',$op_code,$schedule,$sql_row1['order_col_des'],$size,$sql_row1['scanned'])=="FALSE")
-					// {
-						// $flag2=1;
-						// break;
-					// }
-				// }
-				
-			// }
-			//echo "<br/> Flag2 Value1: ".$flag."=".$flag2."<br/>";
-			// if(mysql_num_rows($sql_result1)==0)
-			// {
-				// $flag2=1;
-			// }
-			// $flag=0;
-			// $flag2=0;
-			//echo "<br/> Flag2 Value2: ".$flag."-".$flag2."<br/>";
-			//echo "Total Output Reported:$carton_qty_completed"."<br/>";
-			//echo "Carton Qty Received sofar:$received_qty"."<br/>";
-			//echo "Carton Qty :$carton_qty"."<br/>";
-			//if($carton_qty_completed>=($carton_qty+$received_qty))
+			
 			if($flag==0 and $flag2==0)
 			{
 				echo '<form name="input" method="post" action="'; echo $_SERVER['php_self']; echo '?>">
@@ -733,22 +533,14 @@ echo $sql;
 					
 						//if(mysql_affected_rows($link)>0)
 						if($schedule>0 and $m3_val_chk==0)
-						{
-							/* $sql="update pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where tid=$cartonid";
-							//echo $sql;
-							mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-							
-							$sql="update  $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where tid=$cartonid";
-							//echo $sql;
-							mysql_query($sql,$link) or exit("Sql Error".mysql_error()); */
-							
+						{					
 							//M3 Bulk Upload
 							$sql1="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref) SELECT NOW(),order_style_no,order_del_no,order_col_des,size_code,doc_no,carton_act_qty,concat(user(),'-','$emp_id'),'CPK',tid FROM $bai_pro3.packing_summary WHERE tid in (".$cartonid.") AND tid NOT IN (SELECT sfcs_tid_ref FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log WHERE sfcs_schedule=$schedule and m3_op_des='CPK' and sfcs_remarks='')";
-							//$sql1="INSERT INTO m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref) SELECT NOW(),order_style_no,order_del_no,order_col_des,size_code,doc_no,carton_act_qty,concat(user(),'-','$emp_id'),'CPK',tid FROM bai_pro3.packing_summary WHERE tid in (".$cartonid.")";
+							
 							mysqli_query($link, $sql1) or exit("<div class='alert alert-danger' role='alert'>M3 Error2: Carton was already scanned!".mysqli_error($GLOBALS["___mysqli_ston"]).'</div>');
 						
 						
-							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where tid=$cartonid";
+							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user=concat(user(),'-','$emp_id') where tid=$cartonid";
 							//echo $sql;
 							mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
@@ -760,9 +552,7 @@ echo $sql;
 					{
 						if($m3_val_chk>0)
 						{
-							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where tid=$cartonid";
-
-							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where tid=$cartonid";
+							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user=concat(user(),'-','$emp_id') where tid=$cartonid";
 							//echo $sql;
 							mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
@@ -774,9 +564,6 @@ echo $sql;
 				}
 				else
 				{
-					
-						//echo "Ramesh";
-						//M3 operation reporting
 						//if(mysql_affected_rows($link)>0)
 						{
 							$tid_ref_array=array();
@@ -802,65 +589,48 @@ echo $sql;
 						
 						
 							if(sizeof($tid_ref_array)>0 and $schedule>0 and $m3_val_chk==0)
-							{
-								// echo "SR=1<br>";
-								/* $sql="update pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
-								//echo $sql;
-								mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-									
-								
-								$sql="update $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
-								//echo $sql;
-								mysql_query($sql,$link) or exit("Sql Error".mysql_error()); */
-								
+							{				
 								//M3 Bulk Upload
 								$sql1="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref) SELECT NOW(),order_style_no,order_del_no,order_col_des,size_code,doc_no,carton_act_qty,concat(user(),'-','$emp_id'),'CPK',tid FROM $bai_pro3.packing_summary WHERE tid in (".implode(",",$tid_ref_array).") AND tid NOT IN (SELECT sfcs_tid_ref FROM 
 									$m3_bulk_ops_rep_db.m3_sfcs_tran_log WHERE sfcs_schedule=$schedule and  m3_op_des='CPK' and sfcs_remarks='')";
-								//$sql1="INSERT INTO m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref) SELECT NOW(),order_style_no,order_del_no,order_col_des,size_code,doc_no,carton_act_qty,concat(user(),'-','$emp_id'),'CPK',tid FROM bai_pro3.packing_summary WHERE tid in (".implode(",",$tid_ref_array).")";
+							
 								mysqli_query($link, $sql1) or exit("<div class='alert alert-danger' role='alert'>M3 Error4: Carton was already scanned!".mysqli_error($GLOBALS["___mysqli_ston"]).'</div>');	
 								
 						
 								if($ratio_packing_method=='multiple')
 								{
 									//$sql="update pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
-									$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
+									$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user=concat(user(),'-','$emp_id') where doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
 									//echo "<br/> else:".$sql."<br/>";
 									mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 										
-									
-									//$sql="update $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
 									$sql="update $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
 									//echo "<br/> else:".$sql."<br/>";
 									mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 								}
 								else
 								{
-									$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
-									//$sql="update pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no IN (SELECT doc_no FROM bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
-									//echo "<br/> else:".$sql."<br/>";
+									$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user=concat(user(),'-','$emp_id') where doc_no_ref=\"$doc_no_ref\"";
+									
 									mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 										
 									
 									$sql="update $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
-									//$sql="update $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no IN (SELECT doc_no FROM bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
-									//echo "<br/> else:".$sql."<br/>";
+									
 									mysqli_query($link, $sql) or exit("Sql Error85".mysqli_error($GLOBALS["___mysqli_ston"]));
 								}
 							}
 							else
 							{
-								echo "SR=2<br>";
+								// echo "SR=2<br>";
 								if($m3_val_chk>0)
 								{
 									if($ratio_packing_method=='multiple')
 									{
-										//$sql="update pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
-										$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
+										$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user=concat(user(),'-','$emp_id') where doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
 										//echo "<br/> else1:".$sql."<br/>";
 										mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
-								
-										//$sql="update $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
 										$sql="update $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no IN (SELECT doc_no FROM 
 											$bai_pro3.bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
 										//echo "<br/> else1:".$sql."<br/>";
@@ -868,15 +638,11 @@ echo $sql;
 									}
 									else
 									{
-										$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
-										//$sql="update pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no IN (SELECT doc_no FROM bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
-										//echo "<br/> else1:".$sql."<br/>";
+										$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user=concat(user(),'-','$emp_id') where doc_no_ref=\"$doc_no_ref\"";						
 										mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
 								
 										$sql="update $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no_ref=\"$doc_no_ref\"";
-										//$sql="update $packing_summary_tmp_v3 set status=\"DONE\",audit_status=null, lastup=\"".date("Y-m-d H:i:s")."\" where doc_no IN (SELECT doc_no FROM bai_pro3.plandoc_stat_log WHERE order_tid LIKE '% $schedule%') AND doc_no_ref LIKE '%$cartonid%'";
-										//echo "<br/> else1:".$sql."<br/>";
 										mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 									}
 								}
@@ -889,9 +655,7 @@ echo $sql;
 				echo "<tr><td>Status</td><td><span class='label label-success'>Successfully Updated.</span></td></tr>";
 				//echo "<h2>Successfully Updated.</h2>";
 				echo '<bgsound src="done.mp3" loop="false">';
-				
-				//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"packing_check_point_v1.php?trigger=1\"; }</script>";
-				//2011-06-01
+
 			}
 			else
 			{

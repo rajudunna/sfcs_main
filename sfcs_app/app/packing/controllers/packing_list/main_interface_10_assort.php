@@ -1,5 +1,7 @@
 <?php
 	echo "<form name=\"input\" method=\"post\" action='#'>";
+	echo "<div id='loading' style='display:none;'><img src='sfcs_app/app/production/common/images/pleasewait.gif' style='margin-left:40%;'/></div>";
+	echo "<div id='errormsg' class='alert alert-warning' role='alert' style='display:none;'>Please check packing pcs quantity.</div>";
 	echo "<h4><b>Suggested Carton Qty</b></h4><hr>";
 	$sql="select * from $bai_pro3.carton_qty_chart where user_style=\"$style_id\" and status=0";
 	mysqli_query($link, $sql) or exit("Sql Errork".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -205,8 +207,10 @@ if(isset($_POST['submit']))
 	}
 	else
 	{
-		echo '<div class="alert alert-warning" role="alert">Please check packing pcs quantity.</div>';
-		//echo "Please check packing pcs quantity.";
+		echo "<script>
+			document.getElementById('errormsg').style.display = 'block';
+			document.getElementById('loading').style.display = 'none';
+		</script>";
 	}
 	
 
@@ -234,6 +238,7 @@ th,td{
 			// 	} 
 			// });
 		// );
+		document.getElementById('loading').style.display = 'block';
 		var flag = false;
 		for (let index = 0; index < $(".radiobutton").length; index++) {
 			console.log($('#radio_btn_'+index).is(':checked'));
@@ -244,11 +249,11 @@ th,td{
 				flag = false;
 			}			
 		}
-		console.log(flag);
 		if(flag){
 			return true;
 		}else{
 			sweetAlert('Please check packing pcs quantity.','','warning');
+			document.getElementById('loading').style.display = 'none';
 			return false;
 		}
 	}

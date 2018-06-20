@@ -292,14 +292,15 @@ switch($q)
 		$temp=array();
 		$temp=explode("$",$val);
 		$return="$x$y$<select id=\"job[$x]\" name=\"job[$x]\" onchange=\"showUser(4,$x,$y,this.value)\"><option value=\"\"></option>";
-		// $sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ('Body','Front') order by doc_no";
+		$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ('Body','Front') order by doc_no";
 		// echo $temp[1].'<br>';
-		$sql="SELECT doc_no, input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '%$temp[1]%' GROUP BY input_job_no*1";
+		// $sql="SELECT doc_no, input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '%$temp[1]%' GROUP BY input_job_no*1";
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$return.='<option value="'.'D'.$sql_row['doc_no'].'">J'.$sql_row['input_job_no'].'</option>';
+			// $return.='<option value="'.'D'.$sql_row['doc_no'].'">J'.$sql_row['input_job_no'].'</option>';
+			$return.='<option value="'.'D'.$sql_row['doc_no'].'">'.$sql_row['color_code'].$sql_row['acutno'].'</option>';
 		}
 		
 		$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_recut_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ('Body','Front') order by doc_no";
@@ -472,44 +473,44 @@ switch($q)
 		if(strlen($temp[3])>0)
 		{	
 			
-			$modules[]=array();
+			// $modules[]=array();
 			//changed code for sizes; changed table name bai_orders_db to bai_orders_db_confirm
-			$sql1="select distinct ims_mod_no as modsno from $bai_pro3.ims_log where ims_style=\"".$temp[0]."\" and ims_schedule=\"".$temp[1]."\" and ims_color=\"".$temp[2]."\" AND ims_doc_no=\"".substr($temp[3],1,10)."\" and ims_size=\"a_".$temp[4]."\" and ims_mod_no>0 order by ims_mod_no";
-			//$return2.="<option value=\"\">".$sql1."</option>";
-			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result1)>0)
-			{
-				while($sql_row1=mysqli_fetch_array($sql_result1))
-				{
-					$return2.='<option value="'.$sql_row1['modsno'].'">'.$sql_row1['modsno'].'</option>';
-				}
-				$modules[]=$sql_row1['modsno'];
-			}
+			// $sql1="select distinct ims_mod_no as modsno from $bai_pro3.ims_log where ims_style=\"".$temp[0]."\" and ims_schedule=\"".$temp[1]."\" and ims_color=\"".$temp[2]."\" AND ims_doc_no=\"".substr($temp[3],1,10)."\" and ims_size=\"a_".$temp[4]."\" and ims_mod_no>0 order by ims_mod_no";
+			// $return2.="<option value=\"\">".$sql1."</option>";
+			// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// if(mysqli_num_rows($sql_result1)>0)
+			// {
+				// while($sql_row1=mysqli_fetch_array($sql_result1))
+				// {
+					// $return2.='<option value="'.$sql_row1['modsno'].'">'.$sql_row1['modsno'].'</option>';
+				// }
+				// $modules[]=$sql_row1['modsno'];
+			// }
 			
-			$sql12="select distinct ims_mod_no as modsno from $bai_pro3.ims_log_backup where ims_style=\"".$temp[0]."\" and ims_schedule=\"".$temp[1]."\" and ims_color=\"".$temp[2]."\" AND ims_doc_no=\"".substr($temp[3],1,10)."\" and ims_size=\"a_".$temp[4]."\" and ims_mod_no>0 order by ims_mod_no";
-			//echo $sql12."<br>";
-			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result12)>0)
-			{
-				while($sql_row12=mysqli_fetch_array($sql_result12))
-				{
-					if(in_array($sql_row12['modsno'],$modules))
-					{
+			// $sql12="select distinct ims_mod_no as modsno from $bai_pro3.ims_log_backup where ims_style=\"".$temp[0]."\" and ims_schedule=\"".$temp[1]."\" and ims_color=\"".$temp[2]."\" AND ims_doc_no=\"".substr($temp[3],1,10)."\" and ims_size=\"a_".$temp[4]."\" and ims_mod_no>0 order by ims_mod_no";
+			// echo $sql12."<br>";
+			// $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// if(mysqli_num_rows($sql_result12)>0)
+			// {
+				// while($sql_row12=mysqli_fetch_array($sql_result12))
+				// {
+					// if(in_array($sql_row12['modsno'],$modules))
+					// {
 					
-					}
-					else
-					{
-						$return2.='<option value="'.$sql_row12['modsno'].'">'.$sql_row12['modsno'].'</option>';
-					}
-				}
-			}
+					// }
+					// else
+					// {
+						// $return2.='<option value="'.$sql_row12['modsno'].'">'.$sql_row12['modsno'].'</option>';
+					// }
+				// }
+			// }
 			
 		}	
 		//$return2.='<option value="1">1</option>';
 		$return2.='<option value="CUT">CUT</option>';
-		$return2.='<option value="ENP">E/P</option>';
+		//$return2.='<option value="ENP">E/P</option>';
 		//$return2.='<option value="Pack">Pack</option>';
-		//$return2.='<option value="FG">FG</option>';
+		// $return2.='<option value="FG">CPK</option>';
 		$return2.="</select>";
 		echo $return2;
 		break; 

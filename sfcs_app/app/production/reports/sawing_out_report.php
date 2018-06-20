@@ -1,6 +1,6 @@
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-$sawing_out_excel = '..'.getFullURL($_GET['r'],'sawing_out_excel.php','R');?>
+$sawing_out_excel = ''.getFullURL($_GET['r'],'sawing_out_excel.php','R');?>
 <style>
 	th{
 		background-color: #003366;
@@ -117,7 +117,7 @@ function verify_date()
 	</div>
 	<div class="col-md-3"><label>Schedule </label><input type='text' class="form-control" id='sch'   
 	     name='sch' width=30  onchange="return pop_check()"></div>
-	<div class="col-md-2"><br/><input type="submit" id='btn'  class="btn btn-primary" value="View" onclick="return check_sch();" name="submit" id='sub'></div>
+	<div class="col-md-2"><br/><input type="submit" id='btn'  class="btn btn-primary" value="View" name="submit" id='sub'></div>
 </div>	
 </form><br/><hr/><br/>
 <?php
@@ -128,11 +128,11 @@ if(isset($_POST['submit']))
 	$sch=$_POST['sch'];
 	if($sch==""){
 		$sch=='';
-		$sql="SELECT * FROM $bai_pro3.pac_sawing_out where outs='1' AND scan_date BETWEEN '$dat1' AND '$dat2'";
+		$sql="SELECT * FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND scan_date BETWEEN '$dat1' AND '$dat2'";
 		 //echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}else if($sch !=""){
-		$sql="SELECT * FROM $bai_pro3.pac_sawing_out where outs='1' AND schedule='$sch' AND scan_date BETWEEN '$dat1' AND '$dat2'";
+		$sql="SELECT * FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND schedule='$sch' AND scan_date BETWEEN '$dat1' AND '$dat2'";
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
 	}
@@ -185,8 +185,17 @@ if(isset($_POST['submit']))
 		
 		$cut_job=chr($color_code).'00'.$cutno;
 		$job_no='J00'.$rows['input_job_number'];
-		$size=$rows['size'];
-		$qty=$rows['qty'];
+		$size=$rows['size_code'];
+		$qty=$rows['carton_act_qty'];
+		
+		$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
+		// echo $sql;
+		$sql_result1=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($title_size = mysqli_fetch_array($sql_result1))
+		{	
+			// echo "size".$title_size["size"];
+			$title_size_ref=$title_size["size"];
+		}
 		
 	?>
 	<tr>
@@ -199,7 +208,7 @@ if(isset($_POST['submit']))
 	<td><?= $color; ?></td>
 	<td><?= $cut_job; ?></td>
 	<td><?= $job_no; ?></td>
-	<td><?= $size; ?></td>
+	<td><?= $title_size_ref; ?></td>
 	<td><?= $qty; ?></td>
 	</tr>
 	<?php
