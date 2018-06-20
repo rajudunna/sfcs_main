@@ -6,12 +6,14 @@ Ticket#45927327 Nareshb/Date:24-12-2015/Applying user_acl to give access for inp
 
 --> 
 <?php 
+
 error_reporting(0);
 ini_set('display_errors', 'On');
 set_time_limit(2000); 
 ?> 
 
 <?php 
+
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 //include($_SERVER['DOCUMENT_ROOT']."M3_Bulk_OR/ims_size.php"); 
@@ -19,13 +21,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 //include($_SERVER['DOCUMENT_ROOT']."server/group_def.php"); 
 //access for authorised user to transfer the input  
 //$auth_users=user_acl("SFCS_0203",$username,7,$group_id_sfcs);  
-$auth_users=array("rameshk","chathurangad","dinushapre"); 
+$auth_users=array("rameshk","chathurangad","dinushapre","$username"); 
 //access for power user to remove the input 
 //$auth_cut_users=user_acl("SFCS_0203",$username,22,$group_id_sfcs);  
-$auth_cut_users=array("rameshk","chathurangad","dinushapre"); 
+$auth_cut_users=array("rameshk","chathurangad","dinushapre","$username"); 
 //access for super user to report the sample room for cut panel input 
 //$auth_users_for_sample_cut_input=user_acl("SFCS_0203",$username,33,$group_id_sfcs); 
-$auth_users_for_sample_cut_input=array("rameshk","chathurangad","dinushapre"); 
+$auth_users_for_sample_cut_input=array("rameshk","chathurangad","dinushapre","$username"); 
 ?> 
 
 
@@ -143,12 +145,12 @@ table
         $module_ref=$_GET['module']; 
         $section_id=$_GET['section_id']; 
         //echo "<h2>Module - $module_ref Summary</h2>"; 
-        echo '<div id="page_heading"><span style="float: left"><h3>Module - '.$module_ref.' Summary</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>'; 
+        echo '<div id="page_heading"><span style=""><h3>Module - '.$module_ref.' Summary</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>'; 
         echo '<table style="color:black; border: 1px solid red;">'; 
-        echo "<tr class=\"new\"><th>Select</th><th>Input Date</th><th>Exp. to Comp.</th><th>TID</th><th>Style</th><th>Schedule</th><th>Color</th>"; 
+        echo "<tr class=\"new\"><th>Select</th><th>Input Date</th><th>Exp. to Comp.</th><th>Style</th><th>Schedule</th><th>Color</th>"; 
         //echo "<th>CID</th><th>DOC#</th>"; 
         echo "<th>Input Remarks</th>"; 
-        echo "<th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th></tr>"; 
+        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th></tr>"; 
              
         $toggle=0; 
         $sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref order by tid"; 
@@ -171,7 +173,7 @@ table
              
             $req_date=""; 
             $sql12="select req_date from $bai_pro3.ims_exceptions where ims_rand_track=$rand_track"; 
-            mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+           // mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
             { 
@@ -179,15 +181,18 @@ table
             } 
              
             $sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC"; 
-            mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+           // mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
             { 
                  
                 $ims_doc_no=$sql_row12['ims_doc_no']; 
-             
+				$ims_size=$sql_row12['ims_size'];
+				$ims_size2=substr($ims_size,2);
+                $inputjobno=$sql_row12['input_job_no_ref'];
+				
                 $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0"; 
-                mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                //mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                  
                 while($sql_row22=mysqli_fetch_array($sql_result22)) 
@@ -217,11 +222,12 @@ table
                 } 
                      
                 //$size_value=ims_sizes($order_tid,'','','',substr($sql_row12['ims_size'],2),$link); 
+				$size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
                      
-                echo "</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['tid']."</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>"; 
+                echo "</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>"; 
                 echo "<td>".$sql_row12['ims_remarks']."</td>"; 
 //echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>"; 
-echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper(substr($sql_row12['ims_size'],2))."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td></tr>"; 
+echo "<td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td></tr>"; 
             } 
         } 
         echo "</table>"; 
@@ -238,10 +244,10 @@ echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper(subs
 
     $auth_users=explode(",",$users); 
 */     
+
         if(in_array($username,$auth_users))         
-        { 
-             
-        echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
+        {   
+         echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
          
         } 
 /*         
@@ -272,12 +278,12 @@ echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper(subs
 
 </form> 
 
-<h3>Request for Special Input</h3> 
+<!-- <h3>Request for Special Input</h3> 
 <form name="test_input" method="post" action="special_input.php"> 
 <input type="hidden" name="module" value="<?php echo $module_ref;  ?>"> 
 <input type="hidden" name="section" value="<?php echo $section_id;  ?>"> 
 
-<input type="submit" name="spreq" value="Create Special Input Box"> 
+<input type="submit" name="spreq" value="Create Special Input Box">  -->
 
 
 </form> 

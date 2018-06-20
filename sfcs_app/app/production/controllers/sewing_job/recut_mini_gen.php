@@ -47,215 +47,208 @@ if($status == '')
 	$sizesMasterQuery="select id,upper(size_name) as size_name from $brandix_bts.tbl_orders_size_ref order by size_name";
 	//echo $sizesMasterQuery;exit;
 	$result=mysqli_query($link, $sizesMasterQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($result)>0)
+	while($s=mysqli_fetch_array($result))
 	{
-		while($s=mysqli_fetch_array($result))
-		{
-			if($s['size_name']=='S01')
-			   {
-				$s01_id=$s['id'];
-			   }
-			if($s['size_name']=='S02')
-			   {
-				$s02_id=$s['id'];
-			   }
-			if($s['size_name']=='S03')
-			   {
-				$s03_id=$s['id'];
-			   }
-			if($s['size_name']=='S04')
-			   {
-				$s04_id=$s['id'];
-			   }
-			if($s['size_name']=='S05')
-			   {
-				$s05_id=$s['id'];
-			   }
-			if($s['size_name']=='S06')
-			   {
-				$s06_id=$s['id'];
-			   }
-			if($s['size_name']=='S07')
-			   {
-				$s07_id=$s['id'];
-			   }
-			if($s['size_name']=='S08')
-			   {
-				$s08_id=$s['id'];
-			   }
-			if($s['size_name']=='S09')
-			   {
-				$s09_id=$s['id'];
-			   }
-			if($s['size_name']=='S10')
-			   {
-				$s10_id=$s['id'];
-			   }
-			if($s['size_name']=='S11')
-			   {
-				$s11_id=$s['id'];
-			   }
-			if($s['size_name']=='S12')
-			   {
-				$s12_id=$s['id'];
-			   }
-			if($s['size_name']=='S13')
-			   {
-				$s13_id=$s['id'];
-			   }
-			if($s['size_name']=='S14')
-			   {
-				$s14_id=$s['id'];
-			   }
-			if($s['size_name']=='S15')
-			   {
-				$s15_id=$s['id'];
-			   }
-			if($s['size_name']=='S16')
-			   {
-				$s16_id=$s['id'];
-			   }
-			if($s['size_name']=='S17')
-			   {
-				$s17_id=$s['id'];
-			   }
-			if($s['size_name']=='S18')
-			   {
-				$s18_id=$s['id'];
-			   }
-			if($s['size_name']=='S19')
-			   {
-				$s19_id=$s['id'];
-			   }
-			if($s['size_name']=='S20')
-			   {
-				$s20_id=$s['id'];
-			   }
-			if($s['size_name']=='S21')
-			   {
-				$s21_id=$s['id'];
-			   }
-			if($s['size_name']=='S22')
-			   {
-				$s22_id=$s['id'];
-			   }
-			if($s['size_name']=='S23')
-			   {
-				$s23_id=$s['id'];
-			   }
-			if($s['size_name']=='S24')
-			   {
-				$s24_id=$s['id'];
-			   }
-			if($s['size_name']=='S25')
-			   {
-				$s25_id=$s['id'];
-			   }
-			if($s['size_name']=='S26')
-			   {
-				$s26_id=$s['id'];
-			   }
-			if($s['size_name']=='S27')
-			   {
-				$s27_id=$s['id'];
-			   }
-			if($s['size_name']=='S28')
-			   {
-				$s28_id=$s['id'];
-			   }
-			if($s['size_name']=='S29')
-			   {
-				$s29_id=$s['id'];
-			   }
-			if($s['size_name']=='S30')
-			   {
-				$s30_id=$s['id'];
-			   }
-			if($s['size_name']=='S31')
-			   {
-				$s31_id=$s['id'];
-			   }
-			if($s['size_name']=='S32')
-			   {
-				$s32_id=$s['id'];
-			   }
-			if($s['size_name']=='S33')
-			   {
-				$s33_id=$s['id'];
-			   }
-			if($s['size_name']=='S34')
-			   {
-				$s34_id=$s['id'];
-			   }
-			if($s['size_name']=='S35')
-			   {
-				$s35_id=$s['id'];
-			   }
-			if($s['size_name']=='S36')
-			   {
-				$s36_id=$s['id'];
-			   }
-			if($s['size_name']=='S37')
-			   {
-				$s37_id=$s['id'];
-			   }
-			if($s['size_name']=='S38')
-			   {
-				$s38_id=$s['id'];
-			   }
-			if($s['size_name']=='S39')
-			   {
-				$s39_id=$s['id'];
-			   }
-			if($s['size_name']=='S40')
-			   {
-				$s40_id=$s['id'];
-			   }
-			if($s['size_name']=='S41')
-			   {
-				$s41_id=$s['id'];
-			   }
-			if($s['size_name']=='S42')
-			   {
-				$s42_id=$s['id'];
-			   }
-			if($s['size_name']=='S43')
-			   {
-				$s43_id=$s['id'];
-			   }
-			if($s['size_name']=='S44')
-			   {
-				$s44_id=$s['id'];
-			   }
-			if($s['size_name']=='S45')
-			   {
-				$s45_id=$s['id'];
-			   }
-			if($s['size_name']=='S46')
-			   {
-				$s46_id=$s['id'];
-			   }
-			if($s['size_name']=='S47')
-			   {
-				$s47_id=$s['id'];
-			   }
-			if($s['size_name']=='S48')
-			   {
-				$s48_id=$s['id'];
-			   }
-			if($s['size_name']=='S49')
-			   {
-				$s49_id=$s['id'];
-			   }
-			if($s['size_name']=='S50')
-			   {
-				$s50_id=$s['id'];
-			   }
-		}
-	}
-	else
-	{
-		echo "<script>swal('Sorry No sizes found in masters','Please add sizes first','warning');</script>";
+		if($s['size_name']=='S01')
+		   {
+			$s01_id=$s['id'];
+		   }
+		if($s['size_name']=='S02')
+		   {
+			$s02_id=$s['id'];
+		   }
+		if($s['size_name']=='S03')
+		   {
+			$s03_id=$s['id'];
+		   }
+		if($s['size_name']=='S04')
+		   {
+			$s04_id=$s['id'];
+		   }
+		if($s['size_name']=='S05')
+		   {
+			$s05_id=$s['id'];
+		   }
+		if($s['size_name']=='S06')
+		   {
+			$s06_id=$s['id'];
+		   }
+		if($s['size_name']=='S07')
+		   {
+			$s07_id=$s['id'];
+		   }
+		if($s['size_name']=='S08')
+		   {
+			$s08_id=$s['id'];
+		   }
+		if($s['size_name']=='S09')
+		   {
+			$s09_id=$s['id'];
+		   }
+		if($s['size_name']=='S10')
+		   {
+			$s10_id=$s['id'];
+		   }
+		if($s['size_name']=='S11')
+		   {
+			$s11_id=$s['id'];
+		   }
+		if($s['size_name']=='S12')
+		   {
+			$s12_id=$s['id'];
+		   }
+		if($s['size_name']=='S13')
+		   {
+			$s13_id=$s['id'];
+		   }
+		if($s['size_name']=='S14')
+		   {
+			$s14_id=$s['id'];
+		   }
+		if($s['size_name']=='S15')
+		   {
+			$s15_id=$s['id'];
+		   }
+		if($s['size_name']=='S16')
+		   {
+			$s16_id=$s['id'];
+		   }
+		if($s['size_name']=='S17')
+		   {
+			$s17_id=$s['id'];
+		   }
+		if($s['size_name']=='S18')
+		   {
+			$s18_id=$s['id'];
+		   }
+		if($s['size_name']=='S19')
+		   {
+			$s19_id=$s['id'];
+		   }
+		if($s['size_name']=='S20')
+		   {
+			$s20_id=$s['id'];
+		   }
+		if($s['size_name']=='S21')
+		   {
+			$s21_id=$s['id'];
+		   }
+		if($s['size_name']=='S22')
+		   {
+			$s22_id=$s['id'];
+		   }
+		if($s['size_name']=='S23')
+		   {
+			$s23_id=$s['id'];
+		   }
+		if($s['size_name']=='S24')
+		   {
+			$s24_id=$s['id'];
+		   }
+		if($s['size_name']=='S25')
+		   {
+			$s25_id=$s['id'];
+		   }
+		if($s['size_name']=='S26')
+		   {
+			$s26_id=$s['id'];
+		   }
+		if($s['size_name']=='S27')
+		   {
+			$s27_id=$s['id'];
+		   }
+		if($s['size_name']=='S28')
+		   {
+			$s28_id=$s['id'];
+		   }
+		if($s['size_name']=='S29')
+		   {
+			$s29_id=$s['id'];
+		   }
+		if($s['size_name']=='S30')
+		   {
+			$s30_id=$s['id'];
+		   }
+		if($s['size_name']=='S31')
+		   {
+			$s31_id=$s['id'];
+		   }
+		if($s['size_name']=='S32')
+		   {
+			$s32_id=$s['id'];
+		   }
+		if($s['size_name']=='S33')
+		   {
+			$s33_id=$s['id'];
+		   }
+		if($s['size_name']=='S34')
+		   {
+			$s34_id=$s['id'];
+		   }
+		if($s['size_name']=='S35')
+		   {
+			$s35_id=$s['id'];
+		   }
+		if($s['size_name']=='S36')
+		   {
+			$s36_id=$s['id'];
+		   }
+		if($s['size_name']=='S37')
+		   {
+			$s37_id=$s['id'];
+		   }
+		if($s['size_name']=='S38')
+		   {
+			$s38_id=$s['id'];
+		   }
+		if($s['size_name']=='S39')
+		   {
+			$s39_id=$s['id'];
+		   }
+		if($s['size_name']=='S40')
+		   {
+			$s40_id=$s['id'];
+		   }
+		if($s['size_name']=='S41')
+		   {
+			$s41_id=$s['id'];
+		   }
+		if($s['size_name']=='S42')
+		   {
+			$s42_id=$s['id'];
+		   }
+		if($s['size_name']=='S43')
+		   {
+			$s43_id=$s['id'];
+		   }
+		if($s['size_name']=='S44')
+		   {
+			$s44_id=$s['id'];
+		   }
+		if($s['size_name']=='S45')
+		   {
+			$s45_id=$s['id'];
+		   }
+		if($s['size_name']=='S46')
+		   {
+			$s46_id=$s['id'];
+		   }
+		if($s['size_name']=='S47')
+		   {
+			$s47_id=$s['id'];
+		   }
+		if($s['size_name']=='S48')
+		   {
+			$s48_id=$s['id'];
+		   }
+		if($s['size_name']=='S49')
+		   {
+			$s49_id=$s['id'];
+		   }
+		if($s['size_name']=='S50')
+		   {
+			$s50_id=$s['id'];
+		   }
 	}
 	
 	$sql="select * from $brandix_bts.view_extra_recut where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
@@ -287,13 +280,12 @@ if($status == '')
 		$style_code=$l['order_style_no'];
 		$col_code=$l['color_code'];
 		$insertLayPlanQuery="INSERT ignore INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES 
-		('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
+		('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$issued_time',$planned_plies,$planned_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
 		//echo $insertLayPlanQuery."</br>";
 		$result2=mysqli_query($link, $insertLayPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$layplan_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		if($layplan_id>0)
 		{	
-			$sno=echo_title("$brandix_bts.tbl_miniorder_data","max(mini_order_num)+1","mini_order_ref",$min_ord_ref_id,$link);
 			if($l['a_s01']>0)
 			{
 				$insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s01_id.",".$l['a_s01'].")";
@@ -543,7 +535,7 @@ if($status == '')
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s50_id.",".$l['a_s50'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			 }
+			}
 			
 			//get the last bundle number in mini order data
 			$sql3="select max(bundle_number)+1 as bundle from $brandix_bts.tbl_miniorder_data";
@@ -557,32 +549,37 @@ if($status == '')
 			$layplan_Query1="SELECT cut_sizes.ref_size_name AS size_id,cut_master.cut_num,cut_sizes.id,`cut_master`.`planned_plies`,cut_master.actual_plies,
 			cut_sizes.quantity,cut_master.actual_plies*cut_sizes.quantity AS total_cut_quantity,cut_master.doc_num AS docket_number
 			FROM $brandix_bts.tbl_cut_master AS cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master AS cut_sizes ON cut_master.id=cut_sizes.parent_id
-			WHERE cut_master.id=$layplan_id";
+			WHERE cut_master.id='$layplan_id' group by cut_sizes.ref_size_name";
 			//echo $layplan_Query1."</br>";
 			$result4=mysqli_query($link, $layplan_Query1) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$layplan_result1=mysqli_num_rows($result4);
 			if($layplan_result1>0)
 			{
+				$sno=echo_title("$brandix_bts.tbl_miniorder_data","max(mini_order_num)+1","mini_order_ref",$min_ord_ref_id,$link);
 				while($l=mysqli_fetch_array($result4))
 				{
 					$size=$l['size_id'];
 					//$bundle_quantity=$l['actual_plies'];
-					$bundle_quantity=$l['quantity']*$l['actual_plies'];
-					//for($i=0;$i<$bundles_count;$i++)
-					//{
-						echo "<tr><td>".$sno."</td><td>".$cut_num."</td><td>".$color_code."</td><td>".$size."</td><td>".$bundle_number."</td><td>".$bundle_quantity."</td><td>".$l['docket_number']."</td></tr>";
-						$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".date("Y-m-d h:i:s")."','".$min_ord_ref_id."','".$sno."','".$cut_num."','".$color_code."','".$size."','".$bundle_number."','".$bundle_quantity."','".$l['docket_number']."','".$sno."')";
-						$result5=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$bundle_number++;
-						$insertMiniOrderdata="INSERT INTO $bai_pro3.pac_stat_log_input_job(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".date("Y-m-d h:i:s")."','".$min_ord_ref_id."','".$sno."','".$cut_num."','".$color_code."','".$size."','".$bundle_number."','".$bundle_quantity."','".$l['docket_number']."','".$sno."')";
-						$result5=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						
-					//}
+					$bundle_quantity=$l['quantity']*$l['planned_plies'];
+					$input_job_no=echo_title("$bai_pro3.packing_summary_input","max(input_job_no)+1","order_del_no",$schedule,$link);
+					$size_tit=echo_title("$brandix_bts.tbl_orders_sizes_master","strtolower(size_title)","ref_size_name='$size' and parent_id",$order_id,$link);
+					$destination=echo_title("$bai_pro3.bai_orders_db_confirm","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
+					$packing_mode=echo_title("$bai_pro3.packing_summary_input","packing_mode","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
+					$size_code_ref=echo_title("$brandix_bts.tbl_orders_size_ref","strtolower(size_name)","ref_size_name",$size,$link);
+					$doc_numb=str_replace('R', '', '$l['docket_number']');
+					$rand=$schedule.date("ymdH").$input_job_no;
+					
+					echo "<tr><td>".$sno."</td><td>".$cut_num."</td><td>".$color_code."</td><td>".$size."</td><td>".$bundle_number."</td><td>".$bundle_quantity."</td><td>".$l['docket_number']."</td></tr>";
+					$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".date("Y-m-d h:i:s")."','".$min_ord_ref_id."','".$sno."','".$cut_num."','".$color_code."','".$size."','".$bundle_number."','".$bundle_quantity."','".$l['docket_number']."','".$sno."')";
+					$result5=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$bundle_number++;
+
+					$sql1="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type) values(\"".$doc_numb."\",\"".$size_tit."\",\"".$bundle_quantity."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$packing_mode."\",\"".$size_code_ref."\",'R')";	
+
+					$result5=mysqli_query($link, $sql1) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							
 				}
 			}
-			
-			
-			
 			
 		}	
 	}

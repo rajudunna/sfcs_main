@@ -34,9 +34,6 @@ if(isset($_POST['flag_validation']))
 </script>
 <body>
 	<form action="index.php?r=<?php echo $_GET['r']?>" method="post" id="storingfomr">
-		<input type="hidden" name="style" value="<?php echo $_POST['style'];?>">
-		<input type="hidden" name="schedule" value="<?php echo $_POST['schedule'];?>">
-		<input type="hidden" name="color" value="<?php echo $_POST['color'];?>">
 		<input type="hidden" name="operation_name" id="op_name" value="<?php echo $_POST['operation_name'];?>">
 		<input type="hidden" name="shift" id="shift" value="<?php echo $_POST['shift'];?>">
 		<input type="hidden" name="operation_id" id='operation_id' value="<?php echo $_POST['operation_id'];?>">
@@ -56,26 +53,8 @@ if(isset($_POST['flag_validation']))
 			</div>
 			<center style='color:red;'><h3>Operation You Are Scanning Is &nbsp;<span style='color:green;'><?php echo $_POST['operation_name'];?></span>&nbsp; On The Shift &nbsp;&nbsp;<span style='color:green;'><?php echo $_POST['shift'];?> <span style='color:red;'></h3></center>
 			<div class='row'>
-				<input type='text' id='changed_rej' name='changed_rej' hidden='true'>
-				<input type='text' id='changed_rej_id' name='changed_rej_id' hidden='true'>
-				<table class="table table-bordered">
-					<tr>
-						<td>Style</td>
-						<td id='style'><?php echo $_POST['style'];?></td>
-					</tr>
-					<tr>
-						<td>Schedule</td>
-						<td id='schedule'><?php echo $_POST['schedule'];?></td>
-					</tr>
-					<tr>
-						<td>Mapped Color</td>
-						<td id='color'><?php echo $_POST['color'];?></td>
-					</tr>
-				</table>
+			<div class="form-group col-md-3">
 			</div>
-		<center>
-		
-			<div class='row'>
 				<div class="form-group col-md-3">
 					<label>Input Job Number:<span style="color:red"></span></label>
 					<input type="text"  id="job_number" class="form-control integer" required placeholder="Scan the Job..."/>
@@ -84,8 +63,28 @@ if(isset($_POST['flag_validation']))
 					<label>Assigning To Module</label><br>
 					<h3><label class='label label-info label-xs' id='module_show'></span><h3>
 				</div>
+				<div class="form-group col-md-3">
 			</div>
-		</center>
+			</div>
+			<div class='row'>
+				<input type='text' id='changed_rej' name='changed_rej' hidden='true'>
+				<input type='text' id='changed_rej_id' name='changed_rej_id' hidden='true'>
+				<table class="table table-bordered">
+					<tr>
+						<td>Style</td>
+						<td id='style_show'></td>
+					</tr>
+					<tr>
+						<td>Schedule</td>
+						<td id='schedule_show'></td>
+					</tr>
+					<tr>
+						<td>Mapped Color</td>
+						<td id='color_show'></td>
+					</tr>
+				</table>
+			</div>
+		
 		<div class='panel panel-primary'>
 			<div class='panel-heading'>Job Data</div>
 				<div class="ajax-loader" id="loading-image" style="margin-left: 486px;margin-top: 35px;border-radius: -80px;width: 88px;">
@@ -94,9 +93,9 @@ if(isset($_POST['flag_validation']))
 			<form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
 			
 				<div class='panel-body'>
-						<input type="hidden" name="style" value="<?php echo $_POST['style'];?>">
-						<input type="hidden" name="schedule" value="<?php echo $_POST['schedule'];?>">
-						<input type="hidden" name="color" value="<?php echo $_POST['color'];?>">
+						<input type="hidden" name="style" id="style">
+						<input type="hidden" name="schedule" id="schedule">
+						<input type="hidden" name="color" id="mapped_color">
 						<input type="hidden" name="job_number" id="hid_job">
 						<input type="hidden" name="module" id="module">
 						<input type="hidden" name="operation_name" id="op_name" value="<?php echo $_POST['operation_name'];?>">
@@ -183,13 +182,10 @@ $(document).ready(function()
 	{
 		$('#loading-image').show();
 		var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
-		var style = document.getElementById('style').innerHTML;
-		var schedule = document.getElementById('schedule').innerHTML;
-		var color = document.getElementById('color').innerHTML;
 		var job_number = $('#job_number').val();
 		var operation_id = $('#operation_id').val();
 		console.log(operation_id);
-		var array = [job_number,style,schedule,color,operation_id];
+		var array = [job_number,operation_id];
 	$.ajax({
 			type: "POST",
 			url: function_text+"?job_number="+array,
@@ -209,11 +205,11 @@ $(document).ready(function()
 					sweetAlert('',response['status'],'error');
 					$('#dynamic_table1').html('No Data Found');
 				}
-				else if(response['module'] == undefined)
-				{
-					sweetAlert('',"Please Assign Module to this Input Job",'error');
-					$('#dynamic_table1').html('Please Assign Module to this Input Job');
-				}
+				// else if(response['module'] == undefined)
+				// {
+				// 	sweetAlert('',"Please Assign Module to this Input Job",'error');
+				// 	$('#dynamic_table1').html('Please Assign Module to this Input Job');
+				// }
 				else if(data)
 				{
 					console.log(data);
@@ -221,6 +217,13 @@ $(document).ready(function()
 					$('#module_div').show();
 					document.getElementById('module_show').innerHTML = response['module'];
 					document.getElementById('module').value = response['module'];
+					console.log(response['color_dis']);
+					document.getElementById('style_show').innerHTML = response['style'];
+					document.getElementById('style').value = response['style'];
+					document.getElementById('schedule_show').innerHTML = response['schedule'];
+					document.getElementById('schedule').value = response['schedule'];
+					document.getElementById('color_show').innerHTML = response['color_dis'];
+					document.getElementById('mapped_color').value = response['color_dis'];
 					// var form = '<form action="<?php echo $_GET['r']?>" method="post">';
 					// $("#dynamic_table1").append(form);
 					var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="return check_pack();"><input type="hidden" id="count_of_data" value='+data.length+'></div>';
@@ -990,6 +993,7 @@ function validating()
 					}else{
 						$final_query = $bulk_insert_rej;
 					}
+					echo $final_query;
 					$rej_insert_result = $link->query($final_query) or exit('data error');
 				}
 				if(strtolower($is_m3) == 'yes' && $flag_decision){

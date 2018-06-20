@@ -188,13 +188,19 @@
 						$schedule=$_POST['schedule'];	
 					}
 
-					// $style_code=$_POST['style'];
-					// $schedule=$_POST['schedule'];
-					// echo $style_code.'<br>';s
-					// echo $schedule;
-					if ($style_code =='NIL' or $schedule =='NIL')
+					$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
+					$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule_original,$link);	
+					$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$schedule,$link);
+					$order_colors=explode(",",$o_colors);	
+					$planned_colors=explode(",",$p_colors);
+					$size_of_ordered_colors=sizeof($order_colors);
+					$size_of_planned_colors=sizeof($planned_colors);
+					// echo 'order_colors: '.$size_of_ordered_colors.'<br>planned: '.$size_of_planned_colors;
+
+					if ($size_of_ordered_colors!=$size_of_planned_colors)
 					{
-						echo 'Please Provide All Details';
+						echo "<script>sweetAlert('Please prepare Lay Plan for all Colors in this Schedule - $schedule_original','','warning')</script>";
+						// echo "<br><br><br><div class='alert alert-danger'>Please prepare Lay Plan for all Colors in this Schedule - $schedule_original</div>";
 					}
 					else
 					{
@@ -285,16 +291,15 @@
 								<br>
 								<?php
 								if($carton_qty>0)
-												{
-												
-												}
-												 else
-												{
-													?>
-								<input type="submit" class="btn btn-success" name="save" value="Save" id="save" onclick="return check_val1();">
-							<?php
-							}
-							
+								{
+								
+								}
+								else
+								{
+									?>
+									<input type="submit" class="btn btn-success" name="save" value="Save" id="save" onclick="return check_val1();">
+									<?php
+								}
 							echo "</div>
 						</form>";
 						

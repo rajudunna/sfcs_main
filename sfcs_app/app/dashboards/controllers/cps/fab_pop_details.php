@@ -5,7 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/user_acl_v1.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
 // $authorized=user_acl("SFCS_0199",$username,50,$group_id_sfcs); 
 ?>
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 <!--
 Ticket #: 252392-Kirang/2014-02-07
 This amendement was done based on the confirmation to issue excess (1%) material depending on the savings.
@@ -19,7 +19,7 @@ Changes Log:
 
 2014-05-29/dharanid/Service Request #370686: Add sivaramakrishnat in $authorized array For Docket allocation in CPS Dashboard
 -->
-<script src="/sfcs/includes/js/sweetalert.min.js"></script>
+<script src="../../../../common/js/sweetalert.min.js"></script>
 <script type="text/javascript">
 
 function verify_num(t,e){
@@ -162,6 +162,7 @@ function validate_but()
 
 
 <?php
+
 set_time_limit(20000);
 
 $doc_no=$_GET['doc_no'];
@@ -201,10 +202,11 @@ $group_docs=$_GET['group_docs'];
 
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="page_style.css" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../../../common/css/page_style.css" />
+<link rel="stylesheet" href="../../../../common/css/bootstrap.min.css">
+<script src="../../../../common/js/jquery.min.js"></script>
+<script src="../../../../common/js/bootstrap.min.js"></script>
 
 
 <style>
