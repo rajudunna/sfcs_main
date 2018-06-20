@@ -1,5 +1,8 @@
+
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 $group_docs=$_GET['group_docs'];
 
 echo "<h2>You are not authorised to use this page.</h2><Br/><Br/>";

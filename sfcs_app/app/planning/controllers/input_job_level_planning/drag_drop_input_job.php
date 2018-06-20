@@ -1,8 +1,10 @@
 <?php
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
-$username="sfcsproject1";
-$super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gayanl","baisysadmin","chathurangad","buddhikam","saroasa","chathurikap","sfcsproject2","thanushaj","kemijaht","sfcsproject1","ber_databasesvc","saranilaga","thusiyas","thineshas","sudathra");
+// $username="sfcsproject1";
+$has_perm=haspermission($_GET['r']);
+
+// $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gayanl","baisysadmin","chathurangad","buddhikam","saroasa","chathurikap","sfcsproject2","thanushaj","kemijaht","sfcsproject1","ber_databasesvc","saranilaga","thusiyas","thineshas","sudathra");
 
 ?>
 <!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
@@ -662,7 +664,7 @@ $code_db=explode("*",$code);
 			$mods=array();
 			$mods=explode(",",$section_mods);
 			//$mods[]=$module_ref_no;
-			if(!(in_array(strtolower($username),$super_user)) or !(in_array(strtolower($username),$super_user)))
+			if(!(in_array($authorized,$has_perm)))
 			{
 				//New Implementation to Restrict Power User level Planning 20111211
 				$mods=array();

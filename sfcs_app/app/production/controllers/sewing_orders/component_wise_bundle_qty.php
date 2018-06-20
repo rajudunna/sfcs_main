@@ -53,7 +53,7 @@
 		// include("dbconf.php");
 	    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 
-
+	    $has_permission=haspermission($_GET['r']);
 		$style=$_GET['style'];
 		$schedule=$_GET['schedule']; 
 		$color=$_GET['color'];

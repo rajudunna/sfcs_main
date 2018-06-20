@@ -57,6 +57,7 @@
 		// include("dbconf.php");
 		// include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+$has_permission=haspermission($_GET['r']);
 		
 
 		//include("generate_bundles.php");
@@ -280,7 +281,9 @@ include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 				?>
 				
 			</div>
-			<button type="submit" class="btn btn-primary" style="margin-bottom: -17px;">Submit</button>
+			<?php if(in_array($authorized,$has_permission))
+					{ ?><button type="submit" class="btn btn-primary" style="margin-bottom: -17px;">Submit</button>
+				<?php } ?>
 				
 		</form>
 		<br>

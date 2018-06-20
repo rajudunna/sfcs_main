@@ -11,6 +11,7 @@
 </head>
 <?php
 	include("dbconf.php");
+	$has_permission=haspermission($_GET['r']);
 	if(isset($_POST['style']) && isset($_POST['schedule']) && isset($_POST['color'])&&isset($_POST['cut_num'])&&isset($_POST['operation_code'])&&isset($_POST['bundles_list'])){
 		$style=$_POST['style'];
 		$schedule=$_POST['schedule'];

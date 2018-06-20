@@ -1,9 +1,9 @@
 <?php 
 // $username = "sfcsproject1";
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
-$view_access=user_acl("SFCS_0128",$username,1,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0128",$username,1,$group_id_sfcs);
 ?>
 <html>
 <head>				 

@@ -11,7 +11,7 @@ Change Log:
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
  
 //$view_access=user_acl("SFCS_0056",$username,1,$group_id_sfcs); 
 ?>
@@ -28,14 +28,16 @@ $reasons=array("Miss Yarn","Fabric Holes","Slub","F.Yarn","Stain Mark","Color Sh
 $username=$username_list[1];
 
 $authorized=array("kirang","bainet","baiadmn");
-if(!(in_array(strtolower($username),$authorized)))
+$url=getFullURL($_GET['r'],'restricted.php','N');
+
+if(!in_array($authorized,$has_perm))
 {
-	header("Location:../restricted.php");
+	header("Location:$url");
 }
-*/
+
 
 ?>
-
+*/
 <style type="text/css">
 
 td{

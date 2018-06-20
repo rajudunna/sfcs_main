@@ -5,6 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 $view_access=user_acl("SFCS_0231",$username,1,$group_id_sfcs); 
 $author_id_db=user_acl("SFCS_0231",$username,7,$group_id_sfcs); 
+$permission = hasviewpermission($_GET['r']);
 ?>
 <?php
 
@@ -14,7 +15,7 @@ $username=strtolower($username_list[1]);
 
 $author_id_db=array("lilanku","sasidharch","chandrasekharka","rasools","venkateshch","muralip","kirang","amulyap");
 */
-if(in_array($username,$author_id_db))
+if(in_array($authorized,$permission))
 {
 	
 }

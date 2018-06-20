@@ -4,20 +4,22 @@
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
-$view_access=user_acl("SFCS_0160",$username,1,$group_id_sfcs); 
-$author_id_db=user_acl("SFCS_0160",$username,7,$group_id_sfcs);
+//$has_perm=haspermission($_GET['r']);
+//$view_access=user_acl("SFCS_0160",$username,1,$group_id_sfcs); 
+//$author_id_db=user_acl("SFCS_0160",$username,7,$group_id_sfcs);
 
 //$author_id_db=array("kirang","baiadmn","kirang","denakas","sandeepab","nihals","gayanl","kirang","kirang");
-if(in_array($username,$author_id_db))
-{
+// $url=getFullURL($_GET['r'],'restricted.php','N');
+// if(in_array($authorized,$has_perm))
+// {
 	
-}
-else
-{
-	header("Location:restricted.php");
-}
+// }
+// else
+// {
+// 	header("Location:$url");
+// }
 ?>
 
 <script>

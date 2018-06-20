@@ -1,6 +1,8 @@
 <?php 
 //Without LDAP , With LDAP Unblock LDAP Code
-$username="sfcsproject1";
+//$username="sfcsproject1";
+$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+$user=$username=strtolower($username_list[1]);
 $remove_user_name = true; // set false for static username removing 
 
 //SFCS Db Configurations
