@@ -23,8 +23,7 @@ $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/fabric_requisition.php");
 $has_permission=haspermission($url_r);
-echo count($has_permission);
-echo 'test.php';
+
 
 if(!(in_array($authorized,$has_permission)))
 {
