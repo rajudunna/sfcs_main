@@ -55,11 +55,9 @@ table{
 
 
 <?php 
- include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   
-?>
+ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');  
 
 
-<?php
 
 	    if($_GET['schedule']){
 			$dat1=$_GET['sdate'];	
@@ -90,7 +88,7 @@ table{
 			$table.="<tr><td colspan=11>Schedule: $sch</td></tr></table>";
 		
 			//echo "<right><strong><a href=\"sawing_out_excel.php?sdate=$dat1&edate=$dat2&schedule=$sch\">Export to Excel</a></strong></right>";
-			$sql="SELECT * FROM $$bai_pro3.pac_stat_log where status=\"DONE\"  AND schedule='$sch' AND scan_date BETWEEN '$dat1' AND '$dat2'";
+			$sql="SELECT * FROM $bai_pro3.pac_stat_log where status=\"DONE\"  AND schedule='$sch' AND scan_date BETWEEN '$dat1' AND '$dat2'";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
 		
 		}
