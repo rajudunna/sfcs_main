@@ -391,7 +391,7 @@ if($code==1)
 			$sizes_table.="<input type=\"hidden\" name=\"cat[]\" value=\"".$sql_row1['tid']."\"><input type=\"hidden\" name=\"cat_name[]\" value=\"".$sql_row1['category']."\">";
 			$sizes_table.="<input type=\"hidden\" name=\"docno[]\" value=\"".$sql_row1['doc_no']."\">";
 			$sizes_table.="<h2>".$sql_row1['category']."</h2>";
-			$sizes_table.="<table class='table table-bordered'><tr class='tblheading' style='color:white;'><th>Size</th><th>Qty</th><th>Ratio</th></tr>";
+			$sizes_table.="<table class='table table-bordered' class='float'><tr class='tblheading' style='color:white;'><th>Size</th><th>Qty</th><th>Ratio</th></tr>";
 			//echo sizeof($s_tit)."<br>";
 			for($i=0;$i<sizeof($s_tit);$i++)
 			{
@@ -399,8 +399,8 @@ if($code==1)
 			
 			}
 			$sizes_table.="<tr><td>Total QTY</td><td>".array_sum($a_s)."</td>";
-			$sizes_table.="<tr><td>MK Length</td><td><input type=\"text\" id='mklen".$jj."' name=\"mklen[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
-			$sizes_table.="<tr><td>Plies</td><td><input type=\"text\" id='plies".$jj."' name=\"plies[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
+			$sizes_table.="<tr><td>MK Length</td><td><input class=\"integer\" type=\"text\" id='mklen".$jj."' name=\"mklen[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
+			$sizes_table.="<tr><td>Plies</td><td><input class=\"integer\" type=\"text\" id='plies".$jj."' name=\"plies[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
 			$sizes_table.="</table>";
 			$jj++;
 
