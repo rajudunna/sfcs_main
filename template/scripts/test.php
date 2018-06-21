@@ -36,10 +36,10 @@ include('../helper.php');
     echo "</ul>";
   echo "</div>";
   echo "<div class='col-sm-6'>";
-  $url_view = in_array('view',$perm) ? 'test.php?st=approve' : 'test.php?st=reject';
-  $url_update = in_array('update',$perm) ? 'test.php?st=approve' : 'test.php?st=reject';
-  $url_del = in_array('delete',$perm) ? 'test.php?st=approve' : 'test.php?st=reject';
-  $url_app = in_array('approve',$perm) ? 'test.php?st=approve' : 'test.php?st=reject';
+  $url_view = in_array('1',$perm) ? 'test.php?st=approve' : 'test.php?st=reject';
+  $url_update = in_array('2',$perm) ? 'test.php?st=approve' : 'test.php?st=reject';
+  $url_del = in_array('3',$perm) ? 'test.php?st=approve' : 'test.php?st=reject';
+  $url_app = in_array('5',$perm) ? 'test.php?st=approve' : 'test.php?st=reject';
   echo "<a class='btn btn-primary col-sm-2' href=".$url_view.">View</a><b class='col-sm-1'></b>
   <a class='btn btn-info col-sm-2' href=".$url_update.">Update</a> <b class='col-sm-1'></b>
   <a class='btn btn-danger col-sm-2' href=".$url_del.">Deleate</a> <b class='col-sm-1'></b>
