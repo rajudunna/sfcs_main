@@ -15,7 +15,7 @@ $fca_authorized=user_acl("SFCS_0038",$username,50,$group_id_sfcs);
 $fg_authorized=user_acl("SFCS_0038",$username,51,$group_id_sfcs);
 $spc_users=user_acl("SFCS_0038",$username,68,$group_id_sfcs);
 set_time_limit(6000000);
-$permission = hasviewpermission($_GET['r']);
+$permission = haspermission($_GET['r']);
 ?>
 <title>Weekly Delivery Dashboard - Packing</title>
 <!-- <head>

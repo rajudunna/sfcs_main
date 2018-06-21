@@ -27,8 +27,7 @@
 </style> 
 <script> 
 function printPage(printContent) { 
-    var display_setting="toolbar=yes,menubar=yes,"; 
-    display_setting+="scrollbars=yes,width=650, height=600, left=100, top=25"; 
+    var display_setting="toolbar=yes,menubar=yes,scrollbars=yes,width=1050, height=600"; 
 
     var printpage=window.open("","",display_setting); 
     printpage.document.open(); 

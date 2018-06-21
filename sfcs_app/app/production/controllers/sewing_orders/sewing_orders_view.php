@@ -45,6 +45,8 @@
 <body>
 <?php
 		include("dbconf.php");
+		$has_permission=haspermission($_GET['r']);
+
 		/*getting style codes*/
 		$style_codes="SELECT DISTINCT trim(order_style_no) as order_style_no FROM bai_pro3.bai_orders_db_confirm";
 		$style_result=mysqli_query($link,$style_codes);
@@ -195,7 +197,8 @@
 						}
 						echo '</select>';
 					}
-					echo '<button type="submit" class="btn btn-primary">Update Module</button>';
+					if(in_array($update,$has_permission))
+					{	echo '<button type="submit" class="btn btn-primary">Update Module</button>'; }
 				echo "</div>";
 				echo"</form>";
 			}else{

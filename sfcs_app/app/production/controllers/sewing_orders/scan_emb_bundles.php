@@ -30,6 +30,7 @@
 			}
 		</style>
 	</head>
+	<?php $has_permission=haspermission($_GET['r']); ?>
 	<body> 
 		<div class="container-fluid">			
 			<div class="panel panel-info"> 

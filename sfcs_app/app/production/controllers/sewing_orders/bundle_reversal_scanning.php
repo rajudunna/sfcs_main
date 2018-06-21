@@ -30,6 +30,7 @@
 			}
 		</style>
 	</head>
+	<?php $has_permission=haspermission($_GET['r']); ?>
 	<body> 
 		<div class="container-fluid">
             <span class="pull-right">(<span style="color:red;">*</span>) fields are mandatory</span>			
@@ -105,7 +106,7 @@
                         </div>-->
                         <div class="form-group col-md-3">
 	                        <input type="hidden" name="submit" value="submit"/><br/>
-	                        <button type="submit" class="btn btn-primary" id="submit">Un-Scan</button>
+	                        <?php if(in_array($authorized,$has_permission)) { ?><button type="submit" class="btn btn-primary" id="submit">Un-Scan</button> <?php}?>
 	                    </div>
                     </form>
                 	<img src='cssjs/loading2.gif' id="loading-image" class="img-responsive"/>

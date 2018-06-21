@@ -25,6 +25,7 @@ function verify_num(t){
 	// include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	// include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
+	$has_permission=haspermission($_GET['r']);
 	// include("../../../../../common/config/config_ajax.php");
 // error_reporting (0);
 $qry_get_product_style = "SELECT id,style FROM $brandix_bts.tbl_style_ops_master  where style != '' group by style";
@@ -327,7 +328,15 @@ $(document).ready(function(){
 						{
 							var data = jQuery.parseJSON(response);
 							console.log(data.length);
-							var markup = "<table class = 'table table-striped' id='dynamic_table'><tbody><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Group</th><th>Is M3 Operation?</th><th>M3_SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Next Operations</th><th>Component</th><th>Controls</th><th><button type='button' class='btn btn-info btn-sm particular' id='particular' onclick='value_edition();'>Add Manual Operation</i></button></th></tr></thead><tbody>";
+							var markup = "<table class = 'table table-striped' id='dynamic_table'><tbody><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Group</th><th>Is M3 Operation?</th><th>M3_SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Next Operations</th><th>Component</th><th>Controls</th><th>";
+							<?php
+								if(in_array($update,$has_permission))
+								{	?>
+									markup+="<button type='button' class='btn btn-info btn-sm particular' id='particular' onclick='value_edition();'>Add Manual Operation</i></button>";
+									<?php	
+								} 
+							?>
+							markup+="</th></tr></thead><tbody>";
 							$("#dynamic_table1").append(markup);
 							for(var i=0;i<data.length;i++)
 							{
@@ -359,7 +368,14 @@ $(document).ready(function(){
 								}
 								else
 								{
-									var deleting_html = "<td><button type='button' id='deletable' class='btn btn-danger btn-sm'  onclick='default_oper("+data[i].main_id+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td>";
+									<?php
+										if(in_array($delete,$has_permission))
+										{	?>
+											var deleting_html = "<td><button type='button' id='deletable' class='btn btn-danger btn-sm'  onclick='default_oper("+data[i].main_id+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td>";
+											<?php	
+										} 
+									?>
+									
 								}
 								if(data[i]['operation_code'] == 10 || data[i]['operation_code'] == 15|| data[i]['operation_code'] == 200)
 								{
@@ -369,7 +385,16 @@ $(document).ready(function(){
 								{
 									var editing_class = '';
 								}
-								var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td  id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none'>"+style_name+"</td><td class='none'>"+data[i]['color']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"smv>"+data[i]['smv']+"</td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"supplier_id hidden='true'>"+data[i].emb_supplier+"</td><td id="+data[i].main_id+"supplier>"+data[i].supplier_name+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td><td><button type='button' class='btn btn-info btn-sm particular "+editing_class+"' id='particularedit'  onclick='myfunctionedit(this,"+data[i].main_id+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td>"+deleting_html+"</tr>";
+								var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td  id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none'>"+style_name+"</td><td class='none'>"+data[i]['color']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"smv>"+data[i]['smv']+"</td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"supplier_id hidden='true'>"+data[i].emb_supplier+"</td><td id="+data[i].main_id+"supplier>"+data[i].supplier_name+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td><td>";
+								<?php
+									if(in_array($edit,$has_permission))
+									{	?>
+										markup1+="<button type='button' class='btn btn-info btn-sm particular "+editing_class+"' id='particularedit'  onclick='myfunctionedit(this,"+data[i].main_id+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>";
+										<?php	
+									} 
+								?>
+
+								markup1+="</td>"+deleting_html+"</tr>";
 								s_no++;
 								 $("#dynamic_table").append(markup1);
 							}

@@ -44,7 +44,7 @@ td{ padding:1px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 
 //$tid=$_GET["tid"];
 //$schedule=$_GET["schedule"];
-$permission = hasviewpermission($_GET['r']);
+$permission = haspermission($_GET['r']);
 if(isset($_GET['schedule']))
 {
 	$schedule=$_GET['schedule'];

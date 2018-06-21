@@ -2,6 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+$has_permission = haspermission($_GET['r']);
 
 ?>
 
@@ -182,7 +183,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$max_allowed_date=$sql_row['bac_date'];
 }
 
-if(in_array($username,$auth_users))
+// if(in_array($username,$auth_users))
+if(in_array($authorized,$has_permission))
 {
 	echo '<input type="text" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" >'; 
 }
