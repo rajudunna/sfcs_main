@@ -428,7 +428,7 @@ th
 			
 		}
 		
-		echo "<form name=\"ins\" method=\"post\" action='".getFullURL($_GET['r'],'fab_pop_allocate_v5.php','R')."'>"; //new version
+		echo "<form name=\"ins\" method=\"post\" action='".getFullURLLevel($_GET['r'],'fab_pop_allocate_v5.php',0,'N')."'>"; //new version
 		echo "<input type=\"hidden\" value=\"2\" name=\"process_cat\">"; //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
 		echo "<table class='table table-bordered'><tr><th>Category -- Docket</th><th>Material Req.</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
 		//$sql1="SELECT recut_v2.a_plies,recut_v2.mk_ref,recut_v2.plan_lot_ref,recut_v2.cat_ref,recut_v2.print_status,recut_v2.doc_no,cat_stat_log.category,cat_stat_log.compo_no from recut_v2 left join cat_stat_log on recut_v2.cat_ref=cat_stat_log.tid  where recut_v2.order_tid=\"$order_id_ref\" and recut_v2.acutno=$cut_no_ref"; //OLD

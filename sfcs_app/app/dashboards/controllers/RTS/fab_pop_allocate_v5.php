@@ -100,8 +100,8 @@ Ticket #: #684040-RameshK/2014-05-26 : To raise compalint for rejected RM materi
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.4/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" href="../../../../common/css/bootstrap.css">
-
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/sweetalert.min.js',4,'R'); ?>"></script>
+<!-- <script type="text/javascript" src="../../../../common/js/sweetalert.min.js"></script> -->
+<script type="text/javascript" src="<?php getFullURLLevel($_GET['r'],'common/js/sweetalert.min.js',4,'R'); ?>"></script> 
 <script>
 /* 	$(document).ready(function() {
 		$('#example').DataTable( {
@@ -322,8 +322,12 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait
 
 <?php
 set_time_limit(2000);
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
+error_reporting(0);
 ?>
 
 
@@ -361,7 +365,7 @@ if(isset($_POST['allocate_new']))
 		$width_ref=array();
 		$val_ref=array();
 		$issued_ref=array();
-		
+	
 		for($j=0;$j<sizeof($chk_ref);$j++)
 		{
 			$x=$chk_ref[$j];
@@ -530,14 +534,15 @@ if(isset($_POST['allocate_new']))
 	//Exit Code
 	
 	echo "<h2>Successfully Updated.</h2>";
-	
+	$path1=getFullURLLevel($_GET['r'],'fab_pop_details.php',0,'N');
+	$path2=getFullURLLevel($_GET['r'],'fab_pop_details_recut_v2.php',0,'N');	
 	if($process_cat==1)
 	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details.php?doc_no=".$doc_ref[0]."\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$path1&doc_no=".$doc_ref[0]."\"; }</script>";
 	}
 	else
 	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details_recut_v2.php?doc_no=".$doc_ref[0]."\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$path2&doc_no=".$doc_ref[0]."\"; }</script>";
 	}
 }
 
@@ -550,7 +555,7 @@ if(isset($_POST['allocate']))
 {
 
 	
-	echo "<form name='input' method='post' action='fab_pop_allocate_v5.php'>";
+	echo "<form name='input' method='post' action='?r=".$_GET['r']."'>";
 	$doc=$_POST['doc'];
 	//echo "DOC : ".sizeof($doc);exit;
 	$doc_cat=$_POST['doc_cat'];
@@ -571,14 +576,12 @@ if(isset($_POST['allocate']))
 		
 		$temp="manual".$doc[$i];
 		$manual_lot=$_POST[$temp];
-		
-		$temp="pms".$doc[$i];
+		//$temp="pms".$doc[$i];
 		$pms_lot=array();
 		if(strlen($_POST[$temp])>0)
 		{
-			$pms_lot=explode(",",$_POST[$temp]);
+			$pms_lot=explode(",",$manual_lot);
 		}
-			
 		
 		$lot_ref="";
 		
@@ -682,7 +685,9 @@ if(isset($_POST['allocate']))
 		//$sql="select * from bai_rm_pj1.fabric_status_v2 where inv_no in (select inv_no from bai_rm_pj1.sticker_report where lot_no in (".implode(",",$lot_db_2)."))";
 
 		//Current Version
+		//var_dump($lot_db_2);
 		$sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") order by shade";
+		//echo $sql;
 		//$sql="select * from bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") order by inv_no,shade,width";
 		//2012-06-12 New implementation to get fabric detail based on invoce/batch
 		/////////////////XXXXXXXXXXXXXXXXXXXXXXXXXXX//////////////////////
