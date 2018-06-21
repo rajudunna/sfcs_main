@@ -178,9 +178,9 @@ if(isset($_POST['submit']))
 
 <?php
 $reptype = $_POST['reptype'];
+//echo 'rep type = '.$reptype;
 if(isset($_POST['submit']) && $reptype == 1)
 {
-
 
 //NEW Enhancement for category breakup		 
  		$doc_ref_new="";
@@ -226,11 +226,48 @@ if(isset($_POST['submit']) && $reptype == 1)
 		}
 	//NEW Enhancement for category breakup		
 
-	$sql="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ('$shift') and date between \"$from_date\" and \"$to_date\" ".$query;
+	$sql="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" ".$query;
 
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
+
+	echo '<div id="export"  class="pull-right">
+			<form action="'.$excel_form_action.'" method ="post" > 
+				<input type="hidden" name="csv_text" id="csv_text">
+				<input class="btn btn-warning btn-sm" type="submit" value="Export to Excel" onclick="getCSVData()">
+			</form>
+			</div>';	
+	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'><br>";
+	echo "<h5><b>Detailed Report</b></h5>";
+	echo "<table class='table table-bordered table-responsive' id='report'>";	
+	echo "<tr class='info'>";
+	echo "<th>Date</th>";
+	echo "<th>Shift</th>";
+	echo "<th>Section</th>";
+	echo "<th>Docket No</th>";
+	echo "<th>Style</th>";
+	echo "<th>Schedule</th>";
+	echo "<th>Color</th>";
+	echo "<th>Category</th>";
+	echo "<th>Cut No</th>";
+	echo "<th>Pcs</th>";
+	echo "<th>Plies</th>";
+	echo "<th>MK Len.</th>";
+	echo "<th>Cut Qty</th>";
+	echo "<th>Docket Requested</th>";
+	echo "<th>Fabric Received</th>";
+	echo "<th>Fabric Returned</th>";
+	echo "<th>Damages</th>";
+	echo "<th>Shortages</th>";
+	echo "<th>Net Utlization</th>";
+	echo "<th>Ordering Consumpt-ion</th>";
+	echo "<th>Actual Consumpt-ion</th>";
+	echo "<th>Net Consumpt-ion</th>";
+	echo "<th>Actual Saving</th>";
+	echo "<th>Pct %</th>";
+	echo "<th>Net Saving</th>";
+	echo "</tr>";	
 
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -369,44 +406,9 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,0);
 			$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
 			$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
-		 echo '<div id="export"  class="pull-right">
-			<form action="'.$excel_form_action.'" method ="post" > 
-				<input type="hidden" name="csv_text" id="csv_text">
-				<input class="btn btn-warning btn-sm" type="submit" value="Export to Excel" onclick="getCSVData()">
-			</form>
-			</div>';	
-		 echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'><br>";
-		 echo "<h5><b>Detailed Report</b></h5>";
-		 echo "<table class='table table-bordered table-responsive' id='report'>";	
-		 echo "<tr class='info'>";
-		 echo "<th>Date</th>";
-		 echo "<th>Shift</th>";
-		 echo "<th>Section</th>";
-		 echo "<th>Docket No</th>";
-		 echo "<th>Style</th>";
-		 echo "<th>Schedule</th>";
-		 echo "<th>Color</th>";
-		 echo "<th>Category</th>";
-		 echo "<th>Cut No</th>";
-		 echo "<th>Pcs</th>";
-		 echo "<th>Plies</th>";
-		 echo "<th>MK Len.</th>";
-		 echo "<th>Cut Qty</th>";
-		 echo "<th>Docket Requested</th>";
-		 echo "<th>Fabric Received</th>";
-		 echo "<th>Fabric Returned</th>";
-		 echo "<th>Damages</th>";
-		 echo "<th>Shortages</th>";
-		 echo "<th>Net Utlization</th>";
-		 echo "<th>Ordering Consumpt-ion</th>";
-		 echo "<th>Actual Consumpt-ion</th>";
-		 echo "<th>Net Consumpt-ion</th>";
-		 echo "<th>Actual Saving</th>";
-		 echo "<th>Pct %</th>";
-		 echo "<th>Net Saving</th>";
-		 echo "</tr>";	
+		
 		echo "<tr height=17 style='height:12.75pt'>";
-		echo "<td height=17 class=xl6418241 style='height:12.75pt'></td>";
+		//echo "<td height=17 class=xl6418241 style='height:12.75pt'></td>";
 		echo "<td class=xl6618241 style='border-top:none'>$date</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_shift</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_section</td>";
@@ -451,7 +453,7 @@ if(isset($_POST['submit']) && $reptype==2)
    //NEW Enhancement for category breakup		 
  		$doc_ref_new="";
 		
-		$sql2="select * from $bai_pro3.act_cut_status where section in ('$section') and shift in ('$shift') and date between \"$from_date\" and \"$to_date\"";
+		$sql2="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -468,7 +470,7 @@ if(isset($_POST['submit']) && $reptype==2)
 				$cat_ref_new=$sql_row['cat_ref'];
 			}
 
-			$sql="select * from $bai_pro3.cat_stat_log where category in ('$cat') and tid='$cat_ref_new'";
+			$sql="select * from $bai_pro3.cat_stat_log where category in ($cat) and tid='$cat_ref_new'";
 			
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -498,6 +500,21 @@ if(isset($_POST['submit']) && $reptype==2)
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
+
+	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'>";
+	echo "<h5>Summary Report</h5>";
+	echo "<table class='table table-bordered table-responsive' id='report'>";	
+	echo "<tr class='info'>";
+	echo "<th>Section</th>";
+	echo "<th>Shift</th>";
+	echo "<th>Cut Qty</th>";
+	echo "<th>Damages</th>";
+	echo "<th>Shortages</th>";
+	echo "<th>ActualSaving</th>";
+	echo "<th>Pct %</th>";
+	echo "<th>Net Saving</th>";
+	echo "<th>Pct %</th>";
+	echo "</tr>";
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -557,7 +574,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$net_saving_sum=0;
 		$net_saving_pct=0;
 		
-$sql33="select * from $bai_pro3.act_cut_status where section in ('$section') and shift in ('$shift') and doc_no in ('$doc_list') and date between \"$from_date\" and \"$to_date\"".$query;
+$sql33="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and doc_no in ($doc_list) and date between \"$from_date\" and \"$to_date\"".$query;
 
 mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -732,20 +749,6 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$act_saving_pct=round(($act_saving_sum/$requested)*100,0);
 	$net_saving_sum=round($requested-$utilized,1);
 	$net_saving_pct=round(($net_saving_sum/$requested)*100,0);
-	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'>";
-	echo "<h5>Summary Report</h5>";
-	echo "<table class='table table-bordered table-responsive' id='report'>";	
-	echo "<tr class='info'>";
-	echo "<th>Section</th>";
-	echo "<th>Shift</th>";
-	echo "<th>Cut Qty</th>";
-	echo "<th>Damages</th>";
-	echo "<th>Shortages</th>";
-	echo "<th>ActualSaving</th>";
-	echo "<th>Pct %</th>";
-	echo "<th>Net Saving</th>";
-	echo "<th>Pct %</th>";
-	echo "</tr>";
 	
 	echo" <tr height=17 style='height:12.75pt'>";
 	echo "<td class=xl6618241 style='border-top:none'>$section_new</td>";
