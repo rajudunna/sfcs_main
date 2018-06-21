@@ -11,7 +11,8 @@
 	}
 	else
 	{
-		header($_GET['r'],'restricted.php','N');
+		$url = getFullURLLevel($_GET['r'],'common/restricted.php',1,'N');
+		header("Location:$url");
 	}
 ?>
 <?php echo '<link href="'.getFullURLLevel($_GET['r'],'/common/css/sfcs_styles.css',3,'R').'" rel="stylesheet" type="text/css" />'; ?>

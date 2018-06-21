@@ -13,7 +13,8 @@
 	}
 	else
 	{
-		header($_GET['r'],'restricted.php','N');
+		$url = getFullURLLevel($_GET['r'],'common/restricted.php',1,'N');
+		header("Location:$url");
 	}
 ?>
 

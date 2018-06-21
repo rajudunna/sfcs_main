@@ -11,7 +11,8 @@
 	}
 	else
 	{
-		header($_GET['r'],'restricted.php','N');
+		$url = getFullURLLevel($_GET['r'],'common/restricted.php',1,'N');
+		header("Location:$url");
 	}
 ?>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->

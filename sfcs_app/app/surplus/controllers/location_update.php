@@ -8,13 +8,18 @@
 	// $view_access=user_acl("SFCS_0175",$username,1,$group_id_sfcs);
 	$has_permission=haspermission($_GET['r']);
 
+	// echo $authorized.'authorized<br/>';
+	// for($i=0; $i< count($has_permission); $i++){
+	// 	echo $has_permission[$i].'  - has_permission'.($i+1).'<br/>';
+	// }
 	if(in_array($authorized,$has_permission))
 	{
 		
 	}
 	else
 	{
-		header($_GET['r'],'restricted.php','N');
+		$url = getFullURLLevel($_GET['r'],'common/restricted.php',1,'N');
+		header("Location:$url");
 	}
 ?>
 
