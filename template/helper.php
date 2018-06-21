@@ -215,9 +215,9 @@ function haspermission($r){
     updated at : 18-06-2018.
 */
 function getrbac_user(){
-    $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-    $user=strtolower($username_list[1]);
-    //$user = 'Kiran';
+    // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+    // $user=strtolower($username_list[1]);
+    $user = 'sfcsproject1';
     return $user;
 }
 

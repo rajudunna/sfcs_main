@@ -4,7 +4,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
 
 <?php
-$permission = hasviewpermission($_GET['r']);
+$permission = haspermission($_GET['r']);
 //define a maxim size for the uploaded images
 define ("MAX_SIZE","10000000");
 // define the width and height for the thumbnail
