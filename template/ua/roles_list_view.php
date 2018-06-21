@@ -22,6 +22,7 @@ if(isset($_SESSION["errormsg"])) {
     }
 ?>  
 <div class="panel panel-primary">
+
     <div class="panel-heading">All Roles List</div>
 
         <div class="panel-body">  
@@ -58,7 +59,6 @@ if(isset($_SESSION["errormsg"])) {
                 $link->close();
 
             ?>
-
 
         </div> 
     </div> 
