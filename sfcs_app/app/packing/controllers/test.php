@@ -2,7 +2,7 @@
 
 /*list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 $authorized=array("muralim","duminduw","rajanaa","kranthic","kirang");*/
-$permission = hasviewpermission($_GET['r']);
+$permission = haspermission($_GET['r']);
 if(!(in_array($authorized,$permission)))
 {
 	header("Location:restrict.php");

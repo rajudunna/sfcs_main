@@ -2,6 +2,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+$has_permission = haspermission($_GET['r']);
 
 // include ('../'.getFullURL($_GET['r'],"dbconf.php",'R'));
 
@@ -207,7 +208,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			case 0:
 			{
-				if(in_array($username,$auth_upload_users))
+				if(in_array($authorized,$has_permission))
 				{
 					$sql2="select * from $bai_pro.tbl_freez_plan_tmp where date='$yer_mon'";
 					// echo $sql2."<br>";
@@ -228,7 +229,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}
 			case 1:
 			{
-				if(in_array($username,$auth_approve_users))
+				if(in_array($approve,$has_permission))
 				{
 
 					echo "<a href=\"".getFullURL($_GET['r'], "review_log.php", "N")."&exec=1&status=2&yer_mon=$yer_mon\"><button class='btn btn-success'>Confirm</button></a>";

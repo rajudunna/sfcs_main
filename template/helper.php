@@ -212,7 +212,7 @@ function haspermission($r){
     output : String.
     ** By chandu **
     created at : 18-06-2018.
-    updated at : 18-06-2018.
+    updated at : 20-06-2018.
 */
 function getrbac_user(){
     //$username_list=explode('\\',$_SERVER['REMOTE_USER']);

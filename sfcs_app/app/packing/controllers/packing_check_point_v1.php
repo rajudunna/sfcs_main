@@ -10,7 +10,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3_bulk_or_proc.php")
 // $view_access=user_acl("SFCS_0116",$username,1,$group_id_sfcs);
 // $special_users=user_acl("SFCS_0116",$username,22,$group_id_sfcs);
 // $authorised=user_acl("SFCS_0116",$username,7,$group_id_sfcs);
-$permission = hasviewpermission($_GET['r']);
+$permission = haspermission($_GET['r']);
 ?>
 <?php //include("functions.php"); 
 //To validate the output entries
