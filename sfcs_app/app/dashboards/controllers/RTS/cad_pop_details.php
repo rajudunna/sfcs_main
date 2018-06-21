@@ -326,8 +326,8 @@ echo "</table>";
 	
 	echo "<table class='table table-bordered'><tr class='tblheading' style='color:white;'><th>Category</th><th>Control</th><th>Print Status</th></tr>";
 $sql1="SELECT recut_v2.plan_lot_ref,recut_v2.cat_ref,recut_v2.print_status,recut_v2.doc_no,cat_stat_log.category from $bai_pro3.recut_v2 left join $bai_pro3.cat_stat_log on recut_v2.cat_ref=cat_stat_log.tid  where recut_v2.order_tid=\"$order_id_ref\" and recut_v2.acutno=$cut_no_ref";
-//`echo $sql1;
-mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//echo $sql1;
+//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
 $enable_allocate_button=0;
@@ -343,6 +343,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 	if(strlen($sql_row1['plan_lot_ref'])>0)
 	{
+	
 		echo "<td><a href=\"$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 	}
 	if($sql_row1['print_status']>0)
