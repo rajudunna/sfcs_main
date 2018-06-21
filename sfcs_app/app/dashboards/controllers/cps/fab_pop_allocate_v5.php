@@ -347,7 +347,7 @@ function check_qty2(x,m,n,doc)
 					widt=parseFloat((document.input["width"+doc_ref+"["+j+"]"].value));
 					document.input["min_width["+i+"]"].value=widt;
 					
-					if(selc<mat_req){
+					if(selc<=mat_req){
 						document.getElementById("issued"+doc_ref+"["+j+"]").innerHTML=issued_qty;
 						document.getElementById("issued_new"+doc_ref+"["+j+"]").value=issued_qty;
 						alloc_qty=alloc_qty+parseFloat(issued_qty);
@@ -556,8 +556,8 @@ if(isset($_POST['allocate_new']))
 		}
 		
 		$sql="update bai_rm_pj1.store_in set allotment_status=1 where tid in (".implode(",",$tid_ref).")";
-		//echo $sql."<br/>";
-		
+
+		//Uncheck this
 		mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//To update allocated roll details in docket/label reference table.
@@ -574,7 +574,7 @@ if(isset($_POST['allocate_new']))
 					$sql="insert into bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
 				}
 				
-				
+				//Uncheck this
 				mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				
@@ -592,12 +592,12 @@ if(isset($_POST['allocate_new']))
 					$row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
 					
 					$qry_newroll="insert into bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid_ref[$j]."')";
-					// echo $qry_newroll."<br>";
 					mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 
 				//To update Allocated Qty
-				$sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
+				$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
+				//Uncheck this
 				mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
@@ -612,7 +612,6 @@ if(isset($_POST['allocate_new']))
 		{
 			$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 		}
-		//echo $sql1."<br/>";
 		
 		mysqli_query($link, $sql1) or exit("Sql Error5: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
@@ -629,6 +628,7 @@ if(isset($_POST['allocate_new']))
 			{
 				$mk_length=$sql_row['marker_length'];
 			}
+			
 			if(mysqli_num_rows($sql_result)!=0)
 			{
 				$sql="insert into bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
