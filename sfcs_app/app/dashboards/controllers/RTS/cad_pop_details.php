@@ -391,11 +391,11 @@ if($code==1)
 			$sizes_table.="<input type=\"hidden\" name=\"cat[]\" value=\"".$sql_row1['tid']."\"><input type=\"hidden\" name=\"cat_name[]\" value=\"".$sql_row1['category']."\">";
 			$sizes_table.="<input type=\"hidden\" name=\"docno[]\" value=\"".$sql_row1['doc_no']."\">";
 			$sizes_table.="<h2>".$sql_row1['category']."</h2>";
-			$sizes_table.="<table class='table table-bordered' class='float'><tr class='tblheading' style='color:white;'><th>Size</th><th>Qty</th><th>Ratio</th></tr>";
+			$sizes_table.="<table class='table table-bordered ' ><tr class='tblheading' style='color:white;'><th>Size</th><th>Qty</th><th>Ratio</th></tr>";
 			//echo sizeof($s_tit)."<br>";
 			for($i=0;$i<sizeof($s_tit);$i++)
 			{
-				$sizes_table.="<tr><td>".$s_tit[$i]."</td><td>".$sql_row1["a_s".$sizes_code[$i].""]."</td><td><input type=\"hidden\" name=\"size_".$tid."[]\" value=\"a_s".$sizes_code[$i]."\"><input type=\"text\" name=\"qty_".$tid."[]\" value=\"".$sql_row1["a_s".$sizes_code[$i].""]."\"></td></tr>";
+				$sizes_table.="<tr><td>".$s_tit[$i]."</td><td>".$sql_row1["a_s".$sizes_code[$i].""]."</td><td><input type=\"hidden\" name=\"size_".$tid."[]\" value=\"a_s".$sizes_code[$i]."\"><input type=\"text\" name=\"qty_".$tid."[]\" value=\"".$sql_row1["a_s".$sizes_code[$i].""]."\" class='float'></td></tr>";
 			
 			}
 			$sizes_table.="<tr><td>Total QTY</td><td>".array_sum($a_s)."</td>";
