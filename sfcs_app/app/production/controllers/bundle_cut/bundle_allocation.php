@@ -350,8 +350,10 @@ if($_GET['style_id']<>'')
 <form name="mini_order_report" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post" onsubmit=" return check_val();">
 <br>
 <?php
-echo "<table class=\"table table-bordered\"><tr><td>";
-echo "Select Style:</td><td> <select id=\"style_id\" name=\"style_id\" onchange=\"firstbox();\" class=\"select2_single form-control\">";
+echo "<div class='table table-responsive'>";
+echo "<div class='col-md-3 col-sm-3 col-xs-12'>";
+// echo "<table class=\"table table-bordered\"><tr><td>";
+echo "Select Style:<select id=\"style_id\" name=\"style_id\" onchange=\"firstbox();\" class=\"select2_single form-control\"> ";
 
 //$sql="select distinct style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
@@ -378,11 +380,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 echo "</select>";
-echo "</td><td>";
+echo "</div>";
 ?>
 <?php
-
-echo "Select Schedule: </td><td><select id=\"sch_id\" name=\"sch_id\" onchange=\"secondbox();\" class=\"select2_single form-control\">";
+echo "<div class='col-md-3 col-sm-3 col-xs-12'>";
+echo "Select Schedule: <select id=\"sch_id\" name=\"sch_id\" onchange=\"secondbox();\" class=\"select2_single form-control\">";
 
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
@@ -421,11 +423,11 @@ else
 
 
 echo "</select>";
-echo "</td><td>";
+echo "</div>";
 ?>
 <?php
-
-echo "Select Mini Order: </td><td><select id=\"mini_order_num\" name=\"mini_order_num\" onchange=\"thirdbox();\" class=\"select2_single form-control\">";
+echo "<div class='col-md-3 col-sm-3 col-xs-12'>";
+echo "Select Mini Order:<select id=\"mini_order_num\" name=\"mini_order_num\" onchange=\"thirdbox();\" class=\"select2_single form-control\">";
 
 //$sql="select distinct style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
@@ -452,12 +454,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 echo "</select>";
-echo "</td><td>";
+echo "</div>";
 ?>
 
 <?php
-
-echo "Select color: </td><td><select id=\"color_code\" class=\"select2_single form-control\" name=\"color_code[]\" size='9' multiple>";
+echo "<div class='col-md-3 col-sm-3 col-xs-12'>";
+echo "Select color: <select id=\"color_code\" class=\"select2_single form-control\" name=\"color_code[]\" size='9' multiple>";
 
 //$sql="select distinct style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
@@ -488,12 +490,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 echo "</select>";
-echo "</td><td>";
+echo "</div>";
 ?>
 <?php
-
+echo "<div class='col-md-3 col-sm-3 col-xs-12'>";
 echo "Select Module Number:";
-echo "</td><td>";
+// echo "</td><td>";
 $sql="select id from $brandix_bts.tbl_module_ref";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -530,14 +532,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$i++;
 }
 echo "</tr></table>";
-echo "</td><td>";
+echo "</div>";
 
 ?>
 
  <?php
+ echo "<div class='col-md-3 col-sm-3 col-xs-12' style='margin-left: 100px;margin-top: 16px;'>";
 	echo "<input type=\"hidden\" value=\"$mini_order_ref\" name=\"mini_order_ref\">";	
 	echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\">";	
 	echo "</td></table>";
+	echo "</div></div>";
 ?>
 
 

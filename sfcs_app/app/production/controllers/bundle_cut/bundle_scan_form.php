@@ -170,22 +170,22 @@ $min_val=30;
 // mysqli_select_db($link1, $database1) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $date=date("Y-m-d");
-$prev_date= date('Y-m-d', strtotime("-1 day",strtotime($date)));
-$prev_em_att_year_db="$bai_hr_database"."bai_hr_tna_em_".date("y",strtotime($prev_date)).date("y",strtotime($prev_date)); 
-$date_n='';
+// $prev_date= date('Y-m-d', strtotime("-1 day",strtotime($date)));
+// $prev_em_att_year_db="$bai_hr_database"."bai_hr_tna_em_".date("y",strtotime($prev_date)).date("y",strtotime($prev_date)); 
+// $date_n='';
 
-do
-{
-	$sql="SELECT * FROM prev_em_att_year_db.`calendar` WHERE DATE='".$prev_date."' and day_type='w'";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$date_n=$sql_row['date'];
-	}
-	$prev_date= date('Y-m-d', strtotime("-1 day",strtotime($prev_date)));
-}
-while($date_n=='0' || $date_n=='');
-
+// do
+// {
+	// $sql="SELECT * FROM prev_em_att_year_db.`calendar` WHERE DATE='".$prev_date."' and day_type='w'";
+	// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($sql_row=mysqli_fetch_array($sql_result))
+	// {
+		// $date_n=$sql_row['date'];
+	// }
+	// $prev_date= date('Y-m-d', strtotime("-1 day",strtotime($prev_date)));
+// }
+// while($date_n=='0' || $date_n=='');
+$date_n=date("Y-m-d");
 $ex_date=echo_title("$brandix_bts.users","exp_date","id",1,$link);
 $ex_hour=echo_title("$brandix_bts.users","exp_time","id",1,$link);
 $cur_date=date("Y-m-d");

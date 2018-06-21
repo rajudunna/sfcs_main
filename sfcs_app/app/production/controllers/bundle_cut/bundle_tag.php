@@ -76,7 +76,7 @@ function check_val()
 	
 	if(doc_no == '')
 	{
-		alert('Please Fill the values');
+		swal('Please Fill Docket Number','','warning');
 		//document.getElementById('msg').style.display='';
 		//document.getElementById('submit').style.display=''
 		//document.getElementById('msg').style.display='none';
