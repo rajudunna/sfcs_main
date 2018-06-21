@@ -2,6 +2,8 @@
 
 <?php
 
+    include('../dbconf.php');
+
     session_start();
     if(isset($_SESSION["msg"])) {
         $msg = $_SESSION["msg"];
@@ -28,4 +30,40 @@
 <div class='alert alert-info' align="center"><b><?= $msg ?></b></div>
 
 <?php }else{ echo "";} ?>
+
+// Get Role and Menu and Permissions Data
+
+
+<?php 
+
+$RolsMenusPermissionsMappingData = [];
+
+$sql_select_query = "SELECT role_menu_per_id as record_id,role_name,rbac_role_menu_per.role_menu_id as role_menu_parent_id,menu_description,group_concat(permission_name) as permissions,group_concat(rbac_role_menu_per.permission_id) as permissions_parent_ids from rbac_roles right join rbac_role_menu on rbac_roles.role_id= rbac_role_menu.roll_id right join rbac_role_menu_per on rbac_role_menu.role_menu_id=rbac_role_menu_per.role_menu_id right join rbac_permission on rbac_role_menu_per.permission_id=rbac_permission.permission_id group by role_name,menu_description";
+$query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+if($query_result->num_rows > 0){
+
+    while ($row = $query_result->fetch_assoc()) {
+
+        $RolsMenusPermissionsMappingData []['id']= $row['record_id'];
+        $RolsMenusPermissionsMappingData []['role_name']= $row['role_name'];
+        $RolsMenusPermissionsMappingData []['menu_name']= $row['menu_description'];
+        $RolsMenusPermissionsMappingData []['role_menu_id']= $row['role_menu_parent_id'];
+
+        $myString = $row['permissions'];
+        $permissionNamesArray = explode(',', $myString);
+       
+        $RolsMenusPermissionsMappingData []['permission_names']= $permissionNamesArray;
+
+        $myString = $row['permissions_parent_ids'];
+        $permissionIdsArray = explode(',', $myString);
+       
+        $RolsMenusPermissionsMappingData []['permission_ids']= $permissionIdsArray;
+        
+    }
+
+    var_dump($RolsMenusPermissionsMappingData);
+    die();
+}
+
 
