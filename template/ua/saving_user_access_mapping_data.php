@@ -1,11 +1,14 @@
 <?php
 
 session_start();
-if(isset($_SESSION["errormsg"])) {
-    $error = $_SESSION["errormsg"]; 
-    session_unset($_SESSION["errormsg"]);
+if(isset($_SESSION["msg"])) {
+    $msg = $_SESSION["msg"];
+    $status =  $_SESSION["status"];
+    session_unset($_SESSION["msg"]);
+    session_unset($_SESSION["status"]);
 } else {
-    $error = "";
+    $msg = "";
+    $status = "";
 }
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -30,7 +33,8 @@ if(is_array($_POST) && !empty($_POST))
             $query_result = mysqli_query($link, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
 
-        $_SESSION["errormsg"]='Role Menu and Permissions created successfully';
+        $_SESSION["msg"]='Role Menu and Permissions created successfully';
+        $_SESSION["status"]=1;
         $url = getFullURL($_GET['r'],'view_all_user_access_mapping_data.php','N');
         header("Location:".$url); 
       

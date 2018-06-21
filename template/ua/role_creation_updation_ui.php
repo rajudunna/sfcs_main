@@ -1,5 +1,8 @@
 
 <?php
+
+    include('../dbconf.php');
+
     if(isset($_GET['rid'])){
         $rid = $_GET['rid'];
         $rname = $_GET['rname'];
@@ -8,13 +11,15 @@
         $rname = '';
     }
 
-  
     session_start();
-    if(isset($_SESSION["errormsg"])) {
-        $error = $_SESSION["errormsg"]; 
-        session_unset($_SESSION["errormsg"]);
+    if(isset($_SESSION["msg"])) {
+        $msg = $_SESSION["msg"];
+        $status =  $_SESSION["status"]; 
+        session_unset($_SESSION["msg"]);
+        session_unset($_SESSION["status"]);
     } else {
-        $error = "";
+        $msg = "";
+        $status = "";
     }
 
 ?>
@@ -53,18 +58,16 @@
             </form>  
 
             <?php 
-                if($error){
+                if($msg){
             ?>
 
-            <span class="label label-danger"><?= $error ?></span>
+            <span class="label label-danger"><?= $msg ?></span>
 
             <?php
                 }
             ?> 
 
             <?php
-
-                include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
                 if(isset($_POST['submit']))
                 {
@@ -73,48 +76,51 @@
                   
                     if($_POST['submit'] == 'Update'){
 
-                        $sql_select_query = "SELECT COUNT(*) as count FROM $central_administration_sfcs.rbac_roles WHERE role_name = '$role_name'";
-                        $query_result = mysqli_query($link, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_roles WHERE role_name = '$role_name'";
+                        $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         $role_names = mysqli_fetch_array($query_result);
                         $unique_count = $role_names['count'];
 
                         if($unique_count == 0){
 
-                            $sql_update_query = "update $central_administration_sfcs.rbac_roles set role_name = '$role_name' where role_id='$roleid'";
-                            $query_result = mysqli_query($link, $sql_update_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            $sql_update_query = "update rbac_roles set role_name = '$role_name' where role_id='$roleid'";
+                            $query_result = mysqli_query($link_ui, $sql_update_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {
-                                $_SESSION["errormsg"]='Role Name updated successfully';
+                                $_SESSION["msg"]='Role Name updated successfully';
+                                $_SESSION["status"] = 2;
                                 $url = getFullURL($_GET['r'],'roles_list_view.php','N');
                                 header("Location:".$url); 
                             } else {
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
                             }
                         }else{
-                            $_SESSION["errormsg"]='Role Name already exist';
+                            $_SESSION["msg"]='Role Name already exist';
+                            $_SESSION["status"] = 0;
                             $url = getFullURL($_GET['r'],'role_creation_updation_ui.php','N');
                             header("Location: $url&rid=".$roleid."&rname=".$role_name);
                         }
                         
-                        $link->close();
+                        $link_ui->close();
                        
                     }else{
 
-                        $sql_select_query = "SELECT COUNT(*) as count FROM $central_administration_sfcs.rbac_roles WHERE role_name = '$role_name'";
-                        $query_result = mysqli_query($link, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_roles WHERE role_name = '$role_name'";
+                        $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         $role_names = mysqli_fetch_array($query_result);
                         $unique_count = $role_names['count'];
                         
                         if($unique_count == 0){
-                            $sql_insert_query = "insert into $central_administration_sfcs.rbac_roles (role_name) values ('$role_name')";
-                            $query_result = mysqli_query($link, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            $sql_insert_query = "insert into rbac_roles (role_name) values ('$role_name')";
+                            $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {
+                                $_SESSION["msg"]='Role Name created successfully';
+                                $_SESSION["status"] = 1;
                                 $url = getFullURL($_GET['r'],'roles_list_view.php','N');
                                 header("Location:".$url); 
-                                echo "Role Name created successfully"; 
                             } else {
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
                             }
@@ -122,7 +128,7 @@
                             echo "<span class='label label-danger'>Role Name already exist</span>";
                         }
                         
-                        $link->close();
+                        $link_ui->close();
                         
                     }
 

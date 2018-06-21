@@ -22,14 +22,16 @@ angular.module("app",[])
 
             $http.get(url).success(function (response) {
 
-                if(response == 'proceed'){
+                var x = response.status;
+               
+                if(x == 'Proceed') {
                     $("#permissions").show();
                     $("#b2").show();
                     $("#b3").show();
                     $("#b1").hide();
                     $('#b3').prop('disabled', true);
                     $("select").prop("disabled", true);
-                }else{ 
+                }else{   
                    $("select").prop("disabled", false);
                    sweetAlert("Message", 'Already This Role and Menu and Permissions Exist', "info");
                 }

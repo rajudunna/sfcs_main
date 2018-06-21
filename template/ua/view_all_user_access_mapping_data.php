@@ -3,24 +3,29 @@
 <?php
 
     session_start();
-    if(isset($_SESSION["errormsg"])) {
-        $error = $_SESSION["errormsg"]; 
-        session_unset($_SESSION["errormsg"]);
+    if(isset($_SESSION["msg"])) {
+        $msg = $_SESSION["msg"];
+        $status =  $_SESSION["status"];
+        session_unset($_SESSION["msg"]);
+        session_unset($_SESSION["status"]);
     } else {
-        $error = "";
+        $msg = "";
+        $status = "";
     }
 
 ?>
 
 <?php 
-    if($error){
+    if($status==1){
 ?>
 
-<span class="label label-success"><?= $error ?></span>
+<div class='alert alert-success' align="center"><b><?= $msg ?></b></div>
 
 <?php
-    }
+    }elseif($status==2){
+?> 
 
-    echo "View Page Under Devlo-pment";
-?>
+<div class='alert alert-info' align="center"><b><?= $msg ?></b></div>
+
+<?php }else{ echo "";} ?>
 
