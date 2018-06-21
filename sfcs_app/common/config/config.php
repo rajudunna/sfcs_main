@@ -95,6 +95,6 @@ $sql_query = "select * from $central_administration_sfcs.rbac_permission where s
 $res_query = mysqli_query($link, $sql_query);
 while($sql_row=mysqli_fetch_array($res_query))
 {
-	$$sql_row['permission_name'] = $sql_row['permission_id'];
+	parse_str($sql_row['permission_name']."=".$sql_row['permission_id']);   
 }
 ?>
