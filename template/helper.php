@@ -125,7 +125,7 @@ function getFullURLLevel($r,$filename,$level,$type){
 
 function hasmenupermission()
 {
-    $user = getrbac_user();
+    $user = getrbac_user()['uname'];
     GLOBAL $link_ui;
     $query = "SELECT rbac_role_menu.menu_pid FROM rbac_role_menu LEFT JOIN rbac_users ON rbac_role_menu.roll_id=rbac_users.role_id WHERE rbac_users.user_name='".$user."'";
     
@@ -147,7 +147,7 @@ function hasmenupermission()
 
 function hasviewpermission($r)
 {
-    //$user = getrbac_user();
+    $user = getrbac_user()['uname'];
     GLOBAL $link_ui;
     $r = base64_decode($r);
     $r = "/".trim($r, "/");
@@ -181,7 +181,7 @@ function hasviewpermission($r)
     updated at : 17-06-2018.
 */
 function haspermission($r){
-    //$user = getrbac_user();
+    $user = getrbac_user()['uname'];
     GLOBAL $link_ui;
     $r = base64_decode($r);
     $r = "/".trim($r, "/");
@@ -215,9 +215,14 @@ function haspermission($r){
     updated at : 18-06-2018.
 */
 function getrbac_user(){
-    $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-    $user=strtolower($username_list[1]);
-    //$user = 'Kiran';
+    //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+    //$user['uname']=strtolower($username_list[1]);
+    $user['uname'] = 'sfcsproject1';
+    GLOBAL $link_ui;
+    $query = "SELECT rbac_roles.role_name FROM rbac_users LEFT JOIN rbac_roles ON rbac_users.role_id = rbac_roles.role_id WHERE rbac_users.user_name='".$user['uname']."'";
+    $res = mysqli_query($link_ui, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $roles = mysqli_fetch_array($res);
+    $user['role'] = $roles['role_name'];
     return $user;
 }
 

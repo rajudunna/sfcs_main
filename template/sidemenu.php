@@ -55,7 +55,7 @@
               </div>
             <div class="nav navbar-nav navbar-right" ng-app="brand">
                 <div ng-controller="menu as menuctrl"><br/>
-                    <div class='col-sm-6 pull-right' ng-cloak>
+                    <div class='col-sm-6 ' ng-cloak>
                         <div class="input-group">
                             <input type="text" class="form-control" ng-model="menuctrl.ser_box" ng-change="menuctrl.sugissions()">
                             <span class="input-group-addon"><i class="fa fa-search"></i></span>
@@ -67,6 +67,10 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class='col-sm-3 pull-right text-center'>
+                    <h4 class='text-danger'><i class="fas fa-user"></i>&nbsp;<?= getrbac_user()['uname'] ?></h4>
+                    <b class='text-info'><i class="fas fa-suitcase"></i>&nbsp;<?= getrbac_user()['role'] ?></b>
                 </div>
             </div>
            <!-- <ul class="nav navbar-nav">
