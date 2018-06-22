@@ -34,7 +34,7 @@ $result_oper = $link->query($qry_get_operation_name);
 				<div class="form-group col-md-3">
 					<label for="style">Select Style</label>		      
 					<select class="form-control" id="pro_style" name="style">
-						<option value=''>Select Style No</option>
+						<option value='0'>Select Style No</option>
 						<?php				    	
 							if ($result->num_rows > 0) {
 								while($row = $result->fetch_assoc()) {
@@ -50,19 +50,19 @@ $result_oper = $link->query($qry_get_operation_name);
 				<div class="form-group col-md-3">
 					<label for="title">Select Schedule:</label>
 					<select name="schedule" class="form-control" id='schedule' style="style">
-					<option value=''>Select Schedule</option>
+					<option value='0'>Select Schedule</option>
 					</select>
 				</div>
 				<div class="form-group col-md-3">
 					<label for="title">Select Color:</label>
 					<select name="color" class="form-control" id='color' style="style">
-					<option value=''>Select Color</option>
+					<option value='0'>Select Color</option>
 					</select>
 				</div>
 				<div class="form-group col-md-3">
-					<label for="title">Select Input Job Number:</label>
+					<label for="title">Select Sewing Job Number:</label>
 					<select name="bundle" class="form-control" id='bundle' style="style">
-					<option value=''>Select Input Job Number</option>
+					<option value='0'>Select Sewing Job Number</option>
 					</select>
 				</div>
 			</div>
@@ -71,20 +71,20 @@ $result_oper = $link->query($qry_get_operation_name);
 			<hr>
 			<div class="row">
 				<div class="col-md-3 col-md-offset-3">
-						<label for="bunno">Input Job Number:</label>
+						<label for="bunno">Sewing Job Number:</label>
 						<input type="text" class="form-control" id="bunno" name="bunno" readonly="true" style="height: 100px;width: 500px;text-align:  center;font-size: 60px;color: mediumseagreen;">
 				</div>
 			</div>
 			<br/>
 			<div class="table-responsive" style="height: 500px;">
 				<table id ="dynamic_table1" class="table table-hover table-striped">
-					
 						<thead>
-							<th>Input Job Numbers</th>
-							<th>Operations</th>
-							<th>Quantity</th>
+							<th style="text-align:center;">Size</th>
+							<th style="text-align:center;">Operation Code</th>
+							<th style="text-align:center;">Operation</th>
+							<th style="text-align:center;">Remarks</th>
+							<th style="text-align:center;">Quantity</th>
 						</thead>
-					
 				</table>
 			</div>
 		
@@ -164,7 +164,7 @@ $(document).ready(function(){
 								 // $("#dynamic_table1").append(markup);
 							 // }
 							 // var id = data[i]['bundle_number'];	
-							var markup ="<tr><td style='text-align:center;'>"+data[i]['input_job_no_random_ref']+'&nbsp;&nbsp;&nbsp;&nbsp;Size:&nbsp;&nbsp;['+data[i]['size_title']+"]</td><td style='text-align:center;'>"+data[i]['operation_name']+"</td><td style='text-align:center;'><b style='margin-left: 184px; display:none;'><font color='green'>SEND:&nbsp;"+data[i]['send_qty']+' </font></b><b><font color=blue> &nbsp;&nbsp;  RECEIVED:&nbsp;'+data[i]['recevied_qty']+'</font></b><b style="display:none;"><font color=gold> &nbsp;&nbsp;  MISSING:&nbsp;'+data[i]['missing_qty']+'</font></b><b><font color=red> &nbsp;&nbsp;  REJECTED:&nbsp;'+data[i]['rejected_qty']+"</font></b></td></tr>";
+							var markup ="<tr class='dynamic_data'><td style='text-align:center;'>"+data[i]['size_title'].toUpperCase()+"</td><td style='text-align:center;'>"+data[i]['operation_id']+"</td><td style='text-align:center;'>"+data[i]['operation_name']+"</td><td style='text-align:center;'>"+data[i]['remarks']+"</td><td style='text-align:center;'><b style='margin-left: 184px; display:none;'><font color='green'>SEND:&nbsp;"+data[i]['send_qty']+' </font></b><b><font color=blue> &nbsp;&nbsp;  RECEIVED:&nbsp;'+data[i]['recevied_qty']+'</font></b><b style="display:none;"><font color=gold> &nbsp;&nbsp;  MISSING:&nbsp;'+data[i]['missing_qty']+'</font></b><b><font color=red> &nbsp;&nbsp;  REJECTED:&nbsp;'+data[i]['rejected_qty']+"</font></b></td></tr>";
 							 
 							 
 								//s_no++;
@@ -180,9 +180,15 @@ $(document).ready(function(){
 	$("#pro_style").change(function()
 	{
 		$('#loading-image').show();
+		$(".dynamic_data").html(" ");
 		var pro_style_schedule = $('#pro_style option:selected').text();
-		//alert(pro_style_schedule);
-		
+		$('#schedule').empty();
+		$('select[name="schedule"]').append('<option value="0">Select Schedule</option>');
+		$('#color').empty();
+		$('select[name="color"]').append('<option value="0">Select Color</option>');
+		$('#bundle').empty();
+		$('select[name="bundle"]').append('<option value="0">Select Sewing Job Number</option>');
+
 		$.ajax
 			({
 					type: "POST",
@@ -208,6 +214,11 @@ $(document).ready(function(){
 	});
 	$("#schedule").change(function()
 	{
+		$('#color').empty();
+		$(".dynamic_data").html(" ");
+		$('select[name="color"]').append('<option value="0">Select Color</option>');
+		$('#bundle').empty();
+		$('select[name="bundle"]').append('<option value="0">Select Sewing Job Number</option>');
 		$('#loading-image').show();
 		var pro_schedule_color = $('#schedule option:selected').text();
 		$.ajax
@@ -230,7 +241,11 @@ $(document).ready(function(){
 	
 	$("#color").change(function()
 	{
+		$('#bundle').empty();
+		$("#dynamic_data").html("");
+		$('select[name="bundle"]').append('<option value="0">Select Sewing Job Number</option>');
 		$('#loading-image').show();
+		//$('#loading-image').show();
 		var color_name = $('#color option:selected').text();
 		var style_name = $('#pro_style option:selected').text();
 		var schedule_name = $('#schedule option:selected').text();
@@ -245,7 +260,7 @@ $(document).ready(function(){
 					{
 						$('#loading-image').hide();
 						$.each(response, function(key, value) {
-							
+							console.log(value);
 						$('select[name="bundle"]').append('<option value="'+ key +'">'+ value +'</option>');
 						});
 						
@@ -273,6 +288,7 @@ $(document).ready(function(){
 	  
 	
 });
+
 // $('#smv1').change(function()
 // {
 	// var smv1= $('#smv1').val();
