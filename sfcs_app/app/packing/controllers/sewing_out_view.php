@@ -7,8 +7,6 @@
 	<div class="panel-body">
 		<div class="row">
 			<div class="col-md-6">
-				<h2><b>For Uniqlo Schedules</b></h2>
-				
 				<form name="test" action="<?php echo '?r='.$_GET['r']; ?>" method="post">
 					<div class="row">
 						<div class="col-sm-6">
@@ -21,7 +19,7 @@
 					</div>
 				</form>
 			</div>
-			<div class="col-md-6">
+			<!-- <div class="col-md-6">
 				<h2><b>For Other Schedules</b></h2>
 				<form name="test" action="<?php echo '?r='.$_GET['r']; ?>" method="post">
 					<div class="row">
@@ -35,7 +33,7 @@
 						</div>
 					</div>
 				</form>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </div>
