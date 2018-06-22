@@ -2148,7 +2148,7 @@ tags will be replaced.-->
   {
   	
   	echo '<input type="hidden" name="lot_no" value="'.$lot_no.'">';
-	if(in_array($authorized,$has_permission) or in_array($authorized,$has_permission))
+	if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
 	{
 	//$update_access
 	

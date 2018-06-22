@@ -3,7 +3,7 @@ Revised CSS files for interface standardization,Add the Validation on trims stat
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
-var_dump($php_self);
+//var_dump($php_self);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/input_status_update_input.php");
 $has_permission=haspermission($url_r);  

@@ -1,4 +1,10 @@
 
+<?php 
+
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+
+?>
+
 
 <?php
 
@@ -38,17 +44,21 @@
 
 $RolsMenusPermissionsMappingData = [];
 
-$sql_select_query = "SELECT role_menu_per_id as record_id,role_name,rbac_role_menu_per.role_menu_id as role_menu_parent_id,menu_description,group_concat(permission_name) as permissions,group_concat(rbac_role_menu_per.permission_id) as permissions_parent_ids from rbac_roles right join rbac_role_menu on rbac_roles.role_id= rbac_role_menu.roll_id right join rbac_role_menu_per on rbac_role_menu.role_menu_id=rbac_role_menu_per.role_menu_id right join rbac_permission on rbac_role_menu_per.permission_id=rbac_permission.permission_id group by role_name,menu_description limit 10";
+$sql_select_query = "SELECT group_concat(role_menu_per_id) as record_ids,role_name,rbac_role_menu_per.role_menu_id as role_menu_parent_id,menu_description,group_concat(permission_name) as permissions,group_concat(rbac_role_menu_per.permission_id) as permissions_parent_ids from rbac_roles right join rbac_role_menu on rbac_roles.role_id= rbac_role_menu.roll_id right join rbac_role_menu_per on rbac_role_menu.role_menu_id=rbac_role_menu_per.role_menu_id right join rbac_permission on rbac_role_menu_per.permission_id=rbac_permission.permission_id group by role_name,menu_description limit 10";
 $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $i = 0;
 if($query_result->num_rows > 0){
 
     while ($row = $query_result->fetch_assoc()) {
 
-        $RolsMenusPermissionsMappingData[$i]['id']= $row['record_id'];
+        $myString = $row['record_ids'];
+        $recordIdsArray = explode(',', $myString);
+
+        $RolsMenusPermissionsMappingData[$i]['ids']= $recordIdsArray;
         $RolsMenusPermissionsMappingData[$i]['role_name']= $row['role_name'];
         $RolsMenusPermissionsMappingData[$i]['menu_name']= $row['menu_description'];
         $RolsMenusPermissionsMappingData[$i]['role_menu_id']= $row['role_menu_parent_id'];
+
 
         $myString = $row['permissions'];
         $permissionNamesArray = explode(',', $myString);
@@ -110,44 +120,55 @@ if($query1_result->num_rows > 0){
                 </tbody>
             </table>
         </div>
-        <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog">
-
-                <!-- Modal content-->
                 <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Edit Permissions</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                        <b>Role Name:</b> {{edit_mapping_data.role_name}}
-                        </div>
-                        <div class="col-md-6">
-                        <b>Menu Description:</b> {{edit_mapping_data.menu_name}}
-                        </div>
-                        <!-- <div class="col-md-3">
-                        </div>
-                        <div class="col-md-3">
-                        </div> -->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Edit Permissions</h4>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <ui-select multiple ng-model="perms" theme="bootstrap"  close-on-select="false" style="width: 300px;" title="Choose a permission">
-                                <ui-select-match placeholder="Choose permissions">{{$item}}</ui-select-match>
-                                <ui-select-choices repeat="rbac_perm in rbac_permission | filter:$select.search">
-                                {{rbac_perm}}
-                                </ui-select-choices>
-                            </ui-select>
+                    <div class="modal-body">
+                        <form action="<?= getFullURL($_GET['r'],'update_test_page.php','N');?>" method="POST">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Role Name:</label>
+                                <input type="text" class="form-control" value="{{edit_mapping_data.role_name}}" readonly/>
+                            </div>
+                            <div class="col-md-5">
+                                <label>Menu Name:</label>
+                                <input type="text" id="menu_name" name="menu_name" class="form-control" readonly value='{{edit_mapping_data.menu_name}}'>
+                            </div>
+                            <input type="hidden" name="role_menu_id" class="form-control" value='{{role_menu_id}}'>
+                            <input type="hidden" name="ids" class="form-control" value='{{ids}}'>
+                            <input type="hidden" name="permission_ids" class="form-control" value='{{permission_ids}}'>
+
+                            <div class='col-md-3'>
+                                <input id="b4" type="submit" value="Update Permissions" name="submit" class="btn btn-primary" style="margin-top:22px;" ng-click="SaveData()">
+                            </div>
+                        </div>
+                        </form>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1" style="height:350px;overflow:auto;">
+                                <table class='table table-bordered'> 
+                                    <tr>
+                                        <th><b>Permission Name</b></th>
+                                        <th style="width:10px"><input class='chkbox' type='checkbox' ng-model="Checkedall" ng-click="Checkall()"></th> 
+                                    </tr> 
+                                    <tr ng-repeat="rbac in rbac_permission">
+                                        <td style='display:none'>{{ rbac.permission_id }}</td>
+                                        <td>{{rbac.permission_name}}</td>
+                                        <td>
+                                        <input class='chkbox' type='checkbox' value='{{ rbac.permission_id }}' name='id[]' ng-model="rbac.isChecked">
+                                        </td>
+                                        
+                                    </tr>     
+                                </table>
+                            </div>
                         </div>
                     </div>
+                   
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-                </div>
-                
             </div>
         </div>
     </div>
