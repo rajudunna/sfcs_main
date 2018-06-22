@@ -814,7 +814,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							
 						if($clubbing>0)
 						{
-							$sql111="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ('Body','Front') and order_del_no=$schedule_no and clubbing=".$sql_row33x1['clubbing']." and acutno=".$sql_row33x1['acutno'];
+							for ($i=0; $i < sizeof($in_categories); $i++)
+							{
+								 $cat[]=$in_categories[$i];
+							}
+							$category = "'" .implode("','",$cat)."'" ;
+							$sql111="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ($category) and order_del_no=$schedule_no and clubbing=".$sql_row33x1['clubbing']." and acutno=".$sql_row33x1['acutno'];
 							$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row111=mysqli_fetch_array($sql_result111))
 							{

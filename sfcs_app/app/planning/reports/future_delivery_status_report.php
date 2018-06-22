@@ -188,7 +188,12 @@ $table_flag = false;
 			{
 				$customer='LBI';
 			}
-			$sql2="select tid from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and category in ('body','front')";
+			for ($i=0; $i < sizeof($in_categories); $i++)
+					{
+						 $cat[]=$in_categories[$i];
+					}
+					$category = "'" .implode("','",$cat)."'" ;
+			$sql2="select tid from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and category in ($category)";
 			$result2=mysqli_query($link, $sql2) or die("sql error--2".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($result2)>0)
 			{ 
