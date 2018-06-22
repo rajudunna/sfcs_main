@@ -205,7 +205,7 @@ function ims_schedules_input($link,$section_mods)
 						$order_del_no=0;
 					}
 					
-					$sql223="SELECT sum((a_xs+ a_s+ a_m+ a_l+ a_xl+ a_xxl+ a_xxxl+ a_s01+ a_s02+ a_s03+ a_s04+ a_s05+ a_s06+ a_s07+ a_s08+ a_s09+ a_s10+ a_s11+ a_s12+ a_s13+ a_s14+ a_s15+ a_s16+ a_s17+ a_s18+ a_s19+ a_s20+ a_s21+ a_s22+ a_s23+ a_s24+ a_s25+ a_s26+ a_s27+ a_s28+ a_s29+ a_s30+ a_s31+ a_s32+ a_s33+ a_s34+ a_s35+ a_s36+ a_s37+ a_s38+ a_s39+ a_s40+ a_s41+ a_s42+ a_s43+ a_s44+ a_s45+ a_s46+ a_s47+ a_s48+ a_s49+ a_s50)*a_plies) as cut_qty FROM $bai_pro3.order_cat_doc_mix WHERE order_del_no in ($order_del_no) and category in (\"Body\",\"Front\")";
+					$sql223="SELECT sum((a_xs+ a_s+ a_m+ a_l+ a_xl+ a_xxl+ a_xxxl+ a_s01+ a_s02+ a_s03+ a_s04+ a_s05+ a_s06+ a_s07+ a_s08+ a_s09+ a_s10+ a_s11+ a_s12+ a_s13+ a_s14+ a_s15+ a_s16+ a_s17+ a_s18+ a_s19+ a_s20+ a_s21+ a_s22+ a_s23+ a_s24+ a_s25+ a_s26+ a_s27+ a_s28+ a_s29+ a_s30+ a_s31+ a_s32+ a_s33+ a_s34+ a_s35+ a_s36+ a_s37+ a_s38+ a_s39+ a_s40+ a_s41+ a_s42+ a_s43+ a_s44+ a_s45+ a_s46+ a_s47+ a_s48+ a_s49+ a_s50)*a_plies) as cut_qty FROM $bai_pro3.order_cat_doc_mix WHERE order_del_no in ($order_del_no) and category in ('".implode("','",$in_categories)."')";
 					//echo $sql223;
 					// mysqli_query($link, $sql223) or exit("Sql Error232".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -491,7 +491,7 @@ function ims_schedules_input2($link,$section_mods,$schedule_no)
 					$ims_output=$sql_row2xy['output_qty'];
 					
 					
-					$sql223="SELECT sum((a_xs+ a_s+ a_m+ a_l+ a_xl+ a_xxl+ a_xxxl+ a_s01+ a_s02+ a_s03+ a_s04+ a_s05+ a_s06+ a_s07+ a_s08+ a_s09+ a_s10+ a_s11+ a_s12+ a_s13+ a_s14+ a_s15+ a_s16+ a_s17+ a_s18+ a_s19+ a_s20+ a_s21+ a_s22+ a_s23+ a_s24+ a_s25+ a_s26+ a_s27+ a_s28+ a_s29+ a_s30+ a_s31+ a_s32+ a_s33+ a_s34+ a_s35+ a_s36+ a_s37+ a_s38+ a_s39+ a_s40+ a_s41+ a_s42+ a_s43+ a_s44+ a_s45+ a_s46+ a_s47+ a_s48+ a_s49+ a_s50)*a_plies) as cut_qty FROM $bai_pro3.order_cat_doc_mix WHERE order_del_no in ($schedule_no) and category in (\"Body\",\"Front\")";
+					$sql223="SELECT sum((a_xs+ a_s+ a_m+ a_l+ a_xl+ a_xxl+ a_xxxl+ a_s01+ a_s02+ a_s03+ a_s04+ a_s05+ a_s06+ a_s07+ a_s08+ a_s09+ a_s10+ a_s11+ a_s12+ a_s13+ a_s14+ a_s15+ a_s16+ a_s17+ a_s18+ a_s19+ a_s20+ a_s21+ a_s22+ a_s23+ a_s24+ a_s25+ a_s26+ a_s27+ a_s28+ a_s29+ a_s30+ a_s31+ a_s32+ a_s33+ a_s34+ a_s35+ a_s36+ a_s37+ a_s38+ a_s39+ a_s40+ a_s41+ a_s42+ a_s43+ a_s44+ a_s45+ a_s46+ a_s47+ a_s48+ a_s49+ a_s50)*a_plies) as cut_qty FROM $bai_pro3.order_cat_doc_mix WHERE order_del_no in ($schedule_no) and category in ('".implode("','",$in_categories)."')";
 
 					// mysqli_query($link, $sql223) or exit("Sql Error233".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result223=mysqli_query($link, $sql223) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	

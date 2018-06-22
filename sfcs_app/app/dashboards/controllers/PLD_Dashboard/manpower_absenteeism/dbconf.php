@@ -86,7 +86,7 @@ $half_leave_exemp_groups=array("LGR2");
 
 //For Time Slots
 $time_slots=array("08:00-17:00","06:00-14:00","14:00-22:00","18:00-06:00");
-$team_ref=array("A","B","C","G");
+$team_ref= $shifts_array;
 
 //Day types
 $day_code=array("W","H","O","X");
