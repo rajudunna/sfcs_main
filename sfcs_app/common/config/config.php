@@ -108,4 +108,11 @@ while($sql_row=mysqli_fetch_array($res_query))
 {
 	parse_str($sql_row['permission_name']."=".$sql_row['permission_id']);   
 }
+
+$pack_query="SELECT * FROM $bai_pro3.`pack_methods` WHERE STATUS='active'";
+$pack_result=mysqli_query($link, $pack_query) or exit("Error getting pack details");
+while($methods=mysqli_fetch_array($table_result))
+{
+    $pack_methods[]=$methods['pack_method_name'];
+}
 ?>
