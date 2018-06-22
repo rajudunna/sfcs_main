@@ -2,7 +2,7 @@
 <body>
 <?php
 // include("dbconf.php");
-	include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 // error_reporting (0);
 
@@ -63,7 +63,7 @@ $url = getFullURL($_GET['r'],'scan_input_jobs.php','N');
                         	<label>Shift:<span style="color:red">*</span></label>
                         	<select class="form-control shift"  name="shift" id="shift" style="width:100%;" required>
                         		<option value="">Select Shift</option>
-								<?php
+								<!-- <?php
 									$selecting_a = '';
 									$selecting_b = '';
 									if(isset($_GET['shift']))
@@ -78,9 +78,12 @@ $url = getFullURL($_GET['r'],'scan_input_jobs.php','N');
 										}
 										
 									}
+								?> -->
+								<?php 
+									for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+										<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($_GET['shift']==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+									<?php }
 								?>
-                        		<option value="A" <?php echo $selecting_a;?>>A</option>
-                        		<option value="B" <?php echo $selecting_b;?>>B</option>
                         	</select>
 				</div>
 				<!--
