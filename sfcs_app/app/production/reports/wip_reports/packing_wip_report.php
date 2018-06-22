@@ -1,8 +1,7 @@
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0019",$username,1,$group_id_sfcs);
+
 ?>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -87,6 +86,13 @@ while($roww=mysqli_fetch_array($resultw))
 		{
 			$order_tid=$row1["order_tid"];
 		}
+
+		$sql1="select co_no from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+        $result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row1=mysqli_fetch_array($result1))
+		{
+			$co_no=$row1["co_no"];
+		}	
 		
 		$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
 		$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -178,7 +184,7 @@ while($roww=mysqli_fetch_array($resultw))
 		if($packing_wip > 0)
 		{	 
 			//$msg.="<tr><td>".$row['order_del_no']."</td><td>".$row['doc_no']."</td><td>".$row['acutno']."</td><td>".$row['carton']."</td><td>".$row['carton1']."</td><td>".$input."</td><td>".$output."</td></tr>";
-			$msg.="<tr><td>".$buyer."</td><td>".$order_style_no."</td><td></td><td>".$order_del_no."</td><td>".$order_col_des."</td><td>".$packing_wip."</td><td>".$order_date."</td></tr>";
+			$msg.="<tr><td>".$buyer."</td><td>".$order_style_no."</td><td>".$co_no."</td><td>".$order_del_no."</td><td>".$order_col_des."</td><td>".$packing_wip."</td><td>".$order_date."</td></tr>";
 		}	 
 	}
 }
