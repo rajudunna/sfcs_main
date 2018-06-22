@@ -57,8 +57,11 @@ function verify_date(){
 			<div class="col-md-2">
 			<label>Shift: </label><select name="shift" class="form-control">
 						<option value='"A", "B"' <?php if($shift=='"A", "B"'){ echo "selected"; } ?> >All</option>
-						<option value='"A"' <?php if($shift=='"A"'){ echo "selected"; } ?>>A</option>
-						<option value='"B"' <?php if($shift=='"B"'){ echo "selected"; } ?>>B</option>
+						<?php foreach($shifts_array as $key=>$shift){
+					echo "<option value='$shift'>$shift</option>";
+
+					}
+					echo "</select></div></td></tr>";?>
 					</select>
 					</div>
 			<div class="col-md-2">

@@ -161,9 +161,11 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 								<td valign="top">
 									<label for="team">Select Team: </label>
                                     <select name="team" id="team" class="form-control"> 
-                                        <option value='"A", "B"'<?php if($team=='"A", "B"') echo "selected"; ?>>All</option> 
-                                        <option value='"A"' <?php if($team=='"A"') echo "selected"; ?>>A</option> 
-                                        <option value='"B"'<?php if($team=='"B"') echo "selected"; ?>>B</option> 
+                                        <?php 
+                                            for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+                                                <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+                                            <?php }
+                                        ?>
                                     </select> 
                                 </td>
                                 <td valign="top"> 

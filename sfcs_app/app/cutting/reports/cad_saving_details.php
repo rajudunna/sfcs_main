@@ -152,7 +152,7 @@ echo "<table cellspacing=\"0\" class=\"mytable1\">
 <th>Order YY</th>
 <th>CAD YY</th>
 <th>CAD Saving</th>
-<th>CAD Saving Yards</th>
+<th>CAD Saving  <?php $fab_uom ?></th>
 <th>Fabric Allocated</th>
 <th>Fabric Issued Docket</th>
 <th>Fabric Issued MRN</th>

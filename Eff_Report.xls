@@ -1,0 +1,2797 @@
+<style id="Daily_Efficiency_Report_26424_Styles">
+	<!--table
+	{mso-displayed-decimal-separator:"\.";
+	mso-displayed-thousand-separator:"\,";}
+	.xl1526424
+		{padding:0px;
+			mso-ignore:padding;
+			color:black;
+			font-size:11.0pt;
+			font-weight:400;
+			font-style:normal;
+			text-decoration:none;
+			font-family:Calibri, sans-serif;
+			mso-font-charset:0;
+			mso-number-format:General;
+			text-align:general;
+			vertical-align:bottom;
+			mso-background-source:auto;
+			mso-pattern:auto;
+			white-space:nowrap;}
+	.xl6526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl6626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl6726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl6826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}						
+	.xl6926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl7026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl7126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl7226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl7326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl7426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl7526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl7626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl7726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:9.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl7826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl7926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl8026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl8126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:general;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl8226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl8326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:blue;
+		font-size:11.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:underline;
+		text-underline-style:single;
+		font-family:Calibri, sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border:.5pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl8426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:9.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:wrap;}
+	.xl8526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		background:#E5E0EC;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl8626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl8726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		background:#E5E0EC;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl8826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl8926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		background:#E5E0EC;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"\#\,\#\#0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		background:white;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		background:#E5E0EC;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		background:#DDD9C3;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:none;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		background:#E5E0EC;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl9926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		background:#29759C;
+		color: WHITE;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#CCFFFF;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#CCFFFF;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"Medium Date";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"Medium Date";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid black;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		background:#29759C;
+		color: WHITE;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"Medium Date";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl10926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:Fixed;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:Fixed;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:Fixed;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl11926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl12026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl12126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl12226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl12326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl12426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl12526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl12626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl12726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl12826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl12926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl13926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid black;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid black;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid black;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl14926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid black;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:.5pt solid windowtext;
+		border-left:.5pt solid windowtext;
+		background:#E5E0EC;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:.5pt solid windowtext;
+		border-bottom:.5pt solid windowtext;
+		border-left:none;
+		background:#E5E0EC;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:.5pt solid windowtext;
+		border-right:none;
+		border-bottom:.5pt solid windowtext;
+		border-left:.5pt solid windowtext;
+		background:#E5E0EC;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:none;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:none;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl15926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:#FFC000;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid windowtext;
+		border-bottom:none;
+		border-left:1.0pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:#FFC000;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid black;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid black;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl16926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid black;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid windowtext;
+		background:#C00000;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#C00000;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#C00000;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:1.0pt solid black;
+		background:#DDD9C3;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl17926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid black;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl18026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl18126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:#FFC000;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:middle;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:1.0pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl18226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl18326424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:none;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl18426424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:1.0pt solid windowtext;
+		border-left:none;
+		background:#DDD9C3;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl18526424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0%;
+		text-align:center;
+		vertical-align:bottom;
+		border-top:none;
+		border-right:1.0pt solid windowtext;
+		border-bottom:1.0pt solid black;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:normal;}
+	.xl18626424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"Medium Date";
+		text-align:center;
+		vertical-align:bottom;
+		border-top:1.0pt solid windowtext;
+		border-right:none;
+		border-bottom:none;
+		border-left:none;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl18726424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border:.5pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl18826424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border:.5pt solid windowtext;
+		background:#E5E0EC;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl18926424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border:.5pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl19026424
+		{padding:0px;
+		mso-ignore:padding;
+		color:windowtext;
+		font-size:10.0pt;
+		font-weight:400;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:0;
+		text-align:center;
+		vertical-align:bottom;
+		border:.5pt solid windowtext;
+		background:#DDD9C3;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl19126424
+		{padding:0px;
+		mso-ignore:padding;
+		color:white;
+		font-size:10.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:"Trebuchet MS", sans-serif;
+		mso-font-charset:0;
+		mso-number-format:"0\.0";
+		text-align:center;
+		vertical-align:bottom;
+		border:.5pt solid windowtext;
+		background:#5A5A5A;
+		mso-pattern:black none;
+		mso-protection:unlocked visible;
+		white-space:nowrap;}
+	.xl19226424
+		{padding:0px;
+		mso-ignore:padding;
+		color:black;
+		font-size:11.0pt;
+		font-weight:700;
+		font-style:normal;
+		text-decoration:none;
+		font-family:Calibri, sans-serif;
+		mso-font-charset:0;
+		mso-number-format:General;
+		text-align:center;
+		vertical-align:bottom;
+		border:.5pt solid windowtext;
+		mso-background-source:auto;
+		mso-pattern:auto;
+		white-space:normal;}
+	-->
+	</style><div id="Daily_Efficiency_Report_26424" align=center x:publishsource="Excel">
+
+	<div u1:publishsource=Excel  class='table-responsive'>
+
+	<table border=0 cellpadding=0 cellspacing=0 width=2823 style='border-collapse:collapse;table-layout:fixed;width:2200pt' class='table'>
+	<col width=66 style='mso-width-source:userset;mso-width-alt:2413;width:50pt'>
+	<col width=64 span=17 style='mso-width-source:userset;mso-width-alt:2340; width:48pt'>
+	<col width=72 style='mso-width-source:userset;mso-width-alt:2633;width:54pt'>
+	<col width=64 span=9 style='mso-width-source:userset;mso-width-alt:2340; width:48pt'>
+	<col width=63 style='mso-width-source:userset;mso-width-alt:2304;width:47pt'>
+	<col width=64 span=13 style='mso-width-source:userset;mso-width-alt:2340; width:48pt'>
+	<col width=63 span=2 style='mso-width-source:userset;mso-width-alt:2304; width:47pt'>
+
+	<tr height=22 style='mso-height-source:userset;height:16.5pt'>
+	<td colspan=25 height=22 class=xl10226424 width=1865 style='border-right:1.0pt solid black;height:16.5pt;width:1399pt'>DAILY EFFICIENCY REPORT (Factory)</td>
+	<td colspan=13 class=xl10626424 width=958 style='border-right:1.0pt solid black;
+	border-left:none;width:718pt'>2018-06-22-2018-06-22 (Friday) </td>
+	</tr>
+	<tr background-color='29759C' height=22 style='mso-height-source:userset;height:16.5pt'>
+	<td rowspan=3 height=85 class=xl10826424 style='border-bottom:1.0pt solid black;
+	height:63.75pt;border-top:none'>MOD</td>
+	<td rowspan=3 class=xl10826424 style='border-bottom:1.0pt solid black;
+	border-top:none'>Buyer</td>
+	<td rowspan=3 class=xl10826424 style='border-bottom:1.0pt solid black;
+	border-top:none'>Sty. No</td>
+	<td rowspan=3 class=xl11126424 style='border-bottom:1.0pt solid black;
+	border-top:none'>SMV</td>
+	<td rowspan=3 class=xl6626424 width=64 style='border-bottom:1.0pt solid black;
+	border-top:none;width:48pt'>NO Of Days</td>
+	<td class=xl6626424 width=64 style='border-top:none;border-left:none;
+	width:48pt'></td>
+	<td colspan=2 class=xl11526424 style='border-right:1.0pt solid black;
+	border-left:none'>Operators</td>
+	<td colspan=2 rowspan=2 class=xl11726424 style='border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black'>Rework %</td>
+	<td colspan=2 rowspan=2 class=xl12126424 width=128 style='border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black;width:96pt'>No Of Audit Fail</td>
+	<td colspan=2 rowspan=2 class=xl12526424 width=128 style='border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black;width:96pt'>Plan Clock Hrs.</td>
+	<td rowspan=2 class=xl12926424 style='border-bottom:1.0pt solid black;
+	border-top:none'>Plan</td>
+	<td colspan=2 rowspan=2 class=xl13126424 style='border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black'>Out Put</td>
+	<td class=xl6926424 width=64 style='border-top:none;width:48pt'>Plan</td>
+	<td colspan=2 rowspan=2 class=xl13526424 style='border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black'>Shift A</td>
+	<td colspan=2 rowspan=2 class=xl13526424 style='border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black'>Shift B</td>
+	<td class=xl7026424 width=64 style='border-top:none;width:48pt'>Plan</td>
+	<td colspan=6 class=xl14226424 style='border-right:1.0pt solid black;
+	border-left:none'>Efficiency %</td>
+	<td colspan=2 rowspan=2 class=xl13126424 style='border-bottom:1.0pt solid black'>Off
+	Std Hrs</td>
+	<td colspan=2 rowspan=2 class=xl19226424 width=128 style='width:96pt'>SAH
+	Loss due to Down time</td>
+	<td colspan=2 rowspan=2 class=xl19226424 width=128 style='width:96pt'>SAH
+	Loss due to Production</td>
+	<td rowspan=3 class=xl7026424 width=64 style='border-bottom:1.0pt solid black;
+	border-top:none;width:48pt'>Act. Eff% (A+B)</td>
+	<td colspan=2 rowspan=2 class=xl13126424 style='border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black'>Remarks</td>
+	</tr>
+	<tr height=22 style='mso-height-source:userset;height:16.5pt'>
+	<td height=22 class=xl6726424 width=64 style='height:16.5pt;border-left:none;
+	width:48pt'></td>
+	<td colspan=2 class=xl11526424 style='border-right:1.0pt solid black;
+	border-left:none'>Present</td>
+	<td class=xl7126424 width=64 style='width:48pt'>Std. Hrs.</td>
+	<td class=xl7226424 width=64 style='width:48pt'><span
+	style='mso-spacerun:yes'> </span>Eff%</td>
+	<td colspan=3 class=xl14226424 style='border-right:1.0pt solid black;
+	border-left:none'>Shift A</td>
+	<td colspan=3 class=xl14226424 style='border-right:1.0pt solid black;
+	border-left:none'>Shift B</td>
+	</tr>
+	<tr height=41 style='mso-height-source:userset;height:30.75pt'>
+	<td height=41 class=xl6826424 width=64 style='height:30.75pt;border-left:
+	none;width:48pt'>Fix Oprs</td>
+	<td class=xl7326424 width=64 style='width:48pt'>Oper (A)</td>
+	<td class=xl7326424 width=64 style='width:48pt'>Oper (B)</td>
+	<td class=xl7526424 width=64 style='width:48pt'>Shift A</td>
+	<td class=xl7526424 width=64 style='width:48pt'>Shift B</td>
+	<td class=xl7526424 width=64 style='width:48pt'>Shift A</td>
+	<td class=xl7526424 width=64 style='width:48pt'>Shift B</td>
+	<td class=xl7626424>Shift A</td>
+	<td class=xl7626424>Shift B</td>
+	<td class=xl7726424>Prd. (A+B)</td>
+	<td class=xl7626424>Shift A</td>
+	<td class=xl7626424>Shift B</td>
+	<td class=xl7826424 width=64 style='width:48pt'>(A+B)</td>
+	<td class=xl7826424 width=64 style='width:48pt'>plan std</td>
+	<td class=xl7826424 width=64 style='width:48pt'>Act. std</td>
+	<td class=xl7826424 width=64 style='width:48pt'>plan std</td>
+	<td class=xl7826424 width=64 style='width:48pt'>Act. std</td>
+	<td class=xl7926424 width=64 style='width:48pt'>&nbsp;</td>
+	<td class=xl8026424 width=64 style='width:48pt'>Plan Pro</td>
+	<td class=xl7926424 width=63 style='width:47pt'>Plan Eff%</td>
+	<td class=xl7826424 width=64 style='width:48pt'>Act Eff%</td>
+	<td class=xl8026424 width=64 style='width:48pt'>Plan Pro</td>
+	<td class=xl7826424 width=64 style='width:48pt'>Plan Eff%</td>
+	<td class=xl8126424 width=64 style='width:48pt'>Act Eff%</td>
+	<td class=xl7626424>Shift A</td>
+	<td class=xl8226424>Shift B</td>
+	<td class=xl18726424 style='border-top:none'>Shift A</td>
+	<td class=xl18726424 style='border-top:none;border-left:none'>Shift B</td>
+	<td class=xl18726424 style='border-top:none;border-left:none'>Shift A</td>
+	<td class=xl18726424 style='border-top:none;border-left:none'>Shift B</td>
+	<td colspan=2 class=xl14826424 style='border-right:1.0pt solid black;
+	border-left:none'>A &amp; B</td>
+	</tr><tr height=22 style='mso-height-source:userset;height:16.5pt'><td colspan=5 rowspan=2 height=44 class=xl15326424 style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt'>Section</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9826424>0%</td><td class=xl9826424>0%</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>0</td><td class=xl9726424></td><td class=xl9726424></td><td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>0</td><td class=xl9726424></td><td class=xl9726424>0</td><td class=xl9726424></td><td class=xl9726424>0</td><td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>0%</td><td class=xl9726424>0</td><td  class=xl9826424>0%</td><td class=xl9826424>NAN%</td><td class=xl9726424>0</td><td class=xl9826424>0%</td><td class=xl9826424>NAN%</td><td class=xl9726424>0</td><td class=xl10026424>0</td><td class=xl18926424>0</td><td class=xl18926424>0</td><td class=xl18926424>0</td><td class=xl18926424>0</td></tr><tr height=22 style='mso-height-source:userset;height:16.5pt'><td height=22 class=xl9926424 style='height:16.5pt'>0</td><td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>NAN%</td><td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=2 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=3 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>Actual std hrs =</td><td class=xl9926424>0</td><td colspan=2 class=xl17226424 style='border-right:1.0pt solid black;border-left:none'>Act EFF % =</td><td colspan=4 class=xl17326424 style='border-right:1.0pt solid black'>0%</td><td colspan=2 class=xl18926424 style='border-left:none'>0</td><td colspan=2 class=xl18926424 style='border-left:none'>0</td><td colspan=2 class=xl18926424 style='border-left:none'>0</td></tr><tr height=22 style='mso-height-source:userset;height:16.5pt'><td colspan=5 rowspan=2 height=44 class=xl15326424 style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt'>Section</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9826424>0%</td><td class=xl9826424>0%</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>0</td><td class=xl9726424></td><td class=xl9726424></td><td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>0</td><td class=xl9726424></td><td class=xl9726424>0</td><td class=xl9726424></td><td class=xl9726424>0</td><td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>0%</td><td class=xl9726424>0</td><td  class=xl9826424>0%</td><td class=xl9826424>NAN%</td><td class=xl9726424>0</td><td class=xl9826424>0%</td><td class=xl9826424>NAN%</td><td class=xl9726424>0</td><td class=xl10026424>0</td><td class=xl18926424>0</td><td class=xl18926424>0</td><td class=xl18926424>0</td><td class=xl18926424>0</td></tr><tr height=22 style='mso-height-source:userset;height:16.5pt'><td height=22 class=xl9926424 style='height:16.5pt'>0</td><td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>NAN%</td><td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=2 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=3 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>Actual std hrs =</td><td class=xl9926424>0</td><td colspan=2 class=xl17226424 style='border-right:1.0pt solid black;border-left:none'>Act EFF % =</td><td colspan=4 class=xl17326424 style='border-right:1.0pt solid black'>0%</td><td colspan=2 class=xl18926424 style='border-left:none'>0</td><td colspan=2 class=xl18926424 style='border-left:none'>0</td><td colspan=2 class=xl18926424 style='border-left:none'>0</td></tr><tr height=22 style='mso-height-source:userset;height:16.5pt'><td colspan=5 rowspan=2 height=44 class=xl15326424 style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt'>PPZ</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9826424>0%</td><td class=xl9826424>0%</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td class=xl9726424>0</td><td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>0</td><td class=xl9726424></td><td class=xl9726424></td><td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>0</td><td class=xl9726424></td><td class=xl9726424>0</td><td class=xl9726424></td><td class=xl9726424>0</td><td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>0%</td><td class=xl9726424>0</td><td  class=xl9826424>0%</td><td class=xl9826424>NAN%</td><td class=xl9726424>0</td><td class=xl9826424>0%</td><td class=xl9826424>NAN%</td><td class=xl9726424>0</td><td class=xl10026424>0</td><td class=xl18926424>0</td><td class=xl18926424>0</td><td class=xl18926424>0</td><td class=xl18926424>0</td></tr><tr height=22 style='mso-height-source:userset;height:16.5pt'><td height=22 class=xl9926424 style='height:16.5pt'>0</td><td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>NAN%</td><td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=2 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>0</td><td colspan=3 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>Actual std hrs =</td><td class=xl9926424>0</td><td colspan=2 class=xl17226424 style='border-right:1.0pt solid black;border-left:none'>Act EFF % =</td><td colspan=4 class=xl17326424 style='border-right:1.0pt solid black'>0%</td><td colspan=2 class=xl18926424 style='border-left:none'>0</td><td colspan=2 class=xl18926424 style='border-left:none'>0</td><td colspan=2 class=xl18926424 style='border-left:none'>0</td></tr>

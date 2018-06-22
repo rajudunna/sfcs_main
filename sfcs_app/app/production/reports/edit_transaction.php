@@ -223,22 +223,13 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<th>Shift</th>";
 	
-	$shift=array("A","B");
+	// $shift=array("A","B");
 	
 	echo "<td>";
 	echo "<select name=\"shift\" class='form-control'>";
-	for($i=0;$i<sizeof($shift);$i++)
-	{
-		if($shift[$i]==$row["shift"])
-		{
-			$status="selected='selected'";
-		}
-		else
-		{
-			$status="";
-		}
-		echo "<option value=\"$shift[$i]\" $status>".$shift[$i]."</option>";
-	}
+	for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+		<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+	<?php }
 	echo "</select></td>";
 	
 	echo "</tr>";

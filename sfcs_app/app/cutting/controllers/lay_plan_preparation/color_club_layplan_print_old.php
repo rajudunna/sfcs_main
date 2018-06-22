@@ -1537,7 +1537,7 @@ tags will be replaced.-->
 			
 </td>
   <td colspan=3 class=xl7732599 style='border-right:.5pt solid black'>Used
-  Yards</td>
+  <?php $fab_uom ?></td>
   <td colspan=3 class=xl7032599>
   <?php 
   $sum_newyy = array();

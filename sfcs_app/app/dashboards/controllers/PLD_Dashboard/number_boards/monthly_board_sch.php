@@ -22,7 +22,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select SUM((p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s06+p_s08+p_s10+p_s12+p_s14+p_s16+p_s18+p_s20+p_s22+p_s24+p_s26+p_s28+p_s30
-)*p_plies) AS cutting_wip FROM bai_pro3.order_cat_doc_mix WHERE print_status>\"2013-01-01\" AND act_cut_status='DONE' AND act_cut_issue_status<>'DONE' AND category IN ('Body','Front') AND style_id IS NOT NULL";
+)*p_plies) AS cutting_wip FROM bai_pro3.order_cat_doc_mix WHERE print_status>\"2013-01-01\" AND act_cut_status='DONE' AND act_cut_issue_status<>'DONE' AND category IN ('".implode("','",$in_categories)."') AND style_id IS NOT NULL";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
