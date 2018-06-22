@@ -341,7 +341,7 @@ else
 			$emb_count=$sql_row["order_embl_a"]+$sql_row["order_embl_b"]+$sql_row["order_embl_c"]+$sql_row["order_embl_d"]+$sql_row["order_embl_e"]+$sql_row["order_embl_f"]+$sql_row["order_embl_g"]+$sql_row["order_embl_h"];
 		}
 		
-		$sql_cat="select tid from $bai_pro3.cat_stat_log where order_tid like \"% ".$schedule."".$color."%\" and category in (\"Body\",\"Front\")";
+		$sql_cat="select tid from $bai_pro3.cat_stat_log where order_tid like \"% ".$schedule."".$color."%\" and category in ($in_categories)";
 		//echo $sql_cat."<br>";
 		$sql_result_cat=mysqli_query($link,$sql_cat) or exit("Sql Error3=".mysqli_error());
 		$rows_cat=mysqli_num_rows($sql_result_cat);

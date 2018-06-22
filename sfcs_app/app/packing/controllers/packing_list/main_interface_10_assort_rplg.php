@@ -136,7 +136,7 @@ else
 		//echo "<h2 style='color:Red;' > Carton Ratio Quantities not updated for this schedule... <br/> First please enter the Carton Ratio Quantities for this schedule..</h2>";
 }
 
-$sql2="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and category in (\"Body\",\"Front\")";
+$sql2="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and category in ($in_categories)";
 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row2=mysqli_fetch_array($sql_result2))
 {

@@ -945,7 +945,7 @@ cy9tZWRpYS9pbWFnZTEuanBlZ1BLBQYAAAAABgAGAIUBAAAsHgAAAAA=
    </tr>
   </table>
   </span></td>
-  <td colspan=4 class=xl7623201>Brandix Essentials Limited, Koggala</td>
+  <td colspan=4 class=xl7623201>Brandix Essentials Limited, <?= $plant_name ?></td>
   <td class=xl6323201></td>
   <td class=xl7223201>Surplus Copy</td>
   <td class=xl6323201></td>
@@ -959,7 +959,7 @@ cy9tZWRpYS9pbWFnZTEuanBlZ1BLBQYAAAAABgAGAIUBAAAsHgAAAAA=
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl6323201 style='height:16.5pt'></td>
-  <td colspan=4 class=xl6923201>Koggala,</td>
+  <td colspan=4 class=xl6923201><?= $plant_name ?>,</td>
   <td class=xl6323201></td>
   <td class=xl7123201>Destruction Note No</td>
   <td class=xl6323201></td>

@@ -58,7 +58,7 @@ for($mm=0;$mm<sizeof($packpcs);$mm++)
 
 		$order_tid=$sql_row_group['order_tid'];
 
-		$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\")";
+		$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories)";
 		//// echo $sql;
 		// mysqli_query($link, $sql) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
