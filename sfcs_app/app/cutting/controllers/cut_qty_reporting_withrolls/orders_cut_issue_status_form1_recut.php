@@ -218,10 +218,11 @@ echo "<tr><td>Section</td><td>:</td><td><div class='row col-md-4'><select name=\
 </select></div></td></tr>";
 //echo "<tr><td>Shift</td><td>:</td><td><input type=\"text\" name=\"shift\" value=\"NIL\"></td></tr>";
 echo "<tr><td>Shift</td><td>:</td><td><div class='row col-md-4'><select name=\"shift\" class='form-control' id='team'>
-<option value=\"\">SELECT TEAM</option>
-<option value=\"A\">A</option>
-<option value=\"B\">B</option>
-</select></div></td></tr>";
+<option value=\"\">SELECT TEAM</option>";
+foreach($shifts_array as $key=>$shift){
+	echo "<option value='$shift'>$shift</option>";
+}
+	echo "</select></div></td></tr>";
 echo "<tr><td>Doc Req</td><td>:</td><td>".($act_plies*$mklength)."</td></tr>";
 echo "<tr><td>Plies</td><td>:</td><td><input type=\"hidden\" name=\"old_plies\" value=\"$old_plies\"><div class='row col-md-4'><input type=\"text\" class='form-control' name=\"plies\" value=\"$plies_check\" onchange=\"if(validate(this.value,$plies_check)==1010) { this.value=0; }\"></div></td></tr>";
 echo "<tr><td>Fab_received</td><td>:</td><td><input type=\"hidden\" name=\"old_fab_rec\" value=\"$fab_received\"><div class='row col-md-4'><input type=\"text\" class='form-control' name=\"fab_rec\" value=\"0\"></div></td></tr>";

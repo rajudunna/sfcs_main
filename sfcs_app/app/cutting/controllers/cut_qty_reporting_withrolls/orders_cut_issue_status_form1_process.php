@@ -24,7 +24,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		
 		$size_qty=array();
 		
-		$sql="select * from $bai_pro3.order_cat_doc_mix where doc_no=\"$doc_no\" and category in ('Body','Front')"; //20110911
+		$sql="select * from $bai_pro3.order_cat_doc_mix where doc_no=\"$doc_no\" and category in ($in_categories)"; //20110911
 	
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))

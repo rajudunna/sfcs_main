@@ -807,7 +807,7 @@ bai_pro3.bai_orders_db_confirm.bts_status
 			// ref_order_num = $order_id
 			$layPlanQuery="SELECT plandoc_stat_log.*,cat_stat_log.category FROM $bai_pro3.plandoc_stat_log as plandoc_stat_log
 			LEFT JOIN $bai_pro3.cat_stat_log as cat_stat_log ON plandoc_stat_log.cat_ref = cat_stat_log.tid
-			WHERE cat_stat_log.category IN ('BODY','FRONT') AND  plandoc_stat_log.order_tid='$order_tid'";
+			WHERE cat_stat_log.category IN ($in_categories) AND  plandoc_stat_log.order_tid='$order_tid'";
 			//echo $layPlanQuery."<br>";
 			$result7=mysqli_query($link, $layPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($l=mysqli_fetch_array($result7))
