@@ -2,6 +2,7 @@
 <?php 
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
+
 ?>
 
 
@@ -91,9 +92,17 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							}
 						if($convert==1)
 						{
-							if($uom == "MTR"){
-								$item2=round($item2*1.09361,2);
+							if($fab_uom == "meters"){
+								if($uom == "YRD"){
+									$item2=round($item2*0.9144,2);
+								}
 							}
+							if($fab_uom == "yards"){
+								if($uom == "MTR"){
+									$item2=round($item2*1.09361,2);
+								}
+							}
+							
 						
 						}
 					
@@ -104,8 +113,15 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					}
 					if($convert==1)
 					{
-						if($uom == "MTR"){
-							$total_qty=round($total_qty*1.09361,2);
+						if($fab_uom == "meters"){
+							if($uom == "YRD"){
+								$total_qty=round($total_qty*0.9144,2);
+							}
+						}
+						if($fab_uom == "yards"){
+							if($uom == "MTR"){
+								$total_qty=round($total_qty*1.09361,2);
+							}
 						}
 					}
 						
@@ -169,8 +185,15 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 
 		if($convert==1)
 		{
-			if($uom == "MTR"){
-				$total_qty=round($total_qty*1.09361,2);
+			if($fab_uom == "meters"){
+				if($uom == "YRD"){
+					$total_qty=round($total_qty*0.9144,2);
+				}
+			}
+			if($fab_uom == "yards"){
+				if($uom == "MTR"){
+					$total_qty=round($total_qty*1.09361,2);
+				}
 			}
 		}
 
@@ -195,8 +218,15 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					//query to insert data into table
 					if($convert==1)
 					{
-						if($uom == "MTR"){
-							$qty[$i]=round($qty[$i]*1.09361,2);
+						if($fab_uom == "meters"){
+							if($uom == "YRD"){
+								$qty[$i]=round($qty[$i]*0.9144,2);
+							}
+						}
+						if($fab_uom == "yards"){
+							if($uom == "MTR"){
+								$qty[$i]=round($qty[$i]*1.09361,2);
+							}
 						}
 					}
 					$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','$user_name')";

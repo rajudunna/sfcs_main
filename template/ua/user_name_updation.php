@@ -3,12 +3,12 @@
 
     include('../dbconf.php');
 
-    if(isset($_GET['rid'])){
-        $rid = $_GET['rid'];
-        $rname = $_GET['rname'];
+    if(isset($_GET['uid'])){
+        $uid = $_GET['uid'];
+        $uname = $_GET['uname'];
     }else{
-        $rid = '';
-        $rname = '';
+        $uid = '';
+        $uname = '';
     }
 
     session_start();
@@ -26,22 +26,24 @@
 
 <div class="panel panel-primary">
 
-    <div class="panel-heading"><?php if(isset($_GET['rname'])){
-                            echo 'Role Updation';
+    <div class="panel-heading"><?php if(isset($_GET['uname'])){
+                            echo 'User Name Updation';
                         }else{
-                            echo 'Role Creation';
+                            echo 'User Creation';
                         } ?></div>
 
         <div class="panel-body">
-            <form name = "form1" action="<?= getFullURL($_GET['r'],'role_creation_updation_ui.php','N');?>" method = "post">    
+
+
+            <form name = "form1" action="<?= getFullURL($_GET['r'],'user_name_updation.php','N');?>" method = "post">    
                 <div class = "row">    
                     <div class = "form_group col-md-3">    
-                        <label>Role Name:</label>    
-                        <input type = "text" name = "rname" value = "<?= $rname ?>" class="form-control" required />   
-                        <input type="hidden" name="roleid"  value="<?= $rid ?>"/>
+                        <label>User Name:</label>    
+                        <input type = "text" name = "uname" value = "<?= $uname ?>" class="form-control" required />   
+                        <input type="hidden" name="uid"  value="<?= $uid ?>"/>
                     </div>  
                     <div class='col-md-2'>
-                        <input type="submit" value="<?php if(isset($_GET['rname'])){
+                        <input type="submit" value="<?php if(isset($_GET['uname'])){
                             echo 'Update';
                         }else{
                             echo 'Save';
@@ -64,61 +66,61 @@
 
                 if(isset($_POST['submit']))
                 {
-                    $role_name = $_POST['rname'];
-                    $roleid = $_POST['roleid'];
+                    $user_name = $_POST['uname'];
+                    $user_id = $_POST['uid'];
                   
                     if($_POST['submit'] == 'Update'){
 
-                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_roles WHERE role_name = '$role_name'";
+                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_users WHERE user_name = '$user_name'";
                         $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                        $role_names = mysqli_fetch_array($query_result);
-                        $unique_count = $role_names['count'];
+                        $user_names = mysqli_fetch_array($query_result);
+                        $unique_count = $user_names['count'];
 
                         if($unique_count == 0){
 
-                            $sql_update_query = "update rbac_roles set role_name = '$role_name' where role_id='$roleid'";
-                            $query_result = mysqli_query($link_ui, $sql_update_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            $sql_update_query = "update rbac_users set user_name = '$user_name' where user_id='$user_id'";
+                            $query_result = mysqli_query($link_ui, $sql_update_query) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {
-                                $_SESSION["msg"]='Role Name updated successfully';
+                                $_SESSION["msg"]='User Name updated successfully';
                                 $_SESSION["status"] = 2;
-                                $url = getFullURL($_GET['r'],'roles_list_view.php','N');
+                                $url = getFullURL($_GET['r'],'view_all_users_and_assigned_roles.php','N');
                                 header("Location:".$url); 
                             } else {
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
                             }
                         }else{
-                            $_SESSION["msg"]='Role Name already exist';
+                            $_SESSION["msg"]='User Name already exist';
                             $_SESSION["status"] = 0;
-                            $url = getFullURL($_GET['r'],'role_creation_updation_ui.php','N');
-                            header("Location: $url&rid=".$roleid."&rname=".$role_name);
+                            $url = getFullURL($_GET['r'],'user_name_updation.php','N');
+                            header("Location: $url&uid=".$user_id."&uname=".$user_name);
                         }
                         
                         $link_ui->close();
                        
                     }else{
 
-                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_roles WHERE role_name = '$role_name'";
+                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_users WHERE user_name = '$user_name'";
                         $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                        $role_names = mysqli_fetch_array($query_result);
-                        $unique_count = $role_names['count'];
+                        $user_names = mysqli_fetch_array($query_result);
+                        $unique_count = $user_names['count'];
                         
                         if($unique_count == 0){
-                            $sql_insert_query = "insert into rbac_roles (role_name) values ('$role_name')";
+                            $sql_insert_query = "insert into rbac_users (user_name) values ('$user_name')";
                             $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {
-                                $_SESSION["msg"]='Role Name created successfully';
+                                $_SESSION["msg"]='User Name created successfully';
                                 $_SESSION["status"] = 1;
-                                $url = getFullURL($_GET['r'],'roles_list_view.php','N');
+                                $url = getFullURL($_GET['r'],'view_all_users_and_assigned_roles.php','N');
                                 header("Location:".$url); 
                             } else {
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
                             }
                         }else{
-                            echo "<span class='label label-danger'>Role Name already exist</span>";
+                            echo "<span class='label label-danger'>User Name already exist</span>";
                         }
                         
                         $link_ui->close();

@@ -1,7 +1,8 @@
 <?php 
 // include("dbconf.php"); 
 // include("m3_bulk_or_proc.php"); 
-echo $_SERVER['DOCUMENT_ROOT'];
+// echo $_SERVER['DOCUMENT_ROOT'];
+// die();
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -52,7 +53,7 @@ try {
             // Filling other than Rejections 
             if($m3_reason=='' || $m3_reason=='GX') 
             {     
-                $sql1="select * fro $table_order where order_style_no='".$m3_style."' and order_del_no='".$m3_schedule."' and order_col_des='".$m3_color."' and sfcs_size='".$sfcs_size."' and sfcs_ops='".$m3_ops."' order by order_no*1"; 
+                $sql1="select * from $table_order where order_style_no='".$m3_style."' and order_del_no='".$m3_schedule."' and order_col_des='".$m3_color."' and sfcs_size='".$sfcs_size."' and sfcs_ops='".$m3_ops."' order by order_no*1"; 
                 $sql_result1 = $link->query($sql1) or error_check();
                 
                 $rows=mysqli_num_rows($sql_result1); 
@@ -658,5 +659,7 @@ $roll = $link->rollback();
 // echo $roll.'<br>';
 if($flag){
     echo "<h2>Quantity splitted for Clubbed MO.</h2>"; 
+}else{
+    echo "<h2>Some Error Occured in MO Clubbing.</h2>";
 }
 ?> 

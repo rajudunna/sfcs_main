@@ -33,10 +33,8 @@ if(isset($_SESSION["msg"])) {
 
     <div class="panel-heading">All Roles List</div>
 
-        <div class="panel-body">  
+        <div class="panel-body">      
          
-            <h2>All Roles List</h2>   
-
             <?php
 
                 include('../dbconf.php');
@@ -46,7 +44,7 @@ if(isset($_SESSION["msg"])) {
 
                 if ($query_result->num_rows > 0) {
 
-                    echo "<table class='table table-bordered'><tr><th>Name</th><th>Action</th></tr>";
+                    echo "<div class='col-sm-6 col-sm-offset-3'><table class='table table-bordered'><tr><td class='col-sm-10' align='center'><b>ROLE NAME</b></td><td class='col-sm-2'><b>ACTION</b></td></tr>";
                     // output data of each row
                     while($row = $query_result->fetch_assoc()) {
                         $rid = $row["role_id"];
@@ -55,11 +53,11 @@ if(isset($_SESSION["msg"])) {
                         // $url = $_SERVER['DOCUMENT_ROOT'].'/ui/role_creation_ui?rname='.$row["role_name"];
                         $url = getFullURL($_GET['r'],'role_creation_updation_ui.php','N');
                         echo "<tr>
-                                <td>".$row["role_name"]."</td>
+                                <td align='center'>".$row["role_name"]."</td>
                                 <td><a href='$url&rid=$rid&rname=$rname'><button class='btn btn-sm btn-success'>Edit</button></td>
                             </tr>";
                     }
-                    echo "</table>";
+                    echo "</table></div>";
                 } else {
                     echo "<div class='alert alert-info' align='center'>No Data Found</div>";
                 }
