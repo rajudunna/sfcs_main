@@ -40,7 +40,7 @@
                             echo 'User Creation and Assign Role';
                         } ?></h2> 
 
-            <form name = "form1" action="<?= getFullURL($_GET['r'],'user_creation_and_assign_User.php','N');?>" method = "post">    
+            <form name = "form1" action="<?= getFullURL($_GET['r'],'user_creation_and_assign_role.php','N');?>" method = "post">    
                 <div class = "row">    
                     <div class = "form_group col-md-3">    
                         <label>User Name:</label>    
@@ -90,7 +90,7 @@
                             if ($query_result) {
                                 $_SESSION["msg"]='User Name updated successfully';
                                 $_SESSION["status"] = 2;
-                                $url = getFullURL($_GET['r'],'Users_list_view.php','N');
+                                $url = getFullURL($_GET['r'],'view_all_users_and_assigned_roles.php','N');
                                 header("Location:".$url); 
                             } else {
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
@@ -98,7 +98,7 @@
                         }else{
                             $_SESSION["msg"]='User Name already exist';
                             $_SESSION["status"] = 0;
-                            $url = getFullURL($_GET['r'],'User_creation_updation_ui.php','N');
+                            $url = getFullURL($_GET['r'],'user_creation_and_assign_role.php','N');
                             header("Location: $url&uid=".$user_id."&uname=".$user_name);
                         }
                         
@@ -119,7 +119,7 @@
                             if ($query_result) {
                                 $_SESSION["msg"]='User Name created successfully';
                                 $_SESSION["status"] = 1;
-                                $url = getFullURL($_GET['r'],'Users_list_view.php','N');
+                                $url = getFullURL($_GET['r'],'view_all_users_and_assigned_roles.php','N');
                                 header("Location:".$url); 
                             } else {
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
