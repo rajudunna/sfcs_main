@@ -71,7 +71,12 @@ $has_permission=haspermission($_GET['r']);
 			// $plandoc_stat_log_qry="SELECT bai_orders_db_confirm.*,plandoc_stat_log.*,cat_stat_log.* FROM $bai_pro3.bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log ON bai_orders_db_confirm.order_tid=plandoc_stat_log.order_tid
 			// LEFT JOIN $bai_pro3.plandoc_stat_log ON cat_stat_log.order_tid=plandoc_stat_log.order_tid AND cat_stat_log.tid=plandoc_stat_log.cat_ref
 			// WHERE trim(bai_orders_db_confirm.order_style_no)='$style' and trim(bai_orders_db_confirm.order_del_no)='$schedule' and trim(bai_orders_db_confirm.order_col_des)='$color' and plandoc_stat_log.acutno=$cut_num and cat_stat_log.category in ('Body','Front')";
-			$plandoc_stat_log_qry="SELECT * FROM $bai_pro3.order_cat_doc_mix WHERE TRIM(order_style_no)='$style' AND TRIM(order_del_no)='$schedule' AND TRIM(order_col_des)='$color' and acutno=$cut_num and category in ('Body','Front')";
+			for ($i=0; $i < sizeof($in_categories); $i++)
+			{
+				$cat[]=$in_categories[$i];
+			}
+			$category = "'" .implode("','",$cat)."'" ;
+			$plandoc_stat_log_qry="SELECT * FROM $bai_pro3.order_cat_doc_mix WHERE TRIM(order_style_no)='$style' AND TRIM(order_del_no)='$schedule' AND TRIM(order_col_des)='$color' and acutno=$cut_num and category in ($category)";
 			//echo $plandoc_stat_log_qry."<br>";
 					
 			$query = mysqli_query($link,$plandoc_stat_log_qry);

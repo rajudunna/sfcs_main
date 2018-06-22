@@ -48,7 +48,7 @@ $cut_no=$_GET['cut_no'];
 
 
 
-$sql1="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and purwidth>0";
+$sql1="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and purwidth>0";
 //echo $sql1."<br>";
 mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));

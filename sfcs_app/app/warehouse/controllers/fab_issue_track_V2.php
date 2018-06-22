@@ -531,13 +531,24 @@ if(isset($_POST["submit"]) or $flag==1)
 			echo "<div class='panel-body'>";
 			echo "<form name='update' id='delete_form' method='post' action='".getURL(getBASE($_GET['r'])['path'])['url']."'>";
 			echo "<table class='table table-bordered table-striped'>";
-			echo "<tr><th>Section</th>
-				<td><select name='section' class='form-control' required>
-				<option value='1'>Section-1</option>
-				<option value='2'>Section-2</option>
-				<option value='3'>Section-3</option>
-				</select>
-				</td></tr>";
+			// echo "<tr><th>Section</th>
+			// 	<td><select name='section' class='form-control' required>
+			// 	<option value='1'>Section-1</option>
+			// 	<option value='2'>Section-2</option>
+			// 	<option value='3'>Section-3</option>
+			// 	</select>
+			// 	</td></tr>";
+			 	echo "<tr><th>Section</th> <td><select name='section' class='form-control' required >";
+			    $section_query="select sec_id,sec_head FROM $bai_pro3.sections_db";
+			   $result4=mysqli_query($link, $section_query) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			   while($row4=mysqli_fetch_array($result4))
+			  {
+			 	echo "<option value=\"".$row4['sec_head']."\">".$row4['sec_head']."</option>";
+				
+			  }
+			   echo "</select></td></tr>";
+
+
 			echo "<tr><th>Picking List</th><td><input type='text'  name='picking_list' value='' class='form-control alpha' required></td></tr>";
 			echo "<tr><th>Delivery No</th><td><input type='text' name='delivery_no' value='' class='form-control alpha' required></td></tr>";
 			echo "<tr><th>Issued By</th><td><input type='text'  name='issued_by' value='' class='form-control alpha' required></td></tr>";

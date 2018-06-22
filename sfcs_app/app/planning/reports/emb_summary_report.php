@@ -233,8 +233,13 @@ if(isset($_POST["submit"]))
 
 			$order_tid_ref_implode=implode(",",$order_tid_ref);
 			//echo $order_tid_ref_implode."<br>";
+			for ($i=0; $i < sizeof($in_categories); $i++)
+					{
+						 $cat[]=$in_categories[$i];
+					}
+					$category = "'" .implode("','",$cat)."'" ;
 			
-			$sql23="select group_concat(tid) as cat_tid from $bai_pro3.cat_stat_log where REPLACE(order_tid,\" \",\"\") in (".$order_tid_ref_implode.") and category in (\"Body\",\"Front\")";
+			$sql23="select group_concat(tid) as cat_tid from $bai_pro3.cat_stat_log where REPLACE(order_tid,\" \",\"\") in (".$order_tid_ref_implode.") and category in ($category)";
 			//echo $sql23."<br>";
 			// mysqli_query($link, $sql23) or exit("Sql Error".$sql23."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result23=mysqli_query($link, $sql23) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -251,8 +256,12 @@ if(isset($_POST["submit"]))
 			{
 				$doc_remarks1[]=$row41["remarks"];
 			}
-			
-			$sql3="select group_concat(tid) as cat_tid from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and category in (\"Body\",\"Front\")";
+			for ($i=0; $i < sizeof($in_categories); $i++)
+					{
+						 $cat[]=$in_categories[$i];
+					}
+					$category = "'" .implode("','",$cat)."'" ;
+			$sql3="select group_concat(tid) as cat_tid from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and category in ($category)";
 			// mysqli_query($link, $sql3) or exit("Sql Error".$sql3."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row3=mysqli_fetch_array($sql_result3))

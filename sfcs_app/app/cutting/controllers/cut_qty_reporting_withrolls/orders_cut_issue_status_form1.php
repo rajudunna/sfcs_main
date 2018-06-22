@@ -176,10 +176,12 @@ echo "<tr><td>Section</td><td>:</td><td><select name=\"section\">
 </select></td></tr>";
 //echo "<tr><td>Shift</td><td>:</td><td><input type=\"text\" name=\"shift\" value=\"NIL\"></td></tr>";
 echo "<tr><td>Shift</td><td>:</td><td><select name=\"shift\">
-<option value=\"\">SELECT TEAM</option>
-<option value=\"A\">A</option>
-<option value=\"B\">B</option>
-</select></td></tr>";
+<option value=\"\">SELECT TEAM</option>";
+foreach($shifts_array as $key=>$shift){
+	echo "<option value='$shift'>$shift</option>";
+
+	}
+	echo "</select></div></td></tr>";
 echo "<tr><td>Doc Req</td><td>:</td><td>".(($act_plies*$mklength)+$bind_con)."</td></tr>";
 echo "<tr><td>Plies</td><td>:</td><td><input type=\"hidden\" name=\"old_plies\" value=\"$old_plies\"><input type=\"text\" name=\"plies\" value=\"$plies_check\" onchange=\"if(validate(this.value,$plies_check)==1010) { this.value=0; }\"></td></tr>";
 echo "<tr><td>Fab_received</td><td>:</td><td><input type=\"hidden\" name=\"old_fab_rec\" value=\"$fab_received\"><input type=\"text\" name=\"fab_rec\" value=\"0\"></td></tr>";

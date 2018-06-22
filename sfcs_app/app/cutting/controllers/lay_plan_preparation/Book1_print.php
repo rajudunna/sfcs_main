@@ -1722,7 +1722,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <td class=xl6613019></td> 
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Used 
-    Yards</td> 
+    <?php $fab_uom ?></td> 
     <td class=xl7713019><?php echo round($newyy,0); ?></td> 
     <td class=xl6513019></td> 
     <td class=xl6613019></td> 
