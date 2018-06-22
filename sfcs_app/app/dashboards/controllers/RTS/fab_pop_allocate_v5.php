@@ -388,7 +388,7 @@ if(isset($_POST['allocate_new']))
 		unset($allo_c);
 		$allo_c=array();
 	
-		$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
+		$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
 		//echo $sql."<br/>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -416,20 +416,57 @@ if(isset($_POST['allocate_new']))
 			$allo_c[]="xl=".$sql_row['p_xl'];
 			$allo_c[]="xxl=".$sql_row['p_xxl'];
 			$allo_c[]="xxxl=".$sql_row['p_xxxl'];
+			$allo_c[]="s01=".$sql_row['p_s01'];
+			$allo_c[]="s02=".$sql_row['p_s02'];
+			$allo_c[]="s03=".$sql_row['p_s03'];
+			$allo_c[]="s04=".$sql_row['p_s04'];
+			$allo_c[]="s05=".$sql_row['p_s05'];
 			$allo_c[]="s06=".$sql_row['p_s06'];
+			$allo_c[]="s07=".$sql_row['p_s07'];
 			$allo_c[]="s08=".$sql_row['p_s08'];
+			$allo_c[]="s09=".$sql_row['p_s09'];
 			$allo_c[]="s10=".$sql_row['p_s10'];
+			$allo_c[]="s11=".$sql_row['p_s11'];
 			$allo_c[]="s12=".$sql_row['p_s12'];
+			$allo_c[]="s13=".$sql_row['p_s13'];
 			$allo_c[]="s14=".$sql_row['p_s14'];
+			$allo_c[]="s15=".$sql_row['p_s15'];
 			$allo_c[]="s16=".$sql_row['p_s16'];
+			$allo_c[]="s17=".$sql_row['p_s17'];
 			$allo_c[]="s18=".$sql_row['p_s18'];
+			$allo_c[]="s19=".$sql_row['p_s19'];
 			$allo_c[]="s20=".$sql_row['p_s20'];
+			$allo_c[]="s21=".$sql_row['p_s21'];
 			$allo_c[]="s22=".$sql_row['p_s22'];
+			$allo_c[]="s23=".$sql_row['p_s23'];
 			$allo_c[]="s24=".$sql_row['p_s24'];
+			$allo_c[]="s25=".$sql_row['p_s25'];
 			$allo_c[]="s26=".$sql_row['p_s26'];
+			$allo_c[]="s27=".$sql_row['p_s27'];
 			$allo_c[]="s28=".$sql_row['p_s28'];
+			$allo_c[]="s29=".$sql_row['p_s29'];
 			$allo_c[]="s30=".$sql_row['p_s30'];
-		}
+			$allo_c[]="s31=".$sql_row['p_s31'];
+			$allo_c[]="s32=".$sql_row['p_s32'];
+			$allo_c[]="s33=".$sql_row['p_s33'];
+			$allo_c[]="s34=".$sql_row['p_s34'];
+			$allo_c[]="s35=".$sql_row['p_s35'];
+			$allo_c[]="s36=".$sql_row['p_s36'];
+			$allo_c[]="s37=".$sql_row['p_s37'];
+			$allo_c[]="s38=".$sql_row['p_s38'];
+			$allo_c[]="s39=".$sql_row['p_s39'];
+			$allo_c[]="s40=".$sql_row['p_s40'];
+			$allo_c[]="s41=".$sql_row['p_s41'];
+			$allo_c[]="s42=".$sql_row['p_s42'];
+			$allo_c[]="s43=".$sql_row['p_s43'];
+			$allo_c[]="s44=".$sql_row['p_s44'];
+			$allo_c[]="s45=".$sql_row['p_s45'];
+			$allo_c[]="s46=".$sql_row['p_s46'];
+			$allo_c[]="s47=".$sql_row['p_s47'];
+			$allo_c[]="s48=".$sql_row['p_s48'];
+			$allo_c[]="s49=".$sql_row['p_s49'];
+			$allo_c[]="s50=".$sql_row['p_s50'];
+}
 		
 		$sql="update $bai_rm_pj1.store_in set allotment_status=1 where tid in (".implode(",",$tid_ref).")";
 		//echo $sql."<br/>";
