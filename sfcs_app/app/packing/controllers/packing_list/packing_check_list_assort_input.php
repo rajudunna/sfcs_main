@@ -1433,19 +1433,23 @@ tags will be replaced.-->
  <tr class=xl6553519400 height=20 style='height:15.0pt'>
   <td height=20 class=xl7719400 style='height:15.0pt'>Size</td>
   <td class=xl7819400 style='border-left:none'>Ctn#</td>
-  <td class=xl7819400 style='border-left:none'>Job</td>
+  <td class=xl7819400 style='border-left:none'>Cut Job</td>
+  <td class=xl7819400 style='border-left:none'>Sewing<br> Job</td>
   <td class=xl7819400 style='border-left:none'>Qty</td>
   <td class=xl7819400 style='border-left:none' colspan=2>Label ID</td>
   <td class=xl7819400>Ctn#</td>
-  <td class=xl7819400 style='border-left:none'>Job</td>
+  <td class=xl7819400 style='border-left:none'>Cut Job</td>
+  <td class=xl7819400 style='border-left:none'>Sewing<br> Job</td>
   <td class=xl7819400 style='border-left:none'>Qty</td>
   <td class=xl7819400 style='border-left:none' colspan=2>Label ID</td>
   <td class=xl7819400>Ctn#</td>
-  <td class=xl7819400 style='border-left:none'>Job</td>
+  <td class=xl7819400 style='border-left:none'>Cut Job</td>
+  <td class=xl7819400 style='border-left:none'>Sewing<br> Job</td>
   <td class=xl8119400 style='border-left:none'>Qty</td>
   <td class=xl7819400 style='border-left:none' colspan=2>Label ID</td>
   <td class=xl7819400>Ctn#</td>
-  <td class=xl7819400 style='border-left:none'>Job</td>
+  <td class=xl7819400 style='border-left:none'>Cut Job</td>
+  <td class=xl7819400 style='border-left:none'>Sewing</br> Job</td>
   <td class=xl7819400 style='border-left:none'>Qty</td>
   <td class=xl7819400 style='border-left:none' colspan=2>Label ID</td>
   <td class=xl6553519400></td>
@@ -1458,12 +1462,15 @@ tags will be replaced.-->
   <td class=xl8319400 style='border-top:none'>&nbsp;</td>
   <td class=xl8319400 style='border-top:none'>&nbsp;</td>
   <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
   <td class=xl8319400 style='border-top:none'>&nbsp;</td>
   <td class=xl8219400>&nbsp;</td>
+  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
+  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
+  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
+  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
+  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
+  <td class=xl8219400>&nbsp;</td>
+  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
   <td class=xl8319400 style='border-top:none'>&nbsp;</td>
   <td class=xl8319400 style='border-top:none'>&nbsp;</td>
   <td class=xl8319400 style='border-top:none'>&nbsp;</td>
@@ -1624,7 +1631,7 @@ tags will be replaced.-->
 			
 			$carton_nodes=array();
 			$x=1;
-			$sql="select status,min(tid) as \"tid\",doc_no,sum(carton_act_qty) as \"carton_act_qty\" from pac_stat_log where doc_no in (".implode(",",$docs_db).") and size_code=\"".strtolower($size_titles_qry[$i])."\" group by doc_no_ref order by doc_no,carton_mode,carton_act_qty desc";
+			$sql="select status,min(tid) as \"tid\",doc_no,sum(carton_act_qty) as \"carton_act_qty\",input_job_number from pac_stat_log where doc_no in (".implode(",",$docs_db).") and size_code=\"".strtolower($size_titles_qry[$i])."\" group by doc_no_ref order by doc_no,carton_mode,carton_act_qty desc";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1634,12 +1641,13 @@ tags will be replaced.-->
 				$carton_act_qty=$sql_row['carton_act_qty'];
 				$status=$sql_row['status'];
 				$tid=$sql_row['tid'];
+				$input_job=$sql_row['input_job_number'];
 				$bgcolor="RED";
 				if($status=="DONE")
 				{
 					$bgcolor="GREEN";
 				}
-				$carton_nodes[]=$x."-".$color_code.leading_zeros($cutno_db[array_search($doc_no,$docs_db)],3)."-".$carton_act_qty."-".$bgcolor."-".$tid;
+				$carton_nodes[]=$x."-".$color_code.leading_zeros($cutno_db[array_search($doc_no,$docs_db)],3)."-".$carton_act_qty."-".$bgcolor."-".$tid."-".$input_job;
 				$x++;
 			}
 			
@@ -1664,6 +1672,7 @@ tags will be replaced.-->
 					  {
 					  	  echo "<td class=xl8419400 bgcolor=".$node_detail[3].">".$node_detail[0]."</td>
 						  <td class=xl8419400 style='border-left:none'>".$node_detail[1]."</td>
+						  <td class=xl8419400 style='border-left:none'>".$node_detail[5]."</td>
 						  <td class=xl8419400 style='border-left:none'>".$node_detail[2]."</td>
 						  <td class=xl8419400 style='border-left:none' colspan=2>".$node_detail[4]."</td>";
 					  }
@@ -1672,12 +1681,14 @@ tags will be replaced.-->
 					  	  echo "<td class=xl8419400_new></td>
 						  <td class=xl8419400_new style='border-left:none'></td>
 						  <td class=xl8419400_new style='border-left:none'></td>
+						  <td class=xl8419400_new style='border-left:none'></td>
 						  <td class=xl8419400_new style='border-left:none'>&nbsp;</td>
 						  <td class=xl7919400_new></td>";
 					  }
 				  }
 				  echo "<td class=xl6553519400></td>
   					<td class=xl6553519400></td>
+					<td class=xl6553519400></td>
   					<td class=xl6553519400></td>
  					</tr>";
 					$cycle++;
@@ -1688,6 +1699,9 @@ tags will be replaced.-->
 			  <td class=xl8219400>&nbsp;</td>
 			  <td class=xl8219400>&nbsp;</td>
 			  <td class=xl8219400>&nbsp;</td>
+			   <td class=xl8219400>&nbsp;</td>
+			    <td class=xl8219400>&nbsp;</td>
+				 <td class=xl8219400>&nbsp;</td>
 			  <td class=xl8219400>&nbsp;</td>
 			  <td class=xl8219400>&nbsp;</td>
 			  <td class=xl8219400>&nbsp;</td>

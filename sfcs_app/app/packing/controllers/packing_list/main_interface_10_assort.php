@@ -94,7 +94,7 @@
 		$rowsy=mysqli_num_rows($sql_result4);
 		if($sql_num_check>=1)
 		{
-			if($carton_id==0 || $rowsy==0)
+			if($carton_id==0 && $rowsy==0)
 			{
 				echo "<input type=\"hidden\" name=\"cartonid\" value=\"\"><input type=\"hidden\" name=\"order_tid\" value=\"$tran_order_tid\"><input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
 				echo "<input type=\"hidden\" name=\"style\" value=\"$style\">

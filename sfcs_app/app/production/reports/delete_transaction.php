@@ -1,10 +1,5 @@
 <?php
 
-include($_SERVER['DOCUMENT_ROOT']."server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."server/group_def.php"); 
-//$view_access=user_acl("SFCS_0063",$username,1,$group_id_sfcs);//1 
-//Date:04-04-2016/SR#23509616/kirang/code changed to get access from central administration 
-//$authorised_access=user_acl("SFCS_0063",$username,7,$group_id_sfcs);//2 
 
 if(isset($_GET['tid']))
 {
@@ -19,8 +14,8 @@ body{
 </style>
 
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf2.php',1,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf3.php',1,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+
 
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
@@ -69,13 +64,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf3.php',1
 
 		// $tid=$_POST['tid'];
 		
-		$sql_insert_backup="insert into down_log_deleted select * from down_log where tid=".$tid;
+		$sql_insert_backup="insert into $bai_pro.down_log_deleted select * from $bai_pro.down_log where tid=".$tid;
+		//echo $sql_insert_backup;
 		mysqli_query($link, $sql_insert_backup) or exit("Sql Error in backup".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql_delete_log="insert into down_log_changes(tid_ref,username,operation) value(".$tid.",'".$username."','delete')";
+		$sql_delete_log="insert into $bai_pro.down_log_changes(tid_ref,username,operation) value(".$tid.",'".$username."','delete')";
 		mysqli_query($link, $sql_delete_log) or exit("Sql Error Edit".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql33="delete from down_log where tid=".$tid;
+		$sql33="delete from $bai_pro.down_log where tid=".$tid;
 		mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$url = getFullURL($_GET['r'],'down_time_log.php','N');
 		echo "<script>sweetAlert('Deleted Successfully','','success')</script>";
