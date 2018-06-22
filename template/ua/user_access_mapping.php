@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 <div class="panel panel-primary"  ng-app="app" id="App2">
 
-    <div class="panel-heading">Assign Menus and Permissions To Role</div>
+    <div class="panel-heading">Assign Menu and Permissions To Role</div>
 
         <div class="panel-body" ng-controller="userAccessController">
 

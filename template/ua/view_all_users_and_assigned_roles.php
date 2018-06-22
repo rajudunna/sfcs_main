@@ -35,7 +35,6 @@ if(isset($_SESSION["msg"])) {
 
         <div class="panel-body">  
          
-            <h2>All Users And Assigned Roles List</h2>   
 
             <?php
 
@@ -46,7 +45,7 @@ if(isset($_SESSION["msg"])) {
 
                 if ($query_result->num_rows > 0) {
 
-                    echo "<table class='table table-bordered'><tr><th>User Name</th><th>Role Name</th><th style='width:10px'>Action</th></tr>";
+                    echo "<div class='col-sm-8'><table class='table table-bordered'><tr><th class='col-sm-2'>USER NAME</th><th class='col-sm-2'>ROLE NAME</th><th class='col-sm-4'>ACTION</th></tr>";
                     // output data of each row
                     while($row = $query_result->fetch_assoc()) {
                         
@@ -56,7 +55,7 @@ if(isset($_SESSION["msg"])) {
                         $rname = $row["role_name"];
                         
                         // $url = $_SERVER['DOCUMENT_ROOT'].'/ui/role_creation_ui?uname='.$row["user_name"];
-                        $url1 = getFullURL($_GET['r'],'user_creation_and_assign_role.php','N');
+                        $url1 = getFullURL($_GET['r'],'user_name_updation.php','N');
                         $url2 = getFullURL($_GET['r'],'user_assigned_role_updation.php','N');
                         echo "<tr>
                                 <td>".$row["user_name"]."</td>
@@ -65,7 +64,7 @@ if(isset($_SESSION["msg"])) {
                                 <a href='$url2&uid=$uid&uname=$uname&rid=$rid'><button class='btn btn-sm btn-success'>Update User Role</button></td>
                             </tr>";
                     }
-                    echo "</table>";
+                    echo "</table></div>";
                 } else {
                     echo "<div class='alert alert-info' align='center'>No Data Found</div>";
                 }
