@@ -6,9 +6,11 @@
     if(isset($_GET['uid'])){
         $uid = $_GET['uid'];
         $uname = $_GET['uname'];
+        $rid = $_GET['rid'];
     }else{
         $uid = '';
         $uname = '';
+        $rid = '';
     }
 
     session_start();
@@ -27,26 +29,46 @@
 <div class="panel panel-primary">
 
     <div class="panel-heading"><?php if(isset($_GET['uname'])){
-                            echo 'User Name Updation';
+                            echo 'User and Assigned Role Updation';
                         }else{
-                            echo 'User Creation';
+                            echo 'User Creation and Assign Role';
                         } ?></div>
 
         <div class="panel-body">
 
             <h2><?php if(isset($_GET['uname'])){
-                            echo 'User Name Updation';
+                            echo 'User and Assigned Role Updation';
                         }else{
-                            echo 'User Creation';
+                            echo 'User Creation and Assign Role';
                         } ?></h2> 
 
-            <form name = "form1" action="<?= getFullURL($_GET['r'],'user_creation_and_assign_role.php','N');?>" method = "post">    
+            <form name = "form1" action="<?= getFullURL($_GET['r'],'user_assigned_role_updation.php','N');?>" method = "post">    
                 <div class = "row">    
-                    <div class = "form_group col-md-3">    
+                    <div class ="col-md-3">    
                         <label>User Name:</label>    
-                        <input type = "text" name = "uname" value = "<?= $uname ?>" class="form-control" required />   
+                        <input type = "text" name = "uname" value = "<?= $uname ?>" class="form-control" required readonly/>   
                         <input type="hidden" name="uid"  value="<?= $uid ?>"/>
-                    </div>  
+                    </div> 
+                    <div class="col-md-3">
+                        <label>Role Name:</label>
+                        <select class="form-control" name='rid' id='role'>
+
+                            <option value="">Select Role Name</option>
+
+                            <?php
+
+                                $sql_select_query = "SELECT role_id,role_name FROM rbac_roles";
+                                $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                
+                                if($query_result->num_rows > 0){
+                                    while ($row = $query_result->fetch_assoc()) {
+                                     echo '<option value="'.$row['role_id'].'">'.$row['role_name'].'</option>';
+                                    }
+                                } 
+                            ?>
+
+                        </select>
+                    </div> 
                     <div class='col-md-2'>
                         <input type="submit" value="<?php if(isset($_GET['uname'])){
                             echo 'Update';
@@ -73,22 +95,23 @@
                 {
                     $user_name = $_POST['uname'];
                     $user_id = $_POST['uid'];
+                    $role_id = $_POST['rid'];
                   
                     if($_POST['submit'] == 'Update'){
 
-                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_users WHERE user_name = '$user_name'";
+                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_users WHERE user_id = '$user_id' and role_id='$role_id'";
                         $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                        $user_names = mysqli_fetch_array($query_result);
-                        $unique_count = $user_names['count'];
+                        $assined_role = mysqli_fetch_array($query_result);
+                        $unique_count = $assined_role['count'];
 
                         if($unique_count == 0){
 
-                            $sql_update_query = "update rbac_users set user_name = '$user_name' where user_id='$user_id'";
+                            $sql_update_query = "update rbac_users set role_id = '$role_id' where user_id='$user_id'";
                             $query_result = mysqli_query($link_ui, $sql_update_query) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {
-                                $_SESSION["msg"]='User Name updated successfully';
+                                $_SESSION["msg"]='User Role updated successfully';
                                 $_SESSION["status"] = 2;
                                 $url = getFullURL($_GET['r'],'view_all_users_and_assigned_roles.php','N');
                                 header("Location:".$url); 
@@ -96,45 +119,32 @@
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
                             }
                         }else{
-                            $_SESSION["msg"]='User Name already exist';
+                            $_SESSION["msg"]='This Role already assined to this user';
                             $_SESSION["status"] = 0;
-                            $url = getFullURL($_GET['r'],'user_creation_and_assign_role.php','N');
-                            header("Location: $url&uid=".$user_id."&uname=".$user_name);
-                        }
-                        
-                        $link_ui->close();
-                       
-                    }else{
-
-                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_users WHERE user_name = '$user_name'";
-                        $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-                        $user_names = mysqli_fetch_array($query_result);
-                        $unique_count = $user_names['count'];
-                        
-                        if($unique_count == 0){
-                            $sql_insert_query = "insert into rbac_users (user_name) values ('$user_name')";
-                            $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            
-                            if ($query_result) {
-                                $_SESSION["msg"]='User Name created successfully';
-                                $_SESSION["status"] = 1;
-                                $url = getFullURL($_GET['r'],'view_all_users_and_assigned_roles.php','N');
-                                header("Location:".$url); 
-                            } else {
-                                echo "Error: " . $sql . "<br>" . $conn->error; 
-                            }
-                        }else{
-                            echo "<span class='label label-danger'>User Name already exist</span>";
+                            $url = getFullURL($_GET['r'],'user_assigned_role_updation.php','N');
+                            header("Location: $url&uid=".$user_id."&uname=".$user_name."&rid=".$role_id);
                         }
                         
                         $link_ui->close();
                         
                     }
-
                 }
             ?>
         </div> 
     </div> 
 </div> 
+
+<script>
+
+$(document).ready( function () {
+
+  var role = '<?= $rid ?>';
+
+  if(role){
+       $("#role").val(role);
+  }
+
+});
+
+</script>
 
