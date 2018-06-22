@@ -6,8 +6,6 @@
 
         <div class="panel-body">  
 
-            <h2>Permission Creation</h2> 
-
             <form name = "form1" action="<?= getFullURL($_GET['r'],'permission_creation_ui.php','N'); ?>" method = "post">    
                 <div class = "row">    
                     <div class = "form_group col-md-3">    
@@ -26,25 +24,37 @@
 
             <?php
 
-                include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+                include('../dbconf.php');
+
+                session_start();
+                if(isset($_SESSION["msg"])) {
+                    $msg = $_SESSION["msg"];
+                    $status =  $_SESSION["status"]; 
+                    session_unset($_SESSION["msg"]);
+                    session_unset($_SESSION["status"]);
+                } else {
+                    $msg = "";
+                    $status = "";
+                }
 
                 if(isset($_POST['submit']))
                 {
                     $permission_name = $_POST['pname'];
                     $permission_des = $_POST['pdes'];
                    
-                    $sql_select_query = "SELECT COUNT(*) as count FROM $central_administration_sfcs.rbac_permission WHERE permission_name = '$permission_name'";
-                    $query_result = mysqli_query($link, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $sql_select_query = "SELECT COUNT(*) as count FROM rbac_permission WHERE permission_name = '$permission_name'";
+                    $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     $role_names = mysqli_fetch_array($query_result);
                     $unique_count = $role_names['count'];
                     
                     if($unique_count == 0){
-                        $sql_insert_query = "insert into $central_administration_sfcs.rbac_permission (permission_name,permission_des,status) values ('$permission_name','$permission_des','active')";
-                        $query_result = mysqli_query($link, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $sql_insert_query = "insert into rbac_permission (permission_name,permission_des,status) values ('$permission_name','$permission_des','active')";
+                        $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
                         
                         if ($query_result) {
-                            echo "Permission created successfully";
+                            $_SESSION["msg"]='Permission created successfully';
+                            $_SESSION["status"] = 1;
                             $url = getFullURL($_GET['r'],'permissions_list_view.php','N');
                             header("Location:$url"); 
                         } else {
@@ -54,7 +64,7 @@
                         echo "<span class='label label-danger'>Permission already exist</span>";
                     }
                     
-                    $link->close();
+                    $link_ui->close();
                     
                 }
             ?>

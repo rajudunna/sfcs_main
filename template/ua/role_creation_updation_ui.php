@@ -33,13 +33,6 @@
                         } ?></div>
 
         <div class="panel-body">
-
-            <h2><?php if(isset($_GET['rname'])){
-                            echo 'Role Updation';
-                        }else{
-                            echo 'Role Creation';
-                        } ?></h2> 
-
             <form name = "form1" action="<?= getFullURL($_GET['r'],'role_creation_updation_ui.php','N');?>" method = "post">    
                 <div class = "row">    
                     <div class = "form_group col-md-3">    

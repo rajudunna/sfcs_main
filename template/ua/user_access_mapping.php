@@ -69,12 +69,13 @@ include('../dbconf.php');
                         <input id="b3" type="button" value="Save" name="submit" class="btn btn-primary" style="margin-top:22px;display:none;" ng-click="save()">
                         <input id="b4" type="submit" value="Submit" name="submit" class="btn btn-primary" style="margin-top:22px;display:none;">
                     </div>
-
+                    
                     <div style="display:none" id="permissions">
 
                         <div class="panel-primary">
-
-                            <div class="col-md-5">
+                            <div class="col-md-6 col-md-offset-2">
+                            <br>
+                            <hr>
 
                                <p> <table class='table table-bordered'> 
                                     <tr>

@@ -12,14 +12,14 @@
 
     foreach ($old_records as $key => $rid) {
         $sql_insert_query = "DELETE FROM rbac_role_menu_per WHERE role_menu_per_id = '$rid'";
-        $query_result = mysqli_query($link, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
     }
 
     // Insert New Permissions
 
     foreach ($new_permissions as $key => $pid) {
         $sql_insert_query = "insert into rbac_role_menu_per (role_menu_id,permission_id) values ('$role_menu_id','$pid')";
-        $query_result = mysqli_query($link, $sql_insert_query) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
     }
 
     $_SESSION["msg"]='Permissions updated successfully';

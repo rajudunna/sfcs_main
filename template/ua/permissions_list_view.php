@@ -4,19 +4,39 @@
     <div class="panel-heading">All Permissions List</div>
 
         <div class="panel-body">  
+            <?php 
+    
+                session_start();
+                if(isset($_SESSION["msg"])) {
+                    $msg = $_SESSION["msg"];
+                    $status =  $_SESSION["status"]; 
+                    session_unset($_SESSION["msg"]);
+                    session_unset($_SESSION["status"]);
+                } else {
+                    $msg = "";
+                    $status = "";
+                }
+                if($status==1){
+            ?>
+                
+            <div class='alert alert-success' align="center"><b><?= $msg ?></b></div>
+                
+            <?php
+                }elseif($status==2){
+            ?> 
 
-            <h2>All Permissions List</h2>    
-           
+            <div class='alert alert-info' align="center"><b><?= $msg ?></b></div>
+
+            <?php }else{ echo "";} ?>
+
             <?php
 
-                include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+                $sql_select_query = "SELECT permission_id,permission_name,permission_des FROM rbac_permission";
+                $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                $sql_select_query = "SELECT permission_id,permission_name,permission_des FROM $central_administration_sfcs.rbac_permission";
-                $query_result = mysqli_query($link, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+                
                 if ($query_result->num_rows > 0) {
-
-                    echo "<table class='table table-bordered'><tr><th>Permission Name</th><th>Permission Desciption</th></tr>";
+                    echo "<table class='table table-bordered'><tr><th class='col-md-3'>PERMISSION NAME</th><th class='col-md-9'>PERMISSION DESCRIPTION</th></tr>";
                     // output data of each row
                     while($row = $query_result->fetch_assoc()) {
                         echo "<tr><td>".$row["permission_name"]."</td><td>".$row["permission_des"]."</td></tr>";
@@ -26,7 +46,7 @@
                     echo "<div class='alert alert-danger'>No Data Found</div>";
                 }
                 
-                $link->close();
+                $link_ui->close();
 
             ?>
         </div> 
