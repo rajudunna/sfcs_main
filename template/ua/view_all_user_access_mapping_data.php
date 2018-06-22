@@ -44,7 +44,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 $RolsMenusPermissionsMappingData = [];
 
-$sql_select_query = "SELECT group_concat(role_menu_per_id) as record_ids,role_name,rbac_role_menu_per.role_menu_id as role_menu_parent_id,menu_description,group_concat(permission_name) as permissions,group_concat(rbac_role_menu_per.permission_id) as permissions_parent_ids from rbac_roles right join rbac_role_menu on rbac_roles.role_id= rbac_role_menu.roll_id right join rbac_role_menu_per on rbac_role_menu.role_menu_id=rbac_role_menu_per.role_menu_id right join rbac_permission on rbac_role_menu_per.permission_id=rbac_permission.permission_id group by role_name,menu_description limit 10";
+$sql_select_query = "SELECT group_concat(role_menu_per_id) as record_ids,role_name,rbac_role_menu_per.role_menu_id as role_menu_parent_id,menu_description,group_concat(permission_name) as permissions,group_concat(rbac_role_menu_per.permission_id) as permissions_parent_ids from rbac_roles right join rbac_role_menu on rbac_roles.role_id= rbac_role_menu.roll_id right join rbac_role_menu_per on rbac_role_menu.role_menu_id=rbac_role_menu_per.role_menu_id right join rbac_permission on rbac_role_menu_per.permission_id=rbac_permission.permission_id group by role_name,menu_description";
 $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $i = 0;
 if($query_result->num_rows > 0){
@@ -89,33 +89,31 @@ if($query1_result->num_rows > 0){
 ?>
 
 <div class="panel panel-primary" ng-app="brandix" id="App3" ng-init="mapping_data = <?= htmlspecialchars(json_encode($RolsMenusPermissionsMappingData)) ?> " ng-cloak>
-    <div class="panel-heading" ng-init="rbac_permissions=<?= htmlspecialchars(json_encode($rbac_permissions)) ?>">User Access Mapping Info</div>
+    <div class="panel-heading" ng-init="rbac_permissions=<?= htmlspecialchars(json_encode($rbac_permissions)) ?>">User Role Menus And Permissions List</div>
     <div class="panel-body"  ng-controller="accessmenuctrl" ng-cloak>
         <div class="table-responsive">
             <table class="table table-bordered table-fixed">
                 <thead>
                     <tr>   
-                        <th class="col-sm-2">Sl.No</th> 
-                        <th class="col-sm-2">Role</th>
-                        <th class="col-sm-3">Menu Description</th>
-                        <th class="col-sm-3">Permission</th>
-                        <th class="col-sm-2">Action</th>
+                        <th class="col-sm-2">ROLE NAME</th>
+                        <th class="col-sm-3">MENU DESCRIPTION</th>
+                        <th class="col-sm-3">PERMISSION NAME</th>
+                        <th class="col-sm-2">ACTION</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td></td>
+                        
                         <td><input type="text" ng-model="search.role_name"  class="form-control"></td>
                         <td><input type="text" ng-model="search.menu_name"  class="form-control"></td>
                         <td><input type="text" ng-model="search.permission_names"  class="form-control"></td>
                         <td></td>
                     </tr>
                     <tr ng-repeat="data in access_mapping_data | filter: search" valign="center">
-                        <td >{{$index+1}}</td>
                         <td >{{data.role_name}}</td>
                         <td >{{data.menu_name}}</td>
                         <td ><h2 ng-repeat="perms in data.permission_names track by $index"><span class="label label-success" >{{perms}}</span><br></h2></td>
-                        <td><button class="btn btn-primary" ng-click="edit(data)" data-toggle="modal" data-target="#myModal">Edit Permissions</button></td>
+                        <td><button class="btn btn-primary" ng-click="edit(data)" data-toggle="modal" data-target="#myModal">Edit Menu Permissions</button></td>
                     </tr>
                 </tbody>
             </table>

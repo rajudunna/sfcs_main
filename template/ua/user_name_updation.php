@@ -35,32 +35,12 @@
         <div class="panel-body">
 
 
-            <form name = "form1" action="<?= getFullURL($_GET['r'],'user_creation_and_assign_role.php','N');?>" method = "post">    
+            <form name = "form1" action="<?= getFullURL($_GET['r'],'user_name_updation.php','N');?>" method = "post">    
                 <div class = "row">    
-                    <div class = "col-md-3">    
+                    <div class = "form_group col-md-3">    
                         <label>User Name:</label>    
                         <input type = "text" name = "uname" value = "<?= $uname ?>" class="form-control" required />   
                         <input type="hidden" name="uid"  value="<?= $uid ?>"/>
-                    </div> 
-                    <div class="col-md-3">
-                        <label>Role Name:</label>
-                        <select class="form-control" name='rid' id='role' required >
-
-                            <option value="">Select Role Name</option>
-
-                            <?php
-
-                                $sql_select_query = "SELECT role_id,role_name FROM rbac_roles";
-                                $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                
-                                if($query_result->num_rows > 0){
-                                    while ($row = $query_result->fetch_assoc()) {
-                                     echo '<option value="'.$row['role_id'].'">'.$row['role_name'].'</option>';
-                                    }
-                                } 
-                            ?>
-
-                        </select>
                     </div>  
                     <div class='col-md-2'>
                         <input type="submit" value="<?php if(isset($_GET['uname'])){
@@ -88,8 +68,7 @@
                 {
                     $user_name = $_POST['uname'];
                     $user_id = $_POST['uid'];
-                    $role_id = $_POST['rid'];
-
+                  
                     if($_POST['submit'] == 'Update'){
 
                         $sql_select_query = "SELECT COUNT(*) as count FROM rbac_users WHERE user_name = '$user_name'";
@@ -114,7 +93,7 @@
                         }else{
                             $_SESSION["msg"]='User Name already exist';
                             $_SESSION["status"] = 0;
-                            $url = getFullURL($_GET['r'],'user_creation_and_assign_role.php','N');
+                            $url = getFullURL($_GET['r'],'user_name_updation.php','N');
                             header("Location: $url&uid=".$user_id."&uname=".$user_name);
                         }
                         
@@ -129,11 +108,11 @@
                         $unique_count = $user_names['count'];
                         
                         if($unique_count == 0){
-                            $sql_insert_query = "insert into rbac_users (user_name, role_id) values ('$user_name', '$role_id')";
+                            $sql_insert_query = "insert into rbac_users (user_name) values ('$user_name')";
                             $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {
-                                $_SESSION["msg"]='User Name Created and Role Assigned successfully';
+                                $_SESSION["msg"]='User Name created successfully';
                                 $_SESSION["status"] = 1;
                                 $url = getFullURL($_GET['r'],'view_all_users_and_assigned_roles.php','N');
                                 header("Location:".$url); 
@@ -141,7 +120,7 @@
                                 echo "Error: " . $sql . "<br>" . $conn->error; 
                             }
                         }else{
-                            echo "<span class='label label-danger'>User Name with Role already exist</span>";
+                            echo "<span class='label label-danger'>User Name already exist</span>";
                         }
                         
                         $link_ui->close();

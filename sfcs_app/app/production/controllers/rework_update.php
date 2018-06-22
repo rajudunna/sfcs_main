@@ -367,12 +367,14 @@ function second_box(){
 				} 
 			}
 		echo "</div>";
-
 		?>		
 	<div class="col-sm-2">
 		Shift:	<select name="shift" class="form-control">
-					<option value="A" <?php if($shift=="A") echo "selected"; ?>>A</option>
-					<option value="B" <?php if($shift=="B") echo "selected"; ?>>B</option>
+					<?php 
+						for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+							<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+						<?php }
+					?>
 				</select>
 	</div>
 	<?php	

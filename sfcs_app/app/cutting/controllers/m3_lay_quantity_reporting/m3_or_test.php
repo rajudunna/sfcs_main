@@ -160,7 +160,7 @@ echo "<input type=\"hidden\" name=\"order_tid\" value=\"$order_tid\">";
 
 
 
-$sql="select distinct category,tid from $bai_pro3.cat_stat_log where order_tid='$order_tid' and category in ('Body','Front')";
+$sql="select distinct category,tid from $bai_pro3.cat_stat_log where order_tid='$order_tid' and category in ($in_categories)";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "<div class='col-md-2'>";

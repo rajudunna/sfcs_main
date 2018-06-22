@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 <div class="panel panel-primary"  ng-app="app" id="App2">
 
-    <div class="panel-heading">Assign Menus and Permissions To Role</div>
+    <div class="panel-heading">Assign Menu and Permissions To Role</div>
 
         <div class="panel-body" ng-controller="userAccessController">
 
@@ -80,7 +80,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
                                <p> <table class='table table-bordered'> 
                                     <tr>
                                         <th><b>Permission Name</b></th>
-                                        <th style="width:10px"><b>Action</b></th> 
+                                        <th style="width:10px"><b><input class='chkboxall' type='checkbox'></b></th> 
                                     </tr>
                                         
                                     <?php
@@ -116,6 +116,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 </div>
 
 <script src="<?= getFullURLLevel($_GET['r'],'assets/js/ua_rbac.js',2,'R') ?>"></script>
+<script>
+$(function() {
+    $('.chkboxall').click(function() {
+        $('.chkbox').prop('checked', this.checked);
+        $("#b3").prop('disabled',false);
+    });
+});
+</script>
 
 
 

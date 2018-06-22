@@ -36,11 +36,6 @@
 
         <div class="panel-body">
 
-            <h2><?php if(isset($_GET['uname'])){
-                            echo 'User and Assigned Role Updation';
-                        }else{
-                            echo 'User Creation and Assign Role';
-                        } ?></h2> 
 
             <form name = "form1" action="<?= getFullURL($_GET['r'],'user_assigned_role_updation.php','N');?>" method = "post">    
                 <div class = "row">    

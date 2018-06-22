@@ -481,10 +481,11 @@ else
     <option value=\"$shift_final\">$shift_final</option> 
     </select></td></tr>";*/ 
 
-    echo "<tr><td>Shift</td><td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"shift\" required> 
-            <option value=\"A\">A</option> 
-            <option value=\"B\">B</option> 
-            </select></div></div></td></tr>"; 
+    echo "<tr><td>Shift</td><td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"shift\" required>";
+    foreach($shifts_array as $key=>$shift){
+        echo "<option value='$shift'>$shift</option>";
+    }
+        echo "</select></div></td></tr>"; 
     //} 
     echo "<tr><td>Do you want to create a new cut <br/>for the same ratio to remaining plies</td><td>:</td><td><div class='row'><div class='col-md-6'>
     <select class=\"form-control\" name=\"newratio\" id='new_ratio_drop'> 
