@@ -1,6 +1,14 @@
 <?php
 $start_timestamp = microtime(true);
+include('C:/xampp\htdocs\sfcs_main\configuration\API\confr.php');
+$conf = new confr('C:\xampp\htdocs\sfcs_main\configuration\config-builder\saved_fields\fields.json');
+$ar = [];
+for($i=1;$i<=20;$i++){
+	$ar[$i-1]=$conf->get('mail'.$i);
+}
+var_dump(array_filter($ar));die();
 include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+
 // Turn off all error reporting
 error_reporting(0);
 // Report simple running errors
@@ -219,7 +227,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$message.="</table>";
 	$message .='<br/>Message Sent Via: '.$plant_name.'';
 	$message.="</body></html>";
-
 
 
 
