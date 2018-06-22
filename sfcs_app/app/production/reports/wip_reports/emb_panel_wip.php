@@ -1,9 +1,8 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+   
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs); 
+	
 ?>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',4,'R'); ?>"></script>
@@ -19,33 +18,7 @@
  width:auto;
  float:right;
 </style>
-<!---<style type="text/css" media="screen">
-/*====================================================
-	- HTML Table Filter stylesheet
-=====================================================*/
-@import "TableFilter_EN/filtergrid.css";
 
-/*====================================================
-	- General html elements
-=====================================================*/
-body{ 
-	/* margin:15px; padding:15px; border:1px solid #666; */
-	font-family:Arial, Helvetica, sans-serif; font-size:88%; 
-}
-
-
-h2{ margin-top: 50px; }
-caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
-pre{ font-size:13px;  padding:5px; background-color:#f4f4f4; solid #ccc;  }
-.mytable{
-	width:100%; font-size:12px;
-	}
-div.tools{ margin:5px; }
-div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
-.mytable th{ background-color:#29759c; color:#FFF; width: 100px; padding:2px; solid #ccc; white-space: nowrap;}
-td{ padding:2px; width: 100px; white-space: nowrap;}
-
-</style>--->
 
 <div class="panel panel-primary">
 <div class="panel-heading">Embellishment Panel WIP</div>
@@ -64,6 +37,13 @@ $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysq
 while($row=mysqli_fetch_array($result))
 {
 	$order_tid=$row["order_tid"];
+
+	$sql1="select co_no from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row1=mysqli_fetch_array($result1))
+	{
+		$co_no=$row1["co_no"];
+	}	
 	
 	$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
 //echo $sql1;
@@ -128,7 +108,7 @@ while($row=mysqli_fetch_array($result))
 			echo "<tr>";
 			echo "<td>".$buyer."</td>";
 			echo "<td>".$order_style_no."</td>";
-			echo "<td></td>";
+			echo "<td>".$co_no."</td>";
 			echo "<td>".$order_del_no."</td>";
 			echo "<td>".$order_col_des."</td>";
 			//echo "<td>".$total3."</td>";

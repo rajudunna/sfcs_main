@@ -3,8 +3,8 @@
 
 // include"header.php";
 // include"downtimeperperiode.php"; 
- include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'downtimeperperiode.php','R'));
+ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'],'downtimeperperiode.php','R'));
 
 ?>
 <div id="Book1_7326" align=center x:publishsource="Excel">
