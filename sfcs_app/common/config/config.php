@@ -69,7 +69,7 @@ $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
 
 $plant_name = get_config_values(plantname);
 
-$in_categories = get_config_values(category-display-dashboard);
+$in_categories = get_config_values('category-display-dashboard');
 
 //Central Administraion Group ID's
 $group_id_sfcs=8;
