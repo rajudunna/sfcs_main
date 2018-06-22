@@ -42,7 +42,14 @@ $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysq
 while($row=mysqli_fetch_array($result))
 {
 	$order_tid=$row["order_tid"];
-	
+	$sql1="select co_no from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row1=mysqli_fetch_array($result1))
+	{
+		$co_no=$row1["co_no"];
+	}	
+
+
 	$sql1="select order_div,order_style_no,order_del_no,order_col_des,order_date from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
 	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($result1)==0)
@@ -101,7 +108,7 @@ while($row=mysqli_fetch_array($result))
 	echo "<tr>";
 	echo "<td>".$buyer."</td>";
 	echo "<td>".$order_style_no."</td>";
-	echo "<td></td>";
+	echo "<td>".$co_no."</td>";
 	echo "<td>".$order_del_no."</td>";
 	echo "<td>".$order_col_des."</td>";
 	//echo "<td>".$total3."</td>";
