@@ -1135,7 +1135,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       
       $fabric_required=0;
       $cat_yy=0;
-      $sql11="select catyy,material_req from $bai_pro3.order_cat_doc_mk_mix where category in ('Body','Front') and order_del_no='$schedule' and order_col_des='$color' and doc_no=".$sql_row1['doc_no'];
+      $sql11="select catyy,material_req from $bai_pro3.order_cat_doc_mk_mix where category in ('".implode("','",$in_categories)."') and order_del_no='$schedule' and order_col_des='$color' and doc_no=".$sql_row1['doc_no'];
       //echo $sql11."<br>";
       $sql_result111=mysqli_query($link, $sql11) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -1415,7 +1415,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     echo "<td class='bottom'><strong><a href='javascript:void(0)' title='WIP : $wip'><font class='fontnn' color=orange >$module</font></a></strong></td><td>";
       
       
-    $sql11="select * from recut_v2 where plan_module=$module and cut_inp_temp is null and remarks in ('Body','Front')";
+    $sql11="select * from recut_v2 where plan_module=$module and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."')";
     $sql_result11=mysql_query($sql11,$link) or exit("Sql Error".mysql_error());
     $recut_count=mysql_num_rows($sql_result11);
     
@@ -1546,7 +1546,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     echo "<td>";
       
       
-    $sql11="select * from recut_v2 where plan_module='$module' and cut_inp_temp is null and remarks in ('Body','Front')";
+    $sql11="select * from recut_v2 where plan_module='$module' and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."')";
     $sql_result11=mysql_query($sql11,$link) or exit("Sql Error".mysql_error());
     $recut_count=mysql_num_rows($sql_result11);
     

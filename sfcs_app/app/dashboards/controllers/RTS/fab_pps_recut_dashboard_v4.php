@@ -731,42 +731,42 @@ window.onload = startBlink;
 			// echo 'order tid:- '.$order_tid_1;
 			// die();
 
-			// $sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\")";
+			// $sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."')";
 			//echo $sql11;
 			if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
 			{
-				$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('Body','Front')";
+				$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."')";
 				// echo $sql11;
 			}
 			else
 			{
-				// $sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"".$leter[0]."%\")";
-				$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and order_tid IN ('".$order_tid_1."')";
+				// $sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"".$leter[0]."%\")";
+				$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and order_tid IN ('".$order_tid_1."')";
 				//echo $sql11;
 			}
 			// echo $sql11;
 			// die();
 			/*if($_GET["view_div"]=="P,K")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"P%\" or order_tid like \"K%\")";		//echo $sql11;	
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"P%\" or order_tid like \"K%\")";		//echo $sql11;	
 			}
 			
 			if($_GET["view_div"]=="L,O,G")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"L%\" or order_tid like \"O%\" OR order_tid like \"G%\" OR order_tid like \"U%\")";
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"L%\" or order_tid like \"O%\" OR order_tid like \"G%\" OR order_tid like \"U%\")";
 			}
 			if($_GET["view_div"]=="Y")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"Y%\")";
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"Y%\")";
 			}
 			if($_GET["view_div"]=="CK")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"C%\")";
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"C%\")";
 				
 			}
 			if($_GET["view_div"]=="M")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"M%\")";
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"M%\")";
 			}*/
 			//echo $sql11;
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1014,39 +1014,39 @@ window.onload = startBlink;
 			echo "<td>";
 				
 					
-			$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\")";
+			$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."')";
 			if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
 			{
-				$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\")";
+				$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."')";
 			}
 			else
 			{
-				$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"".$_GET['view_div']."%\")";
+				$sql11="select * from $bai_pro3.recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"".$_GET['view_div']."%\")";
 			}
-			/*$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\")";
+			/*$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."')";
 			if($_GET["view_div"]=="ALL")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\")";
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."')";
 			}
 			
 			if($_GET["view_div"]=="P,K")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"P%\" or order_tid like \"K%\")";		//echo $sql11;	
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"P%\" or order_tid like \"K%\")";		//echo $sql11;	
 			}
 			
 			if($_GET["view_div"]=="L,O,G")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"L%\" or order_tid like \"O%\" OR order_tid like \"G%\" OR order_tid like \"U%\")";
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"L%\" or order_tid like \"O%\" OR order_tid like \"G%\" OR order_tid like \"U%\")";
 			}
 			
 			if($_GET["view_div"]=="M")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"M%\")";
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"M%\")";
 			}
 			
 			if($_GET["view_div"]=="Y")
 			{
-				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in (\"Body\",\"Front\") and (order_tid like \"Y%\")";
+				$sql11="select * from recut_v2 where plan_module=\"$module\" and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') and (order_tid like \"Y%\")";
 			}*/
 			
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -26,12 +26,14 @@ $categories=array("Fabric","Fabric","Fabric","Fabric","Fabric","Fabric","Cutting
 <div class="row">
 	<div class='col-md-2'><label>Start Date</label><input id="demo1" class="form-control" type="text" data-toggle='datepicker' name="sdate" value="<?php if(isset($_POST['sdate'])) { echo $_POST['sdate']; } else { echo date("Y-m-d"); } ?>"></div>
 	<div class='col-md-2'><label>End Date </label><input id="demo2" type="text" data-toggle='datepicker' name="edate" class="form-control" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>"></div>
-	<div class='col-md-2'><label>Team</label>
-		<select name="team" class="form-control">
-		<option value="ALL" <?php if($_POST['team']=="ALL") { echo "selected"; } ?>>ALL</option>
-		<option value="A" <?php if($_POST['team']=="A") { echo "selected"; } ?>>A</option>
-		<option value="B" <?php if($_POST['team']=="B") { echo "selected"; } ?>>B</option>
-		</select>
+	<div class='col-md-2'>
+		Team: <select name="team" class="form-control">
+				<?php 
+				for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+				<option <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";} ?>><?php echo $shifts_array[$i] ?></option>
+				<?php }
+				?>
+				</select>
 	</div><br/>
 	<div class='col-md-1'>
 	<input type="submit" name="filter" value="Filter" onclick ="return verify_date()" class="btn btn-primary">
