@@ -26,8 +26,8 @@
                 "label": "Plant Name",
                 "className": "form-control",
                 "name": "plantname",
-                "subtype": "text",
-                "value": "Brandix Essential - Koggala"
+                "value": "Brandix Essential - Koggala",
+                "subtype": "text"
             },
             {
                 "type": "text",
@@ -35,8 +35,8 @@
                 "label": "Plant Code",
                 "className": "form-control",
                 "name": "plantcode",
-                "subtype": "text",
-                "value": "EKG"
+                "value": "EKG",
+                "subtype": "text"
             },
             {
                 "type": "checkbox-group",
@@ -74,8 +74,8 @@
                 "label": "Super User Name",
                 "className": "form-control",
                 "name": "superuser",
-                "subtype": "text",
-                "value": "admin"
+                "value": "admin",
+                "subtype": "text"
             }
         ],
         [
@@ -86,12 +86,48 @@
             },
             {
                 "type": "text",
+                "required": true,
+                "label": "SMTP Server Name",
+                "className": "form-control",
+                "name": "smtp-server-name",
+                "subtype": "text",
+                "value": "smtp.gmail.com"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "SMTP User Name",
+                "className": "form-control",
+                "name": "smtp-user-name",
+                "subtype": "text",
+                "value": "ravindranath.yrr35@gmail.com"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "SMTP Password",
+                "className": "form-control",
+                "name": "smtp-password",
+                "subtype": "text",
+                "value": "08924226067"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "SMTP Port",
+                "className": "form-control",
+                "name": "smtp-port",
+                "subtype": "text",
+                "value": "587"
+            },
+            {
+                "type": "text",
                 "subtype": "email",
                 "required": true,
                 "label": "Mail1",
                 "className": "form-control",
                 "name": "mail1",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
@@ -100,7 +136,7 @@
                 "label": "Mail2",
                 "className": "form-control",
                 "name": "mail2",
-                "value": "admin"
+                "value": "ravindranath.yrr@gmail.com"
             },
             {
                 "type": "text",
@@ -109,7 +145,7 @@
                 "label": "Mail3",
                 "className": "form-control",
                 "name": "mail3",
-                "value": "admin"
+                "value": "yateesh603@gmail.com"
             },
             {
                 "type": "text",
@@ -118,7 +154,7 @@
                 "label": "Mail4",
                 "className": "form-control",
                 "name": "mail4",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
@@ -127,7 +163,7 @@
                 "label": "Mail5",
                 "className": "form-control",
                 "name": "mail5",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
@@ -136,7 +172,7 @@
                 "label": "Mail6",
                 "className": "form-control",
                 "name": "mail6",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
@@ -145,7 +181,7 @@
                 "label": "Mail7",
                 "className": "form-control",
                 "name": "mail7",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
@@ -154,7 +190,7 @@
                 "label": "Mail8",
                 "className": "form-control",
                 "name": "mail8",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
@@ -163,106 +199,95 @@
                 "label": "Mail9",
                 "className": "form-control",
                 "name": "mail9",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail10",
                 "className": "form-control",
                 "name": "mail10",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail11",
                 "className": "form-control",
                 "name": "mail11",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail12",
                 "className": "form-control",
                 "name": "mail12",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail13",
                 "className": "form-control",
                 "name": "mail13",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail14",
                 "className": "form-control",
                 "name": "mail14",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail15",
                 "className": "form-control",
                 "name": "mail15",
-                "value": "admin"
+                "value": "a@schemaxtech.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail16",
                 "className": "form-control",
                 "name": "mail16",
-                "value": "admin"
+                "value": " "
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail17",
                 "className": "form-control",
                 "name": "mail17",
-                "value": "admin"
+                "value": " "
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail18",
                 "className": "form-control",
                 "name": "mail18",
-                "value": "admin"
+                "value": " "
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail19",
                 "className": "form-control",
                 "name": "mail19",
-                "value": "admin"
+                "value": " "
             },
             {
                 "type": "text",
                 "subtype": "email",
-                "required": true,
                 "label": "Mail20",
                 "className": "form-control",
                 "name": "mail20",
-                "value": "admin"
+                "value": " "
             }
         ],
         [
@@ -324,8 +349,8 @@
                 "label": "Server Name",
                 "className": "form-control",
                 "name": "mssql-server-name",
-                "subtype": "text",
-                "value": "BAIDBSRV01"
+                "value": "BAIDBSRV01",
+                "subtype": "text"
             },
             {
                 "type": "text",
@@ -333,8 +358,8 @@
                 "label": "User Name",
                 "className": "form-control",
                 "name": "mssql-user-name",
-                "subtype": "text",
-                "value": "sa"
+                "value": "sa",
+                "subtype": "text"
             },
             {
                 "type": "text",
@@ -351,8 +376,8 @@
                 "label": "ODBC Name (MSSQL)",
                 "className": "form-control",
                 "name": "mssql-odbc",
-                "subtype": "text",
-                "value": "test1"
+                "value": "test1",
+                "subtype": "text"
             },
             {
                 "type": "text",
@@ -360,8 +385,8 @@
                 "label": "ODBC Name (MYSQL)",
                 "className": "form-control",
                 "name": "mysql-odbc",
-                "subtype": "text",
-                "value": "test2"
+                "value": "test2",
+                "subtype": "text"
             }
         ],
         []
