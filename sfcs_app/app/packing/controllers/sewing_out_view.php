@@ -3,7 +3,7 @@
 <?php //include("menu_content.php");   This file has no content that was beign used ?>
 
 <div class="panel panel-primary">
-	<div class="panel-heading">Sewing Out View</div>
+	<div class="panel-heading">Packing List View(Sewing Job)</div>
 	<div class="panel-body">
 		<div class="row">
 			<div class="col-md-6">
