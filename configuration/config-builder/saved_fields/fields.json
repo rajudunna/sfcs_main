@@ -61,11 +61,6 @@
                         "label": "General",
                         "value": "general"
                     }
-                ],
-                "value": [
-                    "A",
-                    "B",
-                    "C"
                 ]
             },
             {
@@ -90,8 +85,8 @@
                 "label": "SMTP Server Name",
                 "className": "form-control",
                 "name": "smtp-server-name",
-                "subtype": "text",
-                "value": "smtp.gmail.com"
+                "value": "smtp.gmail.com",
+                "subtype": "text"
             },
             {
                 "type": "text",
@@ -99,8 +94,8 @@
                 "label": "SMTP User Name",
                 "className": "form-control",
                 "name": "smtp-user-name",
-                "subtype": "text",
-                "value": "ravindranath.yrr35@gmail.com"
+                "value": "ravindranath.yrr35@gmail.com",
+                "subtype": "text"
             },
             {
                 "type": "text",
@@ -108,8 +103,8 @@
                 "label": "SMTP Password",
                 "className": "form-control",
                 "name": "smtp-password",
-                "subtype": "text",
-                "value": "08924226067"
+                "value": "ravindra@35",
+                "subtype": "text"
             },
             {
                 "type": "text",
@@ -117,8 +112,8 @@
                 "label": "SMTP Port",
                 "className": "form-control",
                 "name": "smtp-port",
-                "subtype": "text",
-                "value": "587"
+                "value": "587",
+                "subtype": "text"
             },
             {
                 "type": "text",
@@ -254,40 +249,35 @@
                 "subtype": "email",
                 "label": "Mail16",
                 "className": "form-control",
-                "name": "mail16",
-                "value": " "
+                "name": "mail16"
             },
             {
                 "type": "text",
                 "subtype": "email",
                 "label": "Mail17",
                 "className": "form-control",
-                "name": "mail17",
-                "value": " "
+                "name": "mail17"
             },
             {
                 "type": "text",
                 "subtype": "email",
                 "label": "Mail18",
                 "className": "form-control",
-                "name": "mail18",
-                "value": " "
+                "name": "mail18"
             },
             {
                 "type": "text",
                 "subtype": "email",
                 "label": "Mail19",
                 "className": "form-control",
-                "name": "mail19",
-                "value": " "
+                "name": "mail19"
             },
             {
                 "type": "text",
                 "subtype": "email",
                 "label": "Mail20",
                 "className": "form-control",
-                "name": "mail20",
-                "value": " "
+                "name": "mail20"
             }
         ],
         [
@@ -312,8 +302,7 @@
                         "label": "Yards",
                         "value": "yards"
                     }
-                ],
-                "value": "meters"
+                ]
             },
             {
                 "type": "checkbox-group",
@@ -330,10 +319,6 @@
                         "label": "Body",
                         "value": "body"
                     }
-                ],
-                "value": [
-                    "front",
-                    "body"
                 ]
             }
         ],
