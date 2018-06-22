@@ -245,7 +245,7 @@ $x=$_GET["x"];
 $y=$_GET["y"];
 $val=$_GET["val"];
 
-
+$category = "'" .implode("','",$in_categories)."'" ;
 switch($q)
 {
 	case 1:
@@ -292,7 +292,7 @@ switch($q)
 		$temp=array();
 		$temp=explode("$",$val);
 		$return="$x$y$<select id=\"job[$x]\" name=\"job[$x]\" onchange=\"showUser(4,$x,$y,this.value)\"><option value=\"\"></option>";
-		$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ('Body','Front') order by doc_no";
+		$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ($category) order by doc_no";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -300,7 +300,7 @@ switch($q)
 			$return.='<option value="'.'D'.$sql_row['doc_no'].'">'.$sql_row['color_code'].$sql_row['acutno'].'</option>';
 		}
 		
-		$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_recut_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ('Body','Front') order by doc_no";
+		$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_recut_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ($category) order by doc_no";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))

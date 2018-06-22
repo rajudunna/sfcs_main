@@ -267,9 +267,20 @@ if(isset($_POST['submit']))
 		echo "<option value='$i'>$i</option>";
 	}
 	echo '</select>&nbsp;&nbsp;';
-	echo 'Team:<select name="team">';
-		echo "<option value='A'>A</option>";
-		echo "<option value='B'>B</option>";
+	// echo 'Team:<select name="team">';
+	// 	echo "<option value='A'>A</option>";
+	// 	echo "<option value='B'>B</option>";
+    
+     echo "<tr><th>Team: </th><td>
+         <div class=\"col-md-4\">
+            <select class=\"form-control\" name=\"sourceid\" id=\"sourceid\" >";
+            foreach($shifts_array as $key=>$shift){
+                echo "<option value='$shift'>$shift</option>";
+            }
+    echo "</select></div></td></tr>";
+
+
+
 	echo '</select>&nbsp;&nbsp;';
 	echo 'Reason:<select name="reason">';
 		echo "<option value='1'>Panel Missing in Production</option>";
