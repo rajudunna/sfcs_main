@@ -226,5 +226,14 @@ function getrbac_user(){
     return $user;
 }
 
+function get_config_values($config_id){
+    $conf = new confr("configuration/config-builder/saved_fields/fields.json");
+    if($config_id=='getmysqldb'){
+        return $conf->getDBConfig();
+    }else{
+        return $conf->get($config_id);
+    }
+}
+
 
 ?>
