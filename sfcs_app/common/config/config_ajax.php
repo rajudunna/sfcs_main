@@ -1,9 +1,9 @@
 <?php 
 
 //SFCS Db Configurations
-$host="192.168.0.110:3326";
-$user="baiall";
-$pass="baiall";
+$host=$mysql_details['db_host'].":".$mysql_details['db_port'];
+$user=$mysql_details['db_user'];
+$pass=$mysql_details['db_pass'];
 
 $central_administration_sfcs='central_administration_sfcs';
 $tbl_view_view_menu="tbl_view_view_menu";
