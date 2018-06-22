@@ -28,7 +28,7 @@ $result_oper = $link->query($qry_get_operation_name);
 ?>
 <div class='container'>
 	<div class="panel panel-primary">
-		<div class="panel-heading">Bundle Operations Report</div>
+		<div class="panel-heading">Input Job Operations Report</div>
 		<div class="panel-body">
 			<div class="row">
 				<div class="form-group col-md-3">
