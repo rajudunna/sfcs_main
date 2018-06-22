@@ -1,7 +1,7 @@
 
 <?php 
 
-include('../dbconf.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 ?>
 
@@ -24,8 +24,8 @@ include('../dbconf.php');
 
                             <?php
 
-                                $sql_select_query = "SELECT role_id,role_name FROM rbac_roles";
-                                $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                $sql_select_query = "SELECT role_id,role_name FROM $central_administration_sfcs.rbac_roles";
+                                $query_result = mysqli_query($link, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 
                                 if($query_result->num_rows > 0){
                                     while ($row = $query_result->fetch_assoc()) {
@@ -47,8 +47,8 @@ include('../dbconf.php');
 
                             <?php
 
-                                $sql_select_query = "SELECT menu_pid,link_description FROM tbl_menu_list where fk_group_id=8 and link_location != ''";
-                                $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                $sql_select_query = "SELECT menu_pid,link_description FROM $central_administration_sfcs.tbl_menu_list";
+                                $query_result = mysqli_query($link, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                 if($query_result->num_rows > 0){
                                     while ($row = $query_result->fetch_assoc()) {
@@ -84,8 +84,8 @@ include('../dbconf.php');
                                         
                                     <?php
 
-                                        $sql_select_query = "SELECT permission_id,permission_name FROM rbac_permission";
-                                        $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $sql_select_query = "SELECT permission_id,permission_name FROM $central_administration_sfcs.rbac_permission";
+                                        $query_result = mysqli_query($link, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         
                                         if($query_result->num_rows > 0){
                                         
