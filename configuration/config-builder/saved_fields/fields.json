@@ -1,0 +1,369 @@
+{
+    "last_update": null,
+    "database": [
+        {
+            "sql_file": "sql_files\/68ddd070e92b2233caee1d412852e99a.sql",
+            "sql_title": "test123",
+            "sql_description": ""
+        }
+    ],
+    "database_info": {
+        "db_host": "192.168.0.110",
+        "db_user": "baiall",
+        "db_pass": "baiall",
+        "db_port": "3326"
+    },
+    "steps": [
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "Plant Details"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Plant Name",
+                "className": "form-control",
+                "name": "plantname",
+                "subtype": "text",
+                "value": "Brandix Essential - Koggala"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Plant Code",
+                "className": "form-control",
+                "name": "plantcode",
+                "subtype": "text",
+                "value": "EKG"
+            },
+            {
+                "type": "checkbox-group",
+                "required": true,
+                "label": "Shifts",
+                "name": "shifts",
+                "values": [
+                    {
+                        "label": "A",
+                        "value": "A",
+                        "selected": true
+                    },
+                    {
+                        "label": "B",
+                        "value": "B"
+                    },
+                    {
+                        "label": "C",
+                        "value": "C"
+                    },
+                    {
+                        "label": "General",
+                        "value": "general"
+                    }
+                ],
+                "value": [
+                    "A",
+                    "B",
+                    "C"
+                ]
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Super User Name",
+                "className": "form-control",
+                "name": "superuser",
+                "subtype": "text",
+                "value": "admin"
+            }
+        ],
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "Mails for Alerts"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail1",
+                "className": "form-control",
+                "name": "mail1",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail2",
+                "className": "form-control",
+                "name": "mail2",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail3",
+                "className": "form-control",
+                "name": "mail3",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail4",
+                "className": "form-control",
+                "name": "mail4",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail5",
+                "className": "form-control",
+                "name": "mail5",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail6",
+                "className": "form-control",
+                "name": "mail6",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail7",
+                "className": "form-control",
+                "name": "mail7",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail8",
+                "className": "form-control",
+                "name": "mail8",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail9",
+                "className": "form-control",
+                "name": "mail9",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail10",
+                "className": "form-control",
+                "name": "mail10",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail11",
+                "className": "form-control",
+                "name": "mail11",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail12",
+                "className": "form-control",
+                "name": "mail12",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail13",
+                "className": "form-control",
+                "name": "mail13",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail14",
+                "className": "form-control",
+                "name": "mail14",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail15",
+                "className": "form-control",
+                "name": "mail15",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail16",
+                "className": "form-control",
+                "name": "mail16",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail17",
+                "className": "form-control",
+                "name": "mail17",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail18",
+                "className": "form-control",
+                "name": "mail18",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail19",
+                "className": "form-control",
+                "name": "mail19",
+                "value": "admin"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Mail20",
+                "className": "form-control",
+                "name": "mail20",
+                "value": "admin"
+            }
+        ],
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "Fabric Details"
+            },
+            {
+                "type": "select",
+                "required": true,
+                "label": "UOM",
+                "className": "form-control",
+                "name": "uom",
+                "values": [
+                    {
+                        "label": "Meters",
+                        "value": "meters",
+                        "selected": true
+                    },
+                    {
+                        "label": "Yards",
+                        "value": "yards"
+                    }
+                ],
+                "value": "meters"
+            },
+            {
+                "type": "checkbox-group",
+                "required": true,
+                "label": "Category Display in Dashboard",
+                "name": "category-display-dashboard",
+                "values": [
+                    {
+                        "label": "Front",
+                        "value": "front",
+                        "selected": true
+                    },
+                    {
+                        "label": "Body",
+                        "value": "body"
+                    }
+                ],
+                "value": [
+                    "front",
+                    "body"
+                ]
+            }
+        ],
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "DB MSSQL"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Server Name",
+                "className": "form-control",
+                "name": "mssql-server-name",
+                "subtype": "text",
+                "value": "BAIDBSRV01"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "User Name",
+                "className": "form-control",
+                "name": "mssql-user-name",
+                "subtype": "text",
+                "value": "sa"
+            },
+            {
+                "type": "text",
+                "subtype": "password",
+                "required": true,
+                "label": "Password",
+                "className": "form-control",
+                "name": "mssql-password",
+                "value": "Brandix@7"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "ODBC Name (MSSQL)",
+                "className": "form-control",
+                "name": "mssql-odbc",
+                "subtype": "text",
+                "value": "test1"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "ODBC Name (MYSQL)",
+                "className": "form-control",
+                "name": "mysql-odbc",
+                "subtype": "text",
+                "value": "test2"
+            }
+        ],
+        []
+    ]
+}
