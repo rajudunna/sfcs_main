@@ -1,7 +1,6 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0070",$username,1,$group_id_sfcs);
+
 ?>
 
 <meta http-equiv="X-UA-Compatible" content="IE=8" />
@@ -192,14 +191,15 @@ zoom:75%;
 
 			</form>
 								
-			<?php $pwurl = getFullURL($_GET['r'],'common/images/pleasewait.gif',1,'R'); ?>
+			<?php $pwurl = getFullURLLEVEL($_GET['r'],'common/images/pleasewait.gif',1
+			,'R'); ?>
 			<div id="loading" align="center" style="position:relative; top:10px; left:20px;">
 				<img src="<?= $pwurl ?>">
 			</div>
 
 			<div id="logo">
 				<table>
-					<?php $logourl = getFullURL($_GET['r'],'common/images/BAI_Logo.jpg',1,'R'); ?>
+					<?php $logourl = getFullURLLEVEL($_GET['r'],'common/images/Book1_29570_image003_v2.png',1,'R'); ?>
 					<tr><td><img src="<?= $logourl ?>"></td>
 					<td valign="bottom"><center><h3>Hourly Efficiency Report (<?php echo $date; ?>)</h3></center></td></tr>
 				</table>

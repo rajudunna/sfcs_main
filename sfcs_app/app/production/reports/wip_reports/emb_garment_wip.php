@@ -11,10 +11,9 @@
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R'); ?>"></script>
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+ 
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs); 
+	
 ?>
 </head>
 <body>
@@ -38,6 +37,13 @@
 		$color_ref=$row['order_col_des'];
 		$style_ref=$row['order_style_no'];
 		$doc_no=$row['doc_no'];	
+
+		$sql1="select co_no from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+		$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row1=mysqli_fetch_array($result1))
+		{
+			$co_no=$row1["co_no"];
+		}	
 
 		$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des=\"".$color_ref."\"";
         //echo $sql1;
@@ -75,7 +81,7 @@
 		if($packing_wip > 0)
 		{	 
 			//$msg.="<tr><td>".$row['order_del_no']."</td><td>".$row['doc_no']."</td><td>".$row['acutno']."</td><td>".$row['carton']."</td><td>".$row['carton1']."</td><td>".$input."</td><td>".$output."</td></tr>";
-			$msg.="<tr><td>".$buyer."</td><td>".$order_style_no."</td><td></td><td>".$order_del_no."</td><td>".$order_col_des."</td><td>".$packing_wip."</td><td>".$order_date."</td></tr>";
+			$msg.="<tr><td>".$buyer."</td><td>".$order_style_no."</td><td>".$co_no."</td><td>".$order_del_no."</td><td>".$order_col_des."</td><td>".$packing_wip."</td><td>".$order_date."</td></tr>";
 		}	 
 	}
 	$msg.="</table>";

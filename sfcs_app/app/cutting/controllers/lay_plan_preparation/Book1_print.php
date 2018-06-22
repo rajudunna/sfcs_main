@@ -2980,7 +2980,7 @@ if($emb_stat==1)
         echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
     $temp_sum=0; 
     for($s=0;$s<sizeof($size);$s++) 
-    {    
+    {   
          
         $array_val=${'ex_'.$sizes_array[$s]}; 
         $array_val_a=${'a_'.$sizes_array[$s]}; 
@@ -3011,7 +3011,8 @@ echo "</tr>";
     {    
         $array_val=${'ex_'.$sizes_array[$s]}; 
         $array_val_a=${'a_'.$sizes_array[$s]}; 
-        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies); $temp_sum=$temp_sum+($array_val_a*$plies); $array_val=0; }  
+        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $array_val=0; }     
+       // echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies); $temp_sum=$temp_sum+($array_val_a*$plies); $array_val=0; }  
 /* 
  echo "<td class=xl8713019 style='text-align: left;'>".$array_val_a."<div style='width: 77px;text-align: left; float: right; height:100%;border-top: 1px solid black;' class='xl8713019'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo (($array_val_a*$plies)-$array_val); $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $array_val=0; }   
 */  
@@ -3019,7 +3020,7 @@ echo "</tr>";
             $total_ratio1=$total_ratio1+$array_val_a; 
              
             if(($array_val_a*$plies)>$array_val){ 
-                //$total_temp_values=$total_temp_values+(($array_val_a*$plies)-$array_val);                 
+              //  $total_temp_values=$total_temp_values+(($array_val_a*$plies)-$array_val);                 
                 $total_temp_values=$total_temp_values+(($array_val_a*$plies));                 
             } 
     } 

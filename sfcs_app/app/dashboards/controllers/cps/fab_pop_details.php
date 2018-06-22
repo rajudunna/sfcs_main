@@ -827,7 +827,7 @@ if(isset($_POST['submit']))
 		}	
 	
 	}
-	exit;
+	// exit;
 	/*	if(in_array($username,$authorized_check_out))
 		{
 			//echo "Test---11"."<br>";
@@ -870,6 +870,10 @@ if(isset($_POST['submit']))
 				$sql3="update fabric_priorities set issued_time='".date("Y-m-d H:i:s")."' where doc_ref in ($group_docs)";
 				//Uncheck this	
 				mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+				$sql1="INSERT INTO `$bai_pro3`.`log_rm_ready_in_pool` (`doc_no`, `date_n_time`, `username`) VALUES ('$group_docs', '".date("Y-m-d H:i:s")."','$username')";
+				// echo $sql1;
+				mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error());
 			}
 
 			if($issue_status==1)

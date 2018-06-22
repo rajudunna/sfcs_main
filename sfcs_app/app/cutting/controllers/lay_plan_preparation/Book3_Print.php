@@ -3512,7 +3512,8 @@ $tkt_width[]=$sql_row['ref6'];
 if($print_status==NULL)
 {
 	
-	$sql="update plandoc_stat_log set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
+	$sql="update plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
+	// echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 }

@@ -326,8 +326,8 @@ echo "</table>";
 	
 	echo "<table class='table table-bordered'><tr class='tblheading' style='color:white;'><th>Category</th><th>Control</th><th>Print Status</th></tr>";
 $sql1="SELECT recut_v2.plan_lot_ref,recut_v2.cat_ref,recut_v2.print_status,recut_v2.doc_no,cat_stat_log.category from $bai_pro3.recut_v2 left join $bai_pro3.cat_stat_log on recut_v2.cat_ref=cat_stat_log.tid  where recut_v2.order_tid=\"$order_id_ref\" and recut_v2.acutno=$cut_no_ref";
-//`echo $sql1;
-mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//echo $sql1;
+//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
 $enable_allocate_button=0;
@@ -343,6 +343,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 	if(strlen($sql_row1['plan_lot_ref'])>0)
 	{
+	
 		echo "<td><a href=\"$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 	}
 	if($sql_row1['print_status']>0)
@@ -390,16 +391,16 @@ if($code==1)
 			$sizes_table.="<input type=\"hidden\" name=\"cat[]\" value=\"".$sql_row1['tid']."\"><input type=\"hidden\" name=\"cat_name[]\" value=\"".$sql_row1['category']."\">";
 			$sizes_table.="<input type=\"hidden\" name=\"docno[]\" value=\"".$sql_row1['doc_no']."\">";
 			$sizes_table.="<h2>".$sql_row1['category']."</h2>";
-			$sizes_table.="<table class='table table-bordered'><tr class='tblheading' style='color:white;'><th>Size</th><th>Qty</th><th>Ratio</th></tr>";
+			$sizes_table.="<table class='table table-bordered ' ><tr class='tblheading' style='color:white;'><th>Size</th><th>Qty</th><th>Ratio</th></tr>";
 			//echo sizeof($s_tit)."<br>";
 			for($i=0;$i<sizeof($s_tit);$i++)
 			{
-				$sizes_table.="<tr><td>".$s_tit[$i]."</td><td>".$sql_row1["a_s".$sizes_code[$i].""]."</td><td><input type=\"hidden\" name=\"size_".$tid."[]\" value=\"a_s".$sizes_code[$i]."\"><input type=\"text\" name=\"qty_".$tid."[]\" value=\"".$sql_row1["a_s".$sizes_code[$i].""]."\"></td></tr>";
+				$sizes_table.="<tr><td>".$s_tit[$i]."</td><td>".$sql_row1["a_s".$sizes_code[$i].""]."</td><td><input type=\"hidden\" name=\"size_".$tid."[]\" value=\"a_s".$sizes_code[$i]."\"><input type=\"text\" name=\"qty_".$tid."[]\" value=\"".$sql_row1["a_s".$sizes_code[$i].""]."\" class='float'></td></tr>";
 			
 			}
 			$sizes_table.="<tr><td>Total QTY</td><td>".array_sum($a_s)."</td>";
-			$sizes_table.="<tr><td>MK Length</td><td><input type=\"text\" id='mklen".$jj."' name=\"mklen[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
-			$sizes_table.="<tr><td>Plies</td><td><input type=\"text\" id='plies".$jj."' name=\"plies[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
+			$sizes_table.="<tr><td>MK Length</td><td><input class=\"integer\" type=\"text\" id='mklen".$jj."' name=\"mklen[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
+			$sizes_table.="<tr><td>Plies</td><td><input class=\"integer\" type=\"text\" id='plies".$jj."' name=\"plies[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
 			$sizes_table.="</table>";
 			$jj++;
 
