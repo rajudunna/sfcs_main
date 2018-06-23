@@ -211,9 +211,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $row_color="test"; 
         } 
     }
-    if ($sql_num_check == 0) {
-    	echo "<div class='alert alert-danger'>No Data Found to Display</div>";
-    }
      
 } 
 ?> 
