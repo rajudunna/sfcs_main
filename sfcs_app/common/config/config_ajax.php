@@ -1,5 +1,5 @@
 <?php 
-
+$mysql_details = get_config_values(getmysqldb);
 //SFCS Db Configurations
 $host=$mysql_details['db_host'].":".$mysql_details['db_port'];
 $user=$mysql_details['db_user'];
