@@ -1,3 +1,3 @@
 <?php
-// added user privilizes
+// added UAT test
 $status=""; ?>
