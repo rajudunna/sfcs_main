@@ -1672,7 +1672,7 @@ tags will be replaced.-->
 					  {
 					  	  echo "<td class=xl8419400 bgcolor=".$node_detail[3].">".$node_detail[0]."</td>
 						  <td class=xl8419400 style='border-left:none'>".$node_detail[1]."</td>
-						  <td class=xl8419400 style='border-left:none'>".$node_detail[5]."</td>
+						  <td class=xl8419400 style='border-left:none'>"."J".$node_detail[5]."</td>
 						  <td class=xl8419400 style='border-left:none'>".$node_detail[2]."</td>
 						  <td class=xl8419400 style='border-left:none' colspan=2>".$node_detail[4]."</td>";
 					  }
