@@ -1,7 +1,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
 <div class="panel panel-primary">
-	<div id="page_heading"><Sawing out Reporting Process</div>
+	<div class="panel-heading">Packing List generation(Sawing Job)</div>
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-md-6">
@@ -21,6 +21,7 @@
 				</div>	
 			</div>		
 		</div>	
+	</div>	
 <?php
 if(isset($_POST['submit']))
 {

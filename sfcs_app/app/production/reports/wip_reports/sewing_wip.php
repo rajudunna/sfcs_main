@@ -1,8 +1,7 @@
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0020",$username,1,$group_id_sfcs);
+
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -21,7 +20,7 @@ $view_access=user_acl("SFCS_0020",$username,1,$group_id_sfcs);
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',4,'R') ?>"></script>
 <script language="javascript" type="text/javascript"></script>
 
-<!---<div id="page_heading"><span style="float:"><h3>Sewing WIP</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>--->
+
 
 <div class="panel panel-primary">
 <div class="panel-heading">Sewing WIP</div>
@@ -47,6 +46,8 @@ while($row=mysqli_fetch_array($result))
 	$ims_schedule=$row["ims_schedule"];
 	$ims_color=$row["ims_color"];
 	$ims_mod_no=$row["ims_mod_no"];
+
+
 	$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$ims_schedule."\" and order_col_des=\"".$ims_color."\"";
 	//echo $sql1;
 	$result1=mysqli_query($link, $sql1) or die("Error=2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -59,6 +60,13 @@ while($row=mysqli_fetch_array($result))
 	{
 		$order_tid=$row1["order_tid"];
 	}
+
+	$sql1="select co_no from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row1=mysqli_fetch_array($result1))
+	{
+		$co_no=$row1["co_no"];
+	}	
 	
 	$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
 	//echo $sql1;
@@ -118,7 +126,7 @@ while($row=mysqli_fetch_array($result))
 	echo "<tr>";
 	echo "<td>".$buyer."</td>";
 	echo "<td>".$order_style_no."</td>";
-	echo "<td></td>";
+	echo "<td>".$co_no."</td>";
 	echo "<td>".$order_del_no."</td>";
 	echo "<td>".$order_col_des."</td>";
 	echo "<td>".$section."</td>";

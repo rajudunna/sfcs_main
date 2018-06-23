@@ -133,8 +133,8 @@ function GetValueFromChild(tmp)
 </script>		
 
 <?php 
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
  ?>
 <?php 
 
@@ -160,7 +160,8 @@ if(isset($_GET['tid']))
 	$tid=$_GET['tid']; 
 
 $sql="select * from $bai_pro.down_log where tid=".$tid;
-$result = mysqli_query($link, $sql) or exit("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+//echo $sql;
+$result = mysqli_query($link, $sql) or exit("1Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
 	
@@ -343,7 +344,7 @@ while($row=mysqli_fetch_array($result))
 	$sql1="select distinct(style_id) as style from $bai_pro2.movex_styles order by style_id";
 	
 	//echo $sql1;
-	$result2=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result2=mysqli_query($link, $sql1) or die("2Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result2))
 	{
 		$styles[]=$row1["style"];
@@ -375,7 +376,7 @@ while($row=mysqli_fetch_array($result))
 	
 	$sql2="select distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db";
 	//echo $sql2;
-	$result3=mysqli_query($link11, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result3=mysqli_query($link, $sql2) or die("377Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row2=mysqli_fetch_array($result3))
 	{
 		$schedule[]=$row2["schedule"];
@@ -678,7 +679,7 @@ if(isset($_POST["submit"]))
 	
 	if(!mysqli_query($link, $update))
 	{
-	 	die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	 	die("4Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	else
 	{

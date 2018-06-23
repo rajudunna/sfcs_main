@@ -1208,6 +1208,23 @@ function ratioQty(t,e){
 }
 
 function check(){
+	var count = '<?= $count; ?>';
+	var j = 0;
+	for(var i=0; i<count; i++){
+		if($('#ratioQty'+i).val() != 0){
+			j += 1;
+			console.log($('#ratioQty'+i).val());
+		}
+		console.log($('#ratioQty'+i).val());
+	}
+	if(j == 0){
+		sweetAlert('Error','Please fill atleast 1 ratio feild and that should be equal or more than 0','error');
+		return false;
+	}
+}
+
+
+function chec(){
 	// for(var i=0; i<count; i++){
 		// if($('#ratioQty'+i).val() != ""){
 			// j += 1;

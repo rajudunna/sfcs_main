@@ -25,8 +25,10 @@ return round($diff / 86400);
 
 function dateDiffsql($link,$start,$end)
 {
+	include("../../../../common/config/config.php");
 	$sql="select distinct bac_date from $bai_pro.bai_log_buf where bac_date<='$start' and bac_date>='$end'";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	return mysqli_num_rows($sql_result);
 }
@@ -134,6 +136,8 @@ function update_fin(x)
 <?php
 
 include("../../../../common/config/config.php");
+include("../../../../common/config/functions.php");
+error_reporting(0);
 
 //To update onscreen comments update
 if(isset($_GET['val']))
@@ -154,8 +158,8 @@ if(isset($_GET['val']))
 		<div class='panel-body'>";
 		
 		$sql="select * from $bai_pro3.sections_db where sec_id=$section";
-		mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+		$sql_result=mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$sec_mods=$sql_row['sec_mods'];
@@ -180,8 +184,8 @@ if(isset($_GET['val']))
 			
 			$sql12="select sum(ims_qty-ims_pro_qty) as balance, count(*) as count from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\"";
 			//echo $sql12;
-			mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result12=mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+			$sql_result12=mysqli_query($link,$sql12) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			while($sql_row12=mysqli_fetch_array($sql_result12))
 			{
@@ -206,15 +210,15 @@ if(isset($_GET['val']))
 			}
 		
 		$sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" order by ims_doc_no";
-		mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+		$sql_result=mysqli_query($link,$sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$rand_track=$sql_row['rand_track'];
 			
 			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC";
-			mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result12=mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+			$sql_result12=mysqli_query($link,$sql12) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row12=mysqli_fetch_array($sql_result12))
 			{
 				
@@ -226,16 +230,16 @@ if(isset($_GET['val']))
 				$ims_size2=substr($ims_size,2);
 			
 				$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0";
-				mysqli_query($link,$sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result22=mysqli_query($link,$sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+				$sql_result22=mysqli_query($link,$sql22) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				while($sql_row22=mysqli_fetch_array($sql_result22))
 				{
 					$order_tid=$sql_row22['order_tid'];
 					
 					$sql33="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-					mysqli_query($link,$sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_result33=mysqli_query($link,$sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					$sql_result33=mysqli_query($link,$sql33) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row33=mysqli_fetch_array($sql_result33))
 					{
 						$color_code=$sql_row33['color_code']; //Color Code
@@ -244,7 +248,7 @@ if(isset($_GET['val']))
 					$cutno=$sql_row22['acutno'];
 				}
 	
-				$size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link11);
+				$size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
 		/*		$sql33="select style from pro_style where movex_styles_db like \"%".$sql_row12['ims_style']."%\"";
 				mysql_query($sql33,$link) or exit("Sql Error".mysql_error());
 				$sql_result33=mysql_query($sql33,$link) or exit("Sql Error".mysql_error());
@@ -254,8 +258,8 @@ if(isset($_GET['val']))
 				} */
 				
 				$sql33="select style_id from $bai_pro2.movex_styles where movex_style like \"%".$sql_row12['ims_style']."%\"";
-				mysqli_query($link22, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result33=mysqli_query($link22, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33=mysqli_fetch_array($sql_result33))
 				{
 					$user_style=$sql_row33['style_id']; //Color Code
@@ -272,8 +276,8 @@ if(isset($_GET['val']))
 				$good_garments=0;
 				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where SUBSTRING_INDEX(remarks,\"-\",1)=$module_ref and qms_schedule=".$sql_row12['ims_schedule']." and qms_color=\"".$sql_row12['ims_color']."\" and qms_size=\"".strtoupper(substr($sql_row12['ims_size'],2))."\"";
 				
-				mysqli_query($link22, $sql33) or exit("Sql Error".$sql33.mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result33=mysqli_query($link22, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33=mysqli_fetch_array($sql_result33))
 				{
 					$rejected=$sql_row33['rejected']; 
@@ -284,7 +288,7 @@ if(isset($_GET['val']))
 				
 				//Ex-Factory
 				$sql33="select ex_factory_date_new as ex_factory from $bai_pro4.week_delivery_plan_ref where schedule_no=\"".$sql_row12['ims_schedule']."\"";
-				$sql_result33=mysqli_query($link22, $sql33) or exit("Sql Error2 =$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error2 =$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33=mysqli_fetch_array($sql_result33))
 				{
 					$ex_factory=$sql_row33['ex_factory'];
@@ -303,11 +307,11 @@ if(isset($_GET['val']))
 					echo $quality_log_row;
 					if(in_array($username,$auth_to_modify))
 					{
-						echo "<td><span id='I".$sql_row12['tid']."'></span><span id='M".$sql_row12['tid']."' style='width:100%' onclick='update_comm(".$sql_row12['tid'].");'>".$sql_row12['team_comm']."</span></td><td>".dateDiffsql($link22,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
+						echo "<td><span id='I".$sql_row12['tid']."'></span><span id='M".$sql_row12['tid']."' style='width:100%' onclick='update_comm(".$sql_row12['tid'].");'>".$sql_row12['team_comm']."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
 					}
 					else
 					{
-						echo "<td>".$sql_row12['team_comm']."</td><td>".dateDiffsql($link22,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
+						echo "<td>".$sql_row12['team_comm']."</td><td>".dateDiffsql($link,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
 					}
 					if($rowcount_check==1)
 					{
@@ -327,11 +331,11 @@ if(isset($_GET['val']))
 				
 					if(in_array($username,$auth_to_modify))
 					{
-						echo "<td><span id='I".$sql_row12['tid']."'></span><span id='M".$sql_row12['tid']."' style='width:100%' onclick='update_comm(".$sql_row12['tid'].");'>".$sql_row12['team_comm']."</span></td><td>".dateDiffsql($link22,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
+						echo "<td><span id='I".$sql_row12['tid']."'></span><span id='M".$sql_row12['tid']."' style='width:100%' onclick='update_comm(".$sql_row12['tid'].");'>".$sql_row12['team_comm']."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
 					}
 					else
 					{
-						echo "<td>".$sql_row12['team_comm']."</td><td>".dateDiffsql($link22,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
+						echo "<td>".$sql_row12['team_comm']."</td><td>".dateDiffsql($link,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
 					}
 				}
 				

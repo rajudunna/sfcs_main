@@ -3,12 +3,10 @@
 <?php //include("menu_content.php");   This file has no content that was beign used ?>
 
 <div class="panel panel-primary">
-	<div class="panel-heading">Sewing Out View</div>
+	<div class="panel-heading">Packing List View(Sewing Job)</div>
 	<div class="panel-body">
 		<div class="row">
 			<div class="col-md-6">
-				<h2><b>For Uniqlo Schedules</b></h2>
-				
 				<form name="test" action="<?php echo '?r='.$_GET['r']; ?>" method="post">
 					<div class="row">
 						<div class="col-sm-6">
@@ -21,7 +19,7 @@
 					</div>
 				</form>
 			</div>
-			<div class="col-md-6">
+			<!-- <div class="col-md-6">
 				<h2><b>For Other Schedules</b></h2>
 				<form name="test" action="<?php echo '?r='.$_GET['r']; ?>" method="post">
 					<div class="row">
@@ -35,7 +33,7 @@
 						</div>
 					</div>
 				</form>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </div>
