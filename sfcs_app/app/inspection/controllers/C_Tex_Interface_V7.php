@@ -2600,9 +2600,18 @@ if($_POST['put'] || $_POST['confirm'])
 	if($_POST['confirm'])
 	{
 		$lot_no_new=trim($_POST['lot_no']); //Batch Number
+		// if($_POST['lot_no'] == '')
+		// {
+		// 	$lot_no_new='+';
+		// }
+		echo $lot_no_new;
 		//Update status as 1 to confirm the Batch details and the confirmed batch will consider as pass or fail at supplier performance report
 		$sql1="update $bai_rm_pj1.inspection_db set status=1 where batch_ref=\"$lot_no_new\"";
 		mysqli_query($link, $sql1) or exit("Sql Error8=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
+		echo "<script>sweetAlert('Updated Sucessfully','','success')</script>";
+		echo getFullURLLevel($_GET['r'], "trims_inspection_update.php", "0", "N");
+		echo "<script>location.href = \"".getFullURLLevel($_GET['r'], "trims_inspection_update.php", "0", "N")."\"; </script>";
+
 		//echo $sql1;
 	}
 	//Status will be 0 either reset or by default, if user update this form. (0- To track as not confirmed by super user and not communicated to front end teams.)
@@ -2647,7 +2656,7 @@ if($_POST['put'] || $_POST['confirm'])
 	echo "<h2>Please Wait While Updating Data.</h2>";
 			echo "<script type='text/javascript'>";
 			 echo "setTimeout('Redirect()',0);";
-			 echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."';";
+			 echo "var url='".$url."&batch_no=+".$lot_no_new."&lot_ref=".$lot_ref."';";
 			 echo "function Redirect(){location.href=url;}</script>";
 	
 }
@@ -2860,7 +2869,9 @@ function enableButton1()
         document.getElementById('option1').checked = false;
 
     }
+	
 
+	
 }
 function enableButton() {
 
@@ -2871,4 +2882,12 @@ function enableButton() {
         document.getElementById('put').disabled = 'true';
     }
 }
+
+	
+	// $php_self = explode('/',$_SERVER['PHP_SELF']);
+    // array_pop($php_self);
+    // $url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+    // $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+	// echo "setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = '".$url."'; }";
+
 </script>
