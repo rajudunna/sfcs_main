@@ -1344,7 +1344,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }else{
               $id='orange';
               //Not Allowed
-            if($username!='sfcsproject1'){
+            if($username=='sfcsproject1'){
 
               //echo "orange : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>";
               if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
