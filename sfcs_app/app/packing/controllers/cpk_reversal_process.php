@@ -3,9 +3,9 @@
 
 ?>
 
-<?php include("../".getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
-<?php include("../".getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R')); 
-include("../".getFullURL($_GET['r'], 'sesssion_track.php', 'R'));
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'], 'sesssion_track.php', 'R'));
 
 //Exemption Handling
 if($session_login_fg_carton_scan==1)
@@ -17,7 +17,7 @@ if($session_login_fg_carton_scan==1)
 $packing_summary_tmp_v3="temp_pool_db.packing_summary_tmp_v3_$current_session_user";
 ?>
 
-<?php include('../'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') ); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') ); ?>
 	<!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
 	<script>
 	function checkx(x,y)
@@ -44,7 +44,7 @@ $packing_summary_tmp_v3="temp_pool_db.packing_summary_tmp_v3_$current_session_us
 	}
 	</script>
 <body onload="focus_box()" style="background-color: #EEEEEE;"  >
-<?php include('../'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R') ); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R') ); ?>
 
 <?php 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
@@ -56,7 +56,8 @@ while($row=mysqli_fetch_array($result))
 	$users=$row["auth_members"];
 }
 */
-$username_access=user_acl("SFCS_0232",$username,7,$group_id_sfcs); 
+//$username_access=user_acl("SFCS_0232",$username,7,$group_id_sfcs); 
+
 //if($username=="amulyap" or $username=="kirang" or $username=="lilanku" or $username=="sasidharch" or $username=="kirang" or $username=="baifg" or $username=="sureshn" or $username=="edwinr")
 //{
 	
@@ -87,7 +88,6 @@ Enter Sticker Number: <!-- <input type="text" value="" name="cartonid"> -->
 	ob_end_flush();
 	flush();
 	usleep(10);
-
 
 ?>
 
@@ -189,6 +189,7 @@ if(isset($_POST['cartonid']))
 
 
 <?php
+
 if(isset($_POST['update1']) or isset($_POST['update']))
 {
 	
@@ -400,9 +401,9 @@ if(isset($_POST['update']) and $flag==0)
 	else
 	{
 		
-		
 		$sql_m3_log="SELECT m3_op_des as 'status' FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_tid_ref='".$cartonid_x."' and m3_op_code<200 order by m3_op_code desc limit 1";
-		$sql_result_m3_log=mysqli_query($sql_m3_log,$link) or exit("Sql Error $sql_m3_log".mysqli_error($link));
+		
+		$sql_result_m3_log=mysqli_query($link,$sql_m3_log) or exit("Sql Error $sql_m3_log".mysqli_error($link));
 		
 		while($sql_row_m3_log=mysqli_fetch_array($sql_result_m3_log))
 		{
