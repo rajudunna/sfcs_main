@@ -9,7 +9,7 @@
     if(in_array($edit,$permission))
     {
         ?>
-            <a href="index.php?r=<?php echo getFullURLLevel($_GET['r'],'edit.php',0,'N'); ?> ">Edit</a>
+            <a  class='btn btn-success pull-right' href="<?php echo getFullURLLevel($_GET['r'],'reports/edit.php',1,'N'); ?> ">Edit</a>
         <?php
     }
 ?>

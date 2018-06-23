@@ -255,7 +255,7 @@ $errors=1;
 //we will give an unique name, for example the time in unix time format
 $image_name=time().'.'.$extension;
 //the new name will be containing the full path where will be stored (images folder)
-$newname = $newname.'/'.$fileName;
+$newname = $newname.'/actual/'.$fileName;
 $copied = copy($_FILES['userfile']['tmp_name'], $newname);
 
 //we verify if the image has been uploaded, and print error instead
@@ -267,7 +267,7 @@ $errors=1;
 else
 {
 // the new thumbnail image will be placed in images/thumbs/ folder
-$thumb_name = $thumb_name.'/thumb_'.$fileName;
+$thumb_name = $thumb_name.'/actual/thumb_'.$fileName;
 // call the function that will create the thumbnail. The function will get as parameters
 //the image name, the thumbnail name and the width and height desired for the thumbnail
 $thumb=make_thumb($newname,$thumb_name,WIDTH,HEIGHT);
