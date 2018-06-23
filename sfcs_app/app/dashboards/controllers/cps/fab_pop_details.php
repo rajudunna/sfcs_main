@@ -19,6 +19,20 @@ Changes Log:
 
 2014-05-29/dharanid/Service Request #370686: Add sivaramakrishnat in $authorized array For Docket allocation in CPS Dashboard
 -->
+<?php 
+
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+?>
+<br/>
+<div class='row'>
+	<div class='col-md-2 pull-left'>
+		<a class='btn btn-primary' href = '<?= $url ?>'> Back</a>
+	</div>
+</div>
+<br/>
 <script src="../../../../common/js/sweetalert.min.js"></script>
 <script type="text/javascript">
 
@@ -829,7 +843,7 @@ if(isset($_POST['submit']))
 		}	
 	
 	}
-	exit;
+	// exit;
 	/*	if(in_array($username,$authorized_check_out))
 		{
 			//echo "Test---11"."<br>";
@@ -872,6 +886,10 @@ if(isset($_POST['submit']))
 				$sql3="update fabric_priorities set issued_time='".date("Y-m-d H:i:s")."' where doc_ref in ($group_docs)";
 				//Uncheck this	
 				mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+				$sql1="INSERT INTO `$bai_pro3`.`log_rm_ready_in_pool` (`doc_no`, `date_n_time`, `username`) VALUES ('$group_docs', '".date("Y-m-d H:i:s")."','$username')";
+				// echo $sql1;
+				mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error());
 			}
 
 			if($issue_status==1)

@@ -105,7 +105,7 @@ $(document).ready(function(){
 				console.log(response);
 					$.each(response, function(key,value) {
 						
-							$('select[name="operation"]').append('<option value="'+ key +'">'+value+'</option>');
+							$('select[name="operation"]').append('<option value="'+ key +'">'+value+' - '+key+'</option>');
 					});		    					
 				
 															  

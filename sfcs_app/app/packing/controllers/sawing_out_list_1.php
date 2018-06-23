@@ -27,7 +27,7 @@
 			</tr>
 			<?php   
 				$sql1="SELECT tid,input_job_no,size_code,color,SUM(carton_act_qty) AS tqty,carton_act_qty AS qty,
-						remarks FROM pac_stat_log_new where schedule='$schedule' 
+						remarks FROM pac_stat_log where schedule='$schedule' 
 						GROUP BY input_job_no,size_code,color  ORDER BY input_job_no*1 ASC";
 				$sql_result=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($rows=mysqli_fetch_array($sql_result)){

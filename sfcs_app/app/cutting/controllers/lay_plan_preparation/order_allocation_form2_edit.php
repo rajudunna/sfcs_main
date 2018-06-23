@@ -779,6 +779,7 @@ echo "<thead><tr><td><center>Sizes</center></td><td><center>Requested Qty</cente
 $count = sizeof($s_tit);
 for($s=0;$s<sizeof($s_tit);$s++)
 	{	
+		//$flag = readonly
 		$code= "aoq_s".$sizes_code[$s];
 		$code1= "coq_s".$sizes_code[$s];
 		$code3= "allocate_s".$sizes_code[$s];
@@ -788,7 +789,7 @@ for($s=0;$s<sizeof($s_tit);$s++)
 		<td><center id='req_qty$s'>".$$code1."</center></td>
 		<td><center  id='prepared_qty$s'>".$$code."</center></td>
 		<td><center>".($$code-$$code1)."</center></td>
-		<td><center><INPUT type=\"text\" $flag name=\"in_s".$sizes_code[$s]."\" id='ratioQty$s' class=\"ratios integer\"  required  value=\"".$$code3."\" size=\"10\"></center></td>
+		<td><center><INPUT type=\"text\"  name=\"in_s".$sizes_code[$s]."\" id='ratioQty$s' class=\"ratios integer\"  required  value=\"".$$code3."\" size=\"10\"></center></td>
 		</tr>";
 		//id='in_s$sizes_code[$s]'
 	}
@@ -1220,8 +1221,23 @@ echo "</div>";
 
 
 <script>
-
 function check(){
+	var count = '<?= $count; ?>';
+	var j = 0;
+	for(var i=0; i<count; i++){
+		if($('#ratioQty'+i).val() != 0){
+			j += 1;
+			console.log($('#ratioQty'+i).val());
+		}
+		console.log($('#ratioQty'+i).val());
+	}
+	if(j == 0){
+		sweetAlert('Error','Please fill atleast 1 ratio feild and that should be equal or more than 0','error');
+		return false;
+	}
+}
+
+function chec(){
 	// for(var i=0; i<count; i++){
 		// if($('#ratioQty'+i).val() != ""){
 			// j += 1;

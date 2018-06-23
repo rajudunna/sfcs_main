@@ -61,11 +61,41 @@
 					$url = $url."?tid=$tid&job_no=$input_job_no&schedule=$schedule&color=$color&size=$size";
 					echo "<a href=\"$url\" class=\"btn btn-warning btn-sm\" target=\"_blank\" onclick=\"return popitup('$url')\">
 						  <i class='fa fa-print'></i>&nbsp;&nbsp;Print Labels </a><br/>";	
+				    $url = getFullURL($_GET['r'],'packing_list_print_assort.php','R');
+					
 				?>
 				</td>
 			</tr>
 			<?php
 			}
+		?>
+		
+		<?php
+			
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+				$tran_order_tid=$sql_row['order_tid'];
+				$carton_id=$sql_row['carton_id'];
+				$style_id=$sql_row['style_id'];
+			}
+			$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and length(category)>0";
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+				$cat_ref=$sql_row['tid'];				
+			}
+			
+			$sql="select * from $bai_pro3.carton_qty_chart where user_style=\"$style_id\" and status=0";
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Errorl".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+				$carton_id_new_create=$sql_row['id'];
+			}	
+			$url = getFullURL($_GET['r'],'packing_list/packing_check_list_assort_input.php','R');
+			echo "</div><div class='col-md-2'><a class=\"btn btn-warning btn-xs\" href=\"$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule\" onclick=\"return popitup("."'"."$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>  Carton Track</a></div></div>";
+			
 		?>
 		</table>
 	</div>

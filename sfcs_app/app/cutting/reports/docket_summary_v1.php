@@ -138,7 +138,7 @@ th
 			
 			$sql="SELECT b.order_style_no,b.order_del_no,b.order_col_des,p.order_tid,p.doc_no,p.pcutno,p.act_cut_status,p.print_status,
 			p.docket_printed_person,p.fabric_status,p.log_update,
-			f.log_user AS req_user,f.log_time,f.req_time,l.date_n_time AS fab_ready_time,f.issued_time
+			f.log_user AS req_user,f.log_time,f.req_time,l.date_n_time AS fab_ready_time,f.issued_time,p.order_tid
 			FROM $bai_pro3.plandoc_stat_log p 
 			JOIN $bai_pro3.fabric_priorities f
 			ON p.doc_no=f.doc_ref
@@ -148,7 +148,7 @@ th
 			ON p.doc_no=l.doc_no
 			WHERE f.log_time between \"$sdate\" and \"$edate\"";
 
-			//echo $sql."<br>";
+			// echo $sql."<br>";
 			//mysql_query($sql,$link) or exit("Sql Error1".mysql_error());
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count_query = mysqli_num_rows($sql_result);
@@ -158,11 +158,22 @@ th
 
 			echo "<table class=\"table table-bordered\" id=\"table_one\" border=1 >";
 			//echo "<tr><th>TID</th><th>Date</th><th>Module</th><th>Section</th><th>Shift</th><th>Qty</th><th>Last Updated</th><th>Log Time</th><th>Controls</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>SMV</th><th>NOP</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th><th>XXXL</th><th>s08</th><th>s10</th><th>s12</th><th>s14</th><th>s16</th><th>s18</th><th>s20</th><th>s22</th><th>s24</th><th>s26</th><th>s28</th></tr>";
-			echo "<thead><tr><th class=\"coloum-title\"><center>Style</center></th><th class=\"coloum-title\"><center>Schedule</center></th><th class=\"coloum-title\"><center>Color</center></th><th class=\"coloum-title\"><center>Docket#</center></th><th class=\"coloum-title\"><center>Cut#</center></th><th class=\"coloum-title\"><center>Actual cut status</center></th>
-			<th class=\"coloum-title\"><center>Docket print status</center></th><th class=\"coloum-title\"><center>Docket printed user</center></th><th class=\"coloum-title\"><center>CPS status</center></th><th class=\"coloum-title\"><center>CPS status log time</center></th><th class=\"coloum-title\"><center>Fabric requested user</center></th>
-			<th class=\"coloum-title\"><center>User log time</center></th><th class=\"coloum-title\"><center>Fab. requested time</center></th><th class=\"coloum-title\"><center>Fab. Ready time</center></th><th class=\"coloum-title\"><center>Fab. Issued time</center></th></tr></thead>";
+			echo "<thead><tr><th class=\"coloum-title\"><center>Style</center></th><th class=\"coloum-title\"><center>Schedule</center></th><th class=\"coloum-title\"><center>Color</center></th><th class=\"coloum-title\"><center>Docket#</center></th><th class=\"coloum-title\"><center>Cut#</center></th><th class=\"coloum-title\"><center>Fabric requested user</center></th>
+			<th class=\"coloum-title\"><center>CPS status</center></th><th class=\"coloum-title\"><center>CPS status log time</center></th>
+			<th class=\"coloum-title\"><center>User log time</center></th><th class=\"coloum-title\"><center>Fab. requested time</center></th><th class=\"coloum-title\"><center>Fab. Ready time</center></th><th class=\"coloum-title\"><center>Fab. Issued time</center></th>			<th class=\"coloum-title\"><center>Docket print status</center></th><th class=\"coloum-title\"><center>Docket printed user</center></th><th class=\"coloum-title\"><center>Actual cut status</center></th></tr></thead>";
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
+				$order_tid=$sql_row['order_tid'];
+				$sql33="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+					mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row33=mysqli_fetch_array($sql_result33))
+					{
+						$color_code=$sql_row33['color_code']; //Color Code
+					}
+				
+				
+				
 				$order_style_no=$sql_row['order_style_no'];
 				$order_del_no=$sql_row['order_del_no'];
 				$order_col_des=$sql_row['order_col_des'];
@@ -200,10 +211,8 @@ th
 					echo "<td class=\"  \"><center>$order_del_no</center></td>";
 					echo "<td class=\"  \"><center>$order_col_des</center></td>";
 					echo "<td class=\"  \"><center>$doc_no</center></td>";
-					echo "<td class=\"  \"><center>$pcutno</center></td>";
-					echo "<td class=\"  \"><center>$act_cut_status</center></td>";
-					echo "<td class=\"  \"><center>$print_status</center></td>";
-					echo "<td class=\"  \"><center>$docket_printed_person</center></td>";
+					echo "<td class=\"  \"><center>".chr($color_code).leading_zeros($pcutno,3)."</center></td>";
+					echo "<td class=\"  \"><center>$req_user</center></td>";
 					if($fabric_status=="5") { 
 						echo "<td class=\"  \"><center>Fab. Issued</center></td>";
 					} else if($fabric_status=="8") { 
@@ -213,11 +222,13 @@ th
 					}
 					//echo "<td>$fabric_status</td>";
 					echo "<td class=\"  \"><center>$log_update</center></td>";
-					echo "<td class=\"  \"><center>$req_user</center></td>";
 					echo "<td class=\"  \"><center>$log_time</center></td>";
 					echo "<td class=\"  \"><center>$req_time</center></td>";
 					echo "<td class=\"  \"><center>".$fab_ready_time."</center></td>";
 					echo "<td class=\"  \"><center>$issued_time</center></td>";
+					echo "<td class=\"  \"><center>$print_status</center></td>";
+					echo "<td class=\"  \"><center>$docket_printed_person</center></td>";					
+					echo "<td class=\"  \"><center>$act_cut_status</center></td>";
 					// echo "<td class=\"  \"><center></center></td>";
 					
 					

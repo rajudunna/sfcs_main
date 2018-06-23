@@ -1,9 +1,8 @@
 <?php
    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+    
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs); 
+	
 ?>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',4,'R'); ?>"></script>
@@ -59,6 +58,13 @@ $sql=mysqli_query($link, "select order_tid,SUM(material_req) AS fabric_wip_yards
 while($row=mysqli_fetch_array($sql))
 {
 	$order_tid=$row["order_tid"];
+
+	$sql1="select co_no from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row1=mysqli_fetch_array($result1))
+	{
+		$co_no=$row1["co_no"];
+	}	
 	
 	$sql1="select order_div,order_style_no,order_del_no,order_col_des,order_date from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
 	//echo $sql1;
@@ -83,7 +89,7 @@ while($row=mysqli_fetch_array($sql))
 	
 	echo "<td>".$buyer."</td>";
 	echo "<td>".$order_style_no."</td>";
-	echo "<td></td>";
+	echo "<td>".$co_no."</td>";
 	echo "<td>".$order_del_no."</td>";
 	echo "<td>".$order_col_des."</td>";
 	echo "<td>".$fabric_wip_yards."</td>";

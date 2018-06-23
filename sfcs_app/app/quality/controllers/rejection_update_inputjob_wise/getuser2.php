@@ -1,6 +1,7 @@
 <?php
 include("../../../../common/config/config_ajax.php");
 include("../../../../common/config/config.php");
+error_reporting(0);
 
 if(isset($_GET['q']))
 {

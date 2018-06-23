@@ -205,11 +205,11 @@ $(document).ready(function()
 					sweetAlert('',response['status'],'error');
 					$('#dynamic_table1').html('No Data Found');
 				}
-				// else if(response['module'] == undefined)
-				// {
-				// 	sweetAlert('',"Please Assign Module to this Input Job",'error');
-				// 	$('#dynamic_table1').html('Please Assign Module to this Input Job');
-				// }
+				else if(response['module'] == undefined)
+				{
+					sweetAlert('',"Please Assign Module to this Input Job",'error');
+					$('#dynamic_table1').html('Please Assign Module to this Input Job');
+				}
 				else if(data)
 				{
 					console.log(data);
