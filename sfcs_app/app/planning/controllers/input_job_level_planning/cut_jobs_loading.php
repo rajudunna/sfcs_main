@@ -32,7 +32,8 @@ $hour=date("H.i");
 	}
 	else
 	{
-	   header("Location:restrict.php");
+		$url=getFullURLLevel($_GET['r'],'/common/config/restricted.php',4,'N');
+	   header("Location:$url");
 	}
 	
 
