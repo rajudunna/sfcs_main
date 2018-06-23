@@ -61,6 +61,11 @@
                         "label": "General",
                         "value": "general"
                     }
+                ],
+                "value": [
+                    "A",
+                    "B",
+                    "C"
                 ]
             },
             {
@@ -122,7 +127,7 @@
                 "label": "Mail1",
                 "className": "form-control",
                 "name": "mail1",
-                "value": "a@schemaxtech.com"
+                "value": "a@brandix.com"
             },
             {
                 "type": "text",
@@ -149,7 +154,7 @@
                 "label": "Mail4",
                 "className": "form-control",
                 "name": "mail4",
-                "value": "a@schemaxtech.com"
+                "value": "a@brandix.com"
             },
             {
                 "type": "text",
@@ -158,7 +163,7 @@
                 "label": "Mail5",
                 "className": "form-control",
                 "name": "mail5",
-                "value": "a@schemaxtech.com"
+                "value": "a@brandix.com"
             },
             {
                 "type": "text",
@@ -167,7 +172,7 @@
                 "label": "Mail6",
                 "className": "form-control",
                 "name": "mail6",
-                "value": "a@schemaxtech.com"
+                "value": "f@brandix.com"
             },
             {
                 "type": "text",
@@ -176,7 +181,7 @@
                 "label": "Mail7",
                 "className": "form-control",
                 "name": "mail7",
-                "value": "a@schemaxtech.com"
+                "value": "g@brandix.com"
             },
             {
                 "type": "text",
@@ -185,7 +190,7 @@
                 "label": "Mail8",
                 "className": "form-control",
                 "name": "mail8",
-                "value": "a@schemaxtech.com"
+                "value": "h@brandix.com"
             },
             {
                 "type": "text",
@@ -194,7 +199,7 @@
                 "label": "Mail9",
                 "className": "form-control",
                 "name": "mail9",
-                "value": "a@schemaxtech.com"
+                "value": "h@brandix.com"
             },
             {
                 "type": "text",
@@ -202,7 +207,7 @@
                 "label": "Mail10",
                 "className": "form-control",
                 "name": "mail10",
-                "value": "a@schemaxtech.com"
+                "value": "h@brandix.com"
             },
             {
                 "type": "text",
@@ -210,7 +215,7 @@
                 "label": "Mail11",
                 "className": "form-control",
                 "name": "mail11",
-                "value": "a@schemaxtech.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -218,7 +223,7 @@
                 "label": "Mail12",
                 "className": "form-control",
                 "name": "mail12",
-                "value": "a@schemaxtech.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -226,7 +231,7 @@
                 "label": "Mail13",
                 "className": "form-control",
                 "name": "mail13",
-                "value": "a@schemaxtech.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -234,7 +239,7 @@
                 "label": "Mail14",
                 "className": "form-control",
                 "name": "mail14",
-                "value": "a@schemaxtech.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -242,42 +247,47 @@
                 "label": "Mail15",
                 "className": "form-control",
                 "name": "mail15",
-                "value": "a@schemaxtech.com"
+                "value": "h@brandix.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
                 "label": "Mail16",
                 "className": "form-control",
-                "name": "mail16"
+                "name": "mail16",
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
                 "label": "Mail17",
                 "className": "form-control",
-                "name": "mail17"
+                "name": "mail17",
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
                 "label": "Mail18",
                 "className": "form-control",
-                "name": "mail18"
+                "name": "mail18",
+                "value": "h@brandix.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
                 "label": "Mail19",
                 "className": "form-control",
-                "name": "mail19"
+                "name": "mail19",
+                "value": "h@brandix.com"
             },
             {
                 "type": "text",
                 "subtype": "email",
                 "label": "Mail20",
                 "className": "form-control",
-                "name": "mail20"
+                "name": "mail20",
+                "value": "b@brandix.com"
             }
         ],
         [
@@ -302,7 +312,8 @@
                         "label": "Yards",
                         "value": "yards"
                     }
-                ]
+                ],
+                "value": "meters"
             },
             {
                 "type": "checkbox-group",
@@ -319,6 +330,10 @@
                         "label": "Body",
                         "value": "body"
                     }
+                ],
+                "value": [
+                    "front",
+                    "body"
                 ]
             }
         ],
@@ -373,7 +388,6 @@
                 "value": "test2",
                 "subtype": "text"
             }
-        ],
-        []
+        ]
     ]
 }
