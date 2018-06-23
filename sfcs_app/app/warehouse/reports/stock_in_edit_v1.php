@@ -26,7 +26,8 @@ if(in_array($authorized,$has_permission))
 }
 else
 {
-	header("Location: restrict.php");
+	$url=getFullURLLevel($_GET['r'],'controllers/restrict.php',1,'N');
+	header("Location: $url");
 }
 
 ?>
