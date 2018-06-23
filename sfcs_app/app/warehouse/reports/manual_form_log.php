@@ -182,6 +182,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			//if(in_array($tmp_username,$team))
 			if(in_array($approve,$has_permission))
 			{
+
+				
 				// echo "<td><a href=\"update_status.php?tid=$tid&check=2\">20 Approved</a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=2\">Approved</a></td>";
 			}
@@ -242,7 +244,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	if($sql_row['app_date']=="0000-00-00 00:00:00" and $sql_row['status']==1 and in_array($update,$has_permission))
 	{
-		echo "<td><a href=\"update_status.php?tid=$tid&check=1\">Update</a></td>";
+
+		$url=getFullURLLevel($_GET['r'],'update_status.php','N');
+            
+		echo "<td><a href=\"$url?tid=$tid&check=1\">Update</a></td>";
 	}
 	else
 	{

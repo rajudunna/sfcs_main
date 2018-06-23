@@ -1,17 +1,18 @@
 <?php
 // include("security1.php");
 
-$username_list=array();
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
+//$username_list=array();
+//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+//$username=$username_list[1];
 
-$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 $has_permission=haspermission($_GET['r']);
 $tid=$_GET['tid'];
 $check=$_GET['check'];
 
 if($check==1 and in_array($authorized,$has_permission))
+
 {
 	$checkx=1;
 	$item_list=array("Applied","Approve","Reject");
@@ -45,7 +46,8 @@ else
 			}
 			default:
 			{
-				header("Location:restricted.php");
+				$url=getFullURLLevel($_GET['r'],'controllers/restrict.php',1,'N');
+	            header("Location: $url");
 			}
 		}
 
