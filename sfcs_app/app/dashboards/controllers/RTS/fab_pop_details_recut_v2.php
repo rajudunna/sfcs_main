@@ -8,6 +8,20 @@ changes log:
 -->
 
 <script type="text/javascript">
+  
+    function check_doc_val()
+    {
+        var $nonempty = $('.doc_nos_class').filter(function() {
+            return this.value != ''
+        });
+
+        if ($nonempty.length == 0) {
+            swal('');
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 	function check_validate()
 	{
@@ -428,7 +442,7 @@ th
 			
 		}
 		
-		echo "<form name=\"ins\" method=\"post\" action='".getFullURLLevel($_GET['r'],'fab_pop_allocate_v5.php',0,'N')."'>"; //new version
+		echo "<form name=\"ins\" method=\"post\"  onsubmit=\"return check_doc_val()\" action='".getFullURLLevel($_GET['r'],'fab_pop_allocate_v5.php',0,'N')."'>"; //new version
 		echo "<input type=\"hidden\" value=\"2\" name=\"process_cat\">"; //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
 		echo "<table class='table table-bordered'><tr><th>Category -- Docket</th><th>Material Req.</th><th>Lot No</th><th>Print Status</th><th>Roll Details</th></tr>";
 		//$sql1="SELECT recut_v2.a_plies,recut_v2.mk_ref,recut_v2.plan_lot_ref,recut_v2.cat_ref,recut_v2.print_status,recut_v2.doc_no,cat_stat_log.category,cat_stat_log.compo_no from recut_v2 left join cat_stat_log on recut_v2.cat_ref=cat_stat_log.tid  where recut_v2.order_tid=\"$order_id_ref\" and recut_v2.acutno=$cut_no_ref"; //OLD
@@ -584,7 +598,7 @@ th
 		echo "</table>";
 		if($enable_allocate_button==1)
 		{
-			echo "<input type=\"submit\" id='allocate' name=\"allocate\" value=\"Allocate\" class='btn btn-success' onclick='return verify()'>";
+			echo "<input type=\"submit\" id='allocate' name=\"allocate\" value=\"Allocate\" class='btn btn-success'>";
 			echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
 		}
 		echo "</form>";
@@ -822,19 +836,4 @@ th
 	</div>
 </div>
 
-<!-- <script>
-var flag = 0;
-	function verify(){
-		$('.manual').each(function(v){
-			if($(this).val()!=''){
-                flag++;
-                return true;  
-			}
-			swal('Please enter atleast 1 lot no','','warning');
-			return false;
-	    });
-	    if(flag==1)
-	    	return true;
-	}
-</script> -->
 
