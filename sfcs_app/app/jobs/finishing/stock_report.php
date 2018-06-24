@@ -182,8 +182,8 @@ $packing_summary="bai_pro3.packing_summary";
 	$mns_stock=0;
 	$balance=0;
 	
-	$auth_usr=array("kirang","baiadmn","baisysadmin","baischtasksvc","baiictintern2","kirang","sfcsproject1","sfcsproject2");
-	if(in_array($username,$auth_usr))
+	// $auth_usr=array("kirang","baiadmn","baisysadmin","baischtasksvc","baiictintern2","kirang","sfcsproject1","sfcsproject2");
+	// if(in_array($username,$auth_usr))
 	{
 			
 		$sql="select *,bai_pro3.fn_act_ship_qty(order_del_no) as rev_shipped from bai_pro3.fg_wh_report_summary where (total_qty-bai_pro3.fn_act_ship_qty(order_del_no))<>0 order by order_date";

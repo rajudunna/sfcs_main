@@ -276,5 +276,3 @@ if($result_count>0)
 	$duration = $end_timestamp - $start_timestamp;
 	print("Execution took ".$duration." milliseconds.");
 ?>
-</body>
-</html>

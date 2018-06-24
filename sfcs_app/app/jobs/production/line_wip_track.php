@@ -2,12 +2,6 @@
 <?php 
 $start_timestamp = microtime(true);
 include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
-
-?>
-
-
-<?php
-
 $message= '<html><head><style type="text/css">
 
 body
@@ -63,7 +57,7 @@ $message.= '
 
 $sec_mods=array();
 $sec_nos=array();
-$sql="SELECT sec_id,group_concat(sec_mods order by sec_mods*1) as mods FROM bai_pro3.sections_db WHERE sec_id NOT IN (0,-1,4) group by sec_id ORDER BY sec_id";
+$sql="SELECT sec_id,group_concat(sec_mods order by sec_mods*1) as mods FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1,4) group by sec_id ORDER BY sec_id";
 
 $result7=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($result7))
@@ -74,7 +68,7 @@ while($sql_row=mysqli_fetch_array($result7))
 for($i=0;$i<sizeof($sec_nos);$i++)
 {
 	$sql11="SELECT ims_style AS style,COUNT(DISTINCT rand_track) AS box, GROUP_CONCAT(DISTINCT ims_mod_no ORDER BY ims_mod_no*1) AS module, 
-		SUM(ims_qty-ims_pro_qty) AS wip FROM bai_pro3.ims_log WHERE ims_mod_no IN (".$sec_mods[$i].") AND ims_status!=\"DONE\" GROUP BY 
+		SUM(ims_qty-ims_pro_qty) AS wip FROM $bai_pro3.ims_log WHERE ims_mod_no IN (".$sec_mods[$i].") AND ims_status!=\"DONE\" GROUP BY 
 		style ORDER BY style";
 	//echo $sql."<br>";
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error-11".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -83,7 +77,7 @@ for($i=0;$i<sizeof($sec_nos);$i++)
 		$message.= "<tr><td align=\"center\">".$sql_row11['style']."</td><td align=\"center\">".$sql_row11['box']."</td><td align=\"right\">".$sql_row11['wip']."</td><td align=\"left\">".$sql_row11['module']."</td></tr>";
 	}
 	
-	$sql12="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\" FROM bai_pro3.ims_log where ims_mod_no in (".$sec_mods[$i].") and ims_status!=\"DONE\"";
+	$sql12="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\" FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mods[$i].") and ims_status!=\"DONE\"";
 	//echo $sql1."<br>";
 	$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error-12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -163,7 +157,7 @@ if(date("H")>18)
 	$cb5=0;
 	$cb6=0;
 	
-	$sql="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM bai_pro3.ims_log GROUP BY ims_mod_no and ims_status!=\"DONE\" ";
+	$sql="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log GROUP BY ims_mod_no and ims_status!=\"DONE\" ";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -208,7 +202,7 @@ if(date("H")>18)
 	}	
 	
 	//To track carton WIP
-	$sql="select SUM(IF(ims_mod_no BETWEEN 1 AND 12,1,0)) as sec1,SUM(IF(ims_mod_no BETWEEN 13 AND 24,1,0)) as sec2,SUM(IF(ims_mod_no BETWEEN 25 AND 36,1,0)) as sec3,SUM(IF(ims_mod_no BETWEEN 37 AND 48,1,0)) as sec4,SUM(IF(ims_mod_no BETWEEN 49 AND 60,1,0)) as sec5,SUM(IF(ims_mod_no BETWEEN 61 AND 72,1,0)) as sec6 FROM bai_pro3.packing_dashboard_temp ORDER BY lastup";
+	$sql="select SUM(IF(ims_mod_no BETWEEN 1 AND 12,1,0)) as sec1,SUM(IF(ims_mod_no BETWEEN 13 AND 24,1,0)) as sec2,SUM(IF(ims_mod_no BETWEEN 25 AND 36,1,0)) as sec3,SUM(IF(ims_mod_no BETWEEN 37 AND 48,1,0)) as sec4,SUM(IF(ims_mod_no BETWEEN 49 AND 60,1,0)) as sec5,SUM(IF(ims_mod_no BETWEEN 61 AND 72,1,0)) as sec6 FROM $bai_pro3.packing_dashboard_temp ORDER BY lastup";
 	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))

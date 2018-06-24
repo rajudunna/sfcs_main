@@ -5,7 +5,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
 set_time_limit(90000000);
 
-$command ='webshotcmd /url "http://localhost/sfcs_app/app/jobs/planning/SAH_Countdown/Plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
+// $command ='webshotcmd /url "http://localhost/sfcs_main/sfcs_app/app/jobs/planning/SAH_Countdown/Plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
 
 shell_exec($command);
 
@@ -22,25 +22,21 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 //MAIL CONFIRMATION
 $date=date("Y-m-d");
-// $date="2018-03-06";
+// $date="2018-06-02";
 
 
-$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah FROM bai_pro.bai_log_buf WHERE bac_date between \"$date\" and \"$date\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
+$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah FROM $bai_pro.bai_log_buf WHERE bac_date between \"$date\" and \"$date\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	
-	$sql_new="update bai_pro.grand_rep set act_sth=".$sql_row['sah']." where tid='".$sql_row['tid']."'";
-	echo $sql_new."<br>";
+	$sql_new="update $bai_pro.grand_rep set act_sth=".$sql_row['sah']." where tid='".$sql_row['tid']."'";
 	mysqli_query($link, $sql_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 //New block create to flush data from the begginig of the month to till date  and refresh the data in SFCS - kiran 20150722
 
 
-$sql="select sum(act_out) as \"act_out\" from bai_pro.grand_rep where date =\"$date\" ";
-// echo $sql."<br>";
-
+$sql="select sum(act_out) as \"act_out\" from $bai_pro.grand_rep where date =\"$date\" ";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -76,7 +72,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS
 if($act_out_check>0)
 {		
 	// $successful = $email->send(implode(",",$em), 'QCI - SAH Countdown Report', 'from: Shop Floor System Alert <ictsysalert@brandix.com>');
-	$successful = $email->send(implode(",",$em), 'BEK - SAH Countdown Report');
+	$successful = $email->send(implode(",",$em), 'SAH Countdown Report');
 
 	
 	if($successful)

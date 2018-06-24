@@ -256,7 +256,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
     $temp_schedule=0; 
     $temp_color=0; 
      
-    $sql="select * from bai_pro3.zero_module_trans"; 
+    $sql="select * from $bai_pro3.zero_module_trans"; 
     //echo $sql; 
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -446,7 +446,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
         $qty=$act_cut_new_db[array_search($size,$sizes_db)]-$order_qtys[array_search($size,$sizes_db)]; 
         //echo $qty."<br/>"; 
      
-        $sql1="select doc_no from bai_pro3.recut_v2_summary where order_tid in (select order_tid from bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\") and date>\"2011-10-26\""; 
+        $sql1="select doc_no from bai_pro3.recut_v2_summary where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\") and date>\"2011-10-26\""; 
     //echo $sql1."<br/>"; 
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 

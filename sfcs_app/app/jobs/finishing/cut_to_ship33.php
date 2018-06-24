@@ -98,7 +98,6 @@ table{
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 // $username=strtolower($username_list[1]);
 
-$author_id_db=array("kirang","baiadmn","bainet","kirang");
 
 
 // if(in_array($username,$author_id_db))

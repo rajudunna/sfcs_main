@@ -1,10 +1,6 @@
-
-
 <html>
-	
     <head>
 	<?php 
-	echo '<link href="'."http://localhost/sfcs/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />';
 	set_time_limit(90000000);
 	?>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -214,9 +210,9 @@
 	</head>
 	<body background="white">
 	<?php
-include("C:/xampp/htdocs/sfcs/jobs/db_hosts.php");
-			// include("header.php");
-			include ("C:/xampp/htdocs/sfcs/Projects/Beta/Reports/Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php");
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\app\dashboards\controllers\PLD_Dashboard\sah_monthly_status\data.php');
+
 		
 
 			error_reporting(0);
@@ -234,15 +230,13 @@ echo '<div id="page_heading"><span style="float: left"><h3>SAH Countdown Report<
 			
 			$from = date("Y-m-1");
 			$todate = date("Y-m-d");
-
-			
 			$day_year = date("Y",strtotime($from));
 			//echo "<br/>year is:".$todaydate;
 			$day_month= date("F",strtotime($from));
 			//echo "<br/>month is:".$todaydate;
 			$lastday= date('Y-m-d', strtotime($todate .' -1 day'));
 			$name_arr[] = "$day_year-$day_month";
-			$sql = "SELECT left(date,7) as 'month', right(date,2) as date FROM bai_pro.grand_rep where date between '$from' and '$todate' group by date";
+			$sql = "SELECT left(date,7) as 'month', right(date,2) as date FROM $bai_pro.grand_rep where date between '$from' and '$todate' group by date";
 			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($r = mysqli_fetch_array($query))
 			{
@@ -315,7 +309,7 @@ echo '<div id="page_heading"><span style="float: left"><h3>SAH Countdown Report<
 				
 		<?php
 		
-			$sql = "SELECT date,sum(plan_sth) as 'plan', sum(act_sth) as 'act',(sum(act_sth)-sum(plan_sth)) as Different FROM bai_pro.grand_rep where date between '$from' and '$todate' group by date";
+			$sql = "SELECT date,sum(plan_sth) as 'plan', sum(act_sth) as 'act',(sum(act_sth)-sum(plan_sth)) as Different FROM $bai_pro.grand_rep where date between '$from' and '$todate' group by date";
 			$chk = 0;			//echo $sql;
 			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($r = mysqli_fetch_array($query)) 
@@ -411,7 +405,7 @@ echo '<div id="page_heading"><span style="float: left"><h3>SAH Countdown Report<
 					$act_tot_val = 0;
 					$plan_tot = 0;
 					$act_tot = 0;
-					$sql = "SELECT date,sum(plan_sth) as 'plan', sum(act_sth) as 'act',(sum(act_sth)-sum(plan_sth)) as Different FROM bai_pro.grand_rep where date between '$from' and '$todate' group by date";
+					$sql = "SELECT date,sum(plan_sth) as 'plan', sum(act_sth) as 'act',(sum(act_sth)-sum(plan_sth)) as Different FROM $bai_pro.grand_rep where date between '$from' and '$todate' group by date";
 					$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($r = mysqli_fetch_array($query)) 
 					{
@@ -478,7 +472,7 @@ echo '<div id="page_heading"><span style="float: left"><h3>SAH Countdown Report<
 			<tr>
 				<th>Average Eff %</th>
 				<td><?php
-						$sql = "SELECT ((sum(act_sth))/(sum(act_clh)))*100 as 'Act_eff' FROM bai_pro.grand_rep where date between '$from' and '$todate'";
+						$sql = "SELECT ((sum(act_sth))/(sum(act_clh)))*100 as 'Act_eff' FROM $bai_pro.grand_rep where date between '$from' and '$todate'";
 						$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($r = mysqli_fetch_array($query)) 
 						{
@@ -499,12 +493,12 @@ echo '<div id="page_heading"><span style="float: left"><h3>SAH Countdown Report<
 			</tr>
 			<?php 
 			
-				$sql1 = "SELECT section,sum(plan_sth) as 'plan', sum(act_sth) as 'act',(sum(act_sth)-sum(plan_sth)) as Diff FROM bai_pro.grand_rep where date between '$from' and '$todate' group by section";
+				$sql1 = "SELECT section,sum(plan_sth) as 'plan', sum(act_sth) as 'act',(sum(act_sth)-sum(plan_sth)) as Diff FROM $bai_pro.grand_rep where date between '$from' and '$todate' group by section";
 				$query1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql1) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($r1 = mysqli_fetch_array($query1)) 
 				{
 					$sec_id=$r1['section'];
-					$sql2 = "SELECT sec_id,sec_head FROM bai_pro3.sections_db where sec_id=$sec_id";
+					$sql2 = "SELECT sec_id,sec_head FROM $bai_pro3.sections_db where sec_id=$sec_id";
 					$query2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql2) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($r2 = mysqli_fetch_array($query2)) 
 					{
@@ -542,7 +536,7 @@ echo '<div id="page_heading"><span style="float: left"><h3>SAH Countdown Report<
 					echo "<th>Actual SAH</th>";	
 					echo "<th>SAH Variation </th>";	
 				echo "</tr>";
-			$sql = "SELECT date,sum(plan_sth) as 'plan', sum(act_sth) as 'act',(sum(act_sth)-sum(plan_sth)) as Different FROM bai_pro.grand_rep where date between '$from' and '$todate' group by date";
+			$sql = "SELECT date,sum(plan_sth) as 'plan', sum(act_sth) as 'act',(sum(act_sth)-sum(plan_sth)) as Different FROM $bai_pro.grand_rep where date between '$from' and '$todate' group by date";
 			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($r = mysqli_fetch_array($query)) 
 			{
@@ -682,7 +676,7 @@ echo '<div id="page_heading"><span style="float: left"><h3>SAH Countdown Report<
 						else
 						{
 						$date_array= array();
-						$sql = "SELECT date FROM bai_pro.grand_rep where date between '$from' and '$todate' group by date";
+						$sql = "SELECT date FROM $bai_pro.grand_rep where date between '$from' and '$todate' group by date";
 						$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 						while($r = mysqli_fetch_array($query))
@@ -690,7 +684,7 @@ echo '<div id="page_heading"><span style="float: left"><h3>SAH Countdown Report<
 							$categ[] = $r['date'];
 						}
 						$c=count($categ)-2;
-						$sql = "SELECT sum(act_sth) as act FROM bai_pro.grand_rep where date = '$categ[$c]'";
+						$sql = "SELECT sum(act_sth) as act FROM $bai_pro.grand_rep where date = '$categ[$c]'";
 						$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 						$r = mysqli_fetch_array($query);
 						echo round($r['act']);

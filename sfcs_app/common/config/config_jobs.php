@@ -22,7 +22,8 @@ $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die
 $serverName = "GD-SQL-UAT";
 $uid = "SFCS_BIA_FF";
 $pwd = "Ba@rUpr6";
-$databasename="BELMasterUAT";
+$m3_databasename="BELMasterUAT";
+$driver_name="Driver={SQL Server Native Client 11.0}";
 //material requirement in week_del_mail_v2
 $server="GD-RPTSQL";
 $database="M3_BEL";

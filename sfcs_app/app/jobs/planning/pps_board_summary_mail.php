@@ -9,7 +9,7 @@
 $start_timestamp = microtime(true);
 include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
-$sql="select * from bai_pro3.buyer_style";
+$sql="select * from $bai_pro3.buyer_style";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $styles_list=array();
 $style_auth=array();
@@ -73,12 +73,12 @@ td
 $message.= "<table>";
 $message.= "<tr><th>Buyer Division</th><th>Modules</th><th>Capacity</th><th>Open</th><th>%</th><th>Critical</th></tr>";
 
-$sqlx="SELECT buyer_div, COUNT(module_id) AS modules, COUNT(module_id)*14 AS capacity, GROUP_CONCAT(module_id) AS modules_ids FROM bai_pro3.plan_modules GROUP BY buyer_div order by COUNT(module_id)";
+$sqlx="SELECT buyer_div, COUNT(module_id) AS modules, COUNT(module_id)*14 AS capacity, GROUP_CONCAT(module_id) AS modules_ids FROM $bai_pro3.plan_modules GROUP BY buyer_div order by COUNT(module_id)";
 //echo $sqlx;
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
-	$sql1="SELECT count(module) as filled, sum(if((ft_status<>1 or st_status<>1),1,0)) as failed FROM bai_pro3.plan_dash_doc_summ where module in (".$sql_rowx['modules_ids'].")";
+	$sql1="SELECT count(module) as filled, sum(if((ft_status<>1 or st_status<>1),1,0)) as failed FROM $bai_pro3.plan_dash_doc_summ where module in (".$sql_rowx['modules_ids'].")";
 	//echo $sql1;
 	// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -1,6 +1,4 @@
-
 <?php
-
 $start_timestamp = microtime(true);
 
 error_reporting(0);
@@ -67,7 +65,7 @@ $j=0;
 $message.= "Dear All,<br><br>Please find the Additional Material Requests of ".trim($start_date_w)." to ".trim($end_date_w).".<br><br>";
 $message.="<table><tr bgcolor=\"yellow\"><th>Section</th><th>PTRIMS</th><th>STRIMS</th><th>FTRIMS</th><th>Recuts</th></tr>";
 
-$sql="SELECT section,SUM(IF(product='PTRIM',1,0)) AS PTRIM,SUM(IF(product='STRIM',1,0)) AS STRIM,SUM(IF(product='FAB',1,0)) AS FAB FROM bai_rm_pj2.mrn_track WHERE DATE(req_date) BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" GROUP BY section";
+$sql="SELECT section,SUM(IF(product='PTRIM',1,0)) AS PTRIM,SUM(IF(product='STRIM',1,0)) AS STRIM,SUM(IF(product='FAB',1,0)) AS FAB FROM $bai_rm_pj2.mrn_track WHERE DATE(req_date) BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" GROUP BY section";
 //echo $sql;
 $result=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
@@ -77,7 +75,7 @@ while($row=mysqli_fetch_array($result))
 	$message.="<td>".$row["PTRIM"]."</td>";
 	$message.="<td>".$row["STRIM"]."</td>";
 	$message.="<td>".$row["FAB"]."</td>";
-	$sql1="select sec_mods from bai_pro3.sections_db where sec_id=".$row["section"]."";
+	$sql1="select sec_mods from $bai_pro3.sections_db where sec_id=".$row["section"]."";
 	//echo $sql1;
 	$result1=mysqli_query($link, $sql1) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
@@ -85,7 +83,7 @@ while($row=mysqli_fetch_array($result))
 		$mods=$row1["sec_mods"];
 	}
 	$recut_count=0;
-	$sql2="SELECT COUNT(DISTINCT qms_schedule) AS sch FROM bai_pro3.bai_qms_db WHERE log_date BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" AND qms_tran_type=6 AND SUBSTRING_INDEX(remarks,'-',1) IN ($mods) GROUP BY log_time";
+	$sql2="SELECT COUNT(DISTINCT qms_schedule) AS sch FROM $bai_pro3.bai_qms_db WHERE log_date BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" AND qms_tran_type=6 AND SUBSTRING_INDEX(remarks,'-',1) IN ($mods) GROUP BY log_time";
 	//echo $sql2;
 	$result2=mysqli_query($link, $sql2) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row2=mysqli_fetch_array($result2))
