@@ -104,7 +104,8 @@ table{
 <body>";
 ?>
 <?php 
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 
 $message.='<div id="page_heading"><span style="float: left"><h3>M3 Bulk Operation Failed Entries</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>';
@@ -120,7 +121,7 @@ $message.= "<tr><th>Transaction ID</th><th>Date</th><th>Style</th><th>Schedule</
 </tr>";
 
 $result_count=0;
-$sql="select * from m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_date='$sdate' and sfcs_status in (40)";
+$sql="select * from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_date='$sdate' and sfcs_status in (40)";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $result_count+=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -161,7 +162,7 @@ $message.= "<table id=\"table111\" border=1 class=\"mytable\">";
 $message.= "<tr><th>Transaction ID</th><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>SFCS Size Code</th><th>M3 Size Code</th><th>Status</th><th>MO Number</th><th>M3 Operation Code</th><th>SFCS Job #</th><th>Docket #</th><th>Reported Qty</th><th>Rejection Reasons</th><th>Remarks</th><th>Log User</th><th>Log Time</th><th>Module #</th><th>Shift</th><th>M3 Operation Des.</th><th>SFCS Tran. Ref. ID</th><th>M3 Error Code</th>
 </tr>";
 
-$sql="select * from m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_date='$sdate' and sfcs_status in (0,20)";
+$sql="select * from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_date='$sdate' and sfcs_status in (0,20)";
 //$message.= $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $result_count+=mysqli_num_rows($sql_result);
@@ -203,7 +204,7 @@ $message.= "<table id=\"table111\" border=1 class=\"mytable\">";
 $message.= "<tr><th>Transaction ID</th><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>SFCS Size Code</th><th>M3 Size Code</th><th>Status</th><th>MO Number</th><th>M3 Operation Code</th><th>SFCS Job #</th><th>Docket #</th><th>Reported Qty</th><th>Rejection Reasons</th><th>Remarks</th><th>Log User</th><th>Log Time</th><th>Module #</th><th>Shift</th><th>M3 Operation Des.</th><th>SFCS Tran. Ref. ID</th><th>M3 Error Code</th>
 </tr>";
 
-$sql="select * from m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_date<'$sdate' and sfcs_status in (0,10,15,16,20)";
+$sql="select * from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_date<'$sdate' and sfcs_status in (0,10,15,16,20)";
 //$message.= $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $result_count+=mysqli_num_rows($sql_result);

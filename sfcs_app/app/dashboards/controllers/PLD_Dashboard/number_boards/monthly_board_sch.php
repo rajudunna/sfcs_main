@@ -42,8 +42,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$value[4]=$sql_row['packing'];
 }
-
-include("C:/xampp/htdocs/sfcs_app/app/packing/reports/fg_wip.php");
+$include_path=getenv('config_job_path');
+include($include_path."/sfcs_app/app/packing/reports/fg_wip.php");
 $value[5]=$fg_wip;
 
 $sql="select ROUND(SUM(act_sth),0) AS act_sth, ROUND(SUM(act_clh),0) AS act_clh, SUM(act_out) AS act_out FROM bai_pro.grand_rep WHERE MONTH(DATE)=\"$month\" AND YEAR(DATE)=\"$year\"";

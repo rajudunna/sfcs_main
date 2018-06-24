@@ -5,14 +5,12 @@
 $start_timestamp = microtime(true);
 error_reporting(0);
 
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 include("mail_config.php");
 error_reporting(0);
-		
-
-	$facility='AIN';
-
+$facility=$global_facility_code;
 $date=date("Y-m-d",strtotime('-1 days'));
 
 
@@ -94,7 +92,7 @@ fputcsv($file,$title_list);
 						$values=array();
 						$values[]=$aod_no;
 						$values[]='AOD';
-						$values[]="Brandix Apparel India -$facility";
+						$values[]=$plant_name.'-'.$facility;
 						$values[]=$party_name;
 						$values[]=$party_location;
 						$values[]=$create_date;
@@ -104,7 +102,7 @@ fputcsv($file,$title_list);
 						//$values[]=$ship_cartons." Cartons";
 						$values[]=$prepared_by;
 						$values[]=$ship_out_qty;
-						$values[]='PCS';
+						$values[]=$fab_uom;
 						$values[]=$ship_style;
 						$values[]=$ship_schedule;
 						$values[]=$color;
@@ -134,7 +132,7 @@ fputcsv($file,$title_list);
 							$values=array();
 							$values[]=$aod_no;
 							$values[]='AOD';
-							$values[]="Brandix Apparel India -$facility";
+							$values[]=$plant_name.'-'.$facility;
 							$values[]=$party_name;
 							$values[]=$party_location;
 							$values[]=$create_date;
@@ -144,7 +142,7 @@ fputcsv($file,$title_list);
 							//$values[]=$ship_cartons." Cartons";
 							$values[]=$prepared_by;
 							$values[]=$item_val*$assortlist[$i];
-							$values[]='PCS';
+							$values[]=$fab_uom;
 							$values[]=$ship_style;
 							$values[]=$ship_schedule;
 							$values[]=$colorlist[$i];
@@ -163,9 +161,9 @@ fputcsv($file,$title_list);
 				}
 			}
 			fclose($file);	
-		
+		$to=$Aod_gate_pass;
 	
-email_attachment($Aod_gate_pass,'Please open the attachment for dispatch details of Brandix Essentials Limited - '.$facility.' Facility on '.$date.'.<br/><br/> Message Sent Via: '.$dns_adr3.'', 'BEK-'.$facility.' Dispatch Details ('.$date.') ',$header_from, $header_from, $file_name, $default_filetype='application/zip');
+email_attachment($to,'Please open the attachment for dispatch details of Brandix Essentials Limited - '.$facility.' Facility on '.$date.'.<br/><br/> Message Sent Via: '.$plant_name.'', $plant_name.'-'.$facility.' Dispatch Details ('.$date.') ',$header_from, $header_from, $file_name, $default_filetype='application/zip');
 
 
 unlink($file_name);

@@ -1,38 +1,39 @@
 <?php 
 
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 ?> 
 <?php  
-function leading_zeros($value, $places){
+// function leading_zeros($value, $places){
 
-    if(is_numeric($value)){
-        for($x = 1; $x <= $places; $x++){
-            $ceiling = pow(10, $x);
-            if($value < $ceiling){
-                $zeros = $places - $x;
-                for($y = 1; $y <= $zeros; $y++){
-                    $leading .= "0";
-                }
-            $x = $places + 1;
-            }
-        }
-        $output = $leading . $value;
-    }
-    else{
-        $output = $value;
-    }
-    return $output;
-}
+//     if(is_numeric($value)){
+//         for($x = 1; $x <= $places; $x++){
+//             $ceiling = pow(10, $x);
+//             if($value < $ceiling){
+//                 $zeros = $places - $x;
+//                 for($y = 1; $y <= $zeros; $y++){
+//                     $leading .= "0";
+//                 }
+//             $x = $places + 1;
+//             }
+//         }
+//         $output = $leading . $value;
+//     }
+//     else{
+//         $output = $value;
+//     }
+//     return $output;
+// }
 
 //TEMP Table 
 
 //include("packing_dashboard_prepare.php"); //AUTO 
 //NEW ADD 2011-07-14 
-$sql1="truncate bai_pro3.packing_dashboard_alert_temp"; 
+$sql1="truncate $bai_pro3.packing_dashboard_alert_temp"; 
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql1="insert into bai_pro3.packing_dashboard_alert_temp SELECT tid,doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,input_date,ims_pro_qty,ims_mod_no,ims_log_date from bai_pro3.packing_dashboard";
+$sql1="insert into $bai_pro3.packing_dashboard_alert_temp SELECT tid,doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,input_date,ims_pro_qty,ims_mod_no,ims_log_date from bai_pro3.packing_dashboard";
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
 

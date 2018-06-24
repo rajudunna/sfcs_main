@@ -1,6 +1,7 @@
 <?php 
-include('C:/xampp\htdocs\sfcs_main\configuration\API\confr.php');
-$conf = new confr('C:\xampp\htdocs\sfcs_main\configuration\config-builder\saved_fields\fields.json');
+$include_path=getenv('config_job_path');
+include($include_path.'\configuration\API\confr.php');
+$conf = new confr($include_path.'\configuration\config-builder\saved_fields\fields.json');
 $mail_alert = [];
 for($i=1;$i<=20;$i++){
 	$mail_alert[$i-1]=$conf->get('mail'.$i);
@@ -29,7 +30,11 @@ $server="GD-RPTSQL";
 $database="M3_BEL";
 $userid="BAIMacroReaders";
 $passwrd="BAI@macrosm3";
-
+// bel data upload Sqlsrv Connections
+$sqsrv_server = "berwebsrv01";
+$sqsrv_id = "sa";
+$sqsrv_pwd = "BAWR123";
+$sqsrv_db="AutoMo";
 //To Facilitate SFCS Filters
 $global_facility_code=$conf->get('plantcode');
 $facility_code=$global_facility_code;
@@ -56,6 +61,8 @@ $brandix_bts="brandix_bts";
 $brandix_bts_uat="brandix_bts_uat";
 $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
+$bai_kpi="bai_kpi";
+$bai_ict="bai_ict";
 ?>
 <?php
 $path="C:/xampp/htdocs/sfcs_main/sfcs_app/app";
@@ -82,7 +89,7 @@ $Aod_gate_pass=$mail_alert[2];
 
 //sah countdown
 
-$command ='webshotcmd /url "http://localhost/sfcs_main/sfcs_app/app/jobs/planning/SAH_Countdown/Plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
+$command ='webshotcmd /url "http://localhost/sfcs_app/app/jobs/planning/SAH_Countdown/Plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
 ?>
 
 

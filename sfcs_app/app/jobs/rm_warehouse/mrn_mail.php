@@ -49,7 +49,9 @@ text-align:right;
 </style>
 </head>
 <body>";
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $start_date_w=time();
 while((date("N",$start_date_w))!=1) {

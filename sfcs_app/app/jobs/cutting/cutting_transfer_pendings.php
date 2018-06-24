@@ -3,7 +3,8 @@
 <head>  
 <?php 
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $cache_date="Cutting_2_1Room_Transfer_Pendings"; 
 $cachefile = $cache_date."html"; 
@@ -211,34 +212,21 @@ $(document).ready(function() {
 }); 
 </script> 
 
-
-
 </head> 
 <body> 
 <div class="panel panel-primary">
 <div class="panel-heading">Cutting to 1% Room Transfer Pendings</div> 
 <div class="panel-body">
 
-
 <?php 
-
-
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
-  
-     
-     
-
     echo "<h3><span class='label label-primary'>LU:".date("Y-m-d H-i-s")."</span></h3>"; 
-     
     echo "<div class='table-responsive'><table class='table table-bordered'>"; 
-     
     echo "<tr> 
     <th colspan=6 class=\"total\">Total</th> 
     <th id=\"col1\" class=\"total\" >0</th> 
     <th id=\"col2\" class=\"total\" >0</th> 
     <th id=\"col3\" class=\"total\" >0</th> 
-     
-     
+
 </tr>"; 
      
     echo "<tr> 
@@ -281,7 +269,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
         { 
             $order_qtys=array(); 
             $order_date=""; 
-            $sql1="select * from bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\""; 
+            $sql1="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\""; 
             //echo $sql1."<br/>"; 
             $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row1=mysqli_fetch_array($sql_result1)) 
@@ -359,7 +347,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
              
             $act_cut_new_db=array(); 
             $sql1="select coalesce(sum(a_xs*a_plies),0) as \"a_xs\", coalesce(sum(a_s*a_plies),0) as \"a_s\", coalesce(sum(a_m*a_plies),0) as \"a_m\", coalesce(sum(a_l*a_plies),0) as \"a_l\", coalesce(sum(a_xl*a_plies),0) as \"a_xl\", coalesce(sum(a_xxl*a_plies),0) as \"a_xxl\", coalesce(sum(a_xxxl*a_plies),0) as \"a_xxxl\", coalesce(sum(a_s01*a_plies),0) as \"a_s01\", coalesce(sum(a_s02*a_plies),0) as \"a_s02\", coalesce(sum(a_s03*a_plies),0) as \"a_s03\", coalesce(sum(a_s04*a_plies),0) as \"a_s04\", coalesce(sum(a_s05*a_plies),0) as \"a_s05\", coalesce(sum(a_s06*a_plies),0) as \"a_s06\", coalesce(sum(a_s07*a_plies),0) as \"a_s07\", coalesce(sum(a_s08*a_plies),0) as \"a_s08\", coalesce(sum(a_s09*a_plies),0) as \"a_s09\", coalesce(sum(a_s10*a_plies),0) as \"a_s10\", coalesce(sum(a_s11*a_plies),0) as \"a_s11\", coalesce(sum(a_s12*a_plies),0) as \"a_s12\", coalesce(sum(a_s13*a_plies),0) as \"a_s13\", coalesce(sum(a_s14*a_plies),0) as \"a_s14\", coalesce(sum(a_s15*a_plies),0) as \"a_s15\", coalesce(sum(a_s16*a_plies),0) as \"a_s16\", coalesce(sum(a_s17*a_plies),0) as \"a_s17\", coalesce(sum(a_s18*a_plies),0) as \"a_s18\", coalesce(sum(a_s19*a_plies),0) as \"a_s19\", coalesce(sum(a_s20*a_plies),0) as \"a_s20\", coalesce(sum(a_s21*a_plies),0) as \"a_s21\", coalesce(sum(a_s22*a_plies),0) as \"a_s22\", coalesce(sum(a_s23*a_plies),0) as \"a_s23\", coalesce(sum(a_s24*a_plies),0) as \"a_s24\", coalesce(sum(a_s25*a_plies),0) as \"a_s25\", coalesce(sum(a_s26*a_plies),0) as \"a_s26\", coalesce(sum(a_s27*a_plies),0) as \"a_s27\", coalesce(sum(a_s28*a_plies),0) as \"a_s28\", coalesce(sum(a_s29*a_plies),0) as \"a_s29\", coalesce(sum(a_s30*a_plies),0) as \"a_s30\", coalesce(sum(a_s31*a_plies),0) as \"a_s31\", coalesce(sum(a_s32*a_plies),0) as \"a_s32\", coalesce(sum(a_s33*a_plies),0) as \"a_s33\", coalesce(sum(a_s34*a_plies),0) as \"a_s34\", coalesce(sum(a_s35*a_plies),0) as \"a_s35\", coalesce(sum(a_s36*a_plies),0) as \"a_s36\", coalesce(sum(a_s37*a_plies),0) as \"a_s37\", coalesce(sum(a_s38*a_plies),0) as \"a_s38\", coalesce(sum(a_s39*a_plies),0) as \"a_s39\", coalesce(sum(a_s40*a_plies),0) as \"a_s40\", coalesce(sum(a_s41*a_plies),0) as \"a_s41\", coalesce(sum(a_s42*a_plies),0) as \"a_s42\", coalesce(sum(a_s43*a_plies),0) as \"a_s43\", coalesce(sum(a_s44*a_plies),0) as \"a_s44\", coalesce(sum(a_s45*a_plies),0) as \"a_s45\", coalesce(sum(a_s46*a_plies),0) as \"a_s46\", coalesce(sum(a_s47*a_plies),0) as \"a_s47\", coalesce(sum(a_s48*a_plies),0) as \"a_s48\", coalesce(sum(a_s49*a_plies),0) as \"a_s49\", coalesce(sum(a_s50*a_plies),0) as \"a_s50\"
- from bai_pro3.order_cat_doc_mix where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and act_cut_status=\"DONE\""; 
+ from $bai_pro3.order_cat_doc_mix where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and act_cut_status=\"DONE\""; 
             //echo $sql1."<br/>"; 
             $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row2=mysqli_fetch_array($sql_result1)) 
@@ -446,7 +434,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
         $qty=$act_cut_new_db[array_search($size,$sizes_db)]-$order_qtys[array_search($size,$sizes_db)]; 
         //echo $qty."<br/>"; 
      
-        $sql1="select doc_no from bai_pro3.recut_v2_summary where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\") and date>\"2011-10-26\""; 
+        $sql1="select doc_no from $bai_pro3.recut_v2_summary where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\") and date>\"2011-10-26\""; 
     //echo $sql1."<br/>"; 
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 
@@ -456,7 +444,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
          
         if(sizeof($recut_docs)>0) 
         { 
-            $sql1="select sum(qms_qty) as \"qms_qty\",qms_tran_type,qms_size,SUBSTRING_INDEX(remarks,'-',1) as \"module\" from bai_pro3.bai_qms_db where qms_style=\"".$style."\" and qms_schedule=\"".$schedule."\" and qms_color=\"".$color."\" and qms_tran_type in (6,9) and SUBSTRING_INDEX(remarks,'-',-1) in (".implode(",",$recut_docs).") and qms_qty>0  group by concat(qms_size,qms_tran_type) order by log_date,SUBSTRING_INDEX(remarks,'-',1)"; 
+            $sql1="select sum(qms_qty) as \"qms_qty\",qms_tran_type,qms_size,SUBSTRING_INDEX(remarks,'-',1) as \"module\" from $bai_pro3.bai_qms_db where qms_style=\"".$style."\" and qms_schedule=\"".$schedule."\" and qms_color=\"".$color."\" and qms_tran_type in (6,9) and SUBSTRING_INDEX(remarks,'-',-1) in (".implode(",",$recut_docs).") and qms_qty>0  group by concat(qms_size,qms_tran_type) order by log_date,SUBSTRING_INDEX(remarks,'-',1)"; 
         //echo $sql1."<br/>"; 
             $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row1=mysqli_fetch_array($sql_result1)) 
@@ -474,7 +462,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
             } 
         }  
          
-        $sql1="select good_panels from bai_pro3.bai_qms_day_report where qms_style=\"".$style."\" and qms_schedule=\"".$schedule."\" and qms_color=\"".$color."\" and qms_size=\"$size\""; 
+        $sql1="select good_panels from $bai_pro3.bai_qms_day_report where qms_style=\"".$style."\" and qms_schedule=\"".$schedule."\" and qms_color=\"".$color."\" and qms_size=\"$size\""; 
     //echo $sql1."<br/>"; 
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 

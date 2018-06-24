@@ -11,7 +11,8 @@ ini_set('default_socket_timeout', 3000);
 
 <?php
 error_reporting(0);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 
 //temp pool
 
@@ -674,7 +675,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no,order_style_
 		
 		
 		//to update dispatch status (as per internal system)
-		$sqlx1="select COALESCE(sum(shipped),0) as \"shipped\" from bai_pro3.bai_ship_cts_ref where ship_style=\"$style\" and ship_schedule=\"$schedule\"";
+		$sqlx1="select COALESCE(sum(shipped),0) as \"shipped\" from $bai_pro3.bai_ship_cts_ref where ship_style=\"$style\" and ship_schedule=\"$schedule\"";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{

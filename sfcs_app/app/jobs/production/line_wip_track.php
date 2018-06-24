@@ -1,7 +1,8 @@
 
 <?php 
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $message= '<html><head><style type="text/css">
 
 body
@@ -85,7 +86,7 @@ for($i=0;$i<sizeof($sec_nos);$i++)
 		$message.= "<tr style='background-color:#29759C;'><td align=\"center\" style='color: WHITE;'>Section-".$sec_nos[$i]."</td><td align=\"center\" style='color: WHITE;'>".$sql_row12['boxs']."</td><td align=\"right\" style='color: WHITE;'>".$sql_row12['wip']."</td><td align=\"left\" style='color: WHITE;'></td></tr>";
 	}
 }
-$sql13="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM bai_pro3.ims_log where ims_mod_no in (".implode(",",$sec_mods).") and ims_status!=\"DONE\" ";
+$sql13="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".implode(",",$sec_mods).") and ims_status!=\"DONE\" ";
 //echo $sql1."<br>";
 $sql_result13=mysqli_query($link, $sql13) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row13=mysqli_fetch_array($sql_result13))
@@ -102,7 +103,7 @@ $message.= '
 
 for($i=0;$i<sizeof($sec_nos);$i++)
 {
-	$sql="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM bai_pro3.ims_log where ims_mod_no in (".$sec_mods[$i].") and ims_status!=\"DONE\" GROUP BY ims_mod_no order by ims_mod_no*1";
+	$sql="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mods[$i].") and ims_status!=\"DONE\" GROUP BY ims_mod_no order by ims_mod_no*1";
 	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -110,7 +111,7 @@ for($i=0;$i<sizeof($sec_nos);$i++)
 		$message.= "<tr><td align=\"center\">".$sql_row['ims_mod_no']."</td><td align=\"center\">".$sql_row['boxs']."</td><td align=\"right\">".$sql_row['wip']."</td><td align=\"left\">".$sql_row['schedules']."</td></tr>";
 	}
 	
-	$sql1="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM bai_pro3.ims_log where ims_mod_no in (".$sec_mods[$i].") and ims_status!=\"DONE\" ";
+	$sql1="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mods[$i].") and ims_status!=\"DONE\" ";
 	//echo $sql1."<br>";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -119,7 +120,7 @@ for($i=0;$i<sizeof($sec_nos);$i++)
 	}
 }
 
-$sql1="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM bai_pro3.ims_log where ims_mod_no in (".implode(",",$sec_mods).") and ims_status!=\"DONE\" ";
+$sql1="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".implode(",",$sec_mods).") and ims_status!=\"DONE\" ";
 //echo $sql1."<br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -238,7 +239,7 @@ if(date("H")>18)
 	
 	//BAI KPI TRACK
 	
-	$sql="insert into bai_kpi.kpi_tracking(rep_date,parameter,title,category,value) values $A1,$A2,$A3,$A4,$A5,$A6,$B1,$B2,$B3,$B4,$B5,$B6,$C1,$C2,$C3,$C4,$C5,$C6";
+	$sql="insert into $bai_kpi.kpi_tracking(rep_date,parameter,title,category,value) values $A1,$A2,$A3,$A4,$A5,$A6,$B1,$B2,$B3,$B4,$B5,$B6,$C1,$C2,$C3,$C4,$C5,$C6";
 	
 	$result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($result)

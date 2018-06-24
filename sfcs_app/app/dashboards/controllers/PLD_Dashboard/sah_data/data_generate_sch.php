@@ -97,9 +97,10 @@ while($row=mysqli_fetch_array($sql))
 {
 	$dates=$row["date"];
 }
+$include_path=getenv('config_job_path');
 
 // include"../sah_monthly_status/data.php";
-include("C:/xampp/htdocs/sfcs_app/app/dashboards/controllers/PLD_Dashboard/sah_monthly_status/data.php");
+include($include_path.'/sfcs_app/app/dashboards/controllers/PLD_Dashboard/sah_monthly_status/data.php');
 
 //$target=$fac_plan;
 //Target set as default

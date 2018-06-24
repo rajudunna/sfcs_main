@@ -1,14 +1,13 @@
 <html>
 <?php  
-
-
 //SFCS_PRO_FG_Stock_Summary_Report
 // Turn off all error reporting
 error_reporting(0);
 // Report simple running errors
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link11)
 {
@@ -20,11 +19,11 @@ function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$li
 		
 		if($order_tid=='')
 		{
-			$sql23="select title_size_$ims_size2 as size_val,title_flag from bai_pro3.bai_orders_db_confirm where order_style_no=\"$ims_style\" and order_del_no=\"$ims_schedule\" ";
+			$sql23="select title_size_$ims_size2 as size_val,title_flag from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$ims_style\" and order_del_no=\"$ims_schedule\" ";
 		}
 		else
 		{
-			$sql23="select title_size_$ims_size2 as size_val,title_flag from bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
+			$sql23="select title_size_$ims_size2 as size_val,title_flag from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
 		}
 		$sql_result=mysqli_query($link, $sql23);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -147,8 +146,8 @@ $packing_summary="temp_pool_db.packing_summary".date("YmdHis");
 $sql="CREATE TABLE $packing_summary ENGINE=MyISAM as (select * from packing_summary)";
 mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 */
-$fg_wh_report_summary="bai_pro3.fg_wh_report_summary";
-$packing_summary="bai_pro3.packing_summary";
+$fg_wh_report_summary="$bai_pro3.fg_wh_report_summary";
+$packing_summary="$bai_pro3.packing_summary";
 
 {
 	echo "<br/><br/><br/><br/><br/><br/><h3>LU:".date("Y-m-d H:i:s")."</h3>";
@@ -186,7 +185,7 @@ $packing_summary="bai_pro3.packing_summary";
 	// if(in_array($username,$auth_usr))
 	{
 			
-		$sql="select *,bai_pro3.fn_act_ship_qty(order_del_no) as rev_shipped from bai_pro3.fg_wh_report_summary where (total_qty-bai_pro3.fn_act_ship_qty(order_del_no))<>0 order by order_date";
+		$sql="select *,bai_pro3.fn_act_ship_qty(order_del_no) as rev_shipped from $bai_pro3.fg_wh_report_summary where (total_qty-bai_pro3.fn_act_ship_qty(order_del_no))<>0 order by order_date";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -254,7 +253,7 @@ $order_qtys[]=$sql_row1['s50'];
 
 			}
 			
-			$sql2="select coalesce(sum(ship_s_xs),0) as \"ship_s_xs\", coalesce(sum(ship_s_s),0) as \"ship_s_s\", coalesce(sum(ship_s_m),0) as \"ship_s_m\", coalesce(sum(ship_s_l),0) as \"ship_s_l\", coalesce(sum(ship_s_xl),0) as \"ship_s_xl\", coalesce(sum(ship_s_xxl),0) as \"ship_s_xxl\", coalesce(sum(ship_s_xxxl),0) as \"ship_s_xxxl\", coalesce(sum(ship_s_s01),0) as \"ship_s_s01\", coalesce(sum(ship_s_s02),0) as \"ship_s_s02\", coalesce(sum(ship_s_s03),0) as \"ship_s_s03\", coalesce(sum(ship_s_s04),0) as \"ship_s_s04\", coalesce(sum(ship_s_s05),0) as \"ship_s_s05\", coalesce(sum(ship_s_s06),0) as \"ship_s_s06\", coalesce(sum(ship_s_s07),0) as \"ship_s_s07\", coalesce(sum(ship_s_s08),0) as \"ship_s_s08\", coalesce(sum(ship_s_s09),0) as \"ship_s_s09\", coalesce(sum(ship_s_s10),0) as \"ship_s_s10\", coalesce(sum(ship_s_s11),0) as \"ship_s_s11\", coalesce(sum(ship_s_s12),0) as \"ship_s_s12\", coalesce(sum(ship_s_s13),0) as \"ship_s_s13\", coalesce(sum(ship_s_s14),0) as \"ship_s_s14\", coalesce(sum(ship_s_s15),0) as \"ship_s_s15\", coalesce(sum(ship_s_s16),0) as \"ship_s_s16\", coalesce(sum(ship_s_s17),0) as \"ship_s_s17\", coalesce(sum(ship_s_s18),0) as \"ship_s_s18\", coalesce(sum(ship_s_s19),0) as \"ship_s_s19\", coalesce(sum(ship_s_s20),0) as \"ship_s_s20\", coalesce(sum(ship_s_s21),0) as \"ship_s_s21\", coalesce(sum(ship_s_s22),0) as \"ship_s_s22\", coalesce(sum(ship_s_s23),0) as \"ship_s_s23\", coalesce(sum(ship_s_s24),0) as \"ship_s_s24\", coalesce(sum(ship_s_s25),0) as \"ship_s_s25\", coalesce(sum(ship_s_s26),0) as \"ship_s_s26\", coalesce(sum(ship_s_s27),0) as \"ship_s_s27\", coalesce(sum(ship_s_s28),0) as \"ship_s_s28\", coalesce(sum(ship_s_s29),0) as \"ship_s_s29\", coalesce(sum(ship_s_s30),0) as \"ship_s_s30\", coalesce(sum(ship_s_s31),0) as \"ship_s_s31\", coalesce(sum(ship_s_s32),0) as \"ship_s_s32\", coalesce(sum(ship_s_s33),0) as \"ship_s_s33\", coalesce(sum(ship_s_s34),0) as \"ship_s_s34\", coalesce(sum(ship_s_s35),0) as \"ship_s_s35\", coalesce(sum(ship_s_s36),0) as \"ship_s_s36\", coalesce(sum(ship_s_s37),0) as \"ship_s_s37\", coalesce(sum(ship_s_s38),0) as \"ship_s_s38\", coalesce(sum(ship_s_s39),0) as \"ship_s_s39\", coalesce(sum(ship_s_s40),0) as \"ship_s_s40\", coalesce(sum(ship_s_s41),0) as \"ship_s_s41\", coalesce(sum(ship_s_s42),0) as \"ship_s_s42\", coalesce(sum(ship_s_s43),0) as \"ship_s_s43\", coalesce(sum(ship_s_s44),0) as \"ship_s_s44\", coalesce(sum(ship_s_s45),0) as \"ship_s_s45\", coalesce(sum(ship_s_s46),0) as \"ship_s_s46\", coalesce(sum(ship_s_s47),0) as \"ship_s_s47\", coalesce(sum(ship_s_s48),0) as \"ship_s_s48\", coalesce(sum(ship_s_s49),0) as \"ship_s_s49\", coalesce(sum(ship_s_s50),0) as \"ship_s_s50\" from bai_pro3.ship_stat_log where ship_schedule=\"$order_del_no\" and disp_note_no>0";
+			$sql2="select coalesce(sum(ship_s_xs),0) as \"ship_s_xs\", coalesce(sum(ship_s_s),0) as \"ship_s_s\", coalesce(sum(ship_s_m),0) as \"ship_s_m\", coalesce(sum(ship_s_l),0) as \"ship_s_l\", coalesce(sum(ship_s_xl),0) as \"ship_s_xl\", coalesce(sum(ship_s_xxl),0) as \"ship_s_xxl\", coalesce(sum(ship_s_xxxl),0) as \"ship_s_xxxl\", coalesce(sum(ship_s_s01),0) as \"ship_s_s01\", coalesce(sum(ship_s_s02),0) as \"ship_s_s02\", coalesce(sum(ship_s_s03),0) as \"ship_s_s03\", coalesce(sum(ship_s_s04),0) as \"ship_s_s04\", coalesce(sum(ship_s_s05),0) as \"ship_s_s05\", coalesce(sum(ship_s_s06),0) as \"ship_s_s06\", coalesce(sum(ship_s_s07),0) as \"ship_s_s07\", coalesce(sum(ship_s_s08),0) as \"ship_s_s08\", coalesce(sum(ship_s_s09),0) as \"ship_s_s09\", coalesce(sum(ship_s_s10),0) as \"ship_s_s10\", coalesce(sum(ship_s_s11),0) as \"ship_s_s11\", coalesce(sum(ship_s_s12),0) as \"ship_s_s12\", coalesce(sum(ship_s_s13),0) as \"ship_s_s13\", coalesce(sum(ship_s_s14),0) as \"ship_s_s14\", coalesce(sum(ship_s_s15),0) as \"ship_s_s15\", coalesce(sum(ship_s_s16),0) as \"ship_s_s16\", coalesce(sum(ship_s_s17),0) as \"ship_s_s17\", coalesce(sum(ship_s_s18),0) as \"ship_s_s18\", coalesce(sum(ship_s_s19),0) as \"ship_s_s19\", coalesce(sum(ship_s_s20),0) as \"ship_s_s20\", coalesce(sum(ship_s_s21),0) as \"ship_s_s21\", coalesce(sum(ship_s_s22),0) as \"ship_s_s22\", coalesce(sum(ship_s_s23),0) as \"ship_s_s23\", coalesce(sum(ship_s_s24),0) as \"ship_s_s24\", coalesce(sum(ship_s_s25),0) as \"ship_s_s25\", coalesce(sum(ship_s_s26),0) as \"ship_s_s26\", coalesce(sum(ship_s_s27),0) as \"ship_s_s27\", coalesce(sum(ship_s_s28),0) as \"ship_s_s28\", coalesce(sum(ship_s_s29),0) as \"ship_s_s29\", coalesce(sum(ship_s_s30),0) as \"ship_s_s30\", coalesce(sum(ship_s_s31),0) as \"ship_s_s31\", coalesce(sum(ship_s_s32),0) as \"ship_s_s32\", coalesce(sum(ship_s_s33),0) as \"ship_s_s33\", coalesce(sum(ship_s_s34),0) as \"ship_s_s34\", coalesce(sum(ship_s_s35),0) as \"ship_s_s35\", coalesce(sum(ship_s_s36),0) as \"ship_s_s36\", coalesce(sum(ship_s_s37),0) as \"ship_s_s37\", coalesce(sum(ship_s_s38),0) as \"ship_s_s38\", coalesce(sum(ship_s_s39),0) as \"ship_s_s39\", coalesce(sum(ship_s_s40),0) as \"ship_s_s40\", coalesce(sum(ship_s_s41),0) as \"ship_s_s41\", coalesce(sum(ship_s_s42),0) as \"ship_s_s42\", coalesce(sum(ship_s_s43),0) as \"ship_s_s43\", coalesce(sum(ship_s_s44),0) as \"ship_s_s44\", coalesce(sum(ship_s_s45),0) as \"ship_s_s45\", coalesce(sum(ship_s_s46),0) as \"ship_s_s46\", coalesce(sum(ship_s_s47),0) as \"ship_s_s47\", coalesce(sum(ship_s_s48),0) as \"ship_s_s48\", coalesce(sum(ship_s_s49),0) as \"ship_s_s49\", coalesce(sum(ship_s_s50),0) as \"ship_s_s50\" from $bai_pro3.ship_stat_log where ship_schedule=\"$order_del_no\" and disp_note_no>0";
 			//echo $sql2."<br/>";
 			
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -315,18 +314,18 @@ $out_qtys[]=$sql_row2['ship_s_s50'];
 	
 			}
 			
-			$sqlx="select * from bai_pro3.bai_orders_db_confirm where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$sql_row['color']."\"";
+			$sqlx="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$sql_row['color']."\"";
 			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_confirmx=mysqli_num_rows($sql_resultx);
 
 			if($sql_num_confirmx>0)
 			{
-				$sqlxx="select * from bai_pro3.bai_orders_db_confirm where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$sql_row['color']."\"";
+				$sqlxx="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$sql_row['color']."\"";
 				$sqlxx="select * from bai_pro3.bai_orders_db_confirm where order_del_no=\"".$order_del_no."\"";
 			}
 			else
 			{
-				$sqlxx="select * from bai_pro3.bai_orders_db where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$sql_row['color']."\"";
+				$sqlxx="select * from $bai_pro3.bai_orders_db where order_del_no=\"".$order_del_no."\" and order_col_des=\"".$sql_row['color']."\"";
 				$sqlxx="select * from bai_pro3.bai_orders_db where order_del_no=\"".$order_del_no."\"";
 			}
 			//echo $sqlxx."<br/>";
@@ -488,7 +487,7 @@ $old_order1[]=$sql_rowxx['old_order_s_s50'];
 				
 				$ex_factory=$sql_row['order_date'];
 				
-				$sql_rev_ex="select * from bai_pro4.week_delivery_plan_ref where schedule_no=\"".$sql_row['order_del_no']."\" and color=\"".$sql_row['color']."\" and style=\"".$sql_row['order_style_no']."\"";
+				$sql_rev_ex="select * from $bai_pro4.week_delivery_plan_ref where schedule_no=\"".$sql_row['order_del_no']."\" and color=\"".$sql_row['color']."\" and style=\"".$sql_row['order_style_no']."\"";
 				$sql_rev_exx=mysqli_query($link, $sql_rev_ex) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_rev_ex_numxx=mysqli_num_rows($sql_rev_exx);
 				if($sql_rev_ex_numxx > 0)

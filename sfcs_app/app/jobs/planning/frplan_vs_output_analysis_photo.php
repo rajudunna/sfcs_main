@@ -88,7 +88,8 @@ float:right;
 
 
 <?php 
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 ?>
 
@@ -144,7 +145,7 @@ $table.="</tr>";
 
 $mod_count=array();
 $sql="select module,count(module) as count from (SELECT group_code,bai_pro4.uExtractNumberFromString(style) as style,module,
-".implode(",",$query_code)." FROM bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style) as t group by module";
+".implode(",",$query_code)." FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style) as t group by module";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -155,7 +156,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $mod_chk=0;
 $sql="SELECT group_code,bai_pro4.uExtractNumberFromString(style) as style,module,
 ".implode(",",$query_code)."
-FROM bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style";
+FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

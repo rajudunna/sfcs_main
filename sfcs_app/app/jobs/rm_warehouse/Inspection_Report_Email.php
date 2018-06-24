@@ -1,9 +1,9 @@
 <?php
 $start_timestamp = microtime(true);
 error_reporting(0);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
  ?>
-
 <?php
 $table='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -168,34 +168,6 @@ $table.= "</tr>";
 				$num_rows=mysqli_num_rows($sql_result);
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
-					// if($sql_row['ref2']=='')
-					// {
-					// 	$sql_row['ref2']=0;
-					// }
-					// if($sql_row['ref4']=='')
-					// {
-					// 	$sql_row['ref4']=0;
-					// }
-					// if($sql_row['qty_rec']=='')
-					// {
-					// 	$sql_row['qty_rec']=0;
-					// }
-					// if($sql_row['ref5']=='')
-					// {
-					// 	$sql_row['ref5']=0;
-					// }
-					// 	if($sql_row['ref5']=='')
-					// {
-					// 	$sql_row['ref5']=0;
-					// }
-					// 	if($sql_row['ref6']=='')
-					// {
-					// 	$sql_row['ref6']=0;
-					// }
-					// 	if($sql_row['ref3']=='')
-					// {
-					// 	$sql_row['ref3']=0;
-					// }
 
 				$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no'];
 		
@@ -221,7 +193,7 @@ $table.= "</tr>";
 				if($print_check==0 and $num_rows>0 and ($ctex_sum-$rec_qty)<0)
 			
 				{
-				include('C:\xampp\htdocs\sfcs_main\sfcs_app\app\jobs\common\php\supplier_db.php');
+				include($include_path.'\sfcs_app\app\jobs\common\php\supplier_db.php');
 
 				sort($scount_temp); //to sort shade groups
 				$avg_t_width=round($avg_t_width/$num_rows,2);
@@ -299,9 +271,7 @@ $table.= "</table>";
 $table.= "</body>
 
 </html>";
-		
-		
-	
+
 		$to  = $inspection_rep_email;
 		$subject = 'BEK RM - Inspection Summary';
 		

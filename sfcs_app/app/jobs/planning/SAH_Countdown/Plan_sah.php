@@ -1,3 +1,7 @@
+<?php
+$include_path=getenv('config_job_path');
+
+?>
 <html>
     <head>
 	<?php 
@@ -210,8 +214,8 @@
 	</head>
 	<body background="white">
 	<?php
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\app\dashboards\controllers\PLD_Dashboard\sah_monthly_status\data.php');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+include($include_path.'\sfcs_app\app\dashboards\controllers\PLD_Dashboard\sah_monthly_status\data.php');
 
 		
 

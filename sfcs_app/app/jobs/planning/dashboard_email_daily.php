@@ -1,6 +1,7 @@
 <?php
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 // Turn off all error reporting
 error_reporting(0);
@@ -248,7 +249,6 @@ $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 $headers .= 'To: '.$to. "\r\n";
 //$headers .= 'To: <brandixalerts@schemaxtech.com>'. "\r\n";
 $headers .= $header_from. "\r\n";
-//$headers .= 'From: Shop Floor System Alert <ravindranath.yrr@gmail.com>'. "\r\n";
 //$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
 
 // Mail it

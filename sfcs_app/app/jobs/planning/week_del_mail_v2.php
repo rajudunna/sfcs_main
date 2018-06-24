@@ -1,6 +1,6 @@
 <?php
 $start_timestamp = microtime(true);
-
+$include_path=getenv('config_job_path');
 // for running these schedules in command prompt making entire code in single php file
 error_reporting(0);
 $date1=date("Y-m-d");
@@ -56,7 +56,7 @@ if($weekday1 != "tuesday")
 			</head>
 			<body>";
 			// set_time_limit(10000000);
-			include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+			include($include_path.'\sfcs_app\common\config\config_jobs.php');
 	
 			
 			$start_date_w=time();
@@ -190,40 +190,8 @@ if($weekday1 != "tuesday")
 					$ship_total=$sql_row4["SUM(ship_s_xs)"]+$sql_row4["SUM(ship_s_s)"]+$sql_row4["SUM(ship_s_m)"]+$sql_row4["SUM(ship_s_l)"]+$sql_row4["SUM(ship_s_xl)"]+$sql_row4["SUM(ship_s_xxl)"]+$sql_row4["SUM(ship_s_xxxl)"]+$sql_row4["SUM(ship_s_s01)"]+$sql_row4["SUM(ship_s_s02)"]+$sql_row4["SUM(ship_s_s03)"]+$sql_row4["SUM(ship_s_s04)"]+$sql_row4["SUM(ship_s_s05)"]+$sql_row4["SUM(ship_s_s06)"]+$sql_row4["SUM(ship_s_s07)"]+$sql_row4["SUM(ship_s_s08)"]+$sql_row4["SUM(ship_s_s09)"]+$sql_row4["SUM(ship_s_s10)"]+$sql_row4["SUM(ship_s_s11)"]+$sql_row4["SUM(ship_s_s12)"]+$sql_row4["SUM(ship_s_s13)"]+$sql_row4["SUM(ship_s_s14)"]+$sql_row4["SUM(ship_s_s15)"]+$sql_row4["SUM(ship_s_s16)"]+$sql_row4["SUM(ship_s_s17)"]+$sql_row4["SUM(ship_s_s18)"]+$sql_row4["SUM(ship_s_s19)"]+$sql_row4["SUM(ship_s_s20)"]+$sql_row4["SUM(ship_s_s21)"]+$sql_row4["SUM(ship_s_s22)"]+$sql_row4["SUM(ship_s_s23)"]+$sql_row4["SUM(ship_s_s24)"]+$sql_row4["SUM(ship_s_s25)"]+$sql_row4["SUM(ship_s_s26)"]+$sql_row4["SUM(ship_s_s27)"]+$sql_row4["SUM(ship_s_s28)"]+$sql_row4["SUM(ship_s_s29)"]+$sql_row4["SUM(ship_s_s30)"]+$sql_row4["SUM(ship_s_s31)"]+$sql_row4["SUM(ship_s_s32)"]+$sql_row4["SUM(ship_s_s33)"]+$sql_row4["SUM(ship_s_s34)"]+$sql_row4["SUM(ship_s_s35)"]+$sql_row4["SUM(ship_s_s36)"]+$sql_row4["SUM(ship_s_s37)"]+$sql_row4["SUM(ship_s_s38)"]+$sql_row4["SUM(ship_s_s39)"]+$sql_row4["SUM(ship_s_s40)"]+$sql_row4["SUM(ship_s_s41)"]+$sql_row4["SUM(ship_s_s42)"]+$sql_row4["SUM(ship_s_s43)"]+$sql_row4["SUM(ship_s_s44)"]+$sql_row4["SUM(ship_s_s45)"]+$sql_row4["SUM(ship_s_s46)"]+$sql_row4["SUM(ship_s_s47)"]+$sql_row4["SUM(ship_s_s48)"]+$sql_row4["SUM(ship_s_s49)"]+$sql_row4["SUM(ship_s_s50)"];
 					//$message.="<td>".round($ship_total,0)."</td>";
 				}
-				
-				//M3 shipment quantity
-				// if($weekday != "tuesday")
-			 //  	{
-				// 	$sql5="SELECT SUM(ship_qty) FROM $database1.style_status_summ WHERE sch_no=\"$sch\" and color=\"".$sch_color."\"";
-				// 	$sql_result5=mysqli_query($con1, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// 	$total_rows1=mysqli_num_rows($sql_result5);
-				// 	while($sql_row5=mysqli_fetch_array($sql_result5))
-				// 	{
-				// 		$m3_total=$sql_row5["SUM(ship_qty)"];
-				// 		$message.="<td>".round($m3_total,0)."</td>";
-				// 		$m3_shipable_qty_total=$m3_shipable_qty_total+$m3_total;
-				// 	}
-					
-				// 	$m3_ship=100+round(($m3_total-$total)*100/$total,0);
-				// 	$color="<font color=black>";
-					
-				// 	if($m3_ship > 100)
-				// 	{
-				// 		$color="<font color=red>";
-				// 	}
-					
-				// 	$message.="<td>$color".$m3_ship."%</td>";
-				// }
-				
-				
 			}
 			$message.="<tr><th colspan=2 style='color:white;background:red;'>Total</th><td colspan=3>Schedules:".$x."</td><td>$order_qty_total</td><td>$shipable_qty_total</td><td>$extra_qty_total</td><td></td>";
-			// if($weekday != "tuesday")
-			// {
-			// 	$message.="<td>$m3_shipable_qty_total</td><td></td>";
-			// }  	
-
-				
 			echo "</tr>";
 
 			}
@@ -311,7 +279,7 @@ else
 			</style>
 			</head>
 			<body>";
-			include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+			include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 			$start_date_w=time();
 
@@ -323,20 +291,10 @@ else
 
 			$start_date_w=date("Y-m-d",$start_date_w);
 			$end_date_w=date("Y-m-d",$end_date_w);
-			// $start_date_w="2018-01-01";
-			// $end_date_w="2018-04-03";
-			//echo $start_date_w."--".$end_date_w;
+		
 			$date=date("Y-m-d");
-			//$date="2012-09-23";
 			$weekday = strtolower(date('l', strtotime($date)));
-			// echo "Week = ".$weekday;
-
-			// $colspan=12;
-			// if($weekday != "tuesday")
-			// {
-				$colspan=14;
-			// }
-
+			$colspan=14;
 			$order_qty_total=0;
 			$shipable_qty_total=0;
 			$extra_qty_total=0;
@@ -607,8 +565,8 @@ else
 					echo "<script>window.close();</script>";
 				}
 				$subject='Dear All, <br/><br/> Please Find The Weekly Delivery Plan Status Report of This Week. <br/><br/> Message Sent Via:'.$plant_name;
-				email_attachment($week_del_mail_v2,$subject,' Weekly Delivery Plan Status Report','Shop Floor System Alert', 'ravindranath.yrr35@gmail.com', 'Weekly_Delivery_Plan_Status.xls', $default_filetype='application/zip');
-
+				$to=$week_del_mail_v2;
+				email_attachment($to,$subject,' Weekly Delivery Plan Status Report','Shop Floor System Alert', 'ravindranath.yrr35@gmail.com', 'Weekly_Delivery_Plan_Status.xls', $default_filetype='application/zip');
 
 }
 
