@@ -1,5 +1,16 @@
 <?php 
-$mysql_details = get_config_values(getmysqldb);
+require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
+
+function get_config_values($config_id){
+    $conf = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/config-builder/saved_fields/fields.json");
+    if($config_id=='getmysqldb'){
+    return $conf->getDBConfig();
+    }else{
+    return $conf->get($config_id);
+    }
+}
+
+$mysql_details = get_config_values('getmysqldb');
 //SFCS Db Configurations
 $host=$mysql_details['db_host'].":".$mysql_details['db_port'];
 $user=$mysql_details['db_user'];
