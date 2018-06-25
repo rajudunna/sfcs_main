@@ -16,7 +16,7 @@ changes log:
         });
 
         if ($nonempty.length == 0) {
-            swal('');
+            swal('Please enter Lot No','','warning');
             return false;
         }else{
             return true;
@@ -179,12 +179,12 @@ changes log:
 <?php
      include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 	//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	$username=$username_list[1];
-	$view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
-	$authorized=user_acl("SFCS_0197",$username,7,$group_id_sfcs);
+	// $view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
+	// $authorized=user_acl("SFCS_0197",$username,7,$group_id_sfcs);
 	//$authorized=array("kirang","harikrishnar","fazlulr","himapriyag","sfcsproject1","chandrasekharko","herambaj","kishorek","kirang","sarojiniv","kirang","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","dharmarajua","bhupalv","varalakshmik","eswarraok","babjim","ramunaidus","nagendral","sivaramakrishnat","gowthamis","rajinig","revathil","lovarajub","ramud","sivark","kirang","kirang");
 	//$authorized=array("kirang");
 	if(!(in_array(strtolower($username),$authorized)))
@@ -305,6 +305,7 @@ th
 		echo "</tr>";
 
 		$sql1="SELECT * from $bai_pro3.recut_v2 where doc_no=\"$doc_no\"";
+		//echo $sql1;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error:$sql1 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -615,7 +616,7 @@ th
 
 		$sql111="select ROUND(SUM(allocated_qty),2) AS alloc,count(distinct doc_no) as doc_count from $bai_rm_pj1.fabric_cad_allocation where doc_no in (".implode(",",$docket_num).")";
 		//echo $sql111."<br>";
-		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--1: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--11: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row111=mysqli_fetch_array($sql_result111))
 			{
 				if($sql_row111['alloc']!='')
@@ -710,7 +711,7 @@ th
 					//echo $doc_no_loc."<br>";
 					$sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_num[$i]."' and status=1";
 					//echo $sql111."<br>";
-					$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--1: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result111)>0)
 					{
 						//$sql2="update recut_v2 set fabric_status='5' where doc_no='".$doc_num[$i]."'";
@@ -722,7 +723,7 @@ th
 							$tran_pin=$row2['tran_pin'];
 							$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
 							//echo $sql1."<br>";
-							$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--1: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
 								$qty_rec=$sql_row['qty_rec']-$sql_row['partial_appr_qty'];
