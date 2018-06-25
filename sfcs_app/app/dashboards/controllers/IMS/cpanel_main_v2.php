@@ -173,7 +173,7 @@ a{
 
 .yellow_box
 {
-  width:80px;height:20px;float:left;margin-right:5px;background-color:#FFFF00;line-height:0px;font-size:12px;
+  width:30px;height:20px;float:left;margin-right:5px;background-color:#FFFF00;line-height:0px;font-size:12px;
   margin-bottom:5px;padding-top:10px;padding-left:10px;
 }
 .clear
@@ -466,10 +466,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
              $redirect_url = getFullURL($_GET['r'],'mod_rep_ch.php','R')."?module=$module";
           ?>
                    
-              <a href="javascript:void(0);" 
+             <!--  <a href="javascript:void(0);" 
                  onclick=" PopupCenter('<?= $redirect_url ?>','myPop1',680,450);" >
                   <div class="yellow_box blink" id="blink" >WIP : <?php echo $wip; ?>
-                  </div>
+                  </div> -->
               </a>  
       <?php } ?>
               <div class="clear"></div>
