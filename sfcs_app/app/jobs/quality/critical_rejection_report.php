@@ -10,8 +10,8 @@ SFCS_PRO_Quality_Rej_Update
 
 $start_timestamp = microtime(true);
 ob_start();
-
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
 
@@ -170,7 +170,7 @@ echo "<tr>
 </tr>";
 
 
-$sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_factory_date_new from bai_pro4.week_delivery_plan_ref where schedule_no is not null and ex_factory_date_new between \"$sdate\" and \"$edate\" order by ex_factory_date_new desc ";
+$sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_factory_date_new from $bai_pro4.week_delivery_plan_ref where schedule_no is not null and ex_factory_date_new between \"$sdate\" and \"$edate\" order by ex_factory_date_new desc ";
 	// echo $sql;
 	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -197,7 +197,7 @@ $sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_facto
 
 		if(sizeof(explode(",",$sch_db_grand[$j]))==1)
 		{
-			$sql1="select sum(bac_Qty) as \"qty\",delivery,size,bac_no,color from bai_pro.bai_log_view where delivery in ($sch_db_grand[$j]) and color=\"$sch_color[$j]\" and length(size)>0 group by delivery,color,size";
+			$sql1="select sum(bac_Qty) as \"qty\",delivery,size,bac_no,color from $bai_pro.bai_log_view where delivery in ($sch_db_grand[$j]) and color=\"$sch_color[$j]\" and length(size)>0 group by delivery,color,size";
 		}
 			
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -213,7 +213,7 @@ $sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_facto
 			
 			if($choice==1)
 			{
-				$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") and qms_size=\"$size\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size";
+				$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") and qms_size=\"$size\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size";
 			}
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -438,7 +438,7 @@ echo '<div class="table-responsive"> <table id="tableone" cellspacing="0" class=
 	<th  class='filter'>Embl <br/> Damages</th>
 	<th  class='filter'> % </th> </tr>";
   
-	$sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_factory_date_new from bai_pro4.week_delivery_plan_ref where schedule_no is not null and ex_factory_date_new between \"$sdate\" and \"$edate\" order by ex_factory_date_new desc ";
+	$sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_factory_date_new from $bai_pro4.week_delivery_plan_ref where schedule_no is not null and ex_factory_date_new between \"$sdate\" and \"$edate\" order by ex_factory_date_new desc ";
     //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sch_db_grand=array();
@@ -467,7 +467,7 @@ echo '<div class="table-responsive"> <table id="tableone" cellspacing="0" class=
 
 		if(sizeof(explode(",",$sch_db_grand[$j]))==1)
 		{
-		$sql1="select sum(bac_Qty) as \"qty\",delivery,size,group_concat(distinct(bac_no)) as bac_no,color from bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand[$j]) and color=\"$sch_color[$j]\" and length(size)>0 group by delivery,color,size";
+		$sql1="select sum(bac_Qty) as \"qty\",delivery,size,group_concat(distinct(bac_no)) as bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand[$j]) and color=\"$sch_color[$j]\" and length(size)>0 group by delivery,color,size";
 		}
 			
 		//echo "<br/>inner part: ".$sql1;
@@ -496,7 +496,7 @@ if($choice==1)
 	$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",
 substring_index(substring_index(remarks,\"-\",1),\"-\",-1) as \"module\",log_date,group_concat(ref1,\"$\") as \"ref1\",
 coalesce(sum(qms_qty),0) as \"qms_qty\" ,section_id
-from bai_pro3.bai_qms_db a join bai_pro3.plan_modules b on substring_index(substring_index(a.remarks,\"-\",1),\"-\",-1)=b.module_id 
+from $bai_pro3.bai_qms_db a join bai_pro3.plan_modules b on substring_index(substring_index(a.remarks,\"-\",1),\"-\",-1)=b.module_id 
 where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") and qms_size=\"$size\" and 
 qms_tran_type=3 and qms_schedule in (".$sch_db.") group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size
 ";
@@ -557,7 +557,7 @@ qms_tran_type=3 and qms_schedule in (".$sch_db.") group by qms_style,qms_schedul
 		
 		if($choice==1)
 		{
-			$sql11="select * from bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" ";
+			$sql11="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" ";
 			//echo $sql11;
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))

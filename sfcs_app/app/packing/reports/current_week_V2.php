@@ -6,7 +6,7 @@ Changes Log:
 2016-09-09 / kirang / Service Request#98739857 : FCA Status Not Turned After FCA    
 
 -->
-<?phP
+<?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
@@ -1054,7 +1054,7 @@ else
 		echo $sHTML_Content;
 		echo $sHTML_Footer;	
 }
-
+}
 }
 ?>
 </div>

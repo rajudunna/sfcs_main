@@ -205,17 +205,23 @@ else
 
 echo "<input type=\"hidden\" name=\"tran_order_tid\" value=\"".$tran_order_tid."\">";
 echo "<table class='table table-bordered'>";
-
+$table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
+$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
+while($tables=mysqli_fetch_array($table_result))
+{
+	$table_name[]=$tables['tbl_name'];
+	$table_id[]=$tables['tbl_id'];
+}
 
 echo "<tr><td>Date</td><td>:</td><td><input type=\"hidden\" name=\"date\" value=".date("Y-m-d").">".date("Y-m-d")."</td></tr>";
 //echo "<tr><td>Section</td><td>:</td><td><input type=\"text\" name=\"section\" value=\"0\"></td></tr>";
 echo "<tr><td>Section</td><td>:</td><td><div class='row col-md-4'><select name=\"section\" class='form-control' id='table'>
-<option value=\"0\">Select Table</option>
-<option value=\"1\">Table - 1</option>
-<option value=\"2\">Table - 2</option>
-<option value=\"3\">Table - 3</option>
-<option value=\"4\">Table - 4</option>
-</select></div></td></tr>";
+<option value=\"0\">Select Table</option>";
+for($i = 0; $i < sizeof($table_name); $i++)
+{
+	echo "<option value='".$table_id[$i]."' style='background-color:#FFFFAA;'>".$table_name[$i]."</option>";
+}
+echo "</select></div></td></tr>";
 //echo "<tr><td>Shift</td><td>:</td><td><input type=\"text\" name=\"shift\" value=\"NIL\"></td></tr>";
 echo "<tr><td>Shift</td><td>:</td><td><div class='row col-md-4'><select name=\"shift\" class='form-control' id='team'>
 <option value=\"\">SELECT TEAM</option>";

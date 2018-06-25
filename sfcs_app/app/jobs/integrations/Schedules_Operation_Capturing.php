@@ -1,22 +1,21 @@
 <?php 
 $start_timestamp = microtime(true);
-
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(1000000);
-/* Connect to the local server using Windows Authentication and
-specify the AdventureWorks database as the database in use. */
-// $serverName = "GD-SQL-UAT";
-// /* Get UID and PWD from application-specific files.  */
-// $uid = "SFCS_BIA_FF";
-// $pwd = "Ba@rUpr6";
-// $databasename="BELMasterUAT";
-$connectionInfo = array( "DRIVER={SQL Server};","UID"=>$uid,"PWD"=>$pwd,"Database"=>$databasename);
-?>
 
-<?php
-$connect = odbc_connect("Driver={SQL Server Native Client 11.0};Server=$serverName;Database=$databasename;", $uid,$pwd);
-$schedule_from="400001";
-$schedule_to="600000";
+$connect = odbc_connect("$driver_name;Server=$serverName;Database=$m3_databasename;", $uid,$pwd);
+
+$schedule_array=array();
+$schedule_array[]=-1;
+
+$sql="SELECT DISTINCT order_del_no AS sch FROM $bai_pro3.bai_orders_db WHERE order_del_no > 0 ORDER BY order_del_no*1";
+$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	$schedule_array[]=$sql_row["sch"];
+}	
+
 $default_operations=array("100","101","129","130");
 
 $sql22="truncate table $bai_pro3.schedule_oprations_master_backup";
@@ -29,28 +28,28 @@ $sql2="truncate table $bai_pro3.schedule_oprations_master";
 mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $tsql="SELECT 
-[BELMasterUAT].[m3].[MO].Style,
-[BELMasterUAT].[m3].[MOOperation].ScheduleNumber,
-[BELMasterUAT].[m3].[StyleMaster].ColorId,
-[BELMasterUAT].[m3].[ColorMaster].Description,
-[BELMasterUAT].[m3].[StyleMaster].SizeId,
-[BELMasterUAT].[m3].[StyleMaster].ZFeature,
-[BELMasterUAT].[m3].[StyleMaster].ZFeatureId,
-[BELMasterUAT].[m3].[MOOperation].MONumber,
-[BELMasterUAT].[m3].[MOOperation].SMV,
-[BELMasterUAT].[m3].[MOOperation].OperationDescription,
-[BELMasterUAT].[m3].[MOOperation].OperationNumber,
-[BELMasterUAT].[m3].[StyleMaster].SequenceNoForSorting,
-[BELMasterUAT].[m3].[MOOperation].WorkCenterId,
-[BELMasterUAT].[m3].[OperationMaster].OperationCode,
-[BELMasterUAT].[m3].[OperationMaster].WorkCenterId
-FROM [BELMasterUAT].[m3].[MOOperation]
-FULL OUTER JOIN [BELMasterUAT].[m3].[OperationMaster] ON [BELMasterUAT].[m3].[OperationMaster].FactoryId=[BELMasterUAT].[m3].[MOOperation].FactoryId and [BELMasterUAT].[m3].[OperationMaster].WorkCenterId=[BELMasterUAT].[m3].[MOOperation].WorkCenterId 
-INNER JOIN [BELMasterUAT].[m3].[MO] ON [BELMasterUAT].[m3].[MO].MONumber=[BELMasterUAT].[m3].[MOOperation].MONumber
-INNER JOIN [BELMasterUAT].[m3].[StyleMaster] ON [BELMasterUAT].[m3].[StyleMaster].SKU=[BELMasterUAT].[m3].[MOOperation].SKU
-INNER JOIN [BELMasterUAT].[m3].[ColorMaster] ON [BELMasterUAT].[m3].[ColorMaster].ColorId=[BELMasterUAT].[m3].[StyleMaster].ColorId
-WHERE [BELMasterUAT].[m3].[MO].FactoryId='EKG' and [BELMasterUAT].[m3].[MOOperation].ScheduleNumber BETWEEN 400000 AND 500100
-ORDER BY [BELMasterUAT].[m3].[StyleMaster].SequenceNoForSorting,[BELMasterUAT].[m3].[MOOperation].MONumber,[BELMasterUAT].[m3].[MOOperation].OperationNumber";
+[$m3_databasename].[m3].[MO].Style,
+[$m3_databasename].[m3].[MOOperation].ScheduleNumber,
+[$m3_databasename].[m3].[StyleMaster].ColorId,
+[$m3_databasename].[m3].[ColorMaster].Description,
+[$m3_databasename].[m3].[StyleMaster].SizeId,
+[$m3_databasename].[m3].[StyleMaster].ZFeature,
+[$m3_databasename].[m3].[StyleMaster].ZFeatureId,
+[$m3_databasename].[m3].[MOOperation].MONumber,
+[$m3_databasename].[m3].[MOOperation].SMV,
+[$m3_databasename].[m3].[MOOperation].OperationDescription,
+[$m3_databasename].[m3].[MOOperation].OperationNumber,
+[$m3_databasename].[m3].[StyleMaster].SequenceNoForSorting,
+[$m3_databasename].[m3].[MOOperation].WorkCenterId,
+[$m3_databasename].[m3].[OperationMaster].OperationCode,
+[$m3_databasename].[m3].[OperationMaster].WorkCenterId
+FROM [$m3_databasename].[m3].[MOOperation]
+FULL OUTER JOIN [$m3_databasename].[m3].[OperationMaster] ON [$m3_databasename].[m3].[OperationMaster].FactoryId=[$m3_databasename].[m3].[MOOperation].FactoryId and [$m3_databasename].[m3].[OperationMaster].WorkCenterId=[$m3_databasename].[m3].[MOOperation].WorkCenterId 
+INNER JOIN [$m3_databasename].[m3].[MO] ON [$m3_databasename].[m3].[MO].MONumber=[$m3_databasename].[m3].[MOOperation].MONumber
+INNER JOIN [$m3_databasename].[m3].[StyleMaster] ON [$m3_databasename].[m3].[StyleMaster].SKU=[$m3_databasename].[m3].[MOOperation].SKU
+INNER JOIN [$m3_databasename].[m3].[ColorMaster] ON [$m3_databasename].[m3].[ColorMaster].ColorId=[$m3_databasename].[m3].[StyleMaster].ColorId
+WHERE [$m3_databasename].[m3].[MO].FactoryId='".$facility_code."' and [$m3_databasename].[m3].[MOOperation].ScheduleNumber IN (".implode(",",$schedule_array).")
+ORDER BY [$m3_databasename].[m3].[StyleMaster].SequenceNoForSorting,[$m3_databasename].[m3].[MOOperation].MONumber,[$m3_databasename].[m3].[MOOperation].OperationNumber";
 // echo $tsql."<br>";
 $result = odbc_exec($connect, $tsql);
 while(odbc_fetch_row($result))

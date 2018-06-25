@@ -286,8 +286,8 @@ if(isset($_POST['Update']))
 								{
 									$order_tid=$sql_row_tid["order_tid"];
 								}
-								
-								$sql_col="select * from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and category in (\"Body\",\"Front\") and purwidth > 0";
+								$category = "'" .implode("','",$in_categories)."'" ;
+								$sql_col="select * from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and category in ($category) and purwidth > 0";
 								$sql_result_col=mysqli_query($link, $sql_col) or exit("Sql Error7 $sql_col".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row_col=mysqli_fetch_array($sql_result_col))
 								{

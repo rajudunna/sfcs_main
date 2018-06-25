@@ -1,8 +1,8 @@
 <?php
 
 //System Restriction
-
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 // Turn off all error reporting
 error_reporting(0);
 // Report simple running errors
@@ -85,7 +85,7 @@ $half_leave_exemp_groups=array("LGR2");
 
 //For Time Slots
 $time_slots=array("08:00-17:00","06:00-14:00","14:00-22:00","18:00-06:00");
-$team_ref=array("A","B","C","G");
+$team_ref= $shifts_array;
 
 //Day types
 $day_code=array("W","H","O","X");

@@ -1,6 +1,7 @@
 <?php 
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $yesterday=date("Y-m-d",strtotime("-1 day")); 
 //$yesterday="2012-03-04"; 
@@ -11,7 +12,7 @@ $hold_mns=0;
 $sno=1; 
 $note="<table>"; 
 $note.="<tr><th>S#</th><th>Style</th><th>Schedule</th><th width=200>Plan Remarks</th><th width=200>Production Remarks</th><th width=200>Commitments</th></tr>"; 
-$sql="select style,schedule_no,ref_id FROM bai_pro4.week_delivery_plan_ref WHERE ex_factory_date_new=\"$yesterday\""; 
+$sql="select style,schedule_no,ref_id FROM $bai_pro4.week_delivery_plan_ref WHERE ex_factory_date_new=\"$yesterday\""; 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row=mysqli_fetch_array($sql_result)) 
 { 
@@ -20,7 +21,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
     $tid=$sql_row['ref_id']; 
      
     $status=1; //Not Failed 
-    $sql="select disp_note_ref FROM bai_pro3.bai_ship_cts_ref WHERE ship_schedule='$schedule'"; 
+    $sql="select disp_note_ref FROM $bai_pro3.bai_ship_cts_ref WHERE ship_schedule='$schedule'"; 
     $sql_result1=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
     if(mysqli_num_rows($sql_result1)>0) 
     { 
@@ -29,7 +30,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $disp_note_ref=$sql_row1['disp_note_ref']; 
         } 
                  
-        $sql="select exit_date FROM bai_pro3.disp_db WHERE disp_note_no in($disp_note_ref) and status<3"; 
+        $sql="select exit_date FROM $bai_pro3.disp_db WHERE disp_note_no in($disp_note_ref) and status<3"; 
         $sql_result1=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
         if(mysqli_num_rows($sql_result1)>0) 
         { 
@@ -44,7 +45,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
     if($status==1) 
     { 
         $remarks=array(); 
-        $sql="select remarks FROM bai_pro4.week_delivery_plan WHERE ref_id=$tid"; 
+        $sql="select remarks FROM $bai_pro4.week_delivery_plan WHERE ref_id=$tid"; 
         $sql_result1=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 
         { 
@@ -172,7 +173,7 @@ else
 
 
 //BAI KPI Track 
-$sql="SELECT style,schedule,color,track_id FROM bai_kpi.delivery_delays_track WHERE ex_fact='$yesterday'"; 
+$sql="SELECT style,schedule,color,track_id FROM $bai_kpi.delivery_delays_track WHERE ex_fact='$yesterday'"; 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row=mysqli_fetch_array($sql_result)) 
 { 
@@ -183,7 +184,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
      
     if($schedule>0 and strlen($style)>0 and strlen($color)>0) 
     { 
-        $sql1="SELECT MAX(ims_date) as input, MAX(ims_log_date) as output FROM (SELECT ims_date,ims_log_date FROM bai_pro3.ims_log WHERE ims_schedule=$schedule and trim(both from ims_color)=\"".trim($color)."\" UNION SELECT ims_date,ims_log_date FROM bai_pro3.ims_log_backup WHERE ims_schedule=$schedule and trim(both from ims_color)=\"".trim($color)."\") AS t";
+        $sql1="SELECT MAX(ims_date) as input, MAX(ims_log_date) as output FROM (SELECT ims_date,ims_log_date FROM $bai_pro3.ims_log WHERE ims_schedule=$schedule and trim(both from ims_color)=\"".trim($color)."\" UNION SELECT ims_date,ims_log_date FROM $bai_pro3.ims_log_backup WHERE ims_schedule=$schedule and trim(both from ims_color)=\"".trim($color)."\") AS t";
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 
         { 
@@ -191,14 +192,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $output_time=$sql_row1['output']; 
         } 
          
-        $sql1="SELECT MAX(lastup) as lastup FROM bai_pro3.packing_summary WHERE order_del_no=$schedule"; 
+        $sql1="SELECT MAX(lastup) as lastup FROM $bai_pro3.packing_summary WHERE order_del_no=$schedule"; 
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 
         { 
             $fg_time=$sql_row1['lastup']; 
         } 
          
-        $sql1="update bai_kpi.delivery_delays_track set input_time='$input_time',sewing_time='$output_time',fg_time='$fg_time' where track_id=$ref_id"; 
+        $sql1="update $bai_kpi.delivery_delays_track set input_time='$input_time',sewing_time='$output_time',fg_time='$fg_time' where track_id=$ref_id"; 
         $sql_result=mysqli_query($link, $sql1) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
         if($sql_result)
         {

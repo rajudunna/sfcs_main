@@ -293,7 +293,7 @@ table tr:hover td {
 		<th>Pcs</th>
 		<th>6.30 P.M.</th>
 		<th>Pcs</th>
-	
+		<th></th>
 		
 		
       </tr>
@@ -437,7 +437,9 @@ table tr:hover td {
 			// $super_user=array("hasithada","thusharako","thilinana","chathurangad","dinushapre","diland","ranganak");
 							
 				if (in_array($authorized, $has_perm)){
-						echo '<td><b><a href="edit_downtime.php?team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
+					$url=base64_encode('/sfcs_app/app/production/reports/kpi/edit_downtime.php');
+					// echo $url;
+						echo '<td><b><a href="index.php?r='.$url.'&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
 				}
 			
 				?>

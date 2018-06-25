@@ -2,7 +2,8 @@
 <?php
 //Ticket #809580 KiranG 20140604 Module number considered as integer where floating number is converted to integer as per OPU requirements.
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 //set_time_limit(50000);
 set_time_limit(0);
@@ -18,19 +19,19 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 /* Connect to the local server using Windows Authentication and
 specify the AdventureWorks database as the database in use. */
 
-$serverName = "berwebsrv01";
-/* Get UID and PWD from application-specific files.  */
-$uid = "sa";
-$pwd = "BAWR123";
-$dbase="AutoMo";
-$connectionInfo = array( "UID"=>$uid,
-                         "PWD"=>$pwd,
-                         "Database"=>$dbase,
+// $serverName = "berwebsrv01";
+// /* Get UID and PWD from application-specific files.  */
+// $uid = "sa";
+// $pwd = "BAWR123";
+// $dbase="AutoMo";
+$connectionInfo = array( "UID"=>$sqsrv_id,
+                         "PWD"=>$sqsrv_pwd,
+                         "Database"=>$AutoMo,
 						 'ReturnDatesAsStrings'=> true, 
 						 "CharacterSet" => 'utf-8' );
 
 /* Connect using SQL Server Authentication. */
-$conn = sqlsrv_connect( $serverName, $connectionInfo);
+$conn = sqlsrv_connect( $sqsrv_server, $connectionInfo);
 if( $conn === false )
 {
      echo "Could not connect.\n";
@@ -79,18 +80,18 @@ sqlsrv_query( $conn, $tsql);
 //sqlsrv_query( $conn, $tsql);
 
 
-$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah, sum(bac_Qty) as outp FROM bai_pro.bai_log_buf WHERE bac_date between \"$sdate\" and \"$edate\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
+$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah, sum(bac_Qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date between \"$sdate\" and \"$edate\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	
-	$sql_new="update bai_pro.grand_rep set act_sth=".$sql_row['sah'].", act_out=".$sql_row['outp']." where tid='".$sql_row['tid']."'";
+	$sql_new="update $bai_pro.grand_rep set act_sth=".$sql_row['sah'].", act_out=".$sql_row['outp']." where tid='".$sql_row['tid']."'";
 	mysqli_query($link, $sql_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 //New block create to flush data from the begginig of the month to till date  and refresh the data in SFCS - kiran 20150722
 
 
-$sql="select date,round(sum(plan_out),0) as plan_out, round(sum(act_out),0) as act_out, SUBSTRING_INDEX(module,\".\",1) as module, left(styles,18) as styles,left(buyer,18) as buyer, round(sum(plan_clh),2) as plan_clh, round(sum(act_clh),2) as act_clh, round(sum(plan_sth),2) as plan_sth,  round(sum(act_sth),2) as act_sth, COALESCE(ROUND(SUM(act_sth)/SUM(act_clh)*100,2),0) AS act_eff, COALESCE(ROUND(SUM(plan_sth)/SUM(plan_clh)*100,2),0) AS plan_eff, SUM(rework_qty) AS rework_qty  from bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" group by date";
+$sql="select date,round(sum(plan_out),0) as plan_out, round(sum(act_out),0) as act_out, SUBSTRING_INDEX(module,\".\",1) as module, left(styles,18) as styles,left(buyer,18) as buyer, round(sum(plan_clh),2) as plan_clh, round(sum(act_clh),2) as act_clh, round(sum(plan_sth),2) as plan_sth,  round(sum(act_sth),2) as act_sth, COALESCE(ROUND(SUM(act_sth)/SUM(act_clh)*100,2),0) AS act_eff, COALESCE(ROUND(SUM(plan_sth)/SUM(plan_clh)*100,2),0) AS plan_eff, SUM(rework_qty) AS rework_qty  from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" group by date";
 
 //GROUP BY SUBSTRING_INDEX(module,\".\",1),DATE ORDER BY DATE,module
 //echo $sql;

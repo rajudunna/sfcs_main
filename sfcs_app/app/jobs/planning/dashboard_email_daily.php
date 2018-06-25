@@ -1,13 +1,7 @@
 <?php
 $start_timestamp = microtime(true);
-include('C:/xampp\htdocs\sfcs_main\configuration\API\confr.php');
-$conf = new confr('C:\xampp\htdocs\sfcs_main\configuration\config-builder\saved_fields\fields.json');
-$ar = [];
-for($i=1;$i<=20;$i++){
-	$ar[$i-1]=$conf->get('mail'.$i);
-}
-var_dump(array_filter($ar));die();
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 // Turn off all error reporting
 error_reporting(0);
@@ -61,12 +55,12 @@ $sms="";
 	$message.="<tr><th>Section</th><th>Plan SAH</th><th>Actual SAH</th><th>Output</th><th>Rework</th><th>EFF %</th></tr>";
 	$sms.="S-P-A-O-E%\r\n";
 	
-	$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah, sum(bac_Qty) as outp FROM bai_pro.bai_log_buf WHERE bac_date between \"$date\" and \"$date\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
+	$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah, sum(bac_Qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date between \"$date\" and \"$date\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	
-	$sql_new="update bai_pro.grand_rep set act_sth=".$sql_row['sah'].",act_out=".$sql_row['outp']." where tid='".$sql_row['tid']."'";
+	$sql_new="update $bai_pro.grand_rep set act_sth=".$sql_row['sah'].",act_out=".$sql_row['outp']." where tid='".$sql_row['tid']."'";
 	mysqli_query($link, $sql_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 //New block create to flush data from the begginig of the month to till date  and refresh the data in SFCS - kiran 20150722
@@ -80,7 +74,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$tot_rework=0;
 	$act_out_check=0;
 	$sec_ids=array();
-	$sql1="select sec_id from bai_pro3.sections_db where sec_id > 0 order by sec_id+0";
+	$sql1="select sec_id from $bai_pro3.sections_db where sec_id > 0 order by sec_id+0";
 	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -156,7 +150,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	//TO show buyer wise performance
 	
-	$sql="select bai_pro3.fn_buyer_division_sch(substring_index(max_style,'^',1)) as buyer,sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from bai_pro.grand_rep where date =\"$date\" GROUP BY bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1)) order by bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1))";
+	$sql="select bai_pro3.fn_buyer_division_sch(substring_index(max_style,'^',1)) as buyer,sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from $bai_pro.grand_rep where date =\"$date\" GROUP BY bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1)) order by bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1))";
 	// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -191,7 +185,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	//To show buyer wise performance
 
-$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from bai_pro.grand_rep where month(date) =".date("m",strtotime($date))." and year(date)=".date("Y",strtotime($date));
+$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from $bai_pro.grand_rep where month(date) =".date("m",strtotime($date))." and year(date)=".date("Y",strtotime($date));
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -234,13 +228,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 if(date("H")=="14")
 {
 	// $to  = 'gayanl@brandix.com,kasinac@brandix.com,brandixalerts@schemaxtech.com,brandixalerts@schemaxtech.com,brandixalerts@schemaxtech.com,bhavanik@brandix.com,bai1leadteam@brandix.com,bai1planningteam@brandix.com,JoeH@brandix.com,ShiranB@brandix.com,BAI1AllExecutives@brandix.com';
-	$to = $dashboard_email_dialy_H_14;
+	 $to = $dashboard_email_dialy_H_14;
 	
 }
 else
 {
 	// $to  = 'BAI1AllExecutives@brandix.com,isteamindia@brandix.com,lalithb@brandix.com,govil@brandix.com,lilanthaw@brandix.com,harshal@brandix.com,rangar@brandix.com,duminduw@brandix.com,PriyanthaNa@brandix.com,UdayaD@brandix.com,JoeH@brandix.com,ShiranB@brandix.com,lakshithas@brandix.com,kaushalap@brandix.com,GayaneeW@brandix.com,NishanthaM@brandix.com,brandixalerts@schemaxtech.com';	//removed minura on 2018-01-06 mail from kirang
-	$to = $dashboard_email_dialy;
+	 $to = $dashboard_email_dialy;
 }
 
 
@@ -255,7 +249,6 @@ $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 $headers .= 'To: '.$to. "\r\n";
 //$headers .= 'To: <brandixalerts@schemaxtech.com>'. "\r\n";
 $headers .= $header_from. "\r\n";
-//$headers .= 'From: Shop Floor System Alert <ravindranath.yrr@gmail.com>'. "\r\n";
 //$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
 
 // Mail it
@@ -266,9 +259,6 @@ if($sql_result)
 {
 	print('Live SAH Run Inserted successfully')."\n";
 }
-
-
-
 
 	if($act_out_check>0)
 	{

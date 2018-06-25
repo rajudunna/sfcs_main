@@ -50,7 +50,6 @@ $message= "<chart Caption='Section wise Efficiency Graph' upperLimit='$full' low
 	
 	//NEW Way to represent the same chart
 		
-		include("header_sch.php");
 		include"data.php";
 		$start=date("Y-m-01");
 		$end=date("Y-m-31");

@@ -4,6 +4,16 @@
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+
+
+
+for($i=0;$i<=sizeof($mod_names);$i++)
+{
+    $mods[]=$mod_names[$i];
+}
+$mod=implode(',',$mods);
+$mod=rtrim($mod,',');
+
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
 //$has_perm=haspermission($_GET['r']);
@@ -263,13 +273,31 @@ if(isset($_POST['submit']))
 	echo '</table>';
 	echo '<br/><br/><br/>';
 	echo 'Module:<select name="module">';
-	for($i=1;$i<=72;$i++){
-		echo "<option value='$i'>$i</option>";
+	foreach($mod_names as $key=>$module){
+		echo "<option value='$module'>$module</option>";
 	}
 	echo '</select>&nbsp;&nbsp;';
-	echo 'Team:<select name="team">';
-		echo "<option value='A'>A</option>";
-		echo "<option value='B'>B</option>";
+   
+// for($i=1;$i<=72;$i++){
+// 		echo "<option value='$i'>$i</option>";
+// 	}
+
+   
+
+	// echo 'Team:<select name="team">';
+	// 	echo "<option value='A'>A</option>";
+	// 	echo "<option value='B'>B</option>";
+    
+     echo "<tr><th>Team: </th><td>
+         <div class=\"col-md-4\">
+            <select class=\"form-control\" name=\"sourceid\" id=\"sourceid\" >";
+            foreach($shifts_array as $key=>$shift){
+                echo "<option value='$shift'>$shift</option>";
+            }
+    echo "</select></div></td></tr>";
+
+
+
 	echo '</select>&nbsp;&nbsp;';
 	echo 'Reason:<select name="reason">';
 		echo "<option value='1'>Panel Missing in Production</option>";

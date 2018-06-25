@@ -8,6 +8,20 @@ changes log:
 -->
 
 <script type="text/javascript">
+  
+    function check_doc_val()
+    {
+        var $nonempty = $('.doc_nos_class').filter(function() {
+            return this.value != ''
+        });
+
+        if ($nonempty.length == 0) {
+            swal('Please enter Lot No','','warning');
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 	function check_validate()
 	{
@@ -165,12 +179,12 @@ changes log:
 <?php
      include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 	//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	$username=$username_list[1];
-	$view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
-	$authorized=user_acl("SFCS_0197",$username,7,$group_id_sfcs);
+	// $view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
+	// $authorized=user_acl("SFCS_0197",$username,7,$group_id_sfcs);
 	//$authorized=array("kirang","harikrishnar","fazlulr","himapriyag","sfcsproject1","chandrasekharko","herambaj","kishorek","kirang","sarojiniv","kirang","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","dharmarajua","bhupalv","varalakshmik","eswarraok","babjim","ramunaidus","nagendral","sivaramakrishnat","gowthamis","rajinig","revathil","lovarajub","ramud","sivark","kirang","kirang");
 	//$authorized=array("kirang");
 	if(!(in_array(strtolower($username),$authorized)))
@@ -290,7 +304,8 @@ th
 		echo "<th>Job No</th>";
 		echo "</tr>";
 
-		$sql1="SELECT * from $bai_pro3.recut_v2 where doc_no=$doc_no";
+		$sql1="SELECT * from $bai_pro3.recut_v2 where doc_no=\"$doc_no\"";
+		//echo $sql1;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error:$sql1 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -428,11 +443,11 @@ th
 			
 		}
 		
-		echo "<form name=\"ins\" method=\"post\" action='".getFullURL($_GET['r'],'fab_pop_allocate_v5.php','R')."'>"; //new version
+		echo "<form name=\"ins\" method=\"post\"  onsubmit=\"return check_doc_val()\" action='".getFullURLLevel($_GET['r'],'fab_pop_allocate_v5.php',0,'N')."'>"; //new version
 		echo "<input type=\"hidden\" value=\"2\" name=\"process_cat\">"; //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
-		echo "<table class='table table-bordered'><tr><th>Category -- Docket</th><th>Material Req.</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
+		echo "<table class='table table-bordered'><tr><th>Category -- Docket</th><th>Material Req.</th><th>Lot No</th><th>Print Status</th><th>Roll Details</th></tr>";
 		//$sql1="SELECT recut_v2.a_plies,recut_v2.mk_ref,recut_v2.plan_lot_ref,recut_v2.cat_ref,recut_v2.print_status,recut_v2.doc_no,cat_stat_log.category,cat_stat_log.compo_no from recut_v2 left join cat_stat_log on recut_v2.cat_ref=cat_stat_log.tid  where recut_v2.order_tid=\"$order_id_ref\" and recut_v2.acutno=$cut_no_ref"; //OLD
-		$sql1="SELECT order_cat_recut_doc_mk_mix.mk_ref,order_cat_recut_doc_mk_mix.material_req,order_cat_recut_doc_mk_mix.plan_lot_ref,order_cat_recut_doc_mk_mix.cat_ref,order_cat_recut_doc_mk_mix.print_status,order_cat_recut_doc_mk_mix.doc_no,order_cat_recut_doc_mk_mix.category,order_cat_recut_doc_mk_mix.a_plies from $bai_pro3.order_cat_recut_doc_mk_mix where order_cat_recut_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_recut_doc_mk_mix.acutno=$cut_no_ref";
+		$sql1="SELECT order_cat_recut_doc_mk_mix.mk_ref,order_cat_recut_doc_mk_mix.material_req,order_cat_recut_doc_mk_mix.plan_lot_ref,order_cat_recut_doc_mk_mix.cat_ref,order_cat_recut_doc_mk_mix.print_status,order_cat_recut_doc_mk_mix.doc_no,order_cat_recut_doc_mk_mix.category,order_cat_recut_doc_mk_mix.a_plies from $bai_pro3.order_cat_recut_doc_mk_mix where order_cat_recut_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_recut_doc_mk_mix.acutno=\"$cut_no_ref\"";
 		//echo $sql1;
 
 		//mysql_query($sql1,$link) or exit("Sql Error: $sql1".mysql_error());
@@ -451,7 +466,7 @@ th
 			$docket_num[]=$sql_row1['doc_no'];
 			$mk_ref=$sql_row1['mk_ref'];
 			
-			$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+			$sql2="select * from $bai_pro3.maker_stat_log where tid=\"$mk_ref\"";
 			//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error: $sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -524,12 +539,12 @@ th
 					echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
 					
 				}
-				echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";		
+				echo "<input type=\"text\" value=\"\"  class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";		
 				echo "</td>";
 				
 				
@@ -584,13 +599,13 @@ th
 		echo "</table>";
 		if($enable_allocate_button==1)
 		{
-			echo "<input type=\"submit\" name=\"allocate\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
+			echo "<input type=\"submit\" id='allocate' name=\"allocate\" value=\"Allocate\" class='btn btn-success'>";
 			echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
 		}
 		echo "</form>";
 		//NEW Implementation for Docket generation from RMS
 
-		$sql1="SELECT * from $bai_pro3.plan_dashboard where doc_no=$doc_no";
+		$sql1="SELECT * from $bai_pro3.plan_dashboard where doc_no=\"$doc_no\"";
 		//mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
@@ -601,7 +616,7 @@ th
 
 		$sql111="select ROUND(SUM(allocated_qty),2) AS alloc,count(distinct doc_no) as doc_count from $bai_rm_pj1.fabric_cad_allocation where doc_no in (".implode(",",$docket_num).")";
 		//echo $sql111."<br>";
-		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--1: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--11: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row111=mysqli_fetch_array($sql_result111))
 			{
 				if($sql_row111['alloc']!='')
@@ -696,7 +711,7 @@ th
 					//echo $doc_no_loc."<br>";
 					$sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_num[$i]."' and status=1";
 					//echo $sql111."<br>";
-					$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--1: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result111)>0)
 					{
 						//$sql2="update recut_v2 set fabric_status='5' where doc_no='".$doc_num[$i]."'";
@@ -708,7 +723,7 @@ th
 							$tran_pin=$row2['tran_pin'];
 							$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
 							//echo $sql1."<br>";
-							$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--1: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
 								$qty_rec=$sql_row['qty_rec']-$sql_row['partial_appr_qty'];
@@ -821,3 +836,5 @@ th
 	</div>
 	</div>
 </div>
+
+

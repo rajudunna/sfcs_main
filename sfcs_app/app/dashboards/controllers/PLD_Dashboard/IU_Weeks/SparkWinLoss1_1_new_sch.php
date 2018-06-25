@@ -33,7 +33,8 @@ $sql="select DISTINCT(SUBSTRING_INDEX(exit_date,\" \",1)) as date,SUBSTRING_INDE
 $sql_result=mysqli_query($con,$sql);
 // echo $sql;
 
-
+$exit_time=[];
+$exit_date=[];
 $count=mysqli_num_rows($sql_result);
 
 echo "rows =".$count;
