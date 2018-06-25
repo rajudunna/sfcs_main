@@ -219,10 +219,11 @@ function getrbac_user(){
     //$user['uname']=strtolower($username_list[1]);
     $user['uname'] = 'sfcsproject1';
     GLOBAL $link_ui;
-    $query = "SELECT rbac_roles.role_name FROM rbac_users LEFT JOIN rbac_roles ON rbac_users.role_id = rbac_roles.role_id WHERE rbac_users.user_name='".$user['uname']."'";
+    $query = "SELECT rbac_roles.role_name,rbac_roles.role_id FROM rbac_users LEFT JOIN rbac_roles ON rbac_users.role_id = rbac_roles.role_id WHERE rbac_users.user_name='".$user['uname']."'";
     $res = mysqli_query($link_ui, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
     $roles = mysqli_fetch_array($res);
     $user['role'] = $roles['role_name'];
+    $user['role_id'] = $roles['role_id'];
     return $user;
 }
 
