@@ -54,9 +54,15 @@
                         <ul class='nav child_menu'>
                         <?php
                             while($mann = mysqli_fetch_array($res)){
-                                echo "<li>
+                                if(base64_decode($_GET['r'])==$mann['link_location']){
+                                    echo "<li class='current-page'>
+                                        <a href='?r=".base64_encode($mann['link_location'])."'>".$mann['link_description']."</a>
+                                    </li>";
+                                }else{
+                                    echo "<li>
                                     <a href='?r=".base64_encode($mann['link_location'])."'>".$mann['link_description']."</a>
-                                </li>";
+                                    </li>";
+                                }
                             }
                         ?>
                         </ul>

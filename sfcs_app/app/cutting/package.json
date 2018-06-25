@@ -1,24 +1,49 @@
 { 
-"name" : "cutting",
-"version" : "1.0",
-"description" : "",
-   "menus" : : {
-  "Data Upload" : "/data_update/upload_ac.php",
-  "Data Update Tool(V3)" :"/data_update/Movex_Order_Tool_v3.xls",
-  "Color Clubbing" :"/color_clubbing/test.php",
-  "Schedule Clubbing" :"/schedule_clubbing/schedule_mix_bek.php",
-  "Schedule Clubbing Split" :"/schedule_clubbing/schedule_split_bek.php",
-  "Schedule Clubbing Delete" :"/schedule_clubbing/schedule_mix_bek_delete.php",
-  "Lay Plan Preparation" :"/lay_plan_preparation/test.php",
-  "Delete Lay Plan" :"/lay_plan_preparation/lay_plan_delete.php",
-  "M3 Lay Quantity Reporing" :"/m3_lay_quantity_reporting/m3_or_test.php",
-  "Cad Job Priority" :"/cad_job_priority/interact.php",
-  "Cad Job Priority-2" :"/cad_job_priority/CAD_Plotting_Interact.php",
-  "Plot Job Priority" :"/cad_plotting_interact2.php",
-  "MRN Request Form" :"/mrn_request_form_V2.php",
-  "Panels Sequence Numbers" :"/panel_sequence_nos.php",
-  "Create Location" :"/locationcreate.php",
-  "Locations Dashboard" :"/locationsdashboard.php",
-  }
+	"name" : "cutting",
+	"version" : "1.0",
+	"description" : "",
+	"cut quantity reporting methods":
+	{
+		 "WithRolls" : 
+		 {
+		    "folder" : "cut_qty_reporting_withrolls",
+            "description" : "In this case cut quantity reporting with rolls",
+            "menus" : 
+			{
+				"Cut qty reporting with rolls":"/cut_qty_reporting_withrolls/doc_track_panel.php",
+			}		
+		 },
+		 "WithOutRolls" : 
+		 {
+			"folder" : "cut_qty_reporting_withrolls",
+            "description" : "In this case cut quantity reporting with out rolls",
+            "menus" : 
+			{
+				"Cut qty reporting with out rolls":"/cut_qty_reporting_withoutrolls/doc_track_panel_cut.php",
+			}
+				
+		 },
+	
+	
+	}
+	   "menus" :  
+	   {
+		  "Data Upload" : "/data_update/upload_ac.php",
+		  "Data Update Tool(V3)" :"/data_update/Movex_Order_Tool_v3.xls",
+		  "Color Clubbing" :"/color_clubbing/test.php",
+		  "Schedule Clubbing" :"/schedule_clubbing/schedule_mix_bek.php",
+		  "Schedule Clubbing Split" :"/schedule_clubbing/schedule_split_bek.php",
+		  "Schedule Clubbing Delete" :"/schedule_clubbing/schedule_mix_bek_delete.php",
+		  "Lay Plan Preparation" :"/lay_plan_preparation/test.php",
+		  "Delete Lay Plan" :"/lay_plan_preparation/lay_plan_delete.php",
+		  "M3 Lay Quantity Reporing" :"/m3_lay_quantity_reporting/m3_or_test.php",
+		  "Cad Job Priority" :"/cad_job_priority/interact.php",
+		  "Cad Job Priority-2" :"/cad_job_priority/CAD_Plotting_Interact.php",
+		  "Plot Job Priority" :"/cad_plotting_interact2.php",
+		  "MRN Request Form" :"/mrn_request_form_V2.php",
+		  "Panels Sequence Numbers" :"/panel_sequence_nos.php",
+		  "Create Location" :"/locationcreate.php",
+		  "Locations Dashboard" :"/locationsdashboard.php"
+	  }
   
   }
