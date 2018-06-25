@@ -89,7 +89,7 @@ if($query1_result->num_rows > 0){
 // die();
 ?>
 
-<div class="panel panel-primary" ng-app="brandix" id="App3" ng-init="mapping_data = <?= htmlspecialchars(json_encode($RolsMenusPermissionsMappingData)) ?> " ng-cloak>
+<div class="panel panel-primary App3" ng-app="brandix" id="" ng-init="mapping_data = <?= htmlspecialchars(json_encode($RolsMenusPermissionsMappingData)) ?> " ng-cloak>
     <div class="panel-heading" ng-init="rbac_permissions=<?= htmlspecialchars(json_encode($rbac_permissions)) ?>">User Role Menus And Permissions List</div>
     <div class="panel-body"  ng-controller="accessmenuctrl" ng-cloak>
         <div class="table-responsive">

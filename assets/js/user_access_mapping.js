@@ -91,4 +91,4 @@ app.controller('accessmenuctrl', function($scope, $http, $window) {
 
 
 });
-angular.bootstrap(document.getElementById("App3"), ['brandix']);
+angular.bootstrap($('.App3'), ['brandix']);
