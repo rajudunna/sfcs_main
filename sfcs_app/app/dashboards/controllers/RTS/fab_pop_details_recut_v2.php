@@ -14,13 +14,14 @@ changes log:
         var $nonempty = $('.doc_nos_class').filter(function() {
             return this.value != ''
         });
-
+		console.log($nonempty.length);
         if ($nonempty.length == 0) {
             swal('Please enter Lot No','','warning');
             return false;
         }else{
             return true;
         }
+		
     }
 
 	function check_validate()
@@ -539,12 +540,12 @@ th
 					echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
 					
 				}
-				echo "<input type=\"text\" value=\"\"  class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";		
+				echo "<input type=\"text\" value=\"\"  class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";		
 				echo "</td>";
 				
 				
