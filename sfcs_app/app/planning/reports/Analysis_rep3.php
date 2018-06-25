@@ -41,12 +41,14 @@ $authorized_users=user_acl("SFCS_0039",$username,7,$group_id_sfcs);
 
 function mainbox()
 {
-	window.location.href ="<?= getFullURL($_GET['r'],'analysis_rep3.php','N').'&buyer_div=' ?>"+document.test.buyer_div.value+"&sdate="+document.test.sdate.value+"&edate="+document.test.edate.value	
+	y=document.test.buyer_div.value;
+	window.location.href ="<?= getFullURL($_GET['r'],'analysis_rep3.php','N').'&buyer_div=' ?>"+encodeURIComponent(y)+"&sdate="+document.test.sdate.value+"&edate="+document.test.edate.value	
 }
 
 function firstbox()
 {
-	window.location.href ="<?= getFullURL($_GET['r'],'analysis_rep3.php','N').'&buyer_div=' ?>"+document.test.buyer_div.value+"&sdate="+document.test.sdate.value+"&edate="+document.test.edate.value+"&style="+document.test.style_name.value	
+	y=document.test.buyer_div.value;
+	window.location.href ="<?= getFullURL($_GET['r'],'analysis_rep3.php','N').'&buyer_div=' ?>"+encodeURIComponent(y)+"&sdate="+document.test.sdate.value+"&edate="+document.test.edate.value+"&style="+document.test.style_name.value	
 }
 
 function checkAll(ele) {
@@ -129,7 +131,6 @@ th{
 			return false;
 		}else{
 			return true;
-			
 		}
 	}
 	function check_buyer(){
@@ -161,34 +162,33 @@ function weeknumber_v2 ($y, $w) {
 
 # get_week_date( week_number, year, day_offset, format )
 function get_week_date($wk_num, $yr, $first = 5, $format = 'F d, Y') {
-
-$wk_ts = strtotime('+' . (($wk_num)-1) . ' weeks', strtotime($yr . '0101'));
-$mon_ts = strtotime('-' . date('w', $wk_ts) + $first . ' days', $wk_ts);
-//echo $wk_ts."-".$mon_ts."<br>";
-return date($format, $mon_ts);
+	$wk_ts = strtotime('+' . (($wk_num)-1) . ' weeks', strtotime($yr . '0101'));
+	$mon_ts = strtotime('-' . date('w', $wk_ts) + $first . ' days', $wk_ts);
+	//echo $wk_ts."-".$mon_ts."<br>";
+	return date($format, $mon_ts);
 }
 
 function daysDifference($endDate, $beginDate){   
-//explode the date by "-" and storing to array  
- $date_parts1=explode("-", $beginDate);   
- $date_parts2=explode("-", $endDate);  
- 
-  //gregoriantojd() Converts a Gregorian date to Julian Day Count   
-  $start_date=gregoriantojd($date_parts1[1], $date_parts1[2], $date_parts1[0]);   
-  $end_date=gregoriantojd($date_parts2[1], $date_parts2[2], $date_parts2[0]);   
-  return $end_date - $start_date;
+	//explode the date by "-" and storing to array  
+	$date_parts1=explode("-", $beginDate);   
+	$date_parts2=explode("-", $endDate);  
+
+	//gregoriantojd() Converts a Gregorian date to Julian Day Count   
+	$start_date=gregoriantojd($date_parts1[1], $date_parts1[2], $date_parts1[0]);   
+	$end_date=gregoriantojd($date_parts2[1], $date_parts2[2], $date_parts2[0]);   
+	return $end_date - $start_date;
 }
 
 # get start and end date of a week
 function getStartAndEndDate($week, $year) {
-  $dto = new DateTime();
-  $dto->setISODate($year, $week);
-  $ret['week_start'] = $dto->format('Y-m-d');
-  $dto->modify('+4 days');
-  $ret['friday'] = $dto->format('Y-m-d');
-  $dto->modify('+2 days');
-  $ret['week_end'] = $dto->format('Y-m-d');
-  return $ret;
+	$dto = new DateTime();
+	$dto->setISODate($year, $week);
+	$ret['week_start'] = $dto->format('Y-m-d');
+	$dto->modify('+4 days');
+	$ret['friday'] = $dto->format('Y-m-d');
+	$dto->modify('+2 days');
+	$ret['week_end'] = $dto->format('Y-m-d');
+	return $ret;
 }
 
 $buyer_div="";
@@ -197,7 +197,8 @@ $style_name="";
 
 if(isset($_GET['buyer_div']))
 {
-	$buyer_div=$_GET['buyer_div'];
+	$buyer_div=urldecode($_GET["buyer_div"]);
+	// $buyer_div=$_GET['buyer_div'];
 }
 
 if(isset($_GET['sdate']))
@@ -226,6 +227,7 @@ if(isset($_GET['style_name']))
 
 if(isset($_POST['buyer_div']))
 {
+	// $buyer_div=urldecode($_GET["buyer_div"]);
 	$buyer_div=$_POST['buyer_div'];
 }
 
