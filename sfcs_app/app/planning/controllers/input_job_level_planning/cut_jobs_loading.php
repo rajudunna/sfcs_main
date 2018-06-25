@@ -27,7 +27,8 @@ $hour=date("H.i");
 		}
 		else
 		{
-			header("Location:time_out.php?msg=1");
+			$url=getFullURLLevel($_GET['r'],'time_out.php',1,'N');
+			header("Location:$url&msg=1");
 		}
 	}
 	else
