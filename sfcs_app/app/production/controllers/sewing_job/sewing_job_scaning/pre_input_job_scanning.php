@@ -152,6 +152,12 @@ $(document).ready(function(){
 					});		    					
 				
 															  
+			},
+			error: function(response){
+				$('#loading-image').hide();	
+				// alert('failure');
+				// console.log(response);
+				swal('Error in getting schedule');
 			}				    
 		});	
 	

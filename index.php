@@ -9,6 +9,11 @@ require_once("configuration/API/confr.php");
 include "template/helper.php";
 include "template/header.php";
 include "template/sidemenu.php";
+require_once 'sfcs_app/common/vendor/autoload.php';
+
+$whoops = new \Whoops\Run;
+$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+$whoops->register();
 
 ?>
 

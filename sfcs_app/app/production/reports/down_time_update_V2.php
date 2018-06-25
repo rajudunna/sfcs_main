@@ -1,5 +1,5 @@
 <?php
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     $has_perm=haspermission($_GET['r']);
 /*
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -31,7 +31,7 @@ else
 
 function box(x)
 {
-	var php_url = '<?= getFullURL($_GET['r'],'pop_view3.php','R');?>';
+	var php_url = '<?= getFullURLLevel($_GET['r'],'workstudy/controllers/pop_view3.php','2','R');?>';
 	var url= php_url+"?dep_id="+document.getElementById("dep_" + x).value+"&row_id="+x;
 	newwindow=window.open(url,'Reasons','width=700, height=500, toolbar=0, menubar=0, location=0, status=0, scrollbars=1, resizable=1, left=0, top=0');
 	if (window.focus) {newwindow.focus()}
@@ -199,7 +199,8 @@ function check_date(x,yy,xx) //form date, allowed date, today date
 
 
 $sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
-$sql_result=mysqli_query($link22, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//echo $sql;
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$max_allowed_date=$sql_row['bac_date'];
@@ -254,7 +255,7 @@ for($i=0;$i<=10;$i++)
 	<select name=\"sec[$i]\" id=\"sec_$i\" name=\"sec_$i\" class=\"form-control\">";
 	$sql="SELECT sec_id FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
 	//echo $sql;
-	$result7=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result7=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result7))
 	{
 		echo "<option value=\"".$sql_row["sec_id"]."\">".$sql_row["sec_id"]."</option>";
@@ -276,7 +277,7 @@ for($i=0;$i<=10;$i++)
 
 	$sql="SELECT GROUP_CONCAT(sec_mods) as mods FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
 	//echo $sql;
-	$result7=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result7=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result7))
 	{
 		$sql_mod=$sql_row["mods"];
@@ -299,7 +300,7 @@ for($i=0;$i<=10;$i++)
 	<td><select name=\"sty[$i]\" id=\"style_$i\" class=\"form-control\">";
 
 	$sql22="select distinct style_id from $bai_pro2.movex_styles order by style_id";
-	$sql_result22=mysqli_query($link22, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row22=mysqli_fetch_array($sql_result22))
 	{
 		echo '<option value="'.$sql_row22['style_id'].'">'.$sql_row22['style_id'].'</option>';
@@ -316,7 +317,7 @@ for($i=0;$i<=10;$i++)
 	//$sql22="select distinct schedule_no from shipment_plan_summ where exfact_date between \"".date("Y-m-d",strtotime("-2 month", strtotime($date)))."\" and \"".date("Y-m-d",strtotime("+2 month", strtotime($date)))."\" order by schedule_no+0";
 	//$sql22="select distinct delivery as schedule_no from $bai_pro.bai_log where delivery > 25000 order by delivery+0";
 	$sql22="select distinct order_del_no as schedule_no from $bai_pro3.bai_orders_db where order_del_no > 25000 order by order_del_no+0";
-	$sql_result22=mysqli_query($link22, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row22=mysqli_fetch_array($sql_result22))
 	{
 		echo "<option value=".$sql_row22['schedule_no'].">".$sql_row22['schedule_no']."</option>";
@@ -421,7 +422,7 @@ for($i=0;$i<=10;$i++)
 	<td><div><p><select name=\"dep[$i]\" id=\"dep_$i\" class=\"form-control\">";
 
 	$sqll1="select * from $bai_pro.down_deps";
-	$sql_resultl1=mysqli_query($link, $sqll1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_resultl1=mysqli_query($link, $sqll1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowl1=mysqli_fetch_array($sql_resultl1))
 	{
 		$dep_id=$sql_rowl1['dep_id'];
@@ -494,7 +495,7 @@ if(isset($_POST["submit"]))
 				$order_style_no=0;
 				$sql3="select distinct order_style_no as order_style_no from $bai_pro3.bai_orders_db where order_del_no='".$schedule[$i]."'";
 					//echo "<br/>".$sql3."<br/>";
-				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row3=mysqli_fetch_array($sql_result3))
 				{
 					$order_style_no=$sql_row3["order_style_no"];
@@ -506,7 +507,7 @@ if(isset($_POST["submit"]))
 				
 				$sql1="SELECT distinct(buyer_id) as buyer FROM $bai_pro2.movex_styles WHERE movex_style=\"".$order_style_no."\"";	
 				//echo "<br/>".$sql1."<br/>";			
-				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
 					$buyer[$i]=$sql_row1["buyer"];
