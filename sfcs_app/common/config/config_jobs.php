@@ -65,8 +65,7 @@ $bai_kpi="bai_kpi";
 $bai_ict="bai_ict";
 ?>
 <?php
-$path="C:/xampp/htdocs/sfcs_main/sfcs_app/app";
-
+$path=$include_path."/sfcs_app/app";
 $mail_to_test=$mail_alert[2];
 $smtp_user=$conf->get('smtp-user-name');
 $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";

@@ -1,9 +1,8 @@
 <?php
 $start_timestamp = microtime(true);
-
 include("m3_process_ses_track.php");
 $include_path=getenv('config_job_path');
-require_once($include_path.'\sfcs_app\common\config\config_jobs.php');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $time_diff=(int)date("YmdH")-$log_time;
 
@@ -11,8 +10,8 @@ set_time_limit(6000000);
 
 function check_style($string)
 {
-	$include_path=getenv('config_job_path');
-	include($include_path.'\sfcs_app\common\config\config_jobs.php');	
+	global $link;
+	global $bai_pro2;
 	$check=0;
 	for ($index=0;$index<strlen($string);$index++) {
     	if(isNumber($string[$index]))
@@ -31,7 +30,6 @@ function check_style($string)
 	}
 
 	$sql3="select style_id from $bai_pro2.movex_styles where movex_style=\"$string\"";
-	echo $sql3;
 	$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row3=mysqli_fetch_array($sql_result3))
 	{
@@ -305,6 +303,7 @@ $username="ber_databasesvc";
 						mysqli_query($link, $sql3) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if($flag==1)
 						{	
+							$vpo='';
 							$vpo_query="select VPO_NO from $m3_inputs.order_details where GMT_Color=\"$color\" and Schedule=\"$sch_no\" and Style=\"$style\"";
 							// echo $vpo_no."<br>";
 							$vpo_result=mysqli_query($link, $vpo_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -328,10 +327,6 @@ $username="ber_databasesvc";
 
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_2\")";
 	mysqli_query($link, $sql3) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
-							
-	// echo "<div class='alert alert-info alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Successfully Updated.</strong></div>";
-
-
 	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"ssc_color_coding.php\"; }</script>";
 ?>
 <?php	
