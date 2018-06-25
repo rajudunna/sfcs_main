@@ -12,7 +12,7 @@ function getscheduledata($variable)
 {
 	// include("dbconf1.php");
 	// include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$query_get_schedule_data= "SELECT order_del_no as schedule FROM $bai_pro3.packing_summary_input group by schedule";
 	//echo $query_get_schedule_data;
@@ -34,7 +34,7 @@ if(isset($_GET['schedule']))
 }
 function getcolor($schedule)
 {
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 	$schedule_query = "SELECT order_col_des as color,order_style_no as style FROM $bai_pro3.packing_summary_input where order_del_no = $schedule GROUP BY order_col_des";
 	//echo $schedule_query;
 	$result1 = $link->query($schedule_query);
@@ -58,7 +58,7 @@ function getcuts($color)
 {
 	//var_dump($color);
 	$color = explode(",",$color);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 	$query_dep_ops = "SELECT tr.operation_code,tr.operation_name,ts.component FROM $brandix_bts.tbl_style_ops_master ts LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.id=ts.operation_name WHERE style='$color[0]'  AND color = '$color[1]'  and barcode='Yes' ORDER BY ts.ops_sequence";
 
 	//echo $query_dep_ops;
@@ -84,7 +84,7 @@ function getjobdetails($job_number)
 {
 	//var_dump($job_number);
 	$job_number = explode(",",$job_number);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 		$ops_dep_flag = 0;
 		$qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
@@ -243,7 +243,7 @@ if(isset($_GET['job_rev_no']))
 }
 function getjobreversaldetails($job_rev_no)
 {
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 	
 	$operations_qty = "SELECT operation_name,operation_id FROM $brandix_bts.bundle_creation_data bc LEFT JOIN $brandix_bts.tbl_orders_ops_ref os ON os.operation_code=bc.operation_id WHERE input_job_no_random_ref='$job_rev_no' GROUP BY operation_id";
 	$result_operations_qty = $link->query($operations_qty);
@@ -274,7 +274,7 @@ function getreversalscanningdetails($job_number)
 	$job_number = explode(",",$job_number);
 	//var_dump($job_number);
 	// include("dbconf1.php");
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	//verifing next operation done are not
 	$getting_style_qry ="select style,mapped_color as color from $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_number[1]' group by style";
@@ -396,7 +396,7 @@ function validating_remarks_with_qty($validating_remarks)
 		$html_response = "";
 	// include("dbconf1.php");
 	//include("remarks_array.php");
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 	
 	$validating_remarks = explode(",",$validating_remarks);
 	$getting_style_qry ="select style,mapped_color as color from $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$validating_remarks[0]' group by style";
