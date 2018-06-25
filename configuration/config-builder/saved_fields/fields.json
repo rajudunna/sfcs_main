@@ -61,6 +61,12 @@
                         "label": "General",
                         "value": "general"
                     }
+                ],
+                "value": [
+                    "A",
+                    "B",
+                    "C",
+                    "general"
                 ]
             },
             {
