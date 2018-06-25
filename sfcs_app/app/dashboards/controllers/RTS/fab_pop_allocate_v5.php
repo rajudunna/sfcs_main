@@ -100,8 +100,8 @@ Ticket #: #684040-RameshK/2014-05-26 : To raise compalint for rejected RM materi
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.4/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" href="../../../../common/css/bootstrap.css">
-
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/sweetalert.min.js',4,'R'); ?>"></script>
+<!-- <script type="text/javascript" src="../../../../common/js/sweetalert.min.js"></script> -->
+<script type="text/javascript" src="<?php getFullURLLevel($_GET['r'],'common/js/sweetalert.min.js',4,'R'); ?>"></script> 
 <script>
 /* 	$(document).ready(function() {
 		$('#example').DataTable( {
@@ -322,8 +322,12 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait
 
 <?php
 set_time_limit(2000);
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
+error_reporting(0);
 ?>
 
 
@@ -361,7 +365,7 @@ if(isset($_POST['allocate_new']))
 		$width_ref=array();
 		$val_ref=array();
 		$issued_ref=array();
-		
+	
 		for($j=0;$j<sizeof($chk_ref);$j++)
 		{
 			$x=$chk_ref[$j];
@@ -384,7 +388,7 @@ if(isset($_POST['allocate_new']))
 		unset($allo_c);
 		$allo_c=array();
 	
-		$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
+		$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
 		//echo $sql."<br/>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -412,20 +416,57 @@ if(isset($_POST['allocate_new']))
 			$allo_c[]="xl=".$sql_row['p_xl'];
 			$allo_c[]="xxl=".$sql_row['p_xxl'];
 			$allo_c[]="xxxl=".$sql_row['p_xxxl'];
+			$allo_c[]="s01=".$sql_row['p_s01'];
+			$allo_c[]="s02=".$sql_row['p_s02'];
+			$allo_c[]="s03=".$sql_row['p_s03'];
+			$allo_c[]="s04=".$sql_row['p_s04'];
+			$allo_c[]="s05=".$sql_row['p_s05'];
 			$allo_c[]="s06=".$sql_row['p_s06'];
+			$allo_c[]="s07=".$sql_row['p_s07'];
 			$allo_c[]="s08=".$sql_row['p_s08'];
+			$allo_c[]="s09=".$sql_row['p_s09'];
 			$allo_c[]="s10=".$sql_row['p_s10'];
+			$allo_c[]="s11=".$sql_row['p_s11'];
 			$allo_c[]="s12=".$sql_row['p_s12'];
+			$allo_c[]="s13=".$sql_row['p_s13'];
 			$allo_c[]="s14=".$sql_row['p_s14'];
+			$allo_c[]="s15=".$sql_row['p_s15'];
 			$allo_c[]="s16=".$sql_row['p_s16'];
+			$allo_c[]="s17=".$sql_row['p_s17'];
 			$allo_c[]="s18=".$sql_row['p_s18'];
+			$allo_c[]="s19=".$sql_row['p_s19'];
 			$allo_c[]="s20=".$sql_row['p_s20'];
+			$allo_c[]="s21=".$sql_row['p_s21'];
 			$allo_c[]="s22=".$sql_row['p_s22'];
+			$allo_c[]="s23=".$sql_row['p_s23'];
 			$allo_c[]="s24=".$sql_row['p_s24'];
+			$allo_c[]="s25=".$sql_row['p_s25'];
 			$allo_c[]="s26=".$sql_row['p_s26'];
+			$allo_c[]="s27=".$sql_row['p_s27'];
 			$allo_c[]="s28=".$sql_row['p_s28'];
+			$allo_c[]="s29=".$sql_row['p_s29'];
 			$allo_c[]="s30=".$sql_row['p_s30'];
-		}
+			$allo_c[]="s31=".$sql_row['p_s31'];
+			$allo_c[]="s32=".$sql_row['p_s32'];
+			$allo_c[]="s33=".$sql_row['p_s33'];
+			$allo_c[]="s34=".$sql_row['p_s34'];
+			$allo_c[]="s35=".$sql_row['p_s35'];
+			$allo_c[]="s36=".$sql_row['p_s36'];
+			$allo_c[]="s37=".$sql_row['p_s37'];
+			$allo_c[]="s38=".$sql_row['p_s38'];
+			$allo_c[]="s39=".$sql_row['p_s39'];
+			$allo_c[]="s40=".$sql_row['p_s40'];
+			$allo_c[]="s41=".$sql_row['p_s41'];
+			$allo_c[]="s42=".$sql_row['p_s42'];
+			$allo_c[]="s43=".$sql_row['p_s43'];
+			$allo_c[]="s44=".$sql_row['p_s44'];
+			$allo_c[]="s45=".$sql_row['p_s45'];
+			$allo_c[]="s46=".$sql_row['p_s46'];
+			$allo_c[]="s47=".$sql_row['p_s47'];
+			$allo_c[]="s48=".$sql_row['p_s48'];
+			$allo_c[]="s49=".$sql_row['p_s49'];
+			$allo_c[]="s50=".$sql_row['p_s50'];
+}
 		
 		$sql="update $bai_rm_pj1.store_in set allotment_status=1 where tid in (".implode(",",$tid_ref).")";
 		//echo $sql."<br/>";
@@ -530,14 +571,15 @@ if(isset($_POST['allocate_new']))
 	//Exit Code
 	
 	echo "<h2>Successfully Updated.</h2>";
-	
+	$path1=getFullURLLevel($_GET['r'],'fab_pop_details.php',0,'N');
+	$path2=getFullURLLevel($_GET['r'],'fab_pop_details_recut_v2.php',0,'N');	
 	if($process_cat==1)
 	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details.php?doc_no=".$doc_ref[0]."\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$path1&doc_no=".$doc_ref[0]."\"; }</script>";
 	}
 	else
 	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details_recut_v2.php?doc_no=".$doc_ref[0]."\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$path2&doc_no=".$doc_ref[0]."\"; }</script>";
 	}
 }
 
@@ -550,7 +592,7 @@ if(isset($_POST['allocate']))
 {
 
 	
-	echo "<form name='input' method='post' action='fab_pop_allocate_v5.php'>";
+	echo "<form name='input' method='post' action='?r=".$_GET['r']."'>";
 	$doc=$_POST['doc'];
 	//echo "DOC : ".sizeof($doc);exit;
 	$doc_cat=$_POST['doc_cat'];
@@ -571,14 +613,12 @@ if(isset($_POST['allocate']))
 		
 		$temp="manual".$doc[$i];
 		$manual_lot=$_POST[$temp];
-		
-		$temp="pms".$doc[$i];
+		//$temp="pms".$doc[$i];
 		$pms_lot=array();
 		if(strlen($_POST[$temp])>0)
 		{
-			$pms_lot=explode(",",$_POST[$temp]);
+			$pms_lot=explode(",",$manual_lot);
 		}
-			
 		
 		$lot_ref="";
 		
@@ -682,7 +722,9 @@ if(isset($_POST['allocate']))
 		//$sql="select * from bai_rm_pj1.fabric_status_v2 where inv_no in (select inv_no from bai_rm_pj1.sticker_report where lot_no in (".implode(",",$lot_db_2)."))";
 
 		//Current Version
+		//var_dump($lot_db_2);
 		$sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") order by shade";
+		//echo $sql;
 		//$sql="select * from bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") order by inv_no,shade,width";
 		//2012-06-12 New implementation to get fabric detail based on invoce/batch
 		/////////////////XXXXXXXXXXXXXXXXXXXXXXXXXXX//////////////////////
