@@ -39,6 +39,31 @@
                 
             }
         ?>
+        <?php 
+            if(getrbac_user()['role_id']=='1'){ 
+                $ma = 'User Access';
+                GLOBAL $link_ui;
+                $query = "SELECT * FROM tbl_menu_list WHERE parent_id=(SELECT menu_pid FROM tbl_menu_list WHERE link_description='".$ma."')";
+                $res = mysqli_query($link_ui, $query);
+                
+        ?>
+        <li><a><i class='fa fa-cog'></i>Settings <span class="fa fa-chevron-down"></span></a>
+            <ul class='nav child_menu'>
+                <li>
+                    <a>User Access <span class="fa fa-chevron-down"></span></a>
+                        <ul class='nav child_menu'>
+                        <?php
+                            while($mann = mysqli_fetch_array($res)){
+                                echo "<li>
+                                    <a href='?r=".base64_encode($mann['link_location'])."'>".$mann['link_description']."</a>
+                                </li>";
+                            }
+                        ?>
+                        </ul>
+                </li>
+            </ul>
+        </li>
+        <?php } ?>
         </ul>
         </div>
     </div>
@@ -56,10 +81,10 @@
             <div class="nav navbar-nav navbar-right" ng-app="brand">
                 <div ng-controller="menu as menuctrl"><br/>
                     <div class='col-sm-6 ' ng-cloak>
-                        <div class="input-group">
+                        <!--<div class="input-group">
                             <input type="text" class="form-control" ng-model="menuctrl.ser_box" ng-change="menuctrl.sugissions()">
                             <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                        </div>
+                        </div>-->
                         <div class='col-sm-12' style="position: absolute;background: white;margin-top: -10px;z-index:999" ng-show='menuctrl.ss'>
                             <h4>Suggestions : {{menuctrl.ser_box}}</h4><hr/>
                             <div ng-repeat="menuctrlre in menuctrl.res121">

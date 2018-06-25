@@ -26,7 +26,7 @@
                 "label": "Plant Name",
                 "className": "form-control",
                 "name": "plantname",
-                "value": "Brandix Essential - Koggala",
+                "value": "bai2",
                 "subtype": "text"
             },
             {
@@ -35,7 +35,7 @@
                 "label": "Plant Code",
                 "className": "form-control",
                 "name": "plantcode",
-                "value": "EKG",
+                "value": "ps",
                 "subtype": "text"
             },
             {
@@ -61,11 +61,6 @@
                         "label": "General",
                         "value": "general"
                     }
-                ],
-                "value": [
-                    "A",
-                    "B",
-                    "C"
                 ]
             },
             {
@@ -74,7 +69,7 @@
                 "label": "Super User Name",
                 "className": "form-control",
                 "name": "superuser",
-                "value": "admin",
+                "value": "Kiran",
                 "subtype": "text"
             }
         ],
@@ -312,8 +307,7 @@
                         "label": "Yards",
                         "value": "yards"
                     }
-                ],
-                "value": "meters"
+                ]
             },
             {
                 "type": "checkbox-group",
@@ -330,10 +324,6 @@
                         "label": "Body",
                         "value": "body"
                     }
-                ],
-                "value": [
-                    "front",
-                    "body"
                 ]
             }
         ],
@@ -349,7 +339,7 @@
                 "label": "Server Name",
                 "className": "form-control",
                 "name": "mssql-server-name",
-                "value": "BAIDBSRV01",
+                "value": "GD-SQL-UAT",
                 "subtype": "text"
             },
             {
@@ -358,7 +348,7 @@
                 "label": "User Name",
                 "className": "form-control",
                 "name": "mssql-user-name",
-                "value": "sa",
+                "value": "SFCS_BIA_FF",
                 "subtype": "text"
             },
             {
@@ -368,7 +358,7 @@
                 "label": "Password",
                 "className": "form-control",
                 "name": "mssql-password",
-                "value": "Brandix@7"
+                "value": "Ba@rUpr6"
             },
             {
                 "type": "text",
@@ -386,6 +376,23 @@
                 "className": "form-control",
                 "name": "mysql-odbc",
                 "value": "test2",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "M3 Database",
+                "className": "form-control",
+                "name": "m3database",
+                "value": "BELMasterUAT",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "label": "Driver Name",
+                "className": "form-control",
+                "name": "driver_name",
+                "value": "Driver={SQL Server Native Client 11.0}",
                 "subtype": "text"
             }
         ]
