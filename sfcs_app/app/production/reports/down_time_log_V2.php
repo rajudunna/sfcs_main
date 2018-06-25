@@ -70,7 +70,7 @@ if(isset($_GET['date']))
 	echo '<a class="btn btn-info btn-sm" href="'.getFullURL($_GET['r'],'down_time_log_V2.php','N').'&date='.date("Y-m-d",strtotime("+1 month", strtotime($date))).'"> Next Month</a>';
 	// if($username=="kirang")
 	{
-	echo '  |  <a href="'.getFullURL($_GET['r'],'down_time_update_V2.php','N').'" class="btn btn-primary btn-sm"> Insert</a>';
+	echo '  |  <a href="'.getFullURLLevel($_GET['r'],'workstudy/controllers/down_time_update_V2.php','2','N').'" class="btn btn-primary btn-sm"> Insert</a>';
 	}
 }
 else
@@ -79,7 +79,7 @@ else
 	echo '<div class="panel-heading">Downtime Log : '.date("M-Y",strtotime($date)).'</div>';
 	echo '<div class="panel-body">';
 	echo '<a class="btn btn-info btn-sm" href="'.getFullURL($_GET['r'],'down_time_log_V2.php','N').'&date='.date("Y-m-d",strtotime("-1 month")).'"> Last Month</a>  |  ';
-	echo '<a href="'.getFullURL($_GET['r'],'down_time_update_V2.php','N').'" class="btn btn-primary btn-sm"> Insert</a>';
+	echo '<a href="'.getFullURLLevel($_GET['r'],'workstudy/controllers/down_time_update_V2.php','2','N').'" class="btn btn-primary btn-sm"> Insert</a>';
 }
 
 echo '<div class="table-responsive">
