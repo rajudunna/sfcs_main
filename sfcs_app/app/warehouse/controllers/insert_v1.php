@@ -558,7 +558,18 @@ echo '</form></div>';
 </div>
 </div>
 </div>
-<script>	
+<script>
+jQuery(document).ready(function($){
+   $('#course1').keypress(function (e) {
+       var regex = new RegExp("^[0-9a-zA-Z\]+$");
+       var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+       if (regex.test(str)) {
+           return true;
+       }
+       e.preventDefault();
+       return false;
+   });
+});
 $(document).ready(function()
 {	
 	$(window).scroll(function(){
