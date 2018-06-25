@@ -74,7 +74,7 @@ $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
 
 $plant_name = $conf1->get('plantname');
 
-$in_categories = implode(',',$conf1->get('category-display-dashboard'));
+$in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
 //Central Administraion Group ID's
 $group_id_sfcs=8;
