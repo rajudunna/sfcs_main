@@ -189,7 +189,6 @@ if(isset($_POST['cartonid']))
 
 
 <?php
-
 if(isset($_POST['update1']) or isset($_POST['update']))
 {
 	

@@ -1,9 +1,9 @@
 
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
-$view_access=user_acl("SFCS_0046",$username,1,$group_id_sfcs); 
+// $view_access=user_acl("SFCS_0046",$username,1,$group_id_sfcs); 
 ?>
 <?php include(getFullURLLevel($_GET['r'],'functions2_production_status_report.php',0,'R')); ?>
 
@@ -77,9 +77,11 @@ for($i=0;$i<sizeof($sql_mods);$i++)
 
 <div class="col-md-1">
 Shift: <select name="shift" class="form-control">
-<option value='"A","B"' <?php if($shift=='"A","B"') { echo "selected"; }?> >All</option>
-<option value='"A"' <?php if($shift=='"A"') { echo "selected"; }?>>A</option>
-<option value='"B"' <?php if($shift=='"B"') { echo "selected"; }?>>B</option>
+<?php 
+for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+<?php }
+?>
 </select></div>
 
 <div class="col-md-2">

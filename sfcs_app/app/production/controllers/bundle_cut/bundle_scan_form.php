@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
 <META HTTP-EQUIV="refresh" content="120">
+<?php $has_permission = haspermission($_GET['r']);?>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -137,9 +138,9 @@ error_reporting(0);
 $shift=$_POST['shift'];
 $module=$_POST['module'];
 
-$view_access=user_acl("SFCS_0273",$username,1,$group_id_sfcs);
-$authorized=user_acl("SFCS_0273",$username,7,$group_id_sfcs);
-$super_user=user_acl("SFCS_0273",$username,33,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0273",$username,1,$group_id_sfcs);
+// $authorized=user_acl("SFCS_0273",$username,7,$group_id_sfcs);
+// $super_user=user_acl("SFCS_0273",$username,33,$group_id_sfcs);
 
 
 // Report simple running errors
@@ -197,7 +198,7 @@ $cur_date=date("Y-m-d");
 <form action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post">
 <table class="table table-bordered"><tr>
 <?php
-if($cur_date<=$ex_date && $cur_hr<=$ex_hour && in_array($username,$authorized))
+if($cur_date<=$ex_date && $cur_hr<=$ex_hour && in_array($authorized,$has_permission))
 {
 	echo "<th>Select Date:</th>";
 	?>
@@ -216,7 +217,7 @@ if($status=='open')
 	?>
 	<th>Hour:</th><td> <select name="hour">
 	<?php
-	if(in_array($username,$super_user))
+	if(in_array($authorizeLevel_1,$has_permission))
 	{
 		for($i=0;$i<sizeof($hrs);$i++)
 		{
@@ -346,7 +347,7 @@ if(isset($_POST['submit']))
 	{
 		$shift_ops='B';
 	}
-	if(($cur_date<=$ex_date) && ($cur_hr<=$ex_hour) && in_array($username,$authorized))
+	if(($cur_date<=$ex_date) && ($cur_hr<=$ex_hour) && in_array($authorized,$has_permission))
 	{
 		if($_POST['op_date']==date("Y-m-d"))
 		{

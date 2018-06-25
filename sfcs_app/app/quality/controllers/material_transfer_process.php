@@ -1,8 +1,8 @@
 <?php
 //This interface is used to transfer material from one schedule to another.
 
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
+// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+// $username=strtolower($username_list[1]);
 ?>
 <html>
 <head>

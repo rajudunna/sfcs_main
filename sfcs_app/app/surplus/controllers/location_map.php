@@ -1,9 +1,19 @@
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-	$Page_Id = 'SFCS_0401';
-	$view_access=user_acl($Page_Id,$username,1,$group_id_sfcs);
+	// $Page_Id = 'SFCS_0401';
+	// $view_access=user_acl($Page_Id,$username,1,$group_id_sfcs);
+	$has_permission=haspermission($_GET['r']);
+	if(in_array($authorized,$has_permission))
+	{
+		
+	}
+	else
+	{
+		$url = getFullURLLevel($_GET['r'],'common/restricted.php',1,'N');
+		header("Location:$url");
+	}
 ?>
 <?php echo '<link href="'.getFullURLLevel($_GET['r'],'/common/css/sfcs_styles.css',3,'R').'" rel="stylesheet" type="text/css" />'; ?>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R'); ?>"></script><!-- External script -->

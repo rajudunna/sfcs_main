@@ -57,9 +57,10 @@ if($log_time==0 or $time_diff>1)
 <body onpageshow="if (event.persisted) noBack();" onkeydown="return showKeyCode(event)">
 
 <?php 
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\m3_bulk_or_proc.php');
+include($include_path.'\sfcs_app\common\config\m3_bulk_or_proc.php');
 	?>
 
 <?php
@@ -102,7 +103,7 @@ $note = date("His").$sql11."<br/>";
 		}
 		}
 	
-	$sql="select speed_schedule from bai_pro3.speed_del_dashboard";
+	$sql="select speed_schedule from $bai_pro3.speed_del_dashboard";
 	$note.=date("His").$sql."<br/>";
 	//mysql_query($sql,$link11) or exit("Sql Error18".mysql_error());
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error18$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -110,7 +111,7 @@ $note = date("His").$sql11."<br/>";
 	{
 		$schedule=$sql_row['speed_schedule'];
 		
-		$sql1="select coalesce(sum(ims_qty),0) as \"ims_qty\", coalesce(sum(ims_pro_qty),0) as \"ims_pro_qty\" from bai_pro3.ims_log where ims_schedule=$schedule";
+		$sql1="select coalesce(sum(ims_qty),0) as \"ims_qty\", coalesce(sum(ims_pro_qty),0) as \"ims_pro_qty\" from $bai_pro3.ims_log where ims_schedule=$schedule";
 $note.=date("His").$sql1."<br/>";
 
 		//mysql_query($sql1,$link11) or exit("Sql Error19".mysql_error());
@@ -121,7 +122,7 @@ $note.=date("His").$sql1."<br/>";
 			$output=$sql_row1['ims_pro_qty'];
 		}
 		
-		$sql1="select coalesce(sum(ims_qty),0) as \"ims_qty\", coalesce(sum(ims_pro_qty),0) as \"ims_pro_qty\" from bai_pro3.ims_log_backup where ims_schedule=$schedule";
+		$sql1="select coalesce(sum(ims_qty),0) as \"ims_qty\", coalesce(sum(ims_pro_qty),0) as \"ims_pro_qty\" from $bai_pro3.ims_log_backup where ims_schedule=$schedule";
 $note.=date("His").$sql1."<br/>";
 
 		//mysql_query($sql1,$link) or exit("Sql Error20".mysql_error());
@@ -132,7 +133,7 @@ $note.=date("His").$sql1."<br/>";
 			$output+=$sql_row1['ims_pro_qty'];
 		}
 
-		$sql1="select order_style_no, sum(if(order_no=1,(old_order_s_s01+old_order_s_s02+old_order_s_s03+old_order_s_s04+old_order_s_s05+old_order_s_s06+old_order_s_s07+old_order_s_s08+old_order_s_s09+old_order_s_s10+old_order_s_s11+old_order_s_s12+old_order_s_s13+old_order_s_s14+old_order_s_s15+old_order_s_s16+old_order_s_s17+old_order_s_s18+old_order_s_s19+old_order_s_s20+old_order_s_s21+old_order_s_s22+old_order_s_s23+old_order_s_s24+old_order_s_s25+old_order_s_s26+old_order_s_s27+old_order_s_s28+old_order_s_s29+old_order_s_s30+old_order_s_s31+old_order_s_s32+old_order_s_s33+old_order_s_s34+old_order_s_s35+old_order_s_s36+old_order_s_s37+old_order_s_s38+old_order_s_s39+old_order_s_s40+old_order_s_s41+old_order_s_s42+old_order_s_s43+old_order_s_s44+old_order_s_s45+old_order_s_s46+old_order_s_s47+old_order_s_s48+old_order_s_s49+old_order_s_s50+old_order_s_xs+old_order_s_s+old_order_s_m+old_order_s_l+old_order_s_xl+old_order_s_xxl+old_order_s_xxxl),(order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50+order_s_xs+order_s_s+order_s_m+order_s_l+order_s_xl+order_s_xxl+order_s_xxxl))) as \"order_qty\" from bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
+		$sql1="select order_style_no, sum(if(order_no=1,(old_order_s_s01+old_order_s_s02+old_order_s_s03+old_order_s_s04+old_order_s_s05+old_order_s_s06+old_order_s_s07+old_order_s_s08+old_order_s_s09+old_order_s_s10+old_order_s_s11+old_order_s_s12+old_order_s_s13+old_order_s_s14+old_order_s_s15+old_order_s_s16+old_order_s_s17+old_order_s_s18+old_order_s_s19+old_order_s_s20+old_order_s_s21+old_order_s_s22+old_order_s_s23+old_order_s_s24+old_order_s_s25+old_order_s_s26+old_order_s_s27+old_order_s_s28+old_order_s_s29+old_order_s_s30+old_order_s_s31+old_order_s_s32+old_order_s_s33+old_order_s_s34+old_order_s_s35+old_order_s_s36+old_order_s_s37+old_order_s_s38+old_order_s_s39+old_order_s_s40+old_order_s_s41+old_order_s_s42+old_order_s_s43+old_order_s_s44+old_order_s_s45+old_order_s_s46+old_order_s_s47+old_order_s_s48+old_order_s_s49+old_order_s_s50+old_order_s_xs+old_order_s_s+old_order_s_m+old_order_s_l+old_order_s_xl+old_order_s_xxl+old_order_s_xxxl),(order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50+order_s_xs+order_s_s+order_s_m+order_s_l+order_s_xl+order_s_xxl+order_s_xxxl))) as \"order_qty\" from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
 $note.=date("His").$sql1."<br/>";
 		//mysql_query($sql1,$link11) or exit("Sql Error21".mysql_error());
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -145,7 +146,7 @@ $note.=date("His").$sql1."<br/>";
 		
 
 		
-		$sql1="select coalesce(sum((a_s01+a_s02+a_s03+a_s04+a_s05+a_s06+a_s07+a_s08+a_s09+a_s10+a_s11+a_s12+a_s13+a_s14+a_s15+a_s16+a_s17+a_s18+a_s19+a_s20+a_s21+a_s22+a_s23+a_s24+a_s25+a_s26+a_s27+a_s28+a_s29+a_s30+a_s31+a_s32+a_s33+a_s34+a_s35+a_s36+a_s37+a_s38+a_s39+a_s40+a_s41+a_s42+a_s43+a_s44+a_s45+a_s46+a_s47+a_s48+a_s49+a_s50+a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl)*a_plies),0) as \"cut_qty\" from bai_pro3.plandoc_stat_log where order_tid in (select order_tid from bai_pro3.bai_orders_db where order_del_no=\"$schedule\") and act_cut_status=\"DONE\" and cat_ref in (select tid from bai_pro3.cat_stat_log where order_tid in (select order_tid from bai_pro3.bai_orders_db where order_del_no=\"$schedule\") and category in (\"Body\",\"Front\"))";
+		$sql1="select coalesce(sum((a_s01+a_s02+a_s03+a_s04+a_s05+a_s06+a_s07+a_s08+a_s09+a_s10+a_s11+a_s12+a_s13+a_s14+a_s15+a_s16+a_s17+a_s18+a_s19+a_s20+a_s21+a_s22+a_s23+a_s24+a_s25+a_s26+a_s27+a_s28+a_s29+a_s30+a_s31+a_s32+a_s33+a_s34+a_s35+a_s36+a_s37+a_s38+a_s39+a_s40+a_s41+a_s42+a_s43+a_s44+a_s45+a_s46+a_s47+a_s48+a_s49+a_s50+a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl)*a_plies),0) as \"cut_qty\" from bai_pro3.plandoc_stat_log where order_tid in (select order_tid from bai_pro3.bai_orders_db where order_del_no=\"$schedule\") and act_cut_status=\"DONE\" and cat_ref in (select tid from bai_pro3.cat_stat_log where order_tid in (select order_tid from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\") and category in (\"Body\",\"Front\"))";
 $note.=date("His").$sql1."<br/>";
 		//mysql_query($sql1,$link11) or exit("Sql Error22".mysql_error());
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error22$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -180,7 +181,7 @@ $note.=date("His").$sql11."<br/>";
 		
 		$lastup=date("Y-m-d H:i:s");
 		
-		$sql1="update bai_pro3.speed_del_dashboard set speed_act=\"$avg_pcs_per_hour\", speed_style=\"$order_style_no\", speed_cut_qty=\"$cut_qty\", speed_in_qty=\"$input\", speed_out_qty=\"$output\", speed_order_qty=\"$order_qty\", lastup=\"$lastup\" where speed_schedule=$schedule";
+		$sql1="update $bai_pro3.speed_del_dashboard set speed_act=\"$avg_pcs_per_hour\", speed_style=\"$order_style_no\", speed_cut_qty=\"$cut_qty\", speed_in_qty=\"$input\", speed_out_qty=\"$output\", speed_order_qty=\"$order_qty\", lastup=\"$lastup\" where speed_schedule=$schedule";
 
 $note.=date("His").$sql1."<br/>";
 
@@ -230,7 +231,7 @@ $note.=date("His").$sql11."<br/>";
 			$total_hrs+=$hoursa_new;
 		}
 		
-		$sql1="update bai_pro3.speed_del_dashboard set total_hrs=$total_hrs, today_hrs=$hoursa where speed_schedule=$schedule";
+		$sql1="update $bai_pro3.speed_del_dashboard set total_hrs=$total_hrs, today_hrs=$hoursa where speed_schedule=$schedule";
 
 $note.=date("His").$sql1."<br/>";
 		mysqli_query($link, $sql1) or exit("Sql Error27$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -456,7 +457,7 @@ $note.=date("His").$sql2."<br/>";
 			}
 			
 			$days=0;
-			$sql2="select days from bai_pro.pro_style_today where style=\"$style_code_new\"";
+			$sql2="select days from $bai_pro.pro_style_today where style=\"$style_code_new\"";
 			$note.=date("His").$sql2."<br/>";
 			//echo $sql2;
 			//mysql_query($sql2,$link) or exit("Sql Error39".mysql_error());
@@ -472,7 +473,7 @@ $note.=date("His").$sql2."<br/>";
 
 			//COM: PLAN
 			
-			$sql2="select plan_eff, plan_pro, act_hours from bai_pro.pro_plan_today where date=\"$date\" and shift=\"$shift\" and sec_no=$sec and   mod_no=$module";
+			$sql2="select plan_eff, plan_pro, act_hours from $bai_pro.pro_plan_today where date=\"$date\" and shift=\"$shift\" and sec_no=$sec and   mod_no=$module";
 $note.=date("His").$sql2."<br/>";
 			//mysql_query($sql2,$link) or exit("Sql Error40".mysql_error());
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -493,7 +494,7 @@ $note.=date("His").$sql2."<br/>";
 			
 			//New 2013-07-27 for actula clock hours calculation
 			$act_nop=0;
-			$sql2="SELECT (avail_$shift-absent_$shift) as nop FROM bai_pro.pro_atten WHERE DATE='$date' AND module=$module";
+			$sql2="SELECT (avail_$shift-absent_$shift) as nop FROM $bai_pro.pro_atten WHERE DATE='$date' AND module=$module";
 $note.=date("His").$sql2."<br/>";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -504,7 +505,7 @@ $note.=date("His").$sql2."<br/>";
 						
 			$code=$date."-".$module."-".$shift;
 			
-			$sql2="insert ignore into bai_pro.grand_rep(tid) values (\"$code\")";
+			$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")";
 			$note.=date("His").$sql2."<br/>";
 			mysqli_query($link, $sql2) or exit("Sql Error41$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -515,7 +516,7 @@ $note.=date("His").$sql2."<br/>";
 				$pln_output=0;
 				$pln_clh=0;
 				$pln_sth=0;
-				$sql2="select plan_eff, plan_pro, plan_sah,plan_clh from bai_pro.pro_plan where date=\"$date\" and shift=\"$shift\" and sec_no=$sec and   mod_no=$module";
+				$sql2="select plan_eff, plan_pro, plan_sah,plan_clh from $bai_pro.pro_plan where date=\"$date\" and shift=\"$shift\" and sec_no=$sec and   mod_no=$module";
 				$note.=date("His").$sql2."<br/>";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -534,7 +535,7 @@ $note.=date("His").$sql2."<br/>";
 			}
 			
 			//$sql2="update grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$buyer_db_new\", days=$days, max_style=\"$style_code_new\", max_out=$max where tid=\"$code\"";
-			$sql2="update bai_pro.grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$buyer_db_new\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
+			$sql2="update $bai_pro.grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$buyer_db_new\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
 
 			$note.=date("His").$sql2."<br/>";
 			mysqli_query($link, $sql2) or exit("Sql Error42$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));			

@@ -4,18 +4,15 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
-$username="sfcsproject1";
-//echo $username;
+// $username="sfcsproject1";
+// echo $username;
 
-$authorized=array("sfcsproject1");
-$super_user=array("sfcsproject1");
+// $authorized=array("sfcsproject1");
+// $super_user=array("sfcsproject1");
+$has_perm=haspermission($_GET['r']);
 $hour=date("H.i");
 
-	if(in_array(strtolower($username),$super_user))
-	{
-	
-	}
-	else if(in_array(strtolower($username),$authorized))
+	if(in_array($authorized,$has_perm))
 	{
 		
 		//New Implementation to restrict as per time lines to update Planning Board 20111211
@@ -30,18 +27,20 @@ $hour=date("H.i");
 		}
 		else
 		{
-			header("Location:time_out.php?msg=1");
+			$url=getFullURLLevel($_GET['r'],'time_out.php',1,'N');
+			header("Location:$url&msg=1");
 		}
 	}
 	else
 	{
-	   header("Location:restrict.php");
+		$url=getFullURLLevel($_GET['r'],'/common/config/restricted.php',4,'N');
+	   header("Location:$url");
 	}
 	
 
 
 // $criteria="where left(order_style_no,1) in (".$global_style_codes.")";
-if(!(in_array(strtolower($username),$super_user)) or !(in_array(strtolower($username),$authorized)))
+/*if(!(in_array($authorized,$has_perm)))
 {
 	//exploding the users list into buyer level
 	include("style_allocation.php");
@@ -61,6 +60,7 @@ if(!(in_array(strtolower($username),$super_user)) or !(in_array(strtolower($user
 	//$criteria=" where left(order_style_no,1) in (".$global_style_codes.") and  left(order_style_no,1) in (".implode(",",$criteria_styles).")";
 	
 }
+*/
 
 ?>
 
@@ -179,7 +179,7 @@ echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"fir
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ $criteria";	
+	$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ ";	
 	echo $sql;
 //}
 // mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));

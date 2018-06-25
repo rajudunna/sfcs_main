@@ -57,7 +57,8 @@ table{
 
 
 <?php
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $text.='<h3>Daily Plan Achievement Report</h3>';
 
@@ -72,7 +73,7 @@ $section=0;
 // Table print
 
 $module_db=array();
-$sql_new1="select distinct module from bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by module*1";
+$sql_new1="select distinct module from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by module*1";
 //echo $sql_new1;
 $sql_result_new1=mysqli_query($link, $sql_new1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row_new1=mysqli_fetch_array($sql_result_new1))
@@ -91,7 +92,7 @@ $text.= "<th>Day(+/-)</th>";
 $text.= "</tr>";
 
 
-$sql222_new="select distinct date from bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by date";
+$sql222_new="select distinct date from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by date";
  // echo $sql222_new;
 
 $sql_result222_new=mysqli_query($link, $sql222_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -117,7 +118,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$check=0;
 		}
 		
-		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from bai_pro.grand_rep where date=\"$date\" and module=$mod group by module";
+		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from $bai_pro.grand_rep where date=\"$date\" and module=$mod group by module";
 		//echo $sql2."<BR>";
 		
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

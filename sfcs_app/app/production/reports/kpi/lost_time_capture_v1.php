@@ -2,6 +2,7 @@
 <?php
 //load the database configuration file
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+$has_perm=haspermission($_GET['r']);
 // echo getFullURLLevel($_GET['r'],'lost_time_capture.php',0,'R');
 ?>
 <html lang="en">
@@ -292,7 +293,7 @@ table tr:hover td {
 		<th>Pcs</th>
 		<th>6.30 P.M.</th>
 		<th>Pcs</th>
-	
+		<th></th>
 		
 		
       </tr>
@@ -431,12 +432,14 @@ table tr:hover td {
 			echo '</td>';
 			echo '<td><b>'.$tout11.'</b></td>';
 			
-			$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-			$username=strtolower($username_list[1]);
-			$super_user=array("hasithada","thusharako","thilinana","chathurangad","dinushapre","diland","ranganak");
+			// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+			// $username=strtolower($username_list[1]);
+			// $super_user=array("hasithada","thusharako","thilinana","chathurangad","dinushapre","diland","ranganak");
 							
-				if (in_array($username, $super_user)){
-						echo '<td><b><a href="edit_downtime.php?team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
+				if (in_array($authorized, $has_perm)){
+					$url=base64_encode('/sfcs_app/app/production/reports/kpi/edit_downtime.php');
+					// echo $url;
+						echo '<td><b><a href="index.php?r='.$url.'&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
 				}
 			
 				?>

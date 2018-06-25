@@ -1,38 +1,39 @@
 <?php 
 
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 ?> 
 <?php  
-function leading_zeros($value, $places){
+// function leading_zeros($value, $places){
 
-    if(is_numeric($value)){
-        for($x = 1; $x <= $places; $x++){
-            $ceiling = pow(10, $x);
-            if($value < $ceiling){
-                $zeros = $places - $x;
-                for($y = 1; $y <= $zeros; $y++){
-                    $leading .= "0";
-                }
-            $x = $places + 1;
-            }
-        }
-        $output = $leading . $value;
-    }
-    else{
-        $output = $value;
-    }
-    return $output;
-}
+//     if(is_numeric($value)){
+//         for($x = 1; $x <= $places; $x++){
+//             $ceiling = pow(10, $x);
+//             if($value < $ceiling){
+//                 $zeros = $places - $x;
+//                 for($y = 1; $y <= $zeros; $y++){
+//                     $leading .= "0";
+//                 }
+//             $x = $places + 1;
+//             }
+//         }
+//         $output = $leading . $value;
+//     }
+//     else{
+//         $output = $value;
+//     }
+//     return $output;
+// }
 
 //TEMP Table 
 
 //include("packing_dashboard_prepare.php"); //AUTO 
 //NEW ADD 2011-07-14 
-$sql1="truncate bai_pro3.packing_dashboard_alert_temp"; 
+$sql1="truncate $bai_pro3.packing_dashboard_alert_temp"; 
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql1="insert into bai_pro3.packing_dashboard_alert_temp SELECT tid,doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,input_date,ims_pro_qty,ims_mod_no,ims_log_date from bai_pro3.packing_dashboard";
+$sql1="insert into $bai_pro3.packing_dashboard_alert_temp SELECT tid,doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,input_date,ims_pro_qty,ims_mod_no,ims_log_date from bai_pro3.packing_dashboard";
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
 
@@ -145,7 +146,7 @@ $sec_db_order=array(1,2,3,4,5);
 for($j=0; $j<sizeof($sec_db_order); $j++) 
 { 
 
-$sqlx="select * from bai_pro3.sections_db where sec_id=".$sec_db_order[$j]; 
+$sqlx="select * from $bai_pro3.sections_db where sec_id=".$sec_db_order[$j]; 
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
@@ -158,7 +159,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     if(sizeof($section_mods)>0) 
     { 
         $y=0; 
-        $sql1="SELECT * FROM bai_pro3.packing_dashboard_alert_temp WHERE ims_mod_no in ($section_mods) ORDER BY lastup"; 
+        $sql1="SELECT * FROM $bai_pro3.packing_dashboard_alert_temp WHERE ims_mod_no in ($section_mods) ORDER BY lastup"; 
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         $sql_num_check=mysqli_num_rows($sql_result1); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 
@@ -169,14 +170,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $ims_tid_qty=$sql_row1['carton_act_qty']; 
              
             //$sqla="select sum(bac_qty) as qty from bai_pro.bai_log_buf where ims_doc_no=$ims_doc_no and size_$ims_size > 0"; 
-            $sqla="select sum(ims_pro_qty) as qty from bai_pro3.ims_log where ims_doc_no=$ims_doc_no and ims_size=\"a_$ims_size\" and ims_mod_no > 0"; 
+            $sqla="select sum(ims_pro_qty) as qty from $bai_pro3.ims_log where ims_doc_no=$ims_doc_no and ims_size=\"a_$ims_size\" and ims_mod_no > 0"; 
             $sql_resulta=mysqli_query($link, $sqla) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_rowa=mysqli_fetch_array($sql_resulta)) 
             { 
                 $output_qty=$sql_rowa["qty"];     
             } 
              
-            $sqla1="select sum(ims_pro_qty) as qty from bai_pro3.ims_log_backup where ims_doc_no=$ims_doc_no and ims_size=\"a_$ims_size\" and ims_mod_no > 0"; 
+            $sqla1="select sum(ims_pro_qty) as qty from $bai_pro3.ims_log_backup where ims_doc_no=$ims_doc_no and ims_size=\"a_$ims_size\" and ims_mod_no > 0"; 
             //echo $sqla1; 
 			$sql_resulta1=mysqli_query($link, $sqla1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_rowa1=mysqli_fetch_array($sql_resulta1)) 
@@ -184,7 +185,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
                 $output_qty1=$sql_rowa1["qty"];     
             } 
              
-            $sqlb="select sum(carton_act_qty) as qty from bai_pro3.pac_stat_log where doc_no=$ims_doc_no and size_code=\"".$ims_size."\" and status=\"DONE\""; 
+            $sqlb="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where doc_no=$ims_doc_no and size_code=\"".$ims_size."\" and status=\"DONE\""; 
 			$sql_resultb=mysqli_query($link, $sqlb) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_rowb=mysqli_fetch_array($sql_resultb)) 
             { 
@@ -198,7 +199,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         }     
          
         $embl_carts=0; 
-        $sql11="SELECT * FROM bai_pro3.packing_dashboard_alert_temp WHERE ims_mod_no in ($section_mods) and ims_schedule in (".implode(",",$embl_dels).") ORDER BY lastup"; 
+        $sql11="SELECT * FROM $bai_pro3.packing_dashboard_alert_temp WHERE ims_mod_no in ($section_mods) and ims_schedule in (".implode(",",$embl_dels).") ORDER BY lastup"; 
         $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         //$embl_carts=mysql_num_rows($sql_result11); 
         while($sql_row11=mysqli_fetch_array($sql_result11)) 
@@ -209,14 +210,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $ims_tid_qty1=$sql_row1['carton_act_qty']; 
              
             //$sqla="select sum(bac_qty) as qty from bai_pro.bai_log_buf where ims_doc_no=$ims_doc_no and size_$ims_size > 0"; 
-            $sqla="select sum(ims_pro_qty) as qty from bai_pro3.ims_log where ims_doc_no=$ims_doc_no and ims_size=\"a_$ims_size\" and ims_mod_no > 0"; 
+            $sqla="select sum(ims_pro_qty) as qty from $bai_pro3.ims_log where ims_doc_no=$ims_doc_no and ims_size=\"a_$ims_size\" and ims_mod_no > 0"; 
             $sql_resulta=mysqli_query($link, $sqla) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_rowa=mysqli_fetch_array($sql_resulta)) 
             { 
                 $output_qty2=$sql_rowa["qty"];     
             } 
              
-            $sqla1="select sum(ims_pro_qty) as qty from bai_pro3.ims_log_backup where ims_doc_no=$ims_doc_no and ims_size=\"a_$ims_size\" and ims_mod_no > 0"; 
+            $sqla1="select sum(ims_pro_qty) as qty from $bai_pro3.ims_log_backup where ims_doc_no=$ims_doc_no and ims_size=\"a_$ims_size\" and ims_mod_no > 0"; 
             //echo $sqla1; 
             $sql_resulta1=mysqli_query($link, $sqla1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_rowa1=mysqli_fetch_array($sql_resulta1)) 
@@ -224,7 +225,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
                 $output_qty12=$sql_rowa1["qty"];     
             } 
              
-            $sqlb="select sum(carton_act_qty) as qty from bai_pro3.pac_stat_log where doc_no=$ims_doc_no and size_code=\"".$ims_size."\" and status=\"DONE\""; 
+            $sqlb="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where doc_no=$ims_doc_no and size_code=\"".$ims_size."\" and status=\"DONE\""; 
             $sql_resultb=mysqli_query($link, $sqlb) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_rowb=mysqli_fetch_array($sql_resultb)) 
             { 
@@ -280,7 +281,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 } 
      
 } 
-$message.= "</table><br/><br/>Message Sent Via: http://beknet</body> 
+$message.= "</table><br/><br/>Message Sent Via:".$plant_name."</body> 
 </html>"; 
 // echo $message; 
 

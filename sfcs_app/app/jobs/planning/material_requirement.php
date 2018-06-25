@@ -2,16 +2,13 @@
 
 function m3_alloc_qty($style,$schedule,$component)
 {
-	
-
-
 //$connect = odbc_connect("bci-mvxrpt-01", "ReportReader", "mvx@bci-01");
 //$connect = odbc_connect("GD-RPTSQL", "BAIMacroReaders", "BAI@macrosm3");
 // $server="GD-RPTSQL";
 // $database="M3_BEL";
 // $userid="BAIMacroReaders";
 // $passwrd="BAI@macrosm3";
-$connect = odbc_connect("Driver={SQL Server Native Client 11.0};Server=$server;Database=$database;",$userid,$passwrd);
+$connect = odbc_connect("$driver_name;Server=$server;Database=$database;",$userid,$passwrd);
 $inp_1=$style;
 $inp_2=$schedule;
 $inp_3=$component;

@@ -88,16 +88,17 @@ float:right;
 
 
 <?php 
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 ?>
 
 <div id="page_heading"><span style="float: left"><h3>FR - Daily Plan Achievement Report</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>
 
 <?php
-$sdate=$_POST['dat1'];
-$edate=$_POST['dat2'];
-$section=$_POST['section'];
+// $sdate=$_POST['dat1'];
+// $edate=$_POST['dat2'];
+// $section=$_POST['section'];
 ?>
 <?php
 $start_date_w=time();
@@ -144,7 +145,7 @@ $table.="</tr>";
 
 $mod_count=array();
 $sql="select module,count(module) as count from (SELECT group_code,bai_pro4.uExtractNumberFromString(style) as style,module,
-".implode(",",$query_code)." FROM bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style) as t group by module";
+".implode(",",$query_code)." FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style) as t group by module";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -155,7 +156,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $mod_chk=0;
 $sql="SELECT group_code,bai_pro4.uExtractNumberFromString(style) as style,module,
 ".implode(",",$query_code)."
-FROM bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style";
+FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -169,7 +170,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			
 			//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
+			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
@@ -262,7 +263,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 			
 			//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
+			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
 			//echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))

@@ -10,12 +10,13 @@ user names taken from the database level
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',3,'R'));
 
-$View_access=user_acl("SFCS_0145",$username,1,$group_id_sfcs);
+//$View_access=user_acl("SFCS_0145",$username,1,$group_id_sfcs);
 ?>
 <?php
+//$has_perm=haspermission($_GET['r']);
 
 //$author_id_db=array("kirang","manojm","sridevik","kirang","kirang","thilinapa","kirang","kirang");
 
@@ -31,13 +32,14 @@ while($row=mysql_fetch_array($result))
 }
 
 $auth_users=explode(",",$users);
-if(in_array($username,$auth_users))
+if(in_array($authorized,$has_perm))
 {
 	
 }
 else
 {
-	header("Location:restricted.php");
+	$url = getFullURL($_GET['r'],'restricted.php','N');
+	header("Location:$url");
 }
 */
 ?>
@@ -475,8 +477,9 @@ if(isset($_POST['submit']))
 		$order_tid=$sql_row['order_tid'];
 
 	}
-	
-	$sql="select sum(p_xs*p_plies) AS \"xs\",sum(p_s*p_plies) AS \"s\",sum(p_m*p_plies) AS \"m\",sum(p_l*p_plies) AS \"l\",sum(p_xl*p_plies) AS \"xl\",sum(p_xxl*p_plies) AS \"xxl\",sum(p_xxxl*p_plies) AS \"xxxl\",sum(p_s01 * p_plies) as \"s01\", sum(p_s02 * p_plies) as \"s02\", sum(p_s03 * p_plies) as \"s03\", sum(p_s04 * p_plies) as \"s04\", sum(p_s05 * p_plies) as \"s05\", sum(p_s06 * p_plies) as \"s06\", sum(p_s07 * p_plies) as \"s07\", sum(p_s08 * p_plies) as \"s08\", sum(p_s09 * p_plies) as \"s09\", sum(p_s10 * p_plies) as \"s10\", sum(p_s11 * p_plies) as \"s11\", sum(p_s12 * p_plies) as \"s12\", sum(p_s13 * p_plies) as \"s13\", sum(p_s14 * p_plies) as \"s14\", sum(p_s15 * p_plies) as \"s15\", sum(p_s16 * p_plies) as \"s16\", sum(p_s17 * p_plies) as \"s17\", sum(p_s18 * p_plies) as \"s18\", sum(p_s19 * p_plies) as \"s19\", sum(p_s20 * p_plies) as \"s20\", sum(p_s21 * p_plies) as \"s21\", sum(p_s22 * p_plies) as \"s22\", sum(p_s23 * p_plies) as \"s23\", sum(p_s24 * p_plies) as \"s24\", sum(p_s25 * p_plies) as \"s25\", sum(p_s26 * p_plies) as \"s26\", sum(p_s27 * p_plies) as \"s27\", sum(p_s28 * p_plies) as \"s28\", sum(p_s29 * p_plies) as \"s29\", sum(p_s30 * p_plies) as \"s30\", sum(p_s31 * p_plies) as \"s31\", sum(p_s32 * p_plies) as \"s32\", sum(p_s33 * p_plies) as \"s33\", sum(p_s34 * p_plies) as \"s34\", sum(p_s35 * p_plies) as \"s35\", sum(p_s36 * p_plies) as \"s36\", sum(p_s37 * p_plies) as \"s37\", sum(p_s38 * p_plies) as \"s38\", sum(p_s39 * p_plies) as \"s39\", sum(p_s40 * p_plies) as \"s40\", sum(p_s41 * p_plies) as \"s41\", sum(p_s42 * p_plies) as \"s42\", sum(p_s43 * p_plies) as \"s43\", sum(p_s44 * p_plies) as \"s44\", sum(p_s45 * p_plies) as \"s45\", sum(p_s46 * p_plies) as \"s46\", sum(p_s47 * p_plies) as \"s47\", sum(p_s48 * p_plies) as \"s48\", sum(p_s49 * p_plies) as \"s49\", sum(p_s50 * p_plies) as \"s50\" from $bai_pro3.plandoc_stat_log where cat_ref in (select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\"))";
+	$category = "'" .implode("','",$in_categories)."'" ;
+	$sql="select sum(p_xs*p_plies) AS \"xs\",sum(p_s*p_plies) AS \"s\",sum(p_m*p_plies) AS \"m\",sum(p_l*p_plies) AS \"l\",sum(p_xl*p_plies) AS \"xl\",sum(p_xxl*p_plies) AS \"xxl\",sum(p_xxxl*p_plies) AS \"xxxl\",sum(p_s01 * p_plies) as \"s01\", sum(p_s02 * p_plies) as \"s02\", sum(p_s03 * p_plies) as \"s03\", sum(p_s04 * p_plies) as \"s04\", sum(p_s05 * p_plies) as \"s05\", sum(p_s06 * p_plies) as \"s06\", sum(p_s07 * p_plies) as \"s07\", sum(p_s08 * p_plies) as \"s08\", sum(p_s09 * p_plies) as \"s09\", sum(p_s10 * p_plies) as \"s10\", sum(p_s11 * p_plies) as \"s11\", sum(p_s12 * p_plies) as \"s12\", sum(p_s13 * p_plies) as \"s13\", sum(p_s14 * p_plies) as \"s14\", sum(p_s15 * p_plies) as \"s15\", sum(p_s16 * p_plies) as \"s16\", sum(p_s17 * p_plies) as \"s17\", sum(p_s18 * p_plies) as \"s18\", sum(p_s19 * p_plies) as \"s19\", sum(p_s20 * p_plies) as \"s20\", sum(p_s21 * p_plies) as \"s21\", sum(p_s22 * p_plies) as \"s22\", sum(p_s23 * p_plies) as \"s23\", sum(p_s24 * p_plies) as \"s24\", sum(p_s25 * p_plies) as \"s25\", sum(p_s26 * p_plies) as \"s26\", sum(p_s27 * p_plies) as \"s27\", sum(p_s28 * p_plies) as \"s28\", sum(p_s29 * p_plies) as \"s29\", sum(p_s30 * p_plies) as \"s30\", sum(p_s31 * p_plies) as \"s31\", sum(p_s32 * p_plies) as \"s32\", sum(p_s33 * p_plies) as \"s33\", sum(p_s34 * p_plies) as \"s34\", sum(p_s35 * p_plies) as \"s35\", sum(p_s36 * p_plies) as \"s36\", sum(p_s37 * p_plies) as \"s37\", sum(p_s38 * p_plies) as \"s38\", sum(p_s39 * p_plies) as \"s39\", sum(p_s40 * p_plies) as \"s40\", sum(p_s41 * p_plies) as \"s41\", sum(p_s42 * p_plies) as \"s42\", sum(p_s43 * p_plies) as \"s43\", sum(p_s44 * p_plies) as \"s44\", sum(p_s45 * p_plies) as \"s45\", sum(p_s46 * p_plies) as \"s46\", sum(p_s47 * p_plies) as \"s47\", sum(p_s48 * p_plies) as \"s48\", sum(p_s49 * p_plies) as \"s49\", sum(p_s50 * p_plies) as \"s50\" from $bai_pro3.plandoc_stat_log where cat_ref in (select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($category))";
+	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{

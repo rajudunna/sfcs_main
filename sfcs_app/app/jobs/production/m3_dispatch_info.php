@@ -7,7 +7,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 include("mail_config.php");
 		
 
-	$facility='BEK';
+	$facility=$global_facility_code;
 
 
 $sdate=date("Y-m-d",strtotime('-7 days'));
@@ -66,9 +66,9 @@ FROM `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` WHERE (sfcs_date between '$sdate' a
 			}
 			fclose($file);	
 		
+			$to=$SFCS_PRO_SI_WED;
 
-
-			 email_attachment($SFCS_PRO_SI_WED,'Please open the attachment for dispatch details of Brandix Essentials Limited - '.$facility.' Facility on '.$date.'.<br/><br/> Message Sent Via: '.$plant_name.'', 'BEK-'.$facility.' Dispatch Details ('.$date.') ',$header_from, $header_from, $file_name, $default_filetype='application/zip');
+			 email_attachment($to,'Please open the attachment for dispatch details of Brandix Essentials Limited - '.$facility.' Facility on '.$date.'.<br/><br/> Message Sent Via: '.$plant_name.'', $plant_name.'-'.$facility.' Dispatch Details ('.$date.') ',$header_from, $header_from, $file_name, $default_filetype='application/zip');
 					
 			unlink($file_name);
 			

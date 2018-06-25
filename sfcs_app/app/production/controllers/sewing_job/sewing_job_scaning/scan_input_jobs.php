@@ -1,6 +1,7 @@
 <?php
 // include("dbconf.php");
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	$has_permission=haspermission($_GET['r']);
 // error_reporting (0);
 
 $url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');

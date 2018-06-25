@@ -7,7 +7,8 @@ SFCS_PRO_Quality_Rej_Update_Size_wise
 $start_timestamp = microtime(true);
 // Start output buffering
 ob_start();
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 set_time_limit(1600000);
 
@@ -17,20 +18,6 @@ $reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Co
 
 <script>
        
-function firstbox()
-{
-	window.location.href ="rep3.php?style="+document.input.style.value
-}
-
-function secondbox()
-{
-	window.location.href ="rep3.php?style="+document.input.style.value+"&schedule="+document.input.schedule.value
-}
-
-function thirdbox()
-{
-	window.location.href ="rep3.php?style="+document.input.style.value+"&schedule="+document.input.schedule.value+"&color="+document.input.color.value
-}
 </script>
 <script type="text/javascript" src="/sfcs_app/common/js/jquery.min.js" ></script>
 
@@ -150,8 +137,8 @@ $edate=$sdate+(60*60*24*5); // define sunday
 // $sdate=date("Y-m-d",$sdate);
 // $edate=date("Y-m-d",$edate);
 
-$sdate=date("2017-09-01",$sdate);
-$edate=date("2017-09-07",$edate);
+// $sdate=date("2017-09-01",$sdate);
+// $edate=date("2017-09-07",$edate);
 
 
 $minrej_per="0.4%"; // FOR ENTER THE REJECTION PERCENTAGE.
@@ -189,7 +176,7 @@ echo '<table id="tableone" cellspacing="0" class="mytable table table-bordered">
 	<th  class='filter'>Embl <br/> Damages</th>
 	<th  class='filter'> % </th> </tr>";
   
-	$sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_factory_date_new from bai_pro4.week_delivery_plan_ref where schedule_no is not null and ex_factory_date_new between \"$sdate\" and \"$edate\" order by ex_factory_date_new desc ";
+	$sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_factory_date_new from $bai_pro4.week_delivery_plan_ref where schedule_no is not null and ex_factory_date_new between \"$sdate\" and \"$edate\" order by ex_factory_date_new desc ";
 	
 	//echo "<br/>".$sql."<br/>";
 	
@@ -220,7 +207,7 @@ echo '<table id="tableone" cellspacing="0" class="mytable table table-bordered">
 
 		if(sizeof(explode(",",$sch_db_grand[$j]))==1)
 		{
-		$sql1="select sum(bac_Qty) as \"qty\",delivery,size,group_concat(distinct(bac_no)) as bac_no,color from bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand[$j]) and color=\"$sch_color[$j]\" and length(size)>0 group by delivery,color,size";
+		$sql1="select sum(bac_Qty) as \"qty\",delivery,size,group_concat(distinct(bac_no)) as bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand[$j]) and color=\"$sch_color[$j]\" and length(size)>0 group by delivery,color,size";
 		}
 			
 		//echo "<br/>inner part: ".$sql1;
@@ -243,7 +230,7 @@ if($choice==1)
 	$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",
 substring_index(substring_index(remarks,\"-\",1),\"-\",-1) as \"module\",log_date,group_concat(ref1,\"$\") as \"ref1\",
 coalesce(sum(qms_qty),0) as \"qms_qty\" ,section_id
-from bai_pro3.bai_qms_db a join bai_pro3.plan_modules b on substring_index(substring_index(a.remarks,\"-\",1),\"-\",-1)=b.module_id 
+from $bai_pro3.bai_qms_db a join bai_pro3.plan_modules b on substring_index(substring_index(a.remarks,\"-\",1),\"-\",-1)=b.module_id 
 where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") and qms_size=\"$size\" and 
 qms_tran_type=3 and qms_schedule in (".$sch_db.") group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size
 ";
@@ -278,7 +265,7 @@ qms_tran_type=3 and qms_schedule in (".$sch_db.") group by qms_style,qms_schedul
 
 		if($choice==1)
 		{
-			$sql11="select order_style_no,order_del_no,order_s_".$size." as order_size_qty from bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" ";
+			$sql11="select order_style_no,order_del_no,order_s_".$size." as order_size_qty from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" ";
 			//echo $sql11;
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))

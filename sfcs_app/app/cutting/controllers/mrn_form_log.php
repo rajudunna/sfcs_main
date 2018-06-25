@@ -3,6 +3,7 @@
 //include("security1.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
+var_dump(haspermission($_GET['r']));
 //$view_access=user_acl("SFCS_0073",$username,1,$group_id_sfcs);
 //$duplicate_print_users=user_acl("SFCS_0073",$username,7,$group_id_sfcs);
 //$duplicate_print_users=array("santhoshbo","kishorek","sarojiniv","chirikis","kirang");

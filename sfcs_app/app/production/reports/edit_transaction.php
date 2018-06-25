@@ -139,8 +139,8 @@ function GetValueFromChild(tmp)
 <?php 
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
+// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+// $username=$username_list[1];
 ?>
 
 <div class="panel panel-primary">
@@ -224,22 +224,13 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<th>Shift</th>";
 	
-	$shift=array("A","B");
+	// $shift=array("A","B");
 	
 	echo "<td>";
 	echo "<select name=\"shift\" class='form-control'>";
-	for($i=0;$i<sizeof($shift);$i++)
-	{
-		if($shift[$i]==$row["shift"])
-		{
-			$status="selected='selected'";
-		}
-		else
-		{
-			$status="";
-		}
-		echo "<option value=\"$shift[$i]\" $status>".$shift[$i]."</option>";
-	}
+	for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+		<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+	<?php }
 	echo "</select></td>";
 	
 	echo "</tr>";
@@ -376,7 +367,11 @@ while($row=mysqli_fetch_array($result))
 	
 	$sql2="select distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db";
 	//echo $sql2;
+<<<<<<< HEAD
 	$result3=mysqli_query($link, $sql2) or die("377Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+=======
+	$result3=mysqli_query($link, $sql2) or die("3Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+>>>>>>> dev_master
 	while($row2=mysqli_fetch_array($result3))
 	{
 		$schedule[]=$row2["schedule"];

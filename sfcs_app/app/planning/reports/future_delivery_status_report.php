@@ -1,7 +1,7 @@
 <?php 
 //CR#886/ kirang / 2015-03-17 / Future Delivery status Report. - To Track the future deliveries.
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 //$view_access=user_acl("SFCS_0100",$username,1,$group_id_sfcs); 
 
@@ -188,7 +188,12 @@ $table_flag = false;
 			{
 				$customer='LBI';
 			}
-			$sql2="select tid from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and category in ('body','front')";
+			for ($i=0; $i < sizeof($in_categories); $i++)
+					{
+						 $cat[]=$in_categories[$i];
+					}
+					$category = "'" .implode("','",$cat)."'" ;
+			$sql2="select tid from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and category in ($category)";
 			$result2=mysqli_query($link, $sql2) or die("sql error--2".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($result2)>0)
 			{ 

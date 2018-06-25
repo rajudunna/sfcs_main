@@ -1,12 +1,12 @@
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-
-$username="sfcsproject1";
-$authorized_to_change=array("sfcsproject1");
-$authorized_docket_change=array("sfcsproject1");
-$authorized_recut_docket_change=array("sfcsproject1");
+$has_permission = haspermission($_GET['r']);
+// $username="sfcsproject1";
+// $authorized_to_change=array("sfcsproject1");
+// $authorized_docket_change=array("sfcsproject1");
+// $authorized_recut_docket_change=array("sfcsproject1");
 ?>
 <script>
 	function edit(c)
@@ -316,7 +316,7 @@ if(isset($_POST["submit"]) or $flag==1)
 				// echo round($qty_issued,2)."<br>";
 			
 
-				if((in_array(strtolower($username),$authorized_to_change)))
+				if((in_array($authorized,$has_permission)))
 				{
 					if(($lastup=="0000-00-00 00:00:00")  and (round($qty_issued,2) < round($material_req,2)))
 					{
@@ -324,11 +324,11 @@ if(isset($_POST["submit"]) or $flag==1)
 					}
 					else if($lastup!="0000-00-00 00:00:00" and (round($qty_issued,2) < round($material_req,2)))
 					{
-						if($cat=='D' and (in_array(strtolower($username),$authorized_docket_change)) and ($sql_num_check==0))
+						if($cat=='D' and (in_array($authorized,$has_permission)) and ($sql_num_check==0))
 						{
 							echo "<td><input type='submit' value='New Entry' name='new_entry' id='new_entry' class='btn btn-success btn-xs' ></td>";
 						}
-						else if($cat=='R' and (in_array(strtolower($username),$authorized_recut_docket_change)) and ($sql_num_check==0) )
+						else if($cat=='R' and (in_array($authorized,$has_permission)) and ($sql_num_check==0) )
 						{
 							echo "<td><input type='submit' value='New Entry' class='btn btn-success btn-xs' name='new_entry' id='new_entry' ></td>";
 						}
@@ -392,7 +392,7 @@ if(isset($_POST["submit"]) or $flag==1)
 				$result121=mysqli_query($link, $sql121) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=mysqli_num_rows($result121);
 				echo "<tr><td>$inv_no</td><td>$batch_no_no</td><td>$shade</td><td>$rollno</td><td>$roll_id</td><td>$roll_width</td><td>$qty</td><td>".$row1['log_time']."</td>";
-				if((in_array(strtolower($username),$authorized_to_change)))
+				if((in_array($authorized,$has_permission)))
 				{
 					if(($tran_pin!="") and ($lastup=="0000-00-00 00:00:00") and ($sql_num_check==0))
 					{
@@ -403,14 +403,14 @@ if(isset($_POST["submit"]) or $flag==1)
 					}
 					else if($tran_pin!="" and $lastup!="0000-00-00 00:00:00" and ($sql_num_check==0))
 					{
-						if($cat=='D' and (in_array(strtolower($username),$authorized_docket_change)) and ($sql_num_check==0))
+						if($cat=='D' and (in_array($authorized,$has_permission)) and ($sql_num_check==0))
 						{
 							echo '<td><input type="hidden" value="'.$roll_id.'" name="roll_id" id="roll_id"><a class="btn btn-warning btn-xs" href="#" value="'.$tran_pin.'" onclick="edit('.$tran_pin.')">Edit</a>';
 							$url=getFullURL($_GET['r'],'fab_issue_track_V2.php','N');
 							$path="$url&doc_no=".$docket."&doc_type=".$docket_type."&tran_pin=".$tran_pin."&delete=1";
 							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id='del_$tran_pin' class='btn btn-danger btn-xs confirm-submit'  href='$path'  value='".$tran_pin."'>Delete</a></td>";
 						}
-						else if($cat=='R'  and (in_array(strtolower($username),$authorized_recut_docket_change)) and ($sql_num_check==0))
+						else if($cat=='R'  and (in_array($authorized,$has_permission)) and ($sql_num_check==0))
 						{
 
 							echo '<td><input type="hidden" value="'.$roll_id.'"  name="roll_id" id="roll_id"><a class="btn btn-warning btn-xs href="#" value="'.$tran_pin.'" onclick="edit('.$tran_pin.')">Edit</a>';
@@ -531,13 +531,24 @@ if(isset($_POST["submit"]) or $flag==1)
 			echo "<div class='panel-body'>";
 			echo "<form name='update' id='delete_form' method='post' action='".getURL(getBASE($_GET['r'])['path'])['url']."'>";
 			echo "<table class='table table-bordered table-striped'>";
-			echo "<tr><th>Section</th>
-				<td><select name='section' class='form-control' required>
-				<option value='1'>Section-1</option>
-				<option value='2'>Section-2</option>
-				<option value='3'>Section-3</option>
-				</select>
-				</td></tr>";
+			// echo "<tr><th>Section</th>
+			// 	<td><select name='section' class='form-control' required>
+			// 	<option value='1'>Section-1</option>
+			// 	<option value='2'>Section-2</option>
+			// 	<option value='3'>Section-3</option>
+			// 	</select>
+			// 	</td></tr>";
+			 	echo "<tr><th>Section</th> <td><select name='section' class='form-control' required >";
+			    $section_query="select sec_id,sec_head FROM $bai_pro3.sections_db";
+			   $result4=mysqli_query($link, $section_query) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			   while($row4=mysqli_fetch_array($result4))
+			  {
+			 	echo "<option value=\"".$row4['sec_head']."\">".$row4['sec_head']."</option>";
+				
+			  }
+			   echo "</select></td></tr>";
+
+
 			echo "<tr><th>Picking List</th><td><input type='text'  name='picking_list' value='' class='form-control alpha' required></td></tr>";
 			echo "<tr><th>Delivery No</th><td><input type='text' name='delivery_no' value='' class='form-control alpha' required></td></tr>";
 			echo "<tr><th>Issued By</th><td><input type='text'  name='issued_by' value='' class='form-control alpha' required></td></tr>";

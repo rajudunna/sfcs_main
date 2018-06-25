@@ -48,7 +48,7 @@ function update_m3_or($order_tid,$cut_no_ref,$operation,$link)
 
 	$size_qty=array();
 	
-	$sql="select * from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and acutno=$cut_no_ref and remarks in ('Body','Front')"; //20110911
+	$sql="select * from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and acutno=$cut_no_ref and remarks in ('".implode("','",$in_categories)."')"; //20110911
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{

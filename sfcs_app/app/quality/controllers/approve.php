@@ -166,10 +166,6 @@ echo "</form>";
 
 if(isset($_POST['update']))
 {
-	//Login User Name
-	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-	$username=$username_list[1];
-	//Login User Name
 	
 	$style_new=$_POST['style_new'];
 	$schedule_new=$_POST['schedule_new'];

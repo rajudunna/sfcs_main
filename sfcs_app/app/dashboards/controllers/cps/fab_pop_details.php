@@ -1,8 +1,16 @@
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
+
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/user_acl_v1.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/user_acl_v1.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
+
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
+$has_permission=haspermission($url_r); 
 // $authorized=user_acl("SFCS_0199",$username,50,$group_id_sfcs); 
 ?>
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
@@ -199,15 +207,18 @@ $group_docs=$_GET['group_docs'];
 //$username=$username_list[1];
 
 
-//$authorized=array("kirang","rameshk","santhoshbo","bhupalv","vemanas","srinivasaraot","kishorek","rajud","baiadmn","lovakumarig","dharmarajua","eswararaop","bhanul","gowthamis","lovarajub","pavang","rajinig","ramud","revathil","varalakshmik","dharanid","gowthamis","rajinig","revathil","lovarajub","eswarraok","babjim","ramunaidus","nagendral","sivaramakrishnat");
+// $authorized=array("kirang","rameshk","santhoshbo","bhupalv","vemanas","srinivasaraot","kishorek","rajud","baiadmn","lovakumarig","dharmarajua","eswararaop","bhanul","gowthamis","lovarajub","pavang","rajinig","ramud","revathil","varalakshmik","dharanid","gowthamis","rajinig","revathil","lovarajub","eswarraok","babjim","ramunaidus","nagendral","sivaramakrishnat");
 //Added for view purpose
 //$authorized=array("kirang");
 //echo $username."<br>"; 
 //echo $authorized[0]."<br>"; 
-// if(!(in_array(strtolower($username),$authorized)))
-// {
-// 	//header("Location:restrict.php?group_docs=$group_docs");
-// }
+if(!(in_array($authorized,$has_permission)))
+{
+	header($_GET['r'],'restrict.php?group_docs=$group_docs','N');
+
+}
+
+	//header("Location:restrict.php?group_docs=$group_docs");
 
 ?>
 

@@ -20,14 +20,15 @@ Description: We can view and update Planning, Packing Remarks of production.
 // $authorized=user_acl("SFCS_0047",$username,49,$group_id_sfcs); 
 // $authorized2=user_acl("SFCS_0047",$username,50,$group_id_sfcs); 
 // $authorized3=user_acl("SFCS_0047",$username,51,$group_id_sfcs); 
-$username="sfcsproject1";
-$view_access=array("sfcsproject1");
-$authorized=array("sfcsproject1");
-$authorized2=array("sfcsproject1");
-$authorized3=array("sfcsproject1");
+// $username="sfcsproject1";
+// $view_access=array("sfcsproject1");
+// $authorized=array("sfcsproject1");
+// $authorized2=array("sfcsproject1");
+// $authorized3=array("sfcsproject1");
 
 ?>
 <?php
+$has_perm=haspermission($_GET['r']);
 set_time_limit(9000);
 $start_date_w=time();
 
@@ -733,8 +734,14 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		}
 
 		// open data from production review for cut%
+		for ($i=0; $i < sizeof($in_categories); $i++)
+					{
+						 $cat[]=$in_categories[$i];
+					}
+					$category = "'" .implode("','",$cat)."'" ;
+					
 		$CID=0;
-		$sql1z="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and purwidth>0";
+		$sql1z="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($category) and purwidth>0";
 		// echo "<br>".$sql1z."<br>";
 		mysqli_query($link, $sql1z) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1z=mysqli_query($link, $sql1z) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1064,7 +1071,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			
 			$highlight=" bgcolor=\"".$color_code_ref1."\" ";
 
-		if(in_array(strtolower($username),$authorized))
+		if(in_array($authorizeLevel_1,$has_perm))
 		{
 			
 			//$edit_rem="<td class=\"editable\" rel=\"B$edit_ref\">".$remarks[1]."</td>";
@@ -1077,7 +1084,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		}
 
 
-		if(!(in_array(strtolower($username),$authorized2)))
+		if(!(in_array($authorizeLevel_2,$has_perm)))
 		{
 			$edit_rem2="<td $highlight>".$remarks[2]."</td>";
 		}
@@ -1089,7 +1096,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			$edit_rem2.="<input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"A[]\" value=\"".$remarks[0]."\"><input type=\"hidden\" name=\"code[]\" value=\"C\"><input type=\"hidden\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\"></td>";
 		}
 
-		if(!(in_array(strtolower($username),$authorized3)))
+		if(!(in_array($authorizeLevel_3,$has_perm)))
 		{
 			//CR#930 //Displaying the Reasons List to Users for selecting the appropriate reason of the schedule.
 			$reason_ref2="";

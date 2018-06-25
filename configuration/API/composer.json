@@ -1,0 +1,13 @@
+{
+    "name": "confr/api",
+    "type": "library",
+    "require": {
+        "phpdocumentor/phpdocumentor": "^2.9"
+    },
+    "authors": [
+        {
+            "name": "John Baker",
+            "email": "johnbaker@confr.com"
+        }
+    ]
+}

@@ -250,10 +250,7 @@ if(isset($_POST['update']))
 	//echo "size=".implode(",",$size)."<br>";
 	$qty=$_POST['qty'];
 	//echo "qty=".implode(",",$qty)."<br>";
-	//Login User Name
-	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-	$username=$username_list[1];
-	//Login User Name
+	
 	
 	for($i=0;$i<sizeof($qty);$i++)
 	{

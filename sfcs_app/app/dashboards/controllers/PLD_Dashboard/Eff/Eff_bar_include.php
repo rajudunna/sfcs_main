@@ -1,3 +1,3 @@
 <?php echo " <chart palette='2' caption='' shownames='1' showvalues='1' numberPrefix='' sYAxisValuesDecimals='2' connectNullData='0' PYAxisName='Order Quantity Vs Output' SYAxisName='' numDivLines='8' formatNumberScale='0' showBorder='1' numberSuffix='%' preSuffix='%'>
- <categories><category label='S-2' /></categories>
- <dataset seriesName='Reached Efficiency' color='AFD8F8' showValues='1'><set value='' />  </dataset><dataset seriesName='Balance Efficiency' color='F6BD0F' showValues='1'><set value='0' />  </dataset>	<dataset seriesName='Extra Efficiency' color='8BBA00' showValues='1'><set value='' />  </dataset>	</chart>"; ?>
+ <categories><category label='S-1' /><category label='S-2' /><category label='S-6' /></categories>
+ <dataset seriesName='Reached Efficiency' color='AFD8F8' showValues='1'><set value='' /> <set value='' /> <set value='' />  </dataset><dataset seriesName='Balance Efficiency' color='F6BD0F' showValues='1'><set value='29' /> <set value='0' /> <set value='0' />  </dataset>	<dataset seriesName='Extra Efficiency' color='8BBA00' showValues='1'><set value='' /> <set value='' /> <set value='' />  </dataset>	</chart>"; ?>

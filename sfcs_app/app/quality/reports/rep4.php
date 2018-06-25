@@ -11,7 +11,7 @@ Change Log:
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
  
 //$view_access=user_acl("SFCS_0056",$username,1,$group_id_sfcs); 
 ?>
@@ -28,14 +28,17 @@ $reasons=array("Miss Yarn","Fabric Holes","Slub","F.Yarn","Stain Mark","Color Sh
 $username=$username_list[1];
 
 $authorized=array("kirang","bainet","baiadmn");
-if(!(in_array(strtolower($username),$authorized)))
+$url=getFullURL($_GET['r'],'restricted.php','N');
+
+if(!in_array($authorized,$has_perm))
 {
-	header("Location:../restricted.php");
+	header("Location:$url");
 }
+
+
+
 */
-
 ?>
-
 <style type="text/css">
 
 td{
@@ -222,13 +225,13 @@ function loadobjs(){
 					<input id="demo2" class='form-control' type="text" data-toggle='datepicker' size="8" name="edate" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>" >
 				</div>
 				<div class='col-sm-2'>
-					<label>Team</label>
-					<select class='form-control' name="team">
-					<option value="'A','B'" <?php if($_POST['team']=="'A','B'") { echo "selected"; } ?>>All</option>
-					<option value="'A'" <?php if($_POST['team']=="'A'") { echo "selected"; } ?>>A</option>
-					<option value="'B'" <?php if($_POST['team']=="'B'") { echo "selected"; } ?>>B</option>
-					</select>
-				</div>
+		        Team: <select name="team" class="form-control">
+				<?php 
+				for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+				<option <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";} ?>><?php echo $shifts_array[$i] ?></option>
+				<?php }
+				?>
+				</select></div>
 				<div class='col-sm-1'>
 					<br/><br/>
 					<input type="radio" name="choice" value="1" <?php if($_POST['choice']==1) { echo "checked";} else { echo "checked"; }?> >Section

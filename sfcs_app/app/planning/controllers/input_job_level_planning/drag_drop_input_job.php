@@ -1,8 +1,10 @@
 <?php
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
-$username="sfcsproject1";
-$super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gayanl","baisysadmin","chathurangad","buddhikam","saroasa","chathurikap","sfcsproject2","thanushaj","kemijaht","sfcsproject1","ber_databasesvc","saranilaga","thusiyas","thineshas","sudathra");
+// $username="sfcsproject1";
+$has_perm=haspermission($_GET['r']);
+
+// $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gayanl","baisysadmin","chathurangad","buddhikam","saroasa","chathurikap","sfcsproject2","thanushaj","kemijaht","sfcsproject1","ber_databasesvc","saranilaga","thusiyas","thineshas","sudathra");
 
 ?>
 <!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
@@ -662,7 +664,7 @@ $code_db=explode("*",$code);
 			$mods=array();
 			$mods=explode(",",$section_mods);
 			//$mods[]=$module_ref_no;
-			if(!(in_array(strtolower($username),$super_user)) or !(in_array(strtolower($username),$super_user)))
+			if(!(in_array($authorized,$has_perm)))
 			{
 				//New Implementation to Restrict Power User level Planning 20111211
 				$mods=array();
@@ -782,8 +784,12 @@ $code_db=explode("*",$code);
 		<p style=\"margin:0px; padding:0px;		font-weight:bold;	background-color:#3170A8;	color:#FFF;	margin-bottom:5px;\">Completed</p>
 		<table class='table table-bordered'>";
 			
+<<<<<<< HEAD
 		/**/
 		$sql1="SELECT input_job_no as acutno from $bai_pro3.plan_doc_summ_input where order_del_no='$schedule' and input_job_input_status(input_job_no_random)=\"DONE\" order by input_job_no * 1";
+=======
+		/**/$sql1="SELECT input_job_no as acutno from $bai_pro3.plan_doc_summ_input where order_del_no=$schedule and input_job_input_status(act_cut_issue_status)=\"DONE\" order by input_job_no * 1";
+>>>>>>> dev_master
 		//echo $sql1;
 		//mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));

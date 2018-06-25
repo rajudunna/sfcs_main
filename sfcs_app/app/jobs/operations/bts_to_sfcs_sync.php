@@ -1,6 +1,7 @@
 <?php	
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 
 ?>
 <?php	
@@ -44,7 +45,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 			/*Inserting data into Ims log*/
 			$insert_imslog="insert into bai_pro3.ims_log (ims_date,ims_cid,ims_doc_no,ims_mod_no,ims_shift,
 			ims_size,ims_qty,ims_log_date,ims_style,ims_schedule,ims_color,rand_track,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,ims_remarks,operation_id) values ('".$ims_date."','".$cat_ref."','".$row['docket_number']."','".$row['assigned_module']."','".$row['shift']."','".trim($sizevalue)."','".$row['recevied_qty']."','".$ims_log_date."','".$row['style']."','".$row['schedule']."','".$row['color']."','".$row['id']."','".$bundle_op_id."','".$row['input_job_no_random_ref']."','".$row['input_job_no']."','".$row['bundle_number']."','".STRTOUPPER($remarks_ref)."','".$row['operation_id']."')";
-			echo "Insert Ims log :".$insert_imslog."</br>";
+			// echo "Insert Ims log :".$insert_imslog."</br>";
 			$qry_status=mysqli_query($link,$insert_imslog);
 			if($qry_status)
 			{

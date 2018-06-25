@@ -1,6 +1,6 @@
 <?php
 $start_timestamp = microtime(true);
-
+$include_path=getenv('config_job_path');
 // for running these schedules in command prompt making entire code in single php file
 error_reporting(0);
 $date1=date("Y-m-d");
@@ -56,9 +56,9 @@ if($weekday1 != "tuesday")
 			</head>
 			<body>";
 			// set_time_limit(10000000);
-			include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
-				
-
+			include($include_path.'\sfcs_app\common\config\config_jobs.php');
+	
+			
 			$start_date_w=time();
 
 			while((date("N",$start_date_w))!=1) 
@@ -111,7 +111,7 @@ if($weekday1 != "tuesday")
 			  $message.="</tr>";
 			$x=0;
 			$schedules=array();
-			$sql="select schedule_no from bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" and schedule_no!=\"NULL\" order by color,left(style,1) ";
+			$sql="select schedule_no from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" and schedule_no!=\"NULL\" order by color,left(style,1) ";
 			//echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count_rows=mysqli_num_rows($sql_result);
@@ -128,7 +128,7 @@ if($weekday1 != "tuesday")
 
 			$total_sch=implode(",",$schedules);
 
-			$sql="select * from bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) order by order_div,order_del_no desc";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) order by order_div,order_del_no desc";
 			//echo "<br>".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -181,7 +181,7 @@ if($weekday1 != "tuesday")
 				
 				//shipemet details
 				
-				$sql4="SELECT SUM(ship_s_xs),SUM(ship_s_s),SUM(ship_s_m),SUM(ship_s_l),SUM(ship_s_xl),SUM(ship_s_xxl),SUM(ship_s_xxxl),SUM(ship_s_s01),SUM(ship_s_s02),SUM(ship_s_s03),SUM(ship_s_s04),SUM(ship_s_s05),SUM(ship_s_s06),SUM(ship_s_s07),SUM(ship_s_s08),SUM(ship_s_s09),SUM(ship_s_s10),SUM(ship_s_s11),SUM(ship_s_s12),SUM(ship_s_s13),SUM(ship_s_s14),SUM(ship_s_s15),SUM(ship_s_s16),SUM(ship_s_s17),SUM(ship_s_s18),SUM(ship_s_s19),SUM(ship_s_s20),SUM(ship_s_s21),SUM(ship_s_s22),SUM(ship_s_s23),SUM(ship_s_s24),SUM(ship_s_s25),SUM(ship_s_s26),SUM(ship_s_s27),SUM(ship_s_s28),SUM(ship_s_s29),SUM(ship_s_s30),SUM(ship_s_s31),SUM(ship_s_s32),SUM(ship_s_s33),SUM(ship_s_s34),SUM(ship_s_s35),SUM(ship_s_s36),SUM(ship_s_s37),SUM(ship_s_s38),SUM(ship_s_s39),SUM(ship_s_s40),SUM(ship_s_s41),SUM(ship_s_s42),SUM(ship_s_s43),SUM(ship_s_s44),SUM(ship_s_s45),SUM(ship_s_s46),SUM(ship_s_s47),SUM(ship_s_s48),SUM(ship_s_s49),SUM(ship_s_s50)  FROM bai_pro3.ship_stat_log WHERE ship_schedule=\"$sch\" and ship_status=\"2\"";
+				$sql4="SELECT SUM(ship_s_xs),SUM(ship_s_s),SUM(ship_s_m),SUM(ship_s_l),SUM(ship_s_xl),SUM(ship_s_xxl),SUM(ship_s_xxxl),SUM(ship_s_s01),SUM(ship_s_s02),SUM(ship_s_s03),SUM(ship_s_s04),SUM(ship_s_s05),SUM(ship_s_s06),SUM(ship_s_s07),SUM(ship_s_s08),SUM(ship_s_s09),SUM(ship_s_s10),SUM(ship_s_s11),SUM(ship_s_s12),SUM(ship_s_s13),SUM(ship_s_s14),SUM(ship_s_s15),SUM(ship_s_s16),SUM(ship_s_s17),SUM(ship_s_s18),SUM(ship_s_s19),SUM(ship_s_s20),SUM(ship_s_s21),SUM(ship_s_s22),SUM(ship_s_s23),SUM(ship_s_s24),SUM(ship_s_s25),SUM(ship_s_s26),SUM(ship_s_s27),SUM(ship_s_s28),SUM(ship_s_s29),SUM(ship_s_s30),SUM(ship_s_s31),SUM(ship_s_s32),SUM(ship_s_s33),SUM(ship_s_s34),SUM(ship_s_s35),SUM(ship_s_s36),SUM(ship_s_s37),SUM(ship_s_s38),SUM(ship_s_s39),SUM(ship_s_s40),SUM(ship_s_s41),SUM(ship_s_s42),SUM(ship_s_s43),SUM(ship_s_s44),SUM(ship_s_s45),SUM(ship_s_s46),SUM(ship_s_s47),SUM(ship_s_s48),SUM(ship_s_s49),SUM(ship_s_s50)  FROM $bai_pro3.ship_stat_log WHERE ship_schedule=\"$sch\" and ship_status=\"2\"";
 				//echo $sql4;
 				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$total_rows=mysqli_num_rows($sql_result4);
@@ -190,40 +190,8 @@ if($weekday1 != "tuesday")
 					$ship_total=$sql_row4["SUM(ship_s_xs)"]+$sql_row4["SUM(ship_s_s)"]+$sql_row4["SUM(ship_s_m)"]+$sql_row4["SUM(ship_s_l)"]+$sql_row4["SUM(ship_s_xl)"]+$sql_row4["SUM(ship_s_xxl)"]+$sql_row4["SUM(ship_s_xxxl)"]+$sql_row4["SUM(ship_s_s01)"]+$sql_row4["SUM(ship_s_s02)"]+$sql_row4["SUM(ship_s_s03)"]+$sql_row4["SUM(ship_s_s04)"]+$sql_row4["SUM(ship_s_s05)"]+$sql_row4["SUM(ship_s_s06)"]+$sql_row4["SUM(ship_s_s07)"]+$sql_row4["SUM(ship_s_s08)"]+$sql_row4["SUM(ship_s_s09)"]+$sql_row4["SUM(ship_s_s10)"]+$sql_row4["SUM(ship_s_s11)"]+$sql_row4["SUM(ship_s_s12)"]+$sql_row4["SUM(ship_s_s13)"]+$sql_row4["SUM(ship_s_s14)"]+$sql_row4["SUM(ship_s_s15)"]+$sql_row4["SUM(ship_s_s16)"]+$sql_row4["SUM(ship_s_s17)"]+$sql_row4["SUM(ship_s_s18)"]+$sql_row4["SUM(ship_s_s19)"]+$sql_row4["SUM(ship_s_s20)"]+$sql_row4["SUM(ship_s_s21)"]+$sql_row4["SUM(ship_s_s22)"]+$sql_row4["SUM(ship_s_s23)"]+$sql_row4["SUM(ship_s_s24)"]+$sql_row4["SUM(ship_s_s25)"]+$sql_row4["SUM(ship_s_s26)"]+$sql_row4["SUM(ship_s_s27)"]+$sql_row4["SUM(ship_s_s28)"]+$sql_row4["SUM(ship_s_s29)"]+$sql_row4["SUM(ship_s_s30)"]+$sql_row4["SUM(ship_s_s31)"]+$sql_row4["SUM(ship_s_s32)"]+$sql_row4["SUM(ship_s_s33)"]+$sql_row4["SUM(ship_s_s34)"]+$sql_row4["SUM(ship_s_s35)"]+$sql_row4["SUM(ship_s_s36)"]+$sql_row4["SUM(ship_s_s37)"]+$sql_row4["SUM(ship_s_s38)"]+$sql_row4["SUM(ship_s_s39)"]+$sql_row4["SUM(ship_s_s40)"]+$sql_row4["SUM(ship_s_s41)"]+$sql_row4["SUM(ship_s_s42)"]+$sql_row4["SUM(ship_s_s43)"]+$sql_row4["SUM(ship_s_s44)"]+$sql_row4["SUM(ship_s_s45)"]+$sql_row4["SUM(ship_s_s46)"]+$sql_row4["SUM(ship_s_s47)"]+$sql_row4["SUM(ship_s_s48)"]+$sql_row4["SUM(ship_s_s49)"]+$sql_row4["SUM(ship_s_s50)"];
 					//$message.="<td>".round($ship_total,0)."</td>";
 				}
-				
-				//M3 shipment quantity
-				// if($weekday != "tuesday")
-			 //  	{
-				// 	$sql5="SELECT SUM(ship_qty) FROM $database1.style_status_summ WHERE sch_no=\"$sch\" and color=\"".$sch_color."\"";
-				// 	$sql_result5=mysqli_query($con1, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// 	$total_rows1=mysqli_num_rows($sql_result5);
-				// 	while($sql_row5=mysqli_fetch_array($sql_result5))
-				// 	{
-				// 		$m3_total=$sql_row5["SUM(ship_qty)"];
-				// 		$message.="<td>".round($m3_total,0)."</td>";
-				// 		$m3_shipable_qty_total=$m3_shipable_qty_total+$m3_total;
-				// 	}
-					
-				// 	$m3_ship=100+round(($m3_total-$total)*100/$total,0);
-				// 	$color="<font color=black>";
-					
-				// 	if($m3_ship > 100)
-				// 	{
-				// 		$color="<font color=red>";
-				// 	}
-					
-				// 	$message.="<td>$color".$m3_ship."%</td>";
-				// }
-				
-				
 			}
 			$message.="<tr><th colspan=2 style='color:white;background:red;'>Total</th><td colspan=3>Schedules:".$x."</td><td>$order_qty_total</td><td>$shipable_qty_total</td><td>$extra_qty_total</td><td></td>";
-			// if($weekday != "tuesday")
-			// {
-			// 	$message.="<td>$m3_shipable_qty_total</td><td></td>";
-			// }  	
-
-				
 			echo "</tr>";
 
 			}
@@ -311,7 +279,7 @@ else
 			</style>
 			</head>
 			<body>";
-			include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+			include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 			$start_date_w=time();
 
@@ -321,22 +289,12 @@ else
 			}
 			$end_date_w=$start_date_w+(60*60*24*6); // define sunday 
 
-			// $start_date_w=date("Y-m-d",$start_date_w);
-			// $end_date_w=date("Y-m-d",$end_date_w);
-			$start_date_w="2018-01-01";
-			$end_date_w="2018-04-03";
-			//echo $start_date_w."--".$end_date_w;
+			$start_date_w=date("Y-m-d",$start_date_w);
+			$end_date_w=date("Y-m-d",$end_date_w);
+		
 			$date=date("Y-m-d");
-			//$date="2012-09-23";
 			$weekday = strtolower(date('l', strtotime($date)));
-			// echo "Week = ".$weekday;
-
-			// $colspan=12;
-			// if($weekday != "tuesday")
-			// {
-				$colspan=14;
-			// }
-
+			$colspan=14;
 			$order_qty_total=0;
 			$shipable_qty_total=0;
 			$extra_qty_total=0;
@@ -372,7 +330,7 @@ else
 			$x=0;
 
 			$schedules=array();
-			$sql="select DISTINCT schedule_no from bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" and schedule_no!=\"\" order by color,left(style,1)";
+			$sql="select DISTINCT schedule_no from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" and schedule_no!=\"\" order by color,left(style,1)";
 			// echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count_rows=mysqli_num_rows($sql_result);
@@ -391,7 +349,7 @@ else
 
 			$total_sch=implode(",",$schedules);
 
-			$sql="select * from bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) order by order_div,order_del_no desc";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) order by order_div,order_del_no desc";
 			// echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -439,7 +397,7 @@ else
 				
 				//shipemet details
 				
-				$sql4="SELECT SUM(ship_s_xs),SUM(ship_s_s),SUM(ship_s_m),SUM(ship_s_l),SUM(ship_s_xl),SUM(ship_s_xxl),SUM(ship_s_xxxl),SUM(ship_s_s01),SUM(ship_s_s02),SUM(ship_s_s03),SUM(ship_s_s04),SUM(ship_s_s05),SUM(ship_s_s06),SUM(ship_s_s07),SUM(ship_s_s08),SUM(ship_s_s09),SUM(ship_s_s10),SUM(ship_s_s11),SUM(ship_s_s12),SUM(ship_s_s13),SUM(ship_s_s14),SUM(ship_s_s15),SUM(ship_s_s16),SUM(ship_s_s17),SUM(ship_s_s18),SUM(ship_s_s19),SUM(ship_s_s20),SUM(ship_s_s21),SUM(ship_s_s22),SUM(ship_s_s23),SUM(ship_s_s24),SUM(ship_s_s25),SUM(ship_s_s26),SUM(ship_s_s27),SUM(ship_s_s28),SUM(ship_s_s29),SUM(ship_s_s30),SUM(ship_s_s31),SUM(ship_s_s32),SUM(ship_s_s33),SUM(ship_s_s34),SUM(ship_s_s35),SUM(ship_s_s36),SUM(ship_s_s37),SUM(ship_s_s38),SUM(ship_s_s39),SUM(ship_s_s40),SUM(ship_s_s41),SUM(ship_s_s42),SUM(ship_s_s43),SUM(ship_s_s44),SUM(ship_s_s45),SUM(ship_s_s46),SUM(ship_s_s47),SUM(ship_s_s48),SUM(ship_s_s49),SUM(ship_s_s50)  FROM bai_pro3.ship_stat_log WHERE ship_schedule=\"$sch\" and ship_status=\"2\"";
+				$sql4="SELECT SUM(ship_s_xs),SUM(ship_s_s),SUM(ship_s_m),SUM(ship_s_l),SUM(ship_s_xl),SUM(ship_s_xxl),SUM(ship_s_xxxl),SUM(ship_s_s01),SUM(ship_s_s02),SUM(ship_s_s03),SUM(ship_s_s04),SUM(ship_s_s05),SUM(ship_s_s06),SUM(ship_s_s07),SUM(ship_s_s08),SUM(ship_s_s09),SUM(ship_s_s10),SUM(ship_s_s11),SUM(ship_s_s12),SUM(ship_s_s13),SUM(ship_s_s14),SUM(ship_s_s15),SUM(ship_s_s16),SUM(ship_s_s17),SUM(ship_s_s18),SUM(ship_s_s19),SUM(ship_s_s20),SUM(ship_s_s21),SUM(ship_s_s22),SUM(ship_s_s23),SUM(ship_s_s24),SUM(ship_s_s25),SUM(ship_s_s26),SUM(ship_s_s27),SUM(ship_s_s28),SUM(ship_s_s29),SUM(ship_s_s30),SUM(ship_s_s31),SUM(ship_s_s32),SUM(ship_s_s33),SUM(ship_s_s34),SUM(ship_s_s35),SUM(ship_s_s36),SUM(ship_s_s37),SUM(ship_s_s38),SUM(ship_s_s39),SUM(ship_s_s40),SUM(ship_s_s41),SUM(ship_s_s42),SUM(ship_s_s43),SUM(ship_s_s44),SUM(ship_s_s45),SUM(ship_s_s46),SUM(ship_s_s47),SUM(ship_s_s48),SUM(ship_s_s49),SUM(ship_s_s50)  FROM $bai_pro3.ship_stat_log WHERE ship_schedule=\"$sch\" and ship_status=\"2\"";
 				//echo $sql4;
 				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$total_rows=mysqli_num_rows($sql_result4);
@@ -452,7 +410,7 @@ else
 				//M3 shipment quantity
 				// if($weekday != "tuesday")
 			 //  	{
-					$sql5="SELECT SUM(ship_qty) FROM bai_pro2.style_status_summ WHERE sch_no=\"$sch\" and color=\"".$sch_color."\"";
+					$sql5="SELECT SUM(ship_qty) FROM $bai_pro2.style_status_summ WHERE sch_no=\"$sch\" and color=\"".$sch_color."\"";
 					$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$total_rows1=mysqli_num_rows($sql_result5);
 					while($sql_row5=mysqli_fetch_array($sql_result5))
@@ -473,7 +431,7 @@ else
 					$message.="<td>$color".$m3_ship."%</td>";
 				// }
 				
-				$sql_yy="select catyy,tid,compo_no from bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and (category=\"Body\" or category=\"Front\")";
+				$sql_yy="select catyy,tid,compo_no from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and (category=\"Body\" or category=\"Front\")";
 				$sql_result_yy=mysqli_query($link, $sql_yy) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$total_rows_yy=mysqli_num_rows($sql_result_yy);
 				while($sql_row_yy=mysqli_fetch_array($sql_result_yy))
@@ -548,7 +506,7 @@ else
 
 			echo $message;
 
-			$myFile1 = "BEK_Weekly_Delivery_Plan_Status.xls";
+			$myFile1 = "Weekly_Delivery_Plan_Status.xls";
 			unlink($myFile1);
 			$fh1 = fopen($myFile1, 'w') or die("can't open file");
 			$stringData1=$message;
@@ -606,9 +564,9 @@ else
 					mail($to_email,$subject,$message, $headers, '-f ' . $our_email) or die ('<h3 style="color: red;">Mail Failed</h3>');
 					echo "<script>window.close();</script>";
 				}
-
-		email_attachment($week_del_mail_v2,'Dear All, <br/><br/> Please Find The BEK Weekly Delivery Plan Status Report of This Week. <br/><br/> Message Sent Via: http://beknet', 'BEK Weekly Delivery Plan Status Report','Shop Floor System Alert', 'ravindranath.yrr35@gmail.com', 'BEK_Weekly_Delivery_Plan_Status.xls', $default_filetype='application/zip');
-
+				$subject='Dear All, <br/><br/> Please Find The Weekly Delivery Plan Status Report of This Week. <br/><br/> Message Sent Via:'.$plant_name;
+				$to=$week_del_mail_v2;
+				email_attachment($to,$subject,' Weekly Delivery Plan Status Report','Shop Floor System Alert', 'ravindranath.yrr35@gmail.com', 'Weekly_Delivery_Plan_Status.xls', $default_filetype='application/zip');
 
 }
 

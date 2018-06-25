@@ -1,14 +1,14 @@
 <?php
 
-// include($_SERVER['DOCUMENT_ROOT']."server/db_hosts.php");
-include('C:\xampp\htdocs\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 // Turn off all error reporting
 error_reporting(0);
 // Report simple running errors
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 $database="bai_pro";
-$user=$host;
+$user=$user;
 $password=$pass;
 $host=$host;
 

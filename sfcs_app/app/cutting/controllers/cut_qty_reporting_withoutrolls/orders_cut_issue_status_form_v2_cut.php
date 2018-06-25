@@ -248,20 +248,21 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			}
 			echo "</select></div></td></tr>";
 	
-			if(in_array($username,$special_users))
-			{
-				echo "<tr><td>Shift</td><td>:</td><td><div class='col-sm-4'><select name=\"shift\" class='form-control'>
-					<option value=\"A\">A</option>
-					<option value=\"B\">B</option>
-					</select></div></td></tr>";
-			}
-			else
-			{
-				echo "<tr><td>Shift</td><td>:</td><td><div class='col-sm-4'><select name=\"shift\" class='form-control'>
-					<option value=\"A\">A</option>
-					<option value=\"B\">B</option>
-					</select></div></td></tr>";
-			}
+			// if(in_array($username,$special_users))
+			// {
+			// 	echo "<tr><td>Shift</td><td>:</td><td><div class='col-sm-4'><select name=\"shift\" class='form-control'>
+			// 		<option value=\"A\">A</option>
+			// 		<option value=\"B\">B</option>
+			// 		</select></div></td></tr>";
+			// }
+			// else
+			// {
+				echo "<tr><td>Shift</td><td>:</td><td><div class='col-sm-4'><select name=\"shift\" class='form-control'>";
+				foreach($shifts_array as $key=>$shift){
+					echo "<option value='$shift'>$shift</option>";
+				}
+					echo "</select></div></td></tr>";
+			//}
 			//echo "<tr><td>Doc Req</td><td>:</td><td>".($act_plies*$mklength)."</td></tr>";
 			echo "<tr><td>Docket Fabric Required</td><td>:</td><td align='left'><div class='col-sm-3'>".round($material,2)."</div></td></tr>";
 			echo "<tr><td>Planned Plies</td><td>:</td><td><div class='col-sm-1'>".$plies_check."</div></td></tr>";

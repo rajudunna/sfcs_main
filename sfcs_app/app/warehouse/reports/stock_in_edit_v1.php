@@ -1,7 +1,7 @@
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 //$view_access=user_acl("SFCS_0156",$username,1,$group_id_sfcs); 
 ?>
@@ -11,22 +11,23 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 <?php  
 
-$auth_members=array();
-$sql="select auth_members from $bai_pro3.menu_index where list_id=165";
-//echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error-a".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$auth_members=explode(",",$sql_row['auth_members']);
-}
+// $auth_members=array();
+// $sql="select auth_members from $bai_pro3.menu_index where list_id=165";
+// //echo $sql;
+// $sql_result=mysqli_query($link, $sql) or exit("Sql Error-a".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_row=mysqli_fetch_array($sql_result))
+// {
+// 	$auth_members=explode(",",$sql_row['auth_members']);
+// }
 
-if(in_array($username,$auth_members))
+if(in_array($authorized,$has_permission))
 {
 		
 }
 else
 {
-	//header("Location: restrict.php");
+	$url=getFullURLLevel($_GET['r'],'controllers/restrict.php',1,'N');
+	header("Location: $url");
 }
 
 ?>

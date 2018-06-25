@@ -4,7 +4,8 @@ $start_timestamp = microtime(true);
 include("dbconf_sch.php");
 
 // include("../fusion_charts/Includes/FusionCharts.php");
-include("C:/xampp/htdocs/sfcs_app/app/dashboards/controllers/PLD_Dashboard/fusion_charts/Includes/FusionCharts_sch.php");
+$include_path=getenv('config_job_path');
+include($include_path.'/sfcs_app/app/dashboards/controllers/PLD_Dashboard/FusionCharts.php');
 $act_eff=6;
 $day=date("D");
 

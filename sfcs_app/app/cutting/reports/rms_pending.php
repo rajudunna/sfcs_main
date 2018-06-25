@@ -109,7 +109,7 @@ if(isset($_POST['show']))
 	$docket=array();
 	$tot_doc=array();
 	//echo $host."<br>";
-	$sql1="select distinct order_tid,count(doc_no) as cuts,group_concat(doc_no order by doc_no) as docket,group_concat(pcutno order by pcutno) as cut_doc from $bai_pro3.order_cat_doc_mk_mix where category in ('Body','Front') and date between '".$s_date."' and '".$e_date."' group by order_tid";
+	$sql1="select distinct order_tid,count(doc_no) as cuts,group_concat(doc_no order by doc_no) as docket,group_concat(pcutno order by pcutno) as cut_doc from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and date between '".$s_date."' and '".$e_date."' group by order_tid";
 	//echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error--1x==".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	// echo $sql1."<br>";

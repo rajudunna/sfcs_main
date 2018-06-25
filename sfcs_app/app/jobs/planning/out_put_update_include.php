@@ -9,7 +9,7 @@ $schedules_to_update=array_diff($sch_to_process,$schedule_db);
 
 if(sizeof($schedules_to_update)>0){
 
-$sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style_no as style, order_col_des as color from bai_pro3.bai_orders_db where order_del_no in (".implode(",",$schedules_to_update).")";
+$sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style_no as style, order_col_des as color from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$schedules_to_update).")";
 
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -39,7 +39,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		
 				
 		//$sql1="select doc_no from plandoc_stat_log where order_tid=\"$ssc_code\"";
-		$sql1="select doc_no from bai_pro3.plandoc_stat_log_cat_log_ref where order_tid=\"$ssc_code\"";
+		$sql1="select doc_no from $bai_pro3.plandoc_stat_log_cat_log_ref where order_tid=\"$ssc_code\"";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$count_check=mysqli_num_rows($sql_result1);
 		if($count_check>0)
@@ -113,7 +113,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		$qty_temp=0;
 
 		//echo date("H:i:s");	
-		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\", coalesce(sum(size_xs),0) as \"size_xs\", coalesce(sum(size_s),0) as \"size_s\", coalesce(sum(size_m),0) as \"size_m\", coalesce(sum(size_l),0) as \"size_l\", coalesce(sum(size_xl),0) as \"size_xl\", coalesce(sum(size_xxl),0) as \"size_xxl\", coalesce(sum(size_xxxl),0) as \"size_xxxl\", coalesce(sum(size_s01),0) as \"size_s01\",coalesce(sum(size_s02),0) as \"size_s02\",coalesce(sum(size_s03),0) as \"size_s03\",coalesce(sum(size_s04),0) as \"size_s04\",coalesce(sum(size_s05),0) as \"size_s05\",coalesce(sum(size_s06),0) as \"size_s06\",coalesce(sum(size_s07),0) as \"size_s07\",coalesce(sum(size_s08),0) as \"size_s08\",coalesce(sum(size_s09),0) as \"size_s09\",coalesce(sum(size_s10),0) as \"size_s10\",coalesce(sum(size_s11),0) as \"size_s11\",coalesce(sum(size_s12),0) as \"size_s12\",coalesce(sum(size_s13),0) as \"size_s13\",coalesce(sum(size_s14),0) as \"size_s14\",coalesce(sum(size_s15),0) as \"size_s15\",coalesce(sum(size_s16),0) as \"size_s16\",coalesce(sum(size_s17),0) as \"size_s17\",coalesce(sum(size_s18),0) as \"size_s18\",coalesce(sum(size_s19),0) as \"size_s19\",coalesce(sum(size_s20),0) as \"size_s20\",coalesce(sum(size_s21),0) as \"size_s21\",coalesce(sum(size_s22),0) as \"size_s22\",coalesce(sum(size_s23),0) as \"size_s23\",coalesce(sum(size_s24),0) as \"size_s24\",coalesce(sum(size_s25),0) as \"size_s25\",coalesce(sum(size_s26),0) as \"size_s26\",coalesce(sum(size_s27),0) as \"size_s27\",coalesce(sum(size_s28),0) as \"size_s28\",coalesce(sum(size_s29),0) as \"size_s29\",coalesce(sum(size_s30),0) as \"size_s30\",coalesce(sum(size_s31),0) as \"size_s31\",coalesce(sum(size_s32),0) as \"size_s32\",coalesce(sum(size_s33),0) as \"size_s33\",coalesce(sum(size_s34),0) as \"size_s34\",coalesce(sum(size_s35),0) as \"size_s35\",coalesce(sum(size_s36),0) as \"size_s36\",coalesce(sum(size_s37),0) as \"size_s37\",coalesce(sum(size_s38),0) as \"size_s38\",coalesce(sum(size_s39),0) as \"size_s39\",coalesce(sum(size_s40),0) as \"size_s40\",coalesce(sum(size_s41),0) as \"size_s41\",coalesce(sum(size_s42),0) as \"size_s42\",coalesce(sum(size_s43),0) as \"size_s43\",coalesce(sum(size_s44),0) as \"size_s44\",coalesce(sum(size_s45),0) as \"size_s45\",coalesce(sum(size_s46),0) as \"size_s46\",coalesce(sum(size_s47),0) as \"size_s47\",coalesce(sum(size_s48),0) as \"size_s48\",coalesce(sum(size_s49),0) as \"size_s49\",coalesce(sum(size_s50),0) as \"size_s50\" from bai_pro.bai_log where ims_doc_no in ($search_string) group by bac_sec";
+		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\", coalesce(sum(size_xs),0) as \"size_xs\", coalesce(sum(size_s),0) as \"size_s\", coalesce(sum(size_m),0) as \"size_m\", coalesce(sum(size_l),0) as \"size_l\", coalesce(sum(size_xl),0) as \"size_xl\", coalesce(sum(size_xxl),0) as \"size_xxl\", coalesce(sum(size_xxxl),0) as \"size_xxxl\", coalesce(sum(size_s01),0) as \"size_s01\",coalesce(sum(size_s02),0) as \"size_s02\",coalesce(sum(size_s03),0) as \"size_s03\",coalesce(sum(size_s04),0) as \"size_s04\",coalesce(sum(size_s05),0) as \"size_s05\",coalesce(sum(size_s06),0) as \"size_s06\",coalesce(sum(size_s07),0) as \"size_s07\",coalesce(sum(size_s08),0) as \"size_s08\",coalesce(sum(size_s09),0) as \"size_s09\",coalesce(sum(size_s10),0) as \"size_s10\",coalesce(sum(size_s11),0) as \"size_s11\",coalesce(sum(size_s12),0) as \"size_s12\",coalesce(sum(size_s13),0) as \"size_s13\",coalesce(sum(size_s14),0) as \"size_s14\",coalesce(sum(size_s15),0) as \"size_s15\",coalesce(sum(size_s16),0) as \"size_s16\",coalesce(sum(size_s17),0) as \"size_s17\",coalesce(sum(size_s18),0) as \"size_s18\",coalesce(sum(size_s19),0) as \"size_s19\",coalesce(sum(size_s20),0) as \"size_s20\",coalesce(sum(size_s21),0) as \"size_s21\",coalesce(sum(size_s22),0) as \"size_s22\",coalesce(sum(size_s23),0) as \"size_s23\",coalesce(sum(size_s24),0) as \"size_s24\",coalesce(sum(size_s25),0) as \"size_s25\",coalesce(sum(size_s26),0) as \"size_s26\",coalesce(sum(size_s27),0) as \"size_s27\",coalesce(sum(size_s28),0) as \"size_s28\",coalesce(sum(size_s29),0) as \"size_s29\",coalesce(sum(size_s30),0) as \"size_s30\",coalesce(sum(size_s31),0) as \"size_s31\",coalesce(sum(size_s32),0) as \"size_s32\",coalesce(sum(size_s33),0) as \"size_s33\",coalesce(sum(size_s34),0) as \"size_s34\",coalesce(sum(size_s35),0) as \"size_s35\",coalesce(sum(size_s36),0) as \"size_s36\",coalesce(sum(size_s37),0) as \"size_s37\",coalesce(sum(size_s38),0) as \"size_s38\",coalesce(sum(size_s39),0) as \"size_s39\",coalesce(sum(size_s40),0) as \"size_s40\",coalesce(sum(size_s41),0) as \"size_s41\",coalesce(sum(size_s42),0) as \"size_s42\",coalesce(sum(size_s43),0) as \"size_s43\",coalesce(sum(size_s44),0) as \"size_s44\",coalesce(sum(size_s45),0) as \"size_s45\",coalesce(sum(size_s46),0) as \"size_s46\",coalesce(sum(size_s47),0) as \"size_s47\",coalesce(sum(size_s48),0) as \"size_s48\",coalesce(sum(size_s49),0) as \"size_s49\",coalesce(sum(size_s50),0) as \"size_s50\" from $bai_pro.bai_log where ims_doc_no in ($search_string) group by bac_sec";
 		//echo $sql2."<br/>";
 		mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -191,7 +191,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 
 		//SPEED - Online Status updates
 		//echo "-".date("H:i:s");
-		$sqlx1="select SUM(IF(act_cut_status=\"DONE\",doc_total,0)) AS \"cut_total\", SUM(IF(act_cut_issue_status=\"DONE\",doc_total,0)) AS \"input_total\" from bai_pro3.plandoc_stat_log_cat_log_ref where order_tid=\"$ssc_code\"";
+		$sqlx1="select SUM(IF(act_cut_status=\"DONE\",doc_total,0)) AS \"cut_total\", SUM(IF(act_cut_issue_status=\"DONE\",doc_total,0)) AS \"input_total\" from $bai_pro3.plandoc_stat_log_cat_log_ref where order_tid=\"$ssc_code\"";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{
@@ -201,7 +201,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		
 		//Recut
 		
-		$sqlx1="select SUM(IF(act_cut_status=\"DONE\",actual_cut_qty,0)) AS \"cut_total\" from bai_pro3.recut_v2_summary where order_tid=\"$ssc_code\"";
+		$sqlx1="select SUM(IF(act_cut_status=\"DONE\",actual_cut_qty,0)) AS \"cut_total\" from $bai_pro3.recut_v2_summary where order_tid=\"$ssc_code\"";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{
@@ -211,7 +211,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		//new for input to consider only given to module
 		$input_total=0;
 		$counter_check=0;
-		$sqlx1="select coalesce(SUM(ims_qty),0) AS \"ims_qty\" from bai_pro3.ims_log where ims_style=\"$style\" and ims_schedule=\"$schedule\" and ims_color=\"$color\" and ims_mod_no>0";
+		$sqlx1="select coalesce(SUM(ims_qty),0) AS \"ims_qty\" from $bai_pro3.ims_log where ims_style=\"$style\" and ims_schedule=\"$schedule\" and ims_color=\"$color\" and ims_mod_no>0";
 		//echo $sql1."<br/>";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$counter_check+=mysqli_num_rows($sql_resultx1);
@@ -220,7 +220,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 			$input_total+=$sql_rowx1['ims_qty'];
 		}
 		
-		$sqlx1="select coalesce(SUM(ims_qty),0) AS \"ims_qty\" from bai_pro3.ims_log_backup where ims_style=\"$style\" and ims_schedule=\"$schedule\" and ims_color=\"$color\" and ims_mod_no>0";
+		$sqlx1="select coalesce(SUM(ims_qty),0) AS \"ims_qty\" from $bai_pro3.ims_log_backup where ims_style=\"$style\" and ims_schedule=\"$schedule\" and ims_color=\"$color\" and ims_mod_no>0";
 		//echo $sql1."<br/>";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$counter_check+=mysqli_num_rows($sql_resultx1);
@@ -236,7 +236,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		$pendingcarts=0;
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select fca_app,app,scanned from bai_pro3.disp_mix_temp where order_del_no=$schedule";
+		$sqlx1="select fca_app,app,scanned from $bai_pro3.disp_mix_temp where order_del_no=$schedule";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{
@@ -249,7 +249,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		if(substr($style,0,1)=="M")
 		{
 			//$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from $packing_summary where doc_no in ($search_string) and status=\"DONE\"";
-			$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from bai_pro3.packing_summary where trim(BOTH from order_del_no)=\"".trim($schedule)."\" and trim(BOTH from order_col_des)=\"".trim($color)."\" and status=\"DONE\"";
+			$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from $bai_pro3.packing_summary where trim(BOTH from order_del_no)=\"".trim($schedule)."\" and trim(BOTH from order_col_des)=\"".trim($color)."\" and status=\"DONE\"";
 			echo "test:".$sqlx1."<br/>";
 			$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
@@ -259,7 +259,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		}
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from bai_pro3.packing_summary where order_del_no=$schedule and container=1";
+		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{
@@ -267,7 +267,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		}
 		
 		//echo "-".date("H:i:s")."<br/";
-		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from bai_pro3.packing_summary where order_del_no=$schedule and container>1";
+		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container>1";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{
@@ -350,7 +350,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		
 		
 		//to update dispatch status (as per internal system)
-		$sqlx1="select COALESCE(sum(shipped),0) as \"shipped\" from bai_pro3.bai_ship_cts_ref where ship_style=\"$style\" and ship_schedule=\"$schedule\"";
+		$sqlx1="select COALESCE(sum(shipped),0) as \"shipped\" from $bai_pro3.bai_ship_cts_ref where ship_style=\"$style\" and ship_schedule=\"$schedule\"";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{

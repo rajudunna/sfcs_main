@@ -324,7 +324,7 @@ $authorized1=array("sfcsproject1");
 set_time_limit(200000);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-
+$has_permission = haspermission($_GET['r']);
 ?>
 
 <!DOCTYPE html>
@@ -343,8 +343,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 // $username="sfcsproject1";
-$special_users=array("sfcsproject1","kirang","rameshk","chathurangad","indikades","minuram","sfcsproject1","buddhikam");
-if(!in_array($username,$special_users))
+// $special_users=array("sfcsproject1","kirang","rameshk","chathurangad","indikades","minuram","sfcsproject1","buddhikam");
+if(!in_array($authorized,$has_permission))
 {
 	echo '<script>
 	var ctrlPressed = false;
@@ -858,7 +858,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					
 				if($clubbing>0)
 				{
-					$sql111="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ('Body','Front') and order_del_no=$schedule_no and clubbing=".$sql_row33x1['clubbing']." and acutno=".$sql_row33x1['acutno'];
+					$sql111="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ('".implode("','",$in_categories)."') and order_del_no=$schedule_no and clubbing=".$sql_row33x1['clubbing']." and acutno=".$sql_row33x1['acutno'];
 					$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row111=mysqli_fetch_array($sql_result111))
 					{
@@ -875,7 +875,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".'J'.leading_zeros($input_job_no,3),50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50);
 				$ui_url=getFullURL($_GET['r'],'input_status_update_input.php','R');		
-				if(in_array($username,$authorized1))
+				if(in_array($authorizeLevel_1,$has_permission))
 				{
 					if($id=="blue" or $id=="yellow")
 					{
@@ -902,7 +902,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		}
 		for($j=$y+1;$j<=4;$j++)
 		{
-			if(in_array($username,$authorized))
+			if(in_array($authorized,$has_permission))
 			{
 				
 				$urll = getFullURLLevel($_GET["r"],'cut_jobs_loading.php',0,'N');
@@ -950,7 +950,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	echo '</div>';
 }
 }
-if((in_array(strtolower($username),$authorized)))
+if((in_array(strtolower($authorized),$has_permission)))
 	{
 		echo "<script>";
 		echo "blink_new_priority('".implode(",",$blink_docs)."');";
