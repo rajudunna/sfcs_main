@@ -148,7 +148,7 @@ if($count_rows > 0){
 
 
 	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) and order_no=\"1\" order by order_del_no";
-	// echo $sql."<br>";
+	 //echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$slnum = 1;
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -163,29 +163,66 @@ if($count_rows > 0){
 		{
 			$id="#ffffff";
 		}
+		$s01_ord_quan=$sql_row['order_s_s01'];
+		$s02_ord_quan=$sql_row['order_s_s02'];
+		$s03_ord_quan=$sql_row['order_s_s03'];
+		$s04_ord_quan=$sql_row['order_s_s04'];
+		$s05_ord_quan=$sql_row['order_s_s05'];
 		$s06_ord_quan=$sql_row['order_s_s06'];
+		$s07_ord_quan=$sql_row['order_s_s07'];
 		$s08_ord_quan=$sql_row['order_s_s08'];
+		$s09_ord_quan=$sql_row['order_s_s09'];
 		$s10_ord_quan=$sql_row['order_s_s10'];
+		$s11_ord_quan=$sql_row['order_s_s11'];
 		$s12_ord_quan=$sql_row['order_s_s12'];
+		$s13_ord_quan=$sql_row['order_s_s13'];
 		$s14_ord_quan=$sql_row['order_s_s14'];
+		$s15_ord_quan=$sql_row['order_s_s15'];
 		$s16_ord_quan=$sql_row['order_s_s16'];
+		$s17_ord_quan=$sql_row['order_s_s17'];
 		$s18_ord_quan=$sql_row['order_s_s18'];
+		$s19_ord_quan=$sql_row['order_s_s19'];
 		$s20_ord_quan=$sql_row['order_s_s20'];
+		$s21_ord_quan=$sql_row['order_s_s21'];
 		$s22_ord_quan=$sql_row['order_s_s22'];
+		$s23_ord_quan=$sql_row['order_s_s23'];
 		$s24_ord_quan=$sql_row['order_s_s24'];
+		$s25_ord_quan=$sql_row['order_s_s25'];
 		$s26_ord_quan=$sql_row['order_s_s26'];
+		$s27_ord_quan=$sql_row['order_s_s27'];
 		$s28_ord_quan=$sql_row['order_s_s28'];
+		$s29_ord_quan=$sql_row['order_s_s29'];
 		$s30_ord_quan=$sql_row['order_s_s30'];
-		
-		$sizes = array($s06_ord_quan, $s08_ord_quan, $s10_ord_quan, $s12_ord_quan, $s14_ord_quan, $s16_ord_quan, $s18_ord_quan, $s20_ord_quan, $s22_ord_quan, $s24_ord_quan, $s26_ord_quan, $s28_ord_quan, $s30_ord_quan);
+		$s31_ord_quan=$sql_row['order_s_s31'];
+		$s32_ord_quan=$sql_row['order_s_s32'];
+		$s33_ord_quan=$sql_row['order_s_s33'];
+		$s34_ord_quan=$sql_row['order_s_s34'];
+		$s35_ord_quan=$sql_row['order_s_s35'];
+		$s36_ord_quan=$sql_row['order_s_s36'];
+		$s37_ord_quan=$sql_row['order_s_s37'];
+		$s38_ord_quan=$sql_row['order_s_s38'];
+		$s39_ord_quan=$sql_row['order_s_s39'];
+		$s40_ord_quan=$sql_row['order_s_s40'];
+		$s41_ord_quan=$sql_row['order_s_s41'];
+		$s42_ord_quan=$sql_row['order_s_s42'];
+		$s43_ord_quan=$sql_row['order_s_s43'];
+		$s44_ord_quan=$sql_row['order_s_s44'];
+		$s45_ord_quan=$sql_row['order_s_s45'];
+		$s46_ord_quan=$sql_row['order_s_s46'];
+		$s47_ord_quan=$sql_row['order_s_s47'];
+		$s48_ord_quan=$sql_row['order_s_s48'];
+		$s49_ord_quan=$sql_row['order_s_s49'];
+		$s50_ord_quan=$sql_row['order_s_s50'];
+		$sizes = array($s01_ord_quan,$s02_ord_quan,$s03_ord_quan,$s04_ord_quan,$s05_ord_quan,$s06_ord_quan,$s07_ord_quan,$s08_ord_quan,$s09_ord_quan,$s10_ord_quan,$s11_ord_quan,$s12_ord_quan,$s13_ord_quan,$s14_ord_quan,$s15_ord_quan,$s16_ord_quan,$s17_ord_quan,$s18_ord_quan,$s19_ord_quan,$s20_ord_quan,$s21_ord_quan,$s22_ord_quan,$s23_ord_quan, $s24_ord_quan, $s25_ord_quan, $s26_ord_quan, $s27_ord_quan, $s28_ord_quan, $s29_ord_quan, $s30_ord_quan, $s31_ord_quan, $s32_ord_quan, $s33_ord_quan, $s34_ord_quan, $s35_ord_quan, $s36_ord_quan, $s37_ord_quan, $s38_ord_quan, $s39_ord_quan, $s40_ord_quan, $s41_ord_quan, $s42_ord_quan, $s43_ord_quan, $s44_ord_quan, $s45_ord_quan, $s46_ord_quan, $s47_ord_quan, $s48_ord_quan, $s49_ord_quan, $s50_ord_quan);
+		//print_r($sizes);
 		$filtered_sizes = array_filter($sizes);
 		
-		$old_order_quantity = array('old_order_s_s06', 'old_order_s_s08', 'old_order_s_s10', 'old_order_s_s12', 'old_order_s_s14', 'old_order_s_s16', 'old_order_s_s18', 'old_order_s_s20', 'old_order_s_s22', 'old_order_s_s24', 'old_order_s_s26', 'old_order_s_s28', 'old_order_s_s30');
+		$old_order_quantity = array('old_order_s_s01','old_order_s_s02','old_order_s_s03', 'old_order_s_s04', 'old_order_s_s05', 'old_order_s_s06', 'old_order_s_s07', 'old_order_s_s08', 'old_order_s_s09', 'old_order_s_s10', 'old_order_s_s11', 'old_order_s_s12', 'old_order_s_s13', 'old_order_s_s14', 'old_order_s_s15','old_order_s_s16', 'old_order_s_s17', 'old_order_s_s18', 'old_order_s_s19', 'old_order_s_s20', 'old_order_s_s21', 'old_order_s_s22', 'old_order_s_s23', 'old_order_s_s24', 'old_order_s_s25', 'old_order_s_s26', 'old_order_s_s27', 'old_order_s_s28','old_order_s_s29', 'old_order_s_s30', 'old_order_s_s31',  'old_order_s_s32',  'old_order_s_s33', 'old_order_s_s34', 'old_order_s_s35', 'old_order_s_s36', 'old_order_s_s37', 'old_order_s_s38', 'old_order_s_s39', 'old_order_s_s40', 'old_order_s_s41',  'old_order_s_s42',  'old_order_s_s43', 'old_order_s_s44', 'old_order_s_s45', 'old_order_s_s46', 'old_order_s_s47', 'old_order_s_s48', 'old_order_s_s49', 'old_order_s_s50');
 		
-		$title_sizes = array('title_size_s06', 'title_size_s08', 'title_size_s10', 'title_size_s12', 'title_size_s14', 'title_size_s16', 'title_size_s18', 'title_size_s20', 'title_size_s22', 'title_size_s24', 'title_size_s26', 'title_size_s28', 'title_size_s30');
-		
-		$ship_title_sizes = array('ship_s_s06', 'ship_s_s08', 'ship_s_s10', 'ship_s_s12', 'ship_s_s14', 'ship_s_s16', 'ship_s_s18', 'ship_s_s20', 'ship_s_s22', 'ship_s_s24', 'ship_s_s26', 'ship_s_s28', 'ship_s_s30');
-		// var_dump(sizeof($filtered_sizes));
+		//$title_sizes = array('title_size_s01','title_size_s02','title_size_s06', 'title_size_s08', 'title_size_s10', 'title_size_s12', 'title_size_s14', 'title_size_s16', 'title_size_s18', 'title_size_s20', 'title_size_s22', 'title_size_s24', 'title_size_s26', 'title_size_s28', 'title_size_s30');
+		$title_sizes = array('title_size_s01','title_size_s02','title_size_s03', 'title_size_s04', 'title_size_s05', 'title_size_s06', 'title_size_s07', 'title_size_s08', 'title_size_s09', 'title_size_s10', 'title_size_s11', 'title_size_s12', 'title_size_s13', 'title_size_s14', 'title_size_s15','title_size_s16', 'title_size_s17', 'title_size_s18', 'title_size_s19', 'title_size_s20', 'title_size_s21', 'title_size_s22', 'title_size_s23', 'title_size_s24', 'title_size_s25', 'title_size_s26', 'title_size_s27', 'title_size_s28','title_size_s29', 'title_size_s30', 'title_size_s31',  'title_size_s32',  'title_size_s33', 'title_size_s34', 'title_size_s35', 'title_size_s36', 'title_size_s37', 'title_size_s38', 'title_size_s39', 'title_size_s40', 'title_size_s41',  'title_size_s42',  'title_size_s43', 'title_size_s44', 'title_size_s45', 'title_size_s46', 'title_size_s47', 'title_size_s48', 'title_size_s49', 'title_size_s50');
+		//$ship_title_sizes = array('ship_s_s01','ship_s_s02','ship_s_s06', 'ship_s_s08', 'ship_s_s10', 'ship_s_s12', 'ship_s_s14', 'ship_s_s16', 'ship_s_s18', 'ship_s_s20', 'ship_s_s22', 'ship_s_s24', 'ship_s_s26', 'ship_s_s28', 'ship_s_s30');
+		$ship_title_sizes = array('ship_s_s01','ship_s_s02','ship_s_s03', 'ship_s_s04', 'ship_s_s05', 'ship_s_s06', 'ship_s_s07', 'ship_s_s08', 'ship_s_s09', 'ship_s_s10', 'ship_s_s11', 'ship_s_s12', 'ship_s_s13', 'ship_s_s14', 'ship_s_s15','ship_s_s16', 'ship_s_s17', 'ship_s_s18', 'ship_s_s19', 'ship_s_s20', 'ship_s_s21', 'ship_s_s22', 'ship_s_s23', 'ship_s_s24', 'ship_s_s25', 'ship_s_s26', 'ship_s_s27', 'ship_s_s28','ship_s_s29', 'ship_s_s30', 'ship_s_s31',  'ship_s_s32',  'ship_s_s33', 'ship_s_s34', 'ship_s_s35', 'ship_s_s36', 'ship_s_s37', 'ship_s_s38', 'ship_s_s39', 'ship_s_s40', 'ship_s_s41',  'ship_s_s42',  'ship_s_s43', 'ship_s_s44', 'ship_s_s45', 'ship_s_s46', 'ship_s_s47', 'ship_s_s48', 'ship_s_s49', 'ship_s_s50');
 		$rowspan_for_shipqty = sizeof($filtered_sizes);
 		foreach($filtered_sizes as $key001 => $value001)
 		{
@@ -222,7 +259,7 @@ if($count_rows > 0){
 			// calculate system yards for schedule
 			
 			$sql1="select tid,purwidth,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and mo_status=\"Y\" and purwidth > 0";
-			// echo $sql1."<br>";
+			//echo $sql1."<br>";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
