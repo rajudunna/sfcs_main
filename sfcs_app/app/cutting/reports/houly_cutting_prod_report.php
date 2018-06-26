@@ -8,12 +8,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/hea
 ?>
 	
 </head>
-<?php
-if(isset($_POST['submit']))
-{
-	$from_date=$_POST['from_date'];
-}
-?>
 <body>
 <div class="panel panel-primary">
 	<div class="panel-heading">Hourly Cutting Production Report</div>
@@ -31,82 +25,10 @@ if(isset($_POST['submit']))
 if(isset($_POST['submit']))
 {
 	$from_date=$_POST['from_date'];
-	/*
-	$from_time = strtotime("2015-01-01 07:30:00");
-	echo '7.30 --------- '.round(abs($from_time) / 60,2). " minute<br>";
-
-	$from_time1 = strtotime("2015-01-01 8.30:59");
-	echo '8.30.59 --------- '.round(abs($from_time1) / 60,2). " minute<br>";
-
-	$from_time2 = strtotime("2015-01-01 8.31:00");
-	echo '8.31 ----------- '.round(abs($from_time2) / 60,2). " minute<br>";
-
-	$from_time3 = strtotime("2015-01-01 9.30:59");
-	echo '9.30.59 ----------- '.round(abs($from_time3) / 60,2). " minute<br>";
-
-	$from_time4 = strtotime("2015-01-01 9.31:00");
-	echo '9.31 ------------- '.round(abs($from_time4) / 60,2). " minute<br>";
-
-	$from_time5 = strtotime("2015-01-01 10.30:59");
-	echo '10.30.59 ------------- '.round(abs($from_time5) / 60,2). " minute<br>";
-
-	$from_time6 = strtotime("2015-01-01 10.31:00");
-	echo '10.31 ---------- '.round(abs($from_time6) / 60,2). " minute<br>";
-
-	$from_time7 = strtotime("2015-01-01 11.30:59");
-	echo '11.30.59 ------------- '.round(abs($from_time7) / 60,2). " minute<br>";
-
-	$from_time8 = strtotime("2015-01-01 11.31:00");
-	echo '11.31 ------------ '.round(abs($from_time8) / 60,2). " minute<br>";
-
-	$from_time9 = strtotime("2015-01-01 12.30:59");
-	echo '12.30.59 -------------- '.round(abs($from_time9) / 60,2). " minute<br>";
-
-	$from_time10 = strtotime("2015-01-01 12.31:00");
-	echo '12.31 --------- '.round(abs($from_time10) / 60,2). " minute<br>";
-
-
-	$from_time11 = strtotime("2015-01-01 13.30:59");
-	echo '13.30.59 ------------ '.round(abs($from_time11) / 60,2). " minute<br>";
-
-	$from_time12 = strtotime("2015-01-01 13.31:00");
-	echo '13.31 ------------- '.round(abs($from_time12) / 60,2). " minute<br>";
-
-	$from_time13 = strtotime("2015-01-01 14.30:59");
-	echo '14.30.59 ------------ '.round(abs($from_time13) / 60,2). " minute<br>";
-
-	$from_time14 = strtotime("2015-01-01 14.31:00");
-	echo '14.31 ------------- '.round(abs($from_time14) / 60,2). " minute<br>";
-
-	$from_time15 = strtotime("2015-01-01 15.30:59");
-	echo '15.30.59 ------------- '.round(abs($from_time15) / 60,2). " minute<br>";
-
-	$from_time16 = strtotime("2015-01-01 15.31:00");
-	echo '15.31 --------------'.round(abs($from_time16) / 60,2). " minute<br>";
-
-	$from_time17 = strtotime("2015-01-01 16.30:59");
-	echo '16.30.59 -------------- '.round(abs($from_time17) / 60,2). " minute<br>";
-
-	$from_time18 = strtotime("2015-01-01 16.31:00");
-	echo '16.31 -------------- '.round(abs($from_time18) / 60,2). " minute<br>";
-
-	$from_time19 = strtotime("2015-01-01 17.30:59");
-	echo '17.30.59 ------------- '.round(abs($from_time19) / 60,2). " minute<br>";
-
-	$from_time20 = strtotime("2015-01-01 17.31:00");
-	echo '17.31 ----------- '.round(abs($from_time20) / 60,2). " minute<br>";
-
-	$from_time21 = strtotime("2015-01-01 18.30:59");
-	echo '18.30.59 ------------ '.round(abs($from_time21) / 60,2). " minute<br>";
-
-	$from_time22= strtotime("2015-01-01 18.31:00");
-	echo '18.31 ------------- '.round(abs($from_time22) / 60,2). " minute<br>";
-
-	$from_time23= strtotime("2015-01-01 19.30:59");
-	echo '19.30.59 ------------- '.round(abs($from_time23) / 60,2). " minute<br>";
-
-	*/
-		?>
+	$total_hours = $plant_end_time - $plant_start_time;
+	list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
+	$hour_start = $hour + 1;
+	?>
 	<div class="panel panel-info">
 		<div class="panel-heading"><center><h4><strong>Hourly Cutting Production Report for <?php echo $from_date;?></strong></h4></center></div>
 			<style type="text/css">
@@ -119,401 +41,59 @@ if(isset($_POST['submit']))
 			</style>
 			<div class="panel-body">
 		<?php
-		echo "<table class='table'><tr class='danger'><th rowspan=2>Section</th><th colspan=11>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
-		echo "<tr class='warning'><th>8.30 am</th><th>9.30 am</th><th>10.30 am</th><th>11.30 am</th><th>12.30 pm</th><th>1.30 pm</th><th>2.30 pm</th><th>3.30 pm</th><th>4.30 pm</th><th>5.30 pm</th><th>6.30 pm</th></tr>";
+		echo "<table class='table'><tr class='danger'><th rowspan=2>Cutting<br>Section</th><th colspan=$total_hours>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
+	   	echo "<tr class='warning'>";
+	   	$query='';
+	   	for ($i=0; $i < $total_hours; $i++)
+		{
+			$hour1=$hour++ + 1;
+			$to_hour = $hour1.":".$minutes;
+			$query.= "IF((TIME(log_time) BETWEEN TIME('".($hour-1).":30:00') AND TIME('".$hour.":30:00')),SUM(tot_cut_qty),0) AS 
+			".$hour."_val,";
+			echo "<th>$to_hour</th>";
+			$hour_end = $hour1;
+		}
+		echo "</tr>";
+		// echo "<table class='table'><tr class='danger'><th rowspan=2>Section</th><th colspan=11>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
+		// echo "<tr class='warning'><th>8.30 am</th><th>9.30 am</th><th>10.30 am</th><th>11.30 am</th><th>12.30 pm</th><th>1.30 pm</th><th>2.30 pm</th><th>3.30 pm</th><th>4.30 pm</th><th>5.30 pm</th><th>6.30 pm</th></tr>";
 		// Section A Start
-		$no_of_doc=$grand_tot_no_of_doc=0;
-		$tot_cut_qty=$grand_tot_cut_qty=0;
-		
-		// $h8=$h9=$h10=$h11=$h12=$h1=$h2=$h3=$h4=$h5=$h6=$yards=$tot_yards=0;
+		$grand_tot_no_of_doc=$grand_tot_cut_qty=0;
 		$cutting_tbl_query= "SELECT tbl_id FROM $bai_pro3.tbl_cutting_table";
-		$cutting_tbl_result=mysqli_query($link, $cutting_tbl_query) or exit("Sql Error1.2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$cutting_tbl_result=mysqli_query($link, $cutting_tbl_query) or exit("Sql Error1.2022");
 		while($tbl_id=mysqli_fetch_array($cutting_tbl_result))
 		{
-			$h8=$h9=$h10=$h11=$h12=$h13=$h14=$h15=$h16=$h17=$h18=$yards=$tot_cut_qty=$no_of_doc=0;
 			$tbl_id=$tbl_id['tbl_id'];
-			$sql2="SELECT * FROM $bai_pro3.cut_dept_report WHERE date= \"$from_date\" and section=$tbl_id";
-			// echo '<br>'.$sql2;
-			// mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql2="SELECT $query ROUND((SUM(fab_received)-(SUM(damages)+SUM(shortages))),2) AS tot_fab,COUNT(doc_no)  AS doc_count FROM $bai_pro3.cut_dept_report WHERE date= \"$from_date\" and section=$tbl_id";
+			 // echo '<br>'.$sql2;
+			// $sql2="SELECT * FROM $bai_pro3.cut_dept_report WHERE date= \"$from_date\" and section=$tbl_id";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			echo "<tr><td>".$tbl_id."</td>";
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
-				$doc_ref_no=$sql_row2['doc_no'];
-				$no_of_doc++;
-				$section=$sql_row2['section'];
-				$category=$sql_row2['category'];
-				if($category=="Body") { $tot_cut_qty=$tot_cut_qty+$sql_row2['tot_cut_qty']; }
-				//$remarks=$sql_row2['remarks'];
-				$fab_received=$sql_row2['fab_received'];
-				$damages=$sql_row2['damages'];
-				$shortages=$sql_row2['shortages'];
-				$yards=$yards+($fab_received-($damages+$shortages));
-				//$tot_cut_qty=$sql_row2['tot_cut_qty'];
-				$log_time=$sql_row2['log_time'];
+				$total_qty = 0;
+				for ($val=$hour_start; $val <= $hour_end; $val++)
+				{ 
+					$row = $sql_row2[$val.'_val'];
+					$total_qty = $total_qty + $row;
+					echo "<td>$row</td>";
+				}
 				
-				// $start_time = $sql_row2['log_time'];
-				// $log_time1 = strtotime("2015-01-01 ". $start_time);
-				// $log_time= round(abs($log_time1) / 60,2)."<br>";
-				
-				//7.30am to 8.30.59am
-				if($log_time>"7:31:00" and $log_time<="8:30:59")   
+				$doc_count=$sql_row2['doc_count'];
+				$tot_fab=$sql_row2['tot_fab'];
+				if ($tot_fab == "")
 				{
-					if($category=="Body") { $h8=$h8+$sql_row2['tot_cut_qty']; }
+					$tot_fab=0;
 				}
-				//8.31.00am to 9.30.59am
-				else if($log_time>"8:31:00" and $log_time<="9:30:59")
-				{
-					if($category=="Body") { $h9=$h9+$sql_row2['tot_cut_qty']; }
-				}
-				//9.31.00am to 10.30.59am
-				else if($log_time>"9:31:00" and $log_time<="10:30:59")
-				{
-					if($category=="Body") { $h10=$h10+$sql_row2['tot_cut_qty']; }
-				}
-				//10.31.00am to 11.30.59am
-				else if($log_time>"10:31:00" and $log_time<="11:30:59")
-				{
-					if($category=="Body") { $h11=$h11+$sql_row2['tot_cut_qty']; }
-				}
-				//11.31.00am to 12.30.59am
-				else if($log_time>"11:31:00" and $log_time<="12:30:59")
-				{
-					if($category=="Body") { $h12=$h12+$sql_row2['tot_cut_qty']; }
-				}
-				//12.31.00am to 1.30.59am
-				else if($log_time>"12:31:00" and $log_time<="13:30:59")
-				{
-					if($category=="Body") { $h13=$h13+$sql_row2['tot_cut_qty']; }
-				}
-				//1.31.00pm to 2.30.59pm
-				else if($log_time>"13:31:00" and $log_time<="14:30:59")
-				{
-					if($category=="Body") { $h14=$h14+$sql_row2['tot_cut_qty']; }
-				}
-				//2.31.00pm to 3.30.59pm
-				else if($log_time>"14:31:00" and $log_time<="15:30:59")
-				{
-					if($category=="Body") { $h15=$h15+$sql_row2['tot_cut_qty']; }
-				}
-				//3.31.00pm to 4.30.59pm
-				else if($log_time>"15:31:00" and $log_time<="16:30:59")
-				{
-					if($category=="Body") { $h16=$h16+$sql_row2['tot_cut_qty']; }
-				}
-				//4.31.00pm to 5.30.59pm
-				else if($log_time>"16:31:00" and $log_time<="17:30:59")
-				{
-					if($category=="Body") { $h17=$h17+$sql_row2['tot_cut_qty']; }
-				}
-				//5.31.00pm to 6.30.59pm
-				else if($log_time>"17:31:00" and $log_time<="18:30:59")
-				{
-					if($category=="Body") { $h18=$h18+$sql_row2['tot_cut_qty']; }
-				}
+				echo "<td>".$total_qty."</td><td>".$tot_fab."</td><td>".$doc_count."</td>";
 			}
-			echo "<tr><td>$tbl_id</td><td>$h8</td><td>$h9</td><td>$h10</td><td>$h11</td><td>$h12</td><td>$h13</td><td>$h14</td><td>$h15</td><td>$h16</td><td>$h17</td><td>$h18</td><td>$tot_cut_qty</td><td>$yards</td><td>$no_of_doc</td></tr>";
-			$grand_tot_cut_qty=$grand_tot_cut_qty+$tot_cut_qty;
-			$grand_tot_no_of_doc=$grand_tot_no_of_doc+$no_of_doc;
-			$tot_yards=$tot_yards+$yards;
+			echo "</tr>";
+			$grand_tot_cut_qty=$grand_tot_cut_qty+$total_qty;
+			$grand_tot_no_of_doc=$grand_tot_no_of_doc+$doc_count;
+			$tot_yards=$tot_yards+$tot_fab;
 		}
 
 		// Section A End
-		
-		// // Section B Start
-		// $no_of_doc=0;
-		// $tot_cut_qty=0;
-		// $h8=$h9=$h10=$h11=$h12=$h1=$h2=$h3=$h4=$h5=$h6=$yards=0;
-		// $sql2="SELECT * FROM $bai_pro3.cut_dept_report WHERE DATE= \"$from_date\" and section=2";
-		// //echo $sql2;
-		// mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// while($sql_row2=mysqli_fetch_array($sql_result2))
-		// {
-		// 	$doc_ref_no=$sql_row2['doc_no'];
-		// 	$no_of_doc++;
-		// 	$section=$sql_row2['section'];
-		// 	$category=$sql_row2['category'];
-		// 	if($category=="Body") { $tot_cut_qty=$tot_cut_qty+$sql_row2['tot_cut_qty']; }
-		// 	//$remarks=$sql_row2['remarks'];
-		// 	$fab_received=$sql_row2['fab_received'];
-		// 	$damages=$sql_row2['damages'];
-		// 	$shortages=$sql_row2['shortages'];
-		// 	$yards=$yards+($fab_received-($damages+$shortages));
-		// 	//$tot_cut_qty=$sql_row2['tot_cut_qty'];
-		// 	$log_time=$sql_row2['log_time'];
-			
-		// 	$start_time = $sql_row2['log_time'];
-		// 	$log_time1 = strtotime("2015-01-01 ". $start_time);
-		// 	$log_time= round(abs($log_time1) / 60,2)."<br>";
-			
-		// 	//7.30am to 8.30.59am
-		// 	if($log_time>"23667960" and $log_time<="23668020.98")   
-		// 	{
-		// 		if($category=="Body") { $h8=$h8+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//8.31.00am to 9.30.59am
-		// 	else if($log_time>"23668021" and $log_time<="23668080.98")
-		// 	{
-		// 		if($category=="Body") { $h9=$h9+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//9.31.00am to 10.30.59am
-		// 	else if($log_time>"23668081" and $log_time<="23668140.98")
-		// 	{
-		// 		if($category=="Body") { $h10=$h10+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//10.31.00am to 11.30.59am
-		// 	else if($log_time>"23668141" and $log_time<="23668200.98")
-		// 	{
-		// 		if($category=="Body") { $h11=$h11+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//11.31.00am to 12.30.59am
-		// 	else if($log_time>"23668201" and $log_time<="23668260.98")
-		// 	{
-		// 		if($category=="Body") { $h12=$h12+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//12.31.00am to 1.30.59am
-		// 	else if($log_time>"23668261" and $log_time<="23668320.98 ")
-		// 	{
-		// 		if($category=="Body") { $h1=$h1+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//1.31.00pm to 2.30.59pm
-		// 	else if($log_time>"23668321" and $log_time<="23668380.98")
-		// 	{
-		// 		if($category=="Body") { $h2=$h2+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//2.31.00pm to 3.30.59pm
-		// 	else if($log_time>"23668381" and $log_time<="23668440.98")
-		// 	{
-		// 		if($category=="Body") { $h3=$h3+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//3.31.00pm to 4.30.59pm
-		// 	else if($log_time>"23668441" and $log_time<="23668500.98")
-		// 	{
-		// 		if($category=="Body") { $h4=$h4+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//4.31.00pm to 5.30.59pm
-		// 	else if($log_time>"23668501" and $log_time<="23668560.98")
-		// 	{
-		// 		if($category=="Body") { $h5=$h5+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//5.31.00pm to 6.30.59pm
-		// 	else if($log_time>"23668561" and $log_time<="23668620.98")
-		// 	{
-		// 		if($category=="Body") { $h6=$h6+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//6.31.00pm to 7.30.59pm
-		// 	else if($log_time>"23668621" and $log_time<="23668680.98")
-		// 	{
-		// 		if($category=="Body") { $h7=$h7+$sql_row2['tot_cut_qty']; }
-		// 	}
-			
-		// 	//echo "<tr><td>$section</td><td>$h8</td><td>9.30 am</td><td>10.30 am</td><td>11.30 am</td><td>12.30 am</td><td>1.30 pm</td><td>2.30 pm</td><td>3.30 pm</td><td>4.30 pm</td><td>5.30 pm</td><td>6.30 pm</td><td>$tot_cut_qty</td><td>$no_of_doc</td></tr>";
-		// }
-		// echo "<tr><td>B</td><td>$h8</td><td>$h9</td><td>$h10</td><td>$h11</td><td>$h12</td><td>$h1</td><td>$h2</td><td>$h3</td><td>$h4</td><td>$h5</td><td>$h6</td><td>$tot_cut_qty</td><td>$yards</td><td>$no_of_doc</td></tr>";
-		// $grand_tot_cut_qty=$grand_tot_cut_qty+$tot_cut_qty;
-		// $grand_tot_no_of_doc=$grand_tot_no_of_doc+$no_of_doc;
-		// $tot_yards=$tot_yards+$yards;
-		// // Section B End
-		
-		// // Section C Start
-		// $no_of_doc=0;
-		// $tot_cut_qty=0;
-		// $h8=$h9=$h10=$h11=$h12=$h1=$h2=$h3=$h4=$h5=$h6=$yards=0;
-		// $sql2="SELECT * FROM $bai_pro3.cut_dept_report WHERE DATE= \"$from_date\" and section=3";
-		// //echo $sql2;
-		// mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// while($sql_row2=mysqli_fetch_array($sql_result2))
-		// {
-		// 	$doc_ref_no=$sql_row2['doc_no'];
-		// 	$no_of_doc++;
-		// 	$section=$sql_row2['section'];
-		// 	$category=$sql_row2['category'];
-		// 	if($category=="Body") { $tot_cut_qty=$tot_cut_qty+$sql_row2['tot_cut_qty']; }
-		// 	//$remarks=$sql_row2['remarks'];
-		// 	$fab_received=$sql_row2['fab_received'];
-		// 	$damages=$sql_row2['damages'];
-		// 	$shortages=$sql_row2['shortages'];
-		// 	$yards=$yards+($fab_received-($damages+$shortages));
-		// 	//$tot_cut_qty=$sql_row2['tot_cut_qty'];
-		// 	$log_time=$sql_row2['log_time'];
-		// 	//echo $log_time."<br>";
-			
-		// 	$start_time = $sql_row2['log_time'];
-		// 	$log_time1 = strtotime("2015-01-01 ". $start_time);
-		// 	$log_time= round(abs($log_time1) / 60,2)."<br>";
-			
-
-			
-		// 	//7.30am to 8.30.59am
-		// 	if($log_time>"23667960" and $log_time<="23668020.98")   
-		// 	{
-		// 		if($category=="Body") { $h8=$h8+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//8.31.00am to 9.30.59am
-		// 	else if($log_time>"23668021" and $log_time<="23668080.98")
-		// 	{
-		// 		if($category=="Body") { $h9=$h9+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//9.31.00am to 10.30.59am
-		// 	else if($log_time>"23668081" and $log_time<="23668140.98")
-		// 	{
-		// 		if($category=="Body") { $h10=$h10+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//10.31.00am to 11.30.59am
-		// 	else if($log_time>"23668141" and $log_time<="23668200.98")
-		// 	{
-		// 		if($category=="Body") { $h11=$h11+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//11.31.00am to 12.30.59am
-		// 	else if($log_time>"23668201" and $log_time<="23668260.98")
-		// 	{
-		// 		if($category=="Body") { $h12=$h12+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//12.31.00am to 1.30.59am
-		// 	else if($log_time>"23668261" and $log_time<="23668320.98 ")
-		// 	{
-		// 		if($category=="Body") { $h1=$h1+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//1.31.00pm to 2.30.59pm
-		// 	else if($log_time>"23668321" and $log_time<="23668380.98")
-		// 	{
-		// 		if($category=="Body") { $h2=$h2+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//2.31.00pm to 3.30.59pm
-		// 	else if($log_time>"23668381" and $log_time<="23668440.98")
-		// 	{
-		// 		if($category=="Body") { $h3=$h3+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//3.31.00pm to 4.30.59pm
-		// 	else if($log_time>"23668441" and $log_time<="23668500.98")
-		// 	{
-		// 		if($category=="Body") { $h4=$h4+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//4.31.00pm to 5.30.59pm
-		// 	else if($log_time>"23668501" and $log_time<="23668560.98")
-		// 	{
-		// 		if($category=="Body") { $h5=$h5+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//5.31.00pm to 6.30.59pm
-		// 	else if($log_time>"23668561" and $log_time<="23668620.98")
-		// 	{
-		// 		if($category=="Body") { $h6=$h6+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//6.31.00pm to 7.30.59pm
-		// 	else if($log_time>"23668621" and $log_time<="23668680.98")
-		// 	{
-		// 		if($category=="Body") { $h7=$h7+$sql_row2['tot_cut_qty']; }
-		// 	}
-			
-		// 	//echo "<tr><td>$section</td><td>$h8</td><td>9.30 am</td><td>10.30 am</td><td>11.30 am</td><td>12.30 am</td><td>1.30 pm</td><td>2.30 pm</td><td>3.30 pm</td><td>4.30 pm</td><td>5.30 pm</td><td>6.30 pm</td><td>$tot_cut_qty</td><td>$no_of_doc</td></tr>";
-		// }
-		// echo "<tr><td>C</td><td>$h8</td><td>$h9</td><td>$h10</td><td>$h11</td><td>$h12</td><td>$h1</td><td>$h2</td><td>$h3</td><td>$h4</td><td>$h5</td><td>$h6</td><td>$tot_cut_qty</td><td>$yards</td><td>$no_of_doc</td></tr>";
-		// $grand_tot_cut_qty=$grand_tot_cut_qty+$tot_cut_qty;
-		// $grand_tot_no_of_doc=$grand_tot_no_of_doc+$no_of_doc;
-		// $tot_yards=$tot_yards+$yards;
-		// //Section C End
-
-		// // Section D start
-		// $no_of_doc=0;
-		// $tot_cut_qty=0;
-		// $h8=$h9=$h10=$h11=$h12=$h1=$h2=$h3=$h4=$h5=$h6=$yards=0;
-		// $sql2="SELECT * FROM $bai_pro3.cut_dept_report WHERE DATE= \"$from_date\" and section=4";
-		// //echo $sql2;
-		// mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// while($sql_row2=mysqli_fetch_array($sql_result2))
-		// {
-		// 	$doc_ref_no=$sql_row2['doc_no'];
-		// 	$no_of_doc++;
-		// 	$section=$sql_row2['section'];
-		// 	$category=$sql_row2['category'];
-		// 	if($category=="Body") { $tot_cut_qty=$tot_cut_qty+$sql_row2['tot_cut_qty']; }
-		// 	//$remarks=$sql_row2['remarks'];
-		// 	$fab_received=$sql_row2['fab_received'];
-		// 	$damages=$sql_row2['damages'];
-		// 	$shortages=$sql_row2['shortages'];
-		// 	$yards=$yards+($fab_received-($damages+$shortages));
-		// 	//$tot_cut_qty=$sql_row2['tot_cut_qty'];
-		// 	$log_time=$sql_row2['log_time'];
-			
-		// 	$start_time = $sql_row2['log_time'];
-		// 	$log_time1 = strtotime("2015-01-01 ". $start_time);
-		// 	$log_time= round(abs($log_time1) / 60,2)."<br>";
-			
-			
-			
-		// 	//7.30am to 8.30.59am
-		// 	if($log_time>"23667960" and $log_time<="23668020.98")   
-		// 	{
-		// 		if($category=="Body") { $h8=$h8+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//8.31.00am to 9.30.59am
-		// 	else if($log_time>"23668021" and $log_time<="23668080.98")
-		// 	{
-		// 		if($category=="Body") { $h9=$h9+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//9.31.00am to 10.30.59am
-		// 	else if($log_time>"23668081" and $log_time<="23668140.98")
-		// 	{
-		// 		if($category=="Body") { $h10=$h10+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//10.31.00am to 11.30.59am
-		// 	else if($log_time>"23668141" and $log_time<="23668200.98")
-		// 	{
-		// 		if($category=="Body") { $h11=$h11+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//11.31.00am to 12.30.59am
-		// 	else if($log_time>"23668201" and $log_time<="23668260.98")
-		// 	{
-		// 		if($category=="Body") { $h12=$h12+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//12.31.00am to 1.30.59am
-		// 	else if($log_time>"23668261" and $log_time<="23668320.98 ")
-		// 	{
-		// 		if($category=="Body") { $h1=$h1+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//1.31.00pm to 2.30.59pm
-		// 	else if($log_time>"23668321" and $log_time<="23668380.98")
-		// 	{
-		// 		if($category=="Body") { $h2=$h2+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//2.31.00pm to 3.30.59pm
-		// 	else if($log_time>"23668381" and $log_time<="23668440.98")
-		// 	{
-		// 		if($category=="Body") { $h3=$h3+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//3.31.00pm to 4.30.59pm
-		// 	else if($log_time>"23668441" and $log_time<="23668500.98")
-		// 	{
-		// 		if($category=="Body") { $h4=$h4+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//4.31.00pm to 5.30.59pm
-		// 	else if($log_time>"23668501" and $log_time<="23668560.98")
-		// 	{
-		// 		if($category=="Body") { $h5=$h5+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//5.31.00pm to 6.30.59pm
-		// 	else if($log_time>"23668561" and $log_time<="23668620.98")
-		// 	{
-		// 		if($category=="Body") { $h6=$h6+$sql_row2['tot_cut_qty']; }
-		// 	}
-		// 	//6.31.00pm to 7.30.59pm
-		// 	else if($log_time>"23668621" and $log_time<="23668680.98")
-		// 	{
-		// 		if($category=="Body") { $h7=$h7+$sql_row2['tot_cut_qty']; }
-		// 	}
-			
-		// 	//echo "<tr><td>$section</td><td>$h8</td><td>9.30 am</td><td>10.30 am</td><td>11.30 am</td><td>12.30 am</td><td>1.30 pm</td><td>2.30 pm</td><td>3.30 pm</td><td>4.30 pm</td><td>5.30 pm</td><td>6.30 pm</td><td>$tot_cut_qty</td><td>$no_of_doc</td></tr>";
-		// }
-		// // echo "<tr><td>D</td><td>$h8</td><td>$h9</td><td>$h10</td><td>$h11</td><td>$h12</td><td>$h1</td><td>$h2</td><td>$h3</td><td>$h4</td><td>$h5</td><td>$h6</td><td>$tot_cut_qty</td><td>$yards</td><td>$no_of_doc</td></tr>";
-		// $grand_tot_cut_qty=$grand_tot_cut_qty+$tot_cut_qty;
-		// $grand_tot_no_of_doc=$grand_tot_no_of_doc+$no_of_doc;
-		// $tot_yards=$tot_yards+$yards;
-		// // Section D End
-
-		echo "<tr><th colspan=12></th><th>$grand_tot_cut_qty</th><th>$tot_yards</th><th>$grand_tot_no_of_doc</th></tr>";
-
+		echo "<tr class='danger'><th>Total:</th><th colspan=$total_hours></th><th>$grand_tot_cut_qty</th><th>$tot_yards</th><th>$grand_tot_no_of_doc</th></tr>";
 		echo "</table>
 	</div>";
 }
