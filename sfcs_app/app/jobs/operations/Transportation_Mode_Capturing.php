@@ -2,29 +2,21 @@
 $start_timestamp = microtime(true);
 include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 
-	$serverName="GD-SQL-UAT";
-	$uid="SFCS_BIA_FF";
-	$pwd="Ba@rUpr6";
-	$BELMasterUAT="BELMasterUAT";
-	$connectionInfo = array( "UID"=>$uid,"PWD"=>$pwd,"Database"=>$BELMasterUAT);
-?>
+$connect = odbc_connect($serverName, $uid, $pwd);
 
-<?php
-	$connect = odbc_connect("gd-sql-uat", "SFCS_BIA_FF", "Ba@rUpr6");
-
-	$tsql="SELECT DeliveryMode FROM [BELMasterUAT].[m3].[PlannedPurchaseOrder] where len(DeliveryMode) > 0  group by DeliveryMode order by DeliveryMode";
-	$result = odbc_exec($connect, $tsql);
-	while(odbc_fetch_row($result))
-	{	
-		$Transport_Mode=odbc_result($result,1);	 
-		$sql41="select * from $bai_pro3.transport_modes where transport_mode='".$Transport_Mode."'";
-		$result41=mysqli_query($link, $sql41) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($result41) == 0)
-		{
-			$sql1="insert $bai_pro3.transport_modes(transport_mode) values('".$Transport_Mode."')";
-			mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		}
+$tsql="SELECT DeliveryMode FROM [$m3_databasename].[m3].[PlannedPurchaseOrder] where len(DeliveryMode) > 0  group by DeliveryMode order by DeliveryMode";
+$result = odbc_exec($connect, $tsql);
+while(odbc_fetch_row($result))
+{	
+	$Transport_Mode=odbc_result($result,1);	 
+	$sql41="select * from $bai_pro3.transport_modes where transport_mode='".$Transport_Mode."'";
+	$result41=mysqli_query($link, $sql41) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($result41) == 0)
+	{
+		$sql1="insert $bai_pro3.transport_modes(transport_mode) values('".$Transport_Mode."')";
+		mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
+}
 
 ?>
 <?php

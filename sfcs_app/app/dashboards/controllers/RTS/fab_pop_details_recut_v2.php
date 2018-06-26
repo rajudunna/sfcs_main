@@ -14,13 +14,14 @@ changes log:
         var $nonempty = $('.doc_nos_class').filter(function() {
             return this.value != ''
         });
-
+		console.log($nonempty.length);
         if ($nonempty.length == 0) {
             swal('Please enter Lot No','','warning');
             return false;
         }else{
             return true;
         }
+		
     }
 
 	function check_validate()
@@ -495,7 +496,7 @@ th
 
 			if(strlen($sql_row1['plan_lot_ref'])>0)
 			{
-				echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&type=$type\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&type=$type','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				echo "<td><a href=\"$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&type=$type\" onclick=\"Popup1=window.open('$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&type=$type','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 			}
 			else
 			{
@@ -539,12 +540,12 @@ th
 					echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
 					
 				}
-				echo "<input type=\"text\" value=\"\"  class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
-				echo "<input type=\"text\" value=\"\" class='manual' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";		
+				echo "<input type=\"text\" value=\"\"  class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
+				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";		
 				echo "</td>";
 				
 				

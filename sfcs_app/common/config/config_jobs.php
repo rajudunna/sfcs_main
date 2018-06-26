@@ -11,11 +11,21 @@ $pass="baiall";
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+<<<<<<< HEAD
 // Schedules Operations Capturing
 $serverName = "BLL-DEVRPT-01";
 $uid = "BELMacroReader";
 $pwd = "bel@macrosm3";
 $databasename="M3_BEL";
+=======
+// M3 Configuration
+$serverName = "GD-SQL-UAT";
+$uid = "SFCS_BIA_FF";
+$pwd = "Ba@rUpr6";
+$m3_databasename="BELMasterUAT";
+$driver_name="Driver={SQL Server Native Client 11.0}";
+
+>>>>>>> 928ecbbaa018b5e1b7d2e4dc9e96b730c72b9762
 //material requirement in week_del_mail_v2
 $server="BLL-DEVRPT-01";
 $database="M3_BEL";
@@ -25,6 +35,7 @@ $passwrd="bel@macrosm3";
 //To Facilitate SFCS Filters
 $global_facility_code="'N02'";
 $facility_code='EKG';
+$facility_id="'E54','104'";
 
 $sizes_array=array('s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50');
 
