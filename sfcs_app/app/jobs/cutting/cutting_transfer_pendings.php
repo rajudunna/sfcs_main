@@ -24,7 +24,7 @@ ob_start();
 body 
 { 
     font-family:calibri; 
-    font-size:12px; 
+    //font-size:12px; 
 } 
 
 table tr 
