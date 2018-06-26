@@ -7,6 +7,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+$cutting_mail = $conf1->get('cutting_mail');
 $view_access=user_acl("SFCS_0008",$username,1,$group_id_sfcs);
 ?>
 <?php
@@ -343,6 +344,7 @@ $message.='
 //$to  = 'rajesh.nalam@schemaxtech.com';
 
 // subject
+$to = $cutting_mail;
 $subject = 'Hourly Input Availability Report';
 
 // To send HTML mail, the Content-type header must be set

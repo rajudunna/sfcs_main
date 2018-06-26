@@ -1704,7 +1704,7 @@ $reverse_url= getFullURL($_GET['r'],'trims_inspection_update.php','N');
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
 
-if(strlen($lot_no)>0 and strlen($lot_ref)>0)
+if(strlen($lot_no)>0 or strlen($lot_ref)>0)
 {
 echo '<form id="myForm" name="input" action="index.php?r='.$_GET['r'].'" method="post">';
 echo "<input type='hidden' id='head_check' name='head_check' value=''>";
@@ -2599,6 +2599,7 @@ if($_POST['put'] || $_POST['confirm'])
 	mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($_POST['confirm'])
 	{
+		
 		$lot_no_new=trim($_POST['lot_no']); //Batch Number
 		// if($_POST['lot_no'] == '')
 		// {
@@ -2610,8 +2611,7 @@ if($_POST['put'] || $_POST['confirm'])
 		mysqli_query($link, $sql1) or exit("Sql Error8=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		echo "<script>sweetAlert('Updated Sucessfully','','success')</script>";
 		echo getFullURLLevel($_GET['r'], "trims_inspection_update.php", "0", "N");
-		echo "<script>location.href = \"".getFullURLLevel($_GET['r'], "trims_inspection_update.php", "0", "N")."\"; </script>";
-
+		echo "<script>setTimeout('Redirect()',3000); location.href = \"".getFullURLLevel($_GET['r'], "trims_inspection_update.php", "0", "N")."\"; </script>";
 		//echo $sql1;
 	}
 	//Status will be 0 either reset or by default, if user update this form. (0- To track as not confirmed by super user and not communicated to front end teams.)
@@ -2656,7 +2656,7 @@ if($_POST['put'] || $_POST['confirm'])
 	echo "<h2>Please Wait While Updating Data.</h2>";
 			echo "<script type='text/javascript'>";
 			 echo "setTimeout('Redirect()',0);";
-			 echo "var url='".$url."&batch_no=+".$lot_no_new."&lot_ref=".$lot_ref."';";
+			 echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."';";
 			 echo "function Redirect(){location.href=url;}</script>";
 	
 }

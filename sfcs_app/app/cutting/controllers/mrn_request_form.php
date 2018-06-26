@@ -3,7 +3,9 @@ $url = getFullURL($_GET['r'],'mrn_request_form_V2.php','N');
 header("Location: ".$url);
 
 ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+$mrn_mail= $conf1->get('mrn_mail');
+?>
 <html>
 <head>
 
@@ -469,9 +471,9 @@ if(isset($_POST['update']))
 		
 		//mail($to, $subject, $message, $headers); (Enable to send mail to requester and RM Team)
 		
-		$to  = implode(", ",$app_team);
-		$cc=implode(", ",$rm_team);
-		$to_new=implode(", ",array_merge($app_team,$rm_team));
+		$to  = $mrn_mail;
+		// $cc=implode(", ",$rm_team);
+		// $to_new=implode(", ",array_merge($app_team,$rm_team));
 		$subject = 'BAI PRO - Additional Material Request Note Ref. '.$rand. ' (Request)';
 		
 		// To send HTML mail, the Content-type header must be set
@@ -483,7 +485,7 @@ if(isset($_POST['update']))
 		$headers .= 'Cc: '.$cc. "\r\n";
 		$headers .= 'From: Shop Floor System Alert <ictsysalert@brandix.com>'. "\r\n";
 		
-		mail($to_new, $subject, $message, $headers);
+		mail($to, $subject, $message, $headers);
 		
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"mrn_request_form.php?msg=1&ref=$rand\"; }</script>";
 	}
