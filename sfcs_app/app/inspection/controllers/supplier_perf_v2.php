@@ -233,18 +233,25 @@ if(isset($_POST['filter']))
 		$comaplint_sno[]=$sql_row2["sno"];
 	}
 	
-	
 	$url=getFullURL($_GET['r'],'supplier_per_charts.php','N');
 	$url1=getFullURLLevel($_GET['r'],'reports/supplier_perf_v2_report.php',1,'N');
 	echo "<div id='main_div'>";
 	echo "<hr/>";
-	echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a>";
 	
 	include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'supplier_perf_summary.php','R'));
 	
 	echo "<form action='".getFullURL($_GET['r'],'supplier_perf_v2_update.php','N')."' 
 	       method='POST'>";
 	echo "<div class='table-responsive'><div style='height:350px; overflow-y: scroll;''><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\">";
+
+	$sql="select distinct supplier as sup from $bai_rm_pj1.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" ".$add_query." AND product_group=\"Fabric\" ".$suppliers_list_ref_query." group by month(grn_date),batch_no ORDER BY supplier";
+	//echo "</br> Supplier Qry :".$sql."<br>";
+
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+	$flag=false;
+if(mysqli_num_rows($sql_result) > 0){
+	$flag=true;
+	echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a>";
 	echo "<tr><th>RECORD #</th><th>WEEK #</th><th>ENTRY NO</th><th>INVOICE NO & DATE</th><th>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th>
 	<th>SWATCHES RECEIVED FROM (SUPPLIER/WH)</th><th>INSPECTED DATE</th><th>RELEASED DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th>
 	<th>M3 LOT#</th><th>PO</th><th>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th><th>COMPOSITION</th><th>COLOR</th><th>SOLID / YARN DYE / PRINT</th><th>BATCH #</th>
@@ -259,14 +266,7 @@ if(isset($_POST['filter']))
 		echo "<th>".$complaint_reason[$i]."</th>";
 	}
 	echo "<th>STATUS</th><th>IMPACT (YES/NO)</th></tr>";
-	$sql="select distinct supplier as sup from $bai_rm_pj1.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" ".$add_query." AND product_group=\"Fabric\" ".$suppliers_list_ref_query." group by month(grn_date),batch_no ORDER BY supplier";
-	//echo "</br> Supplier Qry :".$sql."<br>";
-
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-$flag=false;
-if(mysqli_num_rows($sql_result) > 0){
-	$flag=true;
-
+	
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$supplier_name=$sql_row["sup"];
