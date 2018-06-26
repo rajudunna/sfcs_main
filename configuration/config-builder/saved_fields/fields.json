@@ -131,7 +131,7 @@
                 "label": "Week Del Plan Status Mail",
                 "className": "form-control",
                 "name": "week_del_plan_status_mail",
-                "value": "ravindranath.yrr@gmail.com"
+                "value": "ravindranath.yrr@gmail.com,yateesh603@gmail.com"
             },
             {
                 "type": "text",
@@ -140,7 +140,7 @@
                 "label": "RM Summary Report Email",
                 "className": "form-control",
                 "name": "rm_summary_report_email",
-                "value": "yateesh603@gmail.com"
+                "value": "yateesh603@gmail.com,ravindranath.yrr@gmail.com"
             },
             {
                 "type": "text",
@@ -404,121 +404,122 @@
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Lay Plan Delete",
                 "className": "form-control",
                 "name": "layplanmail",
-                "value": "a@brandix.com,b@brandix.com,c@brandix.com",
-                "subtype": "text"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "MRN Request Form",
                 "className": "form-control",
                 "name": "mrn_mail",
-                "value": "d@brandix.com,e@brandix.com,f@brandix.com",
-                "subtype": "text"
+                "value": "d@brandix.com,e@brandix.com,f@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "MRN Request Form2",
                 "className": "form-control",
                 "name": "mrn_request_mail",
-                "value": "g@brandix.com,h@brandix.com,i@brandix.com",
-                "subtype": "text"
+                "value": "g@brandix.com,h@brandix.com,i@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Cutting Alert",
                 "className": "form-control",
                 "name": "cutting_mail",
-                "value": "j@brandix.com,k@brandix.com,L@brandix.com",
-                "subtype": "text"
+                "value": "j@brandix.com,k@brandix.com,L@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Dispatch Mail",
                 "className": "form-control",
                 "name": "dispatch_mail",
-                "value": "m@brandix.com,n@brandix.com,o@brandix.com",
-                "subtype": "text"
+                "value": "m@brandix.com n@brandix.com,o@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Weekly Delivery Plan Update",
                 "className": "form-control",
                 "name": "weekly_plan_mail",
-                "value": "p@brandix.com,q@brandix.com,r@brandix.com",
-                "subtype": "text"
+                "value": "p@brandix.com q@brandix.com,r@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Order Quantity Revision",
                 "className": "form-control",
                 "name": "order_quantity_mail",
-                "value": "s@brandix.com,t@brandix.com,u@brandix.com",
-                "subtype": "text"
+                "value": "s@brandix.com t@brandix.com,u@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Weekly Delivery Plan Status Update",
                 "className": "form-control",
                 "name": "weekly_plan_status_mail",
-                "value": "v@brandix.com,w@brandix.com,x@brandix.com",
-                "subtype": "text"
+                "value": "v@brandix.com w@brandix.com,x@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Supplier Claim Update",
                 "className": "form-control",
                 "name": "supplier_claim_mail",
-                "value": "xy@brandix.com,yz@brandix.com,ab@brandix.com",
-                "subtype": "text"
+                "value": "xy@brandix.com yz@brandix.com,ab@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Supplier Claim PDF Mail",
                 "className": "form-control",
                 "name": "supplier_claim_pdf_mail",
-                "value": "bc@brandix.com,cd@brandix.com,de@brandix.com",
-                "subtype": "text"
+                "value": "bc@brandix.com cd@brandix.com,de@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "PLD-Manpower",
                 "className": "form-control",
                 "name": "pld_man_mail",
-                "value": "ef@brandix.com,fg@brandix.com,gh@brandix.com",
-                "subtype": "text"
+                "value": "ef@brandix.com fg@brandix.com,gh@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Dashboard Email",
                 "className": "form-control",
                 "name": "dashboard_mail",
-                "value": "hi@brandix.com,ij@brandix.com,jk@brandix.com",
-                "subtype": "text"
+                "value": "hi@brandix.com ij@brandix.com,jk@brandix.com"
             },
             {
                 "type": "text",
+                "subtype": "email",
                 "required": true,
                 "label": "Update Status",
                 "className": "form-control",
                 "name": "update_status_mail",
-                "value": "kl@brandix.com,lm@brandix.com,mn@brandix.com",
-                "subtype": "text"
+                "value": "kl@brandix.com lm@brandix.com,mn@brandix.com"
             }
-        ]
+        ],
+        []
     ]
 }
