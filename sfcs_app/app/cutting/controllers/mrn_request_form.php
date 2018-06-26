@@ -300,7 +300,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 echo "Style: <b>$inp_1</b> | Schedule: <b>$inp_2</b> | Total requests from this schedule: <b>".mysqli_num_rows($sql_result)."</b><br/>";
 
 echo "<h3><center>Additional Material Request Form</center></h3>";
-$connect = odbc_connect("bcimovsms01_bai", "brandix_india_user1", "styleRM123");
+$connect = odbc_connect($mssql_odbc_name, $mssql_username, $mssql_password);
 $query = "STYLE_WISE_RM_INDIA_REQUIREMENT '$inp_1', '$inp_2', '$inp_3'";
 //echo $query;
 $result = odbc_exec($connect, $query);
