@@ -28,6 +28,9 @@ $ms_sql_odbc_host = $conf1->get('mysql-odbc');
 //To Facilitate SFCS Filters
 $global_facility_code=$conf1->get('plantcode');
 
+$plant_alert_code="BEK";
+$message_sent_via="SYSTEM";
+
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
     

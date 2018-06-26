@@ -137,7 +137,7 @@ $message.="</body></html>";
 
   //$to  = 'BAIPlanningTeam@brandix.com,BAIManufacturingTeam@brandix.com,BAISupplyChainTeam@brandix.com,brandixalerts@schemaxtech.com,brandixalerts@schemaxtech.com';
     $to  = $Weekly_plan_mail;
-	$subject = $plant_alert_code."Weeks plan update";
+	$subject = $plant_alert_code." Weeks plan update";
 	
 	// To send HTML mail, the Content-type header must be set
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
