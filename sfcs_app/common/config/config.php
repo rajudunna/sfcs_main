@@ -123,5 +123,3 @@ while($methods=mysqli_fetch_array($table_result))
     $pack_methods[]=$methods['pack_method_name'];
 }
 ?>
-$pack_methods = ['pcs'=>'Pcs','packs'=>'Packs','hangers'=>'Hangers'];
-?>
