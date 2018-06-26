@@ -81,14 +81,30 @@ $cat=$_POST['cat'];
 				<label for='to_date'>End Date : </label>
 				<input class='form-control' type="text" data-toggle="datepicker" id="edate" onchange="return verify_date();" name="to_date" size="8" value="<?php  if(isset($_POST['to_date'])) { echo $_POST['to_date']; } else { echo date("Y-m-d"); } ?>" />
 			</div>
+			<?php
+				$table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
+				$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
+				while($tables=mysqli_fetch_array($table_result))
+				{
+					$table_name[]=$tables['tbl_name'];
+					$table_id[]=$tables['tbl_id'];
+				}
+				$all_sec_query = "SELECT GROUP_CONCAT('\"',tbl_id,'\"') as sec FROM $bai_pro3.tbl_cutting_table WHERE STATUS='active'";
+				$sec_result_all = mysqli_query($link,$all_sec_query) or exit('Unable to load sections all');
+				while($res1 = mysqli_fetch_array($sec_result_all)){
+					$all_secs = $res1['sec'];
+				}
+			?>
 			<div class="col-sm-2">
 				<label for='section'>Section :</label>
 				<select class='form-control' name="section">
-					<option value='1,2,3,4' <?php if($section=="1,2,3,4"){ echo "selected"; } ?> >All</option>
-					<option value='1' <?php if($section=="1"){ echo "selected"; } ?>>Section - 1</option>
-					<option value='2' <?php if($section=="2"){ echo "selected"; } ?>>Section - 2</option>
-					<option value='3' <?php if($section=="3"){ echo "selected"; } ?>>Section - 3</option>
-					<option value='4' <?php if($section=="4"){ echo "selected"; } ?>>Section - 4</option>
+					<option value='<?= $all_secs ?>'>All</option>
+				<?php
+					for($i = 0; $i < sizeof($table_name); $i++)
+					{
+						echo "<option value='".$table_id[$i]."'>".$table_name[$i]."</option>";
+					}
+				?>
 				</select>
 			</div>
 			<div class="col-sm-2">
@@ -96,19 +112,30 @@ $cat=$_POST['cat'];
 				<select class='form-control' name="shift">
 					<option value='"A", "B"' <?php if($shift=='"A", "B"'){ echo "selected"; } ?> >All</option>
 					<?php foreach($shifts_array as $key=>$shift){
-					echo "<option value='$shift'>$shift</option>";
+							echo "<option value='$shift'>$shift</option>";
 					}
-					echo "</select></div></td></tr>"; ?>
+					?>
 				</select>
 			</div>
+			<?php
+				$cat_query = "select * from $bai_pro3.tbl_category where status=1";
+				$cat_result = mysqli_query($link,$cat_query) or exit('Unable to load Categories');	
+				$all_cat_query = "SELECT GROUP_CONCAT('\"',cat_name,'\"') as cat FROM $bai_pro3.tbl_category where status=1";
+				$cat_result_all = mysqli_query($link,$all_cat_query) or exit('Unable to load Categories all');
+				while($res = mysqli_fetch_array($cat_result_all)){
+					$all_cats = $res['cat'];
+				}
+				
+			?>
 			<div class="col-sm-2">
 				<label for='cat'>Category : </label> 
 				<select class='form-control' name="cat">
-					<option value='"Body", "Gusset", "Front", "Back"' <?php if($cat=='"Body", "Gusset", "Front", "Back"') {echo "selected"; } ?>>All</option>
-					<option value='"Body"' <?php if($cat=='"Body"'){ echo "selected"; } ?>>Body</option>
-					<option value='"Gusset"' <?php if($cat=='"Gusset"'){ echo "selected"; } ?>>Gusset</option>
-					<option value='"Front"' <?php if($cat=='"Front"'){ echo "selected"; } ?>>Front</option>
-					<option value='"Back"' <?php if($cat=='"Back"'){ echo "selected"; } ?>>Back</option>
+					<option value='<?= $all_cats ?>'>All</option>
+				<?php
+					foreach($cat_result as $key=>$value){
+						echo "<option value='".$value['cat_name']."'>".$value['cat_name']."</option>";
+					}
+				?>
 				</select>
 			</div>
 			<div class="col-sm-2">
