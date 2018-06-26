@@ -83,7 +83,7 @@ height: 400px;
 </style>
 
 
-<style>
+<!---<style>
 body
 {
 	font-family:calibri;
@@ -128,7 +128,7 @@ table{
 background-image:url(Diag.gif);
 background-repeat:no-repeat;/*dont know if you want this to repeat, ur choice.*/
 }
-</style>
+</style>--->
 
 
 <script type="text/javascript">
