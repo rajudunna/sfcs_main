@@ -6,8 +6,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 <title>POP - IMS Track Panel</title>
 
-<script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>";
-<link rel=\"stylesheet\" href=".getFullURL($_GET['r'],'common/js/ddcolortabs.css',4,'R')." type=\"text/css\" media=\"all\" />
+<script language="javascript" type="text/javascript" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
+<link rel="stylesheet" href=".getFullURL($_GET['r'],'common/js/ddcolortabs.css',4,'R')." type="text/css" media="all" />
 
 
 <style>
@@ -60,7 +60,7 @@ $rand_track=$_GET['rand_track'];
 
 	
 	$sql1="SELECT distinct rand_track, ims_doc_no FROM $bai_pro3.ims_log WHERE ims_mod_no=$module_ref AND ims_doc_no=$ims_doc_no_ref AND rand_track=$rand_track AND ims_status <> \"DONE\"";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result1);
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -93,7 +93,7 @@ while($sql_row22=mysqli_fetch_array($sql_result22))
 <div class="panel-body">
 <?php
 	//echo '<div id="page_heading"><span style="float: left"><h3>Module - '.$module_ref.' - CUT No: '.chr($color_code).leading_zeros($cutno,3).' Summary</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>';	
-		echo '<div class="table-responsive" ><table style="color:black; border: 1px solid red;"';
+		echo '<div class="table-responsive" ><table style="color:black; border: 1px solid red;">';
 		echo "<tr class=\"new\"><th>TID</th><th>Style</th><th>Schedule</th><th>Color</th><th>CID</th><th>DOC#</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th></tr>";
 					
 		$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track";

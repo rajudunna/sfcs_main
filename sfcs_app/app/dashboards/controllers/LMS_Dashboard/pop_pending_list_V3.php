@@ -1,7 +1,7 @@
 <?php
 	// include("../dbconf.php"); 
-include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include("..".getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 ?>
 
 <!-- Loading Page -->
@@ -83,7 +83,7 @@ echo "<div class='table-responsive' style='max-height:600px;overflow-y:scroll;'>
 echo "<tr style='background-color:#ede8e8;color:black;text-align:center;font-size:12px;'><th>Module</th><th>Style</th><th>Schedule</th><th>Color</th><th>Job</th><th>Carton ID</th><th>Size</th><th>Carton Qty</th></tr>";
 
 		$sql1="SELECT * FROM $bai_pro3.packing_issues order by ims_mod_no";
-		//echo $sql1;
+		// echo $sql1;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result1)>0) {	
 			while($sql_row1=mysqli_fetch_array($sql_result1))
