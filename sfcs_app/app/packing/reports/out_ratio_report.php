@@ -28,14 +28,16 @@ function verify(e){
 function verify_date(){
 	var from_date = $('#sdate').val();
 	var to_date   = $('#edate').val();
-
+	console.log(from_date);
+	console.log(to_date);
+	
 	if(from_date.length > 2 || to_date.length > 2){
 		$('#sdate').val(from_date.substr(0,2));
 		$('#edate').val(to_date.substr(0,2));
 		sweetAlert('Only 2 digits are allowed','','info');
 	}
 
-	if(to_date < from_date){
+	if(Number(to_date) < Number(from_date)){
 		$('#edate').val($('#sdate').val());
 		sweetAlert('End Week must not be less than Start Week','','warning');
 		return false;
@@ -118,7 +120,7 @@ function verify_year(){
 			</div>
 			<div class='col-sm-2 form-group'>
 				<label for='sche'>Schedule </label>
-				<input required class='form-control' type="number" name="sche" size="8" value=""/>
+				<input required class='form-control integer' type="number" min="0" name="sche" size="8" value=""/>
 			</div>
 			<div class='col-sm-1'>
 				<br>
