@@ -27,7 +27,7 @@ function verify_date(e){
 
 </script>
 
-<style>
+<!---<style>
 body
 {
 	font-family:calibri;
@@ -71,7 +71,7 @@ table{
 }
 
 }
-</style>
+</style>--->
 
 
 

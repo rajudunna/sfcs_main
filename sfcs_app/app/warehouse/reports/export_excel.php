@@ -2,6 +2,7 @@
 
 if(isset($_POST['export']))
 {
+	
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	
 	$location=$_POST['loc'];
 	$filename ="$location"."_StockRecon2012.xls";
@@ -48,6 +49,7 @@ if(isset($_POST['export']))
 }
 else
 {
+	error_reporting(0);
 	if($_GET['file_name'] != '') {
 		$file_name = $_GET['file_name'];
 	}

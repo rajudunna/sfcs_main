@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-$view_access=user_acl("SFCS_0044",$username,1,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0044",$username,1,$group_id_sfcs);
 ?>
 
 
