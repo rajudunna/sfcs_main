@@ -257,11 +257,6 @@ if($count_rows > 0){
 			echo "<td style=\"background:$id;\">".$order_date."</td>";	
 			
 			// calculate system yards for schedule
-<<<<<<< HEAD
-			
-			$sql1="select tid,purwidth,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and mo_status=\"Y\" and purwidth > 0";
-			//echo $sql1."<br>";
-=======
 			for ($i=0; $i < sizeof($in_categories); $i++)
 					{
 						 $cat[]=$in_categories[$i];
@@ -269,7 +264,6 @@ if($count_rows > 0){
 					$category = "'" .implode("','",$cat)."'" ;
 			$sql1="select tid,purwidth,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($category) and mo_status=\"Y\" and purwidth > 0";
 			// echo $sql1."<br>";
->>>>>>> dev_master
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
