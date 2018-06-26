@@ -466,11 +466,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
              $redirect_url = getFullURL($_GET['r'],'mod_rep_ch.php','R')."?module=$module";
           ?>
                    
-             <!--  <a href="javascript:void(0);" 
+              <!-- <a href="javascript:void(0);" 
                  onclick=" PopupCenter('<?= $redirect_url ?>','myPop1',680,450);" >
                   <div class="yellow_box blink" id="blink" >WIP : <?php echo $wip; ?>
-                  </div> -->
-              </a>  
+                  </div>
+              </a>  --> 
       <?php } ?>
               <div class="clear"></div>
               </div>                  
@@ -617,10 +617,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
     <td>Allocated Cut</td>
     <td><div class="red_box" style="margin-left:15px;"></div></td>
   </tr>
-  <tr>
+ <!--  <tr>
     <td>Line WIP &gt; 1000</td>
     <td><div class="yellow_box" style="margin-left:15px;width:20px;padding-top:0px;"></div></td>
-  </tr>
+  </tr> -->
 </table>
 </div>
     
