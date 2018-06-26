@@ -1,5 +1,6 @@
 
 <?php
+//chnages for recommitt
 	set_time_limit(50000);
 	//require_once('phplogin/auth.php');
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
