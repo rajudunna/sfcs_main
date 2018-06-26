@@ -558,22 +558,22 @@ table{
 				$act_fca_new_db[$m]=0;
 			}
 			
-			if(substr($style,0,1)=="M")
-			{
-				//$sqlx1="select sum(carton_act_qty) as scanned,size_code from packing_summary where order_del_no=\"$schedule\" and order_col_des=\"".$color."\" and status=\"DONE\" group by size_code";
- 				$sqlx1="select sum(carton_act_qty) as scanned,size_code from $bai_pro3.packing_summary where order_del_no=\"$schedule\" and trim(both from order_col_des)=\"".trim($color)."\" and status=\"DONE\" group by size_code";
-				//echo $sqlx1."<br/>";
-				$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-				{
-					$l=array_search($sql_rowx1['size_code'],$sizes_db);
-					$act_fg_new_db[$l]=$sql_rowx1['scanned'];
-					$act_fca_new_db[$l]=$sql_rowx1['scanned'];
-					$tot_ship_new_db[$l]=$sql_rowx1['scanned'];
-				}
-			}
-			else
-			{
+			// if(substr($style,0,1)=="M")
+			// {
+			// 	//$sqlx1="select sum(carton_act_qty) as scanned,size_code from packing_summary where order_del_no=\"$schedule\" and order_col_des=\"".$color."\" and status=\"DONE\" group by size_code";
+ 			// 	$sqlx1="select sum(carton_act_qty) as scanned,size_code from $bai_pro3.packing_summary where order_del_no=\"$schedule\" and trim(both from order_col_des)=\"".trim($color)."\" and status=\"DONE\" group by size_code";
+			// 	//echo $sqlx1."<br/>";
+			// 	$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// 	while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+			// 	{
+			// 		$l=array_search($sql_rowx1['size_code'],$sizes_db);
+			// 		$act_fg_new_db[$l]=$sql_rowx1['scanned'];
+			// 		$act_fca_new_db[$l]=$sql_rowx1['scanned'];
+			// 		$tot_ship_new_db[$l]=$sql_rowx1['scanned'];
+			// 	}
+			// }
+			// else
+			// {
 			$sqlx1="select scanned,fca_app,size_code from $bai_pro3.disp_mix_size where order_del_no=\"$schedule\"";
 			//echo $sqlx1."<br/>";
 			$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -648,7 +648,7 @@ table{
 				$tot_ship_new_db[]=$sql_row2['ship_s_s49'];
 				$tot_ship_new_db[]=$sql_row2['ship_s_s50'];
 			}
-			}
+			// }
 			
 			for($i=0;$i<sizeof($order_qtys);$i++)
 			{
