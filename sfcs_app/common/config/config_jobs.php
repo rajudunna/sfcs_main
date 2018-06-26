@@ -90,8 +90,8 @@ $Aod_gate_pass=$conf->get('pro_aod_gatepass_update_to_belbal_co_invoice_mail');
 
 
 //sah countdown
-
-$command ='webshotcmd /url "http://localhost/sfcs_app/app/jobs/planning/SAH_Countdown/Plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
+$http_host=gethostname();
+$command ="webshotcmd /url 'http://$http_host/sfcs_app/app/jobs/planning/SAH_Countdown/Plan_sah.php' /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123";
 
 // quality->critical rejection 
 $reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
