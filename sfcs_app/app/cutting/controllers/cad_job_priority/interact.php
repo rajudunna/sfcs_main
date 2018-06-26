@@ -66,7 +66,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$order_tid=$sql_row['order_tid'];
 	$cat_ref=$sql_row['cat_ref'];
 
-	$sql33="select * from $bai_pro3.maker_stat_log where allocate_ref=$allocate_tid";
+	$sql33="select * from $bai_pro3.maker_stat_log where allocate_ref='$allocate_tid'";
 	mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -74,7 +74,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$maker_tid=$sql_row33['tid'];
 	}
 	
-	$sql33="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
+	$sql33="select * from $bai_pro3.cat_stat_log where tid='$cat_ref'";
 	mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -84,20 +84,20 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	
 	
-		$sql2="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_num_check2=mysqli_num_rows($sql_result2);
+	$sql2="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check2=mysqli_num_rows($sql_result2);
 
-		while($sql_row2=mysqli_fetch_array($sql_result2))
-		{
-			$color=$sql_row2['order_col_des'];
-			$style=$sql_row2['order_style_no'];
-			$schedule=$sql_row2['order_del_no'];
-			$customer=$sql_row2['order_div'];
-			$customer_div=$sql_row2['order_div'];
-			$flag=$sql_row2['title_flag'];
-		}
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+		$color=$sql_row2['order_col_des'];
+		$style=$sql_row2['order_style_no'];
+		$schedule=$sql_row2['order_del_no'];
+		$customer=$sql_row2['order_div'];
+		$customer_div=$sql_row2['order_div'];
+		$flag=$sql_row2['title_flag'];
+	}
 
 	if(!($maker_tid>0))
 	{
@@ -122,24 +122,41 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 	}
 	
-
-	echo "<tr>";
-	//echo "<td>$maker_tid</td>";
-	echo "<td>$style</td>";
-	echo "<td>$schedule</td>";
-	echo "<td>$color</td>";
-	echo "<td>$category</td>";
-	echo "<td>$mk_msg</td>";
-	echo "<td>$mo_status</td>";
+	if($style!='' || $schedule!='' || $color!=''){
+		echo "<tr>";
+		//echo "<td>$maker_tid</td>";
+		echo "<td>$style</td>";
+		echo "<td>$schedule</td>";
+		echo "<td>$color</td>";
+		echo "<td>$category</td>";
+		echo "<td>$mk_msg</td>";
+		echo "<td>$mo_status</td>";
 	
-	$customer=substr($customer,0,((strlen($customer)-2)*-1));
-	
-	$url = getFullURLLevel($_GET['r'],'lay_plan_preparation/main_interface.php',1,'N');
-	if($customer!="VS")
-	{
-		if(strpos($customer_div,"- Men")) //NEW Implementation for M&S as Men Wear having size codes different. 20110428
+		$customer=substr($customer,0,((strlen($customer)-2)*-1));
+		
+		$url = getFullURLLevel($_GET['r'],'lay_plan_preparation/main_interface.php',1,'N');
+		if($customer!="VS")
 		{
-			if($flag==1)
+			if(strpos($customer_div,"- Men")) //NEW Implementation for M&S as Men Wear having size codes different. 20110428
+			{
+				if($flag==1)
+				{
+					echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
+				}
+				else
+				{
+					echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
+				}
+			}
+			else
+			{
+					echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
+			}
+			
+		}
+		else if($customer=="CK")
+		{
+			if($flag==0)
 			{
 				echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
 			}
@@ -150,28 +167,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		else
 		{
-				echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
-		}
-		
-	}
-	else if($customer=="CK")
-	{
-		if($flag==0)
-		{
 			echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
 		}
-		else
-		{
-			echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
-		}
-	}
-	else
-	{
-		echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
-	}
 	
-	
-	echo "</tr>";
+		echo "</tr>";
+	}
 
 }
 

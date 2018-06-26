@@ -6,7 +6,7 @@
 
 <FORM method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_maker_process_edit.php", "N"); ?>">
 <div class="info">
-  <p><b><font color='#ff0000'> Note:</font></b> add marker with endallovans</p>
+  <!-- <p><b><font color='#ff0000'> Note:</font></b> add marker with endallovans</p> -->
 </div>	
 <?php
 
