@@ -201,7 +201,7 @@ $table.="</table>";
  
  echo "<div id='div-1a'> 
 <form  name='input' action= ".getFullURL($_GET['r'],'plan_vs_output_analysis_excel.php','R')." method='post'>
-<input type='hidden' name='table' value='<?php echo $table; ?>'>
+<input type='hidden' name='table' value='$table'>
 <input type='submit' name='submit1' value='Export to Excel' class='btn btn-info'>
 </form>
 </div>";
