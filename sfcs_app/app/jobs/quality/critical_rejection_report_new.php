@@ -151,7 +151,7 @@ $minrej_per="0.4%"; // FOR ENTER THE REJECTION PERCENTAGE.
 	$choice=1;
 			
 echo "<h4><span class='label label-warning'>Summary of Details</span></h4>";
-echo "<div class='table table-responsive'>";
+echo "<div class='table-responsive'>";
 echo '<table id="tableone" cellspacing="0" class="mytable table table-bordered">';
 	echo "<tr class='tblheading' >
 	<th  class='filter'>Ex_factory</th>
