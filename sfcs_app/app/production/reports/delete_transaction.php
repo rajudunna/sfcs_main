@@ -75,7 +75,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$url = getFullURL($_GET['r'],'down_time_log.php','N');
 		echo "<script>sweetAlert('Deleted Successfully','','success')</script>";
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  window.close();}</script>";
+		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'down_time_log_V2.php',0,'N')."';</script>");
+			// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  window.close();}</script>";
 	// }
 	// else
 	// {

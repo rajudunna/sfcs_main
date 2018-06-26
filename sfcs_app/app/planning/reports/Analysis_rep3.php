@@ -340,7 +340,7 @@ $year_add_query2=" and exfact_date between \"".$sdate."\" and \"".$edate."\" ";
 				if(strlen($buyer_div) >0)
 				{
 					// $query_add=" where left(style_no,1) in ($buyer_div) $year_add_query2";
-					$query_add="where schedule_no in (SELECT order_del_no FROM bai_pro3.bai_orders_db WHERE order_div IN (SELECT buyer_name FROM $bai_pro2.buyer_codes WHERE buyer_name IN ('".str_replace(",","','",$buyer_div)."')))";
+					$query_add="where schedule_no in (SELECT order_del_no FROM bai_pro3.bai_orders_db WHERE order_div IN ('".str_replace(",","','",$buyer_div)."'))";
 					
 					$sql="select distinct style_id from $bai_pro2.shipment_plan $query_add order by style_id";
 					
@@ -523,7 +523,7 @@ for($i=0; $i<sizeof($week_code); $i++)
 }
 echo "</tr>";
 
-$sql="select distinct style_id as style_id from $shipment_plan where exfact_date between \"".$start_date."\" and \"".$end_date."\" and left(style_no,1) in ('".str_replace(",","','",$buyer_div)."') $add_style_id ORDER BY style_id";
+$sql="select distinct style_id as style_id from $shipment_plan where exfact_date between \"".$start_date."\" and \"".$end_date."\" and left(style_no,1) in ($buyer_div) $add_style_id ORDER BY style_id";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Error Message: No styles to process...".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

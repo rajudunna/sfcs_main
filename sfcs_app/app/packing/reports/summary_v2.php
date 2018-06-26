@@ -1,11 +1,12 @@
 <?php
 error_reporting(0);
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 ?>
 <title>Weekly Delivery Dashboard - Packing</title>
 <head>
 <script type="text/javascript" src="datetimepicker_css.js"></script>
 <script language="javascript" type="text/javascript" 
-		src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter_en/table_filter.js', 3, 'R');?>" ></script>
+		src="sfcs_app/common/js/tablefilter_en/table_filter.js" ></script>
 <style type="text/css" media="screen">
 
 /*====================================================
@@ -42,7 +43,6 @@ td{ padding:1px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 	<div class="panel-body">
 <?php
 $weeknumber=$_GET["weekno"];
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 $year =date("Y");
 $dates=array();
 for($day=1; $day<=7; $day++)
@@ -67,7 +67,7 @@ while($rowy=mysqli_fetch_array($resulty))
 $status=array("Shipped","M3 Reported","FCA","FCA/P","FCA Fail","Offered","FG*");
 $low_status=array("FG","Packing","Sewing","Cutting","RM");
 $high_status=array("Shipped","M3 Reported","FCA","FCA/P","FCA Fail","Offered","FG*","FG","Packing","Sewing","Cutting","RM");
-$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';					
+$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";					
 mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "<div class='table-responsive'>";
@@ -84,7 +84,7 @@ for($i=0;$i<sizeof($status);$i++)
 	echo "<th>".$status[$i]."</th>";
 	$status_implode='"'.implode('","',$status).'"';
 	$low_status_implode='"'.implode('","',$low_status).'"';
-	$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';					
+	$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";					
 	mysqli_query($link,$sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowy=mysqli_fetch_array($sql_resulty))
@@ -109,7 +109,7 @@ for($i=0;$i<sizeof($low_status);$i++)
 	echo "<th>".$status[$i]."</th>";
 	$status_implode='"'.implode('","',$status).'"';
 	$low_status_implode='"'.implode('","',$low_status).'"';
-	$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';					
+	$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";					
 	mysqli_query($link,$sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowy=mysqli_fetch_array($sql_resulty))
@@ -129,7 +129,7 @@ for($i=0;$i<sizeof($low_status);$i++)
 }
 echo "</tr>";
 echo "<tr><th>Total</th>";
-$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';					
+$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";					
 mysqli_query($link,$sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowy=mysqli_fetch_array($sql_resulty))
