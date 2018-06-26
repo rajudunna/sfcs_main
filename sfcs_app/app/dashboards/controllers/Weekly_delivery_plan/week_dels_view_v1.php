@@ -22,10 +22,6 @@ $end_date_w=$start_date_w+(60*60*24*6); // define sunday
 
 $start_date_w=date("Y-m-d",$start_date_w);
 $end_date_w=date("Y-m-d",$end_date_w);
-
-// $start_date_w="2018-01-01";
-// $end_date_w="2018-06-22";
-
 ?>
 
 <style>
