@@ -210,6 +210,8 @@ $cpo_code="";
 		echo "<td>";
 	echo '<div class="scroll">';
 	$sql="select distinct CPO from $order_status_buffer $criteria order by CPO";
+	// echo $sql;
+	// die();
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count = mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -237,7 +239,6 @@ $cpo_code="";
 	
 	
 	$sql="select distinct buyer_div from $order_status_buffer $criteria order by buyer_div";
-	echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -422,7 +423,7 @@ $cpo_code="";
 
 <?php
 
-	if($row_count == 0){
+	if($count == 0){
 			echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
 		}
 
