@@ -120,12 +120,12 @@ $o_xs=0;$o_s=0;$o_m=0;$o_l=0;$o_xl=0;$o_xxl=0;$o_xxxl=0;
 ?>
 
 <?php
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=$schedule";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no='$schedule'";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error k".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_confirm=mysqli_num_rows($sql_result);
 
-$old = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=$schedule";
-$old_result=mysqli_query($link, $old) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$old = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no='$schedule'";
+$old_result=mysqli_query($link, $old) or exit("Sql Error l".mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($old_row=mysqli_fetch_array($old_result)) {
 		$old_s_s01+=$old_row['old_order_s_s01'];
 		$old_s_s02+=$old_row['old_order_s_s02'];
@@ -193,15 +193,15 @@ while ($old_row=mysqli_fetch_array($old_result)) {
 
 if($sql_num_confirm>0)
 {
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=$schedule";
+	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no='$schedule'";
 }
 else
 {
-	$sql="select * from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=$schedule";
+	$sql="select * from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no='$schedule'";
 }
 //echo "query =".$sql."<br>";
 // mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error m".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -384,10 +384,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$carton_id=$sql_row['carton_id'];
 }
 
-$sql="select * from $bai_pro3.carton_qty_chart where id=$carton_id";
+$sql="select * from $bai_pro3.carton_qty_chart where id='$carton_id'";
 //echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error n".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error n".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$carton_xs=$sql_row['xs'];
@@ -459,9 +459,9 @@ $carton_qtys=array($carton_xs,$carton_s,$carton_m,$carton_l,$carton_xl,$carton_x
 
 //ERROR CHECK POINT
 
-$sql="select sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no=$delivery";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$delivery'";
+//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error o".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	if(array_sum($order_qtys)!=$sql_row['carton_act_qty'])
@@ -474,8 +474,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 //ERROR CHECK POINT
 
 $sql="select * from $bai_pro2.shipment_plan_summ where ssc_code=\"$order_tid\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error p".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$cpo=$sql_row['CPO'];
@@ -483,9 +483,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cust_ord=$sql_row['Cust_order'];
 } 
 
-$sql="select ims_mod_no from $bai_pro3.ims_log where ims_cid=$cat_ref and ims_date=(select min(ims_date) from $bai_pro3.ims_log where ims_cid=$cat_ref)";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select ims_mod_no from $bai_pro3.ims_log where ims_cid='$cat_ref' and ims_date=(select min(ims_date) from $bai_pro3.ims_log where ims_cid='$cat_ref')";
+//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error q".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$module=$sql_row['ims_mod_no'];
@@ -1613,10 +1613,10 @@ tags will be replaced.-->
  
 	$docs_db=array();
 	$cutno_db=array();
-	$sql="select * from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=$schedule";
+	$sql="select * from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no='$schedule'";
 	//echo $sql;
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//mysqli_query($link, $sql) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$docs_db[]=$sql_row['doc_no'];
@@ -1633,8 +1633,8 @@ tags will be replaced.-->
 			$x=1;
 			$sql="select status,min(tid) as \"tid\",doc_no,sum(carton_act_qty) as \"carton_act_qty\",input_job_number from pac_stat_log where doc_no in (".implode(",",$docs_db).") and size_code=\"".strtolower($size_titles_qry[$i])."\" group by doc_no_ref order by doc_no,carton_mode,carton_act_qty desc";
 			//echo $sql;
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$doc_no=$sql_row['doc_no'];
@@ -1912,8 +1912,8 @@ $max_size_code="";
 $count=0;
 $sql="select packing_summary.*, sum(carton_act_qty) as \"carton_qty\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container is null group by doc_no_ref";
 //echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error c".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error c".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$carton_qty=$sql_row['carton_qty'];
@@ -1937,7 +1937,7 @@ if(sizeof($temp_doc_ref)>0)
 {
 	$sql="update $bai_pro3.pac_stat_log set container=1 where doc_no_ref in (\"".implode('","',$temp_doc_ref)."\")";
 	//echo $sql;
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 
 /*
@@ -1958,8 +1958,8 @@ if($count>0)
 		{
 			$sql="select * from (select packing_summary.*, sum(carton_act_qty) as \"carton_qty\" from packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container is null and doc_no_ref not in (\"".implode('","',$completed)."\") group by doc_no_ref) as t where carton_qty<=$temp order by carton_qty DESC";
 //echo $sql;
-			mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-			$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
+			//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
+			$sql_result=mysql_query($sql,$link) or exit("Sql Error e".mysql_error());
 			$check=mysql_num_rows($sql_result);
 			
 			while($sql_row=mysql_fetch_array($sql_result))
@@ -1987,7 +1987,7 @@ if($count>0)
 		{
 			$sql="update pac_stat_log set container=$container where doc_no_ref in (\"".implode('","',$temp_doc_ref)."\")";
 			//echo $sql;
-			mysql_query($sql,$link) or exit("Sql Error".mysql_error());
+			mysql_query($sql,$link) or exit("Sql Error f".mysql_error());
 			$container++;
 		}
 		
@@ -1999,11 +1999,11 @@ if($count>0)
 //No partial Cartons for DIM/M&S and VSD 
 $x=2;
 $sql="select packing_summary.*, sum(carton_act_qty) as \"carton_qty\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container is null group by doc_no_ref";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error g".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$sql1="update $bai_pro3.pac_stat_log set container=$x where doc_no_ref=\"".$sql_row['doc_no_ref']."\"";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql1) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$x++;
 }
 
@@ -2032,14 +2032,14 @@ $assort=array_sum($temp_2);
 	  <?php
 	  	$total=0;
 		$sql1="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by container";
-		mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
-		$sql_result1=mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
+		//mysql_query($sql1,$link) or exit("Sql Error ".mysql_error());
+		$sql_result1=mysql_query($sql1,$link) or exit("Sql Error g".mysql_error());
 		while($sql_row1=mysql_fetch_array($sql_result1))
 		{
 	    	$container=$sql_row1['container'];
 		$sql="select container,group_concat(label_id) as \"label_id\", count(*) as \"count\" from (select container,min(tid) as \"label_id\", count(*) as \"count\" from packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container=$container group by doc_no_ref) as t group by container";
-		mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
+		//mysql_query($sql,$link) or exit("Sql Error h".mysql_error());
+		$sql_result=mysql_query($sql,$link) or exit("Sql Error h".mysql_error());
 		while($sql_row=mysql_fetch_array($sql_result))
 		{
 			//echo "<tr><td>".$sql_row['container']."</td><td>".$sql_row['count']."</td><td>".$sql_row['label_id']."</td></tr>";
