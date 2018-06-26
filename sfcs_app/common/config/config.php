@@ -82,7 +82,10 @@ $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-das
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;
-
+// mail header
+$smtp_user=$conf->get('smtp-user-name');
+// $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
+$header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 
 //Central Administration Menu Access
 $central_administration_sfcs='central_administration_sfcs';
