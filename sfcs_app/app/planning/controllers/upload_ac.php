@@ -87,7 +87,7 @@ if(isset($_POST['upload']))
 			else 
 			{ 
 				$new_filename=$chk_ext1[0].".".$chk_ext1[1];
-				$path_new="../".getFullURL($_GET['r'],"weekly_delivery_plan/$new_filename","R");
+				$path_new=getFullURL($_GET['r'],"weekly_delivery_plan/$new_filename","R");
 				
 				move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
 
