@@ -1,4 +1,4 @@
-<?php 
+<?php
 //Without LDAP , With LDAP Unblock LDAP Code
 //$username="sfcsproject1";
 // echo $_SERVER['DOCUMENT_ROOT'];
@@ -30,7 +30,7 @@ $global_facility_code=$conf1->get('plantcode');
 
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
-    
+
 //LDAP CODE STARTS***
 // if(substr($server_soft,0,13)=="Apache/2.4.28")
 // {
@@ -41,10 +41,10 @@ $server_soft=$_SERVER['SERVER_SOFTWARE'];
 // else
 // {
 // 	//list($domain,$username) = explode('[\]',$_SERVER['AUTH_USER'],2);
-    
+
 // 	$username = explode('\\',$_SERVER['AUTH_USER']);
 // 	$username=strtolower($username[1]);
-    
+
 // 	//$_SESSION['intra_user_name']=$username;
 // }
 //LDAP CODE ENDS***
@@ -76,6 +76,8 @@ $plant_name = $conf1->get('plantname');
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
+$plant_start_time = "6:30:00";
+$plant_end_time = "22:30:00";
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;
@@ -120,4 +122,6 @@ while($methods=mysqli_fetch_array($table_result))
 {
     $pack_methods[]=$methods['pack_method_name'];
 }
+?>
+$pack_methods = ['pcs'=>'Pcs','packs'=>'Packs','hangers'=>'Hangers'];
 ?>
