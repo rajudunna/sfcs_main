@@ -245,9 +245,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	if($sql_row['app_date']=="0000-00-00 00:00:00" and $sql_row['status']==1 and in_array($update,$has_permission))
 	{
 
-		$url=getFullURLLevel($_GET['r'],'update_status.php','N');
+		$url=getFullURL($_GET['r'],'update_status.php','N');
             
-		echo "<td><a href=\"$url?tid=$tid&check=1\">Update</a></td>";
+		echo "<td><a href=\"$url&tid=$tid&check=1\">Update</a></td>";
 	}
 	else
 	{
