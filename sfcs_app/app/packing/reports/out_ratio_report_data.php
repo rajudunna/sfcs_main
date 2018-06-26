@@ -38,7 +38,7 @@ function verify_date(){
 	}
 
 
-	if(to_date < from_date){
+	if(Number(to_date) < Number(from_date)){
 		$('#edate').val($('#sdate').val());
 		sweetAlert('End Week must not be less than Start Week','','warning');
 		return false;
@@ -238,7 +238,7 @@ if($cat==2)
 $schedules_array1=array();
 $sql1="select distinct qms_schedule as del from $bai_pro3.bai_qms_db where qms_schedule in ('".implode(",",$schedules_array)."') $query";
 //echo $sql1;
-$result1=mysqli_query($link, $sql1) or die("Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+$result1=mysqli_query($link, $sql1) or die("Error3");
 while($row1=mysqli_fetch_array($result1))
 {
 	$schedules_array1[]=$row1["del"];
