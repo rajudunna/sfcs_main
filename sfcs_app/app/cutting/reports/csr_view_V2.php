@@ -45,31 +45,46 @@ function verify_date(){
 			<!--<input id="demo2" title="click select end date" onclick="javascript:NewCssCal('demo2','yyyymmdd','dropdown')" type="text" size="8" name="to_date" value="<?php if(isset($_POST['to_date'])) { echo $_POST['to_date']; } else { echo date("Y-m-d"); } ?>">-->
 			<input type="text" data-toggle='datepicker' id="edate" onchange='return verify_date();' name="to_date" class="form-control" size="8" value="<?php  if(isset($_POST['to_date'])) { echo $_POST['to_date']; } else { echo date("Y-m-d"); } ?>" />
 			</div>
+
+			<?php
+				$table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
+				$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
+		
+				$all_sec_query = "SELECT GROUP_CONCAT('\"',tbl_id,'\"') as sec FROM $bai_pro3.tbl_cutting_table WHERE STATUS='active'";
+				$sec_result_all = mysqli_query($link,$all_sec_query) or exit('Unable to load sections all');
+				while($res1 = mysqli_fetch_array($sec_result_all)){
+					$all_secs = $res1['sec'];
+				}
+			?>
 			<div class="col-md-2">
-			<label>Section: </label><select name="section" class="form-control">
-						<option value='1,2,3,4' <?php if($section=="1,2,3,4"){ echo "selected"; } ?> >All</option>
-						<option value='1' <?php if($section=="1"){ echo "selected"; } ?>>Section - 1</option>
-						<option value='2' <?php if($section=="2"){ echo "selected"; } ?>>Section - 2</option>
-						<option value='3' <?php if($section=="3"){ echo "selected"; } ?>>Section - 3</option>
-						<option value='4' <?php if($section=="4"){ echo "selected"; } ?>>Section - 4</option>
+				<label>Section: </label>
+				<select name="section" class="form-control">
+					<option value='<?= $all_secs ?>'>All</option>
+					<?php
+						foreach($table_result as $key=>$value){
+							echo "<option value='".$value['tbl_id']."'>".$value['tbl_name']."</option>";
+						}
+					?>
 				</select>
 			</div>
 			<div class="col-md-2">
-			<label>Shift: </label><select name="shift" class="form-control">
-						<option value='"A", "B"' <?php if($shift=='"A", "B"'){ echo "selected"; } ?> >All</option>
-						<?php foreach($shifts_array as $key=>$shift){
-					echo "<option value='$shift'>$shift</option>";
-
+				<label>Shift: </label>
+				<select name="shift" class="form-control">
+					<option value='"A", "B"' <?php if($shift=='"A", "B"'){ echo "selected"; } ?> >All</option>
+					<?php 
+					foreach($shifts_array as $key=>$shift){
+						echo "<option value='$shift'>$shift</option>";
 					}
-					echo "</select></div></td></tr>";?>
-					</select>
-					</div>
+				?>
+				</select>
+			</div>
 			<div class="col-md-2">
-			<label>Report: </label><select name="reptype" class="form-control">
-						<option value=1 <?php if($reptype==1){ echo "selected"; } ?> >Detailed</option>
-						<option value=2 <?php if($reptype==2){ echo "selected"; } ?>>Summary</option>
-					</select>
-					</div>
+				<label>Report: </label>
+				<select name="reptype" class="form-control">
+					<option value=1 <?php if($reptype==1){ echo "selected"; } ?> >Detailed</option>
+					<option value=2 <?php if($reptype==2){ echo "selected"; } ?>>Summary</option>
+				</select>
+			</div>
 			<div class="col-md-2">
 			<input type="submit" value="Show" name="submit" class="btn btn-success" onclick='return verify_date();' style="margin-top:22px;">
 			</div>

@@ -3,7 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'order_status_b
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-$view_access=user_acl("SFCS_0043",$username,1,$group_id_sfcs); 
+// $view_access=user_acl("SFCS_0043",$username,1,$group_id_sfcs); 
 
 ?>
 <?php
@@ -211,7 +211,7 @@ $cpo_code="";
 	echo '<div class="scroll">';
 	$sql="select distinct CPO from $order_status_buffer $criteria order by CPO";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$count = $mysqli_num_rows($sql_result);
+	$count = mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$check=0;

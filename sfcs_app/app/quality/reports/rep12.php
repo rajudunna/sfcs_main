@@ -66,7 +66,7 @@ if(isset($_POST['filter'])){
 		echo "</div>";	  
 
 		echo "<div class='col-sm-12' style='max-height : 600px;overflow:scroll;'>";
-		echo "<table id=\"example1\" class=\"table table-border\">";
+		echo "<table id=\"example1\" class=\"table table-bordered\">";
 		echo "<tr>
 				<th>Style</th>
 				<th>Schedule</th>

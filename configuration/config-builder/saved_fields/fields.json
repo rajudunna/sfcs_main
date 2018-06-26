@@ -64,6 +64,11 @@
                         "value": "general",
                         "selected": true
                     }
+                ],
+                "value": [
+                    "A",
+                    "B",
+                    "C"
                 ]
             },
             {
@@ -253,7 +258,7 @@
                 "label": "Mail16",
                 "className": "form-control",
                 "name": "mail16",
-                "value": "b@brandix.com"
+                "value": "i@brandix.com"
             },
             {
                 "type": "text",
@@ -261,7 +266,7 @@
                 "label": "Mail17",
                 "className": "form-control",
                 "name": "mail17",
-                "value": "b@brandix.com"
+                "value": "j@brandix.com"
             },
             {
                 "type": "text",
@@ -269,7 +274,7 @@
                 "label": "Mail18",
                 "className": "form-control",
                 "name": "mail18",
-                "value": "h@brandix.com"
+                "value": "k@brandix.com"
             },
             {
                 "type": "text",
@@ -277,7 +282,7 @@
                 "label": "Mail19",
                 "className": "form-control",
                 "name": "mail19",
-                "value": "h@brandix.com"
+                "value": "m@brandix.com"
             },
             {
                 "type": "text",
@@ -285,7 +290,7 @@
                 "label": "Mail20",
                 "className": "form-control",
                 "name": "mail20",
-                "value": "b@brandix.com"
+                "value": "n@brandix.com"
             }
         ],
         [
@@ -310,7 +315,8 @@
                         "label": "Yards",
                         "value": "yards"
                     }
-                ]
+                ],
+                "value": "meters"
             },
             {
                 "type": "checkbox-group",
@@ -328,6 +334,10 @@
                         "value": "body",
                         "selected": true
                     }
+                ],
+                "value": [
+                    "front",
+                    "body"
                 ]
             }
         ],
@@ -449,7 +459,7 @@
                 "label": "Dispatch Mail",
                 "className": "form-control",
                 "name": "dispatch_mail",
-                "value": "m@brandix.com,n@brandix.com o@brandix.com"
+                "value": "m@brandix.com,n@brandix.com,o@brandix.com"
             },
             {
                 "type": "text",
@@ -458,7 +468,7 @@
                 "label": "Weekly Delivery Plan Update",
                 "className": "form-control",
                 "name": "weekly_plan_mail",
-                "value": "p@brandix.com,q@brandix.com r@brandix.com"
+                "value": "p@brandix.com,q@brandix.com,r@brandix.com"
             },
             {
                 "type": "text",
@@ -467,7 +477,7 @@
                 "label": "Order Quantity Revision",
                 "className": "form-control",
                 "name": "order_quantity_mail",
-                "value": "s@brandix.com,t@brandix.com u@brandix.com"
+                "value": "s@brandix.com,t@brandix.com,u@brandix.com"
             },
             {
                 "type": "text",
@@ -476,7 +486,7 @@
                 "label": "Weekly Delivery Plan Status Update",
                 "className": "form-control",
                 "name": "weekly_plan_status_mail",
-                "value": "v@brandix.com,w@brandix.com x@brandix.com"
+                "value": "v@brandix.com,w@brandix.com,x@brandix.com"
             },
             {
                 "type": "text",
@@ -485,7 +495,7 @@
                 "label": "Supplier Claim Update",
                 "className": "form-control",
                 "name": "supplier_claim_mail",
-                "value": "xy@brandix.com,yz@brandix.com ab@brandix.com"
+                "value": "xy@brandix.com,yz@brandix.com,ab@brandix.com"
             },
             {
                 "type": "text",
@@ -494,7 +504,7 @@
                 "label": "Supplier Claim PDF Mail",
                 "className": "form-control",
                 "name": "supplier_claim_pdf_mail",
-                "value": "bc@brandix.com,cd@brandix.com de@brandix.com"
+                "value": "bc@brandix.com,cd@brandix.com,de@brandix.com"
             },
             {
                 "type": "text",
@@ -503,7 +513,7 @@
                 "label": "PLD-Manpower",
                 "className": "form-control",
                 "name": "pld_man_mail",
-                "value": "ef@brandix.com,fg@brandix.com gh@brandix.com"
+                "value": "ef@brandix.com,fg@brandix.com,gh@brandix.com"
             },
             {
                 "type": "text",
@@ -512,7 +522,7 @@
                 "label": "Dashboard Email",
                 "className": "form-control",
                 "name": "dashboard_mail",
-                "value": "hi@brandix.com,ij@brandix.com jk@brandix.com"
+                "value": "hi@brandix.com,ij@brandix.com,jk@brandix.com"
             },
             {
                 "type": "text",
@@ -521,7 +531,7 @@
                 "label": "Update Status",
                 "className": "form-control",
                 "name": "update_status_mail",
-                "value": "kl@brandix.com,lm@brandix.com mn@brandix.com"
+                "value": "kl@brandix.com,lm@brandix.com,mn@brandix.com"
             }
         ],
         []
