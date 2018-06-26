@@ -1631,7 +1631,7 @@ tags will be replaced.-->
 			
 			$carton_nodes=array();
 			$x=1;
-			$sql="select status,min(tid) as \"tid\",doc_no,sum(carton_act_qty) as \"carton_act_qty\",input_job_number from pac_stat_log where doc_no in (".implode(",",$docs_db).") and size_code=\"".strtolower($size_titles_qry[$i])."\" group by doc_no_ref order by doc_no,carton_mode,carton_act_qty desc";
+			$sql="select status,min(tid) as \"tid\",doc_no,sum(carton_act_qty) as \"carton_act_qty\",input_job_number from $bai_pro3.pac_stat_log where doc_no in ('".implode(",",$docs_db)."') and size_code=\"".strtolower($size_titles_qry[$i])."\" group by doc_no_ref order by doc_no,carton_mode,carton_act_qty desc";
 			//echo $sql;
 			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error b".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1956,7 +1956,7 @@ if($count>0)
 		$completed[]="0";
 		do
 		{
-			$sql="select * from (select packing_summary.*, sum(carton_act_qty) as \"carton_qty\" from packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container is null and doc_no_ref not in (\"".implode('","',$completed)."\") group by doc_no_ref) as t where carton_qty<=$temp order by carton_qty DESC";
+			$sql="select * from (select packing_summary.*, sum(carton_act_qty) as \"carton_qty\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container is null and doc_no_ref not in (\"".implode('","',$completed)."\") group by doc_no_ref) as t where carton_qty<=$temp order by carton_qty DESC";
 //echo $sql;
 			//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 			$sql_result=mysql_query($sql,$link) or exit("Sql Error e".mysql_error());
@@ -2009,7 +2009,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //No partial Cartons for DIM/M&S and VSD 
 
-/*$sql="select packing_summary.*, sum(carton_act_qty) as \"carton_qty\", group_concat(tid) as \"label_id\", count(*) as \"count\" from packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by container";
+/*$sql="select packing_summary.*, sum(carton_act_qty) as \"carton_qty\", group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by container";
 mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 $sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 while($sql_row=mysql_fetch_array($sql_result))
@@ -2031,13 +2031,13 @@ $assort=array_sum($temp_2);
 	  <tr class=new><th class=new>Cartons</th><th class=new>Label IDs (ALPHA VERSION V1)</th></tr>
 	  <?php
 	  	$total=0;
-		$sql1="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by container";
+		$sql1="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by container";
 		//mysql_query($sql1,$link) or exit("Sql Error ".mysql_error());
 		$sql_result1=mysql_query($sql1,$link) or exit("Sql Error g".mysql_error());
 		while($sql_row1=mysql_fetch_array($sql_result1))
 		{
 	    	$container=$sql_row1['container'];
-		$sql="select container,group_concat(label_id) as \"label_id\", count(*) as \"count\" from (select container,min(tid) as \"label_id\", count(*) as \"count\" from packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container=$container group by doc_no_ref) as t group by container";
+		$sql="select container,group_concat(label_id) as \"label_id\", count(*) as \"count\" from (select container,min(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container=$container group by doc_no_ref) as t group by container";
 		//mysql_query($sql,$link) or exit("Sql Error h".mysql_error());
 		$sql_result=mysql_query($sql,$link) or exit("Sql Error h".mysql_error());
 		while($sql_row=mysql_fetch_array($sql_result))

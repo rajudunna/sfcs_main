@@ -784,12 +784,8 @@ $code_db=explode("*",$code);
 		<p style=\"margin:0px; padding:0px;		font-weight:bold;	background-color:#3170A8;	color:#FFF;	margin-bottom:5px;\">Completed</p>
 		<table class='table table-bordered'>";
 			
-<<<<<<< HEAD
 		/**/
 		$sql1="SELECT input_job_no as acutno from $bai_pro3.plan_doc_summ_input where order_del_no='$schedule' and input_job_input_status(input_job_no_random)=\"DONE\" order by input_job_no * 1";
-=======
-		/**/$sql1="SELECT input_job_no as acutno from $bai_pro3.plan_doc_summ_input where order_del_no=$schedule and input_job_input_status(act_cut_issue_status)=\"DONE\" order by input_job_no * 1";
->>>>>>> dev_master
 		//echo $sql1;
 		//mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));

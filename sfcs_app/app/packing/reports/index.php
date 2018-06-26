@@ -102,11 +102,20 @@ if(isset($_POST['division']))
 				echo "<td>".$row["color"]."</td>";
 				echo "<td>".$row["size"]."</td>";
 				$sql12="select old_order_s_".$row["size"]." as qty from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$row["style"]."\" and order_del_no=\"".$row["schedule"]."\" and order_col_des=\"".$row["color"]."\"";
+				//echo $sql12;
 				$result2=mysqli_query($link, $sql12) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row2=mysqli_fetch_array($result2))
+				if(mysqli_num_rows($result2) > 0)
 				{
-					echo "<td>".$row2["qty"]."</td>";
+					while($row2=mysqli_fetch_array($result2))
+					{
+						echo "<td>".$row2["qty"]."</td>";
+					}
 				}
+				else
+				{
+					echo "<td></td>";
+				}
+				
 				echo "<td>".$row["order_qty"]."</td>";
 				echo "<td>".$row["cut_qty"]."</td>";
 				echo "<td>".$row["input_qty"]."</td>";

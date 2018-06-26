@@ -28,7 +28,7 @@ if(isset($_GET['params_smv']))
 function Getsmv($params_smv)
 {
 	$params_smv = explode(",",$params_smv);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 	$qry_get_table_data_oper_data_m3 = "SELECT tos.id,smv,tor.operation_name,tos.operation_code	FROM $brandix_bts.tbl_style_ops_master tos LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tos.operation_name WHERE style = '$params_smv[1]' AND color = '$params_smv[0]' AND smv != '0.00' AND operation_order < 400 ORDER BY operation_order";
 	$result1 = $link->query($qry_get_table_data_oper_data_m3);
    while($row1 = $result1->fetch_assoc()){
@@ -41,7 +41,7 @@ function Getsmv($params_smv)
 function gettabledata($params)
 {
 	$params = explode(",",$params);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by tos.id";
 	//echo $qry_get_table_data_oper_data;
@@ -72,7 +72,7 @@ if(isset($_GET['pro_style_schedule']))
 }
 function getscheduledata($pro_style)
 {
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$query_get_schedule_data= "select id,color from $brandix_bts.tbl_style_ops_master where style='$pro_style' group by style,color";
 	//echo $query_get_schedule_data;exit;
@@ -95,7 +95,7 @@ if(isset($_GET['pro_schedule_color']))
 function getcolordata($pro_schedule_color)
 {
 	error_reporting (0);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$query_get_color_data= "select id,color from $brandix_bts.tbl_style_ops_master where style='$pro_schedule_color' group by color";
 	$result = $link->query($query_get_color_data);
@@ -118,7 +118,7 @@ if(isset($_GET['oper_name']))
 function Getdata($oper_name)
 {
 	error_reporting (0);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$oper_name = explode(",",$oper_name);
 	//var_dump($oper_name);
@@ -162,7 +162,7 @@ function Getdata1($params1)
 	$params1 = explode(",",$params1);
 
 error_reporting (0);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 // var_dump($params1);
 	$qry_get_miniorder_no = "SELECT min_order_ref FROM $brandix_bts.tbl_style_ops_master WHERE scan_status=1 AND color='$params1[0]' AND style='$params1[1]' ";
@@ -214,7 +214,7 @@ if(isset($_GET['saving']))
 function savingdata($saving)
 {
 	error_reporting (0);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$saving1 = explode(",",$saving);
 	if($saving1[15] != 0)
@@ -264,7 +264,7 @@ if(isset($_GET['checking']))
 function getcheckeddata($checking)
 {
 	error_reporting (0);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$checking_query = "select count(operation_order) as count from $brandix_bts.tbl_style_ops_master where operation_order like '$checking_string%'";
 	//echo $checking_query;
@@ -288,7 +288,7 @@ if(isset($_GET['saving_changes']))
 
 function saving_changes($saving_changes)
 {
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$saving_changes = explode(",",$saving_changes);
 	$update_query = "update $brandix_bts.tbl_style_ops_master set smv = $saving_changes[1] where id = $saving_changes[0]";
@@ -310,7 +310,7 @@ if(isset($_GET['parameters']))
 function deleting($parameters)
 {
 	$parameters = explode(",",$parameters);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	//var_dump($deletable_id);
 	$query_delete_m3 = "select smv from $brandix_bts.tbl_style_ops_master where id = $parameters[0]";
@@ -344,7 +344,7 @@ if(isset($_GET['editable_data']))
 function updating($editable_data)
 {
 	$editable_data = explode(",",$editable_data);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	//echo $editable_data[6];
 	if($editable_data[4] != '')
@@ -400,7 +400,7 @@ if(isset($_GET['seq_params']))
 function seq_validation($seq_params)
 {
 	$seq_params = explode(",",$seq_params);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$opeation_validation = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where style = '$seq_params[1]' and color = '$seq_params[2]' and ops_sequence = $seq_params[0] and operation_name=$seq_params[3]";
 	$result_opeation_validation = $link->query($opeation_validation);
@@ -441,7 +441,7 @@ if(isset($_GET['seq_params1']))
 function seq_validation1($seq_params)
 {
 	$seq_params = explode(",",$seq_params);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	// $seq_params_ops = substr($seq_params[3], 0, strpos($seq_params[3], '('));
 	// $operation_id = "select id from $brandix_bts.tbl_orders_ops_ref where operation_name = '$seq_params_ops'";
@@ -492,7 +492,7 @@ if(isset($_GET['dep_validate']))
 function dep_validation($dep_validate)
 {
 	$dep_validate = explode(",",$dep_validate);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$validation_query_component = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style = '$dep_validate[1]' and color = '$dep_validate[2]' and ops_sequence = $dep_validate[0]";
 	$result_validation_query_component = $link->query($validation_query_component);
@@ -520,7 +520,7 @@ function smv_validation($manual_smv_value)
 {
 	$manual_smv_value = explode(",",$manual_smv_value);
 	//var_dump($manual_smv_value);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 	
 	$smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$manual_smv_value[1]' and color = '$manual_smv_value[2]' AND smv != 0.00 AND default_operration = 'Yes'";
 	$result_validation_smv_query = $link->query($smv_query);
@@ -554,7 +554,7 @@ function dependency_ops_validation($dependency_ops_ary)
 	
 	$dependency_ops_ary = explode(",",$dependency_ops_ary);
 	//var_dump($dependency_ops_ary);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$smv_query = "select count(id)as cnt from $brandix_bts.bundle_creation_data where style='$dependency_ops_ary[1]' and color = '$dependency_ops_ary[2]' and operation_id = '$dependency_ops_ary[0]'";
 	//echo $smv_query;
@@ -606,7 +606,7 @@ if(isset($_GET['adding_validation']))
 function adding_validation_fun($adding_validation)
 {
 	$adding_validation = explode(",",$adding_validation);
-	include("../../../../../common/config/config.php");
+	include("../../../../../common/config/config_ajax.php");
 
 	$smv_query = "select count(id)as cnt from $brandix_bts.bundle_creation_data where style='$adding_validation[0]' and color = '$adding_validation[1]'";
 	//echo $smv_query;

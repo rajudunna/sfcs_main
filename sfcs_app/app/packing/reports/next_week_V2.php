@@ -6,7 +6,8 @@ Changes Log:
 2016-09-09 / kirang / Service Request#98739857 : FCA Status Not Turned After FCA    
 
 -->
-<?phP
+<?php
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/config.php", 3, "R"));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 $view_access=user_acl("SFCS_0038",$username,1,$group_id_sfcs);
@@ -131,16 +132,16 @@ $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
 <center><a href="summary_v2.php&weekno=<?php echo $weeknumber; ?>" onclick="return popitup('<?php echo $summary;?>?weekno=<?php echo $weeknumber; ?>')">Summary</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $pre_week;?>">Previous Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $current_week; ?>">Current Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $next_week;?>">Next Week</a>&nbsp;&nbsp;|&nbsp;&nbsp; </center>
 <div class='row'>
 	<div class='col-md-4'>
+				
+				<?php 
+					// $sqly="select distinct(buyer_div) from plan_modules";
+					$sqly = "SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+					$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				?>
 				<label> Buyer Division : </label>
-					<select name="division" id="division" class="form-control" onchange="redirect_view()">';
-					<?php 
-						echo "<option value=\"ALL\" selected >ALL</option>";
-						// $sqly="select distinct(buyer_div) from plan_modules";
-						$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
-						//echo $sqly."<br>";
-
-						mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				<select name="division" id="division" class="form-control" onchange="redirect_view()">
+					<option value=\"ALL\" selected >ALL</option>
+					<?php
 						while($sql_rowy=mysqli_fetch_array($sql_resulty))
 						{
 							$buyer_div=$sql_rowy['buyer_div'];
@@ -156,6 +157,7 @@ $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
 							}
 						}
 						echo '</select>';
+						
 						if($_GET["division"]!='ALL' && $_GET["division"]!='')
 						{
 							//echo "Buyer=".urldecode($_GET["view_div"])."<br>";
