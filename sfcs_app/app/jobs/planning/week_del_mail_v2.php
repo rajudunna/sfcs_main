@@ -8,7 +8,7 @@ $weekday1 = strtolower(date('l', strtotime($date1)));
 echo "Week = ".$weekday1;
 if($weekday1 != "tuesday")
 {
-				$message="<html>
+			$message="<html>
 			<head>
 			<style type=\"text/css\">
 
@@ -112,7 +112,7 @@ if($weekday1 != "tuesday")
 			$x=0;
 			$schedules=array();
 			$sql="select schedule_no from bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" and schedule_no!=\"NULL\" order by color,left(style,1) ";
-			//echo $sql;
+			echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count_rows=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))

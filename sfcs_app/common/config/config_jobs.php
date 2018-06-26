@@ -5,22 +5,22 @@ $username="sfcsproject1";
 $remove_user_name = true; // set false for static username removing 
 
 //SFCS Db Configurations
-$host="10.227.220.238:3326";
+$host="192.168.0.110:3326";
 $user="baiall";
 $pass="baiall";
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 // Schedules Operations Capturing
-$serverName = "GD-SQL-UAT";
-$uid = "SFCS_BIA_FF";
-$pwd = "Ba@rUpr6";
-$databasename="BELMasterUAT";
+$serverName = "BLL-DEVRPT-01";
+$uid = "BELMacroReader";
+$pwd = "bel@macrosm3";
+$databasename="M3_BEL";
 //material requirement in week_del_mail_v2
-$server="GD-RPTSQL";
+$server="BLL-DEVRPT-01";
 $database="M3_BEL";
-$userid="BAIMacroReaders";
-$passwrd="BAI@macrosm3";
+$userid="BELMacroReader";
+$passwrd="bel@macrosm3";
 
 //To Facilitate SFCS Filters
 $global_facility_code="'N02'";
