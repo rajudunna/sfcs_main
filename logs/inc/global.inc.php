@@ -548,6 +548,36 @@ function config_load( $load_user_configuration_dir = true )
 			}
 		}
 	}
+	
+	$path = $_SERVER['DOCUMENT_ROOT'];
+	$path = explode("/",$path);
+	foreach ($path as $key => $value) {
+		if($value == "htdocs" || $value == "sfcs_main"){
+			unset($path[$key]);
+		}
+	}
+
+	
+	$path = implode("\\", $path);
+	$error_path = $path.'\\apache\\logs\\error.log';
+	$access_path = $path.'\\apache\\logs\\access.log';
+
+	
+	foreach($config['files']['apache1'] as $key => $value){
+		if($key == "path"){
+			$config['files']['apache1'][$key] = $error_path;
+		}
+	}
+	foreach($config['files']['apache2'] as $key => $value){
+		if($key == "path"){
+			$config['files']['apache2'][$key] = $access_path;
+		}
+	}
+	foreach($config['files']['php3'] as $key => $value){
+		if($key == "path"){
+			$config['files']['php3'][$key] = $error_path;
+		}
+	}
 
 	// Oups, there is no file... abort
 	if ( ! isset( $config[ 'files' ] ) )

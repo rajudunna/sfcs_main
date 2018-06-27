@@ -95,7 +95,7 @@ if(strlen($filename)>0)
 	<div class="row"><div class="col-sm-3"><label>Process File ID: </label><input type="text" class="form-control" name="id" size="25" value='.$filename.' id="ile">
 	<input type="hidden" name="date" value="'.date('Y-m-d', strtotime('+1 month', strtotime($date))).'">
 	<input type="submit" name="update" class="btn btn-primary" value="Update" id="add" onclick="hide()">';	
-	echo '> </div></div>
+	echo '</div></div>
 	</form> ';
 }
 else
