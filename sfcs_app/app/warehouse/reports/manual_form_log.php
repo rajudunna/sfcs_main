@@ -51,7 +51,7 @@ table{
 	font-size:12px;
 	background-color: white;
 }
-</style>--->
+</style>-->
 
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',4,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',4,'R'); ?>"></script>
@@ -82,9 +82,6 @@ window.print();
 <div class="table-responsive">
 
 <body onload="dodisable();">
-<?php //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);?>
-
-
 
 <?php
 	
@@ -153,20 +150,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$team=$fab_team;
 	}
 	$tmp_username=strtolower($username)."@brandix.com";
-	// echo $tmp_username;
-	// if(substr($style,0,1)=="P" or substr($style,0,1)=="K")
-	// {
-	// 	$team2=$pink_team;
-	// }
-	// if(substr($style,0,1)=="L" or substr($style,0,1)=="O")
-	// {
-	// 	$team2=$logo_team;
-	// }
-	// if(substr($style,0,1)=="D" or substr($style,0,1)=="M")
-	// {
-	// 	$team2=$dms_team;
-	// }
-		$team2=array_merge($pink_team,$logo_team,$dms_team);
+	$team2=array_merge($pink_team,$logo_team,$dms_team);
 	
 	switch($sql_row['status'])
 	{
@@ -179,13 +163,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		case 2:
 		{
 		
-			//if(in_array($tmp_username,$team))
 			if(in_array($approve,$has_permission))
 			{
 
-				
-				// echo "<td><a href=\"update_status.php?tid=$tid&check=2\">20 Approved</a></td>";
-				echo "<td><a href=\"update_status.php?tid=$tid&check=2\">Approved</a></td>";
+				$url=getFullURL($_GET['r'],'update_status.php','N');
+				echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&check=2\">Approved</a></td>";
+
 			}
 			else
 			{
@@ -196,7 +179,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		case 3:
 		{
-			echo "<td>00 Rejected</td>";
+			echo "<td>Rejected</td>";
 			// echo "<td>Rejected</td>";
 			break;
 		}
@@ -207,8 +190,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			
 
 			{
-				// echo "<td><a href=\"update_status.php?tid=$tid&check=4\">40 Manually Issued</a></td>";
-				echo "<td><a href=\"update_status.php?tid=$tid&check=4\">Manually Issued</a></td>";
+				$url=getFullURL($_GET['r'],'update_status.php','N');
+				echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&check=4\">Manually Issued</a></td>";
+
 			}
 			else
 			{
@@ -221,8 +205,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(in_array($authorized,$has_permission))
 			{
-				// echo "<td><a href=\"update_status.php?tid=$tid&check=5\">50 Sourcing Cleared </a></td>";
-				echo "<td><a href=\"update_status.php?tid=$tid&check=5\">Sourcing Cleared </a></td>";
+			
+				echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&check=5\">Sourcing Cleared </a></td>";
+
 			}
 			else
 			{
@@ -247,7 +232,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 		$url=getFullURL($_GET['r'],'update_status.php','N');
             
-		echo "<td><a href=\"$url&tid=$tid&check=1\">Update</a></td>";
+		echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&check=1\">Update</a></td>";
 	}
 	else
 	{

@@ -58,7 +58,11 @@ else
 
 
 ?>
-<form name="input" method="post" action="update_status_process.php">
+<div class="panel panel-primary">
+<div class="panel-heading">Status Update Form
+</div>
+<div class="panel-body">
+<form name="input" method="post" action= "<?=getFullURL($_GET['r'],'update_status_process.php','N') ?>" >
 
 <?php
 
@@ -71,16 +75,17 @@ if(mysqli_num_rows($sql_result)>0)
 {
 	if($checkx==1)
 	{
-		echo "<h2>Status Update Form: </h2><input type=\"submit\" name=\"submit1\" value=\"Update\">";
+		echo "<input type=\"submit\" name=\"submit1\" class=\"btn btn-primary\" value=\"Update\">";
 	}
 	if($checkx==2)
 	{
-		echo "<h2>Status Update Form: </h2><input type=\"submit\" name=\"submit2\" value=\"Update\">";
+		echo "<input type=\"submit\" name=\"submit2\" class=\"btn btn-primary\" value=\"Update\">";
 	}
-	
-	echo '<table id="table1" class="mytable">';
-	
-	echo "<tr class='tblheading'><th>Date</th>	<th>Style</th>	<th>Schedule</th>	<th>Color</th>	<th>Buyer</th>	<th>M3 Item Code</th>	<th>Reason</th>	<th>Qty</th><th>Status</th><th>Req. From</th><th>Approved By</th></tr>";
+	echo "<div class='table table-responsive'>";
+	echo "<table class='table table-bordered'>";
+	echo "<thead>";
+	echo "<tr class='success'><th>Date</th>	<th>Style</th>	<th>Schedule</th>	<th>Color</th>	<th>Buyer</th>	<th>M3 Item Code</th>	<th>Reason</th>	<th>Qty</th><th>Status</th><th>Req. From</th><th>Approved By</th></tr></thead>";
+	echo "<tbody>";
 	
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -106,6 +111,11 @@ if(mysqli_num_rows($sql_result)>0)
 		echo "<td><input type=\"hidden\" name=\"tid[]\" value=\"$tid\">".$sql_row['app_by']."</td>";
 		echo "</tr>";
 	}
+	echo "</tbody>";
+
+	echo "</table>";
+	echo "</div>";
+
 
 }
 else
@@ -116,6 +126,9 @@ else
 
 ?>
 </form>
+</div>
+</div>
+
 
 
 
