@@ -456,7 +456,7 @@ $Days_Required=$_POST['Days_Required'];
 $Expected_Comp_Date=$_POST['Expected_Comp_Date'];
 
 echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="post" > 
-<input type="hidden" id="csv123" name="csv123" >
+<input type="hidden" id="csv_text" name="csv_text" >
 <input type="submit" class="btn btn-info" value="Export to Excel" onclick="getData()">
 </form>';
 
@@ -966,7 +966,7 @@ function popitup(url) {
 }
 function getData(){
  var csv_value=$('#tablecol').table2CSV({delivery:'value'});
- $("#csv123").val(csv_value);	
+ $("#csv_text").val(csv_value);	
 }
 </script>
 </div>
