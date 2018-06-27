@@ -1,13 +1,14 @@
 <?php
 $tbl_id=$_GET['rowid'];
 // echo $tbl_id;
-$servername = "192.168.0.110:3326";
-$username = "baiall";
-$password = "baiall";
-$dbname = "bai_pro3";
-
+// $servername = "192.168.0.110:3326";
+// $username = "baiall";
+// $password = "baiall";
+// $dbname = "bai_pro3";
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+$conn=$link;
 // Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+// $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
