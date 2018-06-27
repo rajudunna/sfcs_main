@@ -228,7 +228,7 @@ if(isset($_POST['submit']) or isset($_GET['division']))
 	}
 	
 //DISPATCH
-}
+
 
 		$sql1="select * from $bai_pro4.week_delivery_plan_ref  where ship_tid=$shipment_plan_id";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
