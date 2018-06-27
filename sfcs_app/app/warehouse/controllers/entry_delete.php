@@ -98,12 +98,11 @@ if(isset($_POST['submit']))
 	{
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$qty_rec=$sql_row['qty_rec'];
+			$qty_rec=round($sql_row['qty_rec'],2);
 			$qty_issued=$sql_row['qty_issued'];
 			$qty_ret=$sql_row['qty_ret'];
 			$ref1=$sql_row['ref1'];
 			$ref4=$sql_row['ref4'];
-			
 			$lot_no=$sql_row['lot_no'];
 		}
 	
@@ -133,7 +132,7 @@ if(isset($_POST['submit']))
 		echo "<tr><td>Item Description</td><td>:</td><td>$item_desc</td></tr>";
 		echo "<tr><td>Item Name</td><td>:</td><td>$item_name</td></tr>";
 		echo "<tr><td>Product</td><td>:</td><td>$product_group</td></tr>";
-		echo "<tr><td>Qty Recieved</td><td>:</td><td>$rec_qty</td></tr>";
+		echo "<tr><td>Qty Recieved</td><td>:</td><td>$qty_rec</td></tr>";
 		echo "<tr><td>GRN Date</td><td>:</td><td>$grn_date</td></tr>";
 		
 		echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'entry_delete.php','N').'">';
