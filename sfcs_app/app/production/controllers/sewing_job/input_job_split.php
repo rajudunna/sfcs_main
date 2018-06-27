@@ -51,13 +51,13 @@ if(isset($_POST['submit']))
     $rowcount=mysqli_num_rows($sql_result);
     if ($rowcount>0) 
     {
-	    echo "<div style='width:400px;'>";
+	    echo "<div style='width:1000px;'>";
 	    echo "<span style='color:black;text-weight:bold;'>Select Sewing Job Number You want To Split: </span><br><br>";
 	    while($sql_row=mysqli_fetch_array($sql_result))
 	    {
 	        $input_job_no=$sql_row['input_job_no'];
 	        $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
-	        echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no' class='btn btn-warning btn-xs' style='width:3em;'>".$input_job_no."</a>"."                ";
+	        echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no' class='btn btn-warning'>".$input_job_no."</a>"."";
 	    }
 	    echo "</div>";
     } else {
