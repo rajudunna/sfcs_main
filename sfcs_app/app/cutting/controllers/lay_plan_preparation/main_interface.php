@@ -372,7 +372,7 @@ echo "<div class='panel panel-default'>
 			    <div class='col-md-4'><b>Binding Consumption: </b>$bind_con</div>";
 			echo "
 		
-	</div><hr/>zz
+	</div><hr/>
 ";
 $order_qty_update_url = getFullUrlLevel($_GET['r'],'planning/controllers/orders_edit_form.php','3','N');
 echo "<div class=\"table-responsive\">";
