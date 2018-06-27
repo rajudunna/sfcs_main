@@ -1497,11 +1497,11 @@ tags will be replaced.-->
 
 <div id="doc_designs_17319" align=center x:publishsource="Excel">
 
-<table border=0 cellpadding=0 cellspacing=0 width=1500 style='border-collapse:
- collapse;table-layout:fixed;width:1000pt'>
- <col width=20 style='mso-width-source:userset;mso-width-alt:731;width:15pt'>
+<table border=0 cellpadding=0 cellspacing=0 width=1800 style='border-collapse:
+ collapse;table-layout:fixed;width:1300pt'>
+ <col width=20 style='mso-width-source:userset;mso-width-alt:800;width:15pt'>
  <col width=64 span=16 style='width:48pt'>
- <col width=19 style='mso-width-source:userset;mso-width-alt:694;width:14pt'>
+ <col width=19 style='mso-width-source:userset;mso-width-alt:800;width:14pt'>
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl1517319 width=20 style='height:15.0pt;width:15pt'><a
   name="RANGE!A1:R64"></a></td>
@@ -1860,16 +1860,16 @@ tags will be replaced.-->
   width:48pt'>Act. Width</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Cutting Wastage %</td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Binding Consumption</td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Fab. Requirement for lay/ Yds</td>
-  <td rowspan=2 class=xl8917319 width=80 style='border-bottom:.5pt solid black;
-  width:48pt'>Fab. Requirement for Binding/ Yds</td>
-  <td rowspan=2 class=xl8917319 width=80 style='border-bottom:.5pt solid black;
-  width:48pt'>Total Fab. Requirement/ Yds</td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Marker Length</td>
+  <td rowspan=2 colspan=2 class='xl8917319 autox'width=80 style='border-bottom:.5pt solid black;
+  width:60px'>Binding Consumption</td>
+  <td rowspan=2   colspan=2 class='xl8917319 autox' width=80 style='border-bottom:.5pt solid black;
+  width:70px'>Fab. Requirement for lay/ Yds</td>
+  <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
+  width:70px'>Fab. Requirement for Binding/ Yds</td>
+  <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
+  width:60px'>Total Fab. Requirement/ Yds</td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:auto'>Marker Length</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Act. Req Qty (<?php echo $fab_uom; ?>)</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
@@ -1909,15 +1909,15 @@ tags will be replaced.-->
   border-top:none;width:48pt'><?php echo $actwidth; ?></td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'><?php echo $cuttable_wastage*100;?></td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  <td rowspan=2 colspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'><?php echo $binding_con; ?></td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'><?php $fab_lay = (float)$purlength*(1+(float)$cuttable_wastage)*(int)$plies; echo round($fab_lay,2); ?></td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'><?php $fab_bind = (float)$binding_con*(int)$plies*(float)$a_ratio_tot; echo round($fab_bind,2); ?></td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'><?php echo round($fab_bind+$fab_lay,2); ?></td>
-  <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
+  <td rowspan=2 colspan=2  class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $act_mk_length; ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php if($act_mk_length>0) {echo array_sum($met_req); } ?></td>
@@ -2753,3 +2753,4 @@ echo $lot_ref; echo "MK File: ".implode(", ",array_unique($mk_files));
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 ?>
+
