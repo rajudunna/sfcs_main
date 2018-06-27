@@ -158,9 +158,9 @@ if(isset($_POST['submit']))
 	
 echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="post" > 
 
-<input type="hidden" id="csv123" name="csv123" >
+<input type="hidden" id="csv_text" name="csv_text" >
 <input type="submit" id="exp_exc" class="btn btn-info" value="Export to Excel" onclick="getData()">
-</form>';
+</form><br>';
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
 	$shift_new=$_POST['shift'];
@@ -379,7 +379,7 @@ echo "</table></div></div>";
 
 function getData(){
  var csv_value=$('#table1').table2CSV({delivery:'value'});
- $("#csv123").val(csv_value);	
+ $("#csv_text").val(csv_value);	
 }
 </script>
 <script type="text/javascript">

@@ -564,7 +564,7 @@ if(isset($_POST['submit1']))
 	}
 
 	echo '<form action="'."../".getFullURL($_GET['r'],"export_excel.php",'R').'" method ="post" > 
-	<input type="hidden" name="csv123" id="csv123">
+	<input type="hidden" name="csv_text" id="csv_text">
 	<input class="pull-right btn btn-info" type="submit" value="Export to Excel" onclick="getCSVData()">
 	</form>';
 			
@@ -777,7 +777,7 @@ if(isset($_POST['submit1']))
 <script language="javascript">
 function getCSVData(){
  var csv_value=$('#table1').table2CSV({delivery:'value'});
- $("#csv123").val(csv_value);	
+ $("#csv_text").val(csv_value);	
 }
 </script>
 
