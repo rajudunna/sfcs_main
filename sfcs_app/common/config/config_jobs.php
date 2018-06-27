@@ -1,4 +1,6 @@
 <?php 
+
+
 $include_path=getenv('config_job_path');
 include($include_path.'\configuration\API\confr.php');
 $conf = new confr($include_path.'\configuration\config-builder\saved_fields\fields.json');
@@ -18,20 +20,12 @@ $user=$mysql_details['db_user'];
 $pass=$mysql_details['db_pass'];
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
 // Schedules Operations Capturing
-$serverName = "BLL-DEVRPT-01";
-$uid = "BELMacroReader";
-$pwd = "bel@macrosm3";
-$databasename="M3_BEL";
-
-// M3 Configuration
-$serverName = "GD-SQL-UAT";
-$uid = "SFCS_BIA_FF";
-$pwd = "Ba@rUpr6";
-$m3_databasename="BELMasterUAT";
-$driver_name="Driver={SQL Server Native Client 11.0}";
+$serverName=$conf->get('mssql-server-name');
+$uid=$conf->get('mssql-user-name');
+$pwd = $conf->get('mssql-password');
+$m3_databasename=$conf->get('m3database');
+$driver_name=$conf->get('driver_name');
 
 //material requirement in week_del_mail_v2
 $server="BLL-DEVRPT-01";
@@ -74,29 +68,36 @@ $bai_ict="bai_ict";
 ?>
 <?php
 $path=$include_path."/sfcs_app/app";
-$mail_to_test=$mail_alert[2];
+// $mail_to_test=$mail_alert[2];
 $smtp_user=$conf->get('smtp-user-name');
-$header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
-$order_summary_report=$mail_alert[2];
-$mrn_mail=$mail_alert[2];
-$inspection_rep_email=$mail_alert[2];
-$pps_board_summary=$mail_alert[2];
-$dashboard_email_dialy_H_14=$mail_alert[2];
-$dashboard_email_dialy=$mail_alert[2];
-$daily_cod_events=$mail_alert[2];
-$plan_vs_output_analysis_mail=$mail_alert[2];
-$SFCS_PRO_SI_WED=$mail_alert[2];
-$transaction_audit_alert=$mail_alert[2];
-$week_del_mail_v2=$mail_alert[2];
-$SAH_Countdown_alert=array($mail_alert[2],$mail_alert[1]);
-$line_wip_track=$mail_alert[2];
-$pop_pending_list_mail=$mail_alert[2];
-$Aod_gate_pass=$mail_alert[2];
+// $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
+$header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
+$order_summary_report=$conf->get('order_summary_mail');
+$mrn_mail=$conf->get('mrn_week_summary_alert_mail');
+$inspection_rep_email=$conf->get('rm_summary_report_email');
+$pps_board_summary=$conf->get('ips_dashboard_summary_mail');
+$dashboard_email_dialy_H_14=$conf->get('sah_dashboard_email');
+$dashboard_email_dialy=$conf->get('sah_dashboard_email');
+$daily_cod_events=$conf->get('dailly_delivery_failures_mail');
+$plan_vs_output_analysis_mail=$conf->get('plan_vs_output_mail');
+$SFCS_PRO_SI_WED=$conf->get('pro_si_wed_output_details_mail');
+$transaction_audit_alert=$conf->get('bulk_or_fail_alert');
+$week_del_mail_v2=$conf->get('week_del_plan_status_mail');
+$SAH_Countdown_alert=$conf->get('sah_countdown_email');
+$line_wip_track=$conf->get('production_wip_status_mail');
+$pop_pending_list_mail=$conf->get('carton_pendings_mail');
+$Aod_gate_pass=$conf->get('pro_aod_gatepass_update_to_belbal_co_invoice_mail');
 
 
 //sah countdown
+$http_host=gethostname();
+$command ="webshotcmd /url 'http://$http_host/sfcs_app/app/jobs/planning/SAH_Countdown/Plan_sah.php' /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123";
 
-$command ='webshotcmd /url "http://localhost/sfcs_app/app/jobs/planning/SAH_Countdown/Plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
+// quality->critical rejection 
+$reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
+
+
 ?>
+
 
 

@@ -123,7 +123,7 @@ $message.= "</table>";
 <?php 
 $message.= "<h2>Section Wise Carton Pending List</h2>"; 
 $message.= "<table>"; 
-$message.= "<tr><th>Point Person</th><th>Section</th><th>Pending</th><th>Remarks</th></tr>"; 
+$message.= "<tr><th>Section</th><th>Pending</th><th>Remarks</th></tr>"; 
 
 $embl_dels=array(); 
 //to track emblishment schedules 
@@ -136,18 +136,21 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $embl_dels[]=$sql_rowx['order_del_no']; 
 } 
 //to track emblishment schedules 
+$sqla="select * from $bai_pro3.sections_db";
+$sqlres=mysqli_query($link, $sqla) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+while($sql_rowa=mysqli_fetch_array($sqlres)) 
+{ 
+    $sec_db_order[]=$sql_rowa['sec_id']; 
+}
 
-
-$packing_team_heads=array("","","Ramakrishna","","Divya Mohan"); 
-$packing_team_heads_rows=array("","","2","","2"); 
+// $packing_team_heads=array("","","Ramakrishna","","Divya Mohan"); 
+// $packing_team_heads_rows=array("","","2","","2"); 
 $i=2; 
-$sec_db_order=array(1,2,3,4,5); 
 
 for($j=0; $j<sizeof($sec_db_order); $j++) 
 { 
 
 $sqlx="select * from $bai_pro3.sections_db where sec_id=".$sec_db_order[$j]; 
-mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
 { 
@@ -266,7 +269,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         }*/ 
         if($i%2==0) 
         { 
-            $message.= "<tr><td rowspan=".$packing_team_heads_rows[$i].">".$packing_team_heads[$i]."</td><td>".$section."</td><td>$y</td><td>$embl_carts</td>"; 
+            $message.= "<tr><td>".$section."</td><td>$y</td><td>$embl_carts</td>"; 
             $i++; 
         } 
         else 
@@ -283,7 +286,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 } 
 $message.= "</table><br/><br/>Message Sent Via:".$plant_name."</body> 
 </html>"; 
-// echo $message; 
+echo $message; 
 
      $to  =$pop_pending_list_mail; 
      

@@ -29,15 +29,7 @@
 		//if(in_array($username,$auth_members) or in_array("all",$auth_members))
 		//{
 			
-			if(!in_array($username,$special_users))
-			{
-				//$list = '<li><a  href="'.$parent['link_location'].'" target="main" alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
-                //<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div>
-                //</li>';
-				$list = '<li><a onmouseover="window.status='."'".$parent['link_tool_tip']."'".'; return true;" href="javascript:void(0);" onclick="document.getElementById('."'".'main'."'".').src='."'" .$parent['link_location']."'".';" onmouseover="window.status='."'".$parent['link_tool_tip']."'".'; return true;" onmouseout="window.status='."'".'BAINet'."'".'; return true;">'.$parent['link_description'].'</a>
-                <div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div>                
-                </li>';
-			}
+			
 				$linkq2q= explode('?',$parent['link_location']);
 				$full_path_url = $linkq2q[0];
 				$get_vars_data = (isset($linkq2q[1]) && $linkq2q[1]!='') ? '&'.$linkq2q[1] : '';
@@ -54,7 +46,7 @@
 				</li>';
 				}
 			}else{
-				$list = "";
+				$list = " ";
 			}
 				
 				// $list = '<li><a  href="'.$parent['link_location'].'" target="main" alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
@@ -101,14 +93,23 @@
     if (hasChild($parent['menu_pid'])) // check if the id has a child
     {
       $append++;
-     // $list .= "<ul class='child child".$append."'>";
+	 // $list .= "<ul class='child child".$append."'>";
+	 $lip = 'a';
 	  $list .= "<ul class='nav child_menu'>";
       $sql = "SELECT * FROM $menu_table_name WHERE parent_id = '".$parent['menu_pid']."'  and link_status=1 and link_visibility=1 order by link_tool_tip*1,left(link_description,1)";
       $qry = mysqli_query($link_ui, $sql);
       $child = mysqli_fetch_array($qry);
       do{
-        $list .= CategoryTree($list,$child,$append,$happ);
-      }while($child = mysqli_fetch_array($qry));
+		$cpn = CategoryTree($list,$child,$append,$happ);
+		$list.= $cpn;
+		if($cpn!="")
+			$lip.= $cpn;
+	  }while($child = mysqli_fetch_array($qry));
+	  //echo str_replace(' ','',$lip);
+	  if(!strpos($lip,'<li')){
+		  //echo "<pre>".$lip."</pre><br/>";
+		$list.="<li><a class='label label-danger'><i class='fas fa-window-close'></i> No Access</a></li>";
+	  }
       $list .= "</ul>";
     }
 	if($parent['link_type']==1)

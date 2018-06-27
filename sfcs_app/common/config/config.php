@@ -38,6 +38,9 @@ $local_mssql_password="Brandix@7";
 //To Facilitate SFCS Filters
 $global_facility_code=$conf1->get('plantcode');
 
+$plant_alert_code="BEK";
+$message_sent_via="SYSTEM";
+
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
@@ -91,7 +94,10 @@ $plant_end_time = "22:30:00";
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;
-
+// mail header
+$smtp_user=$conf->get('smtp-user-name');
+// $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
+$header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 
 //Central Administration Menu Access
 $central_administration_sfcs='central_administration_sfcs';

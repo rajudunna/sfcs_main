@@ -99,13 +99,14 @@ $sql="truncate $bai_pro3.disp_mix_temp";
 // echo $sql."<br/>";
 //mysql_query($sql,$link) or exit("Sql Error1".mysql_error());
 
-$sql="insert into $bai_pro3.disp_mix_temp select * from bai_pro3.disp_mix";
+$sql="insert into $bai_pro3.disp_mix_temp select * from $bai_pro3.disp_mix";
 // echo $sql."<br/>";
 //mysql_query($sql,$link) or exit("Sql Error2".mysql_error());
 
 
 //To update Speed Deliveries
-$sql="select speed_schedule from $bai_pro3.speed_del_dashboard";
+$sql="select speed_schedule,COUNT(*) AS cnt from $bai_pro3.speed_del_dashboard";
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $rowcount=mysqli_num_rows($result);
 //echo "Count =".count($rowcount);
@@ -114,7 +115,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$schedule_db[]=$sql_row['speed_schedule'];
 }
 
-$sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,color from $bai_pro4.shipment_plan_ref where ship_tid in (select ship_tid from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\") order by schedule_no";
+$sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,color from $bai_pro4.shipment_plan_ref where ship_tid in (select ship_tid from bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\") order by schedule_no";
 
 	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -410,17 +411,17 @@ $sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,c
 		}
 		
 		//Exception to check M&S
-		if(substr($style,0,1)=="M")
-		{
-			//$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from $packing_summary where doc_no in ($search_string) and status=\"DONE\"";
-			$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from $bai_pro3.packing_summary where trim(BOTH from order_del_no)=\"".trim($schedule)."\" and trim(BOTH from order_col_des)=\"".trim($color)."\" and status=\"DONE\"";
-			echo "test:".$sqlx1."<br/>";
-			$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-			{
-				$fgqty=$sql_rowx1['scanned'];
-			}
-		}
+		// if(substr($style,0,1)=="M")
+		// {
+		// 	//$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from $packing_summary where doc_no in ($search_string) and status=\"DONE\"";
+		// 	$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from $bai_pro3.packing_summary where trim(BOTH from order_del_no)=\"".trim($schedule)."\" and trim(BOTH from order_col_des)=\"".trim($color)."\" and status=\"DONE\"";
+		// 	echo "test:".$sqlx1."<br/>";
+		// 	$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 	while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+		// 	{
+		// 		$fgqty=$sql_rowx1['scanned'];
+		// 	}
+		// }
 		
 		//echo "-".date("H:i:s");
 		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
@@ -462,25 +463,25 @@ $sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,c
 				}
 			}
 		}
-		
+		// commented to remove hard code value for M&S
 		//Exception to check M&S
-		if(substr($style,0,1)=="M")
-		{
-			if($qty_temp>=$fgqty and $qty_temp>0 and $fgqty>=$order) //due to excess percentage of shipment over order qty
-			{
-				$status=2; //FG
-				if($internal_audited>=$fgqty)
-				{
-					$status=1;
-				}
-			} 
-			if($qty_temp>=$order and $qty_temp>0 and $fgqty<$order)
-			{
-				$status=3; //packing
-			}
-		}
-		else
-		{
+		// if(substr($style,0,1)=="M")
+		// {
+		// 	if($qty_temp>=$fgqty and $qty_temp>0 and $fgqty>=$order) //due to excess percentage of shipment over order qty
+		// 	{
+		// 		$status=2; //FG
+		// 		if($internal_audited>=$fgqty)
+		// 		{
+		// 			$status=1;
+		// 		}
+		// 	} 
+		// 	if($qty_temp>=$order and $qty_temp>0 and $fgqty<$order)
+		// 	{
+		// 		$status=3; //packing
+		// 	}
+		// }
+		// else
+		// {
 			if($qty_temp>=$fgqty and $qty_temp>0 and $fgqty>=$order) //due to excess percentage of shipment over order qty
 			{
 				$status=2; //FG
@@ -493,7 +494,7 @@ $sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,c
 			{
 				$status=3; //packing
 			}
-		}
+		// }
 		
 		//Exception to check M&S
 		

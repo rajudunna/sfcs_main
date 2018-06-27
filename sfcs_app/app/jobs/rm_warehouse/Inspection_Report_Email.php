@@ -92,7 +92,6 @@ $table.= "<th>Length Shortage</th>";
 $table.= "</tr>";
 
 	$sqlx="select * from $bai_rm_pj1.inspection_db where status=1";
-	
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	{
@@ -159,7 +158,7 @@ $table.= "</tr>";
 			$avg_t_width=0;
 			$avg_c_width=0;
 			
-			if($lot_ref_batch!=NULL and $new_ref_date!="--")	
+			if($lot_ref_batch!=NULL or $new_ref_date!="--")	
 			{	
 				$rec_qty=0;
 				$sql="select *, if((length(ref5)<=1 or ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\", qty_rec  from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) order by ref2+0";
@@ -190,10 +189,9 @@ $table.= "</tr>";
 				
 				
 				//if($print_check==0 and $num_rows>0 and (($ctex_sum-$rec_qty)<0 or ($avg_c_width-$avg_t_width)<0))
-				if($print_check==0 and $num_rows>0 and ($ctex_sum-$rec_qty)<0)
-			
+				if($print_check==0 and  $num_rows>0 and ($ctex_sum-$rec_qty)<0)
 				{
-				include($include_path.'\sfcs_app\app\jobs\common\php\supplier_db.php');
+				// include($include_path.'\sfcs_app\app\jobs\common\php\supplier_db.php');
 
 				sort($scount_temp); //to sort shade groups
 				$avg_t_width=round($avg_t_width/$num_rows,2);
@@ -229,16 +227,28 @@ $table.= "</tr>";
 				 $table.= "<td>".$lot_ref_batch."</td>"; //11
 				  
 				 $check=0;
-				  for($i=0;$i<sizeof($suppliers);$i++)
-				  {
-					  	$x=array();
-						$x=explode("$",$suppliers[$i]);
-						if($supplier==$x[1])
-						{
-							$table.= "<td>".$x[0]."</td>"; //2
-							$check=1;
-						}
-				  }
+			
+				 $sqla="SELECT Distinct supplier_m3_code as supplier,seq_no FROM $bai_rm_pj1.inspection_supplier_db where seq_no='$supplier'";
+				//  echo $sqla;
+				$sql_resulta=mysqli_query($link, $sqla) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowa=mysqli_fetch_array($sql_resulta))
+				{
+					$supplier_m3=$sql_rowa['supplier'];
+					$seq_no=$sql_rowa['seq_no'];
+				}
+			
+
+				// var_dump($seq_no);
+				//   for($i=0;$i<sizeof($supplier_m3);$i++)
+				//   {
+					  	// $x=array();
+						// $x=explode("$",$suppliers[$i]);
+				if($supplier==$seq_no)
+				{
+					$table.= "<td>".$supplier_m3."</td>"; //2
+					$check=1;
+				}
+				//   }
 				  if($check==0)
 				  {
 				  	$table.= "<td></td>"; //2
@@ -249,7 +259,7 @@ $table.= "</tr>";
 
 				   $table.= "<td>".$po_no."</td>"; //4
 	
-				   $table.= "<td>".$grn_date."</td>"; //5
+					$table.= "<td>".$grn_date."</td>"; //5
 				 $table.= "<td>".$total_rolls."</td>"; //12
 
 				 $table.= "<td>".$category."</td>"; //8
@@ -265,13 +275,12 @@ $table.= "</tr>";
 		}
 		
 	}
-
 $table.= "</table>";
 
 $table.= "</body>
 
 </html>";
-
+// echo $table;
 		$to  = $inspection_rep_email;
 		$subject = 'BEK RM - Inspection Summary';
 		

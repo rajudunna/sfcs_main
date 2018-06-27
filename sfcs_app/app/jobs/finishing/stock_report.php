@@ -149,8 +149,7 @@ mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 $fg_wh_report_summary="$bai_pro3.fg_wh_report_summary";
 $packing_summary="$bai_pro3.packing_summary";
 
-{
-	echo "<br/><br/><br/><br/><br/><br/><h3>LU:".date("Y-m-d H:i:s")."</h3>";
+	echo "<br/><h3>LU:".date("Y-m-d H:i:s")."</h3>";
 	
 	echo "<div class=\"table-responsive\"><table id=\"example1\" class=\"table table-bordered\">";
 	echo "<tr class='tblheading info'>
@@ -183,9 +182,10 @@ $packing_summary="$bai_pro3.packing_summary";
 	
 	// $auth_usr=array("kirang","baiadmn","baisysadmin","baischtasksvc","baiictintern2","kirang","sfcsproject1","sfcsproject2");
 	// if(in_array($username,$auth_usr))
-	{
 			
 		$sql="select *,bai_pro3.fn_act_ship_qty(order_del_no) as rev_shipped from $bai_pro3.fg_wh_report_summary where (total_qty-bai_pro3.fn_act_ship_qty(order_del_no))<>0 order by order_date";
+		// echo $sql."<br>";
+		// die();
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -583,64 +583,83 @@ $old_order1[]=$sql_rowxx['old_order_s_s50'];
 						
 				echo "</tr>";
 			}
-			
-			switch(substr($sql_row['order_style_no'],0,1))
+			$order_div=$sql_row['order_div'];
+			$sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes where buyer_name='$order_div'";
+// echo $sql;
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1244".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_rowa=mysqli_fetch_array($sql_result))
 			{
-				case "L":
-				{
-					$logo_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
-					break;
-				}
-				case "G":
-				{
-					$logo_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
-					break;
-				}
-				case "O":
-				{
-					$logo_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
-					break;
-				}
-				case "P":
-				{
-					$pink_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
-					break;
-				}
-				case "K":
-				{
-					$pink_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
-					break;
-				}
-				case "I":
-				{
-					$pink_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
-					break;
-				}
-				case "S":
-				{
-					$pink_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
-					break;
-				}
-				case "M":
-				{
-					$mns_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
-					break;
-				}
-			} 
+				$buyer_code=$sql_rowa["buyer_div"];
+				// $buyer_name[]=$sql_row1["buyer_name"];
+			}
+
+			$logo_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
+			$buyer_stock[$buyer_code]= ($sql_row['scanned']-$sql_row['rev_shipped']);
+			// switch(substr($sql_row['order_style_no'],0,1))
+			// {
+			// 	case "L":
+			// 	{
+			// 		$logo_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
+			// 		break;
+			// 	}
+			// 	case "G":
+			// 	{
+			// 		$logo_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
+			// 		break;
+			// 	}
+			// 	case "O":
+			// 	{
+			// 		$logo_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
+			// 		break;
+			// 	}
+			// 	case "P":
+			// 	{
+			// 		$pink_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
+			// 		break;
+			// 	}
+			// 	case "K":
+			// 	{
+			// 		$pink_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
+			// 		break;
+			// 	}
+			// 	case "I":
+			// 	{
+			// 		$pink_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
+			// 		break;
+			// 	}
+			// 	case "S":
+			// 	{
+			// 		$pink_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
+			// 		break;
+			// 	}
+			// 	case "M":
+			// 	{
+			// 		$mns_stock+=($sql_row['scanned']-$sql_row['rev_shipped']);
+			// 		break;
+			// 	}
+			// } 
 			$balance+=($sql_row['scanned']-$sql_row['rev_shipped']);
 			
 			unset($order_qtys);
 			unset($out_qtys);
 			unset($old_order1);
 			unset($order_per);
-	}																																																																																																																																																																									
-	}
-}
-
+	}																											
 
 echo "</table></div>";
 
-echo "<div class='col-md-4 col-sm-offset-8' style='margin-top:-580px;position:relative'><u>Quick Stats</u><table class=\"table table-bordered\"><tr><td>Pink </td><td>$pink_stock</td></tr><tr><td>Logo</td><td>$logo_stock</td></tr><tr><td>M&S</td><td>$mns_stock</td></tr><tr><td><strong>Total</strong></td><td><strong>$balance</strong></td></tr></table></div>";
+
+echo "<div class='col-md-4 col-sm-offset-8'><u>Quick Stats</u><table class=\"table table-bordered\">";
+if(sizeof($buyer_stock)>0)
+{
+	foreach ($buyer_stock as $key => $value)
+	{
+		echo "<tr><td>".$key."</td><td>".$value."</td></tr>";
+	}
+	
+}
+
+echo "<tr><td>Balance</td><td>".$balance."</td></tr></table></div>";
 ?>
 </div></div>
 
