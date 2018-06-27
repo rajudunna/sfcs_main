@@ -92,6 +92,11 @@ function thirdbox()
 	window.location.href =url3+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
+function fourthbox()
+{
+	var url4 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
+	window.location.href =url4+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value;
+}
 
 $(document).ready(function() {
 	$('#schedule').on('mouseup',function(e){
@@ -161,7 +166,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));?>
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
 $color=$_GET['color'];
-
+$cutno=$_GET['cutno'];
 //echo $style.$schedule.$color;
 ?>
 <div class="panel panel-primary">
@@ -245,10 +250,40 @@ echo "</select>";
 
 <?php
 
-echo "Select CutNo: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" id='cutno'>";
+$sql="select distinct order_col_des from $bai_pro3.plan_doc_summ where order_del_no=\"$schedule\"";	
+//}
+echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" id='color'>";
+// mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+
+echo "<option value=\"NIL\" selected>NIL</option>";
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+
+if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
+{
+	echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
+}
+else
+{
+	echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
+}
+//For color Clubbing
+
+}
 
 
-$sql="select distinct pcutno as pcutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" order by pcutno";	
+echo "</select>";
+
+?>
+
+<?php
+
+echo "Select CutNo: <select name=\"cutno\" class=\"form-control\" onchange=\"fourthbox();\" id='cutno'>";
+
+
+$sql="select distinct pcutno as pcutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by pcutno";	
 
 //For Color Clubbing
 /*
@@ -265,11 +300,14 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 $sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<option value=\"NIL\" selected>NIL</option>";
-	
+if($color!='')
+{
+echo "<option value=\"All\" selected>All</option>";	
+}
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 
-if(str_replace(" ","",$sql_row['pcutno'])==str_replace(" ","",$color))
+if(str_replace(" ","",$sql_row['pcutno'])==str_replace(" ","",$cutno))
 {
 	echo "<option value=\"".$sql_row['pcutno']."\" selected>".$sql_row['pcutno']."</option>";
 }
@@ -409,60 +447,13 @@ if(isset($_POST['submit']))
 	$schedule=$_POST['schedule'];
 	//$module=$_POST['modules'];
 	$color=$_POST['color'];
-	$newfiltertable="temp_pool_db.plan_doc_summ_input_v2_".$username;
-	$sql="DROP TABLE IF EXISTS $newfiltertable";
-	//echo $sql."<br/>";
-	//mysql_query($sql,$link) or exit("Sql Error17".mysql_error()
-	
-	//$schedule_list=$schedule;
-	
-	$sql2="select * from $bai_pro3.bai_orders_db where order_joins=\"J$schedule\"";
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check2=mysqli_num_rows($sql_result2);
-	if($sql_num_check2 > 0)
-	{
-		$sql3="select distinct order_del_no as del from $bai_pro3.bai_orders_db where order_joins=\"J$schedule\"";
-	}
-	else
-	{
-		$sql3="select distinct order_del_no as del from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\"";
-	}
-	
-	$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check3=mysqli_num_rows($sql_result3);
-	while($sql_row3=mysqli_fetch_array($sql_result3))
-	{
-		$schedule_no[]=$sql_row3["del"];
-	}
-	
-	$schedule_list=implode(",",$schedule_no);
-	
-	//This is to handle schedule club deliveries
-	$sql="DROP TABLE IF EXISTS $newfiltertable";
-	//echo $sql."<br/>";
-	mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-	//$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,input_job_no,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
-	$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and acutno=$color and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
-	// echo $sql."<br/>";
-	mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-	$sql="select * from $newfiltertable";
-	
-	mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-	//docketno-colorcode cutno-cut_status
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$code.=$sql_row['input_job_no_random']."-"."J".$sql_row['input_job_no']."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."*";
-		//echo "Doc=".$doc_no."<br>";
-		$style=$sql_row['order_style_no'];
-	}
-	
+	$cutno=$_POST['cutno'];
+
+
+	$color=$_POST['color'];
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop_input_job.php?style=$style&schedule=$schedule&code=$code\"; }</script>";
 	// echo("<script>window.open('".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&code=$code');</script>");
-	echo "<script>window.location = '".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&code=$code';</script>";
+	echo "<script>window.location = '".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&cutno=$cutno&color=$color';</script>";
 	// echo "<script>window.close ();</script>";
 	
 	}
