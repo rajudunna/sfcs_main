@@ -1,17 +1,19 @@
 	<?php
-	$servername = "192.168.0.110:3326";
-	$username = "baiall";
-	$password = "baiall";
-	$dbname = "bai_pro2";
+	// $servername = "192.168.0.110:3326";
+	// $username = "baiall";
+	// $password = "baiall";
+	// $dbname = "bai_pro2";
 
 	// Create connection
-	$conn = new mysqli($servername, $username, $password, $dbname);
+	// $conn = new mysqli($servername, $username, $password, $dbname);
 	// Check connection
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+	$conn=$link;
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM bai_pro2.`downtime_reason`";
+	$sql = "SELECT * FROM $bai_pro2.`downtime_reason`";
 	$result = $conn->query($sql);
 	$sno = 1;
 	if ($result->num_rows > 0) {

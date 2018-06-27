@@ -1,39 +1,50 @@
 <?php
 // echo $_POST['table_name'];
 $tbl_id=$_REQUEST['tbl_id'];
+// echo $tbl_id;
 $tbl_name =$_REQUEST['table_name'];
-$status =$_REQUEST['table_status'];
+// echo $tbl_name;die();
+$p_status =$_REQUEST['table_status'];
+// echo $status;die();
 
 // echo $status;die();
-$servername = "192.168.0.110:3326";
-$username = "baiall";
-$password = "baiall";
-$dbname = "bai_pro3";
+// $servername = "192.168.0.110:3326";
+// $username = "baiall";
+// $password = "baiall";
+// $dbname = "bai_pro3";
 
 // Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+// $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+// if (!$conn) {
+//     die("Connection failed: " . mysqli_connect_error());
+// }
+//echo $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php';
+// echo $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php';die();
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+$conn=$link;
+// echo 
 
 
-if (empty($tbl_name) || empty($status)) {
+
+
+
+if (empty($tbl_name) || empty($p_status)) {
 	echo "Please fill values";
 }else{
-	if($status == 1)
+	if($p_status == 1)
 	{
-		$status = 'active';
+		$tblstatus = 'active';
 	}
 	else
 	{
-		$status = 'inactive';
+		$tblstatus = 'inactive';
 	}
 	if($tbl_id>0){
 		
 		//update
 		
-		$sql = "update tbl_cutting_table set tbl_name='$tbl_name',status='$status' where tbl_id=$tbl_id";
+		$sql = "update tbl_cutting_table set tbl_name='$tbl_name',status='$tblstatus' where tbl_id=$tbl_id";
 		// echo $sql;die();
 		if (mysqli_query($conn, $sql)) {
 			echo "Record updated successfully";
@@ -43,7 +54,7 @@ if (empty($tbl_name) || empty($status)) {
 	}else{
 		//insert 
 		$sql = "INSERT INTO tbl_cutting_table (tbl_name,status)
-			VALUES ('$tbl_name','$status')";
+			VALUES ('$tbl_name','$tblstatus')";
 		if (mysqli_query($conn, $sql)) {
 			echo "New record created successfully";
 		} else {
