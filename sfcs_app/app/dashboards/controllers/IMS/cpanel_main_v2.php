@@ -436,7 +436,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $input_date=$sql_rowred['ims_date'];
           ?>
                   
-                  <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'pop_red_box_details.php','R');?>?module=<?php echo $module; ?>&docket=<?php echo $rand_track;?>&input_job_rand=<?php echo $inputjobnorand; ?>', 'myPop1',800,600);"  title="
+                  <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'pop_red_box_details.php','R');?>?module=<?php echo $module; ?>&docket=<?php echo $rand_track;?>&input_job_no=<?php echo $inputno; ?>&input_job_rand_ref=<?php echo $inputjobnorand; ?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>

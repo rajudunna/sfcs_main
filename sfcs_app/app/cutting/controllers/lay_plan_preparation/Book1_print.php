@@ -1761,7 +1761,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     } 
     else 
     { 
-        echo "<td></td><td colspan='3' class='xl7313019' colspan=2 align=left></td>"; 
+        echo "<td></td><td colspan='3' colspan=2 align=left></td>"; 
     } 
     echo "</tr>";
  ?>
