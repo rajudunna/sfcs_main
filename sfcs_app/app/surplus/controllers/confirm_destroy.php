@@ -134,7 +134,7 @@ function enable_button()
 		$schlist=$_POST['schlist'];
 		$showall=$_POST['showall'];
 		$row_count = 0;
-		$addfilter="qms_schedule in ($schlist) and ";
+		$addfilter="qms_schedule in ('$schlist') and ";
 		if($showall=="1")
 		{
 			$addfilter="";
@@ -167,8 +167,9 @@ function enable_button()
 			<?php
 				$sql="select ( SUM(IF((qms_tran_type= 12 and location_id<>'DESTROYED'),qms_qty,0))
 			   -SUM(IF((qms_tran_type= 7 and length(location_id)>0),qms_qty,0))) as qms_qty,qms_style,qms_schedule,qms_color,qms_size,group_concat(qms_tid) as qms_tid, group_concat(concat(location_id,'-',qms_qty,' PCS<br/>')) as existing_location from $bai_pro3.bai_qms_db where $addfilter left(location_id,9)<>'DESTROYED' and location_id<>'PAST_DATA' and qms_tran_type in (12,7) and log_date > \"2014-10-25\"  GROUP BY CONCAT(qms_schedule,qms_color,qms_size),location_id order by qms_schedule,qms_color,qms_size ";
+			   //echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				echo"<table>";
+				echo"<table id='table1'>";
 					echo"<br/><tr>";
 					echo"<td>Select Month&nbsp;&nbsp;</td>";
 					echo"<td><select id='month' name='month' class='form-control'>";
@@ -203,8 +204,9 @@ function enable_button()
 					echo"</tr>";
 					echo"</table><br/>";
 					// echo"<br/><h4><span>Reserved Quantity=<div id='output'></div></span></h4>";
-					if(count($sql_result)>1)
+					if(mysqli_num_rows($sql_result)>0)
 					{
+						$row_count2++;
 						$table="<div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'><table class='table table-bordered' id='table1'>";
 						$table.="<thead>";
 						$table.="<tr>";
@@ -258,8 +260,15 @@ function enable_button()
 		echo "<input type=\"hidden\" name=\"total_rows\" id=\"total_rows\" value=\"".$x."\">";
 
 		echo '</form>';
+
+		if($row_count2 == 0) {
+			echo '<script>
+			$("#table").css({"display":"none"})</script>';
+		}
 		if($row_count == 0) {
-			echo '<script>sweetAlert("No Data found for the Entered Schedule/s","","warning");</script>';
+			echo '<script>
+			$("#table1").css({"display":"none"});
+			sweetAlert("No Data found for the Entered Schedule/s","","warning");</script>';
 		}
 	}
 }
