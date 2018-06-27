@@ -8,7 +8,7 @@
 					<form name="test" action="<?php echo '?r='.$_GET['r']; ?>" method="post">
 						<div class="row">
 							<div class="col-sm-6">
-								Enter Schedule : <input type='text' id='int' name='schedule' size=8 class="form-control integer">
+								Enter Schedule : <input type='text' id='int' name='schedule' size=8 class="form-control integer" required>
 							</div>
 							<div class="col-sm-6">										
 								Carton Quantity : <input type='text' id='int' name='qty' value='120' size=8 class="form-control integer">
