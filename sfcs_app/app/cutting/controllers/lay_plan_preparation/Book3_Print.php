@@ -2154,7 +2154,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status!=NULL) {echo "DUPLICATE"; } else {echo "ORIGINAL";}?></strong></td>
+  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status!=NULL) {echo "COPY"; } else {echo "";}?></strong></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
