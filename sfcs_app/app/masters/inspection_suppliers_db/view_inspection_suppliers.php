@@ -1,15 +1,5 @@
 	<?php
-	$servername = "192.168.0.110:3326";
-	$username = "baiall";
-	$password = "baiall";
-	$dbname = "bai_rm_pj1";
-
-	// Create connection
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	// Check connection
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	} 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 	$sql = "SELECT * FROM bai_rm_pj1.`inspection_supplier_db`";
 	$result = $conn->query($sql);
