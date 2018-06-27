@@ -2,12 +2,12 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 	$sql = "SELECT * FROM bai_rm_pj1.`inspection_supplier_db`";
-	$result = $conn->query($sql);
-
-	if ($result->num_rows > 0) {
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$norows = mysqli_num_rows($sql_result);
+	if ($norows > 0) {
 		echo "<table id='tbl_packing_method' class='table'><tr><th>S.No</th><th>Product Code</th><th>Supplier Code</th><th>Complaint No </th><th>Supplier M3 Code</th><th>Color Code</th><th>Sequence No</th><th> Edit / Delete </th></tr>";
 		// output data of each row
-		while($row = $result->fetch_assoc()) {
+		while($row=mysqli_fetch_array($sql_result)) {
 			$product_code=$row["product_code"];
 			$tid=$row["tid"];
 			$supplier_code=$row["supplier_code"];
@@ -23,7 +23,6 @@
 	} else {
 		echo "0 results";
 	}
-	$conn->close();
 	?>
 
 
