@@ -227,6 +227,14 @@ function getrbac_user(){
     return $user;
 }
 
+
+/*
+    purpose : function to Give Configuration data.
+    output : String/array.
+    ** By chandu **
+    created at : 23-06-2018.
+    updated at : 26-06-2018.
+*/
 function get_config_values($config_id){
     $conf = new confr("configuration/config-builder/saved_fields/fields.json");
     if($config_id=='getmysqldb'){
