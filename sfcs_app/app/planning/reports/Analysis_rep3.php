@@ -340,7 +340,7 @@ $year_add_query2=" and exfact_date between \"".$sdate."\" and \"".$edate."\" ";
 				if(strlen($buyer_div) >0)
 				{
 					// $query_add=" where left(style_no,1) in ($buyer_div) $year_add_query2";
-					$query_add="where schedule_no in (SELECT order_del_no FROM bai_pro3.bai_orders_db WHERE order_div IN (SELECT buyer_name FROM $bai_pro2.buyer_codes WHERE buyer_name IN ('".str_replace(",","','",$buyer_div)."')))";
+					$query_add="where schedule_no in (SELECT order_del_no FROM bai_pro3.bai_orders_db WHERE order_div IN ('".str_replace(",","','",$buyer_div)."'))";
 					
 					$sql="select distinct style_id from $bai_pro2.shipment_plan $query_add order by style_id";
 					
@@ -456,7 +456,7 @@ $Days_Required=$_POST['Days_Required'];
 $Expected_Comp_Date=$_POST['Expected_Comp_Date'];
 
 echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="post" > 
-<input type="hidden" id="csv123" name="csv123" >
+<input type="hidden" id="csv_text" name="csv_text" >
 <input type="submit" class="btn btn-info" value="Export to Excel" onclick="getData()">
 </form>';
 
@@ -552,7 +552,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$week_array1 = getStartAndEndDate($week_code[$i],$exfact_year[$i]);
 			unset($temp);
 			
-			$sql21="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array1["week_start"]."\" and \"".$week_array1["week_end"]."\" and style_id=\"".$style_code."\" and left(style_no,1) in ($buyer_div)";
+			$sql21="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array1["week_start"]."\" and \"".$week_array1["week_end"]."\" and style_id=\"".$style_code."\" and left(style_no,1) in ('".str_replace(",","','",$buyer_div)."')";
 			//echo "Query=".$sql21."<br>";		
 			$sql_result2=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -597,7 +597,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			
 			unset($temp);
 			
-			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ($buyer_div)";
+			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ('".str_replace(",","','",$buyer_div)."')";
 			//echo $sql2."<br>";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -649,7 +649,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$sewing_in[$i]=0;
 			unset($temp);
 			$week_array2 = getStartAndEndDate($week_code[$i],$exfact_year[$i]);			
-			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ($buyer_div)";
+			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ('".str_replace(",","','",$buyer_div)."')";
 			//echo $sql2."<br>";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -698,7 +698,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$sewing_out[$i]=0;
 			unset($temp);
 			$week_array2 = getStartAndEndDate($week_code[$i],$exfact_year[$i]);			
-			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ($buyer_div)";
+			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ('".str_replace(",","','",$buyer_div)."')";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
@@ -745,7 +745,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$pack_out[$i]=0;
 			unset($temp);
 			$week_array2 = getStartAndEndDate($week_code[$i],$exfact_year[$i]);		
-			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ($buyer_div)";
+			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ('".str_replace(",","','",$buyer_div)."')";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
@@ -792,7 +792,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			unset($temp);
 			$week_array2 = getStartAndEndDate($week_code[$i],$exfact_year[$i]);		
 			
-			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ($buyer_div)";
+			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ('".str_replace(",","','",$buyer_div)."')";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
@@ -893,7 +893,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 			unset($temp);
 			$week_array2 = getStartAndEndDate($week_code[$i],$exfact_year[$i]);		
-			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ($buyer_div)";
+			$sql2="select distinct ssc_code from $shipment_plan where exfact_date between \"".$week_array2["week_start"]."\" and \"".$week_array2["week_end"]."\" and style_id=\"$style_code\" and left(style_no,1) in ('".str_replace(",","','",$buyer_div)."')";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
@@ -966,7 +966,7 @@ function popitup(url) {
 }
 function getData(){
  var csv_value=$('#tablecol').table2CSV({delivery:'value'});
- $("#csv123").val(csv_value);	
+ $("#csv_text").val(csv_value);	
 }
 </script>
 </div>

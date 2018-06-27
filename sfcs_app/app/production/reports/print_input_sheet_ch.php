@@ -70,9 +70,6 @@ table.gridtable td {
 		<div class="panel-body">
 
 			<div>
-				<div class='pull-right'>
-					<?php $imgurl = getFullURL($_GET['r'],'common/images/Book1_29570_image003.png','1','R');?>
-					<img src="<?=$imgurl ?>" width="250px"/></div>
 					<?php
 						$sql="select distinct order_del_no as sch from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
 						$result=mysqli_query($link, $sql) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));

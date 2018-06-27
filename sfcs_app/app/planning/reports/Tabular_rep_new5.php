@@ -210,6 +210,8 @@ $cpo_code="";
 		echo "<td>";
 	echo '<div class="scroll">';
 	$sql="select distinct CPO from $order_status_buffer $criteria order by CPO";
+	// echo $sql;
+	// die();
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count = mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -237,7 +239,6 @@ $cpo_code="";
 	
 	
 	$sql="select distinct buyer_div from $order_status_buffer $criteria order by buyer_div";
-	echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -422,7 +423,7 @@ $cpo_code="";
 
 <?php
 
-	if($row_count == 0){
+	if($count == 0){
 			echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
 		}
 
@@ -563,7 +564,7 @@ if(isset($_POST['submit1']))
 	}
 
 	echo '<form action="'."../".getFullURL($_GET['r'],"export_excel.php",'R').'" method ="post" > 
-	<input type="hidden" name="csv123" id="csv123">
+	<input type="hidden" name="csv_text" id="csv_text">
 	<input class="pull-right btn btn-info" type="submit" value="Export to Excel" onclick="getCSVData()">
 	</form>';
 			
@@ -776,7 +777,7 @@ if(isset($_POST['submit1']))
 <script language="javascript">
 function getCSVData(){
  var csv_value=$('#table1').table2CSV({delivery:'value'});
- $("#csv123").val(csv_value);	
+ $("#csv_text").val(csv_value);	
 }
 </script>
 

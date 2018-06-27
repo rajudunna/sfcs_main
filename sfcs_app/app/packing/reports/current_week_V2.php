@@ -111,7 +111,7 @@ $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
 					<?php 
 						echo "<option value=\"ALL\" selected >All</option>";
 						// $sqly="select distinct(buyer_div) from plan_modules";
-						$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
+						$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 						//echo $sqly."<br>";
 
 						mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

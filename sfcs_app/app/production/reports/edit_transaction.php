@@ -367,11 +367,7 @@ while($row=mysqli_fetch_array($result))
 	
 	$sql2="select distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db";
 	//echo $sql2;
-<<<<<<< HEAD
-	$result3=mysqli_query($link, $sql2) or die("377Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-=======
 	$result3=mysqli_query($link, $sql2) or die("3Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
->>>>>>> dev_master
 	while($row2=mysqli_fetch_array($result3))
 	{
 		$schedule[]=$row2["schedule"];
@@ -619,8 +615,7 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<th></th><td><center><input type=\"submit\" class='btn btn-success' name=\"submit\" value=\"submit\" onclick=\"document.getElementById('submit').style.display='none';document.getElementById('cancel').style.display='none';document.getElementById('msg').style.display='';\"/>";
 	?>
-	&nbsp;&nbsp;<button class='btn btn-danger' name='cancel' onClick=document.getElementById('cancel').style.display='none';document.getElementById('submit').style.display='none';document.getElementById('msg').style.display='';location.href='down_time_log_V2.php';>Cancel</button>
-	<span id="msg" style="display:none;">Please Wait..</span>
+	&nbsp;&nbsp;<button class='btn btn-danger' name='cancel' id='cancel' onClick=window.close();>Cancel</button>
 </center>
 		</td>
 	</tr> 

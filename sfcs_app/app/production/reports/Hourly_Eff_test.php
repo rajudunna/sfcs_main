@@ -129,7 +129,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                             <tr>
                                 <td valign="top">
 									<label for="demo1">Select Date: </label>
-                                	<input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
+                                	<input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
 								</td>
                                 <td valign="top">
                                  	<label for="section">Select Unit: </label>
@@ -154,9 +154,11 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
 								<td valign="top">
 									<label for="team">Select Team: </label>
                                     <select name="team" id="team" class="form-control"> 
-                                        <option value='"A", "B"'<?php if($team=='"A", "B"') echo "selected"; ?>>All</option> 
-                                        <option value='"A"' <?php if($team=='"A"') echo "selected"; ?>>A</option> 
-                                        <option value='"B"'<?php if($team=='"B"') echo "selected"; ?>>B</option> 
+                                        <?php 
+                                            for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+                                                <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+                                            <?php }
+                                        ?>
                                     </select> 
                                 </td>
                                 <td valign="top"> 

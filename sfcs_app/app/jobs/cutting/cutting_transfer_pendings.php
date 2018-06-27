@@ -21,11 +21,6 @@ ob_start();
 ?> 
 <title>Cut to 1% Transfer Pendings</title> 
 <style> 
-body 
-{ 
-    font-family:calibri; 
-    //font-size:12px; 
-} 
 
 table tr 
 { 
