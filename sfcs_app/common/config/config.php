@@ -95,7 +95,7 @@ $plant_end_time = "22:30:00";
 $group_id_sfcs=8;
 $group_id_Main=5;
 // mail header
-$smtp_user=$conf->get('smtp-user-name');
+$smtp_user=$conf1->get('smtp-user-name');
 // $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
 $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 

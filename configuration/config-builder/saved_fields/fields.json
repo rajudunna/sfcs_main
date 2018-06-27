@@ -26,7 +26,7 @@
                 "label": "Plant Name",
                 "className": "form-control",
                 "name": "plantname",
-                "value": "bai2",
+                "value": "Brandix Essential - Koggala",
                 "subtype": "text"
             },
             {
@@ -35,7 +35,7 @@
                 "label": "Plant Code",
                 "className": "form-control",
                 "name": "plantcode",
-                "value": "ps",
+                "value": "EKG",
                 "subtype": "text"
             },
             {
@@ -77,7 +77,7 @@
                 "label": "Super User Name",
                 "className": "form-control",
                 "name": "superuser",
-                "value": "Kiran",
+                "value": "chandu",
                 "subtype": "text"
             }
         ],
@@ -175,7 +175,7 @@
                 "label": "PRO AOD GATEPASS UPDATE TO BELBAL CO INVOICE mail",
                 "className": "form-control",
                 "name": "pro_aod_gatepass_update_to_belbal_co_invoice_mail",
-                "value": "f@brandix.com"
+                "value": "a@brandix.com"
             },
             {
                 "type": "text",
@@ -184,7 +184,7 @@
                 "label": "carton pendings mail",
                 "className": "form-control",
                 "name": "carton_pendings_mail",
-                "value": "g@brandix.com"
+                "value": "a@brandix.com"
             },
             {
                 "type": "text",
@@ -193,7 +193,7 @@
                 "label": "Dailly Delivery Failures Mail",
                 "className": "form-control",
                 "name": "dailly_delivery_failures_mail",
-                "value": "h@brandix.com"
+                "value": "a@brandix.com"
             },
             {
                 "type": "text",
@@ -202,7 +202,7 @@
                 "label": "SAH dashboard email",
                 "className": "form-control",
                 "name": "sah_dashboard_email",
-                "value": "h@brandix.com"
+                "value": "a@brandix.com"
             },
             {
                 "type": "text",
@@ -210,7 +210,7 @@
                 "label": "Order Summary Mail",
                 "className": "form-control",
                 "name": "order_summary_mail",
-                "value": "h@brandix.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -250,7 +250,7 @@
                 "label": "Mail15",
                 "className": "form-control",
                 "name": "mail15",
-                "value": "h@brandix.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -258,7 +258,7 @@
                 "label": "Mail16",
                 "className": "form-control",
                 "name": "mail16",
-                "value": "i@brandix.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -266,7 +266,7 @@
                 "label": "Mail17",
                 "className": "form-control",
                 "name": "mail17",
-                "value": "j@brandix.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -274,7 +274,7 @@
                 "label": "Mail18",
                 "className": "form-control",
                 "name": "mail18",
-                "value": "k@brandix.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -282,7 +282,7 @@
                 "label": "Mail19",
                 "className": "form-control",
                 "name": "mail19",
-                "value": "m@brandix.com"
+                "value": "b@brandix.com"
             },
             {
                 "type": "text",
@@ -290,7 +290,7 @@
                 "label": "Mail20",
                 "className": "form-control",
                 "name": "mail20",
-                "value": "n@brandix.com"
+                "value": "b@brandix.com"
             }
         ],
         [
@@ -432,7 +432,7 @@
                 "label": "MRN Request Form",
                 "className": "form-control",
                 "name": "mrn_mail",
-                "value": "d@brandix.com,e@brandix.com,f@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -441,7 +441,7 @@
                 "label": "MRN Request Form2",
                 "className": "form-control",
                 "name": "mrn_request_mail",
-                "value": "g@brandix.com,h@brandix.com,i@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -450,7 +450,7 @@
                 "label": "Cutting Alert",
                 "className": "form-control",
                 "name": "cutting_mail",
-                "value": "j@brandix.com,k@brandix.com,L@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -459,7 +459,7 @@
                 "label": "Dispatch Mail",
                 "className": "form-control",
                 "name": "dispatch_mail",
-                "value": "m@brandix.com,n@brandix.com,o@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -468,7 +468,7 @@
                 "label": "Weekly Delivery Plan Update",
                 "className": "form-control",
                 "name": "weekly_plan_mail",
-                "value": "p@brandix.com,q@brandix.com,r@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -477,7 +477,7 @@
                 "label": "Order Quantity Revision",
                 "className": "form-control",
                 "name": "order_quantity_mail",
-                "value": "s@brandix.com,t@brandix.com,u@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -486,7 +486,7 @@
                 "label": "Weekly Delivery Plan Status Update",
                 "className": "form-control",
                 "name": "weekly_plan_status_mail",
-                "value": "v@brandix.com,w@brandix.com,x@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -495,7 +495,7 @@
                 "label": "Supplier Claim Update",
                 "className": "form-control",
                 "name": "supplier_claim_mail",
-                "value": "xy@brandix.com,yz@brandix.com,ab@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -504,7 +504,7 @@
                 "label": "Supplier Claim PDF Mail",
                 "className": "form-control",
                 "name": "supplier_claim_pdf_mail",
-                "value": "bc@brandix.com,cd@brandix.com,de@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -513,7 +513,7 @@
                 "label": "PLD-Manpower",
                 "className": "form-control",
                 "name": "pld_man_mail",
-                "value": "ef@brandix.com,fg@brandix.com,gh@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -522,7 +522,7 @@
                 "label": "Dashboard Email",
                 "className": "form-control",
                 "name": "dashboard_mail",
-                "value": "hi@brandix.com,ij@brandix.com,jk@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             },
             {
                 "type": "text",
@@ -531,7 +531,7 @@
                 "label": "Update Status",
                 "className": "form-control",
                 "name": "update_status_mail",
-                "value": "kl@brandix.com,lm@brandix.com,mn@brandix.com"
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
             }
         ],
         []
