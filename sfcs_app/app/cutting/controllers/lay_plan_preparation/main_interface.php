@@ -372,7 +372,7 @@ echo "<div class='panel panel-default'>
 			    <div class='col-md-4'><b>Binding Consumption: </b>$bind_con</div>";
 			echo "
 		
-	</div><hr/>
+	</div><hr/>zz
 ";
 $order_qty_update_url = getFullUrlLevel($_GET['r'],'planning/controllers/orders_edit_form.php','3','N');
 echo "<div class=\"table-responsive\">";
@@ -1699,12 +1699,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	//$path="http://localhost/sfcs/projects/Beta/cut_plan_new_ms/new_doc_gen/Book1_print.php";
 
-	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
-	$path1="".getFullURL($_GET['r'], "Book1_print_fabric.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
+	$path1="".getFullURL($_GET['r'], "Book1_print_fabric.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	if($clubbing>0)
 	{
-		$path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
-		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		// $path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		// $path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 
 		$path= getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
