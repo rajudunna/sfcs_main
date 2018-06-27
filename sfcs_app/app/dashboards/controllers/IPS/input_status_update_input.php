@@ -344,9 +344,9 @@ if(in_array($authorized,$has_permission))
 
 echo "<br>";
 if($job_color_status=="blue")
-//if(true)
+if(true)
 {
-//echo "<a class='btn btn-info btn-sm' href=\"new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a><br>";
+	echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a><br>";
 }
 // $production_reviewss_sheet_users=array("chathurangad","dinushapre","buddhikam");
 if(in_array($authorized,$has_permission))

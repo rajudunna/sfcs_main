@@ -2,19 +2,11 @@
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-
-	// $serverName="GD-SQL-UAT";
-	// $uid="SFCS_BIA_FF";
-	// $pwd="Ba@rUpr6";
-	// $BELMasterUAT="BELMasterUAT";
-	// $connectionInfo = array( "UID"=>$uid,"PWD"=>$pwd,"Database"=>$BELMasterUAT);
 	
 $connect = odbc_connect("$driver_name;Server=$serverName;Database=$m3_databasename;", $uid,$pwd);
 ?>
 
 <?php
-	// $connect = odbc_connect("gd-sql-uat", "SFCS_BIA_FF", "Ba@rUpr6");
-
 	$tsql="SELECT DeliveryMode FROM [$m3_databasename].[m3].[PlannedPurchaseOrder] where len(DeliveryMode) > 0  group by DeliveryMode order by DeliveryMode";
 	$result = odbc_exec($connect, $tsql);
 	while(odbc_fetch_row($result))
@@ -28,7 +20,6 @@ $connect = odbc_connect("$driver_name;Server=$serverName;Database=$m3_databasena
 			mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}
-
 ?>
 <?php
 // ssc_porcess4

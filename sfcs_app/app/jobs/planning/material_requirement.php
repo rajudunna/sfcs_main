@@ -2,12 +2,6 @@
 
 function m3_alloc_qty($style,$schedule,$component)
 {
-//$connect = odbc_connect("bci-mvxrpt-01", "ReportReader", "mvx@bci-01");
-//$connect = odbc_connect("GD-RPTSQL", "BAIMacroReaders", "BAI@macrosm3");
-// $server="GD-RPTSQL";
-// $database="M3_BEL";
-// $userid="BAIMacroReaders";
-// $passwrd="BAI@macrosm3";
 $connect = odbc_connect("$driver_name;Server=$server;Database=$database;",$userid,$passwrd);
 $inp_1=$style;
 $inp_2=$schedule;
@@ -37,18 +31,5 @@ odbc_close($connect);
 
 return $returns;
 unset($returns);
-
-//HOW to use
-/*
-$temp=array();
-$temp=m3_alloc_qty('M3934OM2','81505','M3934OM2BF2 001');
-echo "Required:".$temp['allocated'];
-echo "<br/>Issued:".$temp['issued'];
-*/
-
 } 
-
-
-
-
 ?>

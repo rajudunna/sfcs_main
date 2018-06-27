@@ -25,6 +25,16 @@ $ms_sql_odbc_pass = $conf1->get('mssql-password');
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
 
+//M3 MSSQL DB Configurations
+$m3_mssql_odbc_name="bcimovsms01_bai";
+$m3_mssql_username="brandix_india_user1";
+$m3_mssql_password="styleRM123";
+
+//Local MSSQL DB Configurations
+$local_mssql_odbc_name="BAINET_INTRANET_NEW";
+$local_mssql_username="sa";
+$local_mssql_password="Brandix@7";
+
 //To Facilitate SFCS Filters
 $global_facility_code=$conf1->get('plantcode');
 

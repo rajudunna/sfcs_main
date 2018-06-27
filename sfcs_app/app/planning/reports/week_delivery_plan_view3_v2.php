@@ -1,25 +1,4 @@
-<!--
-Core Module: We can view and update Remarks of production.
-
-Description: We can view and update Planning, Packing Remarks of production.
-2013-12-09/DharaniD/Ticket:208365/ Add Actual Cut % in report
-2014-01-28/KiranG/Ticket:913906 / Added initilaization set value for rej_per variable
-2014-03-07/Dharanid/Ticket #222648 / Add the Actual Out% and Ext Ship%  and Modify the Act Cut% in weekly delivery report 
-2014-07-11/DharaniD/service request #331881 : Add Ravipu user in $authorized array for planning remarks and commitments. 
-2015-03-28/RameshK/CR#930/Need To Incorporate the Planning default comments in the Weekly delivery Report.
--->
 <?php
-//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-//$username=strtolower($username_list[1]);
-//$authorized=array("kirang","ramakrishnak","edwinr","divyamohanm","sasidharch","chinnanaidud","kirang","ramakrishnak","edwinr","amulyap","sureshn","baimr1","baimr2"); //For Packing
-//$authorized2=array("bai2mr1","bainet","nalakasb","muralim","baimr1","bainet","nalakasb","baimr1","baimr2","sureshn","srikanthb","roshanm","ravipu"); // commitments
-//$authorized3=array("bai2mr2","rajithago","kiranm","rameshk","baimr1","baimr2","rajithago","srikanthb","roshanm","ravipu"); // planning remarks
-// include($_SERVER['DOCUMENT_ROOT']."server/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT']."server/group_def.php");
-// $view_access=user_acl("SFCS_0047",$username,1,$group_id_sfcs); 
-// $authorized=user_acl("SFCS_0047",$username,49,$group_id_sfcs); 
-// $authorized2=user_acl("SFCS_0047",$username,50,$group_id_sfcs); 
-// $authorized3=user_acl("SFCS_0047",$username,51,$group_id_sfcs); 
 $username="sfcsproject1";
 $view_access=array("sfcsproject1");
 $authorized=array("sfcsproject1");
@@ -36,12 +15,10 @@ $start_date_w=$start_date_w-(60*60*24); // define monday
 }
 $end_date_w=$start_date_w+(60*60*24*6); // define sunday 
 
-//$start_date_w=date("Y-m-d",$start_date_w);
-//$end_date_w=date("Y-m-d",$end_date_w);
 $start_date_w=date("Y-m-d",$start_date_w);
 $end_date_w=date("Y-m-d",$end_date_w);
-// $start_date_w="2017-12-09";
-// $end_date_w="2017-12-09";
+$start_date_w="2017-12-09";
+$end_date_w="2018-06-09";
 
 ?>
 
@@ -58,131 +35,9 @@ $end_date_w=date("Y-m-d",$end_date_w);
 {
      position: absolute; 
 }
-
-
-
 </style>
 
-
-<!-- Filter -->
-<!-- <script>
-	/**
- *  jQuery ColumnFilter Plugin
- *  @requires jQuery v1.2.6 or greater
- *  http://hernan.amiune.com/labs
- *
- *  Copyright (c)  Hernan Amiune (hernan.amiune.com)
- *  Licensed under MIT license:
- *  http://www.opensource.org/licenses/mit-license.php
- * 
- *  Version: 1.1
- 	*/
-jQuery.noConflict();
-
-(function($) {
-    $.fn.columnfilter = function(options) {
-
-        var defaults = {};
-
-        var options = $.extend(defaults, options);
-
-        return this.each(function(index) {
-        	
-            var $table = jQuery(this);
-            $table.find("th.filter").each(function() {
-                //create a select list for each filter column
-                var i = 0;
-                var $select = $('<select class="selectfilter" multiple></select>');
-                var $this = jQuery(this);
-                var colindex = $this.parent().children().index($this) + 1;
-                var dictionary = [];
-                $table.find("tr td:nth-child(" + colindex + ")").each(function() {
-                    var text = jQuery(this).text();
-                    //alert(text);
-                    dictionary[text] = true;
-                });
-                var colkeys = [];
-                for (i in dictionary) colkeys.push(i);
-                colkeys.sort();
-                $select.append('<option value="All" selected>All</option>');
-				var eliminate="$family associate clean combine contains each empty erase every extend filter flatten forEach getLast getRandom hexToRgb hsbToRgb include link map rgbToHex rgbToHsb some toJSON "; // To eliminate jquery error
-//var eliminate="$family associate"; // To eliminate jquery error
-                for (i=0; i<colkeys.length; i++) {
-                    if(colkeys[i] === "indexOf")continue; //weird stuff happens in ie and chrome, firefox is awesome
-					
-					if(!eliminate.contains(colkeys[i]))
-					//eliminate += colkeys[i] + " ";
-					//$("#ages").html(eliminate);
-                    $select.append('<option value="' + colkeys[i] + '">' + colkeys[i] + '</option>');
-                }
-                jQuery(this).append("<br/>");
-                jQuery(this).append($select);
-
-                //bind change function to each select filter
-                $select.change(function() {
-
-                    //create an array of the filters selected values
-                    var colIndexes = [];
-                    var selectedOptions = [];
-                    $table.find(".selectfilter").each(function() {
-                        $this = jQuery(this);
-                        var $parent = jQuery(this).parent();
-                        colIndexes.push($parent.parent().children().index($parent)+1);
-                        //selectedOptions.push($this.children(":selected").text());
-						var test="";
-						$this.children(":selected").each(function(x, selected) {
-						test += $(selected).text() + " ";
-						});
-						selectedOptions.push(test);
-						//alert(test);
-                    });
-					
-
-                    //show or hide the corresponding rows
-                    $table.find("tr").each(function(rowindex) {
-                        if (rowindex > 0) {
-                            var rowok = true;
-                            for (i = 0; i < colIndexes.length;  i++) {
-                                text = jQuery(this).find("td:nth-child(" + colIndexes[i] + ")").text()+" ";
-									
-							   // if (selectedOptions[i] != "All " && text != selectedOptions[i] && selectedOptions[i].indexOf(text)>0) rowok = false;
-								 if (selectedOptions[i] != "All " && selectedOptions[i].indexOf(text)<0) rowok = false;
-								//if (selectedOptions[i] != "All " && text != selectedOptions[i]) rowok = false;
-                            }
-                            if (rowok === true) $(this).show();
-                            else jQuery(this).hide();
-                        }
-                    });
-
-                });
-            });
-
-        });
-
-    } 
-})(jQuery);
-	</script> -->
-
-<!-- Filter -->
-
-<!-- <script>
-
-jQuery(document).ready(function()
-{
-	
-	jQuery('#tableone').columnManager({listTargetID:'targetone', onClass: 'simpleon', offClass: 'simpleoff'});
-	jQuery("table").columnfilter();
-
-});
-</script>	 -->
-
 <style>
-/* body
-{
-	font-family:calibri;
-	font-size:12px;
-} */
-
 table tr
 {
 	border: 1px solid black;
@@ -241,23 +96,6 @@ function enableButton()
 }
 </script>
 
-<!-- <script src="<?= getFullURL($_GET['r'],'jquery.columnmanager/jquery.min.js','R')?>"></script>
-
-<script src="<?= getFullURL($_GET['r'],'jquery.columnmanager/jquery.columnmanager.js','R')?>"></script>
-<link rel="stylesheet" type="text/css" href="<?= getFullURL($_GET['r'],'jquery.columnmanager/clickmenu.css','R')?>" />
-<script src="<?= getFullURL($_GET['r'],'jquery.columnmanager/jquery.clickmenu.pack.js','R')?>"></script> -->
-<!-- <script>
-jQuery(document).ready(function()
-{
-	
-	jQuery('#tableone').columnManager({listTargetID:'targetone', onClass: 'simpleon', offClass: 'simpleoff'});
-	jQuery("table").columnfilter();
-
-});
-</script> -->
-
-
-
 <div class="panel panel-primary">
 <div class="panel-heading">Weekly Delivery Report</div>
 <div class="panel-body">
@@ -283,7 +121,6 @@ $pending=$_POST['pending'];
 
 <form method="post" name="input" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>">
 
-<!-- Section: <input type="text" name="section" size=12 value="">  -->
 <div class="row">
 <div class='col-md-3'>
 <label>Buyer Division: </label><select name="division" class="select2_single form-control">
@@ -465,14 +302,10 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	$table_ref3="shipment_plan_ref_view";
 	$table_ref="week_delivery_plan_ref_temp";
 	$table_ref2="week_delivery_plan_temp";
-
-
 	//TEMP Tables
-
-
 	$x=1;
 	$sql="select * from $bai_pro4.$table_ref2 where ref_id in (select ref_id from $bai_pro4.$table_ref $query) order by ref_id+0";
-	 //echo $sql."<br>";
+	echo $sql."<br>";
 	mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -663,8 +496,8 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 		$order_total=0;
 
-		$sql1="select * from $table_ref3 where ship_tid=$shipment_plan_id";
-		//echo "<br>2=".$sql1."<br>";
+		$sql1="select * from $bai_pro4.$table_ref3 where ship_tid=$shipment_plan_id";
+		echo "<br>2=".$sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{

@@ -150,7 +150,7 @@ while($row11=mysqli_fetch_array($result11))
                         //         <td>".$size_color_qty."</td>
                         //         <td>".$input_job_no."</td>
                         //     </tr>";
-                        $rand1=$schedule.date("ymdH").$row1["cut_num"].$input_job_no;
+                        $rand=$schedule.date("ymdH").$row1["cut_num"].$input_job_no;
                         $sql1q1="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size) values(\"".$docket_number."\",\"".$size_code."\",\"".$size_color_qty."\",\"".$row1["cut_num"].$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$packing_mode."\",\"".$size_code_ref."\")";
                         //echo $sql1q1."<br>";
                         mysqli_query($link, $sql1q1) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -172,7 +172,7 @@ while($row11=mysqli_fetch_array($result11))
                         $input_job_array[]=$row1["cut_num"].$input_job_no;
                         $input_job_no=$input_job_no+1;
                     }
-                    $rand2=$schedule.date("ymdH").$row1["cut_num"].$input_job_no;
+                    $rand=$schedule.date("ymdH").$row1["cut_num"].$input_job_no;
                     $sql1q2="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size) values(\"".$docket_number."\",\"".$size_code."\",\"".$size_color_qty."\",\"".$row1["cut_num"].$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$packing_mode."\",\"".$size_code_ref."\")";
                     mysqli_query($link, $sql1q2) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     // echo "<tr>

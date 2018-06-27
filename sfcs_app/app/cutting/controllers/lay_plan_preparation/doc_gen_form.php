@@ -195,7 +195,7 @@ while($sql_row23=mysqli_fetch_array($sql_result23))
 // $schedule_no=array();
 // $color_no=array();
 
-// $connect = odbc_connect('GD-SQL-UAT', 'SFCS_BIA_FF', 'Ba@rUpr6');
+// $connect =  odbc_connect($serverName, $uid, $pwd);
 // $sch_check="J".$schedule;
 // $check_club = get_val("bai_pro3.bai_orders_db_confirm","count(*)","order_joins",$sch_check,$link);
 // if($check_club>0)

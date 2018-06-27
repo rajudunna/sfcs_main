@@ -113,7 +113,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		$qty_temp=0;
 
 		//echo date("H:i:s");	
-		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\", coalesce(sum(size_xs),0) as \"size_xs\", coalesce(sum(size_s),0) as \"size_s\", coalesce(sum(size_m),0) as \"size_m\", coalesce(sum(size_l),0) as \"size_l\", coalesce(sum(size_xl),0) as \"size_xl\", coalesce(sum(size_xxl),0) as \"size_xxl\", coalesce(sum(size_xxxl),0) as \"size_xxxl\", coalesce(sum(size_s01),0) as \"size_s01\",coalesce(sum(size_s02),0) as \"size_s02\",coalesce(sum(size_s03),0) as \"size_s03\",coalesce(sum(size_s04),0) as \"size_s04\",coalesce(sum(size_s05),0) as \"size_s05\",coalesce(sum(size_s06),0) as \"size_s06\",coalesce(sum(size_s07),0) as \"size_s07\",coalesce(sum(size_s08),0) as \"size_s08\",coalesce(sum(size_s09),0) as \"size_s09\",coalesce(sum(size_s10),0) as \"size_s10\",coalesce(sum(size_s11),0) as \"size_s11\",coalesce(sum(size_s12),0) as \"size_s12\",coalesce(sum(size_s13),0) as \"size_s13\",coalesce(sum(size_s14),0) as \"size_s14\",coalesce(sum(size_s15),0) as \"size_s15\",coalesce(sum(size_s16),0) as \"size_s16\",coalesce(sum(size_s17),0) as \"size_s17\",coalesce(sum(size_s18),0) as \"size_s18\",coalesce(sum(size_s19),0) as \"size_s19\",coalesce(sum(size_s20),0) as \"size_s20\",coalesce(sum(size_s21),0) as \"size_s21\",coalesce(sum(size_s22),0) as \"size_s22\",coalesce(sum(size_s23),0) as \"size_s23\",coalesce(sum(size_s24),0) as \"size_s24\",coalesce(sum(size_s25),0) as \"size_s25\",coalesce(sum(size_s26),0) as \"size_s26\",coalesce(sum(size_s27),0) as \"size_s27\",coalesce(sum(size_s28),0) as \"size_s28\",coalesce(sum(size_s29),0) as \"size_s29\",coalesce(sum(size_s30),0) as \"size_s30\",coalesce(sum(size_s31),0) as \"size_s31\",coalesce(sum(size_s32),0) as \"size_s32\",coalesce(sum(size_s33),0) as \"size_s33\",coalesce(sum(size_s34),0) as \"size_s34\",coalesce(sum(size_s35),0) as \"size_s35\",coalesce(sum(size_s36),0) as \"size_s36\",coalesce(sum(size_s37),0) as \"size_s37\",coalesce(sum(size_s38),0) as \"size_s38\",coalesce(sum(size_s39),0) as \"size_s39\",coalesce(sum(size_s40),0) as \"size_s40\",coalesce(sum(size_s41),0) as \"size_s41\",coalesce(sum(size_s42),0) as \"size_s42\",coalesce(sum(size_s43),0) as \"size_s43\",coalesce(sum(size_s44),0) as \"size_s44\",coalesce(sum(size_s45),0) as \"size_s45\",coalesce(sum(size_s46),0) as \"size_s46\",coalesce(sum(size_s47),0) as \"size_s47\",coalesce(sum(size_s48),0) as \"size_s48\",coalesce(sum(size_s49),0) as \"size_s49\",coalesce(sum(size_s50),0) as \"size_s50\" from $bai_pro.bai_log where ims_doc_no in ($search_string) group by bac_sec";
+		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\", coalesce(sum(size_xs),0) as \"size_xs\", coalesce(sum(size_s),0) as \"size_s\", coalesce(sum(size_m),0) as \"size_m\", coalesce(sum(size_l),0) as \"size_l\", coalesce(sum(size_xl),0) as \"size_xl\", coalesce(sum(size_xxl),0) as \"size_xxl\", coalesce(sum(size_xxxl),0) as \"size_xxxl\", coalesce(sum(size_s01),0) as \"size_s01\",coalesce(sum(size_s02),0) as \"size_s02\",coalesce(sum(size_s03),0) as \"size_s03\",coalesce(sum(size_s04),0) as \"size_s04\",coalesce(sum(size_s05),0) as \"size_s05\",coalesce(sum(size_s06),0) as \"size_s06\",coalesce(sum(size_s07),0) as \"size_s07\",coalesce(sum(size_s08),0) as \"size_s08\",coalesce(sum(size_s09),0) as \"size_s09\",coalesce(sum(size_s10),0) as \"size_s10\",coalesce(sum(size_s11),0) as \"size_s11\",coalesce(sum(size_s12),0) as \"size_s12\",coalesce(sum(size_s13),0) as \"size_s13\",coalesce(sum(size_s14),0) as \"size_s14\",coalesce(sum(size_s15),0) as \"size_s15\",coalesce(sum(size_s16),0) as \"size_s16\",coalesce(sum(size_s17),0) as \"size_s17\",coalesce(sum(size_s18),0) as \"size_s18\",coalesce(sum(size_s19),0) as \"size_s19\",coalesce(sum(size_s20),0) as \"size_s20\",coalesce(sum(size_s21),0) as \"size_s21\",coalesce(sum(size_s22),0) as \"size_s22\",coalesce(sum(size_s23),0) as \"size_s23\",coalesce(sum(size_s24),0) as \"size_s24\",coalesce(sum(size_s25),0) as \"size_s25\",coalesce(sum(size_s26),0) as \"size_s26\",coalesce(sum(size_s27),0) as \"size_s27\",coalesce(sum(size_s28),0) as \"size_s28\",coalesce(sum(size_s29),0) as \"size_s29\",coalesce(sum(size_s30),0) as \"size_s30\",coalesce(sum(size_s31),0) as \"size_s31\",coalesce(sum(size_s32),0) as \"size_s32\",coalesce(sum(size_s33),0) as \"size_s33\",coalesce(sum(size_s34),0) as \"size_s34\",coalesce(sum(size_s35),0) as \"size_s35\",coalesce(sum(size_s36),0) as \"size_s36\",coalesce(sum(size_s37),0) as \"size_s37\",coalesce(sum(size_s38),0) as \"size_s38\",coalesce(sum(size_s39),0) as \"size_s39\",coalesce(sum(size_s40),0) as \"size_s40\",coalesce(sum(size_s41),0) as \"size_s41\",coalesce(sum(size_s42),0) as \"size_s42\",coalesce(sum(size_s43),0) as \"size_s43\",coalesce(sum(size_s44),0) as \"size_s44\",coalesce(sum(size_s45),0) as \"size_s45\",coalesce(sum(size_s46),0) as \"size_s46\",coalesce(sum(size_s47),0) as \"size_s47\",coalesce(sum(size_s48),0) as \"size_s48\",coalesce(sum(size_s49),0) as \"size_s49\",coalesce(sum(size_s50),0) as \"size_s50\" from bai_pro.bai_log where ims_doc_no in ($search_string)  and bac_sec<>0 group by bac_sec";
 		//echo $sql2."<br/>";
 		mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -406,17 +406,17 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		$query_add="";
 		if($counter_check>0)
 		{
-			$query_add=", act_in=$input_total";
+			//$query_add=", act_in=$input_total";
 		}
 		
 		
 		//TO Update Orders_db
 		$sql31="update $table_ref2 set act_cut=$cut_total".$query_add.", act_fca=$internal_audited, act_mca=$fcamca, act_fg=$fgqty, act_ship=$shipped, cart_pending=$pendingcarts, priority=$status, output=$qty_temp where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-		echo $sql31."<br/>-C";
+		//echo $sql31."<br/>-C";
 		mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$sql3="update $table_ref3 set act_cut=$cut_total".$query_add.", act_fca=$internal_audited, act_mca=$fcamca, act_fg=$fgqty, act_ship=$shipped, cart_pending=$pendingcarts, priority=$status, output=$qty_temp where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-		echo $sql3."<br/>-C";
+		//echo $sql3."<br/>-C";
 		mysqli_query($link, $sql3) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//To Update Orders_db
 		
@@ -425,11 +425,11 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		{
 			//TO Update Orders_db
 			$sql3="update $table_ref2 set priority=6 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-			echo $sql3."<br/>-D";
+			//echo $sql3."<br/>-D";
 			mysqli_query($link, $sql3) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql3="update $table_ref3 set priority=6 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-			echo $sql3."<br/>-D";
+			//echo $sql3."<br/>-D";
 			mysqli_query($link, $sql3) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//To Update Orders_db
 		}
@@ -459,17 +459,17 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 	echo date("Y-m-d H:i:s");
 	
 	$sql="drop table $plandoc_stat_log_cat_log_ref";
-	echo $sql;
+	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
 	$sql="drop table $packing_summary";
-	echo $sql;
+	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
 	$sql="drop table $disp_mix_temp";
-	echo $sql;
+	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 ?>

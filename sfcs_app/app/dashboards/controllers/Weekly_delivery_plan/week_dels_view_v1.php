@@ -127,8 +127,9 @@ function redirect_view()
 {
     var x=document.filter.view_div.value;
     var y=document.filter.ex_fact.value;
-    var z=document.filter.status.value;
-    window.location = "index.php?r=<?= $_GET['r'] ?>&view_div="+x+"&ex_fact="+y+"&status="+z;
+    // var z=document.filter.status.value;
+    // window.location = "index.php?r=<?= $_GET['r'] ?>&view_div="+encodeURIComponent(x)+"&ex_fact="+y+"&status="+z;
+	window.location = "index.php?r=<?= $_GET['r'] ?>&view_div="+encodeURIComponent(x)+"&ex_fact="+y;
 }
 
 </script>
@@ -141,9 +142,22 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
 <?php
     //Filter Code
     $query_add="";
+	
+	if($_GET["view_div"]!='ALL' && $_GET["view_div"]!='')
+	{
+		//echo "Buyer=".urldecode($_GET["view_div"])."<br>";
+		$buyer_division=urldecode($_GET["view_div"]);
+		// echo '"'.str_replace(",",'","',$buyer_division).'"'."<br>";
+		$buyer_division_ref='"'.str_replace(",",'","',$buyer_division).'"';
+		$order_div_ref="and buyer_division in (".$buyer_division_ref.")";
+	}
+	else {
+		 $order_div_ref='';
+	}	
+	
     if(isset($_GET['ex_fact']) and $_GET['view_div']!="ALL")
     {
-        $query_add.=" and left(style,1) in (\"".str_replace(",","','",$_GET['view_div'])."\")";
+        $query_add.=$order_div_ref;
     }
 
     if(isset($_GET['ex_fact']) and  $_GET['ex_fact']!="ALL")
@@ -170,14 +184,13 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
     }
 
     $sql="select group_concat(distinct ex_factory_date_new) as ex_factory from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\"";
-    // $sql='SELECT GROUP_CONCAT(DISTINCT ex_factory_date_new) AS ex_factory FROM bai_pro4.week_delivery_plan_ref WHERE ex_factory_date_new BETWEEN "2017-03-19" AND "2018-02-05"';
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row=mysqli_fetch_array($sql_result))
     {
         $ex_factory=$sql_row['ex_factory'];
     }
 
-		$buyer_query="SELECT * FROM $bai_pro2.buyer_codes WHERE STATUS=1";
+		$buyer_query="SELECT * FROM $bai_pro2.buyer_codes WHERE STATUS=1 order by buyer_name";
 		$buyers=mysqli_query($link, $buyer_query) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
     ?>
     <form name="filter" method="post">
@@ -189,11 +202,11 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
         if($_GET['view_div']=="ALL") { echo '<option value="ALL" selected>All</option>'; } else { echo '<option value="ALL">All</option>'; }
         while ($sql_row=mysqli_fetch_array($buyers))
         {
-            if($_GET['view_div']==$sql_row["buyer_name"]) { echo '<option value="'.$sql_row["buyer_name"].'" selected>'.$sql_row["buyer_code"].'</option>'; } else { echo '<option value="'.$sql_row["buyer_name"].'">'.$sql_row["buyer_code"].'</option>'; }
+            if($_GET['view_div']==$sql_row["buyer_name"]) { echo '<option value="'.$sql_row["buyer_name"].'" selected>'.$sql_row["buyer_name"].'</option>'; } else { echo '<option value="'.$sql_row["buyer_name"].'">'.$sql_row["buyer_name"].'</option>'; }
         }
 
 
-                echo '</select>';
+        echo '</select>';
         ?>
         </div>
 		<div class='col-md-2'><label>Ex-Factor</label>
@@ -208,21 +221,7 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
         }
             echo '</select>';
         ?>
-        </div>
-		<div class='col-md-2'><label>Status</label>
-        <?php
-        echo '<select name="status" id="status" onchange="redirect_view()" class="form-control" style="background-color:#CCFFAA;">';
-        if($_GET['status']=="ALL") { echo '<option value="ALL" selected>All</option>'; } else { echo '<option value="ALL">All</option>'; }
-        if($_GET['status']=="0,6") { echo '<option value="0,6" selected>RM</option>'; } else { echo '<option value="0,6">RM</option>'; }
-        if($_GET['status']=="5") { echo '<option value="5" selected>Cutting</option>'; } else { echo '<option value="5">Cutting</option>'; }
-        if($_GET['status']=="4") { echo '<option value="4" selected>Sewing</option>'; } else { echo '<option value="4">Sewing</option>'; }
-        if($_GET['status']=="3") { echo '<option value="3" selected>Packing</option>'; } else { echo '<option value="3">Packing</option>'; }
-        if($_GET['status']=="2") { echo '<option value="2" selected>FG</option>'; } else { echo '<option value="2">FG</option>'; }
-        if($_GET['status']=="1") { echo '<option value="1" selected>FCA</option>'; } else { echo '<option value="1">FCA</option>'; }
-        if($_GET['status']=="-1") { echo '<option value="-1" selected>Shipped</option>'; } else { echo '<option value="-1">Shipped</option>'; }
-            echo '</select>';
-        ?>
-        </div>
+        </div>       
         </div>
         </form>
     <?php
@@ -247,8 +246,9 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
     $grand_carts=0;
 
 
-    $sql="select * from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" $query_add order by priority,ex_factory_date_new,style,schedule_no,color";
+    $sql="select * from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" $query_add AND schedule_no > 0 order by priority,ex_factory_date_new,style,schedule_no,color";
     // $sql="select * from bai_pro4.week_delivery_plan_ref where ex_factory_date_new between '".'2017-03-19'."' and '".'2018-03-05'."' $query_add order by priority,ex_factory_date_new,style,schedule_no,color";
+	// echo $sql."<br>";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row=mysqli_fetch_array($sql_result))
     {

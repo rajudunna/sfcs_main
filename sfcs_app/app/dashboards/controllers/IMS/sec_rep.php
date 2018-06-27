@@ -277,7 +277,7 @@ if(isset($_GET['val']))
 				
 				$rejected=0;
 				$good_garments=0;
-				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where SUBSTRING_INDEX(remarks,\"-\",1)=$module_ref and qms_schedule=".$sql_row12['ims_schedule']." and qms_color=\"".$sql_row12['ims_color']."\" and qms_size=\"".strtoupper(substr($sql_row12['ims_size'],2))."\"";
+				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where SUBSTRING_INDEX(remarks,\"-\",1)=$module_ref and qms_schedule=".$sql_row12['ims_schedule']." and qms_color=\"".$sql_row12['ims_color']."\" and qms_size=\"".strtoupper($size_value)."\"";
 				
 				//mysqli_query($link, $sql33) or exit("Sql Error".$sql33.mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -18,13 +18,13 @@ if(isset($_POST['Update']))
     { 
 
     $sql33="insert ignore into $bai_pro3.ims_log_bc (tid, ims_mod_no) select tid, ims_mod_no from ims_log where tid=$tid"; 
-    mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    mysqli_query($link, $sql33) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
      
     $sql33="update $bai_pro3.ims_log set ims_mod_no=$mod where tid=$tid"; 
-    mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    mysqli_query($link, $sql33) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
      
     $sql33="update $bai_pro3.ims_log_backup set ims_mod_no=$mod where tid=$tid"; 
-    mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    mysqli_query($link, $sql33) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"])); 
      
     } 
     else 
@@ -34,23 +34,24 @@ if(isset($_POST['Update']))
             $date=date("Y-m-d"); 
            // $rand_track=rand(1, 1000000)+date("isu"); 
              
-            $sql="select ims_cid, ims_doc_no, ims_mod_no, ims_shift, ims_style, ims_schedule, ims_color, ims_size,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,operation_id,rand_track from $bai_pro3.ims_log where tid=$tid"; 
-            mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            $sql="select ims_cid, ims_doc_no, ims_mod_no, ims_shift, ims_style, ims_schedule, ims_color, ims_size,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,operation_id,rand_track from $bai_pro3.ims_log where tid='$tid'"; 
+             echo $sql."<br>";
+            
+            $sql_result=mysqli_query($link, $sql) or exit("Sql Error455".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row=mysqli_fetch_array($sql_result)) 
             { 
                 $sql33="insert into $bai_pro3.ims_log (ims_cid, ims_doc_no, ims_mod_no, ims_shift, ims_style, ims_schedule, ims_color, ims_date, ims_qty, ims_remarks, ims_size,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,operation_id,rand_track) values (".$sql_row['ims_cid'].", ".$sql_row['ims_doc_no'].", ".$mod.", \"".$sql_row['ims_shift']."\", \"".$sql_row['ims_style']."\", ".$sql_row['ims_schedule'].", \"".$sql_row['ims_color']."\",  \"$date\", $qty, \"$remarks\",\"".$sql_row['ims_size']."\",\"".$sql_row['bai_pro_ref']."\",\"".$sql_row['input_job_rand_no_ref']."\",\"".$sql_row['input_job_no_ref']."\",\"".$sql_row['pac_tid']."\",\"".$sql_row['operation_id']."\",\"".$sql_row['rand_track']."\")";
 //echo $sql33; 
-                 mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                 mysqli_query($link, $sql33) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
             } 
              
             /*$sql33="insert into ims_log (ims_cid, ims_doc_no, ims_mod_no, ims_shift, ims_style, ims_schedule, ims_color, rand_track, ims_date, ims_qty, ims_remarks) values (select ims_cid, ims_doc_no, ims_mod_no, ims_shift, ims_style, ims_schedule, ims_color, \"$rand_track\", \"$date\", $qty, \"$remarks\"  from ims_log where tid=$tid)"; 
 echo $sql33; 
             mysql_query($sql33,$link) or exit("Sql Error".mysql_error()); */ 
              
-            $sql="select * from $bai_pro3.ims_log where tid=$tid"; 
-            mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            $sql="select * from $bai_pro3.ims_log where tid='$tid'"; 
+             
+            $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row=mysqli_fetch_array($sql_result)) 
             { 
                 $ims_qty=$sql_row['ims_qty']; 
@@ -58,13 +59,13 @@ echo $sql33;
             } 
              
             $new_qty=$ims_qty-$qty; 
-            $sql33="update $bai_pro3.ims_log set ims_qty=$new_qty where tid=$tid"; 
-            mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            $sql33="update $bai_pro3.ims_log set ims_qty=$new_qty where tid='$tid'"; 
+            mysqli_query($link, $sql33) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"])); 
              
             if($new_qty==$produced) 
             { 
-                $sql33="update $bai_pro3.ims_log set ims_status=\"DONE\" where tid=$tid"; 
-                mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                $sql33="update $bai_pro3.ims_log set ims_status=\"DONE\" where tid='$tid'"; 
+                mysqli_query($link, $sql33) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"])); 
             } 
         } 
     } 

@@ -19,14 +19,22 @@ $pass=$mysql_details['db_pass'];
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+
 // Schedules Operations Capturing
+$serverName = "BLL-DEVRPT-01";
+$uid = "BELMacroReader";
+$pwd = "bel@macrosm3";
+$databasename="M3_BEL";
+
+// M3 Configuration
 $serverName = "GD-SQL-UAT";
 $uid = "SFCS_BIA_FF";
 $pwd = "Ba@rUpr6";
 $m3_databasename="BELMasterUAT";
 $driver_name="Driver={SQL Server Native Client 11.0}";
+
 //material requirement in week_del_mail_v2
-$server="GD-RPTSQL";
+$server="BLL-DEVRPT-01";
 $database="M3_BEL";
 $userid="BAIMacroReaders";
 $passwrd="BAI@macrosm3";

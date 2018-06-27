@@ -5,10 +5,12 @@ $include_path=getenv('config_job_path');
 error_reporting(0);
 $date1=date("Y-m-d");
 $weekday1 = strtolower(date('l', strtotime($date1)));
-echo "Week = ".$weekday1;
+$weekday1='monday';
+// echo "Week = ".$weekday1;
+
 if($weekday1 != "tuesday")
 {
-				$message="<html>
+			$message="<html>
 			<head>
 			<style type=\"text/css\">
 
@@ -69,13 +71,14 @@ if($weekday1 != "tuesday")
 
 			$start_date_w=date("Y-m-d",$start_date_w);
 			$end_date_w=date("Y-m-d",$end_date_w);
-
+			$start_date_w='2017-09-05';
+			$end_date_w="2017-10-05";
 			//echo $start_date_w."--".$end_date_w;
 			$date=date("Y-m-d");
 			//$date="2012-08-19";
 			$weekday = strtolower(date('l', strtotime($date)));
 			// echo "Week = ".$weekday;
-
+	
 			$colspan=9;
 			// if($weekday != "tuesday")
 			// {
@@ -109,11 +112,14 @@ if($weekday1 != "tuesday")
 			  
 			  
 			  $message.="</tr>";
+			  //echo $message;exit;
 			$x=0;
 			$schedules=array();
+
 			$sql="select schedule_no from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" and schedule_no!=\"NULL\" order by color,left(style,1) ";
-			//echo $sql;
+
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 			$count_rows=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -127,8 +133,8 @@ if($weekday1 != "tuesday")
 			{
 
 			$total_sch=implode(",",$schedules);
-
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) order by order_div,order_del_no desc";
+			$total_sch=str_replace(",,",",",$total_sch);
+			$sql="select * from bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) order by order_div,order_del_no desc";
 			//echo "<br>".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -228,10 +234,10 @@ if($weekday1 != "tuesday")
 }
 else
 {
-			?>			
-			<?php
+
 			include("material_requirement.php");
 			// set_time_limit(10000000);
+			//echo "welcome";exit;
 			$message="<html>
 			<head>
 			<style type=\"text/css\">
@@ -301,7 +307,7 @@ else
 			$m3_shipable_qty_total=0;
 			$total_issued_yards=0;
 			$total_allocated_yards=0;
-
+			
 			$message.="
 			<table>
 			 <tr><td colspan=$colspan><center><u><strong>Weekly Delivery Plan Status</strong></u></center></td></tr>
@@ -328,7 +334,7 @@ else
 			  
 			  $message.="</tr>";
 			$x=0;
-
+			
 			$schedules=array();
 			$sql="select DISTINCT schedule_no from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" and schedule_no!=\"\" order by color,left(style,1)";
 			// echo $sql;
@@ -427,8 +433,12 @@ else
 					{
 						$color="<font color=red>";
 					}
+					if($m3_total=='' || $m3_ship==''){
+						$message.="<td>$color 0%</td>";
+					}else{
+						$message.="<td>$color".$m3_ship."%</td>";
+					}
 					
-					$message.="<td>$color".$m3_ship."%</td>";
 				// }
 				
 				$sql_yy="select catyy,tid,compo_no from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and (category=\"Body\" or category=\"Front\")";
@@ -477,7 +487,7 @@ else
 			$message.="<tr><th colspan=2 style='color:white;background:red;'>Total</th><td colspan=3>Schedules:".$x."</td><td>$order_qty_total</td><td>$shipable_qty_total</td><td>$extra_qty_total</td><td></td>";
 			// if($weekday != "tuesday")
 			// {
-				$message.="<td>$m3_shipable_qty_total</td><td></td>";
+				$message.="<td>TESST $m3_shipable_qty_total</td><td></td>";
 			// }  	
 			$message.="<td>".round($total_allocated_yards,2)."</td>";
 			$message.="<td>".round($total_issued_yards,2)."</td>";
@@ -504,7 +514,7 @@ else
 			$message.='<br/>Message Sent Via: '.$plant_name;
 			$message.="</body></html>";
 
-			echo $message;
+			echo $message;//exit;
 
 			$myFile1 = "Weekly_Delivery_Plan_Status.xls";
 			unlink($myFile1);
@@ -562,7 +572,7 @@ else
 									"Content-Type: multipart/mixed;\n" .
 									" boundary=\"{$mime_boundary}\"";
 					mail($to_email,$subject,$message, $headers, '-f ' . $our_email) or die ('<h3 style="color: red;">Mail Failed</h3>');
-					echo "<script>window.close();</script>";
+					//echo "<script>window.close();</script>";
 				}
 				$subject='Dear All, <br/><br/> Please Find The Weekly Delivery Plan Status Report of This Week. <br/><br/> Message Sent Via:'.$plant_name;
 				$to=$week_del_mail_v2;
