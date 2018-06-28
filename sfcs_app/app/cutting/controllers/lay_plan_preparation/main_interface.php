@@ -388,6 +388,7 @@ echo "<table class=\"table table-bordered\">";
 
 if($flag==1)
 {
+	
 	echo "<thead><tr><th class=\"column-title\" style='width:190px;'>Sizes</th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
@@ -472,6 +473,63 @@ echo "</div></div></div>";
 <!--<div id="div2" style="display: none;">
 <?php //include("main_interface_2.php"); ?>
 </div> -->
+
+<!-- carton quantities added -->
+<div class='col-sm-12' class='table-responsive'>
+	<div id='#carton' class='panel panel-default'>
+		<div class='panel-heading' style='text-align:center;'>
+			<a data-toggle="collapse"><strong><b>Carton Quantity</b></strong></a>
+		</div>
+		<div class='panel-body'>
+			<table class='table table-bordered table-responsive'>
+					<tr><th>User Def. Style</th>
+						
+						<th>Pack Method</th>
+			<?php
+			//var_dump($s_tit);
+	//getting the dynamic sizes from top $s_tit array
+			$sql="select * from $bai_pro3.carton_qty_chart where user_style='$style_id' and user_schedule='$schedule' and status=0";
+			//echo $sql;
+			$th_count = 0;
+			$sql_result=mysqli_query($link,$sql) or exit("Sql Error getting carton quantities".mysql_error());
+			while($row = mysqli_fetch_array($sql_result)){
+
+				foreach($sizes_array as $key=>$value){
+					if($row["$value"] > 0){
+						$s = substr($value,1);
+						if($th_count == 0)
+							echo "<th>$s_tit[$s]</th>";
+						$csizes[$value] = $row[$value]; 
+					}
+				}
+				$cstyle = $row['user_style'];
+				//$cbuyer = $row['buyer'];
+				$cpakcmethod = $row['packing_method'];
+				$cremarks = $row['remarks'];
+				if($th_count==0){
+					echo "<th>Remarks</th>
+					</tr>";
+					$th_count++;
+				}
+				echo "<tr><td>$cstyle</td>
+						
+						<td>$cpakcmethod</td>";
+				foreach($sizes_array as $key=>$value){
+					if($csizes[$value] > 0){
+						echo "<td>$csizes[$value]</td>";
+					}
+				}//or the below
+				// foreach($csizes as $key=>$value){
+				// 	echo "<td>$value</td>";
+				// }
+				echo "	  <td>$remarks</td>
+					</tr>";
+			}
+			?>
+			</table>
+		</div>
+	</div>
+</div>
 
 <div class="col-md-12 row">
 <div class = "panel panel-default">
@@ -1699,12 +1757,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	//$path="http://localhost/sfcs/projects/Beta/cut_plan_new_ms/new_doc_gen/Book1_print.php";
 
-	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
-	$path1="".getFullURL($_GET['r'], "Book1_print_fabric.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
+	$path1="".getFullURL($_GET['r'], "Book1_print_fabric.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	if($clubbing>0)
 	{
-		$path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
-		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		// $path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		// $path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 
 		$path= getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";

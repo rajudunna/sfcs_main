@@ -1,18 +1,20 @@
 <?php
 $dr_id=$_GET['rowid'];
 // echo $dr_id;
-$servername = "192.168.0.110:3326";
-$username = "baiall";
-$password = "baiall";
-$dbname = "bai_pro2";
+// $servername = "192.168.0.110:3326";
+// $username = "baiall";
+// $password = "baiall";
+// $dbname = "bai_pro2";
 
 // Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+// $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+$conn=$link;
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-$delete="delete from bai_pro2.`downtime_reason` where id='$dr_id'";
+$delete="delete from $bai_pro2.`downtime_reason` where id='$dr_id'";
 // echo $delete;
 if (mysqli_query($conn, $delete)) {
 			echo "Record Deleted successfully";

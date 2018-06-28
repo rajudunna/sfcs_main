@@ -439,7 +439,7 @@ if ( isset( $_POST['s'] ) ) {
 						include_once $config;
 					}
 					else {
-						@unlink( $config_file_temp );
+						// @unlink( $config_file_temp );
 						throw new Exception( sprintf( __( 'Files <code>%s</code> or <code>%s</code> do not exist. Please review your software configuration.') , $config , $configuser ) ) ;
 					}
 
@@ -447,7 +447,7 @@ if ( isset( $_POST['s'] ) ) {
 						$config_files[] = call_user_func( $get_config , $type , $file , $software , $counter );
 					}
 					else {
-						@unlink( $config_file_temp );
+						// @unlink( $config_file_temp );
 						throw new Exception( sprintf( __( 'File <code>%s</code> does not define function <code>%s</code>. Please review your software configuration.') , $config , $get_config ) ) ;
 					}
 				}

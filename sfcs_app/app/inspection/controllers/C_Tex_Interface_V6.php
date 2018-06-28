@@ -2266,11 +2266,11 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 
 		if(!in_array($authorized,$has_permission))
 		{
-			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
 		}
 		else
 		{
-			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
 		}		
 	}
 	else
@@ -2626,7 +2626,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$ele_tid=$_POST['ele_tid'];
 	$ele_check=$_POST['ele_check'];
 	$tot_elements=$_POST['tot_elements'];
-		$ele_t_length=$_POST['ele_t_length'];
+	$ele_t_length=$_POST['ele_t_length'];
 	$ele_c_length=$_POST['ele_c_length'];
 	$ele_t_width=$_POST['ele_t_width'];
 	$ele_c_width=$_POST['ele_c_width'];	

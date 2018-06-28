@@ -306,7 +306,7 @@ if(isset($_GET['val']))
 					echo "<td>".$sql_row12['bai_pro_ref']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
 					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";				
-					echo "<td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
+					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
 					echo $quality_log_row;
 					if(in_array($edit,$has_permission))
 					{
@@ -329,7 +329,7 @@ if(isset($_GET['val']))
 					echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>".$sql_row12['tid']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
 					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";
-					echo "<td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
+					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
 					echo $quality_log_row;
 				
 					if(in_array($edit,$haspermission))

@@ -6,17 +6,20 @@ $status =$_REQUEST['packing_status'];
 $pack_id=$_REQUEST['pack_id'];
 // echo $status;die();
 
-$servername = "192.168.0.110:3326";
-$username = "baiall";
-$password = "baiall";
-$dbname = "bai_pro3";
+// $servername = "192.168.0.110:3326";
+// $username = "baiall";
+// $password = "baiall";
+// $dbname = "bai_pro3";
 
 // Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+// $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+// if (!$conn) {
+//     die("Connection failed: " . mysqli_connect_error());
+// }
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+$conn=$link;
 if (empty($pack_method_name) || empty($status)) {
 	echo "Please fill values";
 }else{
