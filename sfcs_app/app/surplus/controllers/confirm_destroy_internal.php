@@ -61,7 +61,6 @@ function enable_button()
 		</div>
 		
 		</form>
-		<hr>
 
 			<?php
 
@@ -114,10 +113,12 @@ function enable_button()
 					";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-					echo '<input type="checkbox" name="enable" id="enable" onclick="enable_button()">
-							Enable
-						<input type="submit" name="confirm" class="btn btn-success" value="Confirm Destroy" id="add" disabled="true" onclick="enable_button()">
-						<br><br>';
+					if(mysqli_num_rows($sql_result) > 0) {
+
+					echo '<hr/><input type="checkbox" name="enable" id="enable" onclick="enable_button()">
+						Enable
+					<input type="submit" name="confirm" class="btn btn-success" value="Confirm Destroy" id="add" disabled="true" onclick="enable_button()">
+					<br><br>';
 
 					$table="<div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'><table class='table table-bordered' id='table1'>";
 							$table.="<thead>";
@@ -155,6 +156,7 @@ function enable_button()
 						$table='</tbody></table></div>';
 					 echo $table;
 					}
+				}
 										// echo '<input type="checkbox" name="enable" id="enable" onclick="enable_button()">Enable<input type="submit" name="confirm" value="Confirm Destroy" id="add" disabled="true" onclick="enable_button()">';
 			if($row_count == 0){
 				echo '<script>sweetAlert("No Data found for the Entered Schedule/s","","warning");</script>';
