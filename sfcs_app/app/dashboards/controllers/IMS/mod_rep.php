@@ -217,7 +217,7 @@ table
                  
                 echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>"; 
                  
-                if($sql_row12['ims_remarks']!="SAMPLE") 
+                if($sql_row12['ims_remarks']!="SAMPLE" and $sql_row12['ims_pro_qty']==0 ) 
                 { 
                     echo "<input type=\"radio\" name=\"radio\" value=\"".$sql_row12['tid']."\">"; 
                 } 
@@ -250,7 +250,7 @@ echo "<td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)
     $auth_users=explode(",",$users); 
 */     
 
-        if(in_array($authorized,$haspermission))         
+        if(in_array($authorized,$has_permission))         
         {   
          echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
          
@@ -268,7 +268,7 @@ echo "<td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)
 
     $auth_cut_users=explode(",",$users); 
 */ 
-        if(in_array($authorized,$haspermission))
+        if(in_array($authorized,$has_permission))
         { 
              
             echo "&nbsp;<input  title='click to transfer the input' type='radio' name = 'option' Id='option' value='input_transfer'> Input Transfer"; 

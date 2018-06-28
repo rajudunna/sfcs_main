@@ -1,5 +1,6 @@
 <?php 
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
+$conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/config-builder/saved_fields/fields.json");
 
 function get_config_values($config_id){
     $conf = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/config-builder/saved_fields/fields.json");
@@ -33,6 +34,7 @@ $brandix_bts_uat="brandix_bts_uat";
 $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $temp_pool_db="temp_pool_db";
+$in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
