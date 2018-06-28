@@ -204,8 +204,9 @@ function enable_button()
 					echo"</tr>";
 					echo"</table><br/>";
 					// echo"<br/><h4><span>Reserved Quantity=<div id='output'></div></span></h4>";
-					if(count($sql_result)>0)
+					if(mysqli_num_rows($sql_result)>0)
 					{
+						$row_count2++;
 						$table="<div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'><table class='table table-bordered' id='table1'>";
 						$table.="<thead>";
 						$table.="<tr>";
@@ -259,6 +260,11 @@ function enable_button()
 		echo "<input type=\"hidden\" name=\"total_rows\" id=\"total_rows\" value=\"".$x."\">";
 
 		echo '</form>';
+
+		if($row_count2 == 0) {
+			echo '<script>
+			$("#table").css({"display":"none"})</script>';
+		}
 		if($row_count == 0) {
 			echo '<script>
 			$("#table1").css({"display":"none"});
