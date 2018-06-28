@@ -67,9 +67,9 @@ $end_date_w=date("Y-m-d",($end_date_w+(60*60*24*6)));
 <?php
 
 set_time_limit(90000);
-$table_ref="bai_pro4.week_delivery_plan";
-$table_ref2="bai_pro3.bai_orders_db";
-$table_ref3="bai_pro3.bai_orders_db_confirm";
+$table_ref="$bai_pro4.week_delivery_plan";
+$table_ref2="$bai_pro3.bai_orders_db";
+$table_ref3="$bai_pro3.bai_orders_db_confirm";
 ?>
 
 <?php
@@ -115,7 +115,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$schedule_db[]=$sql_row['speed_schedule'];
 }
 
-$sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,color from $bai_pro4.shipment_plan_ref where ship_tid in (select ship_tid from bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\") order by schedule_no";
+$sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,color from $bai_pro4.shipment_plan_ref where ship_tid in (select ship_tid from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\") order by schedule_no";
 
 	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));

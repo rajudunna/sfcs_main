@@ -134,7 +134,7 @@ if($weekday1 != "tuesday")
 
 			$total_sch=implode(",",$schedules);
 			$total_sch=str_replace(",,",",",$total_sch);
-			$sql="select * from bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) order by order_div,order_del_no desc";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) order by order_div,order_del_no desc";
 			//echo "<br>".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
