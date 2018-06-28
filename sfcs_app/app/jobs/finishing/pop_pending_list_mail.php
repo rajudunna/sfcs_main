@@ -127,7 +127,7 @@ $message.= "<tr><th>Section</th><th>Pending</th><th>Remarks</th></tr>";
 
 $embl_dels=array(); 
 //to track emblishment schedules 
-$sqlx="select distinct order_del_no as \"order_del_no\" from bai_pro3.bai_orders_db where (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h)>0 and order_del_no<>\"\""; 
+$sqlx="select distinct order_del_no as \"order_del_no\" from $bai_pro3.bai_orders_db where (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h)>0 and order_del_no<>\"\""; 
 // echo $sqlx; 
 //$sqlx="SELECT group_concat(DISTINCT schedule_no) as \"order_del_no\" FROM bai_pro4.shipment_plan_ref WHERE ship_tid IN (SELECT shipment_plan_id FROM bai_pro4.week_delivery_plan WHERE rev_emb_status<>\"\")"; 
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
