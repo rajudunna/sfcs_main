@@ -52,7 +52,7 @@
                         
                                     
                                 <div class="row"><div class="col-md-6"><div class="form-group">
-                <label class="control-label control-label-left col-sm-3" for="category_name">category Name<span class="req"> *</span></label>
+                <label class="control-label control-label-left col-sm-3" for="category_name">Category Name<span class="req"> *</span></label>
                 <div class="controls col-sm-9">
                     
                 <input id="category_name" type="text" class="form-control k-textbox" data-role="text" placeholder="Category name" name="category_name"  value="<?php echo $cat_name; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
@@ -75,7 +75,7 @@
                 </select><span id="errId2" class="error"></span></div>
                 
                 </div></div></div><div class="row"><div class="col-md-6"><div class="form-group">
-                <label class="control-label control-label-left col-sm-3" for="cat_selection">Select category</label>
+                <label class="control-label control-label-left col-sm-3" for="cat_selection">Select Category</label>
                 <div class="controls col-sm-9">
                     
                 <select id="cat_selection" class="form-control" data-role="select" selected="selected" name="cat_selection"  data-parsley-errors-container="#errId3">

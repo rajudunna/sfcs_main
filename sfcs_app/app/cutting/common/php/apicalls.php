@@ -11,7 +11,7 @@ if(isset($_GET['style']) && empty($_GET['schedule']))
 
 function getscheduledata($style){	
 	header('Content-Type: application/json');
-	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 
 	$schedules="SELECT DISTINCT order_del_no FROM  $bai_pro3.bai_orders_db_confirm WHERE order_tid IN (SELECT DISTINCT order_tid FROM bai_pro3.plandoc_stat_log) AND order_style_no ='".$style."'";
 	$schedules_result=mysqli_query($link, $schedules) or exit("Error at getting Schedules".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -38,7 +38,7 @@ if(isset($_GET['schedule']) && isset($_GET['style']) && empty($_GET['color']))
 
 function getcolordata($schedule,$style){	
 	header('Content-Type: application/json');
-	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 	
 	$colors="SELECT DISTINCT order_col_des FROM  $bai_pro3.bai_orders_db_confirm WHERE order_tid IN (SELECT DISTINCT order_tid FROM $bai_pro3.plandoc_stat_log) AND order_style_no ='".$style."' and order_del_no=".$schedule." group by order_col_des";	
 	$colors_result=mysqli_query($link, $colors) or exit("Error at getting colors".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -66,7 +66,7 @@ if(isset($_GET['color']))
 
 function getmostatus($schedule,$style,$color){	
 	header('Content-Type: application/json');
-	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 
 	$getordertid="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."'";	
 	$ordertid_result=mysqli_query($link, $getordertid) or exit("Error at getting order tid".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -97,7 +97,7 @@ if(isset($_POST['submit']))
 	$color = $_POST['color'];
 
 	header('Content-Type: application/json');
-	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 	
 	if($style != '' && $schedule != '' && $color!= '')
 	{

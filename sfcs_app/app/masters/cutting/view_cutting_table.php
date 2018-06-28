@@ -1,11 +1,13 @@
 <?php
-	$servername = "192.168.0.110:3326";
-	$username = "baiall";
-	$password = "baiall";
-	$dbname = "bai_pro3";
+	// $servername = "192.168.0.110:3326";
+	// $username = "baiall";
+	// $password = "baiall";
+	// $dbname = "bai_pro3";
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+	$conn=$link;
 
 	// Create connection
-	$conn = new mysqli($servername, $username, $password, $dbname);
+	// $conn = new mysqli($servername, $username, $password, $dbname);
 	// Check connection
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
