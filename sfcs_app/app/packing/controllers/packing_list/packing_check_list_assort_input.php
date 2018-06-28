@@ -1613,6 +1613,8 @@ tags will be replaced.-->
  
 	$docs_db=array();
 	$cutno_db=array();
+	$docs_db[]=-1;
+	$cutno_db[]=-1;
 	$sql="select * from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no='$schedule'";
 	//echo $sql;
 	//mysqli_query($link, $sql) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1631,8 +1633,8 @@ tags will be replaced.-->
 			
 			$carton_nodes=array();
 			$x=1;
-			$sql="select status,min(tid) as \"tid\",doc_no,sum(carton_act_qty) as \"carton_act_qty\",input_job_number from $bai_pro3.pac_stat_log where doc_no in ('".implode(",",$docs_db)."') and size_code=\"".strtolower($size_titles_qry[$i])."\" group by doc_no_ref order by doc_no,carton_mode,carton_act_qty desc";
-			//echo $sql;
+			$sql="select status,min(tid) as \"tid\",doc_no,sum(carton_act_qty) as \"carton_act_qty\",input_job_number from $bai_pro3.pac_stat_log where doc_no in (".implode(",",$docs_db).") and size_code=\"".strtolower($size_titles_qry[$i])."\" group by doc_no_ref order by doc_no,carton_mode,carton_act_qty desc";
+			// echo $sql;
 			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
