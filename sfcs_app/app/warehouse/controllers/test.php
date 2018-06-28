@@ -365,7 +365,7 @@ if(isset($_POST['submit']))
 	
 	
 	echo "<script>sweetAlert('Successfully','Updated','success')</script>";
-	$url=getFullURL($_GET['r'],'manual_form_log.php','N');
+	$url=getFullURLLevel($_GET['r'],'reports/manual_form_log.php',1,'N');
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
 }
 ?> 
