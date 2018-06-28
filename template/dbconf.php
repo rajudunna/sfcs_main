@@ -5,7 +5,7 @@ error_reporting(0);
 // Report simple running errors
 //error_reporting(E_ERROR | E_WARNING | E_PARSE);
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
-$conf_tool = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/config-builder/saved_fields/fields.json");
+$conf_tool = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
 $db_obj = $conf_tool->getDBConfig();
 GLOBAL $link_ui;
 GLOBAL $menu_table_name;
@@ -22,5 +22,8 @@ $link_ui = mysqli_connect("$host","$user","$password","$database",$db_obj['db_po
   //echo "Failed to connect to MySQL: " . mysqli_connect_error();
   $link_ui = Null;
   } 
+
+  $mssql = $conf_tool->getMssqlDBConfig();
+  //var_dump($mssql);
 ?>
 

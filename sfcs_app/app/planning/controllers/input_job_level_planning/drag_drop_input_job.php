@@ -85,7 +85,7 @@ $has_perm=haspermission($_GET['r']);
 					
 	}
 	#dhtmlgoodies_listOfItems ul{	
-		height:260px;	
+		height:1000vh;	
 		
 
 	}
@@ -665,7 +665,7 @@ $code_db=explode("*",$code);
 		<img src='images/heading3.gif'>
 	</div> -->
 	<div id="dhtmlgoodies_listOfItems">
-		<div style="position: fixed;width: 123px;overflow:  scroll;">
+		<div style="position: fixed;width: 150px;height:300px;overflow:  scroll;">
 			<p>Jobs</p>		
 		<ul id="allItems">
 		
@@ -743,7 +743,7 @@ $code_db=explode("*",$code);
 			$section_mods=$sql_rowx['sec_mods'];
 			
 			// echo "<div style=\"width:140px;height:500px;\" align=\"center\" class=\"table table-responsive\"><h4>SEC - $section</h4>";
-			echo "<div style=\"width:121px;\" align=\"center\"><h4>SEC - $section</h4>";
+			echo "<div style=\"width:170px;\" align=\"center\"><h4>SEC - $section</h4>";
 		
 			$mods=array();
 			$mods=explode(",",$section_mods);
@@ -773,7 +773,7 @@ $code_db=explode("*",$code);
 		
 				echo '
 					<p>'.$mods[$x].'</p>
-					<ul id="'.$mods[$x].'">';
+					<ul id="'.$mods[$x].'" style="width:150px">';
 						//<li id="node16">Student P</li>
 						
 						$module=$mods[$x];

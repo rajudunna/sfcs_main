@@ -3,7 +3,7 @@
 
 $include_path=getenv('config_job_path');
 include($include_path.'\configuration\API\confr.php');
-$conf = new confr($include_path.'\configuration\config-builder\saved_fields\fields.json');
+$conf = new confr($include_path.'\configuration\API\saved_fields\fields.json');
 $mail_alert = [];
 for($i=1;$i<=20;$i++){
 	$mail_alert[$i-1]=$conf->get('mail'.$i);
