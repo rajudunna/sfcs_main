@@ -1,17 +1,20 @@
 	<?php
-	$servername = "192.168.0.110:3326";
-	$username = "baiall";
-	$password = "baiall";
-	$dbname = "bai_pro3";
+	// $servername = "192.168.0.110:3326";
+	// $username = "baiall";
+	// $password = "baiall";
+	// $dbname = "bai_pro3";
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+	$conn = $link;
+	
 
 	// Create connection
-	$conn = new mysqli($servername, $username, $password, $dbname);
+	// $conn = new mysqli($servername, $username, $password, $dbname);
 	// Check connection
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM bai_pro3.`tbl_category`";
+	$sql = "SELECT * FROM $bai_pro3.`tbl_category`";
 	$result = $conn->query($sql);
 	$sno = 1;
 	if ($result->num_rows > 0) {
@@ -27,7 +30,9 @@
 				$cat_status = "In active";
 			}
 			$cat_selection=$row["cat_selection"];
-			echo "<tr><td>".$sno++."</td><td>".$row["cat_name"]."</td><td>".$cat_status." </td><td>".$row["cat_selection"]."</td><td><a href='/index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw&rowid=$rowid&cat_name=$cat_name&status=$status&cat_selection=$cat_selection' class='editor_edit'>Edit</a> / <a href='/index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvZGVsZXRlX2NhdGVnb3JpZXMucGhw&rowid=$rowid' class='editor_remove'>Delete</a></td></tr>";
+			$url = getFullURLLevel($_GET['r'],'add_categories.php',0,'N');
+			$url_delete = getFullURLLevel($_GET['r'],'delete_categories.php',0,'N');
+			echo "<tr><td>".$sno++."</td><td>".$row["cat_name"]."</td><td>".$cat_status." </td><td>".$row["cat_selection"]."</td><td><a href='$url&rowid=$rowid&cat_name=$cat_name&status=$status&cat_selection=$cat_selection' class='editor_edit'>Edit</a> / <a href='$url_delete&rowid=$rowid' class='editor_remove'>Delete</a></td></tr>";
 		}
 		echo "</table>";
 	} else {
@@ -35,7 +40,7 @@
 	}
 	$conn->close();
 	?>
-
+<!-- /index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw -->
 
 <script>
 $(document).ready(function() {

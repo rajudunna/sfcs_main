@@ -34,11 +34,12 @@
         $c_id=0;
     }
     // echo $cat_name;
+    $action = getFullURL($_GET['r'],'save_categories.php','N');
     ?>
     <div class="container-fluid">
         <div class="row">
 
-            <form action="/index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvc2F2ZV9jYXRlZ29yaWVzLnBocA==" id="formentry" method="POST" class="form-horizontal" role="form" data-parsley-validate novalidate>
+            <form action="<?= $action ?>" method = "POST">
                 <input type='hidden' id='c_id' name='c_id' value="<?php echo $c_id; ?>" >
                 <div class="container-fluid shadow">
                     <div class="row">
@@ -95,7 +96,7 @@
                         
                         
                         
-                <button id="save_btn" type="submit" class="btn btn-primary btn-lg" name="save_btn">Save</button></div></div></div>
+                <button id="save_btn" type="submit" class="btn btn-primary btn-sm"  name="save_btn">Save</button></div></div></div>
 
 
                     </div>
