@@ -4,7 +4,7 @@
 // echo $_SERVER['DOCUMENT_ROOT'];
 error_reporting(0);
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
-$conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/config-builder/saved_fields/fields.json");
+$conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
 
 $mysql_details = $conf1->getDBConfig();
 $mssql_odbc_details = $conf1->get('mssql-odbc');
