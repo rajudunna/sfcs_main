@@ -6,6 +6,7 @@ KiranG/201506-16 Service Request # 186661 : Added form submit button validation 
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+
  ?>
 
 
@@ -294,6 +295,22 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			}
 			echo "</select></div>
 			</td></tr>";
+
+			$team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+			$team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
+			echo "<tr>
+			 		<td>Team Leader</td><td>:</td>
+					<td><div class='col-sm-4'><select name=\"leader_name\" class='form-control'>";
+			echo "<option value='' selected disabled>Select Team</option>";
+			while($row=mysqli_fetch_array($team_result))
+			{
+				echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
+			}
+			echo "</select></div>
+				</td></tr>";
+		
+
+
 			//echo "<tr><td>remarks</td><td>:</td><td><input type=\"text\" name=\"remarks\" value=\"NIL\"></td></tr>";
 
 			echo "<tr style='display:none;'><td><input type=\"hidden\" name=\"remarks\" value=\"$fab_remarks\"></td></tr>";
