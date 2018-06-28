@@ -140,14 +140,13 @@ function disp(x)
 		{
 			if(qty==breakup)
 			{
-				document.getElementById("qty["+x+"]").style.backgroundColor="green";
+				document.getElementById("qty["+x+"]").style.backgroundColor="lightgreen";
 				document.getElementById("test["+x+"]").value=1;
 			}
 		}
 		else
 		{
-			alert("Please fill all the required details");
-			
+			sweetAlert('Please fill all the required details','','warning');
 			document.getElementById("qty["+x+"]").value=0;
 			document.getElementById("demo"+x).style.backgroundColor="red";
 			document.getElementById("demos"+x).style.backgroundColor="red";
