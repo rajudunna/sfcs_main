@@ -167,7 +167,7 @@ class Sentinel
 		self::sessionDestroy();
 
 		if ( self::isAuthSet() ) {
-			return @unlink( self::$authFile );
+			// return @unlink( self::$authFile );
 		}
 
 		return true;

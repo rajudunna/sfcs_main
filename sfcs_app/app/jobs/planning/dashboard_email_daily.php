@@ -83,7 +83,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	for($i=0;$i<sizeof($sec_ids);$i++)
 	{
-		$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from bai_pro.grand_rep where date =\"$date\" and section=".$sec_ids[$i]."";
+		$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from $bai_pro.grand_rep where date =\"$date\" and section=".$sec_ids[$i]."";
 		// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -186,7 +186,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//To show buyer wise performance
 
 $sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from $bai_pro.grand_rep where month(date) =".date("m",strtotime($date))." and year(date)=".date("Y",strtotime($date));
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -253,7 +252,7 @@ $headers .= $header_from. "\r\n";
 
 // Mail it
 
-$sql="insert into bai_ict.report_alert_track(report,date) values (\"Live_SAH_Run\",\"".date("Y-m-d H:i:s")."\")";
+$sql="insert into $bai_ict.report_alert_track(report,date) values (\"Live_SAH_Run\",\"".date("Y-m-d H:i:s")."\")";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if($sql_result)
 {
@@ -265,7 +264,7 @@ if($sql_result)
 		a:
 		if(mail($to, $subject, $message, $headers))
 		{
-			$sql="insert into bai_ict.report_alert_track(report,date) values (\"Live_SAH\",\"".date("Y-m-d H:i:s")."\")";
+			$sql="insert into $bai_ict.report_alert_track(report,date) values (\"Live_SAH\",\"".date("Y-m-d H:i:s")."\")";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			print("Live SAH Inserted And mail sent successfully")."\n";
