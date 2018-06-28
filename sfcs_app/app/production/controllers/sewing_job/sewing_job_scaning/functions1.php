@@ -23,7 +23,7 @@ if(isset($_GET['pro_style_schedule']))
 }
 function getscheduledata1($pro_style)
 {
-include("../../../../../common/config/config.php");
+include("../../../../../common/config/config_ajax.php");
 	$query_get_schedule_data= "select id,schedule from $brandix_bts.bundle_creation_data_temp where style='$pro_style' group by style";
 	$result = $link->query($query_get_schedule_data);
    while($row = $result->fetch_assoc()){
@@ -44,7 +44,7 @@ if(isset($_GET['pro_schedule_color']))
 }
 function getcolordata($pro_style)
 {
-include("../../../../../common/config/config.php");
+include("../../../../../common/config/config_ajax.php");
 	$query_get_schedule_data= "select id,color from $brandix_bts.bundle_creation_data_temp where schedule='$pro_style' group by schedule";
 	$result = $link->query($query_get_schedule_data);
    while($row = $result->fetch_assoc()){
@@ -69,7 +69,7 @@ if(isset($_GET['color_name']) && isset($_GET['style_name']) && isset($_GET['sche
 
 function getbundleno($color_name,$style_name,$schedule_name)
 {
-include("../../../../../common/config/config.php");
+include("../../../../../common/config/config_ajax.php");
 	$query_get_schedule_data= "select id,input_job_no_random_ref,input_job_no from $brandix_bts.bundle_creation_data_temp where schedule='$schedule_name' AND style='$style_name' AND color='$color_name' group by input_job_no order by input_job_no";
 	//echo $query_get_schedule_data;
 	$result = $link->query($query_get_schedule_data);
@@ -87,7 +87,7 @@ include("../../../../../common/config/config.php");
 function Getdata1($params1)
 {
 	$params1 = explode(",",$params1);
-	include("../../../../../common/config/config.php");	
+	include("../../../../../common/config/config_ajax.php");	
 	$bund_transactions="SELECT bcd.input_job_no_random_ref,bcd.size_title,bcd.recevied_qty,bcd.rejected_qty,tor.operation_name,remarks,bcd.input_job_no,bcd.operation_id FROM $brandix_bts.bundle_creation_data_temp bcd left join $brandix_bts.tbl_orders_ops_ref tor on tor.operation_code=bcd.operation_id WHERE style='$params1[1]' AND schedule='$params1[2]' AND color='$params1[0]' AND input_job_no='$params1[3]' order by bcd.id";
 	
 	// echo $bund_transactions;
