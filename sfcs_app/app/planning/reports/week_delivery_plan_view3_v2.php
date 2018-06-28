@@ -567,14 +567,9 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		}
 
 		// open data from production review for cut%
-		for ($i=0; $i < sizeof($in_categories); $i++)
-					{
-						 $cat[]=$in_categories[$i];
-					}
-					$category = "'" .implode("','",$cat)."'" ;
 					
 		$CID=0;
-		$sql1z="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($category) and purwidth>0";
+		$sql1z="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and purwidth>0";
 		// echo "<br>".$sql1z."<br>";
 		mysqli_query($link, $sql1z) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1z=mysqli_query($link, $sql1z) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));

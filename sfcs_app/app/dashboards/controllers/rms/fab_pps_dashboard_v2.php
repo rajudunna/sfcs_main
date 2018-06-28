@@ -26,9 +26,9 @@ $double_modules=array();
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 // $username=$username_list[1];
-$username="sfcsproject1";
+// $username="sfcsproject1";
 
-$authorized=array("kirang","rameshk","chathurangad","minuram","buddhikam","indikaha","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","ashokw","jeganathanj","gayathirit","sudathra","dhanushkah","asankais","saroasa");
+// $authorized=array("kirang","rameshk","chathurangad","minuram","buddhikam","indikaha","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","ashokw","jeganathanj","gayathirit","sudathra","dhanushkah","asankais","saroasa");
 
 
 ?>

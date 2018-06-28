@@ -21,15 +21,15 @@ $hour=date("H.i");
 		//if(($hour>=7.45 and $hour<=10.00) or ($hour>=15.15 and $hour<=16.45)) //OLD
 		//GOOD ONE if(($hour>=7.45 and $hour<=10.45) or ($hour>=12.30 and $hour<=14.00) or ($hour>=16.00 and $hour<=17.30))
 		//if(($hour>=7.15 and $hour<=9.45) or ($hour>=15.15 and $hour<=17.15))
-		if(($hour>=06.00 and $hour<=09.00) or ($hour>=14.00 and $hour<=19.00))
-		{
+		// if(($hour>=06.00 and $hour<=09.00) or ($hour>=14.00 and $hour<=19.00))
+		// {
 			
-		}
-		else
-		{
-			$url=getFullURLLevel($_GET['r'],'time_out.php',1,'N');
-			header("Location:$url&msg=1");
-		}
+		// }
+		// else
+		// {
+			// $url=getFullURLLevel($_GET['r'],'time_out.php',1,'N');
+			// header("Location:$url&msg=1");
+		// }
 	}
 	else
 	{
