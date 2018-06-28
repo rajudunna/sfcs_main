@@ -224,7 +224,7 @@ $sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_facto
 
 			if($choice==1)
 			{
-				$sql11="select * from bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" ";
+				$sql11="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" ";
 				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row11=mysqli_fetch_array($sql_result11))
 				{

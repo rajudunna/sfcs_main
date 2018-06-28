@@ -1,1 +1,1 @@
-<?php $log_time=0; ?>
+<?php $log_time=2018062806; ?>
