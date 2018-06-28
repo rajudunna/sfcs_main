@@ -75,7 +75,7 @@ function enable_button()
 			<div class="row">
 				<div class='col-sm-3'>
 					<label for='schlist'>Schedule</label>
-					<input type="text" value="" class="form-control" id="schedule" name="schlist" />
+					<input type="text" value="" class="form-control" id="schedule" name="schlist" onchange='schedulenumber()'/>
 				</div>
 				<div class='col-sm-3'>
 					<br>
@@ -223,6 +223,7 @@ function enable_button()
 						echo $table;
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
+							
 							$row_count++;
 							if($sql_row['qms_qty']>0)
 							{
@@ -307,3 +308,19 @@ function enable_button()
 		text-align: center;
 	}
 </style>
+<script>
+function schedulenumber(){
+var pattern = /[0-9]/;
+var txtValue=document.getElementById('schedule').value;
+if(txtValue.match(pattern))
+{
+
+}
+
+else
+{
+	sweetAlert("Please Enter Correct Schedule Number","","warning");
+document.getElementById('schedule').value='';
+}
+}
+</script>
