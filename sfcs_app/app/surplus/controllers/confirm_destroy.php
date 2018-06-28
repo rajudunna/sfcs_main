@@ -123,7 +123,7 @@ function enable_button()
 		if($check==1)
 		{
 			$sql="insert into $bai_pro3.bai_qms_destroy_log (qms_log_user,mer_month_year,mer_remarks) values ('$username',\"".$mer_no."\",\"".$mer_remarks."\")";
-			echo $sql;
+			// echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		echo "<script>sweetAlert('Successfully Updated ','','success')</script>";
