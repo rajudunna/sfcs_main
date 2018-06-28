@@ -98,12 +98,7 @@ $has_permission=haspermission($_GET['r']);
 			//$ordertid_qry="select distinct trim(order_tid) as order_tid from $bai_pro3.bai_orders_db_confirm where trim(order_style_no)='$style' and trim(order_del_no)='$schedule' and trim(order_col_des)='$color'";
 			
 			// $pcutno_qry="SELECT distinct TRIM(pcutno) as pcutno FROM $bai_pro3.plandoc_stat_log WHERE order_tid in (SELECT order_tid FROM $bai_pro3.bai_orders_db_confirm WHERE TRIM(order_style_no)='$style' AND TRIM(order_del_no)='$schedule' AND TRIM(order_col_des)='$color') and cat_ref in (select tid from $bai_pro3.cat_stat_log where order_tid in (SELECT order_tid FROM $bai_pro3.bai_orders_db_confirm WHERE TRIM(order_style_no)='$style' AND TRIM(order_del_no)='$schedule' AND TRIM(order_col_des)='$color') and category in ('Body','Front'))";
-			for ($i=0; $i < sizeof($in_categories); $i++)
-			{
-				$cat[]=$in_categories[$i];
-			}
-			$category = "'" .implode("','",$cat)."'" ;
-			$pcutno_qry="SELECT doc_no,pcutno,category FROM $bai_pro3.order_cat_doc_mix WHERE TRIM(order_style_no)='$style' AND TRIM(order_del_no)='$schedule' AND TRIM(order_col_des)='$color' and category in ($category)";
+			$pcutno_qry="SELECT doc_no,pcutno,category FROM $bai_pro3.order_cat_doc_mix WHERE TRIM(order_style_no)='$style' AND TRIM(order_del_no)='$schedule' AND TRIM(order_col_des)='$color' and category in ($in_categories)";
 			$pcutno_result=mysqli_query($link,$pcutno_qry);
 
 		}
