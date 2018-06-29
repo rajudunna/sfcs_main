@@ -88,12 +88,19 @@
             },
             {
                 "type": "text",
-                "required": true,
-                "label": "Super User Name",
+                "label": "Plant Alert Code",
                 "className": "form-control",
-                "name": "superuser",
-                "value": "chandu",
-                "subtype": "text"
+                "name": "plant-alert-code",
+                "subtype": "text",
+                "value": "BEK"
+            },
+            {
+                "type": "text",
+                "label": "Message Sent Name",
+                "className": "form-control",
+                "name": "msg-sent-via",
+                "subtype": "text",
+                "value": "SYSTEM"
             }
         ],
         [
