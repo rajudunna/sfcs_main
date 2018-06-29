@@ -150,11 +150,11 @@ function enable_button()
 								echo $table;
 							}	
 					}
-					if($row_count>0){	
-							echo '<tr><td colspan=5>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
-						$table='</tbody></table></div>';
-					 echo $table;
-					}
+					// if($row_count>0){	
+					// 		echo '<tr><td colspan=5>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
+					// 	$table='</tbody></table></div>';
+					//  echo $table;
+					// }
 				}
 										// echo '<input type="checkbox" name="enable" id="enable" onclick="enable_button()">Enable<input type="submit" name="confirm" value="Confirm Destroy" id="add" disabled="true" onclick="enable_button()">';
 			if($row_count == 0){
@@ -169,7 +169,7 @@ function enable_button()
 	</div>
 </div>
 
-<script language="javascript" type="text/javascript">
+<!-- <script language="javascript" type="text/javascript">
 	$('#reset_table1').addClass('btn btn-warning');
 	var fnsFilters = {
 		rows_counter: true,
@@ -192,7 +192,7 @@ function enable_button()
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
 	});
 	
-</script>
+</script> -->
 
 
 
