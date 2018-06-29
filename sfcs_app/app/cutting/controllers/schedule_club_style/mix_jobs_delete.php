@@ -117,12 +117,12 @@ echo "Select Style: <select name=\"style\" onchange=\"firstbox();\" >";
 //{
 	$sql="select distinct order_style_no from bai_orders_db where order_joins=\"1\" and order_style_no not in ('H18122AA       ','I292550A       ','I292553A       ','I292580A       ','I292653A       ','I296643A       ','I96632AA       ','I96646AA       ','I97183AA','IDUMY929','M04600AA       ','M04600AB       ','M04600AC','M04634AD       ','M04634AE       ','M04634AF','M04634AG','M04641AA       ','M04648AA','M04649AA','M05083AA','M06484AQ       ','M06484AR','M06485AP       ','M07562AA','M09313AE       ','M09313AG       ','M09313AH','M4600GAA       ','M4634LAA','M4634RAA','M7028AAE       ','M7028AAF','N12201AE       ','N19201AD       ','N19801AB       ','N19801AC       ','N7118SAH       ','N7118SAI       ','S16580AA       ','S174815A       ','S174815B       ','S174815C       ','S17761AA       ','S17761AB       ','S17761AC       ','S17764AA       ','S17764AB       ','S17764AC       ','S17767AA       ','S17767AB       ','S17767AC       ','S17775AA       ','S17775AB       ','S17775AC       ','S19876AA       ','S19879AA       ','S19965AA       ','U10098AJ       ','U10217AH       ','U10217AI','U20128AH       ','U20128AI','U30002AH       ','U30002AI','U30148AK       ','U30148AL','U50027AK       ','U50027AL','U60116AK       ','U60117AK       ','U60117AL','U90008AH       ','U90008AI','YCI028AA','YCI278AA','YCI404AA','YCI553AA','YCI931AA','YCL028AA','YCL278AA','YCL404AA','YCL553AA','YCL931AA','YSI028AA','YSI278AA','YSI404AA','YSI553AA','YSI931AA') order by order_style_no";	
 //}
-mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_num_check=mysql_num_rows($sql_result);
+mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysql_fetch_array($sql_result))
+while($sql_row=mysqli_fetch_array($sql_result))
 {
 
 if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
@@ -149,12 +149,12 @@ echo "Select Schedule: <select name=\"schedule\" onchange=\"secondbox();\" >";
 //{
 	$sql="select distinct order_del_no from bai_orders_db where order_style_no=\"$style\" and order_joins=\"1\" order by order_date";	
 //}
-mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_num_check=mysql_num_rows($sql_result);
+mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysql_fetch_array($sql_result))
+while($sql_row=mysqli_fetch_array($sql_result))
 {
 
 
@@ -173,13 +173,13 @@ echo "</select>";
 echo "Select Color: <select name=\"color\" onchange=\"thirdbox();\" >";
 $sql="select distinct order_col_des from bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins=\"1\"";
 //}
-mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_num_check=mysql_num_rows($sql_result);
+mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<option value=\"NIL\" selected>NIL</option>";
 	
-while($sql_row=mysql_fetch_array($sql_result))
+while($sql_row=mysqli_fetch_array($sql_result))
 {
 
 if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
@@ -221,22 +221,22 @@ if(isset($_POST['clear']))
 	$color=$_POST['color'];
 	$docs=array();
 	$sql="slect * from bai_pro3.plando_stat_log where order_tid like \"%".$schedule."%\"";
-	$sql_result451=mysql_query($sql,$link) or die("Error".$sql451.mysql_error());
-	if(mysql_num_rows($sql_result451)>0)
+	$sql_result451=mysqli_query($link, $sql) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_result451)>0)
 	{
-		while($sql_row457=mysql_fetch_array($sql_result451))
+		while($sql_row457=mysqli_fetch_array($sql_result451))
 		{		
 			$docs[]=$sql_row457["doc_no"];
 		}
 		$sql4533="select order_tid from bai_pro3.bai_orders_db where order_joins='J".$order_del_no."' and order_col_des=\"".$color."\"";
-		$sql_result4533=mysql_query($sql4533,$link) or die("Error".$sql4533.mysql_error());
-		while($sql_row4533=mysql_fetch_array($sql_result4533))
+		$sql_result4533=mysqli_query($link, $sql4533) or die("Error".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row4533=mysqli_fetch_array($sql_result4533))
 		{
 			$order_tids[]=$sql_row4533["order_tid"];
 		}
 		$sql32="slect * from brandix_bts.tbl_miniorder_data where docket_number in (select doc_no from bai_pro3.pladoc_stat_log wherer org_doc_no in (".implode(",",$docs)."))";
-		$sql_result451=mysql_query($sql32,$link) or die("Error".$sql451.mysql_error());
-		if(mysql_num_rows($sql_result451)==0)
+		$sql_result451=mysqli_query($link, $sql32) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result451)==0)
 		{
 			$sql4536="delete from bai_pro3.allocate_stat_log where order_tid in ('".implode("','",$order_tids)."')";
 			echo $sql4536."<br>";
@@ -253,10 +253,10 @@ if(isset($_POST['clear']))
 			//$sql_result4513=mysql_query($sql1,$link) or die("Error".$sql451.mysql_error());
 			
 			$sql45331="update bai_pro3.bai_orders_db set order_joins='1' where order_order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
-			$sql_result45313=mysql_query($sql45331,$link) or die("Error".$sql4533.mysql_error());
+			$sql_result45313=mysqli_query($link, $sql45331) or die("Error".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql45331="update bai_pro3.bai_orders_db_confirm set order_joins='1' where order_order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
-			$sql_result45313=mysql_query($sql45331,$link) or die("Error".$sql4533.mysql_error());
+			$sql_result45313=mysqli_query($link, $sql45331) or die("Error".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 		}
 		else
