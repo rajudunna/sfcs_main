@@ -207,7 +207,6 @@ function enable_button()
 					// echo"<br/><h4><span>Reserved Quantity=<div id='output'></div></span></h4>";
 					if(mysqli_num_rows($sql_result)>0)
 					{
-						
 						$row_count2++;
 						$table="<div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'><table class='table table-bordered' id='table1'>";
 						$table.="<thead>";
@@ -226,9 +225,9 @@ function enable_button()
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							
-							$row_count++;
 							if($sql_row['qms_qty']>0)
 							{
+								$row_count++;
 								$table="<tr class=\"foo\" id=\"rowchk$x\">";
 								$table.="<td>".($x+1)."</td>";
 								$table.="<td>".$sql_row['qms_style']."</td>";
