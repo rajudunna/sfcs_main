@@ -113,3 +113,8 @@
 <?php include('view_categories.php'); ?>
 </body>
 </html>
+<style>
+.form-horizontal .control-label {
+    padding-left: 2px;
+}
+</style>

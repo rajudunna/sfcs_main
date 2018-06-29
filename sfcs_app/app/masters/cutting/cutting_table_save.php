@@ -50,11 +50,11 @@ if (empty($tbl_name) || empty($p_status)) {
 }else{
 	if($p_status == 1)
 	{
-		$tblstatus = 'active';
+		$tblstatus = 'Active';
 	}
 	else
 	{
-		$tblstatus = 'inactive';
+		$tblstatus = 'In-Active';
 	}
 	if($tbl_id>0){
 		

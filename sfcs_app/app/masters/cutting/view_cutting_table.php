@@ -26,7 +26,12 @@
 			$rowid=$row["tbl_id"];
 			$tbl_name=$row["tbl_name"];
 			$status=$row["status"];
-			echo "<tr><td>".$sno++."</td><td>".$row["tbl_name"]." </td><td>".$row["status"]."</td><td><a href='$url&rowid=$rowid&tbl_name=$tbl_name&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			if($status == 'active'){
+				$cat_status = "Active";
+			}else{
+				$cat_status = "In-Active";
+			}
+			echo "<tr><td>".$sno++."</td><td>".$row["tbl_name"]." </td><td>".$cat_status."</td><td><a href='$url&rowid=$rowid&tbl_name=$tbl_name&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
