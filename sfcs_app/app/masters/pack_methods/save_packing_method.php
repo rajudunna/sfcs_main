@@ -24,7 +24,20 @@ $pack_id=$_REQUEST['pack_id'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 if (empty($pack_method_name) || empty($status)) {
-	echo "Please fill values";
+	$url=getFullURL($_GET['r'],'add_packing_method.php','N');
+	echo"<script>setTimeout(function () { 
+		swal({
+		  title: 'Please Fill All Values',
+		  text: 'Message!',
+		  type: 'warning',
+		  confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+		  if (isConfirm) {
+			window.location.href = \"$url\";
+		  }
+		}); }, 100);</script>";
+	// echo "Please fill values";
 }else{
 	if($pack_id>0)
 	{
