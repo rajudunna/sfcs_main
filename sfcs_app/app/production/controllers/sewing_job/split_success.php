@@ -18,6 +18,7 @@
     $username=strtolower($username_list[1]); 
     $tid=$_POST['tid']; 
     $qty=$_POST['qty']; 
+ 
 
     $sql="SELECT * FROM $bai_pro3.pac_stat_log_input_job where tid='$tid'"; 
     $result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -66,11 +67,40 @@
                 
                 if($nqty>0)
                 {
-                    $ninput_job_no=$input_job_no.'A'; 
-                    $ninput_job_no_random=$input_job_no_random.'A';
-                    
+                    // $input_job_no=$input_job_no.'.';
+                    $getlastrec="SELECT input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '%$schedule%' and input_job_no like '%$input_job_no.%' ORDER BY tid DESC LIMIT 0,1"; 
+                    // echo $getlastrec;die();
+                    $res_last_rec=mysqli_query($link,$getlastrec);
+                    if($row=mysqli_fetch_array($res_last_rec))
+                    { 
+                       $finalinputjobno=$row['input_job_no']; 
+                    }
+
+                     if($finalinputjobno=='')
+                     {
+                          $ninput_job_no=$input_job_no.'.1'; 
+                          $ninput_job_no_random=$input_job_no_random.'.1';
+                     }
+                     else
+                     {                     
+                     $befdec=$finalinputjobno;
+                     // $finalval=$finalinputjobno-$aftdec;
+                     $finalval=explode('.',$befdec);
+                     $aftdec=$finalval[1];
+
+                     $incrementno=$aftdec+1;
+
+                    $ninput_job_no=$input_job_no.'.'.$incrementno; 
+                    $ninput_job_no_random=$input_job_no_random.'.'.$incrementno;
+                     }
+
+// echo $ninput_job_no."first";
+// echo $ninput_job_no_random."second";
+// die();
+
+
                     $sql1="INSERT into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,status,doc_no_ref,input_job_no,input_job_no_random,destination,packing_mode,old_size) VALUES ('$doc_no','$size_code','$qty','$status','".$doc_no_ref."','".$ninput_job_no."','".$ninput_job_no_random."','$destination','$packing_mode','$old_size')";
-                    // echo $sql1;
+                    // echo $sql1;die();
                     mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
                      
                     $sql2="UPDATE $bai_pro3.pac_stat_log_input_job SET carton_act_qty='$nqty' WHERE tid='$tid'"; 
