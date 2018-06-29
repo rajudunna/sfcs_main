@@ -1,106 +1,39 @@
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
 
-<?php 
-include($_SERVER['DOCUMENT_ROOT']."/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/server/group_def.php"); 
-$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
-?>
-<?php
-include("header_scripts.php"); 
-?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
+
 
 <script>
+	function firstbox()
+	{
+		window.location.href ="mix_schedules_delete.php?style="+document.test.style.value
+	}
 
-function firstbox()
-{
-	window.location.href ="mix_schedules_delete.php?style="+document.test.style.value
-}
+	function thirdbox()
+	{
+		window.location.href ="mix_schedules_delete.php?style="+document.test.style.value+"&color="+document.test.color.value
+	}
 
-function thirdbox()
-{
-	window.location.href ="mix_schedules_delete.php?style="+document.test.style.value+"&color="+document.test.color.value
-}
+	function SetAllCheckBoxes(FormName, FieldName, CheckValue)
+	{
+		if(!document.forms[FormName])
+			return;
+		var objCheckBoxes = document.forms[FormName].elements[FieldName];
+		if(!objCheckBoxes)
+			return;
+		var countCheckBoxes = objCheckBoxes.length;
+		if(!countCheckBoxes)
+			objCheckBoxes.checked = CheckValue;
+		else
+			// set the check value for all check boxes
+			for(var i = 0; i < countCheckBoxes; i++)
+				objCheckBoxes[i].checked = CheckValue;
+	}
+	</script>
 
-</script>
-<link href="style.css" rel="stylesheet" type="text/css" />
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
-<style>
-body
-{
-	font-family:calibri;
-	font-size:12px;
-}
-
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-white-space:nowrap; 
-}
-
-table td.lef
-{
-	border: 1px solid black;
-	text-align: left;
-white-space:nowrap; 
-}
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    	background-color: BLUE;
-	color: WHITE;
-white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
-
-
-}
-
-}
-</style>
-
-<SCRIPT>
-
-function SetAllCheckBoxes(FormName, FieldName, CheckValue)
-{
-	if(!document.forms[FormName])
-		return;
-	var objCheckBoxes = document.forms[FormName].elements[FieldName];
-	if(!objCheckBoxes)
-		return;
-	var countCheckBoxes = objCheckBoxes.length;
-	if(!countCheckBoxes)
-		objCheckBoxes.checked = CheckValue;
-	else
-		// set the check value for all check boxes
-		for(var i = 0; i < countCheckBoxes; i++)
-			objCheckBoxes[i].checked = CheckValue;
-}
-</SCRIPT>
-</head>
-
-<body>
-
-<?php include("dbconf.php"); ?>
-<?php include("menu_content.php"); ?>
 <?php
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
@@ -117,9 +50,10 @@ if(isset($_POST['submit']))
 
 //echo $style.$schedule.$color;
 ?>
-<div id="page_heading"><span style="float: left"><h3>Schedule Mix Delete Panel</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>
 
-
+<div class='panel panel-primary'>
+	<div class='panel panel-heading'>Schedule Mix Delete Panel</div>
+	<div class='panel-body'>
 
 <form name="test" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 <?php
