@@ -23,11 +23,13 @@ $table_order="bai_pro3.bai_orders_db_confirm_mo";
 // echo mysqli_num_rows($sql_result);
 // var_dump($sql_result);
 // die();
+// $link = 
 try {
     $sql="select sfcs_tid,sfcs_qty,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_op_des,sfcs_reason,sfcs_tid_ref,sfcs_job_no  from $table_m3 where $table_m3.club_status='0' and sfcs_style='I00816AA' GROUP BY sfcs_tid order by  sfcs_schedule limit 100";
     // echo $sql;
     $sql_result= $link->query($sql) or error_check();
     $link->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+    $link->autocommit(FALSE);
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
         $m3_tid=$sql_row['sfcs_tid']; 
@@ -63,7 +65,9 @@ try {
                 { 
                     while($sql_row1=mysqli_fetch_array($sql_result1)) 
                     { 
+                        echo 'in <br>';
                         $sql3="update $table_m3 set sfcs_job_no='".$sfcs_job_no."',club_status='1',m3_mo_no='".$sql_row1['mo_number']."',sfcs_status='16',m3_op_code='".$sql_row1['m_ops']."',m3_size='".$sql_row1['m_size']."' where sfcs_tid='".$m3_tid."'"; 
+                        echo $sql3.'<br>';
                         $sql_result3= $link->query($sql3) or error_check(); 
                         $sql31="update $table_order set fill_qty=fill_qty+$m3_qty where id='".$sql_row1['id']."'"; 
                         $sql_result31= $link->query($sql31) or error_check();
@@ -655,7 +659,7 @@ try {
     // var_dump($e);
     echo 'Message: ' .$e->getMessage();
 } 
-$roll = $link->rollback();
+// $roll = $link->rollback();
 // echo $roll.'<br>';
 if($flag){
     echo "<h2>Quantity splitted for Clubbed MO.</h2>"; 
