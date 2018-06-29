@@ -1,6 +1,6 @@
 <?php include('../../../../common/config/config.php'); ?>
 <?php //include("../".getFullURL($_GET['r'], "", "R").""); ?>
-<?php include('../../../../common/php/functions.php'); ?>   
+<?php include('../../../../common/config/functions.php'); ?>   
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php
 $order_tid=$_GET['order_tid'];
@@ -181,7 +181,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta http-equiv=Content-Type content="text/html; charset=windows-1252">
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 12">
-<link rel=File-List href=<?= getFullURL($_GET['r'],'Book3_files/filelist.xml','N'); ?>>
+
 
 <!--[if !mso]>
 <style>
@@ -1049,8 +1049,8 @@ WebBrowser1.outerHTML = "";
 }
 </script>
 
-<script src=<?= getFullURLLevel($_GET['r'],'/common/js/jquery-1.3.2.js',2,'R'); ?>></script>
-<script src=<?= getFullURLLevel($_GET['r'],'/common/js/jquery-barcode-2.0.1.js',2,'R'); ?>></script>
+<script src=<?= $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/common/js/jquery-1.3.2.js'; ?>></script>
+<script src=<?= $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/common/js/jquery-barcode-2.0.1.js'; ?>></script>
 
 </head>
 
@@ -1347,7 +1347,7 @@ ZHJzL2Rvd25yZXYueG1sUEsBAi0ACgAAAAAAAAAhADhzEd/zBQAA8wUAABUAAAAAAAAAAAAAAAAA
   <![if !vml]><span style='mso-ignore:vglayout;
   position:absolute;z-index:5;margin-left:11px;margin-top:1px;width:327px;
   height:68px'><img width=327 height=68
-  src=<?= getFullURL($_GET['r'],'../../common/images/Book1_15551_image003.gif','R'); ?> alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span><![endif]><span
+  src=<?= '../../common/images/BAI_Logo.JPG'?> alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span><![endif]><span
   style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>
    <tr>
@@ -1563,7 +1563,7 @@ L21lZGlhL2ltYWdlMS5wbmdQSwUGAAAAAAYABgCEAQAABQsAAAAA
   </v:shape><![endif]--><![if !vml]><span style='mso-ignore:vglayout;
   position:absolute;z-index:7;margin-left:41px;margin-top:12px;width:219px;
   height:62px'><img width=219 height=62
-  src=<?= getFullURL($_GET['r'],'../../common/images/Book1_15551_image007.gif','R'); ?> v:shapes="Text_x0020_Box_x0020_15 AutoShape_x0020_17 Rectangle_x0020_18"></span><![endif]><span
+  src=<?='../../common/images/Book1_15551_image007.gif'?> v:shapes="Text_x0020_Box_x0020_15 AutoShape_x0020_17 Rectangle_x0020_18"></span><![endif]><span
   style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>
    <tr>
@@ -1716,12 +1716,12 @@ ZHJzL2Rvd25yZXYueG1sUEsFBgAAAAAEAAQA9QAAAAEGAAAAAA==
     <td height=3></td>
     <td colspan=2></td>
     <td rowspan=2 align=left valign=top><img width=354 height=123
-    src=<?= getFullURLLevel($_GET['r'],'../../common/images/Book1_15551_image010.gif',2,'R'); ?> v:shapes="AutoShape_x0020_5"></td>
+    src=<?='../../common/images/Book1_15551_image010.gif' ?> v:shapes="AutoShape_x0020_5"></td>
    </tr>
    <tr>
     <td height=120></td>
     <td rowspan=2 align=left valign=top><img width=352 height=124
-    src=<?= getFullURLLevel($_GET['r'],'../../common/images/Book1_15551_image011.gif',2,'R'); ?> v:shapes="AutoShape_x0020_4"></td>
+    src=<?='../../common/images/Book1_15551_image011.gif'?> v:shapes="AutoShape_x0020_4"></td>
    </tr>
    <tr>
     <td height=4></td>
@@ -1951,12 +1951,12 @@ ZTEucG5nUEsFBgAAAAAGAAYAhAEAAMMOAAAAAA==
     <td height=1></td>
     <td colspan=2></td>
     <td rowspan=2 align=left valign=top><img width=109 height=81
-    src=<?= getFullURLLevel($_GET['r'],'../../common/images/Book1_15551_image014.gif',2,'R'); ?> v:shapes="AutoShape_x0020_8"></td>
+    src=<?= '../../common/images/Book1_15551_image014.gif'?> v:shapes="AutoShape_x0020_8"></td>
    </tr>
    <tr>
     <td height=80></td>
     <td align=left valign=top><img width=595 height=80
-    src=<?= getFullURLLevel($_GET['r'],'../../common/images/Book1_15551_image015.gif',2,'R'); ?> v:shapes="AutoShape_x0020_6"></td>
+    src=<?= '../../common/images/Book1_15551_image015.gif' ?> v:shapes="AutoShape_x0020_6"></td>
    </tr>
   </table>
   </span><![endif]><span style='mso-ignore:vglayout2'>
@@ -2106,7 +2106,7 @@ ZTEucG5nUEsFBgAAAAAGAAYAhAEAAMMOAAAAAA==
   <td rowspan=2 class=xl9615551 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl9615551 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><span style='mso-spacerun:yes'> </span></td>
+  border-top:none;width:48pt'><span style='mso-spacerun:yes'>ï¿½</span></td>
   <td rowspan=2 class=xl9615551 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl9615551 width=64 style='border-bottom:.5pt solid black;
