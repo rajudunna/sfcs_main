@@ -38,8 +38,8 @@ $local_mssql_password="Brandix@7";
 //To Facilitate SFCS Filters
 $global_facility_code=$conf1->get('plantcode');
 
-$plant_alert_code="BEK";
-$message_sent_via="SYSTEM";
+$plant_alert_code=$conf1->get('plant-alert-code');     //plant-alert-code
+$message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
 
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
