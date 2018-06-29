@@ -26,6 +26,7 @@ $clubbing = $_GET['clubbing'];
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
     $remarks_x=$sql_row['remarks']; 
+    $binding_con = $sql_row['binding_con'];
      
     } 
      
@@ -1696,6 +1697,9 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>One Gmt 
     One Way</td> 
     <td class=xl6913019><?php echo $gmtway; ?></td> 
+     
+    <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Binding Consumption</td> 
+    <td class=xl6913019><?php echo $binding_con; ?></td> 
     <td class=xl7113019></td> 
     <td class=xl6613019></td> 
     </tr> 
