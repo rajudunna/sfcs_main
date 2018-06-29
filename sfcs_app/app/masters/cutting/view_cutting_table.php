@@ -13,7 +13,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM bai_pro3.`tbl_cutting_table`";
+	$sql = "SELECT * FROM $bai_pro3.`tbl_cutting_table`";
 	$result = $conn->query($sql);
 	$sno =1;
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
