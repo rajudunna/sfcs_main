@@ -10,7 +10,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <h1>Categories</h1></br>
+    <!--<h1>Categories</h1></br>-->
+    
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -35,8 +36,13 @@
     }
     // echo $cat_name;
     ?>
-    <div class="container-fluid">
-        <div class="row">
+    <!--<div class="container-fluid">
+        <div class="row">-->
+        <div class='panel panel-primary'>
+	<div class='panel-heading'>
+		<b>Categories</b>
+	</div>
+	<div class='panel-body'>
 
             <form action="/index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvc2F2ZV9jYXRlZ29yaWVzLnBocA==" id="formentry" method="POST" class="form-horizontal" role="form" data-parsley-validate novalidate>
                 <input type='hidden' id='c_id' name='c_id' value="<?php echo $c_id; ?>" >
