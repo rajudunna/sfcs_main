@@ -1,4 +1,8 @@
 	<?php
+	$alert_msg = $_REQUEST['error_msg'];
+	if($alert_msg){
+		echo "<script>swal('Enter data correctly.')</script>";
+	}
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 	$sql = "SELECT * FROM bai_rm_pj1.`inspection_supplier_db`";
@@ -16,13 +20,16 @@
 			$color_code=$row["color_code"];
 			$color_code = str_replace("#"," ",$row["color_code"]);
 			$seq_no=$row["seq_no"];
-			echo "<tr><td>".++$start."</td><td>".$row["product_code"]." </td><td>".$row["supplier_code"]."</td><td>".$row["complaint_no"]."</td><td>".$row["supplier_m3_code"]."</td><td>".$row["color_code"]."</td><td>".$row["seq_no"]."</td><td><a href='/index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2luc3BlY3Rpb25fc3VwcGxpZXJzX2RiL3NhdmVfaW5zcGVjdGlvbl9zdXBwbGllcnMucGhw&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='editor_edit'>Edit</a> / 
-			<a href='/index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2luc3BlY3Rpb25fc3VwcGxpZXJzX2RiL2RlbGV0ZV9pbnNwZWN0aW9uX3N1cHBsaWVycy5waHA=&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='editor_remove'>Delete</a></td></tr>";
+			$edit_url = getFullURL($_GET['r'],'save_inspection_suppliers.php','N');
+			$delete_url = getFullURL($_GET['r'],'delete_inspection_suppliers.php','N');
+			echo "<tr><td>".++$start."</td><td>".$row["product_code"]." </td><td>".$row["supplier_code"]."</td><td>".$row["complaint_no"]."</td><td>".$row["supplier_m3_code"]."</td><td>".$row["color_code"]."</td><td>".$row["seq_no"]."</td><td><a href='$edit_url&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
+			<a href='$delete_url&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
 		}
 		echo "</table>";
 	} else {
 		echo "0 results";
 	}
+	// echo "<script>swal('Enter data correctly.')</script>";
 	?>
 
 
