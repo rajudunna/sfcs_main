@@ -4,6 +4,6 @@ include "confr.php";
 
 $conf = new confr("../config-builder/saved_fields/fields.json");
 
-var_dump($conf->get("category-display-dashboard"));
-//var_dump( $conf->getDBConfig() );
-//var_dump( $conf->getConnection() );
+echo $conf->get("select-1528429950732");
+var_dump( $conf->getDBConfig() );
+var_dump( $conf->getConnection() );
