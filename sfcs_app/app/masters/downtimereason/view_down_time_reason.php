@@ -26,7 +26,7 @@
 			$code=$row["code"];
 			$department=$row["rdept"];
 			$reason=$row["reason"];
-			echo "<tr><td>".$sno++."</td><td>".$row["code"]."</td><td>".$row["rdept"]." </td><td>".$row["reason"]."</td><td><a href='$url==&rowid=$rowid&code=$code&department=$department&reason=$reason' class='editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid&code=$code&department=$department&reason=$reason' class='editor_remove'>Delete</a></td></tr>";
+			echo "<tr><td>".$sno++."</td><td>".$row["code"]."</td><td>".$row["rdept"]." </td><td>".$row["reason"]."</td><td><a href='$url==&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
@@ -41,3 +41,35 @@ $(document).ready(function() {
     $('#downtime_reason').DataTable();
 } );
 </script>
+<style>
+table th
+{
+	border: 1px solid grey;
+	text-align: center;
+    background-color: #003366;
+	color: WHITE;
+	white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+	background-color: white;
+}
+table tr
+{
+	border: 1px solid grey;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid grey;
+	text-align: center;
+	white-space:nowrap;
+	color:black;
+}
+</style>

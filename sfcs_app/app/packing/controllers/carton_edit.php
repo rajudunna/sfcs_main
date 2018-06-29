@@ -244,7 +244,7 @@
 	
 // }
 // echo "</select></td>";
-
+		// var_dump($pack_methods);
 		echo "<td>";
 		echo "<input type=\"text\" class='integer' size=\"10\" value=\"$pack\" class=\"alpha\" name=\"pack\"> </td>";
 		echo "<td><select name=\"pack_methods\" id=\"pack_methods\" class='form-control'>";

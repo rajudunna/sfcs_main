@@ -3,7 +3,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
 $rid=$_GET['rowid'];
-echo $rid;
+//echo $rid;
 // $servername = "192.168.0.110:3326";
 // 	$username = "baiall";
 // 	$password = "baiall";

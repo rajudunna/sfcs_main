@@ -244,9 +244,7 @@ if(isset($_GET['qq']))
 	$x=$_GET["x"];
 	$y=$_GET["y"];
 	$val=$_GET["val"];
-	// echo $in_categories;
-	// $category = "'" .implode("','",$in_categories)."'" ;
-	$category = $in_categories;
+	
 	switch($q)
 	{
 		case 1:
@@ -293,7 +291,7 @@ if(isset($_GET['qq']))
 			$temp=array();
 			$temp=explode("$",$val);
 			$return="$x$y$<select id=\"job[$x]\" name=\"job[$x]\" onchange=\"showUser(4,$x,$y,this.value)\"><option value=\"0\">Select</option>";
-			$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ($category) order by doc_no";
+			$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ($in_categories) order by doc_no";
 			//echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1 $sql<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -302,7 +300,7 @@ if(isset($_GET['qq']))
 				$return.='<option value="'.'D'.$sql_row['doc_no'].'">'.$sql_row['color_code'].$sql_row['acutno'].'</option>';
 			}
 			
-			$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_recut_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ($category) order by doc_no";
+			$sql="select distinct doc_no,char(color_code) as color_code,acutno from $bai_pro3.order_cat_recut_doc_mix where order_style_no=\"".$temp[0]."\" and order_del_no=\"".$temp[1]."\" and order_col_des=\"".$temp[2]."\" and category in ($in_categories) order by doc_no";
 			// echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))

@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-	<center><h2><b>INSPECTION SUPPLIERS VIEW</b></h2></center></br></br>
+	
 	
 	
 
@@ -44,8 +44,11 @@
 	}
 	$action_url = getFullURL($_GET['r'],'insert_inspection_suppliers.php','N');
 	?> 
-    <div class="container-fluid">
-        <div class="row">
+    <div class='panel panel-primary'>
+	<div class='panel-heading'>
+		<b>Inspection Suppliers</b>
+	</div>
+	<div class='panel-body'>
 
               <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
 			  <input type='hidden' id='tid' name='tid' value=<?php echo $tid; ?> >
@@ -103,7 +106,7 @@
 			    
 			    
                 
-		<button id="btn_save" type="submit" class="btn btn-default" name="btn_save">Save</button></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div>
 
 
                     </div>
