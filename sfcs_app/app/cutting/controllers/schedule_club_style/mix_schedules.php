@@ -97,7 +97,7 @@
 
 <?php
 	echo "<div class='col-sm-3'>";
-	echo "<label for='style'>Select Style</label>
+	echo "<label for='color'>Select Color</label>
 	<select  class='form-control' name='color' onchange='thirdbox();'>";
 
 	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";
@@ -118,10 +118,12 @@
 	echo "</select>";
 	echo "</div>";
 
-	echo "<div class='col-sm-1'>";
-		echo "<label></label><br/>";
-		echo "<input type='submit' class='btn btn-primary' value='submit' name='submit'>";
-	echo "</div>";		
+	if(isset($_GET['color'])){
+		echo "<div class='col-sm-1'>";
+			echo "<label></label><br/>";
+			echo "<input type='submit' class='btn btn-primary' value='submit' name='submit'>";
+		echo "</div>";	
+	}	
 ?>
 
 
