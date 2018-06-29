@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 $data = [];
 foreach ($_POST["data"] as $key => $value) {
     $data[] = json_decode($value, true);
