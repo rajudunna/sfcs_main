@@ -487,6 +487,20 @@ else
     }
         echo "</select></div></td></tr>"; 
     //} 
+
+    $team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+    $team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
+    echo "<tr>
+            <td>Team Leader</td><td>:</td>
+            <td><div class='row'><div class='col-sm-6'><select name=\"leader_name\" class='form-control'>";
+    echo "<option value='' selected disabled>Select Team</option>";
+    while($row=mysqli_fetch_array($team_result))
+    {
+        echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
+    }
+    echo "</select></div></div>
+        </td></tr>"; 
+        
     echo "<tr><td>Do you want to create a new cut <br/>for the same ratio to remaining plies</td><td>:</td><td><div class='row'><div class='col-md-6'>
     <select class=\"form-control\" name=\"newratio\" id='new_ratio_drop'> 
     <option value=\"no\">No</option> 
@@ -526,18 +540,7 @@ else
             <div class='row'><div class='col-md-6'><input class=\"form-control integer\" id='fb_shortage' type=\"text\" name=\"shortages\" value=\"0\"></div>
         </div></td></tr>"; 
     //Leader Name   
-    $team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
-    $team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
-    echo "<tr>
-            <td>Team Leader</td><td>:</td>
-            <td><div class='row'><div class='col-sm-6'><select name=\"leader_name\" class='form-control'>";
-    echo "<option value='' selected disabled>Select Team</option>";
-    while($row=mysqli_fetch_array($team_result))
-    {
-        echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
-    }
-    echo "</select></div></div>
-        </td></tr>";   
+     
 
     echo "<tr style='display:none;'><td>Bundle Location</td><td>:</td><td><select name=\"bun_loc\">"; 
     echo "<option value='' style='background-color:#FF5500;'></option>"; 
