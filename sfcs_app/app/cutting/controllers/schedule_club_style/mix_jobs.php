@@ -276,9 +276,12 @@ if(isset($_POST['submit']))
 			$status=0;
 			for($s=0;$s<sizeof($o_s_t);$s++)
 			{
-				if($o_s[$sizes_array[$s]]>$tot_com[$sizes_array[$s]])
+				if($o_s[$sizes_array[$s]]>0)
 				{
-					$status=1;
+					if($o_s[$sizes_array[$s]]>$tot_com[$sizes_array[$s]])
+					{
+						$status=1;
+					}
 				}
 			}
 			//Validate for splitting eligible or not.
@@ -303,7 +306,9 @@ if(isset($_POST['submit']))
 			$pend_order_type[]=$cat_type[$ii];				
 		}
 	}
-	//echo sizeof($ready_cat_ref)."<br>";	
+	// echo sizeof($ready_cat_ref)."<br>";	
+	// exit();
+	// die();
 	if(sizeof($ready_cat_ref)>0) 	
 	{
 	    $sql2="truncate mix_temp_desti"; 
