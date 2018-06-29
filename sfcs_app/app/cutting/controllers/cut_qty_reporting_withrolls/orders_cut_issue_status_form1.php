@@ -187,6 +187,20 @@ foreach($shifts_array as $key=>$shift){
 
 	}
 	echo "</select></div></td></tr>";
+
+$team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+$team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
+echo "<tr>
+		<td>Team Leader</td><td>:</td>
+		<td><div class='row'><div class='col-sm-6'><select name=\"leader_name\" class='form-control'>";
+echo "<option value='' selected disabled>Select Team</option>";
+while($row=mysqli_fetch_array($team_result))
+{
+	echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
+}
+echo "</select></div></div>
+	</td></tr>";
+
 echo "<tr><td>Doc Req</td><td>:</td><td>".(($act_plies*$mklength)+$bind_con)."</td></tr>";
 echo "<tr><td>Plies</td><td>:</td><td><input type=\"hidden\" name=\"old_plies\" value=\"$old_plies\"><input type=\"text\" name=\"plies\" value=\"$plies_check\" onchange=\"if(validate(this.value,$plies_check)==1010) { this.value=0; }\"></td></tr>";
 echo "<tr><td>Fab_received</td><td>:</td><td><input type=\"hidden\" name=\"old_fab_rec\" value=\"$fab_received\"><input type=\"text\" name=\"fab_rec\" value=\"0\"></td></tr>";
@@ -311,18 +325,7 @@ echo "<option value='3-T1-A' style='background-color:#FFFFAA;'>3-T1-A</option>
 </td></tr>";
 //echo "<tr><td>remarks</td><td>:</td><td><input type=\"text\" name=\"remarks\" value=\"NIL\"></td></tr>";
 //Leader Name   
-$team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
-$team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
-echo "<tr>
-		<td>Team Leader</td><td>:</td>
-		<td><div class='row'><div class='col-sm-6'><select name=\"leader_name\" class='form-control'>";
-echo "<option value='' selected disabled>Select Team</option>";
-while($row=mysqli_fetch_array($team_result))
-{
-	echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
-}
-echo "</select></div></div>
-	</td></tr>";
+
 	
 echo "<tr><td><input type=\"hidden\" name=\"remarks\" value=\"$fab_remarks\"><input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable</td><td></td><td><INPUT TYPE = \"Submit\" Name = \"Update\" VALUE = \"Update\"></td></tr>";
 
