@@ -3,11 +3,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
 // echo $_POST['table_name'];
-$category_name=$_REQUEST['category_name'];
+$emp_id=$_REQUEST['emp_id'];
 $row_id=$_REQUEST['c_id'];
 // echo $row_id;die();
-$category_status=$_REQUEST['category_status'];
-$cat_select=$_REQUEST['cat_selection'];
+$emp_name=$_REQUEST['emp_name'];
 
 // echo $status;die();
 // $servername = "192.168.0.110:3326";
@@ -24,32 +23,35 @@ $conn=$link;
 //     die("Connection failed: " . mysqli_connect_error());
 // }
 
-if (empty($category_name) || empty($category_status) || empty($cat_select)) 
+if (empty($emp_id)  || empty($emp_name)) 
 {
-	$url=getFullURL($_GET['r'],'add_categories.php','N');
-	echo"<script>setTimeout(function () { 
-		swal({
-		  title: 'Please Fill All Values',
-		  text: 'Message!',
-		  type: 'warning',
-		  confirmButtonText: 'OK'
-		},
-		function(isConfirm){
-		  if (isConfirm) {
-			window.location.href = \"$url\";
-		  }
-		}); }, 100);</script>";
-	// echo "Please fill values";
+    // echo "Please fill values";
+    $url=getFullURL($_GET['r'],'create_leader_names.php','N');
+    //echo $url;
+    //echo "Record updated successfully";
+    echo"<script>setTimeout(function () { 
+        swal({
+          title: 'Please fill values',
+          text: 'Message!',
+          type: 'error',
+          confirmButtonText: 'OK'
+        },
+        function(isConfirm){
+          if (isConfirm) {
+            window.location.href = \"$url\";
+          }
+        }); }, 100);</script>";
+    
 }
 else
 {
 	if($row_id>0)
 	{
 		//update
-		$sql = "update tbl_category set cat_name='$category_name',status='$category_status',cat_selection='$cat_select' where id=$row_id";
+		$sql = "update tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name' where id=$row_id";
 		
 		if (mysqli_query($conn, $sql)) {
-			$url=getFullURL($_GET['r'],'add_categories.php','N');
+			$url=getFullURL($_GET['r'],'create_leader_names.php','N');
 			//echo $url;
 			//echo "Record updated successfully";
 			echo"<script>setTimeout(function () { 
@@ -76,7 +78,7 @@ else
 					{
 						//echo "<script>sweetAlert('Category Already Existed','','warning');</script>";
 
-						$url=getFullURL($_GET['r'],'add_categories.php','N');
+						$url=getFullURL($_GET['r'],'create_leader_names.php','N');
 
 
 						echo"<script>setTimeout(function () { 
@@ -96,12 +98,12 @@ else
 						//echo "<script>window.location = 'index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw'</script>";
 					}else{
 					
-							$sql = "INSERT INTO tbl_category (cat_name, status,cat_selection)
-							VALUES ('$category_name','$category_status','$cat_select')";
+							$sql = "INSERT INTO tbl_leader_name (emp_id,emp_name)
+							VALUES ('$emp_id','$emp_name')";
 
 							if (mysqli_query($conn, $sql)) 
 							{
-								$url=getFullURL($_GET['r'],'add_categories.php','N');
+								$url=getFullURL($_GET['r'],'create_leader_names.php','N');
 								//echo "New record created successfully";
 								echo"<script>setTimeout(function () { 
 									swal({

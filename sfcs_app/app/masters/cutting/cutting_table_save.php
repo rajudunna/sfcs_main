@@ -33,7 +33,20 @@ $conn=$link;
 
 
 if (empty($tbl_name) || empty($p_status)) {
-	echo "Please fill values";
+	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
+	echo"<script>setTimeout(function () { 
+		swal({
+		  title: 'Please Fill All Values',
+		  text: 'Message!',
+		  type: 'warning',
+		  confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+		  if (isConfirm) {
+			window.location.href = \"$url\";
+		  }
+		}); }, 100);</script>";
+	// echo "Please fill values";
 }else{
 	if($p_status == 1)
 	{
