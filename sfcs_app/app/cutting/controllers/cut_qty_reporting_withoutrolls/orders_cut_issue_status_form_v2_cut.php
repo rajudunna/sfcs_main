@@ -264,6 +264,19 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				}
 					echo "</select></div></td></tr>";
 			//}
+			$team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+			$team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
+			echo "<tr>
+			 		<td>Team Leader</td><td>:</td>
+					<td><div class='col-sm-4'><select name=\"leader_name\" class='form-control'>";
+			echo "<option value='' selected disabled>Select Team</option>";
+			while($row=mysqli_fetch_array($team_result))
+			{
+				echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
+			}
+			echo "</select></div>
+				</td></tr>";
+				
 			//echo "<tr><td>Doc Req</td><td>:</td><td>".($act_plies*$mklength)."</td></tr>";
 			echo "<tr><td>Docket Fabric Required</td><td>:</td><td align='left'><div class='col-sm-3'>".round($material,2)."</div></td></tr>";
 			echo "<tr><td>Planned Plies</td><td>:</td><td><div class='col-sm-1'>".$plies_check."</div></td></tr>";
@@ -296,18 +309,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			echo "</select></div>
 			</td></tr>";
 
-			$team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
-			$team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
-			echo "<tr>
-			 		<td>Team Leader</td><td>:</td>
-					<td><div class='col-sm-4'><select name=\"leader_name\" class='form-control'>";
-			echo "<option value='' selected disabled>Select Team</option>";
-			while($row=mysqli_fetch_array($team_result))
-			{
-				echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
-			}
-			echo "</select></div>
-				</td></tr>";
+			
 		
 
 
