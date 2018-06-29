@@ -1596,7 +1596,7 @@ tags will be replaced.-->
   }
   if(strlen($binding_con)>0)
   {
-	  echo "<td colspan=4 style='border:1px solid black'><strong>Binding Con : $binding_con</strong></td>";
+	  echo "<td colspan=4 style='border:1px solid black'><strong>Binding Consumption : $binding_con</strong></td>";
   }else{
 	  echo "<td colspan=5></td>";
   }
