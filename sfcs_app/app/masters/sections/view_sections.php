@@ -25,9 +25,10 @@
 			$sec_head=$row["sec_head"];
 			$sec_mods=$row["sec_mods"];
 			$ims_priority_boxes=$row["ims_priority_boxes"];
-			
-			echo "<tr><td>".$row["sec_id"]."</td><td>".$row["sec_head"]." </td><td>".$row["sec_mods"]."</td><td>".$row["ims_priority_boxes"]."</td><td><a href='$url&rowid=$rowid&sec_head=$sec_head&sec_mods=$sec_mods&ims_priority_boxes=$ims_priority_boxes' class='editor_edit'>Edit</a> / 
-			<a href='$url1&rowid=$rowid&sec_head=$sec_head&sec_mods=$sec_mods&ims_priority_boxes=$ims_priority_boxes' class='editor_remove'>Delete</a></td></tr>";
+			if($sec_head!='Admin'){
+			echo "<tr><td>".$row["sec_id"]."</td><td>".$row["sec_head"]." </td><td>".$row["sec_mods"]."</td><td>".$row["ims_priority_boxes"]."</td><td><a href='$url&rowid=$rowid&sec_head=$sec_head&sec_mods=$sec_mods&ims_priority_boxes=$ims_priority_boxes' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
+			<a href='$url1&rowid=$rowid&sec_head=$sec_head&sec_mods=$sec_mods&ims_priority_boxes=$ims_priority_boxes' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			}
 		}
 		echo "</table></div>";
 	} else {
@@ -42,3 +43,35 @@ $(document).ready(function() {
     $('#tbl_packing_method').DataTable();
 } );
 </script>
+<style>
+table th
+{
+	border: 1px solid grey;
+	text-align: center;
+    background-color: #003366;
+	color: WHITE;
+	white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+	background-color: white;
+}
+table tr
+{
+	border: 1px solid grey;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid grey;
+	text-align: center;
+	white-space:nowrap;
+	color:black;
+}
+</style>

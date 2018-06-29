@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <h1>Sections</h1></br>
+    
 
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -33,13 +33,17 @@
 		$sec_id=0;
 		//$packing_method="";
 		//$status="";
-	}
+    }
+    $action_url = getFullURL($_GET['r'],'insert_sections.php','N');
 	?>
-    <div class="container-fluid">
-        <div class="row">
+    <div class='panel panel-primary'>
+	<div class='panel-heading'>
+		<b>Sections</b>
+	</div>
+	<div class='panel-body'>
 
            
-			 <form action="index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL3NlY3Rpb25zL2luc2VydF9zZWN0aW9ucy5waHA=" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
+			 <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
 			 <input type='hidden' id='sec_id' name='sec_id' value=<?php echo $sec_id; ?> >
                 <div class="container-fluid shadow">
                     <div class="row">
@@ -74,7 +78,7 @@
 			    
 			    
                 
-		<button id="btn_save" type="submit" class="btn btn-default" name="btn_save">Save</button></div></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div></div>
                                     </div>
                                 
 

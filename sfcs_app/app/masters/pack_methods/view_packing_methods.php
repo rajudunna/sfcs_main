@@ -28,7 +28,7 @@
 			}else{
 				$status="In-Active";
 			}
-			echo "<tr><td>".$row["pack_id"]."</td><td>".$row["pack_method_name"]." </td><td>".$status."</td><td><a href='$url&rowid=$rowid&pack_method_name=$pack_method_name&status=$status' class='editor_edit'>Edit</a> / <a href='$url1==&rowid=$rowid&pack_method_name=$pack_method_name&status=$status' class='editor_remove'>Delete</a></td></tr>";
+			echo "<tr><td>".$row["pack_id"]."</td><td>".$row["pack_method_name"]." </td><td>".$status."</td><td><a href='$url&rowid=$rowid&pack_method_name=$pack_method_name&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1==&rowid=$rowid&pack_method_name=$pack_method_name&status=$status' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
@@ -43,3 +43,35 @@ $(document).ready(function() {
     $('#tbl_packing_method').DataTable();
 } );
 </script>
+<style>
+table th
+{
+	border: 1px solid grey;
+	text-align: center;
+    background-color: #003366;
+	color: WHITE;
+	white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+	background-color: white;
+}
+table tr
+{
+	border: 1px solid grey;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid grey;
+	text-align: center;
+	white-space:nowrap;
+	color:black;
+}
+</style>
