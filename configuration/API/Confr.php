@@ -79,7 +79,7 @@ class confr{
      * 
      * @param string $configItem it is config item name
      * 
-     * @return string|null The config item value or null if none provided
+     * @return mixed|null The config item value or null if none provided
      *
      * @example $confr = new confr("file/path.json");
      * @example $confr->get("your_confit_Item_Name");
@@ -110,9 +110,12 @@ class confr{
      * 
      */
     public function getDBConfig(){
-        return $this->configItems['database_info'];
+        return $this->configItems['mysql_database_info'];
     }
 
+    public function getMssqlDBConfig(){
+        return $this->configItems['mssql_database_info'];
+    }
 
     /**
      * Returns the database mysqli connection object.

@@ -35,7 +35,8 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 <br/>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php
-	include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+    //error_reporting(0);
+	include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 	$php_self = explode('/',$_SERVER['PHP_SELF']);
 	array_pop($php_self);
 	$url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5.php");
