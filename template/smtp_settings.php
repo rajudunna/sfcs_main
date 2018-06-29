@@ -78,12 +78,15 @@ if (!function_exists('write_ini_file')) {
 
 
 include($_SERVER["DOCUMENT_ROOT"].'\configuration\API\confr.php');
-$conf = new confr($_SERVER["DOCUMENT_ROOT"].'\configuration\config-builder\saved_fields\fields.json');
+$conf = new confr($_SERVER["DOCUMENT_ROOT"].'\configuration\API\saved_fields\fields.json');
 $smtp_server= $conf->get('smtp-server-name');
 $user_smtp=$conf->get('smtp-user-name');
 $pass_smtp= $conf->get('smtp-password');
 $port_smtp= $conf->get('smtp-port');
-$ini_array = parse_ini_file('C:\xampp\sendmail\sendmail.ini',true);
+$doc_path= $_SERVER['DOCUMENT_ROOT'];
+$xampp_path=explode('/',$doc_path,3);
+$path_xampp=chop($doc_path,$xampp_path[2]);
+$ini_array = parse_ini_file($path_xampp.'\sendmail\sendmail.ini',true);
 $ini_array['sendmail']['smtp_server'] = $smtp_server;
 $ini_array['sendmail']['smtp_port'] =  $port_smtp;
 $ini_array['sendmail']['auth_username'] =$user_smtp;
@@ -91,7 +94,7 @@ $ini_array['sendmail']['auth_password'] = $pass_smtp;
 $ini_array['sendmail']['force_sender'] = $user_smtp;
 
 
-if(write_ini_file('C:\xampp\sendmail\sendmail.ini', $ini_array))
+if(write_ini_file($path_xampp.'\sendmail\sendmail.ini', $ini_array))
 {
     echo "Successfully Changes Smtp Settings";
 }
