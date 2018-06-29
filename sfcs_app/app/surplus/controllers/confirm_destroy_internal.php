@@ -67,14 +67,12 @@ function enable_button()
 			if(isset($_POST['confirm']))
 			{
 				$schedule=array_unique($_POST['sch_list']);
-
 				for($i=0;$i<sizeof($schedule);$i++)
 				{
 						//To store the reserve locations cartons in remarks column in bai_qms_db details before destory not confirmation
 						$sql="update bai_qms_db set remarks=location_id where qms_schedule='".$schedule[$i]."' and location_id<>'INTDESTROY' and qms_tran_type=13";
 						// echo "</br>Update Remarks :".$sql."</br>";
 						mysqli_query($link, $sql) or exit("Sql Error:$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-						
 						$sql="update bai_qms_db set location_id='INTDESTROY' where qms_schedule='".$schedule[$i]."' and location_id<>'INTDESTROY' and qms_tran_type=13";
 						//echo "</br>Location Update : ".$sql."</br>";
 						mysqli_query($link, $sql) or exit("Sql Error:$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -141,7 +139,8 @@ function enable_button()
 								$row_count++;
 								$table="<tr class='foo' id='rowchk$x'>";
 								$table.="<td>".($x+1)."</td>";
-								$table.="<td>".$sql_row['qms_style']."</td>";
+								$sched = $sql_row['qms_schedule'];
+								$table.="<td>".$sql_row['qms_style']."</td><input type='hidden' name='sch_list[]' value='$sched'>";
 								$table.="<td>".$sql_row['qms_schedule']."</td>";
 								$table.="<td>".$sql_row['qms_color']."</td>";
 								$table.="<td>".$sql_row['qms_size']."</td>";
