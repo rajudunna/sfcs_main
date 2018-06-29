@@ -94,10 +94,10 @@
                 <?php
                     if($active_status=="Active"){
                         echo '<option value="0" selected>Active</option>';
-                        echo '<option value="1">Inactive</option>';
+                        echo '<option value="1">In-Active</option>';
                     }else{
                         echo '<option value="0">Active</option>';
-                        echo '<option value="1" selected>Inactive</option>';
+                        echo '<option value="1" selected>In-Active</option>';
                     }
 
                 ?>

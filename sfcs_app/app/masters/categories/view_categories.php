@@ -28,7 +28,7 @@
 			if($status == 1){
 				$cat_status = "Active";
 			}else{
-				$cat_status = "In active";
+				$cat_status = "In-Active";
 			}
 			$cat_selection=$row["cat_selection"];
 			
