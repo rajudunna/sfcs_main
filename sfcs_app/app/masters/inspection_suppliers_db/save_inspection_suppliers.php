@@ -8,6 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+	<center><h2><b>INSPECTION SUPPLIERS VIEW</b></h2></center></br></br>
+	
+	
 
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -39,11 +42,12 @@
 		//$packing_method="";
 		//$status="";
 	}
+	$action_url = getFullURL($_GET['r'],'insert_inspection_suppliers.php','N');
 	?> 
     <div class="container-fluid">
         <div class="row">
 
-              <form action="index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2luc3BlY3Rpb25fc3VwcGxpZXJzX2RiL2luc2VydF9pbnNwZWN0aW9uX3N1cHBsaWVycy5waHA=" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
+              <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
 			  <input type='hidden' id='tid' name='tid' value=<?php echo $tid; ?> >
                 <div class="container-fluid shadow">
                     <div class="row">
@@ -59,8 +63,11 @@
                                 <div class="row"><div class="col-md-6"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="product_code">Product Code<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
-                    
-                <input id="product_code" type="text" class="form-control k-textbox" data-role="text" required="required" placeholder="Product Code" name="product_code" value=<?php echo $product_code; ?> ><span id="errId1" class="error"></span></div>
+				<select id="product_code" class="form-control" data-role="select" selected="selected" name="product_code" data-parsley-errors-container="#errId2">
+					<option value="fabric" selected>Fabric</option>
+					<option value="Trim">Trim</option></select>
+                <!-- <input id="product_code" type="text" class="form-control k-textbox" data-role="text" required="required" placeholder="Product Code" name="product_code" value=<?php echo $product_code; ?> > -->
+				<span id="errId1" class="error"></span></div>
                 
 		</div></div><div class="col-md-6"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="supplier_code">Supplier Code<span class="req"> *</span></label>

@@ -132,7 +132,7 @@ table.gridtable td {
 				while($row=mysqli_fetch_array($resultr))
 				{
 					$sampleqty=$row["remarks"];
-					$sampleqty=substr($sampleqty,8);
+					//$sampleqty=substr($sampleqty,8);
 					echo "<center><table size=16px; style='border-collapse:collapse;border:none;' class='gridtable label label-warning' align='center'>";
 					echo "<tr><th>Sample Job</th>";
 					if($sampleqty != ''){
@@ -144,6 +144,9 @@ table.gridtable td {
 
 
 				$sizes_array=array("xs","s","m","l","xl","xxl","xxxl","s06","s08","s10","s12","s14","s16","s18","s20","s22","s24","s26","s28","s30");
+
+
+				
 
 				$sql="select distinct order_del_no as sch,order_div from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
 				$result=mysqli_query($link, $sql) or die("Error4 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -500,7 +503,7 @@ table.gridtable td {
 						$tot_outout=0;
 						$temp_module=0;
 						echo "<table class=\"gridtable\"><tr><th>Input Date</th><th>Module#</th><th>Color</th><th>Size</th><th>Input Qty</th><th>Output Qty</th></tr>";
-						$sql55="SELECT * FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref=".$sql_row["job"]." order by ims_mod_no,ims_date,ims_color";
+						$sql55="SELECT * FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' order by ims_mod_no,ims_date,ims_color";
 						//echo $sql5."<br>";
 						$result55=mysqli_query($link, $sql55) or die("Error-".$sql55."-".mysqli_error($GLOBALS["___mysqli_ston"]));			
 						while($sql_row55=mysqli_fetch_array($result55))
