@@ -217,7 +217,7 @@ function haspermission($r){
 function getrbac_user(){
     $username_list=explode('\\',$_SERVER['REMOTE_USER']);
     $user['uname']=strtolower($username_list[1]);
-    //$user['uname'] = 'sfcsproject1';
+    $user['uname'] = 'sfcsproject1';
     GLOBAL $link_ui;
     $query = "SELECT rbac_roles.role_name,rbac_roles.role_id FROM rbac_users LEFT JOIN rbac_roles ON rbac_users.role_id = rbac_roles.role_id WHERE rbac_users.user_name='".$user['uname']."'";
     $res = mysqli_query($link_ui, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
