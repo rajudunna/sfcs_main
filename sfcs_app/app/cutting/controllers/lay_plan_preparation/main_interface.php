@@ -403,7 +403,7 @@ if($flag==1)
 	echo "</tr></thead>";
 }
 
-
+$label = 'Original Quantity';
 if($order_no>0)
 {
 	echo "<tr ><th class=\"heading2\">Original Qty</th>";
@@ -415,10 +415,11 @@ if($order_no>0)
 			echo "<td class=\"sizes\">".$n_s[$sizes_code[$s]]."</td>";
 		//}	
 	}
-	
+	$label = 'Revised Quantity';
 	echo "<td class=\"sizes\">".$n_o_total."</td></tr>";
 }
-	echo "<tr ><th class=\"heading2\">Revised Quantity</th>";
+
+	echo "<tr ><th class=\"heading2\">$label</th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
 		//$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];

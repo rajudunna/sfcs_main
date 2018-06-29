@@ -11,7 +11,10 @@ function makeSteps(){
 		"textarea"=>"textarea",
 	];
 
-	$jsonFile = file_get_contents(realpath("../config-builder/saved_fields/fields.json"));
+	//echo(realpath("../API/saved_fields/fields.json"));
+	//die();
+	
+	$jsonFile = file_get_contents(realpath("../API/saved_fields/fields.json"));
 	$fields = json_decode($jsonFile, true);
 	$steps = [];
 	$index = 1;
@@ -84,6 +87,16 @@ function makeSteps(){
 						],
 					]
 				];
+			}else{
+				$tmpStep['callbacks'] = [
+					[
+						'name'=>'stepCallBack',
+						'execute'=>'after',
+						'params'=> [
+							'stepIndex'=>$key
+						],
+					]
+				];
 			}
 		};
 		$steps[] = $tmpStep;
@@ -91,21 +104,15 @@ function makeSteps(){
 	}
 
 	$steps[] =  [
-		"name" => "Database settings",
+		"name" => "MySQL Database settings",
 		"fields"=> [
-			
 			array(
 				'type' => 'info',
-				'value' => 'Trial version cannot be processed further.',
-			),
-
-			array(
-				'type' => 'info',
-				'value' => 'Specify your database settings here. Please note that the database for our software must be created prior to this step. If you have not created one yet, do so now.',
+				'value' => 'Specify your MySQL database settings here. Please note that the database for our software must be created prior to this step. If you have not created one yet, do so now.',
 			),
 			array(
 				'label' => 'Database hostname',
-				'name' => 'db_hostname',
+				'name' => 'mysql_db_hostname',
 				'type' => 'text',
 				'default' => 'localhost',
 				'validate' => array(
@@ -114,7 +121,7 @@ function makeSteps(){
 			),
 			array(
 				'label' => 'Database username',
-				'name' => 'db_username',
+				'name' => 'mysql_db_username',
 				'type' => 'text',
 				'default' => '',
 				'validate' => array(
@@ -123,7 +130,7 @@ function makeSteps(){
 			),
 			array(
 				'label' => 'Database password',
-				'name' => 'db_password',
+				'name' => 'mysql_db_password',
 				'type' => 'text',
 				'default' => '',
 				'validate' => array(
@@ -132,7 +139,7 @@ function makeSteps(){
 			),
 			array(
 				'label' => 'Database Port',
-				'name' => 'db_port',
+				'name' => 'mysql_db_port',
 				'type' => 'text',
 				'default' => '3306',
 				'validate' => array(
@@ -143,13 +150,154 @@ function makeSteps(){
 		],
 		'callbacks' => array( 
 			array( 
-			  'name' => 'databaseSetUP', 
+			  'name' => 'mysqldatabaseSetUP', 
 			  'execute' => 'after',
 			  'params' => array()
 			) 
 		) 
 	];
 
+	$steps[] =  [
+		"name" => "MSSQL Database settings",
+		"fields"=> [
+			array(
+				'type' => 'info',
+				'value' => 'Specify your MSSQL database settings here. Please note that the database for our software must be created prior to this step. If you have not created one yet, do so now.',
+			),
+			array(
+				'label' => 'Server Name',
+				'name' => 'mssql_db_hostname',
+				'type' => 'text',
+				'default' => 'localhost',
+				'validate' => array(
+					array('rule' => 'required'), // make it "required"
+				),
+			),
+			array(
+				'label' => 'Database username',
+				'name' => 'mssql_db_username',
+				'type' => 'text',
+				'default' => '',
+				'validate' => array(
+					array('rule' => 'required'), // make it "required"
+				),
+			),
+			array(
+				'label' => 'Database password',
+				'name' => 'mssql_db_password',
+				'type' => 'text',
+				'default' => '',
+				// 'validate' => array(
+				// 	array('rule' => 'required'), // make it "required"
+				// ),
+			),
+			array(
+				'label' => 'Database Port',
+				'name' => 'mssql_db_port',
+				'type' => 'text',
+				'default' => '1433',
+				'validate' => array(
+					array('rule' => 'required'), // make it "required"
+					array('rule' => 'numeric'), // make it "required"
+				),
+			),
+		],
+		'callbacks' => array( 
+			array( 
+			  'name' => 'MSSQLdatabaseSetUP', 
+			  'execute' => 'after',
+			  'params' => array()
+			) 
+		) 
+	];
+
+	$steps[] =  [
+		"name" => "MSSQL Linked Server Details",
+		"fields"=> [
+			array(
+				'type' => 'info',
+				'value' => 'Specify your Linked server SP Details.',
+			),
+			array(
+				'label' => 'Server',
+				'name' => 'mssql_ls_server',
+				'type' => 'text',
+				'default' => '',
+				'validate' => array(
+					array('rule' => 'required') // make it "required"
+				),
+			),
+			array(
+				'label' => 'Remote User',
+				'name' => 'mssql_ls_rmtuser',
+				'type' => 'text',
+				'default' => '',
+				'validate' => array(
+					array('rule' => 'required') // make it "required"
+				),
+			),
+			array(
+				'label' => 'Remote Password',
+				'name' => 'mssql_ls_rmtpass',
+				'type' => 'text',
+				'default' => '',
+				'validate' => array(
+					array('rule' => 'required') // make it "required"
+				),
+			),
+		],
+		'callbacks' => array( 
+			array( 
+			  'name' => 'MSSQLlinkedServerSP', 
+			  'execute' => 'after',
+			  'params' => array()
+			) 
+		)
+	];
+
+	$steps[] =  [
+		"name" => "MySQL Linked Server Details",
+		"fields"=> [
+			array(
+				'type' => 'info',
+				'value' => 'Specify your Linked server SP Details.',
+			),
+			array(
+				'label' => 'Server',
+				'name' => 'mysql_ls_server',
+				'type' => 'text',
+				'default' => '',
+				'validate' => array(
+					array('rule' => 'required'), // make it "required"
+				),
+			),
+			array(
+				'label' => 'Remote User',
+				'name' => 'mysql_ls_rmtuser',
+				'type' => 'text',
+				'default' => '',
+				'validate' => array(
+					array('rule' => 'required'), // make it "required"
+				),
+			),
+			array(
+				'label' => 'Remote Password',
+				'name' => 'mysql_ls_rmtpass',
+				'type' => 'text',
+				'default' => '',
+				'validate' => array(
+					array('rule' => 'required'), // make it "required"
+				),
+			),
+		],
+		'callbacks' => array( 
+			array( 
+			  'name' => 'MySQLlinkedServerSP', 
+			  'execute' => 'after',
+			  'params' => array()
+			) 
+		)
+	];
 	return $steps;
 }
 
@@ -159,6 +307,37 @@ function makeSteps(){
 
 $steps = makeSteps();
 
+array_unshift($steps, array(
+	// Step name
+	'name' => 'Configuration Requirements Checks',
+
+	// Items we're going to display
+	'fields' => array(
+
+		// Simple text
+		array( 
+			'type' => 'info', 
+			'value' => 'Please verify that these requirements have been met.', 
+		), 
+		array( 
+			'type' => 'php-config', 
+			'label' => 'PHP settings', 
+			'items' => array( 
+			  'php_version' => array('>=7.0', 'PHP Version'), 
+			  'max_execution_time' => ">=1200",
+			  'max_input_time' => ">=1200",
+			) 
+		),
+		array( 
+			'type' => 'php-modules', 
+			'label' => 'PHP modules', 
+			'items' => array( 
+				'mysqli' => array(true, 'MySQLi'),
+				//'pdo_sqlsrv' => array(true, 'PDO MSSQL')
+			)
+		)
+	),
+));
 
 $steps[] =	array(
 	// Step name

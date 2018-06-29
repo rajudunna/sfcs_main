@@ -9,13 +9,14 @@ $color_code =$_REQUEST['color_code'];
 //echo $color_code;
 $seq_no=$_REQUEST['seq_no'];
  //echo $seq_no;die();
-
 $servername = "192.168.0.110:3326";
 $username = "baiall";
 $password = "baiall";
 $dbname = "bai_rm_pj1";
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+// $conn=$link;
 
-// Create connection
+// // Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
 if (!$conn) {
@@ -41,20 +42,32 @@ if (empty($product_code) ){
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 	}else{
-		//insert 
-		$sql = "INSERT INTO inspection_supplier_db (product_code, supplier_code,complaint_no,supplier_m3_code,color_code,seq_no) VALUES ('$product_code','$supplier_code','$complaint_no','$supplier_m3_code','$color_code','$seq_no')";
-		if (mysqli_query($conn, $sql)) {
-			echo "New record created successfully";
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+		
+		$count_qry= "select * from $bai_rm_pj1.inspection_supplier_db where product_code = '$product_code' and (supplier_code = '$supplier_code' or supplier_m3_code = '$supplier_m3_code')"; 
+		// echo $count_qry;
+		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
+		if($count > 0){
+			$error_msg = 1;
+			// echo "<script>alert('Enter data correctly.')</script>";
 		}
+		else{
+			$sql = "INSERT INTO inspection_supplier_db(product_code, supplier_code,complaint_no,supplier_m3_code,color_code,seq_no) VALUES('$product_code','$supplier_code','$complaint_no','$supplier_m3_code','$color_code','$seq_no')";
+			if (mysqli_query($conn, $sql)) {
+				echo "New record created successfully";
+			}
+			else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
+		}
+		//insert 
 	}
 }
 
-
+$url = getFullURL($_GET['r'],'save_inspection_suppliers.php','N');
 
 
 mysqli_close($conn);
-header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2luc3BlY3Rpb25fc3VwcGxpZXJzX2RiL3NhdmVfaW5zcGVjdGlvbl9zdXBwbGllcnMucGhw');
+header("location: $url&error_msg=$error_msg");
 exit;
+// echo "<script>alert('Enter data correctly.')</script>";
 ?>

@@ -7,13 +7,10 @@ foreach ($_POST["data"] as $key => $value) {
     $data[] = json_decode($value, true);
 }
 
-// var_dump($data);
-// die();
-
 try{
     //$data = json_decode( json_encode( $_POST['data'] ) , true);
     $string = file_get_contents("saved_fields/fields.json");
-    $fields  = json_decode($string, true);
+    $fields = json_decode($string, true);
 
     // if(array_key_exists("steps", $fields)){
         $fields["steps"] = $data;

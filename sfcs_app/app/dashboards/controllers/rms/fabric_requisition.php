@@ -17,11 +17,13 @@ $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/fabric_requisition.php");
 $has_permission=haspermission($url_r);
+// echo "Authp : ".var_dump($has_permission);
+// die();
 
 ?>
 <?php
-
-	$username="sfcsproject1";
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+	// $username="sfcsproject1";
 	// $users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
 	//$mods=array();
 
@@ -36,7 +38,6 @@ $has_permission=haspermission($url_r);
 		// header($_GET['r'],'restrict.php','N');
 	}
 
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	if(isset($_POST['sdat'])) 
 	{ 
 		//echo $_POST['doc'];
