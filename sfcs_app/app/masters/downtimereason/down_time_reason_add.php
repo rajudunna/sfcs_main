@@ -35,7 +35,7 @@
     ?>
     <div class='panel panel-primary'>
 	<div class='panel-heading'>
-		<b>Cutting Tables</b>
+		<b>Downtine Log Reasons</b>
 	</div>
 	<div class='panel-body'>
 
