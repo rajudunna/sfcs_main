@@ -19,7 +19,7 @@
 	$url=getFullURL($_GET['r'],'create_leader_names.php','N');
 	$url1=getFullURL($_GET['r'],'delete_leader_names.php','N');
 	if ($result->num_rows > 0) {
-		echo "<table id='downtime_reason' class='table table-bordered '><thead><tr class='info'><th>S.No</th><th>Employee Id </th><th>Employee Name</th><th> Edit / Delete </th></tr></thead><tbody>";
+		echo "<table id='downtime_reason' class='table table-bordered '><thead><tr ><th>S.No</th><th>Employee Id </th><th>Employee Name</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
 		while($row = $result->fetch_assoc()) {
 			$rowid=$row["id"];
@@ -43,3 +43,35 @@ $(document).ready(function() {
     $('#downtime_reason').DataTable();
 } );
 </script>
+<style>
+table th
+{
+	border: 1px solid grey;
+	text-align: center;
+    background-color: #003366;
+	color: WHITE;
+	white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+	background-color: white;
+}
+table tr
+{
+	border: 1px solid grey;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid grey;
+	text-align: center;
+	white-space:nowrap;
+	color:black;
+}
+</style>

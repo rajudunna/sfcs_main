@@ -93,7 +93,8 @@
     
  
     
-    
+    </div>
+    </div> 
 
 
 
@@ -114,7 +115,6 @@
 include('view_team_leaders.php');
 
 ?>
-</div>
-    </div>
+
 </body>
 </html>

@@ -1,8 +1,8 @@
 	<?php
-	$alert_msg = $_REQUEST['error_msg'];
-	if($alert_msg){
-		echo "<script>swal('Enter data correctly.')</script>";
-	}
+	// $alert_msg = $_REQUEST['error_msg'];
+	// if($alert_msg){
+	// 	echo "<script>swal('Enter data correctly.')</script>";
+	// }
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 	$sql = "SELECT * FROM bai_rm_pj1.`inspection_supplier_db`";
