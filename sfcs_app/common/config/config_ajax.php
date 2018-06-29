@@ -1,9 +1,9 @@
 <?php 
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
-$conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/config-builder/saved_fields/fields.json");
+$conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
 
 function get_config_values($config_id){
-    $conf = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/config-builder/saved_fields/fields.json");
+    $conf = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
     if($config_id=='getmysqldb'){
     return $conf->getDBConfig();
     }else{
@@ -16,7 +16,6 @@ $mysql_details = get_config_values('getmysqldb');
 $host=$mysql_details['db_host'].":".$mysql_details['db_port'];
 $user=$mysql_details['db_user'];
 $pass=$mysql_details['db_pass'];
-
 $central_administration_sfcs='central_administration_sfcs';
 $tbl_view_view_menu="tbl_view_view_menu";
 $view_menu_role="view_menu_role";
