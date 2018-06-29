@@ -32,8 +32,8 @@ class Sentinel
 						$attempt = $_POST['attempt'];
 						$error   = 2;
 						// include_once PML_BASE . '/inc/login.inc.php';
-						self::release();
-						die();
+						// self::release();
+						// die();
 					}
 
 					$loggedin = self::signIn( $_POST['username'] , $_POST['password'] );
@@ -47,8 +47,8 @@ class Sentinel
 						$attempt = $_POST['attempt'];
 						$error   = 1;
 						// include_once PML_BASE . '/inc/login.inc.php';
-						self::release();
-						die();
+						// self::release();
+						// die();
 					}
 				}
 
@@ -57,8 +57,8 @@ class Sentinel
 					$attempt = ( isset( $_GET['attempt'] ) ) ? $_GET['attempt'] : $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
 					$error   = 0;
 					// include_once PML_BASE . '/inc/login.inc.php';
-					self::release();
-					die();
+					// self::release();
+					// die();
 				}
 
 				else if ( self::isAnonymousEnabled( $files ) ) { // Anonymous access is enabled, simply return to let anonymosu users to parse logs
@@ -69,8 +69,8 @@ class Sentinel
 					$attempt = $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
 					$error   = 0;
 					// include_once PML_BASE . '/inc/login.inc.php';
-					self::release();
-					die();
+					// self::release();
+					// die();
 				}
 
 			}
