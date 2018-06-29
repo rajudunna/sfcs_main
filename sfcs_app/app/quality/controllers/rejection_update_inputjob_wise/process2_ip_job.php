@@ -5,7 +5,6 @@ Kirang/20150418 added validation to avoid additional rejections.
 
 <head>
 <?php
-
 //CR# 375 / RameshK - 2014-12-22 / To add supplier names against to the schedule
 // Service Request #440767 / DharaniD / Clear the issue of replace quantity , display module no and shift for replace quantity in remarks column.
 ?>
@@ -101,9 +100,49 @@ th
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/quality/common/php/m3_bulk_or_proc.php"); 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/quality/common/php/ims_size.php");
+function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link)
+{
+   include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+
+	$ims = substr($ims_size2,1);
+
+	if($ims>=01 && $ims<=50)
+	{
+		
+		if($order_tid=='')
+		{
+			$sql23="select title_size_$ims_size2 as size_val,title_flag from $bai_pro3.bai_orders_db_confirm where order_style_no='$ims_style' and order_del_no='$ims_schedule' and order_col_des='$ims_color'";
+		}
+		else
+		{
+			$sql23="select title_size_$ims_size2 as size_val,title_flag from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
+		}
+		//echo $sql23."<br>";
+		$sql_result=mysqli_query($link, $sql23) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+				$size_val=$sql_row['size_val'];
+				$flag = $sql_row['title_flag'];
+	    }
+			
+		if($flag==1)
+		{	
+			return $size_val;
+		}
+		else
+		{
+			return $ims_size2;
+		}		
+	}
+	else
+	{
+		return $ims_size2;
+	}
+					
+}
 
 if(isset($_POST['Update']))
 {
@@ -286,8 +325,8 @@ if(isset($_POST['Update']))
 								{
 									$order_tid=$sql_row_tid["order_tid"];
 								}
-								$category = "'" .implode("','",$in_categories)."'" ;
-								$sql_col="select * from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and category in ($category) and purwidth > 0";
+								
+								$sql_col="select * from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and category in ($in_categories) and purwidth > 0";
 								$sql_result_col=mysqli_query($link, $sql_col) or exit("Sql Error7 $sql_col".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row_col=mysqli_fetch_array($sql_result_col))
 								{
