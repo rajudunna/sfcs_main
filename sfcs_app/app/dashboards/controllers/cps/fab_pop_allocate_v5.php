@@ -48,6 +48,11 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 
 
 		<style>
+		
+		input#allocate_new {
+		display: none;
+		}
+
 		.dataTables_filter {
 		display: none; 
 		}
@@ -154,7 +159,6 @@ document.getElementById('process_message').style.visibility="hidden";
 </script>
 
 <script>
-
 function check_qty(x)
 {
 	var check=0;
@@ -342,6 +346,7 @@ function check_qty2(x,m,n,doc)
 	////  code for shrinkage validation
 ///////////////////////SHRINKAGE VALIDATION ENDS	
 	var check=0;
+	var alloc_disab=0;
 	for(i=0;i<x;i++)
 	{
 		var doc_ref=document.input["doc_ref["+i+"]"].value;
@@ -412,7 +417,7 @@ function check_qty2(x,m,n,doc)
 			check=0;
 			document.getElementById(doc_ref).style.backgroundColor = "RED";
 			//OK document.getElementById('validate').style.visibility="";
-			//OK document.getElementById('allocate_new').style.visibility="hidden";
+			//document.getElementById('allocate_new').style.visibility="hidden";
 			
 			//To show stats
 			document.getElementById('alloc'+doc_ref).innerHTML=parseFloat(alloc_qty.toFixed(2));
@@ -422,8 +427,8 @@ function check_qty2(x,m,n,doc)
 		else
 		{
 			check=1;
+			alloc_disab=Number(alloc_disab)+Number(check);
 			document.getElementById(doc_ref).style.backgroundColor = "GREEN";
-			
 			//To show stats
 			document.getElementById('alloc'+doc_ref).innerHTML=parseFloat(alloc_qty.toFixed(2));
 			//document.getElementById('balal'+doc_ref).innerHTML=Math.round((mat_req-selc),2);
@@ -434,8 +439,15 @@ function check_qty2(x,m,n,doc)
 			}
 		}
 	}
-	
-	
+
+	//new condition added for allocated button enabled/disabled based on quantity
+	if(x==alloc_disab){
+		document.getElementById("allocate_new").style.display = "block";
+	}else{	
+		document.getElementById("allocate_new").style.display = "none";
+	}
+
+
 	if(check==0)
 	{
 		//alert("Please select sufficient qty.");
@@ -444,7 +456,6 @@ function check_qty2(x,m,n,doc)
 	//NEW
 	//document.getElementById('allocate_new').style.visibility="";
 }
-
 
 </script>
 
@@ -986,10 +997,10 @@ if(isset($_POST['allocate']))
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\" onclick=\"check_qty(".sizeof($doc).")\">";
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\">";
 	if ($row_count == '') {
-		echo "<input type=\"submit\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success' disabled>";
+		echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success' disabled>";
 	}
 	else {
-		echo "<input type=\"submit\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
+		echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
 	}
 	// echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
 	
