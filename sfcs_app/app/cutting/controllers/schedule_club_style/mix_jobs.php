@@ -51,8 +51,7 @@
 		//{
 			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db order by order_style_no";	
 		//}
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 
 		echo "<option value=\"NIL\" selected>NIL</option>";
@@ -82,8 +81,7 @@
 			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_joins=\"1\" order by order_date";	
 		//}
 		// echo "working".$sql;
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 
 		echo "<option value=\"NIL\" selected>NIL</option>";
@@ -104,8 +102,7 @@
 		echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" >";
 		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins=\"1\"";
 		//}
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 
 		echo "<option value=\"NIL\" selected>NIL</option>";
@@ -242,10 +239,10 @@ if(isset($_POST['submit']))
 	if(sizeof($ready_cat_ref)>0) 	
 	{
 	    $sql2="truncate mix_temp_desti"; 
-        mysqli_query( $link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        mysqli_query( $link, $sql2) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
         $sql3="truncate mix_temp_source"; 
-        mysqli_query( $link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        mysqli_query( $link, $sql3) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		for($l=0;$l<sizeof($ready_cat_ref);$l++)
 		{
 			$sql416="select * from $bai_pro3.plandoc_stat_log where order_tid='".$ready_cat_order[$l]."' and cat_ref='".$ready_cat_ref[$l]."' and org_doc_no=0"; 
@@ -357,7 +354,7 @@ if(isset($_POST['submit']))
 							$req_qty=$sql_row192['ord_qty'];
 							//$req_qty=$sql_row192['size'];
 							$sql14="select * from $bai_pro3.mix_temp_source where size=\"".$sizes_array[$i]."\" and qty>0 and cat_ref='$cat_ref' group by doc_no order by doc_no*1"; 
-							$sql_result114=mysqli_query( $link, $sql14) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+							$sql_result114=mysqli_query( $link, $sql14) or exit("Sql Error78".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							if(mysqli_num_rows($sql_result114)>0)
 							{
 								while($sql_row11=mysqli_fetch_array($sql_result114)) 
@@ -434,7 +431,7 @@ if(isset($_POST['submit']))
 						$sql14="select * from $bai_pro3.mix_temp_source where size=\"p_".$sizes_array[$i]."\" and qty>0 and cat_ref='$cat_ref' group by doc_no order by doc_no*1";
 						//echo $sql14."<br>"; 
 						//$qty_fill=array();
-						$sql_result114=mysqli_query( $link, $sql14) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+						$sql_result114=mysqli_query( $link, $sql14) or exit("Sql Error96".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($sql_result114)>0)
 						{
 							while($sql_row11=mysqli_fetch_array($sql_result114)) 
@@ -507,7 +504,7 @@ if(isset($_POST['submit']))
 					$size_p=explode(",",$sql_row1x['size']);
 					$size_q=explode(",",$sql_row1x['ratio']);
 					$sqlx1="select max(doc_no)+1 as doc_n from bai_pro3.plandoc_stat_log"; 
-					$sql_resultx1=mysqli_query( $link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					$sql_resultx1=mysqli_query( $link, $sqlx1) or exit("Sql Error963".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($sql_rowx1=mysqli_fetch_array($sql_resultx1)) 
 					{ 
 						$docn=$sql_rowx1["doc_n"];
@@ -546,8 +543,8 @@ if(isset($_POST['submit']))
 				{ 
 					$size_p=explode(",",$sql_row1['size']);
 					$size_q=explode(",",$sql_row1['ratio']);
-					$sqlx1="select max(doc_no)+1 as doc_n from $bai_pro3.bai_pro3.plandoc_stat_log"; 
-					$sql_resultx1=mysqli_query( $link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					$sqlx1="select max(doc_no)+1 as doc_n from $bai_pro3.plandoc_stat_log"; 
+					$sql_resultx1=mysqli_query( $link, $sqlx1) or exit("Sql Error6666".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($sql_rowx1=mysqli_fetch_array($sql_resultx1)) 
 					{ 
 						$docn=$sql_rowx1["doc_n"];
@@ -579,9 +576,9 @@ if(isset($_POST['submit']))
 					unset($size_q);
 				}
 				
-				$sqly32="update $bai_pro3.plandoc_stat_log set org_doc_no=1 where doc_no in (select doc_no from $bai_pro3.bai_pro3.mix_temp_desti where cat_ref='".$cat_ref."')"; 
+				$sqly32="update $bai_pro3.plandoc_stat_log set org_doc_no=1 where doc_no in (select doc_no from $bai_pro3.mix_temp_desti where cat_ref='".$cat_ref."')"; 
 				//echo $sqly32."<br/>"; 
-				mysqli_query( $link, $sqly32) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				mysqli_query( $link, $sqly32) or exit("Sql Error96321".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				
 				//Allocation Stat Log allocation
 				$sql12="SELECT cutt_ref,order_del_no,order_col_des,order_tid,GROUP_CONCAT(distinct doc_no) as docs FROM $bai_pro3.`mix_temp_desti` where cat_ref='".$cat_ref."' GROUP BY order_tid order by order_tid*1"; 
@@ -597,7 +594,7 @@ if(isset($_POST['submit']))
 					$sql_resulta=mysqli_query( $link, $sqla) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$allo_ref=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 					$sql32="select sum(p_s01) as s01,sum(p_s02) as s02,sum(p_s03) as s03,sum(p_s04) as s04,sum(p_s05) as s05,sum(p_s06) as s06,sum(p_s07) as s07,sum(p_s08) as s08,sum(p_s09) as s09,sum(p_s10) as s10,sum(p_s11) as s11,sum(p_s12) as s12,sum(p_s13) as s13,sum(p_s14) as s14,sum(p_s15) as s15,sum(p_s16) as s16,sum(p_s17) as s17,sum(p_s18) as s18,sum(p_s19) as s19,sum(p_s20) as s20,sum(p_s21) as s21,sum(p_s22) as s22,sum(p_s23) as s23,sum(p_s24) as s24,sum(p_s25) as s25,sum(p_s26) as s26,sum(p_s27) as s27,sum(p_s28) as s28,sum(p_s29) as s29,sum(p_s30) as s30,sum(p_s31) as s31,sum(p_s32) as s32,sum(p_s33) as s33,sum(p_s34) as s34,sum(p_s35) as s35,sum(p_s36) as s36,sum(p_s37) as s37,sum(p_s38) as s38,sum(p_s39) as s39,sum(p_s40) as s40,sum(p_s41) as s41,sum(p_s42) as s42,sum(p_s43) as s43,sum(p_s44) as s44,sum(p_s45) as s45,sum(p_s46) as s46,sum(p_s47) as s47,sum(p_s48) as s48,sum(p_s49) as s49,sum(p_s50) as s50 from $bai_pro3.plandoc_stat_log where org_doc_no in (".$docslist.") and order_tid='".$order."'";
-					$sql_resultx32=mysqli_query( $link, $sql32) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					$sql_resultx32=mysqli_query( $link, $sql32) or exit("Sql Error74125".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($sql_rowx32=mysqli_fetch_array($sql_resultx32)) 
 					{
 						for($ik=0;$ik<sizeof($sizes_array);$ik++)
@@ -606,18 +603,18 @@ if(isset($_POST['submit']))
 							{
 								$sqly="update $bai_pro3.allocate_stat_log set allocate_".$sizes_array[$ik]."='".$sql_rowx32[$sizes_array[$ik]]."' where tid='".$allo_ref."'"; 
 								//echo $sqly."<br/>"; 
-								mysqli_query( $link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								mysqli_query( $link, $sqly) or exit("Sql Error41258".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 						}	
 					}
 					$sqly="update $bai_pro3.plandoc_stat_log set allocate_ref='".$allo_ref."' where order_tid='".$order."' and org_doc_no in (".$docslist.")"; 
 					//echo $sqly."<br/>"; 
-					mysqli_query( $link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					mysqli_query( $link, $sqly) or exit("Sql Error745963".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				}
 				//Cat Stat log allocation	
 				$sqlx65="select * from $bai_pro3.cat_stat_log where tid='$cat_ref'"; 
 				//echo $sqlx65."<br>";
-				$sql_resultx65=mysqli_query( $link, $sqlx65) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql_resultx65=mysqli_query( $link, $sqlx65) or exit("Sql Error8765".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_rowx=mysqli_fetch_array($sql_resultx65)) 
 				{ 
 					$sql1="SELECT order_del_no,order_col_des,order_tid FROM $bai_pro3.`mix_temp_desti` WHERE cat_ref='".$cat_ref."' GROUP BY order_tid ORDER BY order_tid*1"; 
@@ -628,7 +625,7 @@ if(isset($_POST['submit']))
 						$tid_new_n=str_replace($order_sch,$sql_row1["order_del_no"],$sql_rowx['order_tid2']);
 						$sqlz="select * from $bai_pro3.cat_stat_log where order_tid='".$sql_row1["order_tid"]."' and order_tid2='".$tid_new_n."'";
 						//echo $sqlz."<br/>";
-						$sql_resultz=mysqli_query($link, $sqlz) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_resultz=mysqli_query($link, $sqlz) or exit("Sql Error321234".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 						while($sql_rowz=mysqli_fetch_array($sql_resultz))
 						{
@@ -637,15 +634,15 @@ if(isset($_POST['submit']))
 						}
 						$sqly="update $bai_pro3.allocate_stat_log set cat_ref='".$tid."' where order_tid='".$order_tid_sub."' and cat_ref='".$cat_ref."'"; 
 						//echo $sqly."<br>";
-						mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						mysqli_query($link, $sqly) or exit("Sql Error76567".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 						$sqly="update $bai_pro3.plandoc_stat_log set cat_ref='$tid' where order_tid='$order_tid_sub' and cat_ref='".$cat_ref."'";
 						//echo $sqly."<br/>";
-						mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						mysqli_query($link, $sqly) or exit("Sql Error9890".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 						$sqly="update $bai_pro3.cat_stat_log set category='".$sql_rowx['category']."',purwidth='".$sql_rowx['purwidth']."',gmtway='".$sql_rowx['gmtway']."',date='".$sql_rowx['date']."',lastup='".$sql_rowx['lastup']."',strip_match='".$sql_rowx['strip_match']."',gusset_sep='".$sql_rowx['gusset_sep']."',patt_ver='".$sql_rowx['patt_ver']."' where tid='$tid' and order_tid2='".$tid_new_n."'";
 						//echo $sqly."<br/>";
-						mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 			   
+						mysqli_query($link, $sqly) or exit("Sql Error75230".mysqli_error($GLOBALS["___mysqli_ston"])); 			   
 					}
 				}
 				//echo sizeof($cat_id_ref)."--".(sizeof($ready_cat_ref)+sizeof($pending_cat_ref)+sizeof($pend_order_ref))."<br>";
@@ -653,13 +650,17 @@ if(isset($_POST['submit']))
 				{				
 					$sqlx="update $bai_pro3.bai_orders_db set order_joins=\"2\" where order_del_no=$order_sch and order_col_des=\"$color\""; 
 					//echo $sqlx."<br>";
-					mysqli_query( $link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					mysqli_query( $link, $sqlx) or exit("Sql Error1.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					 
 					$sqlx="update $bai_pro3.bai_orders_db_confirm set order_joins=\"2\" where order_del_no=$order_sch and order_col_des=\"$color\""; 
 					//echo $sqlx."<br>";
-					mysqli_query( $link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					mysqli_query( $link, $sqlx) or exit("Sql Error1.69".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				}
-				
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+				function Redirect() {
+					location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."\";
+					}
+				</script>";
 				echo " <div class='alert alert-success alert-dismissible'>
 				<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
 				<strong>Success!</strong> Successfully Splitting Completed.

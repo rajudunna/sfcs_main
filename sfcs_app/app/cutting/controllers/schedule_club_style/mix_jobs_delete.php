@@ -10,24 +10,24 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 
 	function firstbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'N'); ?>&style="+document.test.style.value
 	}
 
 	function secondbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 	}
 	</script>
 
 <div class="panel panel-primary">
 	<div class="panel-heading">Mixed Schedule : Job Segregation Panel (PO Level)</div>
 	<div class="panel-body">
-	<form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'mix_jobs.php',0,'R') ?>">
+	<form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'R') ?>">
 
 	<?php
 		$style=$_GET['style'];
@@ -123,7 +123,7 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 		if(strlen($color)>0 and $color!="NIL"){
 			//echo '<input type="submit" name="submit" value="Segregate">';
 			echo"<div class='col-md-3'>";
-			echo "<input type=\"submit\"  class='btn btn-success' value=\"Clear\" name=\"clear\"  id=\"clear\" onclick=\"document.getElementById('clear').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
+			echo "<label></label><br/><input type=\"submit\"  class='btn btn-success' value=\"Clear\" name=\"clear\"  id=\"clear\" onclick=\"document.getElementById('clear').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
 			echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait data is processing...!<h5></span></div>";
 		}
 	?>
@@ -139,8 +139,8 @@ if(isset($_POST['clear']))
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$docs=array();
-	$sql="slect * from $bai_pro3.plando_stat_log where order_tid like \"%".$schedule."%\"";
-	$sql_result451=mysqli_query($link, $sql) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"%".$schedule."%\"";
+	$sql_result451=mysqli_query($link, $sql) or die("Error 1 ".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result451)>0)
 	{
 		while($sql_row457=mysqli_fetch_array($sql_result451))
@@ -148,13 +148,13 @@ if(isset($_POST['clear']))
 			$docs[]=$sql_row457["doc_no"];
 		}
 		$sql4533="select order_tid from $bai_pro3.bai_orders_db where order_joins='J".$order_del_no."' and order_col_des=\"".$color."\"";
-		$sql_result4533=mysqli_query($link, $sql4533) or die("Error".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result4533=mysqli_query($link, $sql4533) or die("Error 2".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row4533=mysqli_fetch_array($sql_result4533))
 		{
 			$order_tids[]=$sql_row4533["order_tid"];
 		}
-		$sql32="slect * from $brandix_bts.tbl_miniorder_data where docket_number in (select doc_no from $bai_pro3.pladoc_stat_log wherer org_doc_no in (".implode(",",$docs)."))";
-		$sql_result451=mysqli_query($link, $sql32) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql32="select * from $brandix_bts.tbl_miniorder_data where docket_number in (select doc_no from $bai_pro3.pladoc_stat_log wherer org_doc_no in (".implode(",",$docs)."))";
+		$sql_result451=mysqli_query($link, $sql32) or die("Error 3".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result451)==0)
 		{
 			$sql4536="delete from $bai_pro3.allocate_stat_log where order_tid in ('".implode("','",$order_tids)."')";
@@ -167,15 +167,17 @@ if(isset($_POST['clear']))
 			// $sql43="slect * from brandix_bts.tbl_cut_master where doc_no in (slect doc from bai_pro3.plando_stat_log where org_doc_no in (".implode(",",$docs)."))";
 			// $sql_result4514=mysql_query($sql43,$link) or die("Error".$sql451.mysql_error());
 			
-			$sql1="slect * from $bai_pro3.plando_stat_log where org_doc_no in (".implode(",",$docs).")";
+			$sql1="select * from $bai_pro3.plando_stat_log where org_doc_no in (".implode(",",$docs).")";
 			echo $sql1."<br>";
 			//$sql_result4513=mysql_query($sql1,$link) or die("Error".$sql451.mysql_error());
 			
 			$sql45331="update $bai_pro3.bai_orders_db set order_joins='1' where order_order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
-			$sql_result45313=mysqli_query($link, $sql45331) or die("Error".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result45313=mysqli_query($link, $sql45331) or die("Error 4".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql45331="update $bai_pro3.bai_orders_db_confirm set order_joins='1' where order_order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
-			$sql_result45313=mysqli_query($link, $sql45331) or die("Error".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result45313=mysqli_query($link, $sql45331) or die("Erro 5r".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
+
+			echo "<script>swal('Mini orders are Deleted.Please split Jobs again','','warning');</script>";
 						
 		}
 		else

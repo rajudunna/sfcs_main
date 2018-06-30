@@ -62,17 +62,12 @@
 //echo $style.$schedule.$color;
 ?>
 <div class='panel panel-primary'>
-	<div class='panel panel-heading'>Color Clubbing (Style)</div>
+	<div class='panel panel-heading'>Schedule Clubbing (Style)</div>
 	<div class='panel-body'>
 		<form name="test" action="index.php?r=<?= $_GET['r'] ?>" method="post">
 		<?php
 
 		echo "<div class='col-sm-3'>";
-			//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
-			//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-			//{
-				$sql="select distinct order_style_no from $bai_pro3.bai_orders_db where order_style_no not in ('H18122AA       ','I292550A       ','I292553A       ','I292580A       ','I292653A       ','I296643A       ','I96632AA       ','I96646AA       ','I97183AA','IDUMY929','M04600AA       ','M04600AB       ','M04600AC','M04634AD       ','M04634AE       ','M04634AF','M04634AG','M04641AA       ','M04648AA','M04649AA','M05083AA','M06484AQ       ','M06484AR','M06485AP       ','M07562AA','M09313AE       ','M09313AG       ','M09313AH','M4600GAA       ','M4634LAA','M4634RAA','M7028AAE       ','M7028AAF','N12201AE       ','N19201AD       ','N19801AB       ','N19801AC       ','N7118SAH       ','N7118SAI       ','S16580AA       ','S174815A       ','S174815B       ','S174815C       ','S17761AA       ','S17761AB       ','S17761AC       ','S17764AA       ','S17764AB       ','S17764AC       ','S17767AA       ','S17767AB       ','S17767AC       ','S17775AA       ','S17775AB       ','S17775AC       ','S19876AA       ','S19879AA       ','S19965AA       ','U10098AJ       ','U10217AH       ','U10217AI','U20128AH       ','U20128AI','U30002AH       ','U30002AI','U30148AK       ','U30148AL','U50027AK       ','U50027AL','U60116AK       ','U60117AK       ','U60117AL','U90008AH       ','U90008AI','YCI028AA','YCI278AA','YCI404AA','YCI553AA','YCI931AA','YCL028AA','YCL278AA','YCL404AA','YCL553AA','YCL931AA','YSI028AA','YSI278AA','YSI404AA','YSI553AA','YSI931AA') order by order_style_no";		
-			//}
 			$sql = "select distinct order_style_no from $bai_pro3.bai_orders_db order by order_style_no";
 			$sql_result=mysqli_query($link,$sql) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			echo "<label for='style'>Select Style</label>
@@ -423,13 +418,13 @@ if(isset($_POST['fix']))
 		$sql17="SELECT order_tid,order_tid2,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_del_no IN 
 		('".implode("','",$selected)."') AND order_col_des='$color') GROUP BY order_tid ORDER BY cnt DESC LIMIT 1"; 
         //echo $sql17."<br>";
-	    $sql_result17=mysqli_query( $link, $sql17) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	    $sql_result17=mysqli_query( $link, $sql17) or exit("Sql Error5666".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row17=mysqli_fetch_array($sql_result17)) 
         { 
 			$sql="select * from $bai_pro3.cat_stat_log csl
 					left join $bai_pro3.bai_orders_db bdb on bdb.order_tid = csl.order_tid 
 					where csl.order_tid='".$sql_row17["order_tid"]."'";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Erro5777r".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$style=$sql_row['order_style_no'];
