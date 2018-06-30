@@ -7,12 +7,12 @@
 <script>
 	function firstbox()
 	{
-		window.location.href ="self_url&style="+document.test.style.value
+		window.location.href ="<?= $self_url ?>&style="+document.test.style.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="self_url&style="+document.test.style.value+"&color="+document.test.color.value
+		window.location.href ="<?= $self_url ?>&style="+document.test.style.value+"&color="+document.test.color.value
 	}
 
 	function SetAllCheckBoxes(FormName, FieldName, CheckValue)
@@ -131,7 +131,7 @@ if(isset($_POST['submit']))
 	echo "</select>";
 	echo "</div>";
 
-	if(isset($_GET['schedule'])){	
+	if(isset($_GET['color'])){	
 		echo "<div class='col-sm-1'>";
 			echo "<label></label><br/>";
 			echo "<input type='submit' class='btn btn-primary' value='submit' name='clear'>";

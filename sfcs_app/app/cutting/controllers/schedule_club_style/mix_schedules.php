@@ -118,10 +118,10 @@
 	echo "</select>";
 	echo "</div>";
 
-	if(isset($_GET['color'])){
+	if(isset($_GET['style'])){
 		echo "<div class='col-sm-1'>";
 			echo "<label></label><br/>";
-			echo "<input type='submit' class='btn btn-primary' value='submit' name='submit'>";
+			echo "<input type='submit' class='btn btn-success' value='submit' name='submit'>";
 		echo "</div>";	
 	}	
 ?>
