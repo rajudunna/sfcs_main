@@ -130,7 +130,7 @@ function button_disable()
 	<a href='<?= $url ?>' class='pull-right btn btn-danger'>Go Back</a>
 </div>	
 
-<form name="test" action="<?php echo $_GET['r']; ?>" method="post" enctype="multipart/form data">
+<form name="test" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url'];?>" method="post" enctype="multipart/form data">
 <?php 
 
 
@@ -225,18 +225,13 @@ echo "</table>";
 
 echo "<input type=\"hidden\" name=\"style_new\" value=\"$style\"><input type=\"hidden\" name=\"schedule_new\" value=\"$schedule\"><input type=\"hidden\" name=\"color_new\" value=\"$color\">";
 echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
-echo "<input type=\"submit\" id=\"update\" name=\"update\" value=\"Update\" onclick=\"javascript:button_disable();\">";
+echo "<input type=\"submit\" class=\"btn btn-primary\" id=\"update\" name=\"update\" value=\"Update\" onclick=\"javascript:button_disable();\">";
 
 echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font></h2></div>';
 echo "</form>";
 }
 ?>
-</div><!-- panel body-->
-</div><!-- panel -->
 
-
-</body>
-</html>
 
 
 <?php
@@ -278,10 +273,15 @@ if(isset($_POST['update']))
 	$url1=getFullURL($_GET['r'],'pending.php','N');
 	echo "<h2><font color=\"green\">Successfully Updated!</font></h2>";
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
-	//echo "<script type=\"text/javascript\"> window.close(); </script>";
 	
 }
 
 
 
 ?>
+</div><!-- panel body-->
+</div><!-- panel -->
+
+
+</body>
+</html>

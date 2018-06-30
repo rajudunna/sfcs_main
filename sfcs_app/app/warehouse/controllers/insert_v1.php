@@ -542,7 +542,7 @@ for($j=0;$j<100;$j++)
 				// echo '<td><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" value=""  onkeypress="return validate2(event)"></td>';	
 				echo '<td><div class="col-md-6 col-md-offset-3">
 				<input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']"  
-				value="" class="form-control float" onChange="verify_dup_box_no(this)"/>
+				value="" class="form-control alpha" onChange="verify_dup_box_no(this)"/>
 				</div></td>';	
 			}
 		}
