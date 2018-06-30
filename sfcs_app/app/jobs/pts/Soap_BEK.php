@@ -152,13 +152,18 @@ include('Soap_Op_Update_bek.php');
 					$PTSService = new PTSService();
 					if($value['ScrapReason'] == ""){
 						$response = $PTSService->UpdateM3($UpdateM3);
+						// var_dump($response );
 					}
 					if($value['ScrapReason'] != ""){
 						$response = $PTSService->UpdateScrap($UpdateScrap);
+						// var_dump($response );
 					}
 					
 					if(isset($response->detail)){
 						$Error = $response->detail->FaultDetail->ErrorCode.'-'.$response->detail->FaultDetail->Message;
+					}
+					if(isset($response->faultstring)){
+						$Error = $response->faultstring;
 					}
 					
 					if(isset($response->UpdateM3Result)){
