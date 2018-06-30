@@ -31,8 +31,9 @@ class Sentinel
 					if ( ! csrf_verify() ) {
 						$attempt = $_POST['attempt'];
 						$error   = 2;
-						include_once PML_BASE . '/inc/login.inc.php';
-						self::release();
+						// include_once PML_BASE . '/inc/login.inc.php';
+						// self::release();
+						header( "Location: " . $_POST['attempt'] );
 						die();
 					}
 
@@ -46,8 +47,9 @@ class Sentinel
 					else { // error while signing in
 						$attempt = $_POST['attempt'];
 						$error   = 1;
-						include_once PML_BASE . '/inc/login.inc.php';
-						self::release();
+						// include_once PML_BASE . '/inc/login.inc.php';
+						// self::release();
+						header( "Location: " . $_POST['attempt'] );
 						die();
 					}
 				}
@@ -56,8 +58,9 @@ class Sentinel
 
 					$attempt = ( isset( $_GET['attempt'] ) ) ? $_GET['attempt'] : $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
 					$error   = 0;
-					include_once PML_BASE . '/inc/login.inc.php';
-					self::release();
+					// include_once PML_BASE . '/inc/login.inc.php';
+					// self::release();
+					header( "Location: " . $_POST['attempt'] );
 					die();
 				}
 
@@ -68,8 +71,9 @@ class Sentinel
 				else { // send form
 					$attempt = $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
 					$error   = 0;
-					include_once PML_BASE . '/inc/login.inc.php';
-					self::release();
+					// include_once PML_BASE . '/inc/login.inc.php';
+					// self::release();
+					header( "Location: " . $_POST['attempt'] );
 					die();
 				}
 
