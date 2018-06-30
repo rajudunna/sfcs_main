@@ -31,11 +31,9 @@ class Sentinel
 					if ( ! csrf_verify() ) {
 						$attempt = $_POST['attempt'];
 						$error   = 2;
-						// include_once PML_BASE . '/inc/login.inc.php';
-						// self::release();
-						// die();
-						include_once 'inc/global.inc.php';
-						load_default_constants();
+						include_once PML_BASE . '/inc/login.inc.php';
+						self::release();
+						die();
 					}
 
 					$loggedin = self::signIn( $_POST['username'] , $_POST['password'] );
@@ -48,11 +46,9 @@ class Sentinel
 					else { // error while signing in
 						$attempt = $_POST['attempt'];
 						$error   = 1;
-						// include_once PML_BASE . '/inc/login.inc.php';
-						// self::release();
-						// die();
-						include_once 'inc/global.inc.php';
-						load_default_constants();
+						include_once PML_BASE . '/inc/login.inc.php';
+						self::release();
+						die();
 					}
 				}
 
@@ -60,11 +56,9 @@ class Sentinel
 
 					$attempt = ( isset( $_GET['attempt'] ) ) ? $_GET['attempt'] : $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
 					$error   = 0;
-					// include_once PML_BASE . '/inc/login.inc.php';
-					// self::release();
-					// die();
-					include_once 'inc/global.inc.php';
-					load_default_constants();
+					include_once PML_BASE . '/inc/login.inc.php';
+					self::release();
+					die();
 				}
 
 				else if ( self::isAnonymousEnabled( $files ) ) { // Anonymous access is enabled, simply return to let anonymosu users to parse logs
@@ -74,11 +68,9 @@ class Sentinel
 				else { // send form
 					$attempt = $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
 					$error   = 0;
-					// include_once PML_BASE . '/inc/login.inc.php';
-					// self::release();
-					// die();
-					include_once 'inc/global.inc.php';
-					load_default_constants();
+					include_once PML_BASE . '/inc/login.inc.php';
+					self::release();
+					die();
 				}
 
 			}
@@ -95,9 +87,7 @@ class Sentinel
 					else { // No anonymous access, redirect to login page
 						$error   = 3;
 						$attempt = '?';
-						// include_once PML_BASE . '/inc/login.inc.php';
-						include_once 'inc/global.inc.php';
-						load_default_constants();
+						include_once PML_BASE . '/inc/login.inc.php';
 					}
 
 					die();
