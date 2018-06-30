@@ -40,9 +40,11 @@ class Sentinel
 					$loggedin = self::signIn( 'anil' , '123456' );
 
 					if ( is_array( $loggedin ) ) { // signed in
-						include_once 'inc/global.inc.php';
-						load_default_constants();
-						header( "Location: " . $_POST['attempt'] );
+						// include_once 'inc/global.inc.php';
+						// load_default_constants();
+						// header( "Location: " . $_POST['attempt'] );
+						// die();
+						echo "anil";
 						die();
 					}
 
