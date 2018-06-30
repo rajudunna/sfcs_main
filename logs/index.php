@@ -16,14 +16,14 @@ include_once 'inc/global.inc.php';
 |--------------------------------------------------------------------------
 |
 */
-if ( version_compare( PHP_VERSION , PHP_VERSION_REQUIRED ) < 0 ) {
-	$title    = __( 'Oups!' );
-	$message  = sprintf( __( 'PHP version %s is required but your server run %s.') , PHP_VERSION_REQUIRED , PHP_VERSION );
-	$link_url = HELP_URL;
-	$link_msg = __('Learn more');
-	include_once 'inc/error.inc.php';
-	die();
-}
+// if ( version_compare( PHP_VERSION , PHP_VERSION_REQUIRED ) < 0 ) {
+// 	$title    = __( 'Oups!' );
+// 	$message  = sprintf( __( 'PHP version %s is required but your server run %s.') , PHP_VERSION_REQUIRED , PHP_VERSION );
+// 	$link_url = HELP_URL;
+// 	$link_msg = __('Learn more');
+// 	include_once 'inc/error.inc.php';
+// 	die();
+// }
 
 
 /*
@@ -32,30 +32,30 @@ if ( version_compare( PHP_VERSION , PHP_VERSION_REQUIRED ) < 0 ) {
 |--------------------------------------------------------------------------
 |
 */
-$config_file_name = get_config_file_name();
-if ( is_null( $config_file_name ) ) {
-	$title    = __( 'Welcome!' );
-	$message  = '';
-	$message .= '<br/>';
-	$message .= __( 'Pimp my Log is not configured.');
-	$message .= '<br/><br/>';
-	$message .= '<span class="glyphicon glyphicon-cog"></span> ';
-	$message .= sprintf( __( 'You can manually copy <code>cfg/config.example.php</code> to %s in the root directory and change parameters. Then refresh this page.' ) , '<code>' . CONFIG_FILE_NAME . '</code>' );
-	$message .= '<br/><br/>';
-	$message .= '<span class="glyphicon glyphicon-heart-empty"></span> ';
-	$message .= __( 'Or let me try to configure it for you!' );
-	$message .= '<br/><br/>';
-	if ( SUHOSIN_LOADED === true ) {
-		$message .= '<div class="alert alert-danger"><strong>';
-		$message .= sprintf( __('Suhosin extension is loaded, according to its configuration, Pimp My Log could not run normally... More information %shere%s.') , '<a href="' . SUHOSIN_URL . '">' , '</a>' );
-		$message .= '</strong></div>';
-		$message .= '<br/><br/>';
-	}
-	$link_url = 'inc/configure.php?' . $_SERVER['QUERY_STRING'];
-	$link_msg = __('Configure now');
-	include_once 'inc/error.inc.php';
-	die();
-}
+// $config_file_name = get_config_file_name();
+// if ( is_null( $config_file_name ) ) {
+// 	$title    = __( 'Welcome!' );
+// 	$message  = '';
+// 	$message .= '<br/>';
+// 	$message .= __( 'Pimp my Log is not configured.');
+// 	$message .= '<br/><br/>';
+// 	$message .= '<span class="glyphicon glyphicon-cog"></span> ';
+// 	$message .= sprintf( __( 'You can manually copy <code>cfg/config.example.php</code> to %s in the root directory and change parameters. Then refresh this page.' ) , '<code>' . CONFIG_FILE_NAME . '</code>' );
+// 	$message .= '<br/><br/>';
+// 	$message .= '<span class="glyphicon glyphicon-heart-empty"></span> ';
+// 	$message .= __( 'Or let me try to configure it for you!' );
+// 	$message .= '<br/><br/>';
+// 	if ( SUHOSIN_LOADED === true ) {
+// 		$message .= '<div class="alert alert-danger"><strong>';
+// 		$message .= sprintf( __('Suhosin extension is loaded, according to its configuration, Pimp My Log could not run normally... More information %shere%s.') , '<a href="' . SUHOSIN_URL . '">' , '</a>' );
+// 		$message .= '</strong></div>';
+// 		$message .= '<br/><br/>';
+// 	}
+// 	$link_url = 'inc/configure.php?' . $_SERVER['QUERY_STRING'];
+// 	$link_msg = __('Configure now');
+// 	include_once 'inc/error.inc.php';
+// 	die();
+// }
 
 
 /*
@@ -84,35 +84,35 @@ $current_user = Sentinel::attempt( $files );
 */
 $errors = config_check( $files );
 
-if ( $errors === false ) {
-	$title    = __( 'Oups!' );
-	$message  = '<br/>';
-	$message .= __( 'Your access is disabled, you cannot view any log file.' );
-	$message .= '<br/>';
-	$message .= __( 'Please contact your administrator.' );
-	$message .= '<br/><br/>';
-	$link_url = '?signout&l=' . $locale;
-	$link_msg = __('Sign out');
-	include_once 'inc/error.inc.php';
-	die();
-}
+// if ( $errors === false ) {
+// 	$title    = __( 'Oups!' );
+// 	$message  = '<br/>';
+// 	$message .= __( 'Your access is disabled, you cannot view any log file.' );
+// 	$message .= '<br/>';
+// 	$message .= __( 'Please contact your administrator.' );
+// 	$message .= '<br/><br/>';
+// 	$link_url = '?signout&l=' . $locale;
+// 	$link_msg = __('Sign out');
+// 	include_once 'inc/error.inc.php';
+// 	die();
+// }
 
-if ( is_array( $errors ) ) {
-	$title    = __( 'Oups!' );
-	$message  = '<br/>';
-	$message .= __( '<code>config.user.json</code> configuration file is buggy:' ) . '<ul>';
-	foreach ( $errors as $error ) {
-		$message .= '<li>' . $error . '</li>';
-	}
-	$message .= '</ul>';
-	$message .= '<br/>';
-	$message .= __( 'If you want me to build the configuration for you, please remove file <code>config.user.json</code> at root and click below.' );
-	$message .= '<br/><br/>';
-	$link_url = 'inc/configure.php?' . $_SERVER['QUERY_STRING'];
-	$link_msg = __('Configure now');
-	include_once 'inc/error.inc.php';
-	die();
-}
+// if ( is_array( $errors ) ) {
+// 	$title    = __( 'Oups!' );
+// 	$message  = '<br/>';
+// 	$message .= __( '<code>config.user.json</code> configuration file is buggy:' ) . '<ul>';
+// 	foreach ( $errors as $error ) {
+// 		$message .= '<li>' . $error . '</li>';
+// 	}
+// 	$message .= '</ul>';
+// 	$message .= '<br/>';
+// 	$message .= __( 'If you want me to build the configuration for you, please remove file <code>config.user.json</code> at root and click below.' );
+// 	$message .= '<br/><br/>';
+// 	$link_url = 'inc/configure.php?' . $_SERVER['QUERY_STRING'];
+// 	$link_msg = __('Configure now');
+// 	include_once 'inc/error.inc.php';
+// 	die();
+// }
 
 
 /*

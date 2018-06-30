@@ -1,106 +1,37 @@
 
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-
-<?php 
-include($_SERVER['DOCUMENT_ROOT']."/server/user_acl_v1.php");
-include($_SERVER['DOCUMENT_ROOT']."/server/group_def.php"); 
-$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
-?>
-<?php
-include("header_scripts.php"); 
-?>
-
+<?php $self_url = 'index.php?r='.$_GET['r']; ?>
 <script>
+	function firstbox()
+	{
+		window.location.href ="self_url&style="+document.test.style.value
+	}
 
-function firstbox()
-{
-	window.location.href ="mix_schedules_delete.php?style="+document.test.style.value
-}
+	function thirdbox()
+	{
+		window.location.href ="self_url&style="+document.test.style.value+"&color="+document.test.color.value
+	}
 
-function thirdbox()
-{
-	window.location.href ="mix_schedules_delete.php?style="+document.test.style.value+"&color="+document.test.color.value
-}
+	function SetAllCheckBoxes(FormName, FieldName, CheckValue)
+	{
+		if(!document.forms[FormName])
+			return;
+		var objCheckBoxes = document.forms[FormName].elements[FieldName];
+		if(!objCheckBoxes)
+			return;
+		var countCheckBoxes = objCheckBoxes.length;
+		if(!countCheckBoxes)
+			objCheckBoxes.checked = CheckValue;
+		else
+			// set the check value for all check boxes
+			for(var i = 0; i < countCheckBoxes; i++)
+				objCheckBoxes[i].checked = CheckValue;
+	}
+	</script>
 
-</script>
-<link href="style.css" rel="stylesheet" type="text/css" />
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
-<style>
-body
-{
-	font-family:calibri;
-	font-size:12px;
-}
-
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-white-space:nowrap; 
-}
-
-table td.lef
-{
-	border: 1px solid black;
-	text-align: left;
-white-space:nowrap; 
-}
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    	background-color: BLUE;
-	color: WHITE;
-white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
-
-
-}
-
-}
-</style>
-
-<SCRIPT>
-
-function SetAllCheckBoxes(FormName, FieldName, CheckValue)
-{
-	if(!document.forms[FormName])
-		return;
-	var objCheckBoxes = document.forms[FormName].elements[FieldName];
-	if(!objCheckBoxes)
-		return;
-	var countCheckBoxes = objCheckBoxes.length;
-	if(!countCheckBoxes)
-		objCheckBoxes.checked = CheckValue;
-	else
-		// set the check value for all check boxes
-		for(var i = 0; i < countCheckBoxes; i++)
-			objCheckBoxes[i].checked = CheckValue;
-}
-</SCRIPT>
-</head>
-
-<body>
-
-<?php include("dbconf.php"); ?>
-<?php include("menu_content.php"); ?>
 <?php
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
@@ -117,108 +48,99 @@ if(isset($_POST['submit']))
 
 //echo $style.$schedule.$color;
 ?>
-<div id="page_heading"><span style="float: left"><h3>Schedule Mix Delete Panel</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>
 
+<div class='panel panel-primary'>
+	<div class='panel panel-heading'>Schedule Mix Delete Panel</div>
+	<div class='panel-body'>
 
-
-<form name="test" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<form name="test" action="index.php?r=<?php $_GET['r'] ?>" method="post">
 <?php
 
-echo "Select Style: <select name=\"style\" onchange=\"firstbox();\" >";
+		echo "<div class='col-sm-3'>";
+			//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
+			//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
+			//{
+				// $sql="select distinct order_style_no from $bai_pro3.bai_orders_db where order_style_no not in ('H18122AA       ','I292550A       ','I292553A       ','I292580A       ','I292653A       ','I296643A       ','I96632AA       ','I96646AA       ','I97183AA','IDUMY929','M04600AA       ','M04600AB       ','M04600AC','M04634AD       ','M04634AE       ','M04634AF','M04634AG','M04641AA       ','M04648AA','M04649AA','M05083AA','M06484AQ       ','M06484AR','M06485AP       ','M07562AA','M09313AE       ','M09313AG       ','M09313AH','M4600GAA       ','M4634LAA','M4634RAA','M7028AAE       ','M7028AAF','N12201AE       ','N19201AD       ','N19801AB       ','N19801AC       ','N7118SAH       ','N7118SAI       ','S16580AA       ','S174815A       ','S174815B       ','S174815C       ','S17761AA       ','S17761AB       ','S17761AC       ','S17764AA       ','S17764AB       ','S17764AC       ','S17767AA       ','S17767AB       ','S17767AC       ','S17775AA       ','S17775AB       ','S17775AC       ','S19876AA       ','S19879AA       ','S19965AA       ','U10098AJ       ','U10217AH       ','U10217AI','U20128AH       ','U20128AI','U30002AH       ','U30002AI','U30148AK       ','U30148AL','U50027AK       ','U50027AL','U60116AK       ','U60117AK       ','U60117AL','U90008AH       ','U90008AI','YCI028AA','YCI278AA','YCI404AA','YCI553AA','YCI931AA','YCL028AA','YCL278AA','YCL404AA','YCL553AA','YCL931AA','YSI028AA','YSI278AA','YSI404AA','YSI553AA','YSI931AA') order by order_style_no";		
+			//}
+			$sql = "select distinct order_style_no from $bai_pro3.bai_orders_db order by order_style_no";
+			$sql_result=mysqli_query($link,$sql) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			echo "<label for='style'>Select Style</label>
+			<select  class='form-control' name='style' onchange='firstbox();'>";
+			echo "<option value=\"NIL\" selected>NIL</option>";
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+				if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
+				{
+					echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+				}
+				else
+				{
+					echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+				}
+			}
+			echo "</select>";
 
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	$sql="select distinct order_style_no from bai_orders_db where order_style_no not in ('H18122AA       ','I292550A       ','I292553A       ','I292580A       ','I292653A       ','I296643A       ','I96632AA       ','I96646AA       ','I97183AA','IDUMY929','M04600AA       ','M04600AB       ','M04600AC','M04634AD       ','M04634AE       ','M04634AF','M04634AG','M04641AA       ','M04648AA','M04649AA','M05083AA','M06484AQ       ','M06484AR','M06485AP       ','M07562AA','M09313AE       ','M09313AG       ','M09313AH','M4600GAA       ','M4634LAA','M4634RAA','M7028AAE       ','M7028AAF','N12201AE       ','N19201AD       ','N19801AB       ','N19801AC       ','N7118SAH       ','N7118SAI       ','S16580AA       ','S174815A       ','S174815B       ','S174815C       ','S17761AA       ','S17761AB       ','S17761AC       ','S17764AA       ','S17764AB       ','S17764AC       ','S17767AA       ','S17767AB       ','S17767AC       ','S17775AA       ','S17775AB       ','S17775AC       ','S19876AA       ','S19879AA       ','S19965AA       ','U10098AJ       ','U10217AH       ','U10217AI','U20128AH       ','U20128AI','U30002AH       ','U30002AI','U30148AK       ','U30148AL','U50027AK       ','U50027AL','U60116AK       ','U60117AK       ','U60117AL','U90008AH       ','U90008AI','YCI028AA','YCI278AA','YCI404AA','YCI553AA','YCI931AA','YCL028AA','YCL278AA','YCL404AA','YCL553AA','YCL931AA','YSI028AA','YSI278AA','YSI404AA','YSI553AA','YSI931AA') order by order_style_no";		
-//}
-mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_num_check=mysql_num_rows($sql_result);
-
-echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysql_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
-}
-
-}
-
-echo "</select>";
+		echo "</div>";
 ?>
 
 <?php
+	echo "<div class='col-sm-3'>";
+	echo "<label for='color'>Select Color</label>
+	<select  class='form-control' name='color' onchange='thirdbox();'>";
 
-echo "Select Color: <select name=\"color\" onchange=\"thirdbox();\" >";
-$sql="select distinct order_col_des from bai_orders_db where order_style_no=\"$style\"";
-//}
-mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_num_check=mysql_num_rows($sql_result);
+	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";
+	$sql_result=mysqli_query($link,$sql) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-echo "<option value=\"NIL\" selected>NIL</option>";
+	echo "<option value=\"NIL\" selected>NIL</option>";
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
+		{
+			echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
+		}
+		else
+		{
+			echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
+		}
+	}
+	echo "</select>";
+	echo "</div>";		
+?>
+
+<?php
+	echo "<div class='col-sm-3'>";
+	echo "<label for='schedule'>Select Club Schedule</label>
+		<select  class='form-control' name='schedule'>";
 	
-while($sql_row=mysql_fetch_array($sql_result))
-{
+	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\" and order_joins='1'";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
 
-if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
-{
-	echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
-}
+	echo "<option value=\"NIL\" selected>NIL</option>";	
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
+		{
+			echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
+		}
+		else
+		{
+			echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
+		}
+	}
+	echo "</select>";
+	echo "</div>";
 
-}
-
-
-echo "</select>";
+	if(isset($_GET['schedule'])){	
+		echo "<div class='col-sm-1'>";
+			echo "<label></label><br/>";
+			echo "<input type='submit' class='btn btn-primary' value='submit' name='clear'>";
+		echo "</div>";	
+	}
 ?>
-<?php
-echo "Select club schedule: <select name=\"schedule\" >";
-$sql="select distinct order_del_no from bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\" and order_joins='1'";
-//}
-mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_num_check=mysql_num_rows($sql_result);
-
-echo "<option value=\"NIL\" selected>NIL</option>";
-	
-while($sql_row=mysql_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
-}
-
-}
-
-
-echo "</select>";
-
-
-
-	echo "<input type=\"submit\" value=\"Clear\" name=\"clear\">";	
-?>
-
 
 </form>
 
-
-</body>
-</html>
 <?php
 if(isset($_POST['clear']))
 {
@@ -226,50 +148,50 @@ if(isset($_POST['clear']))
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
 	
-	$sql451="delete from bai_pro3.bai_orders_db where order_del_no='".$schedule."' and order_col_des=\"".$color."\" ";
+	$sql451="delete from $bai_pro3.bai_orders_db where order_del_no='".$schedule."' and order_col_des=\"".$color."\" ";
 	//echo $sql451."<br>";
-	$sql_result451=mysql_query($sql451,$link) or die("Error".$sql451.mysql_error());
+	$sql_result451=mysqli_query($link, $sql451) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-	$sql452="delete from bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des=\"".$color."\" ";
+	$sql452="delete from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des=\"".$color."\" ";
 	//echo $sql452."<br>";
-	$sql_result452=mysql_query($sql452,$link) or die("Error".$sql452.mysql_error());
+	$sql_result452=mysqli_query($link, $sql452) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$order_tids=array();
-	$sql4533="select order_tid from bai_pro3.bai_orders_db where order_joins='J".$schedule."' and order_col_des=\"".$color."\"";
+	$sql4533="select order_tid from $bai_pro3.bai_orders_db where order_joins='J".$schedule."' and order_col_des=\"".$color."\"";
 	//echo $sql4533."<br>";
-	$sql_result4533=mysql_query($sql4533,$link) or die("Error".$sql4533.mysql_error());
-	while($sql_row4533=mysql_fetch_array($sql_result4533))
+	$sql_result4533=mysqli_query($link, $sql4533) or die("Error".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row4533=mysqli_fetch_array($sql_result4533))
 	{
 		$order_tids[]=$sql_row4533["order_tid"];
 	}
-	$sql4531="delete from bai_pro3.bai_orders_db where order_tid in ('".implode("','",$order_tids)."')";
+	$sql4531="delete from $bai_pro3.bai_orders_db where order_tid in ('".implode("','",$order_tids)."')";
 	//echo $sql4531."<br>";
-	$sql_result4531=mysql_query($sql4531,$link) or die("Error".$sql4531.mysql_error());
+	$sql_result4531=mysqli_query($link, $sql4531) or die("Error".$sql4531.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql4551="INSERT IGNORE INTO bai_pro3.bai_orders_db SELECT * FROM bai_pro3.bai_orders_db_club WHERE order_tid IN  ('".implode("','",$order_tids)."')";
+	$sql4551="INSERT IGNORE INTO $bai_pro3.bai_orders_db SELECT * FROM bai_pro3.bai_orders_db_club WHERE order_tid IN  ('".implode("','",$order_tids)."')";
 	//echo $sql4551."<br>";
-	$sql_result4551=mysql_query($sql4551,$link) or die("Error".$sql4551.mysql_error());
+	$sql_result4551=mysqli_query($link, $sql4551) or die("Error".$sql4551.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql4536="delete from bai_pro3.bai_orders_db_confirm where order_tid in ('".implode("','",$order_tids)."')";
+	$sql4536="delete from $bai_pro3.bai_orders_db_confirm where order_tid in ('".implode("','",$order_tids)."')";
 	//echo $sql4536."<br>";
-	$sql_result4536=mysql_query($sql4536,$link) or die("Error".$sql4536.mysql_error());
+	$sql_result4536=mysqli_query($link, $sql4536) or die("Error".$sql4536.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql4527="delete from bai_pro3.allocate_stat_log where order_tid like \"%".$schedule."%\"";
+	$sql4527="delete from $bai_pro3.allocate_stat_log where order_tid like \"%".$schedule."%\"";
 	//echo $sql4527."<br>"; 
-	$sql_result4527=mysql_query($sql4527,$link) or die("Error".$sql4527.mysql_error());
+	$sql_result4527=mysqli_query($link, $sql4527) or die("Error".$sql4527.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql4528="delete from bai_pro3.cuttable_stat_log where order_tid like \"%".$schedule."%\"";
+	$sql4528="delete from $bai_pro3.cuttable_stat_log where order_tid like \"%".$schedule."%\"";
 	//echo $sql4528."<br>";
-	$sql_result4528=mysql_query($sql4528,$link) or die("Error".$sql4528.mysql_error());
+	$sql_result4528=mysqli_query($link, $sql4528) or die("Error".$sql4528.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql4529="delete from bai_pro3.maker_stat_log where order_tid like \"%".$schedule."%\"";
+	$sql4529="delete from $bai_pro3.maker_stat_log where order_tid like \"%".$schedule."%\"";
 	//echo $sql4529."<br>";
-	$sql_result4529=mysql_query($sql4529,$link) or die("Error".$sql4529.mysql_error());
+	$sql_result4529=mysqli_query($link, $sql4529) or die("Error".$sql4529.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql45512="DELETE FROM bai_pro3.bai_orders_db_club_confirm WHERE order_tid IN  ('".implode("','",$order_tids)."')";
-	$sql_result45512=mysql_query($sql45512,$link) or die("Error".$sql45512.mysql_error());
+	$sql45512="DELETE FROM $bai_pro3.bai_orders_db_club_confirm WHERE order_tid IN  ('".implode("','",$order_tids)."')";
+	$sql_result45512=mysqli_query($link, $sql45512) or die("Error".$sql45512.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	echo "<h2> Mixing schedule has been removed, Please Re-mix the schedule's again.</h2>";
+	echo "<script> swal('Mixing schedule has been removed','Please Re-mix the schedules again.','warning');</script>";
 	/*
 	$style=$_POST['style']; 
     $schedule=$_POST['schedule']; 
