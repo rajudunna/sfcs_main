@@ -1,216 +1,144 @@
-<html>
-<head>
+
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?> 
 <?php  
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 	  
-$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 	  
+	$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs); 
 ?> 
-<?php 
-// include("header_scripts.php");  
-?> 
+
 
 
 <script>
+	function firstbox()
+	{
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value
+	}
 
-function firstbox()
-{
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value
-}
+	function secondbox()
+	{
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	}
 
-function secondbox()
-{
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
-}
-
-function thirdbox()
-{
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
-}
+	function thirdbox()
+	{
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	}
 </script>
-</head>
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
-<body>
-
-<style>
-body
-{
-	font-family:calibri;
-	font-size:12px;
-}
-
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-white-space:nowrap; 
-}
-
-table td.lef
-{
-	border: 1px solid black;
-	text-align: left;
-white-space:nowrap; 
-}
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    	background-color: BLUE;
-	color: WHITE;
-white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
 
 
-}
-
-}
-</style>
-<script type="text/javascript" src="datetimepicker_css.js"></script>
-</head>
-<body>
-<body> 
 <div class="panel panel-primary">
-<div class="panel-heading">Schedule Segregation Panel</div>
-<div class="panel-body">
-<form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'mix_jobs.php',0,'R') ?>">
-<?php
+	<div class="panel-heading">Schedule Segregation Panel</div>
+	<div class="panel-body">
+	<form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'mix_jobs.php',0,'R') ?>">
+	<?php
+		$style=$_GET['style'];
+		$schedule=$_GET['schedule']; 
+		$color=$_GET['color'];
+		$po=$_GET['po'];
 
-$style=$_GET['style'];
-$schedule=$_GET['schedule']; 
-$color=$_GET['color'];
-$po=$_GET['po'];
+		if(isset($_POST['submit']))
+		{
+			$style=$_POST['style'];
+			$schedule=$_POST['schedule']; 
+			$color=$_POST['color'];
+			$po=$_POST['po'];
+		}
 
-if(isset($_POST['submit']))
-{
-	$style=$_POST['style'];
-	$schedule=$_POST['schedule']; 
-	$color=$_POST['color'];
-	$po=$_POST['po'];
-}
+		echo "<div class='row'><div class='col-md-3'>";
+		echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"firstbox();\" >";
+		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
+		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
+		//{
+			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db order by order_style_no";	
+		//}
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_num_check=mysqli_num_rows($sql_result);
 
-echo "<div class='row'><div class='col-md-3'>";
-echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"firstbox();\" >";
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	$sql="select distinct order_style_no from $bai_pro3.bai_orders_db order by order_style_no";	
-//}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+		echo "<option value=\"NIL\" selected>NIL</option>";
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
+			{
+				echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+			}
+		}
+		echo "</select></div>";
 
-echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
-}
-
-}
-
-echo "</select></div>";
-
-?>
+	?>
 
 
-<?php
-echo"<div class='col-md-3'>";
-echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" >";
+	<?php
+		echo"<div class='col-md-3'>";
+		echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" >";
 
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_joins=\"1\" order by order_date";	
-//}
-// echo "working".$sql;
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
+		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
+		//{
+			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_joins=\"1\" order by order_date";	
+		//}
+		// echo "working".$sql;
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_num_check=mysqli_num_rows($sql_result);
 
-echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
+		echo "<option value=\"NIL\" selected>NIL</option>";
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
+			{
+				echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
+			}
+		}
+		echo "</select></div>";
 
+		echo"<div class='col-md-3'>";
+		echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" >";
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins=\"1\"";
+		//}
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_num_check=mysqli_num_rows($sql_result);
 
-if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
-}
-
-}
-echo "</select></div>";
-echo"<div class='col-md-3'>";
-echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" >";
-$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins=\"1\"";
-//}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-
-echo "<option value=\"NIL\" selected>NIL</option>";
-	
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
-{
-	echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
-}
-
-}
-
-
-echo "</select></div>";
-?>
-<br>
+		echo "<option value=\"NIL\" selected>NIL</option>";
+			
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
+			{
+				echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
+			}
+		}
+		echo "</select></div>";
+	?>
+	<br>
 <!-- <input type="text" name="schedule" value=""> -->
-<?php 
-if(strlen($color)>0 and $color!="NIL"){
-	//echo '<input type="submit" name="submit" value="Segregate">';
-	echo"<div class='col-md-3'>";
-	echo "<input type=\"submit\" class='btn btn-success' value=\"Segregate\" name=\"submit\"  id=\"Segregate\" onclick=\"document.getElementById('Segregate').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
-	echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait data is processing...!<h5></span></div>";
-}
+	<?php 
+		if(strlen($color)>0 and $color!="NIL"){
+			//echo '<input type="submit" name="submit" value="Segregate">';
+			echo"<div class='col-md-3'>";
+			echo "<input type=\"submit\" class='btn btn-success' value=\"Segregate\" name=\"submit\"  id=\"Segregate\" onclick=\"document.getElementById('Segregate').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
+			echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait data is processing...!<h5></span></div>";
+		}
 
-?>
-
-</div>
+	?>
+	</div>
 </form>
+</div>
+</div>
 
-</body>
-</div>
-</div>
-</html>
 
 <?php
 
@@ -717,8 +645,7 @@ if(isset($_POST['submit']))
 						
 						$sqly="update $bai_pro3.cat_stat_log set category='".$sql_rowx['category']."',purwidth='".$sql_rowx['purwidth']."',gmtway='".$sql_rowx['gmtway']."',date='".$sql_rowx['date']."',lastup='".$sql_rowx['lastup']."',strip_match='".$sql_rowx['strip_match']."',gusset_sep='".$sql_rowx['gusset_sep']."',patt_ver='".$sql_rowx['patt_ver']."' where tid='$tid' and order_tid2='".$tid_new_n."'";
 						//echo $sqly."<br/>";
-						mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-									   
+						mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 			   
 					}
 				}
 				//echo sizeof($cat_id_ref)."--".(sizeof($ready_cat_ref)+sizeof($pending_cat_ref)+sizeof($pend_order_ref))."<br>";
