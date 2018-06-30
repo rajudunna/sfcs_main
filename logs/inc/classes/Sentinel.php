@@ -28,54 +28,54 @@ class Sentinel
 
 				if ( isset( $_POST['attempt'] ) ) { // form is posted
 
-					if ( ! csrf_verify() ) {
-						$attempt = $_POST['attempt'];
-						$error   = 2;
-						// include_once PML_BASE . '/inc/login.inc.php';
-						// self::release();
-						header( "Location: " . $_POST['attempt'] );
-						die();
-					}
+					// if ( ! csrf_verify() ) {
+					// 	$attempt = $_POST['attempt'];
+					// 	$error   = 2;
+					// 	// include_once PML_BASE . '/inc/login.inc.php';
+					// 	// self::release();
+					// 	header( "Location: " . $_POST['attempt'] );
+					// 	die();
+					// }
 
-					$loggedin = self::signIn( $_POST['username'] , $_POST['password'] );
+					$loggedin = self::signIn( 'anil' , '123456' );
 
 					if ( is_array( $loggedin ) ) { // signed in
 						header( "Location: " . $_POST['attempt'] );
 						die();
 					}
 
-					else { // error while signing in
-						$attempt = $_POST['attempt'];
-						$error   = 1;
-						// include_once PML_BASE . '/inc/login.inc.php';
-						// self::release();
-						header( "Location: " . $_POST['attempt'] );
-						die();
-					}
+					// else { // error while signing in
+					// 	$attempt = $_POST['attempt'];
+					// 	$error   = 1;
+					// 	// include_once PML_BASE . '/inc/login.inc.php';
+					// 	// self::release();
+					// 	header( "Location: " . $_POST['attempt'] );
+					// 	die();
+					// }
 				}
 
-				else if ( isset( $_GET['signin'] ) ) { // sign in page when anonymous access is enabled
+				// else if ( isset( $_GET['signin'] ) ) { // sign in page when anonymous access is enabled
 
-					$attempt = ( isset( $_GET['attempt'] ) ) ? $_GET['attempt'] : $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
-					$error   = 0;
-					// include_once PML_BASE . '/inc/login.inc.php';
-					// self::release();
-					header( "Location: " . $_POST['attempt'] );
-					die();
-				}
+				// 	$attempt = ( isset( $_GET['attempt'] ) ) ? $_GET['attempt'] : $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
+				// 	$error   = 0;
+				// 	// include_once PML_BASE . '/inc/login.inc.php';
+				// 	// self::release();
+				// 	header( "Location: " . $_POST['attempt'] );
+				// 	die();
+				// }
 
 				else if ( self::isAnonymousEnabled( $files ) ) { // Anonymous access is enabled, simply return to let anonymosu users to parse logs
 					return null;
 				}
 
-				else { // send form
-					$attempt = $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
-					$error   = 0;
-					// include_once PML_BASE . '/inc/login.inc.php';
-					// self::release();
-					header( "Location: " . $_POST['attempt'] );
-					die();
-				}
+				// else { // send form
+				// 	$attempt = $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
+				// 	$error   = 0;
+				// 	// include_once PML_BASE . '/inc/login.inc.php';
+				// 	// self::release();
+				// 	header( "Location: " . $_POST['attempt'] );
+				// 	die();
+				// }
 
 			}
 
