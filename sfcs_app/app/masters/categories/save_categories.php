@@ -26,7 +26,20 @@ $conn=$link;
 
 if (empty($category_name) || empty($category_status) || empty($cat_select)) 
 {
-	echo "Please fill values";
+	$url=getFullURL($_GET['r'],'add_categories.php','N');
+	echo"<script>setTimeout(function () { 
+		swal({
+		  title: 'Please Fill All Values',
+		  text: 'Message!',
+		  type: 'warning',
+		  confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+		  if (isConfirm) {
+			window.location.href = \"$url\";
+		  }
+		}); }, 100);</script>";
+	// echo "Please fill values";
 }
 else
 {

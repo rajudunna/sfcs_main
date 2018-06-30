@@ -67,15 +67,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$color_len_new=strlen($new_color);
 
 			$ssc_code=$new_style.$sch_no.$new_color;
-			$sql22="select distinct compo_no,material_sequence from $bai_pro3.order_plan where color=\"$color\" and schedule_no=\"$sch_no\" and style_no=\"$style\"";
+			$sql22="select distinct compo_no,material_sequence from $bai_pro3.order_plan where schedule_no=\"$sch_no\" and color=\"$color\" and style_no=\"$style\"";
 			$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row22=mysqli_fetch_array($sql_result22))
 			{	
-				$ssc_code2=$ssc_code.$sql_row22['compo_no']."-".$sql_row22['material_sequence'];
+				// $ssc_code2=$ssc_code.$sql_row22['compo_no']."-".$sql_row22['material_sequence'];
+				$ssc_code2=$ssc_code.$sql_row22['compo_no'];
 				$compo_no=$sql_row22['compo_no'];	
-				$material_sequence=$sql_row22['material_sequence'];
+				// $material_sequence=$sql_row22['material_sequence'];
 				
-				$sql31="select mo_status,item_des,col_des,round((sum(order_yy*order_qty)/sum(order_qty)),4) as order_yy from $bai_pro3.order_plan where style_no=\"$style\" and schedule_no=\"$sch_no\" and color=\"$color\" and compo_no=\"$compo_no\" and material_sequence=\"$material_sequence\"";
+				// $sql31="select mo_status,item_des,col_des,round((sum(order_yy*order_qty)/sum(order_qty)),4) as order_yy from $bai_pro3.order_plan where style_no=\"$style\" and schedule_no=\"$sch_no\" and color=\"$color\" and compo_no=\"$compo_no\" and material_sequence=\"$material_sequence\"";
+				$sql31="select mo_status,item_des,col_des,round((sum(order_yy*order_qty)/sum(order_qty)),4) as order_yy from $bai_pro3.order_plan where style_no=\"$style\" and schedule_no=\"$sch_no\" and color=\"$color\" and compo_no=\"$compo_no\"";
 				$sql_result31=mysqli_query($link, $sql31) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row31=mysqli_fetch_array($sql_result31))
 				{

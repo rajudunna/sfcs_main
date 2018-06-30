@@ -4,7 +4,7 @@
 // echo $_SERVER['DOCUMENT_ROOT'];
 error_reporting(0);
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
-$conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/config-builder/saved_fields/fields.json");
+$conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
 
 $mysql_details = $conf1->getDBConfig();
 $mssql_odbc_details = $conf1->get('mssql-odbc');
@@ -38,8 +38,8 @@ $local_mssql_password="Brandix@7";
 //To Facilitate SFCS Filters
 $global_facility_code=$conf1->get('plantcode');
 
-$plant_alert_code="BEK";
-$message_sent_via="SYSTEM";
+$plant_alert_code=$conf1->get('plant-alert-code');     //plant-alert-code
+$message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
 
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
@@ -132,10 +132,12 @@ while($sql_row=mysqli_fetch_array($res_query))
 	parse_str($sql_row['permission_name']."=".$sql_row['permission_id']);   
 }
 
-$pack_query="SELECT * FROM $bai_pro3.`pack_methods` WHERE STATUS='active'";
+$pack_query="SELECT * FROM $bai_pro3.`pack_methods` WHERE STATUS='1'";
+// echo $pack_query;
 $pack_result=mysqli_query($link, $pack_query) or exit("Error getting pack details");
-while($methods=mysqli_fetch_array($table_result))
+while($methods=mysqli_fetch_array($pack_result))
 {
     $pack_methods[]=$methods['pack_method_name'];
 }
+// var_dump($pack_methods);
 ?>

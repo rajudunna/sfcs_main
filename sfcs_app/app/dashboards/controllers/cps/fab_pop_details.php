@@ -59,10 +59,10 @@ function verify_num(t,e){
 	}
 
 function check_validate()
-{
-	
+{	
 	var checkBox = document.getElementById("validate");
 	if (checkBox.checked == true){
+		
 		//var docket=document.getElementById("doc_no").value;
 	var total_req=parseInt(document.getElementById("tot_req").value);
 	var allocation=parseInt(document.getElementById("alloc_qty").value);
@@ -70,7 +70,6 @@ function check_validate()
 	var doc_tot=document.getElementById("doc_tot").value;
 	var alloc_doc=document.getElementById("alloc_doc").value;
 	// console.log(total_req);
-	// console.log(allocation);
 	if(0<allocation)
 		{
 			document.getElementById("submit").disabled=false;
@@ -121,10 +120,10 @@ function check_validate()
 					document.getElementById('dvremark').style.display = "none";
 				}
 			}
-		
 		}
 		else if(allocation==0 && doc_tot==alloc_doc)
 		{
+			
 			sweetAlert("You have allocated \"STOCK\" for some of the dockets ","","warning");
 			document.getElementById('dvremark').style.display = "block";
 			document.getElementById("submit").disabled=false;
@@ -710,6 +709,9 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 		
 ?>
 
+<?php
+if($Disable_allocate_flag==0){
+?>
 <form method="post" onsubmit=" return validate_but();">
 <table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
 <?php
@@ -753,6 +755,9 @@ echo "<input type=\"hidden\" name=\"group_docs\" value=".implode(",",$docket_num
 ?>
 </td></tr></table>
 </form>
+<?php
+}
+?>
 
 <script>
 	document.getElementById("msg").style.display="none";		

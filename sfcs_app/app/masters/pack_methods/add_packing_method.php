@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -29,11 +29,15 @@
 		//$packing_method="";
 		//$status="";
 	}
+	$action_url = getFullURL($_GET['r'],'save_packing_method.php','N');
 	?>
-    <div class="container-fluid">
-        <div class="row">
+    <div class='panel panel-primary'>
+	<div class='panel-heading'>
+		<b>Packing Methods</b>
+	</div>
+	<div class='panel-body'>
 
-            <form action="index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL3BhY2tfbWV0aG9kcy9zYXZlX3BhY2tpbmdfbWV0aG9kLnBocA==" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
+            <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
 			<input type='hidden' id='pack_id' name='pack_id' value=<?php echo $pack_id; ?> >
                 <div class="container-fluid shadow">
                     <div class="row">
@@ -72,7 +76,7 @@
 			    
 			    
                 
-		<button id="btn_save" type="submit" class="btn btn-default" name="btn_save">Save</button></div></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div></div>
                                     </div>
                                 
 

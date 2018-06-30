@@ -207,7 +207,6 @@ function enable_button()
 					// echo"<br/><h4><span>Reserved Quantity=<div id='output'></div></span></h4>";
 					if(mysqli_num_rows($sql_result)>0)
 					{
-						
 						$row_count2++;
 						$table="<div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'><table class='table table-bordered' id='table1'>";
 						$table.="<thead>";
@@ -226,9 +225,9 @@ function enable_button()
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							
-							$row_count++;
 							if($sql_row['qms_qty']>0)
 							{
+								$row_count++;
 								$table="<tr class=\"foo\" id=\"rowchk$x\">";
 								$table.="<td>".($x+1)."</td>";
 								$table.="<td>".$sql_row['qms_style']."</td>";
@@ -256,7 +255,7 @@ function enable_button()
 								$x++;
 							}
 						}
-						echo '<tr><td colspan=5>Total Reserved Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;text-align:right"></td></tr>';
+						// echo '<tr><td colspan=5>Total Reserved Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;text-align:right"></td></tr>';
 							$table='</tbody></table></div>';
 					}
 		echo $table;
@@ -282,7 +281,7 @@ function enable_button()
 </div>
 </div>
 </body>
-<script language="javascript" type="text/javascript">
+<!-- <script language="javascript" type="text/javascript">
 //<![CDATA[
 	$('#reset_table1').addClass('btn btn-warning');
 	var fnsFilters = {
@@ -305,7 +304,7 @@ function enable_button()
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
 	});
 	//]]>
-</script>
+</script> -->
 <style type="text/css">
 	th {
 		text-align: center;

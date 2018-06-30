@@ -16,17 +16,19 @@
 	$sql = "SELECT * FROM $bai_pro2.`downtime_reason`";
 	$result = $conn->query($sql);
 	$sno = 1;
+	$url=getFullURL($_GET['r'],'down_time_reason_add.php','N');
+	$url1=getFullURL($_GET['r'],'delete_down_time_reason.php','N');
 	if ($result->num_rows > 0) {
-		echo "<table id='downtime_reason' class='table'><tr><th>S.No</th><th>Code</th><th>Department</th><th>Reason</th><th> Edit / Delete </th></tr>";
+		echo "<table id='downtime_reason' class='table'><thead><tr><th>S.No</th><th>Code</th><th>Department</th><th>Reason</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
 		while($row = $result->fetch_assoc()) {
 			$rowid=$row["id"];
 			$code=$row["code"];
 			$department=$row["rdept"];
 			$reason=$row["reason"];
-			echo "<tr><td>".$sno++."</td><td>".$row["code"]."</td><td>".$row["rdept"]." </td><td>".$row["reason"]."</td><td><a href='/index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2Rvd250aW1lcmVhc29uL2Rvd25fdGltZV9yZWFzb25fYWRkLnBocA==&rowid=$rowid&code=$code&department=$department&reason=$reason' class='editor_edit'>Edit</a> / <a href='/index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2Rvd250aW1lcmVhc29uL2RlbGV0ZV9kb3duX3RpbWVfcmVhc29uLnBocA==&rowid=$rowid&code=$code&department=$department&reason=$reason' class='editor_remove'>Delete</a></td></tr>";
+			echo "<tr><td>".$sno++."</td><td>".$row["code"]."</td><td>".$row["rdept"]." </td><td>".$row["reason"]."</td><td><a href='$url==&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
 		}
-		echo "</table>";
+		echo "</tbody></table>";
 	} else {
 		echo "0 results";
 	}
@@ -39,3 +41,35 @@ $(document).ready(function() {
     $('#downtime_reason').DataTable();
 } );
 </script>
+<style>
+table th
+{
+	border: 1px solid grey;
+	text-align: center;
+    background-color: #003366;
+	color: WHITE;
+	white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+	background-color: white;
+}
+table tr
+{
+	border: 1px solid grey;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid grey;
+	text-align: center;
+	white-space:nowrap;
+	color:black;
+}
+</style>

@@ -62,7 +62,7 @@ $(function() {
     };
 
     $.ajax({
-        url: "saved_fields/fields.json",
+        url: instanceURL + "/get-fields.php",
         method: "get",
         dataType: 'json',
     }).done(function(resp) {
@@ -178,10 +178,14 @@ $(function() {
         }
 
         $.ajax({
-            url: "saveFields.php",
+            url: instanceURL + "/set-fields.php",
             method: "POST",
             dataType: 'json',
-            data: {"data":allData}
+            data: {"data":allData},
+            error: function(error){
+                console.log(error);
+                toast("Data not saved.");
+            }
         }).done(function(resp) {
             if(resp.status == 'ok'){
                 toast("Data saved.");
