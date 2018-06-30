@@ -16,14 +16,15 @@ KiranG - CR# 121
 -->
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
     // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 
 	//Due to sunday working.
-	$view_access=user_acl("SFCS_0169",$username,1,$group_id_sfcs);
-	$special_day_permissions=user_acl("SFCS_0169",$username,38,$group_id_sfcs);
-	$hod_acces_list=user_acl("SFCS_0169",$username,39,$group_id_sfcs);
+	// $view_access=user_acl("SFCS_0169",$username,1,$group_id_sfcs);
+	// $special_day_permissions=user_acl("SFCS_0169",$username,38,$group_id_sfcs);
+	// $hod_acces_list=user_acl("SFCS_0169",$username,39,$group_id_sfcs);
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+    $has_permission=haspermission($_GET['r']);
 	
 
 	$workstudy_limit="23.59";
@@ -197,7 +198,7 @@ function second_box(){
     
     <script>
     	
-    	function doesConnectionExist() {
+    function doesConnectionExist() {
 	    var xhr = new XMLHttpRequest();
 	    var file = "alert.gif";
 	    var randomNum = Math.round(Math.random() * 10000);
@@ -215,7 +216,7 @@ function second_box(){
 	    } catch (e) {
 	        return false;
 	    }
-		}
+	}
     
     
     function checkandupdate()
@@ -300,6 +301,16 @@ function second_box(){
 		}
 	}
 
+	function check_date()
+	{
+		var from_date = document.getElementById("sdate").value;
+		var today = document.getElementById("today").value;
+		if ((Date.parse(from_date) > Date.parse(today)))
+		{
+			sweetAlert('Please Select Valid Date','','warning');
+			document.getElementById("sdate").value = "<?php  echo date("Y-m-d");  ?>";
+		}
+	}
 	</script>
 </head>
 
@@ -328,8 +339,7 @@ function second_box(){
 
 	<?php 
 		$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error7896".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$max_allowed_date=$sql_row['bac_date'];
@@ -337,34 +347,16 @@ function second_box(){
 		$max_allowed_date=date("Y-m-d");
 
 		$sql12="UPDATE $bai_pro3.ims_log SET ims_status=\"DONE\" WHERE ims_qty=ims_pro_qty";
-		mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql12) or exit("Sql Error74125".mysqli_error($GLOBALS["___mysqli_ston"]));
 	?>
 <!--<div id="page_heading"><span style="float"><h3>Rework Update Panel</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
 	<form action="#" method="POST" onSubmit="return validateThisFrom (this);" name="select_module" id="select_module">
+		<input type="hidden" name="today" id="today" value="<?php echo date("Y-m-d"); ?>">
 		<div class="col-sm-2"><?php 
 			
-			if(in_array($username,$hod_acces_list) or in_array($username,$special_day_permissions))
+			if(in_array($authorized,$has_permission))
 			{
-				
-				echo "Date: <input type='text' data-toggle='datepicker' id='sdate' class='form-control' name='date' value='".$sdate."' onchange='second_box();' autocomplete='off'>"; 
-				
-			}
-			else
-			{
-				if($username=="kirang")
-				{
-					echo 'Date: <input type="text"  data-toggle="datepicker" id="sdate" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\',\'11\');" autocomplete="off">';
-				}
-				else if($username=="kirang")
-				{
-					// echo 'Date: <input type="text"  data-toggle="datepicker" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\',\''.$workstudy_limit.'\');" autocomplete="off">';
-					echo 'Date: <input type="text"  data-toggle="datepicker" id="sdate"  class="form-control" name="date" value="'.$sdate.'" size="10" autocomplete="off">';
-				}
-				else
-				{
-					// echo 'Date: <input type="text"  data-toggle="datepicker" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\',\''.$user_limit.'\');" autocomplete="off">';
-					echo 'Date: <input type="text"  data-toggle="datepicker" id="sdate" class="form-control" name="date" value="'.$sdate.'" size="10" onchange="second_box();" autocomplete="off">';
-				} 
+				echo "Date: <input type='text' data-toggle='datepicker' id='sdate' class='form-control' name='date' value='".$sdate."' onchange='check_date();' autocomplete='off'>"; 
 			}
 		echo "</div>";
 		?>		
@@ -511,7 +503,7 @@ if ($_POST['submit11'])
 				// $rowcount_check=1;
 				
 				//NEW
-				$sql="select distinct rand_track from ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_doc_no";
+				$sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_doc_no";
 			}
 			else
 			{
@@ -522,15 +514,15 @@ if ($_POST['submit11'])
 				//echo $sql."<br/>";
 			}
 		
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result)>0)
 			{
 				//The below if else was shifted from top to here.Identify the code just above 4-lines and uncommentit,then remove this block if unnecessary
 				if($sql_num_check>0){
-					echo "<tr bgcolor=\"$tr_color\" class=\"new\" onMouseover=\"this.bgColor='#DDDDDD'\" onMouseout=\"this.bgColor='$tr_color'\"><td rowspan=$sql_num_check>$module_ref</td>";
+					echo "<tr><td rowspan=$sql_num_check>$module_ref</td>";
 					$rowcount_check=1;
 				}else{
-					echo "<tr bgcolor=\"$tr_color\" class=\"new\" onMouseover=\"this.bgColor='#DDDDDD'\" onMouseout=\"this.bgColor='$tr_color'\"><td rowspan=$sql_num_check>$module_ref</td>";
+					echo "<tr ><td rowspan=$sql_num_check>$module_ref</td>";
 					$rowcount_check=1;
 				}
 				
@@ -548,7 +540,7 @@ if ($_POST['submit11'])
 						//echo $sql12."<br/>";
 						
 					}
-					$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error556".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row12=mysqli_fetch_array($sql_result12))
 					{
 						
@@ -560,10 +552,7 @@ if ($_POST['submit11'])
 							$sql22="select * from $bai_pro3.live_pro_table_ref3 where doc_no=$ims_doc_no and a_plies>0 limit 1";
 							//echo $sql22."<br/>";
 						}
-						
-						
-						mysqli_query($link, $sql22) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_result22=mysqli_query($link11, $sql22) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 						while($sql_row22=mysqli_fetch_array($sql_result22))
 						{
@@ -573,7 +562,6 @@ if ($_POST['submit11'])
 						
 						
 						$sql33="select style_id from $bai_pro2.movex_styles where movex_style like \"%".$sql_row12['ims_style']."%\"";
-						mysqli_query($link, $sql33) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row33=mysqli_fetch_array($sql_result33))
 						{
@@ -603,7 +591,7 @@ if ($_POST['submit11'])
 						}
 						else
 						{
-							echo "<tr bgcolor=\"$tr_color\" class=\"new\" onMouseover=\"this.bgColor='#DDDDDD'\" onMouseout=\"this.bgColor='$tr_color'\">";
+							echo "<tr>";
 							
 							echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 							$balance=$sql_row12['ims_qty']-$sql_row12['ims_pro_qty'];
@@ -612,16 +600,15 @@ if ($_POST['submit11'])
 						
 						
 						$mod_stat=="Down";
-						$sqlx="select * from $bai_pro.pro_mod_today where mod_date=(select max(mod_date) from pro_mod_today) and mod_no=\"$module_ref\"";
-						mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sqlx="select * from $bai_pro.pro_mod_today where mod_date=(select max(mod_date) from $bai_pro.pro_mod_today) and mod_no=\"$module_ref\"";
+						$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error963 $sqlx".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						{
 							$mod_sec=$sql_rowx['mod_sec'];
 							$mod_stat=$sql_rowx['mod_stat'];
 							$mod_rem=$sql_rowx['mod_remarks'];
 							$id_count++;
-							echo "<td><input type=\"number\" min=0 max=$balance onkeyup='verify_qty($balance,this,event)' onchange='verify_qty($balance,this,event)' name=\"rework_qty[]\" value=\"\"  id=\"rqty$id_count\" style=\"background-color:red; color=white;\"/></td>";
+							echo "<td><input type=\"number\" min=0 max=$balance onkeyup='verify_qty($balance,this,event)' onchange='verify_qty($balance,this,event)' name=\"rework_qty[]\" value=\"\"  id=\"rqty$id_count\"/></td>";
 							echo "<td> <input type=\"text\" name=\"remarks[]\" value=\"".$mod_rem."\" /><input type=\"hidden\" name=\"csnb_code[]\" value=\"$couple_x^$smv^$nop^$buyer^$section\"></td>";								
 						}
 						
@@ -629,7 +616,7 @@ if ($_POST['submit11'])
 						//NEW when pro_mod not been updated.
 						if(mysqli_num_rows($sql_resultx)==0)
 						{							
-							echo "<td><input type=\"number\" min=0 max=$balance onkeyup='verify_qty($balance,this,event)' onchange='verify_qty($balance,this,event)' id=\"rqtyy$id_count\" name=\"rework_qty[]\" value=\"\" style=\"background-color:blue; color=white;\"/></td>";
+							echo "<td><input type=\"number\" min=0 max=$balance onkeyup='verify_qty($balance,this,event)' onchange='verify_qty($balance,this,event)' id=\"rqtyy$id_count\" name=\"rework_qty[]\" value=\"\"/></td>";
 							echo "<td> <input type=\"text\" name=\"remarks[]\" value=\"".$mod_rem."\" /><input type=\"hidden\" name=\"csnb_code[]\" value=\"$couple_x^$smv^$nop^$buyer^$section\"></td>";
 						}
 						
@@ -648,8 +635,11 @@ if ($_POST['submit11'])
 				      $('#option').css('display','none');
 			      });</script>";
 		}else{
-			echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
-			echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="">';
+			if(in_array($authorized,$has_permission))
+			{
+				echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
+				echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="">';
+			}
 		}
 	?>
 
