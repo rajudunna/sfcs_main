@@ -83,6 +83,7 @@ $cat=$_POST['cat'];
 			</div>
 			<?php
 				$table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
+				
 				$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
 				while($tables=mysqli_fetch_array($table_result))
 				{
@@ -231,7 +232,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 				$cat_ref_new=$sql_row['cat_ref'];
 			}
 
-			$sql="select * from $bai_pro3.cat_stat_log where category in ('$cat') and tid=\"$cat_ref_new\"";
+			$sql="select * from $bai_pro3.cat_stat_log where category in ($cat) and tid=\"$cat_ref_new\"";
 			//echo $sql;
 			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error c".mysqli_error($GLOBALS["___mysqli_ston"]));
