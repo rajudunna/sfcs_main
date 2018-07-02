@@ -417,8 +417,8 @@ table.gridtable td {
                         $tot_input=0;
                         $tot_outout=0;
                         $temp_module=0;
-                        
-                        echo "<table class=\"gridtable\"><tr><th>Input Date</th><th>Module#</th><th>Color</th><th>Size</th><th>Input Qty</th><th>Output Qty</th></tr>";
+                        echo "<div class='table-responsive'>";
+                        echo "<table class=\"table table-bordered\"><tr><th>Input Date</th><th>Module#</th><th>Color</th><th>Size</th><th>Input Qty</th><th>Output Qty</th></tr>";
                         $sql55="SELECT * FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' order by ims_mod_no,ims_date,ims_color";
                         //echo $sql5."<br>";
                         $result55=mysqli_query($link, $sql55) or die("Error-".$sql55."-".mysqli_error($GLOBALS["___mysqli_ston"]));         
@@ -455,6 +455,7 @@ table.gridtable td {
                             echo "<tr><td colspan=4 style=\"background-color:#3399ff;\"> </td><td style=\"background-color:#3399ff;color:white\">$tot_input</td><td style=\"background-color:#3399ff;color:white\">$tot_outout</td></tr>";
                         }
                         echo "</table>";
+                        echo "</div>";
                         //echo "Testing".$temp_module;
                         $temp_jobno=$sql_row["job"];
                         if ($temp_module=="0")
