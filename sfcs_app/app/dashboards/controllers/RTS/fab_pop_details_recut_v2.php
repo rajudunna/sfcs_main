@@ -286,10 +286,10 @@ th
 
 		<?php
 
-		echo "<div class='col-md-5'><h2>Fabric Status</h2>
-		<div id=\"msg\">
-		<center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing data...</font></h1></center>
-		</div>";
+		echo "<div class='col-md-5'><h2>Fabric Status</h2>";
+		// <div id=\"msg\">
+		// <center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing data...</font></h1></center>
+		// </div>
 			
 		ob_end_flush();
 		flush();
