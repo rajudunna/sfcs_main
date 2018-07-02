@@ -290,10 +290,10 @@ $table.= "</tr>";
 							
 
 				if($check == 0){
-					echo "<td></td>";
+					$table.= "<td></td>"; 
 				}else
 				{
-					echo "<td>".$supplier."</td>";
+					$table.= "<td>".$supplier."</td>"; 
 				}
 				
 				
