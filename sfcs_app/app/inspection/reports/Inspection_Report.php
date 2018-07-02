@@ -112,7 +112,6 @@ if(isset($_POST['submit']))
 		$sqlx="select * from $bai_rm_pj1.inspection_db where date(log_date) between \"$sdate\" and \"$edate\"";
 	}
 
-
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$no_of_rows = mysqli_num_rows($sql_resultx);
@@ -316,20 +315,32 @@ if(isset($_POST['submit']))
 						echo "<td>".$lot_ref_batch."</td>"; 
 
 						$check=0;
-						for($i=0;$i<sizeof($suppliers);$i++)
+						$sql_supplier = "SELECT supplier_m3_code as supplier_name FROM bai_rm_pj1.inspection_supplier_db where seq_no=".$supplier;
+						$sql_result_supplier=mysqli_query($link, $sql_supplier) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row=mysqli_fetch_array($sql_result_supplier))
 						{
-							$x=array();
-							$x=explode("$",$suppliers[$i]);
-							if($supplier==$x[1])
-							{
-								echo "<td>".$x[0]."</td>";
-								$check=1;
-							}
+							$supplier=$sql_row['supplier_name'];
+							echo "<td>".$supplier."</td>";
+							$check = 1;
 						}
-						if($check==0)
-						{
+						if($check == 0){
 							echo "<td></td>";
 						}
+
+						// for($i=0;$i<sizeof($suppliers);$i++)
+						// {
+						// 	$x=array();
+						// 	$x=explode("$",$suppliers[$i]);
+						// 	if($supplier==$x[1])
+						// 	{
+						// 		echo "<td>".$x[0]."</td>";
+						// 		$check=1;
+						// 	}
+						// }
+						// if($check==0)
+						// {
+						// 	echo "<td></td>";
+						// }
 								
 						echo "<td>".$item_desc."</td>"; 
 						echo "<td>".$rec_qty."</td>"; 

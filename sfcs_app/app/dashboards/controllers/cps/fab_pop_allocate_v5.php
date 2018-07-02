@@ -18,6 +18,21 @@ Changes Log:
 Ticket #: #684040-RameshK/2014-05-26 : To raise compalint for rejected RM material
 
 -->
+<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+<?php 
+
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+?>
+<br/>
+<div class='row'>
+	<div class='col-md-2 pull-left'>
+		<a class='btn btn-primary' href = '<?= $url ?>'> Back</a>
+	</div>
+</div>
+<br/>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">

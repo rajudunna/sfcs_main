@@ -30,7 +30,7 @@
             echo '<h4><b>Schedule : <a href="#" class="btn btn-success">'.$schedule.'</a></b></h4>'; 
             echo '<a href="'.$url_s.'" class="btn btn-primary pull-right">Click here to go Back</a>'; 
             echo '<h4><b>Sewing Job No : <a href="#" class="btn btn-warning">'.$job_no.'</a></b></h4><hr>';
-            $sql="SELECT * FROM $bai_pro3.packing_summary_input where order_del_no='$schedule' AND input_job_no='$job_no'"; 
+            $sql="SELECT *, UPPER(size_code) as size_code FROM $bai_pro3.packing_summary_input where order_del_no='$schedule' AND input_job_no='$job_no'"; 
             $result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         ?> 
             <table class='table table-bordered table-striped'> 

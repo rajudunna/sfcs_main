@@ -4,26 +4,34 @@
 
 error_reporting(0);
 $schedules_to_update=array();
-$sql="select distinct delivery from bai_pro.bai_log_buf where bac_date between \"$start_date_w\" and \"$end_date_w\" and delivery not in (".implode(",",$schedule_db).")";
-//$sql="select distinct delivery from bai_pro.bai_log_buf where delivery not in (".implode(",",$schedule_db).")";
-echo $sql."<br/>";
+if($rowcount>0){
+	$sql="select distinct delivery from bai_pro.bai_log_buf where bac_date between \"$start_date_w\" and \"$end_date_w\" and delivery not in (".implode(",",$schedule_db).")";
+	//$sql="select distinct delivery from bai_pro.bai_log_buf where delivery not in (".implode(",",$schedule_db).")";
+	echo $sql."<br/>";
 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Errorx1".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$schedules_to_update[]=$sql_row['delivery'];
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Errorx1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$schedules_to_update[]=$sql_row['delivery'];
+	}
+	//To track cutting completed schedules
+	$sql="select distinct order_del_no from bai_pro3.plandoc_stat_log_cat_log_ref where order_del_no not in (".implode(",",array_merge($schedule_db,$schedules_to_update)).") and act_cut_status=\"DONE\" and act_cut_issue_status<>\"DONE\" and order_del_no>20000";
+
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Errorx2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$schedules_to_update[]=$sql_row['order_del_no'];
+	}
+	$schedules_count=sizeof($schedules_to_update);
+}
+else{
+	echo "No schedules found to udpate.</br>";
+	$schedules_count=0;
 }
 
-//To track cutting completed schedules
-$sql="select distinct order_del_no from bai_pro3.plandoc_stat_log_cat_log_ref where order_del_no not in (".implode(",",array_merge($schedule_db,$schedules_to_update)).") and act_cut_status=\"DONE\" and act_cut_issue_status<>\"DONE\" and order_del_no>20000";
 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Errorx2".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$schedules_to_update[]=$sql_row['order_del_no'];
-}
-
-if(sizeof($schedules_to_update)>0){
+//echo $schedules_count."</br>";
+if($schedules_count>0){
 
 $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style_no as style, order_col_des as color from bai_pro3.bai_orders_db where order_del_no in (".implode(",",$schedules_to_update).")";
 
@@ -425,11 +433,11 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		
 		//TO Update Orders_db
 		$sql3="update $table_ref2 set act_cut=$cut_total ".$query_add.", act_fca=$internal_audited, act_mca=$fcamca, act_fg=$fgqty, act_ship=$shipped, cart_pending=$pendingcarts, priority=$status, output=$qty_temp where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-		echo $sql3."<br/>-C";
+		//echo $sql3."<br/>-C";
 		mysqli_query($link, $sql3) or exit("Sql Errorx19".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$sql3="update $table_ref3 set act_cut=$cut_total ".$query_add.", act_fca=$internal_audited, act_mca=$fcamca, act_fg=$fgqty, act_ship=$shipped, cart_pending=$pendingcarts, priority=$status, output=$qty_temp where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-		echo $sql3."<br/>-C";
+		//echo $sql3."<br/>-C";
 		mysqli_query($link, $sql3) or exit("Sql Errorx20".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//To Update Orders_db
 		
@@ -438,11 +446,11 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		{
 			//TO Update Orders_db
 			$sql3="update $table_ref2 set priority=6 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-			echo $sql3."<br/>-D";
+			//echo $sql3."<br/>-D";
 			mysqli_query($link, $sql3) or exit("Sql Errorx21".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql3="update $table_ref3 set priority=6 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-			echo $sql3."<br/>-D";
+			//echo $sql3."<br/>-D";
 			mysqli_query($link, $sql3) or exit("Sql Errorx22".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//To Update Orders_db
 		}
@@ -457,17 +465,17 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 
 	
 	$sql="drop table $plandoc_stat_log_cat_log_ref";
-	echo $sql;
+	//echo $sql."</br>";
 	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
 	$sql="drop table $packing_summary";
-	echo $sql;
+	//echo $sql."</br>";
 	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
 	$sql="drop table $disp_mix_temp";
-	echo $sql;
+	//echo $sql."</br>";
 	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 ?>

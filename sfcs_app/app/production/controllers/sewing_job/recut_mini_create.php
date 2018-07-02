@@ -89,8 +89,8 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 		
 		$rowc=1;
 		echo "<table class='table table-bordered'>";
-		echo "<tr><th colspan='8'> Recuts to be bundle numbers generated</th></tr>";
-		echo "<tr><th>S.No</th><th>Doc.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Ply.Height</th><th>Generate bundles</th></tr>";
+		echo "<tr><th colspan='8'> Re-Cuts to be Generated </th></tr>";
+		echo "<tr><th>S.No</th><th>Doc.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>No of Plies</th><th>Control</th></tr>";
 		while($l=mysqli_fetch_array($result))
 		{
 			$doc_num=$l['doc_no'];
@@ -124,7 +124,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 			
 			//get orders table row id
 			$url=getFullURLLevel($_GET['r'],'recut_mini_gen.php',0,'N');
-			echo "<tr><td>".$rowc++."</td><td>".$doc_num."</td><td>".$style_code."</td><td>".$product_schedule."</td><td>".$color_code."</td><td>".$actual_plies."</td><td><a href='$url&style=$style_id&schedule=$order_id&col=$color_code'>Generate </a></td></tr>";
+			echo "<tr><td><center>".$rowc++."</center></td><td><center>".$doc_num."</center></td><td><center>".$style_code."</center></td><td><center>".$product_schedule."</center></td><td><center>".$color_code."</center></td><td><center>".$actual_plies."</center></td><td><center><a href='$url&style=$style_id&schedule=$order_id&col=$color_code&doc=$doc_num' class='btn btn-success'>Generate </a></center></td></tr>";
 		}
 				
 		//sync completed in cut master and cut sizes masters

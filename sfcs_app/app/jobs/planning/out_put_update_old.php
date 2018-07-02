@@ -104,8 +104,11 @@ $sql="insert into bai_pro3.disp_mix_temp select * from bai_pro3.disp_mix";
 
 
 //To update Speed Deliveries
-$sql="select speed_schedule from bai_pro3.speed_del_dashboard";
+$sql="select speed_schedule,COUNT(*) AS cnt from bai_pro3.speed_del_dashboard";
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+$rowcount=mysqli_num_rows($result);
+//echo "Count =".count($rowcount);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$schedule_db[]=$sql_row['speed_schedule'];

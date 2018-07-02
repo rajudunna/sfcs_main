@@ -30,6 +30,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'session_track.
 $style_id=$_GET['style'];	
 $order_id=$_GET['schedule'];
 $color=$_GET['col'];
+$doc_num=$_GET['doc'];
 $style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
 $schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$order_id,$link);	
 if($status == '')
@@ -251,7 +252,7 @@ if($status == '')
 		   }
 	}
 	
-	$sql="select * from $brandix_bts.view_extra_recut where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
+	$sql="select * from $brandix_bts.view_extra_recut where doc_no='".$doc_num."' and order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
 	//echo $sql."<br>";
 	echo "<table class='table table-bordered'>";
 	echo "<tr><th>Mini Order</th><th>Cut Number</th><th>Color</th><th>Size</th><th>Bundle Number</th><th>Bundle Quantity</th><th>Docket Number</th></tr>";
@@ -301,237 +302,237 @@ if($status == '')
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s03_id.",".$l['a_s03'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s04']>0)
+			if($l['a_s04']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s04_id.",".$l['a_s04'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s05']>0)
+			if($l['a_s05']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s05_id.",".$l['a_s05'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s06']>0)
+			if($l['a_s06']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s06_id.",".$l['a_s06'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s07']>0)
+			if($l['a_s07']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s07_id.",".$l['a_s07'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s08']>0)
+			if($l['a_s08']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s08_id.",".$l['a_s08'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s09']>0)
+			if($l['a_s09']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s09_id.",".$l['a_s09'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s10']>0)
+			if($l['a_s10']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s10_id.",".$l['a_s10'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s11']>0)
+			if($l['a_s11']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s11_id.",".$l['a_s11'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s12']>0)
+			if($l['a_s12']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s12_id.",".$l['a_s12'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s13']>0)
+			if($l['a_s13']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s13_id.",".$l['a_s13'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s14']>0)
+			if($l['a_s14']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s14_id.",".$l['a_s14'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s15']>0)
+			if($l['a_s15']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s15_id.",".$l['a_s15'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s16']>0)
+			if($l['a_s16']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s16_id.",".$l['a_s16'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s17']>0)
+			if($l['a_s17']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s17_id.",".$l['a_s17'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s18']>0)
+			if($l['a_s18']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s18_id.",".$l['a_s18'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s19']>0)
+			if($l['a_s19']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s19_id.",".$l['a_s19'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s20']>0)
+			if($l['a_s20']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s20_id.",".$l['a_s20'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s21']>0)
+			if($l['a_s21']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s21_id.",".$l['a_s21'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s22']>0)
+			if($l['a_s22']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s22_id.",".$l['a_s22'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s23']>0)
+			if($l['a_s23']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s23_id.",".$l['a_s23'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s24']>0)
+			if($l['a_s24']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s24_id.",".$l['a_s24'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s25']>0)
+			if($l['a_s25']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s25_id.",".$l['a_s25'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s26']>0)
+			if($l['a_s26']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s26_id.",".$l['a_s26'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s27']>0)
+			if($l['a_s27']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s27_id.",".$l['a_s27'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s28']>0)
+			if($l['a_s28']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s28_id.",".$l['a_s28'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s29']>0)
+			if($l['a_s29']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s29_id.",".$l['a_s29'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s30']>0)
+			if($l['a_s30']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s30_id.",".$l['a_s30'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s31']>0)
+			if($l['a_s31']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s31_id.",".$l['a_s31'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s32']>0)
+			if($l['a_s32']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s32_id.",".$l['a_s32'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s33']>0)
+			if($l['a_s33']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s33_id.",".$l['a_s33'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s34']>0)
+			if($l['a_s34']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s34_id.",".$l['a_s34'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s35']>0)
+			if($l['a_s35']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s35_id.",".$l['a_s35'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s36']>0)
+			if($l['a_s36']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s36_id.",".$l['a_s36'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s37']>0)
+			if($l['a_s37']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s37_id.",".$l['a_s37'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s38']>0)
+			if($l['a_s38']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s38_id.",".$l['a_s38'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s39']>0)
+			if($l['a_s39']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s39_id.",".$l['a_s39'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s40']>0)
+			if($l['a_s40']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s40_id.",".$l['a_s40'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s41']>0)
+			if($l['a_s41']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s41_id.",".$l['a_s41'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s42']>0)
+			if($l['a_s42']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s42_id.",".$l['a_s42'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s43']>0)
+			if($l['a_s43']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s43_id.",".$l['a_s43'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s44']>0)
+			if($l['a_s44']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s44_id.",".$l['a_s44'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s45']>0)
+			if($l['a_s45']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s45_id.",".$l['a_s45'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s46']>0)
+			if($l['a_s46']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s46_id.",".$l['a_s46'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s47']>0)
+			if($l['a_s47']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s47_id.",".$l['a_s47'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s48']>0)
+			if($l['a_s48']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s48_id.",".$l['a_s48'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s49']>0)
+			if($l['a_s49']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s49_id.",".$l['a_s49'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 }
-		if($l['a_s50']>0)
+			if($l['a_s50']>0)
 			{
 			 $insertLayplanItemsQuery="INSERT INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."',".$layplan_id.",".$s50_id.",".$l['a_s50'].")";
 			 $result3=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -546,11 +547,8 @@ if($status == '')
 				$bundle_number=$rows3['bundle'];
 			}
 			
-			$layplan_Query1="SELECT cut_sizes.ref_size_name AS size_id,cut_master.cut_num,cut_sizes.id,`cut_master`.`planned_plies`,cut_master.actual_plies,
-			cut_sizes.quantity,cut_master.actual_plies*cut_sizes.quantity AS total_cut_quantity,cut_master.doc_num AS docket_number
-			FROM $brandix_bts.tbl_cut_master AS cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master AS cut_sizes ON cut_master.id=cut_sizes.parent_id
-			WHERE cut_master.id='$layplan_id' group by cut_sizes.ref_size_name";
-			//echo $layplan_Query1."</br>";
+			$layplan_Query1="SELECT cut_sizes.ref_size_name AS size_id,cut_master.cut_num,cut_sizes.id,`cut_master`.`planned_plies`,cut_master.actual_plies, cut_sizes.quantity,cut_master.actual_plies*cut_sizes.quantity AS total_cut_quantity,cut_master.doc_num AS docket_number FROM $brandix_bts.tbl_cut_master AS cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master AS cut_sizes ON cut_master.id=cut_sizes.parent_id WHERE cut_master.id='$layplan_id' group by cut_sizes.ref_size_name";
+			// echo $layplan_Query1."</br>";
 			$result4=mysqli_query($link, $layplan_Query1) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$layplan_result1=mysqli_num_rows($result4);
 			if($layplan_result1>0)
@@ -559,14 +557,15 @@ if($status == '')
 				while($l=mysqli_fetch_array($result4))
 				{
 					$size=$l['size_id'];
+					$docket_number=$l['docket_number'];
 					//$bundle_quantity=$l['actual_plies'];
 					$bundle_quantity=$l['quantity']*$l['planned_plies'];
-					$input_job_no=echo_title("$bai_pro3.packing_summary_input","max(input_job_no)+1","order_del_no",$schedule,$link);
-					$size_tit=echo_title("$brandix_bts.tbl_orders_sizes_master","strtolower(size_title)","ref_size_name='$size' and parent_id",$order_id,$link);
+					$input_job_no=echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
+					$size_tit=echo_title("$brandix_bts.tbl_orders_sizes_master","LOWER(size_title)","ref_size_name='$size' and parent_id",$order_id,$link);
 					$destination=echo_title("$bai_pro3.bai_orders_db_confirm","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
 					$packing_mode=echo_title("$bai_pro3.packing_summary_input","packing_mode","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
-					$size_code_ref=echo_title("$brandix_bts.tbl_orders_size_ref","strtolower(size_name)","ref_size_name",$size,$link);
-					$doc_numb=str_replace('R', '', '$l['docket_number']');
+					$size_code_ref=echo_title("$brandix_bts.tbl_orders_size_ref","LOWER(size_name)","id",$size,$link);
+					$doc_numb=str_replace('R', '', "$docket_number");
 					$rand=$schedule.date("ymdH").$input_job_no;
 					
 					echo "<tr><td>".$sno."</td><td>".$cut_num."</td><td>".$color_code."</td><td>".$size."</td><td>".$bundle_number."</td><td>".$bundle_quantity."</td><td>".$l['docket_number']."</td></tr>";
@@ -577,11 +576,9 @@ if($status == '')
 					$sql1="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type) values(\"".$doc_numb."\",\"".$size_tit."\",\"".$bundle_quantity."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$packing_mode."\",\"".$size_code_ref."\",'R')";	
 
 					$result5=mysqli_query($link, $sql1) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							
 				}
 			}
-			
-		}	
+		}
 	}
 	//$mini_order_ref=$_GET['id'];
 	$data_sym="$";
@@ -591,7 +588,9 @@ if($status == '')
 	fwrite($fh, $stringData);
 	fclose($fh);	
 	echo "</table>";
-//	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",180); function Redirect() {  location.href = \"recut_mini_create.php\"; }</script>";
+	$recut_mini_create=getFullURLLevel($_GET['r'],'recut_mini_create.php',0,'N');
+	echo "<script>swal('Sewing Jobs Successfully Generated for Re-Cut Docket - $docket_number','','success');</script></br>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = \"$recut_mini_create\"; }</script>";
 }
 else
 {

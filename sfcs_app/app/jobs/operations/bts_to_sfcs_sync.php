@@ -61,7 +61,7 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 	}
 	
 	$bundles_qry="select * FROM brandix_bts.bundle_creation_data_temp WHERE (operation_id='101' or operation_id='130') AND sync_status=0";
-	$bundles_qry_result=mysqli_query($link,$bundles_qry);
+	$bundles_qry_result=mysqli_query($link,$bundles_qry) or exit("Bundles Query Error17".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	if(mysqli_num_rows($bundles_qry_result)>0)
 	{
 		while($row = mysqli_fetch_array($bundles_qry_result))
@@ -77,20 +77,20 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 			
 			/*getting buyer division from bai orders db*/
 			$buyer_qry="select order_div FROM bai_pro3.bai_orders_db WHERE order_style_no='".$row['style']."' AND order_del_no='".$row['schedule']."' AND order_col_des='".$row['color']."'";
-			$buyer_qry_result=mysqli_query($link,$buyer_qry);
+			$buyer_qry_result=mysqli_query($link,$buyer_qry) or exit("Bundles Query Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
 					$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 				}
 			/*getting sections from section db by assign module*/
 			$sections_qry="select sec_id,sec_head FROM bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$row['assigned_module'].",%' OR  sec_mods LIKE '".$row['assigned_module'].",%' LIMIT 0,1";
-			$sections_qry_result=mysqli_query($link,$sections_qry);
+			$sections_qry_result=mysqli_query($link,$sections_qry) or exit("Bundles Query Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($buyer_qry_row=mysqli_fetch_array($sections_qry_result)){
 					$sec_head=$buyer_qry_row['sec_id'];
 			}
 				
 			/*Getting number of operators fro bai_pro.pro_atten*/
 			$qry_nop="select avail_A,avail_B FROM bai_pro.pro_atten WHERE module=".$row['assigned_module']." AND date='$bac_dat'";
-			$qry_nop_result=mysqli_query($link,$qry_nop);
+			$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($nop_qry_row=mysqli_fetch_array($qry_nop_result)){
 					$avail_A=$nop_qry_row['avail_A'];
 					$avail_B=$nop_qry_row['avail_B'];
@@ -128,25 +128,26 @@ include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
 				/*Getting updated operation id bundle num and sequence*/
 				$qry_opid="select * FROM brandix_bts.bundle_creation_data_temp WHERE bundle_number='".$row['bundle_number']."' AND id <'".$bun_id."'  ORDER BY id DESC LIMIT 0,1";
 				//echo "getting id :".$qry_opid."</br>";
-				$qry_opid_result=mysqli_query($link,$qry_opid);
+				$qry_opid_result=mysqli_query($link,$qry_opid) or exit("Bundles Query Error13".mysqli_error($GLOBALS["___mysqli_ston"]));	;
 				while($qry_opid_row=mysqli_fetch_array($qry_opid_result))
 				{
 					$updt_bundle_opid=$qry_opid_row['bundle_number']."-".$qry_opid_row['operation_id']."-".$qry_opid_row['input_job_no']."-".$qry_opid_row['id'];
 				}
 				
 				/*update sync_status into 1*/
-				$update_sync="UPDATE brandix_bts.bundle_creation_data_temp SET sync_status='1' WHERE id=".$row['id'];
-				$qry_status1=mysqli_query($link,$update_sync);
-				if($qry_status1)
-				{
-					echo "Updated bundle_creation_data table successfully<br>";
-				}				
+				// $update_sync="UPDATE brandix_bts.bundle_creation_data_temp SET sync_status='1' WHERE id=".$row['id'];
+				// $qry_status1=mysqli_query($link,$update_sync) or exit("Bundles Query Error12".mysqli_error($GLOBALS["___mysqli_ston"]));		
+				// if($qry_status1)
+				// {
+					// echo "Updated bundle_creation_data table successfully<br>";
+				// }				
 			}	
 		}				
 	}
 	
 	
 	$bundles_output_sql="select style,schedule,color,bundle_number,input_job_no_random_ref,input_job_no,operation_id,assigned_module,remarks,SUM(recevied_qty) AS qty,size_id,group_concat(id) as id FROM brandix_bts.bundle_creation_data_temp WHERE sfcs_smv > 0 AND sync_status=0 GROUP BY style,SCHEDULE,color,bundle_number,input_job_no_random_ref,input_job_no,operation_id,assigned_module,remarks,size_id";
+	echo $bundles_output_sql."<br>";
 	$bundles_output_sql_result=mysqli_query($link,$bundles_output_sql) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row = mysqli_fetch_array($bundles_output_sql_result))
 	{

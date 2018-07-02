@@ -88,7 +88,7 @@ body{
 <div class="panel-body">
 <table> 
 <form name="test" action="ims_edit_process_v1_process.php" method="post"> 
-<!-- <tr><td>TID</td><td>:</td><td> <?php echo $tid; ?><input type="hidden" name="tid" value="<?php // echo $tid; ?>" size="15"></td> </tr> -->
+<tr style='display:none'><td >TID</td><td>:</td><td> <?php echo $tid; ?><input type="hidden" name="tid" value="<?php  echo $tid; ?>" size="15"></td> </tr>
 <?php 
 
 

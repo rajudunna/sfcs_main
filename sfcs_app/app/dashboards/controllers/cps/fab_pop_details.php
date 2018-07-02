@@ -19,6 +19,20 @@ Changes Log:
 
 2014-05-29/dharanid/Service Request #370686: Add sivaramakrishnat in $authorized array For Docket allocation in CPS Dashboard
 -->
+<?php 
+
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+?>
+<br/>
+<div class='row'>
+	<div class='col-md-2 pull-left'>
+		<a class='btn btn-primary' href = '<?= $url ?>'> Back</a>
+	</div>
+</div>
+<br/>
 <script src="../../../../common/js/sweetalert.min.js"></script>
 <script type="text/javascript">
 
@@ -429,9 +443,10 @@ $total=0;$allc_doc=0;
 //By ram Date:14032018
 //this is flag for style automatic/manual 
 $style_flag=0;
+$Disable_allocate_flag=0;
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {	
-	if($style_flag!=0){
+	if($style_flag==0){
 			$docno_lot=$sql_row1['doc_no'];
 			$componentno_lot=$sql_row1['compo_no'];
 			
@@ -442,7 +457,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 			
 			
 			$qry_lotnos="SELECT p.order_tid,p.doc_no,c.compo_no,s.style_no,s.lot_no,s.batch_no FROM $bai_pro3.plandoc_stat_log p LEFT JOIN bai_pro3.cat_stat_log c ON 
-			c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE style_no='$style_ref' and item='$componentno_lot' and  p.doc_no='$docno_lot'";
+			c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE style_no='$style_ref' and item='$componentno_lot' and  p.doc_no='$docno_lot' and s.product_group='Fabric'";
 			// echo "<br>LOt qry : ".$qry_lotnos;
 			$sql_lotresult=mysqli_query($link, $qry_lotnos) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_lotrow=mysqli_fetch_array($sql_lotresult))
@@ -456,7 +471,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				//echo "<h2>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp NO LOT NUMBERS FOR THIS STYLE</h2>";
 				//echo '<script>window.location.href = "http://192.168.0.110:8080/master/projects/beta/production_planning/fab_priority_dashboard.php";</script>';
-				echo '<h1><font color="red">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp No lot numbers for this style !!!</font><br/></h1>';
+				//echo '<h1><font color="red">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp No lot numbers for this style !!!</font><br/></h1>';
 				// die();
 			}
 			else 
@@ -542,8 +557,11 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		echo "<input type=\"hidden\" name=\"cat_ref[]\" value=\"".$cat_ref."\">";
 		//For New Implementation
 		
-		if($style_flag!=0){
-
+		if($style_flag==0){
+			if(sizeof($lotnos_array) ==''){
+				$seperated_lots="No lot Number Found";
+				$Disable_allocate=1;
+			}
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" name=\"pms".$sql_row1['doc_no']."\" id='address' 
 			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 readonly>".$seperated_lots."</textarea><br/>";
 
@@ -631,14 +649,20 @@ else
 }
 
 echo "</tr>";
-unset($lotnos_array);	
+unset($lotnos_array);
+$Disable_allocate_flag=$Disable_allocate_flag+$Disable_allocate;	
 }
 echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td></tr>";
 echo "</table>";
+//echo $Disable_allocate_flag;
 if($enable_allocate_button==1)
-{
-	echo "<input type=\"submit\" name=\"allocate\" value=\"Allocate\" class=\"btn btn-success\" onclick=\"button_disable()\">";
+{	
+	//disable allocate button
+	if($Disable_allocate_flag==0){
+		echo "<input type=\"submit\" name=\"allocate\" value=\"Allocate\" class=\"btn btn-success\" onclick=\"button_disable()\">";
 	// echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
+	}
+	
 }
 echo "</form>";
 //NEW Implementation for Docket generation from RMS
