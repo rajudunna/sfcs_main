@@ -70,11 +70,24 @@ if(isset($_POST['export']))
 
 $sdate=$_POST['fdate'];
 $edate=$_POST['tdate'];
-
-
+$batch_search=$_POST['batch_no'];
+$buyer_select=$_POST['buyerdiv'];
+$sql="SELECT DISTINCT buyer FROM $bai_rm_pj1.sticker_report ";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	$buyer_name[]=$sql_row["buyer"];
+}
+	for($i=0;$i<sizeof($buyer_name);$i++)
+	{
+		$all_buyers[] = $buyer_name[$i];
+	}
+if($buyer_select=='All'){
+		$selected_buyer = $all_buyers;
+	}else{
+		$selected_buyer = array($buyer_select);
+	}
 ?>
-
-
 <?php
 
 $table= '<h2>Fabric Inspection Summary Report - '.date("Y-m-d").'</h2>';
@@ -116,8 +129,15 @@ $table.= "<th>Ticket Width(Avg)</th>";
 $table.= "<th>C-Tex Width(Avg)</th>";
 $table.= "<th>Width Shortage</th>";
 $table.= "</tr>";
+	if(strlen($batch_search)>0)
+	{	
+		$sqlx="select * from $bai_rm_pj1.inspection_db where batch_ref=\"$batch_search\"";
+	}
+	else
+	{
+		$sqlx="select * from $bai_rm_pj1.inspection_db where date(log_date) between \"$sdate\" and \"$edate\"";
+	}
 
-	$sqlx="select * from $bai_rm_pj1.inspection_db where date(log_date) between \"$sdate\" and \"$edate\"";
 
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -220,9 +240,9 @@ $table.= "</tr>";
 			}																				
 				
 				
-				if($print_check==0 and $num_rows>0)
+				if($print_check==0 and $num_rows>0 and in_array($buyer,$selected_buyer))
 				{
-				include('../common/php/supplier_db.php'); 
+				// include('../common/php/supplier_db.php'); 
 				
 				sort($scount_temp); //to sort shade groups
 				$avg_t_width=round($avg_t_width/$num_rows,2);
@@ -258,39 +278,36 @@ $table.= "</tr>";
 				 $table.= "<td>".$item."</td>"; 
 				 $table.= "<td>".$lot_ref_batch."</td>"; 
 				  
-				 $check=0;
-				  for($i=0;$i<sizeof($suppliers);$i++)
-				  {
-					  	$x=array();
-						$x=explode("$",$suppliers[$i]);
-						if($supplier==$x[1])
-						{
-							$table.= "<td>".$x[0]."</td>";
-							$check=1;
-						}
-				  }
-				  if($check==0)
-				  {
-				  	$table.= "<td></td>";
-				  }
+		
+				$check=0;
+				$sql_supplier = "SELECT supplier_m3_code as supplier_name FROM $bai_rm_pj1.inspection_supplier_db where seq_no=".$supplier;
+				$sql_result_supplier=mysqli_query($link, $sql_supplier) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row=mysqli_fetch_array($sql_result_supplier))
+				{
+					$supplier=$sql_row['supplier_name'];
+					$check = 1;
+				}
+							
+
+				if($check == 0){
+					$table.= "<td></td>"; 
+				}else
+				{
+					$table.= "<td>".$supplier."</td>"; 
+				}
 				
-				  
-				   $table.= "<td>".$item_desc."</td>"; 
-				   $table.= "<td>".$rec_qty."</td>"; 
-				   $table.= "<td>".$pts."</td>"; 
-				   $table.= "<td>".$pkg_no."</td>"; 
-				   $table.= "<td>".$po_no."</td>"; 
-				   $table.= "<td>".$qty_insp."</td>"; 
-				   $table.= "<td>".$fallout."</td>"; 
-				   $table.= "<td>".$act_gsm."</td>"; 
-				   $table.= "<td>".$grn_date."</td>"; 
-				  
-				   if($rec_qty>0) { $table.= "<td>".round(($qty_insp/$rec_qty)*100,2)."%"."</td>"; } else { $table.= "<td></td>"; } 
-				   
-				 
 				
-			
-				   
+				$table.= "<td>".$item_desc."</td>"; 
+				$table.= "<td>".$rec_qty."</td>"; 
+				$table.= "<td>".$pts."</td>"; 
+				$table.= "<td>".$pkg_no."</td>"; 
+				$table.= "<td>".$po_no."</td>"; 
+				$table.= "<td>".$qty_insp."</td>"; 
+				$table.= "<td>".$fallout."</td>"; 
+				$table.= "<td>".$act_gsm."</td>"; 
+				$table.= "<td>".$grn_date."</td>"; 
+				
+				if($rec_qty>0) { $table.= "<td>".round(($qty_insp/$rec_qty)*100,2)."%"."</td>"; } else { $table.= "<td></td>"; } 
 				 $table.= "<td>".$skew."</td>"; 
 				 $table.= "<td>".$pur_width."</td>"; 
 				 $table.= "<td>".$total_rolls."</td>"; 
@@ -336,7 +353,6 @@ $table.= "</tr>";
 	}
 
 $table.= "</table>";
-
 		header("Content-type: application/x-msdownload"); 
 		# replace excelfile.xls with whatever you want the filename to default to
 		header("Content-Disposition: attachment; filename=RM_Inspection_Summary_".date("Y-m-d_H_i").".xls");
