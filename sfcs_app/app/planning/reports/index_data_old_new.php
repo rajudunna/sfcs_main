@@ -80,12 +80,12 @@ $sql2="select * from $bai_pro3.sections_db where sec_id>0";
 	}
 
 $week_del="select schedule_no,exfact_date from $bai_pro2.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
-// echo $week_del."<br>";
+//echo $week_del."<br>";
 $sql_result=mysqli_query($link,$week_del) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $count_rows=mysqli_num_rows($sql_result);
 if($count_rows > 0){
-	echo "<br><div class='table-responsive'>";
-	echo "<table  class=\"mytable1\">
+	echo "<br><div class='table-responsive' style='overflow:scroll'>";
+	echo "<table  class='table table-bordered'>
 	<thead>
 	<tr>
 	<th rowspan=2>Sno</th> 
@@ -111,8 +111,7 @@ if($count_rows > 0){
 	</tr>
 	<tr>
 	<th>Size</th><th>Total Quantity</th><th>YY</th><th>Yards</th><th>YY</th><th>Yards</th><th>%</th><th>Yards</th><th>Size</th><th>Total Quantity</th><th>Size</th><th>Total Quantity</th>";
-	
-		
+
 		echo "$addon_headings<th>Total Production<br/>Pendings</th>";
 		echo "<th>Lost Value</th>";
 		
@@ -128,15 +127,13 @@ if($count_rows > 0){
 		
 	}
 
-
 	$total_cost=0;
 	// if($count_rows > 0)
 	// {
 		$total_sch=implode(",",$schdules);
 
-
 	$week_del="select schedule_no,exfact_date from $bai_pro2.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
-	// echo $week_del."<br>";
+	//echo $week_del."<br>";
 	$sql_result=mysqli_query($link, $week_del) or exit("Sql Error3 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -148,7 +145,7 @@ if($count_rows > 0){
 
 
 	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in ($total_sch) and order_no=\"1\" order by order_del_no";
-	 //echo $sql."<br>";
+	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$slnum = 1;
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -258,16 +255,22 @@ if($count_rows > 0){
 			
 			// calculate system yards for 
 			$sql1="select tid,purwidth,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and mo_status=\"Y\" and purwidth > 0";
-			// echo $sql1."<br>";
+			//echo $sql1."<br>";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row1=mysqli_fetch_array($sql_result1))
-			{
-				$cat_tid=$sql_row1["tid"];
-				echo "<td style=\"background:$id;\">".round($sql_row1["purwidth"],0)."</td>";
-				echo "<td style=\"background:$id;\">".round($sql_row1["catyy"],4)."</td>"; 
-				$sys_yy=round($sql_row1["catyy"],4);
-				$sys_yrds=$sys_yy*$total;
-				echo "<td style=\"background:$id;\">".round($sys_yrds,0)."</td>";
+			if(mysqli_num_rows($sql_result1) > 0){
+				while($sql_row1=mysqli_fetch_array($sql_result1))
+				{
+					$cat_tid=$sql_row1["tid"];
+					echo "<td style=\"background:$id;\">".round($sql_row1["purwidth"],0)."</td>";
+					echo "<td style=\"background:$id;\">".round($sql_row1["catyy"],4)."</td>"; 
+					$sys_yy=round($sql_row1["catyy"],4);
+					$sys_yrds=$sys_yy*$total;
+					echo "<td style=\"background:$id;\">".round($sys_yrds,0)."</td>";
+				}
+			}else{
+				echo "<td></td>";
+				echo "<td></td>";
+				echo "<td></td>";
 			}
 			
 			
