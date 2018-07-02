@@ -255,7 +255,7 @@ function enable_button()
 								$x++;
 							}
 						}
-						echo '<tr><td colspan=5>Total Reserved Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;text-align:right"></td></tr>';
+						// echo '<tr><td colspan=5>Total Reserved Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;text-align:right"></td></tr>';
 							$table='</tbody></table></div>';
 					}
 		echo $table;
@@ -281,7 +281,7 @@ function enable_button()
 </div>
 </div>
 </body>
-<script language="javascript" type="text/javascript">
+<!-- <script language="javascript" type="text/javascript">
 //<![CDATA[
 	$('#reset_table1').addClass('btn btn-warning');
 	var fnsFilters = {
@@ -304,7 +304,7 @@ function enable_button()
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
 	});
 	//]]>
-</script>
+</script> -->
 <style type="text/css">
 	th {
 		text-align: center;

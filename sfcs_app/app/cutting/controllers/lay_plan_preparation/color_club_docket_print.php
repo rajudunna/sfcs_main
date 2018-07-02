@@ -151,6 +151,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
+		$mk_ref=$sql_row['mk_ref'];
 		for($s=0;$s<sizeof($sizes_code);$s++)
 		{
 			//if($sql_row["a_s".$sizes_code[$s].""]>0)
@@ -214,6 +215,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 						 $a_s30+$a_s31+$a_s32+$a_s33+$a_s34+$a_s35+$a_s36+$a_s37+$a_s38+$a_s39+$a_s40+$a_s41+$a_s42+$a_s43+$a_s44+
 						 $a_s45+$a_s46+$a_s47+$a_s48+$a_s49+$a_s50;
 	}
+	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+//echo $sql2;
+mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
+$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
+
+while($sql_row2=mysqli_fetch_array($sql_result2))
+{
+	$mklength=$sql_row2['mklength'];
+	$mk_remarks=$sql_row2['remarks'];
+}
 	//echo ' total '.$a_ratio_tot;
 //echo implode(",",$docs);
 
@@ -1603,7 +1614,7 @@ tags will be replaced.-->
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6817319>Cut No :</td>
   <td colspan=2 class=xl9617319><?php if($remarks=="Normal") { echo leading_zeros($cut_no, 3); } else {if($remarks=="Pilot") { echo "Pilot";}}?></td>
-  <td class=xl6817319>Date:</td>
+  <td colspan=2 class=xl6817319>Date:</td>
   <td colspan=2 class=xl9617319><?php  echo $date; ?></td>
   <td class=xl1517319></td>
   <td colspan=2 class=xl6817319>Category :</td>
@@ -1614,18 +1625,18 @@ tags will be replaced.-->
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6817319>Style No :</td>
   <td colspan=2 class=xl9617319><?php echo $style; ?></td>
-  <td class=xl6817319>Module:</td>
+  <td colspan=2 class=xl6817319>Module:</td>
   <td colspan=2 class=xl9617319><?php echo $plan_module; echo " (".$cut_table[$plan_module].")"; ?></td>
   <td class=xl1517319></td>
-  <td colspan=2 class=xl11317319>Consumption :</td>
-  <td colspan=7 class=xl9617319><?php echo $body_yy; ?></td>
+  <td colspan=2 class=xl11317319>Mk Name :</td>
+  <td colspan=7 class=xl9617319><?php echo $mk_remarks; ?></td>
   <td class=xl6417319></td>
  </tr>
  <tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6817319>Sch No :</td>
   <td colspan=2 class=xl9617319><?php echo $schedule; ?></td>
-  <td class=xl6817319>PO:</td>
+  <td colspan=2 class=xl6817319>PO:</td>
   <td colspan=2 class=xl9617319></td>
   <td class=xl1517319></td>
   <td colspan=2 class=xl6817319>Fab Direction :</td>
@@ -1648,7 +1659,9 @@ tags will be replaced.-->
  echo "<tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6817319>Color :</td>
-  <td colspan=5 class=xl9617319>".$sch_color[0]." / ".$color_codes[0]."</td>
+  <td colspan=2 class=xl9617319>".$sch_color[0]." / ".$color_codes[0]."</td>
+  <td colspan=2 class=xl6817319>Consumptions:</td>
+  <td  class=xl9617319'>$body_yy</td>
   <td class=xl1517319></td>
   <td colspan=2 class=xl6817319>Fab Code/ Desc :</td>
   <td colspan=7 class=xl9617319>".$fab_codes[0]."</td>

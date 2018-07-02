@@ -102,7 +102,7 @@
                         
                         
                         
-                <button id="save_btn" type="submit" class="btn btn-primary btn-lg" name="save_btn">Save</button></div></div></div>
+                <button id="save_btn" type="submit" class="btn btn-primary btn-sm" name="save_btn">Save</button></div></div></div>
 
 
                     </div>
@@ -113,3 +113,8 @@
 <?php include('view_categories.php'); ?>
 </body>
 </html>
+<style>
+.form-horizontal .control-label {
+    padding-left: 2px;
+}
+</style>

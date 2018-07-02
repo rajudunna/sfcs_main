@@ -119,7 +119,113 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$patt_ver=$sql_row['patt_ver'];
 	$col_des=$sql_row['col_des'];
 }
+//binding consumption
+	if($category=='Body' || $category=='Front')
+	{
+		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		//echo $sql2;
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error bind".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$rows=mysqli_num_rows($sql_result2);
+		if($rows > 0)
+		{
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+				$binding_con = $sql_row2['binding_con'];
+			}
+		}
+	}
+	//echo 'binding '.$binding_con;
 
+//cuttable wastage
+	$sql="select cuttable_wastage from $bai_pro3.cuttable_stat_log where order_tid=\"$order_tid\" and cat_id=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error cuttable wastage".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$cuttable_wastage = $sql_row['cuttable_wastage'];
+	}
+	//echo '  wastage '.$cuttable_wastage;
+//ratio total ($a_ratio_tot variable)
+	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no=$doc_id";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error total ratio".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$mk_ref=$sql_row['mk_ref'];
+		for($s=0;$s<sizeof($sizes_code);$s++)
+		{
+			//if($sql_row["a_s".$sizes_code[$s].""]>0)
+			//{
+			$a_s[$sizes_code[$s]]=$sql_row["a_s".$sizes_code[$s].""];
+			//}
+		}
+			$a_s01=$sql_row['a_s01'];
+			$a_s02=$sql_row['a_s02'];
+			$a_s03=$sql_row['a_s03'];
+			$a_s04=$sql_row['a_s04'];
+			$a_s05=$sql_row['a_s05'];
+			$a_s06=$sql_row['a_s06'];
+			$a_s07=$sql_row['a_s07'];
+			$a_s08=$sql_row['a_s08'];
+			$a_s09=$sql_row['a_s09'];
+			$a_s10=$sql_row['a_s10'];
+			$a_s11=$sql_row['a_s11'];
+			$a_s12=$sql_row['a_s12'];
+			$a_s13=$sql_row['a_s13'];
+			$a_s14=$sql_row['a_s14'];
+			$a_s15=$sql_row['a_s15'];
+			$a_s16=$sql_row['a_s16'];
+			$a_s17=$sql_row['a_s17'];
+			$a_s18=$sql_row['a_s18'];
+			$a_s19=$sql_row['a_s19'];
+			$a_s20=$sql_row['a_s20'];
+			$a_s21=$sql_row['a_s21'];
+			$a_s22=$sql_row['a_s22'];
+			$a_s23=$sql_row['a_s23'];
+			$a_s24=$sql_row['a_s24'];
+			$a_s25=$sql_row['a_s25'];
+			$a_s26=$sql_row['a_s26'];
+			$a_s27=$sql_row['a_s27'];
+			$a_s28=$sql_row['a_s28'];
+			$a_s29=$sql_row['a_s29'];
+			$a_s30=$sql_row['a_s30'];
+			$a_s31=$sql_row['a_s31'];
+			$a_s32=$sql_row['a_s32'];
+			$a_s33=$sql_row['a_s33'];
+			$a_s34=$sql_row['a_s34'];
+			$a_s35=$sql_row['a_s35'];
+			$a_s36=$sql_row['a_s36'];
+			$a_s37=$sql_row['a_s37'];
+			$a_s38=$sql_row['a_s38'];
+			$a_s39=$sql_row['a_s39'];
+			$a_s40=$sql_row['a_s40'];
+			$a_s41=$sql_row['a_s41'];
+			$a_s42=$sql_row['a_s42'];
+			$a_s43=$sql_row['a_s43'];
+			$a_s44=$sql_row['a_s44'];
+			$a_s45=$sql_row['a_s45'];
+			$a_s46=$sql_row['a_s46'];
+			$a_s47=$sql_row['a_s47'];
+			$a_s48=$sql_row['a_s48'];
+			$a_s49=$sql_row['a_s49'];
+			$a_s50=$sql_row['a_s50'];
+
+			$a_ratio_tot=$a_s01+$a_s02+$a_s03+$a_s04+$a_s05+$a_s06+$a_s07+$a_s08+$a_s09+$a_s10+$a_s11+$a_s12+$a_s13+$a_s14+
+						 $a_s15+$a_s16+$a_s17+$a_s18+$a_s19+$a_s20+$a_s21+$a_s22+$a_s23+$a_s24+$a_s25+$a_s26+$a_s27+$a_s28+$a_s29+
+						 $a_s30+$a_s31+$a_s32+$a_s33+$a_s34+$a_s35+$a_s36+$a_s37+$a_s38+$a_s39+$a_s40+$a_s41+$a_s42+$a_s43+$a_s44+
+						 $a_s45+$a_s46+$a_s47+$a_s48+$a_s49+$a_s50;
+	}
+	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+//echo $sql2;
+mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
+$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
+
+while($sql_row2=mysqli_fetch_array($sql_result2))
+{
+	$mklength=$sql_row2['mklength'];
+	$mk_remarks=$sql_row2['remarks'];
+}
+	//echo ' total '.$a_ratio_tot;
 //echo implode(",",$docs);
 
 //$sql="select min(roll_width) as width from bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
@@ -1402,11 +1508,11 @@ tags will be replaced.-->
 
 <div id="doc_designs_17319" align=center x:publishsource="Excel">
 
-<table border=0 cellpadding=0 cellspacing=0 width=1063 style='border-collapse:
- collapse;table-layout:fixed;width:797pt'>
- <col width=20 style='mso-width-source:userset;mso-width-alt:731;width:15pt'>
+<table border=0 cellpadding=0 cellspacing=0 width=1800 style='border-collapse:
+ collapse;table-layout:fixed;width:1300pt'>
+ <col width=20 style='mso-width-source:userset;mso-width-alt:800;width:15pt'>
  <col width=64 span=16 style='width:48pt'>
- <col width=19 style='mso-width-source:userset;mso-width-alt:694;width:14pt'>
+ <col width=19 style='mso-width-source:userset;mso-width-alt:800;width:14pt'>
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl1517319 width=20 style='height:15.0pt;width:15pt'><a
   name="RANGE!A1:R64"></a></td>
@@ -1447,7 +1553,7 @@ tags will be replaced.-->
   
   <td class=xl6417319></td>
   <td class=xl6417319></td>
-  <td colspan=3 class=xl7617319>ORIGINAL</td>
+  <td colspan=3 class=xl7617319></td>
   <td class=xl6417319></td>
  </tr>
  <tr height=21 style='height:15.75pt'>
@@ -1508,7 +1614,7 @@ tags will be replaced.-->
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6817319>Cut No :</td>
   <td colspan=2 class=xl9617319><?php if($remarks=="Normal") { echo leading_zeros($cut_no, 3); } else {if($remarks=="Pilot") { echo "Pilot";}}?></td>
-  <td class=xl6817319>Date:</td>
+  <td colspan=2 class=xl6817319>Date:</td>
   <td colspan=2 class=xl9617319><?php  echo $date; ?></td>
   <td class=xl1517319></td>
   <td colspan=2 class=xl6817319>Category :</td>
@@ -1519,18 +1625,18 @@ tags will be replaced.-->
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6817319>Style No :</td>
   <td colspan=2 class=xl9617319><?php echo $style; ?></td>
-  <td class=xl6817319>Module:</td>
+  <td colspan=2 class=xl6817319>Module:</td>
   <td colspan=2 class=xl9617319><?php echo $plan_module; echo " (".$cut_table[$plan_module].")"; ?></td>
   <td class=xl1517319></td>
-  <td colspan=2 class=xl11317319>Consumption :</td>
-  <td colspan=7 class=xl9617319><?php echo $body_yy; ?></td>
+  <td colspan=2 class=xl11317319>Mk Name :</td>
+  <td colspan=7 class=xl9617319><?php echo $mk_remarks; ?></td>
   <td class=xl6417319></td>
  </tr>
  <tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6817319>Sch No :</td>
   <td colspan=2 class=xl9617319><?php echo $schedule; ?></td>
-  <td class=xl6817319>PO:</td>
+  <td colspan=2 class=xl6817319>PO:</td>
   <td colspan=2 class=xl9617319></td>
   <td class=xl1517319></td>
   <td colspan=2 class=xl6817319>Fab Direction :</td>
@@ -1553,7 +1659,9 @@ tags will be replaced.-->
  echo "<tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6817319>Color :</td>
-  <td colspan=5 class=xl9617319>".$sch_color[0]." / ".$color_codes[0]."</td>
+  <td colspan=2 class=xl9617319>".$sch_color[0]." / ".$color_codes[0]."</td>
+  <td colspan=2 class=xl6817319>Consumptions:</td>
+  <td  class=xl9617319'>$body_yy</td>
   <td class=xl1517319></td>
   <td colspan=2 class=xl6817319>Fab Code/ Desc :</td>
   <td colspan=7 class=xl9617319>".$fab_codes[0]."</td>
@@ -1750,6 +1858,7 @@ tags will be replaced.-->
   <td class=xl6417319></td>
   <td class=xl6417319></td>
  </tr>
+
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   <td rowspan=2 class=xl7017319 style='border-bottom:.5pt solid black'>Rpt No</td>
@@ -1763,7 +1872,17 @@ tags will be replaced.-->
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Act. Width</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Marker Length</td>
+  width:48pt'>Cutting Wastage %</td>
+  <td rowspan=2 colspan=2 class='xl8917319 autox'width=80 style='border-bottom:.5pt solid black;
+  width:60px'>Binding Consumption</td>
+  <td rowspan=2   colspan=2 class='xl8917319 autox' width=80 style='border-bottom:.5pt solid black;
+  width:70px'>Fab. Requirement for lay/ Yds</td>
+  <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
+  width:70px'>Fab. Requirement for Binding/ Yds</td>
+  <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
+  width:60px'>Total Fab. Requirement/ Yds</td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:auto'>Marker Length</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Act. Req Qty (<?php echo $fab_uom; ?>)</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
@@ -1801,7 +1920,17 @@ tags will be replaced.-->
 	echo (($purlength*array_sum($plies))+$extra);  ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $actwidth; ?></td>
-  <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
+  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php echo $cuttable_wastage*100;?></td>
+  <td rowspan=2 colspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php echo $binding_con; ?></td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php $fab_lay = (float)$purlength*(1+(float)$cuttable_wastage)*(int)$plies; echo round($fab_lay,2); ?></td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php $fab_bind = (float)$binding_con*(int)$plies*(float)$a_ratio_tot; echo round($fab_bind,2); ?></td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php echo round($fab_bind+$fab_lay,2); ?></td>
+  <td rowspan=2 colspan=2  class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $act_mk_length; ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php if($act_mk_length>0) {echo array_sum($met_req); } ?></td>
@@ -2637,3 +2766,4 @@ echo $lot_ref; echo "MK File: ".implode(", ",array_unique($mk_files));
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 ?>
+

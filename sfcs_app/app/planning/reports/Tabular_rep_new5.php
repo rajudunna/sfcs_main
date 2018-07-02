@@ -4,11 +4,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 // $view_access=user_acl("SFCS_0043",$username,1,$group_id_sfcs); 
-
 ?>
 <?php
 error_reporting(0);
-set_time_limit(2000);
+set_time_limit(6000000);
 ?>
 <html>
 <head>
@@ -197,8 +196,8 @@ $cpo_code="";
 	
 	echo "<div class='table-responsive' id='main_content'><table class='table table-bordered'>";
 	echo "<tr class='tblheading'>";
-	echo "<td bgcolor=\"#66FF66\">CPO (".sizeof($cpo).")</td>";
-	echo "<td bgcolor=\"#66FF66\">Buyer Division (".sizeof($buyer_div).")</td>";
+	echo "<td bgcolor=\"#CCFFFF\">CPO (".sizeof($cpo).")</td>";
+	echo "<td bgcolor=\"#CCFFFF\">Buyer Division (".sizeof($buyer_div).")</td>";
 	echo "<td bgcolor=\"#CCFFFF\">Style (".sizeof($style).")</td>";
 	echo "<td bgcolor=\"#CCFFFF\">User Style ID (".sizeof($style_id).")</td>";
 	echo "<td bgcolor=\"#CCFFFF\">Schedule (".sizeof($schedule).")</td>";
@@ -209,9 +208,9 @@ $cpo_code="";
 	echo "<tr>";
 		echo "<td>";
 	echo '<div class="scroll">';
-	$sql="select distinct CPO from $order_status_buffer $criteria order by CPO";
-	// echo $sql;
-	// die();
+
+	$sql="select distinct CPO from $bai_pro2.order_status_buffer $criteria order by CPO";
+	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count = mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -238,7 +237,7 @@ $cpo_code="";
 	echo '<div  class="scroll">';
 	
 	
-	$sql="select distinct buyer_div from $order_status_buffer $criteria order by buyer_div";
+	$sql="select distinct buyer_div from $bai_pro2.order_status_buffer $criteria order by buyer_div";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -262,7 +261,7 @@ $cpo_code="";
 	
 	echo "<td>";
 	echo '<div  class="scroll">';
-	$sql="select distinct style from $order_status_buffer $criteria order by style";
+	$sql="select distinct style from $bai_pro2.order_status_buffer $criteria order by style";
 	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -287,7 +286,7 @@ $cpo_code="";
 	
 	echo "<td>";
 	echo '<div  class="scroll">';
-	$sql="select distinct style_id from $order_status_buffer $criteria order by style_id";
+	$sql="select distinct style_id from $bai_pro2.order_status_buffer $criteria order by style_id";
 	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -312,7 +311,7 @@ $cpo_code="";
 	
 		echo "<td>";
 	echo '<div  class="scroll">';
-	$sql="select distinct (schedule*1) as sch_no from $order_status_buffer $criteria order by schedule";
+	$sql="select distinct (schedule*1) as sch_no from $bai_pro2.order_status_buffer $criteria order by schedule";
 	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -338,7 +337,7 @@ $cpo_code="";
 	
 	echo "<td>";
 	echo '<div  class="scroll">';
-	$sql="select distinct color from $order_status_buffer $criteria order by color";
+	$sql="select distinct color from $bai_pro2.order_status_buffer $criteria order by color";
 	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -361,8 +360,8 @@ $cpo_code="";
 	echo "</td>";
 	
 	echo "<td>";
-		echo 'From: <input type="date" name="from_date" value="';if($from_date==""){ echo date("Y-m-d"); } else { echo $from_date; } echo '"><br/>';
-		echo 'To: <input type="date" name="to_date" value="';if($to_date==""){ echo date("Y-m-d"); } else { echo $to_date; } echo '"><br/>';
+		echo 'From: <input type="text" data-toggle="datepicker" name="from_date" value="';if($from_date==""){ echo date("Y-m-d"); } else { echo $from_date; } echo '"><br/>';
+		echo 'To: <input type="text" data-toggle="datepicker" name="to_date" value="';if($to_date==""){ echo date("Y-m-d"); } else { echo $to_date; } echo '"><br/>';
 	echo "</td>";
 	echo "</tr>";
 	
@@ -529,23 +528,23 @@ if(isset($_POST['submit1']))
 	
 	$order_status_buffer="temp_pool_db.".$username.date("YmdHis")."_"."order_status_buffer";
 	
-	$sql="create TEMPORARY table order_status_buffer ENGINE = MyISAM select * from bai_pro2.order_status_buffer";
+	$sql="create TEMPORARY table $order_status_buffer ENGINE = MyISAM select * from $bai_pro2.order_status_buffer";
 	$newwww = $sql;
 	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql1="delete from order_status_buffer";
+	$sql1="delete from $bai_pro2.order_status_buffer";
 	mysqli_query($link, $sql1) or exit("Sql Error2z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql1="insert into order_status_buffer (cust_order,CPO,buyer_div,style,style_id,schedule,color,exf_date,ssc_code,order_qty) select Cust_order,CPO,buyer_div,style_no,style_id,schedule_no,color,exfact_date,ssc_code,order_qty from shipment_plan_summ";
+	$sql1="insert into $bai_pro2.order_status_buffer (cust_order,CPO,buyer_div,style,style_id,schedule,color,exf_date,ssc_code,order_qty) select Cust_order,CPO,buyer_div,style_no,style_id,schedule_no,color,exfact_date,ssc_code,order_qty from $bai_pro2.shipment_plan_summ";
 	mysqli_query($link, $sql1) or exit("Sql Error3z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	
 	$ssc_code_filter="temp_pool_db.".$username.date("YmdHis")."_"."ssc_code_filter";
 	
-	$sql="create TEMPORARY table $ssc_code_filter ENGINE = MyISAM select * from bai_pro2.ssc_code_filter";
+	$sql="create TEMPORARY table $ssc_code_filter ENGINE = MyISAM select * from $bai_pro2.ssc_code_filter";
 	mysqli_query($link, $sql) or exit("Sql Error4z".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql="delete from $ssc_code_filter";
+	$sql="delete from  $bai_pro2.ssc_code_filter";
 	mysqli_query($link, $sql) or exit("Sql Error5z".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	
@@ -553,12 +552,12 @@ if(isset($_POST['submit1']))
 	if(strlen(substr($criteria,4))>2)
 	{
 		$sql='';
-		$sql="select distinct ssc_code from $order_status_buffer where ".substr($criteria,4);
+		$sql="select distinct ssc_code from $bai_pro2.order_status_buffer where ".substr($criteria,4);
 		//echo $sql.'<br/>'.$newwww ;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$sql1="insert ignore into $ssc_code_filter(ssc_code) values(\"".$sql_row['ssc_code']."\")";
+			$sql1="insert ignore into  $bai_pro2.ssc_code_filter(ssc_code) values(\"".$sql_row['ssc_code']."\")";
 			mysqli_query($link, $sql1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}
@@ -570,8 +569,8 @@ if(isset($_POST['submit1']))
 			
 			
 
-	echo "<div class='table-responsive'><table id=\"table1\" border=1 class=\"mytable table\"><thead>";
-	echo "<tr class='tblheading'>";
+	echo "<div class='table-responsive'><table id=\"table1\"  class=\" table table-bordered\"><thead>";
+	echo "<tr class='info'>";
 	echo "<th>Customer Order</th>";
 	echo "<th>MPO</th>";	
 	echo "<th>CPO</th>";
@@ -594,7 +593,8 @@ if(isset($_POST['submit1']))
 	echo "<th>%</th>";
 	echo "</tr></thead><tbody>";
 
-	$sql11="select distinct ssc_code from $ssc_code_filter";
+	$sql11="select distinct ssc_code from  $bai_pro2.ssc_code_filter";
+	// echo $sql11;
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row11=mysqli_fetch_array($sql_result11))
 	{
@@ -627,13 +627,16 @@ if(isset($_POST['submit1']))
 		$style_id="";
 
 	
-		$sql="select * from style_status_summ where ssc_code=\"$ssc_code\"";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+		$sql="select * from $bai_pro2.style_status_summ where ssc_code=\"$ssc_code\"";
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error11aa".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 		} 
 		
-		$sql1="select act_cut,act_in,output,act_fg,act_ship from bai_pro3.bai_orders_db_confirm where order_tid=\"$ssc_code\"";
+		$sql1="select act_cut,act_in,output,act_fg,act_ship from $bai_pro3.bai_orders_db_confirm where order_tid=\"$ssc_code\"";
+		// echo $sql1."<br>";
+
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -676,7 +679,8 @@ if(isset($_POST['submit1']))
 			$color=$sql_row['color'];
 			
 
-			$sql1="select Cust_order,CPO,buyer_div,style,schedule,color,exf_date,order_qty,style_id from $order_status_buffer  where ssc_code=\"$ssc_code\"";
+			$sql1="select Cust_order,CPO,buyer_div,style,schedule,color,exf_date,order_qty,style_id from $bai_pro2.order_status_buffer  where ssc_code=\"$ssc_code\"";
+			// echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{

@@ -39,7 +39,9 @@ include("header.php");
 
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
-$username="sfcsproject1";
+$username=getrbac_user()['uname'];
+//echo "User :".$username."</br>";
+
 //$special_users=array("sfcsproject1","cwradmn","kirang","buddhikam","chathurangad","minuram","buddhikam");
 //echo $username;
 if(!in_array($authorized,$has_permission))
@@ -581,7 +583,6 @@ $blink_docs=array();
 //$table_name="plan_dashboard_input";
 
 $table_name="$temp_pool_db.plan_dash_doc_summ_input_".$username;
-
 $sql="DROP TABLE IF EXISTS $table_name";
 //echo $sql."<br/>";
 mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -677,7 +678,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			 $id="yash";
 			$y=0;
 			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
-			//echo $sql;
+			//echo "</br>".$sql."</br>";
 			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{

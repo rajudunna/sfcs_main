@@ -15,7 +15,6 @@ Thumbs.db
 
 # Branch master
 /inc/test.REMOVE_UPPERCASE.php
-*.user.php
 *.user.css
 *.user.json
 *.user.json.tmp

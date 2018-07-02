@@ -83,6 +83,7 @@ $cat=$_POST['cat'];
 			</div>
 			<?php
 				$table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
+				
 				$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
 				while($tables=mysqli_fetch_array($table_result))
 				{
@@ -110,12 +111,14 @@ $cat=$_POST['cat'];
 			<div class="col-sm-2">
 				<label for='shift'>Shift : </label>
 				<select class='form-control' name="shift">
-					<option value='"A", "B"' <?php if($shift=='"A", "B"'){ echo "selected"; } ?> >All</option>
 					<?php foreach($shifts_array as $key=>$shift){
-							echo "<option value='$shift'>$shift</option>";
+							echo "<option value=\"'$shift'\">$shift</option>";
+							$all_shifts = $all_shifts."'$shift',";
 					}
 					?>
+					<option value="<?= rtrim($all_shifts,',') ?>" selected>All</option>
 				</select>
+				
 			</div>
 			<?php
 				$cat_query = "select * from $bai_pro3.tbl_category where status=1";
@@ -133,7 +136,7 @@ $cat=$_POST['cat'];
 					<option value='<?= $all_cats ?>'>All</option>
 				<?php
 					foreach($cat_result as $key=>$value){
-						echo "<option value='".$value['cat_name']."'>".$value['cat_name']."</option>";
+						echo "<option value=\"'".$value['cat_name']."'\">".$value['cat_name']."</option>";
 					}
 				?>
 				</select>
@@ -216,7 +219,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		
 		$sql2="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
 		// echo $sql2;
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
 			$doc_ref_no=$sql_row2['doc_no'];
@@ -225,15 +228,16 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no=\"$doc_ref_no\"";
 			
 			
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$cat_ref_new=$sql_row['cat_ref'];
 			}
 
 			$sql="select * from $bai_pro3.cat_stat_log where category in ($cat) and tid=\"$cat_ref_new\"";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//echo $sql;
+			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error c".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			
 			if($sql_num_check>0)
@@ -256,9 +260,9 @@ if(isset($_POST['submit']) && $reptype == 1)
 	//NEW Enhancement for category breakup		
 
 	$sql="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" ".$query;
-
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//echo $sql;
+	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 
 	echo '<div id="export"  class="pull-right">
@@ -296,6 +300,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 	echo "<th>Actual Saving</th>";
 	echo "<th>Pct %</th>";
 	echo "<th>Net Saving</th>";
+	echo "<th>Team Leader</th>";
 	echo "</tr>";	
 
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -309,10 +314,12 @@ if(isset($_POST['submit']) && $reptype == 1)
 		$fab_ret=$sql_row['fab_returned'];
 		$damages=round($sql_row['damages'],2);
 		$shortages=round($sql_row['shortages'],2);
+		$leader_name = $sql_row['leader_name'];
 
 		$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
-		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//echo $sql1;
+		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error e".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$cat_ref=$sql_row1['cat_ref'];
@@ -381,8 +388,8 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$act_total=$act_xs+$act_s+$act_m+$act_l+$act_xl+$act_xxl+$act_xxxl+$act_s01+$act_s02+$act_s03+$act_s04+$act_s05+$act_s06+$act_s07+$act_s08+$act_s09+$act_s10+$act_s11+$act_s12+$act_s13+$act_s14+$act_s15+$act_s16+$act_s17+$act_s18+$act_s19+$act_s20+$act_s21+$act_s22+$act_s23+$act_s24+$act_s25+$act_s26+$act_s27+$act_s28+$act_s29+$act_s30+$act_s31+$act_s32+$act_s33+$act_s34+$act_s35+$act_s36+$act_s37+$act_s38+$act_s39+$act_s40+$act_s41+$act_s42+$act_s43+$act_s44+$act_s45+$act_s46+$act_s47+$act_s48+$act_s49+$act_s50;
 			
 			$sql2="select mklength from $bai_pro3.maker_stat_log where tid='$mk_ref'";
-			mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error f".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$mk_length=$sql_row2['mklength'];
@@ -394,7 +401,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$order_tid=$sql_row1['order_tid'];
 		
 			$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error g".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$bind_con=$sql_row2['binding_con'];
@@ -409,8 +416,8 @@ if(isset($_POST['submit']) && $reptype == 1)
 		}
 		
 		$sql1="select * from $bai_pro3.cat_stat_log where tid='$cat_ref'";
-		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$category=$sql_row1['category'];
@@ -419,8 +426,9 @@ if(isset($_POST['submit']) && $reptype == 1)
 		}	
 		
 		$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//echo $sql1;
+		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error i".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$style=$sql_row1['order_style_no'];
@@ -463,6 +471,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_saving</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_saving_pct%</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_saving</td>";
+		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$leader_name</td>";
 		// echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_saving_pct%</td>";
 		echo "</tr>";
 	}
@@ -483,8 +492,8 @@ if(isset($_POST['submit']) && $reptype==2)
  		$doc_ref_new="";
 		
 		$sql2="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
-		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql2) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
 			$doc_ref_no=$sql_row2['doc_no'];
@@ -492,8 +501,8 @@ if(isset($_POST['submit']) && $reptype==2)
 			
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no='$doc_ref_no'";
 			
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$cat_ref_new=$sql_row['cat_ref'];
@@ -501,8 +510,8 @@ if(isset($_POST['submit']) && $reptype==2)
 
 			$sql="select * from $bai_pro3.cat_stat_log where category in ($cat) and tid='$cat_ref_new'";
 			
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			
 			if($sql_num_check>0)
@@ -524,10 +533,10 @@ if(isset($_POST['submit']) && $reptype==2)
 		}
 //NEW Enhancement for category breakup	
    
- $sql="select distinct section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. "order by section";
+$sql="select distinct section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. "order by section";
 
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'>";
@@ -543,6 +552,7 @@ $sql_num_check=mysqli_num_rows($sql_result);
 	echo "<th>Pct %</th>";
 	echo "<th>Net Saving</th>";
 	echo "<th>Pct %</th>";
+	//echo "<th>Team Leader</th>";
 	echo "</tr>";
 
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -550,8 +560,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$section_new=$sql_row['section'];
 	
 	$sql11="select distinct shift from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift in ($shift) ".$query. "order by shift";
-	mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row11=mysqli_fetch_array($sql_result11))
 	{
 		$shift_new=$sql_row11['shift'];
@@ -559,8 +569,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$doc_list="";
 		
 		$sql2="select doc_no from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift=\"$shift_new\" ".$query;
-		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
 			$doc_list=$doc_list.$sql_row2['doc_no'].", ";
@@ -573,8 +583,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 		$sql3="select sum((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl)*a_plies) as \"cut_qty\" from $bai_pro3.plandoc_stat_log where doc_no in ($doc_list)";
 		//echo $sql3;
-		mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row3=mysqli_fetch_array($sql_result3))
 		{
 			$cut_qty=$sql_row3['cut_qty'];
@@ -582,8 +592,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		$sql3="select sum(damages) as \"damages\", sum(shortages) as \"shortages\" from $bai_pro3.act_cut_status where doc_no in ($doc_list)";
 		//echo $sql3;
-		mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error 9".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row3=mysqli_fetch_array($sql_result3))
 		{
 			$damages=round($sql_row3['damages'],2);
@@ -605,8 +615,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 $sql33="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and doc_no in ($doc_list) and date between \"$from_date\" and \"$to_date\"".$query;
 
-mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error 10".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check33=mysqli_num_rows($sql_result33);
 
 while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -621,12 +631,13 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$fab_ret=$sql_row33['fab_returned'];
 	$damages_new=$sql_row33['damages'];
 	$shortages_new=$sql_row33['shortages'];
+	$leader_name = $sql_row33['leader_name'];
 
 	
 	
 	$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		$cat_ref=$sql_row1['cat_ref'];
@@ -695,8 +706,8 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$act_total=$act_xs+$act_s+$act_m+$act_l+$act_xl+$act_xxl+$act_xxxl+$act_s01+$act_s02+$act_s03+$act_s04+$act_s05+$act_s06+$act_s07+$act_s08+$act_s09+$act_s10+$act_s11+$act_s12+$act_s13+$act_s14+$act_s15+$act_s16+$act_s17+$act_s18+$act_s19+$act_s20+$act_s21+$act_s22+$act_s23+$act_s24+$act_s25+$act_s26+$act_s27+$act_s28+$act_s29+$act_s30+$act_s31+$act_s32+$act_s33+$act_s34+$act_s35+$act_s36+$act_s37+$act_s38+$act_s39+$act_s40+$act_s41+$act_s42+$act_s43+$act_s44+$act_s45+$act_s46+$act_s47+$act_s48+$act_s49+$act_s50;
 		
 		$sql2="select mklength from $bai_pro3.maker_stat_log where tid='$mk_ref'";
-		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
 			$mk_length=$sql_row2['mklength'];
@@ -708,7 +719,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$order_tid=$sql_row1['order_tid'];
 	
 		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 13".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
 			$bind_con=$sql_row2['binding_con'];
@@ -723,8 +734,8 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	
 	$sql1="select * from $bai_pro3.cat_stat_log where tid='$cat_ref'";
 	//echo $sql1."<br>";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 14".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		$category=$sql_row1['category'];
@@ -733,8 +744,8 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	}	
 	
 	$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 15".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		$style=$sql_row1['order_style_no'];
@@ -789,6 +800,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	echo "<td>".$act_saving_pct."%</td>";
 	echo "<td>$net_saving_sum</td>";
 	echo "<td>".$net_saving_pct."%</td>";
+	//echo "<td>$leader_name</td>";
 	echo "</tr>";
  	}	
 }
