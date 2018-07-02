@@ -615,7 +615,7 @@ th
 			$fabric_status=$sql_row1['fabric_status'];
 		}
 
-		$sql111="select ROUND(SUM(allocated_qty),2) AS alloc,count(distinct doc_no) as doc_count from $bai_rm_pj1.fabric_cad_allocation where doc_no in (".implode(",",$docket_num).")";
+		$sql111="select ROUND(SUM(allocated_qty),2) AS alloc,count(distinct doc_no) as doc_count from $bai_rm_pj1.fabric_cad_allocation where doc_no in ('".implode(",",$docket_num)."')";
 		//echo $sql111."<br>";
 		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--11: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row111=mysqli_fetch_array($sql_result111))

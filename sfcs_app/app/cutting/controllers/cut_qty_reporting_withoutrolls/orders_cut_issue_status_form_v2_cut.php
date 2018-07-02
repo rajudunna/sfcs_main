@@ -242,7 +242,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$table_id[]=$tables['tbl_id'];
 			}
 			// var_dump($table_name);
-			echo "<tr><td>Cutting Table</td><td>:</td><td><div class='col-sm-4'><select name=\"section\" class='form-control' required><option value=\"0\">Select Table</option>";
+			echo "<tr><td>Cutting Table</td><td>:</td><td>
+					<div class='col-sm-4'><select name=\"section\" class='form-control' required>
+					<option value='' disabled selected>Select Table</option>";
 			for($i = 0; $i < sizeof($table_name); $i++)
 			{
 				echo "<option value='".$table_id[$i]."' style='background-color:#FFFFAA;'>".$table_name[$i]."</option>";
