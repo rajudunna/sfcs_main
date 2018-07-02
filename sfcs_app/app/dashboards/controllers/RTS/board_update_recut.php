@@ -83,7 +83,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<td align=\"right\">Style:<br/>Schedule:<br/>Job:<br/>Total Qty:</td>";
 		$module=$mods[$x];
 		
-		$sql1="SELECT * FROM $bai_pro3.recut_v2 WHERE plan_module=$module and cut_inp_temp is null and remarks in (\"Body\",\"Front\") LIMIT 14";
+		$sql1="SELECT * FROM $bai_pro3.recut_v2 WHERE plan_module=$module and cut_inp_temp is null and remarks in ('".implode("','",$in_categories)."') LIMIT 14";
 		//echo $sql1."<br/>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);

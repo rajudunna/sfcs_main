@@ -1,11 +1,26 @@
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 	$Page_Id = 'SFCS_0402';
 	// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	// $username=strtolower($username_list[1]);
 	// $view_access=user_acl("SFCS_0175",$username,1,$group_id_sfcs);
+	$has_permission=haspermission($_GET['r']);
+
+	// echo $authorized.'authorized<br/>';
+	// for($i=0; $i< count($has_permission); $i++){
+	// 	echo $has_permission[$i].'  - has_permission'.($i+1).'<br/>';
+	// }
+	if(in_array($authorized,$has_permission))
+	{
+		
+	}
+	else
+	{
+		$url = getFullURLLevel($_GET['r'],'common/restricted.php',1,'N');
+		header("Location:$url");
+	}
 ?>
 
 <?php echo '<link href="'.getFullURLLevel($_GET['r'],'/common/css/sfcs_styles.css',3,'R').'" rel="stylesheet" type="text/css" />'; ?>

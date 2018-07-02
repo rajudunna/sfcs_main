@@ -1,0 +1,60 @@
+<html>
+			<head>
+			<style type="text/css">
+
+			body
+			{
+				font-family: Calibri;
+				font-size:12px;
+				color:black;
+			}
+			table
+			{
+			border-collapse:collapse;
+			white-space:nowrap; 
+			}
+			th
+			{
+				color: black;
+			 border: 1px solid #660000; 
+			white-space:nowrap; 
+			padding-left: 10px;
+			padding-right: 10px;
+			}
+
+			td
+			{
+				background-color: WHITE;
+				color: BLACK;
+			 border: 1px solid #660000; 
+				padding: 1px;
+			white-space:nowrap; 
+			text-align:right;
+			}
+
+			.highlight td
+			{
+				background-color: green;
+				color: BLACK;
+			 border: 1px solid #660000; 
+				padding: 1px;
+			white-space:nowrap; 
+			text-align:right;
+			}
+
+			</style>
+			</head>
+			<body>
+			<table>
+			 <tr><td colspan=14><center><u><strong>Weekly Delivery Plan Status</strong></u></center></td></tr>
+			  <tr>
+			  <th bgcolor="yellow">Sno</th> 
+			  <th bgcolor="yellow">Customer</th>
+			  <th bgcolor="yellow">Style</th>
+			  <th bgcolor="yellow">Schedule</th>
+			  <th bgcolor="yellow">Color</th>
+			  <th bgcolor="yellow">Order <br> Quantity</th>
+			  <th bgcolor="yellow">Shippable <br> Quantity</th>
+			  <th bgcolor="yellow">Extra Ship <br>Quantity</th>
+			  <th bgcolor="yellow">Planned  <br> Extra %</th><th bgcolor="yellow">Shipped <br>Quantity(M3)</th>
+			  	<th bgcolor="yellow">Shipped <br>Quantity %</th><th bgcolor="yellow">Allocated <br> Yards</th><th bgcolor="yellow">Issued <br>Yards</th><th bgcolor="yellow">Extra Yards <br> Issued</th></tr><h2 align="center">Selected period Dont have any schedules to shipment</h2></table><br/>Message Sent Via: bai2</body></html>

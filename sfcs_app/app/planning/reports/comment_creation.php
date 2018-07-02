@@ -99,7 +99,9 @@ function thirdbox()
 <link href="<?= getFullURL($_GET['r'],'style_sheet.css','R')?>" rel="stylesheet" type="text/css" media="all" />
 <?php 
 // include("dbconf.php"); 
-include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'dbconf.php','R'));
+// include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'dbconf.php','R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$weekly_plan_status_mail=$conf1->get('weekly_plan_status_mail');
 
 $query_rs_user_validate = "SELECT tbl_user_auth.username FROM bai_pro3.tbl_user_auth WHERE tbl_user_auth.user_type='sadmin' and tbl_user_auth.active_flag='1' and tbl_user_auth.username='$username' ";
 $rs_user_validate = mysqli_query( $link, $query_rs_user_validate) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -123,17 +125,17 @@ if(strtolower(trim($username))!=strtolower(trim($row_rs_user_validate['username'
 	</style></head><body>';
 
 
-	$message_f='<br/>Message Sent Via: http://beknet';
+	$message_f= $message_sent_via;
 	$message_f.="</body></html>";
-	$dms=$message."Dear Chathuranga,<br/><br/>".$username." try to access Docket Delete Interface.<br/><br/>".$message_f;
-	$to='ChathurangaD@brandix.com';
+	$dms=$message."Dear User,<br/><br/>".$username." try to access Docket Delete Interface.<br/><br/>".$message_f;
+	$to= $weekly_plan_status_mail;
 
 
 	$subject = 'Try to Access Docket Delete  Interface';	
 	// To send HTML mail, the Content-type header must be set
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
 	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-	$headers .= 'To: <Chathurangad@brandix.com>;'. "\r\n";
+	$headers .= "To: $to". "\r\n";
 	
 
 	$headers .= 'From: Try to Access Docket Delete  Interface '. "\r\n";

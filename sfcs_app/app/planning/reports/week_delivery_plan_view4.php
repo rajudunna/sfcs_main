@@ -3,6 +3,12 @@ ini_set('max_execution_time',0);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
+// $view_access=user_acl("SFCS_0040",$username,1,$group_id_sfcs);
+// var_dump($sizes_array);
+$has_perm=haspermission($_GET['r']);
+?>
+
+<?php
 $start_date_w=time();
 
 while((date("N",$start_date_w))!=1) {
@@ -206,6 +212,23 @@ if(isset($_POST['submit']) or isset($_GET['division']))
 				}
 			}
 		}
+
+//DISPATCH
+
+	$sql1="select ship_qty from $bai_pro2.style_status_summ where sch_no=\"$schedule_no\"";
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row1=mysqli_fetch_array($sql_result1))
+	{
+		$ship_qty=$sql_row1['ship_qty'];
+	}
+	
+	if($status=="FG" and $fgqty>=$ship_qty and $ship_qty>=$order)
+	{
+		$status="Dispatched";
+	}
+	
+//DISPATCH
+
 
 		$sql1="select * from $bai_pro4.week_delivery_plan_ref  where ship_tid=$shipment_plan_id";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

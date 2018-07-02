@@ -6,7 +6,8 @@ set_time_limit(2000);
 <?php  
 $module=$_GET['module'];
 $docket=$_GET['docket'];
-$input_job_rand=$_GET['input_job_rand'];
+$input_job_no=$_GET['input_job_no'];
+$input_job_rand_ref=$_GET['input_job_rand_ref'];
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -84,17 +85,18 @@ td
 
 
 <?php
-$sqljob="SELECT SUM(carton_act_qty) AS Job_tot,input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random=\"$input_job_rand\"";
-mysqli_query($link, $sqljob) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_job=mysqli_query($link, $sqljob) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_job=mysqli_fetch_array($sql_job);
-$job_no=$sql_job['input_job_no'];
-$job_tot=$sql_job['Job_tot'];
+$sqljob="SELECT SUM(carton_act_qty) AS Job_tot,input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$input_job_rand_ref."' and input_job_no='".$input_job_no."'";
+//echo $sqljob."<br>";
+$sql_job1=mysqli_query($link, $sqljob) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_job2=mysqli_fetch_array($sql_job1);
+$job_no=$sql_job2['input_job_no'];
+//echo substr($input_job_rand_ref,0,6)."<br>";
+$schedule_ref=substr($input_job_rand_ref,0,6);
+$job_tot=$sql_job2['Job_tot'];
 
 
-$sqldoc="SELECT ims_schedule,GROUP_CONCAT(DISTINCT  ims_color) AS ims_color,ims_style,ims_doc_no,ims_date,ims_size FROM $bai_pro3.ims_log WHERE rand_track=\"$docket\" AND ims_mod_no=\"$module\"";
-//echo $sqldoc;
-mysqli_query($link, $sqldoc) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sqldoc="SELECT ims_schedule,GROUP_CONCAT(DISTINCT  ims_color) AS ims_color,ims_style,ims_doc_no,ims_date,ims_size FROM $bai_pro3.ims_log WHERE input_job_no_ref='".$job_no."' and ims_schedule='".$schedule_ref."' AND ims_mod_no='".$module."'";
+//echo $sqldoc."<br>";
 $sql_doc=mysqli_query($link, $sqldoc) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_docket=mysqli_fetch_array($sql_doc);
 ?>
@@ -137,9 +139,8 @@ $sql_docket=mysqli_fetch_array($sql_doc);
   </tr>
   
 <?php
-$sql="SELECT ims_size,ims_color,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE rand_track=\"$docket\" AND ims_mod_no=\"$module\" GROUP BY ims_color,ims_size ORDER BY ims_date";
+$sql="SELECT ims_size,ims_color,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE ims_schedule='".$schedule_ref."' and input_job_no_ref='".$job_no."' AND ims_mod_no='".$module."' GROUP BY ims_color,ims_size ORDER BY ims_date";
 //echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 { 

@@ -163,23 +163,44 @@ else
 
 echo "<input type=\"hidden\" name=\"tran_order_tid\" value=\"".$tran_order_tid."\">";
 echo "<table>";
-
+$table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
+$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
+while($tables=mysqli_fetch_array($table_result))
+{
+	$table_name[]=$tables['tbl_name'];
+	$table_id[]=$tables['tbl_id'];
+}
 
 echo "<tr><td>Date</td><td>:</td><td><input type=\"hidden\" name=\"date\" value=".date("Y-m-d").">".date("Y-m-d")."</td></tr>";
 //echo "<tr><td>Section</td><td>:</td><td><input type=\"text\" name=\"section\" value=\"0\"></td></tr>";
-echo "<tr><td>Section</td><td>:</td><td><select name=\"section\">
-<option value=\"0\">SELECT SECTION</option>
-<option value=\"1\">Section - 1</option>
-<option value=\"2\">Section - 2</option>
-<option value=\"3\">Section - 3</option>
-<option value=\"4\">Section - 4</option>
-</select></td></tr>";
+echo "<tr><td>Section</td><td>:</td><td><select name=\"section\">";
+for($i = 0; $i < sizeof($table_name); $i++)
+{
+	echo "<option value='".$table_id[$i]."' style='background-color:#FFFFAA;'>".$table_name[$i]."</option>";
+}
+echo "</select></div></td></tr>";
 //echo "<tr><td>Shift</td><td>:</td><td><input type=\"text\" name=\"shift\" value=\"NIL\"></td></tr>";
 echo "<tr><td>Shift</td><td>:</td><td><select name=\"shift\">
-<option value=\"\">SELECT TEAM</option>
-<option value=\"A\">A</option>
-<option value=\"B\">B</option>
-</select></td></tr>";
+<option value=\"\">SELECT TEAM</option>";
+foreach($shifts_array as $key=>$shift){
+	echo "<option value='$shift'>$shift</option>";
+
+	}
+	echo "</select></div></td></tr>";
+
+$team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+$team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
+echo "<tr>
+		<td>Team Leader</td><td>:</td>
+		<td><div class='row'><div class='col-sm-6'><select name=\"leader_name\" class='form-control'>";
+echo "<option value='' selected disabled>Select Team</option>";
+while($row=mysqli_fetch_array($team_result))
+{
+	echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
+}
+echo "</select></div></div>
+	</td></tr>";
+
 echo "<tr><td>Doc Req</td><td>:</td><td>".(($act_plies*$mklength)+$bind_con)."</td></tr>";
 echo "<tr><td>Plies</td><td>:</td><td><input type=\"hidden\" name=\"old_plies\" value=\"$old_plies\"><input type=\"text\" name=\"plies\" value=\"$plies_check\" onchange=\"if(validate(this.value,$plies_check)==1010) { this.value=0; }\"></td></tr>";
 echo "<tr><td>Fab_received</td><td>:</td><td><input type=\"hidden\" name=\"old_fab_rec\" value=\"$fab_received\"><input type=\"text\" name=\"fab_rec\" value=\"0\"></td></tr>";
@@ -303,7 +324,9 @@ echo "<option value='3-T1-A' style='background-color:#FFFFAA;'>3-T1-A</option>
 </select>
 </td></tr>";
 //echo "<tr><td>remarks</td><td>:</td><td><input type=\"text\" name=\"remarks\" value=\"NIL\"></td></tr>";
+//Leader Name   
 
+	
 echo "<tr><td><input type=\"hidden\" name=\"remarks\" value=\"$fab_remarks\"><input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable</td><td></td><td><INPUT TYPE = \"Submit\" Name = \"Update\" VALUE = \"Update\"></td></tr>";
 
 echo "</table>";

@@ -1,4 +1,6 @@
 <?php
+$has_permission=haspermission($_GET['r']);
+
 $reject_roll_qty_sum=0;
 $reject_len_qty_sum=0;
 echo "<div class='panel panel-primary'>";
@@ -24,7 +26,7 @@ while ($row1=mysqli_fetch_array($count))
 		<th bgcolor='#29759C'>Credit Note No</th><th bgcolor='#29759C'>Complaint Status</th>";
 		// echo "<th bgcolor='#29759C'>Print</th><th bgcolor='#29759C'>Mail Status</th>";
 	
-		if(in_array($username,$super_users))
+		if(in_array($authorized,$has_permission))
 		{
 			//echo "<th bgcolor='#29759C'>Controls</th>";
 		}
@@ -127,7 +129,7 @@ while ($row1=mysqli_fetch_array($count))
 				echo "<td>$supplier_remarks</td><td>$supplier_claim_no</td><td>$new_invoice_no</td>
 					<td>$supplier_replace_approved_qty</td><td>$supplier_claim_approved_qty</td><td>$supplier_claim_no</td>";
 				
-				if(in_array($username,$auth_users))
+				if(in_array($authorized,$has_permission))
 				{
 					if($complaint_status == 0)
 					{
@@ -196,7 +198,7 @@ while ($row1=mysqli_fetch_array($count))
 						}
 			    }	
 				
-				if(in_array($username,$super_users))
+				if(in_array($authorized,$has_permission))
 				{
 					
 				}

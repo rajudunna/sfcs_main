@@ -6,6 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 $view_access=user_acl("SFCS_0170",$username,1,$group_id_sfcs); 
 $auth_users=user_acl("SFCS_0170",$username,7,$group_id_sfcs);
 $super_user=user_acl("SFCS_0170",$username,33,$group_id_sfcs); 
+$has_permission = haspermission($_GET['r']);
 ?>
 <style>
 body{
@@ -348,7 +349,8 @@ $max_allowed_date=date("Y-m-d");
 	<?php
 	
 	
-	if(in_array($username,$auth_users)) 
+	// if(in_array($username,$auth_users)) 
+	if(in_array($authorized,$has_permission)) 
 	{
 
 	echo '<p align=right><strong><a class="btn btn-primary btn-xs" href="'.getFullURL($_GET['r'], "plan_update_view.php", "N").'">Plan Review >><strong></a></p>';
@@ -359,7 +361,8 @@ $max_allowed_date=date("Y-m-d");
 	<tr><td colspan=6><b>Change Date</b></td><td colspan=3><div class="col-md-10"><input type="text" data-toggle="datepicker" name="date_change" value="'.date("Y-m-d").'" class="form-control" size=15';
 	
 	//Date:12-10-2015/kirang/Task: added user validation to avoid warning message on selection of back date
-	if(!(in_array($username,$super_user)) )
+	// if(!(in_array($username,$super_user)) )
+	if(!(in_array($authorized,$has_permission)) )
 	{
 		echo ' onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\');"';
 	}

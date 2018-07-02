@@ -45,28 +45,46 @@ function verify_date(){
 			<!--<input id="demo2" title="click select end date" onclick="javascript:NewCssCal('demo2','yyyymmdd','dropdown')" type="text" size="8" name="to_date" value="<?php if(isset($_POST['to_date'])) { echo $_POST['to_date']; } else { echo date("Y-m-d"); } ?>">-->
 			<input type="text" data-toggle='datepicker' id="edate" onchange='return verify_date();' name="to_date" class="form-control" size="8" value="<?php  if(isset($_POST['to_date'])) { echo $_POST['to_date']; } else { echo date("Y-m-d"); } ?>" />
 			</div>
+
+			<?php
+				$table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
+				$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
+		
+				$all_sec_query = "SELECT GROUP_CONCAT('\"',tbl_id,'\"') as sec FROM $bai_pro3.tbl_cutting_table WHERE STATUS='active'";
+				$sec_result_all = mysqli_query($link,$all_sec_query) or exit('Unable to load sections all');
+				while($res1 = mysqli_fetch_array($sec_result_all)){
+					$all_secs = $res1['sec'];
+				}
+			?>
 			<div class="col-md-2">
-			<label>Section: </label><select name="section" class="form-control">
-						<option value='1,2,3,4' <?php if($section=="1,2,3,4"){ echo "selected"; } ?> >All</option>
-						<option value='1' <?php if($section=="1"){ echo "selected"; } ?>>Section - 1</option>
-						<option value='2' <?php if($section=="2"){ echo "selected"; } ?>>Section - 2</option>
-						<option value='3' <?php if($section=="3"){ echo "selected"; } ?>>Section - 3</option>
-						<option value='4' <?php if($section=="4"){ echo "selected"; } ?>>Section - 4</option>
+				<label>Section: </label>
+				<select name="section" class="form-control">
+					<option value='<?= $all_secs ?>'>All</option>
+					<?php
+						foreach($table_result as $key=>$value){
+							echo "<option value='\"".$value['tbl_id']."\"'>".$value['tbl_name']."</option>";
+						}
+					?>
 				</select>
 			</div>
 			<div class="col-md-2">
-			<label>Shift: </label><select name="shift" class="form-control">
-						<option value='"A", "B"' <?php if($shift=='"A", "B"'){ echo "selected"; } ?> >All</option>
-						<option value='"A"' <?php if($shift=='"A"'){ echo "selected"; } ?>>A</option>
-						<option value='"B"' <?php if($shift=='"B"'){ echo "selected"; } ?>>B</option>
-					</select>
-					</div>
+				<label>Shift: </label>
+				<select name="shift" class="form-control">
+					<option value='"A", "B"' <?php if($shift=='"A", "B"'){ echo "selected"; } ?> >All</option>
+					<?php 
+					foreach($shifts_array as $key=>$shift){
+						echo "<option value=\"'$shift'\">$shift</option>";
+					}
+				?>
+				</select>
+			</div>
 			<div class="col-md-2">
-			<label>Report: </label><select name="reptype" class="form-control">
-						<option value=1 <?php if($reptype==1){ echo "selected"; } ?> >Detailed</option>
-						<option value=2 <?php if($reptype==2){ echo "selected"; } ?>>Summary</option>
-					</select>
-					</div>
+				<label>Report: </label>
+				<select name="reptype" class="form-control">
+					<option value=1 <?php if($reptype==1){ echo "selected"; } ?> >Detailed</option>
+					<option value=2 <?php if($reptype==2){ echo "selected"; } ?>>Summary</option>
+				</select>
+			</div>
 			<div class="col-md-2">
 			<input type="submit" value="Show" name="submit" class="btn btn-success" onclick='return verify_date();' style="margin-top:22px;">
 			</div>
@@ -77,6 +95,7 @@ function verify_date(){
 			if(isset($_POST['submit']))
 			{
 				$row_count = 0;
+				$shift = $_POST['shift'];
 		?>	<hr/>
 			<div class='panel panel-default'>
 				<div class="panel-body">
@@ -115,41 +134,44 @@ function verify_date(){
 		<?php
 		if(isset($_POST['submit']) && $reptype==1)
 		{
-			  $row_count = 0;
-			  echo " <div class='panel panel-default'>
-			  			<div class='panel-heading' align='center' style='background-color:#ffff;'>
+			echo " <div class='panel panel-default'>
+			  			<div class='panel-heading' align='center'>
 							  <b>Detailed Report </b>
 						</div>
 					    <div class='panel-body'><div style='max-height:700px;overflow-y:scroll'>";	  
 			  
   			
-			$sql="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
+			$sql="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and 
+				  date between \"$from_date\" and \"$to_date\" and LENGTH(remarks)>0";
             //echo $sql;
 			//mysql_query($sql,$link) or exit("Sql Error1".mysql_error());
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
-
+			$row_count = 0;
+			echo "<div class='table-responsive'>
+					<table class='table table-bordered'>";
+  			echo "<tr class='warning'>
+					  <th class='tblheading'>Date</th><th  class='tblheading'>Shift</th>
+					  <th class='tblheading' >Section</th><th class='tblheading'>Docket No</th>
+					  <th class='tblheading'>Style</th><th class='tblheading'>Schedule</th>
+					  <th class='tblheading'>Color</th><th class='tblheading'>Category</th>
+					  <th class='tblheading'>Cut No</th><th>Size</th><th>Qty</th>";
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
-				echo '<br>';
 				$doc_no=$sql_row['doc_no'];
 				$date=$sql_row['date'];
 				$act_shift=$sql_row['shift'];
 				$act_section=$sql_row['section'];
 				$cut_remarks=$sql_row["remarks"];
 				$cut_remarks_explode=explode("$",$cut_remarks);
-				$row_count++;
-
+				//var_dump($cut_remarks_explode);
 				for($i=0;$i<sizeof($cut_remarks_explode);$i++)
 				{
-	
 					$cut_details_explode=explode("^",$cut_remarks_explode[$i]);
 					$cut_plies=$cut_details_explode[8];
 					$cut_date=$cut_details_explode[0];
-					
 					//if($from_date >= $cut_date && $cut_date <= $to_date)	
 					{	
-	
 						$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
 	
 						mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -205,52 +227,86 @@ function verify_date(){
 								$size[$i] = $sql_row1[$key1];
 							}
 						}
-						
-						echo "<div class='table-responsive'><table class='table table-bordered'>";
-  			echo "<tr class='warning'>
-  				<th class='tblheading'>Date</th><th  class='tblheading'>Shift</th><th class='tblheading' >Section</th><th class='tblheading'>Docket No</th><th class='tblheading'>Style</th><th class='tblheading'>Schedule</th><th class='tblheading'>Color</th><th class='tblheading'>Category</th><th class='tblheading'>Cut No</th>";
-			/*echo "<th class='tblheading'>01</th><th class='tblheading'>02</th><th class='tblheading'>03</th><th class='tblheading'>04</th><th class='tblheading'>05</th><th class='tblheading'>06</th><th class='tblheading'>07</th><th class='tblheading'>08</th><th class='tblheading'>09</th><th class='tblheading'>10</th><th class='tblheading'>11</th><th class='tblheading'>12</th><th class='tblheading'>13</th><th class='tblheading'>14</th><th class='tblheading'>15</th><th class='tblheading'>16</th><th class='tblheading'>17</th><th class='tblheading'>18</th><th class='tblheading'>19</th><th class='tblheading'>20</th><th class='tblheading'>21</th><th class='tblheading'>22</th><th class='tblheading'>23</th><th class='tblheading'>24</th><th class='tblheading'>25</th><th class='tblheading'>26</th><th class='tblheading'>27</th><th class='tblheading'>28</th><th class='tblheading'>29</th><th class='tblheading'>30</th><th class='tblheading'>31</th><th class='tblheading'>32</th><th class='tblheading'>33</th><th class='tblheading'>34</th><th class='tblheading'>35</th><th class='tblheading'>36</th><th class='tblheading'>37</th><th class='tblheading'>38</th><th class='tblheading'>39</th><th class='tblheading'>40</th><th class='tblheading'>41</th><th class='tblheading'>42</th><th class='tblheading'>43</th><th class='tblheading'>44</th><th class='tblheading'>45</th><th class='tblheading'>46</th><th class='tblheading'>47</th><th class='tblheading'>48</th><th class='tblheading'>49</th><th class='tblheading'>50</th>";*/
-			for($i=0;$i<50;$i++)
-			{
-				if($size[$i]!=''){
-					echo "<th>".$size[$i]."</th>";
-				}
-			}
-			echo "<th class='tblheading'>Total</th>
-  
- 		</tr>";
+						$inner_count = 0;
+						/*echo "<th class='tblheading'>01</th><th class='tblheading'>02</th><th class='tblheading'>03</th><th class='tblheading'>04</th><th class='tblheading'>05</th><th class='tblheading'>06</th><th class='tblheading'>07</th><th class='tblheading'>08</th><th class='tblheading'>09</th><th class='tblheading'>10</th><th class='tblheading'>11</th><th class='tblheading'>12</th><th class='tblheading'>13</th><th class='tblheading'>14</th><th class='tblheading'>15</th><th class='tblheading'>16</th><th class='tblheading'>17</th><th class='tblheading'>18</th><th class='tblheading'>19</th><th class='tblheading'>20</th><th class='tblheading'>21</th><th class='tblheading'>22</th><th class='tblheading'>23</th><th class='tblheading'>24</th><th class='tblheading'>25</th><th class='tblheading'>26</th><th class='tblheading'>27</th><th class='tblheading'>28</th><th class='tblheading'>29</th><th class='tblheading'>30</th><th class='tblheading'>31</th><th class='tblheading'>32</th><th class='tblheading'>33</th><th class='tblheading'>34</th><th class='tblheading'>35</th><th class='tblheading'>36</th><th class='tblheading'>37</th><th class='tblheading'>38</th><th class='tblheading'>39</th><th class='tblheading'>40</th><th class='tblheading'>41</th><th class='tblheading'>42</th><th class='tblheading'>43</th><th class='tblheading'>44</th><th class='tblheading'>45</th><th class='tblheading'>46</th><th class='tblheading'>47</th><th class='tblheading'>48</th><th class='tblheading'>49</th><th class='tblheading'>50</th>";*/
+						// if($row_count == 0){
+							// echo "<th>Total</th>";
+							// echo "</tr>";  //header closing here
+							//$row_count++;
+						//}
 						echo  "<tr>
-	
-						 <td>".$cut_details_explode[0]."</td> <td>".$cut_details_explode[2]."</td> <td>".$cut_details_explode[1]."</td> <td >".leading_zeros($doc_no,9)."</td> <td >$style</td> <td >$schedule</td> <td >$color</td> <td >$category</td> <td >".chr($color_code).leading_zeros($act_cut_no,3)."</td>";
-						 
-						//  <td>$act_s01</td> <td>$act_s02</td> <td>$act_s03</td> <td>$act_s04</td> <td>$act_s05</td> <td>$act_s06</td> <td>$act_s07</td> <td>$act_s08</td> <td>$act_s09</td> <td>$act_s10</td> <td>$act_s11</td> <td>$act_s12</td> <td>$act_s13</td> <td>$act_s14</td> <td>$act_s15</td> <td>$act_s16</td> <td>$act_s17</td> <td>$act_s18</td> <td>$act_s19</td> <td>$act_s20</td> <td>$act_s21</td> <td>$act_s22</td> <td>$act_s23</td> <td>$act_s24</td> <td>$act_s25</td> <td>$act_s26</td> <td>$act_s27</td> <td>$act_s28</td> <td>$act_s29</td> <td>$act_s30</td> <td>$act_s31</td> <td>$act_s32</td> <td>$act_s33</td> <td>$act_s34</td> <td>$act_s35</td> <td>$act_s36</td> <td>$act_s37</td> <td>$act_s38</td> <td>$act_s39</td> <td>$act_s40</td> <td>$act_s41</td> <td>$act_s42</td> <td>$act_s43</td> <td>$act_s44</td> <td>$act_s45</td> <td>$act_s46</td> <td>$act_s47</td> <td>$act_s48</td> <td>$act_s49</td> <td>$act_s50</td> 
+								 <td>".$cut_details_explode[0]."</td> 
+								 <td>".$cut_details_explode[2]."</td> 
+								 <td>".$cut_details_explode[1]."</td> 
+								 <td>".leading_zeros($doc_no,9)."</td> 
+								 <td>$style</td> 
+								 <td>$schedule</td> 
+								 <td>$color</td> 
+								 <td>$category</td> 
+								 <td>".chr($color_code).leading_zeros($act_cut_no,3)."</td>";
 						
-						for($i=0;$i<count($act_s);$i++){
+						for($i=0;$i<50;$i++)
+						{
 							if($size[$i]!=''){
-								$j = $i+1;								
-								echo "<td>".$act_s[$j]."</td>";
+								if($inner_count==0){
+									echo "<td>".$size[$i]."</td>";
+									echo "<td>".$act_s[$i+1]."</td>";
+									echo "</tr>";
+									$inner_count++;
+								}
+								else{
+									echo "<tr>
+										<td>".$cut_details_explode[0]."</td> 
+										<td>".$cut_details_explode[2]."</td> 
+										<td>".$cut_details_explode[1]."</td> 
+										<td>".leading_zeros($doc_no,9)."</td> 
+										<td>$style</td> 
+										<td>$schedule</td> 
+										<td>$color</td> 
+										<td>$category</td> 
+										<td>".chr($color_code).leading_zeros($act_cut_no,3)."</td>";
+								echo "<td>".$size[$i]."</td>";		
+								echo "<td>".$act_s[$i+1]."</td>";
+								echo "</tr>";
+								}
 							}
 						}
-						// foreach($act_s as $key=>$val){
-						// 	if($size[$key-1]!=''){								
-						// 		echo "<td>".$val."</td>";
-						// 	}							
-						// }					
- 
- 						echo "<td >$act_total</td></tr>";
-						echo "</table></div>";
-  
+						echo "<tr>";
+						echo "<td></td><td></td><td></td><td>
+							  </td><td></td><td></td>
+							  <td></td><td></td><td></td>
+							  <td class='info'>Total :</td>
+							  <td class='info'>$act_total</td>";
+						echo "</tr>";
+						 $act_total = 0;
   					}
 				}
 			}
-                
+			echo "</table>
+				</div>";    
  		
 			//Recut
 
 			$sql="select * from $bai_pro3.act_cut_status_recut_v2 where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
+			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
+
+			if($sql_num_check > 0){
+				echo "<div class='table-responsive'><table class='table table-bordered'>";
+				echo "<tr class='warning'>
+						<th class='tblheading'>Date 2</th><th class='tblheading'>Shift 2</th>
+						<th class='tblheading' >Section</th>
+						<th class='tblheading'>Docket No</th>
+						<th class='tblheading'>Style</th>
+						<th class='tblheading'>Schedule</th>
+						<th class='tblheading'>Color</th>
+						<th class='tblheading'>Category</th>
+						<th class='tblheading'>Cut No</th>
+						<th>Size</th>
+						<th>Qty</th>";
+			}
 
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -368,46 +424,60 @@ function verify_date(){
 				// 			}
 					
 				// }
-                echo "<div class='table-responsive'><table class='table table-bordered'>";
-  			echo "<tr class='warning'>
-  				<th class='tblheading'>Date</th><th  class='tblheading'>Shift</th><th class='tblheading' >Section</th><th class='tblheading'>Docket No</th><th class='tblheading'>Style</th><th class='tblheading'>Schedule</th><th class='tblheading'>Color</th><th class='tblheading'>Category</th><th class='tblheading'>Cut No</th>";
+              
 			/*echo "<th class='tblheading'>01</th><th class='tblheading'>02</th><th class='tblheading'>03</th><th class='tblheading'>04</th><th class='tblheading'>05</th><th class='tblheading'>06</th><th class='tblheading'>07</th><th class='tblheading'>08</th><th class='tblheading'>09</th><th class='tblheading'>10</th><th class='tblheading'>11</th><th class='tblheading'>12</th><th class='tblheading'>13</th><th class='tblheading'>14</th><th class='tblheading'>15</th><th class='tblheading'>16</th><th class='tblheading'>17</th><th class='tblheading'>18</th><th class='tblheading'>19</th><th class='tblheading'>20</th><th class='tblheading'>21</th><th class='tblheading'>22</th><th class='tblheading'>23</th><th class='tblheading'>24</th><th class='tblheading'>25</th><th class='tblheading'>26</th><th class='tblheading'>27</th><th class='tblheading'>28</th><th class='tblheading'>29</th><th class='tblheading'>30</th><th class='tblheading'>31</th><th class='tblheading'>32</th><th class='tblheading'>33</th><th class='tblheading'>34</th><th class='tblheading'>35</th><th class='tblheading'>36</th><th class='tblheading'>37</th><th class='tblheading'>38</th><th class='tblheading'>39</th><th class='tblheading'>40</th><th class='tblheading'>41</th><th class='tblheading'>42</th><th class='tblheading'>43</th><th class='tblheading'>44</th><th class='tblheading'>45</th><th class='tblheading'>46</th><th class='tblheading'>47</th><th class='tblheading'>48</th><th class='tblheading'>49</th><th class='tblheading'>50</th>";*/
-			for($i=0;$i<50;$i++)
-			{
-				if($size[$i]!=''){
-					echo "<th>".$size[$i]."</th>";
-				}
-			}
-			echo "<th class='tblheading'>Total</th>
-  
- 		</tr>";				
-				  echo "<td>$date</td> <td >$act_shift</td> <td >$act_section</td> <td >".leading_zeros($doc_no,9)."</td> <td >$style</td> <td >$schedule</td> <td >$color</td> <td >$category</td> <td >"."R".leading_zeros($act_cut_no,3)."</td>";
-				  
-				 
-				//   <td>$act_s01</td> <td>$act_s02</td> <td>$act_s03</td> <td>$act_s04</td> <td>$act_s05</td> <td>$act_s06</td> <td>$act_s07</td> <td>$act_s08</td> <td>$act_s09</td> <td>$act_s10</td> <td>$act_s11</td> <td>$act_s12</td> <td>$act_s13</td> <td>$act_s14</td> <td>$act_s15</td> <td>$act_s16</td> <td>$act_s17</td> <td>$act_s18</td> <td>$act_s19</td> <td>$act_s20</td> <td>$act_s21</td> <td>$act_s22</td> <td>$act_s23</td> <td>$act_s24</td> <td>$act_s25</td> <td>$act_s26</td> <td>$act_s27</td> <td>$act_s28</td> <td>$act_s29</td> <td>$act_s30</td> <td>$act_s31</td> <td>$act_s32</td> <td>$act_s33</td> <td>$act_s34</td> <td>$act_s35</td> <td>$act_s36</td> <td>$act_s37</td> <td>$act_s38</td> <td>$act_s39</td> <td>$act_s40</td> <td>$act_s41</td> <td>$act_s42</td> <td>$act_s43</td> <td>$act_s44</td> <td>$act_s45</td> <td>$act_s46</td> <td>$act_s47</td> <td>$act_s48</td> <td>$act_s49</td> <td>$act_s50</td> 
-				// foreach($act_s as $val){
-				// 	if($size[$key-1]!=''){								
-				// 		echo "<td>".$val."</td>";
-				// 	}
-				// }
-				 
-				for($i=0;$i<=count($act_s);$i++){
-					if($size[$i]!=''){			
-						$j = $i+1;						
-						echo "<td>".$act_s[$j]."</td>";
+				$inner_count = 0;
+				echo "<td>$date</td>
+						<td>$act_shift</td> 
+						<td>$act_section</td> 
+						<td>".leading_zeros($doc_no,9)."</td> 
+						<td>$style</td> 
+						<td>$schedule</td> 
+						<td>$color</td> 
+						<td>$category</td> 
+						<td>"."R".leading_zeros($act_cut_no,3)."</td>";
+				
+				for($i=0;$i<50;$i++)
+				{
+					if($size[$i]!=''){
+						if($inner_count==0){
+							echo "<td>".$size[$i]."</td>";
+							echo "<td>".$act_s[$i+1]."</td>";
+							echo "</tr>";
+							$inner_count++;
+						}
+						else{
+							echo "<tr>
+								<td>".$cut_details_explode[0]."</td> 
+								<td>".$cut_details_explode[2]."</td> 
+								<td>".$cut_details_explode[1]."</td> 
+								<td>".leading_zeros($doc_no,9)."</td> 
+								<td>$style</td> 
+								<td>$schedule</td> 
+								<td>$color</td> 
+								<td>$category</td> 
+								<td>".chr($color_code).leading_zeros($act_cut_no,3)."</td>";
+						echo "<td>".$size[$i]."</td>";		
+						echo "<td>".$act_s[$i+1]."</td>";
+						echo "</tr>";
+						}
 					}
 				}
-				echo"<td>$act_total</td>
-				</tr>";
-				if($row_count == 0){
-					echo "<b style='color:#ff0000'>No Data found</b>";
-				}
-				echo "</table></div>";
-				
+				echo "<tr>";
+				echo "<td></td><td></td><td></td><td>
+							  </td><td></td><td></td>
+							  <td></td><td></td><td></td>
+							  <td class='info'>Total :</td>
+							  <td class='info'>$act_total</td>";
+				echo "</tr>";
+				echo "</tr>";
+				 $act_total = 0;
+
 			}
+			echo "</table></div>";
 			echo "</div></div>";
 		}
-		?>
+	 ?>
 	 <?php
  		if(isset($_POST['submit']) && $reptype==2)
 		{
@@ -490,7 +560,7 @@ function verify_date(){
 				}
 			}
 			if($row_count == 0){
-				echo "<b style='color:#ff0000'>No Data found </b>";
+				echo "<tr><td colspan=4 style='color:#ff0000'>No Data found</td></tr>";
 			}
 			echo "</table></div></div>";
 			
@@ -516,10 +586,9 @@ function verify_date(){
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
-
+			$row_count = 0;
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
-				
 				$section_new=$sql_row['section'];
 				$sql1="select distinct shift from $bai_pro3.act_cut_status_recut_v2 where date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift in ($shift) order by shift";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -568,6 +637,7 @@ function verify_date(){
 						{
 							$cut_qty=$sql_row3['cut_qty'];
 						}
+						$row_count++;
 	 					echo "<tr >";
 					    echo "<td >$section_new</td>";
 					  	echo "<td >$shift_new</td>";
@@ -579,7 +649,7 @@ function verify_date(){
 				}
 			}
 			if($row_count == 0){
-				echo "<b style='color:#ff0000'>No Data found</b>";
+				echo "<tr><td colspan=4 style='color:#ff0000'>No Data found</td></tr>";
 			}
 			echo "</table></div>";
 			

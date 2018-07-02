@@ -5,14 +5,19 @@ Revised CSS files for interface standardization,Add the Validation on trims stat
 error_reporting(0);
 //include("header.php");
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/trims_status_update_input.php");
+$has_permission=haspermission($url_r); 
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
-$username="sfcsproject1";
-$special_users=array("kirang","buddhikam","chathurangad","minuram","sfcsproject1","sfcsproject2","aseemmo","jeyakugananthinij","menujar","saroasa"); // users for all access in trims status
-$trim_warehouse_users=array("sfcsproject1","chathurangad","minuram","buddhikam","nizzarm","rangac","asankaj","chamilama","kalpanib","sandyaw","subodhaw","preshilas","nishanthak","tharinduba","keerthik","dilhanis","gayanbu","neilja","sfcsproject1","sfcsproject2","aseemmo","jeyakugananthinij","menujar","saroasa","pirabothenys","thiviyadast","rimoess","ashokw","jeganathanj","ber_databasesvc","sudathra");   //User for access Trim part :ChathurangD
-$input_update_users=array("chathurangad","minuram","buddhikam","nizzarm","rangac","asankaj","chamilama","tharinduba","sfcsproject1","sfcsproject2","saroasa","pirabothenys","thiviyadast","rimoess","ashokw","jeganathanj","ber_databasesvc","sudathra");   //User for access Inputs :ChathurangD
-$view_users=array("ruwank","beracut","berafloor","gayancha","sfcsproject1","sfcsproject2","saroasa","pirabothenys","thiviyadast","rimoess","ashokw","jeganathanj","ber_databasesvc","sudathra");   //User users :ChathurangD
-$trims_special_user_access=array("sfcsproject1","chathurangad","sfcsproject2","gayancha","sudathra","saroasa","buddhikara","samilac");
+//$username="sfcsproject1";
+//$special_users=array("kirang","buddhikam","chathurangad","minuram","sfcsproject1","sfcsproject2","aseemmo","jeyakugananthinij","menujar","saroasa"); // users for all access in trims status
+//$trim_warehouse_users=array("sfcsproject1","chathurangad","minuram","buddhikam","nizzarm","rangac","asankaj","chamilama","kalpanib","sandyaw","subodhaw","preshilas","nishanthak","tharinduba","keerthik","dilhanis","gayanbu","neilja","sfcsproject1","sfcsproject2","aseemmo","jeyakugananthinij","menujar","saroasa","pirabothenys","thiviyadast","rimoess","ashokw","jeganathanj","ber_databasesvc","sudathra");   //User for access Trim part :ChathurangD
+//$input_update_users=array("chathurangad","minuram","buddhikam","nizzarm","rangac","asankaj","chamilama","tharinduba","sfcsproject1","sfcsproject2","saroasa","pirabothenys","thiviyadast","rimoess","ashokw","jeganathanj","ber_databasesvc","sudathra");   //User for access Inputs :ChathurangD
+//$view_users=array("ruwank","beracut","berafloor","gayancha","sfcsproject1","sfcsproject2","saroasa","pirabothenys","thiviyadast","rimoess","ashokw","jeganathanj","ber_databasesvc","sudathra");   //User users :ChathurangD
+//$trims_special_user_access=array("sfcsproject1","chathurangad","sfcsproject2","gayancha","sudathra","saroasa","buddhikara","samilac");
 $isinput=$_GET['isinput'];
 
 //function to extract input informat
@@ -223,12 +228,12 @@ else
 // End - To take club schedule number and list of original schedules  -  11-11-2014 - Added by ChathurangaD
 
 // Start  ---------  03-Nov-2014 -  Added by Chathurangad
-if(in_array($username,$trim_warehouse_users))
+if(in_array($authorized,$has_permission))
 {
 	echo "<h2>Trims Status Update Form</h2>";
 	$textbox_disable="disabled=\"disabled\"";
 }
-else if(in_array($username,$view_users))
+else if(in_array($view,$has_permission))
 {
 	echo "<h2>Trims Status View Form</h2>";
 	$textbox_disable="disabled=\"disabled\"";
@@ -343,14 +348,14 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 		<!--<td><a class='btn btn-info btn-sm' href="/sfcs/projects/Beta/production_planning/mpdf7/sawing_out_labels.php?job_no=1&schedule=<?php echo $org_schs; ?>&color=<?php echo $sql_row['order_col_des']; ?>&size=<?php echo $sql_row['size_code']; ?>" onclick="return popitup_new('/sfcs/projects/Beta/production_planning/mpdf7/sawing_out_labels.php?job_no=1&schedule=<?php echo $org_schs; ?>&color=<?php echo $sql_row['order_col_des']; ?>&size=<?php echo $sql_row['size_code']; ?>)">Print</a></td>-->
 		
 		<?php 
-		// if(in_array($username,$input_update_users)  and $isinput==1)
-		// {
-		// 	echo "<td><input type=\"text\" name=\"input_qty[]\" $textbox_disable value=\"$balance\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
-		// }
-		// else
-		// {
-		// 	echo "<td><input type=\"text\" name=\"input_qty[]\" $textbox_disable value=\"0\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
-		// }
+		 if(in_array($update,$has_permission)  and $isinput==1)
+		 {
+		 	echo "<td><input type=\"text\" name=\"input_qty[]\" $textbox_disable value=\"$balance\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
+		 }
+		 else
+		 {
+		 	echo "<td><input type=\"text\" name=\"input_qty[]\" $textbox_disable value=\"0\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
+		 }
 		echo "</tr>";
 		
 		$i++;
@@ -378,7 +383,7 @@ echo "<input type=\"hidden\" name=\"jobno\" value=\"$jobno\" />";
 echo "<input type=\"hidden\" name=\"moduleno\" value=\"$module_no\" />";
 echo "<input type=\"hidden\" name=\"docket_ref\" value=\"$docket_ref\" />";
 echo "<select name=\"status\" class=\"form-control\" $dropdown_disable>";
-if(in_array($username,$special_users))
+if(in_array($authorized,$has_permission))
 {
 	for($i=0;$i<sizeof($status);$i++)
 	{	

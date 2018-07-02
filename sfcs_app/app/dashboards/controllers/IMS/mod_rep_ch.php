@@ -14,6 +14,12 @@ ini_set('display_errors', 'On');
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/input_status_update_input.php");
+$has_permission=haspermission($url_r); 
 ?>
 
 
@@ -216,7 +222,7 @@ echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>J".leading_zeros(
 
     $auth_cad_mem=array("thusharako","chathurangad","dinushapre","eshankal","monathu","lasitham","hasithada"); 
     $username=strtolower ($username); 
-    if(in_array($username,$auth_cad_mem)) 
+    if(in_array($update,$haspermission)) 
     { 
          
             echo 'Please enter your key to unlock edit panel: 

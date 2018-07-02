@@ -6,9 +6,9 @@ Change Log:
 -->
 
 
-<?php include('../../../../common/config/config.php'); ?>
-<?php //include("../".getFullURL($_GET['r'], "", "R").""); ?>
-<?php include('../../../../common/php/functions.php'); ?>   
+<?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+	  include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+?>   
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>	
 
 <?php
@@ -493,7 +493,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <!--table
 	{mso-displayed-decimal-separator:"\.";
 	mso-displayed-thousand-separator:"\,";}
-.xl6513019
+.xl651301
 	{padding-top:1px;
 	padding-right:1px;
 	padding-left:1px;
@@ -528,6 +528,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	vertical-align:bottom;
 	mso-background-source:auto;
 	mso-pattern:auto;
+	//border : .5pt solid black;
 	white-space:nowrap;}
 .xl6713019
 	{padding-top:1px;
@@ -1684,7 +1685,7 @@ as Web Page wizard.--><!--If the same item is republished from Excel, all inform
 tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD --><!----------------------------->
 
 <table border=0 cellpadding=0 cellspacing=0 width=1757 style='border-collapse:
- collapse;table-layout:fixed;width:1321pt'>
+ collapse;table-layout:fixed;width:3000pt'>
  <col class=xl6513019 width=13 style='mso-width-source:userset;mso-width-alt:
  475;width:10pt'>
  <col class=xl6613019 width=70 style='mso-width-source:userset;mso-width-alt:
@@ -1919,7 +1920,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
  </tr>
  <tr class=xl6513019 height=33 style='mso-height-source:userset;height:24.75pt'>
   <td height=33 class=xl6513019 style='height:24.75pt'></td>
-  <td colspan=28 class=xl9513019>Fabric Docket Issue Plan<span style='mso-spacerun:yes'> </span></td>
+  <td colspan=28 class=xl9513019>Fabric Docket Issue Plan<span style='mso-spacerun:yes'>ï¿½</span></td>
   <td class=xl6513019></td>
  </tr>
  <tr class=xl6513019 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -1964,17 +1965,17 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl6713019>Color :</td>
   <td colspan=3 class=xl9713019><?php echo $color." / ".$col_des; ?></td>
   <td class=xl6613019></td>
-  <td colspan=3 class=xl6713019><span style='mso-spacerun:yes'> </span>Fab
+  <td colspan=3 class=xl6713019><span style='mso-spacerun:yes'>ï¿½</span>Fab
   Code:</td>
   -->
   <td class=xl6713019>Color :</td>
   <td colspan=6 class=xl9713019><?php echo $color." / ".$col_des; ?></td>
-  <td colspan=1 class=xl6713019><span style='mso-spacerun:yes'> </span>Fab
+  <td colspan=1 class=xl6713019><span style='mso-spacerun:yes'>ï¿½</span>Fab
   Code:</td>
   <td colspan=12 class=xl9713019><?php echo $compo_no; ?></td>
   <td class=xl6513019></td>
   <td class=xl6513019></td>
-  <td colspan=2 class=xl6713019>Assortment<span style='mso-spacerun:yes'> 
+  <td colspan=2 class=xl6713019>Assortment<span style='mso-spacerun:yes'>ï¿½
   </span>:</td>
   <td colspan=3 class=xl9713019>&nbsp;</td>
   <td class=xl6513019></td>
@@ -2194,7 +2195,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
  <tr class=xl6513019 height=21 style='mso-height-source:userset;height:15.75pt'>
   <td height=21 class=xl6513019 style='height:15.75pt'></td>
   <td class=xl7213019 width=70 style='width:53pt'>Order Qty<span
-  style='mso-spacerun:yes'> </span></td>
+  style='mso-spacerun:yes'>ï¿½</span></td>
   <?php
   if($order_amend=="1")
   {
@@ -2447,7 +2448,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl6613019></td>
   <td class=xl6613019></td>
   <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Used
-  Yards</td>
+  <?php $fab_uom ?></td>
   <td class=xl7713019><?php echo round($newyy,0); ?></td>
   <td class=xl6513019></td>
   <td class=xl6613019></td>
@@ -2628,7 +2629,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl11613019>&nbsp;</td> -->
   <td class=xl8313019>&nbsp;</td>
  </tr>
- <tr class=xl6613019 height=20 width=200 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=18  class=xl6613019 style='height:15.0pt'></td>
   <?php
   	if($flag == 1)
@@ -2742,10 +2743,6 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
 <td class=xl8413019>48</td>
 <td class=xl8413019>49</td>
 <td class=xl8413019>50</td>
-  
-  
-  
-  
 	<?php
 	}
 	?>
@@ -2759,7 +2756,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td colspan=2 class=xl8413019>ISSUED BY</td>
   <td colspan=2 class=xl8413019>RECEIVED BY</td>
   <td colspan=5 class=xl8413019>REMARKS/Roll No's</td>
-  <td><td/>
+  <td></td>
  </tr>
  
  

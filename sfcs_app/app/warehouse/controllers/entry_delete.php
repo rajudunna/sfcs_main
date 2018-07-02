@@ -21,12 +21,13 @@ Change log:
 ?>
 
 <?php
-$url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
-$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
-$authorised_user=user_acl("SFCS_0147",$username,7,$group_id_sfcs);
+$has_permission = haspermission($_GET['r']);
+// $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
+// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+// $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
+// include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
+// $view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+// $authorised_user=user_acl("SFCS_0147",$username,7,$group_id_sfcs);
 /*
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=$username_list[1];
@@ -40,11 +41,12 @@ $sql="select * from menu_index where list_id=164";
 
 	$auth_users=explode(",",$users);
 //$authorized=array("kirang","herambaj","ravipu","demudun","apparaoo","kirang","narasingaraon","ramprasadk","kirang");
-if(!(in_array(strtolower($username),$auth_users)))
+*/
+if(!(in_array($view,$has_permission)))
 {
 	header("Location:restrict.php");
 }
-*/
+
 ?>
 
 <title>Delete RM Receiving</title>
@@ -96,12 +98,11 @@ if(isset($_POST['submit']))
 	{
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$qty_rec=$sql_row['qty_rec'];
+			$qty_rec=round($sql_row['qty_rec'],2);
 			$qty_issued=$sql_row['qty_issued'];
 			$qty_ret=$sql_row['qty_ret'];
 			$ref1=$sql_row['ref1'];
 			$ref4=$sql_row['ref4'];
-			
 			$lot_no=$sql_row['lot_no'];
 		}
 	
@@ -131,13 +132,13 @@ if(isset($_POST['submit']))
 		echo "<tr><td>Item Description</td><td>:</td><td>$item_desc</td></tr>";
 		echo "<tr><td>Item Name</td><td>:</td><td>$item_name</td></tr>";
 		echo "<tr><td>Product</td><td>:</td><td>$product_group</td></tr>";
-		echo "<tr><td>Qty Recieved</td><td>:</td><td>$rec_qty</td></tr>";
+		echo "<tr><td>Qty Recieved</td><td>:</td><td>$qty_rec</td></tr>";
 		echo "<tr><td>GRN Date</td><td>:</td><td>$grn_date</td></tr>";
 		
 		echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'entry_delete.php','N').'">';
 		echo '<tr><td>Reason</td><td>:</td><td><div class="row"><div class="col-md-4"><input type="text" name="reason"  id="reason2" class="form-control" required ></div></div></td></tr>';
 		
-		if(in_array($username,$authorised_user))
+		if(in_array($authorized,$has_permission))
 		{
 			echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none"; ></td></tr>';
 		}
@@ -365,7 +366,7 @@ if(isset($_POST['put']))
 	
 	if($total_issued==$total_returned)
 	{
-		if(in_array($username,$authorised_user))
+		if(in_array($authorized,$has_permission))
 		{
 		
 		$check=0;

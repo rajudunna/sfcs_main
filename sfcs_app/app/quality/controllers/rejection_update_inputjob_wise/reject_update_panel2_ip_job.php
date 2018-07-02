@@ -140,14 +140,13 @@ function disp(x)
 		{
 			if(qty==breakup)
 			{
-				document.getElementById("qty["+x+"]").style.backgroundColor="green";
+				document.getElementById("qty["+x+"]").style.backgroundColor="lightgreen";
 				document.getElementById("test["+x+"]").value=1;
 			}
 		}
 		else
 		{
-			alert("Please fill all the required details");
-			
+			sweetAlert('Please fill all the required details','','warning');
 			document.getElementById("qty["+x+"]").value=0;
 			document.getElementById("demo"+x).style.backgroundColor="red";
 			document.getElementById("demos"+x).style.backgroundColor="red";
@@ -403,7 +402,15 @@ for($i=0;$i<15;$i++)
   echo "<td id='$i"."5'></td>";
   
   //Shift details added to update mutiple schedules and multiple modules rejection details at one time
-  echo "<td><select id=\"shift[$i]\" name=\"shift[$i]\"><option value=\"0\">Select</option><option value=\"A\">A</option><option value=\"B\">B</option></select></td>";
+  // echo "<td><select id=\"shift[$i]\" name=\"shift[$i]\"><option value=\"0\">Select</option><option value=\"A\">A</option><option value=\"B\">B</option></select></td>";
+
+  
+  echo "<td><select id=\"shift[$i]\" name=\"shift[$i]\">
+  <option value='$shift'>Select</option>";
+   foreach($shifts_array as $key=>$shift){
+                echo "<option value='$shift'>$shift</option>";
+            }
+  echo "</select></td>";
 
   //To identify the form of the garment		
   echo "<td><select id=\"form[$i]\" name=\"form[$i]\"><option value=\"0\">Select</option><option value=\"P\">Panel</option><option value=\"G\">Garment</option></select></td>";

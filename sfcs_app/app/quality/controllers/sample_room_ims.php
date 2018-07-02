@@ -9,12 +9,13 @@ user names taken from the database level
 <?php
 //$author_id_db=array("kirang","manojm","sridevik","kirang","kirang","thilinapa","kirang","kirang");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
  
-$view_access=user_acl("SFCS_0146",$username,1,$group_id_sfcs); 
+ //$has_perm=haspermission($_GET['r']);
+// $view_access=user_acl("SFCS_0146",$username,1,$group_id_sfcs); 
 
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
+// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+// $username=strtolower($username_list[1]);
 /*
 $sql="select * from menu_index where list_id=268";
 $result=mysql_query($sql,$link) or mysql_error("Error=".mysql_error());
@@ -24,13 +25,14 @@ while($row=mysql_fetch_array($result))
 }
 
 $auth_users=explode(",",$users);
-if(in_array($username,$auth_users))
+if(in_array($authorized,$has_perm))
 {
 	
 }
 else
 {
-	header("Location:restricted.php");
+	$url = getFullURL($_GET['r'],'restricted.php','N');
+	header("Location:$url");
 }
 */
 function dateDiffsql($link,$start,$end)

@@ -1,3 +1,4 @@
+<?php $has_permission = haspermission($_GET['r']); ?>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -219,8 +220,8 @@ function openWin() {
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0278",$username,1,$group_id_sfcs);
-$authorized=user_acl("SFCS_0278",$username,7,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0278",$username,1,$group_id_sfcs);
+// $authorized=user_acl("SFCS_0278",$username,7,$group_id_sfcs);
 
 ?>
 
@@ -321,7 +322,7 @@ if(isset($_POST['submit']))
 		//$sql1="select count(*) from $brandix_bts.tbl_miniorder_data where mini_order_ref='".$m['mini_order_ref']."' and mini_order_status='1'";
 		if($mrn_status==0)
 		{
-			if(in_array($username,$authorized))
+			if(in_array($authorized,$has_permission))
 			{
 				if($mini_order_cnt>0)
 				{

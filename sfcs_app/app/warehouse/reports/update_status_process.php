@@ -41,7 +41,6 @@ if(isset($_POST['submit1']))
 	$reason_db=array();
 	$qty_db=array();
 	$sql="select * from $bai_rm_pj2.manual_form where status=1 and tid in (".implode(",",$tid).")";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -81,7 +80,55 @@ if(isset($_POST['submit1']))
 		}
 	}
 	$table.="</table>";
+	$message= '<html><head><style type="text/css">
+	body
+	{
+		font-family: arial;
+		font-size:12px;
+		color:black;
+	}
+	table
+	{
+		border-collapse:collapse;
+		white-space:nowrap; 
+	}
+	th
+	{
+		color: black;
+	 	border: 1px solid #660000; 
+		white-space:nowrap; 
+		padding-left: 10px;
+		padding-right: 10px;
+	}
 	
+	td
+	{
+		color: BLACK;
+	 	border: 1px solid #660000; 
+		padding: 1px;
+		white-space:nowrap; 
+		text-align:center;
+	}
+	
+	.green
+	{
+		border: 0;
+	
+	}
+	
+	.red
+	{
+		border: 0;
+	
+	}
+	
+	.yash
+	{
+		border: 0;
+	
+	}
+	</style></head><body>';
+	$message_f="<br/>Message Sent Via:".$plant_name."  </body></html>";
 	$message.=$table.$message_f;
 	
 	
@@ -116,7 +163,7 @@ if(isset($_POST['submit1']))
 			$recipients=array_merge($dms_team,$fab_team);
 		}
 	}
-	
+
 	$to  = implode(", ",$recipients);
 	$subject = 'BAI RM - Manual Form Ref. '.$rand. ' (Approved)';
 	

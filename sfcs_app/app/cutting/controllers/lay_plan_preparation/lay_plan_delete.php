@@ -10,7 +10,9 @@ Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status)
 --> 
 
 <?php    
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+$layplanmail = $conf1->get('layplanmail'); 
+//var_dump($layplanmail);
 // include("header.php"); 
 ?> 
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
@@ -411,7 +413,7 @@ if(isset($_POST["submit"]))
 				//if(strtolower($_SERVER['SERVER_NAME'])=="bainet") 
 				//{ 
 					//$plant_name="BAI-1"; 
-					$to  = 'bhargavg@schemaxtech.com, rameshk@schemaxtech.com'; 
+					$to  = $layplanmail; 
 				//}                    
 				// subject 
 				$subject = 'Lay Plan Deletion In SFCS'; 

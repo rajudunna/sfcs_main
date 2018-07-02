@@ -4,6 +4,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $view_access=user_acl("SFCS_0165",$username,1,$group_id_sfcs);
 $auth_users=user_acl("SFCS_0165",$username,7,$group_id_sfcs);
+$has_permission = haspermission($_GET['r']);
 ?>
 	<?php
 
@@ -218,7 +219,8 @@ $auth_users=user_acl("SFCS_0165",$username,7,$group_id_sfcs);
 		//#136480 Time based restrictions
 		$max_allowed_date=date("Y-m-d");
 		
-		if(in_array($username,$auth_users))
+		// if(in_array($username,$auth_users))
+		if(in_array($authorized,$has_permission))
 		{
 			echo '<div class="x_content">';
 			if($username=="kiran")

@@ -1,9 +1,9 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-$view_access=user_acl("SFCS_0045",$username,1,$group_id_sfcs); 
+// $view_access=user_acl("SFCS_0045",$username,1,$group_id_sfcs); 
 ?>
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -22,8 +22,9 @@ $view_access=user_acl("SFCS_0045",$username,1,$group_id_sfcs);
 			return true;
 		}
     }
+	
 
-</script>
+	</script>
 	<!--<script type="text/javascript" src="<?= getFullURL($_GET['r'],'jsdatepick-calendar/jsDatePick.min.1.3.js','R')?>"></script>-->
 	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R')?>"></script>
    <link href="<?= getFullURLLevel($_GET['r'],'common/css/jsDatePick_ltr.min.css',1,'R') ?>" rel="stylesheet" type="text/css" />
@@ -98,7 +99,7 @@ while($sql_row_new1=mysqli_fetch_array($sql_result_new1))
 }
 echo "<br/><h4 style='color:#286090'><center><span class='label label-success'>Daily Plan Achievement Report</span></center></h4>";
 echo "<div  class ='table-responsive'>";
-echo "<div class='pull-right'><input type='submit' name='submit1' value='Export to Excel' class='btn btn-info'></div>";
+echo "<div class='pull-right' id='export_excel'></div>";
 echo "<table  border=1 class='table table-bordered' >";
 $table.="<h2>Daily Plan Achievement Report</h2><table border=1>";
 
@@ -199,12 +200,11 @@ $table.="</table>";
  echo "</div>";
  
  echo "<div id='div-1a'> 
-<div class='col-md-6 col-md-offset-9'>
 <form  name='input' action= ".getFullURL($_GET['r'],'plan_vs_output_analysis_excel.php','R')." method='post'>
-<input type='hidden' name='table' value='<?php echo $table; ?>'>
-
+<input type='hidden' name='table' value='$table'>
+<input type='submit' name='submit1' value='Export to Excel' class='btn btn-info'>
 </form>
-</div></div>";
+</div>";
 }
 
 
@@ -220,5 +220,8 @@ $table.="</table>";
 		text-align:center;
 	}
 </style>
+<script>
+$('#export_excel').html($('#div-1a'));
+</script>
 
 

@@ -1,6 +1,6 @@
 <?php 
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 //$view_access=user_acl("SFCS_0061",$username,1,$group_id_sfcs); 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -18,7 +18,6 @@
 <div class="panel-heading">Day DownTime Report</div>
 <div class="panel-body">
 
-
 <form action="<?= getFullURL($_GET['r'],'downtimeperday_data_new.php','N')?>" method="post" id="non-printable">
 	<div class="row">
 		<div class="col-md-3">
@@ -32,9 +31,9 @@
 		<div class="col-md-3">
 			<label>Select Team</label>
 			<select name="team" class="form-control">
-				<option value='"A","B"'>All</option>
-				<option value='"A"'>A</option>
-				<option value='"B"'>B</option>
+				<?php for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+					<option  <?php echo "value='\"$shifts_array[$i]\"'";?> > <?php echo $shifts_array[$i] ?></option>
+			<?php }?>
 			</select> 
 		</div>
 		<div class="col-md-3">

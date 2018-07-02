@@ -3,7 +3,9 @@ $url = getFullURL($_GET['r'],'mrn_request_form_V2.php','N');
 header("Location: ".$url);
 
 ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+$mrn_mail= $conf1->get('mrn_mail');
+?>
 <html>
 <head>
 
@@ -379,18 +381,22 @@ if($schedule==$inp_2)
 echo "</table>";
 echo "<input type=\"hidden\" name=\"style\" value=\"$inp_1\"><input type=\"hidden\" name=\"schedule\" value=\"$inp_2\"><input type=\"hidden\" name=\"color\" value=\"$inp_3\">";
 echo "<br/>";
+$table_q="SELECT * FROM $bai_pro3.`sections_db`";
+while($tables=mysqli_fetch_array($table_result))
+{
+	$table_name[]=$tables['sec_id'];
+	$table_id[]=$tables['sec_head'];
+}
+$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
 if($check==1)
 {
 echo "Section: <select name=\"section\">";
-
 echo "<option value=\"0\"></option>";
-echo "<option value=\"1\">Section -1 </option>";
-echo "<option value=\"2\">Section -2 </option>";
-echo "<option value=\"3\">Section -3 </option>";
-echo "<option value=\"4\">Section -4 </option>";
-echo "<option value=\"5\">Section -5 </option>";
-echo "<option value=\"6\">Section -6 </option>";
-echo "</select>";
+for($i = 0; $i < sizeof($table_name); $i++)
+{
+	echo "<option value='".$table_id[$i]."' style='background-color:#FFFFAA;'>".$table_name[$i]."</option>";
+}
+echo "</select></div></td></tr>";
 
 echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
 echo "<input type=\"submit\" name=\"update\" value=\"Submit Request\" onclick=\"javascript:button_disable();\">";
@@ -465,9 +471,9 @@ if(isset($_POST['update']))
 		
 		//mail($to, $subject, $message, $headers); (Enable to send mail to requester and RM Team)
 		
-		$to  = implode(", ",$app_team);
-		$cc=implode(", ",$rm_team);
-		$to_new=implode(", ",array_merge($app_team,$rm_team));
+		$to  = $mrn_mail;
+		// $cc=implode(", ",$rm_team);
+		// $to_new=implode(", ",array_merge($app_team,$rm_team));
 		$subject = 'BAI PRO - Additional Material Request Note Ref. '.$rand. ' (Request)';
 		
 		// To send HTML mail, the Content-type header must be set
@@ -479,7 +485,7 @@ if(isset($_POST['update']))
 		$headers .= 'Cc: '.$cc. "\r\n";
 		$headers .= 'From: Shop Floor System Alert <ictsysalert@brandix.com>'. "\r\n";
 		
-		mail($to_new, $subject, $message, $headers);
+		mail($to, $subject, $message, $headers);
 		
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"mrn_request_form.php?msg=1&ref=$rand\"; }</script>";
 	}

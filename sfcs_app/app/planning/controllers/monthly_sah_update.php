@@ -27,10 +27,11 @@ td.calendar-day, td.calendar-day-np { width:5px; padding:5px; border-bottom:1px 
 <body>
 <?php 
 set_time_limit(6000000);
+
 include ($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],"dashboards/controllers/PLD_Dashboard/sah_monthly_status/data.php",2,'R')); 
 
 // include('data.php');
-include '..'.getFullURL($_GET['r'],"header.php",'R');
+// include '..'.getFullURL($_GET['r'],"header.php",'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 // include('header.php');
 ?>
@@ -331,7 +332,7 @@ if(isset($_POST["submit"]))
 	$all_dates1=implode(",",$dates_all1);
 	
 	//2015-06-02 / kirang / service request #121226 / Section Wise Plan SAH update interface access
-	$File = '../'.getFullURL($_GET['r'],"data.php",'R');
+	$File = getFullURL($_GET['r'],"data.php",'R');
 	//echo $File;exit;
 	$fh = fopen($File, 'w') or die("can't open file");
 	$stringData = "<?php ".$data_sym."date=array(".$all_dates."); ".$data_sym."half_date=array(".$half_all_dates."); ".$data_sym."date1=array(".$all_dates1."); ".$data_sym."half_date1=array(".$half_all_dates1."); ".$data_sym."fac_plan=\"".$plan_fac."\"; ".$data_sym."vs_plan=\"".$vs_value."\"; ".$data_sym."ms_plan=\"".$ms_value."\"; ".$data_sym."fac_plan_sah=\"".$fac_sah."\"; ".$data_sym."plan_sah_mod=array(".$plan_sah_mod."); ?>";

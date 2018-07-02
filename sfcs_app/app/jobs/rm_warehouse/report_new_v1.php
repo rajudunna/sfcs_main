@@ -6,7 +6,8 @@
 $start_timestamp = microtime(true);
 set_time_limit(90000);
 error_reporting(0);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $cache_date="report_new";
 
@@ -119,8 +120,7 @@ $data='<div class="table-responsive"><table align="left" class="table table-bord
 <th style="text-align:  center;">Balance Qty</th><th style="text-align:  center;">Shade</th><th style="text-align:  center;">Invoice</th><th style="text-align:  center;">Status</th><th style="text-align:  center;">GRN Date</th><th style="text-align:  center;">Remarks</th><th style="text-align:  center;">Label Id</th><th style="text-align:  center;">Product Group</th><th style="text-align:  center;">Buyer</th><th style="text-align:  center;">Supplier</th></tr>';;
 
 
-	$sql1="select * from bai_rm_pj1.stock_report";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql1="select * from $bai_rm_pj1.stock_report";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check1=mysqli_num_rows($sql_result1);
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -154,8 +154,7 @@ $data='<div class="table-responsive"><table align="left" class="table table-bord
 		$supplier=$sql_row1['supplier'];
 		$buyer=$sql_row1['buyer'];
 		
-		$sql1x="select ref4,inv_no from bai_rm_pj1.sticker_ref where tid=$tid";
-		mysqli_query($link, $sql1x) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql1x="select ref4,inv_no from $bai_rm_pj1.sticker_ref where tid=$tid";
 		$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row=mysqli_fetch_array($sql_result1x))
 		{

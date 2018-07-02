@@ -4,17 +4,17 @@
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 //if(!isset($_SESSION)) { session_start(); }
 
-	$auth_cad_mem=array("lokeshk","chandrasekhard","srinub","prabathsa","kirang","dineshin","sandhyaranik","kirang","kirang","pavanm","sanyasiraop","naveendw","sanyasiraog","kirang","baischtasksvc","sfcsproject1","sfcsproject2","sfcsproject3","sfcsproject4","chameeram","shaliyas");
+	// $auth_cad_mem=array("lokeshk","chandrasekhard","srinub","prabathsa","kirang","dineshin","sandhyaranik","kirang","kirang","pavanm","sanyasiraop","naveendw","sanyasiraog","kirang","baischtasksvc","sfcsproject1","sfcsproject2","sfcsproject3","sfcsproject4","chameeram","shaliyas");
 	
-	if(in_array($username,$auth_cad_mem))
-	{
-		$_SESSION['SESS_USER_LEVEL']=1;
-		$_SESSION['SESS_MEMBER_ID']=1;
-	}
-	else
-	{
+	// if(in_array($username,$auth_cad_mem))
+	// {
+	// 	$_SESSION['SESS_USER_LEVEL']=1;
+	// 	$_SESSION['SESS_MEMBER_ID']=1;
+	// }
+	// else
+	// {
 		
-	}
+	// }
 	
 	
 

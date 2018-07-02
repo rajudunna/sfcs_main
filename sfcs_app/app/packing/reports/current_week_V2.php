@@ -1,7 +1,8 @@
-<?phP
+<?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
+	$permission = haspermission($_GET['r']);
 ?>
 <title>Weekly Delivery Dashboard - Packing</title>
 
@@ -158,6 +159,14 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 		{
 		$ref_id_ver[]=$rowy["ref_id"];
 		}
+		
+		$sql_cat="select tid from $bai_pro3.cat_stat_log where order_tid like \"% ".$schedule."".$color."%\" and category in ($in_categories)";
+		//echo $sql_cat."<br>";
+		$sql_result_cat=mysqli_query($link,$sql_cat) or exit("Sql Error3=".mysqli_error());
+		$rows_cat=mysqli_num_rows($sql_result_cat);
+		if($rows_cat > 0)
+		{
+			while($sql_row_cat=mysqli_fetch_array($sql_result_cat))
 		$sqlz="delete from $bai_pro4.weekly_delivery_status_finishing where tid not in (".implode(",",$ref_id_ver).") and ex_fact between \"".trim($start_date)."\" and  \"".trim($end_date)."\"";
 		mysqli_query($link,$sqlz) or die("Error1 = ".mysqli_error());
 	}

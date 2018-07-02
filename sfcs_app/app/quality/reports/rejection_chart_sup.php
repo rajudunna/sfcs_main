@@ -27,7 +27,7 @@ function verify_date(e){
 
 </script>
 
-<style>
+<!---<style>
 body
 {
 	font-family:calibri;
@@ -71,7 +71,7 @@ table{
 }
 
 }
-</style>
+</style>--->
 
 
 
@@ -90,12 +90,13 @@ table{
 				<input class='form-control' id="demo2" data-toggle='datepicker' type="text" size="8" name="edate" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>">
 			</div>
 			<div class='col-sm-2'> 
-				<label>Team</label>
-				<select class='form-control' name="team">
-					<option value="'A','B'" <?php if($_POST['team']=="'A','B'") { echo "selected"; } ?>>ALL</option>
-					<option value="'A'" <?php if($_POST['team']=="'A'") { echo "selected"; } ?>>A</option>
-					<option value="'B'" <?php if($_POST['team']=="'B'") { echo "selected"; } ?>>B</option>
-				</select>&nbsp;&nbsp;
+				Team: <select name="team" class="form-control">
+				<?php 
+				for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+				<option <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";} ?>><?php echo $shifts_array[$i] ?></option>
+				<?php }
+				?>
+				</select>
 			</div>
 			<div class='col-sm-2'>
 				<br/><br/>

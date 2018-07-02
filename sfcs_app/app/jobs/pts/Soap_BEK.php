@@ -1,9 +1,9 @@
 <?php
 $start_timestamp = microtime(true);
 set_time_limit(6000000);
-    include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
-    
-	include('Soap_Op_Update_bek.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+include('Soap_Op_Update_bek.php');
 	require ('SoapWsdlClasses.php');
 	// error_reporting(0);
 	// if(function_exists($_GET['f']))
@@ -152,13 +152,18 @@ set_time_limit(6000000);
 					$PTSService = new PTSService();
 					if($value['ScrapReason'] == ""){
 						$response = $PTSService->UpdateM3($UpdateM3);
+						// var_dump($response );
 					}
 					if($value['ScrapReason'] != ""){
 						$response = $PTSService->UpdateScrap($UpdateScrap);
+						// var_dump($response );
 					}
 					
 					if(isset($response->detail)){
 						$Error = $response->detail->FaultDetail->ErrorCode.'-'.$response->detail->FaultDetail->Message;
+					}
+					if(isset($response->faultstring)){
+						$Error = $response->faultstring;
 					}
 					
 					if(isset($response->UpdateM3Result)){

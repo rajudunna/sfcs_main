@@ -1,17 +1,5 @@
-<?php
-
-// include($_SERVER['DOCUMENT_ROOT']."bai1/server/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT']."bai1/server/group_def.php");
-// $view_access=user_acl("SFCS_0217",$username,1,$group_id_sfcs);
-// $auth_users=user_acl("SFCS_0217",$username,7,$group_id_sfcs);
-//$auth_users=array("kirang","srinivasaraog","sureshg","srinub","tharangam","lokeshk","sandhyaranik","sanyasiraog","dineshin","kirang","srinivasaraog","sureshg","srinub","tharangam","kirang","srinivasaraog","sureshg","srinub","tharangam","lokeshk","sandhyaranik","sanyasiraog","dineshin");
-?>
 
 <?php
-//if(!in_array($username,$auth_users))
-{
-	//header("Location: restricted.php");
-}
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 ?>
 
@@ -172,7 +160,7 @@ echo "<input type=\"hidden\" name=\"order_tid\" value=\"$order_tid\">";
 
 
 
-$sql="select distinct category,tid from $bai_pro3.cat_stat_log where order_tid='$order_tid' and category in ('Body','Front')";
+$sql="select distinct category,tid from $bai_pro3.cat_stat_log where order_tid='$order_tid' and category in ($in_categories)";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "<div class='col-md-2'>";

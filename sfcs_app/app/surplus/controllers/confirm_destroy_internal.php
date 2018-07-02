@@ -1,11 +1,21 @@
 <?php
 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 	$Page_Id = 'SFCS_0403';
 	// $view_access=user_acl("SFCS_0172",$username,1,$group_id_sfcs);
+	$has_permission=haspermission($_GET['r']);
 
+	if(in_array($authorized,$has_permission))
+	{
+		
+	}
+	else
+	{
+		$url = getFullURLLevel($_GET['r'],'common/restricted.php',1,'N');
+		header("Location:$url");
+	}
 ?>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
@@ -51,21 +61,18 @@ function enable_button()
 		</div>
 		
 		</form>
-		<hr>
 
 			<?php
 
 			if(isset($_POST['confirm']))
 			{
 				$schedule=array_unique($_POST['sch_list']);
-
 				for($i=0;$i<sizeof($schedule);$i++)
 				{
 						//To store the reserve locations cartons in remarks column in bai_qms_db details before destory not confirmation
 						$sql="update bai_qms_db set remarks=location_id where qms_schedule='".$schedule[$i]."' and location_id<>'INTDESTROY' and qms_tran_type=13";
 						// echo "</br>Update Remarks :".$sql."</br>";
 						mysqli_query($link, $sql) or exit("Sql Error:$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-						
 						$sql="update bai_qms_db set location_id='INTDESTROY' where qms_schedule='".$schedule[$i]."' and location_id<>'INTDESTROY' and qms_tran_type=13";
 						//echo "</br>Location Update : ".$sql."</br>";
 						mysqli_query($link, $sql) or exit("Sql Error:$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -104,10 +111,12 @@ function enable_button()
 					";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-					echo '<input type="checkbox" name="enable" id="enable" onclick="enable_button()">
-							Enable
-						<input type="submit" name="confirm" class="btn btn-success" value="Confirm Destroy" id="add" disabled="true" onclick="enable_button()">
-						<br><br>';
+					if(mysqli_num_rows($sql_result) > 0) {
+
+					echo '<hr/><input type="checkbox" name="enable" id="enable" onclick="enable_button()">
+						Enable
+					<input type="submit" name="confirm" class="btn btn-success" value="Confirm Destroy" id="add" disabled="true" onclick="enable_button()">
+					<br><br>';
 
 					$table="<div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'><table class='table table-bordered' id='table1'>";
 							$table.="<thead>";
@@ -130,7 +139,8 @@ function enable_button()
 								$row_count++;
 								$table="<tr class='foo' id='rowchk$x'>";
 								$table.="<td>".($x+1)."</td>";
-								$table.="<td>".$sql_row['qms_style']."</td>";
+								$sched = $sql_row['qms_schedule'];
+								$table.="<td>".$sql_row['qms_style']."</td><input type='hidden' name='sch_list[]' value='$sched'>";
 								$table.="<td>".$sql_row['qms_schedule']."</td>";
 								$table.="<td>".$sql_row['qms_color']."</td>";
 								$table.="<td>".$sql_row['qms_size']."</td>";
@@ -140,11 +150,12 @@ function enable_button()
 								echo $table;
 							}	
 					}
-					if($row_count>0){	
-							echo '<tr><td colspan=5>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
-						$table='</tbody></table></div>';
-					 echo $table;
-					}
+					// if($row_count>0){	
+					// 		echo '<tr><td colspan=5>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
+					// 	$table='</tbody></table></div>';
+					//  echo $table;
+					// }
+				}
 										// echo '<input type="checkbox" name="enable" id="enable" onclick="enable_button()">Enable<input type="submit" name="confirm" value="Confirm Destroy" id="add" disabled="true" onclick="enable_button()">';
 			if($row_count == 0){
 				echo '<script>sweetAlert("No Data found for the Entered Schedule/s","","warning");</script>';
@@ -158,7 +169,7 @@ function enable_button()
 	</div>
 </div>
 
-<script language="javascript" type="text/javascript">
+<!-- <script language="javascript" type="text/javascript">
 	$('#reset_table1').addClass('btn btn-warning');
 	var fnsFilters = {
 		rows_counter: true,
@@ -181,7 +192,7 @@ function enable_button()
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
 	});
 	
-</script>
+</script> -->
 
 
 

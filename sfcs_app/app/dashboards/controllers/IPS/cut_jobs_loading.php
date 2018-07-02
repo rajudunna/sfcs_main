@@ -6,16 +6,16 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$username=strtolower($username_list[1]);
 $username="sfcsproject1";
 //echo $username;
-
+$has_permission = haspermission($_GET['r']);
 $authorized=array("sfcsproject1");
 $super_user=array("sfcsproject1");
 $hour=date("H.i");
 
-	if(in_array(strtolower($username),$super_user))
+	if(in_array(strtolower($authorized),$has_permission))
 	{
 	
 	}
-	else if(in_array(strtolower($username),$authorized))
+	else if(in_array(strtolower($authorized),$has_permission))
 	{
 		
 		//New Implementation to restrict as per time lines to update Planning Board 20111211
@@ -41,7 +41,7 @@ $hour=date("H.i");
 
 
 $criteria="where left(order_style_no,1) in (".$global_style_codes.")";
-if(!(in_array(strtolower($username),$super_user)) or !(in_array(strtolower($username),$authorized)))
+if(!(in_array(strtolower($authorized),$has_permission)) or !(in_array(strtolower($authorized),$has_permission)))
 {
 	//exploding the users list into buyer level
 	include("style_allocation.php");
@@ -50,7 +50,7 @@ if(!(in_array(strtolower($username),$super_user)) or !(in_array(strtolower($user
 	{
 		$style_users=$style_auth[$i];
 		$style_users_ex=explode(",",$style_users);
-		if(in_array($username,$style_users_ex))
+		if(in_array($authorized,$has_permission))
 		{
 			$criteria_styles[]=$styles_list[$i];
 		}

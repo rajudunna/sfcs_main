@@ -1,9 +1,9 @@
 <?php 
 // $username = "sfcsproject1";
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
+// include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
-$view_access=user_acl("SFCS_0128",$username,1,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0128",$username,1,$group_id_sfcs);
 ?>
 <html>
 <head>				 
@@ -87,7 +87,7 @@ if(isset($_POST['upload']))
 			else 
 			{ 
 				$new_filename=$chk_ext1[0].".".$chk_ext1[1];
-				$path_new="../".getFullURL($_GET['r'],"weekly_delivery_plan/$new_filename","R");
+				$path_new=getFullURL($_GET['r'],"weekly_delivery_plan/$new_filename","R");
 				
 				move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
 

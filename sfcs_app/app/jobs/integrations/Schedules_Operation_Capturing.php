@@ -1,7 +1,7 @@
 <?php 
 $start_timestamp = microtime(true);
-
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(1000000);
 
 $connect = odbc_connect("$driver_name;Server=$serverName;Database=$m3_databasename;", $uid,$pwd);
@@ -9,7 +9,7 @@ $connect = odbc_connect("$driver_name;Server=$serverName;Database=$m3_databasena
 $schedule_array=array();
 $schedule_array[]=-1;
 
-$sql="SELECT DISTINCT order_del_no AS sch FROM bai_orders_db WHERE order_del_no > 0 ORDER BY order_del_no*1";
+$sql="SELECT DISTINCT order_del_no AS sch FROM $bai_pro3.bai_orders_db WHERE order_del_no > 0 ORDER BY order_del_no*1";
 $result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
