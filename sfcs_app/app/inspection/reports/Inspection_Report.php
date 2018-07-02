@@ -37,12 +37,13 @@ From Date: <input type="text" data-toggle='datepicker' class="form-control" name
  To Date: <input type="text" data-toggle='datepicker' class="form-control" name="tdate" id="tdate" style="width: 180px;    display: inline-block;" size="8" onchange="return verify_date();" value="<?php  if(isset($_POST['tdate'])) { echo $_POST['tdate']; } else { echo date("Y-m-d"); } ?>" >
 
 <?php
-$sql="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+// due to buyer division issue ,we ara taking buyers from sticker report
+$sql="SELECT DISTINCT buyer FROM $bai_rm_pj1.sticker_report ";
+// $sql="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$buyer_code[]=$sql_row["buyer_div"];
-	$buyer_name[]=$sql_row["buyer_name"];
+	$buyer_name[]=$sql_row["buyer"];
 }
 
 ?>
@@ -57,11 +58,11 @@ Buyer: <select  name="buyer" id="buyer" class="form-control" style="width: 180px
 		$all_buyers[] = $buyer_name[$i];
 		if($buyer_name[$i]==$division) 
 		{ 
-			echo "<option value=\"".($buyer_name[$i])."\" selected>".$buyer_code[$i]."</option>";	
+			echo "<option value=\"".($buyer_name[$i])."\" selected>".$buyer_name[$i]."</option>";	
 		}
 		else
 		{
-			echo "<option value=\"".($buyer_name[$i])."\"  >".$buyer_code[$i]."</option>";			
+			echo "<option value=\"".($buyer_name[$i])."\"  >".$buyer_name[$i]."</option>";			
 		}
 	}
 ?>
@@ -85,24 +86,7 @@ if(isset($_POST['submit']))
 		}else{
 			$selected_buyer = array($buyer_select);
 		}
-		// switch($buyer_select)
-		// {
-		// 	case "a":
-		// 	{
-		// 		$query_add=array("m","v");
-		// 		break;
-		// 	}
-		// 	case "v":
-		// 	{
-		// 		$query_add=array("v");
-		// 		break;
-		// 	}
-		// 	case "m":
-		// 	{
-		// 		$query_add=array("m");
-		// 		break;
-		// 	}
-		// }
+	
 	if(strlen($batch_search)>0)
 	{	
 		$sqlx="select * from $bai_rm_pj1.inspection_db where batch_ref=\"$batch_search\"";
@@ -111,20 +95,19 @@ if(isset($_POST['submit']))
 	{
 		$sqlx="select * from $bai_rm_pj1.inspection_db where date(log_date) between \"$sdate\" and \"$edate\"";
 	}
-
+	// echo $sqlx;
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$no_of_rows = mysqli_num_rows($sql_resultx);
-	// echo $no_of_rows;
 	if($no_of_rows > 0){
-		echo '<div id="main_div"><form action="..'.getFullURL($_GET['r'],'Inspection_Report_Excel.php','R').'" method ="post" name="expo" id="expo">
-		<input type="hidden" name="fdate" value="'.$sdate.'"><input type="hidden" name="tdate" value="'.$edate.'">
+		echo '<div id="main_div"><form action='.getFullURL($_GET['r'],'Inspection_Report_Excel.php','R').' method ="post" name="expo" id="expo">
+		<input type="hidden" name="fdate" value="'.$sdate.'"><input type="hidden" name="tdate" value="'.$edate.'"><input type="hidden" name="buyerdiv" value="'.$buyer_select.'"><input type="hidden" name="batch_no" value="'.$batch_search.'">
 		<input type="submit" name="export"  class="btn btn-primary pull-right" value="Export to Excel">
 		</form>';
 
 		// /echo "<form name='report'>";
 		echo "<div class='table-responsive'>";
-		echo "<table id='table1' class = 'table table-striped jambo_table bulk_action'><thead>";
+		echo "<table id='table1' class = 'table table-striped jambo_table bulk_action table-bordered'><thead>";
 		echo "<tr class='headings'>";
 		echo "<th class='column-title'>Report ID</th>";
 		echo "<th>Buyer</th>";
@@ -232,7 +215,7 @@ if(isset($_POST['submit']))
 				$avg_t_width=0;
 				$avg_c_width=0;
 				
-				if($lot_ref_batch!=NULL and $new_ref_date!="--")
+				if($lot_ref_batch!=NULL or $new_ref_date!="--")
 				{
 					$rec_qty=0;
 					//$sql="select *, if((length(ref5)<=1 or ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\", qty_rec  from store_in where lot_no in ($lot_ref_batch) order by ref2+0";
@@ -267,7 +250,7 @@ if(isset($_POST['submit']))
 					if($print_check==0 and $num_rows>0 and in_array($buyer,$selected_buyer))
 					{
 						$flag = true;
-						include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
+						// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
 
 						sort($scount_temp); //to sort shade groups
 						if($num_rows>0)
@@ -315,33 +298,22 @@ if(isset($_POST['submit']))
 						echo "<td>".$lot_ref_batch."</td>"; 
 
 						$check=0;
-						$sql_supplier = "SELECT supplier_m3_code as supplier_name FROM bai_rm_pj1.inspection_supplier_db where seq_no=".$supplier;
+						$sql_supplier = "SELECT supplier_m3_code as supplier_name FROM $bai_rm_pj1.inspection_supplier_db where seq_no=".$supplier;
 						$sql_result_supplier=mysqli_query($link, $sql_supplier) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result_supplier))
 						{
 							$supplier=$sql_row['supplier_name'];
-							echo "<td>".$supplier."</td>";
 							$check = 1;
 						}
+							
+
 						if($check == 0){
 							echo "<td></td>";
+						}else
+						{
+							echo "<td>".$supplier."</td>";
 						}
 
-						// for($i=0;$i<sizeof($suppliers);$i++)
-						// {
-						// 	$x=array();
-						// 	$x=explode("$",$suppliers[$i]);
-						// 	if($supplier==$x[1])
-						// 	{
-						// 		echo "<td>".$x[0]."</td>";
-						// 		$check=1;
-						// 	}
-						// }
-						// if($check==0)
-						// {
-						// 	echo "<td></td>";
-						// }
-								
 						echo "<td>".$item_desc."</td>"; 
 						echo "<td>".$rec_qty."</td>"; 
 						echo "<td>".$pts."</td>"; 
@@ -352,12 +324,20 @@ if(isset($_POST['submit']))
 						echo "<td>".$act_gsm."</td>"; 
 						echo "<td>".$grn_date."</td>"; 
 						
-						if($rec_qty>0) { echo "<td>".round(($qty_insp/$rec_qty)*100,2)."%"."</td>"; } else { echo "<td></td>"; } 
+						if($rec_qty>0) { 
+							echo "<td>".round(($qty_insp/$rec_qty)*100,2)."%"."</td>"; 
+						} else {
+							 echo "<td></td>"; 
+							} 
 							
 						echo "<td>".$skew."</td>"; 
 						echo "<td>".$pur_width."</td>"; 
 						echo "<td>".$total_rolls."</td>"; 
-						if($rec_qty>0) { echo "<td>".round((($ctex_sum-$rec_qty)/$rec_qty)*100,2)."%"."</td>"; } else { echo "<td></td>"; }   
+						if($rec_qty>0) {
+							 echo "<td>".round((($ctex_sum-$rec_qty)/$rec_qty)*100,2)."%"."</td>"; 
+							} else { 
+								echo "<td></td>";
+							 }   
 						echo "<td>".$act_width."</td>"; 
 						echo "<td>".$category."</td>"; 
 
@@ -392,29 +372,27 @@ if(isset($_POST['submit']))
 						echo "<td>".$avg_c_width."</td>"; 
 						echo "<td>".round(($avg_c_width-$avg_t_width),2)."</td>";
 
-						if($status==0)
-						{
-							if($username==$super_user)
-						{
-							echo "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";	
-						}
-						else
-						{
-							if(strtolower(substr($buyer,0,1))=="v" and $username==$vs_auth)
-							{
-								echo "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";
-							}
-							else
-							{
-								if(strtolower(substr($buyer,0,1))=="m" and $username==$mns_auth)
-								{
-									echo "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";
-								}
-							}
-						}
-
-
-						}
+						// if($status==0)
+						// {
+						// 	if($username==$super_user)
+						// 	{
+						// 	echo "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";	
+						// 	}
+						// 	else
+						// 	{
+						// 		if(strtolower(substr($buyer,0,1))=="v" and $username==$vs_auth)
+						// 		{
+						// 			echo "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";
+						// 		}
+						// 		else
+						// 		{
+						// 			if(strtolower(substr($buyer,0,1))=="m" and $username==$mns_auth)
+						// 			{
+						// 				echo "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";
+						// 			}
+						// 		}
+						// 	}
+						// }
 						echo "</tr>"; 
 					}	
 				}																																																																							
