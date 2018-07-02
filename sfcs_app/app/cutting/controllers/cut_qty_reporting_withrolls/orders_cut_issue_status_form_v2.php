@@ -389,7 +389,9 @@ else
     // var_dump($table_name); 
     echo "<tr> 
     <td>Cutting Table</td> 
-    <td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"section\" required><option value=\"0\">Select Table</option>"; 
+    <td>:</td><td><div class='row'>
+        <div class='col-md-6'><select class=\"form-control\" name=\"section\" required>
+        <option value='' selected disabled>Select Table</option>"; 
     for($i = 0; $i < sizeof($table_name); $i++) 
     { 
         echo "<option value='".$table_id[$i]."' style='background-color:#FFFFAA;'>".$table_name[$i]."</option>"; 
