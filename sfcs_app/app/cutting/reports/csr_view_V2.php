@@ -70,12 +70,13 @@ function verify_date(){
 			<div class="col-md-2">
 				<label>Shift: </label>
 				<select name="shift" class="form-control">
-					<option value='"A", "B"' <?php if($shift=='"A", "B"'){ echo "selected"; } ?> >All</option>
 					<?php 
 					foreach($shifts_array as $key=>$shift){
 						echo "<option value=\"'$shift'\">$shift</option>";
+						$all_shifts = $all_shifts."'$shift',";
 					}
 				?>
+				<option value="<?= rtrim($all_shifts,',') ?>" selected>All</option>
 				</select>
 			</div>
 			<div class="col-md-2">
@@ -130,7 +131,7 @@ function verify_date(){
 			}
 		?>
   
- 		
+
 		<?php
 		if(isset($_POST['submit']) && $reptype==1)
 		{
