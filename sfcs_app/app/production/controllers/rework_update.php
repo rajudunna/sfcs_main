@@ -330,13 +330,11 @@ function second_box(){
 			$sdate = $_GET['sdate'];
 		}else{
 			$sdate = date("Y-m-d");
-			
 		}
 		
 		// $mod=$_POST['module'];
 		$module_ref=$_POST['module']; 
 		$shift=$_POST['shift'];
-		echo $shift;
 		$zone_base=$_POST['zone_base'];
 	?>
 
@@ -678,11 +676,7 @@ if ($_POST['submit11'])
 				
 	<?php
 
-		echo '<div class="table-responsive"><table class="table table-bordered"		style="color:black; border: 1px solid red;">';
-		//echo "<tr class=\"new\"><th>Mod#</th>";
-		echo "<th>Mod#</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut#</th><th>Input Job#</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th>";
-		// echo "<th>QTY</th><th>SMV</th><th>SMO</th><th>Status</th>";
-		echo "<th>Rework Qty</th><th>Remarks</th></tr>";
+		
 		
 		$toggle=0;
 		$j=1;
@@ -730,7 +724,11 @@ if ($_POST['submit11'])
 			if(mysqli_num_rows($sql_result)>0)
 			{
 				//The below if else was shifted from top to here.Identify the code just above 4-lines and uncommentit,then remove this block if unnecessary
-				
+				echo '<div class="table-responsive"><table class="table table-bordered"		style="color:black; border: 1px solid red;">';
+				//echo "<tr class=\"new\"><th>Mod#</th>";
+				echo "<th>Mod#</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut#</th><th>Input Job#</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th>";
+				// echo "<th>QTY</th><th>SMV</th><th>SMO</th><th>Status</th>";
+				echo "<th>Rework Qty</th><th>Remarks</th></tr>";	
 				
 
 				$id_count = 0;	
@@ -785,7 +783,7 @@ if ($_POST['submit11'])
 						echo '<input type="hidden" name="cut[]" value="'.$sql_row12['ims_doc_no'].'">';
 						echo '<input type="hidden" name="size[]" value="'.$sql_row12['ims_size'].'">';
 						echo '<input type="hidden" name="tid[]" value="'.$sql_row12['tid'].'">';
-						echo '<input type="hidden" name="shift[]" value="'.$sql_row12['ims_shift'].'">';
+						
 						//To extract as per the M3 Size
 						$size_value=ims_sizes('',$sql_row12['ims_schedule'],$sql_row12['ims_style'],$sql_row12['ims_color'],strtoupper(substr($sql_row12['ims_size'],2)),$link11);
 						
@@ -845,8 +843,9 @@ if ($_POST['submit11'])
 		}else{
 			if(in_array($authorized,$has_permission))
 			{
-				echo '<input type="checkbox" name="option"  style="display:none;" id="option" onclick="javascript:enableButton();">';
-				echo '<input type="submit" name="update" style="display:none;" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="">';
+				echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();" style="display:none">';
+				echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="" style="display:none">';
+				echo "<p>If You Want to Update Please Select Section,Module and Time</p>";
 			}
 		}
 	?>
