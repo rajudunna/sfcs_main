@@ -152,6 +152,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$mk_ref=$sql_row['mk_ref'];
+		$print_status=$sql_row['print_status'];
 		for($s=0;$s<sizeof($sizes_code);$s++)
 		{
 			//if($sql_row["a_s".$sizes_code[$s].""]>0)
@@ -1536,7 +1537,7 @@ tags will be replaced.-->
  </tr>
  <tr height=25 style='height:18.75pt'>
   <td height=25 class=xl6417319 style='height:18.75pt'></td>
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src='../../common/images/BAI_Logo.jpg' width="120" height="60"></td>
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src='/sfcs_app/common/images/BAI_Logo.jpg' width="120" height="60"></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <!-- <td colspan=3 class=xl6617319>Cutting Docket</td> -->
@@ -1546,14 +1547,13 @@ tags will be replaced.-->
   <td colspan=3 class=xl7617319>Cutting Department</td>
   <td class=xl6417319></td>
  </tr>
+
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
- 
-  <td colspan=3 class=xl6617319 height="25pt"><u>Cutting Docket</u></td>
-  
+  <td colspan=3 class=xl6617319 height="25pt"><u>Cutting Docket</u></td> 
   <td class=xl6417319></td>
   <td class=xl6417319></td>
-  <td colspan=3 class=xl7617319></td>
+  <td colspan=3 class=xl7617319><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "ORIGINAL"; } else {echo "DUPLICATE";}?></strong></td>
   <td class=xl6417319></td>
  </tr>
  <tr height=21 style='height:15.75pt'>
@@ -2759,11 +2759,11 @@ echo $lot_ref; echo "MK File: ".implode(", ",array_unique($mk_files));
 </html>
 
 <?php
-
 	$idocs_2 = "'" . implode ( "', '", $docs ) . "'";
-
-	$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\" where doc_no in ($idocs_2) and print_status is null";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
+	if($print_status=="0000-00-00" || $print_status == "")
+	{	
+		$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\" where doc_no in ($idocs_2)";
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 ?>
 
