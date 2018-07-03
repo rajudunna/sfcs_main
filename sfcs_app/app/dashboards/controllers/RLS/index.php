@@ -40,9 +40,9 @@ body
 
 include"section_1.php";
 
-include"section_2.php";
+// include"section_2.php";
 
-include"section_3.php";
+// include"section_3.php";
 
 //include"section_4.php";
 
