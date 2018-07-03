@@ -363,6 +363,7 @@ $p_s50=$sql_row['p_s50'];
 	$remarks=$sql_row['remarks'];
 	$plan_module=$sql_row['plan_module'];
 	$lot_ref=$sql_row['plan_lot_ref'];
+	$print_status = $sql_row['print_status'];
 }
 
 	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
@@ -372,6 +373,7 @@ $p_s50=$sql_row['p_s50'];
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$mklength=$sql_row2['mklength'];
+		$mk_remarks = $sql_row2['remarks'];
 	}
 //chr($color_code).leading_zeros($cutno, 3)	
 
@@ -2084,7 +2086,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status!=NULL) {echo "DUPLICATE"; } else {echo "ORIGINAL";}?></strong></td>
+  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=="0000-00-00" || $print_status == '') {echo "ORIGINAL"; } else {echo "DUPLICATE";}?></strong></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -2137,8 +2139,10 @@ tags will be replaced.-->
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl904118>Sch No :</td>
-  <td colspan=4 class=xl954118 style='border-right:.5pt solid black'><?php echo $delivery.chr($color_code); ?></td>
-  <td class=xl954118></td>
+  <td colspan=2 class=xl954118 style='border-right:.5pt solid black'><?php echo $delivery.chr($color_code); ?></td>
+  <td colspan=1 class=xl904118>Consumption :</td>
+  <td colspan=1 class=xl954118 style='border-right:1px solid'><?php echo $body_yy; ?></td>
+  <td class=xl954118></td>	
   <td colspan=2 class=xl904118>Fab Descrip :</td>
   <td colspan=7 class=xl954118 style='border-right:.5pt solid black'><?php echo $fab_des; ?></td>
   <td class=xl654118></td>
@@ -2148,8 +2152,8 @@ tags will be replaced.-->
   <td class=xl904118>Color :</td>
   <td colspan=4 class=xl954118 style='border-right:.5pt solid black'><?php echo $color." / ".$col_des; ?></td>
   <td class=xl954118></td>
-  <td colspan=2 class=xl904118>Consumption :</td>
-  <td colspan=4 class=xl954118><?php echo $body_yy; ?></td>
+  <td colspan=2 class=xl904118>MK Name :</td>
+  <td colspan=4 class=xl954118><?php echo $mk_remarks; ?></td>	
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl1004118>&nbsp;</td>
@@ -3276,11 +3280,8 @@ echo "</tr>";
 </html>
 <?php 
 
-if($print_status==NULL)
-{
-	
-	$sql="update $bai_pro3.recut_V2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-}
+	if($print_status=="0000-00-00" || $print_status == '') {
+		$sql="update $bai_pro3.recut_V2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 ?>
