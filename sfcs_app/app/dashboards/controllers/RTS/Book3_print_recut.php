@@ -123,7 +123,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
-		$mklength=$sql_row2['mklength'];
+    $mklength=$sql_row2['mklength'];
+    $mk_remarks = $sql_row2['remarks'];
 	}
 //chr($color_code).leading_zeros($cutno, 3)	
 
@@ -1125,7 +1126,7 @@ tags will be replaced.-->
   <td class=xl6315551 width=67 style='width:50pt'></td> -->
   <td class=xl6315551 width=64 style='width:48pt'></td>
   <td class=xl6315551 width=64 style='width:48pt'></td>
-  <td class=xl6315551 width=64 style='width:48pt'><?php if($print_status!=NULL) {echo "DUPLICATE"; } else {echo "ORIGINAL";}?></td>
+  <td class=xl6315551 width=64 style='width:48pt'><?php if($print_status == "0000-00-00" || $print_status == '') {echo "ORIGINAL"; } else {echo "DUPLICATE";} ?></td>
   <td class=xl6315551 width=64 style='width:48pt'></td>
   <td class=xl6315551 width=27 style='width:20pt'></td>
  </tr>
@@ -1780,17 +1781,25 @@ ZHJzL2Rvd25yZXYueG1sUEsFBgAAAAAEAAQA9QAAAAEGAAAAAA==
   <td class=xl6615551>Color :</td>
   <td colspan=4 class=xl10015551><?php echo $color." / ".$col_des; ?></td>
   <td colspan=2 class=xl6615551>Consumption :</td>
-  <td colspan=4 class=xl10015551><?php echo $body_yy; ?></td>
+  <td colspan=1 class=xl10015551><?php echo $body_yy; ?></td>
   <td class=xl6315551></td>
+ </tr>
+ <tr class=xl6315551 height=20 style='mso-height-source:userset;height:15.0pt'>
+    <td height=20 class=xl6315551 style='height:15.0pt'></td>
+    <td colspan=3 class=xl904118>MK Name :</td>
+    <td colspan=2 class=xl954118><?php echo $mk_remarks; ?></td>
+    <td colspan=2 class=xl6615551>Fab Direction :</td>
+    <td colspan=4 class=xl10115551><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>	
+    <td class=xl654118></td>
  </tr>
  <tr class=xl6315551 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6315551 style='height:15.0pt'></td>
   <td class=xl6615551>PO :</td>
   <td colspan=4 class=xl10315551><?php echo $pono; ?></td>
-  <td colspan=2 class=xl6615551>Fab Direction :</td>
-  <td colspan=4 class=xl10115551><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>
-  <td class=xl6315551></td>
+
  </tr>
+
+
  <tr class=xl6315551 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6315551 style='height:15.0pt'></td>
   <td class=xl6315551></td>
@@ -2789,9 +2798,7 @@ echo "</tr>";
 
 <?php 
 
-if($print_status==NULL)
-{
-	
+if($print_status=="0000-00-00" || $print_status == '') {
 	$sql="update $bai_pro3.recut_v2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
