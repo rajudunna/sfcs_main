@@ -127,7 +127,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
-		$mklength=$sql_row2['mklength'];
+        $mklength=$sql_row2['mklength'];
+        $mk_remarks = $sql_row2['remarks'];
 	}
 //chr($color_code).leading_zeros($cutno, 3)	
 
@@ -1792,11 +1793,16 @@ ZHJzL2Rvd25yZXYueG1sUEsFBgAAAAAEAAQA9QAAAAEGAAAAAA==
  </tr>
  <tr class=xl6315551 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6315551 style='height:15.0pt'></td>
-  <td class=xl6615551>PO :</td>
-  <td colspan=4 class=xl10315551><?php echo $pono; ?></td>
+  <td class=xl6615551>MK Name :</td>
+  <td colspan=4 class=xl10315551><?php echo $mk_remarks; ?></td>
   <td colspan=2 class=xl6615551>Fab Direction :</td>
   <td colspan=4 class=xl10115551><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>
   <td class=xl6315551></td>
+ </tr>
+ <tr class=xl6315551 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td height=20 class=xl6315551 style='height:15.0pt'></td>
+  <td class=xl6615551>PO :</td>
+  <td colspan=4 class=xl10315551><?php echo $pono; ?></td>
  </tr>
  <tr class=xl6315551 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6315551 style='height:15.0pt'></td>
@@ -2796,11 +2802,9 @@ echo "</tr>";
 
 <?php 
 
-if($print_status==NULL)
+if($print_status=="0000-00-00" || $print_status == "")
 {
-	
 	$sql="update $bai_pro3.recut_v2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
 }
 ?>
