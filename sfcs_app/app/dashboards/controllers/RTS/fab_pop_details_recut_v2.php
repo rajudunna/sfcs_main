@@ -539,9 +539,9 @@ th
 			echo "<td><img src='".$img_path."'></td>";
 			echo "<td>";
 			
-			//include_once('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
+			include_once('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
 
-			include('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
+			//include('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
 			getDetails("R",$sql_row1['doc_no']);
 			echo "</td>";
 		}
