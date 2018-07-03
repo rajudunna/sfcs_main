@@ -2247,7 +2247,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><span style='mso-spacerun:yes'>�</span></td>
+  border-top:none;width:48pt'><span style='mso-spacerun:yes'></span></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
