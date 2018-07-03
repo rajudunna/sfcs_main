@@ -211,15 +211,15 @@
                 // echo $delete_plan_input_qry."<br>"; 
                 mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry".mysqli_error($GLOBALS["___mysqli_ston"])); 
                  
-                $insert_log="INSERT INTO $bai_pro3.inputjob_delete_log (user_name,date_time,reason,SCHEDULE) VALUES ('USER()',now(),'$reason','$schedule')"; 
-                // echo $insert_log."</br>"; 
-                mysqli_query($link, $insert_log) or exit("Sql Error insert_log".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                 
                 //$sql3="delete from pac_stat_log_input_job where tid in (".$tid.")"; 
                 $sql3="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random like  \"".$schedule."%\""; 
                 // echo $sql3."<br>"; 
                 mysqli_query($link, $sql3) or exit("Sql Error91".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                 
+                
+                $insert_log="INSERT INTO $bai_pro3.inputjob_delete_log (user_name,date_time,reason,SCHEDULE) VALUES (USER(),now(),'$reason','$schedule')"; 
+                // echo $insert_log."</br>"; 
+                mysqli_query($link, $insert_log) or exit("Sql Error insert_log".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
                 // $sql3="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE \"%".$schedule."%\")"; 
                 // $sql3="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random like  \"".$schedule."%\""; 
                 // echo $sql3."<br>"; 

@@ -230,14 +230,14 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 					<div class='col-sm-6 right'>Sealed Container : </div>
 					<div class='col-sm-6'>
 						<input type="hidden" name="MAX_FILE_SIZE4" value="2000000">
-						<input required  class='form-control btn btn-primary' onchange='verify_image(this)' name="userfile4" type="file"  accept="image/*" id="userfile4">
+						<input  class='form-control btn btn-primary' onchange='verify_image(this)' name="userfile4" type="file"  accept="image/*" id="userfile4">
 					</div>
 				</div><br>
 				<div class="row">
 					<div class='col-sm-6 right'>Seal # : </div>
 					<div class='col-sm-6'>
 						<input type="hidden" name="MAX_FILE_SIZE5" value="2000000">
-						<input required class='form-control btn btn-primary' onchange='verify_image(this)' name="userfile5" type="file" accept="image/*"  id="userfile5">
+						<input class='form-control btn btn-primary' onchange='verify_image(this)' name="userfile5" type="file" accept="image/*"  id="userfile5">
 					</div>
 				</div><br>
 			</div>
