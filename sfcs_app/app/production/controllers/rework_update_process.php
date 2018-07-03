@@ -168,7 +168,7 @@ if(isset($_POST['date']))
 				if($rew_qty>=0 and $rew_qty!="")
 				{
 					// echo "<script>alert('till insert query');</script>";
-					$sql="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values ($mno, $sec, $rew_qty, \"$dat\", \"$dat\", \"$msh\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())"; 
+					$sql="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"$rew_qty\", \"$dat\", \"$dat\", \"$msh\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())"; 
 					// echo $sql."<br/>";
 					// die();
 					$note.=$sql."<br/>";
