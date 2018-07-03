@@ -2184,8 +2184,11 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'></tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
-  <td height=21 class=xl6324082 dir=LTR width=80 style='height:15.75pt;  width:60pt'>&nbsp;</td>
-  <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=2>Auto Fill</td>
+ <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1>Auto Fill</td>
+  <!-- <td height=21 class=xl6324082 dir=LTR width=80 style='height:15.75pt;  width:60pt'>&nbsp;</td> -->
+
+   <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="alpha" id="fill_shade_grp" name="fill_shade_grp"  maxlength="8"   value="" size="6">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(4)">Fill</a></td>	
+  <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1></td>
   <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="float" id="fill_c_length" name="fill_c_length"   value="" size="3">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(1)">Fill</a></td>	
   <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
   <td class=xl6424082 dir=LTR width=64 style='width:48pt'><input type="text" id="fill_t_width" class="float" name="fill_t_width"  value="" size="3"><a class="btn btn-success btn-xs" onclick="fill(2)">Fill</a></td>
@@ -2263,7 +2266,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			$readonly = '';
 			$dropdown_read = '';
 		}
-
+		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
 		if(!in_array($authorized,$has_permission))
 		{
 			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
@@ -2913,59 +2916,112 @@ function fill(x,t,e)
 		var y=document.getElementById('fill_c_length').value;
 	
 		var name="ele_c_length[";
+		var name2="qty_allocated[";
 		for (var i=0; i < tot_elements; i++)
 		{
-			document.input[name+i+"]"].value=y;
-			document.input["ele_check["+i+"]"].value=1;
-			document.input[name+i+"]"].style.background="#FFCCFF";
-
-			var ele_t_length = document.getElementById('ele_t_length'+i).value;
-			var result1 = parseInt(y) - parseInt(ele_t_length);
-			if(isNaN(result1))
+			if(document.input[name2+i+"]"].value > 0)
 			{
-				result1=0;
+
 			}
-			document.getElementById('subt'+i).value = result1;
+			else
+			{
+				document.input[name+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name+i+"]"].style.background="#FFCCFF";
+
+				var ele_t_length = document.getElementById('ele_t_length'+i).value;
+				var result1 = parseInt(y) - parseInt(ele_t_length);
+				if(isNaN(result1))
+				{
+					result1=0;
+				}
+				document.getElementById('subt'+i).value = result1;
+			}
+			
 		}
 	}
 	if(x==2)
 	{
 		var y=document.getElementById('fill_t_width').value;
 		var name="ele_t_width[";
+		var name2="qty_allocated[";
 		for (var i=0; i < tot_elements; i++)
 		{
-			document.input[name+i+"]"].value=y;
-			document.input["ele_check["+i+"]"].value=1;
-			document.input[name+i+"]"].style.background="#FFCCFF";
-
-			var ele_c_width = document.getElementById('ele_c_width'+i).value;
-			var result1 = parseInt(ele_c_width) - parseInt(y);
-			if(isNaN(result1))
+			if(document.input[name2+i+"]"].value > 0)
 			{
-				result1=0;
+
 			}
-			document.getElementById('min'+i).value = result1;
+			else
+			{
+				document.input[name+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name+i+"]"].style.background="#FFCCFF";
+
+				var ele_c_width = document.getElementById('ele_c_width'+i).value;
+				var result1 = parseInt(ele_c_width) - parseInt(y);
+				if(isNaN(result1))
+				{
+					result1=0;
+				}
+				document.getElementById('min'+i).value = result1;
+			}
 		}
 	}
 	if(x==3)
 	{
 		var y=document.getElementById('fill_c_width').value;
 		var name="ele_c_width[";
+		var name2="qty_allocated[";
 		for (var i=0; i < tot_elements; i++)
 		{
-			document.input[name+i+"]"].value=y;
-			document.input["ele_check["+i+"]"].value=1;
-			document.input[name+i+"]"].style.background="#FFCCFF";
-
-			var ele_t_width = document.getElementById('ele_t_width'+i).value;
-			var result1 = parseInt(y) - parseInt(ele_t_width);
-			if(isNaN(result1))
+			if(document.input[name2+i+"]"].value > 0)
 			{
-				result1=0;
+
 			}
-			document.getElementById('min'+i).value = result1;
+			else
+			{
+				document.input[name+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name+i+"]"].style.background="#FFCCFF";
+
+				var ele_t_width = document.getElementById('ele_t_width'+i).value;
+				var result1 = parseInt(y) - parseInt(ele_t_width);
+				if(isNaN(result1))
+				{
+					result1=0;
+				}
+				document.getElementById('min'+i).value = result1;
+			}
 		}	
-	}	
+	}
+	if(x==4)
+	{
+		var y=document.getElementById('fill_shade_grp').value;
+		var name1="ele_shade[";
+		var name2="qty_allocated[";
+
+		for (var i=0; i < tot_elements; i++)
+		{
+			if(document.input[name2+i+"]"].value > 0){
+
+			}
+			else
+			{
+				document.input[name1+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name1+i+"]"].style.background="#FFCCFF";
+			}
+		
+
+			// var fill_shade_grp = document.getElementById('ele_t_width'+i).value;
+			// var result1 = parseInt(y) - parseInt(ele_t_width);
+			// if(isNaN(result1))
+			// {
+			// 	result1=0;
+			// }
+			// document.getElementById('min'+i).value = result1;
+		}	
+	}		
 }
 
 function change_body(x,y,z)

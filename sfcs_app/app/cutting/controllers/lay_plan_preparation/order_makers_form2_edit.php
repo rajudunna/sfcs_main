@@ -358,7 +358,7 @@ else
 echo "<tr><td>Marker Efficiency</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"  id='d15' name=\"in_mkeff\" value=\"".$mkeff."\" size=\"10\" required></div></div></td></tr>";
 echo "<tr><td>Marker Version</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control alpha\"type=\"text \" required  id='d16' name=\"in_mkver\" value=\"".$mkver."\" size=\"10\" ></div> </td></tr>";
 
-echo "<tr><td>Remarks (Marker File Name): </td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control alpha\" type=\"text\"  name=\"remarks\" value=\"".$mk_remarks."\"></div></td></tr>";
+echo "<tr><td>Remarks (Marker File Name): </td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control\" id=\"remarks_id\"  type=\"text\"  name=\"remarks\" value=\"".$mk_remarks."\" onkeyup=\"validate_remarks()\"></div></td></tr>";
 echo "</table>";
 
 echo "<input type=\"hidden\" name=\"cat_ref\"  size=2 value=\"".$cat_ref."\">";
@@ -546,6 +546,15 @@ function verify_spec(t,e){
 		return false;
 	}
 }
+function validate_remarks(){
+	console.log($('#remarks_id').val());
+	var reg1 = /"/g;
+	var reg2 = /'/g;
 
+	if($('#remarks_id').val().match(reg1) || $('#remarks_id').val().match(reg2)){
+		$('#remarks_id').val('');
+	}
+	// console.log($('#remarks_id').val().match(reg) );
+}
 
 </script>
