@@ -656,15 +656,11 @@ if(isset($_POST['submit']))
 					//echo $sqlx."<br>";
 					mysqli_query( $link, $sqlx) or exit("Sql Error1.69".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				}
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-				function Redirect() {
-					location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."\";
-					}
-				</script>";
-				echo " <div class='alert alert-success alert-dismissible'>
-				<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
-				<strong>Success!</strong> Successfully Splitting Completed.
-				</div>"; 
+				
+				// echo " <div class='alert alert-success alert-dismissible'>
+				// <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+				// <strong>Success!</strong> Successfully Splitting Completed.
+				// </div>"; 
 				//echo "<h3>Try Again Later<h3>";
 				if(sizeof($pending_cat_order)>0)
 				{	
@@ -679,6 +675,11 @@ if(isset($_POST['submit']))
 				
 			}
 		}
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&color=$color&style=$style&schedule=$order_sch\";
+			}
+		</script>";
 	} 
 	else 
 	{ 		

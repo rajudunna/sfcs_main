@@ -27,108 +27,117 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cono=$sql_row['co_no']; //co
 	$color_code=$sql_row['color_code']; //Color Code
 	$orderno=$sql_row['order_no']; 
-			$o_s01=$sql_row['order_s_s01'];
-$o_s02=$sql_row['order_s_s02'];
-$o_s03=$sql_row['order_s_s03'];
-$o_s04=$sql_row['order_s_s04'];
-$o_s05=$sql_row['order_s_s05'];
-$o_s06=$sql_row['order_s_s06'];
-$o_s07=$sql_row['order_s_s07'];
-$o_s08=$sql_row['order_s_s08'];
-$o_s09=$sql_row['order_s_s09'];
-$o_s10=$sql_row['order_s_s10'];
-$o_s11=$sql_row['order_s_s11'];
-$o_s12=$sql_row['order_s_s12'];
-$o_s13=$sql_row['order_s_s13'];
-$o_s14=$sql_row['order_s_s14'];
-$o_s15=$sql_row['order_s_s15'];
-$o_s16=$sql_row['order_s_s16'];
-$o_s17=$sql_row['order_s_s17'];
-$o_s18=$sql_row['order_s_s18'];
-$o_s19=$sql_row['order_s_s19'];
-$o_s20=$sql_row['order_s_s20'];
-$o_s21=$sql_row['order_s_s21'];
-$o_s22=$sql_row['order_s_s22'];
-$o_s23=$sql_row['order_s_s23'];
-$o_s24=$sql_row['order_s_s24'];
-$o_s25=$sql_row['order_s_s25'];
-$o_s26=$sql_row['order_s_s26'];
-$o_s27=$sql_row['order_s_s27'];
-$o_s28=$sql_row['order_s_s28'];
-$o_s29=$sql_row['order_s_s29'];
-$o_s30=$sql_row['order_s_s30'];
-$o_s31=$sql_row['order_s_s31'];
-$o_s32=$sql_row['order_s_s32'];
-$o_s33=$sql_row['order_s_s33'];
-$o_s34=$sql_row['order_s_s34'];
-$o_s35=$sql_row['order_s_s35'];
-$o_s36=$sql_row['order_s_s36'];
-$o_s37=$sql_row['order_s_s37'];
-$o_s38=$sql_row['order_s_s38'];
-$o_s39=$sql_row['order_s_s39'];
-$o_s40=$sql_row['order_s_s40'];
-$o_s41=$sql_row['order_s_s41'];
-$o_s42=$sql_row['order_s_s42'];
-$o_s43=$sql_row['order_s_s43'];
-$o_s44=$sql_row['order_s_s44'];
-$o_s45=$sql_row['order_s_s45'];
-$o_s46=$sql_row['order_s_s46'];
-$o_s47=$sql_row['order_s_s47'];
-$o_s48=$sql_row['order_s_s48'];
-$o_s49=$sql_row['order_s_s49'];
-$o_s50=$sql_row['order_s_s50'];
+	foreach($sizes_array as $key => $size_num){
+		$o_sizes[$size_num] = $sql_row['order_s_'.$size_num];
+		$all_sizes[$size_num] = $sql_row['title_size_'.$size_num];
+	}
+	// echo $o_s01;
+	$order_total = array_sum($o_sizes);
+	$o_sizes = array_filter($o_sizes);
+	$all_sizes = array_filter($all_sizes);
+
+// 	$o_s01=$sql_row['order_s_s01'];
+// $o_s02=$sql_row['order_s_s02'];
+// $o_s03=$sql_row['order_s_s03'];
+// $o_s04=$sql_row['order_s_s04'];
+// $o_s05=$sql_row['order_s_s05'];
+// $o_s06=$sql_row['order_s_s06'];
+// $o_s07=$sql_row['order_s_s07'];
+// $o_s08=$sql_row['order_s_s08'];
+// $o_s09=$sql_row['order_s_s09'];
+// $o_s10=$sql_row['order_s_s10'];
+// $o_s11=$sql_row['order_s_s11'];
+// $o_s12=$sql_row['order_s_s12'];
+// $o_s13=$sql_row['order_s_s13'];
+// $o_s14=$sql_row['order_s_s14'];
+// $o_s15=$sql_row['order_s_s15'];
+// $o_s16=$sql_row['order_s_s16'];
+// $o_s17=$sql_row['order_s_s17'];
+// $o_s18=$sql_row['order_s_s18'];
+// $o_s19=$sql_row['order_s_s19'];
+// $o_s20=$sql_row['order_s_s20'];
+// $o_s21=$sql_row['order_s_s21'];
+// $o_s22=$sql_row['order_s_s22'];
+// $o_s23=$sql_row['order_s_s23'];
+// $o_s24=$sql_row['order_s_s24'];
+// $o_s25=$sql_row['order_s_s25'];
+// $o_s26=$sql_row['order_s_s26'];
+// $o_s27=$sql_row['order_s_s27'];
+// $o_s28=$sql_row['order_s_s28'];
+// $o_s29=$sql_row['order_s_s29'];
+// $o_s30=$sql_row['order_s_s30'];
+// $o_s31=$sql_row['order_s_s31'];
+// $o_s32=$sql_row['order_s_s32'];
+// $o_s33=$sql_row['order_s_s33'];
+// $o_s34=$sql_row['order_s_s34'];
+// $o_s35=$sql_row['order_s_s35'];
+// $o_s36=$sql_row['order_s_s36'];
+// $o_s37=$sql_row['order_s_s37'];
+// $o_s38=$sql_row['order_s_s38'];
+// $o_s39=$sql_row['order_s_s39'];
+// $o_s40=$sql_row['order_s_s40'];
+// $o_s41=$sql_row['order_s_s41'];
+// $o_s42=$sql_row['order_s_s42'];
+// $o_s43=$sql_row['order_s_s43'];
+// $o_s44=$sql_row['order_s_s44'];
+// $o_s45=$sql_row['order_s_s45'];
+// $o_s46=$sql_row['order_s_s46'];
+// $o_s47=$sql_row['order_s_s47'];
+// $o_s48=$sql_row['order_s_s48'];
+// $o_s49=$sql_row['order_s_s49'];
+// $o_s50=$sql_row['order_s_s50'];
 
 			
-			$size01 = $sql_row['title_size_s01'];
-			$size02 = $sql_row['title_size_s02'];
-			$size03 = $sql_row['title_size_s03'];
-			$size04 = $sql_row['title_size_s04'];
-			$size05 = $sql_row['title_size_s05'];
-			$size06 = $sql_row['title_size_s06'];
-			$size07 = $sql_row['title_size_s07'];
-			$size08 = $sql_row['title_size_s08'];
-			$size09 = $sql_row['title_size_s09'];
-			$size10 = $sql_row['title_size_s10'];
-			$size11 = $sql_row['title_size_s11'];
-			$size12 = $sql_row['title_size_s12'];
-			$size13 = $sql_row['title_size_s13'];
-			$size14 = $sql_row['title_size_s14'];
-			$size15 = $sql_row['title_size_s15'];
-			$size16 = $sql_row['title_size_s16'];
-			$size17 = $sql_row['title_size_s17'];
-			$size18 = $sql_row['title_size_s18'];
-			$size19 = $sql_row['title_size_s19'];
-			$size20 = $sql_row['title_size_s20'];
-			$size21 = $sql_row['title_size_s21'];
-			$size22 = $sql_row['title_size_s22'];
-			$size23 = $sql_row['title_size_s23'];
-			$size24 = $sql_row['title_size_s24'];
-			$size25 = $sql_row['title_size_s25'];
-			$size26 = $sql_row['title_size_s26'];
-			$size27 = $sql_row['title_size_s27'];
-			$size28 = $sql_row['title_size_s28'];
-			$size29 = $sql_row['title_size_s29'];
-			$size30 = $sql_row['title_size_s30'];
-			$size31 = $sql_row['title_size_s31'];
-			$size32 = $sql_row['title_size_s32'];
-			$size33 = $sql_row['title_size_s33'];
-			$size34 = $sql_row['title_size_s34'];
-			$size35 = $sql_row['title_size_s35'];
-			$size36 = $sql_row['title_size_s36'];
-			$size37 = $sql_row['title_size_s37'];
-			$size38 = $sql_row['title_size_s38'];
-			$size39 = $sql_row['title_size_s39'];
-			$size40 = $sql_row['title_size_s40'];
-			$size41 = $sql_row['title_size_s41'];
-			$size42 = $sql_row['title_size_s42'];
-			$size43 = $sql_row['title_size_s43'];
-			$size44 = $sql_row['title_size_s44'];
-			$size45 = $sql_row['title_size_s45'];
-			$size46 = $sql_row['title_size_s46'];
-			$size47 = $sql_row['title_size_s47'];
-			$size48 = $sql_row['title_size_s48'];
-			$size49 = $sql_row['title_size_s49'];
-			$size50 = $sql_row['title_size_s50'];
+// 			$size01 = $sql_row['title_size_s01'];
+// 			$size02 = $sql_row['title_size_s02'];
+// 			$size03 = $sql_row['title_size_s03'];
+// 			$size04 = $sql_row['title_size_s04'];
+// 			$size05 = $sql_row['title_size_s05'];
+// 			$size06 = $sql_row['title_size_s06'];
+// 			$size07 = $sql_row['title_size_s07'];
+// 			$size08 = $sql_row['title_size_s08'];
+// 			$size09 = $sql_row['title_size_s09'];
+// 			$size10 = $sql_row['title_size_s10'];
+// 			$size11 = $sql_row['title_size_s11'];
+// 			$size12 = $sql_row['title_size_s12'];
+// 			$size13 = $sql_row['title_size_s13'];
+// 			$size14 = $sql_row['title_size_s14'];
+// 			$size15 = $sql_row['title_size_s15'];
+// 			$size16 = $sql_row['title_size_s16'];
+// 			$size17 = $sql_row['title_size_s17'];
+// 			$size18 = $sql_row['title_size_s18'];
+// 			$size19 = $sql_row['title_size_s19'];
+// 			$size20 = $sql_row['title_size_s20'];
+// 			$size21 = $sql_row['title_size_s21'];
+// 			$size22 = $sql_row['title_size_s22'];
+// 			$size23 = $sql_row['title_size_s23'];
+// 			$size24 = $sql_row['title_size_s24'];
+// 			$size25 = $sql_row['title_size_s25'];
+// 			$size26 = $sql_row['title_size_s26'];
+// 			$size27 = $sql_row['title_size_s27'];
+// 			$size28 = $sql_row['title_size_s28'];
+// 			$size29 = $sql_row['title_size_s29'];
+// 			$size30 = $sql_row['title_size_s30'];
+// 			$size31 = $sql_row['title_size_s31'];
+// 			$size32 = $sql_row['title_size_s32'];
+// 			$size33 = $sql_row['title_size_s33'];
+// 			$size34 = $sql_row['title_size_s34'];
+// 			$size35 = $sql_row['title_size_s35'];
+// 			$size36 = $sql_row['title_size_s36'];
+// 			$size37 = $sql_row['title_size_s37'];
+// 			$size38 = $sql_row['title_size_s38'];
+// 			$size39 = $sql_row['title_size_s39'];
+// 			$size40 = $sql_row['title_size_s40'];
+// 			$size41 = $sql_row['title_size_s41'];
+// 			$size42 = $sql_row['title_size_s42'];
+// 			$size43 = $sql_row['title_size_s43'];
+// 			$size44 = $sql_row['title_size_s44'];
+// 			$size45 = $sql_row['title_size_s45'];
+// 			$size46 = $sql_row['title_size_s46'];
+// 			$size47 = $sql_row['title_size_s47'];
+// 			$size48 = $sql_row['title_size_s48'];
+// 			$size49 = $sql_row['title_size_s49'];
+// 			$size50 = $sql_row['title_size_s50'];
 			
 			$flag = $sql_row['title_flag'];
 			if($flag == 0)
@@ -184,7 +193,7 @@ $o_s50=$sql_row['order_s_s50'];
 				$size49 = '49';
 				$size50 = '50';
 			}
-$order_total=$o_s01+$o_s02+$o_s03+$o_s04+$o_s05+$o_s06+$o_s07+$o_s08+$o_s09+$o_s10+$o_s11+$o_s12+$o_s13+$o_s14+$o_s15+$o_s16+$o_s17+$o_s18+$o_s19+$o_s20+$o_s21+$o_s22+$o_s23+$o_s24+$o_s25+$o_s26+$o_s27+$o_s28+$o_s29+$o_s30+$o_s31+$o_s32+$o_s33+$o_s34+$o_s35+$o_s36+$o_s37+$o_s38+$o_s39+$o_s40+$o_s41+$o_s42+$o_s43+$o_s44+$o_s45+$o_s46+$o_s47+$o_s48+$o_s49+$o_s50;
+// $order_total=$o_s01+$o_s02+$o_s03+$o_s04+$o_s05+$o_s06+$o_s07+$o_s08+$o_s09+$o_s10+$o_s11+$o_s12+$o_s13+$o_s14+$o_s15+$o_s16+$o_s17+$o_s18+$o_s19+$o_s20+$o_s21+$o_s22+$o_s23+$o_s24+$o_s25+$o_s26+$o_s27+$o_s28+$o_s29+$o_s30+$o_s31+$o_s32+$o_s33+$o_s34+$o_s35+$o_s36+$o_s37+$o_s38+$o_s39+$o_s40+$o_s41+$o_s42+$o_s43+$o_s44+$o_s45+$o_s46+$o_s47+$o_s48+$o_s49+$o_s50;
 }
 
 /* $sql="select * from plan_dashboard where doc_no=$doc_id";
@@ -248,113 +257,15 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-$a_s01=$sql_row['a_s01'];
-$a_s02=$sql_row['a_s02'];
-$a_s03=$sql_row['a_s03'];
-$a_s04=$sql_row['a_s04'];
-$a_s05=$sql_row['a_s05'];
-$a_s06=$sql_row['a_s06'];
-$a_s07=$sql_row['a_s07'];
-$a_s08=$sql_row['a_s08'];
-$a_s09=$sql_row['a_s09'];
-$a_s10=$sql_row['a_s10'];
-$a_s11=$sql_row['a_s11'];
-$a_s12=$sql_row['a_s12'];
-$a_s13=$sql_row['a_s13'];
-$a_s14=$sql_row['a_s14'];
-$a_s15=$sql_row['a_s15'];
-$a_s16=$sql_row['a_s16'];
-$a_s17=$sql_row['a_s17'];
-$a_s18=$sql_row['a_s18'];
-$a_s19=$sql_row['a_s19'];
-$a_s20=$sql_row['a_s20'];
-$a_s21=$sql_row['a_s21'];
-$a_s22=$sql_row['a_s22'];
-$a_s23=$sql_row['a_s23'];
-$a_s24=$sql_row['a_s24'];
-$a_s25=$sql_row['a_s25'];
-$a_s26=$sql_row['a_s26'];
-$a_s27=$sql_row['a_s27'];
-$a_s28=$sql_row['a_s28'];
-$a_s29=$sql_row['a_s29'];
-$a_s30=$sql_row['a_s30'];
-$a_s31=$sql_row['a_s31'];
-$a_s32=$sql_row['a_s32'];
-$a_s33=$sql_row['a_s33'];
-$a_s34=$sql_row['a_s34'];
-$a_s35=$sql_row['a_s35'];
-$a_s36=$sql_row['a_s36'];
-$a_s37=$sql_row['a_s37'];
-$a_s38=$sql_row['a_s38'];
-$a_s39=$sql_row['a_s39'];
-$a_s40=$sql_row['a_s40'];
-$a_s41=$sql_row['a_s41'];
-$a_s42=$sql_row['a_s42'];
-$a_s43=$sql_row['a_s43'];
-$a_s44=$sql_row['a_s44'];
-$a_s45=$sql_row['a_s45'];
-$a_s46=$sql_row['a_s46'];
-$a_s47=$sql_row['a_s47'];
-$a_s48=$sql_row['a_s48'];
-$a_s49=$sql_row['a_s49'];
-$a_s50=$sql_row['a_s50'];
 
+	foreach($sizes_array as $key => $size_num){
+		$a_sizes[$size_num] = $sql_row['a_'.$size_num];
+		$p_sizes[$size_num] = $sql_row['p_'.$size_num];
+	}
 
-
-$p_s01=$sql_row['p_s01'];
-$p_s02=$sql_row['p_s02'];
-$p_s03=$sql_row['p_s03'];
-$p_s04=$sql_row['p_s04'];
-$p_s05=$sql_row['p_s05'];
-$p_s06=$sql_row['p_s06'];
-$p_s07=$sql_row['p_s07'];
-$p_s08=$sql_row['p_s08'];
-$p_s09=$sql_row['p_s09'];
-$p_s10=$sql_row['p_s10'];
-$p_s11=$sql_row['p_s11'];
-$p_s12=$sql_row['p_s12'];
-$p_s13=$sql_row['p_s13'];
-$p_s14=$sql_row['p_s14'];
-$p_s15=$sql_row['p_s15'];
-$p_s16=$sql_row['p_s16'];
-$p_s17=$sql_row['p_s17'];
-$p_s18=$sql_row['p_s18'];
-$p_s19=$sql_row['p_s19'];
-$p_s20=$sql_row['p_s20'];
-$p_s21=$sql_row['p_s21'];
-$p_s22=$sql_row['p_s22'];
-$p_s23=$sql_row['p_s23'];
-$p_s24=$sql_row['p_s24'];
-$p_s25=$sql_row['p_s25'];
-$p_s26=$sql_row['p_s26'];
-$p_s27=$sql_row['p_s27'];
-$p_s28=$sql_row['p_s28'];
-$p_s29=$sql_row['p_s29'];
-$p_s30=$sql_row['p_s30'];
-$p_s31=$sql_row['p_s31'];
-$p_s32=$sql_row['p_s32'];
-$p_s33=$sql_row['p_s33'];
-$p_s34=$sql_row['p_s34'];
-$p_s35=$sql_row['p_s35'];
-$p_s36=$sql_row['p_s36'];
-$p_s37=$sql_row['p_s37'];
-$p_s38=$sql_row['p_s38'];
-$p_s39=$sql_row['p_s39'];
-$p_s40=$sql_row['p_s40'];
-$p_s41=$sql_row['p_s41'];
-$p_s42=$sql_row['p_s42'];
-$p_s43=$sql_row['p_s43'];
-$p_s44=$sql_row['p_s44'];
-$p_s45=$sql_row['p_s45'];
-$p_s46=$sql_row['p_s46'];
-$p_s47=$sql_row['p_s47'];
-$p_s48=$sql_row['p_s48'];
-$p_s49=$sql_row['p_s49'];
-$p_s50=$sql_row['p_s50'];
-
-
-
-	$a_ratio_tot=$a_s01+$a_s02+$a_s03+$a_s04+$a_s05+$a_s06+$a_s07+$a_s08+$a_s09+$a_s10+$a_s11+$a_s12+$a_s13+$a_s14+$a_s15+$a_s16+$a_s17+$a_s18+$a_s19+$a_s20+$a_s21+$a_s22+$a_s23+$a_s24+$a_s25+$a_s26+$a_s27+$a_s28+$a_s29+$a_s30+$a_s31+$a_s32+$a_s33+$a_s34+$a_s35+$a_s36+$a_s37+$a_s38+$a_s39+$a_s40+$a_s41+$a_s42+$a_s43+$a_s44+$a_s45+$a_s46+$a_s47+$a_s48+$a_s49+$a_s50;
+	$a_ratio_tot= array_sum($a_sizes);
+	$a_sizes= array_filter($a_sizes);
+	$p_sizes= array_filter($p_sizes);
 	$cutno=$sql_row['acutno'];
 	$plies=$sql_row['p_plies']; //20110911
 	$docketno=$sql_row['doc_no'];
@@ -363,6 +274,7 @@ $p_s50=$sql_row['p_s50'];
 	$remarks=$sql_row['remarks'];
 	$plan_module=$sql_row['plan_module'];
 	$lot_ref=$sql_row['plan_lot_ref'];
+	$print_status = $sql_row['print_status'];
 }
 
 	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
@@ -372,6 +284,7 @@ $p_s50=$sql_row['p_s50'];
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$mklength=$sql_row2['mklength'];
+		$mk_remarks = $sql_row2['remarks'];
 	}
 //chr($color_code).leading_zeros($cutno, 3)	
 
@@ -2084,7 +1997,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status!=NULL) {echo "DUPLICATE"; } else {echo "ORIGINAL";}?></strong></td>
+  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=="0000-00-00" || $print_status == '') {echo "ORIGINAL"; } else {echo "DUPLICATE";}?></strong></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -2137,8 +2050,10 @@ tags will be replaced.-->
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl904118>Sch No :</td>
-  <td colspan=4 class=xl954118 style='border-right:.5pt solid black'><?php echo $delivery.chr($color_code); ?></td>
-  <td class=xl954118></td>
+  <td colspan=2 class=xl954118 style='border-right:.5pt solid black'><?php echo $delivery.chr($color_code); ?></td>
+  <td colspan=1 class=xl904118>Consumption :</td>
+  <td colspan=1 class=xl954118 style='border-right:1px solid'><?php echo $body_yy; ?></td>
+  <td class=xl954118></td>	
   <td colspan=2 class=xl904118>Fab Descrip :</td>
   <td colspan=7 class=xl954118 style='border-right:.5pt solid black'><?php echo $fab_des; ?></td>
   <td class=xl654118></td>
@@ -2148,8 +2063,8 @@ tags will be replaced.-->
   <td class=xl904118>Color :</td>
   <td colspan=4 class=xl954118 style='border-right:.5pt solid black'><?php echo $color." / ".$col_des; ?></td>
   <td class=xl954118></td>
-  <td colspan=2 class=xl904118>Consumption :</td>
-  <td colspan=4 class=xl954118><?php echo $body_yy; ?></td>
+  <td colspan=2 class=xl904118>MK Name :</td>
+  <td colspan=4 class=xl954118><?php echo $mk_remarks; ?></td>	
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl1004118>&nbsp;</td>
@@ -2207,174 +2122,36 @@ tags will be replaced.-->
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118>Size</td>
- 
-<td class=xl694118><?php echo $size01; ?></td>
-<td class=xl714118><?php echo $size02; ?></td>
-<td class=xl714118><?php echo $size03; ?></td>
-<td class=xl714118><?php echo $size04; ?></td>
-<td class=xl714118><?php echo $size05; ?></td>
-<td class=xl714118><?php echo $size06; ?></td>
-<td class=xl714118><?php echo $size07; ?></td>
-<td class=xl714118><?php echo $size08; ?></td>
-<td class=xl714118><?php echo $size09; ?></td>
-<td class=xl714118><?php echo $size10; ?></td>
-<td class=xl714118><?php echo $size11; ?></td>
-<td class=xl714118><?php echo $size12; ?></td>
-<td class=xl714118><?php echo $size13; ?></td>
-<td class=xl714118><?php echo $size14; ?></td>
-<td class=xl714118><?php echo $size15; ?></td>
-<td class=xl714118><?php echo $size16; ?></td>
-<td class=xl714118><?php echo $size17; ?></td>
-<td class=xl714118><?php echo $size18; ?></td>
-<td class=xl714118><?php echo $size19; ?></td>
-<td class=xl714118><?php echo $size20; ?></td>
-<td class=xl714118><?php echo $size21; ?></td>
-<td class=xl714118><?php echo $size22; ?></td>
-<td class=xl714118><?php echo $size23; ?></td>
-<td class=xl714118><?php echo $size24; ?></td>
-<td class=xl714118><?php echo $size25; ?></td>
-<td class=xl714118><?php echo $size26; ?></td>
-<td class=xl714118><?php echo $size27; ?></td>
-<td class=xl714118><?php echo $size28; ?></td>
-<td class=xl714118><?php echo $size29; ?></td>
-<td class=xl714118><?php echo $size30; ?></td>
-<td class=xl714118><?php echo $size31; ?></td>
-<td class=xl714118><?php echo $size32; ?></td>
-<td class=xl714118><?php echo $size33; ?></td>
-<td class=xl714118><?php echo $size34; ?></td>
-<td class=xl714118><?php echo $size35; ?></td>
-<td class=xl714118><?php echo $size36; ?></td>
-<td class=xl714118><?php echo $size37; ?></td>
-<td class=xl714118><?php echo $size38; ?></td>
-<td class=xl714118><?php echo $size39; ?></td>
-<td class=xl714118><?php echo $size40; ?></td>
-<td class=xl714118><?php echo $size41; ?></td>
-<td class=xl714118><?php echo $size42; ?></td>
-<td class=xl714118><?php echo $size43; ?></td>
-<td class=xl714118><?php echo $size44; ?></td>
-<td class=xl714118><?php echo $size45; ?></td>
-<td class=xl714118><?php echo $size46; ?></td>
-<td class=xl714118><?php echo $size47; ?></td>
-<td class=xl714118><?php echo $size48; ?></td>
-<td class=xl714118><?php echo $size49; ?></td>
-<td class=xl714118><?php echo $size50; ?></td>
-
+<?php
+	foreach ($all_sizes as $size_key => $size_value) {
+		echo "<td class=xl694118>".$size_value."</td>";
+	}
+?>
   <td class=xl714118  >Total</td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118>Ratio</td>
-  
- <td class=xl734118><?php echo $a_s01; ?></td>
- <td class=xl754118><?php echo $a_s02; ?></td>
- <td class=xl754118><?php echo $a_s03; ?></td>
- <td class=xl754118><?php echo $a_s04; ?></td>
- <td class=xl754118><?php echo $a_s05; ?></td>
- <td class=xl754118><?php echo $a_s06; ?></td>
- <td class=xl754118><?php echo $a_s07; ?></td>
- <td class=xl754118><?php echo $a_s08; ?></td>
- <td class=xl754118><?php echo $a_s09; ?></td>
- <td class=xl754118><?php echo $a_s10; ?></td>
- <td class=xl754118><?php echo $a_s11; ?></td>
- <td class=xl754118><?php echo $a_s12; ?></td>
- <td class=xl754118><?php echo $a_s13; ?></td>
- <td class=xl754118><?php echo $a_s14; ?></td>
- <td class=xl754118><?php echo $a_s15; ?></td>
- <td class=xl754118><?php echo $a_s16; ?></td>
- <td class=xl754118><?php echo $a_s17; ?></td>
- <td class=xl754118><?php echo $a_s18; ?></td>
- <td class=xl754118><?php echo $a_s19; ?></td>
- <td class=xl754118><?php echo $a_s20; ?></td>
- <td class=xl754118><?php echo $a_s21; ?></td>
- <td class=xl754118><?php echo $a_s22; ?></td>
- <td class=xl754118><?php echo $a_s23; ?></td>
- <td class=xl754118><?php echo $a_s24; ?></td>
- <td class=xl754118><?php echo $a_s25; ?></td>
- <td class=xl754118><?php echo $a_s26; ?></td>
- <td class=xl754118><?php echo $a_s27; ?></td>
- <td class=xl754118><?php echo $a_s28; ?></td>
- <td class=xl754118><?php echo $a_s29; ?></td>
- <td class=xl754118><?php echo $a_s30; ?></td>
- <td class=xl754118><?php echo $a_s31; ?></td>
- <td class=xl754118><?php echo $a_s32; ?></td>
- <td class=xl754118><?php echo $a_s33; ?></td>
- <td class=xl754118><?php echo $a_s34; ?></td>
- <td class=xl754118><?php echo $a_s35; ?></td>
- <td class=xl754118><?php echo $a_s36; ?></td>
- <td class=xl754118><?php echo $a_s37; ?></td>
- <td class=xl754118><?php echo $a_s38; ?></td>
- <td class=xl754118><?php echo $a_s39; ?></td>
- <td class=xl754118><?php echo $a_s40; ?></td>
- <td class=xl754118><?php echo $a_s41; ?></td>
- <td class=xl754118><?php echo $a_s42; ?></td>
- <td class=xl754118><?php echo $a_s43; ?></td>
- <td class=xl754118><?php echo $a_s44; ?></td>
- <td class=xl754118><?php echo $a_s45; ?></td>
- <td class=xl754118><?php echo $a_s46; ?></td>
- <td class=xl754118><?php echo $a_s47; ?></td>
- <td class=xl754118><?php echo $a_s48; ?></td>
- <td class=xl754118><?php echo $a_s49; ?></td>
- <td class=xl754118><?php echo $a_s50; ?></td>
-
+<?php
+	foreach ($a_sizes as $a_size_key => $a_size_value) {
+		echo "<td class=xl734118>".$a_size_value."</td>";
+	}
+?>
   <td class=xl754118><?php echo $a_ratio_tot; ?></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118>Quantity</td>
- 
- <td class=xl734118><?php echo ($a_s01*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s02*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s03*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s04*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s05*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s06*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s07*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s08*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s09*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s10*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s11*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s12*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s13*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s14*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s15*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s16*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s17*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s18*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s19*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s20*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s21*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s22*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s23*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s24*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s25*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s26*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s27*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s28*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s29*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s30*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s31*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s32*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s33*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s34*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s35*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s36*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s37*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s38*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s39*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s40*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s41*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s42*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s43*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s44*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s45*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s46*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s47*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s48*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s49*$plies);  ?></td>
- <td class=xl754118><?php echo ($a_s50*$plies);  ?></td>
-
+<?php
+	$excess_data = '';
+	foreach ($a_sizes as $a_size_key => $a_size_value) {
+		$sum_of_a_p_sizes[] = ($a_size_value*$plies)-$p_sizes[$a_size_key];
+		echo "<td class=xl734118>".$a_size_value*$plies."</td>";
+		$excess_data .= "<td class=xl734118 style='border:.5pt solid windowtext;'>".(($a_size_value*$plies)-$p_sizes[$a_size_key])."</td>";
+	}
+?>
   <td class=xl754118><?php echo ($a_ratio_tot*$plies); ?></td>
   <td class=xl654118></td>
  </tr>
@@ -2401,58 +2178,10 @@ tags will be replaced.-->
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118 style="border:.5pt solid windowtext;">Excess</td>
- <td class=xl734118 style="border:.5pt solid windowtext;"><?php echo ($a_s01*$plies)-$p_s01; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s02*$plies)-$p_s02; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s03*$plies)-$p_s03; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s04*$plies)-$p_s04; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s05*$plies)-$p_s05; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s06*$plies)-$p_s06; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s07*$plies)-$p_s07; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s08*$plies)-$p_s08; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s09*$plies)-$p_s09; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s10*$plies)-$p_s10; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s11*$plies)-$p_s11; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s12*$plies)-$p_s12; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s13*$plies)-$p_s13; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s14*$plies)-$p_s14; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s15*$plies)-$p_s15; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s16*$plies)-$p_s16; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s17*$plies)-$p_s17; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s18*$plies)-$p_s18; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s19*$plies)-$p_s19; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s20*$plies)-$p_s20; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s21*$plies)-$p_s21; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s22*$plies)-$p_s22; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s23*$plies)-$p_s23; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s24*$plies)-$p_s24; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s25*$plies)-$p_s25; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s26*$plies)-$p_s26; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s27*$plies)-$p_s27; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s28*$plies)-$p_s28; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s29*$plies)-$p_s29; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s30*$plies)-$p_s30; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s31*$plies)-$p_s31; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s32*$plies)-$p_s32; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s33*$plies)-$p_s33; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s34*$plies)-$p_s34; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s35*$plies)-$p_s35; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s36*$plies)-$p_s36; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s37*$plies)-$p_s37; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s38*$plies)-$p_s38; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s39*$plies)-$p_s39; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s40*$plies)-$p_s40; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s41*$plies)-$p_s41; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s42*$plies)-$p_s42; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s43*$plies)-$p_s43; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s44*$plies)-$p_s44; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s45*$plies)-$p_s45; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s46*$plies)-$p_s46; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s47*$plies)-$p_s47; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s48*$plies)-$p_s48; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s49*$plies)-$p_s49; ?></td>
- <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ($a_s50*$plies)-$p_s50; ?></td>
-
-  <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo ((($a_s01*$plies)-$p_s01)+(($a_s02*$plies)-$p_s02)+(($a_s03*$plies)-$p_s03)+(($a_s04*$plies)-$p_s04)+(($a_s05*$plies)-$p_s05)+(($a_s06*$plies)-$p_s06)+(($a_s07*$plies)-$p_s07)+(($a_s08*$plies)-$p_s08)+(($a_s09*$plies)-$p_s09)+(($a_s10*$plies)-$p_s10)+(($a_s11*$plies)-$p_s11)+(($a_s12*$plies)-$p_s12)+(($a_s13*$plies)-$p_s13)+(($a_s14*$plies)-$p_s14)+(($a_s15*$plies)-$p_s15)+(($a_s16*$plies)-$p_s16)+(($a_s17*$plies)-$p_s17)+(($a_s18*$plies)-$p_s18)+(($a_s19*$plies)-$p_s19)+(($a_s20*$plies)-$p_s20)+(($a_s21*$plies)-$p_s21)+(($a_s22*$plies)-$p_s22)+(($a_s23*$plies)-$p_s23)+(($a_s24*$plies)-$p_s24)+(($a_s25*$plies)-$p_s25)+(($a_s26*$plies)-$p_s26)+(($a_s27*$plies)-$p_s27)+(($a_s28*$plies)-$p_s28)+(($a_s29*$plies)-$p_s29)+(($a_s30*$plies)-$p_s30)+(($a_s31*$plies)-$p_s31)+(($a_s32*$plies)-$p_s32)+(($a_s33*$plies)-$p_s33)+(($a_s34*$plies)-$p_s34)+(($a_s35*$plies)-$p_s35)+(($a_s36*$plies)-$p_s36)+(($a_s37*$plies)-$p_s37)+(($a_s38*$plies)-$p_s38)+(($a_s39*$plies)-$p_s39)+(($a_s40*$plies)-$p_s40)+(($a_s41*$plies)-$p_s41)+(($a_s42*$plies)-$p_s42)+(($a_s43*$plies)-$p_s43)+(($a_s44*$plies)-$p_s44)+(($a_s45*$plies)-$p_s45)+(($a_s46*$plies)-$p_s46)+(($a_s47*$plies)-$p_s47)+(($a_s48*$plies)-$p_s48)+(($a_s49*$plies)-$p_s49)+(($a_s50*$plies)-$p_s50)); ?></td>
+<?php
+	echo $excess_data;
+?>
+  <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo array_sum($sum_of_a_p_sizes) ?></td>
   <td class=xl654118></td>
  </tr>
  
@@ -2518,7 +2247,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><span style='mso-spacerun:yes'>�</span></td>
+  border-top:none;width:48pt'><span style='mso-spacerun:yes'></span></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
@@ -3276,11 +3005,8 @@ echo "</tr>";
 </html>
 <?php 
 
-if($print_status==NULL)
-{
-	
-	$sql="update $bai_pro3.recut_V2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-}
+	if($print_status=="0000-00-00" || $print_status == '') {
+		$sql="update $bai_pro3.recut_V2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 ?>

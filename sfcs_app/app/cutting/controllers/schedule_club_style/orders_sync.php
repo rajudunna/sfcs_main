@@ -1164,7 +1164,7 @@ bai_pro3.bai_orders_db_confirm.bts_status
   echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
   		function Redirect() {
   			sweetAlert('Splitting Completed','','success');
-  			location.href = \"".getFullURLLevel($_GET['r'], "schedule_split_bek.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+  			location.href = \"".getFullURLLevel($_GET['r'], "mix_jobs.php", "0", "N")."\";
   			}
   		</script>";
 ?>
