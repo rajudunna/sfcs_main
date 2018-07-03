@@ -104,7 +104,7 @@ while($result22=mysqli_fetch_array($sql22))
 				}
 
 				if($stat == "Active")
-				{ 
+				{
 					if($val == "")
 					{
 						echo "<th><div style=\"border-style:solid;border-width:2px;border-color:black;font-size:12px;width:28px;height:28px;background-color:white;color:black;\" title=\"$title\"><center>".$rew."</center></div></th>";
@@ -152,8 +152,8 @@ while($result22=mysqli_fetch_array($sql22))
 
 
 				$sql11=mysqli_query($GLOBALS["___mysqli_ston"], "select sum(bac_qty) from $bai_pro.bai_quality_log where bac_date=\"$dt\" and bac_no=\"$modules[$i]\" and bac_lastup between \"$dt $sta:00:00\" and \"$dt $end:00:00\"");
-				// echo "select sum(bac_qty) from $bai_pro.bai_quality_log where bac_date=\"$dt\" and bac_no=\"$modulesi]\" and bac_lastup between \"$dt $sta:00:00\" and \"$dt $end:00:00\"";
-				while($result11=mysqli_fetch_array($sql11))[$
+				// echo "select sum(bac_qty) from $bai_pro.bai_quality_log where bac_date=\"$dt\" and bac_no=\"$modules[$i]\" and bac_lastup between \"$dt $sta:00:00\" and \"$dt $end:00:00\"";
+				while($result11=mysqli_fetch_array($sql11))
 				{
 					$rew1=$result11["sum(bac_qty)"];
 				}
