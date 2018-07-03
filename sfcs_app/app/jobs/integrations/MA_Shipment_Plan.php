@@ -1,4 +1,5 @@
 <?php
+$start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 	
@@ -267,20 +268,20 @@ if($new_styles>0)
 	
 	$to  = 'rameshk@schemaxtech.com';
 	
-	if(strtolower($_SERVER['SERVER_NAME'])=="bainet")
-	{
-		$plant_name="BAI-1";
-		$to  = 'rameshk@schemaxtech.com';
-	}
+	// if(strtolower($_SERVER['SERVER_NAME'])=="bainet")
+	// {
+	// 	$plant_name="BAI-1";
+	// 	$to  = 'rameshk@schemaxtech.com';
+	// }
 
-	if(strtolower($_SERVER['SERVER_NAME'])=="bai2net")
-	{
-		$plant_name="BAI-2";
-		$to  = 'rameshk@schemaxtech.com';
-	}
+	// if(strtolower($_SERVER['SERVER_NAME'])=="bai2net")
+	// {
+	// 	$plant_name="BAI-2";
+	// 	$to  = 'rameshk@schemaxtech.com';
+	// }
 	
 	
-	$to  = 'rameshk@schemaxtech.com';
+	$to  = 'rameshk@schemaxtech.com,yateesh603@gmail.com';
 	$subject = 'New Style Additions';
 	
 	//To send HTML mail, the Content-type header must be set
@@ -291,10 +292,15 @@ if($new_styles>0)
 	$headers .= 'To: <rameshk@schemaxtech.com>;'. "\r\n";
 	$headers .= 'From: Shop Floor System Alert <ictsysalert@brandix.com>'. "\r\n";
 	
-	mail($to, $subject, $msg, $headers);
+	if(mail($to, $subject, $msg, $headers))
+	{
+		print("Mail sent Successfully")."\n";
+	}
 	
 }
 
-
+$end_timestamp = microtime(true);
+$duration = $end_timestamp - $start_timestamp;
+print("Execution took ".$duration." milliseconds.");
 ?>
-<script language="javascript"> setTimeout("CloseWindow()",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script>
+<!-- <script language="javascript"> setTimeout("CloseWindow()",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script> -->
