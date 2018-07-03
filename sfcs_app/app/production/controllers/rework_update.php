@@ -697,7 +697,7 @@ if ($_POST['submit11'])
 			$for_zero_entries=0;
 			$row_count = 0;
 			
-			$sql12="select * from $bai_pro3.ims_log where  ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date<'$sdate'";
+			$sql12="select * from $bai_pro3.ims_log where  ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate'";
 			//echo $sql12;
 			// mysqli_query($link, $sql12) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -843,8 +843,9 @@ if ($_POST['submit11'])
 		}else{
 			if(in_array($authorized,$has_permission))
 			{
-				echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
-				echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="">';
+				echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();" style="display:none">';
+				echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="" style="display:none">';
+				echo "<p>If You Want to Update Please Select Section,Module and Time</p>";
 			}
 		}
 	?>

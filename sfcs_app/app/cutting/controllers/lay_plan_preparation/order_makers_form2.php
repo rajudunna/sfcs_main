@@ -386,7 +386,7 @@ echo "<tr><td>Marker Version</td><td>:</td>
 	  <td colspan='2'><INPUT class=\"form-control alpha\" type=\"text\" name=\"in_mkver\" id='mk_ver' value=\"$patt_ver\" size=\"10\" required>
 	  </tr>";
 
-echo "<tr><td>Remarks (Marker File Name): </td><td>:</td><td colspan='2'><INPUT class=\"form-control alpha\" type=\"text\" name=\"remarks\" id='remarks' value=\"Nil\"></td></tr>";
+echo "<tr><td>Remarks (Marker File Name): </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remarks\"  id=\"remarks_id\" value=\"Nil\" onkeyup=\"validate_remarks()\"></td></tr>";
 echo "</table></div>";
 
 echo "<input class=\"form-control\" type=\"hidden\" name=\"cat_ref\"  size=2 value=\"".$cat_ref."\">";
@@ -394,7 +394,7 @@ echo "<input class=\"form-control\" type=\"hidden\" name=\"cuttable_ref\" size=2
 echo "<input class=\"form-control\" type=\"hidden\" name=\"allocate_ref\"  size=2 value=\"".$allocate_ref."\">";
 echo "</table>";
 //echo "<div class=\"col-md-offset-8\"><input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable&nbsp;&nbsp;&nbsp;";
-echo "<INPUT class=\"btn btn-sm btn-success\" onclick='return verify_null()' type = \"submit\" name = \"update\" value = \"Update\"></div>";
+echo "<INPUT class=\"btn btn-sm btn-success\" onclick='return verify_null()' type = \"submit\" id=\"create\" name = \"update\" value = \"Create\"></div>";
 echo "</form>";
 echo "</div>";
 ?> 
@@ -535,6 +535,17 @@ if($num_rows>0)
 		}
 		return true;
 	}
+	function validate_remarks(){
+	console.log($('#remarks_id').val());
+	var reg1 = /"/g;
+	var reg2 = /'/g;
+
+
+	if($('#remarks_id').val().match(reg1) || $('#remarks_id').val().match(reg2)){
+		$('#remarks_id').val('');
+	}
+	// console.log($('#remarks_id').val().match(reg) );
+}
 
 
 function verify_null(){
@@ -553,7 +564,7 @@ function verify_null(){
 		sweetAlert('Please enter valid Marker Version','','warning');
 		return false;
 	}
-	
+	document.getElementById('create').style.display="none";
 	return true;
 }
 
