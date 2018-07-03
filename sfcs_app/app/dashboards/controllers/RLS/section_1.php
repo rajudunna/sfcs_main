@@ -76,7 +76,7 @@ while($result22=mysqli_fetch_array($sql22))
 			{
 				$rew=$result1["sum(bac_qty)"];
 			}
-				//echo $rew;
+			//echo $rew;
 			if($rew == 0 && $val == 0)
 			{
 				$per=0;
@@ -86,7 +86,8 @@ while($result22=mysqli_fetch_array($sql22))
 				$per=($rew/($rew+$val))*100;
 			}
 
-			$title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schdule,80)."\n".str_pad("Output_Qty:".$val,80)."\n".str_pad("Rework_Qty:".$rew,80)."\n".str_pad("Rework % :".round($per,2),80)."\n".str_pad("Shift  :".$shift,80);
+			// $title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schdule,80)."\n".str_pad("Output_Qty:".$val,80)."\n".str_pad("Rework_Qty:".$rew,80)."\n".str_pad("Rework % :".round($per,2),80)."\n".str_pad("Shift  :".$shift,80);
+			$title=str_pad("Output_Qty:".$val,80)."\n".str_pad("Rework_Qty:".$rew,80)."\n".str_pad("Rework % :".round($per,2),80)."\n".str_pad("Shift  :".$shift,80);
 
 			$k=$k+1;
 			$l=$j+1;
@@ -201,7 +202,7 @@ while($result22=mysqli_fetch_array($sql22))
 			}
 			else
 			{
-				//$title=str_pad("Style:".$style,80).str_pad("Schedule:".$schdule,80).str_pad("Output_Qty:".$val,80).str_pad("Rework_Qty:".$rew,80).str_pad("Rework % :".round($per,2),80).str_pad("Shift :".$shift,80);;
+				// $title=str_pad("Style:".$style,80).str_pad("Schedule:".$schdule,80).str_pad("Output_Qty:".$val,80).str_pad("Rework_Qty:".$rew,80).str_pad("Rework % :".round($per,2),80).str_pad("Shift :".$shift,80);;
 
 				if($stat == "Active")
 				{
