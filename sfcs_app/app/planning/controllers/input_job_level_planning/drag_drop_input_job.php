@@ -678,14 +678,14 @@ $code_db=explode("*",$code);
 				
 				if($code_db_new[2]=="DONE")
 				{
-					$check= "#cce5ff";
+					$check= "#0c10e1";
 				}
 				else
 				{
-					$check="#cce5ff"; // red
+					$check="#0c10e1"; // red
 				}
 				
-				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check; border-color:#b8daff; color:#004085;\"><strong>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</strong></li>";
+				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check; border-color:#b8daff; color:#f6f6f6;\"><strong>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</strong></li>";
 			}
 		?>
 			
@@ -813,7 +813,7 @@ $code_db=explode("*",$code);
 							
 							if($style==$style1  and $schedule==$schedule1)
 							{
-								$id="#f2dede";
+								$id="#f02009";
 							}
 							
 							
@@ -824,7 +824,7 @@ $code_db=explode("*",$code);
 							{
 								if($style==$style1  and $schedule==$schedule1)
 								{
-									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;background-color:'.$id.'; color:#a94442;" title="'.$title.'"><strong>J'.$cut_no1."(".$style_id_new.')</strong></li>';
+									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;background-color:'.$id.'; color:#f6f6f6;" title="'.$title.'"><strong>J'.$cut_no1."(".$style_id_new.')</strong></li>';
 								}
 								else
 								{
