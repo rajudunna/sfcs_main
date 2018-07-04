@@ -399,7 +399,7 @@ if($code==1)
 			
 			}
 			$sizes_table.="<tr><td>Total QTY</td><td>".array_sum($a_s)."</td>";
-			$sizes_table.="<tr><td>MK Length</td><td><input class=\"integer\" type=\"text\" id='mklen".$jj."' name=\"mklen[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
+			$sizes_table.="<tr><td>MK Length</td><td><input class=\"float\" type=\"text\" id='mklen".$jj."' name=\"mklen[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
 			$sizes_table.="<tr><td>Plies</td><td><input class=\"integer\" type=\"text\" id='plies".$jj."' name=\"plies[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"></td></tr>";
 			$sizes_table.="</table>";
 			$jj++;
