@@ -320,11 +320,13 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 
 		
 		// echo $con;
-		if (!$tmpName || !$tmpName1 || !$tmpName2 || !$tmpName3 || !$tmpName4 || !$tmpName5) {
+		//The below line is commented by Ramani ---------------------------------------------
+		//if (!$tmpName || !$tmpName1 || !$tmpName2 || !$tmpName3 || !$tmpName4 || !$tmpName5) {
 			// echo "Please Upload All Images <br>";
-			echo "<script>sweetAlert('Please Upload All Images','','info') </script>";
+			//echo "<script>sweetAlert('Please Upload All Images','','info') </script>";
 
-		} else {
+		//} else 
+		{
 			// $fp      = fopen($tmpName, 'r');
 			// $content = fread($fp, filesize($tmpName));
 			// $content = addslashes($content);
