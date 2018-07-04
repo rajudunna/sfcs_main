@@ -1132,7 +1132,7 @@ tags will be replaced.-->
   <td class=xl6315551 width=67 style='width:50pt'></td> -->
   <td class=xl6315551 width=64 style='width:48pt'></td>
   <td class=xl6315551 width=64 style='width:48pt'></td>
-  <td class=xl6315551 width=64 style='width:48pt'><?php if($print_status!=NULL) {echo "DUPLICATE"; } else {echo "ORIGINAL";}?></td>
+  <td class=xl6315551 width=64 style='width:48pt'><?php if($print_status!=NULL) {echo "COPY"; } else {echo "COPY";}?></td>
   <td class=xl6315551 width=64 style='width:48pt'></td>
   <td class=xl6315551 width=27 style='width:20pt'></td>
  </tr>
