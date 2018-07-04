@@ -2035,7 +2035,7 @@ for($i=0;$i<sizeof($roll_det);$i++){
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>
 		<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>
-		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
+		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>				
 		</tr>";
 }
 echo "</table>";	
