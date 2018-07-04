@@ -516,7 +516,8 @@ th
 				$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error: $sql1x".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1x=mysqli_fetch_array($sql_result1x))
 				{
-					echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"manual".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
+					echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" class=\"manual doc_nos_class\"
+					name=\"manual".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
 					
 				}
 				echo "<input type=\"text\" value=\"\"  class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
