@@ -1977,44 +1977,46 @@ body{
 <style>
 
 @media print {
-@page narrow {size: 15in 11in}
-@page rotated {size: potrait}
-DIV {page: narrow}
-TABLE {page: rotated}
-#non-printable { display: none; }
-#printable { display: block; }
-#logo { display: block; }
-body { zoom:82%;}
-#ad{ display:none;}
-#leftbar{ display:none;}
-#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
+	@page narrow {size: 15in 11in}
+	@page rotated {size: potrait}
+	DIV {page: narrow}
+	TABLE {page: rotated}
+	#non-printable { display: none; }
+	#printable { display: block; }
+	#logo { display: block; }
+	body { zoom:72%;}
+	#ad{ display:none;}
+	#leftbar{ display:none;}
+	#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
 }
 </style>
 
 <script>
 function printpr()
 {
-var OLECMDID = 7;
-/* OLECMDID values:
-* 6 - print
-* 7 - print preview
-* 1 - open window
-* 4 - Save As
-*/
-var PROMPT = 1; // 2 DONTPROMPTUSER
-var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-WebBrowser1.ExecWB(OLECMDID, PROMPT);
-WebBrowser1.outerHTML = "";
+	window.print();
+	// var OLECMDID = 7;
+	// /* OLECMDID values:
+	// * 6 - print
+	// * 7 - print preview
+	// * 1 - open window
+	// * 4 - Save As
+	// */
+	// var PROMPT = 1; // 2 DONTPROMPTUSER
+	// var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
+	// document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+	// WebBrowser1.ExecWB(OLECMDID, PROMPT);
+	// WebBrowser1.outerHTML = "";
    
 }
 </script>
 
 <script src="../../common/js/jquery-1.3.2.js"></script>
 <script src="../../common/js/jquery-barcode-2.0.1.js"></script>
+
 </head>
 
-<body onload="printp();">
+<body onload="printpr();">
 
 <script language="JavaScript">
 <!--
@@ -2097,15 +2099,19 @@ tags will be replaced.-->
   <td class=xl154118 width=21 style='width:16pt'></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+
+ </tr>
+
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td colspan=6 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
-  <td colspan=6 rowspan=3 class=xl674118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td colspan=3 class=xl844118>Cutting Department</td>
+  <td colspan=3 >Cutting Department</td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -3530,3 +3536,4 @@ if($print_status=="0000-00-00" || $print_status == "")
 	
 }
 ?>
+
