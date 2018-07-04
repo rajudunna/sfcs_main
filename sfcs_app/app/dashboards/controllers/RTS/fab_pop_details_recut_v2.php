@@ -476,13 +476,14 @@ th
 				$mklength=$sql_row2['mklength'];
 			}
 			
-			$material_req=$mklength*$sql_row1['a_plies'];
+			//$material_req=$mklength*$sql_row1['a_plies'];
+			$material_req=$sql_row1['material_req'];
 			$extra=0;
 			//if(substr($style_ref,0,1)=="M") { $extra=round(($material_req*0.01),2); }
 			{ $extra=round(($material_req*0.01),2); }
 			//echo "<td>".($material_req+$extra)."</td>";
 			$temp_tot=($material_req);
-			$total+=$temp_tot;
+			$total+=round($temp_tot,2);
 			$temp_tot=0;
 			//For new implementation
 			

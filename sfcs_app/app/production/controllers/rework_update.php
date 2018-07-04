@@ -339,7 +339,7 @@ function second_box(){
 	?>
 
 	<?php 
-		$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
+		$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date=\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error7896".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -469,11 +469,7 @@ if ($_POST['submit11'])
 				
 	<?php
 
-		echo '<div class="table-responsive"><table class="table table-bordered"		style="color:black; border: 1px solid red;">';
-		echo "<tr class=\"new\"><th>Mod#</th>";
-		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Cut#</th><th>Input Job#</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th>";
-		// echo "<th>QTY</th><th>SMV</th><th>SMO</th><th>Status</th>";
-		echo "<th>Rework Qty</th><th>Remarks</th></tr>";
+		
 		
 		$toggle=0;
 		$j=1;
@@ -494,7 +490,7 @@ if ($_POST['submit11'])
 			$for_zero_entries=0;
 			$row_count = 0;
 			
-			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB')";
+			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate'";
 			//echo $sql12;
 			// mysqli_query($link, $sql12) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -506,13 +502,13 @@ if ($_POST['submit11'])
 				// $rowcount_check=1;
 				
 				//NEW
-				$sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_doc_no";
+				$sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_doc_no";
 			}
 			else
 			{
 				// echo "<tr bgcolor=\"$tr_color\" class=\"new\" onMouseover=\"this.bgColor='#DDDDDD'\" onMouseout=\"this.bgColor='$tr_color'\"><td rowspan=$sql_num_check>$module_ref</td>";
 				// $rowcount_check=1;
-				$sql="SELECT rand_track FROM $bai_pro3.ims_log_backup WHERE ims_mod_no=$module_ref AND ims_status=\"DONE\" AND rand_track>0 and (ims_qty-ims_pro_qty)=0 and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') ORDER BY ims_date DESC limit 1";
+				$sql="SELECT rand_track FROM $bai_pro3.ims_log_backup WHERE ims_mod_no=$module_ref AND ims_status=\"DONE\" AND rand_track>0 and (ims_qty-ims_pro_qty)=0 and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' ORDER BY ims_date DESC limit 1";
 				$for_zero_entries=1;
 				//echo $sql."<br/>";
 			}
@@ -528,7 +524,11 @@ if ($_POST['submit11'])
 					echo "<tr ><td rowspan=$sql_num_check>$module_ref</td>";
 					$rowcount_check=1;
 				}
-				
+				echo '<div class="table-responsive"><table class="table table-bordered"		style="color:black; border: 1px solid red;">';
+		echo "<tr class=\"new\"><th>Mod#</th>";
+		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Cut#</th><th>Input Job#</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th>";
+		// echo "<th>QTY</th><th>SMV</th><th>SMO</th><th>Status</th>";
+		echo "<th>Rework Qty</th><th>Remarks</th></tr>";
 
 				$id_count = 0;	
 				while($sql_row=mysqli_fetch_array($sql_result))
@@ -536,10 +536,10 @@ if ($_POST['submit11'])
 					$row_count++;
 					$id_count++;
 					$rand_track=$sql_row['rand_track'];
-					$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_schedule, ims_size DESC";
+					$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_schedule, ims_size DESC";
 					if($for_zero_entries==1)
 					{
-						$sql12="select * from $bai_pro3.ims_log_backup where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status=\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_schedule, ims_size DESC limit 1";
+						$sql12="select * from $bai_pro3.ims_log_backup where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status=\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_schedule, ims_size DESC limit 1";
 						//echo $sql12."<br/>";
 						
 					}

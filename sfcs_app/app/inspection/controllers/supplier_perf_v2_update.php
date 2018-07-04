@@ -158,12 +158,17 @@ if(isset($_POST['update']))
 			mysqli_query($link, $sql) or exit("Sql Error3".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 		}	
+		$url=getFullURL($_GET['r'],'supplier_perf_v2.php','N');
 		if(mysqli_num_rows($sql_result5)!= 0 ){
 		 echo "<script>sweetAlert('Success!','Successfully Updated','success');</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
+
 		}else{
-		 echo "<script>sweetAlert('Error!','Not Updated','warning');</script>";	
+		 echo "<script>sweetAlert('Error!','Not Updated','warning');
+		 window.location.href = \"$url\";</script>";
+		 	
 		}
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
+	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
 	}
 	
 
