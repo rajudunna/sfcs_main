@@ -550,7 +550,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$week_array1 = getStartAndEndDate($week_code[$i],$exfact_year[$i]);
 			unset($temp);
 			
-			$sql21="select distinct ssc_code from $bai_pro2.shipment_plan where exfact_date between \"".$week_array1["week_start"]."\" and \"".$week_array1["week_end"]."\" and style_id=\"".$style_code."\" buyer_div ='".str_replace(",","','",$buyer_div)."'";
+			$sql21="select distinct ssc_code from $bai_pro2.shipment_plan where exfact_date between \"".$week_array1["week_start"]."\" and \"".$week_array1["week_end"]."\" and style_id=\"".$style_code."\" and buyer_div ='".str_replace(",","','",$buyer_div)."'";
 			//echo "Query=".$sql21."<br>";		
 			$sql_result2=mysqli_query($link, $sql21) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -895,12 +895,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
-				$temp[]="\"".$sql_row2['ssc_code']."\"";
+				$temp[]="'".$sql_row2['ssc_code']."'";
 			}
-			
+			// $ssc_code=implode(",",$temp);
+			// echo "SSC :".$ssc_code;
 			if(sizeof($temp)>0){
-				$sql2="select sum(old_sewing_out) as \"old_sewing_out\" from $bai_pro2.style_status_summ_primary where ssc_code in (".implode(",",$temp).")";
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql12="select sum(old_sewing_out) as \"old_sewing_out\" from $bai_pro2.$style_status_summ_primary where ssc_code in 
+				(".implode(",",$temp).")";
+				//echo "Host:".var_dump($link)."</br>";
+				//echo "Qry:".$sql12;
+				
+				$sql_result2=mysqli_query($link,$sql12);
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
 					$old_sewing_out[$i]=$sql_row2['old_sewing_out'];
