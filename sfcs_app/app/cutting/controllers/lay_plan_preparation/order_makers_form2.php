@@ -394,7 +394,7 @@ echo "<input class=\"form-control\" type=\"hidden\" name=\"cuttable_ref\" size=2
 echo "<input class=\"form-control\" type=\"hidden\" name=\"allocate_ref\"  size=2 value=\"".$allocate_ref."\">";
 echo "</table>";
 //echo "<div class=\"col-md-offset-8\"><input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable&nbsp;&nbsp;&nbsp;";
-echo "<INPUT class=\"btn btn-sm btn-success btn-disabled\" onclick='return verify_null()' type = \"submit\" id=\"create\" name = \"update\" value = \"Create\"></div>";
+echo "<INPUT class=\"btn btn-sm btn-success\" onclick='return verify_null()' type = \"submit\" id=\"create\" name = \"update\" value = \"Create\"></div>";
 echo "</form>";
 echo "</div>";
 ?> 
@@ -553,7 +553,7 @@ function verify_null(){
 		sweetAlert('Please enter valid Marker Version','','warning');
 		return false;
 	}
-	document.getElementById('create').disabled=true;
+	document.getElementById('create').style.display="none";
 	return true;
 }
 
