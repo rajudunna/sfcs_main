@@ -1749,9 +1749,9 @@ WebBrowser1.outerHTML = "";
 if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 {
 
-$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no SEPARATOR ', ') as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $bai_rm_pj1.sticker_report where lot_no in ($lot_ref) and batch_no=\"".trim($lot_no)."\"";
+$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no SEPARATOR ', ') as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $bai_rm_pj1.sticker_report where lot_no in ($lot_ref) and right(lot_no,1)<> 'R' and batch_no=\"".trim($lot_no)."\"";
 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$product_group=$sql_row['product_group'];
@@ -1784,7 +1784,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select * from $bai_rm_pj1.inspection_db where batch_ref=\"".trim($lot_no)."\"";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$act_gsm=$sql_row['act_gsm'];
@@ -1817,7 +1817,7 @@ $avg_t_width=0;
 $avg_c_width=0;
 
 $sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) order by ref2+0";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1847,7 +1847,7 @@ $shade_count=sizeof($scount_temp2);
 
 
 $sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch)";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$total_rolls=$sql_row['count'];
@@ -2167,7 +2167,7 @@ $doc_db=array();
 $recut_doc_db=array();
 $qty=array();
 $sql="select cutno, round(sum(qty_issued),2) as material_req from $bai_rm_pj1.store_out where tran_tid=\"".$temp[0]."\" and length(cutno)>0 group by cutno";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
@@ -2192,7 +2192,7 @@ if($num_check>0)
 	if(sizeof($doc_db)>0)
 	{
 		$sql="select material_req,order_del_no,color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$doc_db).")";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$schedule[]=$sql_row['order_del_no'];
@@ -2203,7 +2203,7 @@ if($num_check>0)
 	if(sizeof($recut_doc_db)>0)
 	{
 		$sql="select material_req,order_del_no,color_code,acutno from $bai_pro3.order_cat_recut_doc_mk_mix where doc_no in (".implode(",",$recut_doc_db).")";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Errorg".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$schedule[]=$sql_row['order_del_no'];
