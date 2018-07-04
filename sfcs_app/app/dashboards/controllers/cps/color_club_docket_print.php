@@ -65,7 +65,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select *,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where clubbing=$clubbing and pcutno=$cut_no and category=\"$cat_title\" and order_del_no=$order_del_no and clubbing>0";
-// echo $sql;
+echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -99,7 +99,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$allocate_ref=$sql_row['allocate_ref'];
 
 }
-
+var_dump($met_req);
 $sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1764,7 +1764,7 @@ tags will be replaced.-->
 	  echo "</tr>";
   }
   
-   echo "<tr>";
+echo "<tr>";
   
   echo "<th $style_css colspan=4>Total</th>";
   //echo "<th>Color</th>";
@@ -2013,7 +2013,6 @@ echo "<tr>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Batch</td>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Shade</td>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>
-	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Length</td>
 	<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Length</td>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Length Variation</td>
@@ -2036,9 +2035,7 @@ for($i=0;$i<sizeof($roll_det);$i++){
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>
 		<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>
-		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>
-		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
-
+		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
 		</tr>";
 }
 echo "</table>";	

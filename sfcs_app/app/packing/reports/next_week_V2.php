@@ -127,8 +127,9 @@ $current_week = getFullURL($_GET['r'],'current_week_V2.php','N');
 $next_week = getFullURL($_GET['r'],'next_week_V2.php','N');
 $summary =  getFullURL($_GET['r'],'summary_v2.php','R');
 $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
+$status_update = getFullURL($_GET['r'],'status_update.php','N');
 ?>
-<form method="post" name="input" action="<?php echo $url;?>">
+<form method="post" name="input" action="<?php echo $next_week;?>">
 <center><a href="summary_v2.php&weekno=<?php echo $weeknumber; ?>" onclick="return popitup('<?php echo $summary;?>?weekno=<?php echo $weeknumber; ?>')">Summary</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $pre_week;?>">Previous Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $current_week; ?>">Current Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $next_week;?>">Next Week</a>&nbsp;&nbsp;|&nbsp;&nbsp; </center>
 <div class='row'>
 	<div class='col-md-4'>
@@ -306,7 +307,7 @@ else
 		$color=$row["color"];
 		$buyer_division=$row["buyer_division"];
 		$ex_factory_date_new=$row["ex_factory_date_new"];
-		$sql1="select remarks from week_delivery_plan where ref_id=\"".$ref_id."\"";
+		$sql1="select remarks from $bai_pro4.week_delivery_plan where ref_id=\"".$ref_id."\"";
 		$result1=mysqli_query($link,$sql1) or die("Error = ".mysqli_error());
 		while($row1=mysqli_fetch_array($result1))
 		{
@@ -333,7 +334,7 @@ else
 			$id="#008000";
 		}
 		
-		$sql_co="select order_no,mpo,cpo from $bai_pro3.shipment_plan where schedule_no=\"".$schedule."\" and color=\"".$color."\"";
+		$sql_co="select order_no,mpo,cpo from $bai_pro4.shipment_plan where schedule_no=\"".$schedule."\" and color=\"".$color."\"";
 		$result_co=mysqli_query($link,$sql_co) or die("Error =".mysqli_error());
 		while($row_co=mysqli_fetch_array($result_co))
 		{
@@ -343,7 +344,7 @@ else
 		}
 		
 		/*$sHTML_Content .="<tr>";
-		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -943,7 +944,7 @@ else
 			if($status=="FCA" || $status=="FCA/P")
 			{		
 				$sHTML_Content .="<tr>";
-				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -1007,7 +1008,7 @@ else
 			if(($status=="FG" && ($order_total_qty==$scan_total_qty)) || $status=="FG*")
 			{
 				$sHTML_Content .="<tr>";
-				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
+				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
 				$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -1039,7 +1040,7 @@ else
 			$sHTML_Content .="<tr>";
 			if(in_array($authorized,$permission))
 			{
-				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 			}
 			else
 			{
