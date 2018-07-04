@@ -2099,15 +2099,19 @@ tags will be replaced.-->
   <td class=xl154118 width=21 style='width:16pt'></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+
+ </tr>
+
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td colspan=6 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
-  <td colspan=6 rowspan=3 class=xl674118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td colspan=3 class=xl844118>Cutting Department</td>
+  <td colspan=3 >Cutting Department</td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>

@@ -1007,28 +1007,21 @@ body{
 
 </style>
 
-<style type="text/css">
-@page
-{
-	size: landscape;
-	margin: 0cm;
-}
-</style>
 
 <style>
 
 @media print {
-@page narrow {size: 11in 9in}
-@page rotated {size: potrait}
-DIV {page: narrow}
-TABLE {page: rotated}
-#non-printable { display: none; }
-#printable { display: block; }
-#logo { display: block; }
-body { zoom:72%;}
-#ad{ display:none;}
-#leftbar{ display:none;}
-#Book2_14270{ width:95%;}
+    @page narrow {size: 11in 9in}
+    @page rotated {size: potrait}
+    DIV {page: narrow}
+    TABLE {page: rotated}
+    #non-printable { display: none; }
+    #printable { display: block; }
+    #logo { display: block; }
+    body { zoom:72%;}
+    #ad{ display:none;}
+    #leftbar{ display:none;}
+    #Book2_14270{ width:90%;}
 }
 </style>
 
@@ -1347,11 +1340,11 @@ ZHJzL2Rvd25yZXYueG1sUEsBAi0ACgAAAAAAAAAhADhzEd/zBQAA8wUAABUAAAAAAAAAAAAAAAAA
     <x:AutoPict/>
    </x:ClientData>
   </v:shape><![endif]-->
-  <![if !vml]><span style='mso-ignore:vglayout;
+  <span style='mso-ignore:vglayout;
   position:absolute;z-index:5;margin-left:11px;margin-top:1px;width:327px;
   height:68px'><img width=327 height=68
-  src=<?= getFullURL($_GET['r'],'Book3_files/Book1_15551_image003.gif','R'); ?> alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span><![endif]><span
-  style='mso-ignore:vglayout2'>
+  src='/sfcs_app/common/images/BEK_image1.png' alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span>
+  <span style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>
    <tr>
     <td height=20 class=xl6315551 width=64 style='height:15.0pt;width:48pt'></td>
