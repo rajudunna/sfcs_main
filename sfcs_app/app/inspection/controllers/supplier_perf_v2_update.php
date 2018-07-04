@@ -103,7 +103,7 @@ if(isset($_POST['update']))
 		
 		$sql11="select * from $bai_rm_pj1.supplier_performance_track where tid='".trim($batch_ref[$i])."-".$month_ref[$i]."'";
 		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
-		echo $sql11;
+		//echo $sql11;
 		if(mysqli_num_rows($sql_result11) > 0)
 		{
 			while($row11=mysqli_fetch_array($sql_result11))
@@ -148,7 +148,7 @@ if(isset($_POST['update']))
 			$sql2="delete from $bai_rm_pj1.supplier_performance_track where tid='".trim($batch_ref[$i])."-".$month_ref[$i]."'";
 		
 			mysqli_query($link, $sql2) or exit("Sql Error1".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
-			mysqli_query($link, $sql) or exit("Sql Error3".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result5=mysqli_query($link, $sql) or exit("Sql Error3".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 		
 		}
@@ -157,10 +157,18 @@ if(isset($_POST['update']))
 			
 			mysqli_query($link, $sql) or exit("Sql Error3".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-		}		
-	
-	echo "<script>sweetAlert('Success!','Successfully Updated','success');</script>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
+		}	
+		$url=getFullURL($_GET['r'],'supplier_perf_v2.php','N');
+		if(mysqli_num_rows($sql_result5)!= 0 ){
+		 echo "<script>sweetAlert('Success!','Successfully Updated','success');</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
+
+		}else{
+		 echo "<script>sweetAlert('Error!','Not Updated','warning');
+		 window.location.href = \"$url\";</script>";
+		 	
+		}
+	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
 	}
 	
 
