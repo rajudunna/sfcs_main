@@ -1736,7 +1736,7 @@ tags will be replaced.-->
   echo "<th $style_css>$fab_uom</th>";
   echo "</tr>";
   
-  $color_codes = [1];
+
   for($j=0;$j<sizeof($color_codes);$j++)
   {
   	echo "<tr style='height:40px'>";
