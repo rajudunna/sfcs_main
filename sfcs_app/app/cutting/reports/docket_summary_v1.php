@@ -135,7 +135,8 @@ th
 			ON p.order_tid=b.order_tid
 			LEFT JOIN $bai_pro3.log_rm_ready_in_pool l
 			ON p.doc_no=l.doc_no
-			WHERE f.log_time between \"$sdate\" and \"$edate\"";
+			WHERE date(f.log_time) between \"$sdate\" and \"$edate\"";
+			// echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count_query = mysqli_num_rows($sql_result);
 			if($count_query > 0){

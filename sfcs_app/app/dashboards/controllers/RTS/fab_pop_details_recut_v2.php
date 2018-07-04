@@ -476,13 +476,14 @@ th
 				$mklength=$sql_row2['mklength'];
 			}
 			
-			$material_req=$mklength*$sql_row1['a_plies'];
+			//$material_req=$mklength*$sql_row1['a_plies'];
+			$material_req=$sql_row1['material_req'];
 			$extra=0;
 			//if(substr($style_ref,0,1)=="M") { $extra=round(($material_req*0.01),2); }
 			{ $extra=round(($material_req*0.01),2); }
 			//echo "<td>".($material_req+$extra)."</td>";
 			$temp_tot=($material_req);
-			$total+=$temp_tot;
+			$total+=round($temp_tot,2);
 			$temp_tot=0;
 			//For new implementation
 			
@@ -511,12 +512,13 @@ th
 				echo "<input type=\"hidden\" name=\"cat_ref[]\" value=\"".$cat_ref."\">";
 				//For New Implementation
 				
-				$sql1x="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
-				//echo $sql1x;
+				$sql1x="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from $bai_pro3.cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
+				
 				$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error: $sql1x".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1x=mysqli_fetch_array($sql_result1x))
 				{
-					echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
+					echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" class=\"manual doc_nos_class\"
+					name=\"manual".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
 					
 				}
 				echo "<input type=\"text\" value=\"\"  class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
@@ -541,7 +543,7 @@ th
 			
 			//include_once('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
 
-			include('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
+			//include('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
 			getDetails("R",$sql_row1['doc_no']);
 			echo "</td>";
 		}

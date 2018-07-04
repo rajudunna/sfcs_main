@@ -677,8 +677,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			//  onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/board_update_V2_input.php?mod=$module&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=yes,scrollbars=yes,resizable=yes, width=1200,height=750, top=23');
 			 $id="yash";
 			$y=0;
-			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
-			//echo "</br>".$sql."</br>";
+			//$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";
+			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
 			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{
@@ -745,7 +745,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$id="pink"; //Total Trim input issued to module
 					//Circle if the total panel Input is issued to module
 				}
-				
 				$firststy=substr($order_tid,0,strpos($order_tid," "));
 				
 				$title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Job_No:".'J'.leading_zeros($input_job_no,3),80);

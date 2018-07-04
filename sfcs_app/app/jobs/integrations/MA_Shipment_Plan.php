@@ -105,7 +105,7 @@ function isNumber($c)
 $sql3="delete from $bai_pro2.shipment_plan";
 mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="SELECT Customer_Order_No AS A,MPO,CPO,Buyer_Division,Style_No,Schedule_No,Colour,Size,ZFeature,SUM(Order_Qty) as qty,Ex_Factory,MODE,Destination,Packing_Method,FOB_Price_per_piece,CM_Value,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H FROM $m3_inputs.shipment_plan WHERE ex_factory BETWEEN \"20180101\" AND \"20180831\" AND schedule_no > 0 GROUP BY Style_No,Schedule_No,Colour,Size,Ex_Factory,Destination";
+$sql="SELECT Customer_Order_No AS A,MPO,CPO,Buyer_Division,Style_No,Schedule_No,Colour,Size,ZFeature,SUM(Order_Qty) as qty,Ex_Factory,MODE,Destination,Packing_Method,FOB_Price_per_piece,CM_Value,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H FROM $m3_inputs.shipment_plan WHERE schedule_no > 0 GROUP BY Style_No,Schedule_No,Colour,Size,Ex_Factory,Destination";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
