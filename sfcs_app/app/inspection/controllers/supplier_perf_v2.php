@@ -369,6 +369,9 @@ if(mysqli_num_rows($sql_result) > 0){
 				$po_ref=$sql_row1l["po"];
 				$color_ref=$sql_row1l["col"];
 				$pkg_no=$sql_row1l["pkg_no"];
+				if($pkg_no="'"){
+					$pkg_no="";
+				}
 				$item_desc_ref=$sql_row1l["item_name"];
 			}
 			
