@@ -1460,16 +1460,16 @@ body{
 
 @media print {
 	@page narrow {size: 11in 9in}
-	@page rotated {size: potrait}
+	@page rotated {size: PORTRAIT}
 	DIV {page: narrow}
 	TABLE {page: rotated}
 	#non-printable { display: none; }
 	#printable { display: block; }
 	#logo { display: block; }
-	body { zoom:72%;}
+	body { zoom:90%;}
 	#ad{ display:none;}
 	#leftbar{ display:none;}
-	#Book2_14270{ width:95%;}
+	#Book2_14270{ width:90%;}
 }
 </style>
 
