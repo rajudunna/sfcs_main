@@ -219,7 +219,7 @@ if(isset($_GET['val']))
 			
 			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC";
 			//echo $sql12;
-			mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row12=mysqli_fetch_array($sql_result12))
 			{
@@ -269,10 +269,10 @@ if(isset($_GET['val']))
 				}
 				
 				// Ticket #770947 Add the buddhikarr name in $auth_to_modify for remarks column edit option
-				$auth_to_modify=array("sandeepab","ranjang","lakshmanb","diland","pasanj","kapilarathnai","bhavanik","kirang","kirang","maheshkumary","kasunsi","nuwanan","channam","kirang","chandrasekhard","ajithmi","prabathsa");
+				// $auth_to_modify=array("sandeepab","ranjang","lakshmanb","diland","pasanj","kapilarathnai","bhavanik","kirang","kirang","maheshkumary","kasunsi","nuwanan","channam","kirang","chandrasekhard","ajithmi","prabathsa");
 				
-				$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-				$username=strtolower($username_list[1]);
+				// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+				// $username=strtolower($username_list[1]);
 				
 				
 				$rejected=0;
