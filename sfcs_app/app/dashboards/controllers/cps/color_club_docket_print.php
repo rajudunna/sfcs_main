@@ -65,7 +65,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select *,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where clubbing=$clubbing and pcutno=$cut_no and category=\"$cat_title\" and order_del_no=$order_del_no and clubbing>0";
-// echo $sql;
+echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -99,7 +99,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$allocate_ref=$sql_row['allocate_ref'];
 
 }
-
+var_dump($met_req);
 $sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1599,11 +1599,13 @@ tags will be replaced.-->
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class='xl6817319 top left'>Cut No :</td>
   <td colspan=2 class='xl9617319 top' ><?php if($remarks=="Normal") { echo leading_zeros($cut_no, 3); } else {if($remarks=="Pilot") { echo "Pilot";}}?></td>
+  <td class='xl1517319 top'></td>
   <td colspan=2 class='xl6817319 top '>Date:</td>
   <td colspan=2 class='xl9617319 top right'><?php  echo $date; ?></td>
   <td class='xl1517319'></td>
   <td colspan=2 class='xl6817319 top left'>Category :</td>
-  <td colspan=7 class='xl9617319 top right'><?php echo $cat_title; ?></td>
+  <td colspan=7 class='xl9617319 top'><?php echo $cat_title; ?></td>
+  <td colspan=3 class='xl1517319 top right'></td>
 
  </tr>
  <tr>
@@ -1612,25 +1614,28 @@ tags will be replaced.-->
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class='xl6817319 left'>Style No :</td>
   <td colspan=2 class=xl9617319><?php echo $style; ?></td>
+  <td class='xl1517319'></td>
   <td colspan=2 class='xl6817319'>Module:</td>
-  <td colspan=2 class='xl9617319 right'><?php echo $plan_module; echo " (".$cut_table[$plan_module].")"; ?></td>
+  <td colspan=2 class='xl9617319 right'><?php echo $plan_module; if($cut_table[$plan_module]) echo "(".$cut_table[$plan_module].")"; ?></td>
   <td class=xl1517319></td>
   <td colspan=2 class='xl11317319 left'>Mk Name :</td>
   <td colspan=3 class=xl9617319><?php echo $mk_remarks; ?></td>
   <td colspan=2 class='xl6817319'>Consumptions:</td>
-  <td colspan=2 class='xl9617319 right'><?= $body_yy ?></td>
+  <td colspan=2 class='xl9617319'><?= $body_yy ?></td>
+  <td colspan=3 class='xl1517319 right'></td>
  </tr>
  
  <tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class='xl6817319 left'>Sch No :</td>
   <td colspan=2 class=xl9617319><?php echo $schedule; ?></td>
+  <td class='xl1517319'></td>
   <td colspan=2 class=xl6817319>PO:</td>
   <td colspan=2 class='xl9617319 right'></td>
   <td class=xl1517319></td>
   <td colspan=2 class='xl6817319 left'>Fab Direction :</td>
-  <td colspan=7 class='xl11517319 right'><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>
-  <td class=xl11417319></td>
+  <td colspan=7 class='xl11517319'><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>
+  <td colspan=3 class='xl1517319 right'></td>
  </tr>
  
 <!-- 
@@ -1649,20 +1654,20 @@ tags will be replaced.-->
  echo "<tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class='xl6817319 left'>Color :</td>
-  <td colspan=6 class='xl9617319 right'>".$sch_color[0]." / ".$color_codes[0]."</td>
+  <td colspan=7 class='xl9617319 right'>".$sch_color[0]." / ".$color_codes[0]."</td>
   <td class=xl1517319></td>
   <td colspan=2 class='xl6817319 left'>Fab Code/ Desc :</td>
-  <td colspan=7 class='xl9617319 right'>".$fab_codes[0]."</td>
+  <td colspan=10 class='xl9617319 right'>".$fab_codes[0]."</td>
  </tr>";
  for($i=1;$i<sizeof($color_codes);$i++)
  {
  	echo "<tr class=xl1517319 height=21 style='height:15.75pt'>
 			<td height=21 class=xl6417319 style='height:15.75pt'></td>
 			<td class='xl6817319 left'>Color :</td>
-			<td colspan=6 class='xl9617319 right'>".$sch_color[$i]." / ".$color_codes[$i]."</td>
+			<td colspan=7 class='xl9617319 right'>".$sch_color[$i]." / ".$color_codes[$i]."</td>
 			<td class=xl1517319></td>
 			<td colspan=2 class='xl6817319 left'>Fab Code/ Desc :</td>
-			<td colspan=7 class='xl9617319 right'>".$fab_codes[$i]."</td>
+			<td colspan=10 class='xl9617319 right'>".$fab_codes[$i]."</td>
  		</tr>";
  }
  
@@ -1677,6 +1682,7 @@ tags will be replaced.-->
   <td class=xl11617319>&nbsp;</td>
   <td class=xl11617319>&nbsp;</td>
   <td class='bottom'></td>
+  <td class='bottom'></td>
   <td class='bottom right'>&nbsp;</td>
   <td class=''>&nbsp;</td>
   <td class='xl9717319 left'>&nbsp;</td>
@@ -1687,6 +1693,7 @@ tags will be replaced.-->
   <td class=xl9717319>&nbsp;</td>
   <td class=xl9717319>&nbsp;</td>
   <td class=xl9717319>&nbsp;</td>
+  <td colspan=3 class='bottom'></td>
   <td class='xl9717319 right' ></td>
  </tr>
  <tr class=xl1517319 height=21 style='height:15.75pt'>
@@ -1757,7 +1764,7 @@ tags will be replaced.-->
 	  echo "</tr>";
   }
   
-   echo "<tr>";
+echo "<tr>";
   
   echo "<th $style_css colspan=4>Total</th>";
   //echo "<th>Color</th>";
@@ -1904,7 +1911,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
   	//Extra 1% added to avoid cad saving manual mrn claims.
-	$extra=round((($purlength*array_sum($plies))*$savings)/100,2);
+	$extra=round((($purlength*array_sum($plies))*$savings),2);
 	echo (($purlength*array_sum($plies))+$extra);  ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $actwidth; ?></td>
@@ -1956,6 +1963,7 @@ tags will be replaced.-->
   <td class=xl11217319></td>
   <td class=xl6417319></td>
  </tr>
+ <tr style='height:50px'></tr>	
  <tr>
   <td class=xl6417319></td>
   <td colspan=16 rowspan=7 class=xl8217319>
@@ -2005,7 +2013,6 @@ echo "<tr>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Batch</td>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Shade</td>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>
-	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Length</td>
 	<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Length</td>
 	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Length Variation</td>
@@ -2028,9 +2035,7 @@ for($i=0;$i<sizeof($roll_det);$i++){
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>
 		<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>
-		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>
-		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
-
+		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
 		</tr>";
 }
 echo "</table>";	
