@@ -337,6 +337,7 @@ if($category=='Body' || $category=='Front')
 			{
 				$binding_con = $sql_row2['binding_con'];
 				$bind_con= $binding_con *($a_ratio_tot*$plies);
+				//$bind_con = $sql_row2['binding_con'];
 			}
 		}
 		else
@@ -2209,7 +2210,13 @@ tags will be replaced.-->
   <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo array_sum($sum_of_a_p_sizes) ?></td>
   <td class=xl654118></td>
  </tr>
- 
+ <tr style='height:10px'>
+ </tr>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td height=20 class=xl654118 style='height:15.0pt'></td>
+  <td colspan=4 class=xl654118 style="border:.5pt solid windowtext;">Binding Consumption : <?= $binding_con ?></td>
+ </tr> 
+
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
