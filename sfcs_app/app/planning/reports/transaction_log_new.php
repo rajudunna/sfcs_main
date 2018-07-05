@@ -25,7 +25,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	$module=$_POST['module'];
 ?>
 <!--<div id="page_heading"><span style="float"><h3>Daily Production Status Report</h3></span><span style="float: right; margin-top: -20px"><b>?</b>&nbsp;</span></div>-->
-<div class="panel panel-primary">
+<div class="panel panel-primary" style='width:1087px;'>
 <div class="panel-heading">Production Status Report</div>
 <div class="panel-body">
 <div class="form-group" style='width:1069px;';>
@@ -209,6 +209,8 @@ $sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) 
 }
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+if(mysqli_num_rows($sql_result)>0)
+{
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$tid=$sql_row['tid'];
@@ -311,10 +313,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_no_rows=mysqli_num_rows($sql_result12);
 		
-		$table="bai_orders_db";
+		$table="$bai_pro3.bai_orders_db";
 		if($sql_no_rows == 0)
 		{
-			$table="bai_orders_db_archive";
+			$table="$bai_pro3.bai_orders_db_archive";
 		}
 		
 		$sql1="select order_style_no,order_del_no,order_col_des,color_code,style_id from $table where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\" ";
@@ -338,7 +340,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		foreach( $filtered_sizes as $key => $value){
 			$finalized_size_qty = $value;
 			$finalized_title_size = $title_sizes[$key];
-			$getting_title_size = "select $finalized_title_size from bai_orders_db where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\"";
+			$getting_title_size = "select $finalized_title_size from $bai_pro3.bai_orders_db where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\"";
 			// echo $getting_title_size;
 			// mysqli_query($link11, $getting_title_size) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result001=mysqli_query($link, $getting_title_size) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -368,13 +370,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 }
 echo "</table></div></div>";
-if($sql_row==0){
-	echo "<div class='alert alert-danger'>No Data Found</div>";
+}
+else{
+	echo "<div class='alert alert-danger' style='width:942px';>No Data Found</div>";
 	echo "<script>$(document).ready(function(){
-			  $('#table1').css('display','none');
-		  });</script>";
+			 $('#table1').css('display','none');
+		 });</script>";
 }
 }
+ 
 ?>
 <script>
 
