@@ -209,6 +209,8 @@ $sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) 
 }
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+if(mysqli_num_rows($sql_result)>0)
+{
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$tid=$sql_row['tid'];
@@ -368,7 +370,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 }
 echo "</table></div></div>";
-if($sql_row==0){
+}
+else{
 	echo "<div class='alert alert-danger' style='width:942px';>No Data Found</div>";
 	echo "<script>$(document).ready(function(){
 			 $('#table1').css('display','none');
