@@ -44,6 +44,9 @@ $whoops->register();
                         echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Click here to dowload Tool</a>";
                     }else{
                         echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Get ".$get_file_path['type']." file to click here..</a>";
+                        //if($_GET['r'] == ''){
+                            echo "<h4>Are Ram ga neeku kavalasina points rasukoooo.....</h4>";
+                        //}
                     }
                 }
             }elseif(isset($_GET['r'])){
