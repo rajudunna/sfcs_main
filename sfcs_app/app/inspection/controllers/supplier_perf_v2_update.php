@@ -1,5 +1,6 @@
 
 <?php
+ini_set('max_execution_time', 5000);
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 
 if(isset($_POST['update']))

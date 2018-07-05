@@ -355,7 +355,7 @@ $table.= "</tr>";
 $table.= "</table>";
 		header("Content-type: application/x-msdownload"); 
 		# replace excelfile.xls with whatever you want the filename to default to
-		header("Content-Disposition: attachment; filename=RM_Inspection_Summary_".date("Y-m-d_H_i").".xls");
+		header("Content-Disposition: attachment; filename=Fabric_Inspection_Summary_".date("Y-m-d_H_i").".xls");
 		header("Pragma: no-cache");
 		header("Expires: 0");
 		echo $table;

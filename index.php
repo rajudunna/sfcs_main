@@ -42,6 +42,9 @@ $whoops->register();
                 else{
                     if($get_file_path['type'] == 'xlsm'){
                         echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Click here to dowload Tool</a>";
+                        if($_GET['r'] == 'L3NmY3NfYXBwL2FwcC9kYXNoYm9hcmRzL2NvbnRyb2xsZXJzL2Nwcy9mYWJfcHJpb3JpdHlfZGFzaGJvYXJkLnBocA=='){
+                            echo "<h4>Instructions Here : </h4>";
+                        }
                     }else{
                         echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Get ".$get_file_path['type']." file to click here..</a>";
                     }

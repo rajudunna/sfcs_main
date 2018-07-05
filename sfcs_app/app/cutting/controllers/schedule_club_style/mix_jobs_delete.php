@@ -47,7 +47,7 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where order_joins in ('1','2') order by order_style_no";	
+			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where order_joins ='2' order by order_style_no";	
 		//}
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -74,7 +74,7 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins in ('1','2') order by order_date";	
+			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins ='2' order by order_date";	
 		//}
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -95,7 +95,7 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 		echo"<div class='col-md-3'>";
 
 		echo "Select Color: <select class=\"form-control\" name=\"color\" onchange=\"thirdbox();\" required>";
-		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins in ('1','2')";
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins ='2'";
 		//}
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -159,6 +159,10 @@ if(isset($_POST['clear']))
 			$sql1="delete from $bai_pro3.plandoc_stat_log where org_doc_no in (".implode(",",$docs).")";
 			//echo $sql1."<br>";
 			$sql_result4513=mysqli_query($link,$sql1) or die("Error 4".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
+
+			$sql1="update $bai_pro3.plandoc_stat_log set org_doc_no ='0' where doc_no in (".implode(",",$docs).")";
+			//echo $sql1."<br>";
+			$sql_result4513=mysqli_query($link,$sql1) or die("Error 4".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql45331="update $bai_pro3.bai_orders_db set order_joins='1' where order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
 			$sql_result45313=mysqli_query($link, $sql45331) or die("Error 4".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -167,6 +171,11 @@ if(isset($_POST['clear']))
 			$sql_result45313=mysqli_query($link, $sql45331) or die("Erro 5r".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 
 			echo "<script>swal('Sewing Jobs are Deleted.Please split Jobs again','','warning');</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+			function Redirect() {
+				location.href = \"".getFullURLLevel($_GET['r'], 'mix_jobs_delete.php',0,'N')."\";
+				}
+			</script>";
 						
 		}
 		else
