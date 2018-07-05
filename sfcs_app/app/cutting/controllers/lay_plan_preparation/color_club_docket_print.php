@@ -1583,7 +1583,7 @@ tags will be replaced.-->
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <td class=xl6417319  colspan='4'></td>
-  <td colspan=3 class=xl7617319><strong style='font-size:16px'><?php if($print_status=='0000-00-00' || $print_status == "") {echo "ORIGINAL"; } else {echo "DUPLICATE";}?></strong></td>
+  <td colspan=3 class=xl7617319><strong style='font-size:16px'><?php if($print_status=='0000-00-00' || $print_status == "") {echo "COPY"; } else {echo "COPY";}?></strong></td>
   <td class=xl6417319></td>
  </tr>
  <tr height=21 style='height:15.75pt'>
@@ -2505,7 +2505,7 @@ echo $lot_ref; echo "<span style='font-size:16px'>MK File: </style>".implode(", 
 	if($print_status=="0000-00-00" || $print_status == "")
 	{	
 		$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\" where doc_no in ($idocs_2)";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 ?>
 
