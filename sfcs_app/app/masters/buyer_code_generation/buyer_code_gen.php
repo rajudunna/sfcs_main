@@ -87,7 +87,7 @@ th {
         echo '<script>swal("'.$sbmtmsg.'")
             .then((value) => {
                 if(value){
-                    // window.location = "'.$url.'";
+                    window.location = "'.$url.'";
                     // location.reload(); 
                 }
             });</script>';
