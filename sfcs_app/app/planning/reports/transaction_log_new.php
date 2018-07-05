@@ -25,7 +25,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	$module=$_POST['module'];
 ?>
 <!--<div id="page_heading"><span style="float"><h3>Daily Production Status Report</h3></span><span style="float: right; margin-top: -20px"><b>?</b>&nbsp;</span></div>-->
-<div class="panel panel-primary">
+<div class="panel panel-primary" style='width:1087px;'>
 <div class="panel-heading">Production Status Report</div>
 <div class="panel-body">
 <div class="form-group" style='width:1069px;';>
@@ -368,13 +368,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 }
 echo "</table></div></div>";
-// if($sql_row==0){
-// 	echo "<div class='alert alert-danger' style='width:942px';>No Data Found</div>";
-// 	echo "<script>$(document).ready(function(){
-// 			  $('#table1').css('display','none');
-// 		  });</script>";
-// }
 }
+ if($sql_row==0){
+ 	echo "<div class='alert alert-danger' style='width:942px';>No Data Found</div>";
+ 	echo "<script>$(document).ready(function(){
+			  $('#table1').css('display','none');
+		  });</script>";
+ }
 ?>
 <script>
 
