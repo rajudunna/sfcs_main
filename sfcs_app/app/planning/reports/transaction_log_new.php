@@ -368,13 +368,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 }
 echo "</table></div></div>";
+if($sql_row==0){
+	echo "<div class='alert alert-danger' style='width:942px';>No Data Found</div>";
+	echo "<script>$(document).ready(function(){
+			 $('#table1').css('display','none');
+		 });</script>";
 }
- if($sql_row==0){
- 	echo "<div class='alert alert-danger' style='width:942px';>No Data Found</div>";
- 	echo "<script>$(document).ready(function(){
-			  $('#table1').css('display','none');
-		  });</script>";
- }
+}
+ 
 ?>
 <script>
 
