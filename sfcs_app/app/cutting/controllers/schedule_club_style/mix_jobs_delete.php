@@ -43,17 +43,16 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 			$po=$_POST['po'];
 		}
 		echo "<div class='row'><div class='col-md-3'>";
-		echo "Select Style: <select class=\"form-control\" name=\"style\" onchange=\"firstbox();\" >";
+		echo "Select Style: <select class=\"form-control\" name=\"style\" onchange=\"firstbox();\" required>";
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db order by order_style_no";	
+			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where order_joins in ('1','2') order by order_style_no";	
 		//}
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
-
-		echo "<option value=\"NIL\" selected>NIL</option>";
+		echo "<option value=''>Please Select</option>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
@@ -70,18 +69,17 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 	?>
 	<?php
 		echo"<div class='col-md-3'>";
-		echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" >";
+		echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" required>";
 
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_joins=\"1\" order by order_date";	
+			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins in ('1','2') order by order_date";	
 		//}
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
-
-		echo "<option value=\"NIL\" selected>NIL</option>";
+		echo "<option value=''>Please Select</option>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
@@ -96,15 +94,13 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 		echo "</select></div>";
 		echo"<div class='col-md-3'>";
 
-		echo "Select Color: <select class=\"form-control\" name=\"color\" onchange=\"thirdbox();\" >";
-		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins=\"1\"";
+		echo "Select Color: <select class=\"form-control\" name=\"color\" onchange=\"thirdbox();\" required>";
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins in ('1','2')";
 		//}
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
-
-		echo "<option value=\"NIL\" selected>NIL</option>";
-			
+		echo "<option value=''>Please Select</option>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
@@ -117,15 +113,8 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 			}
 		}
 		echo "</select></div>";
-	?>
-<!-- <input type="text" name="schedule" value=""> -->
-	<?php 
-		if(strlen($color)>0 and $color!="NIL"){
-			//echo '<input type="submit" name="submit" value="Segregate">';
-			echo"<div class='col-md-3'>";
-			echo "<label></label><br/><input type=\"submit\"  class='btn btn-success' value=\"Clear\" name=\"clear\"  id=\"clear\" onclick=\"document.getElementById('clear').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
-			echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait data is processing...!<h5></span></div>";
-		}
+		echo"<div class='col-md-3'>";
+			echo "<label></label><br/><input type=\"submit\"  class='btn btn-success' value=\"Clear\" name=\"clear\"  id=\"clear\"/>";
 	?>
 	</form>
 </div>
@@ -135,7 +124,7 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 if(isset($_POST['clear']))
 {
 	$order_del_no=$_POST['schedule'];
-	$order_joins="J".$order_del_no;
+	$order_joins=$order_del_no;
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$docs=array();
@@ -147,19 +136,19 @@ if(isset($_POST['clear']))
 		{		
 			$docs[]=$sql_row457["doc_no"];
 		}
-		$sql4533="select order_tid from $bai_pro3.bai_orders_db where order_joins='J".$order_del_no."' and order_col_des=\"".$color."\"";
+		$sql4533="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$order_del_no."' and order_col_des=\"".$color."\"";
 		$sql_result4533=mysqli_query($link, $sql4533) or die("Error 2".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row4533=mysqli_fetch_array($sql_result4533))
 		{
 			$order_tids[]=$sql_row4533["order_tid"];
 		}
-		$sql32="select * from $brandix_bts.tbl_miniorder_data where docket_number in (select doc_no from $bai_pro3.pladoc_stat_log wherer org_doc_no in (".implode(",",$docs)."))";
+		$sql32="select * from $brandix_bts.tbl_miniorder_data where docket_number in (select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no in (".implode(",",$docs)."))";
 		$sql_result451=mysqli_query($link, $sql32) or die("Error 3".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result451)==0)
 		{
 			$sql4536="delete from $bai_pro3.allocate_stat_log where order_tid in ('".implode("','",$order_tids)."')";
-			echo $sql4536."<br>";
-			//$sql_result4536=mysql_query($sql4536,$link) or die("Error".$sql4536.mysql_error());
+			//echo $sql4536."<br>";
+			$sql_result4536=mysqli_query($link,$sql4536) or die("Error 4".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			// $sql323="slect * from brandix_bts.tbl_cut_size_master where preant_id in (slect id from brandix_bts.tbl_cut_master where doc_no in (slect doc_no from bai_pro3.plando_stat_log where org_doc_no in (".implode(",",$docs).")))";
 			// $sql_result4513=mysql_query($sql323,$link) or die("Error".$sql451.mysql_error());
@@ -167,22 +156,22 @@ if(isset($_POST['clear']))
 			// $sql43="slect * from brandix_bts.tbl_cut_master where doc_no in (slect doc from bai_pro3.plando_stat_log where org_doc_no in (".implode(",",$docs)."))";
 			// $sql_result4514=mysql_query($sql43,$link) or die("Error".$sql451.mysql_error());
 			
-			$sql1="select * from $bai_pro3.plando_stat_log where org_doc_no in (".implode(",",$docs).")";
-			echo $sql1."<br>";
-			//$sql_result4513=mysql_query($sql1,$link) or die("Error".$sql451.mysql_error());
+			$sql1="delete from $bai_pro3.plandoc_stat_log where org_doc_no in (".implode(",",$docs).")";
+			//echo $sql1."<br>";
+			$sql_result4513=mysqli_query($link,$sql1) or die("Error 4".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql45331="update $bai_pro3.bai_orders_db set order_joins='1' where order_order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
+			$sql45331="update $bai_pro3.bai_orders_db set order_joins='1' where order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
 			$sql_result45313=mysqli_query($link, $sql45331) or die("Error 4".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql45331="update $bai_pro3.bai_orders_db_confirm set order_joins='1' where order_order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
+			$sql45331="update $bai_pro3.bai_orders_db_confirm set order_joins='1' where order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
 			$sql_result45313=mysqli_query($link, $sql45331) or die("Erro 5r".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 
-			echo "<script>swal('Mini orders are Deleted.Please split Jobs again','','warning');</script>";
+			echo "<script>swal('Sewing Jobs are Deleted.Please split Jobs again','','warning');</script>";
 						
 		}
 		else
 		{
-			echo "<script>swal('Mini orders are preapred please delete and try again.','','warning');</script>";
+			echo "<script>swal('Sewing Jobs are preapred please delete and try again.','','warning');</script>";
 		}
 	}
 }

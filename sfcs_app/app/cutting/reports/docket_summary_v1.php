@@ -1,6 +1,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
-// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-// $username=$username_list[1];
+$excel_form_action = getFullURL($_GET['r'],'export_excel.php','R');
+$table_csv = getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
+
 ?>
 
 
@@ -53,23 +54,9 @@ th
 	white-space: nowrap;
 }
 </style>
-<script language="javascript" type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R')?>"></script><!-- External script -->
-<script language="javascript" type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R')?>"></script><!-- External script -->
-<script type="text/javascript">
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
 
-	// $(document).ready(function() {
-	// 	$('#edate').on('mouseup',function(e){
-	// 		var val1 = $('#sdate').val();
-	// 		var val2 = $('#edate').val();
-	// 		$d1 = new DateTime($val1);
-	// 		$d2 = new DateTime($val2);
-	// 		var k = e.which;
-	// 		if(d1 < d2){
-	// 			sweetAlert('End date should not be greater than Start date','','warning');
-	// 			$('#sdate').val('');
-	// 		}
-	// 	});
-	// });
+<script type="text/javascript">
 
 	function verify_date(){
 		var val1 = $('#sdate').val();
@@ -86,11 +73,13 @@ th
 }
 	
 </script>
+<script type="text/javascript" src="<?php echo $table_csv ?>" ></script>	
 
 	<div class="panel panel-primary">
 
-		<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
-		<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "dbconf3.php", "1", "R").""); ?>
+		<?php 
+		
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 
 		<?php
 			$sdate=$_POST['sdate'];
@@ -146,21 +135,24 @@ th
 			ON p.order_tid=b.order_tid
 			LEFT JOIN $bai_pro3.log_rm_ready_in_pool l
 			ON p.doc_no=l.doc_no
-			WHERE f.log_time between \"$sdate\" and \"$edate\"";
-
-			// echo $sql."<br>";
-			//mysql_query($sql,$link) or exit("Sql Error1".mysql_error());
+			WHERE date(f.log_time) between \"$sdate\" and \"$edate\"";
+			// echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count_query = mysqli_num_rows($sql_result);
 			if($count_query > 0){
 
-				echo "<div class=\"table-responsive\">";
-
-			echo "<table class=\"table table-bordered\" id=\"table_one\" border=1 >";
-			//echo "<tr><th>TID</th><th>Date</th><th>Module</th><th>Section</th><th>Shift</th><th>Qty</th><th>Last Updated</th><th>Log Time</th><th>Controls</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>SMV</th><th>NOP</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th><th>XXXL</th><th>s08</th><th>s10</th><th>s12</th><th>s14</th><th>s16</th><th>s18</th><th>s20</th><th>s22</th><th>s24</th><th>s26</th><th>s28</th></tr>";
-			echo "<thead><tr><th class=\"coloum-title\"><center>Style</center></th><th class=\"coloum-title\"><center>Schedule</center></th><th class=\"coloum-title\"><center>Color</center></th><th class=\"coloum-title\"><center>Docket#</center></th><th class=\"coloum-title\"><center>Cut#</center></th><th class=\"coloum-title\"><center>Fabric requested user</center></th>
-			<th class=\"coloum-title\"><center>CPS status</center></th><th class=\"coloum-title\"><center>CPS status log time</center></th>
-			<th class=\"coloum-title\"><center>User log time</center></th><th class=\"coloum-title\"><center>Fab. requested time</center></th><th class=\"coloum-title\"><center>Fab. Ready time</center></th><th class=\"coloum-title\"><center>Fab. Issued time</center></th>			<th class=\"coloum-title\"><center>Docket print status</center></th><th class=\"coloum-title\"><center>Docket printed user</center></th><th class=\"coloum-title\"><center>Actual cut status</center></th></tr></thead>";
+			echo "<div class=\"table-responsive\">";
+			echo '<span class="pull-right">
+			<form action="'.$excel_form_action.'" method ="post" > 
+				<input type="hidden" name="csv_123" id="csv_123">
+				<input class="btn btn-info btn-sm" type="submit" value="Export to Excel" onclick="getCSVData()">
+			</form></span>
+		';
+			
+			echo "<table class=\"table table-bordered\" id=\"table_one\" >";
+			echo "<thead><tr class=\"info\"><th>Style</th><th>Schedule</th><th>Color</th><th>Docket#</th><th>Cut#</th><th>Fabric requested user</th>
+			<th>CPS status</th><th>CPS status log time</th>
+			<th>User log time</th><th>Fab. requested time</th><th>Fab. Ready time</th><th>Fab. Issued time</th><th>Docket print status</th><th>Docket printed user</th><th>Actual cut status</th></tr></thead>";
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$order_tid=$sql_row['order_tid'];
@@ -171,9 +163,7 @@ th
 					{
 						$color_code=$sql_row33['color_code']; //Color Code
 					}
-				
-				
-				
+			
 				$order_style_no=$sql_row['order_style_no'];
 				$order_del_no=$sql_row['order_del_no'];
 				$order_col_des=$sql_row['order_col_des'];
@@ -207,29 +197,29 @@ th
 							
 					echo "<tr style=\"color: #000000\">";
 					
-					echo "<td class=\"  \"><center>$order_style_no</center></td>";
-					echo "<td class=\"  \"><center>$order_del_no</center></td>";
-					echo "<td class=\"  \"><center>$order_col_des</center></td>";
-					echo "<td class=\"  \"><center>$doc_no</center></td>";
-					echo "<td class=\"  \"><center>".chr($color_code).leading_zeros($pcutno,3)."</center></td>";
-					echo "<td class=\"  \"><center>$req_user</center></td>";
+					echo "<td>$order_style_no</td>";
+					echo "<td>$order_del_no</td>";
+					echo "<td>$order_col_des</td>";
+					echo "<td>$doc_no</td>";
+					echo "<td>".chr($color_code).leading_zeros($pcutno,3)."</td>";
+					echo "<td>$req_user</td>";
 					if($fabric_status=="5") { 
-						echo "<td class=\"  \"><center>Fab. Issued</center></td>";
+						echo "<td>Fab. Issued</td>";
 					} else if($fabric_status=="8") { 
-						echo "<td class=\"  \"><center>Fab. Ready in Pool</center></td>";
+						echo "<td>Fab. Ready in Pool</td>";
 					}else { 
-						echo "<td class=\"  \"><center> - </center></td>";
+						echo "<td> - </td>";
 					}
 					//echo "<td>$fabric_status</td>";
-					echo "<td class=\"  \"><center>$log_update</center></td>";
-					echo "<td class=\"  \"><center>$log_time</center></td>";
-					echo "<td class=\"  \"><center>$req_time</center></td>";
-					echo "<td class=\"  \"><center>".$fab_ready_time."</center></td>";
-					echo "<td class=\"  \"><center>$issued_time</center></td>";
-					echo "<td class=\"  \"><center>$print_status</center></td>";
-					echo "<td class=\"  \"><center>$docket_printed_person</center></td>";					
-					echo "<td class=\"  \"><center>$act_cut_status</center></td>";
-					// echo "<td class=\"  \"><center></center></td>";
+					echo "<td>$log_update</td>";
+					echo "<td>$log_time</td>";
+					echo "<td>$req_time</td>";
+					echo "<td>".$fab_ready_time."</td>";
+					echo "<td>$issued_time</td>";
+					echo "<td>$print_status</td>";
+					echo "<td>$docket_printed_person</td>";					
+					echo "<td>$act_cut_status</td>";
+					// echo "<td></td>";
 					
 					
 
@@ -247,42 +237,41 @@ th
 			}
 			?>
 			<script language="javascript" type="text/javascript">
-			//<![CDATA[
-			//var MyTableFilter = {  exact_match: true }
+			$('#reset_table_one').addClass('btn btn-warning');
 
-			//setFilterGrid( "table1");
+			var MyTableFilter = 
+			{  
+				exact_match: false,
+				alternate_rows: true,
+				// display_all_text: "Show All",
+				// col_0: "select",
+				// col_1: "select",
+				rows_counter: true,
+				rows_counter_text: "Total rows: ",
+				btn_reset: true,
 
-			var table3Filters = {
-					btn: true,
-					col_0:"select",
-					col_2: "select",
-					// col_4:"none",
-					// col_5:"none",
-					// col_6:"none",
-					// col_7:"none",
-					// col_8:"none",
-					// col_9:"none",
-					// col_10:"none",
-					// col_11:"none",
-					// col_12:"none",
-					// col_13:"none",
-					// col_14:"none",
-					// col_15:"none",
-					// col_16:"none",
-					
-					exact_match: true,
-					alternate_rows: true,
-					loader: true,
-					loader_text: "Filtering data...",
-					loader: true,
-					btn_reset_text: "Clear",
-					display_all_text: "Display all rows",
-					btn_text: ">"
-				}
-				setFilterGrid("table_one",table3Filters);
-
-
-			//]]>
+				bnt_reset_text: "Clear all "
+			}
+			setFilterGrid( "table_one", MyTableFilter );
+			$(document).ready(function(){
+				$('#reset_table_one').addClass('btn btn-warning btn-xs');
+			});
 			</script>
+			<script>
+				function getCSVData(){
+				var csv_value=$('#table_one').table2CSV({delivery:'value'});
+				$("#csv_123").val(csv_value);	
+				}
+			</script>
+			<style>
+			#reset_table_one{
+				width : 80px;
+				color : #fff;
+				margin : 10px;
+			}
+			th,td{
+				 text-align: center;
+			}
+			</style>
 		</div>
 	</div>

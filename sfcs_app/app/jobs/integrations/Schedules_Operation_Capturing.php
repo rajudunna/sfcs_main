@@ -11,7 +11,7 @@ $schedule_array[]=-1;
 
 $sql="SELECT DISTINCT order_del_no AS sch FROM $bai_pro3.bai_orders_db WHERE order_del_no > 0 ORDER BY order_del_no*1";
 $result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
+while($sql_row=mysqli_fetch_array($result))
 {
 	$schedule_array[]=$sql_row["sch"];
 }	

@@ -45,16 +45,15 @@
 		}
 
 		echo "<div class='row'><div class='col-md-3'>";
-		echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"firstbox();\" >";
+		echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"firstbox();\" required>";
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db order by order_style_no";	
+			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where order_joins=\"1\" order by order_style_no";	
 		//}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
-
-		echo "<option value=\"NIL\" selected>NIL</option>";
+		echo "<option value=''>Please Select</option>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
@@ -73,18 +72,17 @@
 
 	<?php
 		echo"<div class='col-md-3'>";
-		echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" >";
+		echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" required>";
 
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_joins=\"1\" order by order_date";	
+			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins=\"1\" order by order_date";	
 		//}
 		// echo "working".$sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
-
-		echo "<option value=\"NIL\" selected>NIL</option>";
+		echo "<option value=''>Please Select</option>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
@@ -99,14 +97,12 @@
 		echo "</select></div>";
 
 		echo"<div class='col-md-3'>";
-		echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" >";
-		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins=\"1\"";
+		echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" required>";
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins=\"1\"";
 		//}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
-
-		echo "<option value=\"NIL\" selected>NIL</option>";
-			
+		echo "<option value=''>Please Select</option>";			
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
@@ -118,31 +114,22 @@
 				echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
 			}
 		}
-		echo "</select></div>";
+		echo "</select></div>		<br>";
+		echo"<div class='col-md-3'>";
+		echo "<input type=\"submit\" class='btn btn-success' value=\"Segregate\" name=\"submit\"  id=\"Segregate\" onclick='this.disabled=true; this.value='Please Wait...';' /></div>";
 	?>
-	<br>
-<!-- <input type="text" name="schedule" value=""> -->
-	<?php 
-		if(strlen($color)>0 and $color!="NIL"){
-			//echo '<input type="submit" name="submit" value="Segregate">';
-			echo"<div class='col-md-3'>";
-			echo "<input type=\"submit\" class='btn btn-success' value=\"Segregate\" name=\"submit\"  id=\"Segregate\" onclick=\"document.getElementById('Segregate').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
-			echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait data is processing...!<h5></span></div>";
-		}
 
-	?>
 	</div>
 </form>
 </div>
 </div>
-
 
 <?php
 
 if(isset($_POST['submit']))
 {
 	$order_sch=$_POST['schedule'];
-	$orders_join="J".$order_sch;	
+	$orders_join=$order_sch;	
     $style=$_POST['style']; 
     $color=$_POST['color'];
 	$cat_id_ref=array();
@@ -233,9 +220,9 @@ if(isset($_POST['submit']))
 			$pend_order_type[]=$cat_type[$ii];				
 		}
 	}
-	// echo sizeof($ready_cat_ref)."<br>";	
+	//echo sizeof($ready_cat_ref)."<br>";	
 	// exit();
-	// die();
+	//die();
 	if(sizeof($ready_cat_ref)>0) 	
 	{
 	    $sql2="truncate mix_temp_desti"; 
@@ -246,12 +233,11 @@ if(isset($_POST['submit']))
 		for($l=0;$l<sizeof($ready_cat_ref);$l++)
 		{
 			$sql416="select * from $bai_pro3.plandoc_stat_log where order_tid='".$ready_cat_order[$l]."' and cat_ref='".$ready_cat_ref[$l]."' and org_doc_no=0"; 
-			// echo $sql416."<br>";
 			$sql_result416=mysqli_query( $link, $sql416) or exit("Sql Error48".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result416)>0)
 			{	
 				$sql5="select tid,order_tid from $bai_pro3.cat_stat_log where order_tid='".$ready_cat_order[$l]."' and tid='".$ready_cat_ref[$l]."'";
-		
+			
 				$sql_result5=mysqli_query( $link, $sql5) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row=mysqli_fetch_array($sql_result5)) 
 				{ 
@@ -279,7 +265,9 @@ if(isset($_POST['submit']))
 					
 					$tot_qty=array(); 
 					$sql6="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=\"$cat_ref\" and remarks=\"Normal\" order by acutno";
+
 					//echo $sql6."<br>";
+					
 					$sql_result16=mysqli_query( $link, $sql6) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($sql_row1=mysqli_fetch_array($sql_result16)) 
 					{ 
@@ -327,6 +315,7 @@ if(isset($_POST['submit']))
 							if($qts[$sizes_array[$ii]]>0) 
 							{ 
 								$sql7="insert into $bai_pro3.mix_temp_source (doc_no,cat_ref,cutt_ref,mk_ref,size,qty,plies,cutno) values ($doc_no,$cat_ref,$cut_ref,$mk_ref,\"".$sizes_array[$ii]."\",".$qts[$sizes_array[$ii]].",\"".$plies."\",\"".$cutno."\")"; 
+							//	echo $sql71."<br>";
 								 mysqli_query( $link, $sql7) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							} 
 						} 
@@ -334,7 +323,8 @@ if(isset($_POST['submit']))
 						{ 
 							if($qts_ex_val[$sizes_array[$kk]]>0) 
 							{ 
-								$sql71="insert into $bai_pro3.mix_temp_source (doc_no,cat_ref,cutt_ref,mk_ref,size,qty,plies,cutno) values ($doc_no,$cat_ref,$cut_ref,$mk_ref,\"".$qts_ex_size[$sizes_array[$kk]]."\",".$qts_ex_val[$sizes_array[$kk]].",\"".$plies."\",\"".$cutno."\")"; 
+								$sql71="insert into $bai_pro3.mix_temp_source (doc_no,cat_ref,cutt_ref,mk_ref,size,qty,plies,cutno) values ($doc_no,$cat_ref,$cut_ref,$mk_ref,\"".$qts_ex_size[$sizes_array[$kk]]."\",".$qts_ex_val[$sizes_array[$kk]].",\"".$plies."\",\"".$cutno."\")";
+							//echo $sql71."<br>"; 
 								mysqli_query( $link, $sql71) or exit("Sql Error71".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							} 
 						}
@@ -418,9 +408,6 @@ if(isset($_POST['submit']))
 						$sql9="select order_tid, order_del_no, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination from $bai_pro3.bai_orders_db_club_confirm where order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 group by order_del_no order by order_del_no limit 1";
 						$sql_result19=mysqli_query( $link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						$tot_col=mysqli_num_rows($sql_result19);
-						// $colrs=array();
-						// $order_tids=array();
-						// $destination_id_new=array();
 						while($sql_row19=mysqli_fetch_array($sql_result19)) 
 						{
 							$del=$sql_row19["order_del_no"];
@@ -495,6 +482,7 @@ if(isset($_POST['submit']))
 				
 				$size_p=array();
 				$size_q=array();
+				
 				//Executing Docket Creation & Updation
 				$sql1="SELECT cutno,order_col_des,order_del_no,order_tid,doc_no,GROUP_CONCAT(size ORDER BY size) as size,GROUP_CONCAT(qty ORDER BY size) as  ratio,cat_ref,plies FROM $bai_pro3.`mix_temp_desti` where size NOT LIKE \"%p_%\" and cat_ref='".$cat_ref."' GROUP BY order_tid,doc_no order by doc_no*1"; 
 				//echo $sql1."<br>";
@@ -656,15 +644,11 @@ if(isset($_POST['submit']))
 					//echo $sqlx."<br>";
 					mysqli_query( $link, $sqlx) or exit("Sql Error1.69".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				}
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-				function Redirect() {
-					location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."\";
-					}
-				</script>";
-				echo " <div class='alert alert-success alert-dismissible'>
-				<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
-				<strong>Success!</strong> Successfully Splitting Completed.
-				</div>"; 
+				
+				// echo " <div class='alert alert-success alert-dismissible'>
+				// <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+				// <strong>Success!</strong> Successfully Splitting Completed.
+				// </div>"; 
 				//echo "<h3>Try Again Later<h3>";
 				if(sizeof($pending_cat_order)>0)
 				{	
@@ -679,6 +663,11 @@ if(isset($_POST['submit']))
 				
 			}
 		}
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',1,'N')."&color=$color&style=$style&schedule=$order_sch&club_status=2\";
+			}
+		</script>";
 	} 
 	else 
 	{ 		

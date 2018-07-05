@@ -1776,9 +1776,9 @@ $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
 $print_check=0;
-
-$sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
-
+//removed validation of print button
+// $sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1799,8 +1799,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //Added Backup Lots for visibility in Inspection Report
-
-$sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+//removed validation of print button
+// $sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql1="select *, if((length(ref4)=0 and qty_allocated <= 0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=$num_rows+mysqli_num_rows($sql_result1);
 if(mysqli_num_rows($sql_result1) > 0)
@@ -2109,6 +2110,7 @@ tags will be replaced.-->
   <td class=xl11824082></td>
  </tr>
  <?php 
+ 
  if($num_rows>0 and $print_check==0 and $inspection_check==1) 
  {
  	$print_report=1;
@@ -2184,8 +2186,11 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'></tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
-  <td height=21 class=xl6324082 dir=LTR width=80 style='height:15.75pt;  width:60pt'>&nbsp;</td>
-  <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=2>Auto Fill</td>
+ <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1>Auto Fill</td>
+  <!-- <td height=21 class=xl6324082 dir=LTR width=80 style='height:15.75pt;  width:60pt'>&nbsp;</td> -->
+
+   <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="alpha" id="fill_shade_grp" name="fill_shade_grp"  maxlength="8"   value="" size="6">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(4)">Fill</a></td>	
+  <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1></td>
   <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="float" id="fill_c_length" name="fill_c_length"   value="" size="3">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(1)">Fill</a></td>	
   <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
   <td class=xl6424082 dir=LTR width=64 style='width:48pt'><input type="text" id="fill_t_width" class="float" name="fill_t_width"  value="" size="3"><a class="btn btn-success btn-xs" onclick="fill(2)">Fill</a></td>
@@ -2263,7 +2268,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			$readonly = '';
 			$dropdown_read = '';
 		}
-
+		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
 		if(!in_array($authorized,$has_permission))
 		{
 			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
@@ -2765,14 +2770,15 @@ function enableButton1()
 
 	    for (var i = 0; i < rowcount; i++) 
 	    {
-	        if (parseFloat(document.input["ele_c_length[" + i + "]"].value) > 0) 
-	        {
-	            j = j + 0;
-	        }
-	        else 
-	        {
-	            j = j + 1;
-	        }
+			//removed this validation on the request of chathurangad 
+	        // if (parseFloat(document.input["ele_c_length[" + i + "]"].value) > 0) 
+	        // {
+	        //     j = j + 0;
+	        // }
+	        // else 
+	        // {
+	        //     j = j + 1;
+	        // }
 
 	        if (parseInt((document.input["ele_shade[" + i + "]"].value).length) > 0) 
 	        {
@@ -2790,14 +2796,14 @@ function enableButton1()
 	        	}
 	        }
 	       
-	        if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
-	        {
-	            j = j + 0;
-	        } 
-	        else 
-	        {
-	            j = j + 1;
-	        }
+	        // if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
+	        // {
+	        //     j = j + 0;
+	        // } 
+	        // else 
+	        // {
+	        //     j = j + 1;
+	        // }
 	        var roll_status = document.input["roll_status[" + i + "]"].value;
 	        if ((Number(roll_status)==1 || Number(roll_status)==2) )
 	        {
@@ -2820,7 +2826,8 @@ function enableButton1()
 	    }
 		
 		var counter_man = 0;
-		var classes = ['req_man','ctex_len','ticket_wid','ctex_wid','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
+		//removed this validation on the request of chathurangad ctex_len,ticket_wid,ctex_wid
+		var classes = ['req_man','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
 		var ele;
 		for(var j=0;j<classes.length;j++){
 			var ele = document.getElementsByClassName(classes[j]);
@@ -2913,59 +2920,112 @@ function fill(x,t,e)
 		var y=document.getElementById('fill_c_length').value;
 	
 		var name="ele_c_length[";
+		var name2="qty_allocated[";
 		for (var i=0; i < tot_elements; i++)
 		{
-			document.input[name+i+"]"].value=y;
-			document.input["ele_check["+i+"]"].value=1;
-			document.input[name+i+"]"].style.background="#FFCCFF";
-
-			var ele_t_length = document.getElementById('ele_t_length'+i).value;
-			var result1 = parseInt(y) - parseInt(ele_t_length);
-			if(isNaN(result1))
+			if(document.input[name2+i+"]"].value > 0)
 			{
-				result1=0;
+
 			}
-			document.getElementById('subt'+i).value = result1;
+			else
+			{
+				document.input[name+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name+i+"]"].style.background="#FFCCFF";
+
+				var ele_t_length = document.getElementById('ele_t_length'+i).value;
+				var result1 = parseInt(y) - parseInt(ele_t_length);
+				if(isNaN(result1))
+				{
+					result1=0;
+				}
+				document.getElementById('subt'+i).value = result1;
+			}
+			
 		}
 	}
 	if(x==2)
 	{
 		var y=document.getElementById('fill_t_width').value;
 		var name="ele_t_width[";
+		var name2="qty_allocated[";
 		for (var i=0; i < tot_elements; i++)
 		{
-			document.input[name+i+"]"].value=y;
-			document.input["ele_check["+i+"]"].value=1;
-			document.input[name+i+"]"].style.background="#FFCCFF";
-
-			var ele_c_width = document.getElementById('ele_c_width'+i).value;
-			var result1 = parseInt(ele_c_width) - parseInt(y);
-			if(isNaN(result1))
+			if(document.input[name2+i+"]"].value > 0)
 			{
-				result1=0;
+
 			}
-			document.getElementById('min'+i).value = result1;
+			else
+			{
+				document.input[name+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name+i+"]"].style.background="#FFCCFF";
+
+				var ele_c_width = document.getElementById('ele_c_width'+i).value;
+				var result1 = parseInt(ele_c_width) - parseInt(y);
+				if(isNaN(result1))
+				{
+					result1=0;
+				}
+				document.getElementById('min'+i).value = result1;
+			}
 		}
 	}
 	if(x==3)
 	{
 		var y=document.getElementById('fill_c_width').value;
 		var name="ele_c_width[";
+		var name2="qty_allocated[";
 		for (var i=0; i < tot_elements; i++)
 		{
-			document.input[name+i+"]"].value=y;
-			document.input["ele_check["+i+"]"].value=1;
-			document.input[name+i+"]"].style.background="#FFCCFF";
-
-			var ele_t_width = document.getElementById('ele_t_width'+i).value;
-			var result1 = parseInt(y) - parseInt(ele_t_width);
-			if(isNaN(result1))
+			if(document.input[name2+i+"]"].value > 0)
 			{
-				result1=0;
+
 			}
-			document.getElementById('min'+i).value = result1;
+			else
+			{
+				document.input[name+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name+i+"]"].style.background="#FFCCFF";
+
+				var ele_t_width = document.getElementById('ele_t_width'+i).value;
+				var result1 = parseInt(y) - parseInt(ele_t_width);
+				if(isNaN(result1))
+				{
+					result1=0;
+				}
+				document.getElementById('min'+i).value = result1;
+			}
 		}	
-	}	
+	}
+	if(x==4)
+	{
+		var y=document.getElementById('fill_shade_grp').value;
+		var name1="ele_shade[";
+		var name2="qty_allocated[";
+
+		for (var i=0; i < tot_elements; i++)
+		{
+			if(document.input[name2+i+"]"].value > 0){
+
+			}
+			else
+			{
+				document.input[name1+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name1+i+"]"].style.background="#FFCCFF";
+			}
+		
+
+			// var fill_shade_grp = document.getElementById('ele_t_width'+i).value;
+			// var result1 = parseInt(y) - parseInt(ele_t_width);
+			// if(isNaN(result1))
+			// {
+			// 	result1=0;
+			// }
+			// document.getElementById('min'+i).value = result1;
+		}	
+	}		
 }
 
 function change_body(x,y,z)

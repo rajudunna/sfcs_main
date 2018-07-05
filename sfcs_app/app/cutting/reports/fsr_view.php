@@ -111,12 +111,14 @@ $cat=$_POST['cat'];
 			<div class="col-sm-2">
 				<label for='shift'>Shift : </label>
 				<select class='form-control' name="shift">
-					<option value='"A", "B"' <?php if($shift=='"A", "B"'){ echo "selected"; } ?> >All</option>
 					<?php foreach($shifts_array as $key=>$shift){
-							echo "<option value='$shift'>$shift</option>";
+							echo "<option value=\"'$shift'\">$shift</option>";
+							$all_shifts = $all_shifts."'$shift',";
 					}
 					?>
+					<option value="<?= rtrim($all_shifts,',') ?>" selected>All</option>
 				</select>
+				
 			</div>
 			<?php
 				$cat_query = "select * from $bai_pro3.tbl_category where status=1";
@@ -134,7 +136,7 @@ $cat=$_POST['cat'];
 					<option value='<?= $all_cats ?>'>All</option>
 				<?php
 					foreach($cat_result as $key=>$value){
-						echo "<option value='".$value['cat_name']."'>".$value['cat_name']."</option>";
+						echo "<option value=\"'".$value['cat_name']."'\">".$value['cat_name']."</option>";
 					}
 				?>
 				</select>
@@ -312,9 +314,10 @@ if(isset($_POST['submit']) && $reptype == 1)
 		$fab_ret=$sql_row['fab_returned'];
 		$damages=round($sql_row['damages'],2);
 		$shortages=round($sql_row['shortages'],2);
-		$team_leader = $sql_row['leader_name'];
+		$leader_name = $sql_row['leader_name'];
 
 		$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
+		//echo $sql1;
 		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error e".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -530,7 +533,7 @@ if(isset($_POST['submit']) && $reptype==2)
 		}
 //NEW Enhancement for category breakup	
    
- $sql="select distinct section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. "order by section";
+$sql="select distinct section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. "order by section";
 
 //mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -549,7 +552,7 @@ $sql_num_check=mysqli_num_rows($sql_result);
 	echo "<th>Pct %</th>";
 	echo "<th>Net Saving</th>";
 	echo "<th>Pct %</th>";
-	echo "<th>Team Leader</th>";
+	//echo "<th>Team Leader</th>";
 	echo "</tr>";
 
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -797,7 +800,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	echo "<td>".$act_saving_pct."%</td>";
 	echo "<td>$net_saving_sum</td>";
 	echo "<td>".$net_saving_pct."%</td>";
-	echo "<td>$leader_name</td>";
+	//echo "<td>$leader_name</td>";
 	echo "</tr>";
  	}	
 }

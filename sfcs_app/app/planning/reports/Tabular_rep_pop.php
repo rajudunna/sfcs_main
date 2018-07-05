@@ -6,11 +6,16 @@ $end_week=$_GET['week_end'];
 $style_id=$_GET['style_id'];
 //echo $color_code;
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+
 ?>
 
 <html>
 <head>
-<TITLE>Movex Analytica - POPUP REPORT</TITLE>
+<div class="panel panel-primary">
+<div class="panel-heading">	
+Movex Analytical - POPUP REPORT
+</div>
+
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
 <link href="table_style.css" rel="stylesheet" type="text/css" />
@@ -18,7 +23,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <body>
 <?php 
 // include ("dbconf_pop.php"); ?>
-
+<div class="panel-body">
 <span><h2>Order Status - POP REPORT</h2></span>
 
 <?php
@@ -41,11 +46,12 @@ $style_status_summ="style_status_summ";
 
 //Create Temp Table
 
-$sql="create TEMPORARY table $ssc_code_temp select * from bai_pro2.ssc_code_temp";
+$sql="create TEMPORARY table $bai_pro2.ssc_code_temp select * from $bai_pro2.ssc_code_temp";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-echo "<table>";
-echo "<tr>";
+
+echo "<table class=table table-bodered>";
+echo "<tr class=danger>";
 echo "<th>Style</th>";
 echo "<th>Schedule</th>";
 echo "<th>Color</th>";
@@ -66,22 +72,22 @@ echo "</tr>";
 $ssc_code_base=array();
 $i=0;
 
-$sql11="delete from $ssc_code_temp";
-mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql11="delete from $bai_pro2.ssc_code_temp";
+mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
-$sql11="select distinct ssc_code from $shipment_plan where exfact_date between \"".$start_week."\" and \"".$end_week."\" and style_id=\"$style_id\"";
-mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql11="select distinct ssc_code from $bai_pro2.shipment_plan where exfact_date between \"".$start_week."\" and \"".$end_week."\" and style_id=\"$style_id\"";
+
+$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row11=mysqli_fetch_array($sql_result11))
 {
-	$sql111="insert ignore into $ssc_code_temp(ssc_code) values (\"".$sql_row11['ssc_code']."\")";
-	mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql111="insert ignore into $bai_pro2.ssc_code_temp(ssc_code) values (\"".$sql_row11['ssc_code']."\")";
+	mysqli_query($link, $sql111) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 
 
-$sql111="select distinct ssc_code from $ssc_code_temp";
-mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql111="select distinct ssc_code from $bai_pro2.ssc_code_temp";
+mysqli_query($link, $sql111) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row111=mysqli_fetch_array($sql_result111))
 {
@@ -108,16 +114,16 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 	$order_qty=0;
 	$style_id="";
 
-	$sql="select * from $style_status_summ where ssc_code=\"$ssc_code\"";
+	$sql="select * from $bai_pro2.style_status_summ where ssc_code=\"$ssc_code\"";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$sql1="select act_cut,act_in,output,act_fg,act_ship from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$sql_row['style']."\" and order_del_no=\"".$sql_row['sch_no']."\" and order_col_des=\"".$sql_row['color']."\"";
 		//echo $sql1."<br>";
-		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$cut_qty=$sql_row1['act_cut'];
@@ -130,7 +136,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 
 	$sql1="select * from $bai_pro2.shipment_plan where ssc_code=\"$ssc_code\"";
 	//echo $sql1."<br>";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
@@ -145,8 +151,8 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 		$color=$sql_row1['color'];
 	}
 
-	$sql1="select sum(order_qty) as \"order_qty\" from $shipment_plan where ssc_code=\"$ssc_code\"";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql1="select sum(order_qty) as \"order_qty\" from $bai_pro2.shipment_plan where ssc_code=\"$ssc_code\"";
+	mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
@@ -220,8 +226,8 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 echo "</table>";
 ?>	
 
-
-
+</div>
+</div>
 
 </body>
 </html>

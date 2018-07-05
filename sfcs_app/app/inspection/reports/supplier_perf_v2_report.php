@@ -3,7 +3,7 @@
 // Need to show summary of batches and update the log time for fully filled batches. Total Batches || Updated Batches || Pending Batches || Passed Batches || Failed Batches
 ?>
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 $Page_Id='SFCS_0058';
 ?>
@@ -63,7 +63,7 @@ if(isset($_POST['filter']))
 	$edate=$_POST['edate'];
 	
 	echo "<div id='main_div' class='table-responsive' style='height:500px;'>";
-	echo "<hr/>";
+	echo "<br/>";
 	$table="<table id='table1' class='table table-bordered'>";
 	$table.="<tr class = 'headings'>";
 	$table.="<th>RECORD #</th><th>WEEK #</th><th>ENTRY NO</th><th>INVOICE NO & DATE</th><th>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th><th>SWATCHES RECEIVED FROM (SUPPLIER/WH)</th><th>INSPECTED DATE</th><th>RELEASED DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th><th>M3 LOT#</th><th>PO</th><th>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th>
@@ -72,7 +72,7 @@ if(isset($_POST['filter']))
 	$table.="</tr>";
 	
 	$sql="select * from $bai_rm_pj1.supplier_performance_track where DATE(log_time) between \"".$sdate."\" AND \"".$edate."\" AND LENGTH(srdfs)>0 AND LENGTH(srtfs)>0 AND LENGTH(srdfsw)>0 AND LENGTH(reldat)>0 AND LENGTH(quality)>0 AND LENGTH(rms)>0 AND LENGTH(const)>0 AND LENGTH(syp)>0 AND LENGTH(qty_insp_act)>0 AND LENGTH(defects)>0 AND LENGTH(skew_cat_ref)>0 AND LENGTH(sup_test_rep)>0 AND LENGTH(inspec_per_rep)>0 AND LENGTH(cc_rep)>0 AND LENGTH(fab_tech)>0 ORDER BY log_time";
-
+    //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result) > 0)
 	{
@@ -187,10 +187,10 @@ if(isset($_POST['filter']))
 	{
 		$flag=false;
 	}
-	if(!$flag){
-		echo "<script>sweetAlert('No Data Found','','warning');
-		$('#main_div').hide()</script>";
-	}
+	// if(!$flag){
+	// 	echo "<script>sweetAlert('No Data Found','','warning');
+	// 	$('#main_div').hide()</script>";
+	// }
 }
 
 ?>
@@ -220,7 +220,7 @@ if(isset($_POST['filter']))
 $(document).ready(function(){
 	$('#reset_table1').addClass('btn');
 	$('#reset_table1').addClass('btn-warning');
-	$('#reset_table1').css({'width':'100px'});
+	$('#reset_table1').css({'height':'20px','width':'40px','padding' : '0px 0px'});
 })
 
 </script>

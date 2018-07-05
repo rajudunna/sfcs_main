@@ -351,7 +351,7 @@ table.gridtable td {
                         $result2=mysqli_query($link, $sql2) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row2=mysqli_fetch_array($result2))
                         {
-                            //$destination=$sql_row2["dest"];
+                            $destination=$sql_row2["dest"];
                             $color=$sql_row2["color"];
                             $order_tid=$sql_row2["order_tid"];
                             $style=$sql_row2["style"];

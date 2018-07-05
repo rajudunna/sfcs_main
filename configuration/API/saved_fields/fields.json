@@ -330,15 +330,16 @@
                 "values": [
                     {
                         "label": "Meters",
-                        "value": "meters",
-                        "selected": true
+                        "value": "meters"
+                        
                     },
                     {
                         "label": "Yards",
-                        "value": "yards"
+                        "value": "yards",
+                        "selected": true
                     }
                 ],
-                "value": "meters"
+                "value": "yards"
             },
             {
                 "type": "checkbox-group",

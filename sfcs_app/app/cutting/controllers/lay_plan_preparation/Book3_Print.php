@@ -2164,7 +2164,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status!=NULL) {echo "COPY"; } else {echo "";}?></strong></td>
+  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status!=NULL) {echo "COPY"; } else {echo "COPY";}?></strong></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -3524,10 +3524,8 @@ $tkt_width[]=$sql_row['ref6'];
 
 if($print_status==NULL)
 {
-	
 	$sql="update plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
 	// echo $sql;
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
+	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
 }
 ?>

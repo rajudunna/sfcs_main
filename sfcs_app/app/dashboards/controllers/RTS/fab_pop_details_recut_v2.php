@@ -286,10 +286,10 @@ th
 
 		<?php
 
-		echo "<div class='col-md-5'><h2>Fabric Status</h2>
-		<div id=\"msg\">
-		<center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing data...</font></h1></center>
-		</div>";
+		echo "<div class='col-md-5'><h2>Fabric Status</h2>";
+		// <div id=\"msg\">
+		// <center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing data...</font></h1></center>
+		// </div>
 			
 		ob_end_flush();
 		flush();
@@ -476,13 +476,14 @@ th
 				$mklength=$sql_row2['mklength'];
 			}
 			
-			$material_req=$mklength*$sql_row1['a_plies'];
+			//$material_req=$mklength*$sql_row1['a_plies'];
+			$material_req=$sql_row1['material_req'];
 			$extra=0;
 			//if(substr($style_ref,0,1)=="M") { $extra=round(($material_req*0.01),2); }
 			{ $extra=round(($material_req*0.01),2); }
 			//echo "<td>".($material_req+$extra)."</td>";
 			$temp_tot=($material_req);
-			$total+=$temp_tot;
+			$total+=round($temp_tot,2);
 			$temp_tot=0;
 			//For new implementation
 			
@@ -500,29 +501,7 @@ th
 			}
 			else
 			{
-			
-				//This was with limitation that we cannt execute for reclassified schedules
-				/*echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
-				$sql1x="select ref1,lot_no from bai_rm_pj1.fabric_status where item in (select compo_no from cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
-				$sql_result1x=mysql_query($sql1x,$link) or exit("Sql Error".mysql_error());
-				if(mysql_num_rows($sql_result1x)==0)
-				{
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";		
-				}
-				else
-				{
-					while($sql_row1x=mysql_fetch_array($sql_result1x))
-					{
-						echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
-						
-					}
-				}
-				echo "</td>"; */
+			    
 				
 				echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
 				
@@ -533,11 +512,13 @@ th
 				echo "<input type=\"hidden\" name=\"cat_ref[]\" value=\"".$cat_ref."\">";
 				//For New Implementation
 				
-				$sql1x="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
+				$sql1x="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from $bai_pro3.cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
+				
 				$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error: $sql1x".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1x=mysqli_fetch_array($sql_result1x))
 				{
-					echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
+					echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" class=\"manual doc_nos_class\"
+					name=\"manual".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
 					
 				}
 				echo "<input type=\"text\" value=\"\"  class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
@@ -547,29 +528,6 @@ th
 				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";
 				echo "<input type=\"text\" value=\"\" class='manual doc_nos_class' name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\" onkeypress=\"return numbersOnly(event)\"/><br/>";		
 				echo "</td>";
-				
-				
-				/* echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
-				$sql1x="select ref1,lot_no from bai_rm_pj1.fabric_status where item in (select compo_no from cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
-				$sql_result1x=mysql_query($sql1x,$link) or exit("Sql Error".mysql_error());
-				if(mysql_num_rows($sql_result1x)==0)
-				{
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-					echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";		
-				}
-				else
-				{
-					while($sql_row1x=mysql_fetch_array($sql_result1x))
-					{
-						echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
-						
-					}
-				}
-				echo "</td>"; */
 				
 				
 				
@@ -583,7 +541,9 @@ th
 			echo "<td><img src='".$img_path."'></td>";
 			echo "<td>";
 			
-			include_once('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
+			//include_once('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
+
+			//include('../'.getFullURL($_GET['r'],'fab_detail_track_include.php','R'));
 			getDetails("R",$sql_row1['doc_no']);
 			echo "</td>";
 		}
@@ -601,7 +561,7 @@ th
 		if($enable_allocate_button==1)
 		{
 			echo "<input type=\"submit\" id='allocate' name=\"allocate\" value=\"Allocate\" class='btn btn-success'>";
-			echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
+			//echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
 		}
 		echo "</form>";
 		//NEW Implementation for Docket generation from RMS
@@ -615,7 +575,7 @@ th
 			$fabric_status=$sql_row1['fabric_status'];
 		}
 
-		$sql111="select ROUND(SUM(allocated_qty),2) AS alloc,count(distinct doc_no) as doc_count from $bai_rm_pj1.fabric_cad_allocation where doc_no in (".implode(",",$docket_num).")";
+		$sql111="select ROUND(SUM(allocated_qty),2) AS alloc,count(distinct doc_no) as doc_count from $bai_rm_pj1.fabric_cad_allocation where doc_no in ('".implode(",",$docket_num)."')";
 		//echo $sql111."<br>";
 		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--11: $sql111".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row111=mysqli_fetch_array($sql_result111))
