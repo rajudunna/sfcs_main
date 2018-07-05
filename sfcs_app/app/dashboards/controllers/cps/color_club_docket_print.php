@@ -37,6 +37,7 @@ $cut_table=array("0","T1","T1","T2","T2","T3","T3","T4","T4","T5","T5","T6","T6"
 $color_codes=array();
 $fab_codes=array();
 $met_req=array();
+$mk_length_ref=array();
 $plies=array();
 $qty=array();
 $docs=array();
@@ -78,6 +79,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$gmtway=$sql_row['gmtway'];
 	//Extra 1% added to avoid cad saving manual mrn claims.
 	$mklength=$sql_row['mklength'];
+	$mk_length_ref[]=$sql_row['mklength'];
 	//if(substr($style,0,1)=="M") 
 	$savings=$sql_row['savings'];
 { $extra=round((($sql_row['material_req'])*$savings),2); } 
@@ -1740,9 +1742,9 @@ tags will be replaced.-->
   }
   $fab_uom = 'Yds';//hardcoded
   echo "<th $style_css>Plies</th>";
+  echo "<th $style_css>MK Length</th>";
   echo "<th $style_css>$fab_uom</th>";
   echo "</tr>";
-  
 
   for($j=0;$j<sizeof($color_codes);$j++)
   {
@@ -1760,24 +1762,25 @@ tags will be replaced.-->
 		}
 	  }
 	  echo "<td $style_css>".$plies[$j]."</td>";
+	  echo "<td $style_css>".$mk_length_ref[$j]."</td>";
 	  echo "<td $style_css>".$met_req[$j]."</td>";
 	  echo "</tr>";
   }
   
 echo "<tr>";
   
-  echo "<th $style_css colspan=4>Total</th>";
+  echo "<th $style_css colspan=11>Total</th>";
   //echo "<th>Color</th>";
   //echo "<th>Job</th>";
   //echo "<th>Doc.ID</th>";
-   for($i=0;$i<sizeof($sizes_tit);$i++)
-  {
-  	// if($qty[$i]>0)
-	// {
-		echo "<th $style_css>".($qty[$i]*array_sum($plies))."</th>";
-	//}
-  }
-  echo "<th $style_css>".((array_sum($qty)/sizeof($color_codes))*array_sum($plies))."</th>";
+//    for($i=0;$i<sizeof($sizes_tit);$i++)
+//   {
+//   	// if($qty[$i]>0)
+// 	// {
+// 		echo "<th $style_css>".($qty[$i]*array_sum($plies))."</th>";
+// 	//}
+//   }
+//   echo "<th $style_css>".((array_sum($qty)/sizeof($color_codes))*array_sum($plies))."</th>";
   echo "<th $style_css>".array_sum($met_req)."</th>";
   echo "</tr>";
   
@@ -1909,10 +1912,7 @@ echo "<tr>";
   <td rowspan=2 class=xl9817319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $purlength; ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
-  	//Extra 1% added to avoid cad saving manual mrn claims.
-	$extra=round((($purlength*array_sum($plies))*$savings),2);
-	echo (($purlength*array_sum($plies))+$extra);  ?></td>
+  border-top:none;width:48pt'><?php echo array_sum($met_req); ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $actwidth; ?></td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
@@ -2035,7 +2035,8 @@ for($i=0;$i<sizeof($roll_det);$i++){
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>
 		<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>
-		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>				
+		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
+
 		</tr>";
 }
 echo "</table>";	
