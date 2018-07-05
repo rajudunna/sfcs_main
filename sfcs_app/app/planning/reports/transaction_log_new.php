@@ -28,7 +28,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <div class="panel panel-primary">
 <div class="panel-heading">Production Status Report</div>
 <div class="panel-body">
-<div class="form-group">
+<div class="form-group" style='width:1069px;';>
 <form name="text" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
 <div class="col-md-12">
 <div class="col-md-2">
@@ -39,7 +39,7 @@ End : <input data-toggle="datepicker"  class="form-control" type="text" id="demo
 </div>
 <div class="col-md-1">
 Section: <select name="module" class="form-control">
-<option value="0" <?php  if($module=="All") { echo "selected"; }?>>All</option>
+<option value="0" <?php  if($module=="All")?>selected>All</option>
 <?php
 /*for($i=1;$i<=8; $i++)
 {
@@ -65,7 +65,7 @@ for($i=0;$i<sizeof($sql_mods);$i++)
 {
 	if($sql_mods[$i]==$module)
 	{
-		echo "<option value=\"".$sql_mods[$i]."\" selected>".str_pad($sql_mods[$i],2,"0",0)."</option>";
+		echo "<option value=\"".$sql_mods[$i]."\" >".str_pad($sql_mods[$i],2,"0",0)."</option>";
 	}
 	else
 	{
@@ -196,8 +196,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 echo "<div>";
 echo "<div  class ='table-responsive'>";
-echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" ><thead>";
-echo "<tr class='tblheading'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Job No</th>";
+echo "<table id=\"table1\" style='max-width: 89%;'  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" ><thead>";
+echo "<tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Job No</th>";
 //echo "<th>SMV</th><th>NOP</th>";
 echo "<th>Input Job No</th><th>Size</th><th>Quantity</th></tr></tbody>";
 
@@ -207,7 +207,7 @@ if($hour_from='Day' and $hour_to='Day'){
 {
 $sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as \"bac_Qty\",bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,sum(size_s01) as \"size_s01\", sum(size_s02) as \"size_s02\", sum(size_s03) as \"size_s03\",sum(size_s04) as \"size_s04\",sum(size_s05) as \"size_s05\",sum(size_s06) as \"size_s06\", sum(size_s07) as \"size_s07\",sum(size_s08) as \"size_s08\",sum(size_s09) as \"size_s09\",sum(size_s10) as \"size_s10\",sum(size_s11) as \"size_s11\", sum(size_s12) as \"size_s12\", sum(size_s13) as \"size_s13\",sum(size_s14) as \"size_s14\", sum(size_s15) as \"size_s15\", sum(size_s16) as \"size_s16\",sum(size_s17) as \"size_s17\", sum(size_s18) as \"size_s18\", sum(size_s19) as \"size_s19\",sum(size_s20) as \"size_s20\", sum(size_s21) as \"size_s21\", sum(size_s22) as \"size_s22\",sum(size_s23) as \"size_s23\", sum(size_s24) as \"size_s24\", sum(size_s25) as \"size_s25\",sum(size_s26) as \"size_s26\",sum(size_s27) as \"size_s27\", sum(size_s28) as \"size_s28\",sum(size_s29) as \"size_s29\", sum(size_s30) as \"size_s30\",sum(size_s31) as \"size_s31\",sum(size_s32) as \"size_s32\",sum(size_s33) as \"size_s33\",sum(size_s34) as \"size_s34\",sum(size_s35) as \"size_s35\",sum(size_s36) as \"size_s36\",sum(size_s37) as \"size_s37\",sum(size_s38) as \"size_s38\",sum(size_s39) as \"size_s39\",sum(size_s40) as \"size_s40\",sum(size_s41) as \"size_s41\",sum(size_s42) as \"size_s42\",sum(size_s43) as \"size_s43\",sum(size_s44) as \"size_s44\",sum(size_s45) as \"size_s45\",sum(size_s46) as \"size_s46\",sum(size_s47) as \"size_s47\",sum(size_s48) as \"size_s48\",sum(size_s49) as \"size_s49\",sum(size_s50) as \"size_s50\" from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" and bac_shift in ('$shift') and bac_no in ($module) and hour(bac_lastup) between \"$hour_from\" and \"$hour_to\" and bac_qty>0 group by bac_date,bac_style,delivery,color,ims_doc_no,bac_sec,bac_no,bac_shift,bac_lastup order by bac_date,bac_no*1,ims_doc_no,bac_shift,bac_lastup";
 }
-// echo $sql;
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -365,8 +365,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			echo "</tr></tbody>";
 		}
 		
+		
 }
-
+if($sql_row==0){
+	echo "<div class='alert alert-danger'>No Data Found</div>";
+	echo "<script>$(document).ready(function(){
+			  $('#table1').css('display','none');
+		  });</script>";
+}
 
 echo "</table></div></div>";
 
