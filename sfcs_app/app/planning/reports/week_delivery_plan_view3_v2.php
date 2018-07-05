@@ -17,9 +17,10 @@ $end_date_w=$start_date_w+(60*60*24*6); // define sunday
 
 $start_date_w=date("Y-m-d",$start_date_w);
 $end_date_w=date("Y-m-d",$end_date_w);
-$start_date_w="2017-12-09";
-$end_date_w="2018-06-09";
-
+// $start_date_w="2017-12-09";
+// $end_date_w="2018-07-04";
+// echo $start_date_w;
+// echo $end_date_w;
 ?>
 
 
@@ -305,8 +306,8 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	//TEMP Tables
 	$x=1;
 	$sql="select * from $bai_pro4.$table_ref2 where ref_id in (select ref_id from $bai_pro4.$table_ref $query) order by ref_id+0";
-	echo $sql."<br>";
-	mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// echo $sql."<br>";
+	// mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -497,7 +498,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		$order_total=0;
 
 		$sql1="select * from $bai_pro4.$table_ref3 where ship_tid=$shipment_plan_id";
-		echo "<br>2=".$sql1."<br>";
+		// echo "<br>2=".$sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
