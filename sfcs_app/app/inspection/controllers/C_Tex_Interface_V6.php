@@ -1776,9 +1776,9 @@ $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
 $print_check=0;
-
-$sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
-
+//removed validation of print button
+// $sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1799,8 +1799,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //Added Backup Lots for visibility in Inspection Report
-
-$sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+//removed validation of print button
+// $sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql1="select *, if((length(ref4)=0 and qty_allocated <= 0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=$num_rows+mysqli_num_rows($sql_result1);
 if(mysqli_num_rows($sql_result1) > 0)
@@ -2109,6 +2110,7 @@ tags will be replaced.-->
   <td class=xl11824082></td>
  </tr>
  <?php 
+ 
  if($num_rows>0 and $print_check==0 and $inspection_check==1) 
  {
  	$print_report=1;
@@ -2768,14 +2770,15 @@ function enableButton1()
 
 	    for (var i = 0; i < rowcount; i++) 
 	    {
-	        if (parseFloat(document.input["ele_c_length[" + i + "]"].value) > 0) 
-	        {
-	            j = j + 0;
-	        }
-	        else 
-	        {
-	            j = j + 1;
-	        }
+			//removed this validation on the request of chathurangad 
+	        // if (parseFloat(document.input["ele_c_length[" + i + "]"].value) > 0) 
+	        // {
+	        //     j = j + 0;
+	        // }
+	        // else 
+	        // {
+	        //     j = j + 1;
+	        // }
 
 	        if (parseInt((document.input["ele_shade[" + i + "]"].value).length) > 0) 
 	        {
@@ -2793,14 +2796,14 @@ function enableButton1()
 	        	}
 	        }
 	       
-	        if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
-	        {
-	            j = j + 0;
-	        } 
-	        else 
-	        {
-	            j = j + 1;
-	        }
+	        // if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
+	        // {
+	        //     j = j + 0;
+	        // } 
+	        // else 
+	        // {
+	        //     j = j + 1;
+	        // }
 	        var roll_status = document.input["roll_status[" + i + "]"].value;
 	        if ((Number(roll_status)==1 || Number(roll_status)==2) )
 	        {
@@ -2823,7 +2826,8 @@ function enableButton1()
 	    }
 		
 		var counter_man = 0;
-		var classes = ['req_man','ctex_len','ticket_wid','ctex_wid','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
+		//removed this validation on the request of chathurangad ctex_len,ticket_wid,ctex_wid
+		var classes = ['req_man','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
 		var ele;
 		for(var j=0;j<classes.length;j++){
 			var ele = document.getElementsByClassName(classes[j]);
