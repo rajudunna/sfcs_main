@@ -29,10 +29,7 @@ $end_date_w=date("Y-m-d",$end_date_w);
 	
 	margin:2px;
 }
-#tableone thead.Fixed
-{
-     position: absolute; 
-}
+
 </style>
 
 <style>
@@ -240,7 +237,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		$query="where ex_factory_date_new between \"$start_date_w\" and  \"$end_date_w\" ".$order_div_ref." order by left(style,1),schedule_no+0";
 	}
 	
-	echo '<div class="table-responsive">';
+	echo '<div class="table-responsive" style="max-height:600px">';
 	//echo '<div id="targetone" name="targetone" class="target col-sm-12 toggleview">toggle columns:</div>'
 	
 	//TEMP Tables
