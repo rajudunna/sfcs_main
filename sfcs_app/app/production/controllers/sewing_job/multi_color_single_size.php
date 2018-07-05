@@ -1,10 +1,14 @@
 <script>
 
-function calculateqty(i)
+function calculateqty(i,sizeOfColors)
 {
-	alert(i);
-	var qty=document.getElementsByName('qty').value;
-	alert(qty);
+	for (var j = 0; j < sizeOfColors; j++)
+	{
+		var GarPerBag=document.getElementById('GarPerBag_'+i+'_'+j).value;
+		var BagPerCart=document.getElementById('BagPerCart_'+i).value;
+		var GarPerCart = GarPerBag*BagPerCart;
+		document.getElementById('GarPerCart_'+i+'_'+j).value=GarPerCart;
+	}
 }
 
 </script>
@@ -34,26 +38,14 @@ function calculateqty(i)
 	echo "<div class='panel panel-primary'>";
 	echo "<div class='panel-heading'>Multi Color Single Size</div>";
 	echo "<div class='panel-body'>";
-
 	if ($size_of_ordered_colors==$size_of_planned_colors)
 	{
 		echo "<script>sweetAlert('Please prepare Lay Plan for all Colors in this Schedule - $schedule','','warning')</script>";
-		// echo "<br><br><br><div class='alert alert-danger'>Please prepare Lay Plan for all Colors in this Schedule - $schedule_original</div>";
 	}
 	else
-	{
-	
-	
-	//first table
-	echo "";
-	$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
-	$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-	echo "<div class='panel panel-primary'>";
-	echo "<div class='panel-heading'>Number of Garments For Poly Bag</div>
-	<div class='panel-body'>
-		<table class=\"table table-bordered\">
-			<tr>
-				<th>Color</th>";
+	{		
+		$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
+		$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 		while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
 		{
 			$parent_id = $sewing_jobratio_color_details['parent_id'];
@@ -63,96 +55,108 @@ function calculateqty(i)
 			$size1 = explode(",",$size);
 			// var_dump($size);
 		}
-		for ($i=0; $i < sizeof($size1); $i++)
-		{
-			$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
-			// echo $Original_size_query;
-			$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
-			while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
-			{
-				$Ori_size = $Original_size_details['size_title'];
-			}
-			echo "<th>".$Ori_size."</th>";
-		}
-		echo "</tr>";
-		for ($j=0; $j < sizeof($color1); $j++)
-		{
-			echo "<tr>
-					<td>$color1[$j]</td>";
-					for ($i=0; $i < sizeof($size1); $i++)
-					{
-						echo "<td><input type='text' name='qty' class='form-control'></td>";
-					}
-			echo "</tr>";
-		}
-		echo "</table></div></div>";
-	
-	//second table
-	echo "<div class='panel panel-primary'>";
-	echo "<div class='panel-heading'>Number of Poly Bags Per Carton</div>";
-	echo "<div class='panel-body'>";
-	echo "<div class='table-responsive'>";
-	
-	echo "<table class='table table-bordered'>";
-	
-		for ($i=0; $i < sizeof($size1); $i++)
-		{
-			$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
-			// echo $Original_size_query;
-			$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
-			while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
-			{
-				$Ori_size = $Original_size_details['size_title'];
-			}
-			echo "<th>".$Ori_size."</th>";
-		}
-		echo "</tr>";
-		// for ($j=0; $j < sizeof($color1); $j++)
-		// {
-			echo "<tr>";
-					for ($i=0; $i < sizeof($size1); $i++)
-					{
-						echo "<td><input type='text' name='qty' class='form-control' onchange=calculateqty($i);></td>";
-					}
-			echo "</tr>";
-		// }	
-	echo "</table>";
-	
-	echo "</div></div></div>";
-	
-	
-	
-	//third table	
-	echo "<div class='panel panel-primary'>";
-	echo "<div class='panel-heading'>Number of Garments Per Carton</div>
-	<div class='panel-body'>
-		<table class=\"table table-bordered\">
-			<tr>
-				<th>Color</th>";
+		//first table
+		echo "<div class='panel panel-primary'>";
+				echo "<div class='panel-heading'>Number of Garments Per Poly Bag</div>
+				<div class='panel-body'>
+					<table class=\"table table-bordered\">
+						<tr>
+							<th>Color</th>";
+							// Display Sizes
+							for ($i=0; $i < sizeof($size1); $i++)
+							{
+								$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
+								// echo $Original_size_query;
+								$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
+								while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
+								{
+									$Ori_size = $Original_size_details['size_title'];
+								}
+								echo "<th>".$Ori_size."</th>";
+							}
+						echo "</tr>";
+						// Display Textboxes
+						$k=0;
+						for ($j=0; $j < sizeof($color1); $j++)
+						{
+							echo "<tr>
+									<td>$color1[$j]</td>";
+									for ($i=0; $i < sizeof($size1); $i++)
+									{
+										echo "<td><input type='text' name='GarPerBag' id='GarPerBag_".$i."_".$k."' class='form-control' value=''></td>";
+									}
+							echo "</tr>";
+							$k++;
+						}
+					echo "</table>
+				</div>
+			</div>";
 		
-		for ($i=0; $i < sizeof($size1); $i++)
-		{
-			$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
-			// echo $Original_size_query;
-			$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
-			while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
-			{
-				$Ori_size = $Original_size_details['size_title'];
-			}
-			echo "<th>".$Ori_size."</th>";
-		}
-		echo "</tr>";
-		for ($j=0; $j < sizeof($color1); $j++)
-		{
-			echo "<tr>
-					<td>$color1[$j]</td>";
-					for ($i=0; $i < sizeof($size1); $i++)
-					{
-						echo "<td><input type='text' readonly='true' name='qtyfinal' class='form-control'></td>";
-					}
-			echo "</tr>";
-		}
-		echo "</table></div></div>";
+		//second table
+		echo "<div class='panel panel-primary'>";
+				echo "<div class='panel-heading'>Number of Poly Bags Per Carton</div>";
+				echo "<div class='panel-body'>";
+					echo "<table class='table table-bordered'>
+						<tr>";
+							// Show Sizes
+							for ($i=0; $i < sizeof($size1); $i++)
+							{
+								$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
+								// echo $Original_size_query;
+								$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
+								while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
+								{
+									$Ori_size = $Original_size_details['size_title'];
+								}
+								echo "<th>".$Ori_size."</th>";
+							}
+						echo "</tr>";
+						echo "<tr>";
+							for ($i=0; $i < sizeof($size1); $i++)
+							{
+								echo "<td><input type='text' name='BagPerCart' id='BagPerCart_".$i."' class='form-control' onchange=calculateqty($i,$size_of_ordered_colors);></td>";
+							}
+						echo "</tr>";
+					echo "</table>
+				</div>
+			</div>";
+		
+		
+		
+		//third table	
+		echo "<div class='panel panel-primary'>
+				<div class='panel-heading'>Number of Garments Per Carton</div>
+				<div class='panel-body'>
+					<table class=\"table table-bordered\">
+						<tr>
+							<th>Color</th>";
+								for ($i=0; $i < sizeof($size1); $i++)
+								{
+									$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
+									// echo $Original_size_query;
+									$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
+									while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
+									{
+										$Ori_size = $Original_size_details['size_title'];
+									}
+									echo "<th>".$Ori_size."</th>";
+								}
+						echo "</tr>";
+						$k=0;
+						for ($j=0; $j < sizeof($color1); $j++)
+						{
+							echo "<tr>";
+									echo "<td>$color1[$j]</td>";
+									for ($i=0; $i < sizeof($size1); $i++)
+									{
+										echo "<td><input type='text' readonly='true' name='GarPerCart' id='GarPerCart_".$i."_".$k."' class='form-control' value=''></td>";
+									}
+							echo "</tr>";
+							$k++;
+						}
+					echo "</table>
+				</div>
+			</div>";
 	}
 	echo "</div></div>";
 	
