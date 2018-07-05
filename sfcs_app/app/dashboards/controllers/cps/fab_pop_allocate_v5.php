@@ -162,6 +162,7 @@ document.getElementById('process_message').style.visibility="hidden";
 function check_qty(x)
 {
 	var check=0;
+	
 	for(i=0;i<x;i++)
 	{
 		var doc_ref=document.input["doc_ref["+i+"]"].value;
@@ -243,11 +244,11 @@ var srgp;
 var srgp1;
 var doc_count = 0;
 var verifier = 0;
+var doc_flag=0;
 function check_qty2(x,m,n,doc)
 {	
 //PLEASE DO NOT MODIFY THE ORDER OF ANY OF THE BELOW STATEMENTS OF THIS FUNCTION
 	////  code for shrinkage validation
-	
 	if(doc_count==0){
 		old_doc = doc;
 		doc_count++;
@@ -412,6 +413,17 @@ function check_qty2(x,m,n,doc)
 
 		}
 		
+		//validation for allocate button for component
+		if(doc_flag!=doc_ref){
+			if(alloc_qty>0){
+				check=1;
+				alloc_disab=Number(alloc_disab)+Number(check);
+				doc_flag=doc_ref;
+			}
+			
+		}
+		
+
 		if(selc<mat_req)
 		{
 			check=0;
@@ -440,8 +452,10 @@ function check_qty2(x,m,n,doc)
 		}
 	}
 
+	//alert(x);
+	//alert(alloc_disab);
 	//new condition added for allocated button enabled/disabled based on quantity
-	if(x==alloc_disab){
+	if(x<=alloc_disab){
 		document.getElementById("allocate_new").style.display = "block";
 	}else{	
 		document.getElementById("allocate_new").style.display = "none";
@@ -460,7 +474,7 @@ function check_qty2(x,m,n,doc)
 </script>
 
 <div class="panel panel-primary">
-	<div class="panel-heading"><b>Fabric Allocation Panel</b></div>
+	<div class="panel-heading"><b><font size="5">Fabric Allocation Panel</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="red">Note:</font>Please select atleast one roll for allocation in every component</b></div>
 		<div class="panel-body">
 <?php
 //Auto Selecting Based on Manual Decision.
