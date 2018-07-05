@@ -29,7 +29,7 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 <br/>
 <div class='row'>
 	<div class='col-md-2 pull-left'>
-		<a class='btn btn-primary' href = '<?= $url ?>'> Back</a>
+		<a class='btn btn-primary' href = '<?= $url ?>'> << Back</a>
 	</div>
 </div>
 <br/>
@@ -820,7 +820,12 @@ if(isset($_POST['allocate']))
 				}
 			}
 		}
-		
+		$sql = "SELECT SUM(purwidth) AS pur_width FROM bai_pro3.cat_stat_log WHERE compo_no='".$doc_com[$i]."'";
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error 13 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			$pur_width =$sql_row['pur_width'];
+		}
 		//Table to show all list of available items
 		if(sizeof($lot_db_2)>0)
 		{
@@ -831,7 +836,7 @@ if(isset($_POST['allocate']))
 		echo "<input type=\"hidden\" name=\"lot_db[$i]\" value=\"".implode(";",$lot_db)."\">";
 		echo "<input type=\"hidden\" name=\"min_width[$i]\" value=\"\">";
 		
-		echo "<h2><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]."</font></h2>";
+		echo "<h2><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." ".$pur_width."</font></h2>";
 		
 		//To show stats
 		echo "<h3>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\"></span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h3>";
@@ -841,21 +846,21 @@ if(isset($_POST['allocate']))
 		echo "<th>Invoice No</th>";	
 		echo "<th>GRN Date</th>";	
 		echo "<th>Batch No</th>";	
-		echo "<th>Item Code</th>";	
-		echo "<th>Lot No</th>";	
+		echo "<th id='col1'>Item Code</th>";	
+		echo "<th id='col2'>Lot No</th>";	
 		echo "<th>Shade</th>";
-		echo "<th>Shrinkage Group</th>";
-		echo "<th>Shrinkage Width</th>";	
-		echo "<th>Shrinkage Length</th>";
+		echo "<th id='col'>Shrinkage Group</th>";
+		echo "<th id='col'>Shrinkage Width</th>";	
+		echo "<th id='col'>Shrinkage Length</th>";
 		echo "<th>Roll No</th>";	
-		echo "<th>Location</th>";	
+		echo "<th id='col'>Location</th>";	
 		echo "<th>Group</th>";	
 		echo "<th>Tkt Width</th>";	
 		echo "<th>Ctx Width</th>";	
 		echo "<th>Tkt Length</th>";	
 		echo "<th>Ctx Length</th>";		
 		echo "<th>Balance</th>";
-		echo "<th>Allocated</th>";
+		echo "<th id='col'>Allocated</th>";
 		echo "<th>Issued Qty</th>";
 		echo "<th>Select</th>";
 		//echo "<th>Allocated Qnty</th>";
@@ -907,14 +912,13 @@ if(isset($_POST['allocate']))
 					$inv_no=trim($sql_row['inv_no']);
 				}
 			}
-			
 			echo "<tr bgcolor=\"$bg_color\" id=\"trchk$doc_ref$j\">";
 			echo "<td style='display:none'><input type='hidden' id='srgp$doc_ref$j' value='".$sql_row['shrinkage_group']."'></td>";
 			echo "<td>".$sql_row['inv_no']."</td>";
 			echo "<td>".$sql_row['grn_date']."</td>";
 			echo "<td>".$sql_row['batch_no']."</td>";
-			echo "<td>".$sql_row['item']."</td>";
-			echo "<td>".$sql_row['lot_no']."</td>";
+			echo "<td id='col1'>".$sql_row['item']."</td>";
+			echo "<td id='col1'>".$sql_row['lot_no']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
 			echo "<td>".$sql_row['shrinkage_group']."</td>";
 			echo "<td>".$sql_row['shrinkage_width']."</td>";
@@ -1006,7 +1010,7 @@ if(isset($_POST['allocate']))
 		}//Allow only for selected lots/docs
 		
 		//Table to show all list of available items
-		echo "<input type='hidden' value='$doc_ref' id='doc_chk'>";
+		echo "<input type='hidden' value='$doc_ref' id='doc_chk'><br/>";
 	}
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\" onclick=\"check_qty(".sizeof($doc).")\">";
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\">";
@@ -1060,7 +1064,7 @@ if(isset($_POST['allocate']))
 	} );
 </script>
 <style>
-   th, td { white-space: nowrap; }
+   /* th, td { white-space: nowrap; }
     div.dataTables_wrapper {
         width: 2000px;
         margin: 0 auto;
@@ -1068,7 +1072,50 @@ if(isset($_POST['allocate']))
  
     th input {
         width: 90%;
-    }
+    } */
+	table{
+		table-layout:fixed;
+	}
+	th{
+		white-space:pre-wrap;
+	}
+	td{
+		white-space:pre-wrap;
+		/* word-wrap:break-word */
+	}
+	#col {
+		padding :5px;
+	}
+	#col1 {
+		width:8%;
+		padding :0px;
+	}
+	#col2 {
+		width:5%;
+		padding :0px;
+	}
+	.btn-primary{
+		background-color:#337ab7;
+		color:white;
+		font-weight:bold;
+		padding:4px;
+		text-decoration:none;
+	}
+	.btn-success{
+		background-color:#5cb85c;
+		color:white;
+		font-weight:bold;
+		padding:4px;
+		text-decoration:none;
+		borde: 1 px solid #5cb85c;
+	}
+	h3{
+		background-color:#f4a82e;
+		width:32%;
+		color:white;
+		padding:2pt;
+	}
+	}
 </style>
 </body>
 </html>

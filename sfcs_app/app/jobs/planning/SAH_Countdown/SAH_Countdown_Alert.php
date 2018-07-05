@@ -70,18 +70,18 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS
 		// echo $act_out_check."<br>";
 if($act_out_check>0)
 {		
-	// $successful = $email->send(implode(",",$em), 'QCI - SAH Countdown Report', 'from: Shop Floor System Alert <ictsysalert@brandix.com>');
-	$successful = $email->send(implode(",",$em), 'SAH Countdown Report');
+	$successful = $email->send($em, 'QCI - SAH Countdown Report', $header_from);
+	// $successful = $email->send($em, 'SAH Countdown Report');
 
 	
 	if($successful)
 	{
-		echo (implode(",",$em))."OK<br/>";
+		echo $em."OK<br/>";
 	
 	}
 	else
 	{
-		echo (implode(",",$em))."NOT OK<br/>";
+		echo $em."NOT OK<br/>";
 	}
 }	
 $end_timestamp = microtime(true);
