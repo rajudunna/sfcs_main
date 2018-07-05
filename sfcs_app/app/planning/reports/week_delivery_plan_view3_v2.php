@@ -17,8 +17,6 @@ $end_date_w=$start_date_w+(60*60*24*6); // define sunday
 
 $start_date_w=date("Y-m-d",$start_date_w);
 $end_date_w=date("Y-m-d",$end_date_w);
-$start_date_w="2017-12-09";
-$end_date_w="2018-06-09";
 
 ?>
 
@@ -243,37 +241,8 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	}
 	
 	echo '<div class="table-responsive">';
-	//echo '<div id="targetone" name="targetone" class="target col-sm-12 toggleview">toggle columns:</div>';
-	echo '<form method="post" name="test" action='.getFullURL($_GET['r'],'week_delivery_plan_edit_process.php','N').'>
-			<p style="float:right">
-				<input type="checkbox" name="option"  id="option" height= "21px" onclick="javascript:enableButton();">Enable
-				<input type="submit" name="update" id="update" class="btn btn-success" disabled value="Update">
-			</p>';
-	echo '</form>';
-
-	echo '<table id="tableone" name="table_one" cellspacing="0" class="table table-bordered"><thead>';
-
-	echo '<tr>
-		<th>S. No</th>	<th class="filter">Buyer Division</th>	<th class="filter">MPO</th>	<th class="filter">CPO</th>	<th>Customer Order No</th>	<th>Z-Feature</th><th class="filter">Style No.</th>	<th class="filter">Schedule No.</th>	<th>Colour</th><th>Actual Cut %</th><th>Ext Ship %</th>	<th>Order Total</th><th>Actual Total</th><th>Act Out %</th><th class="filter">Current Status</th><th>Rejection %</th><th>M3 Ship Qty</th><th>Total</th><th>Size</th><th>Quantity</th>';
-		if(!isset($_POST['custom']))
-		{
-			//echo '<th>XS</th>	<th>S</th>	<th>M</th>	<th>L</th>	<th>XL</th>	<th>XXL</th>	<th>XXXL</th>	<th>S06</th><th>S08</th>	<th>S10</th>	<th>S12</th>	<th>S14</th>	<th>S16</th>	<th>S18</th>	<th>S20</th>	<th>S22</th>	<th>S24</th>	<th>S26</th>	<th>S28</th><th>S30</th>';
-		}
-
-
-	echo '<th class="filter">Ex Factory</th><th class="filter">Rev. Ex-Factory</th><th class="filter">Mode</th>
-		  <th class="filter">Rev. Mode</th><th class="filter">Packing Method</th><th>Plan End Date</th>	
-		  <th class="filter">Exe. Sections</th><th>Embellishment</th>';
-	if(!isset($_POST['custom']))
-	{
-		echo '<th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th>	
-			  <th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th>';
-	}
-	echo '	<th>Plan Module</th><th>Actual Module</th><th>Planning Remarks</th><th>Production Remarks</th>
-		 	<th>Commitments</th><th>Remarks</th>
-		</tr>';
-	echo '</thead><tbody>';
-
+	//echo '<div id="targetone" name="targetone" class="target col-sm-12 toggleview">toggle columns:</div>'
+	
 	//TEMP Tables
 
 	$sql="Truncate $bai_pro4.week_delivery_plan_ref_temp";
@@ -289,11 +258,11 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$sql="insert into $bai_pro4.week_delivery_plan_ref_temp select * from $bai_pro4.week_delivery_plan_ref $query";
-	//echo $sql;
+	// echo $sql."<br>";
 	mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$sql="insert into $bai_pro4.week_delivery_plan_temp select * from $bai_pro4.week_delivery_plan where ref_id in (select ref_id from $bai_pro4.week_delivery_plan_ref_temp $query)";
-	//echo $sql;
+	// echo $sql."<br>";
 	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$sql="insert into $bai_pro4.shipment_plan_ref_view select * from $bai_pro4.shipment_plan_ref where ship_tid in (select shipment_plan_id from $bai_pro4.week_delivery_plan_temp)";
@@ -305,9 +274,39 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	//TEMP Tables
 	$x=1;
 	$sql="select * from $bai_pro4.$table_ref2 where ref_id in (select ref_id from $bai_pro4.$table_ref $query) order by ref_id+0";
-	echo $sql."<br>";
-	mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// echo $sql."<br>";
+	// mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_result) > 0)
+	{
+		echo '<form method="post" name="test" action='.getFullURL($_GET['r'],'week_delivery_plan_edit_process.php','N').'>
+			<p style="float:right">
+				<input type="checkbox" name="option"  id="option" height= "21px" onclick="javascript:enableButton();">Enable
+				<input type="submit" name="update" id="update" class="btn btn-success" disabled value="Update">
+			</p>';
+		echo '</form>';
+		echo '<table id="tableone" name="table_one" cellspacing="0" class="table table-bordered"><thead>';
+
+		echo '<tr>
+		<th>S. No</th>	<th class="filter">Buyer Division</th>	<th class="filter">MPO</th>	<th class="filter">CPO</th>	<th>Customer Order No</th>	<th>Z-Feature</th><th class="filter">Style No.</th>	<th class="filter">Schedule No.</th>	<th>Colour</th><th>Actual Cut %</th><th>Ext Ship %</th>	<th>Order Total</th><th>Actual Total</th><th>Act Out %</th><th class="filter">Current Status</th><th>Rejection %</th><th>M3 Ship Qty</th><th>Total</th><th>Size</th><th>Quantity</th>';
+		if(!isset($_POST['custom']))
+		{
+			//echo '<th>XS</th>	<th>S</th>	<th>M</th>	<th>L</th>	<th>XL</th>	<th>XXL</th>	<th>XXXL</th>	<th>S06</th><th>S08</th>	<th>S10</th>	<th>S12</th>	<th>S14</th>	<th>S16</th>	<th>S18</th>	<th>S20</th>	<th>S22</th>	<th>S24</th>	<th>S26</th>	<th>S28</th><th>S30</th>';
+		}
+
+
+		echo '<th class="filter">Ex Factory</th><th class="filter">Rev. Ex-Factory</th><th class="filter">Mode</th>
+		  <th class="filter">Rev. Mode</th><th class="filter">Packing Method</th><th>Plan End Date</th>	
+		  <th class="filter">Exe. Sections</th><th>Embellishment</th>';
+		if(!isset($_POST['custom']))
+		{
+			echo '<th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th>	
+				  <th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th>';
+		}
+		echo '	<th>Plan Module</th><th>Actual Module</th><th>Planning Remarks</th><th>Production Remarks</th>
+				<th>Commitments</th><th>Remarks</th>
+			</tr>';
+		echo '</thead><tbody>';
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$edit_ref=$sql_row['ref_id'];
@@ -497,7 +496,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		$order_total=0;
 
 		$sql1="select * from $bai_pro4.$table_ref3 where ship_tid=$shipment_plan_id";
-		echo "<br>2=".$sql1."<br>";
+		// echo "<br>2=".$sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -613,106 +612,14 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			$o_xxxl=$sql_rowza['order_s_xxxl'];
 			$act_cut_val=$sql_rowza['act_cut'];
 			$act_out_val=$sql_rowza['output'];
-			$title_size_s01=$sql_rowza['title_size_s01'];
-			$title_size_s02=$sql_rowza['title_size_s02'];
-			$title_size_s03=$sql_rowza['title_size_s03'];
-			$title_size_s04=$sql_rowza['title_size_s04'];
-			$title_size_s05=$sql_rowza['title_size_s05'];
-			$title_size_s06=$sql_rowza['title_size_s06'];
-			$title_size_s07=$sql_rowza['title_size_s07'];
-			$title_size_s08=$sql_rowza['title_size_s08'];
-			$title_size_s09=$sql_rowza['title_size_s09'];
-			$title_size_s10=$sql_rowza['title_size_s10'];
-			$title_size_s11=$sql_rowza['title_size_s11'];
-			$title_size_s12=$sql_rowza['title_size_s12'];
-			$title_size_s13=$sql_rowza['title_size_s13'];
-			$title_size_s14=$sql_rowza['title_size_s14'];
-			$title_size_s15=$sql_rowza['title_size_s15'];
-			$title_size_s16=$sql_rowza['title_size_s16'];
-			$title_size_s17=$sql_rowza['title_size_s17'];
-			$title_size_s18=$sql_rowza['title_size_s18'];
-			$title_size_s19=$sql_rowza['title_size_s19'];
-			$title_size_s20=$sql_rowza['title_size_s20'];
-			$title_size_s21=$sql_rowza['title_size_s21'];
-			$title_size_s22=$sql_rowza['title_size_s22'];
-			$title_size_s23=$sql_rowza['title_size_s23'];
-			$title_size_s24=$sql_rowza['title_size_s24'];
-			$title_size_s25=$sql_rowza['title_size_s25'];
-			$title_size_s26=$sql_rowza['title_size_s26'];
-			$title_size_s27=$sql_rowza['title_size_s27'];
-			$title_size_s28=$sql_rowza['title_size_s28'];
-			$title_size_s29=$sql_rowza['title_size_s29'];
-			$title_size_s30=$sql_rowza['title_size_s30'];
-			$title_size_s31=$sql_rowza['title_size_s31'];
-			$title_size_s32=$sql_rowza['title_size_s32'];
-			$title_size_s33=$sql_rowza['title_size_s33'];
-			$title_size_s34=$sql_rowza['title_size_s34'];
-			$title_size_s35=$sql_rowza['title_size_s35'];
-			$title_size_s36=$sql_rowza['title_size_s36'];
-			$title_size_s37=$sql_rowza['title_size_s37'];
-			$title_size_s38=$sql_rowza['title_size_s38'];
-			$title_size_s39=$sql_rowza['title_size_s39'];
-			$title_size_s40=$sql_rowza['title_size_s40'];
-			$title_size_s41=$sql_rowza['title_size_s41'];
-			$title_size_s42=$sql_rowza['title_size_s42'];
-			$title_size_s43=$sql_rowza['title_size_s43'];
-			$title_size_s44=$sql_rowza['title_size_s44'];
-			$title_size_s45=$sql_rowza['title_size_s45'];
-			$title_size_s46=$sql_rowza['title_size_s46'];
-			$title_size_s47=$sql_rowza['title_size_s47'];
-			$title_size_s48=$sql_rowza['title_size_s48'];
-			$title_size_s49=$sql_rowza['title_size_s49'];
-			$title_size_s50=$sql_rowza['title_size_s50'];
-			$title_size_s01=$sql_rowza['title_size_s01'];
-			$title_size_s02=$sql_rowza['title_size_s02'];
-			$title_size_s03=$sql_rowza['title_size_s03'];
-			$title_size_s04=$sql_rowza['title_size_s04'];
-			$title_size_s05=$sql_rowza['title_size_s05'];
-			$title_size_s06=$sql_rowza['title_size_s06'];
-			$title_size_s07=$sql_rowza['title_size_s07'];
-			$title_size_s08=$sql_rowza['title_size_s08'];
-			$title_size_s09=$sql_rowza['title_size_s09'];
-			$title_size_s10=$sql_rowza['title_size_s10'];
-			$title_size_s11=$sql_rowza['title_size_s11'];
-			$title_size_s12=$sql_rowza['title_size_s12'];
-			$title_size_s13=$sql_rowza['title_size_s13'];
-			$title_size_s14=$sql_rowza['title_size_s14'];
-			$title_size_s15=$sql_rowza['title_size_s15'];
-			$title_size_s16=$sql_rowza['title_size_s16'];
-			$title_size_s17=$sql_rowza['title_size_s17'];
-			$title_size_s18=$sql_rowza['title_size_s18'];
-			$title_size_s19=$sql_rowza['title_size_s19'];
-			$title_size_s20=$sql_rowza['title_size_s20'];
-			$title_size_s21=$sql_rowza['title_size_s21'];
-			$title_size_s22=$sql_rowza['title_size_s22'];
-			$title_size_s23=$sql_rowza['title_size_s23'];
-			$title_size_s24=$sql_rowza['title_size_s24'];
-			$title_size_s25=$sql_rowza['title_size_s25'];
-			$title_size_s26=$sql_rowza['title_size_s26'];
-			$title_size_s27=$sql_rowza['title_size_s27'];
-			$title_size_s28=$sql_rowza['title_size_s28'];
-			$title_size_s29=$sql_rowza['title_size_s29'];
-			$title_size_s30=$sql_rowza['title_size_s30'];
-			$title_size_s31=$sql_rowza['title_size_s31'];
-			$title_size_s32=$sql_rowza['title_size_s32'];
-			$title_size_s33=$sql_rowza['title_size_s33'];
-			$title_size_s34=$sql_rowza['title_size_s34'];
-			$title_size_s35=$sql_rowza['title_size_s35'];
-			$title_size_s36=$sql_rowza['title_size_s36'];
-			$title_size_s37=$sql_rowza['title_size_s37'];
-			$title_size_s38=$sql_rowza['title_size_s38'];
-			$title_size_s39=$sql_rowza['title_size_s39'];
-			$title_size_s40=$sql_rowza['title_size_s40'];
-			$title_size_s41=$sql_rowza['title_size_s41'];
-			$title_size_s42=$sql_rowza['title_size_s42'];
-			$title_size_s43=$sql_rowza['title_size_s43'];
-			$title_size_s44=$sql_rowza['title_size_s44'];
-			$title_size_s45=$sql_rowza['title_size_s45'];
-			$title_size_s46=$sql_rowza['title_size_s46'];
-			$title_size_s47=$sql_rowza['title_size_s47'];
-			$title_size_s48=$sql_rowza['title_size_s48'];
-			$title_size_s49=$sql_rowza['title_size_s49'];
-			$title_size_s50=$sql_rowza['title_size_s50'];			
+			foreach($sizes_array as $key => $value)
+			{
+				if($sql_rowza['order_s_'.$value.''] > 0)
+				{
+					$size_value[$value]=$sql_rowza['order_s_'.$value.''];
+					$title_size_value[$value]=$sql_rowza['title_size_'.$value.''];
+				}
+			}	
 			
 			$total_ord=$sql_rowza['old_order_s_s01']+$sql_rowza['old_order_s_s02']+$sql_rowza['old_order_s_s03']+$sql_rowza['old_order_s_s04']+$sql_rowza['old_order_s_s05']+$sql_rowza['old_order_s_s06']+$sql_rowza['old_order_s_s07']+$sql_rowza['old_order_s_s08']+$sql_rowza['old_order_s_s09']+$sql_rowza['old_order_s_s10']+$sql_rowza['old_order_s_s11']+$sql_rowza['old_order_s_s12']+$sql_rowza['old_order_s_s13']+$sql_rowza['old_order_s_s14']+$sql_rowza['old_order_s_s15']+$sql_rowza['old_order_s_s16']+$sql_rowza['old_order_s_s17']+$sql_rowza['old_order_s_s18']+$sql_rowza['old_order_s_s19']+$sql_rowza['old_order_s_s20']+$sql_rowza['old_order_s_s21']+$sql_rowza['old_order_s_s22']+$sql_rowza['old_order_s_s23']+$sql_rowza['old_order_s_s24']+$sql_rowza['old_order_s_s25']+$sql_rowza['old_order_s_s26']+$sql_rowza['old_order_s_s27']+$sql_rowza['old_order_s_s28']+$sql_rowza['old_order_s_s29']+$sql_rowza['old_order_s_s30']+$sql_rowza['old_order_s_s31']+$sql_rowza['old_order_s_s32']+$sql_rowza['old_order_s_s33']+$sql_rowza['old_order_s_s34']+$sql_rowza['old_order_s_s35']+$sql_rowza['old_order_s_s36']+$sql_rowza['old_order_s_s37']+$sql_rowza['old_order_s_s38']+$sql_rowza['old_order_s_s39']+$sql_rowza['old_order_s_s40']+$sql_rowza['old_order_s_s41']+$sql_rowza['old_order_s_s42']+$sql_rowza['old_order_s_s43']+$sql_rowza['old_order_s_s44']+$sql_rowza['old_order_s_s45']+$sql_rowza['old_order_s_s46']+$sql_rowza['old_order_s_s47']+$sql_rowza['old_order_s_s48']+$sql_rowza['old_order_s_s49']+$sql_rowza['old_order_s_s50'];
 
@@ -967,14 +874,14 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 			if(!isset($_POST['custom']))
 			{
-				 for($i=0;$i<13;$i++){
-					$size_val= ${'size_'.$sizes_array[$i]};
+				 for($i=0;$i<sizeof($sizes_array);$i++){
+					$size_val= $size_value[$sizes_array[$i]];
 					//echo '<br>size_'.$sizes_array[$i]."<br>";
-					$title_size=${'title_size_'.$sizes_array[$i]};
+					$title_size=$title_size_value[$sizes_array[$i]];
 					if($title_size==''){
 						$title_size=$sizes_array[$i];
 					}
-					//echo "<br>".$size_val."<br>";
+					// echo "<br>".$size_val."<br>";
 					if($size_val>0){
 						echo "<tr>
 							 <td $highlight> $x  </td>	<td $highlight>$buyer_division</td>	<td $highlight>$mpo</td>	<td $highlight>$cpo</td>	<td $highlight>$order_no</td>	<td $highlight>$z_feature</td><td $highlight>$style</td>	<td $highlight>$schedule_no</td>	<td $highlight>$color</td><td$highlight>$act_cut_per</td><td$highlight>$ext_cut_per</td>	<td $highlight>$order_total</td><td $highlight>$plan_total</td><td $highlight>$act_out_per</td><td $highlight>$status</td><td$highlight>$rej_per</td><td$highlight>$ship_qty</td><td $highlight>$actu_total</td>";
@@ -993,7 +900,11 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	echo '</tbody>';
 	echo '</table>';
 	echo '</div>';
-	
+	}
+	else
+	{
+		echo "<div class='alert alert-info'>There are no deliveries in this week.</div>";
+	}
 }
 
 ?>
