@@ -167,6 +167,15 @@
 					echo "</select>";
 				?>
 				&nbsp;&nbsp;
+				Pack Method: 
+				<?php 
+				echo "<select id=\"cart_method\" class='form-control' name=\"cart_method\" >";
+				for($j=0;$j<sizeof($operation);$j++)
+				{
+					echo "<option value=\"".$j."\">".$operation[$j]."</option>";
+				}
+				echo "</select>";
+				?>
 				<input type="submit" name="submit" id="submit" class="btn btn-success" onclick="return check_val();" value="Submit">
 				</form>
 		</div>
