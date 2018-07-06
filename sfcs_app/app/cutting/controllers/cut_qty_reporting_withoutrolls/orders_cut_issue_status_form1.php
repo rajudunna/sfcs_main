@@ -1,6 +1,7 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 ?>
 
 
@@ -108,6 +109,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		}	
 	}
 }
+
 echo "<table class='table table-bordered'>";
 echo "<tr>";
 echo "<th>Doc ID</th><th>Cut No</th>";
