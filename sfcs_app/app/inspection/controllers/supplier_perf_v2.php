@@ -239,7 +239,7 @@ if(isset($_POST['filter']))
 	$url1=getFullURLLevel($_GET['r'],'reports/supplier_perf_v2_report.php',1,'N');
 	echo "<div id='main_div'>";
 	echo "<hr/>";
-	echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a>";
+	echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='abc'> </span> Preformance Updated &nbsp;&nbsp;||&nbsp;&nbsp; <span> </span> Performance Not Updated</a>";
 	
 	include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'supplier_perf_summary.php','R'));
 	
@@ -289,12 +289,10 @@ if(mysqli_num_rows($sql_result) > 0){
 		{	
 			$n=$n+1;
 			$mnt=$sql_row1x["mnt"];
-			echo "<tr>";	
-			echo "<td><input type=\"hidden\" name=\"bai1_rec[".$n."]\" id=\"bai1_rec\" value=\"3\"><input type=\"hidden\" name=\"month[".$n."]\" id=\"bai1_rec\" value=\"".$mnt."\">3</td>";
 			$batch_ref=$sql_row1x["batch_no"];
-			
+
 			$sql_fet="select * from $bai_rm_pj1.supplier_performance_track where tid=\"".trim($batch_ref)."-".$mnt."\"";
-			 //echo $sql_fet."<br>";
+			//echo $sql_fet."<br>";
 			$sql_result_fet=mysqli_query($link, $sql_fet) or exit("Sql Error".$sql_fet."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result_fet) > 0)
 			{
@@ -333,6 +331,7 @@ if(mysqli_num_rows($sql_result) > 0){
 					$inspec_per_rep=$sql_row_fet["inspec_per_rep"];
 					$cc_rep=$sql_row_fet["cc_rep"];
 					$fab_tech=$sql_row_fet["fab_tech"];
+					$log_time=$sql_row_fet["log_time"];
 				}
 			}
 			else
@@ -355,7 +354,19 @@ if(mysqli_num_rows($sql_result) > 0){
 				$cc_rep="";
 				$fab_tech="";
 			}
-						
+			//echo $log_time."</br>";
+			if($log_time=="0000-00-00 00:00:00"){
+				$tr_color="#d00b0b";
+			}else{
+				$tr_color="#2c7b038a";
+			}
+			//echo $tr_color."</br>";
+			echo "<tr style='background-color:".$tr_color."'>";	
+			echo "<td><input type=\"hidden\" name=\"bai1_rec[".$n."]\" id=\"bai1_rec\" value=\"3\"><input type=\"hidden\" name=\"month[".$n."]\" id=\"bai1_rec\" value=\"".$mnt."\">3</td>";
+			
+			
+
+			//echo $log_time."</br>";			
 			$sql1l="select DATE(grn_date) as dat,week(grn_date)+1 as wkno,month(grn_date) as mnt,inv_no,item as item,GROUP_CONCAT(CONCAT(\"'\",lot_no,\"'\")) as lot,po_no as po,item_desc as col,pkg_no,item_name from $bai_rm_pj1.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" and batch_no=\"".$batch_ref."\" and supplier=\"".$supplier_name."\" and month(grn_date)=\"".$mnt."\"";
 			// echo $sql1l."<br>";
 			$sql_result1l=mysqli_query($link, $sql1l) or exit("Sql Error".$sql1l.mysqli_error($GLOBALS["___mysqli_ston"]));
