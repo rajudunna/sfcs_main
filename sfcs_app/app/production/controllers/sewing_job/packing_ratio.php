@@ -1,20 +1,31 @@
 <script language="javascript" type="text/javascript">
-	function enableButton() 
+	function calculateqty(size_count,sizeOfColors)
 	{
-		if(document.getElementById('option').checked)
+		for (var row_count = 0; row_count < sizeOfColors; row_count++)
 		{
-			document.getElementById('submit').disabled='';
-		} 
-		else 
-		{
-			document.getElementById('submit').disabled='true';
+			var GarPerBag=document.getElementById('GarPerBag_'+size_count+'_'+row_count).value;
+			var BagPerCart=document.getElementById('BagPerCart_'+size_count).value;
+			var GarPerCart = GarPerBag*BagPerCart;
+			document.getElementById('GarPerCart_'+size_count+'_'+row_count).value=GarPerCart;
 		}
 	}
 
-	function button_disable()
+	function calculateqty1(sizeofsizes,sizeOfColors)
 	{
-		document.getElementById('process_message').style.hidden="false";
-		document.getElementById('submit').style.disabled='true';
+		var total=0;
+		for (var row_count = 0; row_count < sizeOfColors; row_count++)
+		{
+			for(var size=0;size < sizeofsizes; size++)
+			{
+				var GarPerBag=document.getElementById('GarPerBag_'+size+'_'+row_count).value;
+				var BagPerCart=document.getElementById('BagPerCart').value;
+				var GarPerCart = GarPerBag*BagPerCart;
+				document.getElementById('GarPerCart_'+size+'_'+row_count).value=GarPerCart;
+				total = total+GarPerCart;
+			}
+			document.getElementById('total_'+row_count).value=total;
+			total=0;
+		}
 	}
 
 	function firstbox()
@@ -23,15 +34,8 @@
 		window.location.href =url1+"&style="+document.mini_order_report.style.value;
 	}
 
-	// function secondbox()
-	// {
-	// 	var url2 = '<?= getFullUrl($_GET['r'],'carton_ratio.php','N'); ?>';
-		// window.location.href =url2+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value;
-	// }
-
 	function check_val()
 	{
-
 		var style=document.getElementById("style").value;
 		var schedule=document.getElementById("schedule").value;
 		var pack_method=document.getElementById("pack_method").value;
@@ -39,58 +43,12 @@
 		if(style=='NIL' || schedule=='NIL' || pack_method=='0')
 		{
 			sweetAlert('Please Select the Values','','warning');
-			
 			return false;
 		}
 		else
 		{
 			return true;
 		}
-
-	}
-
-	function check_val1()
-	{
-		//alert('Test');
-		var carton_tot=document.getElementById("carton_tot").value;
-		var barcode=document.getElementById("barcode").value;
-		//var mini_order_qty=document.getElementById("mini_order_qty").value;
-		var count=document.getElementById("total_cnt").value;
-		//alert(count);
-		var total_val=0;
-		for(i=0;i<count;i++)
-		{
-			if(Number(document.getElementById("ratio["+i+"]").value)<=0)
-			{
-				sweetAlert('Fill all the Ratios','','info');
-				return false;
-			}
-		}
-		if(carton_tot>=0 && barcode>0)
-		{
-			//alert('Ok');
-		}
-		else
-		{
-			alert('Please Check the values.');
-			document.getElementById('save').style.display=''
-			document.getElementById('msg1').style.display='none';
-			return false;
-		}
-	}
-
-	function check_sum1()
-	{
-		//alert('okaeypress');
-		var count=document.getElementById("total_cnt").value;
-		//alert(count);
-		var total_val=0;
-		for(i=0;i<count;i++)
-		{
-			total_val+=Number(document.getElementById("ratio["+i+"]").value);
-		}
-		//alert(total_val);
-		document.getElementById('carton_tot').value=total_val;
 	}
 </script>
 
@@ -232,119 +190,120 @@
 							$title = "Multi Color Single Size";
 							$combo='YES';
 						}
-						
-						echo "<div class='panel panel-primary'>";
-							echo "<div class='panel-heading'>$title</div>";
-							echo "<div class='panel-body'>";
-								//first table
-								echo "<div class='panel panel-primary'>";
-										echo "<div class='panel-heading'>Number of Garments Per Poly Bag</div>
-										<div class='panel-body'>
-											<table class=\"table table-bordered\">
-												<tr>
-													<th>Color</th>";
-													// Display Sizes
-													$sizes_to_display=array();
-													for ($i=0; $i < sizeof($size1); $i++)
-													{
-														$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
-														// echo $Original_size_query;	
-														$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Size Details $Original_size_query");
-														while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
+						echo '<form method="POST" class="form-inline" name="SS_MS" action="#">';
+							echo "<div class='panel panel-primary'>";
+								echo "<div class='panel-heading'>$title</div>";
+								echo "<div class='panel-body'>";
+									//first table
+									echo "<div class='panel panel-primary'>";
+											echo "<div class='panel-heading'>Number of Garments Per Poly Bag</div>
+											<div class='panel-body'>
+												<table class=\"table table-bordered\">
+													<tr>
+														<th>Color</th>";
+														// Display Sizes
+														$sizes_to_display=array();
+														for ($i=0; $i < sizeof($size1); $i++)
 														{
-															$Ori_size = $Original_size_details['size_title'];
-															$sizes_to_display[] = $Original_size_details['size_title'];
-														}
-														echo "<th>".$Ori_size."</th>";
-													}
-													echo "<th>Combo</th>
-												</tr>";
-												// Display Textboxes
-												$row_count=0;
-												for ($j=0; $j < sizeof($color1); $j++)
-												{
-													if ($combo=='YES') {
-														$combo_value=1;
-														$readonly = '';
-													} else if ($combo=='NO') {
-														$combo_value=$j+1;
-														$readonly = 'readonly';
-													}
-													// echo $combo_value;
-													echo "<tr>
-															<td>$color1[$j]</td>";
-															for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+															$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
+															// echo $Original_size_query;	
+															$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Size Details $Original_size_query");
+															while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
 															{
-																echo "<td><input type='text' name='GarPerBag' id='GarPerBag_".$size_count."_".$row_count."' class='form-control' value=''></td>";
+																$Ori_size = $Original_size_details['size_title'];
+																$sizes_to_display[] = $Original_size_details['size_title'];
 															}
-															echo "<td><input type='text' name='combo' id='combo' class='form-control' value='".$combo_value."' $readonly></td>
-														</tr>";
-													$row_count++;
-												}
-											echo "</table>
-										</div>
-									</div>";
-								
-								//second table
-								echo "<div class='panel panel-primary'>";
-										echo "<div class='panel-heading'>Number of Poly Bags Per Carton</div>";
-										echo "<div class='panel-body'>";
-											echo "<table class='table table-bordered'>
-												<tr>";
-													// Show Sizes
-													for ($i=0; $i < sizeof($sizes_to_display); $i++)
+															echo "<th>".$Ori_size."</th>";
+														}
+														echo "<th>Combo</th>
+													</tr>";
+													// Display Textboxes
+													$row_count=0;
+													for ($j=0; $j < sizeof($color1); $j++)
 													{
-														echo "<th>".$sizes_to_display[$i]."</th>";
+														if ($combo=='YES') {
+															$combo_value=1;
+															$readonly = '';
+														} else if ($combo=='NO') {
+															$combo_value=$j+1;
+															$readonly = 'readonly';
+														}
+														// echo $combo_value;
+														echo "<tr>
+																<td>$color1[$j]</td>";
+																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+																{
+																	echo "<td><input type='text' name='GarPerBag' id='GarPerBag_".$size_count."_".$row_count."' class='form-control' value=''></td>";
+																}
+																echo "<td><input type='text' name='combo' id='combo' class='form-control' value='".$combo_value."' $readonly></td>
+															</tr>";
+														$row_count++;
 													}
-												echo "</tr>";
-												echo "<tr>";
-													for ($size_count=0; $size_count < sizeof($size1); $size_count++)
-													{
-														echo "<td><input type='text' name='BagPerCart' id='BagPerCart_".$size_count."' class='form-control' onchange=calculateqty($size_count,$size_of_ordered_colors);></td>";
-													}
-												echo "</tr>";
-											echo "</table>
-										</div>
-									</div>";
-								
-								//third table	
-								echo "<div class='panel panel-primary'>
-										<div class='panel-heading'>Number of Garments Per Carton</div>
-										<div class='panel-body'>
-											<table class=\"table table-bordered\">
-												<tr>
-													<th>Color</th>";
+												echo "</table>
+											</div>
+										</div>";
+									
+									//second table
+									echo "<div class='panel panel-primary'>";
+											echo "<div class='panel-heading'>Number of Poly Bags Per Carton</div>";
+											echo "<div class='panel-body'>";
+												echo "<table class='table table-bordered'>
+													<tr>";
+														// Show Sizes
 														for ($i=0; $i < sizeof($sizes_to_display); $i++)
 														{
 															echo "<th>".$sizes_to_display[$i]."</th>";
 														}
-												echo "</tr>";
-												$row_count=0;
-												for ($j=0; $j < sizeof($color1); $j++)
-												{
+													echo "</tr>";
 													echo "<tr>";
-															echo "<td>$color1[$j]</td>";
-															for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+														for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+														{
+															echo "<td><input type='text' name='BagPerCart' id='BagPerCart_".$size_count."' class='form-control' onchange=calculateqty($size_count,$size_of_ordered_colors);></td>";
+														}
+													echo "</tr>";
+												echo "</table>
+											</div>
+										</div>";
+									
+									//third table	
+									echo "<div class='panel panel-primary'>
+											<div class='panel-heading'>Number of Garments Per Carton</div>
+											<div class='panel-body'>
+												<table class=\"table table-bordered\">
+													<tr>
+														<th>Color</th>";
+															for ($i=0; $i < sizeof($sizes_to_display); $i++)
 															{
-																echo "<td><input type='text' readonly='true' name='GarPerCart' id='GarPerCart_".$size_count."_".$row_count."' class='form-control' value=''></td>";
+																echo "<th>".$sizes_to_display[$i]."</th>";
 															}
 													echo "</tr>";
-													$row_count++;
-												}
-											echo "</table>
-										</div>
-									</div>";
-							echo "</div>
-						</div>";
+													$row_count=0;
+													for ($j=0; $j < sizeof($color1); $j++)
+													{
+														echo "<tr>";
+																echo "<td>$color1[$j]</td>";
+																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+																{
+																	echo "<td><input type='text' readonly='true' name='GarPerCart' id='GarPerCart_".$size_count."_".$row_count."' class='form-control' value=''></td>";
+																}
+														echo "</tr>";
+														$row_count++;
+													}
+												echo "</table>
+											</div>
+										</div>";
+								echo "</div>
+							</div>
+						</form>";
 					}
 					if ($pack_method==3 or $pack_method==4)
 					{
-						if ($pack_method==4)
+						if ($pack_method==3)
 						{
-							$title = "Multi Color Multi Size";
+							$title = "Single Color Multi Size";
 							$combo='YES';
 						} else {
-							$title = "Single Color Multi Size";
+							$title = "Multi Color Multi Size";
 							$combo='NO';
 						}
 						echo "<div class='panel panel-primary'>";
@@ -404,7 +363,7 @@
 										echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
 										echo "<div class='panel-body'>";
 
-										echo "<div class='col-md-3 col-sm-3 col-xs-12'>Number of Poly Bags Per Carton : <input type='text' name='BagPerCart' id='BagPerCart' class='form-control' onchange=calculateqty($sizeofsizes,$size_of_ordered_colors);></div>";
+										echo "<div class='col-md-3 col-sm-3 col-xs-12'>Number of Poly Bags Per Carton : <input type='text' name='BagPerCart' id='BagPerCart' class='form-control' onchange=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
 											
 										echo "</div>
 									 </div>";
