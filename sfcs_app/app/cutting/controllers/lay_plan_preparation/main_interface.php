@@ -406,7 +406,6 @@ if($flag==1)
 	echo "</tr></thead>";
 }
 
-<<<<<<< HEAD
 //Getting sample details here  By SK-05-07-2018 == Start
 $samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid' order by sizes_ref";
 $samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -442,9 +441,6 @@ if($num_rows_samples >0){
 
 // Samples End By SK-05-07-2018
 
-=======
-$label = 'Original Quantity';
->>>>>>> ba98eb3734c549720f44da1c97ef322e9854ce14
 if($order_no>0)
 {
 	echo "<tr ><th class=\"heading2\">Original Qty</th>";
