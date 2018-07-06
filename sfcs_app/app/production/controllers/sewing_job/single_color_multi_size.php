@@ -1,20 +1,13 @@
 <script>
 
-function calculateqty(sizeofsizes,sizeOfColors)
+function calculateqty(size_count,sizeOfColors)
 {
-	var total=0;
 	for (var row_count = 0; row_count < sizeOfColors; row_count++)
 	{
-		for(var size=0;size < sizeofsizes; size++)
-		{
-			var GarPerBag=document.getElementById('GarPerBag_'+size+'_'+row_count).value;
-			var BagPerCart=document.getElementById('BagPerCart').value;
-			var GarPerCart = GarPerBag*BagPerCart;
-			document.getElementById('GarPerCart_'+size+'_'+row_count).value=GarPerCart;
-			total = total+GarPerCart;
-		}
-		document.getElementById('total_'+row_count).value=total;
-		total=0;
+		var GarPerBag=document.getElementById('GarPerBag_'+size_count+'_'+row_count).value;
+		var BagPerCart=document.getElementById('BagPerCart_'+size_count).value;
+		var GarPerCart = GarPerBag*BagPerCart;
+		document.getElementById('GarPerCart_'+size_count+'_'+row_count).value=GarPerCart;
 	}
 }
 
@@ -43,7 +36,7 @@ function calculateqty(sizeofsizes,sizeOfColors)
 	
 	
 	echo "<div class='panel panel-primary'>";
-	echo "<div class='panel-heading'>Multi Color Multi Size</div>";
+	echo "<div class='panel-heading'>Single Color Multi Size</div>";
 	echo "<div class='panel-body'>";
 	if ($size_of_ordered_colors==$size_of_planned_colors)
 	{
@@ -64,7 +57,7 @@ function calculateqty(sizeofsizes,sizeOfColors)
 		}
 		//first table
 		echo "<div class='panel panel-primary'>";
-				echo "<div class='panel-heading'>Poly Bag Ratio</div>
+				echo "<div class='panel-heading'>Number of Garments Per Poly Bag</div>
 				<div class='panel-body'>
 					<table class=\"table table-bordered\">
 						<tr>
@@ -81,10 +74,8 @@ function calculateqty(sizeofsizes,sizeOfColors)
 									$Ori_size = $Original_size_details['size_title'];
 									$sizes_to_display[] = $Original_size_details['size_title'];
 								}
-								$sizeofsizes=sizeof($sizes_to_display);
 								echo "<th>".$Ori_size."</th>";
 							}
-							echo "<th>Combo</th>";
 						echo "</tr>";
 						// Display Textboxes
 						$row_count=0;
@@ -96,7 +87,6 @@ function calculateqty(sizeofsizes,sizeOfColors)
 									{
 										echo "<td><input type='text' name='GarPerBag' id='GarPerBag_".$size_count."_".$row_count."' class='form-control' value=''></td>";
 									}
-									echo "<td><input type='text' name='combo' id='combo' value='1' readonly='true' class='form-control'></td>";
 							echo "</tr>";
 							$row_count++;
 						}
@@ -106,19 +96,17 @@ function calculateqty(sizeofsizes,sizeOfColors)
 		
 		//second table
 		echo "<div class='panel panel-primary'>";
-				echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
-				echo "<div class='panel-body'>";
-
-				echo "<div class='col-md-3 col-sm-3 col-xs-12'>Number of Poly Bags Per Carton : <input type='text' name='BagPerCart' id='BagPerCart' class='form-control' onchange=calculateqty($sizeofsizes,$size_of_ordered_colors);></div>";
-					
-				echo "</div>
-			 </div>";
+				echo "<div class='panel-body'>
+					Number of Poly Bags Per Carton: <input type='text' name='BagPerCart' id='BagPerCart_".$size_count."' class='form-control' onchange=calculateqty($size_count,$size_of_ordered_colors);>";
+					echo "
+				</div>
+			</div>";
 		
 		
 		
 		//third table	
 		echo "<div class='panel panel-primary'>
-				<div class='panel-heading'>Total FG Per Carton Size Wise</div>
+				<div class='panel-heading'>Number of Garments Per Carton</div>
 				<div class='panel-body'>
 					<table class=\"table table-bordered\">
 						<tr>
@@ -127,7 +115,6 @@ function calculateqty(sizeofsizes,sizeOfColors)
 								{
 									echo "<th>".$sizes_to_display[$i]."</th>";
 								}
-							echo "<th>Total</th>";
 						echo "</tr>";
 						$row_count=0;
 						for ($j=0; $j < sizeof($color1); $j++)
@@ -138,7 +125,6 @@ function calculateqty(sizeofsizes,sizeOfColors)
 									{
 										echo "<td><input type='text' readonly='true' name='GarPerCart' id='GarPerCart_".$size_count."_".$row_count."' class='form-control' value=''></td>";
 									}
-									echo "<td><input type='text' name='total_".$j."' id='total_".$j."' readonly='true' class='form-control'></td>";
 							echo "</tr>";
 							$row_count++;
 						}
