@@ -824,7 +824,7 @@ if(isset($_POST['allocate']))
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error 13 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$pur_width =$sql_row['pur_width'];
+			$pur_width =round($sql_row['pur_width'],2);
 		}
 		//Table to show all list of available items
 		if(sizeof($lot_db_2)>0)
@@ -836,7 +836,7 @@ if(isset($_POST['allocate']))
 		echo "<input type=\"hidden\" name=\"lot_db[$i]\" value=\"".implode(";",$lot_db)."\">";
 		echo "<input type=\"hidden\" name=\"min_width[$i]\" value=\"\">";
 		
-		echo "<h2><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." ".$pur_width."</font></h2>";
+		echo "<h2><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h2>";
 		
 		//To show stats
 		echo "<h3>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\"></span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h3>";
@@ -1111,7 +1111,7 @@ if(isset($_POST['allocate']))
 	}
 	h3{
 		background-color:#f4a82e;
-		width:32%;
+		width:36%;
 		color:white;
 		padding:2pt;
 	}
