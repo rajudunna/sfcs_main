@@ -71,10 +71,7 @@ hza.style.display = state;
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>	
 
 
-<?php 
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
- ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <?php
@@ -371,7 +368,7 @@ echo "<div class='panel panel-default'>
 			<div class='col-md-4'>
 			<strong>Binding Consumption : </strong>";
 				include("main_interface_remarks.php");
-				echo "</div><div class='col-md-4' style='display:none;'><b>Remarks: </b>$remarks_y</div>
+				echo "</div><div class='col-md-4'><b>Remarks: </b>$remarks_y</div>
 			    <div class='col-md-4'><b>Binding Consumption: </b>$bind_con</div>";
 			echo "
 		

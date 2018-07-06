@@ -18,17 +18,17 @@
 	}
 </script>
 
-<?php
+<?php	
 	echo "<div class='panel panel-primary'>";
-		echo "<div class='panel-heading'>Single Color Multi Size</div>";
+		echo "<div class='panel-heading'>Single Color Single Size</div>";
 		echo "<div class='panel-body'>";
 			//first table
 			echo "<div class='panel panel-primary'>";
-					echo "<div class='panel-heading'>Number of Garments Per Poly Bag</div>
+					echo "<div class='panel-heading'>Carton Details</div>
 					<div class='panel-body'>
 						<table class=\"table table-bordered\">
 							<tr>
-								<th>Color</th>";
+								<th>Size</th>";
 								// Display Sizes
 								$sizes_to_display=array();
 								for ($i=0; $i < sizeof($size1); $i++)
@@ -47,10 +47,9 @@
 							echo "</tr>";
 							// Display Textboxes
 							$row_count=0;
-							for ($j=0; $j < sizeof($color1); $j++)
+							for ($j=0; $j < 2; $j++)
 							{
-								echo "<tr>
-										<td>$color1[$j]</td>";
+								echo "<tr>";
 										for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 										{
 											echo "<td><input type='text' name='GarPerBag' id='GarPerBag_".$size_count."_".$row_count."' class='form-control' value=''></td>";
@@ -61,44 +60,7 @@
 						echo "</table>
 					</div>
 				</div>";
-			
-			//second table
-			echo "<div class='panel panel-primary'>";
-					echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
-						echo "<div class='panel-body'>";
-							echo "<div class='col-md-3 col-sm-3 col-xs-12'>Number of Poly Bags Per Carton : <input type='text' name='BagPerCart' id='BagPerCart' class='form-control' onchange=calculateqty($sizeofsizes,$size_of_ordered_colors);></div>";
-						echo "</div>
-				</div>";
-			
-			//third table	
-			echo "<div class='panel panel-primary'>
-					<div class='panel-heading'>Number of Garments Per Carton</div>
-					<div class='panel-body'>
-						<table class=\"table table-bordered\">
-							<tr>
-								<th>Color</th>";
-									for ($i=0; $i < sizeof($sizes_to_display); $i++)
-									{
-										echo "<th>".$sizes_to_display[$i]."</th>";
-									}
-								echo "<th>Total</th>
-							</tr>";
-							$row_count=0;
-							for ($j=0; $j < sizeof($color1); $j++)
-							{
-								echo "<tr>";
-										echo "<td>$color1[$j]</td>";
-										for ($size_count=0; $size_count < sizeof($size1); $size_count++)
-										{
-											echo "<td><input type='text' readonly='true' name='GarPerCart' id='GarPerCart_".$size_count."_".$row_count."' class='form-control' value=''></td>";
-										}
-										echo "<td><input type='text' name='total_".$j."' id='total_".$j."' readonly='true' class='form-control'></td>";
-								echo "</tr>";
-								$row_count++;
-							}
-						echo "</table>
-					</div>
-				</div>";
 		echo "</div>
 	</div>";
+	
 ?>
