@@ -1,19 +1,26 @@
 <script>
-	function calculateqty(size_count,sizeOfColors)
+	function calculateqty(sizeofsizes,sizeOfColors)
 	{
+		var total=0;
 		for (var row_count = 0; row_count < sizeOfColors; row_count++)
 		{
-			var GarPerBag=document.getElementById('GarPerBag_'+size_count+'_'+row_count).value;
-			var BagPerCart=document.getElementById('BagPerCart_'+size_count).value;
-			var GarPerCart = GarPerBag*BagPerCart;
-			document.getElementById('GarPerCart_'+size_count+'_'+row_count).value=GarPerCart;
+			for(var size=0;size < sizeofsizes; size++)
+			{
+				var GarPerBag=document.getElementById('GarPerBag_'+size+'_'+row_count).value;
+				var BagPerCart=document.getElementById('BagPerCart').value;
+				var GarPerCart = GarPerBag*BagPerCart;
+				document.getElementById('GarPerCart_'+size+'_'+row_count).value=GarPerCart;
+				total = total+GarPerCart;
+			}
+			document.getElementById('total_'+row_count).value=total;
+			total=0;
 		}
 	}
 </script>
 
 <?php
 	echo "<div class='panel panel-primary'>";
-		echo "<div class='panel-heading'>Multi Color Single Size</div>";
+		echo "<div class='panel-heading'>Single Color Multi Size</div>";
 		echo "<div class='panel-body'>";
 			//first table
 			echo "<div class='panel panel-primary'>";
@@ -34,10 +41,10 @@
 										$Ori_size = $Original_size_details['size_title'];
 										$sizes_to_display[] = $Original_size_details['size_title'];
 									}
+									$sizeofsizes=sizeof($sizes_to_display);
 									echo "<th>".$Ori_size."</th>";
 								}
-								echo "<th>Combo</th>
-							</tr>";
+							echo "</tr>";
 							// Display Textboxes
 							$row_count=0;
 							for ($j=0; $j < sizeof($color1); $j++)
@@ -48,8 +55,7 @@
 										{
 											echo "<td><input type='text' name='GarPerBag' id='GarPerBag_".$size_count."_".$row_count."' class='form-control' value=''></td>";
 										}
-										echo "<td><input type='text' name='combo' id='combo' class='form-control' value='1' readonly></td>
-									</tr>";
+								echo "</tr>";
 								$row_count++;
 							}
 						echo "</table>
@@ -58,24 +64,10 @@
 			
 			//second table
 			echo "<div class='panel panel-primary'>";
-					echo "<div class='panel-heading'>Number of Poly Bags Per Carton</div>";
-					echo "<div class='panel-body'>";
-						echo "<table class='table table-bordered'>
-							<tr>";
-								// Show Sizes
-								for ($i=0; $i < sizeof($sizes_to_display); $i++)
-								{
-									echo "<th>".$sizes_to_display[$i]."</th>";
-								}
-							echo "</tr>";
-							echo "<tr>";
-								for ($size_count=0; $size_count < sizeof($size1); $size_count++)
-								{
-									echo "<td><input type='text' name='BagPerCart' id='BagPerCart_".$size_count."' class='form-control' onchange=calculateqty($size_count,$size_of_ordered_colors);></td>";
-								}
-							echo "</tr>";
-						echo "</table>
-					</div>
+					echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
+						echo "<div class='panel-body'>";
+							echo "<div class='col-md-3 col-sm-3 col-xs-12'>Number of Poly Bags Per Carton : <input type='text' name='BagPerCart' id='BagPerCart' class='form-control' onchange=calculateqty($sizeofsizes,$size_of_ordered_colors);></div>";
+						echo "</div>
 				</div>";
 			
 			//third table	
@@ -89,7 +81,8 @@
 									{
 										echo "<th>".$sizes_to_display[$i]."</th>";
 									}
-							echo "</tr>";
+								echo "<th>Total</th>
+							</tr>";
 							$row_count=0;
 							for ($j=0; $j < sizeof($color1); $j++)
 							{
@@ -99,6 +92,7 @@
 										{
 											echo "<td><input type='text' readonly='true' name='GarPerCart' id='GarPerCart_".$size_count."_".$row_count."' class='form-control' value=''></td>";
 										}
+										echo "<td><input type='text' name='total_".$j."' id='total_".$j."' readonly='true' class='form-control'></td>";
 								echo "</tr>";
 								$row_count++;
 							}

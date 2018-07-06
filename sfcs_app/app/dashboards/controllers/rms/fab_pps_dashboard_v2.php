@@ -112,7 +112,10 @@ if(!in_array($authorized,$has_permission))
 
 ?>
 <script>
-
+function hello(){
+	alert('hiiiiiiiii');
+	
+}
 function redirect_view()
 {
 	//x=document.getElementById('view_cat').value;
@@ -677,6 +680,7 @@ $blink_docs=array();
 $sqlx="select * from $bai_pro3.sections_db where sec_id>0";
 mysqli_query($link, $sqlx) or exit("Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
+$rows5=mysqli_num_rows($sql_resultx);	
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
 	$section=$sql_rowx['sec_id'];
@@ -726,6 +730,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 	for($x=0;$x<sizeof($mods);$x++)
 	{
+
 		$module=$mods[$x];
 		$blink_check=0;
 		
@@ -744,12 +749,28 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		}
 		
 		echo "<tr class=\"bottom\">";
+		$url5=getFullURL($_GET['r'],'module_wise_summary.php','N');
+		$sql_count="select * from $bai_pro3.plan_dash_doc_summ where act_cut_status!=\"DONE\" and module='$module'";
+		$sql_count_result=mysqli_query($link, $sql_count) or exit("Sql Error2".mysqli_error($GLOBALS["$___mysqli_ston"]));
+		$rows5=mysqli_num_rows($sql_count_result);
+		//echo $rows5;
+		if($rows5!=''or $rows5!='0'){
 		echo "<td class=\"bottom\" $iu_module_highlight>
 				<strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\">
-						  <font class=\"fontnn\" color=black >$module</font>
+						  <font class=\"fontnn\" color=black onclick=\"Popup=window.open('$url5&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$module</font>
 				</a></strong>
 			  </td>
 			  <td>";
+		}
+		else{
+			echo "<td class=\"bottom\" $iu_module_highlight>
+			<strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\">
+			<font class=\"fontnn\" color=black><a href='#'>$module</a></font>
+			</a></strong>
+			  </td>
+			  <td>";
+
+		}	  
 	   	//To disable issuing fabric to cutting tables
 		//All yellow colored jobs will be treated as Fabric Wip
 		$cut_wip_control=3000;
@@ -759,7 +780,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 
 		$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_issue_status<>\"DONE\" ".$order_div_ref." GROUP BY order_del_no,acutno,clubbing order by priority limit $priority_limit";
-		//echo $sql1."<br>";
+		//echo "Module : ".$sql1."<br>";
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 		if($_GET['view']==1)
 		{
@@ -772,7 +793,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" ".$order_div_ref." order by priority limit $priority_limit";
 			$view_count=0;
 		}
-		// echo $sql1."<br>";
+		 //echo $sql1."<br>";
 		mysqli_query($link, $sql1) or exit("Sql Error 25".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
@@ -784,6 +805,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$rm_update_new=strtolower(chop($sql_row1['rm_date']));
 			$input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
 			$doc_no=$sql_row1['doc_no'];
+			//echo $doc_no;
 			$order_tid=$sql_row1['order_tid'];
 			$ord_style=$sql_row1['order_style_no'];
 			//$fabric_status=$sql_row1['fabric_status'];
@@ -971,9 +993,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			} 
 			
 			//if($cut_new=="DONE")
+			//echo "Color Id : ".$id."</br>";
 			if($cut_new=="T")
-			{
-				$id="blue";
+			{   
+
+				//changed into white due to removing from modules 05062018  
+				$id="white";
+				//$id="blue";
 			}
 			else
 			{
@@ -1061,7 +1087,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		}
 				
 		$title=str_pad("Style:".trim($style),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),80)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Log_Time:".$log_time,80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
-
+		
 
 		//Embellishment Tracking
 		if($emb_sum=="")

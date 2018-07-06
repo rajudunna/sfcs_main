@@ -403,10 +403,43 @@ if($flag==1)
 	echo "</tr></thead>";
 }
 
-$label = 'Original Quantity';
+//Getting sample details here  By SK-05-07-2018 == Start
+$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid' order by sizes_ref";
+$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+$num_rows_samples = mysqli_num_rows($samples_qry_result);
+
+if($num_rows_samples >0){
+	$samples_total = 0;	
+	echo "<tr ><th class=\"heading2\">Samples Qty</th>";
+	while($samples_data=mysqli_fetch_array($samples_qry_result))
+	{
+		$samples_total+=$samples_data['input_qty'];
+		$samples_size_arry[] =$samples_data['sizes_ref'];
+		$samples_input_qty_arry[] =$samples_data['input_qty'];
+	}	
+	for($s=0;$s<sizeof($s_tit);$s++)
+	{
+		$size_code = 's'.$sizes_code[$s];
+		$flg = 0;
+		for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+		{
+			if($size_code == $samples_size_arry[$ss]){
+				echo "<td class=\"sizes\">".$samples_input_qty_arry[$ss]."</td>";
+				$flg = 1;
+			}			
+		}	
+		if($flg == 0){
+			echo "<td class=\"sizes\"><strong>-</strong></td>";
+		}
+	}		
+	echo "<td class=\"sizes\">".$samples_total."</td></tr>";
+}
+
+// Samples End By SK-05-07-2018
+$label = 'Original Qty';
 if($order_no>0)
 {
-	echo "<tr ><th class=\"heading2\">Original Qty</th>";
+	echo "<tr ><th class=\"heading2\">$label</th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
 		//$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
@@ -414,11 +447,10 @@ if($order_no>0)
 		//{
 			echo "<td class=\"sizes\">".$n_s[$sizes_code[$s]]."</td>";
 		//}	
-	}
-	$label = 'Revised Quantity';
+	}	
+	$label = "Revised Qty";
 	echo "<td class=\"sizes\">".$n_o_total."</td></tr>";
 }
-
 	echo "<tr ><th class=\"heading2\">$label</th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
@@ -428,7 +460,6 @@ if($order_no>0)
 			echo "<td class=\"sizes\">".$o_s[$sizes_code[$s]]."</td>";
 		//}	
 	}
-	
 	
 echo "<td class=\"sizes\">".$o_total."</td></tr>";
 echo "</table>";
