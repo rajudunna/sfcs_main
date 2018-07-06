@@ -538,7 +538,7 @@ echo "</div></div></div>";
 		
 		<a data-toggle="collapse" href="#Category"><strong><b>Category</b></strong></a>
 		</div>
-		<div id="Category" class="panel-collapse collapse-in">
+		<div id="Category" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
 			<div class="table-responsive">
 <?php
@@ -699,7 +699,7 @@ echo "</table></div>
 				
 					<a data-toggle="collapse" href="#Cuttable"><strong><b>Cuttable</b></strong></a>
 				</div>
-				<div id="Cuttable" class="panel-collapse collapse-in">
+				<div id="Cuttable" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 					<div class="panel-body">
 						
 <?php
@@ -956,7 +956,7 @@ echo "</table></div>
 				
 					<a data-toggle="collapse" href="#Allocation"><strong><b>Allocation</b></strong></a>
 				</div>
-				<div id="Allocation" class="panel-collapse collapse-in">
+				<div id="Allocation" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 					<div class="panel-body">
 
 	<?php
@@ -1112,7 +1112,7 @@ echo "</table></div></div>
 				
 					<a data-toggle="collapse" href="#Ratios"><strong><b>Ratios</b></strong></a>
 				</div>
-				<div id="Ratios" class="panel-collapse collapse-in">
+				<div id="Ratios" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 					<div class="panel-body">
 <?php
 
@@ -1351,7 +1351,7 @@ echo "</table></div>
 			
 				<a data-toggle="collapse" href="#Marker"><strong><b>Marker</b></strong></a>
 		</div>
-		<div id="Marker" class="panel-collapse collapse-in">
+		<div id="Marker" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
 				<?php include("main_interface_5.php"); ?>
 			</div>
@@ -1376,7 +1376,7 @@ echo "</table></div>
 		<span class="label label-default pull-left">Available Slots</span>
 				<a data-toggle="collapse" href="#docket_creation"><strong><b>Docket Creation / Edit</b></strong></a>
 			</div>
-			<div id="docket_creation" class="panel-collapse collapse-in">
+			<div id="docket_creation" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 				<div class="panel-body">
 					
 
@@ -1602,7 +1602,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				<span class="label label-default pull-left">Quick Status</span>
 					<a data-toggle="collapse" href="#cut_plan"><strong><b>Cut Plan / Docket View</b></strong></a>
 				</div>
-				<div id="cut_plan" class="panel-collapse collapse-in">
+				<div id="cut_plan" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 					<div class="panel-body">
 <?php
 
@@ -1837,7 +1837,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			
 				<a data-toggle="collapse" href="#recut_details"><strong><b>Recut Details</b></strong></a>
 		</div>
-		<div id="recut_details" class="panel-collapse collapse-in">
+		<div id="recut_details" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
 				<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "recut_stat_v3.php", "0", "R")); ?>
 			</div>
