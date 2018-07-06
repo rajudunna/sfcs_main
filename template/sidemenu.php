@@ -67,7 +67,7 @@
                         ?>
                         </ul>
                 </li>
-                <li><a href='/logs'>Logs</a></li>
+                <li><a href='/logs' target="_blank">Logs</a></li>
             </ul>
         </li>
         <?php } ?>
