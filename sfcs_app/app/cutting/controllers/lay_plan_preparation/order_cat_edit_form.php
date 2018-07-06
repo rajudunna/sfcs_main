@@ -244,8 +244,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	if($flag==1)
 	{
 		$lupdate=date("Y-m-d H:i:s");
-		$sql="update $bai_pro3.cat_stat_log set date=\"$in_date\", category=\"$in_cat\", purwidth=$in_width, patt_ver=\"$patt_ver\", gmtway=\"$gmt_way\",  strip_match=\"$strip_match\", gusset_sep=\"$guess_sep\", remarks=\"$remarks\", lastup=\"$lupdate\" where tid=$cat_tid";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sqlx="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and  category=\"$in_cat\"";
+		$resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$num_rows=mysqli_num_rows($resultx);
+		if($num_rows >0)
+		{
+			echo "<script>swal('Mentioned \"$in_cat\" Category Already Updated ','','warning')</script>";
+		}
+		else
+		{
+			$sql="update $bai_pro3.cat_stat_log set date=\"$in_date\", category=\"$in_cat\", purwidth=$in_width, patt_ver=\"$patt_ver\", gmtway=\"$gmt_way\",  strip_match=\"$strip_match\", gusset_sep=\"$guess_sep\", remarks=\"$remarks\", lastup=\"$lupdate\" where tid=$cat_tid";
+			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
+	
 			//$location="Location: report.php?tran_order_tid=$o_id";
 				
 			//header( $location );

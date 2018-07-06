@@ -338,7 +338,7 @@ if(isset($_POST["submit"]))
                         $sql88="select * from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\"";
                         $result88=mysqli_query($link, $sql88) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         // echo $sql88."<br>"; 
-                        // if(mysqli_num_rows($result88)>0) 
+                        if(mysqli_num_rows($result88)>0) 
                         { 
                             $sql881="select GROUP_CONCAT(doc_no) as doc_no from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\""; 
 							$result88=mysqli_query($link, $sql881) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
