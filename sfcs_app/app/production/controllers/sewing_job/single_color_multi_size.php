@@ -1,13 +1,20 @@
 <script>
 
-function calculateqty(size_count,sizeOfColors)
+function calculateqty(sizeofsizes,sizeOfColors)
 {
+	var total=0;
 	for (var row_count = 0; row_count < sizeOfColors; row_count++)
 	{
-		var GarPerBag=document.getElementById('GarPerBag_'+size_count+'_'+row_count).value;
-		var BagPerCart=document.getElementById('BagPerCart_'+size_count).value;
-		var GarPerCart = GarPerBag*BagPerCart;
-		document.getElementById('GarPerCart_'+size_count+'_'+row_count).value=GarPerCart;
+		for(var size=0;size < sizeofsizes; size++)
+		{
+			var GarPerBag=document.getElementById('GarPerBag_'+size+'_'+row_count).value;
+			var BagPerCart=document.getElementById('BagPerCart').value;
+			var GarPerCart = GarPerBag*BagPerCart;
+			document.getElementById('GarPerCart_'+size+'_'+row_count).value=GarPerCart;
+			total = total+GarPerCart;
+		}
+		document.getElementById('total_'+row_count).value=total;
+		total=0;
 	}
 }
 
@@ -22,8 +29,8 @@ function calculateqty(size_count,sizeOfColors)
 	// $schedule=$_GET['schedule'];
 	$pack_method=$_GET['pack_method'];
 	
-	$style_code='3';
-	$schedule='3';
+	$style_code='9';
+	$schedule='16';
 	
 	$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
 	$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule_original,$link);	
@@ -38,7 +45,7 @@ function calculateqty(size_count,sizeOfColors)
 	echo "<div class='panel panel-primary'>";
 	echo "<div class='panel-heading'>Single Color Multi Size</div>";
 	echo "<div class='panel-body'>";
-	if ($size_of_ordered_colors==$size_of_planned_colors)
+	if ($size_of_ordered_colors!=$size_of_planned_colors)
 	{
 		echo "<script>sweetAlert('Please prepare Lay Plan for all Colors in this Schedule - $schedule','','warning')</script>";
 	}
@@ -74,6 +81,7 @@ function calculateqty(size_count,sizeOfColors)
 									$Ori_size = $Original_size_details['size_title'];
 									$sizes_to_display[] = $Original_size_details['size_title'];
 								}
+								$sizeofsizes=sizeof($sizes_to_display);
 								echo "<th>".$Ori_size."</th>";
 							}
 						echo "</tr>";
@@ -96,11 +104,13 @@ function calculateqty(size_count,sizeOfColors)
 		
 		//second table
 		echo "<div class='panel panel-primary'>";
-				echo "<div class='panel-body'>
-					Number of Poly Bags Per Carton: <input type='text' name='BagPerCart' id='BagPerCart_".$size_count."' class='form-control' onchange=calculateqty($size_count,$size_of_ordered_colors);>";
-					echo "
-				</div>
-			</div>";
+				echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
+				echo "<div class='panel-body'>";
+
+				echo "<div class='col-md-3 col-sm-3 col-xs-12'>Number of Poly Bags Per Carton : <input type='text' name='BagPerCart' id='BagPerCart' class='form-control' onchange=calculateqty($sizeofsizes,$size_of_ordered_colors);></div>";
+					
+				echo "</div>
+			 </div>";
 		
 		
 		
@@ -115,7 +125,8 @@ function calculateqty(size_count,sizeOfColors)
 								{
 									echo "<th>".$sizes_to_display[$i]."</th>";
 								}
-						echo "</tr>";
+							echo "<th>Total</th>
+						</tr>";
 						$row_count=0;
 						for ($j=0; $j < sizeof($color1); $j++)
 						{
@@ -125,6 +136,7 @@ function calculateqty(size_count,sizeOfColors)
 									{
 										echo "<td><input type='text' readonly='true' name='GarPerCart' id='GarPerCart_".$size_count."_".$row_count."' class='form-control' value=''></td>";
 									}
+									echo "<td><input type='text' name='total_".$j."' id='total_".$j."' readonly='true' class='form-control'></td>";
 							echo "</tr>";
 							$row_count++;
 						}
