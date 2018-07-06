@@ -21,8 +21,8 @@ Changes Log:
 	?>
 		<form name="test" method="post" action="<?php echo getFullURL($_GET['r'], "edit_remarks.php", "N"); ?>">
 			<div class="row">
-				<div class="col-sm-4"><label>Remarks : </label>
-					<input type="textarea" class="form-control" rows="1" name="rem" value="<?= $_GET['remarks_x']?>" required></textarea >
+				<div class="col-sm-4" style="display:none;"><label>Remarks : </label>
+					<input type="textarea" class="form-control" rows="1" name="rem" value="<?= $_GET['remarks_x']?>" ></textarea >
 				</div>
 				<div class="col-sm-5"><label>Binding/Rib Consumption (If no item code is available) :</label> 
 					<input type="text" step="any"  title="Enter only numbers and decimals" class="form-control float" id='rib' required name="bind_con" value="<?php echo $_GET['bind_con']; ?>"></div>

@@ -71,7 +71,10 @@ hza.style.display = state;
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>	
 
 
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+ ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <?php
@@ -368,7 +371,7 @@ echo "<div class='panel panel-default'>
 			<div class='col-md-4'>
 			<strong>Binding Consumption : </strong>";
 				include("main_interface_remarks.php");
-				echo "</div><div class='col-md-4'><b>Remarks: </b>$remarks_y</div>
+				echo "</div><div class='col-md-4' style='display:none;'><b>Remarks: </b>$remarks_y</div>
 			    <div class='col-md-4'><b>Binding Consumption: </b>$bind_con</div>";
 			echo "
 		
@@ -402,6 +405,40 @@ if($flag==1)
 	echo "</tr></thead>";
 }
 
+//Getting sample details here  By SK-05-07-2018 == Start
+$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid' order by sizes_ref";
+$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+$num_rows_samples = mysqli_num_rows($samples_qry_result);
+
+if($num_rows_samples >0){
+	$samples_arry = [];
+	$samples_total = 0;	
+	echo "<tr ><th class=\"heading2\">Samples Qty</th>";
+	while($samples_data=mysqli_fetch_array($samples_qry_result))
+	{
+		$samples_total+=$samples_data['input_qty'];
+		$samples_size_arry[] =$samples_data['sizes_ref'];
+		$samples_input_qty_arry[] =$samples_data['input_qty'];
+	}	
+	for($s=0;$s<sizeof($s_tit);$s++)
+	{
+		$size_code = 's'.$sizes_code[$s];
+		$flg = 0;
+		for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+		{
+			if($size_code == $samples_size_arry[$ss]){
+				echo "<td class=\"sizes\">".$samples_input_qty_arry[$ss]."</td>";
+				$flg = 1;
+			}			
+		}	
+		if($flg == 0){
+			echo "<td class=\"sizes\"><strong>-</strong></td>";
+		}
+	}		
+	echo "<td class=\"sizes\">".$samples_total."</td></tr>";
+}
+
+// Samples End By SK-05-07-2018
 
 if($order_no>0)
 {
