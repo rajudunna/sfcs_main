@@ -30,8 +30,8 @@
 
 	function firstbox()
 	{
-		var url1 = '<?= getFullUrl($_GET['r'],'polybag_ratio.php','N'); ?>';
-		window.location.href =url1+"&style="+document.mini_order_report.style.value;
+		var url1 = '<?= getFullUrl($_GET['r'],'packing_ratio.php','N'); ?>';
+		window.location.href =url1+"&style="+document.packing_ratio.style.value;
 	}
 
 	function check_val()
@@ -76,7 +76,7 @@
 	<div class="panel-heading"><strong>Packing Ratio</strong></div>
 	<div class="panel-body">
 		<div class="col-md-12">
-			<form method="POST" class="form-inline" name="mini_order_report" action="index.php?r=<?php echo $_GET['r']; ?>">
+			<form method="POST" class="form-inline" name="packing_ratio" action="index.php?r=<?php echo $_GET['r']; ?>">
 				Style:
 				<?php
 					// Style
