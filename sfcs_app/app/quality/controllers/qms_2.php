@@ -1,17 +1,17 @@
 <?php
 // include("dbconf.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
-
-$view_access=user_acl("SFCS_0142",$username,1,$group_id_sfcs);
-$auth_users=user_acl("SFCS_0142",$username,7,$group_id_sfcs);
-
-//$auth_users=array("kirang","mohanr","gayanl","buddhikam");
-if(!in_array($username,$auth_users))
-{
-	header("location: restricted.php");
-}
+//$has_perm=haspermission($_GET['r']);
+// $view_access=user_acl("SFCS_0142",$username,1,$group_id_sfcs);
+// $auth_users=user_acl("SFCS_0142",$username,7,$group_id_sfcs);
+// $url=getFullURL($_GET['r'],'restricted.php','N');
+ //$auth_users=array("kirang","mohanr","gayanl","buddhikam");
+// if(!in_array($authorized,$has_perm))
+// {
+// 	header("Location:$url");
+// }
 
 
 ?>
@@ -19,7 +19,7 @@ if(!in_array($username,$auth_users))
 
 <head>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',3,'R'); ?>"></script>
-<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',1,'R'); ?>">
+
 <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/jquery.autocomplete.css',1,'R'); ?>" />
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.js',3,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.autocomplete.js',1,'R'); ?>"></script>

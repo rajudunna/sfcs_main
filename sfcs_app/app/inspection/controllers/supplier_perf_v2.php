@@ -2,18 +2,19 @@
 // Need to show summary of batches and update the log time for fully filled batches. Total Batches || Updated Batches || Pending Batches || Passed Batches || Failed Batches
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 $Page_Id='SFCS_0054';
 ?>
 
 <?php  
 
 
-$sql="select * from $bai_rm_pj1.inspection_supplier_db where product_code=\"Fabric\"";
+//$sql="select * from $bai_rm_pj1.inspection_supplier_db where product_code=\"Fabric\"";
+$sql="SELECT * FROM $bai_rm_pj1.sticker_report WHERE product_group='Fabric' GROUP BY supplier";
 $sql_result=mysqli_query($link, $sql) or exit("No Data Avaiable".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$supplier_code[]=$sql_row["supplier_m3_code"];
+	$supplier_code[]=$sql_row["supplier"];
 }
 if(isset($_POST['filter']))
 {
@@ -85,7 +86,7 @@ function enableButton()
 
 function change_body(x,y,z)
 {
-	alert("Hi");
+	
 	document.getElementById(y).style.background="#FFCCFF";
 }
 
@@ -368,6 +369,9 @@ if(mysqli_num_rows($sql_result) > 0){
 				$po_ref=$sql_row1l["po"];
 				$color_ref=$sql_row1l["col"];
 				$pkg_no=$sql_row1l["pkg_no"];
+				if($pkg_no="'"){
+					$pkg_no="";
+				}
 				$item_desc_ref=$sql_row1l["item_name"];
 			}
 			

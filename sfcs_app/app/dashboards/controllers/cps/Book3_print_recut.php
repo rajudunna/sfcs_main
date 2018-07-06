@@ -124,7 +124,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
-		$mklength=$sql_row2['mklength'];
+    $mklength=$sql_row2['mklength'];
+    $mk_remarks = $sql_row2['remarks'];
 	}
 //chr($color_code).leading_zeros($cutno, 3)	
 
@@ -1006,47 +1007,40 @@ body{
 
 </style>
 
-<style type="text/css">
-@page
-{
-	size: landscape;
-	margin: 0cm;
-}
-</style>
 
 <style>
 
 @media print {
-@page narrow {size: 11in 9in}
-@page rotated {size: potrait}
-DIV {page: narrow}
-TABLE {page: rotated}
-#non-printable { display: none; }
-#printable { display: block; }
-#logo { display: block; }
-body { zoom:95%;}
-#ad{ display:none;}
-#leftbar{ display:none;}
-#Book2_14270{ width:95%;}
+    @page narrow {size: 11in 9in}
+    @page rotated {size: potrait}
+    DIV {page: narrow}
+    TABLE {page: rotated}
+    #non-printable { display: none; }
+    #printable { display: block; }
+    #logo { display: block; }
+    body { zoom:72%;}
+    #ad{ display:none;}
+    #leftbar{ display:none;}
+    #Book2_14270{ width:90%;}
 }
 </style>
 
 <script>
 function printpr()
 {
-var OLECMDID = 7;
-/* OLECMDID values:
-* 6 - print
-* 7 - print preview
-* 1 - open window
-* 4 - Save As
-*/
-var PROMPT = 1; // 2 DONTPROMPTUSER
-var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-WebBrowser1.ExecWB(OLECMDID, PROMPT);
-WebBrowser1.outerHTML = "";
-   
+    window.print();
+    var OLECMDID = 7;
+    /* OLECMDID values:
+    * 6 - print
+    * 7 - print preview
+    * 1 - open window
+    * 4 - Save As
+    */
+    var PROMPT = 1; // 2 DONTPROMPTUSER
+    var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
+    document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+    WebBrowser1.ExecWB(OLECMDID, PROMPT);
+    WebBrowser1.outerHTML = "";
 }
 </script>
 
@@ -1129,7 +1123,7 @@ tags will be replaced.-->
   <td class=xl6315551 width=67 style='width:50pt'></td> -->
   <td class=xl6315551 width=64 style='width:48pt'></td>
   <td class=xl6315551 width=64 style='width:48pt'></td>
-  <td class=xl6315551 width=64 style='width:48pt'><?php if($print_status!=NULL) {echo "DUPLICATE"; } else {echo "ORIGINAL";}?></td>
+  <td class=xl6315551 width=64 style='width:48pt'><?php if($print_status=="0000-00-00" || $print_status == "") { echo "ORIGINAL"; } else {echo "DUPLICATE";}?></td>
   <td class=xl6315551 width=64 style='width:48pt'></td>
   <td class=xl6315551 width=27 style='width:20pt'></td>
  </tr>
@@ -1346,11 +1340,11 @@ ZHJzL2Rvd25yZXYueG1sUEsBAi0ACgAAAAAAAAAhADhzEd/zBQAA8wUAABUAAAAAAAAAAAAAAAAA
     <x:AutoPict/>
    </x:ClientData>
   </v:shape><![endif]-->
-  <![if !vml]><span style='mso-ignore:vglayout;
+  <span style='mso-ignore:vglayout;
   position:absolute;z-index:5;margin-left:11px;margin-top:1px;width:327px;
   height:68px'><img width=327 height=68
-  src=<?= getFullURL($_GET['r'],'Book3_files/Book1_15551_image003.gif','R'); ?> alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span><![endif]><span
-  style='mso-ignore:vglayout2'>
+  src='/sfcs_app/common/images/BEK_image1.png' alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span>
+  <span style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>
    <tr>
     <td height=20 class=xl6315551 width=64 style='height:15.0pt;width:48pt'></td>
@@ -1790,11 +1784,16 @@ ZHJzL2Rvd25yZXYueG1sUEsFBgAAAAAEAAQA9QAAAAEGAAAAAA==
  </tr>
  <tr class=xl6315551 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6315551 style='height:15.0pt'></td>
-  <td class=xl6615551>PO :</td>
-  <td colspan=4 class=xl10315551><?php echo $pono; ?></td>
+  <td class=xl6615551>MK Name :</td>
+  <td colspan=4 class=xl10315551><?php echo $mk_remarks; ?></td>
   <td colspan=2 class=xl6615551>Fab Direction :</td>
   <td colspan=4 class=xl10115551><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>
   <td class=xl6315551></td>
+ </tr>
+ <tr class=xl6315551 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td height=20 class=xl6315551 style='height:15.0pt'></td>
+  <td class=xl6615551>PO :</td>
+  <td colspan=4 class=xl10315551><?php echo $pono; ?></td>
  </tr>
  <tr class=xl6315551 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6315551 style='height:15.0pt'></td>
@@ -2794,10 +2793,10 @@ echo "</tr>";
 
 <?php 
 
-if($print_status==NULL)
+if($print_status=="0000-00-00" || $print_status == "")
 {
 	
-	$sql="update recut_v2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
+	$sql="update $bai_pro3.recut_v2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 }

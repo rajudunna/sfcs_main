@@ -458,7 +458,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 }
 
 // open data from production review for cut%
-$sql1z="select * from bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and purwidth>0";
+$sql1z="select * from bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and purwidth>0";
 //echo $sql1z."<br>";
 mysqli_query($link, $sql1z) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1z=mysqli_query($link, $sql1z) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));

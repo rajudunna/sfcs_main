@@ -74,6 +74,7 @@
 <body>
 	<?php
 		include("dbconf.php");
+		$has_permission=haspermission($_GET['r']);
 		//include("generate_bundles.php");
 		/*getting style codes*/
 		$style_codes="SELECT DISTINCT trim(order_style_no) as order_style_no FROM bai_pro3.bai_orders_db_confirm";
@@ -316,7 +317,8 @@
 			// }
 			// echo '</select></div>';
 		// }
-		echo '<button type="submit" onclick="load();" class="btn btn-primary pull-right">Save</button>';
+		if(in_array($authorized,$has_permission))
+		{	echo '<button type="submit" onclick="load();" class="btn btn-primary pull-right">Save</button>'; }
 		echo "<input type='hidden' name='style' value=$style>";
 		echo "<input type='hidden' name='schedule' value=$schedule>";
 		echo "<input type='hidden' name='color' value='".$_GET["color"]."'>";

@@ -7,9 +7,10 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3_bulk_or_proc.php"); 
-$view_access=user_acl("SFCS_0116",$username,1,$group_id_sfcs);
-$special_users=user_acl("SFCS_0116",$username,22,$group_id_sfcs);
-$authorised=user_acl("SFCS_0116",$username,7,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0116",$username,1,$group_id_sfcs);
+// $special_users=user_acl("SFCS_0116",$username,22,$group_id_sfcs);
+// $authorised=user_acl("SFCS_0116",$username,7,$group_id_sfcs);
+$permission = haspermission($_GET['r']);
 ?>
 <?php //include("functions.php"); 
 //To validate the output entries
@@ -100,7 +101,7 @@ else
 //$authorised=array("kirang","amulyap","narasimharaop","sureshn","edwinr","eswarammae","nagashivan","prasadms");
 
 
-if(!in_array($username,$special_users))
+if(!in_array($authorized,$permission))
 {
 	echo '<script>
 	var ctrlPressed = false;
@@ -219,7 +220,7 @@ $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
 
 
-if(in_array($username,$authorised)) {
+if(in_array($authorized,$permission)) {
 
 echo '<div class="row form-group"><div class="col-md-8"><label>Enter Sticker Number Manually: (optional)</label><input type="text" name="cartonid_new" class="form-control"></div></div><input type="submit" name="check" value="check" class="btn btn-primary">';
 }

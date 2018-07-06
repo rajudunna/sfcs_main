@@ -15,9 +15,9 @@ Changes Log:2013-11-25/DharaniD/Ticket #988194 change order in trims status ie($
 $double_modules=array();
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
-$username="sfcsproject1";
-$authorized=array("sfcsproject1");//production
-$authorized1=array("sfcsproject1");//trims
+//$username="sfcsproject1";
+//$authorized=array("sfcsproject1");//production
+//$authorized1=array("sfcsproject1");//trims
 ?>
 
 <?php
@@ -39,10 +39,12 @@ include("header.php");
 
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
-$username="sfcsproject1";
-$special_users=array("sfcsproject1","cwradmn","kirang","buddhikam","chathurangad","minuram","buddhikam");
+$username=getrbac_user()['uname'];
+//echo "User :".$username."</br>";
+
+//$special_users=array("sfcsproject1","cwradmn","kirang","buddhikam","chathurangad","minuram","buddhikam");
 //echo $username;
-if(!in_array($username,$special_users))
+if(!in_array($authorized,$has_permission))
 {
 	echo '<script>
 	var ctrlPressed = false;
@@ -454,7 +456,8 @@ window.onload = startBlink;
 
 <body>
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+$has_permission=haspermission($_GET['r']);
 include('functions.php');
 ?>
 <script language="JavaScript">
@@ -580,7 +583,6 @@ $blink_docs=array();
 //$table_name="plan_dashboard_input";
 
 $table_name="$temp_pool_db.plan_dash_doc_summ_input_".$username;
-
 $sql="DROP TABLE IF EXISTS $table_name";
 //echo $sql."<br/>";
 mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -675,8 +677,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			//  onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/board_update_V2_input.php?mod=$module&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=yes,scrollbars=yes,resizable=yes, width=1200,height=750, top=23');
 			 $id="yash";
 			$y=0;
-			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
-			//echo $sql;
+			//$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";
+			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
 			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{
@@ -743,13 +745,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$id="pink"; //Total Trim input issued to module
 					//Circle if the total panel Input is issued to module
 				}
-				
 				$firststy=substr($order_tid,0,strpos($order_tid," "));
 				
 				$title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Job_No:".'J'.leading_zeros($input_job_no,3),80);
 				
 							
-					if(in_array($username,$authorized1))
+					if(in_array($authorized,$has_permission))
 					{
 						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../ ".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
 					}
@@ -796,7 +797,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo '</div>';
 	}
 }
-if((in_array(strtolower($username),$authorized)))
+if((in_array($authorized,$has_permission)))
 	{
 		echo "<script>";
 		echo "blink_new_priority('".implode(",",$blink_docs)."');";

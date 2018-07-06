@@ -9,7 +9,9 @@
 <body>
 <?php 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$Weekly_plan_mail=$conf1->get('Weekly_plan_mail');
+?>
 
 <?php 
 	error_reporting(E_ALL ^ E_NOTICE);
@@ -130,12 +132,12 @@ td
 $message.="Dear All,<br/><br/>
 The 2 Weeks Plan Schedules had been updated in FSP Status in BAINet.<br/><br/>";
 
-$message.='<br/>Message Sent Via: http://bainet';
+$message.=$message_sent_via;
 $message.="</body></html>";
 
   //$to  = 'BAIPlanningTeam@brandix.com,BAIManufacturingTeam@brandix.com,BAISupplyChainTeam@brandix.com,brandixalerts@schemaxtech.com,brandixalerts@schemaxtech.com';
-    $to  = 'brandixalerts@schemaxtech.com';
-	$subject = 'BAI 2 Weeks Plan Update';
+    $to  = $Weekly_plan_mail;
+	$subject = $plant_alert_code." Weeks plan update";
 	
 	// To send HTML mail, the Content-type header must be set
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
@@ -143,7 +145,7 @@ $message.="</body></html>";
 	
 	// Additional headers
 	//$headers .= 'To: <BAIPlanningTeam@brandix.com>; <BAIManufacturingTeam@brandix.com>; <BAISupplyChainTeam@brandix.com>'. "\r\n";
-	$headers .= 'To: <brandixalerts@schemaxtech.com>;'. "\r\n";
+	$headers .= "To: $to". "\r\n";
 	$headers .= 'From: Shop Floor System Alert <ictsysalert@brandix.com>'. "\r\n";
 	
 	//mail($to, $subject, $message, $headers);

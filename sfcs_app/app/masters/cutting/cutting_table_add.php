@@ -14,7 +14,7 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <!-- Fav and touch icons -->
-    
+   
 </head>
 
 <body>
@@ -32,11 +32,15 @@
 		//$packing_method="";
 		//$status="";
 	}
+	$action_url = getFullURL($_GET['r'],'cutting_table_save.php','N');
 	?>
-    <div class="container-fluid">
-        <div class="row">
+    <div class='panel panel-primary'>
+	<div class='panel-heading'>
+		<b>Cutting Tables</b>
+	</div>
+	<div class='panel-body'>
 
-            <form action="index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2N1dHRpbmcvY3V0dGluZ190YWJsZV9zYXZlLnBocA==" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
+            <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
 			<input type='hidden' id='tbl_id' name='tbl_id' value=<?php echo $tbl_id; ?> >
                 <div class="container-fluid shadow">
                     <div class="row">
@@ -80,7 +84,7 @@
 			    
 			    
                 
-		<button id="btn_save" type="submit" class="btn btn-default" name="btn_save">Save</button></div></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div></div>
                                     </div>
                                 
 

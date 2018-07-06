@@ -16,6 +16,11 @@ set_time_limit(2000);
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
+$has_permission=haspermission($url_r);
 //include($_SERVER['DOCUMENT_ROOT']."M3_Bulk_OR/ims_size.php"); 
 //include($_SERVER['DOCUMENT_ROOT']."server/user_acl_v1.php"); 
 //include($_SERVER['DOCUMENT_ROOT']."server/group_def.php"); 
@@ -212,7 +217,7 @@ table
                  
                 echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>"; 
                  
-                if($sql_row12['ims_remarks']!="SAMPLE") 
+                if($sql_row12['ims_remarks']!="SAMPLE" and $sql_row12['ims_pro_qty']==0 ) 
                 { 
                     echo "<input type=\"radio\" name=\"radio\" value=\"".$sql_row12['tid']."\">"; 
                 } 
@@ -245,7 +250,7 @@ echo "<td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)
     $auth_users=explode(",",$users); 
 */     
 
-        if(in_array($username,$auth_users))         
+        if(in_array($authorized,$has_permission))         
         {   
          echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
          
@@ -263,7 +268,7 @@ echo "<td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)
 
     $auth_cut_users=explode(",",$users); 
 */ 
-        if(in_array($username,$auth_cut_users)) 
+        if(in_array($authorized,$has_permission))
         { 
              
             echo "&nbsp;<input  title='click to transfer the input' type='radio' name = 'option' Id='option' value='input_transfer'> Input Transfer"; 
@@ -318,7 +323,7 @@ else
 
     $auth_users=explode(",",$users); 
 */ 
-        if(in_array($username,$auth_users_for_sample_cut_input))         
+        if(in_array($authorized,$haspermission))         
         { 
 
 ?> 

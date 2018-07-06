@@ -1681,7 +1681,7 @@ max-width: 100px;
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
--->
+
 </style>
 
 
@@ -1756,7 +1756,7 @@ if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 
 $sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no SEPARATOR ', ') as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $bai_rm_pj1.sticker_report where lot_no in ($lot_ref) and batch_no=\"".trim($lot_no)."\"";
 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$product_group=$sql_row['product_group'];
@@ -1771,7 +1771,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$buyer=$sql_row['buyer'];
 	$pkg_no=$sql_row['pkg_no'];
 	$grn_date=$sql_row['grn_date'];
-	$lot_ref_batch=$sql_row['lot_ref_batch'];
+	$lot_ref_batch=rtrim($sql_row['lot_ref_batch'],'R');
 	$lot_count=$sql_row['lot_count'];
 	$buyer_code=$sql_row['buyer_code'];
 	$supplier_ref_name=$sql_row['supplier'];
@@ -1791,7 +1791,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select * from $bai_rm_pj1.inspection_db where batch_ref=\"".trim($lot_no)."\"";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$act_gsm=$sql_row['act_gsm'];
@@ -1824,7 +1824,7 @@ $avg_c_width=0;
 
 $sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) order by ref2+0";
 //echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1900,9 +1900,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 Page wizard.-->
 <!--If the same item is republished from Excel, all information between the DIV
 tags will be replaced.-->
-<!----------------------------->
+<!---->
 <!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
-<!----------------------------->
+<!---->
 <div class="col-md-12">
 <div id="C_Tex_Interface_24082" align=center x:publishsource="Excel">
 
@@ -1980,7 +1980,7 @@ tags will be replaced.-->
   ?>
   
   </td>
-  <td colspan=2 rowspan=6 class=xl9324082x dir=LTR width=272 style='border-right:1.0pt solid black;
+  <td colspan=2 rowspan=5 class=xl9324082x dir=LTR width=272 style='border-right:1.0pt solid black;
   border-left:none;width:204pt'>FABRIC SWATCH
   </td>
  </tr>
@@ -1992,7 +1992,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Qty In (<?php echo $fab_uom; ?>)</td>
   <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;
-  border-left:none;width:96pt'><?php echo $rec_qty; ?></td>
+  border-left:none;width:96pt'><?php echo round($rec_qty,2); ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;
   width:74pt'>PTS/100 Sq.Yd.</td>
   <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;
@@ -2005,16 +2005,16 @@ tags will be replaced.-->
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;
   border-top:none;width:60pt'>PO Number</td>
-  <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;
+  <td colspan=4 class=xl9324082 dir=LTR width=130 style='border-left:none;
   width:98pt'><?php echo $po_no; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
-  width:102pt'>Qty Inspected</td>
-  <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;
-  border-left:none;width:96pt'><?php echo $qty_insp; ?></td>
-  <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;
-  width:74pt'>Fallout</td>
-  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;
-  width:109pt'><?php echo $fallout; ?></td>
+  width:102pt'>Qty Inspected </td>
+  <td class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
+  border-left:none;width:204pt'><?php echo $qty_insp; ?></td>
+  <td class=xl9324082 dir=LTR width=136 style='border-left:none;
+  width:102pt'>Fallout </td>
+  <td class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
+  border-left:none;width:204pt'><?php echo $fallout; ?></td>
   <td class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Pur. GSM </td>
   <td class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
@@ -2115,7 +2115,8 @@ tags will be replaced.-->
   <td class=xl11324082 style='border-top:none;border-left:none'><?php echo $shrink_l; ?></td>
   <td class=xl11424082 style='border-top:none;border-left:none'><?php echo $shrink_w; ?></td>
   <td colspan=2 class=xl11324082>Invoice</td>
-  <td colspan=2 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
+  <td colspan=4 class=xl10024082 style='border-right:1.0pt solid black;
+  border-bottom:.5pt solid black;border-left:none' ><?php echo $inv_no; ?></td>
  </tr>
  
  
@@ -2341,7 +2342,7 @@ if($num_check>0)
  <tr height=31 style='mso-height-source:userset;height:23.25pt'>
   <td height=31 class=xl6824082 style='height:23.25pt;border-top:none'><?php echo $num_rows; ?></td>
   <td class=xl6924082 style='border-top:none;border-left:none'><?php  echo $shade_count; ?></td>
-  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo $rec_qty; ?></td>
+  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($rec_qty,2); ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo $ctex_sum; ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo ($ctex_sum-$rec_qty); ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo $avg_t_width; ?></td>
@@ -2448,7 +2449,7 @@ for($i=0;$i<$shade_count;$i++)
   <td class=xl11024082></td>
   <td class=xl11024082></td>
   <td class=xl11024082></td>
-  <td colspan=9 rowspan=3 height=84 class=xl8424082 style='border-right:1.0pt solid black;
+  <td colspan=9 rowspan=3 height=84 class=xl8424082 style='text-align: left; border-right:1.0pt solid black;
   border-bottom:1.0pt solid black;height:63.0pt'><?php echo $sp_rem; ?></td>
   
  </tr>

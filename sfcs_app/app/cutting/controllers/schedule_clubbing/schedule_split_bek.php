@@ -863,7 +863,7 @@ if(isset($_POST['submit']))
 		}
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
-			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&color=$color&style=$style&schedule=$order_del_no\";
+			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',1,'N')."&color=$color&style=$style&schedule=$order_del_no&club_status=1\";
 			}
 		</script>";
 		// echo " <div class='alert alert-success alert-dismissible'>

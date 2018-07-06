@@ -121,7 +121,7 @@ if(isset($_POST['confirm']))
 
 if(!isset($_REQUEST['order_tid']))
 {
-	$sql="select distinct order_tid,cat_ref from $bai_pro3.order_cat_doc_mix where order_del_no=\"".$_REQUEST['schedule']."\" and order_col_des='".$_REQUEST['color']."' and category in ('Body','Front')";
+	$sql="select distinct order_tid,cat_ref from $bai_pro3.order_cat_doc_mix where order_del_no=\"".$_REQUEST['schedule']."\" and order_col_des='".$_REQUEST['color']."' and category in ($in_categories)";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{

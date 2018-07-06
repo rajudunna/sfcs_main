@@ -9,12 +9,14 @@ Changes Log:
 <?phP
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/config.php", 3, "R"));
 $view_access=user_acl("SFCS_0038",$username,1,$group_id_sfcs);
 $authorized=user_acl("SFCS_0038",$username,7,$group_id_sfcs);
 $fca_authorized=user_acl("SFCS_0038",$username,50,$group_id_sfcs);
 $fg_authorized=user_acl("SFCS_0038",$username,51,$group_id_sfcs);
 $spc_users=user_acl("SFCS_0038",$username,68,$group_id_sfcs);
 set_time_limit(6000000);
+$permission = haspermission($_GET['r']);
 ?>
 <title>Weekly Delivery Dashboard - Packing</title>
 <!-- <head>
@@ -139,8 +141,9 @@ $current_week = getFullURL($_GET['r'],'current_week_V2.php','N');
 $next_week = getFullURL($_GET['r'],'next_week_V2.php','N');
 $summary =  getFullURL($_GET['r'],'summary_v2.php','R');
 $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
+$status_update = getFullURL($_GET['r'],'status_update.php','N');
 ?>
-<form method="post" name="input" action="<?php echo $url;?>">
+<form method="post" name="input" action="<?php echo $pre_week;?>">
 <center><a href="summary_v2.php&weekno=<?php echo $weeknumber; ?>" onclick="return popitup('<?php echo $summary;?>?weekno=<?php echo $weeknumber; ?>')">Summary</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $pre_week;?>">Previous Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $current_week; ?>">Current Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $next_week;?>">Next Week</a>&nbsp;&nbsp;|&nbsp;&nbsp; </center>
 <div class='row'>
 	<div class='col-md-4'>
@@ -149,10 +152,7 @@ $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
 					<?php 
 						echo "<option value=\"ALL\" selected >ALL</option>";
 						// $sqly="select distinct(buyer_div) from plan_modules";
-						$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
-						//echo $sqly."<br>";
-
-						mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 						$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_rowy=mysqli_fetch_array($sql_resulty))
 						{
@@ -272,9 +272,9 @@ $sHTML_Content.="<th bgcolor=\"#002060\" style=\"color:#ffffff\">Low Status</th>
 
 
 $x=0;
-$sqly="select ref_id from bai_pro4.week_delivery_plan_ref $query1";
-//echo $sqly;
-$resulty=mysqli_query($link,$sqly) or die("Error = No Details found!!!".mysqli_error());
+$sqly="select ref_id from $bai_pro4.week_delivery_plan_ref $query1";
+// echo $sqly;
+$resulty=mysqli_query($link,$sqly) or die("Errora= No Details found!!!".mysqli_error());
 $sql_num_check=mysqli_num_rows($resulty);
 if($sql_num_check <= 0)
 {
@@ -287,13 +287,13 @@ else
 	{
 		$ref_id_ver[]=$rowy["ref_id"];
 	}
-	$sqlz="delete from weekly_delivery_status_finishing where tid not in (".implode(",",$ref_id_ver).") and ex_fact between \"".trim($start_date)."\" and  \"".trim($end_date)."\"";
-	mysqli_query($link,$sqlz) or die("Error = ".mysqli_error());
+	$sqlz="delete from $bai_pro4.weekly_delivery_status_finishing where tid not in (".implode(",",$ref_id_ver).") and ex_fact between \"".trim($start_date)."\" and  \"".trim($end_date)."\"";
+	mysqli_query($link,$sqlz) or die("Errorsb= ".mysqli_error());
 }
 //$sql="select ref_id,ship_tid,style,color,schedule_no,buyer_division,ex_factory_date_new from week_delivery_plan_ref where ex_factory_date_new between \"".trim($start_date)."\" and \"".trim($end_date)."\" order by ex_factory_date_new ";
-$sql="select ref_id,ship_tid,style,color,schedule_no,buyer_division,ex_factory_date_new from week_delivery_plan_ref $query ";
+$sql="select ref_id,ship_tid,style,color,schedule_no,buyer_division,ex_factory_date_new from $bai_pro4.week_delivery_plan_ref $query ";
 // echo $sql;
-$result=mysqli_query($link,$sql) or die("Error = ".mysqli_error());
+$result=mysqli_query($link,$sql) or die("Errorc = ".mysqli_error());
 $sql_num_check_result=mysqli_num_rows($result);
 if($sql_num_check_result <= 0)
 {
@@ -314,8 +314,8 @@ else
 		$color=$row["color"];
 		$buyer_division=$row["buyer_division"];
 		$ex_factory_date_new=$row["ex_factory_date_new"];
-		$sql1="select remarks from week_delivery_plan where ref_id=\"".$ref_id."\"";
-		$result1=mysqli_query($link,$sql1) or die("Error = ".mysqli_error());
+		$sql1="select remarks from $bai_pro4.week_delivery_plan where ref_id=\"".$ref_id."\"";
+		$result1=mysqli_query($link,$sql1) or die("Errord= ".mysqli_error());
 		while($row1=mysqli_fetch_array($result1))
 		{
 			$remarks=$row1["remarks"];
@@ -341,8 +341,8 @@ else
 			$id="#008000";
 		}
 		
-		$sql_co="select order_no,mpo,cpo from shipment_plan where schedule_no=\"".$schedule."\" and color=\"".$color."\"";
-		$result_co=mysqli_query($link,$sql_co) or die("Error =".mysqli_error());
+		$sql_co="select order_no,mpo,cpo from $bai_pro4.shipment_plan where schedule_no=\"".$schedule."\" and color=\"".$color."\"";
+		$result_co=mysqli_query($link,$sql_co) or die("Errore =".mysqli_error());
 		while($row_co=mysqli_fetch_array($result_co))
 		{
 			$order_no=$row_co["order_no"];
@@ -351,7 +351,7 @@ else
 		}
 		
 		/*$sHTML_Content .="<tr>";
-		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -361,22 +361,22 @@ else
 		$sHTML_Content .="<td bgcolor=\"$id\">".$color."<input type=\"hidden\" name=\"col[]\" value=\"".$color."\" /></td>";*/
 		
 		$table_name="bai_orders_db";
-		$sqly="select * from bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\" order by order_div,order_del_no desc";
-		$sql_resulty=mysqli_query($link,$sqly) or exit("Sql Error =".mysqli_error());
+		$sqly="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\" order by order_div,order_del_no desc";
+		$sql_resulty=mysqli_query($link,$sqly) or exit("Sql Errorf =".mysqli_error());
 		$rows=mysqli_num_rows($sql_resulty);	
 		if($rows > 0)
 		{
 			$table_name="bai_orders_db_confirm";
 		}
-		$sql="select * from bai_pro3.$table_name where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\" order by order_div,order_del_no desc";
-		$sql_result=mysqli_query($link,$sql) or exit("Sql Error =".mysqli_error());
+		$sql="select * from $bai_pro3.$table_name where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\" order by order_div,order_del_no desc";
+		$sql_result=mysqli_query($link,$sql) or exit("Sql Errorg =".mysqli_error());
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$order_total_qty=$sql_row["order_s_xs"]+$sql_row["order_s_s"]+$sql_row["order_s_m"]+$sql_row["order_s_l"]+$sql_row["order_s_xl"]+$sql_row["order_s_xxl"]+$sql_row["order_s_xxxl"]+$sql_row["order_s_s01"]+$sql_row["order_s_s02"]+$sql_row["order_s_s03"]+$sql_row["order_s_s04"]+$sql_row["order_s_s05"]+$sql_row["order_s_s06"]+$sql_row["order_s_s07"]+$sql_row["order_s_s08"]+$sql_row["order_s_s09"]+$sql_row["order_s_s10"]+$sql_row["order_s_s11"]+$sql_row["order_s_s12"]+$sql_row["order_s_s13"]+$sql_row["order_s_s14"]+$sql_row["order_s_s15"]+$sql_row["order_s_s16"]+$sql_row["order_s_s17"]+$sql_row["order_s_s18"]+$sql_row["order_s_s19"]+$sql_row["order_s_s20"]+$sql_row["order_s_s21"]+$sql_row["order_s_s22"]+$sql_row["order_s_s23"]+$sql_row["order_s_s24"]+$sql_row["order_s_s25"]+$sql_row["order_s_s26"]+$sql_row["order_s_s27"]+$sql_row["order_s_s28"]+$sql_row["order_s_s29"]+$sql_row["order_s_s30"]+$sql_row["order_s_s31"]+$sql_row["order_s_s32"]+$sql_row["order_s_s33"]+$sql_row["order_s_s34"]+$sql_row["order_s_s35"]+$sql_row["order_s_s36"]+$sql_row["order_s_s37"]+$sql_row["order_s_s38"]+$sql_row["order_s_s39"]+$sql_row["order_s_s40"]+$sql_row["order_s_s41"]+$sql_row["order_s_s42"]+$sql_row["order_s_s43"]+$sql_row["order_s_s44"]+$sql_row["order_s_s45"]+$sql_row["order_s_s46"]+$sql_row["order_s_s47"]+$sql_row["order_s_s48"]+$sql_row["order_s_s49"]+$sql_row["order_s_s50"];
 			$emb_count=$sql_row["order_embl_a"]+$sql_row["order_embl_b"]+$sql_row["order_embl_c"]+$sql_row["order_embl_d"]+$sql_row["order_embl_e"]+$sql_row["order_embl_f"]+$sql_row["order_embl_g"]+$sql_row["order_embl_h"];
 		}
 		
-		$sql_cat="select tid from bai_pro3.cat_stat_log where order_tid like \"% ".$schedule."".$color."%\" and category in (\"Body\",\"Front\")";
+		$sql_cat="select tid from $bai_pro3.cat_stat_log where order_tid like \"% ".$schedule."".$color."%\" and category in ($in_categories)";
 		//echo $sql_cat."<br>";
 		$sql_result_cat=mysqli_query($link,$sql_cat) or exit("Sql Error3=".mysqli_error());
 		$rows_cat=mysqli_num_rows($sql_result_cat);
@@ -392,13 +392,13 @@ else
 			$cat_ref=0;
 		}
 
-		$sqlxs="select * from bai_pro3.plandoc_stat_log where cat_ref=$cat_ref and order_tid like \"% ".$schedule."".$color."%\"";	
+		$sqlxs="select * from $bai_pro3.plandoc_stat_log where cat_ref=$cat_ref and order_tid like \"% ".$schedule."".$color."%\"";	
 		//echo $sqlxs."<br>";
 		$sql_resultxs=mysqli_query($link,$sqlxs) or exit("Sql Error =".mysqli_error());
 		$rowsx2s=mysqli_num_rows($sql_resultxs);
 		if($rowsx2s > 0)
 		{
-			$sqlx="select * from bai_pro3.plandoc_stat_log where cat_ref=$cat_ref and order_tid like \"% ".$schedule."".$color."%\" and fabric_status=5";	
+			$sqlx="select * from $bai_pro3.plandoc_stat_log where cat_ref=$cat_ref and order_tid like \"% ".$schedule."".$color."%\" and fabric_status=5";	
 			//echo $sqlx."<br>";
 			$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error =".mysqli_error());
 			$rowsx2=mysqli_num_rows($sql_resultx);
@@ -408,7 +408,7 @@ else
 			$rowsx2=0;
 		}
 		
-		$sqla="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and act_cut_status=\"DONE\" GROUP BY doc_no";
+		$sqla="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and act_cut_status=\"DONE\" GROUP BY doc_no";
 		//echo $sql."<br>";
 		$resulta=mysqli_query($link,$sqla) or exit("Sql Error1".mysqli_error());
 		while($rowa=mysqli_fetch_array($resulta))
@@ -441,7 +441,7 @@ else
 			$cut_total_qty=$sql_row["cuttable_s_xs"]+$sql_row["cuttable_s_s"]+$sql_row["cuttable_s_m"]+$sql_row["cuttable_s_l"]+$sql_row["cuttable_s_xl"]+$sql_row["cuttable_s_xxl"]+$sql_row["cuttable_s_xxxl"]+$sql_row["cuttable_s_s06"]+$sql_row["cuttable_s_s08"]+$sql_row["cuttable_s_s10"]+$sql_row["cuttable_s_s12"]+$sql_row["cuttable_s_s14"]+$sql_row["cuttable_s_s16"]+$sql_row["cuttable_s_s18"]+$sql_row["cuttable_s_s20"]+$sql_row["cuttable_s_s22"]+$sql_row["cuttable_s_s24"]+$sql_row["cuttable_s_s26"]+$sql_row["cuttable_s_s28"]+$sql_row["cuttable_s_s30"];
 		}	*/
 		
-		$sql2x="SELECT GROUP_CONCAT(DISTINCT bac_sec SEPARATOR '#') as mods FROM bai_pro.bai_log_buf WHERE delivery=\"".$schedule."\" AND color=\"".$color."\" order by bac_no+0";
+		$sql2x="SELECT GROUP_CONCAT(DISTINCT bac_sec SEPARATOR '#') as mods FROM $bai_pro.bai_log_buf WHERE delivery=\"".$schedule."\" AND color=\"".$color."\" order by bac_no+0";
 		$sql_result2x=mysqli_query($link,$sql2x) or exit("Sql Error =".mysqli_error());
 		while($sql_row2x=mysqli_fetch_array($sql_result2x))
 		{
@@ -468,7 +468,7 @@ else
 			$input_total_qtyx=$sql_row2xx["qty"];
 		}
 		
-		$sql2x1="select sum(ims_pro_qty) as qty from bai_pro3.ims_log where ims_schedule=\"".$schedule."\" and ims_color=\"".$color."\" and ims_cid=$cat_ref and ims_mod_no > 0";
+		$sql2x1="select sum(ims_pro_qty) as qty from $bai_pro3.ims_log where ims_schedule=\"".$schedule."\" and ims_color=\"".$color."\" and ims_cid=$cat_ref and ims_mod_no > 0";
 		$sql_result2x1=mysqli_query($link,$sql2x1) or exit("Sql Error =".mysqli_error());
 		while($sql_row2x1=mysqli_fetch_array($sql_result2x1))
 		{
@@ -483,14 +483,14 @@ else
 		}
 		
 		
-		$sql2xy="select sum(ims_qty) as qty from bai_pro3.ims_log where ims_schedule=\"".$schedule."\" and ims_color=\"".$color."\" and ims_cid=$cat_ref and ims_mod_no = 0";
+		$sql2xy="select sum(ims_qty) as qty from $bai_pro3.ims_log where ims_schedule=\"".$schedule."\" and ims_color=\"".$color."\" and ims_cid=$cat_ref and ims_mod_no = 0";
 		$sql_result2xy=mysqli_query($link,$sql2xy) or exit("Sql Error =".mysqli_error());
 		while($sql_row2xy=mysqli_fetch_array($sql_result2xy))
 		{
 			$zero_total_qty=$sql_row2xy["qty"];
 		}
 		
-		$sql2xxy="select sum(ims_qty) as qty from bai_pro3.ims_log_backup where ims_schedule=\"".$schedule."\" and ims_color=\"".$color."\" and ims_cid=$cat_ref and ims_mod_no = 0";
+		$sql2xxy="select sum(ims_qty) as qty from $bai_pro3.ims_log_backup where ims_schedule=\"".$schedule."\" and ims_color=\"".$color."\" and ims_cid=$cat_ref and ims_mod_no = 0";
 		$sql_result2xxy=mysqli_query($link,$sql2xxy) or exit("Sql Error =".mysqli_error());
 		while($sql_row2xxy=mysqli_fetch_array($sql_result2xxy))
 		{
@@ -513,7 +513,7 @@ else
 			$scan_total_qty=$sql_row3["scan"];
 		}
 		
-		$sql4="select sum(pcs) as pcs,max(lastup) as fcatime from bai_pro3.fca_audit_fail_db where schedule=\"".$schedule."\" and tran_type=\"1\"";
+		$sql4="select sum(pcs) as pcs,max(lastup) as fcatime from $bai_pro3.fca_audit_fail_db where schedule=\"".$schedule."\" and tran_type=\"1\"";
 		$sql_result4=mysqli_query($link,$sql4) or exit("Sql Error =".mysqli_error());
 		while($sql_row4=mysqli_fetch_array($sql_result4))
 		{
@@ -521,14 +521,14 @@ else
 			$fca_time=$sql_row4["fcatime"];
 		}
 		
-		$sql4z="select sum(pcs) as pcs from bai_pro3.fca_audit_fail_db where schedule=\"".$schedule."\" and tran_type=\"2\"";
+		$sql4z="select sum(pcs) as pcs from $bai_pro3.fca_audit_fail_db where schedule=\"".$schedule."\" and tran_type=\"2\"";
 		$sql_result4z=mysqli_query($link,$sql4z) or exit("Sql Error =".mysqli_error());
 		while($sql_row4z=mysqli_fetch_array($sql_result4z))
 		{
 			$fca_fail_total_qty=$sql_row4z["pcs"];
 		}
 		
-		$sqlx="select * from weekly_delivery_status_finishing where tid=\"".$ref_id."\"";	
+		$sqlx="select * from $bai_pro4.weekly_delivery_status_finishing where tid=\"".$ref_id."\"";	
 		$resultx=mysqli_query($link,$sqlx) or die("Error = ".mysqli_error());
 		$rowsx=mysqli_num_rows($resultx);	
 		while($sql_rowx=mysqli_fetch_array($resultx))
@@ -540,7 +540,7 @@ else
 		
 		if($status_rep == "Shipped")
 		{
-			$sql4zx="select sum(pcs) as pcs from bai_pro3.fca_audit_fail_db where schedule=\"".$schedule."\" and tran_type=\"1\" and date(lastup) between \"".trim($start_date)."\" and  \"".trim($end_date)."\"";
+			$sql4zx="select sum(pcs) as pcs from $bai_pro3.fca_audit_fail_db where schedule=\"".$schedule."\" and tran_type=\"1\" and date(lastup) between \"".trim($start_date)."\" and  \"".trim($end_date)."\"";
 			//echo $sql4zx."<br>";
 			$sql_result4zx=mysqli_query($link,$sql4zx) or exit("Sql Error =".mysqli_error());
 			while($sql_row4zx=mysqli_fetch_array($sql_result4zx))
@@ -556,7 +556,7 @@ else
 				}			
 			}
 			
-			$sql4zy="select sum(carton_act_qty) as qty from bai_pro3.packing_summary where order_del_no=\"".$schedule."\" and status=\"DONE\" and date(lastup) between \"".trim($start_date)."\" and  \"".trim($end_date)."\"";
+			$sql4zy="select sum(carton_act_qty) as qty from $bai_pro3.packing_summary where order_del_no=\"".$schedule."\" and status=\"DONE\" and date(lastup) between \"".trim($start_date)."\" and  \"".trim($end_date)."\"";
 			$sql_result4zy=mysqli_query($link,$sql4zy) or exit("Sql Error =".mysqli_error());
 			while($sql_row4zy=mysqli_fetch_array($sql_result4zy))
 			{
@@ -566,7 +566,7 @@ else
 			//echo $scan_qty_week."^".$fca_pass_total_qty."^".$schedule."<br>";
 		}
 		
-		$sql4zz="select sum(pcs) as pcs from bai_pro3.fca_audit_fail_db where schedule=\"".$schedule."\" and tran_type=\"1\" and date(lastup)=\"".date("Y-m-d")."\"";
+		$sql4zz="select sum(pcs) as pcs from $bai_pro3.fca_audit_fail_db where schedule=\"".$schedule."\" and tran_type=\"1\" and date(lastup)=\"".date("Y-m-d")."\"";
 		//echo $sql4zz."<br>";
 		$sql_result4zz=mysqli_query($link,$sql4zz) or exit("Sql Error =".mysqli_error());
 		while($sql_row4zz=mysqli_fetch_array($sql_result4zz))
@@ -865,7 +865,7 @@ else
 		
 		
 		
-		$sql4="SELECT SUM(ship_s_xs),SUM(ship_s_s),SUM(ship_s_m),SUM(ship_s_l),SUM(ship_s_xl),SUM(ship_s_xxl),SUM(ship_s_xxxl),SUM(ship_s_s01),SUM(ship_s_s02),SUM(ship_s_s03),SUM(ship_s_s04),SUM(ship_s_s05),SUM(ship_s_s06),SUM(ship_s_s07),SUM(ship_s_s08),SUM(ship_s_s09),SUM(ship_s_s10),SUM(ship_s_s11),SUM(ship_s_s12),SUM(ship_s_s13),SUM(ship_s_s14),SUM(ship_s_s15),SUM(ship_s_s16),SUM(ship_s_s17),SUM(ship_s_s18),SUM(ship_s_s19),SUM(ship_s_s20),SUM(ship_s_s21),SUM(ship_s_s22),SUM(ship_s_s23),SUM(ship_s_s24),SUM(ship_s_s25),SUM(ship_s_s26),SUM(ship_s_s27),SUM(ship_s_s28),SUM(ship_s_s29),SUM(ship_s_s30),SUM(ship_s_s31),SUM(ship_s_s32),SUM(ship_s_s33),SUM(ship_s_s34),SUM(ship_s_s35),SUM(ship_s_s36),SUM(ship_s_s37),SUM(ship_s_s38),SUM(ship_s_s39),SUM(ship_s_s40),SUM(ship_s_s41),SUM(ship_s_s42),SUM(ship_s_s43),SUM(ship_s_s44),SUM(ship_s_s45),SUM(ship_s_s46),SUM(ship_s_s47),SUM(ship_s_s48),SUM(ship_s_s49),SUM(ship_s_s50) FROM bai_pro3.ship_stat_log WHERE ship_schedule=\"".$schedule."\" and ship_status=\"2\"";
+		$sql4="SELECT SUM(ship_s_xs),SUM(ship_s_s),SUM(ship_s_m),SUM(ship_s_l),SUM(ship_s_xl),SUM(ship_s_xxl),SUM(ship_s_xxxl),SUM(ship_s_s01),SUM(ship_s_s02),SUM(ship_s_s03),SUM(ship_s_s04),SUM(ship_s_s05),SUM(ship_s_s06),SUM(ship_s_s07),SUM(ship_s_s08),SUM(ship_s_s09),SUM(ship_s_s10),SUM(ship_s_s11),SUM(ship_s_s12),SUM(ship_s_s13),SUM(ship_s_s14),SUM(ship_s_s15),SUM(ship_s_s16),SUM(ship_s_s17),SUM(ship_s_s18),SUM(ship_s_s19),SUM(ship_s_s20),SUM(ship_s_s21),SUM(ship_s_s22),SUM(ship_s_s23),SUM(ship_s_s24),SUM(ship_s_s25),SUM(ship_s_s26),SUM(ship_s_s27),SUM(ship_s_s28),SUM(ship_s_s29),SUM(ship_s_s30),SUM(ship_s_s31),SUM(ship_s_s32),SUM(ship_s_s33),SUM(ship_s_s34),SUM(ship_s_s35),SUM(ship_s_s36),SUM(ship_s_s37),SUM(ship_s_s38),SUM(ship_s_s39),SUM(ship_s_s40),SUM(ship_s_s41),SUM(ship_s_s42),SUM(ship_s_s43),SUM(ship_s_s44),SUM(ship_s_s45),SUM(ship_s_s46),SUM(ship_s_s47),SUM(ship_s_s48),SUM(ship_s_s49),SUM(ship_s_s50) FROM $bai_pro3.ship_stat_log WHERE ship_schedule=\"".$schedule."\" and ship_status=\"2\"";
 		//echo $sql4;
 		$sql_result4=mysqli_query($link,$sql4) or exit("Sql Error".mysqli_error());
 		$total_rows=mysqli_num_rows($sql_result4);
@@ -897,7 +897,7 @@ else
 		//$sHTML_Content .="</tr>";
 		
 		
-		$sqlxr="select * from weekly_delivery_status_finishing where tid=\"".$ref_id."\"";
+		$sqlxr="select * from $bai_pro4.weekly_delivery_status_finishing where tid=\"".$ref_id."\"";
 		$resultxr=mysqli_query($link,$sqlxr) or die("Error = ".mysqli_error());
 		$rowsxr=mysqli_num_rows($resultxr);
 		while($rowxx=mysqli_fetch_array($resultxr))
@@ -907,7 +907,7 @@ else
 			$status_u=$rowxx["status"];
 		}
 		
-		$sqlxry="select * from weekly_delivery_status_finishing where tid=\"".$ref_id."\" and log_time like \"%FG-Released%\"";
+		$sqlxry="select * from $bai_pro4.weekly_delivery_status_finishing where tid=\"".$ref_id."\" and log_time like \"%FG-Released%\"";
 		$resultxry=mysqli_query($link,$sqlxry) or die("Error = ".mysqli_error());
 		$rowsxry=mysqli_num_rows($resultxry);
 		
@@ -927,7 +927,7 @@ else
 		}
 		if($rowsxr == 0)
 		{
-			$sql2xr="insert into weekly_delivery_status_finishing(tid,tran_tid,buyer,style,schedule,color,low_status,status,ex_fact,log_time) values(\"".$ref_id."\",\"".$ship_tid."\",\"".$buyer_division."\",\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$low_status."\",\"".$status."\",\"".$ex_factory_date_new."\",\"".$status."^".date("Y-m-d H:i:s")."\")";
+			$sql2xr="insert into $bai_pro4.weekly_delivery_status_finishing(tid,tran_tid,buyer,style,schedule,color,low_status,status,ex_fact,log_time) values(\"".$ref_id."\",\"".$ship_tid."\",\"".$buyer_division."\",\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$low_status."\",\"".$status."\",\"".$ex_factory_date_new."\",\"".$status."^".date("Y-m-d H:i:s")."\")";
 			//echo $sql2xr."<br>";
 			mysqli_query($link,$sql2xr) or die("Error2 = ".mysqli_error());
 		}
@@ -935,23 +935,23 @@ else
 		{
 			if($status_u == $status)
 			{		
-				$sql3xr="update weekly_delivery_status_finishing set low_status=\"".$low_status."\",buyer=\"".$buyer_division."\",log_time=\"".$log_time."\",ex_fact=\"".$ex_factory_date_new."\",status=\"".$status."\" where tid=\"".$ref_id."\" ";
+				$sql3xr="update $bai_pro4.weekly_delivery_status_finishing set low_status=\"".$low_status."\",buyer=\"".$buyer_division."\",log_time=\"".$log_time."\",ex_fact=\"".$ex_factory_date_new."\",status=\"".$status."\" where tid=\"".$ref_id."\" ";
 			}
 			else
 			{			
-				$sql3xr="update weekly_delivery_status_finishing set low_status=\"".$low_status."\",buyer=\"".$buyer_division."\",log_time=\"$log_time&".$status."^".date("Y-m-d H:i:s")."\",ex_fact=\"".$ex_factory_date_new."\",status=\"".$status."\" where tid=\"".$ref_id."\" ";
+				$sql3xr="update $bai_pro4.weekly_delivery_status_finishing set low_status=\"".$low_status."\",buyer=\"".$buyer_division."\",log_time=\"$log_time&".$status."^".date("Y-m-d H:i:s")."\",ex_fact=\"".$ex_factory_date_new."\",status=\"".$status."\" where tid=\"".$ref_id."\" ";
 			}
 			//echo $sql3xr."<br>";
 			//echo $status_u."-".$status."-".$sql3xr."<br>";
 			mysqli_query($link,$sql3xr) or die("Error21 = ".mysqli_error());
 		}
 		
-		if((in_array(strtolower($username),$authorized)))
+		if(in_array($authorized,$permission))
 		{	
 			if($status=="FCA" || $status=="FCA/P")
 			{		
 				$sHTML_Content .="<tr>";
-				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -978,7 +978,7 @@ else
 				$sHTML_Content .="</tr>";
 			}
 		}
-		else if((in_array(strtolower($username),$fca_authorized)))
+		else if(in_array($authorized,$permission))
 		{	
 			if($status=="Offered" || $status=="FCA/P" || $status=="FCA Fail")
 			{
@@ -1010,12 +1010,12 @@ else
 				$sHTML_Content .="</tr>";
 			}
 		}
-		else if((in_array(strtolower($username),$fg_authorized)))
+		else if(in_array($authorized,$permission))
 		{	
 			if(($status=="FG" && ($order_total_qty==$scan_total_qty)) || $status=="FG*")
 			{
 				$sHTML_Content .="<tr>";
-				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
+				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
 				$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -1045,9 +1045,9 @@ else
 		else
 		{
 			$sHTML_Content .="<tr>";
-			if((in_array(strtolower($username),$spc_users)))
+			if(in_array($authorized,$permission))
 			{
-				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 			}
 			else
 			{

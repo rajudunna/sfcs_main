@@ -152,8 +152,8 @@
 			echo "<input type=\"text\"  class='form-control alpha' size=\"10\" value=\"\" name=\"pack\" id='pack'></td>";
 			echo "<td><select name=\"pack_methods\" id=\"pack_methods\" class='form-control'>";
 			echo "<option value=\"\">Select Pack Method</option>";
-			foreach($pack_methods as $P => $pack_method){				
-				echo "<option value='$P'>$pack_method</option>";
+			foreach($pack_methods as  $pack_method){				
+				echo "<option value='$pack_method'>$pack_method</option>";
 			}
 			echo "</select></td>";
 

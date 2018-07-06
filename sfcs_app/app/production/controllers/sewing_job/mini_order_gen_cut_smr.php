@@ -35,12 +35,13 @@ set_time_limit(30000000);
 // include("dbconf.php");
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    $has_permission=haspermission($_GET['r']);
 $input_job_no=0;
 $mini_order_ref=$_GET["id"];
 $packing_mode=$_GET["mode"];
     $style_ori=$_GET['style'];
     $schedule_ori=$_GET['schedule'];
-echo "<h2>Single Color & Multi Size (Ratio Pack) Carton Method</h2>";
+echo "<h2>Single Color & Multi Size Carton Method</h2>";
 
 $sql="select * from $brandix_bts.tbl_min_ord_ref where id=".$mini_order_ref."";
 //echo $sql."<br>";

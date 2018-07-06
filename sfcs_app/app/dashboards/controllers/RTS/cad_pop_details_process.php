@@ -48,7 +48,7 @@ function update_m3_or($order_tid,$cut_no_ref,$operation,$link)
 
 	$size_qty=array();
 	
-	$sql="select * from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and acutno=$cut_no_ref and remarks in ('Body','Front')"; //20110911
+	$sql="select * from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and acutno=$cut_no_ref and remarks in ('".implode("','",$in_categories)."')"; //20110911
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -248,10 +248,10 @@ if(isset($_POST['update']))
 		$add_query=", lastup=\"".date("Y-m-d H:i:s")."\" ";
 	}
 	$sql1="update $bai_pro3.recut_v2 set fabric_status=$status $add_query where order_tid=\"$order_tid\" and acutno=$cut_no_ref";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$doc_nos."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
 	//echo $sql;
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	echo "<h2>Successfully Updated</h2>";
 }
 
@@ -291,12 +291,12 @@ if(isset($_POST['submit']))
 		
 		$sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength) values (\"".date("Y-m-d")."\",".$cat[$i].",\"$order_tid\",".$mklen[$i].")";
 //echo $sql1;
-		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		
-		$sql1="update recut_v2 set p_plies=".$plies[$i].",a_plies=".$plies[$i].",mk_ref=$ilastid,".implode(",",$temp)." where doc_no=".$docno[$i];
+		$sql1="update $bai_pro3.recut_v2 set p_plies=".$plies[$i].",a_plies=".$plies[$i].",mk_ref=$ilastid,".implode(",",$temp)." where doc_no=".$docno[$i];
 //echo $sql1;
-		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//if($i==0)
 		if($cat_name_temp=="Body" or $cat_name_temp=="Front")
@@ -305,7 +305,7 @@ if(isset($_POST['submit']))
 			{
 				$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size[$j])."\",".($qty[$j]*$plies[$i]).",9,\"$module-".$docno[$i]."\")";
 		//echo $sql;
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
 		

@@ -5,15 +5,16 @@ Ticket# 575423: 2014-02-08/Kirang: Added Color Filter Clause for multi color ord
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+$order_quantity_mail=$conf1->get('order_quantity_mail');
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-$view_access=user_acl("SFCS_0135",$username,1,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0135",$username,1,$group_id_sfcs);
 
 ?>
 <?php
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
+// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+// $username=strtolower($username_list[1]);
 
 //$authorized=array("muralim","kirang","kirang","srinub","kirang","lokeshk","prabathsa","kirang");
 /*$sql="select * from menu_index where list_id=135";
@@ -1337,7 +1338,7 @@ if(isset($_POST["update"]))
 
 
 <?php	
-	/*$email_header="<html><head><style>
+	$email_header="<html><head><style>
 		body
 		{
 			font-family: Trebuchet MS;
@@ -1425,7 +1426,7 @@ if(isset($_POST["update"]))
 		}									
 	}
 					
-	$subject1 = "BAI-PRO. Order Quantity Amendments of $sch on ".date("Y-m-d H:i:s")."";
+	$subject1 = $plant_alert_code."Order Quantity Amendments of $sch on ".date("Y-m-d H:i:s")."";
 																	
 	$message1 =$email_header;
 									
@@ -1438,7 +1439,7 @@ if(isset($_POST["update"]))
 										
 	$message1 .=$email_footer;		
 											
-	send_email1("baiict@brandix.com","brandixalerts@schemaxtech.com","",$subject1,$message1);*/
+	send_email1("baiict@brandix.com",$order_quantity_mail,"",$subject1,$message1);
 }
 
 ?>

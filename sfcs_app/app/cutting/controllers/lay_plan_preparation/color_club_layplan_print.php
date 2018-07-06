@@ -190,6 +190,7 @@ for($i=0;$i<sizeof($cat_db);$i++)
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$remarks_x=$sql_row['remarks'];
+		$binding_con = $sql_row['bindning_con'];
 		
 	}
 
@@ -1544,7 +1545,7 @@ tags will be replaced.-->
 			
 </td>
   <td colspan=3 class=xl7732599 style='border-right:.5pt solid black'>Used
-  Yards</td>
+  <?php $fab_uom ?></td>
   <td colspan=3 class=xl7032599>
   <?php 
   $sum_newyy = array();
@@ -1584,15 +1585,22 @@ tags will be replaced.-->
   
   
   <?php
+  $binding_con = 0.12;
   if(strlen($remarks_x)>0)
   {
-  	echo "<td colspan=13><strong>Remarks: $remarks_x</strong></td>";
+  	echo "<td colspan=5 style='border:1px solid black'><strong>Remarks : $remarks_x</strong></td>";
   }
   else
   {
-  	echo "<td colspan=13></td>";
+  	echo "<td colspan=5></td>";
   }
-  
+  if(strlen($binding_con)>0)
+  {
+	  echo "<td colspan=4 style='border:1px solid black'><strong>Binding Consumption : $binding_con</strong></td>";
+  }else{
+	  echo "<td colspan=5></td>";
+  }
+ 
   ?>
   <!--<td class=xl7732599></td>
   <td class=xl7732599></td>

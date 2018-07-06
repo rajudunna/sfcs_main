@@ -34,6 +34,7 @@ set_time_limit(30000000);
 // include("dbconf.php");
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    $has_permission=haspermission($_GET['r']);
 include("session_track.php");
 $status="";
 if($status == '' || $status == '1')
@@ -91,15 +92,9 @@ if($status == '' || $status == '1')
 			$bundle_number=1;
 		}
 
-		if($carton_method == '1' || $carton_method == '4')
+		if($carton_method == '1')
 		{
-			// echo "<a href=\"sewing_job_create.php\">Click Here to Back</a>";
-			// echo "<h3>Single Color & Single Size Carton Method</h3>";
-			if ($carton_method=='4') {
-				echo "<h2>Single Color & Multi Size (Non Ratio Pack) Carton Method</h2>";
-			}else {
-				echo "<h2>Single Color & Single Size Carton Method</h2>";
-			}
+			echo "<h2>Single Color & Single Size Carton Method</h2>";
 			echo "<br><div class='alert alert-warning'>Data Saving under process Please wait.....</div>";
 			// echo "<table class='table table-striped table-bordered'>";
 			// echo "<thead><th>Carton No</th><th>Cut Number</th><th>Color</th><th>Size</th><th>Bundle Number</th><th>Quantity</th><th>Docket Number</th></thead>";
@@ -597,10 +592,10 @@ if($status == '' || $status == '1')
 			// echo("<script>location.href = 'mini_order_gen_cut_mm.php?id=$mini_order_ref&mode=$carton_method';</script>");
 		}
 
-		if($carton_method == '5')
+		if($carton_method == '4')
 		{
 			// echo "<a href=\"sewing_job_create.php\">Click Here to Back</a>";
-			echo "<h3>Single Color & Multi Size (Ratio Pack) Carton Method</h3>";
+			echo "<h3>Single Color & Multi Size Carton Method</h3>";
 			echo "<br><div class='alert alert-warning'>Data Saving under process Please wait.....</div>";
 			// echo "<table class='table table-striped table-bordered'>";
 			// echo "<thead><th>Carton No</th><th>Cut Number</th><th>Color</th><th>Size</th><th>Bundle Number</th><th>Quantity</th><th>Docket Number</th></thead>";

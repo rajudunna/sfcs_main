@@ -142,6 +142,7 @@ if(isset($_POST["submit"]))
 	$edat=$_POST["edat"];
 	$aod_nos=array();
 	$sql_dat="select disp_note_no as disp from $bai_pro3.disp_db where create_date between \"$sdat\" and \"$edat\"";
+	//echo $sql_dat;
 	$result_dat=mysqli_query($link, $sql_dat) or exit("Sql Error1".$sql_dat.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_dat=mysqli_fetch_array($result_dat))
 	{
@@ -160,7 +161,7 @@ if(isset($_POST["submit"]))
 	//$sql_sch="select distinct ship_schedule as sch from bai_pro3.ship_stat_log where disp_note_no in (".implode(",",$aod_nos).")";
 	//$sql_sch="select distinct schedule_no as sch from bai_pro4.shipment_plan_ref where ex_factory_date between \"$sdat\" and \"$edat\"";
 	$sql_sch="select distinct schedule_no as sch from $bai_pro4.week_delivery_plan_ref $query";
-	// echo $sql_sch."<br>";
+	//echo $sql_sch."<br>";
 	$result_sch=mysqli_query($link, $sql_sch) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_sch=mysqli_fetch_array($result_sch))
 	{
@@ -192,7 +193,7 @@ if(isset($_POST["submit"]))
 				<th>Order YY</th>
 				<th>CAD YY</th>
 				<th>CAD Saving</th>
-				<th>CAD Saving Yards</th>
+				<th>CAD Saving  <?php $fab_uom ?></th>
 				<th>Utilization(CAD YY)</th>
 				<th>Fabric Allocated</th>
 				<th>Fabric Issued Docket</th>
@@ -207,13 +208,13 @@ if(isset($_POST["submit"]))
 				<th>AOD Status</th>
 			</tr>";
 		$sql3="select order_del_no as sch,order_col_des as col from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$sch_nos).")";
-		// echo $sql3."<br>";
+		//echo $sql3."<br>";
 		$result3=mysqli_query($link, $sql3) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row3=mysqli_fetch_array($result3))
 		{
 			$schedule=$row3["sch"];
 			$color=$row3["col"];
-			$sql4="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category!=\"\"";
+			$sql4="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category <> 'NULL' ";
 			// echo $sql4."<br>";
 			$result4=mysqli_query($link, $sql4) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row4=mysqli_fetch_array($result4))
@@ -226,8 +227,8 @@ if(isset($_POST["submit"]))
 				$cut_total_qty=0;
 				$issued_qty=0;
 				$recut_issued_qty=0;
-				$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-				// echo $sql."<br>";
+				$sql="select * from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
@@ -247,6 +248,7 @@ if(isset($_POST["submit"]))
 					$old_order_total=$order_total_qty;
 				}
 				$sql="select * from $bai_pro3.cat_stat_log where order_tid like \"% $schedule$color%\" and category=\"$category\"";
+				//echo $sql;
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{

@@ -1,17 +1,18 @@
 <?php
 // include("security1.php");
 
-$username_list=array();
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
+//$username_list=array();
+//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+//$username=$username_list[1];
 
-$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+$has_permission=haspermission($_GET['r']);
 $tid=$_GET['tid'];
 $check=$_GET['check'];
 
-if($check==1 and in_array(strtolower($username),$app_users))
+if($check==1 and in_array($authorized,$has_permission))
+
 {
 	$checkx=1;
 	$item_list=array("Applied","Approve","Reject");
@@ -45,7 +46,8 @@ else
 			}
 			default:
 			{
-				header("Location:restricted.php");
+				$url=getFullURLLevel($_GET['r'],'controllers/restrict.php',1,'N');
+	            header("Location: $url");
 			}
 		}
 
@@ -56,7 +58,11 @@ else
 
 
 ?>
-<form name="input" method="post" action="update_status_process.php">
+<div class="panel panel-primary">
+<div class="panel-heading">Status Update Form
+</div>
+<div class="panel-body">
+<form name="input" method="post" action= "<?=getFullURL($_GET['r'],'update_status_process.php','N') ?>" >
 
 <?php
 
@@ -69,16 +75,17 @@ if(mysqli_num_rows($sql_result)>0)
 {
 	if($checkx==1)
 	{
-		echo "<h2>Status Update Form: </h2><input type=\"submit\" name=\"submit1\" value=\"Update\">";
+		echo "<input type=\"submit\" name=\"submit1\" class=\"btn btn-primary\" value=\"Update\">";
 	}
 	if($checkx==2)
 	{
-		echo "<h2>Status Update Form: </h2><input type=\"submit\" name=\"submit2\" value=\"Update\">";
+		echo "<input type=\"submit\" name=\"submit2\" class=\"btn btn-primary\" value=\"Update\">";
 	}
-	
-	echo '<table id="table1" class="mytable">';
-	
-	echo "<tr class='tblheading'><th>Date</th>	<th>Style</th>	<th>Schedule</th>	<th>Color</th>	<th>Buyer</th>	<th>M3 Item Code</th>	<th>Reason</th>	<th>Qty</th><th>Status</th><th>Req. From</th><th>Approved By</th></tr>";
+	echo "<div class='table table-responsive'>";
+	echo "<table class='table table-bordered'>";
+	echo "<thead>";
+	echo "<tr class='success'><th>Date</th>	<th>Style</th>	<th>Schedule</th>	<th>Color</th>	<th>Buyer</th>	<th>M3 Item Code</th>	<th>Reason</th>	<th>Qty</th><th>Status</th><th>Req. From</th><th>Approved By</th></tr></thead>";
+	echo "<tbody>";
 	
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -104,6 +111,11 @@ if(mysqli_num_rows($sql_result)>0)
 		echo "<td><input type=\"hidden\" name=\"tid[]\" value=\"$tid\">".$sql_row['app_by']."</td>";
 		echo "</tr>";
 	}
+	echo "</tbody>";
+
+	echo "</table>";
+	echo "</div>";
+
 
 }
 else
@@ -114,6 +126,9 @@ else
 
 ?>
 </form>
+</div>
+</div>
+
 
 
 

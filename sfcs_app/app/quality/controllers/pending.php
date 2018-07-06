@@ -8,9 +8,9 @@ Description: Here AQL team will be update Garments Approve or Rejected status.
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-$view_access=user_acl("SFCS_0140",$username,1,$group_id_sfcs);
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+//$view_access=user_acl("SFCS_0140",$username,1,$group_id_sfcs);
 //include("security1.php");
 ?>
 <html>
@@ -92,6 +92,7 @@ function firstbox()
 	<input type="submit" name="filter" value="Show" class="btn btn-primary" id='btn' style='display: none'>
 </div> 
 </form>
+<br>
 
 <?php $url=getFullURL($_GET['r'],'pending_ajax.php','R') ?>
 <script type='text/javascript'>
@@ -178,15 +179,15 @@ if($no_of_rows > 0) {
 		{
 			if($color=='0')
 			{
-			echo "<td><a href=\"$url2&style=$style&schedule=$schedule&audit_pending=$audit_pending&color=0\">Update Approved</a></td>";
-			echo "<td><a href=\"$url3&style=$style&schedule=$schedule&audit_pending=$audit_pending&color=0\">Update Rejected</a></td>";
-			echo "<td><a href=\"$url4&style=$style&schedule=$schedule&audit_pending=$audit_pending&recheck=$recheck&color=0\">Approve All</a></td>";
+			echo "<td><a class=\"btn btn-info btn-xs\"  href=\"$url2&style=$style&schedule=$schedule&audit_pending=$audit_pending&color=0\">Update Approved</a></td>";
+			echo "<td><a class=\"btn btn-info btn-xs\"  href=\"$url3&style=$style&schedule=$schedule&audit_pending=$audit_pending&color=0\">Update Rejected</a></td>";
+			echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url4&style=$style&schedule=$schedule&audit_pending=$audit_pending&recheck=$recheck&color=0\">Approve All</a></td>";
 			}
 			else
 			{
-			echo "<td><a href=\"$url2&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending\">Update Approved</a></td>";
-			echo "<td><a href=\"$url3&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending\">Update Rejected</a></td>";
-			echo "<td><a href=\"$url4&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending&recheck=$recheck\">Approve All</a></td>";
+			echo "<td><a class=\"btn btn-info btn-xs\"  href=\"$url2&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending\">Update Approved</a></td>";
+			echo "<td><a class=\"btn btn-info btn-xs\"  href=\"$url3&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending\">Update Rejected</a></td>";
+			echo "<td><a class=\"btn btn-info btn-xs\"  href=\"$url4&style=$style&schedule=$schedule&color=$color&audit_pending=$audit_pending&recheck=$recheck\">Approve All</a></td>";
 			}
 		}
 		else

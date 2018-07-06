@@ -1,9 +1,9 @@
 <?php
 $start_timestamp = microtime(true);
 set_time_limit(6000000);
-    include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
-    
-	include('Soap_Op_Update_bek.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+include('Soap_Op_Update_bek.php');
 	require ('SoapWsdlClasses.php');
 	// error_reporting(0);
 	// if(function_exists($_GET['f']))
@@ -34,10 +34,11 @@ set_time_limit(6000000);
 			return $output;
 		}
 		
-		$sql = "select sfcs_color as ColorCode,sfcs_schedule as SchelduleCode,sfcs_style as StyleCode,m3_mo_no as MONumber,m3_size as SizeCode,sfcs_qty as Quantity,sfcs_shift as ShiftCode,sfcs_reason as ScrapReason,m3_op_des,sfcs_mod_no,m3_op_code,sfcs_tid as RemarkKey,sfcs_job_no as JobNumber,sfcs_date as TransactionDate,work_centre from $m3_bulk_ops_rep_db.m3_sfcs_tran_log WHERE sfcs_status IN (0,40) order by sfcs_tid*1 limit 500";
+		$sql = "select sfcs_color as ColorCode,sfcs_schedule as SchelduleCode,sfcs_style as StyleCode,m3_mo_no as MONumber,m3_size as SizeCode,sfcs_qty as Quantity,sfcs_shift as ShiftCode,sfcs_reason as ScrapReason,m3_op_des,sfcs_mod_no,m3_op_code,sfcs_tid as RemarkKey,sfcs_job_no as JobNumber,sfcs_date as TransactionDate,work_centre from $m3_bulk_ops_rep_db.m3_sfcs_tran_log WHERE sfcs_status IN (0,75) order by sfcs_tid*1 limit 500";
 				
 		// echo $sql."<br>";
 	    $result = mysqli_query($link, $sql);
+		
 		$InputValue = array();
 		$normal_ids = array();
 		$scrap_ids = array();
@@ -152,13 +153,21 @@ set_time_limit(6000000);
 					$PTSService = new PTSService();
 					if($value['ScrapReason'] == ""){
 						$response = $PTSService->UpdateM3($UpdateM3);
+						//var_dump($response );
 					}
 					if($value['ScrapReason'] != ""){
 						$response = $PTSService->UpdateScrap($UpdateScrap);
+						// var_dump($response );
 					}
 					
 					if(isset($response->detail)){
 						$Error = $response->detail->FaultDetail->ErrorCode.'-'.$response->detail->FaultDetail->Message;
+					}
+					if(isset($response->faultstring)){
+						$Error = $response->faultstring;
+						if(isset($response->detail)){
+							$Error = $response->detail->FaultDetail->ErrorCode.'-'.$response->detail->FaultDetail->Message;
+						}
 					}
 					
 					if(isset($response->UpdateM3Result)){
@@ -185,6 +194,7 @@ set_time_limit(6000000);
 					$m3_sfcs_tran_log_id = $link->query($m3_sfcs_tran_log_sql);
 					$m3_sfcs_tran_log_id = $m3_sfcs_tran_log_id->fetch_assoc();
 					$m3_sfcs_tran_log_id = (int)$m3_sfcs_tran_log_id["m3_sfcs_tran_log_id"];
+					
 					if($Error == "TRUE"){
 						$Success_ids[] =  $m3_sfcs_tran_log_id;
 						$sql = "UPDATE  $m3_bulk_ops_rep_db.m3_sfcs_tran_log SET m3_error_code='$Error',sfcs_status=30 WHERE sfcs_tid=$m3_sfcs_tran_log_id";

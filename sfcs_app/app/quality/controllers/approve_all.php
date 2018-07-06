@@ -59,10 +59,7 @@ $audit_pending=$_GET['audit_pending'];
 $color=$_GET['color'];
 $recheck=$_GET['recheck'];
 
-	//Login User Name
-	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-	$username=$username_list[1];
-	//Login User Name
+	
 
 $size=array();
 $qty=array();

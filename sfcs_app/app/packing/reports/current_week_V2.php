@@ -1,7 +1,8 @@
-<?phP
+<?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
+	$permission = haspermission($_GET['r']);
 ?>
 <title>Weekly Delivery Dashboard - Packing</title>
 
@@ -56,6 +57,7 @@ $current_week = getFullURL($_GET['r'],'current_week_V2.php','N');
 $next_week = getFullURL($_GET['r'],'next_week_V2.php','N');
 $summary =  getFullURL($_GET['r'],'summary_v2.php','R');
 $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
+$status_update = getFullURL($_GET['r'],'status_update.php','N');
 ?>
 <form method="post" name="input" action="?r=<?php echo $_GET['r']; ?>">
 <center><a href="<?php echo $summary;?>&weekno=<?php echo $weeknumber; ?>" onclick="return popitup('<?php echo $summary;?>?weekno=<?php echo $weeknumber; ?>')">Summary</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $pre_week;?>">Previous Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $current_week; ?>">Current Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $next_week;?>">Next Week</a>&nbsp;&nbsp;|&nbsp;&nbsp; </center>
@@ -144,7 +146,6 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 
 	$x=0;
 	$sqly="select ref_id from $bai_pro4.week_delivery_plan_ref $query1";
-	//echo $sqly;
 	$resulty=mysqli_query($link,$sqly) or die("Error = No Details found!!!".mysqli_error());
 	$sql_num_check=mysqli_num_rows($resulty);
 	if($sql_num_check <= 0)
@@ -153,13 +154,13 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 	}
 	else
 	{
-		$ref_id_ver[]=-1;
-		while($rowy=mysqli_fetch_array($resulty))
-		{
-		$ref_id_ver[]=$rowy["ref_id"];
-		}
-		$sqlz="delete from $bai_pro4.weekly_delivery_status_finishing where tid not in (".implode(",",$ref_id_ver).") and ex_fact between \"".trim($start_date)."\" and  \"".trim($end_date)."\"";
-		mysqli_query($link,$sqlz) or die("Error1 = ".mysqli_error());
+			while($rowy=mysqli_fetch_array($resulty))
+			{
+				$ref_id_ver[]=$rowy["ref_id"];
+			}
+			$sqlz="delete from $bai_pro4.weekly_delivery_status_finishing where tid not in (".implode(",",$ref_id_ver).") and ex_fact between \"".trim($start_date)."\" and  \"".trim($end_date)."\"";
+			mysqli_query($link,$sqlz) or die("Error = ".mysqli_error());
+		
 	}
 	//$sql="select ref_id,ship_tid,style,color,schedule_no,buyer_division,ex_factory_date_new from week_delivery_plan_ref where ex_factory_date_new between \"".trim($start_date)."\" and \"".trim($end_date)."\" order by ex_factory_date_new ";
 	$sql="select ref_id,ship_tid,style,color,schedule_no,buyer_division,ex_factory_date_new from $bai_pro4.week_delivery_plan_ref $query ";
@@ -721,7 +722,7 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 	if($status=="FCA" || $status=="FCA/P")
 	{		
 		$sHTML_Content .="<tr>";
-		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -781,7 +782,7 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 	if(($status=="FG" && ($order_total_qty==$scan_total_qty)) || $status=="FG*")
 	{
 		$sHTML_Content .="<tr>";
-		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
+		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
 		$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -809,7 +810,7 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 	}
 
 	$sHTML_Content .="<tr>";
-	$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+	$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 
 	$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 	$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";

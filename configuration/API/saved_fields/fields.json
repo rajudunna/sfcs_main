@@ -1,0 +1,561 @@
+{
+    "last_update": null,
+    "database": {
+        "mysql": [
+            {
+                "sql_file": "sql_files\/dc4667e194c667ce876e21b8e2e751c6.sql",
+                "sql_title": "test",
+                "sql_description": "test"
+            }
+        ],
+        "mssql": [
+            {
+                "sql_file": "sql_files\/b01deb558660d2b272112bf847a801da.sql",
+                "sql_title": "test1",
+                "sql_description": "test"
+            }
+        ]
+    },
+    "mysql_database_info": {
+        "db_host": "192.168.0.110",
+        "db_user": "baiall",
+        "db_pass": "baiall",
+        "db_port": "3326"
+    },
+    "mssql_database_info": {
+        "db_host": "localhost",
+        "db_user": "root",
+        "db_pass": "srinuK_21",
+        "db_port": "3306"
+    },
+    "steps": [
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "Plant Details"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Plant Name",
+                "className": "form-control",
+                "name": "plantname",
+                "value": "Brandix Essential - Koggala",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Plant Code",
+                "className": "form-control",
+                "name": "plantcode",
+                "value": "EKG",
+                "subtype": "text"
+            },
+            {
+                "type": "checkbox-group",
+                "required": true,
+                "label": "Shifts",
+                "name": "shifts",
+                "values": [
+                    {
+                        "label": "A",
+                        "value": "A",
+                        "selected": true
+                    },
+                    {
+                        "label": "B",
+                        "value": "B",
+                        "selected": true
+                    },
+                    {
+                        "label": "C",
+                        "value": "C",
+                        "selected": true
+                    },
+                    {
+                        "label": "General",
+                        "value": "general",
+                        "selected": true
+                    }
+                ],
+                "value": [
+                    "A",
+                    "B",
+                    "C"
+                ]
+            },
+            {
+                "type": "text",
+                "label": "Plant Alert Code",
+                "className": "form-control",
+                "name": "plant-alert-code",
+                "subtype": "text",
+                "value": "BEK"
+            },
+            {
+                "type": "text",
+                "label": "Message Sent Name",
+                "className": "form-control",
+                "name": "msg-sent-via",
+                "subtype": "text",
+                "value": "SYSTEM"
+            }
+        ],
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "Mails for Alerts"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "SMTP Server Name",
+                "className": "form-control",
+                "name": "smtp-server-name",
+                "value": "smtp.gmail.com",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "SMTP User Name",
+                "className": "form-control",
+                "name": "smtp-user-name",
+                "value": "ravindranath.yrr35@gmail.com",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "SMTP Password",
+                "className": "form-control",
+                "name": "smtp-password",
+                "value": "ravindra@35",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "SMTP Port",
+                "className": "form-control",
+                "name": "smtp-port",
+                "value": "587",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "SAH Countdown email",
+                "className": "form-control",
+                "name": "sah_countdown_email",
+                "value": "a@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Week Del Plan Status Mail",
+                "className": "form-control",
+                "name": "week_del_plan_status_mail",
+                "value": "ravindranath.yrr@gmail.com,yateesh603@gmail.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "RM Summary Report Email",
+                "className": "form-control",
+                "name": "rm_summary_report_email",
+                "value": "yateesh603@gmail.com,ravindranath.yrr@gmail.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "MRN week summary alert mail",
+                "className": "form-control",
+                "name": "mrn_week_summary_alert_mail",
+                "value": "a@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Bulk OR Fail Alert",
+                "className": "form-control",
+                "name": "bulk_or_fail_alert",
+                "value": "a@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "PRO AOD GATEPASS UPDATE TO BELBAL CO INVOICE mail",
+                "className": "form-control",
+                "name": "pro_aod_gatepass_update_to_belbal_co_invoice_mail",
+                "value": "a@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "carton pendings mail",
+                "className": "form-control",
+                "name": "carton_pendings_mail",
+                "value": "a@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Dailly Delivery Failures Mail",
+                "className": "form-control",
+                "name": "dailly_delivery_failures_mail",
+                "value": "a@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "SAH dashboard email",
+                "className": "form-control",
+                "name": "sah_dashboard_email",
+                "value": "a@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "Order Summary Mail",
+                "className": "form-control",
+                "name": "order_summary_mail",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "Plan Vs Output Mail",
+                "className": "form-control",
+                "name": "plan_vs_output_mail",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "IPS Dashboard Summary mail",
+                "className": "form-control",
+                "name": "ips_dashboard_summary_mail",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "PRODUCTION WIP Status mail",
+                "className": "form-control",
+                "name": "production_wip_status_mail",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "PRO SI WED OUTPUT Details mail",
+                "className": "form-control",
+                "name": "pro_si_wed_output_details_mail",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "Mail15",
+                "className": "form-control",
+                "name": "mail15",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "Mail16",
+                "className": "form-control",
+                "name": "mail16",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "Mail17",
+                "className": "form-control",
+                "name": "mail17",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "Mail18",
+                "className": "form-control",
+                "name": "mail18",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "Mail19",
+                "className": "form-control",
+                "name": "mail19",
+                "value": "b@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "label": "Mail20",
+                "className": "form-control",
+                "name": "mail20",
+                "value": "b@brandix.com"
+            }
+        ],
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "Fabric Details"
+            },
+            {
+                "type": "select",
+                "required": true,
+                "label": "UOM",
+                "className": "form-control",
+                "name": "uom",
+                "values": [
+                    {
+                        "label": "Meters",
+                        "value": "meters"
+                        
+                    },
+                    {
+                        "label": "Yards",
+                        "value": "yards",
+                        "selected": true
+                    }
+                ],
+                "value": "yards"
+            },
+            {
+                "type": "checkbox-group",
+                "required": true,
+                "label": "Category Display in Dashboard",
+                "name": "category-display-dashboard",
+                "values": [
+                    {
+                        "label": "Front",
+                        "value": "front",
+                        "selected": true
+                    },
+                    {
+                        "label": "Body",
+                        "value": "body",
+                        "selected": true
+                    }
+                ],
+                "value": [
+                    "front",
+                    "body"
+                ]
+            }
+        ],
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "DB MSSQL"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Server Name",
+                "className": "form-control",
+                "name": "mssql-server-name",
+                "value": "GD-SQL-UAT",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "User Name",
+                "className": "form-control",
+                "name": "mssql-user-name",
+                "value": "SFCS_BIA_FF",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "subtype": "password",
+                "required": true,
+                "label": "Password",
+                "className": "form-control",
+                "name": "mssql-password",
+                "value": "Ba@rUpr6"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "ODBC Name (MSSQL)",
+                "className": "form-control",
+                "name": "mssql-odbc",
+                "value": "test1",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "ODBC Name (MYSQL)",
+                "className": "form-control",
+                "name": "mysql-odbc",
+                "value": "test2",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "M3 Database",
+                "className": "form-control",
+                "name": "m3database",
+                "value": "BELMasterUAT",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "label": "Driver Name",
+                "className": "form-control",
+                "name": "driver_name",
+                "value": "Driver={SQL Server Native Client 11.0}",
+                "subtype": "text"
+            }
+        ],
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "SFCS Mails"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Lay Plan Delete",
+                "className": "form-control",
+                "name": "layplanmail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "MRN Request Form",
+                "className": "form-control",
+                "name": "mrn_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "MRN Request Form2",
+                "className": "form-control",
+                "name": "mrn_request_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Cutting Alert",
+                "className": "form-control",
+                "name": "cutting_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Dispatch Mail",
+                "className": "form-control",
+                "name": "dispatch_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Weekly Delivery Plan Update",
+                "className": "form-control",
+                "name": "weekly_plan_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Order Quantity Revision",
+                "className": "form-control",
+                "name": "order_quantity_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Weekly Delivery Plan Status Update",
+                "className": "form-control",
+                "name": "weekly_plan_status_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Supplier Claim Update",
+                "className": "form-control",
+                "name": "supplier_claim_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Supplier Claim PDF Mail",
+                "className": "form-control",
+                "name": "supplier_claim_pdf_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "PLD-Manpower",
+                "className": "form-control",
+                "name": "pld_man_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Dashboard Email",
+                "className": "form-control",
+                "name": "dashboard_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            },
+            {
+                "type": "text",
+                "subtype": "email",
+                "required": true,
+                "label": "Update Status",
+                "className": "form-control",
+                "name": "update_status_mail",
+                "value": "a@brandix.com,b@brandix.com,c@brandix.com"
+            }
+        ]
+    ]
+}

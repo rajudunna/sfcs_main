@@ -510,9 +510,9 @@ WebBrowser1.outerHTML = "";
 Page wizard.-->
 <!--If the same item is republished from Excel, all information between the DIV
 tags will be replaced.-->
-<!----------------------------->
+<!-- -->
 <!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
-<!----------------------------->
+<!-- -->
 
 <div id="Book1_2606" align=center x:publishsource="Excel">
 
@@ -552,7 +552,7 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
   <td colspan=2 rowspan=4 class=xl7026062 ><img src="../../../common/images/bai_logo.jpg" width="50" height="70"></td>
-  <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala </td>
+  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?> </td>
   <td class=xl662606></td>
   <td class=xl742606>CUSTOMER COPY</td>
   <td class=xl662606></td>
@@ -566,7 +566,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Koggala, </td>
+  <td colspan=4 class=xl772606><?= $plant_name ?>, </td>
   <td class=xl662606></td>
   <td class=xl732606>Dispatch Note No</td>
   <td class=xl662606></td>
@@ -1109,7 +1109,7 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
   <td colspan=2 rowspan=4 class=xl7026062 ><img src="../../../common/images/bai_logo.jpg" width="50" height="70"></td>
-  <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
+  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?></td>
   <td class=xl662606></td>
   <td class=xl742606>FG COPY</td>
   <td class=xl662606></td>
@@ -1123,7 +1123,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Koggala, </td>
+  <td colspan=4 class=xl772606><?= $plant_name ?>, </td>
   <td class=xl662606></td>
   <td class=xl732606>Dispatch Note No</td>
   <td class=xl662606></td>
@@ -1670,7 +1670,7 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
   <td colspan=2 rowspan=4 class=xl7026062 ><img src="../../../common/images/bai_logo.jpg" width="50" height="70"></td>
-  <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
+  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?></td>
   <td class=xl662606></td>
   <td class=xl742606>LOGISTICS COPY</td>
   <td class=xl662606></td>
@@ -1684,7 +1684,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Koggala, </td>
+  <td colspan=4 class=xl772606><?= $plant_name ?>, </td>
   <td class=xl662606></td>
   <td class=xl732606>Dispatch Note No</td>
   <td class=xl662606></td>
@@ -2226,7 +2226,7 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
   <td colspan=2 rowspan=4 class=xl7026062 ><img src="../../../common/images/bai_logo.jpg" width="50" height="70"></td>
-  <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
+  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?></td>
   <td class=xl662606></td>
   <td class=xl742606>SECURITY COPY</td>
   <td class=xl662606></td>
@@ -2240,7 +2240,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Koggala, </td>
+  <td colspan=4 class=xl772606><?= $plant_name ?>, </td>
   <td class=xl662606></td>
   <td class=xl732606>Dispatch Note No</td>
   <td class=xl662606></td>

@@ -1,6 +1,6 @@
 <?php
 header("Content-type: application/octet-stream");
-header("Content-Disposition: attachment; filename=\""."cut_to_ship".".csv\"");
-$data=stripcslashes($_REQUEST['csv123']);
+header("Content-Disposition: attachment; filename=\""."Production Status Report".".csv\"");
+$data=stripcslashes($_REQUEST['csv_text']);
 echo $data; 
 ?>

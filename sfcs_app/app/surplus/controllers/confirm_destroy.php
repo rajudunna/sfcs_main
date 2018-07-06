@@ -1,17 +1,19 @@
 <?php
+	//chnages for recommit
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));	
+	// $view_access=user_acl("SFCS_0173",$username,1,$group_id_sfcs);
+	$has_permission=haspermission($_GET['r']);
 
-//This interface is used to confirm destory quantity.
-
-//Service Request# 319844 - KiranG/2014-08-26
-//Added location in group clause.
-
-//CR #198 / 2014-12-12 / kirang / To store the reserve locations cartons in remarks column in bai_qms_db details before destory not confirmation
-//CR #198 / 2014-12-18 / kirang / Taken the usernames from databse level
-
-//Service Request #930334 / 2015-01-12 / kirang / Added Remarks field for capturing the MER Packing List Remarks
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));	
-// $view_access=user_acl("SFCS_0173",$username,1,$group_id_sfcs);
+	if(in_array($authorized,$has_permission))
+	{
+		
+	}
+	else
+	{
+		$url = getFullURLLevel($_GET['r'],'common/restricted.php',1,'N');
+		header("Location:$url");
+	}
 ?>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
@@ -73,7 +75,7 @@ function enable_button()
 			<div class="row">
 				<div class='col-sm-3'>
 					<label for='schlist'>Schedule</label>
-					<input type="text" value="" class="form-control" id="schedule" name="schlist" />
+					<input type="text" value="" class="form-control" id="schedule" name="schlist" onchange='schedulenumber()'/>
 				</div>
 				<div class='col-sm-3'>
 					<br>
@@ -121,7 +123,7 @@ function enable_button()
 		if($check==1)
 		{
 			$sql="insert into $bai_pro3.bai_qms_destroy_log (qms_log_user,mer_month_year,mer_remarks) values ('$username',\"".$mer_no."\",\"".$mer_remarks."\")";
-			echo $sql;
+			// echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		echo "<script>sweetAlert('Successfully Updated ','','success')</script>";
@@ -132,7 +134,8 @@ function enable_button()
 		$schlist=$_POST['schlist'];
 		$showall=$_POST['showall'];
 		$row_count = 0;
-		$addfilter="qms_schedule in ($schlist) and ";
+		$row_count2 = 0;
+		$addfilter="qms_schedule in ('$schlist') and ";
 		if($showall=="1")
 		{
 			$addfilter="";
@@ -165,8 +168,9 @@ function enable_button()
 			<?php
 				$sql="select ( SUM(IF((qms_tran_type= 12 and location_id<>'DESTROYED'),qms_qty,0))
 			   -SUM(IF((qms_tran_type= 7 and length(location_id)>0),qms_qty,0))) as qms_qty,qms_style,qms_schedule,qms_color,qms_size,group_concat(qms_tid) as qms_tid, group_concat(concat(location_id,'-',qms_qty,' PCS<br/>')) as existing_location from $bai_pro3.bai_qms_db where $addfilter left(location_id,9)<>'DESTROYED' and location_id<>'PAST_DATA' and qms_tran_type in (12,7) and log_date > \"2014-10-25\"  GROUP BY CONCAT(qms_schedule,qms_color,qms_size),location_id order by qms_schedule,qms_color,qms_size ";
+			   //echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				echo"<table>";
+				echo"<table id='table2'>";
 					echo"<br/><tr>";
 					echo"<td>Select Month&nbsp;&nbsp;</td>";
 					echo"<td><select id='month' name='month' class='form-control'>";
@@ -201,69 +205,83 @@ function enable_button()
 					echo"</tr>";
 					echo"</table><br/>";
 					// echo"<br/><h4><span>Reserved Quantity=<div id='output'></div></span></h4>";
-					$table="<div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'><table class='table table-bordered' id='table1'>";
-					$table.="<thead>";
-					$table.="<tr>";
-					$table.='<th>SNo</th>';
-					$table.="<th>Style</th>";
-					$table.="<th>Schedule</th>";
-					$table.="<th>Color</th>";
-					$table.="<th>Size</th>";
-					$table.="<th>Available Quantity</th>";
-					$table.="<th>Existing Locations</th>";
-					$table.="<th>Note #</th>";
-					$table.="</tr>";
-					$table.="</thead><tbody>";
-					echo $table;
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$row_count++;
-					if($sql_row['qms_qty']>0)
+					if(mysqli_num_rows($sql_result)>0)
 					{
-						$table="<tr class=\"foo\" id=\"rowchk$x\">";
-						$table.="<td>".($x+1)."</td>";
-						$table.="<td>".$sql_row['qms_style']."</td>";
-						$table.="<td>".$sql_row['qms_schedule']."</td>";
-						$table.="<td>".$sql_row['qms_color']."</td>";
-						$table.="<td>".$sql_row['qms_size']."</td>";
-						
-						$table.="<td style='text-align: center;'>".$sql_row['qms_qty']."<input type=\"hidden\" name=\"qty[$x]\" id=\"qty[$x]\" value=\"".$sql_row['qms_qty']."\" onchange='if(this.value<0 || this.value>".$sql_row['qms_qty'].") { this.value=0; alert(\"Please enter correct value\"); }'></td>";
-						
-						$table.="<td>".$sql_row['existing_location']."</td>";
-						$table.="<td><select name=location[] id=location[$x] onchange=\"location_ref($x);\">";
-						$table.="<option value=''></option>";
-								$table.="<option value='DEST#$note_no' SELECTED>DEST#".$note_no."</option>";
-
-						$table.="</select><input type='hidden' name='tid[$x]' value='".$sql_row['qms_tid']."'>
-							<input type=\"hidden\" name=\"style[$x]\" value=\"".$sql_row['qms_style']."\">
-							<input type=\"hidden\" name=\"schedule[$x]\" value=\"".$sql_row['qms_schedule']."\">
-							<input type=\"hidden\" name=\"color[$x]\" value=\"".$sql_row['qms_color']."\">
-							<input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['qms_size']."\">
-						</td>";
-						
+						$row_count2++;
+						$table="<div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'><table class='table table-bordered' id='table1'>";
+						$table.="<thead>";
+						$table.="<tr>";
+						$table.='<th>SNo</th>';
+						$table.="<th>Style</th>";
+						$table.="<th>Schedule</th>";
+						$table.="<th>Color</th>";
+						$table.="<th>Size</th>";
+						$table.="<th>Available Quantity</th>";
+						$table.="<th>Existing Locations</th>";
+						$table.="<th>Note #</th>";
 						$table.="</tr>";
-					
+						$table.="</thead><tbody>";
 						echo $table;
-						$x++;
+						while($sql_row=mysqli_fetch_array($sql_result))
+						{
+							
+							if($sql_row['qms_qty']>0)
+							{
+								$row_count++;
+								$table="<tr class=\"foo\" id=\"rowchk$x\">";
+								$table.="<td>".($x+1)."</td>";
+								$table.="<td>".$sql_row['qms_style']."</td>";
+								$table.="<td>".$sql_row['qms_schedule']."</td>";
+								$table.="<td>".$sql_row['qms_color']."</td>";
+								$table.="<td>".$sql_row['qms_size']."</td>";
+								
+								$table.="<td style='text-align: center;'>".$sql_row['qms_qty']."<input type=\"hidden\" name=\"qty[$x]\" id=\"qty[$x]\" value=\"".$sql_row['qms_qty']."\" onchange='if(this.value<0 || this.value>".$sql_row['qms_qty'].") { this.value=0; alert(\"Please enter correct value\"); }'></td>";
+								
+								$table.="<td>".$sql_row['existing_location']."</td>";
+								$table.="<td><select name=location[] id=location[$x] onchange=\"location_ref($x);\">";
+								$table.="<option value=''></option>";
+										$table.="<option value='DEST#$note_no' SELECTED>DEST#".$note_no."</option>";
+
+								$table.="</select><input type='hidden' name='tid[$x]' value='".$sql_row['qms_tid']."'>
+									<input type=\"hidden\" name=\"style[$x]\" value=\"".$sql_row['qms_style']."\">
+									<input type=\"hidden\" name=\"schedule[$x]\" value=\"".$sql_row['qms_schedule']."\">
+									<input type=\"hidden\" name=\"color[$x]\" value=\"".$sql_row['qms_color']."\">
+									<input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['qms_size']."\">
+								</td>";
+								
+								$table.="</tr>";
+							
+								echo $table;
+								$x++;
+							}
+						}
+						// echo '<tr><td colspan=5>Total Reserved Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;text-align:right"></td></tr>';
+							$table='</tbody></table></div>';
 					}
-				}
-			echo '<tr><td colspan=5>Total Reserved Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;text-align:right"></td></tr>';
-						$table='</tbody></table></div>';
 		echo $table;
 		echo "<input type=\"hidden\" name=\"total_rows\" id=\"total_rows\" value=\"".$x."\">";
 
 		echo '</form>';
+
+		if($row_count2 == 0) {
+			echo '<script>
+			$("#table").css({"display":"none"})</script>';
+		}
+		if($row_count == 0) {
+			echo '<script>
+			$("#table2").css({"display":"none"});
+			$("#table1").css({"display":"none"});
+			sweetAlert("No Data found for the Entered Schedule/s","","warning");</script>';
+		}
 	}
 }
-if($row_count == 0) {
-	echo '<script>sweetAlert("No Data found for the Entered Schedule/s","","warning");</script>';
-}
+
 ?>
 </form>
 </div>
 </div>
 </body>
-<script language="javascript" type="text/javascript">
+<!-- <script language="javascript" type="text/javascript">
 //<![CDATA[
 	$('#reset_table1').addClass('btn btn-warning');
 	var fnsFilters = {
@@ -286,9 +304,25 @@ if($row_count == 0) {
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
 	});
 	//]]>
-</script>
+</script> -->
 <style type="text/css">
 	th {
 		text-align: center;
 	}
 </style>
+<script>
+function schedulenumber(){
+var pattern = /[0-9]/;
+var txtValue=document.getElementById('schedule').value;
+if(txtValue.match(pattern))
+{
+
+}
+
+else
+{
+	sweetAlert("Please Enter Correct Schedule Number","","warning");
+document.getElementById('schedule').value='';
+}
+}
+</script>

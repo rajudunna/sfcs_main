@@ -3,7 +3,7 @@ Add columns in that table like start time and end time
 -->
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+
 //$view_access=user_acl("SFCS_0063",$username,1,$group_id_sfcs); //1
 //Date:04-04-2016/SR#23509616/kirang/code changed to get access from central administration 
 //$authorised_access=user_acl("SFCS_0063",$username,7,$group_id_sfcs); //2
@@ -70,7 +70,7 @@ if(isset($_GET['date']))
 	echo '<a class="btn btn-info btn-sm" href="'.getFullURL($_GET['r'],'down_time_log_V2.php','N').'&date='.date("Y-m-d",strtotime("+1 month", strtotime($date))).'"> Next Month</a>';
 	// if($username=="kirang")
 	{
-	echo '  |  <a href="'.getFullURL($_GET['r'],'down_time_update_V2.php','N').'" class="btn btn-primary btn-sm"> Insert</a>';
+	echo '  |  <a href="'.getFullURLLevel($_GET['r'],'workstudy/controllers/down_time_update_V2.php','2','N').'" class="btn btn-primary btn-sm"> Insert</a>';
 	}
 }
 else
@@ -79,7 +79,7 @@ else
 	echo '<div class="panel-heading">Downtime Log : '.date("M-Y",strtotime($date)).'</div>';
 	echo '<div class="panel-body">';
 	echo '<a class="btn btn-info btn-sm" href="'.getFullURL($_GET['r'],'down_time_log_V2.php','N').'&date='.date("Y-m-d",strtotime("-1 month")).'"> Last Month</a>  |  ';
-	echo '<a href="'.getFullURL($_GET['r'],'down_time_update_V2.php','N').'" class="btn btn-primary btn-sm"> Insert</a>';
+	echo '<a href="'.getFullURLLevel($_GET['r'],'workstudy/controllers/down_time_update_V2.php','2','N').'" class="btn btn-primary btn-sm"> Insert</a>';
 }
 
 echo '<div class="table-responsive">

@@ -3,10 +3,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=6; IE=5; IE=EDGE" />
 
-
-<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'style.css',0,'R'); ?>">
-
-
 <script language="javascript" type="text/javascript">
 	function enableButton() 
 	{
@@ -106,9 +102,8 @@
 
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+	$has_permission=haspermission($_GET['r']);
 
 	if(isset($_POST['style']))
 	{
@@ -172,6 +167,15 @@
 					echo "</select>";
 				?>
 				&nbsp;&nbsp;
+				Pack Method: 
+				<?php 
+				echo "<select id=\"cart_method\" class='form-control' name=\"cart_method\" >";
+				for($j=0;$j<sizeof($operation);$j++)
+				{
+					echo "<option value=\"".$j."\">".$operation[$j]."</option>";
+				}
+				echo "</select>";
+				?>
 				<input type="submit" name="submit" id="submit" class="btn btn-success" onclick="return check_val();" value="Submit">
 				</form>
 		</div>
@@ -243,15 +247,17 @@
 											<th >Schedule:</th>
 											<?php
 												if ($carton_qty>0) {
-													echo "<th ><input type=\"text\" required class=\"form-control integer\" readonly=true id=\"barcode\" name=\"barcode\" value=\"$barcode_num\"></th>";
+													$value_barcode = 'readonly=true value='.$barcode_num.'';
+													$value_carton_qty='value='.$carton_qty.'';
 												} else {
-													echo "<th ><input type=\"text\"  required class=\"form-control integer\" id=\"barcode\" name=\"barcode\" value=\"$schedule_result\"></th>";
+													$value_barcode = '  value='.$schedule_result.'';
+													$value_carton_qty='value=0';
 												}
-												if($carton_qty>0){	$value='value='.$carton_qty.'';	}
-												else{	$value='value=0';	}								
+
+												echo "<th ><input type=\"text\"  required class=\"form-control integer\" id=\"barcode\" name=\"barcode\" ".$value_barcode."></th>";								
 												echo "
 												<th >Ratio Total:</th>
-												<th ><input type=\"text\"  oncopy='return false' onpaste='return false' class=\"form-control\" ".$value." id=\"carton_tot\" readonly=true name=\"carton_tot\" onmouseover=\"check_sum1();\"> </th>";
+												<th ><input type=\"text\"  oncopy='return false' onpaste='return false' class=\"form-control\" ".$value_carton_qty." id=\"carton_tot\" readonly=true name=\"carton_tot\" onmouseover=\"check_sum1();\"> </th>";
 									
 											?>
 										</tr><br>
@@ -273,11 +279,12 @@
 												}
 												if($carton_qty>0){	$read_only="value='$carton' readonly=true";	}
 												else{	$read_only="value='0'";	}
+												if(in_array($authorized,$has_permission)){ $ratio_textBox = ''; } else { $ratio_textBox = 'readonly'; }
 												echo "<tr>
 														<td>".($i+1)."</td>
 														<td><input type=\"hidden\" name=\"color_code[".$i."]\" value='".$row['order_col_des']."'>".$row['order_col_des']."</td>
 														<td><input type=\"hidden\" name=\"size[".$i."]\" value='".$row['ref_size_name']."'><input type=\"hidden\" name=\"size_tit[".$i."]\" value='".$row['size_title']."'>".$row['size_title']."</td>
-														<td><input class=\"form-control integer\" type=\"text\" oncopy='return false' onpaste='return false' id=\"ratio[".$i."]\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value='0';}\" name=\"ratio[".$i."]\"  required ".$read_only."  onkeyup='check_sum1();'></td>
+														<td><input class=\"form-control integer\" type=\"text\" ".$ratio_textBox." oncopy='return false' onpaste='return false' id=\"ratio[".$i."]\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value='0';}\" name=\"ratio[".$i."]\"  required ".$read_only."  onkeyup='check_sum1();' ></td>
 													</tr>";
 												$carton=0;
 												$i++;
@@ -296,9 +303,14 @@
 								}
 								else
 								{
-									?>
-									<input type="submit" class="btn btn-success" name="save" value="Save" id="save" onclick="return check_val1();">
-									<?php
+									if(in_array($authorized,$has_permission))
+									{
+										?>
+										<input type="submit" class="btn btn-success" name="save" value="Save" id="save" onclick="return check_val1();">
+										<?php
+									} else {
+										echo "<div class='alert alert-danger'>You are Not Authorized to Add Sewing Job Ratio</div>";
+									}
 								}
 							echo "</div>
 						</form>";

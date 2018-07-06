@@ -2,6 +2,7 @@
 <?php
 //load the database configuration file
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+$has_perm=haspermission($_GET['r']);
 ?>
   <title>Lost Time Capturing Report</title>
   <meta charset="utf-8">
@@ -425,12 +426,12 @@ table tr:hover td {
 			echo '</td>';
 			echo '<td><b>'.$tout11.'</b></td>';
 			
-			$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-			$username=strtolower($username_list[1]);
-			$username="sfcsproject1";
-			$super_user=array("sfcsproject1","hasithada","thusharako","thilinana","chathurangad","dinushapre","diland","ranganak");
+			// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+			// $username=strtolower($username_list[1]);
+			// $username="sfcsproject1";
+			// $super_user=array("sfcsproject1","hasithada","thusharako","thilinana","chathurangad","dinushapre","diland","ranganak");
 							
-				if (in_array($username, $super_user)){
+				if (in_array($authorized, $has_perm)){
 						echo '<td><b><a href="'.getFullURLLevel($_GET['r'],'edit_downtime.php',0,'N').'"&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
 				}
 			

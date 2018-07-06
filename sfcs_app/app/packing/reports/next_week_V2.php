@@ -6,7 +6,8 @@ Changes Log:
 2016-09-09 / kirang / Service Request#98739857 : FCA Status Not Turned After FCA    
 
 -->
-<?phP
+<?php
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/config.php", 3, "R"));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
 $view_access=user_acl("SFCS_0038",$username,1,$group_id_sfcs);
@@ -15,6 +16,7 @@ $fca_authorized=user_acl("SFCS_0038",$username,50,$group_id_sfcs);
 $fg_authorized=user_acl("SFCS_0038",$username,51,$group_id_sfcs);
 $spc_users=user_acl("SFCS_0038",$username,68,$group_id_sfcs);
 set_time_limit(6000000);
+$permission = haspermission($_GET['r']);
 ?>
 <title>Weekly Delivery Dashboard - Packing</title>
 
@@ -125,21 +127,22 @@ $current_week = getFullURL($_GET['r'],'current_week_V2.php','N');
 $next_week = getFullURL($_GET['r'],'next_week_V2.php','N');
 $summary =  getFullURL($_GET['r'],'summary_v2.php','R');
 $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
+$status_update = getFullURL($_GET['r'],'status_update.php','N');
 ?>
-<form method="post" name="input" action="<?php echo $url;?>">
+<form method="post" name="input" action="<?php echo $next_week;?>">
 <center><a href="summary_v2.php&weekno=<?php echo $weeknumber; ?>" onclick="return popitup('<?php echo $summary;?>?weekno=<?php echo $weeknumber; ?>')">Summary</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $pre_week;?>">Previous Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $current_week; ?>">Current Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $next_week;?>">Next Week</a>&nbsp;&nbsp;|&nbsp;&nbsp; </center>
 <div class='row'>
 	<div class='col-md-4'>
+				
+				<?php 
+					// $sqly="select distinct(buyer_div) from plan_modules";
+					$sqly = "SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+					$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				?>
 				<label> Buyer Division : </label>
-					<select name="division" id="division" class="form-control" onchange="redirect_view()">';
-					<?php 
-						echo "<option value=\"ALL\" selected >ALL</option>";
-						// $sqly="select distinct(buyer_div) from plan_modules";
-						$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
-						//echo $sqly."<br>";
-
-						mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				<select name="division" id="division" class="form-control" onchange="redirect_view()">
+					<option value=\"ALL\" selected >ALL</option>
+					<?php
 						while($sql_rowy=mysqli_fetch_array($sql_resulty))
 						{
 							$buyer_div=$sql_rowy['buyer_div'];
@@ -155,6 +158,7 @@ $pre_week = getFullURL($_GET['r'],'Previous_week_V2.php','N');
 							}
 						}
 						echo '</select>';
+						
 						if($_GET["division"]!='ALL' && $_GET["division"]!='')
 						{
 							//echo "Buyer=".urldecode($_GET["view_div"])."<br>";
@@ -303,7 +307,7 @@ else
 		$color=$row["color"];
 		$buyer_division=$row["buyer_division"];
 		$ex_factory_date_new=$row["ex_factory_date_new"];
-		$sql1="select remarks from week_delivery_plan where ref_id=\"".$ref_id."\"";
+		$sql1="select remarks from $bai_pro4.week_delivery_plan where ref_id=\"".$ref_id."\"";
 		$result1=mysqli_query($link,$sql1) or die("Error = ".mysqli_error());
 		while($row1=mysqli_fetch_array($result1))
 		{
@@ -330,7 +334,7 @@ else
 			$id="#008000";
 		}
 		
-		$sql_co="select order_no,mpo,cpo from $bai_pro3.shipment_plan where schedule_no=\"".$schedule."\" and color=\"".$color."\"";
+		$sql_co="select order_no,mpo,cpo from $bai_pro4.shipment_plan where schedule_no=\"".$schedule."\" and color=\"".$color."\"";
 		$result_co=mysqli_query($link,$sql_co) or die("Error =".mysqli_error());
 		while($row_co=mysqli_fetch_array($result_co))
 		{
@@ -340,7 +344,7 @@ else
 		}
 		
 		/*$sHTML_Content .="<tr>";
-		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -365,7 +369,7 @@ else
 			$emb_count=$sql_row["order_embl_a"]+$sql_row["order_embl_b"]+$sql_row["order_embl_c"]+$sql_row["order_embl_d"]+$sql_row["order_embl_e"]+$sql_row["order_embl_f"]+$sql_row["order_embl_g"]+$sql_row["order_embl_h"];
 		}
 		
-		$sql_cat="select tid from $bai_pro3.cat_stat_log where order_tid like \"% ".$schedule."".$color."%\" and category in (\"Body\",\"Front\")";
+		$sql_cat="select tid from $bai_pro3.cat_stat_log where order_tid like \"% ".$schedule."".$color."%\" and category in ($in_categories)";
 		//echo $sql_cat."<br>";
 		$sql_result_cat=mysqli_query($link,$sql_cat) or exit("Sql Error3=".mysqli_error());
 		$rows_cat=mysqli_num_rows($sql_result_cat);
@@ -935,12 +939,12 @@ else
 			mysqli_query($link,$sql3xr) or die("Error21 = ".mysqli_error());
 		}
 		
-		if((in_array(strtolower($username),$authorized)))
+		if(in_array($authorized,$permission))
 		{	
 			if($status=="FCA" || $status=="FCA/P")
 			{		
 				$sHTML_Content .="<tr>";
-				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -967,7 +971,7 @@ else
 				$sHTML_Content .="</tr>";
 			}
 		}
-		else if((in_array(strtolower($username),$fca_authorized)))
+		else if(in_array($authorized,$permission))
 		{	
 			if($status=="Offered" || $status=="FCA/P" || $status=="FCA Fail")
 			{
@@ -999,12 +1003,12 @@ else
 				$sHTML_Content .="</tr>";
 			}
 		}
-		else if((in_array(strtolower($username),$fg_authorized)))
+		else if(in_array($authorized,$permission))
 		{	
 			if(($status=="FG" && ($order_total_qty==$scan_total_qty)) || $status=="FG*")
 			{
 				$sHTML_Content .="<tr>";
-				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
+				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
 				$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
@@ -1034,9 +1038,9 @@ else
 		else
 		{
 			$sHTML_Content .="<tr>";
-			if((in_array(strtolower($username),$spc_users)))
+			if(in_array($authorized,$permission))
 			{
-				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"status_update.php?tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('status_update.php?tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
+				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 			}
 			else
 			{

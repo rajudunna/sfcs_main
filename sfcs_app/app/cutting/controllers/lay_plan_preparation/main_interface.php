@@ -391,6 +391,7 @@ echo "<table class=\"table table-bordered\">";
 
 if($flag==1)
 {
+	
 	echo "<thead><tr><th class=\"column-title\" style='width:190px;'>Sizes</th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
@@ -405,6 +406,7 @@ if($flag==1)
 	echo "</tr></thead>";
 }
 
+<<<<<<< HEAD
 //Getting sample details here  By SK-05-07-2018 == Start
 $samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid' order by sizes_ref";
 $samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -440,6 +442,9 @@ if($num_rows_samples >0){
 
 // Samples End By SK-05-07-2018
 
+=======
+$label = 'Original Quantity';
+>>>>>>> ba98eb3734c549720f44da1c97ef322e9854ce14
 if($order_no>0)
 {
 	echo "<tr ><th class=\"heading2\">Original Qty</th>";
@@ -451,10 +456,11 @@ if($order_no>0)
 			echo "<td class=\"sizes\">".$n_s[$sizes_code[$s]]."</td>";
 		//}	
 	}
-	
+	$label = 'Revised Quantity';
 	echo "<td class=\"sizes\">".$n_o_total."</td></tr>";
 }
-	echo "<tr ><th class=\"heading2\">Revised Quantity</th>";
+
+	echo "<tr ><th class=\"heading2\">$label</th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
 		//$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
@@ -509,6 +515,63 @@ echo "</div></div></div>";
 <!--<div id="div2" style="display: none;">
 <?php //include("main_interface_2.php"); ?>
 </div> -->
+
+<!-- carton quantities added -->
+<div class='col-sm-12' class='table-responsive'>
+	<div id='#carton' class='panel panel-default'>
+		<div class='panel-heading' style='text-align:center;'>
+			<a data-toggle="collapse"><strong><b>Carton Quantity</b></strong></a>
+		</div>
+		<div class='panel-body'>
+			<table class='table table-bordered table-responsive'>
+					<tr><th>User Def. Style</th>
+						
+						<th>Pack Method</th>
+			<?php
+			//var_dump($s_tit);
+	//getting the dynamic sizes from top $s_tit array
+			$sql="select * from $bai_pro3.carton_qty_chart where user_style='$style_id' and user_schedule='$schedule' and status=0";
+			//echo $sql;
+			$th_count = 0;
+			$sql_result=mysqli_query($link,$sql) or exit("Sql Error getting carton quantities".mysql_error());
+			while($row = mysqli_fetch_array($sql_result)){
+
+				foreach($sizes_array as $key=>$value){
+					if($row["$value"] > 0){
+						$s = substr($value,1);
+						if($th_count == 0)
+							echo "<th>$s_tit[$s]</th>";
+						$csizes[$value] = $row[$value]; 
+					}
+				}
+				$cstyle = $row['user_style'];
+				//$cbuyer = $row['buyer'];
+				$cpakcmethod = $row['packing_method'];
+				$cremarks = $row['remarks'];
+				if($th_count==0){
+					echo "<th>Remarks</th>
+					</tr>";
+					$th_count++;
+				}
+				echo "<tr><td>$cstyle</td>
+						
+						<td>$cpakcmethod</td>";
+				foreach($sizes_array as $key=>$value){
+					if($csizes[$value] > 0){
+						echo "<td>$csizes[$value]</td>";
+					}
+				}//or the below
+				// foreach($csizes as $key=>$value){
+				// 	echo "<td>$value</td>";
+				// }
+				echo "	  <td>$remarks</td>
+					</tr>";
+			}
+			?>
+			</table>
+		</div>
+	</div>
+</div>
 
 <div class="col-md-12 row">
 <div class = "panel panel-default">
@@ -1016,7 +1079,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	$cuttable_sum=$cuttable_s01+$cuttable_s02+$cuttable_s03+$cuttable_s04+$cuttable_s05+$cuttable_s06+$cuttable_s07+$cuttable_s08+$cuttable_s09+$cuttable_s10+$cuttable_s11+$cuttable_s12+$cuttable_s13+$cuttable_s14+$cuttable_s15+$cuttable_s16+$cuttable_s17+$cuttable_s18+$cuttable_s19+$cuttable_s20+$cuttable_s21+$cuttable_s22+$cuttable_s23+$cuttable_s24+$cuttable_s25+$cuttable_s26+$cuttable_s27+$cuttable_s28+$cuttable_s29+$cuttable_s30+$cuttable_s31+$cuttable_s32+$cuttable_s33+$cuttable_s34+$cuttable_s35+$cuttable_s36+$cuttable_s37+$cuttable_s38+$cuttable_s39+$cuttable_s40+$cuttable_s41+$cuttable_s42+$cuttable_s43+$cuttable_s44+$cuttable_s45+$cuttable_s46+$cuttable_s47+$cuttable_s48+$cuttable_s49+$cuttable_s50;
 
-	$sql2="select ((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log left join cat_stat_log on  allocate_stat_log.order_tid=cat_stat_log.order_tid where allocate_stat_log.order_tid=\"$tran_order_tid\" and allocate_stat_log.cuttable_ref='$cuttable_ref' and cat_stat_log.category in ('Body','Front')";
+	$sql2="select ((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log left join cat_stat_log on  allocate_stat_log.order_tid=cat_stat_log.order_tid where allocate_stat_log.order_tid=\"$tran_order_tid\" and allocate_stat_log.cuttable_ref='$cuttable_ref' and cat_stat_log.category in ($in_categories)";
 	//echo $sql2."<br>";	
 	// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1583,28 +1646,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				<div id="cut_plan" class="panel-collapse collapse-in">
 					<div class="panel-body">
 <?php
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
-// $view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
-// $authorized2=user_acl("SFCS_0215",$username,50,$group_id_sfcs); //  RM Fabric 
 
-
-// include("dbconf.php");
-
-// if($_SERVER['SERVER_NAME']=="bainet")
-// {
-// 	$facility='AIN';
-// }
-
-// if($_SERVER['SERVER_NAME']=="bai2net")
-// {
-// 	$facility='AIP';
-// }
-
-$username_list=array();
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
-
+$permission = haspermission($_GET['r']);
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1626,7 +1669,7 @@ else{
 	echo "<th class=\"column-title\"><center>Docs</center></th>";
 	//echo "<th class=\"column-title\"><center>Cut Plan Print</center></th>";
 	echo "<th class=\"column-title\"><center>Cut Plan View</center></th>";
-	if((in_array(strtolower($username),$authorized2)) && $facility=='AIP')
+	if(in_array($authorized,$permission))
 	{
 	echo "<th class=\"column-title\"><center>Fabric Cut Plan</center></th>";
 	}
@@ -1756,12 +1799,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	//$path="http://localhost/sfcs/projects/Beta/cut_plan_new_ms/new_doc_gen/Book1_print.php";
 
-	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
-	$path1="".getFullURL($_GET['r'], "Book1_print_fabric.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
+	$path1="".getFullURL($_GET['r'], "Book1_print_fabric.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	if($clubbing>0)
 	{
-		$path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
-		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		// $path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		// $path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 
 		$path= getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
@@ -1777,7 +1820,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo $wrong_icon;
 	} 
 	echo "</center></td>";
-	if((in_array(strtolower($username),$authorized2)) && $facility=='AIP')
+	if(in_array($authorized,$permission))
 	{
 	echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-info\" href=\"$path1\" onclick=\"return popitup("."'".$path1."'".")\">View Fabric Cut Plan</a>";} else {echo $wrong_icon;} echo "</center></td>";
 	}

@@ -1,6 +1,11 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
+$has_permission=haspermission($url_r);
 error_reporting(0);
 ?>
 <?php
@@ -214,7 +219,7 @@ if(isset($_GET['val']))
 			
 			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC";
 			//echo $sql12;
-			mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row12=mysqli_fetch_array($sql_result12))
 			{
@@ -264,10 +269,10 @@ if(isset($_GET['val']))
 				}
 				
 				// Ticket #770947 Add the buddhikarr name in $auth_to_modify for remarks column edit option
-				$auth_to_modify=array("sandeepab","ranjang","lakshmanb","diland","pasanj","kapilarathnai","bhavanik","kirang","kirang","maheshkumary","kasunsi","nuwanan","channam","kirang","chandrasekhard","ajithmi","prabathsa");
+				// $auth_to_modify=array("sandeepab","ranjang","lakshmanb","diland","pasanj","kapilarathnai","bhavanik","kirang","kirang","maheshkumary","kasunsi","nuwanan","channam","kirang","chandrasekhard","ajithmi","prabathsa");
 				
-				$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-				$username=strtolower($username_list[1]);
+				// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+				// $username=strtolower($username_list[1]);
 				
 				
 				$rejected=0;
@@ -301,9 +306,9 @@ if(isset($_GET['val']))
 					echo "<td>".$sql_row12['bai_pro_ref']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
 					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";				
-					echo "<td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
+					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
 					echo $quality_log_row;
-					if(in_array($username,$auth_to_modify))
+					if(in_array($edit,$has_permission))
 					{
 						echo "<td><span id='I".$sql_row12['tid']."'></span><span id='M".$sql_row12['tid']."' style='width:100%' onclick='update_comm(".$sql_row12['tid'].");'>".$sql_row12['team_comm']."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
 					}
@@ -324,10 +329,10 @@ if(isset($_GET['val']))
 					echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>".$sql_row12['tid']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
 					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";
-					echo "<td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
+					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
 					echo $quality_log_row;
 				
-					if(in_array($username,$auth_to_modify))
+					if(in_array($edit,$haspermission))
 					{
 						echo "<td><span id='I".$sql_row12['tid']."'></span><span id='M".$sql_row12['tid']."' style='width:100%' onclick='update_comm(".$sql_row12['tid'].");'>".$sql_row12['team_comm']."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$sql_row12['ims_date'])."</td>";
 					}

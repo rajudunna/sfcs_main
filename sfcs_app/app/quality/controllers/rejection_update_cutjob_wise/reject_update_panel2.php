@@ -17,9 +17,9 @@ CR# 375 / kirang - 2014-12-22 / Submit validation for enable and disable button
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 
-$View_access=user_acl("SFCS_0143",$username,1,$group_id_sfcs);
+//$View_access=user_acl("SFCS_0143",$username,1,$group_id_sfcs);
 
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);

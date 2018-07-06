@@ -103,7 +103,7 @@ function button_disable()
 <div class='row'>
 	<a href='<?= $url ?>' class='pull-right btn btn-danger'>Go Back</a>
 </div>
-<form name="test" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form data">
+<form name="test" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url'];?>" method="post" enctype="multipart/form data">
 <?php 
 if(isset($_GET['style']))
 {
@@ -148,28 +148,20 @@ while($sql_row=mysqli_fetch_array($sql_result))
 echo "</table>";
 echo "<input type=\"hidden\" name=\"style_new\" value=\"$style\"><input type=\"hidden\" name=\"schedule_new\" value=\"$schedule\"><input type=\"hidden\" name=\"color_new\" value=\"$color\">";
 echo '<br/><input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
-echo "<input type=\"submit\" id=\"update\" name=\"update\" value=\"Update\" onclick=\"javascript:button_disable();\">";
+echo "<input type=\"submit\" id=\"update\" name=\"update\" class=\"btn btn-primary\"value=\"Update\" onclick=\"javascript:button_disable();\">";
 
 echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font></h2></div>';
 echo "</form>";
 }
 ?>
 
-</div>
-</div>
 
-</body>
-</html>
 
 
 <?php
 
 if(isset($_POST['update']))
 {
-	//Login User Name
-	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-	$username=$username_list[1];
-	//Login User Name
 	
 	$style_new=$_POST['style_new'];
 	$schedule_new=$_POST['schedule_new'];
@@ -233,11 +225,13 @@ if(isset($_POST['update']))
 	$url1=getFullURL($_GET['r'],'pending.php','N');
 	echo "<h2><font color=\"green\">Successfully Updated!</font></h2>";
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
+	
 }
-
-
-
 ?>
+</div>
+</div>
+</body>
+</html>
 <script>
 $(document).ready(function () {
   //called when key is pressed in textbox

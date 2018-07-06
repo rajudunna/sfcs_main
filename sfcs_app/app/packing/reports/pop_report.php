@@ -262,7 +262,7 @@ $(document).ready(function() {
 						coalesce(sum(a_s46*a_plies),0) as \"a_s46\",coalesce(sum(a_s47*a_plies),0) as \"a_s47\",
 						coalesce(sum(a_s48*a_plies),0) as \"a_s48\",coalesce(sum(a_s49*a_plies),0) as \"a_s49\",
 						coalesce(sum(a_s50*a_plies),0) as \"a_s50\" 
-						from $bai_pro3.order_cat_doc_mix where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") 
+						from $bai_pro3.order_cat_doc_mix where order_tid=\"$order_tid\" and category in ($in_categories) 
 						and act_cut_status=\"DONE\"";
 
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

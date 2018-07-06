@@ -1,26 +1,36 @@
 <?php 
+error_reporting(0);
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $yesterday=date("Y-m-d",strtotime("-1 day")); 
-//$yesterday="2012-03-04"; 
+$yesterday="2018-02-21"; 
 $total_sch_count=0; 
+$buyer_hold_count = [];
+$buyer_unhold_count = [];
+
 $hold_sch=0; 
 $total_mns=0; 
 $hold_mns=0; 
 $sno=1; 
 $note="<table>"; 
 $note.="<tr><th>S#</th><th>Style</th><th>Schedule</th><th width=200>Plan Remarks</th><th width=200>Production Remarks</th><th width=200>Commitments</th></tr>"; 
-$sql="select style,schedule_no,ref_id FROM bai_pro4.week_delivery_plan_ref WHERE ex_factory_date_new=\"$yesterday\""; 
+
+$sql="select * FROM $bai_pro4.week_delivery_plan_ref WHERE ex_factory_date_new=\"$yesterday\""; 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row=mysqli_fetch_array($sql_result)) 
-{ 
+{
+    $remarks = []; 
     $schedule=$sql_row['schedule_no']; 
     $style=$sql_row['style']; 
     $tid=$sql_row['ref_id']; 
-     
+    $buyer =$sql_row['buyer_division'];
+   
+
+    $remarks=explode("^",$sql_row['remarks']);
     $status=1; //Not Failed 
-    $sql="select disp_note_ref FROM bai_pro3.bai_ship_cts_ref WHERE ship_schedule='$schedule'"; 
+    $sql="select disp_note_ref FROM $bai_pro3.bai_ship_cts_ref WHERE ship_schedule='$schedule'"; 
     $sql_result1=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
     if(mysqli_num_rows($sql_result1)>0) 
     { 
@@ -29,7 +39,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $disp_note_ref=$sql_row1['disp_note_ref']; 
         } 
                  
-        $sql="select exit_date FROM bai_pro3.disp_db WHERE disp_note_no in($disp_note_ref) and status<3"; 
+        $sql="select exit_date FROM $bai_pro3.disp_db WHERE disp_note_no in($disp_note_ref) and status<3"; 
         $sql_result1=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
         if(mysqli_num_rows($sql_result1)>0) 
         { 
@@ -40,32 +50,28 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $status=0; 
         } 
     } 
-     
+    $sqla="SELECT buyer_code AS buyer_div FROM $bai_pro2.buyer_codes where buyer_name='$buyer'";
+    $sql_resulta=mysqli_query($link, $sqla) or exit("Sql Error1244".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_rowa=mysqli_fetch_array($sql_resulta))
+    {
+        $buyer_code=$sql_rowa['buyer_div'];
+    }
+    $buyer_remarks[$buyer_code]=$remarks;
     if($status==1) 
     { 
-        $remarks=array(); 
-        $sql="select remarks FROM bai_pro4.week_delivery_plan WHERE ref_id=$tid"; 
-        $sql_result1=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
-        while($sql_row1=mysqli_fetch_array($sql_result1)) 
-        { 
-            $remarks=explode("^",$sql_row1['remarks']); 
-        } 
+ 
         $total_sch_count++; 
-        if(strtoupper($remarks[0])=="HOLD") 
+       
+        if(in_array("HOLD",strtoupper($buyer_remarks[$buyer_code]))) 
         { 
-            $hold_sch++; 
-             
-            if(strtoupper(substr($style,0,1))=="M") 
-            { 
-                $hold_mns++; 
-            } 
+            $buyer_hold_count[$buyer_code] = $buyer_code;
+        
+        }else
+        {
+            $buyer_unhold_count[$buyer_code] = $buyer_code;
         }     
-         
-        if(strtoupper(substr($style,0,1))=="M") 
-        { 
-            $total_mns++; 
-        } 
-         
+
+       
         $note.= "<tr><td>$sno</td><td>$style</td><td>$schedule</td><td>".$remarks[0]."</td><td>".$remarks[1]."</td><td>".$remarks[2]."</td></tr>"; 
         $sno++; 
     } 
@@ -113,9 +119,9 @@ font-size:12px;
 
 
         
-$message.="<table>";
-$message.="<tr><th colspan=2>Summary</th><th>M&S</th><th>VS</th><th>Total</th></tr>";
-// $sql='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
+// $message.="<table>";
+// $message.="<tr><th colspan=2>Summary</th><th>M&S</th><th>VS</th><th>Total</th></tr>";
+// $sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 
 // $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 // while($sql_row=mysqli_fetch_array($sql_result))
@@ -123,26 +129,55 @@ $message.="<tr><th colspan=2>Summary</th><th>M&S</th><th>VS</th><th>Total</th></
 //     $buyer_code[]=$sql_row["buyer_div"];
 //     $buyer_name[]=$sql_row["buyer_name"];
 // }
+if(sizeof($buyer_remarks)>0)
+{
+$message.="<table>"; 
+$message.="<tr><th colspan=2>Summary</th>";
 
-// $message.="<table>"; 
-// $message.="<tr><th colspan=2>Summary</th>";
-// for($i=0;$i<sizeof($buyer_name);$i++)
-// {
-//     $message.="<th>".$buyer_code[$i]."</th>";
-// }
-// $message.="<th>Total</th></tr>"; 
+	foreach ($buyer_remarks as $key => $value)
+	{
+		$message.= "<th>".$key."</th>";
+	}
+    $message.="<th>Total</th></tr>"; 
+    $message.="<tr><td colspan=2 >On Hold</td>";
+    foreach ($buyer_remarks as $key => $value)
+	{
+        $message.= "<td>".sizeof($buyer_hold_count[$key])."</td>";
+    }
+    $total =sizeof($buyer_hold_count);
+    $message.= "<td>".$total."</td>";
+    //   <td><td>$hold_mns</td><td>".($hold_sch-$hold_mns)."</td></td><td>$hold_sch</td>
+    $message.="</tr>"; 
+    $message.="<tr ><td colspan=2>Failed to send on time</td>";
+    foreach ($buyer_remarks as $key => $value)
+	{
+        $message.= "<td >".sizeof($buyer_unhold_count[$key])."</td>";
+    }
+    $total1 = sizeof($buyer_unhold_count);
+    $message.= "<td>".$total1."</td>";
+   
+    $message.="</tr>"; 
+    $message.="<tr><td colspan=2>Total Schedules</td>";
+    foreach ($buyer_remarks as $key => $value)
+	{
+        $message.= "<td>".(sizeof($buyer_hold_count[$key])+sizeof($buyer_unhold_count[$key]))."</td>";
+        
+    }
+		$message.= "<td>".($total1+$total)."</td>";
 
-$message.="<tr><td>On Hold</td><td><td>$hold_mns</td><td>".($hold_sch-$hold_mns)."</td></td><td>$hold_sch</td></tr>"; 
-$message.="<tr bgcolor=yellow><td>Failed to send on time</td><td></td><td>".($total_mns-$hold_mns)."</td><td>".(($total_sch_count-$hold_sch)-($total_mns-$hold_mns))."</td><td>".($total_sch_count-$hold_sch)."</td></tr>"; 
-$message.="<tr><td>Total Schedules</td><td></td><td>$total_mns</td><td>".($total_sch_count-$total_mns)."</td><td>$total_sch_count</td></tr>"; 
-$message.="</table><br/><br/>"; 
+    $message.="</tr></table><br/><br/>"; 
+}
+
+
+
+
 
 $message.=$note; 
 
 $message.='<br/>Message Sent Via: '.$plant_name.'';
 $message.="</body></html>"; 
 
-// echo $message;
+echo $message;
 
 $to  =$daily_cod_events;
 $subject = 'Delivery Failures :'.$yesterday; 
@@ -172,7 +207,7 @@ else
 
 
 //BAI KPI Track 
-$sql="SELECT style,schedule,color,track_id FROM bai_kpi.delivery_delays_track WHERE ex_fact='$yesterday'"; 
+$sql="SELECT style,schedule,color,track_id FROM $bai_kpi.delivery_delays_track WHERE ex_fact='$yesterday'"; 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row=mysqli_fetch_array($sql_result)) 
 { 
@@ -183,7 +218,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
      
     if($schedule>0 and strlen($style)>0 and strlen($color)>0) 
     { 
-        $sql1="SELECT MAX(ims_date) as input, MAX(ims_log_date) as output FROM (SELECT ims_date,ims_log_date FROM bai_pro3.ims_log WHERE ims_schedule=$schedule and trim(both from ims_color)=\"".trim($color)."\" UNION SELECT ims_date,ims_log_date FROM bai_pro3.ims_log_backup WHERE ims_schedule=$schedule and trim(both from ims_color)=\"".trim($color)."\") AS t";
+        $sql1="SELECT MAX(ims_date) as input, MAX(ims_log_date) as output FROM (SELECT ims_date,ims_log_date FROM $bai_pro3.ims_log WHERE ims_schedule=$schedule and trim(both from ims_color)=\"".trim($color)."\" UNION SELECT ims_date,ims_log_date FROM $bai_pro3.ims_log_backup WHERE ims_schedule=$schedule and trim(both from ims_color)=\"".trim($color)."\") AS t";
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 
         { 
@@ -191,14 +226,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $output_time=$sql_row1['output']; 
         } 
          
-        $sql1="SELECT MAX(lastup) as lastup FROM bai_pro3.packing_summary WHERE order_del_no=$schedule"; 
+        $sql1="SELECT MAX(lastup) as lastup FROM $bai_pro3.packing_summary WHERE order_del_no=$schedule"; 
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 
         { 
             $fg_time=$sql_row1['lastup']; 
         } 
          
-        $sql1="update bai_kpi.delivery_delays_track set input_time='$input_time',sewing_time='$output_time',fg_time='$fg_time' where track_id=$ref_id"; 
+        $sql1="update $bai_kpi.delivery_delays_track set input_time='$input_time',sewing_time='$output_time',fg_time='$fg_time' where track_id=$ref_id"; 
         $sql_result=mysqli_query($link, $sql1) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"])); 
         if($sql_result)
         {

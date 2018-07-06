@@ -5,11 +5,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title></title>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <!--<h1>Categories</h1></br>-->
     
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -33,12 +34,23 @@
     {
         $c_id=0;
     }
+    $action_url = getFullURL($_GET['r'],'save_categories.php','N');
     // echo $cat_name;
+    $action = getFullURL($_GET['r'],'save_categories.php','N');
     ?>
-    <div class="container-fluid">
-        <div class="row">
+    <!--<div class="container-fluid">
+        <div class="row">-->
+        <div class='panel panel-primary'>
+	<div class='panel-heading'>
+		<b>Categories</b>
+	</div>
+	<div class='panel-body'>
 
-            <form action="/index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvc2F2ZV9jYXRlZ29yaWVzLnBocA==" id="formentry" method="POST" class="form-horizontal" role="form" data-parsley-validate novalidate>
+<<<<<<< HEAD
+            <form action="<?= $action ?>" method = "POST">
+=======
+            <form action="<?= $action_url ?>" id="formentry" method="POST" class="form-horizontal" role="form" data-parsley-validate novalidate>
+>>>>>>> UAT2
                 <input type='hidden' id='c_id' name='c_id' value="<?php echo $c_id; ?>" >
                 <div class="container-fluid shadow">
                     <div class="row">
@@ -52,7 +64,7 @@
                         
                                     
                                 <div class="row"><div class="col-md-6"><div class="form-group">
-                <label class="control-label control-label-left col-sm-3" for="category_name">category Name<span class="req"> *</span></label>
+                <label class="control-label control-label-left col-sm-3" for="category_name">Category Name<span class="req"> *</span></label>
                 <div class="controls col-sm-9">
                     
                 <input id="category_name" type="text" class="form-control k-textbox" data-role="text" placeholder="Category name" name="category_name"  value="<?php echo $cat_name; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
@@ -75,7 +87,7 @@
                 </select><span id="errId2" class="error"></span></div>
                 
                 </div></div></div><div class="row"><div class="col-md-6"><div class="form-group">
-                <label class="control-label control-label-left col-sm-3" for="cat_selection">Select category</label>
+                <label class="control-label control-label-left col-sm-3" for="cat_selection">Select Category</label>
                 <div class="controls col-sm-9">
                     
                 <select id="cat_selection" class="form-control" data-role="select" selected="selected" name="cat_selection"  data-parsley-errors-container="#errId3">
@@ -95,7 +107,11 @@
                         
                         
                         
-                <button id="save_btn" type="submit" class="btn btn-primary btn-lg" name="save_btn">Save</button></div></div></div>
+<<<<<<< HEAD
+                <button id="save_btn" type="submit" class="btn btn-primary btn-sm"  name="save_btn">Save</button></div></div></div>
+=======
+                <button id="save_btn" type="submit" class="btn btn-primary btn-sm" name="save_btn">Save</button></div></div></div>
+>>>>>>> UAT2
 
 
                     </div>
@@ -106,3 +122,8 @@
 <?php include('view_categories.php'); ?>
 </body>
 </html>
+<style>
+.form-horizontal .control-label {
+    padding-left: 2px;
+}
+</style>

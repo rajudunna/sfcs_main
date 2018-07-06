@@ -37,6 +37,7 @@ $cut_table=array("0","T1","T1","T2","T2","T3","T3","T4","T4","T5","T5","T6","T6"
 $color_codes=array();
 $fab_codes=array();
 $met_req=array();
+$mk_length_ref=array();
 $plies=array();
 $qty=array();
 $docs=array();
@@ -65,7 +66,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select *,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where clubbing=$clubbing and pcutno=$cut_no and category=\"$cat_title\" and order_del_no=$order_del_no and clubbing>0";
-// echo $sql;
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -78,6 +79,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$gmtway=$sql_row['gmtway'];
 	//Extra 1% added to avoid cad saving manual mrn claims.
 	$mklength=$sql_row['mklength'];
+	$mk_length_ref[]=$sql_row['mklength'];
 	//if(substr($style,0,1)=="M") 
 	$savings=$sql_row['savings'];
 { $extra=round((($sql_row['material_req'])*$savings),2); } 
@@ -99,7 +101,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$allocate_ref=$sql_row['allocate_ref'];
 
 }
-
+//var_dump($met_req);
 $sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -119,7 +121,114 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$patt_ver=$sql_row['patt_ver'];
 	$col_des=$sql_row['col_des'];
 }
+//binding consumption
+	if($category=='Body' || $category=='Front')
+	{
+		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		//echo $sql2;
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error bind".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$rows=mysqli_num_rows($sql_result2);
+		if($rows > 0)
+		{
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+				$binding_con = $sql_row2['binding_con'];
+			}
+		}
+	}
+	//echo 'binding '.$binding_con;
 
+//cuttable wastage
+	$sql="select cuttable_wastage from $bai_pro3.cuttable_stat_log where order_tid=\"$order_tid\" and cat_id=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error cuttable wastage".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$cuttable_wastage = $sql_row['cuttable_wastage'];
+	}
+	//echo '  wastage '.$cuttable_wastage;
+//ratio total ($a_ratio_tot variable)
+	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no=$doc_id";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error total ratio".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$mk_ref=$sql_row['mk_ref'];
+		$print_status=$sql_row['print_status'];
+		for($s=0;$s<sizeof($sizes_code);$s++)
+		{
+			//if($sql_row["a_s".$sizes_code[$s].""]>0)
+			//{
+			$a_s[$sizes_code[$s]]=$sql_row["a_s".$sizes_code[$s].""];
+			//}
+		}
+			$a_s01=$sql_row['a_s01'];
+			$a_s02=$sql_row['a_s02'];
+			$a_s03=$sql_row['a_s03'];
+			$a_s04=$sql_row['a_s04'];
+			$a_s05=$sql_row['a_s05'];
+			$a_s06=$sql_row['a_s06'];
+			$a_s07=$sql_row['a_s07'];
+			$a_s08=$sql_row['a_s08'];
+			$a_s09=$sql_row['a_s09'];
+			$a_s10=$sql_row['a_s10'];
+			$a_s11=$sql_row['a_s11'];
+			$a_s12=$sql_row['a_s12'];
+			$a_s13=$sql_row['a_s13'];
+			$a_s14=$sql_row['a_s14'];
+			$a_s15=$sql_row['a_s15'];
+			$a_s16=$sql_row['a_s16'];
+			$a_s17=$sql_row['a_s17'];
+			$a_s18=$sql_row['a_s18'];
+			$a_s19=$sql_row['a_s19'];
+			$a_s20=$sql_row['a_s20'];
+			$a_s21=$sql_row['a_s21'];
+			$a_s22=$sql_row['a_s22'];
+			$a_s23=$sql_row['a_s23'];
+			$a_s24=$sql_row['a_s24'];
+			$a_s25=$sql_row['a_s25'];
+			$a_s26=$sql_row['a_s26'];
+			$a_s27=$sql_row['a_s27'];
+			$a_s28=$sql_row['a_s28'];
+			$a_s29=$sql_row['a_s29'];
+			$a_s30=$sql_row['a_s30'];
+			$a_s31=$sql_row['a_s31'];
+			$a_s32=$sql_row['a_s32'];
+			$a_s33=$sql_row['a_s33'];
+			$a_s34=$sql_row['a_s34'];
+			$a_s35=$sql_row['a_s35'];
+			$a_s36=$sql_row['a_s36'];
+			$a_s37=$sql_row['a_s37'];
+			$a_s38=$sql_row['a_s38'];
+			$a_s39=$sql_row['a_s39'];
+			$a_s40=$sql_row['a_s40'];
+			$a_s41=$sql_row['a_s41'];
+			$a_s42=$sql_row['a_s42'];
+			$a_s43=$sql_row['a_s43'];
+			$a_s44=$sql_row['a_s44'];
+			$a_s45=$sql_row['a_s45'];
+			$a_s46=$sql_row['a_s46'];
+			$a_s47=$sql_row['a_s47'];
+			$a_s48=$sql_row['a_s48'];
+			$a_s49=$sql_row['a_s49'];
+			$a_s50=$sql_row['a_s50'];
+
+			$a_ratio_tot=$a_s01+$a_s02+$a_s03+$a_s04+$a_s05+$a_s06+$a_s07+$a_s08+$a_s09+$a_s10+$a_s11+$a_s12+$a_s13+$a_s14+
+						 $a_s15+$a_s16+$a_s17+$a_s18+$a_s19+$a_s20+$a_s21+$a_s22+$a_s23+$a_s24+$a_s25+$a_s26+$a_s27+$a_s28+$a_s29+
+						 $a_s30+$a_s31+$a_s32+$a_s33+$a_s34+$a_s35+$a_s36+$a_s37+$a_s38+$a_s39+$a_s40+$a_s41+$a_s42+$a_s43+$a_s44+
+						 $a_s45+$a_s46+$a_s47+$a_s48+$a_s49+$a_s50;
+	}
+	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+//echo $sql2;
+mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
+$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
+
+while($sql_row2=mysqli_fetch_array($sql_result2))
+{
+	$mklength=$sql_row2['mklength'];
+	$mk_remarks=$sql_row2['remarks'];
+}
+	//echo ' total '.$a_ratio_tot;
 //echo implode(",",$docs);
 
 //$sql="select min(roll_width) as width from bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
@@ -1341,46 +1450,42 @@ body{
 
 </style>
 
-<style type="text/css">
-@page
-{
-	size: landscape;
-	margin: 0cm;
-}
-</style>
+
 
 <style>
 
 @media print {
-@page narrow {size: 11in 9in}
-@page rotated {size: potrait}
-DIV {page: narrow}
-TABLE {page: rotated}
-#non-printable { display: none; }
-#printable { display: block; }
-#logo { display: block; }
-body { zoom:95%;}
-#ad{ display:none;}
-#leftbar{ display:none;}
-#Book2_14270{ width:95%;}
+	@page narrow {size: 15in 11in}
+	@page rotated {size: PORTRAIT}
+	DIV {page: narrow}
+	TABLE {page: rotated}
+	#non-printable { display: none; }
+	#printable { display: block; }
+	#logo { display: block; }
+	body { zoom:75%;}
+	#ad{ display:none;}
+	#leftbar{ display:none;}
+	#DOCKET_NEW_4118{ width:80%; margin-left:2px; margin-right:2px;}
 }
+
 </style>
 
 <script>
 function printpr()
 {
-var OLECMDID = 7;
-/* OLECMDID values:
-* 6 - print
-* 7 - print preview
-* 1 - open window
-* 4 - Save As
-*/
-var PROMPT = 1; // 2 DONTPROMPTUSER
-var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-WebBrowser1.ExecWB(OLECMDID, PROMPT);
-WebBrowser1.outerHTML = "";
+	window.print();
+	// var OLECMDID = 7;
+	// /* OLECMDID values:
+	// * 6 - print
+	// * 7 - print preview
+	// * 1 - open window
+	// * 4 - Save As
+	// */
+	// var PROMPT = 1; // 2 DONTPROMPTUSER
+	// var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
+	// document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+	// WebBrowser1.ExecWB(OLECMDID, PROMPT);
+	// WebBrowser1.outerHTML = "";
    
 }
 </script>
@@ -1390,7 +1495,7 @@ WebBrowser1.outerHTML = "";
 
 </head>
 
-<body onload="printp();">
+<body onload="printpr();">
 <!--[if !excel]>&nbsp;&nbsp;<![endif]-->
 <!--The following information was generated by Microsoft Excel's Publish as Web
 Page wizard.-->
@@ -1402,11 +1507,11 @@ tags will be replaced.-->
 
 <div id="doc_designs_17319" align=center x:publishsource="Excel">
 
-<table border=0 cellpadding=0 cellspacing=0 width=1063 style='border-collapse:
- collapse;table-layout:fixed;width:797pt'>
- <col width=20 style='mso-width-source:userset;mso-width-alt:731;width:15pt'>
+<table border=0 cellpadding=0 cellspacing=0 width=1800 style='border-collapse:
+ collapse;table-layout:fixed;width:1300pt'>
+ <col width=20 style='mso-width-source:userset;mso-width-alt:800;width:15pt'>
  <col width=64 span=16 style='width:48pt'>
- <col width=19 style='mso-width-source:userset;mso-width-alt:694;width:14pt'>
+ <col width=19 style='mso-width-source:userset;mso-width-alt:800;width:14pt'>
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl1517319 width=20 style='height:15.0pt;width:15pt'><a
   name="RANGE!A1:R64"></a></td>
@@ -1430,112 +1535,109 @@ tags will be replaced.-->
  </tr>
  <tr height=25 style='height:18.75pt'>
   <td height=25 class=xl6417319 style='height:18.75pt'></td>
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src='../../common/images/BAI_Logo.jpg' width="120" height="60"></td>
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <!-- <td colspan=3 class=xl6617319>Cutting Docket</td> -->
   <td></td>
   <td class=xl6617319></td>
   <td class=xl6417319></td>
+  <td class=xl6617319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319 colspan='4'></td>
   <td colspan=3 class=xl7617319>Cutting Department</td>
   <td class=xl6417319></td>
  </tr>
+
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td colspan=3 class=xl6617319 height="25pt"><u>Cutting Docket</u></td> 
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319  colspan='4'></td>
+  <td colspan=3 class=xl7617319><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "ORIGINAL"; } else {echo "DUPLICATE";}?></strong></td>
+  <td class=xl6417319></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 class=xl6417319 style='height:15.75pt'></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 class=xl6417319 style='height:15.75pt'></td>
+  <td class=xl8217319></td>
+  <td class=xl8217319></td>
+  <td class=xl8217319></td>
+  <td class=xl8217319></td>
+  <td class=xl8217319></td>
+  <td class=xl8217319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  </td>
+
+ <tr class=xl1517319 height=21 style='height:15.75pt'>
+  <td height=21 class=xl6417319 style='height:15.75pt'></td>
+  <td class='xl6817319 top left'>Cut No :</td>
+  <td colspan=2 class='xl9617319 top' ><?php if($remarks=="Normal") { echo leading_zeros($cut_no, 3); } else {if($remarks=="Pilot") { echo "Pilot";}}?></td>
+  <td class='xl1517319 top'></td>
+  <td colspan=2 class='xl6817319 top '>Date:</td>
+  <td colspan=2 class='xl9617319 top right'><?php  echo $date; ?></td>
+  <td class='xl1517319'></td>
+  <td colspan=2 class='xl6817319 top left'>Category :</td>
+  <td colspan=7 class='xl9617319 top'><?php echo $cat_title; ?></td>
+  <td colspan=3 class='xl1517319 top right'></td>
+
+ </tr>
+ <tr>
  
-  <td colspan=3 class=xl6617319 height="25pt"><u>Cutting Docket</u></td>
-  
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td colspan=3 class=xl7617319>ORIGINAL</td>
-  <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl8217319></td>
-  <td class=xl8217319></td>
-  <td class=xl8217319></td>
-  <td class=xl8217319></td>
-  <td class=xl8217319></td>
-  <td class=xl8217319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6417319></td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6717319>&nbsp;</td>
-  <td class=xl6417319></td>
- </tr>
  <tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6817319>Cut No :</td>
-  <td colspan=2 class=xl9617319><?php if($remarks=="Normal") { echo leading_zeros($cut_no, 3); } else {if($remarks=="Pilot") { echo "Pilot";}}?></td>
-  <td class=xl6817319>Date:</td>
-  <td colspan=2 class=xl9617319><?php  echo $date; ?></td>
-  <td class=xl1517319></td>
-  <td colspan=2 class=xl6817319>Category :</td>
-  <td colspan=7 class=xl9617319><?php echo $cat_title; ?></td>
-  <td class=xl1517319></td>
- </tr>
- <tr class=xl1517319 height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6817319>Style No :</td>
+  <td class='xl6817319 left'>Style No :</td>
   <td colspan=2 class=xl9617319><?php echo $style; ?></td>
-  <td class=xl6817319>Module:</td>
-  <td colspan=2 class=xl9617319><?php echo $plan_module; echo " (".$cut_table[$plan_module].")"; ?></td>
+  <td class='xl1517319'></td>
+  <td colspan=2 class='xl6817319'>Module:</td>
+  <td colspan=2 class='xl9617319 right'><?php echo $plan_module; if($cut_table[$plan_module]) echo "(".$cut_table[$plan_module].")"; ?></td>
   <td class=xl1517319></td>
-  <td colspan=2 class=xl11317319>Consumption :</td>
-  <td colspan=7 class=xl9617319><?php echo $body_yy; ?></td>
-  <td class=xl6417319></td>
+  <td colspan=2 class='xl11317319 left'>Mk Name :</td>
+  <td colspan=3 class=xl9617319><?php echo $mk_remarks; ?></td>
+  <td colspan=2 class='xl6817319'>Consumptions:</td>
+  <td colspan=2 class='xl9617319'><?= $body_yy ?></td>
+  <td colspan=3 class='xl1517319 right'></td>
  </tr>
+ 
  <tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6817319>Sch No :</td>
+  <td class='xl6817319 left'>Sch No :</td>
   <td colspan=2 class=xl9617319><?php echo $schedule; ?></td>
-  <td class=xl6817319>PO:</td>
-  <td colspan=2 class=xl9617319></td>
+  <td class='xl1517319'></td>
+  <td colspan=2 class=xl6817319>PO:</td>
+  <td colspan=2 class='xl9617319 right'></td>
   <td class=xl1517319></td>
-  <td colspan=2 class=xl6817319>Fab Direction :</td>
-  <td colspan=7 class=xl11517319><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>
-  <td class=xl11417319></td>
+  <td colspan=2 class='xl6817319 left'>Fab Direction :</td>
+  <td colspan=7 class='xl11517319'><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>
+  <td colspan=3 class='xl1517319 right'></td>
  </tr>
  
 <!-- 
@@ -1550,49 +1652,51 @@ tags will be replaced.-->
  </tr>
  -->
  <?php
+ 
  echo "<tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6817319>Color :</td>
-  <td colspan=5 class=xl9617319>".$sch_color[0]." / ".$color_codes[0]."</td>
+  <td class='xl6817319 left'>Color :</td>
+  <td colspan=7 class='xl9617319 right'>".$sch_color[0]." / ".$color_codes[0]."</td>
   <td class=xl1517319></td>
-  <td colspan=2 class=xl6817319>Fab Code/ Desc :</td>
-  <td colspan=7 class=xl9617319>".$fab_codes[0]."</td>
-  <td class=xl6417319></td>
+  <td colspan=2 class='xl6817319 left'>Fab Code/ Desc :</td>
+  <td colspan=10 class='xl9617319 right'>".$fab_codes[0]."</td>
  </tr>";
  for($i=1;$i<sizeof($color_codes);$i++)
  {
  	echo "<tr class=xl1517319 height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6817319>Color :</td>
-  <td colspan=5 class=xl9617319>".$sch_color[$i]." / ".$color_codes[$i]."</td>
-  <td class=xl1517319></td>
-  <td colspan=2 class=xl6817319>Fab Code/ Desc :</td>
-  <td colspan=7 class=xl9617319>".$fab_codes[$i]."</td>
-  <td class=xl6417319></td>
- </tr>";
+			<td height=21 class=xl6417319 style='height:15.75pt'></td>
+			<td class='xl6817319 left'>Color :</td>
+			<td colspan=7 class='xl9617319 right'>".$sch_color[$i]." / ".$color_codes[$i]."</td>
+			<td class=xl1517319></td>
+			<td colspan=2 class='xl6817319 left'>Fab Code/ Desc :</td>
+			<td colspan=10 class='xl9617319 right'>".$fab_codes[$i]."</td>
+ 		</tr>";
  }
  
  
  ?>
+ 
  <tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6917319>&nbsp;</td>
+  <td class='xl6917319 left'>&nbsp;</td>
   <td class=xl11617319>&nbsp;</td>
   <td class=xl11617319>&nbsp;</td>
   <td class=xl11617319>&nbsp;</td>
   <td class=xl11617319>&nbsp;</td>
-  <td class=xl11617319>&nbsp;</td>
-  <td class=xl1517319></td>
+  <td class='bottom'></td>
+  <td class='bottom'></td>
+  <td class='bottom right'>&nbsp;</td>
+  <td class=''>&nbsp;</td>
+  <td class='xl9717319 left'>&nbsp;</td>
+  <td class='xl9717319'>&nbsp;</td>
   <td class=xl9717319>&nbsp;</td>
   <td class=xl9717319>&nbsp;</td>
   <td class=xl9717319>&nbsp;</td>
   <td class=xl9717319>&nbsp;</td>
   <td class=xl9717319>&nbsp;</td>
   <td class=xl9717319>&nbsp;</td>
-  <td class=xl9717319>&nbsp;</td>
-  <td class=xl9717319>&nbsp;</td>
-  <td class=xl9717319>&nbsp;</td>
-  <td class=xl6417319></td>
+  <td colspan=3 class='bottom'></td>
+  <td class='xl9717319 right' ></td>
  </tr>
  <tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
@@ -1638,12 +1742,13 @@ tags will be replaced.-->
   }
   $fab_uom = 'Yds';//hardcoded
   echo "<th $style_css>Plies</th>";
+  echo "<th $style_css>MK Length</th>";
   echo "<th $style_css>$fab_uom</th>";
   echo "</tr>";
-  
+
   for($j=0;$j<sizeof($color_codes);$j++)
   {
-  	echo "<tr>";
+  	echo "<tr style='height:40px'>";
 	echo "<td $style_css>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
 	  echo "<td $style_css>".$color_codes[$j]."</td>";
 	  echo "<td $style_css>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
@@ -1657,24 +1762,25 @@ tags will be replaced.-->
 		}
 	  }
 	  echo "<td $style_css>".$plies[$j]."</td>";
+	  echo "<td $style_css>".$mk_length_ref[$j]."</td>";
 	  echo "<td $style_css>".$met_req[$j]."</td>";
 	  echo "</tr>";
   }
   
-   echo "<tr>";
+echo "<tr>";
   
-  echo "<th $style_css colspan=4>Total</th>";
+  echo "<th $style_css colspan=11>Total</th>";
   //echo "<th>Color</th>";
   //echo "<th>Job</th>";
   //echo "<th>Doc.ID</th>";
-   for($i=0;$i<sizeof($sizes_tit);$i++)
-  {
-  	// if($qty[$i]>0)
-	// {
-		echo "<th $style_css>".($qty[$i]*array_sum($plies))."</th>";
-	//}
-  }
-  echo "<th $style_css>".((array_sum($qty)/sizeof($color_codes))*array_sum($plies))."</th>";
+//    for($i=0;$i<sizeof($sizes_tit);$i++)
+//   {
+//   	// if($qty[$i]>0)
+// 	// {
+// 		echo "<th $style_css>".($qty[$i]*array_sum($plies))."</th>";
+// 	//}
+//   }
+//   echo "<th $style_css>".((array_sum($qty)/sizeof($color_codes))*array_sum($plies))."</th>";
   echo "<th $style_css>".array_sum($met_req)."</th>";
   echo "</tr>";
   
@@ -1750,6 +1856,7 @@ tags will be replaced.-->
   <td class=xl6417319></td>
   <td class=xl6417319></td>
  </tr>
+
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   <td rowspan=2 class=xl7017319 style='border-bottom:.5pt solid black'>Rpt No</td>
@@ -1763,7 +1870,17 @@ tags will be replaced.-->
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Act. Width</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Marker Length</td>
+  width:48pt'>Cutting Wastage %</td>
+  <td rowspan=2 colspan=2 class='xl8917319 autox'width=80 style='border-bottom:.5pt solid black;
+  width:60px'>Binding Consumption</td>
+  <td rowspan=2   colspan=2 class='xl8917319 autox' width=80 style='border-bottom:.5pt solid black;
+  width:70px'>Fab. Requirement for lay/ Yds</td>
+  <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
+  width:70px'>Fab. Requirement for Binding/ Yds</td>
+  <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
+  width:60px'>Total Fab. Requirement/ Yds</td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:auto'>Marker Length</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Act. Req Qty (<?php echo $fab_uom; ?>)</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
@@ -1771,8 +1888,8 @@ tags will be replaced.-->
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Return Qty (<?php echo $fab_uom; ?>)</td>
   <td class=xl11717319 width=64 style='width:48pt'></td>
-  <td class=xl8217319></td>
-  <td colspan=3 rowspan=4 class=xl10117319 style='border-right:1.0pt solid black;
+
+  <td colspan=2 rowspan=4 class=xl10117319 style='border-right:1.0pt solid black;
   border-bottom:1.0pt solid black'>Fabric Swatch</td>
   <td class=xl8217319></td>
  </tr>
@@ -1795,13 +1912,20 @@ tags will be replaced.-->
   <td rowspan=2 class=xl9817319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $purlength; ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
-  	//Extra 1% added to avoid cad saving manual mrn claims.
-	{ $extra=round((($purlength*array_sum($plies))*$savings),2); }  
-	echo (($purlength*array_sum($plies))+$extra);  ?></td>
+  border-top:none;width:48pt'><?php echo array_sum($met_req); ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $actwidth; ?></td>
-  <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
+  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php echo $cuttable_wastage*100;?></td>
+  <td rowspan=2 colspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php echo $binding_con; ?></td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php $fab_lay = (float)$purlength*(1+(float)$cuttable_wastage)*(int)$plies; echo round($fab_lay,2); ?></td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php $fab_bind = (float)$binding_con*(int)$plies*(float)$a_ratio_tot; echo round($fab_bind,2); ?></td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  width:48pt'><?php echo round($fab_bind+$fab_lay,2); ?></td>
+  <td rowspan=2 colspan=2  class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $act_mk_length; ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php if($act_mk_length>0) {echo array_sum($met_req); } ?></td>
@@ -1839,6 +1963,7 @@ tags will be replaced.-->
   <td class=xl11217319></td>
   <td class=xl6417319></td>
  </tr>
+ <tr style='height:50px'></tr>	
  <tr>
   <td class=xl6417319></td>
   <td colspan=16 rowspan=7 class=xl8217319>
@@ -1879,21 +2004,22 @@ $tkt_width[]=$sql_row['ref6'];
 } 
 
 echo "<table style='font-size:16px; border:.5pt solid black; border-collapse: collapse; float:left;'>";
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Roll No</td>
-<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Lot No</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Label ID</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Width</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Allocated Length</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Batch</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Shade</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Length</td>
-<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Length</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Length Variation</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Width</td>
-<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Width</td>
-<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Width Variation</td><tr/>";
+echo "<tr>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Roll No</td>
+	<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Lot No</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Label ID</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Width</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Allocated Length</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Batch</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Shade</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Length</td>
+	<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Length</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Length Variation</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Width</td>
+	<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Width</td>
+	<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Width Variation</td>
+</tr>";
 for($i=0;$i<sizeof($roll_det);$i++){
 	echo "<tr>
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_det[$i]."</td>
@@ -1909,7 +2035,6 @@ for($i=0;$i<sizeof($roll_det);$i++){
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>
 		<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>
-		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>
 		<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
 
 		</tr>";
@@ -2630,10 +2755,25 @@ echo $lot_ref; echo "MK File: ".implode(", ",array_unique($mk_files));
 </html>
 
 <?php
-
 	$idocs_2 = "'" . implode ( "', '", $docs ) . "'";
-
-	$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\" where doc_no in ($idocs_2) and print_status is null";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
+	if($print_status=="0000-00-00" || $print_status == "")
+	{	
+		$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\" where doc_no in ($idocs_2)";
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 ?>
+
+<style>
+.top{
+	border-top : 1px solid black;
+}
+.left{
+	border-left : 1px solid black;
+}
+.right{
+	border-right : 1px solid black;
+}
+.bottom{
+	border-bottom : 1px solid black;
+}
+</style>

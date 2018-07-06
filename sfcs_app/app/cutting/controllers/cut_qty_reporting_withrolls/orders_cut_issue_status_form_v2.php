@@ -389,7 +389,9 @@ else
     // var_dump($table_name); 
     echo "<tr> 
     <td>Cutting Table</td> 
-    <td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"section\" required><option value=\"0\">Select Table</option>"; 
+    <td>:</td><td><div class='row'>
+        <div class='col-md-6'><select class=\"form-control\" name=\"section\" required>
+        <option value='' selected disabled>Select Table</option>"; 
     for($i = 0; $i < sizeof($table_name); $i++) 
     { 
         echo "<option value='".$table_id[$i]."' style='background-color:#FFFFAA;'>".$table_name[$i]."</option>"; 
@@ -468,24 +470,39 @@ else
             } 
         */ 
         
-    if(in_array($username,$special_users)) 
-    { 
-        echo "<tr><td>Shift</td><td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"shift\" required> 
-                <option value=\"A\">A</option> 
-                <option value=\"B\">B</option> 
-                </select></div></div></td></tr>"; 
-    } 
-    else 
-    { 
+    // if(in_array($username,$special_users)) 
+    // { 
+    //     echo "<tr><td>Shift</td><td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"shift\" required> 
+    //             <option value=\"A\">A</option> 
+    //             <option value=\"B\">B</option> 
+    //             </select></div></div></td></tr>"; 
+    // } 
+    // else 
+    // { 
         /*echo "<tr><td>Shift</td><td>:</td><td><select name=\"shift\"> 
     <option value=\"$shift_final\">$shift_final</option> 
     </select></td></tr>";*/ 
 
-    echo "<tr><td>Shift</td><td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"shift\" required> 
-            <option value=\"A\">A</option> 
-            <option value=\"B\">B</option> 
-            </select></div></div></td></tr>"; 
-    } 
+    echo "<tr><td>Shift</td><td>:</td><td><div class='row'><div class='col-md-6'><select class=\"form-control\" name=\"shift\" required>";
+    foreach($shifts_array as $key=>$shift){
+        echo "<option value='$shift'>$shift</option>";
+    }
+        echo "</select></div></td></tr>"; 
+    //} 
+
+    $team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+    $team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
+    echo "<tr>
+            <td>Team Leader</td><td>:</td>
+            <td><div class='row'><div class='col-sm-6'><select name=\"leader_name\" class='form-control'>";
+    echo "<option value='' selected disabled>Select Team</option>";
+    while($row=mysqli_fetch_array($team_result))
+    {
+        echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
+    }
+    echo "</select></div></div>
+        </td></tr>"; 
+        
     echo "<tr><td>Do you want to create a new cut <br/>for the same ratio to remaining plies</td><td>:</td><td><div class='row'><div class='col-md-6'>
     <select class=\"form-control\" name=\"newratio\" id='new_ratio_drop'> 
     <option value=\"no\">No</option> 
@@ -524,6 +541,9 @@ else
             <input type=\"hidden\" name=\"old_shortages\" value=\"$fab_shortages\">
             <div class='row'><div class='col-md-6'><input class=\"form-control integer\" id='fb_shortage' type=\"text\" name=\"shortages\" value=\"0\"></div>
         </div></td></tr>"; 
+    //Leader Name   
+     
+
     echo "<tr style='display:none;'><td>Bundle Location</td><td>:</td><td><select name=\"bun_loc\">"; 
     echo "<option value='' style='background-color:#FF5500;'></option>"; 
     //$locations="select * from locations where status='active'"; 

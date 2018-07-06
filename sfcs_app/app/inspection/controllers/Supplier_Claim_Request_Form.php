@@ -2,6 +2,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R'));
 $Page_Id='SFCS_0053';
+$has_permission=haspermission($_GET['r']);
+
 ?>
 <script>
 
@@ -131,7 +133,7 @@ else
 ?>
 <?php
 
-if(in_array($username,$auth_users))
+if(in_array($authorized,$has_permission))
 {
 echo '<a class="btn btn-info btn-xs" href="'.getFullURL($_GET["r"],"Supplier_Claim_Request_Form.php","N").'">Request Form</a> | <a class="btn btn-info btn-xs" href="'.getFullURLLevel($_GET["r"],"reports/Supplier_Claim_Log_Form.php",1,"N").'">Log</a> <hr>';
 }

@@ -5,19 +5,17 @@ This amendement was done based on the confirmation to issue excess (1%) material
 //Binding Consumption / YY Calculation //20151016-KIRANG-Imported Binding inclusive concept.
 -->
 
-<?php //include("../".getFullURLLevel($_GET['r'], "dbconf.php", "1", "R").""); ?>
-<?php //include("../".getFullURLLevel($_GET['r'], "", "1", "R").""); ?>
-<?php //include("../dbconf.php"); ?>
+<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "dbconf.php", "1", "R").""); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "", "1", "R").""); ?>
+<?php include('../../../../common/config/config.php'); ?>
 <?php //include("../".getFullURL($_GET['r'], "", "R").""); ?>
-<?php //include("functions.php"); ?>
+<?php include('../../../../common/config/functions.php'); ?>
 <?php
-ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');	
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
-$sql12="select MIN(mini_order_num) as min_no,MAX(mini_order_num) as max_no from brandix_bts.tbl_miniorder_data where docket_number='".$doc_id."'";
+$sql12="select MIN(mini_order_num) as min_no,MAX(mini_order_num) as max_no from $brandix_bts.tbl_miniorder_data where docket_number='".$doc_id."'";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result12)>0)
 {
@@ -44,7 +42,7 @@ $cut_table=array("0","T1","T1","T2","T2","T3","T3","T4","T4","T5","T5","T6","T6"
 
 <?php
 
-$sql="select * from bai_orders_db_confirm where order_tid=\"$order_tid\"";
+$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 
 // mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($link));
 
@@ -183,7 +181,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 //echo $size6."<br/>".$flag;
 
 
-$sql="select * from plan_dashboard where doc_no='$doc_id'";
+$sql="select * from $bai_pro3.plan_dashboard where doc_no='$doc_id'";
+// echo $sql;
 // mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -191,7 +190,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$plan_log_time=$sql_row['log_time'];
 }
 	
-$sql="select * from cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+//echo $sql;
 // mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -210,9 +210,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$patt_ver=$sql_row['patt_ver'];
 	$col_des=$sql_row['col_des'];
 }
-
-$sql="select cuttable_wastage, sum(cuttable_s_xs) as \"cuttable_s_xs\", sum(cuttable_s_s) as \"cuttable_s_s\", sum(cuttable_s_m) as \"cuttable_s_m\", sum(cuttable_s_l) as \"cuttable_s_l\", sum(cuttable_s_xl) as \"cuttable_s_xl\", sum(cuttable_s_xxl) as \"cuttable_s_xxl\", sum(cuttable_s_xxxl) as \"cuttable_s_xxxl\" from cuttable_stat_log where order_tid=\"$order_tid\" and cat_id=$cat_ref";
-// $sql="select * from cuttable_stat_log where order_tid=\"$order_tid\" and cat_id=$cat_ref";
+// var_dump($sizes_code);
+$sql="select *,cuttable_wastage, sum(cuttable_s_xs) as \"cuttable_s_xs\", sum(cuttable_s_s) as \"cuttable_s_s\", sum(cuttable_s_m) as \"cuttable_s_m\", sum(cuttable_s_l) as \"cuttable_s_l\", sum(cuttable_s_xl) as \"cuttable_s_xl\", sum(cuttable_s_xxl) as \"cuttable_s_xxl\", sum(cuttable_s_xxxl) as \"cuttable_s_xxxl\" from $bai_pro3.cuttable_stat_log where order_tid=\"$order_tid\" and cat_id=$cat_ref";
+//echo $sql;
 // mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -220,10 +220,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 		for($s=0;$s<sizeof($sizes_code);$s++)
 		{
-			//if($sql_row["cuttable_s_s".$sizes_code[$s].""]>0)
-			//{
-			$c_o[$sizes_code[$s]]=$sql_row["cuttable_s_s".$sizes_code[$s].""];
-			//}
+			if($sql_row["cuttable_s_s".$sizes_code[$s].""]>0)
+			{
+				$c_o[$sizes_code[$s]]=$sql_row["cuttable_s_s".$sizes_code[$s]];
+			}
 		}
 	$cuttable_wastage = $sql_row['cuttable_wastage'];
 	$c_s01=$sql_row['cuttable_s_s01'];
@@ -286,13 +286,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 <?php
 
-$sql="select *,fn_savings_per_cal(DATE,cat_ref,'$delivery','$color') as savings from plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no=$doc_id";
+$sql="select *,fn_savings_per_cal(DATE,cat_ref,'$delivery','$color') as savings from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no=$doc_id";
 //echo $sql."<br>";
 // mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
+	$mk_ref=$sql_row['mk_ref'];
 
 for($s=0;$s<sizeof($sizes_code);$s++)
 {
@@ -366,8 +367,17 @@ $a_s50=$sql_row['a_s50'];
 	$allocate_ref=$sql_row['allocate_ref'];
 	$savings=$sql_row['savings'];
 }
+$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+// echo $sql2;
+mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
+$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 
-	$sql="select min(roll_width) as width from bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
+while($sql_row2=mysqli_fetch_array($sql_result2))
+{
+	$mklength=$sql_row2['mklength'];
+	$mk_remarks=$sql_row2['remarks'];
+}
+	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
  //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x=mysqli_fetch_array($sql_result))
@@ -377,7 +387,7 @@ $a_s50=$sql_row['a_s50'];
 	$actwidth=$system_width;
 	// $ctexlength=$sql_row1x['allocated_qty'];
 	
-	$sql2="select * from maker_stat_log where tid=$mk_ref";
+	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
 	//echo $sql2;
 	// mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -387,7 +397,7 @@ $a_s50=$sql_row['a_s50'];
 		$mklength=$sql_row2['mklength'];
 		$mk_file=$sql_row2['remarks'];
 		
-		$sql22="select * from marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
+		$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row22=mysqli_fetch_array($sql_result22))
 		{
@@ -395,7 +405,7 @@ $a_s50=$sql_row['a_s50'];
 			$act_mk_length=$sql_row22['marker_length'];
 		}
 		
-		$sql22="select * from marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
+		$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
 		//echo $sql22;
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row22=mysqli_fetch_array($sql_result22))
@@ -412,7 +422,8 @@ $a_s50=$sql_row['a_s50'];
 	
 	if($category=='Body' || $category=='Front')
 	{
-		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		// echo $sql2;
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows=mysqli_num_rows($sql_result2);
 		if($rows > 0)
@@ -420,7 +431,6 @@ $a_s50=$sql_row['a_s50'];
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$binding_con = $sql_row2['binding_con'];
-				// echo $binding_con;
 				$bind_con= $binding_con *($a_ratio_tot*$plies);
 			}
 		}
@@ -477,7 +487,7 @@ if($print_status==NULL)
 
 */
 // echo $docketno.'<br>';
-$child_dockets_query="SELECT doc_no AS doc_no FROM plandoc_stat_log WHERE org_doc_no='$docketno'";
+$child_dockets_query="SELECT doc_no AS doc_no FROM $bai_pro3.plandoc_stat_log WHERE org_doc_no='$docketno'";
 $child_dockets_result=mysqli_query($link, $child_dockets_query) or exit("error while getting original doc nos");
 while($sql_row=mysqli_fetch_array($child_dockets_result))
 {
@@ -1967,41 +1977,43 @@ body{
 <style>
 
 @media print {
-@page narrow {size: 15in 11in}
-@page rotated {size: potrait}
-DIV {page: narrow}
-TABLE {page: rotated}
-#non-printable { display: none; }
-#printable { display: block; }
-#logo { display: block; }
-body { zoom:82%;}
-#ad{ display:none;}
-#leftbar{ display:none;}
-#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
+	@page narrow {size: 15in 11in}
+	@page rotated {size: potrait}
+	DIV {page: narrow}
+	TABLE {page: rotated}
+	#non-printable { display: none; }
+	#printable { display: block; }
+	#logo { display: block; }
+	body { zoom:72%;}
+	#ad{ display:none;}
+	#leftbar{ display:none;}
+	#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
 }
 </style>
 
 <script>
 function printpr()
 {
-var OLECMDID = 7;
-/* OLECMDID values:
-* 6 - print
-* 7 - print preview
-* 1 - open window
-* 4 - Save As
-*/
-var PROMPT = 1; // 2 DONTPROMPTUSER
-var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-WebBrowser1.ExecWB(OLECMDID, PROMPT);
-WebBrowser1.outerHTML = "";
+	window.print();
+	// var OLECMDID = 7;
+	// /* OLECMDID values:
+	// * 6 - print
+	// * 7 - print preview
+	// * 1 - open window
+	// * 4 - Save As
+	// */
+	// var PROMPT = 1; // 2 DONTPROMPTUSER
+	// var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
+	// document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+	// WebBrowser1.ExecWB(OLECMDID, PROMPT);
+	// WebBrowser1.outerHTML = "";
    
 }
 </script>
 
-<script src="jquery-1.3.2.js"></script>
-<script src="jquery-barcode-2.0.1.js"></script>
+<script src="../../common/js/jquery-1.3.2.js"></script>
+<script src="../../common/js/jquery-barcode-2.0.1.js"></script>
+
 </head>
 
 <body onload="printpr();">
@@ -2087,15 +2099,19 @@ tags will be replaced.-->
   <td class=xl154118 width=21 style='width:16pt'></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+
+ </tr>
+
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td colspan=6 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
-  <td colspan=6 rowspan=3 class=xl674118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td colspan=3 class=xl844118>Cutting Department</td>
+  <td colspan=3 >Cutting Department</td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -2154,7 +2170,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status!=NULL) {echo "DUPLICATE"; } else {echo "ORIGINAL";}?></strong></td>
+  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "ORIGINAL"; } else {echo "DUPLICATE";}?></strong></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -2194,7 +2210,7 @@ tags will be replaced.-->
   <td class=xl904118>Style No :</td>
   <td colspan=2 class=xl954118 style='border-right:.5pt solid black'><?php echo $style; ?></td>
   <td class=xl904118x>Module:</td>
-  <td class=xl954118><?php echo $plan_module; ?></td>
+  <td class=xl954118><?php echo $plan_module; ?></td>	
   <td class=xl904118></td>
   <td colspan=2 class=xl904118>Fab Code :</td>
   <td colspan=4 class=xl954118><?php echo $compo_no ?></td>
@@ -2206,8 +2222,10 @@ tags will be replaced.-->
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl904118>Sch No :</td>
-  <td colspan=4 class=xl954118 style='border-right:.5pt solid black'><?php echo $delivery.chr($color_code); ?></td>
-  <td class=xl954118></td>
+  <td colspan=2 class=xl954118 style='border-right:.5pt solid black'><?php echo $delivery.chr($color_code); ?></td>
+  <td class=xl904118x>Consumption:</td>
+  <td class=xl954118><?php echo $body_yy; ?></td>
+  <td class=xl904118></td>
   <td colspan=2 class=xl904118>Fab Descrip :</td>
   <td colspan=7 class=xl954118 style='border-right:.5pt solid black'><?php echo $fab_des; ?></td>
   <td class=xl654118></td>
@@ -2217,8 +2235,8 @@ tags will be replaced.-->
   <td class=xl904118>Color :</td>
   <td colspan=4 class=xl954118 style='border-right:.5pt solid black'><?php echo $color." / ".$col_des; ?></td>
   <td class=xl954118></td>
-  <td colspan=2 class=xl904118>Consumption :</td>
-  <td colspan=4 class=xl954118><?php echo $body_yy; ?></td>
+  <td colspan=2 class=xl904118>MK Name :</td>
+  <td colspan=4 class=xl954118><?php echo $mk_remarks; ?></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl1004118>&nbsp;</td>
@@ -2929,6 +2947,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
 		$size_result = mysqli_query($link, $size_query) or exit("error while getting details for child doc nos");
 		while($sql_row=mysqli_fetch_array($size_result))
 		{
+
 			$planned_plies = $sql_row['p_plies'];
 			for($s=0;$s<sizeof($sizes_code);$s++)
 			{
@@ -3116,28 +3135,8 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td rowspan="2" colspan="16" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
-  //echo ($bind_con>0)?"Binding/Rib Quantity: $bind_con YDS":"";
-   if(sizeof($batch_det) > 0)
-   {
-	   	$rem="";
-		$batchs=array();
-	   	for($i=0;$i<sizeof($batch_det);$i++)
-		{
-			$batchs[]="'".$batch_det[$i]."'";
-		}
-	   
-	    $batchs=array_unique($batchs);
-	    $sql="select group_concat(sp_rem) as rem from bai_rm_pj1.inspection_db where batch_ref in (".implode(",",$batchs).")";
-   	    //echo $sql;
-	    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	    while($sql_row=mysqli_fetch_array($sql_result))
-	    {
-	    	$rem=$sql_row["rem"];
-	    }
-	    echo $rem;
-   }
- $sql="select * from bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id";
-// echo $sql;
+  $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id";
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -3156,6 +3155,27 @@ $tkt_len[]=$sql_row['qty_rec'];
 $ctex_width[]=$sql_row['ref3'];
 $tkt_width[]=$sql_row['ref6'];
 } 
+  //echo ($bind_con>0)?"Binding/Rib Quantity: $bind_con YDS":"";
+   if(sizeof($batch_det) > 0)
+   {
+	   	$rem="";
+		$batchs=array();
+	   	for($i=0;$i<sizeof($batch_det);$i++)
+		{
+			$batchs[]="'".$batch_det[$i]."'";
+		}
+	   
+	    $batchs=array_unique($batchs);
+	    $sql="select group_concat(sp_rem) as rem from $bai_rm_pj1.inspection_db where batch_ref in (".implode(",",$batchs).")";
+   	    //echo $sql;
+	    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	    while($sql_row=mysqli_fetch_array($sql_result))
+	    {
+	    	$rem=$sql_row["rem"];
+	    }
+	    echo $rem;
+   }
+
 ?>
   </td>
 
@@ -3165,7 +3185,9 @@ $tkt_width[]=$sql_row['ref6'];
  <td height=20 class=xl674118 style='height:15.0pt'></td>
  <!--<td rowspan="2" colspan="15" class=xl764118 style='border-bottom:.5pt solid black;'>-->
  <?php
- $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM bai_rm_pj1.docket_ref WHERE doc_no=$doc_id AND doc_type='normal' GROUP BY ref4";
+ $roll_length = array();
+ $roll_det = array();
+ $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=$doc_id AND doc_type='normal' GROUP BY ref4";
  $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row123=mysqli_fetch_array($sql_result123))
 {
@@ -3506,11 +3528,12 @@ $tkt_width[]=$sql_row['ref6'];
 </html>
 <?php 
 
-if($print_status==NULL)
+if($print_status=="0000-00-00" || $print_status == "")
 {
-	
-	$sql="update plandoc_stat_log set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
+	$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
+ 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 }
 ?>
+

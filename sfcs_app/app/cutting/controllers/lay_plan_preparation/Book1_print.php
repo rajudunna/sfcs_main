@@ -26,6 +26,7 @@ $clubbing = $_GET['clubbing'];
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
     $remarks_x=$sql_row['remarks']; 
+    $binding_con = $sql_row['binding_con'];
      
     } 
      
@@ -1696,6 +1697,9 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>One Gmt 
     One Way</td> 
     <td class=xl6913019><?php echo $gmtway; ?></td> 
+     
+    <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Binding Consumption</td> 
+    <td class=xl6913019><?php echo $binding_con; ?></td> 
     <td class=xl7113019></td> 
     <td class=xl6613019></td> 
     </tr> 
@@ -1722,7 +1726,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <td class=xl6613019></td> 
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Used 
-    Yards</td> 
+    <?php $fab_uom ?></td> 
     <td class=xl7713019><?php echo round($newyy,0); ?></td> 
     <td class=xl6513019></td> 
     <td class=xl6613019></td> 
@@ -1761,7 +1765,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     } 
     else 
     { 
-        echo "<td></td><td colspan='3' class='xl7313019' colspan=2 align=left></td>"; 
+        echo "<td></td><td colspan='3' colspan=2 align=left></td>"; 
     } 
     echo "</tr>";
  ?>
@@ -2869,8 +2873,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
      
     for($s=0;$s<sizeof($size);$s++) 
     { 
-    $code="ex_s".$sizes_code[$s]; 
-    $$code=($c_s[$s]-$o_s[$s]); 
+        $code="ex_s".$sizes_code[$s]; 
+        $$code=($c_s[$s]-$o_s[$s]); 
     } 
      
     // NEW CODE 
@@ -2984,7 +2988,7 @@ if($emb_stat==1)
          
         $array_val=${'ex_'.$sizes_array[$s]}; 
         $array_val_a=${'a_'.$sizes_array[$s]}; 
-        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $array_val=0; } echo"</div></td>";     
+        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val;  $code="ex_s".$sizes_code[$s]; $$code=0; } echo"</div></td>";     
         $total_ratio+=$array_val_a; 
          
     } 
@@ -3011,7 +3015,7 @@ echo "</tr>";
     {    
         $array_val=${'ex_'.$sizes_array[$s]}; 
         $array_val_a=${'a_'.$sizes_array[$s]}; 
-        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $array_val=0; }     
+        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $code="ex_s".$sizes_code[$s]; $$code=0;}     
        // echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies); $temp_sum=$temp_sum+($array_val_a*$plies); $array_val=0; }  
 /* 
  echo "<td class=xl8713019 style='text-align: left;'>".$array_val_a."<div style='width: 77px;text-align: left; float: right; height:100%;border-top: 1px solid black;' class='xl8713019'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo (($array_val_a*$plies)-$array_val); $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $array_val=0; }   

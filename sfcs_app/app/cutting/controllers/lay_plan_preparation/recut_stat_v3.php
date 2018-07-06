@@ -1,5 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R')); ?>
 <?php
 
 $order_qtys=array();
@@ -355,18 +355,20 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	$doc_no=$sql_row['doc_no'];
 	$cut_no=$sql_row['acutno'];
-	
-	$path="Book3_print_recut.php"; 
+	$path = getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'R');
+	//$path="Book3_print_recut.php"; 
 	
 	if(substr($sql_row['order_tid'],0,1)!="P" || substr($sql_row['order_tid'],0,1)!="K" || substr($sql_row['order_tid'],0,1)!="L" || substr($sql_row['order_tid'],0,1)!="O" )
 	{
 		if($o_total>0)
 		{
-			$path="Book3_print_recut.php";  // For M&S Men Briefs
+			$path = getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'R');
+			//$path="Book3_print_recut.php";  // For M&S Men Briefs
 		}
 		else
 		{
-			$path="Book3_print_recut1.php"; // FOR M&S Ladies Briefs
+			$path = getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'R');
+			//$path="Book3_print_recut1.php"; // FOR M&S Ladies Briefs
 		}
 		
 	}
@@ -375,7 +377,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		if(substr($sql_row['order_tid'],0,1)=="Y")
 		{
-			$path="Book3_print_recut1.php"; // FOR M&S Ladies Briefs	
+			$path = getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'R');
+			//$path="Book3_print_recut1.php"; // FOR M&S Ladies Briefs	
 		}
 		
 	}

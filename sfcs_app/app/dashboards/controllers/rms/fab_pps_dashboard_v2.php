@@ -1,3 +1,4 @@
+
 <!--
 Core Module:In this interface we can get module wise fabric allocation details.
 
@@ -26,9 +27,9 @@ $double_modules=array();
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 // $username=$username_list[1];
-$username="sfcsproject1";
+// $username="sfcsproject1";
 
-$authorized=array("kirang","rameshk","chathurangad","minuram","buddhikam","indikaha","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","ashokw","jeganathanj","gayathirit","sudathra","dhanushkah","asankais","saroasa");
+// $authorized=array("kirang","rameshk","chathurangad","minuram","buddhikam","indikaha","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","ashokw","jeganathanj","gayathirit","sudathra","dhanushkah","asankais","saroasa");
 
 
 ?>
@@ -71,11 +72,19 @@ echo '<META HTTP-EQUIV="refresh" content="180">';
 {
 	echo '<META HTTP-EQUIV="refresh" content="120">';	
 } */
+// E:\xampp\htdocs\sfcs_main\template\helper.php
+
+include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
+$has_permission=haspermission($url_r); 
+
 ?>
 
 <?php
-$special_users=array("kirang","rameshk","chathurangad","minuram","buddhikam","sfcsproject1","saroasa");
-if(!in_array($username,$special_users))
+// $special_users=array("kirang","rameshk","chathurangad","minuram","buddhikam","sfcsproject1","saroasa");
+if(!in_array($authorized,$has_permission))
 {
 	echo '<script>
 	var ctrlPressed = false;
@@ -717,6 +726,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 	for($x=0;$x<sizeof($mods);$x++)
 	{
+
 		$module=$mods[$x];
 		$blink_check=0;
 		
@@ -750,7 +760,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 
 		$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_issue_status<>\"DONE\" ".$order_div_ref." GROUP BY order_del_no,acutno,clubbing order by priority limit $priority_limit";
-		//echo $sql1."<br>";
+		//echo "Module : ".$sql1."<br>";
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 		if($_GET['view']==1)
 		{
@@ -962,9 +972,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			} 
 			
 			//if($cut_new=="DONE")
+			//echo "Color Id : ".$id."</br>";
 			if($cut_new=="T")
-			{
-				$id="blue";
+			{   
+
+				//changed into white due to removing from modules 05062018  
+				$id="white";
+				//$id="blue";
 			}
 			else
 			{
@@ -1018,10 +1032,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$club_c_code=array();
 		$club_docs=array();
 		$colors_db=array();
+		
 		if($sql_row1['clubbing']>0)
 		{
 			$total_qty=0;
-			$sql11="select order_col_des,color_code,doc_no,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s06+p_s08+p_s10+p_s12+p_s14+p_s16+p_s18+p_s20+p_s22+p_s24+p_s26+p_s28+p_s30)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where category in ('Body','Front') and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
+			$sql11="select order_col_des,color_code,doc_no,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where UPPER(category) in (".$in_categories.") and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
+			//echo "</br>RMS tool Tip:".$sql11."</br>";
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 22".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
 			{
@@ -1050,7 +1066,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		}
 				
 		$title=str_pad("Style:".trim($style),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),80)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Log_Time:".$log_time,80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
-
+		
 
 		//Embellishment Tracking
 		if($emb_sum=="")
@@ -1110,9 +1126,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}						
 			else
 			{
-		    	$auth_users_to_req_cut_priority=array("kirang","chathurangad","buddhikam","gayancha","rameshk","sudathra","swarnakanthip","madavik","geethikak","minuram","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","jesikaa","saroasa","gayathirit","jeganathanj");
+		    	// $auth_users_to_req_cut_priority=array("kirang","chathurangad","buddhikam","gayancha","rameshk","sudathra","swarnakanthip","madavik","geethikak","minuram","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","jesikaa","saroasa","gayathirit","jeganathanj");
 				
-				if(in_array($username,$auth_users_to_req_cut_priority) and $id!="yellow" and $id!="blue")
+				if(in_array($authorized,$has_permission) and $id!="yellow" and $id!="blue")
 				{
 				$url1=getFullURL($_GET['r'],'fabric_requisition.php','N');
 				echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$iustyle $emb_stat_title</a>";
@@ -1137,8 +1153,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			else
 			{
 				
-		    	$auth_users_to_req_cut_priority=array("kirang","chathurangad","buddhikam","gayanch","rameshk","sudathra","swarnakanthip","madavik","geethikak","thejaw","minuram","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","jesikaa","saroasa","gayathirit","jeganathanj");
-				if(in_array($username,$auth_users_to_req_cut_priority) and $id!="yellow" and $id!="blue")
+		    	// $auth_users_to_req_cut_priority=array("kirang","chathurangad","buddhikam","gayanch","rameshk","sudathra","swarnakanthip","madavik","geethikak","thejaw","minuram","sfcsproject1","elakshanar","elakshikav","ber_databasesvc","vanistakumark","virginiv","kumarimo","jesikaa","saroasa","gayathirit","jeganathanj");
+				if(in_array($authorized,$has_permission) and $id!="yellow" and $id!="blue")
 				{
 				$url1=getFullURL($_GET['r'],'fabric_requisition.php','N');
 				echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$emb_stat_title</a>";
@@ -1222,7 +1238,7 @@ while($sql_rowy=mysqli_fetch_array($sql_resulty))
 }
 	
 //To show section level priority only to RM-Fabric users only.
-if((in_array(strtolower($username),$authorized)))
+if((in_array($authorized,$has_permission)))
 {
 	//PLEASE UNCOMMENT THIS IF YOU WANT TO BLINK SOME SECTIONS FOR SPECIFIC LOGGED IN USERS DURING ON LOAD
 /*	echo "<script>

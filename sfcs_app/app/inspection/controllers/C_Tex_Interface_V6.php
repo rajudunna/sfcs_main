@@ -1,8 +1,9 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R'));
+$has_permission=haspermission($_GET['r']);
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -1666,7 +1667,7 @@ table
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
--->
+
 </style>
 
 </head>
@@ -1775,9 +1776,9 @@ $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
 $print_check=0;
-
-$sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
-
+//removed validation of print button
+// $sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1798,8 +1799,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //Added Backup Lots for visibility in Inspection Report
-
-$sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+//removed validation of print button
+// $sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql1="select *, if((length(ref4)=0 and qty_allocated <= 0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=$num_rows+mysqli_num_rows($sql_result1);
 if(mysqli_num_rows($sql_result1) > 0)
@@ -1899,7 +1901,7 @@ tags will be replaced.-->
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>Consumption<span style='mso-spacerun:yes'></span></td>
-  <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php if(in_array($username,$auth_to_modify)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"    id=\"consumption\" name=\"consumption\" value='".$consumption."' />"; } else { echo $consumption; }?></td>
+  <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php if(in_array($authorized,$has_permission)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"    id=\"consumption\" name=\"consumption\" value='".$consumption."' />"; } else { echo $consumption; }?></td>
   <td colspan=7 class=xl12224082 style='border-right:.5pt solid black;  border-left:none'>Inspection Summary</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Supplier</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'>
@@ -1915,7 +1917,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty In (<?php echo $fab_uom; ?>)</td>
   <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo $rec_qty; ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>PTS/100 Sq.Yd.</td>
-  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($username,$auth_to_modify)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"  id=\"pts\" name=\"pts\" value='".$pts."' />"; } else { echo $pts; }?></td>
+  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"  id=\"pts\" name=\"pts\" value='".$pts."' />"; } else { echo $pts; }?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Package</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php echo $pkg_no; ?></td>
  </tr>
@@ -1923,14 +1925,14 @@ tags will be replaced.-->
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>PO Number</td>
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $po_no; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty Inspected</td>
-  <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="qty_insp" name="qty_insp" value="'.$qty_insp.'" >'; } else { echo $qty_insp; }?></td>
+  <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="qty_insp" name="qty_insp" value="'.$qty_insp.'" >'; } else { echo $qty_insp; }?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>Fallout</td>
-  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="fallout" name="fallout" value="'.$fallout.'" >'; } else { echo $fallout; }?></td>
+  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="fallout" name="fallout" value="'.$fallout.'" >'; } else { echo $fallout; }?></td>
   
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;width:102pt'>Pur. GSM</td>
-  <td class=xl9324082 dir=LTR style='border-left:none; width:102pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)" size=4  type="text" class="textbox float req_man"   id="pur_gsm" name="pur_gsm"  value="'.$pur_gsm.'" >'; } else { echo $pur_gsm; }?></td>
+  <td class=xl9324082 dir=LTR style='border-left:none; width:102pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" size=4  type="text" class="textbox float req_man"   id="pur_gsm" name="pur_gsm"  value="'.$pur_gsm.'" >'; } else { echo $pur_gsm; }?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none; style="align:center;" width:102pt'>Act. GSM</td>
-  <td colspan=1 class=xl9324082 dir=LTR width=136 style='border-left:none; width:102pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)" size=4 type="text" class="textbox float req_man" id="act_gsm" name="act_gsm"  value="'.$act_gsm.'" >'; } else { echo $act_gsm; }?></td>
+  <td colspan=1 class=xl9324082 dir=LTR width=136 style='border-left:none; width:102pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" size=4 type="text" class="textbox float req_man" id="act_gsm" name="act_gsm"  value="'.$act_gsm.'" >'; } else { echo $act_gsm; }?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>GRN Date</td>
@@ -1943,7 +1945,7 @@ tags will be replaced.-->
 
 
   <?php 
- if(in_array($username,$auth_to_modify))
+ if(in_array($authorized,$has_permission))
  {
  	 echo "<select onchange='change_head(1,this.name)'  id='skew_cat' name='skew_cat' class='listbox req_man'>";
 	 if($skew_cat==1)
@@ -1996,11 +1998,11 @@ tags will be replaced.-->
  }  
     ?></td>
   <td colspan=2 class=xl9424082 dir=LTR width=145 style='border-right:.5pt solid black;
-  width:109pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text"  class="textbox float req_man" id="skew" name="skew" value="'.$skew.'" />'; } else { echo $skew; } ?></td>
+  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text"  class="textbox float req_man" id="skew" name="skew" value="'.$skew.'" />'; } else { echo $skew; } ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Purchase Width</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
-  border-left:none;width:204pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="pur_width" name="pur_width" value="'.$pur_width.'" />';} else { echo $pur_width; } ?></td>
+  border-left:none;width:204pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="pur_width" name="pur_width" value="'.$pur_width.'" />';} else { echo $pur_width; } ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>No of rolls</td>
@@ -2011,7 +2013,7 @@ tags will be replaced.-->
   <td class=xl9324082 dir=LTR width=77 style='border-top:none;border-left:none;  width:58pt'>L%</td>
   <td class=xl9424082 dir=LTR width=68 style='border-top:none;border-left:none;  width:51pt'>W%</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='width:102pt'>Actual  Width</td>
-  <td colspan=4 class=xl13524082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="act_width" name="act_width" value="'.$act_width.'" />';} else { echo $act_width; } ?> </td>
+  <td colspan=4 class=xl13524082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="act_width" name="act_width" value="'.$act_width.'" />';} else { echo $act_width; } ?> </td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9824082 dir=LTR width=80 style='height:20.1pt;
@@ -2021,7 +2023,7 @@ tags will be replaced.-->
   width:102pt'>Fabric Way</td>
   <td colspan=2 class=xl11424082 style='border-right:.5pt solid black;
   border-left:none'><?php 
- if(in_array($username,$auth_to_modify))
+ if(in_array($authorized,$has_permission))
  {
 	 echo "<select onchange='change_head(1,this.name)' id='gmt_way'  name='gmt_way' class='listbox req_man'>";
 	 
@@ -2085,8 +2087,8 @@ tags will be replaced.-->
 	 }
  }  
     ?></td>
-  <td class=xl11324082 style='border-top:none;border-left:none'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="shrink_l" name="shrink_l" value="'.$shrink_l.'" />';  } else { echo $shrink_l; } ?> </td>
-  <td class=xl11424082 style='border-top:none;border-left:none'><?php if(in_array($username,$auth_to_modify)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="shrink_w" name="shrink_w" value="'.$shrink_w.'" />';  } else { echo $shrink_w; } ?> </td>
+  <td class=xl11324082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="shrink_l" name="shrink_l" value="'.$shrink_l.'" />';  } else { echo $shrink_l; } ?> </td>
+  <td class=xl11424082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="shrink_w" name="shrink_w" value="'.$shrink_w.'" />';  } else { echo $shrink_w; } ?> </td>
   <td colspan=2 class=xl11324082>Invoice</td>
   <td colspan=4 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
  </tr>
@@ -2108,6 +2110,7 @@ tags will be replaced.-->
   <td class=xl11824082></td>
  </tr>
  <?php 
+ 
  if($num_rows>0 and $print_check==0 and $inspection_check==1) 
  {
  	$print_report=1;
@@ -2143,7 +2146,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   {
   	
   	echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
-	if(in_array($username,$auth_to_modify) or in_array($username,$shade_update_right))
+	if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
 	{
 	//$update_access
 	
@@ -2183,8 +2186,11 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'></tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
-  <td height=21 class=xl6324082 dir=LTR width=80 style='height:15.75pt;  width:60pt'>&nbsp;</td>
-  <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=2>Auto Fill</td>
+ <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1>Auto Fill</td>
+  <!-- <td height=21 class=xl6324082 dir=LTR width=80 style='height:15.75pt;  width:60pt'>&nbsp;</td> -->
+
+   <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="alpha" id="fill_shade_grp" name="fill_shade_grp"  maxlength="8"   value="" size="6">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(4)">Fill</a></td>	
+  <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1></td>
   <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="float" id="fill_c_length" name="fill_c_length"   value="" size="3">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(1)">Fill</a></td>	
   <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
   <td class=xl6424082 dir=LTR width=64 style='width:48pt'><input type="text" id="fill_t_width" class="float" name="fill_t_width"  value="" size="3"><a class="btn btn-success btn-xs" onclick="fill(2)">Fill</a></td>
@@ -2251,7 +2257,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	}
 	
 	//for shade wise category
-	if(in_array($username,$auth_to_modify))
+	if(in_array($authorized,$has_permission))
 	{
 		if ($temp[16] > 0) 
 		{
@@ -2262,14 +2268,14 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			$readonly = '';
 			$dropdown_read = '';
 		}
-
-		if(!in_array($username,$shade_update_right))
+		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
+		if(!in_array($authorized,$has_permission))
 		{
-			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
 		}
 		else
 		{
-			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
 		}		
 	}
 	else
@@ -2309,7 +2315,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 
 	  <td class=xl12824082 colspan='2' style='border-left:none;width:100px'>".$temp[7]."</td>";
 	  
-	  if(in_array($username,$shade_update_right))
+	  if(in_array($authorized,$has_permission))
 	  {	  
 	    echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
 	    	<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
@@ -2625,7 +2631,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$ele_tid=$_POST['ele_tid'];
 	$ele_check=$_POST['ele_check'];
 	$tot_elements=$_POST['tot_elements'];
-		$ele_t_length=$_POST['ele_t_length'];
+	$ele_t_length=$_POST['ele_t_length'];
 	$ele_c_length=$_POST['ele_c_length'];
 	$ele_t_width=$_POST['ele_t_width'];
 	$ele_c_width=$_POST['ele_c_width'];	
@@ -2639,7 +2645,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$shrinkage_group = $_POST["shrinkage_group"];
 	$roll_remarks = $_POST["roll_remarks"];
 
-	if(in_array($username,$auth_to_modify))
+	if(in_array($authorized,$has_permission))
 	{
 		$ele_shade=$_POST['ele_shade'];
 	}
@@ -2649,7 +2655,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 		if($ele_check[$i]>0)
 		{
 			$add_query="";
-			if(in_array($username,$shade_update_right))
+			if(in_array($authorized,$has_permission))
 			{
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}
@@ -2764,14 +2770,15 @@ function enableButton1()
 
 	    for (var i = 0; i < rowcount; i++) 
 	    {
-	        if (parseFloat(document.input["ele_c_length[" + i + "]"].value) > 0) 
-	        {
-	            j = j + 0;
-	        }
-	        else 
-	        {
-	            j = j + 1;
-	        }
+			//removed this validation on the request of chathurangad 
+	        // if (parseFloat(document.input["ele_c_length[" + i + "]"].value) > 0) 
+	        // {
+	        //     j = j + 0;
+	        // }
+	        // else 
+	        // {
+	        //     j = j + 1;
+	        // }
 
 	        if (parseInt((document.input["ele_shade[" + i + "]"].value).length) > 0) 
 	        {
@@ -2789,14 +2796,14 @@ function enableButton1()
 	        	}
 	        }
 	       
-	        if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
-	        {
-	            j = j + 0;
-	        } 
-	        else 
-	        {
-	            j = j + 1;
-	        }
+	        // if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
+	        // {
+	        //     j = j + 0;
+	        // } 
+	        // else 
+	        // {
+	        //     j = j + 1;
+	        // }
 	        var roll_status = document.input["roll_status[" + i + "]"].value;
 	        if ((Number(roll_status)==1 || Number(roll_status)==2) )
 	        {
@@ -2819,7 +2826,8 @@ function enableButton1()
 	    }
 		
 		var counter_man = 0;
-		var classes = ['req_man','ctex_len','ticket_wid','ctex_wid','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
+		//removed this validation on the request of chathurangad ctex_len,ticket_wid,ctex_wid
+		var classes = ['req_man','par_rej','shr_len','shr_wid','shr_grp','el_joins'];
 		var ele;
 		for(var j=0;j<classes.length;j++){
 			var ele = document.getElementsByClassName(classes[j]);
@@ -2912,59 +2920,112 @@ function fill(x,t,e)
 		var y=document.getElementById('fill_c_length').value;
 	
 		var name="ele_c_length[";
+		var name2="qty_allocated[";
 		for (var i=0; i < tot_elements; i++)
 		{
-			document.input[name+i+"]"].value=y;
-			document.input["ele_check["+i+"]"].value=1;
-			document.input[name+i+"]"].style.background="#FFCCFF";
-
-			var ele_t_length = document.getElementById('ele_t_length'+i).value;
-			var result1 = parseInt(y) - parseInt(ele_t_length);
-			if(isNaN(result1))
+			if(document.input[name2+i+"]"].value > 0)
 			{
-				result1=0;
+
 			}
-			document.getElementById('subt'+i).value = result1;
+			else
+			{
+				document.input[name+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name+i+"]"].style.background="#FFCCFF";
+
+				var ele_t_length = document.getElementById('ele_t_length'+i).value;
+				var result1 = parseInt(y) - parseInt(ele_t_length);
+				if(isNaN(result1))
+				{
+					result1=0;
+				}
+				document.getElementById('subt'+i).value = result1;
+			}
+			
 		}
 	}
 	if(x==2)
 	{
 		var y=document.getElementById('fill_t_width').value;
 		var name="ele_t_width[";
+		var name2="qty_allocated[";
 		for (var i=0; i < tot_elements; i++)
 		{
-			document.input[name+i+"]"].value=y;
-			document.input["ele_check["+i+"]"].value=1;
-			document.input[name+i+"]"].style.background="#FFCCFF";
-
-			var ele_c_width = document.getElementById('ele_c_width'+i).value;
-			var result1 = parseInt(ele_c_width) - parseInt(y);
-			if(isNaN(result1))
+			if(document.input[name2+i+"]"].value > 0)
 			{
-				result1=0;
+
 			}
-			document.getElementById('min'+i).value = result1;
+			else
+			{
+				document.input[name+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name+i+"]"].style.background="#FFCCFF";
+
+				var ele_c_width = document.getElementById('ele_c_width'+i).value;
+				var result1 = parseInt(ele_c_width) - parseInt(y);
+				if(isNaN(result1))
+				{
+					result1=0;
+				}
+				document.getElementById('min'+i).value = result1;
+			}
 		}
 	}
 	if(x==3)
 	{
 		var y=document.getElementById('fill_c_width').value;
 		var name="ele_c_width[";
+		var name2="qty_allocated[";
 		for (var i=0; i < tot_elements; i++)
 		{
-			document.input[name+i+"]"].value=y;
-			document.input["ele_check["+i+"]"].value=1;
-			document.input[name+i+"]"].style.background="#FFCCFF";
-
-			var ele_t_width = document.getElementById('ele_t_width'+i).value;
-			var result1 = parseInt(y) - parseInt(ele_t_width);
-			if(isNaN(result1))
+			if(document.input[name2+i+"]"].value > 0)
 			{
-				result1=0;
+
 			}
-			document.getElementById('min'+i).value = result1;
+			else
+			{
+				document.input[name+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name+i+"]"].style.background="#FFCCFF";
+
+				var ele_t_width = document.getElementById('ele_t_width'+i).value;
+				var result1 = parseInt(y) - parseInt(ele_t_width);
+				if(isNaN(result1))
+				{
+					result1=0;
+				}
+				document.getElementById('min'+i).value = result1;
+			}
 		}	
-	}	
+	}
+	if(x==4)
+	{
+		var y=document.getElementById('fill_shade_grp').value;
+		var name1="ele_shade[";
+		var name2="qty_allocated[";
+
+		for (var i=0; i < tot_elements; i++)
+		{
+			if(document.input[name2+i+"]"].value > 0){
+
+			}
+			else
+			{
+				document.input[name1+i+"]"].value=y;
+				document.input["ele_check["+i+"]"].value=1;
+				document.input[name1+i+"]"].style.background="#FFCCFF";
+			}
+		
+
+			// var fill_shade_grp = document.getElementById('ele_t_width'+i).value;
+			// var result1 = parseInt(y) - parseInt(ele_t_width);
+			// if(isNaN(result1))
+			// {
+			// 	result1=0;
+			// }
+			// document.getElementById('min'+i).value = result1;
+		}	
+	}		
 }
 
 function change_body(x,y,z)

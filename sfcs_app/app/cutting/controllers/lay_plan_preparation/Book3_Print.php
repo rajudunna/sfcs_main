@@ -293,6 +293,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
+	$mk_ref=$sql_row['mk_ref'];
 
 for($s=0;$s<sizeof($sizes_code);$s++)
 {
@@ -366,7 +367,16 @@ $a_s50=$sql_row['a_s50'];
 	$allocate_ref=$sql_row['allocate_ref'];
 	$savings=$sql_row['savings'];
 }
+$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+// echo $sql2;
+mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
+$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 
+while($sql_row2=mysqli_fetch_array($sql_result2))
+{
+	$mklength=$sql_row2['mklength'];
+	$mk_remarks=$sql_row2['remarks'];
+}
 	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
  //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2154,7 +2164,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status!=NULL) {echo "COPY"; } else {echo "";}?></strong></td>
+  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status!=NULL) {echo "COPY"; } else {echo "COPY";}?></strong></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -2194,7 +2204,7 @@ tags will be replaced.-->
   <td class=xl904118>Style No :</td>
   <td colspan=2 class=xl954118 style='border-right:.5pt solid black'><?php echo $style; ?></td>
   <td class=xl904118x>Module:</td>
-  <td class=xl954118><?php echo $plan_module; ?></td>
+  <td class=xl954118><?php echo $plan_module; ?></td>	
   <td class=xl904118></td>
   <td colspan=2 class=xl904118>Fab Code :</td>
   <td colspan=4 class=xl954118><?php echo $compo_no ?></td>
@@ -2206,8 +2216,10 @@ tags will be replaced.-->
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl904118>Sch No :</td>
-  <td colspan=4 class=xl954118 style='border-right:.5pt solid black'><?php echo $delivery.chr($color_code); ?></td>
-  <td class=xl954118></td>
+  <td colspan=2 class=xl954118 style='border-right:.5pt solid black'><?php echo $delivery.chr($color_code); ?></td>
+  <td class=xl904118x>Consumption:</td>
+  <td class=xl954118><?php echo $body_yy; ?></td>
+  <td class=xl904118></td>
   <td colspan=2 class=xl904118>Fab Descrip :</td>
   <td colspan=7 class=xl954118 style='border-right:.5pt solid black'><?php echo $fab_des; ?></td>
   <td class=xl654118></td>
@@ -2217,8 +2229,8 @@ tags will be replaced.-->
   <td class=xl904118>Color :</td>
   <td colspan=4 class=xl954118 style='border-right:.5pt solid black'><?php echo $color." / ".$col_des; ?></td>
   <td class=xl954118></td>
-  <td colspan=2 class=xl904118>Consumption :</td>
-  <td colspan=4 class=xl954118><?php echo $body_yy; ?></td>
+  <td colspan=2 class=xl904118>MK Name :</td>
+  <td colspan=4 class=xl954118><?php echo $mk_remarks; ?></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl1004118>&nbsp;</td>
@@ -2929,6 +2941,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
 		$size_result = mysqli_query($link, $size_query) or exit("error while getting details for child doc nos");
 		while($sql_row=mysqli_fetch_array($size_result))
 		{
+
 			$planned_plies = $sql_row['p_plies'];
 			for($s=0;$s<sizeof($sizes_code);$s++)
 			{
@@ -3511,10 +3524,8 @@ $tkt_width[]=$sql_row['ref6'];
 
 if($print_status==NULL)
 {
-	
 	$sql="update plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
 	// echo $sql;
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
+	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
 }
 ?>

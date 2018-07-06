@@ -114,7 +114,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			
 			for($ch=0;$ch<sizeof($order_tid_ref);$ch++) // Added by Chathuranga
 			{
-				$sqlr="select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid_ref[$ch]\" and category in (\"Body\",\"Front\")";
+					
+				$sqlr="select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid_ref[$ch]\" and category in ($in_categories)";
 				///echo $sqlr.";<br>";
 				$resultr=mysqli_query($link, $sqlr) or die("Error=$sqlr".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowr=mysqli_fetch_array($resultr))

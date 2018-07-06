@@ -1,5 +1,7 @@
+<?php
+$has_permission=haspermission($_GET['r']);
 
-
+?>
 <!-- <script language="javascript" type="text/javascript" src="../styles/dropdowntabs.js"></script> -->
 <!-- <link rel="stylesheet" href="../styles/ddcolortabs.css" type="text/css" media="all" /> -->
 	
@@ -200,26 +202,29 @@ switch($level)
 {
 	case 1:
 	{
-		$tmp=$username."@brandix.com";
+		//$tmp=$username."@brandix.com";
 		//echo $tmp;
 		//To allow Inspection team to approve fabric MRN request
-		$auth_new=array();
+		//$auth_new=array();
 		if(trim($product)=="FAB")
 		{
-			$auth_new=array_merge($app_team,$inspection_team);
+			//$auth_new=array_merge($app_team,$inspection_team);
+			$check=$authorizeLevel_1;	
 		}
 		else
 		{
-			$auth_new=$app_team;
+		//	$auth_new=$app_team;
+			$check=$authorized;
 		}
 		
 		//For Cad Saving Approval
 		if($reason_code==30)
 		{
-			$auth_new=array_merge($auth_new,$cad_savings);
+			//$auth_new=array_merge($auth_new,$cad_savings);
+			$check=$authorizeLevel_2;
 		}
 		
-		if(!in_array($tmp,$auth_new))
+		if(!in_array($check,$has_permission))
 		{
 			header("Location:".$pgeurl);
 		}
@@ -228,26 +233,28 @@ switch($level)
 	}
 	case 2:
 	{
-		$tmp=$username."@brandix.com";
+		//$tmp=$username."@brandix.com";
 		
 		//To allow Inspection team to approve fabric MRN request (as sourcing)
-		$auth_new=array();
+		//$auth_new=array();
 		if(trim($product)=="FAB")
 		{
-			$auth_new=array_merge($pink_team,$logo_team,$dms_team,$inspection_team);
+			//$auth_new=array_merge($pink_team,$logo_team,$dms_team,$inspection_team);
+			$checks=$authorizeLevel_1;
 		}
 		else
 		{
-			$auth_new=array_merge($pink_team,$logo_team,$dms_team);
+			//$auth_new=array_merge($pink_team,$logo_team,$dms_team);
+			$checks=$authorizeLevel_3;
 		}
 		
 		//For Cad Saving Approval
 		if($reason_code==30)
 		{
-			$auth_new=array_merge($auth_new,$cad_savings);
+			$checks=$authorizeLevel_2;
 		}
 		
-		if(!in_array($tmp,$auth_new))
+		if(!in_array($checks,$has_permission))
 		{
 			header("Location:".$pgeurl);
 		}
@@ -256,8 +263,8 @@ switch($level)
 	}
 	case 4:
 	{
-		$tmp=$username."@brandix.com";
-		if(!in_array($tmp,array_merge($pink_team,$logo_team,$dms_team)))
+		//$tmp=$username."@brandix.com";
+		if(!in_array($authorizeLevel_3,$has_permission))
 		{
 			header("Location:".$pgeurl);
 		}
@@ -266,8 +273,8 @@ switch($level)
 	}
 	case 5:
 	{
-		$tmp=$username."@brandix.com";
-		if(!in_array($tmp,array_merge($rm_team,$rm_team2)))
+		//$tmp=$username."@brandix.com";
+		if(!in_array($authorizeLevel_4,$has_permission))
 		{
 			header("Location:".$pgeurl);
 		}

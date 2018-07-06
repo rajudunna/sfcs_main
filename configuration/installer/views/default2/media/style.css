@@ -1,0 +1,330 @@
+/*
+Copyright (c) 2009, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.net/yui/license.txt
+version: 2.7.0
+*/
+/**
+ * YUI Reset
+ * @module reset
+ * @namespace
+ * @requires
+ */
+html {
+	color: #000;
+	background: #FFF;
+}
+
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+button,
+textarea,
+p,
+blockquote,
+th,
+td {
+	margin: 0;
+	padding: 0;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+fieldset,
+img {
+	border: 0;
+}
+
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var,
+optgroup {
+	font-style: inherit;
+	font-weight: inherit;
+}
+
+del,
+ins {
+	text-decoration: none;
+}
+
+li {
+	list-style: none;
+}
+
+caption,
+th {
+	text-align: left;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size: 100%;
+	font-weight: normal;
+}
+
+q:before,
+q:after {
+	content: '';
+}
+
+abbr,
+acronym {
+	border: 0;
+	font-variant: normal;
+}
+
+sup {
+	vertical-align: baseline;
+}
+
+sub {
+	vertical-align: baseline;
+}
+
+/*because legend doesn't inherit in IE */
+legend {
+	color: #000;
+}
+
+input,
+button,
+textarea,
+select,
+optgroup,
+option {
+	font-family: inherit;
+	font-size: inherit;
+	font-style: inherit;
+	font-weight: inherit;
+}
+
+/*@purpose To enable resizing for IE */
+/*@branch For IE6-Win, IE7-Win */
+input,
+button,
+textarea,
+select {
+	*font-size: 100%;
+}
+
+html, body {
+	background: #ecf5ff;
+	color: #000000;
+	font: 12px arial, sans-serif; }
+
+a {
+	color: #004FD2;
+	outline: none;
+	text-decoration: none; }
+
+	a:hover {
+		text-decoration: underline; }
+
+div#container {
+	background: #f3f3f3;
+	border: 1px solid #a7a7a7;
+	margin: 15px auto 0 auto;
+	width: 800px; }
+
+div#page {
+	background: #ffffff;
+	margin: 10px;
+	padding: 15px 20px 10px 20px; }
+
+div#header {
+	background: url('logo.svg') no-repeat;
+	background-size: 48px 48px;
+	border-bottom: 1px solid #7db0e3;
+	height: 48px;
+	padding: 0 10px 10px 60px; }
+
+	div#header h1 {
+		color: #c80000;
+		font-size: 16px;
+		padding-top: 6px; }
+
+	div#header p {
+		color: #222222;
+		font-size: 11px; }
+
+div#content {
+	background: #ffffff;
+	padding: 20px 0 10px 0; }
+
+	div#content div.progress {
+		background: #f0f0f0;
+		margin-bottom: 10px;
+		padding: 10px; }
+
+	div#content div.error {
+		background: url('error.svg') no-repeat;
+		background-size: 16px 16px;
+		color: #D70000;
+		line-height: 16px;
+		margin-bottom: 10px;
+		padding-left: 20px; }
+
+	div#content div.info {
+		line-height: 18px;
+		padding-bottom: 10px; }
+
+	div#content div.sections {
+		padding-bottom: 10px; }
+
+		div#content div.sections h2 {
+			font-weight: bold;
+			padding-bottom: 10px; }
+
+div#footer {
+	color: #2060a0;
+	margin: 0 auto;
+	padding: 10px 0;
+	text-align: center;
+	width: 800px; }
+
+	div#footer a {
+		color: #2060a0; }
+
+div.grid {
+	border-bottom: 1px solid #eeeeee;
+	clear: both;
+	margin-bottom: 10px; }
+
+	div.grid div.even {
+		border-top: 1px solid #eeeeee; }
+
+	div.grid div.odd {
+		background: #fffff4;
+		border-top: 1px solid #eeeeee; }
+
+	div.grid div.first { }
+
+		div.grid label {
+			display: block;
+			float: left;
+			line-height: 24px;
+			width: 160px; }
+
+		div.grid div.value {
+			line-height: 24px;
+			margin-left: 160px; }
+
+			div.grid div.value span.pass {
+				color: #008000; }
+
+			div.grid div.value span.fail {
+				color: #C80000; }
+
+div.row {
+	clear: both;
+	padding-bottom: 6px; }
+
+	div.row label {
+		display: block;
+		float: left;
+		line-height: 24px;
+		width: 160px; }
+
+		div.row label.error {
+			color: #c80000; }
+
+	div.row div.field {
+		margin-left: 160px; }
+
+	div.row div.field ul.items { }
+
+		div.row div.field ul.items li { }
+
+			div.row div.field ul.items li label {
+				float: none;
+				line-height: 18px;
+				width: auto; }
+
+
+input.text {
+	border: 1px solid #999999;
+	padding: 4px;
+	width: 250px; }
+
+	input.xsmall {
+		width: 70px; }
+
+	input.small {
+		width: 120px; }
+
+	input.medium {
+		width: 250px; }
+
+	input.large {
+		width: 400px; }
+
+	input.xlarge {
+		width: 570px; }
+
+textarea.textarea {
+	border: 1px solid #999999;
+	height: 100px;
+	padding: 4px;
+	width: 400px; }
+
+	textarea.xsmall {
+		height: 40px;
+		width: 120px; }
+
+	textarea.small {
+		height: 60px;
+		width: 180px; }
+
+	textarea.medium {
+		height: 80px;
+		width: 250px; }
+
+	textarea.large {
+		height: 100px;
+		width: 400px; }
+
+	textarea.xlarge {
+		height: 120px;
+		width: 570px; }
+
+select.select {
+	border: 1px solid #999999;
+	margin: 0;
+	padding: 1px; }
+
+input.button {
+	padding: 3px 6px; }
+
+div.clear {
+	clear: both; }

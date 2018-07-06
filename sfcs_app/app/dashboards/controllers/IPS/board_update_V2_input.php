@@ -595,7 +595,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			if($sql_row1['clubbing']>0)
 			{
 				//$total_qty=0;
-				$sql11="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ('Body','Front') and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
+				$sql11="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ('".implode("','",$in_categories)."') and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
 				if($username=='ber_databasesvc'){
 					//echo $sql11."<br/>";
 					}

@@ -1,6 +1,6 @@
 <?php
 // include($_SERVER['DOCUMENT_ROOT']."server/db_hosts_open.php");
-include("C:/xampp/htdocs/sfcs/Jobs/db_hosts.php")
+// include("C:/xampp/htdocs/sfcs/Jobs/db_hosts.php")
 
 function mail_alert($recep,$to,$cc,$msg,$subject)
 {
