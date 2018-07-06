@@ -187,10 +187,10 @@ if(isset($_POST['filter']))
 	{
 		$flag=false;
 	}
-	// if(!$flag){
-	// 	echo "<script>sweetAlert('No Data Found','','warning');
-	// 	$('#main_div').hide()</script>";
-	// }
+	if(!$flag){
+		echo "<script>sweetAlert('No Data Found','','warning');
+		$('#main_div').hide()</script>";
+	}
 }
 
 ?>

@@ -5,7 +5,16 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/hea
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 $Page_Id='SFCS_0054';
 ?>
+<style>
+.lb-lg {
+  font-size: 12px;
+}
+body{
+	
+	color:black;
+}
 
+</style>
 <?php  
 
 
@@ -239,8 +248,9 @@ if(isset($_POST['filter']))
 	$url1=getFullURLLevel($_GET['r'],'reports/supplier_perf_v2_report.php',1,'N');
 	echo "<div id='main_div'>";
 	echo "<hr/>";
-	echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='abc'> </span> Preformance Updated &nbsp;&nbsp;||&nbsp;&nbsp; <span> </span> Performance Not Updated</a>";
-	
+	echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='label label-success lb-lg'> Preformance Updated</span>  &nbsp;&nbsp;||&nbsp;&nbsp; <span class='label label-danger lb-lg'>Performance Not Updated </span> ";
+	echo "<br>";
+	echo "<b style='color:red' >Note:Please Fill All Fields to Update Supplier Performance Report </b>";
 	include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'supplier_perf_summary.php','R'));
 	
 	echo "<form action='".getFullURL($_GET['r'],'supplier_perf_v2_update.php','N')."' 

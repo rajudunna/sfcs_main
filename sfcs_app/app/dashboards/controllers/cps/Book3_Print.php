@@ -3186,7 +3186,7 @@ $tkt_width[]=$sql_row['ref6'];
  <!--<td rowspan="2" colspan="15" class=xl764118 style='border-bottom:.5pt solid black;'>-->
  <?php
  $roll_length = array();
- $roll_det = array();
+//  $roll_det = array();
  $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=$doc_id AND doc_type='normal' GROUP BY ref4";
  $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row123=mysqli_fetch_array($sql_result123))
