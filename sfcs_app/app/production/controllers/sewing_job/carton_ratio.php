@@ -186,10 +186,25 @@
 					$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
 					$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule_original,$link);	
 					$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$schedule,$link);
-					$order_colors=explode(",",$o_colors);	
-					$planned_colors=explode(",",$p_colors);
-					$size_of_ordered_colors=sizeof($order_colors);
-					$size_of_planned_colors=sizeof($planned_colors);
+					if($o_colors<>'')
+					{
+						$order_colors=explode(",",$o_colors);
+						$size_of_ordered_colors=sizeof($order_colors);
+					}
+					else
+					{
+						$size_of_ordered_colors=0;
+					}              
+					if($p_colors<>'')
+					{
+						$planned_colors=explode(",",$p_colors);
+						$size_of_planned_colors=sizeof($planned_colors);
+					}
+					else
+					{
+						$size_of_planned_colors=0;
+					}
+
 					// echo 'order_colors: '.$size_of_ordered_colors.'<br>planned: '.$size_of_planned_colors;
 
 					if ($size_of_ordered_colors!=$size_of_planned_colors)
