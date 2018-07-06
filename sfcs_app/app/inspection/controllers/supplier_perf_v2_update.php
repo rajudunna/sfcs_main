@@ -86,6 +86,7 @@ if(isset($_POST['update']))
 		}
 	}
 
+	$alert_check=0;
 	for($i=1;$i<=sizeof($reason_name);$i++)
 	{
 		$string_include1="";
@@ -149,31 +150,36 @@ if(isset($_POST['update']))
 			$sql2="delete from $bai_rm_pj1.supplier_performance_track where tid='".trim($batch_ref[$i])."-".$month_ref[$i]."'";
 			//echo $sql2;
 			mysqli_query($link, $sql2) or exit("Sql Error1".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result5=mysqli_query($link, $sql) or exit("Sql Error3".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result5=mysqli_query($link, $sql);
 			
 		
 		}
 		else
 		{
 			
-			mysqli_query($link, $sql) or exit("Sql Error3".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result5=mysqli_query($link, $sql) ;
 			
+		}
+		if($sql_result5>0){
+			
+		}else{
+			$flag=1;
+			$alert_check=$alert_check+$flag;
+
 		}	
-		if(strlen($srdfs[$i]) > 0 && strlen($srtfs[$i]) > 0 && strlen($srdfsw[$i]) > 0 && strlen($reldat[$i]) > 0 && strlen($quality[$i]) > 0 && strlen($rms[$i]) > 0 && strlen($const[$i]) > 0 && strlen($syp[$i]) > 0 && strlen($qty_insp_act[$i]) > 0 && strlen($defects[$i]) > 0 && strlen($skew_cat_ref[$i]) > 0 && strlen($sup_test_rep[$i]) > 0 && strlen($inspec_per_rep[$i]) > 0 && strlen($cc_rep[$i]) > 0 && strlen($fab_tech[$i]) > 0){
-		 echo "<script>sweetAlert('Success!','Successfully Updated','success');</script>";
-		
-
-echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
-		}
-		else{
-
-			echo "<script>sweetAlert('Please Fill All Values!','','error');</script>";
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"supplier_perf_v2.php",0, "N")."\"; }</script>";	
-
-
-		}
-	}
 	
+	}
+	//echo "</br>Qry Result :</br>".$sql_result5;
+	if($alert_check<=0){
+	  echo "<script>sweetAlert('Success!','Successfully Updated','success');</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
+	}
+	else{
+	   echo "<script>sweetAlert('Few Records Not Updated..!','','error');</script>";
+		 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"supplier_perf_v2.php",0, "N")."\"; }</script>";	
+
+
+	}
 
 }
 
