@@ -1,23 +1,12 @@
 <script>
-	function calculateqty(sizeofsizes,sizeOfColors)
+	function calculateqty(i)
 	{
-		var total=0;
-		for (var row_count = 0; row_count < sizeOfColors; row_count++)
-		{
-			for(var size=0;size < sizeofsizes; size++)
-			{
-				var GarPerBag=document.getElementById('GarPerBag_'+size+'_'+row_count).value;
-				var BagPerCart=document.getElementById('BagPerCart').value;
-				var GarPerCart = GarPerBag*BagPerCart;
-				document.getElementById('GarPerCart_'+size+'_'+row_count).value=GarPerCart;
-				total = total+GarPerCart;
-			}
-			document.getElementById('total_'+row_count).value=total;
-			total=0;
-		}
+		var GarPerBag=document.getElementById('GarPerBag_'+i).value;
+		var BagPerCart=document.getElementById('BagPerCart_'+i).value;
+		var GarPerCart = GarPerBag*BagPerCart;
+		document.getElementById('GarPerCart_'+i).value=GarPerCart;
 	}
 </script>
-
 <?php	
 	echo "<div class='panel panel-primary'>";
 		echo "<div class='panel-heading'>Single Color Single Size</div>";
@@ -46,17 +35,29 @@
 								}
 							echo "</tr>";
 							// Display Textboxes
-							$row_count=0;
-							for ($j=0; $j < 2; $j++)
-							{
-								echo "<tr>";
-										for ($size_count=0; $size_count < sizeof($size1); $size_count++)
-										{
-											echo "<td><input type='text' name='GarPerBag' id='GarPerBag_".$size_count."_".$row_count."' class='form-control' value=''></td>";
-										}
-								echo "</tr>";
-								$row_count++;
-							}
+							echo "<tr>
+									<td>Number of Garments per Polybag</td>";
+									for ($i=0; $i < $sizeofsizes; $i++)
+									{ 
+										echo "<td><input type='text' name='GarPerBag' id='GarPerBag_".$i."' class='form-control' value=''></td>";
+									}
+							echo "</tr>";
+
+							echo "<tr>
+									<td>Number of Polybags per Carton</td>";
+									for ($i=0; $i < $sizeofsizes; $i++)
+									{ 
+										echo "<td><input type='text' name='BagPerCart' id='BagPerCart_".$i."' class='form-control' onchange='calculateqty($i);' value=''></td>";
+									}
+							echo "</tr>";
+
+							echo "<tr>
+									<td>Number of Garments per Carton</td>";
+									for ($i=0; $i < $sizeofsizes; $i++)
+									{ 
+										echo "<td><input type='text' name='GarPerCart' id='GarPerCart_".$i."' class='form-control' value='' readonly></td>";
+									}
+							echo "</tr>";
 						echo "</table>
 					</div>
 				</div>";
