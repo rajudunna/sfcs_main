@@ -437,8 +437,6 @@ if($num_rows_samples >0){
 
 // Samples End By SK-05-07-2018
 
-if($order_no>0)
-{
 	echo "<tr ><th class=\"heading2\">Original Qty</th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
@@ -447,12 +445,11 @@ if($order_no>0)
 		//{
 			echo "<td class=\"sizes\">".$n_s[$sizes_code[$s]]."</td>";
 		//}	
-	}
-	$label = 'Revised Quantity';
+	}	
 	echo "<td class=\"sizes\">".$n_o_total."</td></tr>";
-}
-
-	echo "<tr ><th class=\"heading2\">$label</th>";
+if($order_no>0)
+{
+	echo "<tr ><th class=\"heading2\">Revised Qty</th>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
 		//$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
@@ -461,7 +458,7 @@ if($order_no>0)
 			echo "<td class=\"sizes\">".$o_s[$sizes_code[$s]]."</td>";
 		//}	
 	}
-	
+}
 	
 echo "<td class=\"sizes\">".$o_total."</td></tr>";
 echo "</table>";
