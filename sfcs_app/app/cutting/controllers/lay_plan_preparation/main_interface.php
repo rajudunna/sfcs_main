@@ -412,7 +412,6 @@ $samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query deta
 $num_rows_samples = mysqli_num_rows($samples_qry_result);
 
 if($num_rows_samples >0){
-	$samples_arry = [];
 	$samples_total = 0;	
 	echo "<tr ><th class=\"heading2\">Samples Qty</th>";
 	while($samples_data=mysqli_fetch_array($samples_qry_result))

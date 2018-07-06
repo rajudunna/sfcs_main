@@ -79,14 +79,15 @@ function percent_cal()
 		for(var i=1; i<=50; i++){
 			if(i < 10){
 				var val = 'in_s0'+i+'_source';
+				var sample_qty = 'in_s0'+i+'_sample';
 			}else{
 				var val = 'in_s'+i+'_source';
+				var sample_qty = 'in_s'+i+'_sample';
 			}
-			// console.log(val);
-			// console.log(Math.round(parseInt(document.getElementsByName(val)[0].value)+document.getElementsByName(val)[0].value*x/100));
 			if(document.getElementsByName(val)[0] != undefined){
 				// var val = 'in_s0'+i+'_source';
-				document.getElementsByName('in_s0'+i)[0].value = Math.round(parseInt(document.getElementsByName(val)[0].value)+document.getElementsByName(val)[0].value*x/100);
+				document.getElementsByName('in_s0'+i)[0].value = Math.round(parseInt(document.getElementsByName(val)[0].value)+document.getElementsByName(val)[0].value*x/100)+parseInt(document.getElementsByName(sample_qty)[0].value);
+
 			}
 			
 		}
@@ -766,6 +767,21 @@ if($style_back == null){
 	// echo $style_back;
 }
 
+//Getting sample details here  By SK-05-07-2018 == Start
+$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid' order by sizes_ref";
+$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+$num_rows_samples = mysqli_num_rows($samples_qry_result);
+if($num_rows_samples >0){
+	$samples_total = 0;	
+	while($samples_data=mysqli_fetch_array($samples_qry_result))
+	{
+		$samples_total+=$samples_data['input_qty'];
+		$samples_size_arry[] =$samples_data['sizes_ref'];
+		$samples_input_qty_arry[] =$samples_data['input_qty'];
+	}		
+}
+// Samples End By SK-05-07-2018
+
 echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color_back."&style=".$style_back."&schedule=".$schedule_back."\"><<<< Click here to Go Back</a>";
 echo "<br><br>";
 $url = getFullURL($_GET['r'],'order_cut_process.php','N');
@@ -781,488 +797,41 @@ echo "<div class=\"col-md-4\"><label>Cutting Wastage:(%)</label>
 	   onkeyup='return verify_num(this,event)' required name='cuttable_wastage' value='0' size='2'></div></div>";
 
 echo "<hr/><table class=\"table table-bordered\">";
-echo "<thead><tr class='success'><td class=\"\"><center>Sizes</center></td><td class=\"  \"><center>Order Qty</center></td><td class=\"  \"><center>Completed</center></td><td class=\"  \"><center>Balance</center></td><td style='display:none;' class=\"  \"><center>Excess %</center></td><td class=\"  \"><center>Cuttable Qty</center></td></tr></thead>";
+echo "<thead><tr class='success'><td class=\"\"><center>Sizes</center></td><td class=\"  \"><center>Order Qty</center></td>
+<td class=\"  \"><center>Samples Qty</center></td><td class=\"  \"><center>Completed</center></td><td class=\"  \"><center>Balance</center></td><td style='display:none;' class=\"  \"><center>Excess %</center></td><td class=\"  \"><center>Cuttable Qty</center></td></tr></thead>";
 for($s=0;$s<sizeof($s_tit);$s++)
 	{	
 		$code= "oq_s".$sizes_code[$s];
 		$code1= "coq_s".$sizes_code[$s];
 		//echo $$code1;
 		$flag = ($$code == 0)?'readonly':'';
+		//samples qty display SK 06-07-2018 == Start
+		$size_code = 's'.$sizes_code[$s];
+		$flg = 0;		
+		//samples qty display SK 06-07-2018 == End
 		echo "<tr>
 		<td><center>".$s_tit[$sizes_code[$s]]."</center></td>
-		<td><center>".$$code."</center></td>
-		<td><center>".$$code1."</center></td>
+		<td><center>".$$code."</center></td>";
+		//samples qty display SK 06-07-2018 == Start
+		for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+		{
+			if($size_code == $samples_size_arry[$ss]){
+				echo "<td><input type=\"hidden\" name=\"in_s".$sizes_code[$s]."_sample\" value=".$samples_input_qty_arry[$ss]."><center>".$samples_input_qty_arry[$ss]."</center></td>";
+				$flg = 1;
+			}			
+		}	
+		if($flg == 0){
+			echo "<td class=\"sizes\"><strong>-</strong></td>";
+		}
+		//samples qty display SK 06-07-2018 == End
+		echo "<td><center>".$$code1."</center></td>
 		<td><center>".($$code1-$$code)."</center></td>
 		<td style='display:none;'><center>
 			<input class=\"form-control\" type=\"text\"  name=\"e_in_s".$sizes_code[$s]."\" onkeydown='return verify_num(event)'  required value=0 onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" onchange=\"ind_per_cal('".$sizes_code[$s]."')\"></center></td>
 		<td align='center'><div class='row'><div class='col-md-offset-4 col-md-4'><input type=\"hidden\" name=\"in_s".$sizes_code[$s]."_source\" value=".(abs($$code1-$$code)).">
-			<center><input class=\"form-control\" $flag type=\"text\"  onkeydown='return verify_num(event)' name=\"in_s".$sizes_code[$s]."\" value=".$$code." size=\"10\"></center></div></div></td>
+			<center><input class=\"form-control\" $flag type=\"text\"  name=\"in_s".$sizes_code[$s]."\" readonly value=".$$code." size=\"10\"></center></div></div></td>
 		</tr>";
-		// onClick={this.value=".abs($$code1-$$code)."+".abs($$code1-$$code)."*parseInt(document.input.cuttable_percent.value)/100}
 	}
-	/*
-echo "<tr>
-<td>$size01</td>
-<td>".$oq_s01."</td>
-<td>".$coq_s01."</td>
-<td>".($coq_s01-$oq_s01)."</td>
-<td><input type=\"text\" name=\"e_in_s01\" value=0 onchange=\"ind_per_cal('s01')\"></td>
-<td><input type=\"hidden\" name=\"in_s01_source\" value=".(abs($coq_s01-$oq_s01))."><INPUT type=\"text\" name=\"in_s01\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s01-$oq_s01)."+".abs($coq_s01-$oq_s01)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size02</td>
-<td>".$oq_s02."</td>
-<td>".$coq_s02."</td>
-<td>".($coq_s02-$oq_s02)."</td>
-<td><input type=\"text\" name=\"e_in_s02\" value=0 onchange=\"ind_per_cal('s02')\"></td>
-<td><input type=\"hidden\" name=\"in_s02_source\" value=".(abs($coq_s02-$oq_s02))."><INPUT type=\"text\" name=\"in_s02\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s02-$oq_s02)."+".abs($coq_s02-$oq_s02)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size03</td>
-<td>".$oq_s03."</td>
-<td>".$coq_s03."</td>
-<td>".($coq_s03-$oq_s03)."</td>
-<td><input type=\"text\" name=\"e_in_s03\" value=0 onchange=\"ind_per_cal('s03')\"></td>
-<td><input type=\"hidden\" name=\"in_s03_source\" value=".(abs($coq_s03-$oq_s03))."><INPUT type=\"text\" name=\"in_s03\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s03-$oq_s03)."+".abs($coq_s03-$oq_s03)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size04</td>
-<td>".$oq_s04."</td>
-<td>".$coq_s04."</td>
-<td>".($coq_s04-$oq_s04)."</td>
-<td><input type=\"text\" name=\"e_in_s04\" value=0 onchange=\"ind_per_cal('s04')\"></td>
-<td><input type=\"hidden\" name=\"in_s04_source\" value=".(abs($coq_s04-$oq_s04))."><INPUT type=\"text\" name=\"in_s04\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s04-$oq_s04)."+".abs($coq_s04-$oq_s04)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size05</td>
-<td>".$oq_s05."</td>
-<td>".$coq_s05."</td>
-<td>".($coq_s05-$oq_s05)."</td>
-<td><input type=\"text\" name=\"e_in_s05\" value=0 onchange=\"ind_per_cal('s05')\"></td>
-<td><input type=\"hidden\" name=\"in_s05_source\" value=".(abs($coq_s05-$oq_s05))."><INPUT type=\"text\" name=\"in_s05\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s05-$oq_s05)."+".abs($coq_s05-$oq_s05)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size06</td>
-<td>".$oq_s06."</td>
-<td>".$coq_s06."</td>
-<td>".($coq_s06-$oq_s06)."</td>
-<td><input type=\"text\" name=\"e_in_s06\" value=0 onchange=\"ind_per_cal('s06')\"></td>
-<td><input type=\"hidden\" name=\"in_s06_source\" value=".(abs($coq_s06-$oq_s06))."><INPUT type=\"text\" name=\"in_s06\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s06-$oq_s06)."+".abs($coq_s06-$oq_s06)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size07</td>
-<td>".$oq_s07."</td>
-<td>".$coq_s07."</td>
-<td>".($coq_s07-$oq_s07)."</td>
-<td><input type=\"text\" name=\"e_in_s07\" value=0 onchange=\"ind_per_cal('s07')\"></td>
-<td><input type=\"hidden\" name=\"in_s07_source\" value=".(abs($coq_s07-$oq_s07))."><INPUT type=\"text\" name=\"in_s07\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s07-$oq_s07)."+".abs($coq_s07-$oq_s07)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size08</td>
-<td>".$oq_s08."</td>
-<td>".$coq_s08."</td>
-<td>".($coq_s08-$oq_s08)."</td>
-<td><input type=\"text\" name=\"e_in_s08\" value=0 onchange=\"ind_per_cal('s08')\"></td>
-<td><input type=\"hidden\" name=\"in_s08_source\" value=".(abs($coq_s08-$oq_s08))."><INPUT type=\"text\" name=\"in_s08\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s08-$oq_s08)."+".abs($coq_s08-$oq_s08)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size09</td>
-<td>".$oq_s09."</td>
-<td>".$coq_s09."</td>
-<td>".($coq_s09-$oq_s09)."</td>
-<td><input type=\"text\" name=\"e_in_s09\" value=0 onchange=\"ind_per_cal('s09')\"></td>
-<td><input type=\"hidden\" name=\"in_s09_source\" value=".(abs($coq_s09-$oq_s09))."><INPUT type=\"text\" name=\"in_s09\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s09-$oq_s09)."+".abs($coq_s09-$oq_s09)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size10</td>
-<td>".$oq_s10."</td>
-<td>".$coq_s10."</td>
-<td>".($coq_s10-$oq_s10)."</td>
-<td><input type=\"text\" name=\"e_in_s10\" value=0 onchange=\"ind_per_cal('s10')\"></td>
-<td><input type=\"hidden\" name=\"in_s10_source\" value=".(abs($coq_s10-$oq_s10))."><INPUT type=\"text\" name=\"in_s10\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s10-$oq_s10)."+".abs($coq_s10-$oq_s10)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size11</td>
-<td>".$oq_s11."</td>
-<td>".$coq_s11."</td>
-<td>".($coq_s11-$oq_s11)."</td>
-<td><input type=\"text\" name=\"e_in_s11\" value=0 onchange=\"ind_per_cal('s11')\"></td>
-<td><input type=\"hidden\" name=\"in_s11_source\" value=".(abs($coq_s11-$oq_s11))."><INPUT type=\"text\" name=\"in_s11\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s11-$oq_s11)."+".abs($coq_s11-$oq_s11)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size12</td>
-<td>".$oq_s12."</td>
-<td>".$coq_s12."</td>
-<td>".($coq_s12-$oq_s12)."</td>
-<td><input type=\"text\" name=\"e_in_s12\" value=0 onchange=\"ind_per_cal('s12')\"></td>
-<td><input type=\"hidden\" name=\"in_s12_source\" value=".(abs($coq_s12-$oq_s12))."><INPUT type=\"text\" name=\"in_s12\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s12-$oq_s12)."+".abs($coq_s12-$oq_s12)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size13</td>
-<td>".$oq_s13."</td>
-<td>".$coq_s13."</td>
-<td>".($coq_s13-$oq_s13)."</td>
-<td><input type=\"text\" name=\"e_in_s13\" value=0 onchange=\"ind_per_cal('s13')\"></td>
-<td><input type=\"hidden\" name=\"in_s13_source\" value=".(abs($coq_s13-$oq_s13))."><INPUT type=\"text\" name=\"in_s13\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s13-$oq_s13)."+".abs($coq_s13-$oq_s13)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size14</td>
-<td>".$oq_s14."</td>
-<td>".$coq_s14."</td>
-<td>".($coq_s14-$oq_s14)."</td>
-<td><input type=\"text\" name=\"e_in_s14\" value=0 onchange=\"ind_per_cal('s14')\"></td>
-<td><input type=\"hidden\" name=\"in_s14_source\" value=".(abs($coq_s14-$oq_s14))."><INPUT type=\"text\" name=\"in_s14\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s14-$oq_s14)."+".abs($coq_s14-$oq_s14)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size15</td>
-<td>".$oq_s15."</td>
-<td>".$coq_s15."</td>
-<td>".($coq_s15-$oq_s15)."</td>
-<td><input type=\"text\" name=\"e_in_s15\" value=0 onchange=\"ind_per_cal('s15')\"></td>
-<td><input type=\"hidden\" name=\"in_s15_source\" value=".(abs($coq_s15-$oq_s15))."><INPUT type=\"text\" name=\"in_s15\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s15-$oq_s15)."+".abs($coq_s15-$oq_s15)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size16</td>
-<td>".$oq_s16."</td>
-<td>".$coq_s16."</td>
-<td>".($coq_s16-$oq_s16)."</td>
-<td><input type=\"text\" name=\"e_in_s16\" value=0 onchange=\"ind_per_cal('s16')\"></td>
-<td><input type=\"hidden\" name=\"in_s16_source\" value=".(abs($coq_s16-$oq_s16))."><INPUT type=\"text\" name=\"in_s16\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s16-$oq_s16)."+".abs($coq_s16-$oq_s16)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size17</td>
-<td>".$oq_s17."</td>
-<td>".$coq_s17."</td>
-<td>".($coq_s17-$oq_s17)."</td>
-<td><input type=\"text\" name=\"e_in_s17\" value=0 onchange=\"ind_per_cal('s17')\"></td>
-<td><input type=\"hidden\" name=\"in_s17_source\" value=".(abs($coq_s17-$oq_s17))."><INPUT type=\"text\" name=\"in_s17\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s17-$oq_s17)."+".abs($coq_s17-$oq_s17)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size18</td>
-<td>".$oq_s18."</td>
-<td>".$coq_s18."</td>
-<td>".($coq_s18-$oq_s18)."</td>
-<td><input type=\"text\" name=\"e_in_s18\" value=0 onchange=\"ind_per_cal('s18')\"></td>
-<td><input type=\"hidden\" name=\"in_s18_source\" value=".(abs($coq_s18-$oq_s18))."><INPUT type=\"text\" name=\"in_s18\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s18-$oq_s18)."+".abs($coq_s18-$oq_s18)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size19</td>
-<td>".$oq_s19."</td>
-<td>".$coq_s19."</td>
-<td>".($coq_s19-$oq_s19)."</td>
-<td><input type=\"text\" name=\"e_in_s19\" value=0 onchange=\"ind_per_cal('s19')\"></td>
-<td><input type=\"hidden\" name=\"in_s19_source\" value=".(abs($coq_s19-$oq_s19))."><INPUT type=\"text\" name=\"in_s19\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s19-$oq_s19)."+".abs($coq_s19-$oq_s19)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size20</td>
-<td>".$oq_s20."</td>
-<td>".$coq_s20."</td>
-<td>".($coq_s20-$oq_s20)."</td>
-<td><input type=\"text\" name=\"e_in_s20\" value=0 onchange=\"ind_per_cal('s20')\"></td>
-<td><input type=\"hidden\" name=\"in_s20_source\" value=".(abs($coq_s20-$oq_s20))."><INPUT type=\"text\" name=\"in_s20\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s20-$oq_s20)."+".abs($coq_s20-$oq_s20)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size21</td>
-<td>".$oq_s21."</td>
-<td>".$coq_s21."</td>
-<td>".($coq_s21-$oq_s21)."</td>
-<td><input type=\"text\" name=\"e_in_s21\" value=0 onchange=\"ind_per_cal('s21')\"></td>
-<td><input type=\"hidden\" name=\"in_s21_source\" value=".(abs($coq_s21-$oq_s21))."><INPUT type=\"text\" name=\"in_s21\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s21-$oq_s21)."+".abs($coq_s21-$oq_s21)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size22</td>
-<td>".$oq_s22."</td>
-<td>".$coq_s22."</td>
-<td>".($coq_s22-$oq_s22)."</td>
-<td><input type=\"text\" name=\"e_in_s22\" value=0 onchange=\"ind_per_cal('s22')\"></td>
-<td><input type=\"hidden\" name=\"in_s22_source\" value=".(abs($coq_s22-$oq_s22))."><INPUT type=\"text\" name=\"in_s22\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s22-$oq_s22)."+".abs($coq_s22-$oq_s22)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size23</td>
-<td>".$oq_s23."</td>
-<td>".$coq_s23."</td>
-<td>".($coq_s23-$oq_s23)."</td>
-<td><input type=\"text\" name=\"e_in_s23\" value=0 onchange=\"ind_per_cal('s23')\"></td>
-<td><input type=\"hidden\" name=\"in_s23_source\" value=".(abs($coq_s23-$oq_s23))."><INPUT type=\"text\" name=\"in_s23\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s23-$oq_s23)."+".abs($coq_s23-$oq_s23)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size24</td>
-<td>".$oq_s24."</td>
-<td>".$coq_s24."</td>
-<td>".($coq_s24-$oq_s24)."</td>
-<td><input type=\"text\" name=\"e_in_s24\" value=0 onchange=\"ind_per_cal('s24')\"></td>
-<td><input type=\"hidden\" name=\"in_s24_source\" value=".(abs($coq_s24-$oq_s24))."><INPUT type=\"text\" name=\"in_s24\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s24-$oq_s24)."+".abs($coq_s24-$oq_s24)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size25</td>
-<td>".$oq_s25."</td>
-<td>".$coq_s25."</td>
-<td>".($coq_s25-$oq_s25)."</td>
-<td><input type=\"text\" name=\"e_in_s25\" value=0 onchange=\"ind_per_cal('s25')\"></td>
-<td><input type=\"hidden\" name=\"in_s25_source\" value=".(abs($coq_s25-$oq_s25))."><INPUT type=\"text\" name=\"in_s25\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s25-$oq_s25)."+".abs($coq_s25-$oq_s25)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size26</td>
-<td>".$oq_s26."</td>
-<td>".$coq_s26."</td>
-<td>".($coq_s26-$oq_s26)."</td>
-<td><input type=\"text\" name=\"e_in_s26\" value=0 onchange=\"ind_per_cal('s26')\"></td>
-<td><input type=\"hidden\" name=\"in_s26_source\" value=".(abs($coq_s26-$oq_s26))."><INPUT type=\"text\" name=\"in_s26\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s26-$oq_s26)."+".abs($coq_s26-$oq_s26)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size27</td>
-<td>".$oq_s27."</td>
-<td>".$coq_s27."</td>
-<td>".($coq_s27-$oq_s27)."</td>
-<td><input type=\"text\" name=\"e_in_s27\" value=0 onchange=\"ind_per_cal('s27')\"></td>
-<td><input type=\"hidden\" name=\"in_s27_source\" value=".(abs($coq_s27-$oq_s27))."><INPUT type=\"text\" name=\"in_s27\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s27-$oq_s27)."+".abs($coq_s27-$oq_s27)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size28</td>
-<td>".$oq_s28."</td>
-<td>".$coq_s28."</td>
-<td>".($coq_s28-$oq_s28)."</td>
-<td><input type=\"text\" name=\"e_in_s28\" value=0 onchange=\"ind_per_cal('s28')\"></td>
-<td><input type=\"hidden\" name=\"in_s28_source\" value=".(abs($coq_s28-$oq_s28))."><INPUT type=\"text\" name=\"in_s28\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s28-$oq_s28)."+".abs($coq_s28-$oq_s28)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size29</td>
-<td>".$oq_s29."</td>
-<td>".$coq_s29."</td>
-<td>".($coq_s29-$oq_s29)."</td>
-<td><input type=\"text\" name=\"e_in_s29\" value=0 onchange=\"ind_per_cal('s29')\"></td>
-<td><input type=\"hidden\" name=\"in_s29_source\" value=".(abs($coq_s29-$oq_s29))."><INPUT type=\"text\" name=\"in_s29\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s29-$oq_s29)."+".abs($coq_s29-$oq_s29)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size30</td>
-<td>".$oq_s30."</td>
-<td>".$coq_s30."</td>
-<td>".($coq_s30-$oq_s30)."</td>
-<td><input type=\"text\" name=\"e_in_s30\" value=0 onchange=\"ind_per_cal('s30')\"></td>
-<td><input type=\"hidden\" name=\"in_s30_source\" value=".(abs($coq_s30-$oq_s30))."><INPUT type=\"text\" name=\"in_s30\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s30-$oq_s30)."+".abs($coq_s30-$oq_s30)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size31</td>
-<td>".$oq_s31."</td>
-<td>".$coq_s31."</td>
-<td>".($coq_s31-$oq_s31)."</td>
-<td><input type=\"text\" name=\"e_in_s31\" value=0 onchange=\"ind_per_cal('s31')\"></td>
-<td><input type=\"hidden\" name=\"in_s31_source\" value=".(abs($coq_s31-$oq_s31))."><INPUT type=\"text\" name=\"in_s31\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s31-$oq_s31)."+".abs($coq_s31-$oq_s31)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size32</td>
-<td>".$oq_s32."</td>
-<td>".$coq_s32."</td>
-<td>".($coq_s32-$oq_s32)."</td>
-<td><input type=\"text\" name=\"e_in_s32\" value=0 onchange=\"ind_per_cal('s32')\"></td>
-<td><input type=\"hidden\" name=\"in_s32_source\" value=".(abs($coq_s32-$oq_s32))."><INPUT type=\"text\" name=\"in_s32\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s32-$oq_s32)."+".abs($coq_s32-$oq_s32)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size33</td>
-<td>".$oq_s33."</td>
-<td>".$coq_s33."</td>
-<td>".($coq_s33-$oq_s33)."</td>
-<td><input type=\"text\" name=\"e_in_s33\" value=0 onchange=\"ind_per_cal('s33')\"></td>
-<td><input type=\"hidden\" name=\"in_s33_source\" value=".(abs($coq_s33-$oq_s33))."><INPUT type=\"text\" name=\"in_s33\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s33-$oq_s33)."+".abs($coq_s33-$oq_s33)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size34</td>
-<td>".$oq_s34."</td>
-<td>".$coq_s34."</td>
-<td>".($coq_s34-$oq_s34)."</td>
-<td><input type=\"text\" name=\"e_in_s34\" value=0 onchange=\"ind_per_cal('s34')\"></td>
-<td><input type=\"hidden\" name=\"in_s34_source\" value=".(abs($coq_s34-$oq_s34))."><INPUT type=\"text\" name=\"in_s34\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s34-$oq_s34)."+".abs($coq_s34-$oq_s34)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size35</td>
-<td>".$oq_s35."</td>
-<td>".$coq_s35."</td>
-<td>".($coq_s35-$oq_s35)."</td>
-<td><input type=\"text\" name=\"e_in_s35\" value=0 onchange=\"ind_per_cal('s35')\"></td>
-<td><input type=\"hidden\" name=\"in_s35_source\" value=".(abs($coq_s35-$oq_s35))."><INPUT type=\"text\" name=\"in_s35\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s35-$oq_s35)."+".abs($coq_s35-$oq_s35)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size36</td>
-<td>".$oq_s36."</td>
-<td>".$coq_s36."</td>
-<td>".($coq_s36-$oq_s36)."</td>
-<td><input type=\"text\" name=\"e_in_s36\" value=0 onchange=\"ind_per_cal('s36')\"></td>
-<td><input type=\"hidden\" name=\"in_s36_source\" value=".(abs($coq_s36-$oq_s36))."><INPUT type=\"text\" name=\"in_s36\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s36-$oq_s36)."+".abs($coq_s36-$oq_s36)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size37</td>
-<td>".$oq_s37."</td>
-<td>".$coq_s37."</td>
-<td>".($coq_s37-$oq_s37)."</td>
-<td><input type=\"text\" name=\"e_in_s37\" value=0 onchange=\"ind_per_cal('s37')\"></td>
-<td><input type=\"hidden\" name=\"in_s37_source\" value=".(abs($coq_s37-$oq_s37))."><INPUT type=\"text\" name=\"in_s37\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s37-$oq_s37)."+".abs($coq_s37-$oq_s37)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size38</td>
-<td>".$oq_s38."</td>
-<td>".$coq_s38."</td>
-<td>".($coq_s38-$oq_s38)."</td>
-<td><input type=\"text\" name=\"e_in_s38\" value=0 onchange=\"ind_per_cal('s38')\"></td>
-<td><input type=\"hidden\" name=\"in_s38_source\" value=".(abs($coq_s38-$oq_s38))."><INPUT type=\"text\" name=\"in_s38\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s38-$oq_s38)."+".abs($coq_s38-$oq_s38)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size39</td>
-<td>".$oq_s39."</td>
-<td>".$coq_s39."</td>
-<td>".($coq_s39-$oq_s39)."</td>
-<td><input type=\"text\" name=\"e_in_s39\" value=0 onchange=\"ind_per_cal('s39')\"></td>
-<td><input type=\"hidden\" name=\"in_s39_source\" value=".(abs($coq_s39-$oq_s39))."><INPUT type=\"text\" name=\"in_s39\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s39-$oq_s39)."+".abs($coq_s39-$oq_s39)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size40</td>
-<td>".$oq_s40."</td>
-<td>".$coq_s40."</td>
-<td>".($coq_s40-$oq_s40)."</td>
-<td><input type=\"text\" name=\"e_in_s40\" value=0 onchange=\"ind_per_cal('s40')\"></td>
-<td><input type=\"hidden\" name=\"in_s40_source\" value=".(abs($coq_s40-$oq_s40))."><INPUT type=\"text\" name=\"in_s40\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s40-$oq_s40)."+".abs($coq_s40-$oq_s40)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size41</td>
-<td>".$oq_s41."</td>
-<td>".$coq_s41."</td>
-<td>".($coq_s41-$oq_s41)."</td>
-<td><input type=\"text\" name=\"e_in_s41\" value=0 onchange=\"ind_per_cal('s41')\"></td>
-<td><input type=\"hidden\" name=\"in_s41_source\" value=".(abs($coq_s41-$oq_s41))."><INPUT type=\"text\" name=\"in_s41\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s41-$oq_s41)."+".abs($coq_s41-$oq_s41)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size42</td>
-<td>".$oq_s42."</td>
-<td>".$coq_s42."</td>
-<td>".($coq_s42-$oq_s42)."</td>
-<td><input type=\"text\" name=\"e_in_s42\" value=0 onchange=\"ind_per_cal('s42')\"></td>
-<td><input type=\"hidden\" name=\"in_s42_source\" value=".(abs($coq_s42-$oq_s42))."><INPUT type=\"text\" name=\"in_s42\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s42-$oq_s42)."+".abs($coq_s42-$oq_s42)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size43</td>
-<td>".$oq_s43."</td>
-<td>".$coq_s43."</td>
-<td>".($coq_s43-$oq_s43)."</td>
-<td><input type=\"text\" name=\"e_in_s43\" value=0 onchange=\"ind_per_cal('s43')\"></td>
-<td><input type=\"hidden\" name=\"in_s43_source\" value=".(abs($coq_s43-$oq_s43))."><INPUT type=\"text\" name=\"in_s43\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s43-$oq_s43)."+".abs($coq_s43-$oq_s43)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size44</td>
-<td>".$oq_s44."</td>
-<td>".$coq_s44."</td>
-<td>".($coq_s44-$oq_s44)."</td>
-<td><input type=\"text\" name=\"e_in_s44\" value=0 onchange=\"ind_per_cal('s44')\"></td>
-<td><input type=\"hidden\" name=\"in_s44_source\" value=".(abs($coq_s44-$oq_s44))."><INPUT type=\"text\" name=\"in_s44\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s44-$oq_s44)."+".abs($coq_s44-$oq_s44)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size45</td>
-<td>".$oq_s45."</td>
-<td>".$coq_s45."</td>
-<td>".($coq_s45-$oq_s45)."</td>
-<td><input type=\"text\" name=\"e_in_s45\" value=0 onchange=\"ind_per_cal('s45')\"></td>
-<td><input type=\"hidden\" name=\"in_s45_source\" value=".(abs($coq_s45-$oq_s45))."><INPUT type=\"text\" name=\"in_s45\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s45-$oq_s45)."+".abs($coq_s45-$oq_s45)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size46</td>
-<td>".$oq_s46."</td>
-<td>".$coq_s46."</td>
-<td>".($coq_s46-$oq_s46)."</td>
-<td><input type=\"text\" name=\"e_in_s46\" value=0 onchange=\"ind_per_cal('s46')\"></td>
-<td><input type=\"hidden\" name=\"in_s46_source\" value=".(abs($coq_s46-$oq_s46))."><INPUT type=\"text\" name=\"in_s46\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s46-$oq_s46)."+".abs($coq_s46-$oq_s46)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size47</td>
-<td>".$oq_s47."</td>
-<td>".$coq_s47."</td>
-<td>".($coq_s47-$oq_s47)."</td>
-<td><input type=\"text\" name=\"e_in_s47\" value=0 onchange=\"ind_per_cal('s47')\"></td>
-<td><input type=\"hidden\" name=\"in_s47_source\" value=".(abs($coq_s47-$oq_s47))."><INPUT type=\"text\" name=\"in_s47\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s47-$oq_s47)."+".abs($coq_s47-$oq_s47)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size48</td>
-<td>".$oq_s48."</td>
-<td>".$coq_s48."</td>
-<td>".($coq_s48-$oq_s48)."</td>
-<td><input type=\"text\" name=\"e_in_s48\" value=0 onchange=\"ind_per_cal('s48')\"></td>
-<td><input type=\"hidden\" name=\"in_s48_source\" value=".(abs($coq_s48-$oq_s48))."><INPUT type=\"text\" name=\"in_s48\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s48-$oq_s48)."+".abs($coq_s48-$oq_s48)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size49</td>
-<td>".$oq_s49."</td>
-<td>".$coq_s49."</td>
-<td>".($coq_s49-$oq_s49)."</td>
-<td><input type=\"text\" name=\"e_in_s49\" value=0 onchange=\"ind_per_cal('s49')\"></td>
-<td><input type=\"hidden\" name=\"in_s49_source\" value=".(abs($coq_s49-$oq_s49))."><INPUT type=\"text\" name=\"in_s49\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s49-$oq_s49)."+".abs($coq_s49-$oq_s49)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-
-echo "<tr>
-<td>$size50</td>
-<td>".$oq_s50."</td>
-<td>".$coq_s50."</td>
-<td>".($coq_s50-$oq_s50)."</td>
-<td><input type=\"text\" name=\"e_in_s50\" value=0 onchange=\"ind_per_cal('s50')\"></td>
-<td><input type=\"hidden\" name=\"in_s50_source\" value=".(abs($coq_s50-$oq_s50))."><INPUT type=\"text\" name=\"in_s50\" value=\"0\" size=\"10\" onClick={this.value=".abs($coq_s50-$oq_s50)."+".abs($coq_s50-$oq_s50)."*parseInt(document.input.cuttable_percent.value)/100}></td>
-</tr>";
-*/
-
-
-
-echo "</table>";
-//echo "Remarks: <INPUT type=\"text\" name=\"remarks\">";
-
-
-
-
-
-//echo "<div class=\"col-md-offset-10\"><input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable&nbsp;&nbsp;&nbsp;";
-
 if(count($s_tit) <= 0){
 	$display = "display:none";
 }
@@ -1277,3 +846,4 @@ echo "</form>";
 </div></div>
 </div></div>
 </body>
+
