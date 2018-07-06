@@ -181,7 +181,7 @@ for($i = 0; $i < sizeof($table_name); $i++)
 echo "</select></div></td></tr>";
 //echo "<tr><td>Shift</td><td>:</td><td><input type=\"text\" name=\"shift\" value=\"NIL\"></td></tr>";
 echo "<tr><td>Shift</td><td>:</td><td><select name=\"shift\">
-<option value=\"\">SELECT TEAM</option>";
+<option value=\"\">SELECT Shift</option>";
 foreach($shifts_array as $key=>$shift){
 	echo "<option value='$shift'>$shift</option>";
 

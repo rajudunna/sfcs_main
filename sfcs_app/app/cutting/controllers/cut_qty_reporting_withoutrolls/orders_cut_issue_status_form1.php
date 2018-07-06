@@ -228,6 +228,20 @@ foreach($shifts_array as $key=>$shift){
 	echo "<option value='$shift'>$shift</option>";
 }
 	echo "</select></div></td></tr>";
+
+$team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+$team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
+echo "<tr>
+			<td>Team Leader</td><td>:</td>
+		<td><div class='col-sm-4'><select name=\"leader_name\" class='form-control'>";
+echo "<option value='' selected disabled>Select Team</option>";
+while($row=mysqli_fetch_array($team_result))
+{
+	echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
+}
+echo "</select></div>
+	</td></tr>";	
+	
 //echo </select></div></td></tr>";
 echo "<tr><td>Doc Req</td><td>:</td><td>".($act_plies*$mklength)."</td></tr>";
 echo "<tr><td>Plies</td><td>:</td><td><input type=\"hidden\" name=\"old_plies\" value=\"$old_plies\"><div class='row col-md-4'><input type=\"text\" class='form-control' name=\"plies\" value=\"$plies_check\" onchange=\"if(validate(this.value,$plies_check)==1010) { this.value=0; }\"></div></td></tr>";
