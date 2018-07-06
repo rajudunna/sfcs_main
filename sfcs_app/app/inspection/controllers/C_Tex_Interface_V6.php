@@ -2246,6 +2246,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>"; */
  $shade_group_total=array();
  echo "<input type=\"hidden\" id=\"rowcount\" value=\"".sizeof($values)."\" />";
+
  for($i=0;$i<sizeof($values);$i++)
  {
  	$temp=array();
@@ -2271,11 +2272,11 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
 		if(!in_array($authorized,$has_permission))
 		{
-			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".$temp[2]."\", ".$temp[1].", $i)' value=\"".$temp[2]."\" />";
 		}
 		else
 		{
-			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".$temp[2]."\", ".$temp[1].", $i)' value=\"".$temp[2]."\" />";
 		}		
 	}
 	else
@@ -2294,9 +2295,9 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	{
 		$insp_status="Red";		
 	}
-	 
+	 echo "<input type='hidden' class='roll_no_".$temp[1]."' value='".$temp[1]."'>";
 	  echo "
-	  <td height=50 class=xl12824082 style='height:15.0pt;background-color: ".$insp_status.";color:white'>".$temp[1]."<input type='hidden' id='ele_tid[$i]' name='ele_tid[$i]' value='".$temp[0]."'><input type='hidden' name='ele_check[$i]' value=''><input type='hidden' name='tot_elements' id='tot_elements' value='".sizeof($values)."'></td>";
+	  <td height=50 class='xl12824082' style='height:15.0pt;background-color: ".$insp_status.";color:white'>".$temp[1]."<input type='hidden' id='ele_tid[$i]' name='ele_tid[$i]' value='".$temp[0]."'><input type='hidden' name='ele_check[$i]' value=''><input type='hidden' name='tot_elements' id='tot_elements' value='".sizeof($values)."'></td>";
 	  
 	  echo "<td class=xl12824082 style='border-left:none'>".$temp_shade_tag."<input type='hidden' id='ele_shades[$i]'  name='ele_shades[$i]' value='".$temp[2]."'></td>
 
@@ -2918,113 +2919,128 @@ function fill(x,t,e)
 	if(x==1)
 	{
 		var y=document.getElementById('fill_c_length').value;
-	
-		var name="ele_c_length[";
-		var name2="qty_allocated[";
-		for (var i=0; i < tot_elements; i++)
-		{
-			if(document.input[name2+i+"]"].value > 0)
+		if(y!= ''){
+			var name="ele_c_length[";
+			var name2="qty_allocated[";
+			for (var i=0; i < tot_elements; i++)
 			{
-
-			}
-			else
-			{
-				document.input[name+i+"]"].value=y;
-				document.input["ele_check["+i+"]"].value=1;
-				document.input[name+i+"]"].style.background="#FFCCFF";
-
-				var ele_t_length = document.getElementById('ele_t_length'+i).value;
-				var result1 = parseInt(y) - parseInt(ele_t_length);
-				if(isNaN(result1))
+				if(document.input[name2+i+"]"].value > 0)
 				{
-					result1=0;
+
 				}
-				document.getElementById('subt'+i).value = result1;
+				else
+				{
+					document.input[name+i+"]"].value=y;
+					document.input["ele_check["+i+"]"].value=1;
+					document.input[name+i+"]"].style.background="#FFCCFF";
+
+					var ele_t_length = document.getElementById('ele_t_length'+i).value;
+					var result1 = parseInt(y) - parseInt(ele_t_length);
+					if(isNaN(result1))
+					{
+						result1=0;
+					}
+					document.getElementById('subt'+i).value = result1;
+				}
+				
 			}
-			
+		}else {
+			swal('Please enter c-tex length to auto fill.');
 		}
 	}
 	if(x==2)
 	{
 		var y=document.getElementById('fill_t_width').value;
-		var name="ele_t_width[";
-		var name2="qty_allocated[";
-		for (var i=0; i < tot_elements; i++)
-		{
-			if(document.input[name2+i+"]"].value > 0)
+		if(y!= ''){
+			var name="ele_t_width[";
+			var name2="qty_allocated[";
+			for (var i=0; i < tot_elements; i++)
 			{
-
-			}
-			else
-			{
-				document.input[name+i+"]"].value=y;
-				document.input["ele_check["+i+"]"].value=1;
-				document.input[name+i+"]"].style.background="#FFCCFF";
-
-				var ele_c_width = document.getElementById('ele_c_width'+i).value;
-				var result1 = parseInt(ele_c_width) - parseInt(y);
-				if(isNaN(result1))
+				if(document.input[name2+i+"]"].value > 0)
 				{
-					result1=0;
+
 				}
-				document.getElementById('min'+i).value = result1;
+				else
+				{
+					document.input[name+i+"]"].value=y;
+					document.input["ele_check["+i+"]"].value=1;
+					document.input[name+i+"]"].style.background="#FFCCFF";
+
+					var ele_c_width = document.getElementById('ele_c_width'+i).value;
+					var result1 = parseInt(ele_c_width) - parseInt(y);
+					if(isNaN(result1))
+					{
+						result1=0;
+					}
+					document.getElementById('min'+i).value = result1;
+				}
 			}
+		}else{
+			swal('Please enter ticket width to auto fill.');
 		}
 	}
 	if(x==3)
 	{
 		var y=document.getElementById('fill_c_width').value;
-		var name="ele_c_width[";
-		var name2="qty_allocated[";
-		for (var i=0; i < tot_elements; i++)
-		{
-			if(document.input[name2+i+"]"].value > 0)
+		if(y!= ''){
+			var name="ele_c_width[";
+			var name2="qty_allocated[";
+			for (var i=0; i < tot_elements; i++)
 			{
-
-			}
-			else
-			{
-				document.input[name+i+"]"].value=y;
-				document.input["ele_check["+i+"]"].value=1;
-				document.input[name+i+"]"].style.background="#FFCCFF";
-
-				var ele_t_width = document.getElementById('ele_t_width'+i).value;
-				var result1 = parseInt(y) - parseInt(ele_t_width);
-				if(isNaN(result1))
+				if(document.input[name2+i+"]"].value > 0)
 				{
-					result1=0;
+
 				}
-				document.getElementById('min'+i).value = result1;
+				else
+				{
+					document.input[name+i+"]"].value=y;
+					document.input["ele_check["+i+"]"].value=1;
+					document.input[name+i+"]"].style.background="#FFCCFF";
+
+					var ele_t_width = document.getElementById('ele_t_width'+i).value;
+					var result1 = parseInt(y) - parseInt(ele_t_width);
+					if(isNaN(result1))
+					{
+						result1=0;
+					}
+					document.getElementById('min'+i).value = result1;
+				}
 			}
+		}else{
+			swal('Please enter c-tex width to auto fill.');
 		}	
 	}
 	if(x==4)
 	{
 		var y=document.getElementById('fill_shade_grp').value;
-		var name1="ele_shade[";
-		var name2="qty_allocated[";
+		if(y != ''){
+			var name1="ele_shade[";
+			var name2="qty_allocated[";
 
-		for (var i=0; i < tot_elements; i++)
-		{
-			if(document.input[name2+i+"]"].value > 0){
-
-			}
-			else
+			for (var i=0; i < tot_elements; i++)
 			{
-				document.input[name1+i+"]"].value=y;
-				document.input["ele_check["+i+"]"].value=1;
-				document.input[name1+i+"]"].style.background="#FFCCFF";
-			}
-		
+				if(document.input[name2+i+"]"].value > 0){
 
-			// var fill_shade_grp = document.getElementById('ele_t_width'+i).value;
-			// var result1 = parseInt(y) - parseInt(ele_t_width);
-			// if(isNaN(result1))
-			// {
-			// 	result1=0;
-			// }
-			// document.getElementById('min'+i).value = result1;
-		}	
+				}
+				else
+				{
+					document.input[name1+i+"]"].value=y;
+					document.input["ele_check["+i+"]"].value=1;
+					document.input[name1+i+"]"].style.background="#FFCCFF";
+				}
+			
+
+				// var fill_shade_grp = document.getElementById('ele_t_width'+i).value;
+				// var result1 = parseInt(y) - parseInt(ele_t_width);
+				// if(isNaN(result1))
+				// {
+				// 	result1=0;
+				// }
+				// document.getElementById('min'+i).value = result1;
+			}	
+		}else{
+			swal('Please enter shade group to auto fill.');
+		}
 	}		
 }
 
@@ -3088,7 +3104,29 @@ function change_body(x,y,z)
 		}
 	}
 }
-
+function validate_unique_shade(shde, roll, index)
+{
+	var ele_shade = $('#ele_shade\\['+index+'\\]')
+	console.log('ele_shade['+index+']');
+	var arr = new Array();
+	$('.unique_shade_'+roll).each(function(){
+		if($(this).val() != ''){
+			arr.push($(this).val());
+		}
+	});
+	if(arr.length > 0){
+		var unique_elem = $.unique(arr);
+		if(unique_elem.length > 1){
+			ele_shade.val('');
+			swal('Roll Number and shade group should be unique.');
+		}else{
+			return true;
+		}
+		console.log(arr);
+		console.log($.unique(arr));
+	}
+	// alert();
+}
 function change_head(x,y)
 {
 	document.getElementById('head_check').value=1;
