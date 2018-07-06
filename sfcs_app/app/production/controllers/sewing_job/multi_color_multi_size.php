@@ -45,7 +45,7 @@ function calculateqty(sizeofsizes,sizeOfColors)
 	echo "<div class='panel panel-primary'>";
 	echo "<div class='panel-heading'>Multi Color Multi Size</div>";
 	echo "<div class='panel-body'>";
-	if ($size_of_ordered_colors==$size_of_planned_colors)
+	if ($size_of_ordered_colors!=$size_of_planned_colors)
 	{
 		echo "<script>sweetAlert('Please prepare Lay Plan for all Colors in this Schedule - $schedule','','warning')</script>";
 	}
@@ -109,7 +109,7 @@ function calculateqty(sizeofsizes,sizeOfColors)
 				echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
 				echo "<div class='panel-body'>";
 
-				echo "<div class='col-md-3 col-sm-3 col-xs-12'>Number of Poly Bags Per Carton : <input type='text' name='BagPerCart' id='BagPerCart' class='form-control' onchange=calculateqty($sizeofsizes,$size_of_ordered_colors);></div>";
+				echo "<div class='col-md-3 col-sm-3 col-xs-12'>Number of Poly Bags Per Carton : <input type='text' name='BagPerCart' id='BagPerCart' class='form-control' onchange=calculateqty($sizeofsizes,$size_of_planned_colors);></div>";
 					
 				echo "</div>
 			 </div>";
