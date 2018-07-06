@@ -88,8 +88,8 @@ th
 	    aLink.dispatchEvent(event);
 	   }
 	function getCSVData() {
-		var data = $('#table1').table2CSV({delivery: 'value',filename: 'report.csv'});
-        downloadFile('report.csv', 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data));
+		var data = $('#table1').table2CSV({delivery: 'value',filename: 'stock_report.csv'});
+        downloadFile('stock_report.csv', 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data));
 
 	}
 </script>

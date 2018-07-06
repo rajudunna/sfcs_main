@@ -1977,44 +1977,46 @@ body{
 <style>
 
 @media print {
-@page narrow {size: 15in 11in}
-@page rotated {size: potrait}
-DIV {page: narrow}
-TABLE {page: rotated}
-#non-printable { display: none; }
-#printable { display: block; }
-#logo { display: block; }
-body { zoom:82%;}
-#ad{ display:none;}
-#leftbar{ display:none;}
-#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
+	@page narrow {size: 15in 11in}
+	@page rotated {size: potrait}
+	DIV {page: narrow}
+	TABLE {page: rotated}
+	#non-printable { display: none; }
+	#printable { display: block; }
+	#logo { display: block; }
+	body { zoom:72%;}
+	#ad{ display:none;}
+	#leftbar{ display:none;}
+	#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
 }
 </style>
 
 <script>
 function printpr()
 {
-var OLECMDID = 7;
-/* OLECMDID values:
-* 6 - print
-* 7 - print preview
-* 1 - open window
-* 4 - Save As
-*/
-var PROMPT = 1; // 2 DONTPROMPTUSER
-var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-WebBrowser1.ExecWB(OLECMDID, PROMPT);
-WebBrowser1.outerHTML = "";
+	window.print();
+	// var OLECMDID = 7;
+	// /* OLECMDID values:
+	// * 6 - print
+	// * 7 - print preview
+	// * 1 - open window
+	// * 4 - Save As
+	// */
+	// var PROMPT = 1; // 2 DONTPROMPTUSER
+	// var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
+	// document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+	// WebBrowser1.ExecWB(OLECMDID, PROMPT);
+	// WebBrowser1.outerHTML = "";
    
 }
 </script>
 
 <script src="../../common/js/jquery-1.3.2.js"></script>
 <script src="../../common/js/jquery-barcode-2.0.1.js"></script>
+
 </head>
 
-<body onload="printp();">
+<body onload="printpr();">
 
 <script language="JavaScript">
 <!--
@@ -2097,15 +2099,19 @@ tags will be replaced.-->
   <td class=xl154118 width=21 style='width:16pt'></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+
+ </tr>
+
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td colspan=6 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
-  <td colspan=6 rowspan=3 class=xl674118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td colspan=3 class=xl844118>Cutting Department</td>
+  <td colspan=3 >Cutting Department</td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -3016,7 +3022,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr>
+ </tr> 
  <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td class=xl764118>Rpt No</td>
@@ -3043,7 +3049,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td class=xl724118>&nbsp;</td>
   <!--<td class=xl744118>&nbsp;</td>-->
-  
+ 
   <td class=xl674118></td>
   <td class=xl674118></td>
   <td class=xl674118></td>
@@ -3180,7 +3186,7 @@ $tkt_width[]=$sql_row['ref6'];
  <!--<td rowspan="2" colspan="15" class=xl764118 style='border-bottom:.5pt solid black;'>-->
  <?php
  $roll_length = array();
- $roll_det = array();
+//  $roll_det = array();
  $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=$doc_id AND doc_type='normal' GROUP BY ref4";
  $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row123=mysqli_fetch_array($sql_result123))
@@ -3215,7 +3221,7 @@ $tkt_width[]=$sql_row['ref6'];
 		</tr>
 	  <?php
 	}
- }else{?>
+ }else{?> 
  	<tr class=xl654118 height=20 style='mso-height-source:userset;height:18.0pt'>
 	  <td height=20 class=xl654118 style='height:18.0pt'></td>
 	  <td class=xl804118 style='border-bottom:.5pt solid black;  width:48pt'>&nbsp;</td>
@@ -3249,6 +3255,7 @@ $tkt_width[]=$sql_row['ref6'];
   <td class=xl774118>Damage</td>
   <td class=xl774118>Joints</td>
   <td class=xl774118>Ends</td>
+
   <td colspan=2 class=xl1064118>Shortages</td>
   <td colspan=3 rowspan=2 class=xl1064118>Binding Length</td>  
   <td colspan=3 rowspan=2 class=xl1064118>Comments</td>
@@ -3280,8 +3287,8 @@ $tkt_width[]=$sql_row['ref6'];
 	 for($i=0;$i<sizeof($roll_det);$i++)
 	 {
 	 ?>
-	  <tr class=xl654118 height=20 style='mso-height-source:userset;height:18.0pt'>
-	  <td height=20 class=xl654118 style='height:18.0pt'></td>
+	  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+	  <td height=20 class=xl654118 style='height:30pt'></td>
 	  <td class=xl804118><?php echo $batch_det[$i]; ?></td>
 	  <td class=xl814118 style='font-size: 85%;'><?php echo $lot_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_id[$i]; ?></td>
@@ -3313,7 +3320,7 @@ $tkt_width[]=$sql_row['ref6'];
 ?>	
 
 		
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -3333,8 +3340,8 @@ $tkt_width[]=$sql_row['ref6'];
   <td class=xl654118></td>
  </tr>
 
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
+  <td height=20 class=xl654118 style='height:30pt'></td>
   <td class=xl654118></td>
   <td class=xl684118>Docket</td>
   <td class=xl704118>Marker</td>
@@ -3353,7 +3360,7 @@ $tkt_width[]=$sql_row['ref6'];
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118>Team</td>
   <td class=xl804118>&nbsp;</td>
@@ -3373,8 +3380,8 @@ $tkt_width[]=$sql_row['ref6'];
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
+  <td height=20 class=xl654118 style='height:30pt'></td>
   <td class=xl654118>EMP No1</td>
   <td class=xl804118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
@@ -3393,7 +3400,7 @@ $tkt_width[]=$sql_row['ref6'];
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118>Emp No2</td>
   <td class=xl804118>&nbsp;</td>
@@ -3413,7 +3420,7 @@ $tkt_width[]=$sql_row['ref6'];
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118>Emp No3</td>
   <td class=xl804118>&nbsp;</td>
@@ -3432,7 +3439,7 @@ $tkt_width[]=$sql_row['ref6'];
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118>Date</td>
   <td class=xl804118><?php //echo date("y/m/d",strtotime($plan_log_time)); ?></td>
@@ -3451,8 +3458,8 @@ $tkt_width[]=$sql_row['ref6'];
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
+ <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+  <td height=20 class=xl654118 style='height:30pt'></td>
   <td class=xl654118>Time</td>
   <td class=xl804118><?php //echo date("H:i",strtotime($plan_log_time)); ?></td>
   <td class=xl814118>&nbsp;</td>
@@ -3470,8 +3477,8 @@ $tkt_width[]=$sql_row['ref6'];
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl154118 style='height:15.75pt'></td>
+ <tr height=21 style='height:30pt'>
+  <td height=21 class=xl154118 style='height:30pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -3530,3 +3537,13 @@ if($print_status=="0000-00-00" || $print_status == "")
 	
 }
 ?>
+
+<style>
+.xl744118,.xl694118,.xl774118,.xl684118,.xl704118,.xl724118,.xl1064118,.xl764118,.xl814118,.xl804118,.xl674118,.xl654118,.xl1124118,.xl1144118,.xl714118{
+	font-size : 20px;
+}
+*{
+	font-size : 20px;
+}
+</style>
+

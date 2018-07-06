@@ -307,7 +307,7 @@ while($sql_row23=mysqli_fetch_array($sql_result23))
 // 	}
 // }
 //echo "<div class='panel panel-primary'><div class='panel-body'>";
-$order_joins_check="SELECT order_joins FROM $bai_pro3.`bai_orders_db` WHERE order_tid='".$tran_order_tid."'";
+$order_joins_check="SELECT order_joins FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_tid='".$tran_order_tid."'";
 $order_joins_result=mysqli_query($link, $order_joins_check) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($order_joins_result))
 {

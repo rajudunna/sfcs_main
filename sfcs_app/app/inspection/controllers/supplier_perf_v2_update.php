@@ -76,7 +76,7 @@ if(isset($_POST['update']))
 			//echo $reason_ref_explode_ex[$i][$i1]."<br>";
 		}
 	}
-
+	$updated_rows=0;
 	for($i=1;$i<=sizeof($reason_name);$i++)
 	{
 		//echo $batch_ref[$i]."<br>";
@@ -88,6 +88,7 @@ if(isset($_POST['update']))
 
 	for($i=1;$i<=sizeof($reason_name);$i++)
 	{
+		$count=sizeof($reason_name);
 		$string_include1="";
 		$string_include2="";
 		
@@ -103,7 +104,7 @@ if(isset($_POST['update']))
 		
 		$sql11="select * from $bai_rm_pj1.supplier_performance_track where tid='".trim($batch_ref[$i])."-".$month_ref[$i]."'";
 		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
-		echo $sql11;
+		//echo $sql11;
 		if(mysqli_num_rows($sql_result11) > 0)
 		{
 			while($row11=mysqli_fetch_array($sql_result11))
@@ -133,36 +134,61 @@ if(isset($_POST['update']))
 		}
 	
 		$sql="insert into $bai_rm_pj1.supplier_performance_track(tid,bai1_rec,weekno,pkg_no,invoice,srdfs,srtfs,srdfsw,insp_date,reldat,unique_id,grn_date,entdate,buyer,item, lots_ref,po_ref,	supplier_name,quality,rms,const,compo,color_ref,syp,batch_ref,rolls_count,tktlen,ctexlen,lenper,qty_insp,qty_insp_act, inches,pur_width_ref,act_width_ref,pur_gsm,act_gsm,consumption,pts,fallout,defects,skew_cat_ref,skew,shrink_l,shrink_w,sup_test_rep,inspec_per_rep,cc_rep, com_ref1,reason_qty,reason_name,reason_ref_explode_ex,reason_name1,reason_ref_explode_ex1,  fab_tech,high_pts,fall_out,skew_bowing,wirc_shading,gsm,others,off_shade,hand_feel,length,width,test_report,status_f,impact,log_time) values('".trim($batch_ref[$i])."-".$month_ref[$i]."','".$bai1_rec[$i]."','".$weekno[$i]."','".$pkg_no[$i]."','".$invoice[$i]."','".$srdfs[$i]."','".$srtfs[$i]."','".$srdfsw[$i]."','".$insp_date[$i]."','".$reldat[$i]."','".$unique_id[$i]."','".$grn_date[$i]."','".$entdate[$i]."','".$buyer[$i]."','".$item[$i]."','".$lots_ref[$i]."','".$po_ref[$i]."','".$supplier_name[$i]."','".$quality[$i]."','".$rms[$i]."','".$const[$i]."','".$compo[$i]."','".$color_ref[$i]."','".$syp[$i]."','".$batch_ref[$i]."','".$rolls_count[$i]."','".$tktlen[$i]."','".$ctexlen[$i]."','".$lenper[$i]."','".$qty_insp[$i]."','".$qty_insp_act[$i]."','".$inches[$i]."','".$pur_width_ref[$i]."','".$act_width_ref[$i]."','".$pur_gsm[$i]."','".$act_gsm[$i]."','".$consumption[$i]."','".$pts[$i]."','".$fallout[$i]."','".$defects[$i]."','".$skew_cat_ref[$i]."','".$skew[$i]."','".$shrink_l[$i]."','".$shrink_w[$i]."','".$sup_test_rep[$i]."','".$inspec_per_rep[$i]."','".$cc_rep[$i]."','".$com_ref1[$i]."','".$reason_qty[$i]."',".$string_include1."'".$fab_tech[$i]."',".$string_include2."'".$status_f[$i]."','".$impact[$i]."','".$reported_date."')";	
-			//echo $sql."<br>";
+		//echo $sql."<br>";
 		$sql1s="insert into $bai_rm_pj1.supplier_performance_track_log(tid,bai1_rec,weekno,pkg_no,invoice,srdfs,srtfs,srdfsw,insp_date,reldat,unique_id,grn_date,entdate,buyer, item,lots_ref,po_ref,supplier_name,quality,rms,const,compo,color_ref,syp,batch_ref,rolls_count,tktlen,ctexlen,lenper,qty_insp,qty_insp_act,inches, pur_width_ref,act_width_ref,pur_gsm,act_gsm,consumption,pts,fallout,defects,skew_cat_ref,skew,shrink_l,shrink_w,sup_test_rep,inspec_per_rep,cc_rep, com_ref1, reason_qty,reason_name,reason_ref_explode_ex,reason_name1,reason_ref_explode_ex1,fab_tech, high_pts, fall_out, skew_bowing, wirc_shading,gsm,others, off_shade,hand_feel,length,width,test_report,status_f,impact,host_name,user_name,log_time) values('".trim($batch_ref[$i])."-".$month_ref[$i]."','".$bai1_rec[$i]."','".$weekno[$i]."','".$pkg_no[$i]."','".$invoice[$i]."','".$srdfs[$i]."','".$srtfs[$i]."','".$srdfsw[$i]."','".$insp_date[$i]."','".$reldat[$i]."','".$unique_id[$i]."','".$grn_date[$i]."','".$entdate[$i]."','".$buyer[$i]."','".$item[$i]."','".$lots_ref[$i]."','".$po_ref[$i]."','".$supplier_name[$i]."','".$quality[$i]."','".$rms[$i]."','".$const[$i]."','".$compo[$i]."','".$color_ref[$i]."','".$syp[$i]."','".$batch_ref[$i]."','".$rolls_count[$i]."','".$tktlen[$i]."','".$ctexlen[$i]."','".$lenper[$i]."','".$qty_insp[$i]."','".$qty_insp_act[$i]."','".$inches[$i]."','".$pur_width_ref[$i]."','".$act_width_ref[$i]."','".$pur_gsm[$i]."','".$act_gsm[$i]."','".$consumption[$i]."','".$pts[$i]."','".$fallout[$i]."','".$defects[$i]."','".$skew_cat_ref[$i]."','".$skew[$i]."','".$shrink_l[$i]."','".$shrink_w[$i]."','".$sup_test_rep[$i]."','".$inspec_per_rep[$i]."','".$cc_rep[$i]."','".$com_ref1[$i]."','".$reason_qty[$i]."',".$string_include1."'".$fab_tech[$i]."',".$string_include2."'".$status_f[$i]."','".$impact[$i]."','".$host_name."','".$username."','".date("Y-m-d H:i:s")."')";	
 		mysqli_query($link, $sql1s) or exit("Sql Error4s".$sql1s.mysqli_error($GLOBALS["___mysqli_ston"]));
 		//echo $sql1s."<br>";
 
 		$sql1="select * from $bai_rm_pj1.supplier_performance_track where tid='".trim($batch_ref[$i])."-".$month_ref[$i]."'";
-		// echo $sql1."<br>";
+		//echo $sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error4".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		if(mysqli_num_rows($sql_result1) > 0)
+		if(mysqli_num_rows($sql_result1) >0)
 		{
-			
 			$sql2="delete from $bai_rm_pj1.supplier_performance_track where tid='".trim($batch_ref[$i])."-".$month_ref[$i]."'";
-		
 			mysqli_query($link, $sql2) or exit("Sql Error1".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
-			mysqli_query($link, $sql) or exit("Sql Error3".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-			
-		
+			$sql_result5=mysqli_query($link, $sql);
 		}
 		else
 		{
+			$sql_result5=mysqli_query($link, $sql) ;
+			if($sql_result5>0){
+			}
+		}
+		if($sql_result5>0)
+		{
+			if(strlen($srdfs[$i]) > 0 && strlen($srtfs[$i]) > 0 && strlen($srdfsw[$i]) > 0 && strlen($reldat[$i]) > 0 && strlen($quality[$i]) > 0 && strlen($rms[$i]) > 0 && strlen($const[$i]) > 0 && strlen($syp[$i]) > 0 && strlen($qty_insp_act[$i]) > 0 && strlen($defects[$i]) > 0 && strlen($skew_cat_ref[$i]) > 0 && strlen($sup_test_rep[$i]) > 0 && strlen($inspec_per_rep[$i]) > 0 && strlen($cc_rep[$i]) > 0 && strlen($fab_tech[$i]) > 0)
+			{
+				$alert_check="updated";
+				$count_update=$updated_rows++;
+			}
+		// 	else{
+		// 		$alert_check="partiallyupdated";
+		// 	}
 			
-			mysqli_query($link, $sql) or exit("Sql Error3".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-			
-		}		
+		// }else{
+		// 		$alert_check="notupdated";
+		// }	
+		$total_rows_updated=$updated_rows;
 	
-	echo "<script>sweetAlert('Success!','Successfully Updated','success');</script>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
+		}
+	//echo "</br>Qry Result :</br>".$sql_result5;
+	// if($alert_check=="updated"){
+	// echo "<script>sweetAlert('Success!','Successfully Updated','success');</script>";
+	// //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"supplier_perf_v2.php",0, "N")."\"; }</script>";
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";	
+	// }
+	// elseif($alert_check=="partiallyupdated"){
+	//    echo "<script>sweetAlert('Values updated..,But Performance not updated','','success');</script>";
+	// 	 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"supplier_perf_v2.php",0, "N")."\"; }</script>";
+	// }
+	// else{
+	// 	echo "<script>sweetAlert('Records Not Updated..!','','error');</script>";
+	// 	  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"supplier_perf_v2.php",0, "N")."\"; }</script>";
+	//  }
 	}
-	
+	 echo "<script>sweetAlert('\"$total_rows_updated\" Records Updated Successfully','','success');</script>";
+		  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";
 
 }
 
