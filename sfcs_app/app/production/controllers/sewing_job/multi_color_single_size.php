@@ -76,7 +76,8 @@ function calculateqty(size_count,sizeOfColors)
 								}
 								echo "<th>".$Ori_size."</th>";
 							}
-						echo "</tr>";
+							echo "<th>Combo</th>
+						</tr>";
 						// Display Textboxes
 						$row_count=0;
 						for ($j=0; $j < sizeof($color1); $j++)
@@ -87,7 +88,8 @@ function calculateqty(size_count,sizeOfColors)
 									{
 										echo "<td><input type='text' name='GarPerBag' id='GarPerBag_".$size_count."_".$row_count."' class='form-control' value=''></td>";
 									}
-							echo "</tr>";
+									echo "<td><input type='text' name='combo' id='combo' class='form-control' value='1' readonly></td>
+								</tr>";
 							$row_count++;
 						}
 					echo "</table>
@@ -109,7 +111,7 @@ function calculateqty(size_count,sizeOfColors)
 						echo "<tr>";
 							for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 							{
-								echo "<td><input type='text' name='BagPerCart' id='BagPerCart_".$size_count."' class='form-control' onchange=calculateqty($size_count,$size_of_planned_colors);></td>";
+								echo "<td><input type='text' name='BagPerCart' id='BagPerCart_".$size_count."' class='form-control' onchange=calculateqty($size_count,$size_of_ordered_colors);></td>";
 							}
 						echo "</tr>";
 					echo "</table>
