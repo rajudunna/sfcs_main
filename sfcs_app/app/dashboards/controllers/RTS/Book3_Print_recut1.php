@@ -267,7 +267,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$a_sizes= array_filter($a_sizes);
 	$p_sizes= array_filter($p_sizes);
 	$cutno=$sql_row['acutno'];
-	$plies=$sql_row['p_plies']; //20110911
+	$plies=$sql_row['a_plies']; //20110911
 	$docketno=$sql_row['doc_no'];
 	$docketdate=$sql_row['date'];
 	$mk_ref=$sql_row['mk_ref'];
@@ -325,6 +325,31 @@ if($print_status==NULL)
 	}
 }
 */
+if($category=='Body' || $category=='Front')
+	{
+		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		// echo $sql2;
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$rows=mysqli_num_rows($sql_result2);
+		if($rows > 0)
+		{
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+				$binding_con = $sql_row2['binding_con'];
+				$bind_con= $binding_con *($a_ratio_tot*$plies);
+				//$bind_con = $sql_row2['binding_con'];
+			}
+		}
+		else
+		{
+			$bind_con=0;
+		}
+	}
+	else
+	{
+		$bind_con=0;
+		
+	}
 //To allocate Lot Number for RM Issuing
 ?>
 
@@ -2185,7 +2210,13 @@ tags will be replaced.-->
   <td class=xl754118 style="border:.5pt solid windowtext;"><?php echo array_sum($sum_of_a_p_sizes) ?></td>
   <td class=xl654118></td>
  </tr>
- 
+ <tr style='height:10px'>
+ </tr>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td height=20 class=xl654118 style='height:15.0pt'></td>
+  <td colspan=4 class=xl654118 style="border:.5pt solid windowtext;">Binding Consumption : <?= $binding_con ?></td>
+ </tr> 
+
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
@@ -2262,7 +2293,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $plies ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><?php echo ($mklength*$plies); ?></td>
+  border-top:none;width:48pt'><?php echo round((($mklength*$plies)+$bind_con),2); ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;

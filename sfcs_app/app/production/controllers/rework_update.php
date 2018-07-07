@@ -93,73 +93,6 @@ function second_box(){
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
 
 <script>
-	// function GreaterDate(DtVal1, DtVal2)
-	// {
-		// var DtDiff;
-		// Date1 = new Date(DtVal1);
-		// Date2 = new Date(DtVal2);
-		// DaysDiff = Math.floor((Date1.getTime() - Date2.getTime())/(1000*60*60*24));
-		// if(DtDiff > 0)
-		// return true;
-		// else
-		// return false;
-	// }
-
-	// function Lessdate(DtVal1, DtVal2)
-	// {
-		// var DtDiff;
-		// Date1 = new Date(DtVal1);
-		// Date2 = new Date(DtVal2);
-		// DaysDiff = Math.floor((Date1.getTime() - Date2.getTime())/(1000*60*60*24));
-		// alert("DaysDiff ="+DaysDiff);
-		// if(DtDiff <= 0)
-		// return true;
-		// else
-		// return false;
-	// }
-
-	// function EqualDate(DtVal1, DtVal2)
-	// {
-		// var DtDiff;
-		// Date1 = new Date(DtVal1);
-		// Date2 = new Date(DtVal2);
-		// DtDiff = Math.floor((Date1.getTime() - Date2.getTime())/(1000*60*60*24));
-		// if(DtDiff == 0)
-		// return true;
-		// else
-		// return false;
-	// }
-
-	// function check_date(x,yy,xx,hh) //form date, allowed date, today date
-	// {
-		
-		// var d = new Date();
-		// var curr_hour = d.getHours()+"."+d.getMinutes();
-		// curr_hour=parseFloat(curr_hour);
-		// hh=parseFloat(hh);
-					
-		// if (x< yy)
-		// { 
-			// sweetAlert("Pleae enter correct date","","warning");
-			// document.test.date.value=xx;
-		// }
-		// if(x>xx)
-		// {
-			// sweetAlert("Pleae enter correct date","","warning");
-			// document.test.date.value=xx;
-		// }
-		
-		// if (x==yy && curr_hour<=hh)
-		// {
-			
-		// }
-		// else
-		// {
-			// sweetAlert("You are not Authorized to Update Backdated Output.","","warning");
-			// document.test.date.value=xx;
-		// }
-		
-	// }
 	
     window.onload = function () 
 	{
@@ -310,6 +243,8 @@ function second_box(){
 			sweetAlert('Please Select Valid Date','','warning');
 			document.getElementById("sdate").value = "<?php  echo date("Y-m-d");  ?>";
 		}
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value
+
 	}
 	</script>
 </head>
@@ -323,23 +258,32 @@ function second_box(){
 	    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/rework_functions.php',1,'R'));
 		$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 		$username=strtolower($username_list[1]);
-
-		$section=$_GET['section'];
-		
-		if($_GET['sdate']){
-			$sdate = $_GET['sdate'];
+		if($_POST['select_section']){
+			$section=$_POST['select_section'];
 		}else{
-			$sdate = date("Y-m-d");
+			$section=$_GET['section'];
 		}
-		
-		// $mod=$_POST['module'];
+		// $section=$_GET['section'];
+		if($_POST['date'])
+		{
+			$sdate = $_POST['date'];
+		}
+		else if($_GET['sdate'])
+		{
+			$sdate = $_GET['sdate'];
+		}
+		else
+		{
+			$sdate = date('Y-m-d');
+		}
+
 		$module_ref=$_POST['module']; 
 		$shift=$_POST['shift'];
 		$zone_base=$_POST['zone_base'];
 	?>
 
 	<?php 
-		$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
+		$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date=\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error7896".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -448,13 +392,12 @@ function second_box(){
 <br><br>
 <?php
 
-// echo $module_ref;
 	//To avoid Duplicate Entry - 20150511 Kirang
 	session_start();
 	$secret=md5(uniqid(rand(), true));
 	$_SESSION['FORM_SECRET'] = $secret;
 
-if ($_POST['submit11'])
+if (isset($_POST['submit11']))
 {
 ?>		
 
@@ -469,11 +412,7 @@ if ($_POST['submit11'])
 				
 	<?php
 
-		echo '<div class="table-responsive"><table class="table table-bordered"		style="color:black; border: 1px solid red;">';
-		echo "<tr class=\"new\"><th>Mod#</th>";
-		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Cut#</th><th>Input Job#</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th>";
-		// echo "<th>QTY</th><th>SMV</th><th>SMO</th><th>Status</th>";
-		echo "<th>Rework Qty</th><th>Remarks</th></tr>";
+		
 		
 		$toggle=0;
 		$j=1;
@@ -494,8 +433,8 @@ if ($_POST['submit11'])
 			$for_zero_entries=0;
 			$row_count = 0;
 			
-			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB')";
-			//echo $sql12;
+			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate'";
+			// echo $sql12;
 			// mysqli_query($link, $sql12) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result12);
@@ -506,13 +445,13 @@ if ($_POST['submit11'])
 				// $rowcount_check=1;
 				
 				//NEW
-				$sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_doc_no";
+				$sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_doc_no";
 			}
 			else
 			{
 				// echo "<tr bgcolor=\"$tr_color\" class=\"new\" onMouseover=\"this.bgColor='#DDDDDD'\" onMouseout=\"this.bgColor='$tr_color'\"><td rowspan=$sql_num_check>$module_ref</td>";
 				// $rowcount_check=1;
-				$sql="SELECT rand_track FROM $bai_pro3.ims_log_backup WHERE ims_mod_no=$module_ref AND ims_status=\"DONE\" AND rand_track>0 and (ims_qty-ims_pro_qty)=0 and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') ORDER BY ims_date DESC limit 1";
+				$sql="SELECT rand_track FROM $bai_pro3.ims_log_backup WHERE ims_mod_no=$module_ref AND ims_status=\"DONE\" AND rand_track>0 and (ims_qty-ims_pro_qty)=0 and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' ORDER BY ims_date DESC limit 1";
 				$for_zero_entries=1;
 				//echo $sql."<br/>";
 			}
@@ -521,14 +460,18 @@ if ($_POST['submit11'])
 			if(mysqli_num_rows($sql_result)>0)
 			{
 				//The below if else was shifted from top to here.Identify the code just above 4-lines and uncommentit,then remove this block if unnecessary
-				if($sql_num_check>0){
-					echo "<tr><td rowspan=$sql_num_check>$module_ref</td>";
-					$rowcount_check=1;
-				}else{
-					echo "<tr ><td rowspan=$sql_num_check>$module_ref</td>";
-					$rowcount_check=1;
-				}
-				
+				// if($sql_num_check>0){
+				// 	echo "<tr><td rowspan=$sql_num_check>$module_ref</td>";
+				// 	$rowcount_check=1;
+				// }else{
+				// 	echo "<tr ><td rowspan=$sql_num_check>$module_ref</td>";
+				// 	$rowcount_check=1;
+				// }
+				echo '<div class="table-responsive"><table class="table table-bordered"		style="color:black; border: 1px solid red;">';
+		echo "<tr class=\"new\"><th>Mod#</th>";
+		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Cut#</th><th>Input Job#</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th>";
+		// echo "<th>QTY</th><th>SMV</th><th>SMO</th><th>Status</th>";
+		echo "<th>Rework Qty</th><th>Remarks</th></tr>";
 
 				$id_count = 0;	
 				while($sql_row=mysqli_fetch_array($sql_result))
@@ -536,10 +479,10 @@ if ($_POST['submit11'])
 					$row_count++;
 					$id_count++;
 					$rand_track=$sql_row['rand_track'];
-					$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_schedule, ims_size DESC";
+					$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_schedule, ims_size DESC";
 					if($for_zero_entries==1)
 					{
-						$sql12="select * from $bai_pro3.ims_log_backup where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status=\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_schedule, ims_size DESC limit 1";
+						$sql12="select * from $bai_pro3.ims_log_backup where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status=\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_schedule, ims_size DESC limit 1";
 						//echo $sql12."<br/>";
 						
 					}
@@ -580,13 +523,13 @@ if ($_POST['submit11'])
 						echo '<input type="hidden" name="cut[]" value="'.$sql_row12['ims_doc_no'].'">';
 						echo '<input type="hidden" name="size[]" value="'.$sql_row12['ims_size'].'">';
 						echo '<input type="hidden" name="tid[]" value="'.$sql_row12['tid'].'">';
-						
+						$module_no=$sql_row12['ims_mod_no'];
 						//To extract as per the M3 Size
 						$size_value=ims_sizes('',$sql_row12['ims_schedule'],$sql_row12['ims_style'],$sql_row12['ims_color'],strtoupper(substr($sql_row12['ims_size'],2)),$link11);
-						
+						echo "<tr>";
 						if($rowcount_check==1)
 						{
-							echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>J".leading_zeros($sql_row12['input_job_no_ref'],3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
+							echo "<td>".$module_no."</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>J".leading_zeros($sql_row12['input_job_no_ref'],3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 							$balance=$sql_row12['ims_qty']-$sql_row12['ims_pro_qty'];
 							// echo '<td><input type="text" name="qty[]" autocomplete="off" size="8" onchange="if(check(this.value, '.($sql_row12['ims_qty']-$sql_row12['ims_pro_qty']).')==1010){ this.value=0;}" value="0" tabindex="'.$j.'" style="background-color:green; color=white;"></td>';
 							
@@ -594,9 +537,9 @@ if ($_POST['submit11'])
 						}
 						else
 						{
-							echo "<tr>";
 							
-							echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>J".leading_zeros($sql_row12['input_job_no_ref'],3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
+							
+							echo "<td>".$module_no."</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>J".leading_zeros($sql_row12['input_job_no_ref'],3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 							$balance=$sql_row12['ims_qty']-$sql_row12['ims_pro_qty'];
 							// echo '<td><input type="text" name="qty[]" autocomplete="off" size="8" onchange="if(check(this.value, '.($sql_row12['ims_qty']-$sql_row12['ims_pro_qty']).')==1010){ this.value=0;}" value="" tabindex="'.$j.'" style="background-color:green; color=white;"></td>';
 						}
@@ -604,6 +547,7 @@ if ($_POST['submit11'])
 						
 						$mod_stat=="Down";
 						$sqlx="select * from $bai_pro.pro_mod_today where mod_date=(select max(mod_date) from $bai_pro.pro_mod_today) and mod_no=\"$module_ref\"";
+						// echo $sqlx;
 						$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error963 $sqlx".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						{
@@ -612,7 +556,7 @@ if ($_POST['submit11'])
 							$mod_rem=$sql_rowx['mod_remarks'];
 							$id_count++;
 							echo "<td><input type=\"number\" min=0 max=$balance onkeyup='verify_qty($balance,this,event)' onchange='verify_qty($balance,this,event)' name=\"rework_qty[]\" value=\"\"  id=\"rqty$id_count\"/></td>";
-							echo "<td> <input type=\"text\" name=\"remarks[]\" value=\"".$mod_rem."\" /><input type=\"hidden\" name=\"csnb_code[]\" value=\"$couple_x^$smv^$nop^$buyer^$section\"></td>";								
+							echo "<td> <input type=\"text\" name=\"remarks[]\" value=\"".$mod_rem."\" /></td><input type=\"hidden\" name=\"csnb_code[]\" value=\"$couple_x^$smv^$nop^$buyer^$section\">";								
 						}
 						
 
@@ -620,7 +564,7 @@ if ($_POST['submit11'])
 						if(mysqli_num_rows($sql_resultx)==0)
 						{							
 							echo "<td><input type=\"number\" min=0 max=$balance onkeyup='verify_qty($balance,this,event)' onchange='verify_qty($balance,this,event)' id=\"rqtyy$id_count\" name=\"rework_qty[]\" value=\"\"/></td>";
-							echo "<td> <input type=\"text\" name=\"remarks[]\" value=\"".$mod_rem."\" /><input type=\"hidden\" name=\"csnb_code[]\" value=\"$couple_x^$smv^$nop^$buyer^$section\"></td>";
+							echo "<td> <input type=\"text\" name=\"remarks[]\" value=\"".$mod_rem."\" /></td><input type=\"hidden\" name=\"csnb_code[]\" value=\"$couple_x^$smv^$nop^$buyer^$section\">";
 						}
 						
 						// For module status updation
@@ -662,7 +606,8 @@ if ($_POST['submit11'])
 		</script>
 
 	<?php
-		}else{
+		}
+		else{
 			?>		
 
 	<FORM method="post" name="test" action="<?= getFullURLLevel($_GET['r'],'rework_update_process.php',0,'N');?>" enctype="multipart/form-data" id="test">

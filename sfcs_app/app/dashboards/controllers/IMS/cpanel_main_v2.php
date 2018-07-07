@@ -408,16 +408,22 @@ while($sql_row=mysqli_fetch_array($sql_result))
         $wip='0';
         $wip=$sql_rowwip['WIP'];
         ?></span> -->
+
+
+
                 <div style="float:left;padding-left:25px;">
                 
-                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,i.ims_color,i.ims_schedule,i.rand_track, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date FROM $bai_pro3.ims_log i,plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no AND i.ims_status !=\"DONE\" GROUP BY ims_doc_no,inputjobnorand";
-               // echo $sqlred;
+                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,i.ims_color,i.ims_schedule,i.rand_track,i.ims_remarks, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date FROM $bai_pro3.ims_log i,plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no AND i.ims_status !=\"DONE\" GROUP BY ims_doc_no,inputjobnorand";
+                //echo $sqlred;
         //$sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_color,ims_schedule,rand_track  FROM ims_log WHERE ims_mod_no='$module' GROUP BY ims_doc_no"
-        mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         
         $total_qty="0";
         $total_out="0";
+
+
+
+        
         while($sql_rowred=mysqli_fetch_array($sql_resultred))     //docket boxes Loop -start
         {
             $input_qty=$sql_rowred['Input'];      // input qty
@@ -427,6 +433,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $color_name=$sql_rowred['ims_color'];   // color
             $schedul_no=$sql_rowred['ims_schedule'];  // schedul no
             $rand_track=$sql_rowred['rand_track'];
+            $ims_remarks=$sql_rowred['ims_remarks'];
             $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
             $cut_no=$sql_rowred['acutno'];
             $inputno=$sql_rowred['inputjobno'];
@@ -434,6 +441,23 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $total_qty=$total_qty+$input_qty;
             $total_out=$total_out+$output_qty;
             $input_date=$sql_rowred['ims_date'];
+             
+
+             $rejected=0;
+             $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color=\"".$sql_rowred['ims_color']."\" and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" ";
+               
+              // echo $sql33;
+
+              $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+              while($sql_row33=mysqli_fetch_array($sql_result33))
+              {
+                $rejected=$sql_row33['rejected']; 
+              }
+
+
+
+
+
           ?>
                   
                   <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'pop_red_box_details.php','R');?>?module=<?php echo $module; ?>&docket=<?php echo $rand_track;?>&input_job_no=<?php echo $inputno; ?>&input_job_rand_ref=<?php echo $inputjobnorand; ?>', 'myPop1',800,600);"  title="
@@ -447,7 +471,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
                   <?php echo "-------------------------</br>"; ?>
                   Total Input :<?php echo $input_qty."<br/>"; ?>
                   Total Output:<?php echo $output_qty."<br/>"; ?>
-                  <?php echo "Balance : ".($input_qty - $output_qty); ?>
+                  Rejected:<?php echo $rejected."<br/>"; ?>
+                  <?php echo "Balance : ".($input_qty - ($output_qty));
+                   // echo "Balance :".(int)$input_qty - (int)$output_qty."";
+                   ?>
                   " rel="tooltip"><div class="red_box"  >
                   
                   </div></a>

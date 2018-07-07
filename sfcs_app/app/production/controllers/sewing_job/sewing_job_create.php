@@ -385,13 +385,8 @@ td{ padding:2px; white-space: nowrap;}
 														for($j=0;$j<sizeof($operation);$j++)
 														{
 															$disabled='';
-															if ($val>1)
+															if ($val == 1) 
 															{
-																if ($j == '1' or $j == '4' or $j == '5')
-																{
-																	$disabled='disabled';
-																}
-															} elseif ($val == 1) {
 																if ($j == '2' or $j == '3')
 																{
 																	$disabled='disabled';

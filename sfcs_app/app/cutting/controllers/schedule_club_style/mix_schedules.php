@@ -1,6 +1,3 @@
-
-
-
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
@@ -65,14 +62,14 @@
 	<div class='panel panel-heading'>Schedule Clubbing (Style)</div>
 	<div class='panel-body'>
 		<form name="test" action="index.php?r=<?= $_GET['r'] ?>" method="post">
-		<?php
+		<?php	
 
 		echo "<div class='col-sm-3'>";
 			$sql = "select distinct order_style_no from $bai_pro3.bai_orders_db order by order_style_no";
 			$sql_result=mysqli_query($link,$sql) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			echo "<label for='style'>Select Style</label>
-			<select  class='form-control' name='style' onchange='firstbox();'>";
-			echo "<option value=\"NIL\" selected>NIL</option>";
+			<select  class='form-control' name='style' onchange='firstbox();' required>";
+			echo "<option value=''>Please Select</option>";
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
@@ -93,12 +90,11 @@
 <?php
 	echo "<div class='col-sm-3'>";
 	echo "<label for='color'>Select Color</label>
-	<select  class='form-control' name='color' onchange='thirdbox();'>";
+	<select  class='form-control' name='color' onchange='thirdbox();' required>";
 
 	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-	echo "<option value=\"NIL\" selected>NIL</option>";
+	echo "<option value=''>Please Select</option>";
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
@@ -111,14 +107,13 @@
 		}
 	}
 	echo "</select>";
-	echo "</div>";
 
-	if(isset($_GET['style'])){
-		echo "<div class='col-sm-1'>";
-			echo "<label></label><br/>";
-			echo "<input type='submit' class='btn btn-success' value='submit' name='submit'>";
-		echo "</div>";	
-	}	
+	echo "</div>";
+	echo "<div class='col-sm-1'>";
+	echo "<label></label><br/>";
+	echo "<input type='submit' class='btn btn-success' value='Submit' name='submit'>";
+echo "</div>";
+
 ?>
 
 
@@ -179,9 +174,13 @@ if(isset($_POST['submit']))
 		}	
 		echo "<th>Total</th>";
 		echo "</tr>";
-		$sql="select * from $bai_pro3.bai_orders_db where order_joins not in (\"1\",\"2\") and order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no>0 order by order_style_no";
+		$sql="select * from $bai_pro3.bai_orders_db where order_joins not in (\"1\",\"2\") and order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no>0 order by order_style_no";		
 		$test_count=0;
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$num_rows = mysqli_num_rows($sql_result);
+		if($num_rows>1){
+
+		
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			for($ii=0;$ii<sizeof($sizes_array);$ii++)
@@ -281,21 +280,16 @@ if(isset($_POST['submit']))
 		echo '<input type="hidden" name="color" value="'.$color.'">';
 		echo '<input type="hidden" name="exfact" value="'.$exfact.'">';
 		echo '<input type="hidden" name="po" value="'.$po.'">';
-		if($test_count>=1)
-		{
-			echo "<input type=\"submit\" class='btn btn-success btn-sm' value=\"confirm\" name=\"fix\"  id=\"confirm\" onclick=\"document.getElementById('confirm').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
-			echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait data is processing...!<h5></span>";
-		}
-		
-		echo '</form>';
 		
 		$row_count=0;
 		echo "<br>";
-		echo "<h4>Clubbed Schedule Details</h4>";
+		
 		$sql452="select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$style."' and order_col_des=\"".$color."\" and order_joins in (1,2)";
+		//echo $sql452."<br>";
 		$sql_result452=mysqli_query($link, $sql452) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result452)>0)
 		{
+			echo "<h4>Clubbed Schedule Details</h4>";
 			while($sql_row452=mysqli_fetch_array($sql_result452))
 			{
 				$row_count++;
@@ -313,7 +307,7 @@ if(isset($_POST['submit']))
 				}
 				echo "</tr>";
 				echo "<tr><td>".$sql_row452["order_style_no"]."</td><td>".$sql_row452["order_del_no"]."</td><td>".$sql_row452["order_col_des"]."</td>";
-				$sql453="select group_concat(order_del_no)  as org_sch from $bai_pro3.bai_orders_db_confirm where order_joins='J".$sql_row452["order_del_no"]."' and order_col_des=\"".$color."\"";
+				$sql453="select group_concat(order_del_no)  as org_sch from $bai_pro3.bai_orders_db_confirm where order_joins='".$sql_row452["order_del_no"]."' and order_col_des=\"".$color."\"";
 				$sql_result453=mysqli_query($link, $sql453) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row453=mysqli_fetch_array($sql_result453))
 				{		
@@ -329,8 +323,16 @@ if(isset($_POST['submit']))
 				echo "<br>";
 			}
 		}
-		if($row_count == 0){
-			echo "<b style='color:#ff0000'>No data Found</b>";
+		echo "<br><br>";
+		if($test_count>=1)
+		{
+			echo "<input type=\"submit\" class='btn btn-success btn-sm' value=\"Confirm\" name=\"fix\"  id=\"confirm\" onclick=\"document.getElementById('confirm').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
+			echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait data is processing...!<h5></span>";
+		}		
+		echo '</form>';
+		}else{
+			echo "<script>swal('Warning!','This style doesnt have more than 1 schedule so it cannot be clubbed','warning')</script>";
+			exit();
 		}
 	}
 	else
@@ -354,7 +356,13 @@ if(isset($_POST['fix']))
 	$size_array1=array();
 	$orginal_size_array1=array();
 	$schedule_array=array();
-	
+
+	if(sizeof($selected)<2){
+		echo "<script>swal('Warning!','Please select more than one schedule for clubbing.','warning');</script>"; 
+		//write redirection for the style and color here
+		exit();
+	}
+
 	for($q1=0;$q1<sizeof($sizes_array);$q1++)
 	{
 		for($x1=0;$x1<sizeof($selected);$x1++)
@@ -392,28 +400,17 @@ if(isset($_POST['fix']))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$tot_ext_count=mysqli_num_rows($sql_result);
 	$tot_ext_count++;
-	if(sizeof($selected)>=1)
+	if(sizeof($selected)>1)
 	{
 		//To find new color code 
 		$sql="select max(color_code) as new_color_code from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\"";
-		echo $sql."<bR>";
+		//echo $sql."<bR>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$new_color_code=($sql_row['new_color_code']);
 		}
 		
-		$sql1="delete from $bai_pro3.bai_orders_db_club where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
-		//echo $sql1."<br>";
-		mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		$sql1="insert ignore into $bai_pro3.bai_orders_db_club select * from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
-		//echo $sql1."<br>";
-		mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		$sql1="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
-		//echo $sql1."<br>";
-		mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//New to eliminate issues 2012
 		$sql17="SELECT order_tid,order_tid2,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_del_no IN 
 		('".implode("','",$selected)."') AND order_col_des='$color') GROUP BY order_tid ORDER BY cnt DESC LIMIT 1"; 
@@ -439,21 +436,32 @@ if(isset($_POST['fix']))
 			}
 		}
 
-		if(mysqli_num_rows($sql_result)>0)
+		if(mysqli_num_rows($sql_result17)>0)
 		{
+			$sql1="delete from $bai_pro3.bai_orders_db_club where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
+			//echo $sql1."<br>";
+			mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+			$sql1="insert ignore into $bai_pro3.bai_orders_db_club select * from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
+			//echo $sql1."<br>";
+			mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+			$sql1="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
+			//echo $sql1."<br>";
+			mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//echo $new_sch."<br>";
 			$sql1="insert ignore into $bai_pro3.bai_orders_db(order_tid,order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,order_del_no,order_col_des,order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,color_code,order_joins,packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no,order_s_s01,order_s_s02,order_s_s03,order_s_s04,order_s_s05,order_s_s06,order_s_s07,order_s_s08,order_s_s09,order_s_s10,order_s_s11,order_s_s12,order_s_s13,order_s_s14,order_s_s15,order_s_s16,order_s_s17,order_s_s18,order_s_s19,order_s_s20,order_s_s21,order_s_s22,order_s_s23,order_s_s24,order_s_s25,order_s_s26,order_s_s27,order_s_s28,order_s_s29,order_s_s30,order_s_s31,order_s_s32,order_s_s33,order_s_s34,order_s_s35,order_s_s36,order_s_s37,order_s_s38,order_s_s39,order_s_s40,order_s_s41,order_s_s42,order_s_s43,order_s_s44,order_s_s45,order_s_s46,order_s_s47,order_s_s48,order_s_s49,order_s_s50,old_order_s_s01,old_order_s_s02,old_order_s_s03,old_order_s_s04,old_order_s_s05,old_order_s_s06,old_order_s_s07,old_order_s_s08,old_order_s_s09,old_order_s_s10,old_order_s_s11,old_order_s_s12,old_order_s_s13,old_order_s_s14,old_order_s_s15,old_order_s_s16,old_order_s_s17,old_order_s_s18,old_order_s_s19,old_order_s_s20,old_order_s_s21,old_order_s_s22,old_order_s_s23,old_order_s_s24,old_order_s_s25,old_order_s_s26,old_order_s_s27,old_order_s_s28,old_order_s_s29,old_order_s_s30,old_order_s_s31,old_order_s_s32,old_order_s_s33,old_order_s_s34,old_order_s_s35,old_order_s_s36,old_order_s_s37,old_order_s_s38,old_order_s_s39,old_order_s_s40,old_order_s_s41,old_order_s_s42,old_order_s_s43,old_order_s_s44,old_order_s_s45,old_order_s_s46,old_order_s_s47,old_order_s_s48,old_order_s_s49,old_order_s_s50) select \"".$style.$new_sch.$color."\",order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,$new_sch,order_col_des,order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,$new_color_code,1,packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 			//echo $sql1."<br><br>";
 			mysqli_query($link, $sql1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql1="update $bai_pro3.bai_orders_db set order_joins=\"J$new_sch\" where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
+			$sql1="update $bai_pro3.bai_orders_db set order_joins=\"$new_sch\" where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
 			mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			//New to eliminate issues 2012
 			$sql1="insert ignore into $bai_pro3.bai_orders_db_confirm(order_tid,order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,order_del_no,order_col_des,order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,color_code,order_joins,packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no,order_s_s01,order_s_s02,order_s_s03,order_s_s04,order_s_s05,order_s_s06,order_s_s07,order_s_s08,order_s_s09,order_s_s10,order_s_s11,order_s_s12,order_s_s13,order_s_s14,order_s_s15,order_s_s16,order_s_s17,order_s_s18,order_s_s19,order_s_s20,order_s_s21,order_s_s22,order_s_s23,order_s_s24,order_s_s25,order_s_s26,order_s_s27,order_s_s28,order_s_s29,order_s_s30,order_s_s31,order_s_s32,order_s_s33,order_s_s34,order_s_s35,order_s_s36,order_s_s37,order_s_s38,order_s_s39,order_s_s40,order_s_s41,order_s_s42,order_s_s43,order_s_s44,order_s_s45,order_s_s46,order_s_s47,order_s_s48,order_s_s49,order_s_s50,old_order_s_s01,old_order_s_s02,old_order_s_s03,old_order_s_s04,old_order_s_s05,old_order_s_s06,old_order_s_s07,old_order_s_s08,old_order_s_s09,old_order_s_s10,old_order_s_s11,old_order_s_s12,old_order_s_s13,old_order_s_s14,old_order_s_s15,old_order_s_s16,old_order_s_s17,old_order_s_s18,old_order_s_s19,old_order_s_s20,old_order_s_s21,old_order_s_s22,old_order_s_s23,old_order_s_s24,old_order_s_s25,old_order_s_s26,old_order_s_s27,old_order_s_s28,old_order_s_s29,old_order_s_s30,old_order_s_s31,old_order_s_s32,old_order_s_s33,old_order_s_s34,old_order_s_s35,old_order_s_s36,old_order_s_s37,old_order_s_s38,old_order_s_s39,old_order_s_s40,old_order_s_s41,old_order_s_s42,old_order_s_s43,old_order_s_s44,old_order_s_s45,old_order_s_s46,old_order_s_s47,old_order_s_s48,old_order_s_s49,old_order_s_s50) select \"".$style.$new_sch.$color."\",order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,$new_sch,order_col_des,order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,$new_color_code,1,packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 			mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//echo "2=".$sql1."<br><br>";
-			$sql1="update $bai_pro3.bai_orders_db_confirm set order_joins=\"J$new_sch\" where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
+			$sql1="update $bai_pro3.bai_orders_db_confirm set order_joins=\"$new_sch\" where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
 			mysqli_query($link, $sql1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			/*
 			for($q11=0;$q11<sizeof($unique_orginal_sizes_explode1);$q11++)
@@ -540,7 +548,7 @@ if(isset($_POST['fix']))
 					}
 					echo "</tr>";
 					echo "<tr><td>".$sql_row451["order_style_no"]."</td><td>".$sql_row451["order_del_no"]."</td><td>".$sql_row451["order_col_des"]."</td>";
-					$sql457="select group_concat(order_del_no)  as org_sch from $bai_pro3.bai_orders_db_confirm where order_joins='J".$new_sch."' and order_col_des=\"".$color."\"";
+					$sql457="select group_concat(order_del_no)  as org_sch from $bai_pro3.bai_orders_db_confirm where order_joins='".$new_sch."' and order_col_des=\"".$color."\"";
 					$sql_result457=mysqli_query($link, $sql457) or die("Error".$sql457.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row457=mysqli_fetch_array($sql_result457))
 					{		

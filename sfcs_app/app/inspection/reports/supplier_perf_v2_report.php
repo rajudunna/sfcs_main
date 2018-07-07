@@ -187,10 +187,10 @@ if(isset($_POST['filter']))
 	{
 		$flag=false;
 	}
-	// if(!$flag){
-	// 	echo "<script>sweetAlert('No Data Found','','warning');
-	// 	$('#main_div').hide()</script>";
-	// }
+	if(!$flag){
+		echo "<script>sweetAlert('No Data Found','','warning');
+		$('#main_div').hide()</script>";
+	}
 }
 
 ?>
@@ -220,7 +220,7 @@ if(isset($_POST['filter']))
 $(document).ready(function(){
 	$('#reset_table1').addClass('btn');
 	$('#reset_table1').addClass('btn-warning');
-	$('#reset_table1').css({'width':'100px'});
+	$('#reset_table1').css({'height':'20px','width':'40px','padding' : '0px 0px'});
 })
 
 </script>

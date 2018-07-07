@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$view_access=user_acl("SFCS_0100",$username,1,$group_id_sfcs); 
 
 
-include("header.php");
+// include("header.php");
 set_time_limit(60000);
 
 function div_by_zero($arg)
@@ -28,12 +28,11 @@ function div_by_zero($arg)
 <title>Future Delivery Status Report</title>
 <meta name="" content="">
 <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
-<!--<link href="style.css" rel="stylesheet" type="text/css" />-->
-<!--<script type="text/javascript" src="datetimepicker_css.js"></script>
-<script language="javascript" type="text/javascript" src="TableFilter_EN/tablefilter.js"></script>-->
+
 <link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R') ?>" rel="stylesheet" type="text/css" />
-<!--<script type="text/javascript" src="<?= getFullURL($_GET['r'],'datetimepicker_css.js','R')?>"></script>-->
-<script type="text/javascript" src="<?= getFullURL($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
+
+
 
 
 </head>
@@ -70,8 +69,8 @@ $table_flag = false;
 	$no_of_rows = mysqli_num_rows($result);
 	if($no_of_rows > 0){  
 		echo "<div class='table-responsive' id='main_content'>
-		<table border='1px' cellpadding=\"0\" cellspacing=\"0\" class=\"mytable\" id=\"table1\">
-		<tr>
+		<table border='1px' cellpadding=\"0\" cellspacing=\"0\" class=\"mytable table table-bordered\" id=\"table1\">
+		<tr class='info'>
 			<th>Customer</th><th>Style</th><th>Schedule</th><th>Color</th><th>Order Qty</th><th>Output</th><th>Achievement %</th><th>FG Status</th><th>Ex factory</th><th>PED</th>";
 		for($i=0;$i<sizeof($section);$i++)
 		{	
@@ -393,14 +392,36 @@ $table_flag = false;
 	}
 ?>
 <script language="javascript" type="text/javascript">
-	var table3Filters = {
-	col_7: "select",
-	sort_select: true,
-	btn_reset: true,
-	display_all_text: "Display all"
-	}
-	setFilterGrid("table1",table3Filters);
+
+$('#reset_table1').addClass('btn btn-warning');
+    var table6_Props =  {
+                            rows_counter: true,
+                            btn_reset: true,
+                            // btn_reset_text: "Clear",
+                            loader: true,
+                            loader_text: "Filtering data..."
+                        };
+    setFilterGrid( "table1",table6_Props );
+    $(document).ready(function(){
+        $('#reset_table1').addClass('btn btn-warning btn-xs');
+    });
+
+
 </script> 
+<style>
+table{
+    white-space:nowrap; 
+    border-collapse:collapse;
+    font-size:15px;
+}
+#reset_table1{
+    width : 50px;
+    color : #ec971f;
+    margin-top : 10px;
+    margin-left : 0px;
+    margin-bottom:15pt;
+}
+</style>
 </div>
 </div>
 </div>
