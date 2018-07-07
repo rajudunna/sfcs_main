@@ -44,21 +44,21 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 <script src="../../../../common/js/sweetalert.min.js"></script>
 <script type="text/javascript">
 
-function verify_num(t,e){
+// function verify_num(t,e){
 	
-		if(e.keyCode == 8){
-			return false;
-		}
-		var c = /^[0-9, ]+$/;
-		var id = t.id;
-		var n = document.getElementById(id);
-		var lot_length=n.value;
-		if( !((n.value).match(c)) ){
-			n.value ="";
-			//alert('Please enter only numerics');
-			return false;
-		}
-	}
+// 		if(e.keyCode == 8){
+// 			return false;
+// 		}
+// 		var c = /^[0-9, ]+$/;
+// 		var id = t.id;
+// 		var n = document.getElementById(id);
+// 		var lot_length=n.value;
+// 		if( !((n.value).match(c)) ){
+// 			n.value ="";
+// 			//alert('Please enter only numerics');
+// 			return false;
+// 		}
+// 	}
 
 function check_validate()
 {
