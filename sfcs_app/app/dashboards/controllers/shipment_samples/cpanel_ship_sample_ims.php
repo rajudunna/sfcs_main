@@ -102,8 +102,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 30px;">';
 echo "<p>";
 	
-$jump_section2 = getFullURLLevel($_GET['r'],'sec_rep.php',0,'R');  
-echo "<a href='".$jump_section2."?section=$section' onclick=\"Popup=window.open('".$jump_section2."?section=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:24px;color:#000000;\"><b>SECTION - $section</b><br><font style=\"font-size:16px;font-color:#000000;\">($section_head)</font></font></a>";
+$jump_section2 = getFullURLLevel($_GET['r'],'IMS/sec_rep.php',1,'R');  
+echo "<a href='".$jump_section2."?section=$section' onclick=\"Popup=window.open('".$jump_section2."?section=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:24px;color:#000000;\"><b>SECTION - $section</b></a>";
 //echo "<br/><div id=\"progressBar\" class=\"progressBar$section\"><div></div></div>";
 echo "<table>";
 
@@ -131,11 +131,11 @@ for($x=0;$x<sizeof($mods);$x++)
 			    $iu_module_highlight="bgcolor=\"$iu_module_highlight_color\"";
 		  }
     }
-	$jump_url = getFullURL($_GET['r'],'mod_rep.php','N');
+	$jump_url = getFullURLLevel($_GET['r'],'IMS/mod_rep.php',1,'R');
 	echo "<tr class=\"bottom\">";
 	echo "<td $iu_module_highlight style='width=10px'><font class=\"fontnn\" color=Black >
-        <a  href='".$jump_url."&module=$module&section_id=$section&imsremark=1' 
-           onclick=\"Popup=window.open('".$jump_url."&module=$module&section_id=$section&imsremark=1','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
+        <a  href='".$jump_url."?module=$module&section_id=$section&imsremark=1' 
+           onclick=\"Popup=window.open('".$jump_url."?module=$module&section_id=$section&imsremark=1','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
           if (window.focus) {
             Popup.focus()
           } 
@@ -223,7 +223,7 @@ for($x=0;$x<sizeof($mods);$x++)
 		}
 		else
 		{
-			$image_url2 = getFullURLLevel($_GET['r'],'common/images/ship_sample.gif',2,'R');
+			$image_url2 = getFullURLLevel($_GET['r'],'common/images/down.gif',2,'R');
 				$image="<img src='$image_url2' border=0/>";
 			
 		}
