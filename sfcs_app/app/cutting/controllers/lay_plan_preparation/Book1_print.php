@@ -1759,14 +1759,14 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
 
  <?php
     echo "<tr height=23 style='mso-height-source:userset;height:17.25pt'>"; 
-    if(strlen($remarks_x)>0) 
-    { 
-        echo "<td></td><td colspan=4 style='border-top:1px solid black' class=xl7313019 colspan=15 align=left><strong>Remarks:&nbsp;&nbsp;$remarks_x</strong></td>"; 
-    } 
-    else 
-    { 
-        echo "<td></td><td colspan='3' colspan=2 align=left></td>"; 
-    } 
+    // if(strlen($remarks_x)>0) 
+    // { 
+    //     echo "<td></td><td colspan=4 style='border-top:1px solid black' class=xl7313019 colspan=15 align=left><strong>Remarks:&nbsp;&nbsp;$remarks_x</strong></td>"; 
+    // } 
+    // else 
+    // { 
+    //     echo "<td></td><td colspan='3' colspan=2 align=left></td>"; 
+    // } 
     echo "</tr>";
  ?>
  <tr height=23 style='mso-height-source:userset;height:17.25pt'><td></td></tr>
@@ -1790,7 +1790,46 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
 <td class=xl7013019>Total</td> 
    
  </tr> 
- <tr class=xl6513019 height=21 style='mso-height-source:userset;height:15.75pt'> 
+
+<?php 
+//Getting sample details here  By SK-05-07-2018 == Start
+$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tid' order by sizes_ref";
+$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+$num_rows_samples = mysqli_num_rows($samples_qry_result);
+if($num_rows_samples >0){
+    $samples_total = 0;	   
+?>
+<tr class=xl6513019 height=21 style='mso-height-source:userset;height:15.75pt'> 
+  <td height=21 class=xl6513019 style='height:15.75pt'></td> 
+  <td class=xl7213019 width=70 style='width:53pt'>Samples Qty<span 
+  style='mso-spacerun:yes'></span></td> 
+    <?php 
+     while($samples_data=mysqli_fetch_array($samples_qry_result))
+     {
+         $samples_total+=$samples_data['input_qty'];
+         $samples_size_arry[] =$samples_data['sizes_ref'];
+         $samples_input_qty_arry[] =$samples_data['input_qty'];
+     }    
+     for($s=0;$s<sizeof($size);$s++) 
+     { 
+        $size_code = 's'.$sizes_code[$s];
+        $flg = 0;
+        for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+        {
+            if($size_code == $samples_size_arry[$ss]){
+                echo "<td class=xl7413019>".$samples_input_qty_arry[$ss]."</td>";
+                $flg = 1;
+            }			
+        }	
+        if($flg == 0){
+            echo "<td class=xl7413019><strong>-</strong></td>";
+        }      
+     } 
+     echo "<td class=xl7413019>".$samples_total."</td>";
+    }
+    ?>
+</tr>
+<tr class=xl6513019 height=21 style='mso-height-source:userset;height:15.75pt'> 
   <td height=21 class=xl6513019 style='height:15.75pt'></td> 
   <td class=xl7213019 width=70 style='width:53pt'>Order Qty<span 
   style='mso-spacerun:yes'></span></td> 
@@ -2412,14 +2451,14 @@ else
    
   <?php 
   
-  if(strlen($remarks_x)>0) 
-  { 
-      echo "<td colspan='31' class=xl6513019 colspan=15 align=left><strong>Remarks: $remarks_x</strong></td>"; 
-  } 
-  else 
-  { 
-      echo "<td class='xl6513019' colspan=2 align=left></td>"; 
-  } 
+//   if(strlen($remarks_x)>0) 
+//   { 
+//       echo "<td colspan='31' class=xl6513019 colspan=15 align=left><strong>Remarks: $remarks_x</strong></td>"; 
+//   } 
+//   else 
+//   { 
+//       echo "<td class='xl6513019' colspan=2 align=left></td>"; 
+//   } 
 
 
    if(($emb_a+$emb_b+$emb_c+$emb_d+$emb_e+$emb_f)>0)  
