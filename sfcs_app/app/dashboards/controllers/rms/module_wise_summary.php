@@ -26,7 +26,6 @@ $date=date("Y-m-d H:i:s");
             $priority=$row21x["priority"];
             $total=$row21x["total"];
             $mk_ref=$row21x["mk_ref"];
-            $mk_ref=$row21x["mk_ref"];
             $all_sizes = [];
             foreach($sizes_array as $key => $value){
                 $size_title = ims_sizes($row21x["order_tid"], $row21x["order_del_no"], $row21x["order_style_no"], $row21x["order_col_des"], $value, $link);
@@ -62,6 +61,14 @@ $date=date("Y-m-d H:i:s");
 			$color_codex=$row21x["color_code"];
         }
       
+        $marker="select mklength from $bai_pro3.maker_stat_log where tid=\"".$mk_ref."\"";
+        //echo  $marker;
+		$marker_result=mysqli_query($link, $marker) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($marker_result_row=mysqli_fetch_array($marker_result))
+		{
+			$mklength=$row21x["mklength"];
+			
+        }
         
         
 
@@ -84,9 +91,9 @@ $date=date("Y-m-d H:i:s");
         }
 
         echo "</table></td><td>".$total."</td>";
-        echo "<td>".$doc_nos_splitx[$i]."</td>";
-        echo "<td>".$module1."</td>";
-        echo "<td>".$mk_ref."</td>";
+        echo "<td> Doc#:".$doc_nos_splitx[$i]."</td>";
+        echo "<td>Mod#:".$module1."</td>";
+        echo "<td>".$mklength."</td>";
         echo "<td>".$a_plies."</td>";
         
 		

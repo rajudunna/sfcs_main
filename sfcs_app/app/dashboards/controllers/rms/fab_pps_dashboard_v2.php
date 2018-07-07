@@ -756,7 +756,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		//echo $rows5;
 		if($rows5!=''or $rows5!='0'){
 		echo "<td class=\"bottom\" $iu_module_highlight>
-				<strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\">
+				<strong><a href=\"javascript:void(0)\" >
 						  <font class=\"fontnn\" color=black onclick=\"Popup=window.open('$url5&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$module</font>
 				</a></strong>
 			  </td>
@@ -764,7 +764,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		}
 		else{
 			echo "<td class=\"bottom\" $iu_module_highlight>
-			<strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\">
+			<strong><a href=\"javascript:void(0)\" >
 			<font class=\"fontnn\" color=black><a href='#'>$module</a></font>
 			</a></strong>
 			  </td>
