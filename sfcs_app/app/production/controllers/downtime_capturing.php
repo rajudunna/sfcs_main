@@ -65,7 +65,7 @@ $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_er
             <form>
                 <input type='hidden' name='r' value='<?= $_GET['r'] ?>'>
                 <div class="form-group col-sm-3">
-                    <input type="date" class="form-control" name='mdate' value="<?= isset($_GET['mdate']) ? $_GET['mdate'] : '' ?>" required>
+                    <input data-toggle='datepicker' type="text" class="form-control" name='mdate' value="<?= isset($_GET['mdate']) ? $_GET['mdate'] : '' ?>" required>
                 </div>
                 <div class="form-group col-sm-3">
                     <select class="form-control" name='mtime' required>
@@ -153,8 +153,13 @@ $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_er
 
                     $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND TIME= '".$_GET['mtime'].":30' AND team = '".$_GET['module']."'";
                     $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($hourly_down_time_res)==0){
+                        echo "<button class='btn btn-danger pull right' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
+                    }else{
+                        echo "<div class='alert alert-info'>Down time updated previously.</div>";
+                    }
 
-                    echo "<button class='btn btn-danger pull right' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Hours)</button>";
+
                     echo '<div id="myModal" class="modal fade" role="dialog">
                         <div class="modal-dialog modal-lg">
 
@@ -261,7 +266,7 @@ $scope.sendData = function(){
             .then(function successCallback(response) {
                 console.log(response.data);
                 if(response.data.message=='success'){
-                    alert('downtime updated successfully.');
+                    swal('downtime updated successfully.');
                     location.reload();
                 }
             });
@@ -271,11 +276,12 @@ $scope.sendData = function(){
     $scope.addData = function(){
         $scope.test = {};
         var check = false;
+        var h = Math.floor($scope.hours);
         for(var i=0;i<$scope.downtimeData.length;i++){
             if($scope.downtimeData[i].reasons==$scope.reasons)
                 check = true;
         }
-        if($scope.hours>0 && !check && $scope.reasons!='' && ($scope.act_hrs+$scope.hours)<=$scope.dtimehrs){
+        if($scope.hours>0 && !check && $scope.reasons!='' && ($scope.act_hrs+$scope.hours)<=$scope.dtimehrs && $scope.hours==h){
             $scope.test.reasons = $scope.reasons;
             $scope.test.hours = $scope.hours;
             $scope.reasons = "";
@@ -289,13 +295,15 @@ $scope.sendData = function(){
             $scope.alert_info = true;
             $scope.alert_class = 'danger';
             if($scope.hours==0)
-                $scope.alert = 'Hours should be grater then zero';
+                $scope.alert = 'Quantity should be grater then zero';
             else if($scope.reasons=='')
                 $scope.alert = 'Reason should not null';
             else if(check)
                 $scope.alert = 'Reason already exist';
             else if(($scope.act_hrs+$scope.hours)>$scope.dtimehrs)
-                $scope.alert = 'Total Hours should not grater then '+$scope.dtimehrs;
+                $scope.alert = 'Total Quantity should not grater then '+$scope.dtimehrs;
+            else if($scope.hours!=h)
+            $scope.alert = 'Quantity should not Decimal Value.';
             else
                 $scope.alert = 'Wrong entry';
         }
