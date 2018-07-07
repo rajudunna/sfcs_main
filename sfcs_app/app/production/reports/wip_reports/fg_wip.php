@@ -6,8 +6,6 @@ table {
 	text-align:center;
 	font-size:12px;
 	width:100%;
-	padding: 1em 1em 1em 1em;
-	margin-top:-1em;
 	color:black;
 }
 th{
@@ -20,7 +18,10 @@ th{
 	color:#FFFFFF;
 	text-align:center;
 }
-.rdiv{
+.table-responsive{
+	margin-top:-40pt;
+}
+/* .rdiv{
 	color: black;
     display: inline-block;
     background-color: #52e56b;
@@ -29,7 +30,7 @@ th{
     text-align: right;
     margin-left: 70em;
 	margin-top:-6em;
-}
+} */
 .ldiv{
 	color: black;
     display: inline-block;
@@ -58,7 +59,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			set_time_limit(6000000);
 			//$msg="<table border='1px' class='mytable' id='table1'><tr><th>Schedule No</th><th>Doc No</th><th>Cut No</th><th>Scanned Qty</th><th>Unscanned Qty</th><th>Input</th><th>Output</th></tr>";
 			$msg="
-			<div class='col-sm-12' style='max-height:800px;overflow-y:scroll;'><table class='table table-bordered table-striped' id='table1'>
+			<div class='table-responsive'><table class='table table-bordered table-striped' id='table1'>
 			<thead><tr><th>Buyer Division</th><th>Style</th><th>Schedule</th><th>Color</th><th>FG WIP</th><th>EX-Factory</th></tr></thead>";
 			$sqlw="select distinct order_del_no as del_no FROM $bai_pro3.packing_summary WHERE date(lastup) >= \"2015-01-01\"";
 			$resultw=mysqli_query($link, $sqlw) or die("Sql error--1".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
@@ -160,13 +161,30 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	</div>
 </div>
 <script language="javascript" type="text/javascript">
+	$('#reset_table1').addClass('btn btn-warning');
 // <![CDATA[
-	// var table6_Props = 	{
-							// rows_counter: true,
-							// btn_reset: true,
-							// loader: true,
-							// loader_text: "Filtering data..."
-						// };
-	// setFilterGrid( "table1",table6_Props );
-//]]>
+	var table6_Props = 	{
+							rows_counter: true,
+							btn_reset: true,
+							btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+	setFilterGrid( "table1",table6_Props );
+	$(document).ready(function(){
+		$('#reset_table1').addClass('btn btn-warning btn-xs');
+	});
+// ]]>
 </script>
+<style>
+.flt{
+	color:black;
+}
+#reset_table1{
+	width : 80px;
+	color : #fff;
+	margin-top : 80px;
+	margin-left : -110px;
+	margin-bottom:15pt;
+}
+</style>

@@ -39,16 +39,16 @@ $sec=$_GET['sec'];
 $cat=$_GET['cat'];
 
 
-$sql="select distinct(date) from $bai_pro.$grand_rep where section='$sec' AND  date between '$start' and '$end' order by date";
+$sql="select distinct(date) from $bai_pro.grand_rep where section='$sec' AND  date between '$start' and '$end' order by date";
 
-$sql_result=mysqli_query($con, $sql) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($sql_result))
 {
 	$date[] = $row['date']; 
 	//echo "<br>Date = ".$row['date'];//$weekday1 = date('l', strtotime($date));
 }
 
-$sql1=mysqli_query($con, "select sec_mods from $bai_pro3.$sections_db where sec_id='$sec'") or exit("sql1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql1=mysqli_query($link, "select sec_mods from $bai_pro3.sections_db where sec_id='$sec'") or exit("sql1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row1=mysqli_fetch_array($sql1))
 {
 	$sections = $row1['sec_mods']; 
@@ -64,7 +64,7 @@ for($i=0;$i<sizeof($date);$i++)
 }
 
 
-$sql=mysqli_query($con, "select distinct(date) from $bai_pro.$grand_rep where section='$sec' AND  date between '$start' and '$end' order by date") or exit("sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql=mysqli_query($link, "select distinct(date) from $bai_pro.grand_rep where section='$sec' AND  date between '$start' and '$end' order by date") or exit("sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql)> 0){
 		echo "<div class='table-responsive' style='max-height:600px;overflow-y:scroll;'><table class='table table-bordered'>";
 		echo "<tr class='tblheading' style='color:white;' >";
@@ -108,7 +108,7 @@ while($row1=mysql_fetch_array($sql1))
 { */
 for($i=0;$i<sizeof($secs);$i++)
 {
-	 $sql2=mysqli_query($con, "select distinct(styles) from $bai_pro.$grand_rep where section='$sec' AND module='".$secs[$i]."' and date between '$start' and '$end' order by module ") or exit("sql2 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	 $sql2=mysqli_query($link, "select distinct(styles) from $bai_pro.grand_rep where section='$sec' AND module='".$secs[$i]."' and date between '$start' and '$end' order by module ") or exit("sql2 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 //echo "select distinct(styles) from $database.$table1 where section='$sec' AND module='".$secs[$i]."' and date between '$start' and '$end' order by module";
 	while($row2=mysqli_fetch_array($sql2))
 	{
@@ -118,17 +118,17 @@ for($i=0;$i<sizeof($secs);$i++)
 		
 		echo "<td style=\"background-color:#C4BD97;\">A SHIFT</td>";
 		
-		$sql3=mysqli_query($con, "select distinct(date) from $bai_pro.grand_rep where section='$sec' AND  date between '$start' and '$end' order by date") or exit("sql3 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql3=mysqli_query($link, "select distinct(date) from $bai_pro.grand_rep where section='$sec' AND  date between '$start' and '$end' order by date") or exit("sql3 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row3=mysqli_fetch_array($sql3))
 		{
 		
-			$sql4=mysqli_query($con, "select sum(act_out) from $bai_pro.grand_rep where styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$row3['date']."' and section='$sec' AND shift=\"A\"") or exit("sql4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));   
+			$sql4=mysqli_query($link, "select sum(act_out) from $bai_pro.grand_rep where styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$row3['date']."' and section='$sec' AND shift=\"A\"") or exit("sql4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));   
      
             while($row4=mysqli_fetch_array($sql4))
 			{
 				$date1 = $row3['date']; 
 				$weekday1 = date('l', strtotime($date1));
-				$sqlxx4=mysqli_query($con, "select act_hours from $bai_pro.pro_plan where mod_no='".$secs[$i]."' and date='".$row3['date']."' and sec_no='$sec' AND shift=\"A\"") or exit("sqlxx4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sqlxx4=mysqli_query($link, "select act_hours from $bai_pro.pro_plan where mod_no='".$secs[$i]."' and date='".$row3['date']."' and sec_no='$sec' AND shift=\"A\"") or exit("sqlxx4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rowxx4=mysqli_fetch_array($sqlxx4))
 				{	
 					$act_hoursx=$rowxx4["act_hours"];
@@ -163,17 +163,17 @@ for($i=0;$i<sizeof($secs);$i++)
 		echo "<tr>";	
 		echo "<td style=\"background-color:#C4BD97;\">B SHIFT</td>";
 		
-		$sql3=mysqli_query($con, "select distinct(date) from $bai_pro.grand_rep where section='$sec' AND  date between '$start' and '$end' order by date") or exit("sql3 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql3=mysqli_query($link, "select distinct(date) from $bai_pro.grand_rep where section='$sec' AND  date between '$start' and '$end' order by date") or exit("sql3 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row3=mysqli_fetch_array($sql3))
 		{
 		
-			$sql4=mysqli_query($con, "select sum(act_out) from $bai_pro.grand_rep where styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$row3['date']."' and section='$sec' AND shift=\"B\"") or exit("sql4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));   
+			$sql4=mysqli_query($link, "select sum(act_out) from $bai_pro.grand_rep where styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$row3['date']."' and section='$sec' AND shift=\"B\"") or exit("sql4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));   
      
             while($row4=mysqli_fetch_array($sql4))
 			{
 				$date1 = $row3['date']; 
 				$weekday1 = date('l', strtotime($date1));
-				$sqlx4=mysqli_query($con, "select act_hours from $bai_pro.pro_plan where mod_no='".$secs[$i]."' and date='".$row3['date']."' and sec_no='$sec' AND shift=\"B\"") or exit("sqlx4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sqlx4=mysqli_query($link, "select act_hours from $bai_pro.pro_plan where mod_no='".$secs[$i]."' and date='".$row3['date']."' and sec_no='$sec' AND shift=\"B\"") or exit("sqlx4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rowx4=mysqli_fetch_array($sqlx4))
 				{	
 					$act_hours=$rowx4["act_hours"];
@@ -208,7 +208,7 @@ for($i=0;$i<sizeof($secs);$i++)
 
 echo "</tr>";
 
-echo "</table></div>";
+echo "</table></div><br/></div>";
 	}
 	else {
 		echo "<div class='alert alert-danger' role='alert' style='text-align:center;text-weight:bold;' >No data found!</div>";

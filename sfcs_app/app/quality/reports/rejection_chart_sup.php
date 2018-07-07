@@ -71,7 +71,7 @@ table{
 }
 
 }
-</style>--->
+</style>-->
 
 
 
@@ -90,7 +90,8 @@ table{
 				<input class='form-control' id="demo2" data-toggle='datepicker' type="text" size="8" name="edate" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>">
 			</div>
 			<div class='col-sm-2'> 
-				Team: <select name="team" class="form-control">
+				<label>Team:</label>
+				<select name="team" class="form-control">
 				<?php 
 				for ($i=0; $i < sizeof($shifts_array); $i++) {?>
 				<option <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";} ?>><?php echo $shifts_array[$i] ?></option>
@@ -99,13 +100,13 @@ table{
 				</select>
 			</div>
 			<div class='col-sm-2'>
-				<br/><br/>
-				<input type="radio" name="check_list[]" <?php if ($_POST['check_list'] === '1') echo "checked";?> value="1">
+				<br/>
+				<input type="radio" name="check_list[]" <?php if ($_POST['check_list'] === '1') echo "checked";?> value="1"><br/>
 				<label>Supplier Wise</label>&nbsp;&nbsp; 
 			</div>
 			<div class='col-sm-2'>
-				<br/><br/>
-				<input type="radio" name="check_list[]" <?php if (isset($_POST['check_list']) && $_POST['check_list']=="2") echo "checked"; ?> value="2">
+				<br/>
+				<input type="radio" name="check_list[]" <?php if (isset($_POST['check_list']) && $_POST['check_list']=="2") echo "checked"; ?> value="2"><br/>
 				<label>Supplier Reason Wise</label>&nbsp;&nbsp;
 			</div>
 			<div class='col-sm-2'>
@@ -124,7 +125,7 @@ if(isset($_POST['filter']))
 
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
-	$team=$_POST['team'];
+	$team="'".$_POST['team']."'";
 	
 	if(!empty($_POST['check_list']))
 	{

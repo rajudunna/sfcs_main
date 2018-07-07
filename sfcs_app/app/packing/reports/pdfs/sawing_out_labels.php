@@ -9,7 +9,7 @@
 
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => 'utf-8', 
-		'format' => [65, 105], 
+		'format' => [70, 110], 
 		'orientation' => 'L'
 	]);
 
