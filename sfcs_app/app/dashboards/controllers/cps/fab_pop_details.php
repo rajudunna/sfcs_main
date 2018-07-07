@@ -45,14 +45,16 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 <script type="text/javascript">
 
 function verify_num(t,e){
+	
 		if(e.keyCode == 8){
 			return false;
 		}
 		var c = /^[0-9, ]+$/;
 		var id = t.id;
 		var n = document.getElementById(id);
+		var lot_length=n.value;
 		if( !((n.value).match(c)) ){
-			n.value = 0;
+			n.value ="";
 			//alert('Please enter only numerics');
 			return false;
 		}
@@ -588,7 +590,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 				$Disable_allocate=1;
 			}
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" name=\"pms".$sql_row1['doc_no']."\" id='address' 
-			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 readonly>".$seperated_lots."</textarea><br/>";
+			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 required>".$seperated_lots."</textarea><br/>";
 
 		}else{
 
@@ -685,10 +687,10 @@ echo "</table>";
 if($enable_allocate_button==1)
 {	
 	//disable allocate button
-	if($Disable_allocate_flag==0){
+	// if($Disable_allocate_flag==0){
 		echo "<input type=\"submit\" name=\"allocate\" value=\"Allocate\" class=\"btn btn-success\" onclick=\"button_disable()\">";
 	// echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
-	}
+	// }
 	
 }
 echo "</form>";
@@ -727,7 +729,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 ?>
 
 <?php
-if($Disable_allocate_flag==0){
+// if($Disable_allocate_flag==0){
 ?>
 <form method="post" onsubmit=" return validate_but();">
 <table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
@@ -776,7 +778,7 @@ echo "<input type=\"hidden\" name=\"group_docs\" value=".implode(",",$docket_num
 </td></tr></table>
 </form>
 <?php
-}
+// }
 ?>
 
 <script>
