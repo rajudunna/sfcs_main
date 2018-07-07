@@ -6,6 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/hea
 error_reporting(0);
 ?>
 
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 <script>
 
 	function verify_date(){
@@ -410,6 +411,25 @@ if(isset($_POST['submit']))
 	}
 }
 ?>
+
 </div>
 </div>
+<script language="javascript" type="text/javascript">
+	var table3Filters = {
+	// col_1: "select",
+	// col_3: "select",
+	// col_4: "select",
+	// col_7: "select",
+	// col_21: "select",
+	col_23: "select",
+	sort_select: true,
+	display_all_text: "Display all"
+	}
+	setFilterGrid("table1",table3Filters);
+</script> 
+<style>
+	.flt {
+		color: black;
+	}
+</style>
 </body>

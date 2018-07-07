@@ -53,48 +53,47 @@ function verify_date()
 </style> -->
 
 <div class="panel panel-primary">
-<div class="panel-heading">Weekly Style Progress</div>
-<div class="panel-body">
-<form method="post" class="form_inline" action=<?php getFullURLLevel($_GET['r'],'exp_mod_main.php',0,'N') ?>>
-<div class="row">
-	<!-- date1=2018-02-15;date1=2018-02-20;-example -->
-	<div class="col-md-3"><label>Start Date </label><input type="text" data-toggle='datepicker' class="form-control" id="dat1" name="dat1" size=8  value="<?php  if(isset($_GET['dat1'])) { echo $_GET['dat1']; } else { echo date("Y-m-d"); } ?>"/></div>
-	<div class="col-md-3"><label>End Date </label><input type="text" data-toggle='datepicker'class="form-control" id="dat2" name="dat2" size=8 value="<?php  if(isset($_GET['dat2'])) { echo $_GET['dat2']; } else { echo date("Y-m-d"); } ?>"/></div>
-	<div class="col-md-1"><label>Section</label>
-		<?php
-			echo "<select name=\"sec\" class='form-control'>";
-			$sql="SELECT sec_id as secid FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
-			$result17=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($result17))
-			{
-				$sql_sec=$sql_row["secid"];
-				if($_GET['sec'] == $sql_sec){
-					echo "<option value=\"".$sql_sec."\" selected>".$sql_sec."</option>";
-				} else {
-					echo "<option value=\"".$sql_sec."\" >".$sql_sec."</option>";
-				}
-					
-			}
-			echo "</select>";
-		?>
-	</div>
-	<div class="col-md-2"><label>Category</label><select name="cat" class="form-control">
-		<?php
-			$categories = ['Weekly', 'Shift'];
-			foreach ($categories as $key => $value) {
-				if($_GET['cat'] == $value){
-					echo "<option value=\"".$value."\" selected>".$value."</option>";
-				}else {
-					echo "<option value=\"".$value."\" >".$value."</option>";
-				}
-			}
-		?>
-		</select>
-	</div>
-	<div class="col-md-1"><br/><input type="submit" onclick='return verify_date()' class="btn btn-primary" NAME="submit" value="Show" /></div>
-</div>
-<br/><hr/>
-</form>
+	<div class="panel-heading">Weekly Style Progress</div>
+	<div class="panel-body">
+		<form method="post" class="form_inline" action=<?php getFullURLLevel($_GET['r'],'exp_mod_main.php',0,'N') ?>>
+		<div class="row">
+			<div class="col-md-3"><label>Start Date </label><input type="text" data-toggle='datepicker' class="form-control" id="dat1" name="dat1" size=8  value="<?php  if(isset($_GET['dat1'])) { echo $_GET['dat1']; } else { echo date("Y-m-d"); } ?>"/></div>
+			<div class="col-md-3"><label>End Date </label><input type="text" data-toggle='datepicker'class="form-control" id="dat2" name="dat2" size=8 value="<?php  if(isset($_GET['dat2'])) { echo $_GET['dat2']; } else { echo date("Y-m-d"); } ?>"/></div>
+			<div class="col-md-1"><label>Section</label>
+				<?php
+					echo "<select name=\"sec\" class='form-control'>";
+					$sql="SELECT sec_id as secid FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
+					$result17=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row=mysqli_fetch_array($result17))
+					{
+						$sql_sec=$sql_row["secid"];
+						if($_GET['sec'] == $sql_sec){
+							echo "<option value=\"".$sql_sec."\" selected>".$sql_sec."</option>";
+						} else {
+							echo "<option value=\"".$sql_sec."\" >".$sql_sec."</option>";
+						}
+							
+					}
+					echo "</select>";
+				?>
+			</div>
+			<div class="col-md-2"><label>Category</label><select name="cat" class="form-control">
+				<?php
+					$categories = ['Weekly', 'Shift'];
+					foreach ($categories as $key => $value) {
+						if($_GET['cat'] == $value){
+							echo "<option value=\"".$value."\" selected>".$value."</option>";
+						}else {
+							echo "<option value=\"".$value."\" >".$value."</option>";
+						}
+					}
+				?>
+				</select>
+			</div>
+			<div class="col-md-1"><br/><input type="submit" onclick='return verify_date()' class="btn btn-primary" NAME="submit" value="Show" /></div>
+		</div>
+		<br/><hr/>
+		</form>
 
 <!-- <span id="msg" style="display:none;"><h4>Please Wait.. While Processing The Data..<h4></span> -->
 <?php
@@ -132,4 +131,4 @@ if(isset($_POST["submit"]))
 
 ?>
 </div>
-</div>
+

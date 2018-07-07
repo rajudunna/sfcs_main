@@ -39,7 +39,7 @@ echo "
 		<th class=\"column-title\"><center>Marker Length</center></th><th class=\"column-title\"><center>Marker EFF%</center></th>
 		<th class=\"column-title\"><center>Version</center></th><th class=\"column-title\"><center>Controls</center></th>
 		<th class=\"column-title\"><center>Delete Control</center></th>
-		<th class=\"column-title\"><center>Ratio wise Saving</center></th>
+		<th class=\"column-title\"><center>Ratio wise Savings%</center></th>
 		<th class=\"column-title\"><center>Ratio wise CAD Consumption</center></th>
 		<th class=\"column-title\"><center>Used Meters</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead>";
 
