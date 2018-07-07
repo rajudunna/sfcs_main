@@ -328,7 +328,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		/* end  Adding MPO Number  */
 
 $color_code = chr($color_code);
-echo "<div class='panel panel-default'>
+echo "<div class='col-sm-12 row'><div class='panel panel-info'>
 <div class='panel-body' >
 	<div class='row'>
 		<div class='col-md-4'>
@@ -432,7 +432,7 @@ if($order_no>0)
 	
 echo "<td class=\"sizes\">".$o_total."</td></tr>";
 echo "</table>";
-echo "</div></div></div>";
+echo "</div></div></div></div>";
 
 //echo "<input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable";
 //echo "<INPUT TYPE = \"Submit\" Name = \"Update\" VALUE = \"Update\">";
@@ -476,11 +476,12 @@ echo "</div></div></div>";
 </div> -->
 
 <!-- carton quantities added -->
-<div class='col-sm-12' class='table-responsive'>
-	<div id='#carton' class='panel panel-default'>
+<div class='col-sm-12 row'>
+	<div class='panel panel-info'>
 		<div class='panel-heading' style='text-align:center;'>
-			<a data-toggle="collapse"><strong><b>Carton Quantity</b></strong></a>
+			<a data-toggle="collapse" href="#Carton"><strong><b>Carton Quantity</b></strong></a>
 		</div>
+		<div id="Carton" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 		<div class='panel-body'>
 			<table class='table table-bordered table-responsive'>
 					<tr><th>User Def. Style</th>
@@ -529,13 +530,13 @@ echo "</div></div></div>";
 			?>
 			</table>
 		</div>
+		</div>
 	</div>
 </div>
 
 <div class="col-md-12 row">
-<div class = "panel panel-default">
+<div class = "panel panel-info">
 	<div class="panel-heading" style='text-align:center;'>
-		
 		<a data-toggle="collapse" href="#Category"><strong><b>Category</b></strong></a>
 		</div>
 		<div id="Category" class="panel-collapse collapse-in collapse in" aria-expanded="true">
@@ -694,7 +695,7 @@ echo "</table></div>
 <!--<div id="div3" style="display: none;">
 <?php //include("main_interface_3.php"); ?>
 </div>-->
-		<div class="col-md-12 row"><div class="panel panel-default">
+		<div class="col-md-12 row"><div class="panel panel-info">
 			<div class="panel-heading" style="text-align:center;">
 				
 					<a data-toggle="collapse" href="#Cuttable"><strong><b>Cuttable</b></strong></a>
@@ -952,7 +953,7 @@ echo "</table></div>
 <!-- <p><a href="#" >Allocation</a></p> -->
 
 <div class="row col-md-12">
-		<div class="panel panel-default">
+		<div class="panel panel-info">
 			<div class="panel-heading" style="text-align:center;">
 				
 					<a data-toggle="collapse" href="#Allocation"><strong><b>Allocation</b></strong></a>
@@ -1108,7 +1109,7 @@ echo "</table></div></div>
 <!-- <p><a href="#" >Ratios</a></p> -->
 
 	<div class="row col-md-12">
-		<div class="panel panel-default">
+		<div class="panel panel-info">
 			<div class="panel-heading" style="text-align:center;">
 				
 					<a data-toggle="collapse" href="#Ratios"><strong><b>Ratios</b></strong></a>
@@ -1224,9 +1225,9 @@ else
 	<th class=\"column-title\"><center>01</center></th><th class=\"column-title\"><center>02</center></th><th class=\"column-title\"><center>03</center></th><th class=\"column-title\"><center>04</center></th><th class=\"column-title\"><center>05</center></th><th class=\"column-title\"><center>06</center></th><th class=\"column-title\"><center>07</center></th><th class=\"column-title\"><center>08</center></th><th class=\"column-title\"><center>09</center></th><th class=\"column-title\"><center>10</center></th><th class=\"column-title\"><center>11</center></th><th class=\"column-title\"><center>12</center></th><th class=\"column-title\"><center>13</center></th><th class=\"column-title\"><center>14</center></th><th class=\"column-title\"><center>15</center></th><th class=\"column-title\"><center>16</center></th><th class=\"column-title\"><center>17</center></th><th class=\"column-title\"><center>18</center></th><th class=\"column-title\"><center>19</center></th><th class=\"column-title\"><center>20</center></th><th class=\"column-title\"><center>21</center></th><th class=\"column-title\"><center>22</center></th><th class=\"column-title\"><center>23</center></th><th class=\"column-title\"><center>24</center></th><th class=\"column-title\"><center>25</center></th><th class=\"column-title\"><center>26</center></th><th class=\"column-title\"><center>27</center></th><th class=\"column-title\"><center>28</center></th><th class=\"column-title\"><center>29</center></th><th class=\"column-title\"><center>30</center></th><th class=\"column-title\"><center>31</center></th><th class=\"column-title\"><center>32</center></th><th class=\"column-title\"><center>33</center></th><th class=\"column-title\"><center>34</center></th><th class=\"column-title\"><center>35</center></th><th class=\"column-title\"><center>36</center></th><th class=\"column-title\"><center>37</center></th><th class=\"column-title\"><center>38</center></th><th class=\"column-title\"><center>39</center></th><th class=\"column-title\"><center>40</center></th><th class=\"column-title\"><center>41</center></th><th class=\"column-title\"><center>42</center></th><th class=\"column-title\"><center>43</center></th><th class=\"column-title\"><center>44</center></th><th class=\"column-title\"><center>45</center></th><th class=\"column-title\"><center>46</center></th><th class=\"column-title\"><center>47</center></th><th class=\"column-title\"><center>48</center></th><th class=\"column-title\"><center>49</center></th><th class=\"column-title\"><center>50</center></th>
 	<th class=\"column-title\"><center>Ratio Total</center></th><th class=\"column-title\"><center>Controls</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead>";
 }
+$used_fabric =0;
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-
 	$mk_status=$sql_row['mk_status'];
 	
 	$check_id=$sql_row['cuttable_ref'];
@@ -1318,6 +1319,14 @@ else
 	}
 echo "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
 echo "</tr>";
+$allc_ref = $sql_row['tid'];
+$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allc_ref and cuttable_ref > 0";
+$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row2=mysqli_fetch_array($sql_result2))
+{		
+	$used_fabric+=$sql_row2['mklength'] * $sql_row['plies'];	
+}
+
 }
 echo "<tr><td colspan=3> Total Planned Quantity</center><td>";
 for($s=0;$s<sizeof($s_tit);$s++)
@@ -1343,17 +1352,35 @@ echo "</table></div>
 
 <!-- <p><a href="#" >Marker</a></p>
 <div id="div5">
-<?php //include("main_interface_5.php"); ?>
+<?php //include("main_interface_5.php"); 
+/*  calculating overall savings
+total fabric req = CatYY * Order Qunatity(New/Old)
+Used fabrci req = mklenght * no of plies
+overall savings = (total fabric req-used fabric)/total fabric req
+*/
+if($order_no == "1"){
+	$orderqty = $n_o_total;
+}else{
+	$orderqty = $o_total;
+}
+$total_fabric_req = $cat_yy * $orderqty;
+$overall_savings = round(((($total_fabric_req-$used_fabric)/$total_fabric_req)*100),0);
+/*  Calculating Overall Consumption
+Used Fabric req/Order Quantity(New/Old)
+*/
+$overall_cad_consumption = round($used_fabric/$orderqty,4);
+?>
 </div> -->
 
 <div class="col-sm-12 row">
-	<div class = "panel panel-default">
+	<div class = "panel panel-info">
 		<div class="panel-heading" style="text-align:center;">
-			
-				<a data-toggle="collapse" href="#Marker"><strong><b>Marker</b></strong></a>
+			<a data-toggle="collapse" href="#Marker"><strong><b>Marker</b></strong></a>
 		</div>
 		<div id="Marker" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
+			<center><span class="pull-right"><strong>Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;
+    color: white;">'.$overall_savings."%"."</span>";?> &nbsp;&nbsp;|&nbsp;&nbsp; Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?></strong></span><center><br/>
 				<?php include("main_interface_5.php"); ?>
 			</div>
 		</div>
@@ -1372,7 +1399,7 @@ echo "</table></div>
 </div>-->
 
 <div class="col-sm-12 row">
-	<div class = "panel panel-default">
+	<div class = "panel panel-info">
 		<div class="panel-heading" style="text-align:center;">
 		<span class="label label-default pull-left">Available Slots</span>
 				<a data-toggle="collapse" href="#docket_creation"><strong><b>Docket Creation / Edit</b></strong></a>
@@ -1513,7 +1540,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 </div>-->
 
 <div class="col-sm-12 row">
-		<div class = "panel panel-default">
+		<div class = "panel panel-info">
 			<div class="panel-heading" style="text-align:center;">
 				<span class="label label-default pull-left">Quick Status</span>
 					<a data-toggle="collapse" href="#cut_plan"><strong><b>Cut Plan / Docket View</b></strong></a>
@@ -1748,7 +1775,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 </div>  -->
 
 <div class="col-sm-12 row">
-	<div class = "panel panel-default">
+	<div class = "panel panel-info">
 		<div class="panel-heading" style="text-align:center;">
 			
 				<a data-toggle="collapse" href="#recut_details"><strong><b>Recut Details</b></strong></a>
