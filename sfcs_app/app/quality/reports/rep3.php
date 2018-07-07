@@ -82,7 +82,9 @@ function verify_date()
 		font-weight:bold;
 		color:black;
 	}
-
+	.form-control{
+		min-width : 200px;
+	}
 	.BG {
 	/* background-image:url(Diag.gif); */
 	background-repeat:no-repeat;/*dont know if you want this to repeat, ur choice.*/
@@ -102,7 +104,7 @@ function verify_date()
 			<label>End Date</label>
 			<input  class="form-control" type="text" data-toggle='datepicker' id="dat2" name="edate" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>">
 		</div>
-		<div class="col-md-2 form-group">
+		<div class="col-md-3 form-group">
 			<br/>
 			<input type="checkbox" class="checkbox" name="module" value="1" <?php if(isset($_POST['module'])) { echo "checked"; }?>>
 			<label class="checkbox-inline">Module</label>
@@ -127,11 +129,11 @@ function verify_date()
 		$color=$_GET['color'];
 	}
 ?>
-<br/>
+<hr>
 <div class="row">
 	<!-- <div class="col-md-1"></div> -->
-	<div class="col-sm-3">
-	<label>Select Style:</label>
+	<div class="col-md-3 form-group">
+	<label>Select Style</label><br/>
 	<select name="style" onchange="firstbox();"  class="form-control">
 	<?php
 		$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm order by order_style_no";	
@@ -157,7 +159,7 @@ function verify_date()
 	</select>
 	</div>
 	<div class="col-sm-3">
-	<label>Select Schedule:</label>
+	<label>Select Schedule:</label><br/>
 	<select name="schedule" onchange="secondbox();"  class="form-control">
 	<?php
 		$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" order by order_del_no";	
@@ -183,7 +185,7 @@ function verify_date()
 	</select>
 	</div>
 	<div class="col-sm-3">
-	<label>Select Color:</label>
+	<label>Select Color:</label><br/>
 	<select name="color" onchange="thirdbox();"  class="form-control">
 	<?php
 		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" ";
@@ -210,6 +212,7 @@ function verify_date()
 	</select>
 	</div>
 	<div class="col-md-1">
+		<label></label><br/>
 		<input type="submit" class="btn btn-primary" value="Filter" name="filter2">
 	</div>
 </div>
