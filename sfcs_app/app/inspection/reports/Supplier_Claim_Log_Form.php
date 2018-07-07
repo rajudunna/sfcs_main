@@ -54,23 +54,38 @@ if(in_array($authorized,$has_permission))
 }
 ?>
 <form  action="index.php?r=<?php echo $_GET['r']; ?>" method="POST" name="test">
+<div class="row">
+<div class='col-lg-2'>
+	<label class='control-label'>Start Date: </label><br>
+<input type="text" class="form-control" data-toggle="datepicker" style=" display: inline-block;" id="demo1" name="txtstartdate" value="<?php  if(isset($_POST['txtstartdate'])) { echo $_POST['txtstartdate']; } else { echo date("Y-m-d"); } ?>" />
+</div>
+<div class='col-lg-2'>
+	<label class='control-label' for='demo1'>End Date: </label><br>
 
-Start Date: 
-<input type="text" class="form-control" data-toggle="datepicker" style="width: 150px;  display: inline-block;" id="demo1" name="txtstartdate" value="<?php  if(isset($_POST['txtstartdate'])) { echo $_POST['txtstartdate']; } else { echo date("Y-m-d"); } ?>" />
 
-End Date:
-<input type="text" id="demo2" class="form-control" data-toggle="datepicker" onchange="return verify_date();" style="width: 150px;  display: inline-block;" name="txtenddate" value="<?php  if(isset($_POST['txtenddate'])) { echo $_POST['txtenddate']; } else { echo date("Y-m-d"); } ?>" />
+<input type="text" id="demo2" class="form-control" data-toggle="datepicker" onchange="return verify_date();" style=" display: inline-block;" name="txtenddate" value="<?php  if(isset($_POST['txtenddate'])) { echo $_POST['txtenddate']; } else { echo date("Y-m-d"); } ?>" />
+</div>
+<div class='col-lg-3'>
+	<label class='control-label' for='demo1'>Complaint Status </label><br>
 
-Complaint Status <select name="selcompro" class="form-control"  style="width: 120px;  display: inline-block;" >
+ <select name="selcompro" class="form-control"  style="  display: inline-block;" >
 				 <option value="-1" <?php if($division=="-1"){ echo "selected"; } ?>>All</option>
 				 <option value="1" <?php if($division=="1"){ echo "selected"; } ?>>Not Agreed</option>
 				 <option value="2" <?php if($division=="2"){ echo "selected"; } ?>>Hold</option>
 				 <option value="3" <?php if($division=="3"){ echo "selected"; } ?>>Agreed</option> </select>
-Enter Batch / Invoice # : <input type="text"  name="batch" id="batch" class="form-control alpha"  onchange="return pop_check();"  style="width: 150px;  display: inline-block;">
-&nbsp;<input type="submit" class="btn btn-success"  value="Show" name="show" onclick="return verify_date();" />				
+</div>
+<div class='col-lg-3'>
+	<label class='control-label' for='demo1'>Enter Batch / Invoice # : </label><br>
 
-</form>		
+ <input type="text"  name="batch" id="batch" class="form-control alpha"  onchange="return pop_check();"  style="  display: inline-block;">
+</div>
+<div class='col-lg-2'>
+	<input type="submit" class="btn btn-success" style='margin-top: 25px'  value="Show" name="show" onclick="return verify_date();" />
+</div>
 </div>	 
+<br>
+			
+</form>		
 <?php
 if(isset($_POST['show']) || isset($_GET['show']))
 {
