@@ -13,6 +13,19 @@ $view_access=user_acl("SFCS_0050",$username,1,$group_id_sfcs);
 $reasons=array("Miss Yarn","Fabric Holes","Slub","F.Yarn","Stain Mark","Color Shade","Heat Seal","Trim","Panel Un-Even","Stain Mark","Strip Match","Cut Damage","Heat Seal","M' ment Out","Un Even","Shape Out Leg","Shape Out waist","Shape Out","Stain Mark","With out Label","Trim shortage","Sewing Excess",
 "Cut Holes","Slip Stitch’s","Oil Marks","Others EMB","Foil Defects","Embroidery","Print","Sequence","Bead","Dye","wash");
 ?>
+<script>
+function verify_dates(){
+	
+	var from = document.getElementById('demo1').value;
+	var to =   document.getElementById('demo2').value;
+	// alert(from+'  '+to );
+	if(from > to){
+		swal('End Date should not be less than Start Date','','warning');
+		return false;
+	}
+	return true;
+}
+</script>
 <style>
 td {
 	font-weight:bold;
@@ -72,7 +85,7 @@ background-position:center middle;
 							echo "</select>";	
 					?>
 				</div><br/>
-			<input type="submit" name="filter" value="Filter" class="btn btn-primary">
+			<input type="submit" onclick="return verify_dates()" name="filter" value="Filter" class="btn btn-primary">
 		</div>
 		</form>
 
