@@ -13,9 +13,9 @@ Changes Log:2013-11-25/DharaniD/Ticket #988194 change order in trims status ie($
 -->
 <?php
 $double_modules=array();
-//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-//$username=strtolower($username_list[1]);
-//$username="sfcsproject1";
+//$rbac_username_list=explode('\\',$_SERVER['REMOTE_USER']);
+//$rbac_username=strtolower($rbac_username_list[1]);
+//$rbac_username="sfcsproject1";
 //$authorized=array("sfcsproject1");//production
 //$authorized1=array("sfcsproject1");//trims
 ?>
@@ -37,13 +37,13 @@ include("header.php");
 
 <?php
 
-//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-//$username=strtolower($username_list[1]);
-$username=getrbac_user()['uname'];
-//echo "User :".$username."</br>";
+//$rbac_username_list=explode('\\',$_SERVER['REMOTE_USER']);
+//$rbac_username=strtolower($rbac_username_list[1]);
+$rbac_username=getrbac_user()['uname'];
+// echo "User :".$rbac_username."</br>";
 
 //$special_users=array("sfcsproject1","cwradmn","kirang","buddhikam","chathurangad","minuram","buddhikam");
-//echo $username;
+//echo $rbac_username;
 if(!in_array($authorized,$has_permission))
 {
 	echo '<script>
@@ -437,7 +437,7 @@ border: 1px solid black;
 </style>
 
 <SCRIPT>
-<!--
+// <!--
 function doBlink() {
 	var blink = document.all.tags("BLINK")
 	for (var i=0; i<blink.length; i++)
@@ -449,6 +449,7 @@ function startBlink() {
 		setInterval("doBlink()",1000)
 }
 window.onload = startBlink;
+
 // -->
 </SCRIPT>
 
@@ -500,12 +501,11 @@ document.oncontextmenu=new Function("alert(message);return false")
 </script>
 
 <?php
-$sql="DROP TABLE IF EXISTS $temp_pool_db.plan_doc_summ_input_tms_$username";
+$sql="DROP TABLE IF EXISTS $temp_pool_db.plan_doc_summ_input_tms_$rbac_username";
 //echo $sql."<br/>";
 mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="CREATE TABLE $temp_pool_db.plan_doc_summ_input_tms_$username ENGINE = MYISAM SELECT MIN(st_status) AS st_status,order_style_no,input_job_no_random,GROUP_CONCAT(DISTINCT order_del_no) AS order_del_no,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no FROM $bai_pro3.plan_doc_summ_input GROUP BY input_job_no_random";
-//echo $sql."<br/>";
+$sql="CREATE TABLE $temp_pool_db.plan_doc_summ_input_tms_$rbac_username ENGINE = MYISAM SELECT MIN(st_status) AS st_status,order_style_no,input_job_no_random,GROUP_CONCAT(DISTINCT order_del_no) AS order_del_no,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no FROM $bai_pro3.plan_doc_summ_input GROUP BY input_job_no_random";
 mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
@@ -582,13 +582,13 @@ $blink_docs=array();
 // Ticket #663887 display buyers like pink,logo and IU as per plan_modules table
 //$table_name="plan_dashboard_input";
 
-$table_name="$temp_pool_db.plan_dash_doc_summ_input_".$username;
+$table_name="$temp_pool_db.plan_dash_doc_summ_input_".$rbac_username;
 $sql="DROP TABLE IF EXISTS $table_name";
 //echo $sql."<br/>";
 mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sql="CREATE TABLE $table_name ENGINE = myisam SELECT * FROM $bai_pro3.plan_dash_doc_summ_input ";
-if($username='sfcsproject1'){
+if($rbac_username=='sfcsproject1'){
 	//echo $sql."<br/>";
 }
 mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -639,7 +639,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$mods[]=$sql_row1d["modx"];
 		}
 		$url_path = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'R');
-		echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;">';
+		echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;" class="hide_table">';
 		echo "<p>";
 		echo "<table>";
 	
@@ -698,8 +698,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$clubbed_schedule_ref=$row3['order_joins'];
 				}
 				
-				$sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $temp_pool_db.plan_doc_summ_input_tms_$username WHERE input_job_no_random='$input_job_no_random_ref'";	
-				//echo $sql;
+				$sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $temp_pool_db.plan_doc_summ_input_tms_$rbac_username WHERE input_job_no_random='$input_job_no_random_ref'";	
 				$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row2=mysqli_fetch_array($result2))
 				{
@@ -796,7 +795,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "</p>";
 		echo '</div>';
 	}
+
 }
+// echo '<script>$(".hide_table").show()</script>';
 if((in_array($authorized,$has_permission)))
 	{
 		echo "<script>";
