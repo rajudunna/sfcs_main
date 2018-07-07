@@ -13,7 +13,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 table
 {
 	font-family:calibri;
-	font-size:12px;
+	font-size:15px;
 }
 
 table tr
@@ -51,7 +51,7 @@ white-space:nowrap;
 table{
 	white-space:nowrap; 
 	border-collapse:collapse;
-	font-size:12px;
+	font-size:15px;
 }
 
 
@@ -59,6 +59,8 @@ table{
 
 <!-- <?php echo '<link href="'.getFullURL($_GET['r'],'/sfcs/styles/sfcs_styles.css','R').'" rel="stylesheet" type="text/css" />'; ?>
    -->
+   <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
  <?php echo '<link href="'.getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',1,'R').'" rel="stylesheet" type="text/css" />';  ?>
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R');?>"></script>
  <!-- <script type="text/javascript" src="<?= getFullURL($_GET['r'],'jquery-1.3.2.js','R')?>"></script> -->
@@ -72,7 +74,7 @@ table{
 <?php include("menu_content.php"); ?>
 <div class="panel panel-primary">
 <div class="panel-heading">GRN to Production Track</div>
-<div class="panel-body table-responsive">
+<div class="panel-body">
 <!-- <div id="page_heading"><span style="float: left"><h3>GRN to Production Track</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div> -->
 
 
@@ -81,7 +83,7 @@ table{
 <input type="submit" value="Export to Excel" onclick="getCSVData()" class="btn btn-success">
 </form>
 <?php
-echo '<div class="table-responsive" style="height:500px;overflow:auto;"><table class="table table-bordered" id="table1" name="table1"><thead><tr ><th>Lot #</th><th>Supplier</th><th>Batch</th><th>Item Code</th><th>Item Color</th><th>Item Description</th><th>Qty</th><th>GRN Date</th><th>Product</th>
+echo '<div class="table-responsive"><table class="table table-bordered" id="table1" name="table1"><thead><tr ><th>Lot #</th><th>Supplier</th><th>Batch</th><th>Item Code</th><th>Item Color</th><th>Item Description</th><th>Qty</th><th>GRN Date</th><th>Product</th>
 <th>PKG #</th>
 <th>Label Pending</th><th>Shade Group Pending</th><th>C-Tax Pending</th><th>Location Tran. Pending</th><th>Rolls</th></tr></thead>';
 
@@ -189,10 +191,30 @@ echo '<div class="table-responsive" style="height:500px;overflow:auto;"><table c
 	echo '</table></div>';
 ?>
 <script>
+
+	$('#reset_table1').addClass('btn btn-warning');
+// <![CDATA[
+	var table6_Props = 	{
+							rows_counter: true,
+							btn_reset: true,
+							// btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+	setFilterGrid( "table1",table6_Props );
+	$(document).ready(function(){
+		$('#reset_table1').addClass('btn btn-warning btn-xs');
+	});
+//]]>
 function getCSVData(){
  var csv_value=$('#table1').table2CSV({delivery:'value'});
  $("#csv_text").val(csv_value);	
 }
 </script>
+
 </div>
 </div>
+<style>
+.flt{
+	width:100%;
+}

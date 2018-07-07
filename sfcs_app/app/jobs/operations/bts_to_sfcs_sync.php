@@ -7,7 +7,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 <?php	
 	//getting bundle creation temp data to sync
 	
-	$bundles_qry="select * FROM $brandix_bts.bundle_creation_data_temp WHERE (operation_id='129' or operation_id='100') AND sync_status=0";
+	$bundles_qry="select * FROM $brandix_bts.bundle_creation_data_temp WHERE (operation_id='129' or operation_id='100') AND sync_status=0 and recevied_qty!=0";
 	$bundles_qry_result=mysqli_query($link,$bundles_qry) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($bundles_qry_result)>0)
 	{
@@ -17,16 +17,16 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 			$ims_date=date('Y-m-d', strtotime($row['scanned_date']));
 			$ims_log_date=date("Y-m-d");
 			/*For our identification/unique we maintain bundle no and operation id operation_sequence*/
-			$bundle_op_id=$row['bundle_number']."-".$row['operation_id']."-".$row['input_job_no']."-".$row['id'];
+			// $bundle_op_id=$row['bundle_number']."-".$row['operation_id']."-".$row['input_job_no']."-".$row['id'];			
 			$remarks_ref=$row['remarks'];
 			if($remarks_ref=="Normal")
 			{
 				$remarks_ref="Nil";
 			}
-			
+			$bundle_op_id=$row['bundle_number']."-".$row['operation_id']."-".$row['input_job_no']."-".$row['assigned_module']."-".$row['remarks'];
 			/*getting sections from section db by assign module*/
 			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$row['assigned_module'].",%' OR  sec_mods LIKE '".$row['assigned_module'].",%' LIMIT 0,1";
-			$sections_qry_result=mysqli_query($link,$sections_qry);
+			$sections_qry_result=mysqli_query($link,$sections_qry) or exit("sections Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($buyer_qry_row=mysqli_fetch_array($sections_qry_result))
 			{
 				$sec_head=$buyer_qry_row['sec_id'];
@@ -35,33 +35,57 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 			$cat_ref=0;
 			$catrefd_qry="select * FROM $bai_pro3.plandoc_stat_log WHERE order_tid in (select order_tid FROM bai_pro3.bai_orders_db WHERE order_style_no='".$row['style']."' AND order_del_no='".$row['schedule']."' AND order_col_des='".$row['color']."')";
 			// echo "<br>Cat Qry :".$catrefd_qry."</br>";
-			$catrefd_qry_result=mysqli_query($link,$catrefd_qry);
+			$catrefd_qry_result=mysqli_query($link,$catrefd_qry) or exit("Cat ref Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($buyer_qry_row=mysqli_fetch_array($catrefd_qry_result))
 			{
 				$cat_ref=$buyer_qry_row['cat_ref'];
 			}
 			echo "</br>Cat :".$cat_ref."</br>";
 			
-			/*Inserting data into Ims log*/
-			$insert_imslog="insert into $bai_pro3.ims_log (ims_date,ims_cid,ims_doc_no,ims_mod_no,ims_shift,
-			ims_size,ims_qty,ims_log_date,ims_style,ims_schedule,ims_color,rand_track,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,ims_remarks,operation_id) values ('".$ims_date."','".$cat_ref."','".$row['docket_number']."','".$row['assigned_module']."','".$row['shift']."','".trim($sizevalue)."','".$row['recevied_qty']."','".$ims_log_date."','".$row['style']."','".$row['schedule']."','".$row['color']."','".$row['id']."','".$bundle_op_id."','".$row['input_job_no_random_ref']."','".$row['input_job_no']."','".$row['bundle_number']."','".STRTOUPPER($remarks_ref)."','".$row['operation_id']."')";
-			// echo "Insert Ims log :".$insert_imslog."</br>";
-			$qry_status=mysqli_query($link,$insert_imslog);
-			if($qry_status)
+			$ims_check="select * from $bai_pro3.ims_log where bai_pro_ref='".$bundle_op_id."'";
+			$ims_check_result=mysqli_query($link,$ims_check) or exit("IMS Check Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$ims_check_rows=mysqli_num_rows($ims_check_result);
+			
+			if($ims_check_rows==0)
 			{
-				echo "Inserted into ims_log table successfully<br>";
-				// /*update sync_status into 1*/
-				$update_sync="UPDATE $brandix_bts.bundle_creation_data_temp SET sync_status='1' WHERE id=".$row['id'];
-				$qry_status1=mysqli_query($link,$update_sync);
-				if($qry_status1)
+				/*Inserting data into Ims log*/
+				$insert_imslog="insert into $bai_pro3.ims_log (ims_date,ims_cid,ims_doc_no,ims_mod_no,ims_shift,
+				ims_size,ims_qty,ims_log_date,ims_style,ims_schedule,ims_color,rand_track,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,ims_remarks,operation_id) values ('".$ims_date."','".$cat_ref."','".$row['docket_number']."','".$row['assigned_module']."','".$row['shift']."','".trim($sizevalue)."','".$row['recevied_qty']."','".$row['date_time']."','".$row['style']."','".$row['schedule']."','".$row['color']."','".$row['id']."','".$bundle_op_id."','".$row['input_job_no_random_ref']."','".$row['input_job_no']."','".$row['bundle_number']."','".STRTOUPPER($remarks_ref)."','".$row['operation_id']."')";
+				echo "Insert Ims log :".$insert_imslog."</br>";
+				$qry_status=mysqli_query($link,$insert_imslog) or exit("IMS Insert Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if($qry_status)
 				{
-					echo "Updated bundle_creation_data table successfully<br>";
+					echo "Inserted into ims_log table successfully<br>";
+					// /*update sync_status into 1*/
+					$update_sync="UPDATE $brandix_bts.bundle_creation_data_temp SET sync_status='1' WHERE id=".$row['id'];
+					$qry_status1=mysqli_query($link,$update_sync);
+					if($qry_status1)
+					{
+						echo "Updated bundle_creation_data table successfully<br>";
+					}
 				}
-			}	
+			}
+			else
+			{
+				$update_imslog="update $bai_pro3.ims_log set ims_qty=ims_qty+".$row['recevied_qty']." where bai_pro_ref='".$bundle_op_id."'";
+				echo "Update Ims log :".$update_imslog."<br>";
+				$qry_status=mysqli_query($link,$update_imslog) or exit("IMS Insert Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if($qry_status)
+				{
+					echo "Inserted into ims_log table successfully<br>";
+					// /*update sync_status into 1*/
+					$update_sync="UPDATE $brandix_bts.bundle_creation_data_temp SET sync_status='1' WHERE id=".$row['id'];
+					$qry_status1=mysqli_query($link,$update_sync);
+					if($qry_status1)
+					{
+						echo "Updated bundle_creation_data table successfully<br>";
+					}
+				}
+			}			
 		}				
 	}
 	
-	$bundles_qry="select * FROM $brandix_bts.bundle_creation_data_temp WHERE (operation_id='101' or operation_id='130') AND sync_status=0";
+	$bundles_qry="select *,DATE(date_time) as date_ref,HOUR(date_time) as hour_ref FROM $brandix_bts.bundle_creation_data_temp WHERE (operation_id='101' or operation_id='130') AND sync_status=0";
 	$bundles_qry_result=mysqli_query($link,$bundles_qry) or exit("Bundles Query Error17".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	if(mysqli_num_rows($bundles_qry_result)>0)
 	{
@@ -109,7 +133,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 			/*Inserting data into bai log*/
 			$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 			bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-			) values ('".$row['assigned_module']."','".$sec_head."','".$row['recevied_qty']."','".$row['scanned_date']."','".$bac_dat."','".$row['shift']."','".$row['style']."','Active','".$log_time."','".$buyer_div."','".$row['schedule']."','".$row['color']."','".$row['scanned_user']."','".$row['docket_number']."','".$row['sfcs_smv']."','".$row['recevied_qty']."','ims_log','".$bundle_op_id."','".$nop."','".$bundle_op_id."','".$row['operation_id']."','".$row['input_job_no']."')";
+			) values ('".$row['assigned_module']."','".$sec_head."','".$row['recevied_qty']."','".$row['date_ref']." ".$row['hour_ref'].":00:00"."','".$bac_dat."','".$row['shift']."','".$row['style']."','Active','".$log_time."','".$buyer_div."','".$row['schedule']."','".$row['color']."','".$row['scanned_user']."','".$row['docket_number']."','".$row['sfcs_smv']."','".$row['recevied_qty']."','ims_log','".$bundle_op_id."','".$nop."','".$bundle_op_id."','".$row['operation_id']."','".$row['input_job_no']."')";
 			echo "Bai log : ".$insert_bailog."</br>";
 			$qry_status=mysqli_query($link,$insert_bailog) or exit("BAI Log Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if($qry_status)
@@ -118,7 +142,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 				/*Insert same data into bai_pro.bai_log_buf table*/
 				$insert_bailogbuf="insert into $bai_pro.bai_log_buf (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 				bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-				) values ('".$row['assigned_module']."','".$sec_head."','".$row['recevied_qty']."','".$row['scanned_date']."','".$bac_dat."','".$row['shift']."','".$row['style']."','Active','".$log_time."','".$buyer_div."','".$row['schedule']."','".$row['color']."','".$row['scanned_user']."','".$row['docket_number']."','".$row['sfcs_smv']."','".$row['recevied_qty']."','ims_log','".$bundle_op_id."','".$nop."','".$bundle_op_id."','".$row['operation_id']."','".$row['input_job_no']."')";
+				) values ('".$row['assigned_module']."','".$sec_head."','".$row['recevied_qty']."','".$row['date_ref']." ".$row['hour_ref'].":00:00"."','".$bac_dat."','".$row['shift']."','".$row['style']."','Active','".$log_time."','".$buyer_div."','".$row['schedule']."','".$row['color']."','".$row['scanned_user']."','".$row['docket_number']."','".$row['sfcs_smv']."','".$row['recevied_qty']."','ims_log','".$bundle_op_id."','".$nop."','".$bundle_op_id."','".$row['operation_id']."','".$row['input_job_no']."')";
 				echo "</br>Insert Bailog buf: ".$insert_bailogbuf."</br>";
 				$qrybuf_status=mysqli_query($link,$insert_bailogbuf) or exit("BAI Log Buf Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($qrybuf_status)
@@ -147,8 +171,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 	}
 	
 	
-	$bundles_output_sql="select style,schedule,color,bundle_number,input_job_no_random_ref,input_job_no,operation_id,assigned_module,remarks,SUM(recevied_qty) AS qty,size_id,group_concat(id) as id FROM $brandix_bts.bundle_creation_data_temp WHERE sfcs_smv > 0 AND sync_status=0 GROUP BY style,SCHEDULE,color,bundle_number,input_job_no_random_ref,input_job_no,operation_id,assigned_module,remarks,size_id";
-	// echo $bundles_output_sql."<br>";
+	$bundles_output_sql="select * FROM $brandix_bts.bundle_creation_data_temp WHERE (operation_id='130' or operation_id='101') AND sync_status=0";
 	$bundles_output_sql_result=mysqli_query($link,$bundles_output_sql) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row = mysqli_fetch_array($bundles_output_sql_result))
 	{
@@ -161,7 +184,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 		$operation_id=$sql_row['operation_id'];
 		$assigned_module=$sql_row['assigned_module'];
 		$remarks=$sql_row['remarks'];
-		$reported_qty=$sql_row['qty'];
+		$reported_qty=$sql_row['recevied_qty'];
 		$orginal_reported_qty=$reported_qty;
 		$size_id=$sql_row["size_id"];
 		if($remarks=="Normal")
@@ -170,6 +193,8 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 		}
 		$tran_id=$sql_row["id"];
 		
+		
+		
 		$prev_ops="select operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND operation_code<'".$operation_id."' ORDER BY operation_code DESC LIMIT 1";
 		$prev_ops_sql_result=mysqli_query($link,$prev_ops) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($prev_ops_row = mysqli_fetch_array($prev_ops_sql_result))
@@ -177,67 +202,49 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 			$prevs_op_code=$prev_ops_row["operation_code"];
 		}
 		
-		echo $prevs_op_code."<br>";
+		echo $prevs_op_code."<br>";		
 		
+		$bundle_op_id1=$sql_row['bundle_number']."-".$prevs_op_code."-".$sql_row['input_job_no']."-".$sql_row['assigned_module']."-".$sql_row['remarks'];
 		
-		$ims_sql="select * from $bai_pro3.ims_log where operation_id='".$prevs_op_code."' and input_job_rand_no_ref='".$input_job_no_random_ref."' and pac_tid='".$bundle_number."' and ims_remarks='".strtoupper($remarks)."' and ims_size='a_".$size_id."'";
-		// echo $ims_sql."<br>";
-		$ims_sql_result=mysqli_query($link,$ims_sql) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
-		while($ims_row = mysqli_fetch_array($ims_sql_result))
+		$update_ims_pro_log="update $bai_pro3.ims_log set ims_pro_qty=ims_pro_qty+".$sql_row['recevied_qty']." where bai_pro_ref='".$bundle_op_id1."'";
+		echo $update_ims_pro_log."<br>";
+		$qry_status=mysqli_query($link,$update_ims_pro_log) or exit("IMS Pro Update Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if($qry_status)
 		{
-			$ims_qty=$ims_row["ims_qty"];
-			$ims_pro_qty=$ims_row["ims_pro_qty"];
-			$ims_tid=$ims_row["tid"];
-			$balance_to_report=$ims_qty-$ims_pro_qty;
-			
-			if($balance_to_report > 0 and $reported_qty > 0)
-			{				
-				echo "0=".$orginal_reported_qty."-".$reported_qty."-".$balance_to_report."<br>";
-				if($reported_qty>$balance_to_report)
-				{
-					$ims_sql_update="update $bai_pro3.ims_log set ims_pro_qty=ims_pro_qty+".$balance_to_report." where tid='".$ims_tid."'";
-					echo $ims_sql_update."<br>";
-					mysqli_query($link,$ims_sql_update) or exit("IMS Output Reported Qty=".mysqli_error($GLOBALS["___mysqli_ston"]));
-				}
-				else
-				{
-					$ims_sql_update="update $bai_pro3.ims_log set ims_pro_qty=ims_pro_qty+".$reported_qty." where tid='".$ims_tid."'";
-					echo $ims_sql_update."<br>";
-					mysqli_query($link,$ims_sql_update) or exit("IMS Output Reported Qty=".mysqli_error($GLOBALS["___mysqli_ston"]));
-				}
-				$reported_qty=$reported_qty-$balance_to_report;
-			}			
-		}
-		
-		$update_sync="UPDATE $brandix_bts.bundle_creation_data_temp SET sync_status='1' WHERE id in (".$sql_row['id'].")";
-		$qry_status1=mysqli_query($link,$update_sync);
-		if($qry_status1)
-		{
-			echo "Updated bundle_creation_data table successfully<br>";
-		}
-		
+			echo "Inserted into ims_log table successfully<br>";
+			// /*update sync_status into 1*/
+			$update_sync="UPDATE $brandix_bts.bundle_creation_data_temp SET sync_status='1' WHERE id=".$tran_id;
+			$qry_status1=mysqli_query($link,$update_sync);
+			if($qry_status1)
+			{
+				echo "Updated bundle_creation_data table successfully<br>";
+			}
+		}		
 	}	
 	
 	$ims_status="update $bai_pro3.ims_log set ims_status=\"DONE\" where ims_qty=ims_pro_qty";
 	mysqli_query($link,$ims_status) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$ims_status_1="update $bai_pro3.ims_log_backup set ims_status=\"NULL\" where ims_qty!=ims_pro_qty";
-	mysqli_query($link,$ims_status_1) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$ims_status="update $bai_pro3.ims_log set ims_status=\"\" where ims_qty!=ims_pro_qty";
+	mysqli_query($link,$ims_status) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$ims_backup="insert ignore into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where ims_status=\"DONE\"";
-	mysqli_query($link,$ims_backup) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $ims_status_1="update $bai_pro3.ims_log_backup set ims_status=\"NULL\" where ims_qty!=ims_pro_qty";
+	// mysqli_query($link,$ims_status_1) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$ims_backup_2="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where ims_status!=\"DONE\"";
-	mysqli_query($link,$ims_backup_2) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $ims_backup="insert ignore into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where ims_status=\"DONE\"";
+	// mysqli_query($link,$ims_backup) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+	// $ims_backup_2="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where ims_status!=\"DONE\"";
+	// mysqli_query($link,$ims_backup_2) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$ims_delete="delete from $bai_pro3.ims_log where ims_status=\"DONE\"";
-	mysqli_query($link,$ims_delete) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $ims_delete="delete from $bai_pro3.ims_log where ims_status=\"DONE\"";
+	// mysqli_query($link,$ims_delete) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$ims_delete_2="delete from $bai_pro3.ims_log_backup where ims_status!=\"DONE\"";
-	mysqli_query($link,$ims_delete_2) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $ims_delete_2="delete from $bai_pro3.ims_log_backup where ims_status!=\"DONE\"";
+	// mysqli_query($link,$ims_delete_2) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	echo memory_get_usage();
-$end_timestamp = microtime(true);
-$duration = $end_timestamp - $start_timestamp;
-print("Execution took ".$duration." milliseconds.")."\n";	
-?>
+	$end_timestamp = microtime(true);
+	$duration = $end_timestamp - $start_timestamp;
+	print("Execution took ".$duration." milliseconds.")."\n";	
+// ?>
