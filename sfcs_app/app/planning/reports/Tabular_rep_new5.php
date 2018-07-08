@@ -13,7 +13,13 @@ set_time_limit(6000000);
 <head>
 
 <style type="text/css">
-
+#reset_example1{
+	width : 50px;
+	color : #ec971f;
+	margin-top : 10px;
+	margin-left : 0px;
+	margin-bottom:15pt;
+}
 div.scroll {
 height: 75px;
 width: auto;
@@ -87,6 +93,8 @@ function uncheckall()
 	};
 </script>
 <script language="javascript" type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R') ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 <link rel="stylesheet" href="<?= '../'.getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R') ?>" type="text/css" media="all" />
 <!--<link href="<?= '../'.getFullURLLevel($_GET['r'],'common/css/table_style.css',3,'R') ?>" rel="stylesheet" type="text/css" />
 
@@ -194,7 +202,7 @@ $cpo_code="";
 
 
 	
-	echo "<div class='table-responsive' id='main_content'><table class='table table-bordered'>";
+	echo "<div class='table-responsive' id='main_content'><table class='table table-bordered table-striped'>";
 	echo "<tr class='tblheading'>";
 	echo "<td bgcolor=\"#CCFFFF\">CPO (".sizeof($cpo).")</td>";
 	echo "<td bgcolor=\"#CCFFFF\">Buyer Division (".sizeof($buyer_div).")</td>";
@@ -562,8 +570,8 @@ if(isset($_POST['submit1']))
 		}
 	}
 
-	echo '<form action="'."../".getFullURL($_GET['r'],"export_excel.php",'R').'" method ="post" > 
-	<input type="hidden" name="csv_text" id="csv_text">
+	echo '<form action="'."../".getFullURL($_GET['r'],"export_excel1.php",'R').'" method ="post" > 
+	<input type="hidden" name="csv_123" id="csv_123">
 	<input class="pull-right btn btn-info" type="submit" value="Export to Excel" onclick="getCSVData()">
 	</form>';
 			
@@ -781,8 +789,22 @@ if(isset($_POST['submit1']))
 <script language="javascript">
 function getCSVData(){
  var csv_value=$('#table1').table2CSV({delivery:'value'});
- $("#csv_text").val(csv_value);	
+ $("#csv_123").val(csv_value);	
 }
+//<![CDATA[
+	$('#reset_table1').addClass('btn btn-warning');
+	var table6_Props = 	{
+							rows_counter: true,
+							btn_reset: true,
+							// btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+	setFilterGrid( "table1",table6_Props );
+	$(document).ready(function(){
+		$('#reset_table1').addClass('btn btn-warning btn-xs');
+	});
+	//]]>
 </script>
 
 </div></div>

@@ -55,10 +55,7 @@
 
 				table
 				{
-					margin-left:auto;
-					margin-right:auto;
-					margin-top:auto;
-					margin-bottom:auto;
+					margin:0px;
 				}
 				@page {
 				margin-top: 7px;   
@@ -107,7 +104,7 @@
 
 $mpdf = new \Mpdf\Mpdf([
 	'mode' => 'utf-8', 
-	'format' => [55, 95], 
+	'format' => [65, 110], 
 	'orientation' => 'L'
 ]);
 $mpdf->WriteHTML($html);

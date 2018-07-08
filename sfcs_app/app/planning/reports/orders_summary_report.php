@@ -10,20 +10,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 ?>
 
 
-<html>
-<head>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/incentives/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
-<!-- <script type="text/javascript" src="<?= getFullURL($_GET['r'],'jquery-1.3.2.js','R')?>"></script> -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R')?>"></script>
 <!-- <script type="text/javascript" src="<?= getFullURL($_GET['r'],'datetimepicker_css.js','R')?>"></script> -->
 
 
-<?php
-//  echo '<link href="'.getFullURL($_GET['r'],'/master/styles/sfcs_styles.css','R').'" rel="stylesheet" type="text/css" />'; ?>
+<!-- echo '<link href="'.getFullURL($_GET['r'],'/master/styles/sfcs_styles.css','R').'" rel="stylesheet" type="text/css" />'; ?> -->
 
-</head>
-<body>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Orders Summary Report</div>
@@ -90,8 +84,7 @@ if(isset($_POST['filter']))
 	<input type="hidden" name="csvname" id="csvname" value="Order Summary Report">
 	<input type="submit" class="btn btn-info" id="expexc" name="expexc" value="Export to Excel" onclick="getCSVData()">
 	</form>';
-
-	echo "<br><div class='table-responsive'><table id='example1' class ='table'>";
+	echo "<br><div class='table-responsive'><table id='example1' name='example1' class ='table table-bordered table-striped'>";
 	echo "<tr class='tblheading'>
 	<th>Order Date</th>
 	<th>Style</th>
@@ -211,15 +204,73 @@ function getCSVData(){
 
 <script language="javascript" type="text/javascript">
 	//<![CDATA[
-	var MyTableFilter = {  exact_match: false,
-	display_all_text: "Show All",
-	col_0: "select",
-	col_1: "select" }
-	setFilterGrid( "example1", MyTableFilter );
+		$('#reset_example1').addClass('btn btn-warning');
+	var table6_Props = 	{
+							rows_counter: true,
+							btn_reset: true,
+							// btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+	setFilterGrid( "example1",table6_Props );
+	$(document).ready(function(){
+		$('#reset_example1').addClass('btn btn-warning btn-xs');
+	});
 	//]]>
 </script>
 
 </div>
 </div>
-</body>
-</html>
+
+<style>
+	table
+{
+	font-family:calibri;
+	font-size:15px;
+}
+
+table tr
+{
+	border: 1px solid black;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid black;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td.lef
+{
+	border: 1px solid black;
+	text-align: left;
+	white-space:nowrap; 
+}
+table th
+{
+	border: 1px solid black;
+	text-align: center;
+	background-color: #337ab7;
+	border-color: #337ab7;
+	color: WHITE;
+	white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:15px;
+}
+#reset_example1{
+	width : 50px;
+	color : #ec971f;
+	margin-top : 10px;
+	margin-left : 0px;
+	margin-bottom:15pt;
+}
+</style>

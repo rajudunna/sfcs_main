@@ -1479,14 +1479,14 @@ body{
 <style>
 
 @media print {
-	@page narrow {size: 15in 11in}
+	@page narrow {size: 15in 12in}
 	@page rotated {size: PORTRAIT}
 	DIV {page: narrow}
 	TABLE {page: rotated}
 	#non-printable { display: none; }
 	#printable { display: block; }
 	#logo { display: block; }
-	body { zoom:79%;}
+	body { zoom:80%;}
 	#ad{ display:none;}
 	#leftbar{ display:none;}
 	#DOCKET_NEW_4118{ width:85%; margin-left:2px; margin-right:2px;}
@@ -1744,7 +1744,7 @@ tags will be replaced.-->
  </tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td colspan=19 rowspan=5 class=xl8217319>
+  <td colspan=27 rowspan=5 class=xl8217319>
   
   <?php
   $style_css="style='font-size:16px; border:.5pt solid black; padding-left: 10px; padding-right:10px; border-collapse: collapse;'";
@@ -1816,100 +1816,55 @@ echo "<tr>";
   </td>
   <td class=xl6417319></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
+
+ <tr height=10 style='height:5pt'>
+  <td height=10 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6417319></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
+ <tr height=10 style='height:5pt'>
+  <td height=10 class=xl6417319 style='height:15.75pt'></td>
+  <td class=xl6417319></td>
+ </tr> <tr height=10 style='height:5pt'>
+  <td height=10 class=xl6417319 style='height:15.75pt'></td>
+  <td class=xl6417319></td>
+ </tr> <tr height=10 style='height:5pt'>
+  <td height=10 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6417319></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
+ <tr height=10 style='height:5pt'>
+  <td height=10 class=xl6417319 style='height:5pt'></td>
   <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
- </tr>
- <tr height=22 style='height:16.5pt'>
-  <td height=22 class=xl6417319 style='height:16.5pt'></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
+ </tr> <tr height=10 style='height:15.75pt'>
+  <td height=10 class=xl6417319 style='height:5pt'></td>
   <td class=xl6417319></td>
  </tr>
 
+
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
-  <td rowspan=2 class=xl7017319 style='border-bottom:.5pt solid black'>Rpt No</td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black; width:48pt'>Pattern Version</td>
+  <td rowspan=2 class=xl8917319 colspan=1 style='border-bottom:.5pt solid black; width:48pt'>Pattern<br/>Version</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;  width:48pt'>No of Plies</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Pur Width</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black; width:48pt'>Marker Length</td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Req. Qty (<?php echo $fab_uom; ?>)</td>
+  <td rowspan=2 colspan=1 class=xl8917319 width=64 style='border-bottom:.5pt solid black;'>Req. Qty <br/>(<?php echo $fab_uom; ?>)</td>
   <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Act. Width</td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Cutting Wastage %</td>
-  <td rowspan=2 colspan=2 class='xl8917319 autox'width=80 style='border-bottom:.5pt solid black;
-  width:60px'>Binding Consumption</td>
+  <td rowspan=2 colspan=1 class=xl8917319 width=70 style='border-bottom:.5pt solid black;'>Cutting<br/>wastage %</td>
+  <td rowspan=2 colspan=1 class='xl8917319 autox'width=80 style='border-bottom:.5pt solid black;
+  width:60px'>Binding<br/> Cons.</td>
   <td rowspan=2   colspan=2 class='xl8917319 autox' width=80 style='border-bottom:.5pt solid black;
-  width:70px'>Fab. Requirement for lay/ Yds</td>
+  width:70px'>Fab. Req for lay</td>
   <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
-  width:70px'>Fab. Requirement for Binding/ Yds</td>
-  <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
-  width:60px'>Total Fab. Requirement/ Yds</td>
-  <td rowspan=2 colspan=3  class=xl8917319 style='border-bottom:.5pt solid black;width:auto'>Marker Length<br/>(actual)</td>
+  width:70px'>Fab. Req for Binding</td>
+  <td rowspan=2  colspan=2 class='autox xl8917319' style='border-bottom:.5pt solid black'>Total Fab. Req</td>
+  <td rowspan=2 colspan=2  class=xl8917319 style='border-bottom:.5pt solid black;width:auto'>Marker Length<br/>(actual)</td>
   <td colspan=2 rowspan=2 class=xl8917319  style='border-bottom:.5pt solid black;'>Act. Req Qty (<?php echo $fab_uom; ?>)</td>
   <td colspan=2 rowspan=2 class=xl8917319  style='border-bottom:.5pt solid black;'>Issued Qty (<?php echo $fab_uom; ?>)</td>
   <td colspan=2 rowspan=2 class=xl8917319  style='border-bottom:.5pt solid black;'>Return Qty (<?php echo $fab_uom; ?>)</td>
   <td class=xl11717319 width=64 style='width:48pt'></td>
-  <td colspan=3 rowspan=4 class=xl10117319 style='border-right:1.0pt solid black;
-  border-bottom:1.0pt solid black'>Fabric Swatch</td>
+  <td colspan=4 rowspan=4 class=xl10117319 style='border-right:1.0pt solid black;
+  border-bottom:1.0pt solid black'>Fabric <br/>Swatch</td>
   <td class=xl8217319></td>
  </tr>
  <tr height=21 style='height:15.75pt'>
@@ -1920,31 +1875,28 @@ echo "<tr>";
 
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td rowspan=2 class=xl9817319 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'>&nbsp;</td>
-  <td rowspan=2 class=xl9817319 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><?php echo $patt_ver; ?></td>
+  <td rowspan=2 colspan=1 class=xl9817319 width=64 style='border-bottom:.5pt solid black;
+  border-top:none;'><?php echo $patt_ver; ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo array_sum($plies); ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $purwidth; ?></td>
   <td rowspan=2 class=xl9817319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $purlength; ?></td>
-  <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><?php echo array_sum($met_req); ?></td>
+  <td rowspan=2 colspan=1 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
+  border-top:none;'><?php echo array_sum($met_req); ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $actwidth; ?></td>
-  <td rowspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'><?php echo $cuttable_wastage*100;?></td>
-  <td rowspan=2 colspan=2 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
+  <td rowspan=2 colspan=1 class=xl8917319 width=70 style='border-bottom:.5pt solid black;'><?php echo $cuttable_wastage*100;?></td>
+  <td rowspan=2 colspan=1 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'><?php echo $binding_con; ?></td>
   <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'><?php $fab_lay = (float)$purlength*(1+(float)$cuttable_wastage)*(int)$plies; echo round($fab_lay,2); ?></td>
-  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'><?php $fab_bind = (float)$binding_con*(int)$plies*(float)$a_ratio_tot; echo round($fab_bind,2); ?></td>
-  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'><?php echo round($fab_bind+$fab_lay,2); ?></td>
-  <td rowspan=2 colspan=3  class=xl10017319 style='border-bottom:.5pt solid black;
+  width:48pt'><?php $fab_lay = (float)$purlength*(1+(float)$cuttable_wastage)*(int)$plies; echo round($fab_lay,2);echo '<br/>('.$fab_uom.')'; ?></td>
+  <td rowspan=2 colspan=2  class=xl8917319 style='border-bottom:.5pt solid black;
+  width:48pt'><?php $fab_bind = (float)$binding_con*(int)$plies*(float)$a_ratio_tot; echo round($fab_bind,2);echo '<br/>('.$fab_uom.')'; ?></td>
+  <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;'>
+  <?php echo round($fab_bind+$fab_lay,2);echo '<br/>('.$fab_uom.')'; ?></td>
+  <td rowspan=2 colspan=2  class=xl10017319 style='border-bottom:.5pt solid black;
   border-top:none;'><?php echo $act_mk_length; ?></td>
   <td colspan=2  rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;'><?php if($act_mk_length>0) {echo array_sum($met_req); } ?></td>
@@ -1982,10 +1934,10 @@ echo "<tr>";
   <td class=xl11217319></td>
   <td class=xl6417319></td>
  </tr>
- <tr style='height:50px'></tr>	
+ <tr style='height:10px'></tr>	
  <tr>
   <td class=xl6417319></td>
-  <td colspan=22 rowspan=7 class=xl8217319>
+  <td colspan=27 rowspan=7 class=xl8217319>
   
   <?php
   $roll_det=array();
@@ -2022,45 +1974,45 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$item_name[] = $sql_row['item'];
 } 
 
-echo "<table style='width:auto;font-size:16px; border:.5pt solid black; border-collapse: collapse; float:left;'>";
+echo "<table style='width:auto;font-size:18px; border:.5pt solid black; border-collapse: collapse; float:left;'>";
 echo "
 <thead>
 	<tr>
-	<th colspan=3 style='width : 200px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'> Roll No</th>
-	<th colspan=3 style='width : 400px; font-size:15px; border:.5pt solid black; border-collapse: collapse;'>Fabric Name</th>
-	<th colspan=3 style='width : 400px; font-size:15px; border:.5pt solid black; border-collapse: collapse;'> Lot No</th>
-	<th colspan=3 style='width : 250px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'>Label ID</th>
-	<th colspan=3 style='width : 250px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'> Width</th>
-	<th colspan=3 style='width : 250px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'>Allocated Length</th>
-	<th colspan=3 style='width : 350px;font-size:16px; border:.5pt solid black; border-collapse: collapse;'> Batch</th>
-	<th colspan=3 style='width : 300px;font-size:16px; border:.5pt solid black; border-collapse: collapse;'> Shade</th>
-	<th colspan=3 style='width : 300px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'> Location</th>
-	<th colspan=3 style='width : 250px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Length</th>
-	<th colspan=3 style='width : 250px; font-size:15px; border:.5pt solid black; border-collapse: collapse;'> Ticket Length</th>
-	<th colspan=3 style='width : 250px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'> Length Variation</th>
-	<th colspan=3 style='width : 250px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Width</th>
-	<th colspan=3 style='width : 250px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'> Ticket Width</th>
-	<th colspan=3 style='width : 250px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'> Width Variation</th>
+	<th colspan=3 style='width : 200px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Roll No</th>
+	<th colspan=3 style='width : 400px; font-size:18px; border:.5pt solid black; border-collapse: collapse;'>Fabric Name</th>
+	<th colspan=3 style='width : 400px; font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Lot No</th>
+	<th colspan=3 style='width : 250px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'>Label ID</th>
+	<th colspan=3 style='width : 250px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Width</th>
+	<th colspan=3 style='width : 250px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'>Allocated Length</th>
+	<th colspan=3 style='width : 350px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Batch</th>
+	<th colspan=3 style='width : 300px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Shade</th>
+	<th colspan=3 style='width : 300px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Location</th>
+	<th colspan=3 style='width : 250px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Length</th>
+	<th colspan=3 style='width : 250px; font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Ticket Length</th>
+	<th colspan=3 style='width : 250px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Length Variation</th>
+	<th colspan=3 style='width : 250px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Width</th>
+	<th colspan=3 style='width : 250px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Ticket Width</th>
+	<th colspan=3 style='width : 250px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'> Width Variation</th>
 	</tr>
 </thead>
 <tbody>";
 for($i=0;$i<sizeof($roll_det);$i++){
 	echo "<tr>
-		<td colspan=3 class='manual_height' style='width:200px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$roll_det[$i]."</td>
-		<td colspan=3  class='manual_height' style='width:300px;font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$item_name[$i]."</td>
-		<td colspan=3  class='width:250px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$width_det[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$leng_det[$i]."</td>
-		<td colspan=3  class='width:200px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$batch_det[$i]."</td>
-		<td colspan=3  class='width:200px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$shade_det[$i]."</td>
-		<td colspan=3  class='width:200px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$locan_det[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_len[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height'style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_len[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:15px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
+		<td colspan=3 class='manual_height' style='width:200px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$roll_det[$i]."</td>
+		<td colspan=3  class='manual_height' style='width:300px;font-size:16px; border:.5pt solid black; border-collapse: collapse;'>".$item_name[$i]."</td>
+		<td colspan=3  class='width:250px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>
+		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>
+		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$width_det[$i]."</td>
+		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$leng_det[$i]."</td>
+		<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$batch_det[$i]."</td>
+		<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$shade_det[$i]."</td>
+		<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$locan_det[$i]."</td>
+		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_len[$i]."</td>
+		<td colspan=3  class='width:150px;manual_height'style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_len[$i]."</td>
+		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
+		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>
+		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>
+		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
 
 		</tr>";
 }
@@ -2192,7 +2144,6 @@ echo "</tbody></table>";
 // echo "</tr>";
 
 // echo "</table>";	
-echo $lot_ref; echo "<span style='font-size:16px'>MK File: </style>".implode(", ",array_unique($mk_files));
   ?>
   </td>
   <td class=xl6417319></td>
@@ -2225,26 +2176,8 @@ echo $lot_ref; echo "<span style='font-size:16px'>MK File: </style>".implode(", 
   <td class=xl654118></td> -->
   <td class=xl6417319></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-<!-- <td class=xl824118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td> 
-  <td class=xl654118></td> -->
-  <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-<!-- <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td> 
-  <td class=xl654118></td>-->
-  <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
-  <td class=xl7617319></td>
- </tr>
+
+
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6417319></td>
@@ -2326,32 +2259,33 @@ echo $lot_ref; echo "<span style='font-size:16px'>MK File: </style>".implode(", 
   <td  colspan=3 class=xl8217319></td>
  </tr>
  <?php 
-   for($i=0;$i<15;$i++){
+   for($i=0;$i<14;$i++){
 ?>
  <tr style='height:30px'>
   <td></td>
-  <td  colspan=2 class=xl7417319>&nbsp;</td>
-  <td  colspan=2 class=xl7517319>&nbsp;</td>
-  <td  colspan=2 class=xl7517319>&nbsp;</td>
-  <td  colspan=2 class=xl7517319>&nbsp;</td>
-  <td  colspan=2 class=xl7517319>&nbsp;</td>
-  <td  colspan=2 class=xl7517319>&nbsp;</td>
-  <td  colspan=2 class=xl7517319>&nbsp;</td>
-  <td  colspan=2 class=xl7517319>&nbsp;</td>
-  <td  colspan=3 class=xl7517319>&nbsp;</td>
-  <td  colspan=9 class=xl8317319 style='border-right:.5pt solid black;
-  border-left:none'>&nbsp;</td>
-  <td class=xl6417319></td>
+  <td  colspan=2 class=xl74173191>&nbsp;</td>
+  <td  colspan=2 class=xl74173191>&nbsp;</td>
+  <td  colspan=2 class=xl74173191>&nbsp;</td>
+  <td  colspan=2 class=xl74173191>&nbsp;</td>
+  <td  colspan=2 class=xl74173191>&nbsp;</td>
+  <td  colspan=2 class=xl74173191>&nbsp;</td>
+  <td  colspan=2 class=xl74173191>&nbsp;</td>
+  <td  colspan=2 class=xl74173191>&nbsp;</td>
+  <td  colspan=3 class=xl74173191>&nbsp;</td>
+  <td  colspan=9 class=xl74173191>&nbsp;</td>
+  <td class=xl64173191></td>
  </tr>
  <?php 
    }
 ?>
- <tr height=30 style='height:15.75pt'>
 
+ 
+ <tr height=30 style='height:15.75pt'>
  </tr>
+
  <tr height=30 style='height:30pt'>
   <td height=30 class=xl6417319 style='height:30pt'></td>
-  <td colspan=2 class=xl6417319></td>
+  <td colspan=2 ></td>
   <td colspan=2 class=xl7017319>Docket</td>
   <td colspan=2 class=xl8017319>Marker</td>
   <td colspan=2 class=xl8017319>Issuing</td>
@@ -2522,7 +2456,12 @@ echo $lot_ref; echo "<span style='font-size:16px'>MK File: </style>".implode(", 
 .bottom{
 	border-bottom : 1px solid black;
 }
-.xl8917319,xl9117319,.xl10017319,.xl9817319,.xl7017319,.xl7117319,xl8217319,.xl7317319,.xl7217319,
+.xl8917319{
+	font-size:17px;
+	font-weight:bold;
+	vertical-align : top;
+}
+.xl9117319,.xl10017319,.xl9817319,.xl7017319,.xl7117319,xl8217319,.xl7317319,.xl7217319,
  .xl7917319,.xl8017319,.xl6417319,.xl8117319,.xl7417319,.xl7517319,.xl6417319,.xl9117319,.xl10117319
 	{
 		font-size:18px;
@@ -2536,5 +2475,9 @@ echo $lot_ref; echo "<span style='font-size:16px'>MK File: </style>".implode(", 
 	}
 .manual_height{
 	height : 30px;
+}
+.xl74173191{
+	border : 1px solid black;
+
 }
 </style>
