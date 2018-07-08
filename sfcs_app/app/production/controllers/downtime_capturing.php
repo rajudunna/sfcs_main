@@ -3,7 +3,7 @@
     Purpose : Page to update down time in sewing time based on planning vs actual 
     Created By : Chandu
     Create : 04-07-2018
-    Update : 05-07-2018 
+    Update : 08-07-2018 
     inputs : date,time,module
     output : show table with style,schedule,color details and update button for update down time
 */
@@ -52,7 +52,7 @@ if(isset($_POST) && isset($_POST['date_y'])){
 $sql_module = 'select sec_mods FROM '.$bai_pro3.'.sections_db where sec_id>0';
 $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".mysqli_error($GLOBALS["___mysqli_ston"]));
 //=========== get timimgs list =======================
-$sql_time = 'select time_value,CONCAT(time_display,"(",day_part,")") AS time_display  FROM '.$bai_pro3.'.tbl_plant_timings';
+$sql_time = 'select time_value,time_display,day_part  FROM '.$bai_pro3.'.tbl_plant_timings';
 $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_error($GLOBALS["___mysqli_ston"]));
 ?> 
 <head>
@@ -65,22 +65,32 @@ $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_er
             <form>
                 <input type='hidden' name='r' value='<?= $_GET['r'] ?>'>
                 <div class="form-group col-sm-3">
-                    <input data-toggle='datepicker' type="text" class="form-control" name='mdate' value="<?= isset($_GET['mdate']) ? $_GET['mdate'] : '' ?>" required>
+                    <label>Date</label><br/>
+                    <input data-toggle='datepicker' placeholder="YYYY-MM-DD" type="text" class="form-control" name='mdate' value="<?= isset($_GET['mdate']) ? $_GET['mdate'] : '' ?>" required>
                 </div>
                 <div class="form-group col-sm-3">
+                <label>Time</label><br/>
                     <select class="form-control" name='mtime' required>
                         <option value=''>Select Time</option>
                         <?php
                             while($row=mysqli_fetch_array($result_time)){
-                                if(isset($_GET['mtime']) && $_GET['mtime']==$row['time_value'])
-                                    echo "<option value='".$row['time_value']."' selected>".$row['time_display']."</option>";
+                                if($row['day_part']=='Morning')
+                                    $put = 'AM';
+                                elseif($row['day_part']=='Evening')
+                                    $put = 'PM';
                                 else
-                                    echo "<option value='".$row['time_value']."'>".$row['time_display']."</option>";
+                                    $put = $row['day_part'];
+                                
+                                if(isset($_GET['mtime']) && $_GET['mtime']==$row['time_value'])
+                                    echo "<option value='".$row['time_value']."' selected>".$row['time_display']." ".$put."</option>";
+                                else
+                                    echo "<option value='".$row['time_value']."'>".$row['time_display']." ".$put."</option>";
                             }
                         ?>
                     </select>
                 </div>
                 <div class="form-group col-sm-3">
+                    <label>Module</label><br/>
                     <select class="form-control" name='module' required>
                         <option value=''>Module</option>
                         <?php
@@ -96,8 +106,11 @@ $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_er
                         ?>
                     </select>
                 </div>
+                <div class='col-sm-3'>
+                <br/>
                 <button type="submit" class="btn btn-success"><i class="fas fa-search"></i> Filter</button>
                 <a href="index.php?r=<?= $_GET['r'] ?>" class="btn btn-warning"><i class="fas fa-times"></i> Clear</a>
+                </div>
             </form>
 
 <!-- Logics starts here -->
@@ -111,7 +124,7 @@ $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_er
                 SELECT style,schedule,color,FLOOR(fr_qty/hours) AS qty FROM $bai_pro2.fr_data WHERE DATE(frdate)='".date('Y-m-d',strtotime($_GET['mdate']))."' AND team='".$_GET['module']."'";
                 $result_fr_data = mysqli_query($link, $get_fr_data) or exit("Sql Error fr".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                $tab="<table class='table'><thead><tr><th>Type</th><th>Style</th><th>Schedule</th><th>Color</th><th>Quantity</th></tr></thead><tbody>";
+                $tab="<table class='table table-bordered'><thead><tr><th class='text-center'>Type</th><th>Style</th><th>Schedule</th><th>Color</th><th>Quantity</th></tr></thead><tbody>";
                 $act_data = [];
                 $target = true;
                 $act_count = mysqli_num_rows($result_log_data);
@@ -241,7 +254,7 @@ app.controller('downtimecontroller', function($scope, $http) {
                 $scope.downtimeData.splice(i, 1);
                 $scope.alert_info = true;
                 $scope.alert_class = 'warning';
-                $scope.alert = 'Reason Deleated..';
+                $scope.alert = 'Reason Deleted..';
             }
         }
     };
@@ -254,7 +267,7 @@ $scope.sendData = function(){
     var params = $.param({
         'main_data' : rv,'date_y' :$scope.date_y ,'date_m' :$scope.date_m ,'date_d' :$scope.date_d ,'time' : $scope.time,'team' :$scope.team 
      });
-    if($scope.downtimeData.length>0){
+    if($scope.downtimeData.length>0 && $scope.act_hrs==$scope.dtimehrs){
         $http({ 
             method: 'POST', 
             url: url_serv,
@@ -270,6 +283,10 @@ $scope.sendData = function(){
                     location.reload();
                 }
             });
+    }else{
+        $scope.alert_info = true;
+        $scope.alert_class = 'danger';
+        $scope.alert = "Total quantity should be equal to "+$scope.dtimehrs;
     }
 };
 
@@ -294,18 +311,18 @@ $scope.sendData = function(){
         }else{
             $scope.alert_info = true;
             $scope.alert_class = 'danger';
-            if($scope.hours==0)
-                $scope.alert = 'Quantity should be grater then zero';
-            else if($scope.reasons=='')
-                $scope.alert = 'Reason should not null';
+            if($scope.reasons=='')
+                $scope.alert = 'Please select Reason.';
+            else if($scope.hours==0)
+                $scope.alert = 'Quantity should be greater than zero';
             else if(check)
                 $scope.alert = 'Reason already exist';
             else if(($scope.act_hrs+$scope.hours)>$scope.dtimehrs)
-                $scope.alert = 'Total Quantity should not grater then '+$scope.dtimehrs;
+                $scope.alert = 'Total Quantity should not be greater than '+$scope.dtimehrs;
             else if($scope.hours!=h)
-            $scope.alert = 'Quantity should not Decimal Value.';
+                $scope.alert = 'Please enter values and Quantity should not be Decimal.';
             else
-                $scope.alert = 'Wrong entry';
+                $scope.alert = 'Invalid values.';
         }
     };
 });
