@@ -1,5 +1,4 @@
 <script language="javascript" type="text/javascript">
-	var total=0;
 
 	function calculateqty(size_count,sizeOfColors)
 	{
@@ -9,12 +8,9 @@
 			var BagPerCart=document.getElementById('BagPerCart_'+size_count).value;
 			var GarPerCart = Number(GarPerBag)*Number(BagPerCart);
 			document.getElementById('GarPerCart_'+row_count+'_'+size_count).value = GarPerCart;
-			total = Number(total)+Number(GarPerCart);
 		}
-		document.getElementById('GarPerCart_total').value = total;
 	}
 
-	var grand_total=0;
 	function calculateqty1(sizeofsizes,sizeOfColors)
 	{
 		var total=0;
@@ -28,11 +24,9 @@
 				document.getElementById('GarPerCart_'+row_count+'_'+size).value=GarPerCart;
 				total = total+GarPerCart;
 			}
-			grand_total = grand_total + total;
 			document.getElementById('total_'+row_count).value=total;
 			total=0;
 		}
-		document.getElementById('GarPerCart_total').value = grand_total;
 	}
 
 	function firstbox()
@@ -347,7 +341,6 @@
 															echo "</tr>";
 															$row_count++;
 														}
-														echo "<input type='hidden' readonly='true' name='GarPerCart_total' id='GarPerCart_total' class='form-control integer' value='0'>";
 													echo "</table>
 												</div>
 											</div>
@@ -489,7 +482,6 @@
 															echo "</tr>";
 															$row_count++;
 														}
-														echo "<input type='hidden' readonly='true' name='GarPerCart_total' id='GarPerCart_total' class='form-control integer' value='0'>";
 													echo "</table>
 												</div>
 											</div>
@@ -515,13 +507,22 @@
 				$GarPerBag = $_POST['GarPerBag'];
 				$BagPerCart = $_POST['BagPerCart'];
 				$GarPerCart = $_POST['GarPerCart'];
-				$GarPerCart_total = $_POST['GarPerCart_total'];
 
-				$insert_carton_ref="insert ignore into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code,carton_method) values('".$schedule_original."','".$GarPerCart_total."','".$schedule."','".$style."','".$pack_method."')";
+				for($i=0;$i<sizeof($color);$i++)
+				{
+					for ($j=0; $j < sizeof($original_size); $j++)
+					{
+						if ($GarPerCart[$i][$j]>0)
+						{
+							$tot = $tot + $GarPerCart[$i][$j];
+						}
+					}
+				}
+				$insert_carton_ref="insert ignore into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code,carton_method) values('".$schedule_original."','".$tot."','".$schedule."','".$style."','".$pack_method."')";
 				$insert_carton_ref_result=mysqli_query($link, $insert_carton_ref) or exit("Errror while saving parent details");
 				// echo $insert_carton_ref.'<br>';
 
-				$get_inserted_id = "select id from $brandix_bts.tbl_carton_ref where ref_order_num='".$schedule."' and style_code='".$style."' and carton_method='".$pack_method."' and carton_barcode='".$schedule_original."' and carton_tot_quantity='".$GarPerCart_total."' ";
+				$get_inserted_id = "select id from $brandix_bts.tbl_carton_ref where ref_order_num='".$schedule."' and style_code='".$style."' and carton_method='".$pack_method."' and carton_barcode='".$schedule_original."' and carton_tot_quantity='".$tot."' ";
 				$get_insert_id_result=mysqli_query($link, $get_inserted_id) or exit("Errror while selecting ID ");
 				// echo $get_inserted_id.'<br>';
 				while ($get_insert_id_details=mysqli_fetch_array($get_insert_id_result))
@@ -565,13 +566,23 @@
 				$GarPerBag = $_POST['GarPerBag'];
 				$BagPerCart = $_POST['BagPerCart'];
 				$GarPerCart = $_POST['GarPerCart'];
-				$GarPerCart_total = $_POST['GarPerCart_total'];
-
-				$insert_carton_ref="insert ignore into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code,carton_method) values('".$schedule_original."','".$GarPerCart_total."','".$schedule."','".$style."','".$pack_method."')";
+				$tot = 0;
+				for($i=0;$i<sizeof($color);$i++)
+				{
+					for ($j=0; $j < sizeof($original_size); $j++)
+					{
+						if ($GarPerCart[$i][$j]>0)
+						{
+							$tot = $tot + $GarPerCart[$i][$j];
+						}
+					}
+				}
+				// echo $tot;
+				$insert_carton_ref="insert ignore into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code,carton_method) values('".$schedule_original."','".$tot."','".$schedule."','".$style."','".$pack_method."')";
 				$insert_carton_ref_result=mysqli_query($link, $insert_carton_ref) or exit("Errror while saving parent details");
 				// echo $insert_carton_ref.'<br>';
 
-				$get_inserted_id = "select id from $brandix_bts.tbl_carton_ref where ref_order_num='".$schedule."' and style_code='".$style."' and carton_method='".$pack_method."' and carton_barcode='".$schedule_original."' and carton_tot_quantity='".$GarPerCart_total."' ";
+				$get_inserted_id = "select id from $brandix_bts.tbl_carton_ref where ref_order_num='".$schedule."' and style_code='".$style."' and carton_method='".$pack_method."' and carton_barcode='".$schedule_original."' and carton_tot_quantity='".$tot."' ";
 				$get_insert_id_result=mysqli_query($link, $get_inserted_id) or exit("Errror while selecting ID ");
 				// echo $get_inserted_id.'<br>';
 				while ($get_insert_id_details=mysqli_fetch_array($get_insert_id_result))
