@@ -368,7 +368,7 @@ echo "<div class='panel panel-default'>
 			<div class='col-md-4'>
 			<strong>Binding Consumption : </strong>";
 				include("main_interface_remarks.php");
-				echo "</div><div class='col-md-4'><b>Remarks: </b>$remarks_y</div>
+				echo "</div><div class='col-md-4' style='display:none;'><b>Remarks: </b>$remarks_y</div>
 			    <div class='col-md-4'><b>Binding Consumption: </b>$bind_con</div>";
 			echo "
 		
