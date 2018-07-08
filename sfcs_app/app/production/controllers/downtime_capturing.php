@@ -76,8 +76,10 @@ $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_er
                             while($row=mysqli_fetch_array($result_time)){
                                 if($row['day_part']=='Morning')
                                     $put = 'AM';
-                                else
+                                elseif($row['day_part']=='Evening')
                                     $put = 'PM';
+                                else
+                                    $put = $row['day_part'];
                                 
                                 if(isset($_GET['mtime']) && $_GET['mtime']==$row['time_value'])
                                     echo "<option value='".$row['time_value']."' selected>".$row['time_display']." ".$put."</option>";
