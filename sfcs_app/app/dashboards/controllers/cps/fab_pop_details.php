@@ -537,8 +537,9 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 	$docket_num[]=$sql_row1['doc_no'];
 	//echo var_dump($docket_num);
-	//echo "Length :".strlen($sql_row1['plan_lot_ref']);
-	if(strlen($sql_row1['plan_lot_ref'])>0)
+	//echo "</br>Length :".$sql_row1['plan_lot_ref']."</br>";
+	//if(strlen($sql_row1['plan_lot_ref'])>0)
+	if($sql_row1['plan_lot_ref']!='')
 	{	
 
 		$plan_lot_ref=$sql_row1['plan_lot_ref'];

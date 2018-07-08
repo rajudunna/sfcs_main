@@ -48,11 +48,6 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 
 
 		<style>
-		
-		input#allocate_new {
-		display: none;
-		}
-
 		.dataTables_filter {
 		display: none; 
 		}
