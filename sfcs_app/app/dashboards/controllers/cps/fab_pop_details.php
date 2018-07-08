@@ -597,12 +597,12 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 				$Disable_allocate=1;
 			}
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" name=\"pms".$sql_row1['doc_no']."\" id='address' 
-			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 required>".$seperated_lots."</textarea><br/>";
+			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 >".$seperated_lots."</textarea><br/>";
 
 		}else{
 
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" id='address' onkeyup='return verify_num(this,event)'
-			     onchange='return verify_num(this,event)' name=\"pms".$sql_row1['doc_no']."\" cols=12 rows=10 required></textarea><br/>";
+			     onchange='return verify_num(this,event)' name=\"pms".$sql_row1['doc_no']."\" cols=12 rows=10 ></textarea><br/>";
 
 		}
 		

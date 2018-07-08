@@ -450,11 +450,11 @@ function check_qty2(x,m,n,doc)
 	//alert(x);
 	//alert(alloc_disab);
 	//new condition added for allocated button enabled/disabled based on quantity
-	if(x<=alloc_disab){
-		document.getElementById("allocate_new").style.display = "block";
-	}else{	
-		document.getElementById("allocate_new").style.display = "none";
-	}
+	// if(x<=alloc_disab){
+	// 	document.getElementById("allocate_new").style.display = "block";
+	// }else{	
+	// 	document.getElementById("allocate_new").style.display = "none";
+	// }
 
 
 	if(check==0)
