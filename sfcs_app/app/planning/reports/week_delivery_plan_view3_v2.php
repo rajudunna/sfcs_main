@@ -91,7 +91,7 @@ function get_excel(){
 
 	$('.fltrow').remove();
 	var tableID = 'tableone';
-	var filename = 'weekly_delivery_report.xlsx';
+	var filename = 'weekly_delivery_report.xls';
     var downloadLink;
     var dataType = 'application/vnd.ms-excel';
     var tableSelect = document.getElementById(tableID);

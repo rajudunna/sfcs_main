@@ -36,9 +36,12 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 ?>
 <br/>
 <div class='row'>
-	<div class='col-md-2 pull-left'>
-		<a class='btn btn-primary' href = '<?= $url ?>'> Back</a>
-	</div>
+		<div class='col-md-2 pull-left'>
+			<a class='btn btn-primary' href = '<?= $url ?>'> Back </a>
+		</div>
+		<div class='col-md-10 pull-right'>
+			<p style='color:red'>Note : Please Print "Docket Print" Before Update Status and Go Back Once Done</p>
+		</div>
 </div>
 <br/>
 <script src="../../../../common/js/sweetalert.min.js"></script>
@@ -534,8 +537,10 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 	$docket_num[]=$sql_row1['doc_no'];
 	//echo var_dump($docket_num);
+	//echo "Length :".strlen($sql_row1['plan_lot_ref']);
 	if(strlen($sql_row1['plan_lot_ref'])>0)
-	{
+	{	
+
 		$plan_lot_ref=$sql_row1['plan_lot_ref'];
 		$allc_doc++;
 		//echo $sql_row1['category']."</br>";
@@ -549,6 +554,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			echo "<td>Clubbed</td>";
 		}
+		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
 	}
 	else
@@ -678,8 +684,7 @@ echo "<td>";
 	echo "</td>";
 
 echo "</tr>";
-unset($lotnos_array);
-$Disable_allocate_flag=$Disable_allocate_flag+$Disable_allocate;	
+unset($lotnos_array);	
 }
 echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td></tr>";
 echo "</table>";
@@ -730,6 +735,8 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 
 <?php
 // if($Disable_allocate_flag==0){
+	//echo "Length :".$sql_num_check;
+	if($Disable_allocate_flag==$sql_num_check){
 ?>
 <form method="post" onsubmit=" return validate_but();">
 <table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
@@ -778,6 +785,7 @@ echo "<input type=\"hidden\" name=\"group_docs\" value=".implode(",",$docket_num
 </td></tr></table>
 </form>
 <?php
+	}
 // }
 ?>
 
