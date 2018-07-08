@@ -460,9 +460,10 @@ if($clubbing>0)
 }
 
 
-// echo "getting req qty : ".$sql1."</br>";
+//echo "getting req qty : ".$sql1."</br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
+$for_Staus_dis=$sql_num_check;
 //echo "Rows:".$sql_num_check;
 $enable_allocate_button=0;
 $comp_printed=array();
@@ -736,8 +737,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 
 <?php
 // if($Disable_allocate_flag==0){
-	//echo "Length :".$sql_num_check;
-	if($Disable_allocate_flag==$sql_num_check){
+if($Disable_allocate_flag==$for_Staus_dis){
 ?>
 <form method="post" onsubmit=" return validate_but();">
 <table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
@@ -761,7 +761,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 <input type="hidden" value="<?php echo $allc_doc; ?>" name="alloc_doc" id="alloc_doc"/>
 <input type="hidden" value="<?php echo sizeof($docket_num); ?>" name="doc_tot" id="doc_tot"/>
 <input type="hidden" value="<?php echo $print_validation; ?>" name="print_validation" id="print_validation"/>
-<input type="hidden" value="<?php echo $sql_num_check; ?>" name="sql_num_check" id="sql_num_check"/>
+<input type="hidden" value="<?php echo $for_Staus_dis; ?>" name="sql_num_check" id="sql_num_check"/>
 <td>
 <div id="dvremark" style="display: none">
  <center>Remark:</center>

@@ -704,15 +704,22 @@ if(isset($_POST['allocate_new']))
 	//Exit Code
 	
 	echo "<h2>Successfully Updated.</h2>";
-	
-	if($process_cat==1)
-	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details.php?doc_no=".$doc_ref[0]."\"; }</script>";
-	}
-	else
-	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details_recut_v2.php?doc_no=".$doc_ref[0]."\"; }</script>";
-	}
+	//this is for after allocating article redirect to cps dashboard.removed sfcsui
+	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	array_pop($php_self);
+	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+	$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+	echo"<script>swal('Successfully Updated.','','success')</script>";
+	echo"<script>location.href = '".$url."';</script>"; 
+
+	// if($process_cat==1)
+	// {
+	// 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details.php?doc_no=".$doc_ref[0]."\"; }</script>";
+	// }
+	// else
+	// {
+	// 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details_recut_v2.php?doc_no=".$doc_ref[0]."\"; }</script>";
+	// }
 }
 
 ?>
