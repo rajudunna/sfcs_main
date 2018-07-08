@@ -1,19 +1,14 @@
 <?php
 //include("header.php");
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_jobs.php'); 
 $schedule=$_GET['schedule'];
 // $schedule='469623';
 $style=$_GET['style'];
 // $style='T152AB83       ';
 $input_job_no=$_GET['input_job'];
 // $input_job_no=1;
-
- $cut=1;
-//$doc_no=52048;
-//$doc_no=$_GET['doc_no'];
-//$order_tid = get_val("bai_pro3.plandoc_stat_log","order_tid","doc_no",$doc_no,$link);
-//$club = get_val("bai_pro3.cat_stat_log","clubbing","category='body' and order_tid",$order_tid,$link);
-//$sizes_array=array('s06','s08','s10','s12','s14','s16','s18','s20','s22','s24','s26','s28','s30');
+$connect = odbc_connect("$driver_name;Server=$server;Database=$database;", $userid,$password);
+$cut=1;
 $color=array();
 $sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	 
 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1071,32 +1066,38 @@ tags will be replaced.-->
   <?php
   for($j=0;$j<sizeof($size_code);$j++)
   {
-	
-	$sql="select * from $bai_rm_pj1.cwh_to_rmwh_temp where schedule='".$schedule."' and color='".$color[$ii]."' and proc_grp='STRIM' and gmt_size='".$size_code[$j]."'";
-	//$sql="select * from bai_rm_pj1.cwh_to_rmwh where schedule='416100' and color='NATBL : NAUTICAL BLUE' and proc_grp='STRIM' and gmt_size='L' limit 1";
-	$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row=mysqli_fetch_array($sql_result))
+	$query = "TFR_BEL_BAI_STYLE_WISE_RM_INDIA_REQUIREMENT '$style', '', ''";
+	$result = odbc_exec($connect, $query);
+	while(odbc_fetch_row($result))
 	{
+		// $sql="select * from $bai_rm_pj1.cwh_to_rmwh_temp where schedule='".$schedule."' and color='".$color[$ii]."' and proc_grp='STRIM' and gmt_size='".$size_code[$j]."'";
+		// $sql="select * from bai_rm_pj1.cwh_to_rmwh where schedule='416100' and color='NATBL : NAUTICAL BLUE' and proc_grp='STRIM' and gmt_size='L' limit 1";
+		// $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($row=mysqli_fetch_array($sql_result))
+		// {
+		if(odbc_result($result, 7) == "STRIM" AND odbc_result($result, 7)==$plant_m3_wh_code)
+		{
 		$material_qty=0;
 		$material_qty_wast=0;
-		$material_qty=round($size_code_qty[$j]*$row['consumption'],2);
-		$material_qty_wast=round($size_code_qty[$j]*$row['wastage'],2);
+		$material_qty=round($size_code_qty[$j]*odbc_result($result, 21),2);
+		$material_qty_wast=round($size_code_qty[$j]*odbc_result($result, 24),2);
 	?>
  
  <tr height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6330411 style='height:15.0pt'></td>
-  <td colspan=2 class=xl9130411 dir=LTR width=149 style='width:112pt'><?php echo $row['material_item']; ?></td>
-  <td colspan=4 class=xl7230411 dir=LTR width=256 style='width:192pt'><?php echo $row['item_description']; ?></td>
-  <td colspan=2 class=xl7230411 dir=LTR width=128 style='width:96pt'><?php echo $row['color']; ?></td>
-  <td class=xl7230411 dir=LTR width=64 style='width:48pt'><?php echo $row['gmt_size']; ?></td>
-  <td class=xl7330411 dir=LTR width=64 style='width:48pt'><?php echo $row['consumption']; ?></td>
-  <td class=xl7430411 dir=LTR width=64 style='width:48pt'><?php echo $row['wastage']; ?></td>
+  <td colspan=2 class=xl9130411 dir=LTR width=149 style='width:112pt'><?php echo odbc_result($result, 9); ?></td>
+  <td colspan=4 class=xl7230411 dir=LTR width=256 style='width:192pt'><?php echo odbc_result($result, 10) ?></td>
+  <td colspan=2 class=xl7230411 dir=LTR width=128 style='width:96pt'><?php odbc_result($result, 11); ?></td>
+  <td class=xl7230411 dir=LTR width=64 style='width:48pt'><?php echo odbc_result($result, 12); ?></td>
+  <td class=xl7330411 dir=LTR width=64 style='width:48pt'><?php echo odbc_result($result, 21); ?></td>
+  <td class=xl7430411 dir=LTR width=64 style='width:48pt'><?php echo odbc_result($result, 24); ?></td>
   <td class=xl7330411 dir=LTR width=64 style='width:48pt'><?php echo $material_qty; ?></td>
   <td class=xl7330411 dir=LTR width=64 style='width:48pt'><?php echo $material_qty_wast; ?></td>
-  <td class=xl6530411 dir=LTR width=64 style='width:48pt'><?php echo $row['uom']; ?></td>
+  <td class=xl6530411 dir=LTR width=64 style='width:48pt'><?php echo odbc_result($result, 23); ?></td>
   <td class=xl6330411></td>
  </tr>
 	 <?php
+	 }
 	}
   }	
 	 ?>
@@ -1172,34 +1173,41 @@ tags will be replaced.-->
  <?php
   for($j=0;$j<sizeof($size_code);$j++)
   {
-	$sql="select * from $bai_rm_pj1.cwh_to_rmwh_temp where schedule='".$schedule."' and color='".$color[$ii]."' and proc_grp='PTRIM' and gmt_size='".$size_code[$j]."'";
-	//$sql="select * from bai_rm_pj1.cwh_to_rmwh where schedule='416100' and color='NATBL : NAUTICAL BLUE' and proc_grp='PTRIM' and gmt_size='L' limit 1";
-	$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row=mysqli_fetch_array($sql_result))
+	$query = "TFR_BEL_BAI_STYLE_WISE_RM_INDIA_REQUIREMENT '$style', '', ''";
+	$result = odbc_exec($connect, $query);
+	while(odbc_fetch_row($result))
 	{
+		// $sql="select * from $bai_rm_pj1.cwh_to_rmwh_temp where schedule='".$schedule."' and color='".$color[$ii]."' and proc_grp='STRIM' and gmt_size='".$size_code[$j]."'";
+		// $sql="select * from bai_rm_pj1.cwh_to_rmwh where schedule='416100' and color='NATBL : NAUTICAL BLUE' and proc_grp='STRIM' and gmt_size='L' limit 1";
+		// $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($row=mysqli_fetch_array($sql_result))
+		// {
+		if(odbc_result($result, 7) == "PTRIM" AND odbc_result($result, 7)==$plant_m3_wh_code)
+		{
 		$material_qty=0;
 		$material_qty_wast=0;
-		$material_qty=round($size_code_qty[$j]*$row['consumption'],2);
-		$material_qty_wast=round($size_code_qty[$j]*$row['wastage'],2);
+		$material_qty=round($size_code_qty[$j]*odbc_result($result, 21),2);
+		$material_qty_wast=round($size_code_qty[$j]*odbc_result($result, 24),2);
 	?>
+ 
  <tr height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6330411 style='height:15.0pt'></td>
-  <td colspan=2 class=xl9130411 dir=LTR width=149 style='width:112pt'><?php echo $row['material_item']; ?></td>
-  <td colspan=4 class=xl7230411 dir=LTR width=256 style='width:192pt'><?php echo $row['item_description']; ?></td>
-  <td colspan=2 class=xl7230411 dir=LTR width=128 style='width:96pt'><?php echo $row['color']; ?></td>
-  <td class=xl7230411 dir=LTR width=64 style='width:48pt'><?php echo $row['gmt_size']; ?></td>
-  <td class=xl7330411 dir=LTR width=64 style='width:48pt'><?php echo $row['consumption']; ?></td>
-  <td class=xl7430411 dir=LTR width=64 style='width:48pt'><?php echo $row['wastage']; ?></td>
+  <td colspan=2 class=xl9130411 dir=LTR width=149 style='width:112pt'><?php echo odbc_result($result, 9); ?></td>
+  <td colspan=4 class=xl7230411 dir=LTR width=256 style='width:192pt'><?php echo odbc_result($result, 10) ?></td>
+  <td colspan=2 class=xl7230411 dir=LTR width=128 style='width:96pt'><?php odbc_result($result, 11); ?></td>
+  <td class=xl7230411 dir=LTR width=64 style='width:48pt'><?php echo odbc_result($result, 12); ?></td>
+  <td class=xl7330411 dir=LTR width=64 style='width:48pt'><?php echo odbc_result($result, 21); ?></td>
+  <td class=xl7430411 dir=LTR width=64 style='width:48pt'><?php echo odbc_result($result, 24); ?></td>
   <td class=xl7330411 dir=LTR width=64 style='width:48pt'><?php echo $material_qty; ?></td>
   <td class=xl7330411 dir=LTR width=64 style='width:48pt'><?php echo $material_qty_wast; ?></td>
-  <td class=xl6530411 dir=LTR width=64 style='width:48pt'><?php echo $row['uom']; ?></td>
+  <td class=xl6530411 dir=LTR width=64 style='width:48pt'><?php echo odbc_result($result, 23); ?></td>
   <td class=xl6330411></td>
  </tr>
- 
- <?php
- }
- }
- ?>
+	 <?php
+	 }
+	}
+  }	
+	 ?>
  <!--
  <tr height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6330411 style='height:15.0pt'></td>
