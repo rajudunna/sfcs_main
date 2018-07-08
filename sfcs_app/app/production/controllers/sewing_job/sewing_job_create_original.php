@@ -216,19 +216,15 @@ td{ padding:2px; white-space: nowrap;}
 
 	function calculateqty1(sizeofsizes,sizeOfColors)
 	{
-		var total=0;
 		for (var row_count = 0; row_count < sizeOfColors; row_count++)
 		{
 			for(var size=0;size < sizeofsizes; size++)
 			{
-				var GarPerBag=document.getElementById('GarPerBag_'+row_count+'_'+size).value;
+				var GarPerCart=document.getElementById('GarPerCart_'+row_count+'_'+size).value;
 				var no_of_cartons=document.getElementById('no_of_cartons').value;
-				var GarPerCart = GarPerBag*no_of_cartons;
-				document.getElementById('GarPerCart_'+row_count+'_'+size).value=GarPerCart;
-				total = total+GarPerCart;
+				var SewingJobQty = GarPerCart*no_of_cartons;
+				document.getElementById('SewingJobQty_'+row_count+'_'+size).value=SewingJobQty;
 			}
-			document.getElementById('total_'+row_count).value=total;
-			total=0;
 		}
 	}
 </script>
@@ -629,12 +625,12 @@ td{ padding:2px; white-space: nowrap;}
 																		if (mysqli_num_rows($individual_sizes_result) >0)
 																		{
 																			if ($size_main[$size_count] == $individual_color) {
-																				echo "<td><input type='text'  readonly name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value='".$qty."'></td>";
+																				echo "<td><input type='text'  readonly name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value='".$qty."'></td>";
 																			}
 																		}
 																		else
 																		{
-																			echo "<td><input type='hidden' readonly name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
+																			echo "<td><input type='hidden' readonly name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' value='0' /></td>";
 																		}
 																	}
 																	
@@ -677,12 +673,12 @@ td{ padding:2px; white-space: nowrap;}
 																if (mysqli_num_rows($individual_sizes_result) >0)
 																{
 																	if ($size1[$size_count] == $individual_color) {
-																		echo "<td><input type='text' required readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																		echo "<td><input type='text' required readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
 																	}
 																}
 																else 
 																{
-																	echo "<td><input type='text' readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value='0'></td>";
+																	echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$row_count."_".$size_count."' class='form-control integer' value='0'></td>";
 																}
 																
 															}
@@ -695,78 +691,46 @@ td{ padding:2px; white-space: nowrap;}
 								// Sewing Job Qty End
 								if(in_array($authorized,$has_permission))
 								{
-									$sql="select * from $brandix_bts.tbl_min_ord_ref where ref_crt_schedule='".$sch_id."' and ref_product_style='".$style_id."'";
-									$sql_result=mysqli_query($link, $sql) or exit("Sql Error2");
-									if(mysqli_num_rows($sql_result)>0)
-									{
-										while($row=mysqli_fetch_array($sql_result))
-										{
-											$bundle_size=$row['miximum_bundles_per_size'];
-											$bundle_plie=$row['max_bundle_qnty'];
-											// $mini_qty=$row['mini_order_qnty'];
-										}
-									}
-									else
-									{
-										$bundle_size=1;
-										$bundle_plie=0;
-										// $mini_qty=$bundle_size*$bundle_plie*$carton_qty;
-									}
-									$mini_qty=$bundle_size*$bundle_plie*$carton_qty;
-
 									$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
 									$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$sch_id,$link);
 									$order_colors=explode(",",$o_colors);	
 									$planned_colors=explode(",",$p_colors);
 									$val=sizeof($order_colors);
 									$val1=sizeof($planned_colors);
-									// echo $val."--".$val1."<br>";
-									$ii=0;
-									if($val==$val1 )
-									{
-										$ii=1;
-									}
-									if($bundle==0)
-									{
-										$status='';
-									}
-									else
-									{
-										$status='readonly';
-									}
-
-
-									$packqtyqry="SELECT sum(carton_tot_quantity) as packquantity FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$sch_id AND style_code=$style_id";
-									$result1=mysqli_query($link, $packqtyqry) or exit("Sql Error Pack Qty");
-									 if($row=mysqli_fetch_array($result1))
-										{ 
-										   $packingqty=$row['packquantity']; 
-										}
-									
+									// echo $val."--".$val1."<br>";						
 
 									echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_job_create_original.php','N').'">';
 									echo  "<input type=\"hidden\" value=\"$style_id\" id=\"style_id\" name=\"style_id\">";
 									echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
+									echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
+									echo  "<input type=\"hidden\" value=\"$c_ref\" id=\"c_ref\" name=\"c_ref\">";
 						
 									echo "<div class='col-md-12'>
-										<table class='table table-bordered'>
+											<table class='table table-bordered'>
 												<tr>
 													<th>No of Cartons</th>";
 													if($scanning_methods=='Bundle Level')
 													{
 													  echo "<th>Split</th>";	
 													}	
-													echo "<th>Control</th>
+													echo "<th>Excess From</th><th>Control</th>
 												</tr>
 												<tr>
 													<td><input type='text' required name='no_of_cartons' onchange=calculateqty1($sizeofsizes,$size_of_ordered_colors); id='no_of_cartons' class='form-control integer' value=''></td>
-												";
-												if($scanning_methods=='Bundle Level')
-												{
-													echo"<td><input type='text' required name='split_qty' id='split_qty' class='form-control integer' value='0'></td>";
-												}
-												echo "<td><input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
-												echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait..Sewing Job Generating.<h5></span></td>";
+													";
+													if($scanning_methods=='Bundle Level')
+													{
+														echo"<td><input type='text' required name='split_qty' id='split_qty' class='form-control integer' value='0'></td>";
+													}
+													echo "<td>
+														<select name='exces_from' id='exces_from' required class='form-control'>
+															<option value=''>Select</option>
+															<option value='1'>First Cut</option>
+															<option value='2'>Last Cut</option>
+														</select>
+													</td>
+													<td><input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" /></td>
+												</tr>";
 										echo "</table>";
 									echo "</div>";
 									echo "</form>";
@@ -790,43 +754,22 @@ td{ padding:2px; white-space: nowrap;}
 				if(isset($_POST['generate']))
 				{
 					$style=$_POST['style_id'];
-					$operation=$_POST['cart_method'];
+					$pack_method=$_POST['pack_method'];
 					$scheudle=$_POST['sch_id'];
-					$mini_order_ref =echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_crt_schedule",$scheudle,$link);
-					$carton_qty=$_POST['carton_qty'];
-					$bundle_plies=$_POST['bundle_plies'];
-					$bundle_per_size=$_POST['bundle_per_size'];
-					$mini_order_qty=$_POST['mini_order_qty'];
-					
+					$split_qty=$_POST['split_qty'];
+					$no_of_cartons=$_POST['no_of_cartons'];
+					$exces_from=$_POST['exces_from'];
+					$c_ref=$_POST['c_ref'];
 
-					// echo $style."--".$operation."--".$schedule."==".$mini_order_ref."==".$carton_qty."==".$bundle_plies."==".$bundle_per_size."==".$mini_order_qty;
+					// echo $c_ref;
 					
-					if($bundle_plies!=0 && $bundle_per_size!=0 && $mini_order_qty!=0)
-					{
-						if($mini_order_ref>0)
-						{
-							$sql="update $brandix_bts.`tbl_min_ord_ref` set max_bundle_qnty='".$bundle_plies."',carton_method=".$operation.",miximum_bundles_per_size='".$bundle_per_size."',mini_order_qnty='".$mini_order_qty."' where id='".$mini_order_ref."'";
-							// echo $sql."<br>";
-							$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$id=$mini_order_ref;
-						}
-						else
-						{
-							$sql="insert into $brandix_bts.`tbl_min_ord_ref` (`ref_product_style`, `ref_crt_schedule`, `carton_quantity`, `max_bundle_qnty`, `miximum_bundles_per_size`, `mini_order_qnty`,`carton_method`) values ('".$style."', '".$scheudle."', '".$carton_qty."', '".$bundle_plies."', '".$bundle_per_size."', '".$mini_order_qty."',".$operation.")";
-							//echo $sql."<br>";
-							$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-						}
-					}
-					else
-					{
-						echo "<h2>Please Fill Correct values</h2>";
-					}
-					//echo "<a href=\"mini_order_gen.php?id=$id\">Generate Mini Orders</a>";
+					$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."',no_of_cartons=".$no_of_cartons.",split_qty='".$split_qty."' where id='".$c_ref."'";
+					// echo $sql."<br>";
+					$sql_result=mysqli_query($link, $sql) or exit("Failed to update Carton Details");
+					
 					echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
-					// header("Location:mini_order_gen.php?id=$id");
-					$url5 = getFullURLLevel($_GET['r'],'mini_order_gen.php',0,'N');
-					echo("<script>location.href = '".$url5."&id=$id&style=$style&schedule=$scheudle';</script>");
+					// $url5 = getFullURLLevel($_GET['r'],'mini_order_gen.php',0,'N');
+					// echo("<script>location.href = '".$url5."&id=$id&style=$style&schedule=$scheudle';</script>");
 				}
 				?> 
 		</div>
