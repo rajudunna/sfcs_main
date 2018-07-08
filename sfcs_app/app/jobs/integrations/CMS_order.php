@@ -71,21 +71,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row22=mysqli_fetch_array($sql_result22))
 			{	
-				// $ssc_code2=$ssc_code.$sql_row22['compo_no']."-".$sql_row22['material_sequence'];
 				$ssc_code2=$ssc_code.$sql_row22['compo_no'];
-				$compo_no=$sql_row22['compo_no'];	
-				// $material_sequence=$sql_row22['material_sequence'];
-				
-				// $sql31="select mo_status,item_des,col_des,round((sum(order_yy*order_qty)/sum(order_qty)),4) as order_yy from $bai_pro3.order_plan where style_no=\"$style\" and schedule_no=\"$sch_no\" and color=\"$color\" and compo_no=\"$compo_no\" and material_sequence=\"$material_sequence\"";
-				// $sql31="select mo_status,item_des,col_des,round((sum(order_yy*order_qty)/sum(order_qty)),4) as order_yy from $bai_pro3.order_plan where style_no=\"$style\" and schedule_no=\"$sch_no\" and color=\"$color\" and compo_no=\"$compo_no\"";
-				// $sql_result31=mysqli_query($link, $sql31) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// while($sql_row31=mysqli_fetch_array($sql_result31))
-				// {
-					// $mo_status=$sql_row31['mo_status'];
-					// $item_des=$sql_row31['item_des'];
-					// $order_yy=$sql_row31['order_yy'];
-					// $col_des=$sql_row31['col_des'];
-				// }
+				$compo_no=$sql_row22['compo_no'];					
 				
 				$sql31="select MO_Released_Status_Y_N as mo_status,Item_Description as item_des,RM_Color_Description as col_des,round(sum(Required_Qty)/sum(MO_Qty),4) as order_yy from $m3_inputs.order_details where Style=\"$style\" and Schedule=\"$sch_no\" and GMT_Color=\"$color\" and Item_Code=\"$compo_no\"";
 				// echo $sql31."<br>";
@@ -97,6 +84,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$order_yy=$sql_row31['order_yy'];
 					$col_des=$sql_row31['col_des'];
 				}
+				
+				$sql_check="select * from $bai_pro3.cat_stat_log where order_tid2=\"$ssc_code2\"";
+				$result_check=mysqli_query($link,$sql_check) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($result_check) ==0)
+				{
+					$transaction_time="inserted_time=\"".date("Y-m-d H:i:s")."\"";
+				}
+				else
+				{
+					$transaction_time="updated_time=\"".date("Y-m-d H:i:s")."\"";
+				}
 					
 				$sql3="insert ignore into $bai_pro3.cat_stat_log (order_tid2) values (\"$ssc_code2\")";
 				mysqli_query($link, $sql3) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -104,7 +102,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$item_des=str_replace('"'," ",$item_des);
 				$item_des=str_replace("'"," ",$item_des);
 				
-				$sql3="update $bai_pro3.cat_stat_log set order_tid=\"$ssc_code\", mo_status=\"$mo_status\", compo_no=\"$compo_no\", catyy=$order_yy, fab_des=\"$item_des\", col_des=\"$col_des\" where order_tid2=\"$ssc_code2\"";
+				$sql3="update $bai_pro3.cat_stat_log set order_tid=\"$ssc_code\", mo_status=\"$mo_status\", compo_no=\"$compo_no\", catyy=$order_yy, fab_des=\"$item_des\", col_des=\"$col_des\",".$transaction_time." where order_tid2=\"$ssc_code2\"";
 				// echo $sql3;
 				mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
