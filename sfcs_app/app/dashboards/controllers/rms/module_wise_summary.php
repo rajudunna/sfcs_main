@@ -66,7 +66,7 @@ $date=date("Y-m-d H:i:s");
 		$marker_result=mysqli_query($link, $marker) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($marker_result_row=mysqli_fetch_array($marker_result))
 		{
-			$mklength=$row21x["mklength"];
+			$mklength=$marker_result_row["mklength"];
 			
         }
         
@@ -91,8 +91,8 @@ $date=date("Y-m-d H:i:s");
         }
 
         echo "</table></td><td>".$total."</td>";
-        echo "<td> Doc#:".$doc_nos_splitx[$i]."</td>";
-        echo "<td>Mod#:".$module1."</td>";
+        echo "<td> Doc#: ".$doc_nos_splitx[$i]."</td>";
+        echo "<td>Mod#: ".$module1."</td>";
         echo "<td>".$mklength."</td>";
         echo "<td>".$a_plies."</td>";
         
