@@ -225,7 +225,8 @@ $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_er
                     echo $tab.$tab1.$tab2;
                 else
                     echo "<div class='alert alert-warning'>No Data Found</div>";
-            }
+            }elseif(isset($_GET['mdate']) && $_GET['mdate']=='')
+                echo "<div class='alert alert-danger'>Pleae select Date</div>";
 ?>
         </div>
     </div>
