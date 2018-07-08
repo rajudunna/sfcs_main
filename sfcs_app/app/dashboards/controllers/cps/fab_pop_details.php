@@ -36,9 +36,12 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 ?>
 <br/>
 <div class='row'>
-	<div class='col-md-2 pull-left'>
-		<a class='btn btn-primary' href = '<?= $url ?>'> Back</a>
-	</div>
+		<div class='col-md-2 pull-left'>
+			<a class='btn btn-primary' href = '<?= $url ?>'> Back </a>
+		</div>
+		<div class='col-md-10 pull-right'>
+			<p style='color:red'>Note : Please Print "Docket Print" Before Update Status and Go Back Once Done</p>
+		</div>
 </div>
 <br/>
 <script src="../../../../common/js/sweetalert.min.js"></script>
