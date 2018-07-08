@@ -81,7 +81,8 @@ if(isset($_POST['filter']))
 
 	echo '<form action="'.getFullURL($_GET['r'],'export_excel.php','R').'" method ="post" > 
 	<input type="hidden" name="csv_text" id="csv_text">
-	<input type="submit" class="btn btn-info"  value="Export to Excel" onclick="getCSVData()">
+	<input type="hidden" name="csvname" id="csvname" value="Order Summary Report">
+	<input type="submit" class="btn btn-info" id="expexc" name="expexc" value="Export to Excel" onclick="getCSVData()">
 	</form>';
 	echo "<br><div class='table-responsive'><table id='example1' name='example1' class ='table table-bordered table-striped'>";
 	echo "<tr class='tblheading'>

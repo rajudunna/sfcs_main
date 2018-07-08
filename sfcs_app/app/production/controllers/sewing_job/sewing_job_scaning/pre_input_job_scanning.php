@@ -23,6 +23,8 @@ $url = getFullURL($_GET['r'],'scan_input_jobs.php','N');
 		}
 	}
 	//var_dump($final);
+//$configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Sewing Job Level'];
+$configuration_bundle_print_array = ['1'=>'Sewing Job Level'];
 ?>
 <form method ='POST' action='<?php echo $url ?>'>
 	<div class="panel panel-primary">
@@ -63,6 +65,29 @@ $url = getFullURL($_GET['r'],'scan_input_jobs.php','N');
 									<?php }
 								?>
                         	</select>
+				</div>
+				
+				<div class='col-md-3' hidden='true'>
+					<label>Barcode Generation:<span style="color:red">*</span></label>
+                        	<select class="form-control shift"  name="barcode_generation" id="barcode_generation" style="width:100%;" required>
+                        		<option value="">Select Method</option>
+								<?php 
+									if(sizeof($configuration_bundle_print_array) == 1)
+									{
+										echo"<option value='1' selected>$configuration_bundle_print_array[1]</option>";
+									}
+									else
+									{
+										foreach($configuration_bundle_print_array as $key=>$value)
+										{
+											echo"<option value='$key'>$value</option>";
+										}
+										
+									}
+								?>
+                        	</select>
+				
+				
 				</div>
 				<!--
 				<div class="form-group col-md-2">
