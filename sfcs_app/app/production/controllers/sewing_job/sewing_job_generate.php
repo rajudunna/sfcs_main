@@ -71,6 +71,7 @@ td{ padding:2px; white-space: nowrap;}
 	$split_qty=echo_title("$brandix_bts.tbl_carton_ref","split_qty","id",$carton_id,$link);
 	$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link); 
 	$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule_id,$link);
+	/*
 	if($carton_method==1)
 	{
 		$input_job_no=1;
@@ -149,7 +150,9 @@ td{ padding:2px; white-space: nowrap;}
 			unset($cols_tot);
 		}
 		
-	}	else if($carton_method==2)
+	}	else 
+	*/
+	if($carton_method==1 || $carton_method==2)
 	{
 		$status_check=1;
 		for($kk=0;$kk<sizeof($cols_tot_tmp);$kk++)
@@ -247,7 +250,7 @@ td{ padding:2px; white-space: nowrap;}
 			}
 		}
 	}
-	else if($carton_method==3)
+	else if($carton_method==3 || $carton_method==4)
 	{
 		for($kk=0;$kk<sizeof($cols_tot_tmp);$kk++)
 		{
@@ -321,10 +324,6 @@ td{ padding:2px; white-space: nowrap;}
 				unset($cols_tot);
 			}
 			$input_job_no= echo_title("$bai_pro3.packing_summary_input","max(input_job_no)+1","order_col_des='".implode(",",$cols_tot)."' and order_del_no",$schedule,$link);
-			// if($input_job_no=='')
-			// {
-				$input_job_no=100;
-			// }
 			$rand=$schedule.date("ymd").$input_job_no;
 			//Excess Pieces Execution
 			$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =0 and color in ('".implode(",",$cols_tot)."') group BY cut_num order by cut_num*1"; 
@@ -337,64 +336,7 @@ td{ padding:2px; white-space: nowrap;}
 				//mysqli_query($link, $sql1q) or die("Error---3".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				echo "<tr><td>".$docket_number."</td><td>".$row12["color"]."</td><td>".$row12["size_ref"]."</td><td>".$row12["size_tit"]."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 			}
-			// $input_job_no++;
-			// $rand=$schedule.date("ymd").$input_job_no;
 		}
-	}
-	else if($carton_method==4)
-	{
-		for($ii=0;$ii<sizeof($cols_tot_tmp);$ii++)
-		{			
-			$sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."' and color=('".implode(",",$cols_tot_tmp)."')";
-			//echo $sql1."<br>";
-			$result1=mysqli_query($link, $sql1) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row1=mysqli_fetch_array($result1))
-			{
-				$input_job_quantiy_tmp=0;
-				$color_code=$row1['color'];
-				$size_ref=$row1['ref_size_name'];
-				$size_tit=$row1['size_title'];
-				$packing_mode=$row1['carton_method'];
-				$garments_per_carton=$row1['garments_per_carton'];
-				$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link); 
-				$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num > 0 and color='".$color_code."' and size='".$size_ref."' group BY cut_num order by cut_num*1"; 
-				$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				//echo $sql12."<br>";
-				//echo $garments_per_carton."------".$input_job_quantiy_tmp."<br>";
-				//die();
-				while($row12=mysqli_fetch_array($result12)) 
-				{ 
-					$docket_number=$row12["docket_number"]; 
-					//$color_code=$row12["color"]; 
-					$qty=$row12["quantity"]; 
-					if($qty>0)
-					{												
-						do
-						{	
-							if(($garments_per_carton-$input_job_quantiy_tmp)<=$qty)
-							{
-								$qty_new=$garments_per_carton-$input_job_quantiy_tmp;
-								$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty_new."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$packing_mode."\",\"".$row12["size_ref"]."\")";
-								echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."-A-".$garments_per_carton."--".$input_job_quantiy_tmp."</td><td>".$qty_new."</td></tr>";
-								$qty=$qty-$qty_new;
-								$input_job_no++;
-								$input_job_quantiy_tmp=0;
-							}
-							else
-							{
-								$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$packing_mode."\",\"".$row12["size_ref"]."\")";
-								echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."-B-".$garments_per_carton."--".$input_job_quantiy_tmp."</td><td>".$qty."</td></tr>";
-								$qty=0;
-								$input_job_quantiy_tmp=+$qty;
-							} 
-						}while($qty>0);	
-					}
-					
-				}	
-				//die();
-			}
-		}
-		unset($cols_tot);
 	}
 	
 
