@@ -40,7 +40,7 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 			<a class='btn btn-primary' href = '<?= $url ?>'> Back </a>
 		</div>
 		<div class='col-md-10 pull-right'>
-			<p style='color:red'>Note : Please Print "Docket Print" Before Update Status and Go Back Once Done</p>
+			<p style='color:red'>Note : Please Print "Docket Print" Before Update Fabric Status</p>
 		</div>
 </div>
 <br/>
