@@ -5,10 +5,10 @@
 	{
 		for (var row_count = 0; row_count < sizeOfColors; row_count++)
 		{
-			var GarPerBag=document.getElementById('GarPerBag_'+size_count+'_'+row_count).value;
+			var GarPerBag=document.getElementById('GarPerBag_'+row_count+'_'+size_count).value;
 			var BagPerCart=document.getElementById('BagPerCart_'+size_count).value;
 			var GarPerCart = Number(GarPerBag)*Number(BagPerCart);
-			document.getElementById('GarPerCart_'+size_count+'_'+row_count).value = GarPerCart;
+			document.getElementById('GarPerCart_'+row_count+'_'+size_count).value = GarPerCart;
 			total = Number(total)+Number(GarPerCart);
 		}
 		document.getElementById('GarPerCart_total').value = total;
@@ -22,10 +22,10 @@
 		{
 			for(var size=0;size < sizeofsizes; size++)
 			{
-				var GarPerBag=document.getElementById('GarPerBag_'+size+'_'+row_count).value;
+				var GarPerBag=document.getElementById('GarPerBag_'+row_count+'_'+size).value;
 				var BagPerCart=document.getElementById('BagPerCart').value;
 				var GarPerCart = GarPerBag*BagPerCart;
-				document.getElementById('GarPerCart_'+size+'_'+row_count).value=GarPerCart;
+				document.getElementById('GarPerCart_'+row_count+'_'+size).value=GarPerCart;
 				total = total+GarPerCart;
 			}
 			grand_total = grand_total + total;
@@ -225,54 +225,60 @@
 									echo "<div class='panel panel-primary'>";
 											echo "<div class='panel-heading'>Number of Garments Per Poly Bag</div>
 											<div class='panel-body'>
-												<table class=\"table table-bordered\">
-													<tr>
-														<th>Color</th>";
-														// Display Sizes
-														for ($i=0; $i < sizeof($size1); $i++)
+												<div class='table-responsive'>
+													<table class=\"table table-bordered\">
+														<tr>
+															<th>Color</th>";
+															// Display Sizes
+															for ($i=0; $i < sizeof($size1); $i++)
+															{
+																echo "<th>".$size1[$i]."</th>";
+																echo "<input type='hidden' name=size[] value='".$size1[$i]."'>";
+															}
+															echo "<th>Combo</th>
+														</tr>";
+														// Display Textboxes
+														echo "<input type='hidden' name='noOfSizes' id='noOfSizes' value='".sizeof($color1)."' />";
+														$row_count=0;
+														for ($j=0; $j < sizeof($color1); $j++)
 														{
-															echo "<th>".$size1[$i]."</th>";
-															echo "<input type='hidden' name=size[] value='".$size1[$i]."'>";
-														}
-														echo "<th>Combo</th>
-													</tr>";
-													// Display Textboxes
-													echo "<input type='hidden' name='noOfSizes' id='noOfSizes' value='".sizeof($color1)."' />";
-													$row_count=0;
-													for ($j=0; $j < sizeof($color1); $j++)
-													{
-														if ($combo=='YES') {
-															$combo_value=1;
-															$readonly = '';
-														} else if ($combo=='NO') {
-															$combo_value=$j+1;
-															$readonly = 'readonly';
-														}
-														// echo $combo_value;
-														echo "<tr>
-																<td>$color1[$j]</td>
-																<input type='hidden' name=color[] value='".$color1[$j]."'>";
-																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
-																{
-																	$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."'";
-																	// echo $individual_sizes_query.'<br>';
-																	$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
-																	while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
+															if ($combo=='YES') {
+																$combo_value=1;
+																$readonly = '';
+															} else if ($combo=='NO') {
+																$combo_value=$j+1;
+																$readonly = 'readonly';
+															}
+															// echo $combo_value;
+															echo "<tr>
+																	<td>$color1[$j]</td>
+																	<input type='hidden' name=color[] value='".$color1[$j]."'>";
+																	for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																	{
-																		$individual_color = $individual_sizes_details['size_title'];
-
+																		$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
+																		// echo $individual_sizes_query.'<br>';
+																		$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
+																		while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
+																		{
+																			$individual_color = $individual_sizes_details['size_title'];
+																		}
+																		if (mysqli_num_rows($individual_sizes_result) >0)
+																		{
+																			if ($size1[$size_count] == $individual_color) {
+																				echo "<td><input type='text' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																			}
+																		}
+																		else
+																		{
+																			echo "<td><input type='hidden' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
+																		}																
 																	}
-																	if ($size1[$size_count] == $individual_color) {
-																		echo "<td><input type='text' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
-																	} else {
-																		echo "<td><input type='hidden' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
-																	}
-																}
-																echo "<td><input type='text' required name='combo[]' id='combo' class='form-control integer' value='".$combo_value."' $readonly></td>
-															</tr>";
-														$row_count++;
-													}
-												echo "</table>
+																	echo "<td><input type='text' required name='combo[]' id='combo' class='form-control integer' value='".$combo_value."' $readonly></td>
+																</tr>";
+															$row_count++;
+														}
+													echo "</table>
+												</div>
 											</div>
 										</div>";
 									
@@ -281,7 +287,7 @@
 											echo "<div class='panel-heading'>Number of Poly Bags Per Carton</div>";
 											echo "<div class='panel-body'>";
 												echo "<input type='hidden' name='size_size1' id='size_size1' value='".sizeof($size1)."' />";
-												echo "<table class='table table-bordered'>
+												echo "<div class='table-responsive'><table class='table table-bordered'>
 													<tr>";
 														// Show Sizes
 														for ($i=0; $i < sizeof($size1); $i++)
@@ -292,10 +298,10 @@
 													echo "<tr>";
 														for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 														{
-															echo "<td><input type='text' required name='BagPerCart[]' id='BagPerCart_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors);></td>";
+															echo "<td><input type='text' required name='BagPerCart[]' id='BagPerCart_".$size_count."' class='form-control integer' onchange=calculateqty($size_count,$size_of_ordered_colors);></td>";
 														}
 													echo "</tr>";
-												echo "</table>
+												echo "</div></table>
 											</div>
 										</div>";
 									
@@ -303,40 +309,47 @@
 									echo "<div class='panel panel-primary'>
 											<div class='panel-heading'>Number of Garments Per Carton</div>
 											<div class='panel-body'>
-												<table class=\"table table-bordered\">
-													<tr>
-														<th>Color</th>";
-															for ($i=0; $i < sizeof($size1); $i++)
-															{
-																echo "<th>".$size1[$i]."</th>";
-															}
-													echo "</tr>";
-													$row_count=0;
-													for ($j=0; $j < sizeof($color1); $j++)
-													{
-														echo "<tr>";
-																echo "<td>$color1[$j]</td>";
-																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+												<div class='table-responsive'>
+													<table class=\"table table-bordered\">
+														<tr>
+															<th>Color</th>";
+																for ($i=0; $i < sizeof($size1); $i++)
 																{
-																	$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."'";
-																	// echo $individual_sizes_query.'<br>';
-																	$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
-																	while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
-																	{
-																		$individual_color = $individual_sizes_details['size_title'];
-																	}
-																	if ($size1[$size_count] == $individual_color) {
-																		echo "<td><input type='text' required readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
-																	} else {
-																		echo "<td><input type='hidden' readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value='0'></td>";
-																	}
-																	
+																	echo "<th>".$size1[$i]."</th>";
 																}
 														echo "</tr>";
-														$row_count++;
-													}
-													echo "<input type='hidden' readonly='true' name='GarPerCart_total' id='GarPerCart_total' class='form-control integer' value='0'>";
-												echo "</table>
+														$row_count=0;
+														for ($j=0; $j < sizeof($color1); $j++)
+														{
+															echo "<tr>";
+																	echo "<td>$color1[$j]</td>";
+																	for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+																	{
+																		$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
+																		// echo $individual_sizes_query.'<br>';
+																		$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
+																		while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
+																		{
+																			$individual_color = $individual_sizes_details['size_title'];
+																		}
+																		if (mysqli_num_rows($individual_sizes_result) >0)
+																		{
+																			if ($size1[$size_count] == $individual_color) {
+																				echo "<td><input type='text' required readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																			}
+																		}
+																		else 
+																		{
+																			echo "<td><input type='hidden' readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value='0'></td>";
+																		}
+																		
+																	}
+															echo "</tr>";
+															$row_count++;
+														}
+														echo "<input type='hidden' readonly='true' name='GarPerCart_total' id='GarPerCart_total' class='form-control integer' value='0'>";
+													echo "</table>
+												</div>
 											</div>
 										</div>";
 									echo "<input type='submit' class='btn btn-success' name='SS_MS_save' id='SS_MS_save' value='Save' />
@@ -367,55 +380,60 @@
 									echo "<div class='panel panel-primary'>";
 											echo "<div class='panel-heading'>Poly Bag Ratio</div>
 											<div class='panel-body'>
-												<table class=\"table table-bordered\">
-													<tr>
-														<th>Color</th>";
-														// Display Sizes
-														$sizeofsizes=sizeof($size1);
-														for ($i=0; $i < sizeof($size1); $i++)
-														{
-															echo "<th>".$size1[$i]."</th>";
-															echo "<input type='hidden' name=size[] value='".$size1[$i]."'>";
-														}
-														echo "<th>Combo</th>";
-													echo "</tr>";
-													// Display Textboxes
-													echo "<input type='hidden' name='noOfSizes' id='noOfSizes' value='".sizeof($color1)."' />";
-													$row_count=0;
-													for ($j=0; $j < sizeof($color1); $j++)
-													{
-														if ($combo=='YES') {
-															$combo_value=1;
-															$readonly = '';
-														} else if ($combo=='NO') {
-															$combo_value=$j+1;
-															$readonly = 'readonly';
-														}
-														echo "<tr>
-																<td>$color1[$j]</td>
-																<input type='hidden' name=color[] value='".$color1[$j]."'>";
-																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
-																{
-																	$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."'";
-																		// echo $individual_sizes_query.'<br>';
-																	$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
-																	while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
-																	{
-																		$individual_color = $individual_sizes_details['size_title'];
-
-																	}
-																	if ($size1[$size_count] == $individual_color) {
-																		echo "<td><input type='text' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
-																	} else {
-																		echo "<td><input type='hidden' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
-																	}
-																	// echo "<td><input type='text' required name='GarPerBag' id='GarPerBag_".$size_count."_".$row_count."' class='form-control integer' value=''></td>";
-																}
-																echo "<td><input type='text' required name='combo[]' id='combo' value='".$combo_value."' $readonly class='form-control integer'></td>";
+												<div class='table-responsive'>
+													<table class=\"table table-bordered\">
+														<tr>
+															<th>Color</th>";
+															// Display Sizes
+															$sizeofsizes=sizeof($size1);
+															for ($i=0; $i < sizeof($size1); $i++)
+															{
+																echo "<th>".$size1[$i]."</th>";
+																echo "<input type='hidden' name=size[] value='".$size1[$i]."'>";
+															}
+															echo "<th>Combo</th>";
 														echo "</tr>";
-														$row_count++;
-													}
-												echo "</table>
+														// Display Textboxes
+														echo "<input type='hidden' name='noOfSizes' id='noOfSizes' value='".sizeof($color1)."' />";
+														$row_count=0;
+														for ($j=0; $j < sizeof($color1); $j++)
+														{
+															if ($combo=='YES') {
+																$combo_value=1;
+																$readonly = '';
+															} else if ($combo=='NO') {
+																$combo_value=$j+1;
+																$readonly = 'readonly';
+															}
+															echo "<tr>
+																	<td>$color1[$j]</td>
+																	<input type='hidden' name=color[] value='".$color1[$j]."'>";
+																	for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+																	{
+																		$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."'  AND size_title='".$size1[$size_count]."'";
+																			// echo $individual_sizes_query.'<br>';
+																		$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
+																		while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
+																		{
+																			$individual_color = $individual_sizes_details['size_title'];
+																		}
+																		if (mysqli_num_rows($individual_sizes_result) >0)
+																		{
+																			if ($size1[$size_count] == $individual_color) {
+																				echo "<td><input type='text' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																			}
+																		}
+																		else
+																		{
+																			echo "<td><input type='hidden' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
+																		}
+																	}
+																	echo "<td><input type='text' required name='combo[]' id='combo' value='".$combo_value."' $readonly class='form-control integer'></td>";
+															echo "</tr>";
+															$row_count++;
+														}
+													echo "</table>
+												</div>
 											</div>
 										</div>";
 									
@@ -432,41 +450,48 @@
 									echo "<div class='panel panel-primary'>
 											<div class='panel-heading'>Total FG Per Carton Size Wise</div>
 											<div class='panel-body'>
-												<table class=\"table table-bordered\">
-													<tr>
-														<th>Color</th>";
-															for ($i=0; $i < sizeof($size1); $i++)
-															{
-																echo "<th>".$size1[$i]."</th>";
-															}
-														echo "<th>Total</th>";
-													echo "</tr>";
-													$row_count=0;
-													for ($j=0; $j < sizeof($color1); $j++)
-													{
-														echo "<tr>";
-																echo "<td>$color1[$j]</td>";
-																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+												<div class='table-responsive'>
+													<table class=\"table table-bordered\">
+														<tr>
+															<th>Color</th>";
+																for ($i=0; $i < sizeof($size1); $i++)
 																{
-																	$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."'";
-																	// echo $individual_sizes_query.'<br>';
-																	$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
-																	while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
-																	{
-																		$individual_color = $individual_sizes_details['size_title'];
-																	}
-																	if ($size1[$size_count] == $individual_color) {
-																		echo "<td><input type='text' required readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
-																	} else {
-																		echo "<td><input type='hidden' readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value='0'></td>";
-																	}
+																	echo "<th>".$size1[$i]."</th>";
 																}
-																echo "<td><input type='text' required name='total_".$j."' id='total_".$j."' readonly='true' class='form-control integer'></td>";
+															echo "<th>Total</th>";
 														echo "</tr>";
-														$row_count++;
-													}
-													echo "<input type='hidden' readonly='true' name='GarPerCart_total' id='GarPerCart_total' class='form-control integer' value='0'>";
-												echo "</table>
+														$row_count=0;
+														for ($j=0; $j < sizeof($color1); $j++)
+														{
+															echo "<tr>";
+																	echo "<td>$color1[$j]</td>";
+																	for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+																	{
+																		$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
+																		// echo $individual_sizes_query.'<br>';
+																		$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
+																		while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
+																		{
+																			$individual_color = $individual_sizes_details['size_title'];
+																		}
+																		if (mysqli_num_rows($individual_sizes_result) >0)
+																		{
+																			if ($size1[$size_count] == $individual_color) {
+																				echo "<td><input type='text' required readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																			}
+																		}
+																		else 
+																		{
+																			echo "<td><input type='hidden' readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value='0'></td>";
+																		}
+																	}
+																	echo "<td><input type='text' required name='total_".$j."' id='total_".$j."' readonly='true' class='form-control integer' value=''></td>";
+															echo "</tr>";
+															$row_count++;
+														}
+														echo "<input type='hidden' readonly='true' name='GarPerCart_total' id='GarPerCart_total' class='form-control integer' value='0'>";
+													echo "</table>
+												</div>
 											</div>
 										</div>";
 										echo "<input type='submit' class='btn btn-success' name='MM_SM_save' id='MM_SM_save' value='Save' />
@@ -518,7 +543,7 @@
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}
 
-							$insert_tbl_carton_size_ref="insert ignore into $brandix_bts.tbl_carton_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garemnts_per_carton, combo_no, size_title) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$combo[$i]."','".$original_size[$j]."')";
+							$insert_tbl_carton_size_ref="insert ignore into $brandix_bts.tbl_carton_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, combo_no, size_title) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$combo[$i]."','".$original_size[$j]."')";
 							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
 							// echo $insert_tbl_carton_size_ref.'<br>';
 						}
@@ -568,7 +593,7 @@
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}
 
-							$insert_tbl_carton_size_ref="insert ignore into $brandix_bts.tbl_carton_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garemnts_per_carton, combo_no, size_title) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$combo[$i]."','".$original_size[$j]."')";
+							$insert_tbl_carton_size_ref="insert ignore into $brandix_bts.tbl_carton_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, combo_no, size_title) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$combo[$i]."','".$original_size[$j]."')";
 							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
 							// echo $insert_tbl_carton_size_ref.'<br>';
 						}
