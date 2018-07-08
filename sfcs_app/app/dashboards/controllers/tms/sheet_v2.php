@@ -7,7 +7,7 @@ $style=$_GET['style'];
 // $style='T152AB83       ';
 $input_job_no=$_GET['input_job'];
 // $input_job_no=1;
-$connect = odbc_connect("$driver_name;Server=$server;Database=$database;", $userid,$password);
+$connect = odbc_connect("$driver_name;Server=$server;Database=$database;", $userid,$password) or die("Not Connected To M3");
 $cut=1;
 $color=array();
 $sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	 
@@ -1075,7 +1075,7 @@ tags will be replaced.-->
 		// $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 		// while($row=mysqli_fetch_array($sql_result))
 		// {
-		if(odbc_result($result, 7) == "STRIM" AND odbc_result($result, 7)==$plant_m3_wh_code)
+		if(odbc_result($result, 7) == "STRIM" AND odbc_result($result, 2)==$plant_m3_wh_code)
 		{
 		$material_qty=0;
 		$material_qty_wast=0;
@@ -1182,7 +1182,7 @@ tags will be replaced.-->
 		// $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 		// while($row=mysqli_fetch_array($sql_result))
 		// {
-		if(odbc_result($result, 7) == "PTRIM" AND odbc_result($result, 7)==$plant_m3_wh_code)
+		if(odbc_result($result, 7) == "PTRIM" AND odbc_result($result, 2)==$plant_m3_wh_code)
 		{
 		$material_qty=0;
 		$material_qty_wast=0;
