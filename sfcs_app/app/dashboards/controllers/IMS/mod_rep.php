@@ -159,8 +159,7 @@ table
              
         $toggle=0; 
         $sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref order by tid"; 
-        mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-        $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row=mysqli_fetch_array($sql_result)) 
         { 
             $rand_track=$sql_row['rand_track']; 
@@ -179,7 +178,7 @@ table
             $req_date=""; 
             $sql12="select req_date from $bai_pro3.ims_exceptions where ims_rand_track=$rand_track"; 
            // mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.2".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
             { 
                 $req_date=$sql_row12['req_date']; 
@@ -187,7 +186,7 @@ table
              
             $sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC"; 
            // mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
             { 
                  
@@ -198,15 +197,14 @@ table
 				
                 $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0"; 
                 //mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2.4".mysqli_error($GLOBALS["___mysqli_ston"])); 
                  
                 while($sql_row22=mysqli_fetch_array($sql_result22)) 
                 { 
                     $order_tid=$sql_row22['order_tid']; 
                      
                     $sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
-                    mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                    $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                    $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error2.5".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row33=mysqli_fetch_array($sql_result33)) 
                     { 
                         $color_code=$sql_row33['color_code']; //Color Code 
