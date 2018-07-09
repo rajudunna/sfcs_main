@@ -1486,10 +1486,10 @@ body{
 	#non-printable { display: none; }
 	#printable { display: block; }
 	#logo { display: block; }
-	body { zoom:80%;}
+	body { zoom:73%;}
 	#ad{ display:none;}
 	#leftbar{ display:none;}
-	#DOCKET_NEW_4118{ width:85%; margin-left:2px; margin-right:2px;}
+	#DOCKET_NEW_4118{ width:80%; margin-left:2px; margin-right:2px;}
 }
 
 </style>
