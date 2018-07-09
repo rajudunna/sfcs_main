@@ -193,7 +193,7 @@ td{ padding:2px; white-space: nowrap;}
 						$size_ref=$row1['ref_size_name'];
 						$size_tit=$row1['size_title'];
 						$carton_method=$row1['carton_method'];
-						$garments_per_carton=$row1['garments_per_carton'];
+						$garments_per_carton=$row1['garments_per_carton']*$row1['no_of_cartons'];
 						$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link); 
 						$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref='".$carton_id."' AND mini_order_num > 0 and color='".$color_code."' and size='".$size_ref."' group BY cut_num order by cut_num*1"; 
 						//echo $input_job_no."p----".$schedule."<br>";
@@ -269,7 +269,7 @@ td{ padding:2px; white-space: nowrap;}
 											mysqli_query($link, $sql1q) or die("Error---2".mysqli_error($GLOBALS["___mysqli_ston"])); 
 											echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."-B-".$garments_per_carton."--".$input_job_quantiy_tmp."</td><td>".$qty."</td></tr>";
 										}
-										$input_job_quantiy_tmp=+$qty;
+										$input_job_quantiy_tmp+=$qty;
 										$qty=0;										
 									} 
 								}while($qty>0);	
@@ -330,7 +330,7 @@ td{ padding:2px; white-space: nowrap;}
 					$size_ref=$row1['ref_size_name'];
 					$size_tit=$row1['size_title'];
 					$carton_method=$row1['carton_method'];
-					$garments_per_carton=$row1['garments_per_carton'];
+					$garments_per_carton=$row1['garments_per_carton']*$row1['no_of_cartons'];
 					$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link); 
 					$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num > 0 and color='".$color_code."' and size='".$size_ref."' group BY cut_num order by cut_num*1"; 
 					//echo $input_job_no."p----".$schedule."<br>";
@@ -405,7 +405,7 @@ td{ padding:2px; white-space: nowrap;}
 										mysqli_query($link, $sql1q) or die("Error---2".mysqli_error($GLOBALS["___mysqli_ston"])); 
 										echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."-B-".$garments_per_carton."--".$input_job_quantiy_tmp."</td><td>".$qty."</td></tr>";
 									}
-									$input_job_quantiy_tmp=+$qty;
+									$input_job_quantiy_tmp+=$qty;
 									$qty=0;
 								} 
 							}while($qty>0);	
