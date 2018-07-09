@@ -84,7 +84,7 @@ td{ padding:2px; white-space: nowrap;}
 			var mini_order_qty  = document.getElementById("mini_order_qty").value;
 			if(cart_method=="0")
 			{
-				sweetAlert('Please Select Carton Method','','warning');
+				sweetAlert('Please Select Pack Method','','warning');
 				document.getElementById('msg1').style.display='none';
 				document.getElementById('generate').style.display='';
 				return false;
@@ -147,7 +147,7 @@ td{ padding:2px; white-space: nowrap;}
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	$has_permission=haspermission($_GET['r']);
-	
+
 	if(isset($_POST['style']))
 	{
 	    $style=$_POST['style'];
@@ -266,125 +266,84 @@ td{ padding:2px; white-space: nowrap;}
 									$size_main = explode(",",$ref_size);
 									// var_dump($size);
 								}
+
 								$sizeofsizes=sizeof($size_main);
 								$size_of_ordered_colors=sizeof($color_main);
 
 								// Order Details Display Start
 								{
-									$col_array = array();
-									$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."'";
-									//echo $sizes_query;die();
-									$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2");
-									$row_count = mysqli_num_rows($sizes_result);
-									while($sizes_result1=mysqli_fetch_array($sizes_result))
+									$planned_qty = array();
+									$ordered_qty = array();
+									$tot_ordered = 0;
+									$tot_planned = 0;
+									$tot_balance = 0;
+									foreach ($sizes_array as $key => $value)
 									{
-										$col_array[]=$sizes_result1['order_col_des'];
-									}
-
-									foreach ($col_array as $key1 => $value1)
-									{
-										foreach ($sizes_array as $key => $value)
+										$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%$schedule%'";
+										// echo $plannedQty_query.'<br>';
+										$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
+										while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
 										{
-											$query = "SELECT bod.order_s_$sizes_array[$key] as order_qty, bod.title_size_$sizes_array[$key] as title, sum(psl.a_$sizes_array[$key]*psl.a_plies) AS planned_qty FROM $bai_pro3.bai_orders_db bod LEFT JOIN $bai_pro3.plandoc_stat_log psl ON psl.order_tid=bod.order_tid WHERE order_del_no=$schedule AND order_style_no='".$style."' AND order_s_$sizes_array[$key]>0 GROUP BY order_col_des";
-											// echo $query.'<br>';
-											$qty=mysqli_query($link, $query) or exit("Sql Error2");
-											while($qty_result=mysqli_fetch_array($qty))
-											{
-												// echo $qty_result['title'];
-												$sizes_order_array[] = $qty_result['title'];
-												$order_array[$col_array[$key1]][$qty_result['title']] = $qty_result['order_qty'];
-												$planned_array[$col_array[$key1]][$qty_result['title']] = $qty_result['planned_qty'];
-												$balance_array[$col_array[$key1]][$qty_result['title']] = $qty_result['order_qty']-$qty_result['planned_qty'];
-											}
+											$planned_qty[] = $planneQTYDetails['plannedQty'];
+										}
+
+										$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule";
+										// echo $orderQty_query.'<br>';
+										$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
+										while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
+										{
+											$ordered_qty[] = $orderQty_details['orderedQty'];
 										}
 									}
-									//var_dump($order_array);
+
 									$url1 = getFullURLLevel($_GET['r'],'pop_up_sewing_job_det.php',0,'R');
 									echo "<br><a class='btn btn-success' href='$url1?schedule=$schedule' onclick=\"return popitup2('$url1?schedule=$sch_id&style=$style_id')\" target='_blank'>Click Here For Full Order Details</a>      ";
 
-									echo "<br><div class='col-md-12'><b>Order Details: </b>
+									echo "<br>
+									<div class='col-md-12'><b>Order Details: </b>
 										<table class=\"table table-bordered\">
 											<tr>
-												<th>Details</th>
-												<th>Colors</th>";
-												foreach(array_unique($sizes_order_array) as $size)
+												<th>Details</th>";
+												for ($i=0; $i < sizeof($size_main); $i++)
 												{
-													echo "<th>$size</th>";
+													echo "<th>$size_main[$i]</th>";
 												}	
 												
 												echo "<th>Total</th>
 											</tr>";
 
-											$counter = 0;
-											foreach ($order_array as $key => $value) 
-											{
-												$order_total = 0;
-												if($counter == 0)
-												{
-													echo "<tr><td rowspan='$row_count'>Order Qty</td>";
-												}
-												echo "<td>".$key."</td>";
-												foreach ($value as $key1 => $value1) 
-												{
-													foreach(array_unique($sizes_order_array) as $size)
-													{
-														if($key1 == $size){
-															echo "<td>".$value1."</td>";
-															$order_total += $value1;
-														}
+											echo "<tr>
+													<td>Order Qty</td>";
+													for ($i=0; $i < $sizeofsizes; $i++)
+													{ 
+														echo "<td>$ordered_qty[$i]</td>";
+														$tot_ordered = $tot_ordered + $ordered_qty[$i];
 													}
-												}
-												echo "<td>$order_total</td></tr>";
-												$counter++;
-											}
+													echo "<td>$tot_ordered</td>
+												</tr>";
 
-											$counter1 = 0;
-											foreach ($planned_array as $key => $value) 
-											{
-												$planned_total = 0;
-												if($counter1 == 0)
-												{
-													echo "<tr><td rowspan='$row_count'>Planned Qty</td>";
-												}
-												echo "<td>".$key."</td>";
-												foreach ($value as $key1_1 => $order_value)
-												{
-													foreach(array_unique($sizes_order_array) as $size)
-													{
-														if($key1_1 == $size){
-															echo "<td>".$order_value."</td>";
-															$planned_total += $order_value;
-														}
+											echo "<tr>
+													<td>Planned Qty</td>";
+													for ($i=0; $i < $sizeofsizes; $i++)
+													{ 
+														echo "<td>$planned_qty[$i]</td>";
+														$tot_planned = $tot_planned + $planned_qty[$i];
 													}
-												}
-												echo "<td>$planned_total</td></tr>";
-												$counter1++;
-											}
+													echo "<td>$tot_planned</td>
+												</tr>";
 
-											$counter3 = 0;
-											foreach ($balance_array as $key => $value) 
-											{
-												$balance_total = 0;
-												if($counter3 == 0)
-												{
-													echo "<tr><td rowspan='$row_count'>Balance Qty</td>";
-												}
-												echo "<td>".$key."</td>";
-												foreach ($value as $key1 => $balance_value) 
-												{
-													foreach(array_unique($sizes_order_array) as $size)
+											echo "<tr>
+													<td>Balance Qty</td>";
+													for ($i=0; $i < $sizeofsizes; $i++)
 													{
-														if($key1 == $size){
-															echo "<td>".$balance_value."</td>";
-															$balance_total += $balance_value;
-														}
+														$balance = $planned_qty[$i]-$ordered_qty[$i];
+														echo "<td>".$balance."</td>";
+														$tot_balance = $tot_balance + $balance;
 													}
-												}
-												echo "<td>$balance_total</td></tr>";
-												$counter3++;
-											}
-
-									echo "</table></div>";
+													echo "<td>$tot_balance</td>
+												</tr>";
+										echo "</table>
+									</div>";
 								}
 								// Order Details Display End
 
@@ -654,7 +613,7 @@ td{ padding:2px; white-space: nowrap;}
 						}
 						else
 						{							
-							echo "<script>sweetAlert('Please Update Carton Details ','Before Creating Sewing Jobs!','warning');</script>";
+							echo "<script>sweetAlert('Please Update Packing Ratio ','Before Creating Sewing Jobs!','warning');</script>";
 						}	
 					}
 				}
