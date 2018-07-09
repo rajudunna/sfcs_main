@@ -9,6 +9,7 @@ $module=$_GET['module'];
 $docket=$_GET['docket'];
 $input_job_no=$_GET['input_job_no'];
 $input_job_rand_ref=$_GET['input_job_rand_ref'];
+$ims_remarks1=$_GET['ims_remarks'];
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -147,7 +148,8 @@ $ims_doc_no=$sql_docket['ims_doc_no'];
   </tr>
   
 <?php
-$sql="SELECT input_job_rand_no_ref,ims_size,ims_color,ims_remarks,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE ims_schedule='".$schedule_ref."' and input_job_no_ref='".$job_no."' AND ims_mod_no='".$module."' GROUP BY ims_color,ims_size,ims_remarks ORDER BY ims_date";
+$sql="SELECT input_job_rand_no_ref,ims_size,ims_color,ims_remarks,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE ims_schedule='".$schedule_ref."' and input_job_no_ref='".$job_no."' AND ims_mod_no='".$module."'
+AND ims_remarks='$ims_remarks1' GROUP BY ims_color,ims_size,ims_remarks ORDER BY ims_date";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -182,7 +184,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
 
 	
-     $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where qms_schedule=".$ims_schedule." and qms_color=\"".$ims_color."\" and input_job_no=\"".$input_job_rand_no_ref."\" and qms_style=\"".$ims_style."\" and qms_remarks=\"".$ims_remarks=$sql_row['ims_remarks']."\" and qms_size=\"".strtoupper($size_value)."\"";  
+     $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where qms_schedule=".$ims_schedule." and qms_color=\"".$ims_color."\" and input_job_no=\"".$input_job_rand_no_ref."\" and qms_style=\"".$ims_style."\" and qms_remarks=\"".$ims_remarks=$sql_row['ims_remarks']."\" and qms_size=\"".strtoupper($size_value)."\" and operation_id='130'";  
      //echo $sql33;  
 	  $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error888".mysqli_error($GLOBALS["___mysqli_ston"]));
 	  while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -199,9 +201,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
     <td><?php echo $sql_row['ims_pro_qty']; ?></td>
     <td><?php echo $sql_row['ims_remarks']; ?></td>
     <td><?php echo $rejected; ?></td>
-    <td><?php //echo $sql_row['ims_qty']-($sql_row['ims_pro_qty']+$rejected);
+    <td><?php echo $sql_row['ims_qty']-($sql_row['ims_pro_qty']+$rejected);
 
-                  echo $sql_row['ims_qty']-($sql_row['ims_pro_qty']);
+                  //echo $sql_row['ims_qty']-($sql_row['ims_pro_qty']);
      ?></td>
 
     

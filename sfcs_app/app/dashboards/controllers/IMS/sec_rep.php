@@ -169,7 +169,7 @@ if(isset($_GET['val']))
 		echo '<div style="max-height:600px;overflow-y:scroll;"><table style="color:black; border: 1px solid #337ab7;" class="table table-bordered">';
 		echo "<tr class=\"new\" style='background-color:#337ab7'><th>Module</th><th>Bundle No</th>";
 		//echo "<th>CID</th><th>DOC#</th>";
-		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Input Job No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th><th>Input Remarks</th><th>Ex-Factory</th><th>Rejected</th><th>Good Garments</th><th>Total</th><th width='150'>Remarks</th><th>Age</th><th>WIP</th></tr>";
+		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Input Job No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th><th>Ex-Factory</th><th width='150'>Remarks</th><th>Age</th><th>WIP</th></tr>";
 		
 		$toggle=0;
 		$j=1;
@@ -279,7 +279,7 @@ if(isset($_GET['val']))
 				
 				$rejected=0;
 				$good_garments=0;
-				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where qms_schedule=".$sql_row12['ims_schedule']." and qms_color=\"".$sql_row12['ims_color']."\" and qms_size=\"".strtoupper($size_value)."\" and qms_style=\"".$sql_row12['ims_style']."\" and input_job_no=\"".$sql_row12['input_job_rand_no_ref']."\" and qms_remarks=\"".$sql_row12['ims_remarks']."\"";
+				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where qms_schedule=".$sql_row12['ims_schedule']." and qms_color=\"".$sql_row12['ims_color']."\" and qms_size=\"".strtoupper($size_value)."\" and qms_style=\"".$sql_row12['ims_style']."\" and input_job_no=\"".$sql_row12['input_job_rand_no_ref']."\" and qms_remarks=\"".$sql_row12['ims_remarks']."\" and operation_id='130'";
 				
 				//echo $sql33;
 				//mysqli_query($link, $sql33) or exit("Sql Error".$sql33.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -301,16 +301,16 @@ if(isset($_GET['val']))
 				}
 				
 				$quality_log_row="";
-				$quality_log_row="<td>".$sql_row12['ims_remarks']."</td><td>$ex_factory</td><td>$rejected</td><td>$good_garments</td><td>".($rejected+$good_garments)."</td>";
+				$quality_log_row="<td>".$sql_row12['ims_remarks']."</td><td>$ex_factory</td>";
 				
 				
 				if($rowcount_check==1)
 				{
 					echo "<td>".$sql_row12['bai_pro_ref']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
-					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";				
-				//	echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
-					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
+					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>$rejected</td>";				
+					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
+					//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
 					echo $quality_log_row;
 					if(in_array($edit,$has_permission))
 					{
@@ -332,9 +332,9 @@ if(isset($_GET['val']))
 				{
 					echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>".$sql_row12['tid']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
-					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";
-					//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
-					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
+					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>$rejected</td>";
+					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
+					//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
 					echo $quality_log_row;
 				
 					if(in_array($edit,$haspermission))
