@@ -1177,7 +1177,7 @@ echo "</select></div>";
 echo "<input type\"text\" name=\"ratio\" value=\"".$ratiocount."\" id=\"ratio\" style=\"visibility:hidden\">";
 
 //echo "<div class=\"col-sm-4\"><input type=\"checkbox\"  name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable</div>
-echo "<div class=\"col-sm-4\"><input type = \"submit\" class = \"btn btn-sm btn-success\"  name = \"Update\" value = \"Update\"  style='margin-top:22px;'></div>";
+echo "<div class=\"col-sm-4\"><input type = \"submit\" class = \"btn btn-sm btn-success\" id=\"update\" name = \"Update\" value = \"Update\"  style='margin-top:22px;'></div>";
 echo "</div>";
 echo "</form>";
 echo "</div>";
@@ -1264,9 +1264,9 @@ function chec(){
 	{
 		sweetAlert('','Ratio preparing quantity is more than requested quantity.','error');
 		return false;
-	}
-	
-	
-	
+	}	
 }
+$('#update').click(function(){
+  $('#update').css("display",'none');   
+});
 </script>
