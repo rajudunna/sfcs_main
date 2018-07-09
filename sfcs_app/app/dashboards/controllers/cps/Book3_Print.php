@@ -4,7 +4,6 @@ Ticket #: 252392-Kirang/2014-02-07
 This amendement was done based on the confirmation to issue excess (1%) material depending on the savings.
 //Binding Consumption / YY Calculation //20151016-KIRANG-Imported Binding inclusive concept.
 -->
-
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "dbconf.php", "1", "R").""); ?>
 <?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "", "1", "R").""); ?>
@@ -1984,7 +1983,7 @@ body{
 	#non-printable { display: none; }
 	#printable { display: block; }
 	#logo { display: block; }
-	body { zoom:72%;}
+	body { zoom:65%;}
 	#ad{ display:none;}
 	#leftbar{ display:none;}
 	#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
@@ -2064,11 +2063,11 @@ Page wizard.-->
 tags will be replaced.-->
 <!----------------------------->
 <!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
-<!----------------------------->
-
+<!---->
+<div style='height:50px'><br/><br/></div>
 <div id="DOCKET_NEW_4118" align=center x:publishsource="Excel">
 
-<table border=0 cellpadding=0 cellspacing=0 width=1008 style='border-collapse: collapse;width:1008pt'>
+<table border=0 cellpadding=0 cellspacing=0 style='border-collapse: collapse;width:1000px'>
  <col width=24 style='mso-width-source:userset;mso-width-alt:877;width:18pt'>
  <col class=xl654118 width=64 span=6 style='mso-width-source:userset;
  mso-width-alt:2340;width:48pt'>
@@ -2080,7 +2079,7 @@ tags will be replaced.-->
  <col width=21 style='mso-width-source:userset;mso-width-alt:768;width:16pt'>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
   <td height=21 class=xl664118 width=24 style='height:15.75pt;width:18pt' colspan="8"><a
-  name="RANGE!A1:Q57"></a><?php echo '<div id="bcTarget1" style="width:auto;"></div><script>$("#bcTarget1").barcode("D'.$doc_id.'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'; ?></td>
+  name="RANGE!A1:Q57"></a><?php echo '<div id="bcTarget1" style="width:auto;"></div><script>$("#bcTarget1").barcode("D'.$doc_id.'", "code39",{barWidth:2,barHeight:30,moduleSize:5,fontSize:5});</script>'; ?></td>
   <!-- <td class=xl654118 width=64 style='width:48pt'></td>
   <td class=xl654118 width=64 style='width:48pt'></td>
   <td class=xl654118 width=64 style='width:48pt'></td>
@@ -2103,8 +2102,12 @@ tags will be replaced.-->
  </tr>
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td colspan=6 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
+  <td colspan=3 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2147,10 +2150,10 @@ tags will be replaced.-->
   <td class=xl1014118></td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
-  <td colspan=3 class=xl1224118>Cutting Docket</td>
+  <td colspan=3 style='font-size:24px;font-weight:bold'>Cutting Docket</td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
-  <td colspan=2 class=xl1164118 style='border-right:.5pt solid black'>Docket
+  <td colspan=2 style='border-right:1px solid black;font-size:20px;font-weight:bold;text-align:right' style='border-right:.5pt solid black'>Docket
   Number</td>
   <td colspan=3 class=xl1024118 style='border-right:.5pt solid black;
   border-left:none'><?php echo leading_zeros($docketno,9); ?></td>
@@ -2202,8 +2205,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl914118>Category :</td>
   <td colspan=2 class=xl1214118><?php echo $category; ?></td>
   <td  colspan=2 class=xl984118></td>
-  <td  colspan=3 class=xl994118></td>
-  <td class=xl654118></td>
+  <td colspan=2 class='xl984118 right'></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2215,9 +2217,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl904118>Fab Code :</td>
   <td colspan=4 class=xl954118><?php echo $compo_no ?></td>
   <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl1004118>&nbsp;</td>
-  <td class=xl654118></td>
+  <td class='xl654118 right'></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2227,20 +2227,17 @@ tags will be replaced.-->
   <td class=xl954118><?php echo $body_yy; ?></td>
   <td class=xl904118></td>
   <td colspan=2 class=xl904118>Fab Descrip :</td>
-  <td colspan=7 class=xl954118 style='border-right:.5pt solid black'><?php echo $fab_des; ?></td>
-  <td class=xl654118></td>
+  <td colspan=6 style='padding-top : 12px;border-right:.5pt solid black'><?php echo $fab_des; ?></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl904118>Color :</td>
-  <td colspan=4 class=xl954118 style='border-right:.5pt solid black'><?php echo $color." / ".$col_des; ?></td>
+  <td colspan=4 style='padding-top : 12px;border-right:.5pt solid black;font-size:18px'><?php echo $color." / ".$col_des; ?></td>
   <td class=xl954118></td>
   <td colspan=2 class=xl904118>MK Name :</td>
   <td colspan=4 class=xl954118><?php echo $mk_remarks; ?></td>
   <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl1004118>&nbsp;</td>
-  <td class=xl654118></td>
+  <td class='xl654118 right'></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2248,9 +2245,10 @@ tags will be replaced.-->
   <td colspan=4 class=xl1194118 style='border-right:.5pt solid black'><?php echo $pono; ?></td>
   <td class=xl974118></td>
   <td colspan=2 class=xl934118>Fab Direction :</td>
-  <td colspan=7 class=xl1104118 style='border-right:.5pt solid black'><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>
-  <td class=xl654118></td>
+  <td colspan=5 class=xl1104118 ><?php if($gmtway=="Y") { echo "One Gmt One Way"; } else  { echo "All Gmt One Way"; }?></td>
+  <td class='xl1104118 right'></td>
  </tr>
+ 
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2290,7 +2288,10 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
+ </table>
+ <table border=0 cellpadding=0 cellspacing=0 align=left style='border-collapse: collapse;'>
  <?php
+ $fab_uom = 'Yds';
  if(sizeof($s_tit)>13)
  {
 	 ?>
@@ -2300,12 +2301,11 @@ tags will be replaced.-->
 	 <?php
 		if($flag == 1)
 		{
-			
 			for($s=0;$s<14;$s++)
 			{
 				//if($s_tit[$sizes_code[$s]]<>'' && $a_s[$sizes_code[$s]] > 0)
 				//{
-					echo  "<td class=xl694118>".$s_tit[$sizes_code[$s]]."</td>";
+					echo  "<td class=xl694118 >".$s_tit[$sizes_code[$s]]."</td>";
 				//}
 			}
 		}
@@ -2398,7 +2398,7 @@ tags will be replaced.-->
 		{
 			//if($a_s[$sizes_code[$s]]>0)
 			//{
-				echo "<td class=xl734118>".($a_s[$sizes_code[$s]]*$plies)."</td>";
+				echo "<td class=xl734118 >".($a_s[$sizes_code[$s]]*$plies)."</td>";
 			//}
 			/*else
 				{
@@ -2438,7 +2438,7 @@ tags will be replaced.-->
 			{
 				//if($s_tit[$sizes_code[$s]]<>'' && $a_s[$sizes_code[$s]] > 0)
 				//{
-					echo  "<td class=xl694118>".$s_tit[$sizes_code[$s]]."</td>";
+					echo  "<td class=xl734118>".$s_tit[$sizes_code[$s]]."</td>";
 				//}
 			}
 		}
@@ -3023,52 +3023,46 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr> 
+ </table>
+
+ <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:parent'>
  <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-  <td class=xl764118>Rpt No</td>
+  <td rowspan=2 class=xl764118 style='border-bottom:1px solid black'>Rpt No</td>
   <td rowspan=2 class=xl774118  width=64 style='border-bottom:.5pt solid black;  width:48pt'>Pattern Version</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>No of Plies</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:70pt'>No of Plies</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Pur Width</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Marker Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Cutting Wastage %</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Binding Consumption</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:90pt'>Fab. Requirement for lay/ Yds</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:90pt'>Fab. Requirement for Binding / Yds</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Binding Cons.</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:90pt'>Fab. Requirement for lay</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:90pt'>Fab. Requirement for Binding</td>
   <td rowspan=2 class=xl1144118 width=67 style='border-bottom:.5pt solid black;  width:70pt'>Act. Width</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Total Fab. Requirement/ Yds</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Total Fab. Requirement</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Issued Qty (Yds)</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Return Qty (Yds)</td>
- <!-- <td class=xl674118></td>-->
-  <td rowspan=4 colspan=4 class=xl1144118 width=64 style='border-bottom:.6pt solid black;
-  width:48pt'></td>
+
+  <td rowspan=4 colspan=10 class=xl1144118 width=64 style='border-bottom:.6pt solid black'></td>
+  <td class=xl674118></td>
+  <td class=xl674118></td>
+  <td class=xl674118></td>
   <td class=xl674118></td>
   <td class=xl674118></td>
   <td class=xl674118></td>
  </tr>
  <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-  <td class=xl724118>&nbsp;</td>
-  <!--<td class=xl744118>&nbsp;</td>-->
- 
-  <td class=xl674118></td>
-  <td class=xl674118></td>
-  <td class=xl674118></td>
-  <td class=xl674118></td>
-  <td class=xl674118></td>
+
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $patt_ver; ?></td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $plies; ?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:70pt'><?php echo $plies; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $purwidth; ?></td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $purlength; ?></td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $cuttable_wastage*100;?></td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $binding_con; ?></td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_lay = $purlength*(1+$cuttable_wastage)*$plies; echo round($fab_lay,2);?></td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $binding_con*$plies*$a_ratio_tot; echo round($fab_bind,2); ?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_lay = $purlength*(1+$cuttable_wastage)*$plies; echo round($fab_lay,2).'<br/>('.$fab_uom.')';?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $binding_con*$plies*$a_ratio_tot; echo round($fab_bind,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $actwidth; ?></td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($fab_bind+$fab_lay,2); ?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($fab_bind+$fab_lay,2).'<br/>('.$fab_uom.')'; ?></td>
 <!--<td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
 { $extra=round((($act_mk_length*$plies)*$savings),2); }  echo round((($act_mk_length*$plies)+$extra+$bind_con),2); //Extra 1% added to avoid cad saving manual mrn claims. ?></td>-->
@@ -3129,7 +3123,9 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
  </tr>
- 
+<table>
+
+<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
  <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td rowspan="2" colspan="16" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
@@ -3154,6 +3150,7 @@ $ctex_len[]=$sql_row['ref5'];
 $tkt_len[]=$sql_row['qty_rec'];
 $ctex_width[]=$sql_row['ref3'];
 $tkt_width[]=$sql_row['ref6'];
+$item_name[] = $sql_row['item'];
 } 
   //echo ($bind_con>0)?"Binding/Rib Quantity: $bind_con YDS":"";
    if(sizeof($batch_det) > 0)
@@ -3240,16 +3237,18 @@ $tkt_width[]=$sql_row['ref6'];
   <td height=20 class=xl674118 style='height:15.0pt'></td>
 </tr>
 
+<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td class=xl764118>Batch</td>
+  <td class='xl764118'>Fabric Name</td>
   <td class=xl764118>Lot No</td>
   <td class=xl764118>Label</td>
   <td class=xl764118>Shade</td>
   <td class=xl774118>Roll No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex Length</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex Width</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Length</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Width</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Allocated Qty</td>
   <td class=xl774118>Plies</td>
   <td class=xl774118>Damage</td>
@@ -3262,6 +3261,7 @@ $tkt_width[]=$sql_row['ref6'];
  </tr> <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td class=xl724118>&nbsp;</td>
+  <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
@@ -3290,7 +3290,8 @@ $tkt_width[]=$sql_row['ref6'];
 	  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
 	  <td height=20 class=xl654118 style='height:30pt'></td>
 	  <td class=xl804118><?php echo $batch_det[$i]; ?></td>
-	  <td class=xl814118 style='font-size: 85%;'><?php echo $lot_det[$i]; ?></td>
+	  <td class=xl804118><?php echo $item_name[$i]; ?></td>
+	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_id[$i]; ?></td>
 	  <td class=xl814118><?php echo $shade_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_det[$i]; ?></td>
@@ -3342,23 +3343,23 @@ $tkt_width[]=$sql_row['ref6'];
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:30pt'></td>
-  <td class=xl654118></td>
-  <td class=xl684118>Docket</td>
-  <td class=xl704118>Marker</td>
-  <td class=xl704118>Issuing</td>
-  <td class=xl704118>Laying</td>
-  <td class=xl704118>Cutting</td>
-  <td class=xl704118>Return</td>
-  <td class=xl704118>Bundling</td>
-  <td class=xl704118>Dispatch</td>
-  <td></td>
-  <td class=xl654118>Act Con</td>
-  <td class=xl864118>&nbsp;</td>
-  <td class=xl864118>&nbsp;</td>
-  <td class=xl864118>&nbsp;</td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
+  <th class=xl654118></th>
+  <th class=xl684118>Docket</th>
+  <th class=xl704118>Marker</th>
+  <th class=xl704118 style='width:100px'>Issuing</th>
+  <th class=xl704118>Laying</th>
+  <th class=xl704118>Cutting</th>
+  <th class=xl704118>Return</th>
+  <th class=xl704118>Bundling</th>
+  <th class=xl704118>Dispatch</th>
+  <th></th>
+  <th class=xl654118>Act Con</th>
+  <th class=xl864118>&nbsp;</th>
+  <th class=xl864118>&nbsp;</th>
+  <th class=xl864118>&nbsp;</th>
+  <th class=xl654118></th>
+  <th class=xl654118></th>
+  <th class=xl654118></th>
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -3548,10 +3549,36 @@ function refreshParent() {
 ?>
 <style>
 .xl744118,.xl694118,.xl774118,.xl684118,.xl704118,.xl724118,.xl1064118,.xl764118,.xl814118,.xl804118,.xl674118,.xl654118,.xl1124118,.xl1144118,.xl714118{
-	font-size : 20px;
+	font-size : 22px;
+	font-wight : bold;
+}
+.xl754118,.xl914118,.xl694118,.xl734118,.xl734118,.xl934118,.xl1104118,.xl1194118,.xl1214118,.xl924118,.xl944118,.xl654118,.xl904118,.xl954118,.xl904118x,.xl904118,.xl1144118,.xl774118,.xl1184118{
+	font-size : 22px;
+	font-weight : bold;
+}
+.xl804118,.xl814118,.xl684118,.xl764118,.xl774118,.xl1064118,.xl704118,.xl654118,.xl1024118{
+	font-size : 22px;
+	font-weight : bold;
+}
+.xl664118{
+	font-size : 24px;
+	//font-weight : bold;
 }
 *{
 	font-size : 20px;
+}
+tr{
+	height : 40pt;
+}
+.xl734118{
+	width : 50px;
+}
+td{
+	vertical-align:top;
+	height : 25pt;
+}
+.right{
+	border-right : 1px solid black;
 }
 </style>
 
