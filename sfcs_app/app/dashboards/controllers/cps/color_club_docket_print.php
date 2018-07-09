@@ -1486,10 +1486,12 @@ body{
 	#non-printable { display: none; }
 	#printable { display: block; }
 	#logo { display: block; }
-	body { zoom:73%;}
+	body { zoom:74%;}
 	#ad{ display:none;}
 	#leftbar{ display:none;}
-	#DOCKET_NEW_4118{ width:80%; margin-left:2px; margin-right:2px;}
+	#DOCKET_NEW_4118{ width:85%; margin-left:2px; margin-right:2px;}
+	@page { margin: 0;
+	margin-top : 10px; }
 }
 
 </style>
@@ -1497,19 +1499,20 @@ body{
 <script>
 function printpr()
 {
+	
+	var OLECMDID = 7;
+	/* OLECMDID values:
+	* 6 - print
+	* 7 - print preview
+	* 1 - open window
+	* 4 - Save As
+	*/
+	var PROMPT = 1; // 2 DONTPROMPTUSER
+	var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
+	document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+	//WebBrowser1.ExecWB(OLECMDID, PROMPT);
+	WebBrowser1.outerHTML = "";
 	window.print();
-	// var OLECMDID = 7;
-	// /* OLECMDID values:
-	// * 6 - print
-	// * 7 - print preview
-	// * 1 - open window
-	// * 4 - Save As
-	// */
-	// var PROMPT = 1; // 2 DONTPROMPTUSER
-	// var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-	// document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-	// WebBrowser1.ExecWB(OLECMDID, PROMPT);
-	// WebBrowser1.outerHTML = "";
    
 }
 </script>
