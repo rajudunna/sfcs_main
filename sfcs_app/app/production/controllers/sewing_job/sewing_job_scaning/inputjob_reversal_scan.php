@@ -24,7 +24,7 @@ if(isset($_POST['id']))
 				</div>
 				<div class='form-group col-md-3'>
 					<label>Remarks:<span style="color:red">*</span></label>
-					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required><option value='Normal' selected>Normal</option><option value='sample'>Sample</option><option value='shipment_sample'>Shipment Sample</option></select>
+					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required><option value='Normal' selected>Normal</option><option value='sample'>Sample</option><option value='Shipment_Sample'>Shipment_Sample</option></select>
 				</div>
 				<div class="form-group col-md-3">
 						<label for="title">Select Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
@@ -94,10 +94,17 @@ $(document).ready(function()
 				$('#dynamic_table1').html('');
 				console.log(response);
 				var data = response['table_data'];
+				var check_flag = 0;
 				if(response['post_ops'])
 				{
 					var post_ops_data = response['post_ops'];
 					var send_qty = response['send_qty'];
+					if(response['rec_qtys'])
+					{
+						var post_rec_qtys_array = response['rec_qtys'];
+						var check_flag = 1;
+					}
+				  
 					for(var ops=0;ops<post_ops_data.length;ops++)
 					{
 						// console.log(response['post_ops'][ops]);
@@ -111,6 +118,8 @@ $(document).ready(function()
 				{
 					var mark3="<input type='hidden' name='ops_dep' value='"+response['ops_dep']+"'>";
 					$("#dynamic_table1").append(mark3);
+					var check_flag = 1;
+					var post_rec_qtys_array = response['rec_qtys'];
 				}
 				var send_qty = response['send_qty'];
 				if(response['status'])
@@ -123,14 +132,23 @@ $(document).ready(function()
 					var s_no=0;;
 					var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
 					$("#dynamic_table1").append(btn);
-					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Reported Quantity</th><th>Reversing Quantity</th></tr></thead><tbody>";
+					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
 					$("#dynamic_table1").append(markup);
 					$("#dynamic_table1").append(btn);
 					for(var i=0;i<data.length;i++)
 					{
-						s_no++;
-				var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color' value='"+data[i].order_col_des+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td id='"+i+"repor'>"+data[i].reported_qty+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
-						$("#dynamic_table").append(markup1);
+						console.log(data[i].reported_qty);
+							//console.log(check_flag);
+							if(check_flag == 0)
+							{
+								var post_rec_qtys = data[i].reported_qty;
+							}
+							else{
+								var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
+							}
+							s_no++;
+							var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color' value='"+data[i].order_col_des+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
+							$("#dynamic_table").append(markup1);
 					}
 				}
 				
@@ -161,7 +179,7 @@ function validation(id)
 		var reverting_qty = document.getElementById(rev).value;
 		if(Number(reported_qty_validation) < Number(reverting_qty))
 		{
-			sweetAlert('','You are reversing more than reported quantity.','error');
+			sweetAlert('','You are reversing more than Eligiblity.','error');
 			document.getElementById(rev).value = 0;
 		}
 	}
@@ -208,7 +226,7 @@ if(isset($_POST['formSubmit']))
 	if($ops_dep != 0)
 	{
 		$dep_ops_array_qry_raw = "select operation_code from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and ops_dependency='$ops_dep'";
-		//echo $dep_ops_array_qry_raw;
+		// echo $dep_ops_array_qry_raw;
 		$result_dep_ops_array_qry_raw = $link->query($dep_ops_array_qry_raw) or exit('query error in updating 4');
 		while($row = $result_dep_ops_array_qry_raw->fetch_assoc()) 
 		{
@@ -239,7 +257,7 @@ if(isset($_POST['formSubmit']))
 	{
 		//echo "working";
 		$retriving_data = "select * from $brandix_bts.bundle_creation_data where bundle_number = $bundle_no[$key] and operation_id = $operation_id";
-	//	echo $retriving_data;
+		//echo $retriving_data;
 		$result_retriving_data = $link->query($retriving_data) or exit('query error in updating 7');
 		while($row = $result_retriving_data->fetch_assoc()) 
 		{
@@ -255,6 +273,7 @@ if(isset($_POST['formSubmit']))
 			$size_id = $row['size_id'];
 			$b_in_job_qty = $row['original_qty'];
 			$b_a_cut_no = $row['cut_number'];
+			$mapped_color = $row['mapped_color'];
 		}
 		$ops_name_qry = "select operation_name from $brandix_bts.tbl_orders_ops_ref where operation_code = $b_op_id";
 		$result_ops_name_qry = $link->query($ops_name_qry) or exit('query error in updating 8');
@@ -303,10 +322,107 @@ if(isset($_POST['formSubmit']))
 				$final_query_000_temp = $bulk_insert_temp;
 		}
 		$bundle_creation_result_temp = $link->query($final_query_000_temp) or exit('query error in updating 8');
+		//Checking with ims_log 
+		if($b_op_id == 100 || $b_op_id == 129)
+		{
+			$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$remarks'";
+			//echo $searching_query_in_imslog;
+			$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
+			if($result_searching_query_in_imslog->num_rows > 0)
+			{
+				while($row = $result_searching_query_in_imslog->fetch_assoc()) 
+				{
+					$updatable_id = $row['tid'];
+					$pre_ims_qty = $row['ims_qty'];
+					$pre_pro_ims_qty = $row['ims_pro_qty'];
+				}
+				$act_ims_qty = $pre_ims_qty - $reversalval[$key];
+				//updating the ims_qty when it was there in ims_log
+				$update_query = "update $bai_pro3.ims_log set ims_qty = $act_ims_qty where tid = $updatable_id";
+				mysqli_query($link,$update_query) or exit("While updating ims_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if($act_ims_qty == 0 && $pre_pro_ims_qty == 0)
+				{
+					$ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
+					mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
+			}
+		}
+		else
+		{
+			$ops_seq_check = "select id,ops_sequence from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$b_op_id'";
+			// echo $ops_seq_check;
+			$result_ops_seq_check = $link->query($ops_seq_check);
+			while($row = $result_ops_seq_check->fetch_assoc()) 
+			{
+				$ops_seq = $row['ops_sequence'];
+				$seq_id = $row['id'];
+			}
+			$selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
+			//echo $selecting_output_from_seq_query;
+			$result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
+			while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
+			{
+				$input_ops_code = $row['operation_code'];
+			}
+			if($input_ops_code == 100 || $input_ops_code == 129)
+			{
+				$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
+				$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
+				//echo $searching_query_in_imslog;
+				if($result_searching_query_in_imslog->num_rows > 0)
+				{
+					while($row = $result_searching_query_in_imslog->fetch_assoc()) 
+					{
+						$updatable_id = $row['tid'];
+						$pre_ims_qty = $row['ims_pro_qty'];
+						//$act_ims_input_qty = $row['ims_qty'];
+					}
+					$actual_ims_pro_qty = $pre_ims_qty - $reversalval[$key];
+					//updating ims_pro_qty in ims log table
+					$update_ims_pro_qty = "update $bai_pro3.ims_log set ims_pro_qty = $actual_ims_pro_qty where tid=$updatable_id";
+					$ims_pro_qty_updating = mysqli_query($link,$update_ims_pro_qty) or exit("While updating ims_pro_qty in ims_log_".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+				}
+				else
+				{
+					//if it was not there in ims log am checking that in ims log backup and updating the qty and reverting that into the ims log because ims_qty and ims_pro_qty not equal
+					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module' AND ims_shift = '$b_shift' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
+					$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
+					if($result_searching_query_in_imslog->num_rows > 0)
+					{
+						while($row = $result_searching_query_in_imslog->fetch_assoc()) 
+						{
+							$updatable_id = $row['tid'];
+							$pre_ims_qty = $row['ims_pro_qty'];
+							$act_ims_input_qty = $row['ims_qty'];
+						}
+						$act_ims_qty = $pre_ims_qty - $reversalval[$key];
+						//updating the ims_qty when it was there in ims_log
+						$update_query = "update $bai_pro3.ims_log_backup set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
+						$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if($ims_pro_qty_updating)
+						{
+							$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
+							mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+							mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
+							mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}
+					}
+					
+				}
+				
+			}
+		}
+		
+		
+		
+		
 	}
 	$url = '?r='.$_GET['r'];
 	echo "<script>window.location = '".$url."'</script>";
-}
+ }
 
 ?>
 	
