@@ -9,6 +9,7 @@ $module=$_GET['module'];
 $docket=$_GET['docket'];
 $input_job_no=$_GET['input_job_no'];
 $input_job_rand_ref=$_GET['input_job_rand_ref'];
+$ims_remarks1=$_GET['ims_remarks'];
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -147,7 +148,8 @@ $ims_doc_no=$sql_docket['ims_doc_no'];
   </tr>
   
 <?php
-$sql="SELECT input_job_rand_no_ref,ims_size,ims_color,ims_remarks,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE ims_schedule='".$schedule_ref."' and input_job_no_ref='".$job_no."' AND ims_mod_no='".$module."' GROUP BY ims_color,ims_size,ims_remarks ORDER BY ims_date";
+$sql="SELECT input_job_rand_no_ref,ims_size,ims_color,ims_remarks,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE ims_schedule='".$schedule_ref."' and input_job_no_ref='".$job_no."' AND ims_mod_no='".$module."'
+AND ims_remarks='$ims_remarks1' GROUP BY ims_color,ims_size,ims_remarks ORDER BY ims_date";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
