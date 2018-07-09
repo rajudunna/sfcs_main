@@ -155,15 +155,24 @@ table
         echo "<tr class=\"new\"><th>Select</th><th>Input Date</th><th>Exp. to Comp.</th><th>Style</th><th>Schedule</th><th>Color</th>"; 
         //echo "<th>CID</th><th>DOC#</th>"; 
         echo "<th>Input Remarks</th>"; 
-        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th></tr>"; 
+        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th></tr>"; 
              
         $toggle=0; 
-        $sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref order by tid"; 
+        $sql="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref order by tid"; 
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row=mysqli_fetch_array($sql_result)) 
         { 
-            $rand_track=$sql_row['rand_track']; 
-             
+            $rand_track=$sql_row['rand_track'];
+            $ims_size=$sql_row['ims_size'];
+            $ims_size2=substr($ims_size,2);
+            $title_size='title_size_'.$size_code;
+            $input_job_rand_no_ref=$sql_row['input_job_rand_no_ref'];
+            $ims_style=$sql_row['ims_style'];
+            $ims_schedule=$sql_row['ims_schedule'];
+            $ims_color=$sql_row['ims_color'];
+            $ims_remarks=$sql_row['ims_remarks']; 
+
+
             if($toggle==0) 
             { 
                 $tr_color="#66DDAA"; 
@@ -212,6 +221,17 @@ table
                     $cutno=$sql_row22['acutno']; 
                 } 
      
+                 $size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
+
+    
+                 $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where qms_schedule=".$ims_schedule." and qms_color=\"".$ims_color."\" and input_job_no=\"".$input_job_rand_no_ref."\" and qms_style=\"".$ims_style."\" and qms_remarks=\"".$ims_remarks=$sql_row['ims_remarks']."\" and qms_size=\"".strtoupper($size_value)."\" and operation_id='130'";  
+                // echo $sql33;  
+                  $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error888".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($sql_row33=mysqli_fetch_array($sql_result33))
+                  {
+                    $rejected=0;
+                    $rejected=$sql_row33['rejected']; 
+                  }
                  
                 echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>"; 
                  
@@ -230,7 +250,7 @@ table
                 echo "</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>"; 
                 echo "<td>".$sql_row12['ims_remarks']."</td>"; 
 //echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>"; 
-echo "<td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td></tr>"; 
+echo "<td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".$rejected."</td><td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td></tr>"; 
             } 
         } 
         echo "</table>"; 
