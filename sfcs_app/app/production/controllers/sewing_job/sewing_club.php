@@ -68,47 +68,41 @@
 		$row2=mysqli_fetch_array($result13);
 		$input_job_random_min = $row2['input_job_no_random'];
 		// echo $input_job_random_min;
+		
+		
+		$check_update_before="select * from brandix_bts.bundle_creation_data_temp where schedule='".$schedule."' and input_job_no in ($list1) ";
+		// echo $check_update_before;
+		
+		$result22=mysqli_query($link, $check_update_before) or die("Error100-".$check_update_before."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$rows_count22=mysqli_num_rows($result22);
+		// echo $rows_count22;die();
+		if($rows_count22 > 0){
+			  echo 'Sorry! Some of the jobs were already scanned'
+		}
+		
+		else{
 		$count_sch_qry1="SELECT input_job_no,input_job_no_random FROM bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no in ($list1) ";
 		$result10=mysqli_query($link, $count_sch_qry1) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//$row2=mysqli_fetch_array($result10);
 		//$input_job_random = $row2['input_job_no_random'];
 		while($row2=mysqli_fetch_array($result10))
 						{
+							// swal("Already Scanned");
 							$input_job=$row2["input_job_no"];
 							$input_job_random=$row2["input_job_no_random"];
 							$count_sch_qry2 = "UPDATE bai_pro3.pac_stat_log_input_job SET input_job_no = '$value2', input_job_no_random = '$input_job_random_min'
 							WHERE input_job_no = $input_job and input_job_no_random = '$input_job_random'";
-							$result12=mysqli_query($link, $count_sch_qry2) or die("Error100-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 							// echo $count_sch_qry2 ;
+							$result12=mysqli_query($link, $count_sch_qry2) or die("Error100-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+							
+							// die();
 							echo 'Input Job NO '.$input_job.'clubbed to '.$value2.' and Random Number '.$input_job_random_min.' </br>';
 							//echo "Updated data successfully\n";
 							
 						}
 		
-		// $count_sch_qry2 = "SELECT  input_job_no_random FROM pac_stat_log_input_job WHERE `input_job_no_random`= '$input_job_random'";
-		// echo  $count_sch_qry2;
-		// $result11=mysqli_query($link, $count_sch_qry2) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-	   // $row3=mysqli_fetch_array($result11);
-		// var_dump($row2);
-		// $input_job_random_final = $row3['input_job_no_random'];
-		// $count_sch_qry3 = "UPDATE `bai_pro3.pac_stat_log_input_job` SET input_job_no = '$value2', input_job_no_random = '$input_job_random_final' WHERE input_job_no IN ($list)"; 
-					//echo $count_sch_qry3;
-					//die();
-					
-		                      // echo $input_job_random_final;
-	    /* $count_sch_qry2 = "SELECT input_job_no,input_job_no_random FROM bai_pro3.packing_summary_input WHERE input_job_no IN ($list) AND order_del_no = '$schedule'";
-		$result11=mysqli_query($link, $count_sch_qry2) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$row2=mysqli_fetch_array($result11);
-		  while($row2=mysqli_fetch_array($result11))
-						{
-							$job_no_array[]=$row2["input_job_no"];
-							$random_array[]=$row2["input_job_no_random"];
-							 $count_sch_qry2 = "Update"
-						} */
-		
-							
-		
-	}
+			}
+		}
 ?>
 <?php
 $sql="select distinct order_style_no from bai_orders_db";	
@@ -154,7 +148,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 echo "	</select>
 	 </div>";
 ?>
-</form>
+</form
+
 </div>
 <?php
 if($schedule==''){
@@ -165,7 +160,7 @@ if($schedule==''){
 	else{?>
 		
 <div class="panel panel-primary">
-				<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>
+				<!--<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>-->
 				<div class="panel-body">
 					<!--<div style="float:right"><img src="../../common/images/Book1_29570_image003_v2.png" width="250px"/></div>-->
 					<?php
@@ -278,7 +273,7 @@ if($schedule==''){
 						echo "<th>Clubbing Details</th>";  
 						echo "</tr></thead>";
 
-						$sql="select distinct input_job_no as job from $bai_pro3.packing_summary_input where order_del_no in ($schedule) order by input_job_no*1";
+						$sql="select distinct input_job_no as job from $bai_pro3.packing_summary_input where order_del_no in ($schedule) order by input_job_no*1 ";
 						//echo $sql."<br>";
 						$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result))
@@ -358,7 +353,7 @@ if($schedule==''){
 								// echo "<td>Clubbed</td>";		
 								if($rows_count1 > 0){
 									    
-                                 		echo "<td>Clubbed</td>";			
+                                 		echo "<td>Already Scanned</td>";			
 								}
 								// else {
 									// echo "<td>hai</td>";
@@ -438,7 +433,7 @@ if($schedule==''){
 				</div>
 				<form method='post'>
 				<input type='hidden' id='myval' name='myval'>
-            <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+            <button type="submit" class="btn btn-primary btn-lg">Merge Jobs</button>
 			</form>
 				<?php
 	}
