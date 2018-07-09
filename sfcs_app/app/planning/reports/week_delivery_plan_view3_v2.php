@@ -34,6 +34,7 @@ $end_date_w=date("Y-m-d",$end_date_w);
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'common/css/TableFilter_EN/filtergrid.css',3,'R')?>"></script>
+<script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
 <script>
 	function dodisablenew()
 	{
@@ -53,7 +54,8 @@ $end_date_w=date("Y-m-d",$end_date_w);
 		}
 	}
 	$(document).ready(function(){
-		
+
+		$('#click_me').css({'display':'block'});
 		$('#tableone').css({'border':'1px solid black'});
 		$('td').css({'border':'1px solid black'});
 		$('th').css({'border':'1px solid black'});
@@ -68,11 +70,15 @@ $end_date_w=date("Y-m-d",$end_date_w);
 			btn_reset : true,
 		};
 		setFilterGrid("tableone",table3Filters);
+		$('#reset_tableone').addClass('btn btn-warning');
+	});
 	
-	})
-	
+	function get_excel(){
+		var csv_value=$('#tableone').table2CSV({delivery:'value'});
+		$("#csv_weekly").val(csv_value);
+	}	
 
-	// jQuery(function() {
+		// jQuery(function() {
 	// 	var table = jQuery("#tableone");
 
 	// 	jQuery(window).scroll(function() {
@@ -87,38 +93,35 @@ $end_date_w=date("Y-m-d",$end_date_w);
 	// });
 
 
-function get_excel(){
+	// $('.fltrow').remove();
+	// var tableID = 'tableone';
+	// var filename = 'weekly_delivery_report.xls';
+    // var downloadLink;
+    // var dataType = 'application/vnd.ms-excel';
+    // var tableSelect = document.getElementById(tableID);
+    // var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    // // Create download link element
+    // downloadLink = document.createElement("a");
 
-	$('.fltrow').remove();
-	var tableID = 'tableone';
-	var filename = 'weekly_delivery_report.xls';
-    var downloadLink;
-    var dataType = 'application/vnd.ms-excel';
-    var tableSelect = document.getElementById(tableID);
-    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    // Create download link element
-    downloadLink = document.createElement("a");
-
-    document.body.appendChild(downloadLink);
+    // document.body.appendChild(downloadLink);
     
-    if(navigator.msSaveOrOpenBlob){
-        var blob = new Blob(['\ufeff', tableHTML], {
-            type: dataType
-        });
-        navigator.msSaveOrOpenBlob( blob, filename);
-    }else{
-        // Create a link to the file
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    // if(navigator.msSaveOrOpenBlob){
+    //     var blob = new Blob(['\ufeff', tableHTML], {
+    //         type: dataType
+    //     });
+    //     navigator.msSaveOrOpenBlob( blob, filename);
+    // }else{
+    //     // Create a link to the file
+    //     downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
     
-        // Setting the file name
-        downloadLink.download = filename;
+    //     // Setting the file name
+    //     downloadLink.download = filename;
         
-        //triggering the function
-        downloadLink.click();
-    }
-	location.reload();
+    //     //triggering the function
+    //     downloadLink.click();
+    // }
+	// //location.reload();
 
-}
 
 </script>
 
@@ -307,14 +310,20 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result) > 0)
 	{
+		$excel_link = getFullURLLevel($_GET['r'],'export_excel_weekly_delivery_plan.php',0,'R');
+		echo '<form action="'.$excel_link.'" method="POST">
+				<input type="hidden" name="csv_weekly" id="csv_weekly">
+				<input type="submit" value="Export to Excel" id="click_me" onclick="get_excel()" class="btn btn-primary btn-sm" >
+		</form>';
+		
 		echo '<form method="post" name="test" action='.getFullURL($_GET['r'],'week_delivery_plan_edit_process.php','N').'>
-			<input type="button" value="Export to Excel" id="click_me" onclick="get_excel()" class="btn btn-primary btn-sm">
+			
 			<p style="float:right">
 				<input type="checkbox" name="option"  id="option" height= "21px" onclick="javascript:enableButton();">Enable
 				<input type="submit" name="update" id="update" class="btn btn-success" disabled value="Update">
 			</p>';
 		echo '</form>';
-		echo '<table id="tableone" name="table_one" cellspacing="0" class="table table-bordered"><thead>';
+		echo '<table id="tableone" name="tableone" cellspacing="0" class="table table-bordered"><thead>';
 
 		echo '
 				<tr class="danger">
@@ -1020,7 +1029,8 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		echo "<script>
 			$(document).ready(function(){
 				$('#click_me').css({'display':'none');
-			})
+				$('#update').css({'display':'none');
+			});
 		</script>";
 	}
 	echo '</tbody>';

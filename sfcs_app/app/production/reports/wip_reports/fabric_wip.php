@@ -17,7 +17,7 @@ table {
 	color:black;
 }
 th{
-	background-color:#003366;
+	background-color:#29759c;
 	color:white;
 	text-align:center;
 }
@@ -107,6 +107,18 @@ echo "</table></div>";
 
 <script language="javascript" type="text/javascript">
 	$('#reset_table1').addClass('btn btn-warning');
+// <![CDATA[
+	var table6_Props = 	{
+							rows_counter: true,
+							btn_reset: true,
+							btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+	setFilterGrid( "table1",table6_Props );
+	$(document).ready(function(){
+		$('#reset_table1').addClass('btn btn-warning btn-xs');
+	});$('#reset_table1').addClass('btn btn-warning');
 // <![CDATA[
 	var table6_Props = 	{
 							rows_counter: true,
