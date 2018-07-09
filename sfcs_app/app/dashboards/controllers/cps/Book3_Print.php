@@ -3536,8 +3536,16 @@ if($print_status=="0000-00-00" || $print_status == "")
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 }
-?>
 
+
+//Refresh Parent Page After this Print Out 
+echo"<script>
+window.onunload = refreshParent;
+function refreshParent() {
+	window.opener.location.reload();
+}
+</script>"; 
+?>
 <style>
 .xl744118,.xl694118,.xl774118,.xl684118,.xl704118,.xl724118,.xl1064118,.xl764118,.xl814118,.xl804118,.xl674118,.xl654118,.xl1124118,.xl1144118,.xl714118{
 	font-size : 20px;

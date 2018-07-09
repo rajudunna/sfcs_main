@@ -40,7 +40,7 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 			<a class='btn btn-primary' href = '<?= $url ?>'> Back </a>
 		</div>
 		<div class='col-md-10 pull-right'>
-			<p style='color:red'>Note : Please Print "Docket Print" Before Update Status and Go Back Once Done</p>
+			<p style='color:red'>Note : Please Print "Docket Print" Before Update Fabric Status</p>
 		</div>
 </div>
 <br/>
@@ -460,9 +460,10 @@ if($clubbing>0)
 }
 
 
-// echo "getting req qty : ".$sql1."</br>";
+//echo "getting req qty : ".$sql1."</br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
+$for_Staus_dis=$sql_num_check;
 //echo "Rows:".$sql_num_check;
 $enable_allocate_button=0;
 $comp_printed=array();
@@ -537,8 +538,9 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 	$docket_num[]=$sql_row1['doc_no'];
 	//echo var_dump($docket_num);
-	//echo "Length :".strlen($sql_row1['plan_lot_ref']);
-	if(strlen($sql_row1['plan_lot_ref'])>0)
+	//echo "</br>Length :".$sql_row1['plan_lot_ref']."</br>";
+	//if(strlen($sql_row1['plan_lot_ref'])>0)
+	if($sql_row1['plan_lot_ref']!='')
 	{	
 
 		$plan_lot_ref=$sql_row1['plan_lot_ref'];
@@ -596,12 +598,12 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 				$Disable_allocate=1;
 			}
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" name=\"pms".$sql_row1['doc_no']."\" id='address' 
-			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 required>".$seperated_lots."</textarea><br/>";
+			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 >".$seperated_lots."</textarea><br/>";
 
 		}else{
 
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" id='address' onkeyup='return verify_num(this,event)'
-			     onchange='return verify_num(this,event)' name=\"pms".$sql_row1['doc_no']."\" cols=12 rows=10 required></textarea><br/>";
+			     onchange='return verify_num(this,event)' name=\"pms".$sql_row1['doc_no']."\" cols=12 rows=10 ></textarea><br/>";
 
 		}
 		
@@ -735,8 +737,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 
 <?php
 // if($Disable_allocate_flag==0){
-	//echo "Length :".$sql_num_check;
-	if($Disable_allocate_flag==$sql_num_check){
+if($Disable_allocate_flag==$for_Staus_dis){
 ?>
 <form method="post" onsubmit=" return validate_but();">
 <table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
@@ -760,7 +761,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 <input type="hidden" value="<?php echo $allc_doc; ?>" name="alloc_doc" id="alloc_doc"/>
 <input type="hidden" value="<?php echo sizeof($docket_num); ?>" name="doc_tot" id="doc_tot"/>
 <input type="hidden" value="<?php echo $print_validation; ?>" name="print_validation" id="print_validation"/>
-<input type="hidden" value="<?php echo $sql_num_check; ?>" name="sql_num_check" id="sql_num_check"/>
+<input type="hidden" value="<?php echo $for_Staus_dis; ?>" name="sql_num_check" id="sql_num_check"/>
 <td>
 <div id="dvremark" style="display: none">
  <center>Remark:</center>

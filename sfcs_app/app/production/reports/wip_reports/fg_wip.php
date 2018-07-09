@@ -9,7 +9,7 @@ table {
 	color:black;
 }
 th{
-	background-color:#003366;
+	background-color:#29759c;
 	color:white;
 	text-align:center;
 }

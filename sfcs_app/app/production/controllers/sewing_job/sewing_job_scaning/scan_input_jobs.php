@@ -1,3 +1,7 @@
+<head>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
 <?php
 // include("dbconf.php");
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));

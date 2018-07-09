@@ -48,11 +48,6 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 
 
 		<style>
-		
-		input#allocate_new {
-		display: none;
-		}
-
 		.dataTables_filter {
 		display: none; 
 		}
@@ -455,11 +450,11 @@ function check_qty2(x,m,n,doc)
 	//alert(x);
 	//alert(alloc_disab);
 	//new condition added for allocated button enabled/disabled based on quantity
-	if(x<=alloc_disab){
-		document.getElementById("allocate_new").style.display = "block";
-	}else{	
-		document.getElementById("allocate_new").style.display = "none";
-	}
+	// if(x<=alloc_disab){
+	// 	document.getElementById("allocate_new").style.display = "block";
+	// }else{	
+	// 	document.getElementById("allocate_new").style.display = "none";
+	// }
 
 
 	if(check==0)
@@ -709,15 +704,22 @@ if(isset($_POST['allocate_new']))
 	//Exit Code
 	
 	echo "<h2>Successfully Updated.</h2>";
-	
-	if($process_cat==1)
-	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details.php?doc_no=".$doc_ref[0]."\"; }</script>";
-	}
-	else
-	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details_recut_v2.php?doc_no=".$doc_ref[0]."\"; }</script>";
-	}
+	//this is for after allocating article redirect to cps dashboard.removed sfcsui
+	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	array_pop($php_self);
+	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+	$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+	echo"<script>swal('Successfully Updated.','','success')</script>";
+	echo"<script>location.href = '".$url."';</script>"; 
+
+	// if($process_cat==1)
+	// {
+	// 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details.php?doc_no=".$doc_ref[0]."\"; }</script>";
+	// }
+	// else
+	// {
+	// 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details_recut_v2.php?doc_no=".$doc_ref[0]."\"; }</script>";
+	// }
 }
 
 ?>
@@ -1015,7 +1017,7 @@ if(isset($_POST['allocate']))
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\" onclick=\"check_qty(".sizeof($doc).")\">";
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\">";
 	if ($row_count == '') {
-		echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success' disabled>";
+		echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
 	}
 	else {
 		echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
