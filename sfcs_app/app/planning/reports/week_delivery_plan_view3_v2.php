@@ -70,6 +70,7 @@ $end_date_w=date("Y-m-d",$end_date_w);
 			btn_reset : true,
 		};
 		setFilterGrid("tableone",table3Filters);
+		$('#reset_tableone').addClass('btn btn-warning');
 	});
 	
 	function get_excel(){
@@ -1028,7 +1029,8 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		echo "<script>
 			$(document).ready(function(){
 				$('#click_me').css({'display':'none');
-			})
+				$('#update').css({'display':'none');
+			});
 		</script>";
 	}
 	echo '</tbody>';
