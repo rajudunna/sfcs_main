@@ -153,13 +153,191 @@
 					$pack_method=$_POST['pack_method'];	
 				}
 
+				$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$schedule,$link);
 				$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
+
+
 				$validation_query = "SELECT * FROM $brandix_bts.tbl_carton_ref WHERE carton_barcode=$schedule_original";
 				// echo $sewing_jobratio_sizes_query.'<br>';
 				$validation_result=mysqli_query($link, $validation_query) or exit("Error while getting Job Ratio Details");
 				if (mysqli_num_rows($validation_result) > 0)
 				{
 					echo "<script>sweetAlert('Packing Ratio Already Updated for this Schedule - $schedule_original','Go to Sewing Job Creation','warning')</script>";
+					// GArments per Poly Bag Details Start
+					{
+						$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
+						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+						echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
+							<table class=\"table table-bordered\">
+								<tr>
+									<th>Color</th>";
+						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+						{
+							$parent_id = $sewing_jobratio_color_details['parent_id'];
+							$color = $sewing_jobratio_color_details['color'];
+							$size = $sewing_jobratio_color_details['size'];
+							$color1 = explode(",",$color);
+							$size1 = explode(",",$size);
+							// var_dump($size);
+						}
+						for ($i=0; $i < sizeof($size1); $i++)
+						{
+							$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
+							// echo $Original_size_query;
+							$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
+							while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
+							{
+								$Ori_size = $Original_size_details['size_title'];
+							}
+							echo "<th>".$Ori_size."</th>";
+						}
+						echo "</tr>";
+						for ($j=0; $j < sizeof($color1); $j++)
+						{
+							echo "<tr>
+									<td>$color1[$j]</td>";
+									for ($i=0; $i < sizeof($size1); $i++)
+									{
+										$qty_query = "SELECT quantity FROM $brandix_bts.`tbl_carton_size_ref` WHERE ref_size_name=$size1[$i] AND parent_id=$parent_id AND color='".$color1[$j]."'";
+										// echo $qty_query;
+										$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
+										while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
+										{
+											$qty = $qty_query_details['quantity'];
+											if ($qty == '') {
+												$qty=0;
+											}
+											echo "<td>".$qty.'</td>';
+										}
+									}
+							echo "</tr>";
+						}
+						echo "</table></div>";
+					}
+					// GArments per Poly Bag Details End
+
+					// Poly Bags per Carton Start
+					{
+						if ($pack_method == 3 || $pack_method == 4)
+						{
+							$poly_bags_per_carton_query = "SELECT distinct(poly_bags_per_carton) as poly_bags_per_carton FROM $brandix_bts.`tbl_carton_size_ref` WHERE parent_id=$c_ref";
+							// echo $poly_bags_per_carton_query;
+							$poly_bags_per_carton_result=mysqli_query($link, $poly_bags_per_carton_query) or exit("Error while getting poly_bags_per_carton Details");
+							while($poly_bags_per_carton_details=mysqli_fetch_array($poly_bags_per_carton_result)) 
+							{
+								echo "<br><div class='col-md-4'>
+											<table class=\"table table-bordered\">
+												<tr><th>Number of Poly Bags Per Carton:</th><th>".$poly_bags_per_carton_details['poly_bags_per_carton']."</th>
+												</tr>
+											</table>
+										</div>";
+							}
+							echo "<br><br>";
+						}
+						else if ($pack_method == 1 || $pack_method == 2)
+						{
+							$poly_bags_per_carton=array();
+							$size_title=array();
+							$poly_bags_per_carton_query = "SELECT poly_bags_per_carton,size_title FROM $brandix_bts.`tbl_carton_size_ref` WHERE parent_id=$c_ref GROUP BY size_title DESC";
+							// echo $poly_bags_per_carton_query;
+							$poly_bags_per_carton_result=mysqli_query($link, $poly_bags_per_carton_query) or exit("Error while getting poly_bags_per_carton Details");
+							while($poly_bags_per_carton_details=mysqli_fetch_array($poly_bags_per_carton_result)) 
+							{
+								$poly_bags_per_carton[]=$poly_bags_per_carton_details['poly_bags_per_carton'];
+								$size_title[]=$poly_bags_per_carton_details['size_title'];
+							}
+
+							echo "<br><div class='col-md-12'><b>Number of Poly Bags Per Carton: </b>
+							<table class=\"table table-bordered\">
+								<tr>";
+								for ($i=0; $i < sizeof($size_title); $i++)
+								{ 
+									echo "<th>$size_title[$i]</th>";
+								}
+								echo "</tr><tr>";
+								for ($i=0; $i < sizeof($poly_bags_per_carton); $i++)
+								{ 
+									echo "<td>$poly_bags_per_carton[$i]</td>";
+								}
+								echo "</tr>
+							</table></div>";
+						}				
+					}
+					// Poly Bags per Carton end
+
+					// Garments Per Carton Start
+					{
+						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original)";
+						// echo $sewing_jobratio_sizes_query.'<br>';
+						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+						{
+							$parent_id = $sewing_jobratio_color_details['parent_id'];
+							$color = $sewing_jobratio_color_details['color'];
+							$ref_size = $sewing_jobratio_color_details['size'];
+							$color1 = explode(",",$color);
+							$size1 = explode(",",$ref_size);
+							// var_dump($size);
+						}
+						echo "
+							<div class='col-md-12'><b>Garments Per Carton: </b>
+								<div class='table-responsive'>
+									<table class=\"table table-bordered\">
+										<tr>
+											<th>Color</th>";
+											// Display Sizes
+											for ($i=0; $i < sizeof($size1); $i++)
+											{
+												echo "<th>".$size1[$i]."</th>";
+											}
+										echo "</tr>";
+										// Display Textboxes
+										$row_count=0;
+										for ($j=0; $j < sizeof($color1); $j++)
+										{
+											echo "<tr>
+													<td>$color1[$j]</td>";
+													for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+													{
+														$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."'  AND size_title='".$size1[$size_count]."'";
+														// echo $individual_sizes_query.'<br>';
+														$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
+														while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
+														{
+															$individual_color = $individual_sizes_details['size_title'];
+														}
+
+														$qty_query = "SELECT garments_per_carton FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size1[$size_count]' AND parent_id=$c_ref AND color='".$color1[$j]."'";
+														// echo '<br>'.$qty_query.'<br>';
+														$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
+														while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
+														{
+															$qty = $qty_query_details['garments_per_carton'];
+															if ($qty == '') {
+																$qty=0;
+															}
+															if (mysqli_num_rows($individual_sizes_result) >0)
+															{
+																if ($size1[$size_count] == $individual_color) {
+																	echo "<td>".$qty."</td>";
+																}
+															}
+															else
+															{
+																echo "<td>".$qty."</td>";
+															}
+														}
+														
+													}
+											echo "</tr>";
+											$row_count++;
+										}
+									echo "</table>
+								</div>
+							<div>
+						";
+					}
+					// Garments Per Carton End
 				}
 				else
 				{
@@ -193,18 +371,7 @@
 					else
 					{
 
-						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original)";
-						// echo $sewing_jobratio_sizes_query.'<br>';
-						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
-						{
-							$parent_id = $sewing_jobratio_color_details['parent_id'];
-							$color = $sewing_jobratio_color_details['color'];
-							$ref_size = $sewing_jobratio_color_details['size'];
-							$color1 = explode(",",$color);
-							$size1 = explode(",",$ref_size);
-							// var_dump($size);
-						}
+
 						echo "<br><br><br>";
 						if ($pack_method==1 or $pack_method==2 or $_GET['pack_method']==1 or $_GET['pack_method']==2)
 						{

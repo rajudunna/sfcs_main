@@ -53,9 +53,6 @@ td{ padding:2px; white-space: nowrap;}
 <script language="javascript" type="text/javascript">
 	
 	var url1 = '<?= getFullURL($_GET['r'],'sewing_job_create_original.php','N'); ?>';
-	function myFunction() {
-		document.getElementById("generate").style.visibility = "hidden";
-	}
 
 	function firstbox()
 	{
@@ -63,16 +60,6 @@ td{ padding:2px; white-space: nowrap;}
 		window.location.href =url1+"&style="+document.mini_order_report.style.value
 	}
 
-	function secondbox()
-	{
-		//alert('test');
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
-	}
-
-	function tot_sum()
-	{
-
-	}
 	function check_val()
 	{
 		//alert('dfsds');
@@ -88,70 +75,6 @@ td{ padding:2px; white-space: nowrap;}
 		}
 		return true;	
 	}
-	function check_val1()
-	{
-		var cart_method=document.getElementById("cart_method").value;
-		var bundle_size=document.getElementById("bundle_plies").value;
-		var bundle_per_size=document.getElementById("bundle_per_size").value;
-		var mini_order_qty=document.getElementById("mini_order_qty").value;
-		if(cart_method=="0")
-		{
-			sweetAlert('Please Select Carton Method','','warning');
-			document.getElementById('msg1').style.display='none';
-			document.getElementById('generate').style.display='';
-			return false;
-		}
-		else 
-		{
-			if(bundle_size>=1 && mini_order_qty>=1)
-			{
-				//alert('Ok');
-			}
-			else
-			{
-				sweetAlert('Please Check the values','','warning');
-				document.getElementById('generate').style.display='';
-				document.getElementById('msg1').style.display='none';
-				return false;
-			}
-			
-			if(confirm("Sewing Order Quantity :"+mini_order_qty+"\nAre you Sure to continue with this Sewing Order Quantity???") == true )
-			{
-				return true;	
-			}
-			else
-			{
-				//alert("No");
-				document.getElementById('msg1').style.display='none';
-				document.getElementById('generate').style.display='';
-				return false;
-			}
-		}
-	}
-	
-	
-	function openWin() {
-		//window.open("http://baidevsrv1:8080/projects/beta/bundle_tracking_system/brandix_bts/mini_order_report/bundle_alloc_save.php");
-	}
-	function validate()
-	{
-		//alert("test");
-		var bundle_plies=document.getElementById("bundle_plies").value;
-		var bundle_per_size=document.getElementById("bundle_per_size").value;
-		var carton_qty=document.getElementById("carton_qty").value;
-		mini_order_qty=document.getElementById("mini_order_qty").value=bundle_plies*bundle_per_size*carton_qty;
-	}
-	function validateQty(event) 
-	{
-
-
-		event = (event) ? event : window.event;
-		var charCode = (event.which) ? event.which : event.keyCode;
-		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-			return false;
-		}
-		return true;
-	};
 
 	$(document).ready(function(){
 		$('#generate').on('click',function(event, redirect=true){
@@ -204,16 +127,6 @@ td{ padding:2px; white-space: nowrap;}
 		}
 	});
 	
-		function calcsjqty()
-		{
-			var packqty=document.getElementById('pack_qty').value;
-			var noofcartons=document.getElementById('bundle_per_size').value;
-			
-			var sjquantity=packqty * noofcartons;
-			
-			document.getElementById('mini_order_qty').value=sjquantity;
-		}
-
 	function calculateqty1(sizeofsizes,sizeOfColors)
 	{
 		for (var row_count = 0; row_count < sizeOfColors; row_count++)
@@ -234,11 +147,7 @@ td{ padding:2px; white-space: nowrap;}
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	$has_permission=haspermission($_GET['r']);
-
-	error_reporting(0);
-	// Report simple running errors
-	error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
+	
 	if(isset($_POST['style']))
 	{
 	    $style=$_POST['style'];
@@ -256,62 +165,60 @@ td{ padding:2px; white-space: nowrap;}
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>Create Sewing Jobs</b></div>
 	<div class="panel-body">
-			
-			<div class="col-md-12">
-				<?php
-				echo "<form name=\"mini_order_report\" action=\"?r=".$_GET["r"]."\" class=\"form-inline\" method=\"post\" >";
+		<div class="col-md-12">
+			<?php
+			echo "<form name=\"mini_order_report\" action=\"?r=".$_GET["r"]."\" class=\"form-inline\" method=\"post\" >";
 				?>
-					Style:
-					<?php
-						// Style
-						echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" >";
-						$sql="select * from $brandix_bts.tbl_orders_style_ref order by product_style";
-						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_num_check=mysqli_num_rows($sql_result);
-						echo "<option value=\"NIL\" selected>Select Style</option>";
-						while($sql_row=mysqli_fetch_array($sql_result))
-						{
-							if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$style))
-							{
-								echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_style']."</option>";
-							}
-							else
-							{
-								echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_style']."</option>";
-							}
-						}
-						echo "</select>";
-					?>
-
-					&nbsp;Schedule:
-					<?php
-						// Schedule
-						echo "<select class='form-control' name=\"schedule\" id=\"schedule\"  >";
-						$sql="select * from $brandix_bts.tbl_orders_master where ref_product_style='".$style."'";
-						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_num_check=mysqli_num_rows($sql_result);
-						echo "<option value=\"NIL\" selected>Select Schedule</option>";
-						while($sql_row=mysqli_fetch_array($sql_result))
-						{
-							if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$schedule))
-							{
-								echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_schedule']."</option>";
-							}
-							else
-							{
-								echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_schedule']."</option>";
-							}
-						}
-						echo "</select>";
-					?>
-					&nbsp;&nbsp;
-					<input type="submit" name="submit" id="submit" class="btn btn-success " onclick="return check_val();" value="Submit">
-				</form>
-			</div>
-
-			<div class="col-md-12">
-				
+				Style:
 				<?php
+					// Style
+					echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" >";
+					$sql="select * from $brandix_bts.tbl_orders_style_ref order by product_style";
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_num_check=mysqli_num_rows($sql_result);
+					echo "<option value=\"NIL\" selected>Select Style</option>";
+					while($sql_row=mysqli_fetch_array($sql_result))
+					{
+						if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$style))
+						{
+							echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_style']."</option>";
+						}
+						else
+						{
+							echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_style']."</option>";
+						}
+					}
+					echo "</select>";
+				?>
+
+				&nbsp;Schedule:
+				<?php
+					// Schedule
+					echo "<select class='form-control' name=\"schedule\" id=\"schedule\"  >";
+					$sql="select * from $brandix_bts.tbl_orders_master where ref_product_style='".$style."'";
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_num_check=mysqli_num_rows($sql_result);
+					echo "<option value=\"NIL\" selected>Select Schedule</option>";
+					while($sql_row=mysqli_fetch_array($sql_result))
+					{
+						if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$schedule))
+						{
+							echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_schedule']."</option>";
+						}
+						else
+						{
+							echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_schedule']."</option>";
+						}
+					}
+					echo "</select>";
+				?>
+				&nbsp;&nbsp;
+				<input type="submit" name="submit" id="submit" class="btn btn-success " onclick="return check_val();" value="Submit">
+			</form>
+		</div>
+
+		<div class="col-md-12">
+			<?php
 				if(isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule']))
 				{	
 					if ($_GET['style'] and $_GET['schedule'])
@@ -771,24 +678,7 @@ td{ padding:2px; white-space: nowrap;}
 					// $url5 = getFullURLLevel($_GET['r'],'mini_order_gen.php',0,'N');
 					// echo("<script>location.href = '".$url5."&id=$id&style=$style&schedule=$scheudle';</script>");
 				}
-				?> 
+			?> 
 		</div>
 	</div>
 </div>
-
-
-<style>
-#table1 {
-  display: inline-table;
-  width: 100%;
-}
-
-
-div#table_div {
-    width: 30%;
-}
-#test{
-margin-left:8%;
-margin-bottom:2%;
-}
-</style>
