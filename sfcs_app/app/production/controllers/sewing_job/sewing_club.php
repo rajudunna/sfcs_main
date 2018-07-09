@@ -77,7 +77,7 @@
 		$rows_count22=mysqli_num_rows($result22);
 		// echo $rows_count22;die();
 		if($rows_count22 > 0){
-			  echo 'Sorry! Some of the jobs were already scanned'
+			  echo 'Sorry! Some of the jobs were already scanned';
 		}
 		
 		else{
