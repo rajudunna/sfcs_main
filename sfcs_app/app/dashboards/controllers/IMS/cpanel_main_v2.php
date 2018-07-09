@@ -444,9 +444,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
              
 
              $rejected=0;
-             $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color=\"".$sql_rowred['ims_color']."\" and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" ";
+             $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color=\"".$sql_rowred['ims_color']."\" and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" and operation_id='130'";
                
-              // echo $sql33;
+               //echo $sql33;
 
               $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
               while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -472,7 +472,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
                   Total Input :<?php echo $input_qty."<br/>"; ?>
                   Total Output:<?php echo $output_qty."<br/>"; ?>
                   Rejected:<?php echo $rejected."<br/>"; ?>
-                  <?php echo "Balance : ".($input_qty - ($output_qty));
+                  <?php echo "Balance : ".($input_qty - ($output_qty+$rejected));
                    // echo "Balance :".(int)$input_qty - (int)$output_qty."";
                    ?>
                   " rel="tooltip"><div class="red_box"  >
