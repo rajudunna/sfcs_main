@@ -53,9 +53,6 @@ td{ padding:2px; white-space: nowrap;}
 <script language="javascript" type="text/javascript">
 	
 	var url1 = '<?= getFullURL($_GET['r'],'sewing_job_create_original.php','N'); ?>';
-	function myFunction() {
-		document.getElementById("generate").style.visibility = "hidden";
-	}
 
 	function firstbox()
 	{
@@ -63,16 +60,6 @@ td{ padding:2px; white-space: nowrap;}
 		window.location.href =url1+"&style="+document.mini_order_report.style.value
 	}
 
-	function secondbox()
-	{
-		//alert('test');
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
-	}
-
-	function tot_sum()
-	{
-
-	}
 	function check_val()
 	{
 		//alert('dfsds');
@@ -88,70 +75,6 @@ td{ padding:2px; white-space: nowrap;}
 		}
 		return true;	
 	}
-	function check_val1()
-	{
-		var cart_method=document.getElementById("cart_method").value;
-		var bundle_size=document.getElementById("bundle_plies").value;
-		var bundle_per_size=document.getElementById("bundle_per_size").value;
-		var mini_order_qty=document.getElementById("mini_order_qty").value;
-		if(cart_method=="0")
-		{
-			sweetAlert('Please Select Carton Method','','warning');
-			document.getElementById('msg1').style.display='none';
-			document.getElementById('generate').style.display='';
-			return false;
-		}
-		else 
-		{
-			if(bundle_size>=1 && mini_order_qty>=1)
-			{
-				//alert('Ok');
-			}
-			else
-			{
-				sweetAlert('Please Check the values','','warning');
-				document.getElementById('generate').style.display='';
-				document.getElementById('msg1').style.display='none';
-				return false;
-			}
-			
-			if(confirm("Sewing Order Quantity :"+mini_order_qty+"\nAre you Sure to continue with this Sewing Order Quantity???") == true )
-			{
-				return true;	
-			}
-			else
-			{
-				//alert("No");
-				document.getElementById('msg1').style.display='none';
-				document.getElementById('generate').style.display='';
-				return false;
-			}
-		}
-	}
-	
-	
-	function openWin() {
-		//window.open("http://baidevsrv1:8080/projects/beta/bundle_tracking_system/brandix_bts/mini_order_report/bundle_alloc_save.php");
-	}
-	function validate()
-	{
-		//alert("test");
-		var bundle_plies=document.getElementById("bundle_plies").value;
-		var bundle_per_size=document.getElementById("bundle_per_size").value;
-		var carton_qty=document.getElementById("carton_qty").value;
-		mini_order_qty=document.getElementById("mini_order_qty").value=bundle_plies*bundle_per_size*carton_qty;
-	}
-	function validateQty(event) 
-	{
-
-
-		event = (event) ? event : window.event;
-		var charCode = (event.which) ? event.which : event.keyCode;
-		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-			return false;
-		}
-		return true;
-	};
 
 	$(document).ready(function(){
 		$('#generate').on('click',function(event, redirect=true){
@@ -161,7 +84,7 @@ td{ padding:2px; white-space: nowrap;}
 			var mini_order_qty  = document.getElementById("mini_order_qty").value;
 			if(cart_method=="0")
 			{
-				sweetAlert('Please Select Carton Method','','warning');
+				sweetAlert('Please Select Pack Method','','warning');
 				document.getElementById('msg1').style.display='none';
 				document.getElementById('generate').style.display='';
 				return false;
@@ -204,16 +127,6 @@ td{ padding:2px; white-space: nowrap;}
 		}
 	});
 	
-		function calcsjqty()
-		{
-			var packqty=document.getElementById('pack_qty').value;
-			var noofcartons=document.getElementById('bundle_per_size').value;
-			
-			var sjquantity=packqty * noofcartons;
-			
-			document.getElementById('mini_order_qty').value=sjquantity;
-		}
-
 	function calculateqty1(sizeofsizes,sizeOfColors)
 	{
 		for (var row_count = 0; row_count < sizeOfColors; row_count++)
@@ -235,10 +148,6 @@ td{ padding:2px; white-space: nowrap;}
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	$has_permission=haspermission($_GET['r']);
 
-	error_reporting(0);
-	// Report simple running errors
-	error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
 	if(isset($_POST['style']))
 	{
 	    $style=$_POST['style'];
@@ -256,62 +165,60 @@ td{ padding:2px; white-space: nowrap;}
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>Create Sewing Jobs</b></div>
 	<div class="panel-body">
-			
-			<div class="col-md-12">
-				<?php
-				echo "<form name=\"mini_order_report\" action=\"?r=".$_GET["r"]."\" class=\"form-inline\" method=\"post\" >";
+		<div class="col-md-12">
+			<?php
+			echo "<form name=\"mini_order_report\" action=\"?r=".$_GET["r"]."\" class=\"form-inline\" method=\"post\" >";
 				?>
-					Style:
-					<?php
-						// Style
-						echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" >";
-						$sql="select * from $brandix_bts.tbl_orders_style_ref order by product_style";
-						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_num_check=mysqli_num_rows($sql_result);
-						echo "<option value=\"NIL\" selected>Select Style</option>";
-						while($sql_row=mysqli_fetch_array($sql_result))
-						{
-							if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$style))
-							{
-								echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_style']."</option>";
-							}
-							else
-							{
-								echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_style']."</option>";
-							}
-						}
-						echo "</select>";
-					?>
-
-					&nbsp;Schedule:
-					<?php
-						// Schedule
-						echo "<select class='form-control' name=\"schedule\" id=\"schedule\"  >";
-						$sql="select * from $brandix_bts.tbl_orders_master where ref_product_style='".$style."'";
-						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_num_check=mysqli_num_rows($sql_result);
-						echo "<option value=\"NIL\" selected>Select Schedule</option>";
-						while($sql_row=mysqli_fetch_array($sql_result))
-						{
-							if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$schedule))
-							{
-								echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_schedule']."</option>";
-							}
-							else
-							{
-								echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_schedule']."</option>";
-							}
-						}
-						echo "</select>";
-					?>
-					&nbsp;&nbsp;
-					<input type="submit" name="submit" id="submit" class="btn btn-success " onclick="return check_val();" value="Submit">
-				</form>
-			</div>
-
-			<div class="col-md-12">
-				
+				Style:
 				<?php
+					// Style
+					echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" >";
+					$sql="select * from $brandix_bts.tbl_orders_style_ref order by product_style";
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_num_check=mysqli_num_rows($sql_result);
+					echo "<option value=\"NIL\" selected>Select Style</option>";
+					while($sql_row=mysqli_fetch_array($sql_result))
+					{
+						if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$style))
+						{
+							echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_style']."</option>";
+						}
+						else
+						{
+							echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_style']."</option>";
+						}
+					}
+					echo "</select>";
+				?>
+
+				&nbsp;Schedule:
+				<?php
+					// Schedule
+					echo "<select class='form-control' name=\"schedule\" id=\"schedule\"  >";
+					$sql="select * from $brandix_bts.tbl_orders_master where ref_product_style='".$style."'";
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_num_check=mysqli_num_rows($sql_result);
+					echo "<option value=\"NIL\" selected>Select Schedule</option>";
+					while($sql_row=mysqli_fetch_array($sql_result))
+					{
+						if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$schedule))
+						{
+							echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_schedule']."</option>";
+						}
+						else
+						{
+							echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_schedule']."</option>";
+						}
+					}
+					echo "</select>";
+				?>
+				&nbsp;&nbsp;
+				<input type="submit" name="submit" id="submit" class="btn btn-success " onclick="return check_val();" value="Submit">
+			</form>
+		</div>
+
+		<div class="col-md-12">
+			<?php
 				if(isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule']))
 				{	
 					if ($_GET['style'] and $_GET['schedule'])
@@ -334,15 +241,13 @@ td{ padding:2px; white-space: nowrap;}
 						$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
 						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
 						
-						$mini_order_ref = echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_crt_schedule",$sch_id,$link);
-						$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$mini_order_ref,$link);
 						$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
+						$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$c_ref,$link);
 						$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 						$pack_method = echo_title("$brandix_bts.tbl_carton_ref","carton_method","carton_barcode",$schedule,$link);
+						$tbl_carton_ref_check = echo_title("$brandix_bts.tbl_carton_ref","count(*)","style_code='".$style_id."' AND ref_order_num",$sch_id,$link);
 
-						$validation_query = "SELECT * FROM $brandix_bts.`tbl_carton_ref` WHERE style_code=".$style_id." AND ref_order_num=".$sch_id."";
-						$sql_result=mysqli_query($link, $validation_query) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($sql_result)>0)
+						if($tbl_carton_ref_check>0)
 						{
 							// echo "carton props added, You can proceed";
 							if($bundle==0)
@@ -359,125 +264,98 @@ td{ padding:2px; white-space: nowrap;}
 									$size_main = explode(",",$ref_size);
 									// var_dump($size);
 								}
+
 								$sizeofsizes=sizeof($size_main);
 								$size_of_ordered_colors=sizeof($color_main);
 
 								// Order Details Display Start
 								{
-									$col_array = array();
-									$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."'";
-									//echo $sizes_query;die();
-									$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2");
-									$row_count = mysqli_num_rows($sizes_result);
-									while($sizes_result1=mysqli_fetch_array($sizes_result))
+									$planned_qty = array();
+									$ordered_qty = array();
+									$tot_ordered = 0;
+									$tot_planned = 0;
+									$tot_balance = 0;
+									foreach ($sizes_array as $key => $value)
 									{
-										$col_array[]=$sizes_result1['order_col_des'];
-									}
-
-									foreach ($col_array as $key1 => $value1)
-									{
-										foreach ($sizes_array as $key => $value)
+										$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%$schedule%'";
+										// echo $plannedQty_query.'<br>';
+										$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
+										while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
 										{
-											$query = "SELECT bod.order_s_$sizes_array[$key] as order_qty, bod.title_size_$sizes_array[$key] as title, sum(psl.a_$sizes_array[$key]*psl.a_plies) AS planned_qty FROM $bai_pro3.bai_orders_db bod LEFT JOIN $bai_pro3.plandoc_stat_log psl ON psl.order_tid=bod.order_tid WHERE order_del_no=$schedule AND order_style_no='".$style."' AND order_s_$sizes_array[$key]>0 GROUP BY order_col_des";
-											// echo $query.'<br>';
-											$qty=mysqli_query($link, $query) or exit("Sql Error2");
-											while($qty_result=mysqli_fetch_array($qty))
-											{
-												// echo $qty_result['title'];
-												$sizes_order_array[] = $qty_result['title'];
-												$order_array[$col_array[$key1]][$qty_result['title']] = $qty_result['order_qty'];
-												$planned_array[$col_array[$key1]][$qty_result['title']] = $qty_result['planned_qty'];
-												$balance_array[$col_array[$key1]][$qty_result['title']] = $qty_result['order_qty']-$qty_result['planned_qty'];
-											}
+											$planned_qty[] = $planneQTYDetails['plannedQty'];
+										}
+
+										$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule";
+										// echo $orderQty_query.'<br>';
+										$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
+										while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
+										{
+											$ordered_qty[] = $orderQty_details['orderedQty'];
 										}
 									}
-									//var_dump($order_array);
-									$url1 = getFullURLLevel($_GET['r'],'pop_up_sewing_job_det.php',0,'R');
-									echo "<br><a class='btn btn-success' href='$url1?schedule=$schedule' onclick=\"return popitup2('$url1?schedule=$sch_id&style=$style_id')\" target='_blank'>Click Here For Full Order Details</a>      ";
 
-									echo "<br><div class='col-md-12'><b>Order Details: </b>
+									$url1 = getFullURLLevel($_GET['r'],'pop_up_sewing_job_det.php',0,'R');
+									echo "<br><a class='btn btn-success' href='$url1?schedule=$schedule' onclick=\"return popitup2('$url1?schedule=$sch_id&style=$style_id')\" target='_blank'>Click Here For Color Wise Order Details</a>";
+
+									echo "<br>
+									<div class='col-md-12'><b>Order Details: </b>
 										<table class=\"table table-bordered\">
 											<tr>
-												<th>Details</th>
-												<th>Colors</th>";
-												foreach(array_unique($sizes_order_array) as $size)
+												<th>Details</th>";
+												for ($i=0; $i < sizeof($size_main); $i++)
 												{
-													echo "<th>$size</th>";
+													echo "<th>$size_main[$i]</th>";
 												}	
 												
 												echo "<th>Total</th>
 											</tr>";
 
-											$counter = 0;
-											foreach ($order_array as $key => $value) 
-											{
-												$order_total = 0;
-												if($counter == 0)
-												{
-													echo "<tr><td rowspan='$row_count'>Order Qty</td>";
-												}
-												echo "<td>".$key."</td>";
-												foreach ($value as $key1 => $value1) 
-												{
-													foreach(array_unique($sizes_order_array) as $size)
-													{
-														if($key1 == $size){
-															echo "<td>".$value1."</td>";
-															$order_total += $value1;
-														}
+											echo "<tr>
+													<td>Order Qty</td>";
+													for ($i=0; $i < $sizeofsizes; $i++)
+													{ 
+														echo "<td>$ordered_qty[$i]</td>";
+														$tot_ordered = $tot_ordered + $ordered_qty[$i];
 													}
-												}
-												echo "<td>$order_total</td></tr>";
-												$counter++;
-											}
+													echo "<td>$tot_ordered</td>
+												</tr>";
 
-											$counter1 = 0;
-											foreach ($planned_array as $key => $value) 
-											{
-												$planned_total = 0;
-												if($counter1 == 0)
-												{
-													echo "<tr><td rowspan='$row_count'>Planned Qty</td>";
-												}
-												echo "<td>".$key."</td>";
-												foreach ($value as $key1_1 => $order_value)
-												{
-													foreach(array_unique($sizes_order_array) as $size)
-													{
-														if($key1_1 == $size){
-															echo "<td>".$order_value."</td>";
-															$planned_total += $order_value;
-														}
+											echo "<tr>
+													<td>Planned Qty</td>";
+													for ($i=0; $i < $sizeofsizes; $i++)
+													{ 
+														echo "<td>$planned_qty[$i]</td>";
+														$tot_planned = $tot_planned + $planned_qty[$i];
 													}
-												}
-												echo "<td>$planned_total</td></tr>";
-												$counter1++;
-											}
+													echo "<td>$tot_planned</td>
+												</tr>";
 
-											$counter3 = 0;
-											foreach ($balance_array as $key => $value) 
-											{
-												$balance_total = 0;
-												if($counter3 == 0)
-												{
-													echo "<tr><td rowspan='$row_count'>Balance Qty</td>";
-												}
-												echo "<td>".$key."</td>";
-												foreach ($value as $key1 => $balance_value) 
-												{
-													foreach(array_unique($sizes_order_array) as $size)
+											echo "<tr>
+													<td>Balance Qty</td>";
+													for ($i=0; $i < $sizeofsizes; $i++)
 													{
-														if($key1 == $size){
-															echo "<td>".$balance_value."</td>";
-															$balance_total += $balance_value;
+														$balance = $planned_qty[$i]-$ordered_qty[$i];
+														if ($balance > 0) {
+															$color = '#00b33c';
+														} else if ($balance < 0 ) {
+															$color = '#FF0000';
+														} else if ($balance == 0 ) {
+															$color = '#73879C';
 														}
+														echo "<td style='color:".$color."; font-weight:bold'>".$balance."</td>";
+														$tot_balance = $tot_balance + $balance;
 													}
-												}
-												echo "<td>$balance_total</td></tr>";
-												$counter3++;
-											}
-
-									echo "</table></div>";
+													if ($tot_balance > 0) {
+														$color = '#00b33c';
+													} else if ($tot_balance < 0 ) {
+														$color = '#FF0000';
+													} else if ($tot_balance == 0 ) {
+														$color = '#73879C';
+													}
+													echo "<td style='color:".$color."; font-weight:bold'>$tot_balance</td>
+												</tr>";
+										echo "</table>
+									</div>";
 								}
 								// Order Details Display End
 
@@ -729,7 +607,24 @@ td{ padding:2px; white-space: nowrap;}
 															<option value='2'>Last Cut</option>
 														</select>
 													</td>
-													<td><input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" /></td>
+													<td>";
+													$count = 0;
+													for ($i=0; $i < $sizeofsizes; $i++)
+													{
+														if ($ordered_qty[$i] > $planned_qty[$i]) 
+														{
+															$flag = 1;
+															$count = $count + $flag;
+														}
+													}
+													if ($count > 0)
+													{
+														echo '<b><font color="red">Please Prepare Lay Plan for Complete Order Quantity</font></b>';
+													}
+													else {
+														echo "<input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
+													}
+													echo "</td>
 												</tr>";
 										echo "</table>";
 									echo "</div>";
@@ -747,15 +642,12 @@ td{ padding:2px; white-space: nowrap;}
 						}
 						else
 						{							
-							echo "<script>sweetAlert('Please Update Carton Details ','Before Creating Sewing Jobs!','warning');</script>";
+							echo "<script>sweetAlert('Please Update Packing Ratio ','Before Creating Sewing Jobs!','warning');</script>";
 						}	
 					}
 				}
 				if(isset($_POST['generate']))
 				{
-					$style=$_POST['style_id'];
-					$pack_method=$_POST['pack_method'];
-					$scheudle=$_POST['sch_id'];
 					$split_qty=$_POST['split_qty'];
 					$no_of_cartons=$_POST['no_of_cartons'];
 					$exces_from=$_POST['exces_from'];
@@ -768,27 +660,10 @@ td{ padding:2px; white-space: nowrap;}
 					$sql_result=mysqli_query($link, $sql) or exit("Failed to update Carton Details");
 					
 					echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
-					// $url5 = getFullURLLevel($_GET['r'],'mini_order_gen.php',0,'N');
-					// echo("<script>location.href = '".$url5."&id=$id&style=$style&schedule=$scheudle';</script>");
+					$url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
+					echo("<script>location.href = '".$url5."&id=$c_ref';</script>");
 				}
-				?> 
+			?> 
 		</div>
 	</div>
 </div>
-
-
-<style>
-#table1 {
-  display: inline-table;
-  width: 100%;
-}
-
-
-div#table_div {
-    width: 30%;
-}
-#test{
-margin-left:8%;
-margin-bottom:2%;
-}
-</style>
