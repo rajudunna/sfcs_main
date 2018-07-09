@@ -8,7 +8,7 @@ $form = 'P';
 $ops_dep='';
 $post_ops_code='';
 $qry_status='';
-error_reporting(0);
+// error_reporting(0);
 // $username = user();
 if($operation_code >=130 && $operation_code < 300)
 {
@@ -46,7 +46,34 @@ $r_no_reasons = $new_data['tot_reasons'];
 $mapped_color = $new_data['color'];
 $type = $form;
 $barcode_generation =  $new_data['barcode_generation'];
-if($barcode_generation == 0)
+$concurrent_flag = 0;
+//user concatnation issue resolving method
+foreach ($b_tid as $key=>$value)
+{
+	$select_send_qty = "SELECT send_qty,recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+	//echo $select_send_qty;
+	$result_select_send_qty = $link->query($select_send_qty);
+	if($result_select_send_qty->num_rows >0)
+	{
+		while($row = $result_select_send_qty->fetch_assoc()) 
+		{
+			$send_qty = $row['send_qty'];
+			$pre_recieved_qty = $row['recevied_qty'];
+			$act_reciving_qty = $b_rep_qty[$key];
+			$total_rec_qty = $pre_recieved_qty + $act_reciving_qty;
+			if($total_rec_qty > $send_qty)
+			{
+				echo "<h1 style='color:red;'>You are Receiving More than eligible quantity.</h1>";
+				$concurrent_flag = 1;
+			}
+		}
+	}
+} 
+
+
+if($concurrent_flag == 0)
+{
+	if($barcode_generation == 0)
 {
 	$fetching_job_number_from_bundle = "select input_job_no_random FROM $bai_pro3.packing_summary_input where tid='$b_job_no'";
 	$result_fetching_job_number_from_bundle = $link->query($fetching_job_number_from_bundle);
@@ -148,7 +175,7 @@ if($result_post_ops_check->num_rows > 0)
 }
 foreach($pre_ops_code as $index => $op_code){
 	if($op_code != $b_op_id){
-		$b_query[$op_code] = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES";
+		$b_query[$op_code] = "INSERT ingonre INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES";
 
 		// temp table data query
 
@@ -535,7 +562,7 @@ for($i=0;$i<sizeof($b_tid);$i++)
 					{
 						$update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where tid = $updatable_id";
 						mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$ims_backup="insert ignore into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where tid=$updatable_id";
+						$ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where tid=$updatable_id";
 						mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
 						mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -613,4 +640,7 @@ for($i=0;$i<sizeof($b_tid);$i++)
 }
 $table_data .= "</table>";
 echo $table_data;
+}
+
+
 ?>
