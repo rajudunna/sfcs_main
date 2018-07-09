@@ -241,15 +241,13 @@ td{ padding:2px; white-space: nowrap;}
 						$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
 						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
 						
-						$mini_order_ref = echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_crt_schedule",$sch_id,$link);
-						$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$mini_order_ref,$link);
 						$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
+						$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$c_ref,$link);
 						$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 						$pack_method = echo_title("$brandix_bts.tbl_carton_ref","carton_method","carton_barcode",$schedule,$link);
+						$tbl_carton_ref_check = echo_title("$brandix_bts.tbl_carton_ref","count(*)","style_code='".$style_id."' AND ref_order_num",$sch_id,$link);
 
-						$validation_query = "SELECT * FROM $brandix_bts.`tbl_carton_ref` WHERE style_code=".$style_id." AND ref_order_num=".$sch_id."";
-						$sql_result=mysqli_query($link, $validation_query) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($sql_result)>0)
+						if($tbl_carton_ref_check>0)
 						{
 							// echo "carton props added, You can proceed";
 							if($bundle==0)
@@ -297,7 +295,7 @@ td{ padding:2px; white-space: nowrap;}
 									}
 
 									$url1 = getFullURLLevel($_GET['r'],'pop_up_sewing_job_det.php',0,'R');
-									echo "<br><a class='btn btn-success' href='$url1?schedule=$schedule' onclick=\"return popitup2('$url1?schedule=$sch_id&style=$style_id')\" target='_blank'>Click Here For Full Order Details</a>      ";
+									echo "<br><a class='btn btn-success' href='$url1?schedule=$schedule' onclick=\"return popitup2('$url1?schedule=$sch_id&style=$style_id')\" target='_blank'>Click Here For Color Wise Order Details</a>";
 
 									echo "<br>
 									<div class='col-md-12'><b>Order Details: </b>
@@ -650,9 +648,6 @@ td{ padding:2px; white-space: nowrap;}
 				}
 				if(isset($_POST['generate']))
 				{
-					$style=$_POST['style_id'];
-					$pack_method=$_POST['pack_method'];
-					$scheudle=$_POST['sch_id'];
 					$split_qty=$_POST['split_qty'];
 					$no_of_cartons=$_POST['no_of_cartons'];
 					$exces_from=$_POST['exces_from'];
@@ -666,7 +661,7 @@ td{ padding:2px; white-space: nowrap;}
 					
 					echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
 					$url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
-					echo("<script>location.href = '".$url5."&id=$id&style=$style&schedule=$scheudle$cart_method=$pack_method';</script>");
+					echo("<script>location.href = '".$url5."&id=$c_ref';</script>");
 				}
 			?> 
 		</div>

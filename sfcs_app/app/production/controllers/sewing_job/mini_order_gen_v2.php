@@ -11,7 +11,6 @@ set_time_limit(30000000);
 	if($status == '' || $status == '1')
 	{
 		$carton_id=$_GET['id'];
-		$carton_method=$_GET['carton_method'];
 		$data_sym="$";
 		$File = "session_track.php";
 		$fh = fopen($File, 'w') or die("can't open file");
