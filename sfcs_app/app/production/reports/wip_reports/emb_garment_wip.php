@@ -107,6 +107,7 @@ th{
 							loader_text: "Filtering data..."
 						};
 	setFilterGrid( "table1",table6_Props );
+	$('#reset_table2').addClass('btn btn-warning btn-xs');
 //]]>
 </script>
 

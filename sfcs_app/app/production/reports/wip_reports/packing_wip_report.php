@@ -200,9 +200,17 @@ while($roww=mysqli_fetch_array($resultw))
 							loader_text: "Filtering data..."
 						};
 	setFilterGrid( "table1",table6_Props );
+		$('#reset_table1').addClass('btn btn-warning btn-xs');
 //]]>
 </script>
 
 </div>
 </div>
 </div>
+<style>
+th{
+	background-color:#29759c;
+	color:white;
+	text-align:center;
+}
+</style>
