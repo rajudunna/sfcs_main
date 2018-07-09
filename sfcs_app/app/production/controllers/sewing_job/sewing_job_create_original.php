@@ -337,10 +337,24 @@ td{ padding:2px; white-space: nowrap;}
 													for ($i=0; $i < $sizeofsizes; $i++)
 													{
 														$balance = $planned_qty[$i]-$ordered_qty[$i];
-														echo "<td>".$balance."</td>";
+														if ($balance > 0) {
+															$color = '#00b33c';
+														} else if ($balance < 0 ) {
+															$color = '#FF0000';
+														} else if ($balance == 0 ) {
+															$color = '#73879C';
+														}
+														echo "<td style='color:".$color."; font-weight:bold'>".$balance."</td>";
 														$tot_balance = $tot_balance + $balance;
 													}
-													echo "<td>$tot_balance</td>
+													if ($tot_balance > 0) {
+														$color = '#00b33c';
+													} else if ($tot_balance < 0 ) {
+														$color = '#FF0000';
+													} else if ($tot_balance == 0 ) {
+														$color = '#73879C';
+													}
+													echo "<td style='color:".$color."; font-weight:bold'>$tot_balance</td>
 												</tr>";
 										echo "</table>
 									</div>";
@@ -595,7 +609,24 @@ td{ padding:2px; white-space: nowrap;}
 															<option value='2'>Last Cut</option>
 														</select>
 													</td>
-													<td><input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" /></td>
+													<td>";
+													$count = 0;
+													for ($i=0; $i < $sizeofsizes; $i++)
+													{
+														if ($ordered_qty[$i] > $planned_qty[$i]) 
+														{
+															$flag = 1;
+															$count = $count + $flag;
+														}
+													}
+													if ($count > 0)
+													{
+														echo '<b><font color="red">Please Prepare Lay Plan for Complete Order Quantity</font></b>';
+													}
+													else {
+														echo "<input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
+													}
+													echo "</td>
 												</tr>";
 										echo "</table>";
 									echo "</div>";
@@ -634,8 +665,8 @@ td{ padding:2px; white-space: nowrap;}
 					$sql_result=mysqli_query($link, $sql) or exit("Failed to update Carton Details");
 					
 					echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
-					// $url5 = getFullURLLevel($_GET['r'],'mini_order_gen.php',0,'N');
-					// echo("<script>location.href = '".$url5."&id=$id&style=$style&schedule=$scheudle';</script>");
+					$url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
+					echo("<script>location.href = '".$url5."&id=$id&style=$style&schedule=$scheudle$cart_method=$pack_method';</script>");
 				}
 			?> 
 		</div>
