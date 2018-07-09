@@ -8,6 +8,7 @@ $form = 'P';
 $ops_dep='';
 $post_ops_code='';
 $qry_status='';
+error_reporting(0);
 // $username = user();
 if($operation_code >=130 && $operation_code < 300)
 {
