@@ -17,6 +17,12 @@
  right:0;
  width:auto;
  float:right;
+}
+th{
+	background-color:#29759c;
+	color:white;
+	text-align:center;
+}
 </style>
 
 
@@ -34,6 +40,7 @@ $sql="select order_tid,group_concat(doc_no) as doc_no,SUM((a_xs+a_s+a_m+a_l+a_xl
 //echo $sql."<br>";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 // echo mysqli_num_rows($result);
+$flag = 0;
 while($row=mysqli_fetch_array($result))
 {
 	$order_tid=$row["order_tid"];
@@ -116,8 +123,13 @@ while($row=mysqli_fetch_array($result))
 			echo "<td>".($total3-($input1+$input2))."</td>";
 			echo "<td>".$order_date."</td>";
 			echo "</tr>";
+			$flag = 1;
 		}
 	}
+	
+}
+if($flag==0) {
+	echo "<tr style='text-align:center;color:red;font-weight:bold;'><td colspan=7>No Data Found!</td></tr>";
 }
 echo "</table>";
 
@@ -132,6 +144,8 @@ echo "</table>";
 							loader_text: "Filtering data..."
 						};
 	setFilterGrid( "table1",table6_Props );
+	$('#reset_table1').addClass('btn btn-warning btn-xs');
+
 //]]>
 </script>
 
