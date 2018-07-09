@@ -190,8 +190,8 @@ $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_er
                                 echo "<option value='".$row1['code']."(".$row1['reason'].")'>".$row1['code']."(".$row1['reason'].")</option>";
                             }
                         echo "</select></div>";
-                        echo "<div class='col-sm-4'><input type='number' place-holder='Quantity' name='hours' ng-model='hours' id='hours' class='form-control'></div>";
-                        echo "<button class='btn btn-info col-sm-2' ng-click='addData()'>Add</button> <button class='btn btn-primary col-sm-2' ng-click='sendData()'>Save</button></div>
+                        echo "<div class='col-sm-4'><div class='col-sm-3'>Quantity</div><div class='col-sm-9'><input type='number' place-holder='Quantity' name='hours' ng-model='hours' id='hours' class='form-control'></div></div>";
+                        echo "<button class='btn btn-info col-sm-1' ng-click='addData()'>Add</button> <button class='btn btn-primary col-sm-2' ng-click='sendData()'>Save</button></div>
                         <br/>";
 ?>
                             <div class='col-sm-12'>
@@ -287,7 +287,10 @@ $scope.sendData = function(){
     }else{
         $scope.alert_info = true;
         $scope.alert_class = 'danger';
-        $scope.alert = "Total quantity should be equal to "+$scope.dtimehrs;
+        if($scope.downtimeData.length==0)
+            $scope.alert = "Invalid data";
+        else
+            $scope.alert = "Total quantity should be equal to "+$scope.dtimehrs;
     }
 };
 
