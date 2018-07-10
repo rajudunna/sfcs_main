@@ -1,23 +1,11 @@
-<!--
+<!DOCTYPE html>
+<html>
+<head>
 
-Ticket #: 252392-Kirang/2014-02-07
-This amendement was done based on the confirmation to issue excess (1%) material depending on the savings.
+</head>
+<body>
 
--->
 
-<!--
-Core Module:In this interface we can update the fabric allocatio details.
-
-Description:In this interface we can update the fabric allocatio details.
-
-Changes Log:
--->
-
-<!--
-
-Ticket #: #684040-RameshK/2014-05-26 : To raise compalint for rejected RM material
-
--->
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 <?php 
 
@@ -42,42 +30,57 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 	$url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5.php");
 	$has_permission=haspermission($url_r);
 ?>
-	<meta charset="utf-8">
+	<!-- <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=11; IE=10;IE=9; IE=8; IE=7; IE=EDGE" />
+	<meta http-equiv="X-UA-Compatible" content="IE=11; IE=10;IE=9; IE=8; IE=7; IE=EDGE" /> -->
 
 
 		<style>
-		.dataTables_filter {
+		
+		/* input#allocate_new {
+		display: none;
+		} */
+
+		/* .dataTables_filter {
 		display: none; 
-		}
+		} */
 
 		body
 		{
 			font-family: Trebuchet MS;
-			font-size: 14px;
+			/* font-size: 14px; */
 		}
-
+		.btnflt{
+			width:100%;
+		}
+		#chk11770{
+			width:60%;
+		}
 		table
 		{
 		border-collapse:collapse;
 		white-space:nowrap;
+		font-size:12px;
+		}
 		tr.total
 		{
 		font-weight: bold;
 		white-space:nowrap; 
 		}
 
-		table
+		/* table
 		{
 		border-collapse:collapse;
 		white-space:nowrap;
 		font-size: 12pt; 
 		}
-		}
-
+		*/
 		th
 		{
+			/* font-size:14px; */
+			text-align: center;
+			width:100%;
+
 			color: WHITE;
 		border: 1px solid #660000;
 			padding: 10px;
@@ -87,7 +90,9 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 
 		td
 		{
-			
+			/* font-size:14px; */
+			/* text-align: center; */
+			/* width:100%; */
 			color: BLACK;
 		border: 1px solid #660000;
 			padding: 1px;
@@ -117,24 +122,27 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 		</style>
 
 <script src="../../../../common/js/jquery-1.12.4.js"></script>
-<script src="../../../../common/js/jquery.dataTables.min.js"></script>
-<!-- <script src="../../common/css/jquery.dataTables.min.css"></script> -->
-<script src="../../../../common/css/bootstrap.min.css"></script>
+
+<link rel='stylesheet' href="../../../../common/css/bootstrap.min.css">
 <script src="../../../../common/js/sweetalert.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"> --><!-- External script -->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/tablefilter/2.5.0/tablefilter_min.js'></script> -->
 
-
-
+<!-- <script language="javascript" type="text/javascript" src="../../../../common/js/TableFilter_EN/actb.js"></script> -->
+<script language="javascript" type="text/javascript" 
+src="../../../../common/js/TableFilter_EN/tablefilter.js"></script>
 
 <script>
-/* 	$(document).ready(function() {
-		$('#example').DataTable( {
-			dom: 'Bfrtip',
-			buttons: [
-				'copy', 'csv', 'excel', 'pdf', 'print'
-			]
-		} );
-	} ); */
+
+
+			// $(document).keypress(
+			// 		function(event){
+			// 		if (event.which == '13')
+			// 		{
+			// 			event.preventDefault();
+			// 		}
+			// });
+	
 
 function button_disable()
 {
@@ -399,7 +407,7 @@ function check_qty2(x,m,n,doc)
 						
 					}
 				}else{
-					console.log('test');
+					// console.log('test');
 					console.log(widt+"<="+parseFloat((document.input["width"+doc_ref+"["+j+"]"].value))+" J = "+j);
 				}
 			}else{
@@ -469,7 +477,8 @@ function check_qty2(x,m,n,doc)
 </script>
 
 <div class="panel panel-primary">
-	<div class="panel-heading"><b><font size="5">Fabric Allocation Panel</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="red">Note:</font>Please select atleast one roll for allocation in every component</b></div>
+	<div class="panel-heading"><b><font size="4">Fabric Allocation Panel</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div>
+	<font color="red">Note:</font>Please select atleast one roll for allocation in every component</b>
 		<div class="panel-body">
 <?php
 //Auto Selecting Based on Manual Decision.
@@ -719,7 +728,7 @@ if(isset($_POST['allocate_new']))
 	// else
 	// {
 	// 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details_recut_v2.php?doc_no=".$doc_ref[0]."\"; }</script>";
-	// }
+	// }	
 }
 
 ?>
@@ -741,8 +750,9 @@ if(isset($_POST['allocate']))
 	
 	$process_cat=$_POST['process_cat'];
 	$style_ref=$_POST['style_ref'];
-	
+	$size_doc=sizeof($doc);
 	$note="";
+	echo "<input type='hidden' id='size_doc' value=\"$size_doc\"></>";
 	for($i=0;$i<sizeof($doc);$i++)
 	{
 		$lot=$doc[$i];
@@ -842,28 +852,28 @@ if(isset($_POST['allocate']))
 		
 		//To show stats
 		echo "<h3>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\"></span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h3>";
-		echo '<div class="table-responsive"><table id="example" class="stripe row-border order-column dataTable" cellspacing="0" width="100%">';
+		echo "<div class='table-responsive'><table id='example".$i."' class='table table-bordered' cellspacing='0'>";
 		
 		echo "<thead><tr id=\"$doc_ref\" bgcolor=\"RED\">";
-		echo "<th>Invoice No</th>";	
+		echo "<th>Invoice<br/>No</th>";	
 		echo "<th>GRN Date</th>";	
-		echo "<th>Batch No</th>";	
+		echo "<th>Batch<br/>No</th>";	
 		echo "<th id='col1'>Item Code</th>";	
 		echo "<th id='col2'>Lot No</th>";	
 		echo "<th>Shade</th>";
-		echo "<th id='col'>Shrinkage Group</th>";
-		echo "<th id='col'>Shrinkage Width</th>";	
-		echo "<th id='col'>Shrinkage Length</th>";
-		echo "<th>Roll No</th>";	
+		echo "<th id='col'>Shrinkage<br/>Group</th>";
+		echo "<th id='col'>Shrinkage<br/>Width</th>";	
+		echo "<th id='col'>Shrinkage<br/>Length</th>";
+		echo "<th>Roll<br/>No</th>";	
 		echo "<th id='col'>Location</th>";	
 		echo "<th>Group</th>";	
-		echo "<th>Tkt Width</th>";	
-		echo "<th>Ctx Width</th>";	
-		echo "<th>Tkt Length</th>";	
-		echo "<th>Ctx Length</th>";		
+		echo "<th>Tkt<br/>Width</th>";	
+		echo "<th>Ctx<br/>Width</th>";	
+		echo "<th>Tkt<br/>Length</th>";	
+		echo "<th>Ctx<br/>Length</th>";		
 		echo "<th>Balance</th>";
 		echo "<th id='col'>Allocated</th>";
-		echo "<th>Issued Qty</th>";
+		echo "<th>Issued<br/>Qty</th>";
 		echo "<th>Select</th>";
 		//echo "<th>Allocated Qnty</th>";
 		echo "</tr></thead><tbody>";
@@ -914,8 +924,9 @@ if(isset($_POST['allocate']))
 					$inv_no=trim($sql_row['inv_no']);
 				}
 			}
+			echo "<input type='hidden' id='srgp$doc_ref$j' value='".$sql_row['shrinkage_group']."'>";
 			echo "<tr bgcolor=\"$bg_color\" id=\"trchk$doc_ref$j\">";
-			echo "<td style='display:none'><input type='hidden' id='srgp$doc_ref$j' value='".$sql_row['shrinkage_group']."'></td>";
+			
 			echo "<td>".$sql_row['inv_no']."</td>";
 			echo "<td>".$sql_row['grn_date']."</td>";
 			echo "<td>".$sql_row['batch_no']."</td>";
@@ -984,7 +995,7 @@ if(isset($_POST['allocate']))
 
 				if(strlen($sql_row['shade'])==0)
 				{
-					$tag="Insp. Pending";
+					$tag="Insp. <br/>Pending";
 					$valid_check="display:none";
 				}
 				
@@ -1027,43 +1038,41 @@ if(isset($_POST['allocate']))
 	echo "</form>";
 }
 ?>
-
+</div>
 <script>
 	document.getElementById("msg").style.display="none";	
-	$(document).ready(function() {
+	// $(document).ready(function() {
+	// 	// Setup - add a text input to each footer cell
+	// 	$('#example1 th').each( function (i) {
+	// 		var title = $('#example thead th').eq( $(this).index() ).text();
+	// 		$(this).html( '<input type="text" placeholder="'+title+'" data-index="'+i+'" />');
+	// 	} );
+	// 		var table = $('.stripe').dataTable( {
+	// 			//scrollY:        "300px",
+	// 			"bPaginate": false,
+	// 			//scrollX:        true,
+	// 			scrollCollapse: true,
+	// 			paging:         false,
+	// 			fixedColumns:   true
+	// 		} );
+	// 	// DataTable
+	// 	var table = $('#example1').dataTable( {
+	// 		scrollY:        "300px",
+	// 		"bPaginate": false,
+	// 		scrollX:        true,
+	// 		scrollCollapse: true,
+	// 		paging:         false,
+	// 		fixedColumns:   true
+	// 	} );
 
-		// Setup - add a text input to each footer cell
-		$('#example1 th').each( function (i) {
-			var title = $('#example thead th').eq( $(this).index() ).text();
-			$(this).html( '<input type="text" placeholder="'+title+'" data-index="'+i+'" />');
-		} );
-			var table = $('.stripe').DataTable( {
-				//scrollY:        "300px",
-				"bPaginate": false,
-				//scrollX:        true,
-				scrollCollapse: true,
-				paging:         false,
-				fixedColumns:   true
-			} );
-		
-		// DataTable
-		// var table = $('#example').DataTable( {
-			// scrollY:        "300px",
-			// "bPaginate": false,
-			// scrollX:        true,
-			// scrollCollapse: true,
-			// paging:         false,
-			// fixedColumns:   true
-		// } );
-
-		// Filter event handler
-		$( table.table().container() ).on( 'keyup', 'thead input', function () {
-			table
-				.column( $(this).data('index') )
-				.search( this.value )
-				.draw();
-		} );
-	} );
+	// 	// Filter event handler
+	// 	$( table.table().container() ).on( 'keyup', 'thead input', function () {
+	// 		table
+	// 			.column( $(this).data('index') )
+	// 			.search( this.value )
+	// 			.draw();
+	// 	} );
+	// } );
 </script>
 <style>
    /* th, td { white-space: nowrap; }
@@ -1075,16 +1084,16 @@ if(isset($_POST['allocate']))
     th input {
         width: 90%;
     } */
-	table{
+	/* table{
 		table-layout:fixed;
-	}
-	th{
+	} */
+	/* th{
 		white-space:pre-wrap;
 	}
 	td{
 		white-space:pre-wrap;
 		/* word-wrap:break-word */
-	}
+	/* } 
 	#col {
 		padding :5px;
 	}
@@ -1095,7 +1104,7 @@ if(isset($_POST['allocate']))
 	#col2 {
 		width:5%;
 		padding :0px;
-	}
+	} */
 	.btn-primary{
 		background-color:#337ab7;
 		color:white;
@@ -1117,7 +1126,56 @@ if(isset($_POST['allocate']))
 		color:white;
 		padding:2pt;
 	}
+	
+
+	#reset_example{
+		width : 80px;
+		color : #fff;
+		margin : 10px;
+	}
+	.flt{
+		width:100%;
 	}
 </style>
+
 </body>
 </html>
+	<script language="javascript" type="text/javascript">
+	
+	var MyTableFilter = 
+			{  
+				exact_match: false,
+				alternate_rows: true,
+				sort_select: true,
+				loader_text: "Filtering data...",
+				loader: true,
+				// display_all_text: "Show All",
+				// onchange:true,
+				btn: true,
+				btn_text: "go",
+				enter_key: true,
+				col_20:false,
+				col_19:false,
+				rows_counter: true,
+				rows_counter_text: "Total rows: ",
+				btn_reset: true,
+				bnt_reset_text: "Clear all ",
+			};
+
+
+			var i;
+			var len=document.getElementById('size_doc').value;
+			for (i = 0; i <=len; i++) { 
+				setFilterGrid( 'example'+i, MyTableFilter );
+			}
+
+			$(document).ready(function(){
+					var i;
+					var len=document.getElementById('size_doc').value;
+					for (i = 0; i <=len; i++) { 
+					$('#reset_example'+i).addClass('btn btn-warning btn-xs');
+					$('#btn19_example'+i).addClass('btn btn-success btn-xs');
+					}
+			});
+		
+	</script>

@@ -328,7 +328,7 @@ if(isset($_POST['submit']))
 				$o_s_t[$sizes_array[$s]]=$sql_row47["title_size_".$sizes_array[$s].""];
 			}
 		}	
-		$orders_join=substr($sql_row47["order_col_des"],-1);
+		$orders_join='J'.substr($sql_row47["order_col_des"],-1);
 	} 
 	for($ii=0;$ii<sizeof($cat_id_ref);$ii++)
 	{

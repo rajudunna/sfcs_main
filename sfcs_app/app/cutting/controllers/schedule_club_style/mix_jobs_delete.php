@@ -124,7 +124,7 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 if(isset($_POST['clear']))
 {
 	$order_del_no=$_POST['schedule'];
-	$order_joins=$order_del_no;
+	$order_joins='J'.$order_del_no;
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$docs=array();

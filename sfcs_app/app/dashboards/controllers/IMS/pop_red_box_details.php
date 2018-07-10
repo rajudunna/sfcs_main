@@ -141,15 +141,15 @@ $ims_doc_no=$sql_docket['ims_doc_no'];
     <td >Size</td>
     <td>Input Qty</td>
     <td>Output Qty</td>
-    <td>Remarks</td>
     <td>Rejected</td>
     <td>Balance</td>
+    <td>Remarks</td>
     
   </tr>
   
 <?php
 $sql="SELECT input_job_rand_no_ref,ims_size,ims_color,ims_remarks,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE ims_schedule='".$schedule_ref."' and input_job_no_ref='".$job_no."' AND ims_mod_no='".$module."'
-AND ims_remarks='$ims_remarks1' GROUP BY ims_color,ims_size,ims_remarks ORDER BY ims_date";
+ GROUP BY ims_color,ims_size,ims_remarks ORDER BY ims_date";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -199,12 +199,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
     <td><?php echo $size_title; ?></td>
     <td><?php echo $sql_row['ims_qty']; ?></td>
     <td><?php echo $sql_row['ims_pro_qty']; ?></td>
-    <td><?php echo $sql_row['ims_remarks']; ?></td>
     <td><?php echo $rejected; ?></td>
     <td><?php echo $sql_row['ims_qty']-($sql_row['ims_pro_qty']+$rejected);
-
-                  //echo $sql_row['ims_qty']-($sql_row['ims_pro_qty']);
-     ?></td>
+    //echo $sql_row['ims_qty']-($sql_row['ims_pro_qty']);?></td>
+    <td><?php echo $sql_row['ims_remarks']; ?></td>
 
     
   </tr>

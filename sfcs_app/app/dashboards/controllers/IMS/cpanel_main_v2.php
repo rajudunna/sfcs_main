@@ -413,7 +413,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
                 <div style="float:left;padding-left:25px;">
                 
-                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,i.ims_color,i.ims_schedule,i.rand_track,i.ims_remarks AS ims_remarks, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date FROM $bai_pro3.ims_log i,plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no AND i.ims_status !=\"DONE\" GROUP BY ims_doc_no,inputjobnorand,ims_remarks";
+                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,i.ims_color,i.ims_schedule,i.rand_track,i.ims_remarks AS ims_remarks, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date FROM $bai_pro3.ims_log i,plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no AND i.ims_status !=\"DONE\" GROUP BY ims_doc_no,inputjobnorand";
                 //echo $sqlred;
         //$sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_color,ims_schedule,rand_track  FROM ims_log WHERE ims_mod_no='$module' GROUP BY ims_doc_no"
         $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -472,9 +472,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
                   Total Input :<?php echo $input_qty."<br/>"; ?>
                   Total Output:<?php echo $output_qty."<br/>"; ?>
                   Rejected:<?php echo $rejected."<br/>"; ?>
-                  <?php echo "Balance : ".($input_qty - ($output_qty+$rejected));
+                  <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";
                    // echo "Balance :".(int)$input_qty - (int)$output_qty."";
-                   ?>
+                  ?>
+                    Remarks: <?php echo $ims_remarks."<br/>"; ?>
                   " rel="tooltip"><div class="red_box"  >
                   
                   </div></a>

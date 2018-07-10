@@ -533,7 +533,7 @@ if(isset($_POST['fix']))
             //echo $sql1."<br><br>"; 
             mysqli_query($link, $sql1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"])); 
              
-            $sql1="update $bai_pro3.bai_orders_db set order_joins=\"$maxorder\" where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
+            $sql1="update $bai_pro3.bai_orders_db set order_joins='J".$maxorder."' where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
             mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"])); 
             //echo "<br>1-1=".$sql1."<br><br>"; 
             
@@ -541,7 +541,7 @@ if(isset($_POST['fix']))
             mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"])); 
             //echo "2=".$sql1."<br><br>"; 
          
-            $sql1="update $bai_pro3.bai_orders_db_confirm set order_joins=\"$maxorder\" where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
+            $sql1="update $bai_pro3.bai_orders_db_confirm set order_joins='J".$maxorder."' where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
             mysqli_query($link, $sql1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
             //echo "<br>2-1=".$sql1."<br><br>"; 
            
@@ -607,7 +607,7 @@ if(isset($_POST['fix']))
                     echo "</tr>"; 
                     $old_colors1 = array();
                     echo "<tr><td>".$sql_row451["order_style_no"]."</td><td>".$sql_row451["order_del_no"]."</td><td>".$sql_row451["order_col_des"]."</td>"; 
-                    $sql457="select order_col_des as order_col from $bai_pro3.bai_orders_db_confirm where order_joins='".$maxorder."' and order_col_des in ('".implode("','",$selected)."')"; 
+                    $sql457="select order_col_des as order_col from $bai_pro3.bai_orders_db_confirm where order_joins='J".$maxorder."' and order_col_des in ('".implode("','",$selected)."')"; 
                     $sql_result457=mysqli_query($link, $sql457) or die("Error47".$sql457.mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row457=mysqli_fetch_array($sql_result457)) 
                     {      

@@ -153,7 +153,7 @@ if(isset($_POST['clear']))
 	$sql_result452=mysqli_query($link, $sql452) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$order_tids=array();
-	$sql4533="select order_tid from $bai_pro3.bai_orders_db where order_joins='".$schedule."' and order_col_des=\"".$color."\"";
+	$sql4533="select order_tid from $bai_pro3.bai_orders_db where order_joins='J".$schedule."' and order_col_des=\"".$color."\"";
 	//echo $sql4533."<br>";
 	$sql_result4533=mysqli_query($link, $sql4533) or die("Error".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row4533=mysqli_fetch_array($sql_result4533))
