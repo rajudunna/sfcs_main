@@ -129,7 +129,7 @@
 if(isset($_POST['submit']))
 {
 	$order_sch=$_POST['schedule'];
-	$orders_join=$order_sch;	
+	$orders_join='J'.$order_sch;	
     $style=$_POST['style']; 
     $color=$_POST['color'];
 	$cat_id_ref=array();
