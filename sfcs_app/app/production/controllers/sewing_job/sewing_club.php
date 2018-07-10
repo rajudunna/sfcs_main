@@ -1,41 +1,28 @@
 <html>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.jqueryui.min.css" />
-<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+<?php 
+include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+?>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
- <script>
+<script>
  $(document).ready(function(){
+	var url1 = '<?= getFullURL($_GET['r'],'sewing_club.php','N'); ?>';
+    console.log(url1);
     $("#style").change(function(){
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected = this.value;
-	 window.location.href ="http://localhost/sfcs_app/app/production/controllers/sewing_job/sewing_club.php?style="+valueSelected
+	  window.location.href =url1+"&style="+valueSelected
     });
 	 $("#schedule").change(function(){
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected2 = this.value;
-	 window.location.href ="http://localhost/sfcs_app/app/production/controllers/sewing_job/sewing_club.php?schedule="+valueSelected2
+	   window.location.href =url1+"&schedule="+valueSelected2
+	 //window.location.href ="http://localhost/sfcs_app/app/production/controllers/sewing_job/sewing_club.php?schedule="+valueSelected2
     });
 });
 </script>
-</html>
-<?php   
-   include("../../../../common/config/config.php");
-   include("../../../../common/config/functions.php");
-  include("../../../../common/config/user_acl_v1.php");
-  include("../../../../common/config/headers.php");
-   include('/template/header.php');
- ?>
-
 <head>
 <div class = 'panel panel-primary'>
 <div class = 'panel-heading'>
@@ -54,8 +41,17 @@
 	 //echo $variable = "<script>document.write(valueSelected)</script>";
 	 if(isset($_POST['myval'])){
 		$value = $_POST['myval'];
+		//echo $value;  
+		//die();
 		$value1 = explode(",",$value);
 		$list1 = "'". implode("', '", $value1) ."'";
+		//print_r($value1);
+		//echo count($value1);
+		$checked_count = count($value1);
+        //echo $checked_count;
+			//die();
+			if($checked_count > 1)
+			{
 		//print_r($value1);
 		//echo min($value1);
 		//var_dump($value1[0]);
@@ -77,7 +73,8 @@
 		$rows_count22=mysqli_num_rows($result22);
 		// echo $rows_count22;die();
 		if($rows_count22 > 0){
-			  echo 'Sorry! Some of the jobs were already scanned';
+			  //echo 'Sorry! Some of the jobs were already scanned';
+			  echo "<script>sweetAlert('Sorry! Some of the jobs were already scanned','','warning');</script>";
 		}
 		
 		else{
@@ -103,6 +100,13 @@
 		
 			}
 		}
+		else{
+			//echo "Please Select More than One Sewing Job to Club";
+			//swal('Please Select More than One Sewing Job to Club','','warning');
+			echo "<script>sweetAlert('Please Select More than One Sewing Job to Club','','warning');</script>";
+			
+		}
+	 }
 ?>
 <?php
 $sql="select distinct order_style_no from bai_orders_db";	
@@ -514,4 +518,5 @@ div#example_filter {
 </style>
 </body>
 
-   
+</html>
+

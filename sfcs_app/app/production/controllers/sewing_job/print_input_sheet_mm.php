@@ -1,41 +1,15 @@
-<!-- <style type="text/css"> 
-    table.gridtable { 
-        font-family:arial; 
-        font-size:12px; 
-        color:#333333; 
-        border-width: 1px; 
-        border-color: #666666; 
-        border-collapse: collapse; 
-         
-        /*height: 100%;  
-        width: 100%;*/ 
-    } 
-    table.gridtable th { 
-        border-width: 1px; 
-        padding: 3.5px; 
-        border-style: solid; 
-        border-color: #666666; 
-        background-color: #ffffff; 
-    } 
-    table.gridtable td { 
-        border-width: 1px; 
-        padding: 3.5px; 
-        border-style: solid; 
-        border-color: #666666; 
-        background-color: #ffffff; 
-    } 
-</style> --> 
-<script> 
-function printPage(printContent) { 
-    var display_setting="toolbar=yes,menubar=yes,scrollbars=yes,width=1050, height=600"; 
 
-    var printpage=window.open("","",display_setting); 
-    printpage.document.open(); 
-    printpage.document.write('<html><head><title>Print Page</title></head>'); 
-    printpage.document.write('<body onLoad="self.print()" align="center">'+ printContent +'</body></html>'); 
-    printpage.document.close(); 
-    printpage.focus(); 
-}
+<script> 
+    function printPage(printContent) { 
+        var display_setting="toolbar=yes,menubar=yes,scrollbars=yes,width=1050, height=600"; 
+
+        var printpage=window.open("","",display_setting); 
+        printpage.document.open(); 
+        printpage.document.write('<html><head><title>Print Page</title></head>'); 
+        printpage.document.write('<body onLoad="self.print()" align="center">'+ printContent +'</body></html>'); 
+        printpage.document.close(); 
+        printpage.focus(); 
+    }
 </script> 
 <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
 
@@ -66,34 +40,16 @@ function printPage(printContent) {
                 { 
                     $schs_array1[]=$row["sch"];    
                     $order_tid = $row["order_tid"]; 
-                } 
-                
-                $operation=array("","Single Colour & Single Size","Multi Colour & Single Size","Multi Colour & Multi Size","Single Colour & Multi Size(Non Ratio Pack)","Single Colour & Multi Size(Ratio Pack)"); 
+                }
                 
                 $sql2="select distinct packing_mode as mode from $bai_pro3.packing_summary_input where order_del_no in (".$schedule.") "; 
                 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 while($row2=mysqli_fetch_array($result2)) 
                 { 
                     $packing_mode=$row2["mode"];     
-                } 
+                }
                 
-                if (sizeof($schs_array1)>1) 
-                { 
-                    $sql="select distinct order_joins from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") "; 
-                    //echo $sql; 
-                    $result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                    while($row=mysqli_fetch_array($result)) 
-                    { 
-                        $joinSch=substr($row["order_joins"], 1); 
-                        //echo $joinSch;             
-                    } 
-                } 
-                else 
-                { 
-                    $joinSch=$schs_array1[0]; 
-                    //echo $joinSch; 
-                } 
-                
+                $joinSch=$schedule; 
                 //$sql2="select * from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$joinSch\" "; 
                 $sql2="select order_style_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$joinSch\" "; 
                 

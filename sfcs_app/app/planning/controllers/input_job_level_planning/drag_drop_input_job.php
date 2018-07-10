@@ -609,24 +609,23 @@ $module_ref_no=$_GET["module"];
 
 	if($cutno!='All')
 	{
-		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and acutno=$cutno and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
+		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and acutno=$cutno and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
 	}
 	else
 	{
-		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
+		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
 	}
 	// echo $sql."<br/>";
 	mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$sql="select * from $newfiltertable";
-	
-	mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	//docketno-colorcode cutno-cut_status
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$code.=$sql_row['input_job_no_random']."-"."J".$sql_row['input_job_no']."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."*";
+		$input_job_no = 'J'.leading_zeros($sql_row['input_job_no'], 3);
+		$code.=$sql_row['input_job_no_random']."-".$input_job_no."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."-".$sql_row['type_of_sewing']."*";
 		//echo "Doc=".$doc_no."<br>";
 		$style=$sql_row['order_style_no'];
 	}
@@ -649,6 +648,7 @@ $module_ref_no=$_GET["module"];
 
 $code_db=array();
 $code_db=explode("*",$code);
+// var_dump($code_db);
 // echo "Code Size:".sizeof($code_db)."</br>";
 // exit;
 ?>		
@@ -659,7 +659,12 @@ $code_db=explode("*",$code);
 <?php echo "Style:$style | Schedule: $schedule | color: $color"; ?>
 </div>
 <div class="panel-body">
-<form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()"><input type="hidden" name="listOfItems" value=""><input class='btn btn-success btn-sm pull-right' type="button" name="saveButton" id='saveButton' onclick='do_disable()' value="Save"></form>
+<h4><span class="label label-info">Note: Yellow Color indicates Excess/Sample Job</span></h4>
+<form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()">
+	<input type="hidden" name="listOfItems" value="">
+	<input class='btn btn-success btn-sm pull-right' type="button" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
+</form>
+<br>
 <div id="dhtmlgoodies_dragDropContainer">
 	<!-- <div id="topBar">
 		<img src='images/heading3.gif'>
@@ -675,17 +680,27 @@ $code_db=explode("*",$code);
 			{
 				$code_db_new=array();
 				$code_db_new=explode("-",$code_db[$i]);
-				
+				// var_dump($code_db_new);
 				if($code_db_new[2]=="DONE")
 				{
 					$check= "#0c10e1";
+					$font_color = 'white';
 				}
 				else
 				{
 					$check="#0c10e1"; // red
+					$font_color = 'white';
 				}
-				
-				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check; border-color:#b8daff; color:#f6f6f6;\"><strong>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</strong></li>";
+
+				if ($code_db_new[7] == 2)
+				{
+					$check = 'yellow'; // yellow for excess/sample cut
+					$font_color = 'black';
+				}
+
+				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check; border-color:#b8daff; color:#f6f6f6;\">
+							<strong><font color='$font_color'>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</font></strong>
+						</li>";
 			}
 		?>
 			
@@ -790,6 +805,7 @@ $code_db=explode("*",$code);
 						$sql_num_check=mysqli_num_rows($sql_result1);
 						while($sql_row1=mysqli_fetch_array($sql_result1))
 						{
+							$type_of_sewing=$sql_row1['type_of_sewing'];
 							$doc_no_ref=$sql_row1['doc_no'];
 							$doc_no=$sql_row1["input_job_no_random_ref"];						
 							$style1=$sql_row1['order_style_no'];
@@ -810,26 +826,33 @@ $code_db=explode("*",$code);
 							
 							
 							
-							
-							if($style==$style1  and $schedule==$schedule1)
-							{
-								$id="#f02009";
-							}
-							
-							
-							
-							
 							$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$color_code1.$acutno1,80)."\n".str_pad("Qty:".$total_qty1,90);
 							if($style1!=NULL)
 							{
 								if($style==$style1  and $schedule==$schedule1)
 								{
-									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;background-color:'.$id.'; color:#f6f6f6;" title="'.$title.'"><strong>J'.$cut_no1."(".$style_id_new.')</strong></li>';
+									if ($type_of_sewing == 2)
+									{
+										$check = 'yellow'; // yellow for excess/sample cut
+										$font_color = 'black';
+									} else {
+										$check = '#f02009';
+										$font_color = '#f6f6f6';
+									}
+									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;background-color:$check;" title="'.$title.'"><strong><font color="$font_color">J'.$cut_no1."(".$style_id_new.')</font></strong></li>';
 								}
 								else
 								{
-									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;color:#a94442;" title="'.$title.'"><strong>J'.$cut_no1."(".$style_id_new.')</strong></li>';
-								}//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
+									if ($type_of_sewing == 2)
+									{
+										$check = 'yellow'; // yellow for excess/sample cut
+										$font_color = 'black';
+									} else {
+										$check = '#f02009';
+										$font_color = '#a94442';
+									}
+									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;background-color:$check;" title="'.$title.'"><strong><font color="$font_color">J'.$cut_no1."(".$style_id_new.')</font></strong></li>';
+								}
 							}	
 							
 						}
