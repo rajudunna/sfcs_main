@@ -126,7 +126,7 @@ if(isset($_POST['date']))
 			$csnb=explode("^",$csnb_code);
 			
 			$note.=$doc_no."-".$mqt."<br/>";
-			
+			$dat=date("Y-m-d");
 			if($zone>0)
 			{
 				$dat=date("Y-m-d", strtotime($dat))." ".$zone.":00:00";
@@ -163,7 +163,6 @@ if(isset($_POST['date']))
 				$nop=$csnb[2];
 				$buyer=$csnb[3];
 				$sec=$csnb[4];
-				$dat=date('Y-m-d');
 				// echo "<script>alert('till rework if condition');</script>";
 				//REWORK
 				if($rew_qty>=0 and $rew_qty!="")
@@ -190,14 +189,14 @@ if(isset($_POST['date']))
 	echo "<h2><font color=green>Data Saved Successfully!!</font></h2>";
 	echo "<a href= '$back_url' class='btn btn-primary'>Click Here to go back</a>";
 
-	echo '<script type="text/javascript">
-            function Redirect() {
-               window.location="'.$back_url.'";
-            }
+	// echo '<script type="text/javascript">
+    //         function Redirect() {
+    //            window.location="'.$back_url.'";
+    //         }
             
-            document.write("You will be redirected back in 5 sec.");
-            setTimeout("Redirect()", 5000);
-      </script>';
+    //         document.write("You will be redirected back in 5 sec.");
+    //         setTimeout("Redirect()", 5000);
+    //   </script>';
 		
 	$usr_msg.="</table>";
 	if ($flag!=1) {
