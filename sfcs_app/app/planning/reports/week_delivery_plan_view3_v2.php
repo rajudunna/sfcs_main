@@ -32,63 +32,97 @@ $end_date_w=date("Y-m-d",$end_date_w);
 
 </style>
 
-<style>
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-white-space:nowrap; 
-}
-
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    	background-color: #29759C;
-	color: WHITE;
-white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
-
-
-}
-
-}
-</style>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'common/css/TableFilter_EN/filtergrid.css',3,'R')?>"></script>
+<script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
 <script>
-function dodisablenew()
-{
-	document.getElementById('update').disabled='true';
-}
-
-
-function enableButton() 
-{
-	if(document.getElementById('option').checked)
+	function dodisablenew()
 	{
-		document.getElementById('update').disabled=false;
-	} 
-	else 
-	{
-		document.getElementById('update').disabled=true;
+		document.getElementById('update').disabled='true';
 	}
-}
+
+
+	function enableButton() 
+	{
+		if(document.getElementById('option').checked)
+		{
+			document.getElementById('update').disabled=false;
+		} 
+		else 
+		{
+			document.getElementById('update').disabled=true;
+		}
+	}
+	$(document).ready(function(){
+
+		$('#click_me').css({'display':'block'});
+		$('#tableone').css({'border':'1px solid black'});
+		$('td').css({'border':'1px solid black'});
+		$('th').css({'border':'1px solid black'});
+		var table3Filters = {
+			status_bar: true,
+			sort_select: true,
+			alternate_rows: false,
+			loader_text: "Filtering data...",
+			loader: true,
+			rows_counter: true,
+			display_all_text: "Display all",
+			btn_reset : true,
+		};
+		setFilterGrid("tableone",table3Filters);
+		$('#reset_tableone').addClass('btn btn-warning');
+	});
+	
+	function get_excel(){
+		var csv_value=$('#tableone').table2CSV({delivery:'value'});
+		$("#csv_weekly").val(csv_value);
+	}	
+
+		// jQuery(function() {
+	// 	var table = jQuery("#tableone");
+
+	// 	jQuery(window).scroll(function() {
+	// 		var windowTop = jQuery(window).scrollTop();
+	// 		if (windowTop > table.offset().top) {
+	// 			jQuery("thead", table).addClass("Fixed").css("top", windowTop);
+	// 		}
+	// 		else {
+	// 			jQuery("thead", table).removeClass("Fixed");
+	// 		}
+	// 	});
+	// });
+
+
+	// $('.fltrow').remove();
+	// var tableID = 'tableone';
+	// var filename = 'weekly_delivery_report.xls';
+    // var downloadLink;
+    // var dataType = 'application/vnd.ms-excel';
+    // var tableSelect = document.getElementById(tableID);
+    // var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    // // Create download link element
+    // downloadLink = document.createElement("a");
+
+    // document.body.appendChild(downloadLink);
+    
+    // if(navigator.msSaveOrOpenBlob){
+    //     var blob = new Blob(['\ufeff', tableHTML], {
+    //         type: dataType
+    //     });
+    //     navigator.msSaveOrOpenBlob( blob, filename);
+    // }else{
+    //     // Create a link to the file
+    //     downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+    //     // Setting the file name
+    //     downloadLink.download = filename;
+        
+    //     //triggering the function
+    //     downloadLink.click();
+    // }
+	// //location.reload();
+
+
 </script>
 
 <div class="panel panel-primary">
@@ -276,33 +310,77 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result) > 0)
 	{
+		$excel_link = getFullURLLevel($_GET['r'],'export_excel_weekly_delivery_plan.php',0,'R');
+		echo '<form action="'.$excel_link.'" method="POST">
+				<input type="hidden" name="csv_weekly" id="csv_weekly">
+				<input type="submit" value="Export to Excel" id="click_me" onclick="get_excel()" class="btn btn-primary btn-sm" >
+		</form>';
+		
 		echo '<form method="post" name="test" action='.getFullURL($_GET['r'],'week_delivery_plan_edit_process.php','N').'>
+			
 			<p style="float:right">
 				<input type="checkbox" name="option"  id="option" height= "21px" onclick="javascript:enableButton();">Enable
 				<input type="submit" name="update" id="update" class="btn btn-success" disabled value="Update">
 			</p>';
 		echo '</form>';
-		echo '<table id="tableone" name="table_one" cellspacing="0" class="table table-bordered"><thead>';
+		echo '<table id="tableone" name="tableone" cellspacing="0" class="table table-bordered"><thead>';
 
-		echo '<tr>
-		<th>S. No</th>	<th class="filter">Buyer Division</th>	<th class="filter">MPO</th>	<th class="filter">CPO</th>	<th>Customer Order No</th>	<th>Z-Feature</th><th class="filter">Style No.</th>	<th class="filter">Schedule No.</th>	<th>Colour</th><th>Actual Cut %</th><th>Ext Ship %</th>	<th>Order Total</th><th>Actual Total</th><th>Act Out %</th><th class="filter">Current Status</th><th>Rejection %</th><th>M3 Ship Qty</th><th>Total</th><th>Size</th><th>Quantity</th>';
+		echo '
+				<tr class="danger">
+				<th>S. No</th>
+				<th class=" filter">Buyer Division</th>
+				<th class=" filter">MPO</th>	
+				<th class=" filter">CPO</th>	
+				<th>Customer Order No</th>	
+				<th>Z-Feature</th>
+				<th class="filter">Ex Factory</th>
+				<th class="filter">Rev. Ex-Factory</th>
+				<th class="filter" >Style No.</th>	
+				<th class="filter" >Schedule No.</th>
+
+				<th>Colour</th>
+				<th>Order Total</th>
+				<th>Ext Ship %</th>
+				<th>Size</th>
+				<th>Quantity</th>
+				<th>Total</th>
+				<th>Actual Cut %</th>
+				<th>Actual Total</th>
+				<th>Act Out %</th>
+				<th>Rejection %</th>
+
+				<th>Embellishment</th>
+				<th class="filter">Packing Method</th>
+				<th>M3 Ship Qty</th>
+				<th class="filter">Current Status</th>
+				<th>Plan End Date</th>
+				<th>Mode</th>
+				<th class="filter" >Rev. Mode</th>
+				<th class="filter">Exe. Sections</th>';
 		if(!isset($_POST['custom']))
 		{
-			//echo '<th>XS</th>	<th>S</th>	<th>M</th>	<th>L</th>	<th>XL</th>	<th>XXL</th>	<th>XXXL</th>	<th>S06</th><th>S08</th>	<th>S10</th>	<th>S12</th>	<th>S14</th>	<th>S16</th>	<th>S18</th>	<th>S20</th>	<th>S22</th>	<th>S24</th>	<th>S26</th>	<th>S28</th><th>S30</th>';
+			echo   '<th>Plan</th>
+					<th>Actual</th>
+					<th>Plan</th>
+					<th>Actual</th>
+					<th>Plan</th>
+					<th>Actual</th>	
+					<th>Plan</th>
+					<th>Actual</th>
+					<th>Plan</th>
+					<th>Actual</th>
+					<th>Plan</th>
+					<th>Actual</th>';
 		}
 
-
-		echo '<th class="filter">Ex Factory</th><th class="filter">Rev. Ex-Factory</th><th class="filter">Mode</th>
-		  <th class="filter">Rev. Mode</th><th class="filter">Packing Method</th><th>Plan End Date</th>	
-		  <th class="filter">Exe. Sections</th><th>Embellishment</th>';
-		if(!isset($_POST['custom']))
-		{
-			echo '<th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th>	
-				  <th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th>';
-		}
-		echo '	<th>Plan Module</th><th>Actual Module</th><th>Planning Remarks</th><th>Production Remarks</th>
-				<th>Commitments</th><th>Remarks</th>
-			</tr>';
+		echo '  <th>Plan Module</th>
+				<th>Actual Module</th>
+				<th>Planning Remarks</th>
+				<th>Production Remarks</th>
+				<th>Commitments</th>
+				<th>Remarks</th>';
+	
+		echo '</tr>';
 		echo '</thead><tbody>';
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -880,13 +958,65 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 					}
 					// echo "<br>".$size_val."<br>";
 					if($size_val>0){
-						echo "<tr>
-							 <td $highlight> $x  </td>	<td $highlight>$buyer_division</td>	<td $highlight>$mpo</td>	<td $highlight>$cpo</td>	<td $highlight>$order_no</td>	<td $highlight>$z_feature</td><td $highlight>$style</td>	<td $highlight>$schedule_no</td>	<td $highlight>$color</td><td$highlight>$act_cut_per</td><td$highlight>$ext_cut_per</td>	<td $highlight>$order_total</td><td $highlight>$plan_total</td><td $highlight>$act_out_per</td><td $highlight>$status</td><td$highlight>$rej_per</td><td$highlight>$ship_qty</td><td $highlight>$actu_total</td>";
-						echo "<td $highlight>".strtoupper($title_size)."</td><td>".$size_val." </td>"; 
-						echo "<td $highlight>$ex_factory_date</td><td $highlight>$rev_ex_factory_date</td>	<td $highlight>$mode</td><td $highlight>$rev_mode</td>	<td $highlight>$packing_method</td>	<td $highlight>$plan_comp_date</td><td $highlight>".implode(",",$executed_sec)."</td><td $highlight>$embl_tag</td>";
-						echo "<td $highlight>$plan_sec1</td>	<td $highlight>$actu_sec1</td>	<td $highlight>$plan_sec2</td>	<td $highlight>$actu_sec2</td>	<td $highlight>$plan_sec3</td>	<td $highlight>$actu_sec3</td>	<td $highlight>$plan_sec4</td>	<td $highlight>$actu_sec4</td>	<td $highlight>$plan_sec5</td>	<td $highlight>$actu_sec5</td>	<td $highlight>$plan_sec6</td>	<td $highlight>$actu_sec6</td>"; 
-						echo "<td $highlight>".$plan_mod."</td>	<td $highlight>".$act_mod."</td><td $highlight>".$edit_rem3."</td><td>".$edit_rem.$edit_rem2."</td>
-							 </tr>";
+						$row_count++;
+						echo "
+							<tr>
+							<td $highlight> $x  </td>	
+							<td $highlight>$buyer_division</td>
+							<td $highlight>$mpo</td>	
+							<td $highlight>$cpo</td>	
+							<td $highlight>$order_no</td>	
+							<td $highlight>$z_feature</td>
+							<td $highlight>$ex_factory_date</td>
+							<td $highlight>$rev_ex_factory_date</td>
+							<td $highlight>$style</td>	
+							<td $highlight>$schedule_no</td>
+							
+							<td $highlight>$color</td>
+							<td $highlight>$order_total</td>
+							<td $highlight>$ext_cut_per</td>
+							<td $highlight>".strtoupper($title_size)."</td>
+							<td>$size_val</td> 
+							<td $highlight>$actu_total</td>
+							<td $highlight>$act_cut_per</td>
+							<td $highlight>$plan_total</td>
+							<td $highlight>$act_out_per</td>
+							<td $highlight>$rej_per</td>
+							
+							<td $highlight>$embl_tag</td>
+							<td $highlight>$packing_method</td>
+							<td $highlight>$ship_qty</td>	
+							<td $highlight>$status</td>
+							<td $highlight>$plan_comp_date</td>
+							<td $highlight>$mode</td>
+							<td $highlight>$rev_mode</td>
+							<td $highlight>".implode(",",$executed_sec)."</td>
+							";
+
+						if(!isset($_POST['custom'])){
+
+							echo "
+								<td $highlight>$plan_sec1</td>	
+								<td $highlight>$actu_sec1</td>	
+								<td $highlight>$plan_sec2</td>	
+								<td $highlight>$actu_sec2</td>	
+								<td $highlight>$plan_sec3</td>	
+								<td $highlight>$actu_sec3</td>	
+								<td $highlight>$plan_sec4</td>	
+								<td $highlight>$actu_sec4</td>	
+								<td $highlight>$plan_sec5</td>	
+								<td $highlight>$actu_sec5</td>	
+								<td $highlight>$plan_sec6</td>	
+								<td $highlight>$actu_sec6</td>
+								";
+						}	
+						echo "
+						    <td $highlight>$plan_mod</td>	
+							<td $highlight>$act_mod</td>
+							<td $highlight>$edit_rem3</td>
+							<td>$edit_rem$edit_rem2</td>
+							</tr>";
+
 						$x+=1;
 					}
 					
@@ -894,6 +1024,15 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			}
 	}
 	//echo $i;
+	if($row_count==0){
+		echo "<font size='11px' color='#ff0000'>NO Data Found</font>";
+		echo "<script>
+			$(document).ready(function(){
+				$('#click_me').css({'display':'none');
+				$('#update').css({'display':'none');
+			});
+		</script>";
+	}
 	echo '</tbody>';
 	echo '</table>';
 	echo '</div>';
@@ -906,35 +1045,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 ?>
 
-<script language="javascript" type="text/javascript">
 
-	var table3Filters = {
-        status_bar: true,
-	    sort_select: true,
-		alternate_rows: false,
-		loader_text: "Filtering data...",
-		loader: true,
-		rows_counter: true,
-		display_all_text: "Display all",
-		btn_reset : true,
-	};
-	setFilterGrid("tableone",table3Filters);
-
-	jQuery(function() {
-		var table = jQuery("#tableone");
-
-		jQuery(window).scroll(function() {
-			var windowTop = jQuery(window).scrollTop();
-			if (windowTop > table.offset().top) {
-				jQuery("thead", table).addClass("Fixed").css("top", windowTop);
-			}
-			else {
-				jQuery("thead", table).removeClass("Fixed");
-			}
-		});
-	});
-
-</script>
 
 
 </div>

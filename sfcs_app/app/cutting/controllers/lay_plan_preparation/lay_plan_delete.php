@@ -328,7 +328,7 @@ if(isset($_POST["submit"]))
                     mysqli_query($link, $sql5) or die("Error=5".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     // echo $sql5."<br>"; 
                      
-                    $sql7="update cat_stat_log set clubbing=0 where order_tid=\"".$order_tid[$i]."\""; 
+                    $sql7="update $bai_pro3.cat_stat_log set clubbing=0,category='',purwidth=0,gmtway='',patt_ver='' where order_tid=\"".$order_tid[$i]."\""; 
                     mysqli_query($link, $sql7) or die("Error=7".mysqli_error($GLOBALS["___mysqli_ston"]));  
                     // echo $sql7."<br>"; 
                      
@@ -338,7 +338,7 @@ if(isset($_POST["submit"]))
                         $sql88="select * from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\"";
                         $result88=mysqli_query($link, $sql88) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         // echo $sql88."<br>"; 
-                        // if(mysqli_num_rows($result88)>0) 
+                        if(mysqli_num_rows($result88)>0) 
                         { 
                             $sql881="select GROUP_CONCAT(doc_no) as doc_no from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\""; 
 							$result88=mysqli_query($link, $sql881) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 

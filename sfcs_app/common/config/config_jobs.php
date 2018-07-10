@@ -27,11 +27,14 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
+$plant_m3_wh_code='E54';
+
 //material requirement in week_del_mail_v2
 $server="BLL-DEVRPT-01";
 $database="M3_BEL";
-$userid="BAIMacroReaders";
-$passwrd="BAI@macrosm3";
+$userid="BELMacroReader";
+$password="bel@macrosm3";
+
 // bel data upload Sqlsrv Connections
 $sqsrv_server = "berwebsrv01";
 $sqsrv_id = "sa";

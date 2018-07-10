@@ -2272,11 +2272,11 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
 		if(!in_array($authorized,$has_permission))
 		{
-			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".$temp[2]."\", ".$temp[1].", $i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".trim($temp[2])."\", \"".$temp[1]."\", $i)' value=\"".trim($temp[2])."\" />";
 		}
 		else
 		{
-			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".$temp[2]."\", ".$temp[1].", $i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".trim($temp[2])."\", \"".$temp[1]."\", $i)' value=\"".trim($temp[2])."\" />";
 		}		
 	}
 	else
@@ -2299,7 +2299,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  echo "
 	  <td height=50 class='xl12824082' style='height:15.0pt;background-color: ".$insp_status.";color:white'>".$temp[1]."<input type='hidden' id='ele_tid[$i]' name='ele_tid[$i]' value='".$temp[0]."'><input type='hidden' name='ele_check[$i]' value=''><input type='hidden' name='tot_elements' id='tot_elements' value='".sizeof($values)."'></td>";
 	  
-	  echo "<td class=xl12824082 style='border-left:none'>".$temp_shade_tag."<input type='hidden' id='ele_shades[$i]'  name='ele_shades[$i]' value='".$temp[2]."'></td>
+	  echo "<td class=xl12824082 style='border-left:none'>".$temp_shade_tag."<input type='hidden' id='ele_shades[$i]'  name='ele_shades[$i]' value='".trim($temp[2])."'></td>
 
 	  <td class=xl12824082 style='border-left:none'>".$temp[3]."<input class='hidden' type='hidden' id='ele_t_length".$i."' name='ele_t_length[$i]' value='".$temp[3]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_len float' ".$readonly." type='text'  min='0'  id='ele_c_length".$i."'  onkeyup='Subtract(".$i.");' name='ele_c_length[$i]' value='".$temp[4]."' onchange='change_body(2,this.name,$i)' ></td>
@@ -3106,12 +3106,12 @@ function change_body(x,y,z)
 }
 function validate_unique_shade(shde, roll, index)
 {
-	var ele_shade = $('#ele_shade\\['+index+'\\]')
+	var ele_shade = $('#ele_shade\\['+index+'\\]');
 	console.log('ele_shade['+index+']');
 	var arr = new Array();
 	$('.unique_shade_'+roll).each(function(){
 		if($(this).val() != ''){
-			arr.push($(this).val());
+			arr.push($(this).val().toUpperCase());
 		}
 	});
 	if(arr.length > 0){

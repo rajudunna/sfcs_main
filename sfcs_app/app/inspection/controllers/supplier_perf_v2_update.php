@@ -188,7 +188,7 @@ if(isset($_POST['update']))
 	//  }
 	}
 	 echo "<script>sweetAlert('\"$total_rows_updated\" Records Updated Successfully','','success');</script>";
-		  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"supplier_perf_v2.php",0, "N")."\"; }</script>";
+		  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";
 
 }
 

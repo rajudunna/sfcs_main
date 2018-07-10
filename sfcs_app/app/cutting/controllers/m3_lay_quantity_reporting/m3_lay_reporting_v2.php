@@ -89,8 +89,8 @@ if(isset($_POST['confirm']))
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error1.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result)==0)
 						{
-							$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no,sfcs_status) values 
-							(NOW(),'$style','$schedule','$color[$i]','".$size_db[$i]."',$original_docs[$i],".$qty_db[$i].",USER(),'LAY',$original_docs[$i],0,'','".$job_no[$i]."',0)";
+							$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no,sfcs_status,m3_op_code) values 
+							(NOW(),'$style','$schedule','$color[$i]','".$size_db[$i]."',$original_docs[$i],".$qty_db[$i].",USER(),'LAY',$original_docs[$i],0,'','".$job_no[$i]."',0,10)";
 							// echo '<br>M3_tran_log Query= '.$sql;
 							mysqli_query($link, $sql) or exit("Sql Error1.2".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}
@@ -105,7 +105,7 @@ if(isset($_POST['confirm']))
 					
 					if(mysqli_num_rows($sql_result)==0)
 					{
-						$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no,sfcs_status) values (NOW(),'$style','$schedule','$color','".$size_db[$i]."',$key,".$qty_db[$i].",USER(),'LAY',$key,0,'','".$job_no[$i]."',0)";
+						$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no,sfcs_status,m3_op_code) values (NOW(),'$style','$schedule','$color','".$size_db[$i]."',$key,".$qty_db[$i].",USER(),'LAY',$key,0,'','".$job_no[$i]."',0,10)";
 						// echo '<br>M3_tran_log Query= '.$sql;
 						mysqli_query($link, $sql) or exit("Sql Error1.4".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}

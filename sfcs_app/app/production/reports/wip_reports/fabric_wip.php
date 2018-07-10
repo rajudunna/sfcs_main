@@ -13,11 +13,11 @@ table {
 	font-size:12px;
 	width:100%;
 	padding: 1em 1em 1em 1em;
-	margin-top:-1em;
+	/* margin-top:-1em; */
 	color:black;
 }
 th{
-	background-color:#003366;
+	background-color:#29759c;
 	color:white;
 	text-align:center;
 }
@@ -26,16 +26,19 @@ th{
 	color:#FFFFFF;
 	text-align:center;
 }
-.rdiv{
+.table-responsive{
+	margin-top:-40pt;
+}
+/* .rdiv{
 	color: black;
     display: inline-block;
-    background-color: #52e56b;
-    padding: 0.5em 0.5em 0.5em 0.5em;
+    background-color: #ec971f;
+    padding: 0.1em 0.1em 0.1em 0.1em;
     margin-bottom: 1em;
-    text-align: right;
-    margin-left: 70em;
-	margin-top:-6em;	
-}
+    text-align: left;
+    /* margin-left: 70em; */
+	/* margin-top:5em;	 */
+/* } */ 
 .ldiv{
 	color: black;
     display: inline-block;
@@ -52,7 +55,7 @@ th{
 <div class="panel-body"><br>
 <?php
 
-echo "<table class='table table-bordered table-striped' id='table1'><thead><tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>Fabric WIP Yards</th><th>Fabric WIP Pcs</th><th>EX-Factory</th></tr></thead>";
+echo "<div class='table-responsive'><table class='table table-bordered table-striped' id='table1'><thead><tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>Fabric WIP Yards</th><th>Fabric WIP Pcs</th><th>EX-Factory</th></tr></thead>";
 
 $sql=mysqli_query($link, "select order_tid,SUM(material_req) AS fabric_wip_yards,GROUP_CONCAT(doc_no) AS DOCNO,SUM((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl+a_s06+a_s08+a_s10++a_s12+a_s14+a_s16+a_s18+a_s20+a_s22+a_s24+a_s26+a_s28+a_s30)*a_plies) AS pcs from $bai_pro3.order_cat_doc_mk_mix WHERE fabric_status=5 and date >= \"2015-01-01\" AND act_cut_status=\"\" and category in (\"Body\",\"Front\") GROUP BY ORDER_TID ORDER BY DOC_NO");
 while($row=mysqli_fetch_array($sql))
@@ -98,19 +101,48 @@ while($row=mysqli_fetch_array($sql))
  
   echo "</tr>";
 }
-echo "</table>";
+echo "</table></div>";
 
 ?>
 
 <script language="javascript" type="text/javascript">
-//<![CDATA[
-	// var table6_Props = 	{
-	// 						rows_counter: true,
-	// 						btn_reset: false,
-	// 						loader: true,
-	// 						loader_text: "Filtering data..."
-	// 					};
-	// setFilterGrid( "table1",table6_Props );
-//]]>
+	$('#reset_table1').addClass('btn btn-warning');
+// <![CDATA[
+	var table6_Props = 	{
+							rows_counter: true,
+							btn_reset: true,
+							btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+	setFilterGrid( "table1",table6_Props );
+	$(document).ready(function(){
+		$('#reset_table1').addClass('btn btn-warning btn-xs');
+	});$('#reset_table1').addClass('btn btn-warning');
+// <![CDATA[
+	var table6_Props = 	{
+							rows_counter: true,
+							btn_reset: true,
+							btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+	setFilterGrid( "table1",table6_Props );
+	$(document).ready(function(){
+		$('#reset_table1').addClass('btn btn-warning btn-xs');
+	});
+// ]]>
 </script>
 </div></div>
+<style>
+.flt{
+	color:black;
+}
+#reset_table1{
+	width : 80px;
+	color : #fff;
+	margin-top : 80px;
+	margin-left : -110px;
+	margin-bottom:15pt;
+}
+</style>

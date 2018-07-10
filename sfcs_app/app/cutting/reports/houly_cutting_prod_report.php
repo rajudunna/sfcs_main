@@ -29,6 +29,7 @@ if(isset($_POST['submit']))
 	list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
 	$hour_start = $hour + 1;
 	?>
+	<hr>
 	<div class="panel panel-info">
 		<div class="panel-heading"><center><h4><strong>Hourly Cutting Production Report for <?php echo $from_date;?></strong></h4></center></div>
 			<style type="text/css">

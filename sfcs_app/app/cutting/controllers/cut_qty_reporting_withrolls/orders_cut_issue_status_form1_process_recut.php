@@ -11,6 +11,10 @@ function update_m3_or($doc_no,$plies,$operation,$link)
 {
 	//include("dbconf.php"); 
 	//include("functions.php"); 
+	global $link;
+	global $bai_pro3;
+	global $in_categories;
+	global $m3_bulk_ops_rep_db;
 	
 	$size_code_db=array('xs','s','m','l','xl','xxl','xxxl','s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50');
 	$size_qty=array();
@@ -176,6 +180,7 @@ $input_shortages=$_POST['shortages'];
 $input_remarks=$_POST['remarks'];
 $input_doc_no=$_POST['doc_no'];
 $tran_order_tid=$_POST['tran_order_tid'];
+$leader_name = $_POST['leader_name'];
 
 $plies=$_POST['plies'];
 $old_plies=$_POST['old_plies'];
@@ -217,7 +222,7 @@ if($plies>0)
 		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		$sql="update $bai_pro3.ct_cut_status_recut_v2 set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\" where doc_no=$input_doc_no";
+		$sql="update $bai_pro3.ct_cut_status_recut_v2 set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\",leader_name='$leader_name' where doc_no=$input_doc_no";
 		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	

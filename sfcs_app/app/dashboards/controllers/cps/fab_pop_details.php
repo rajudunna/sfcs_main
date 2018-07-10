@@ -36,110 +36,128 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 ?>
 <br/>
 <div class='row'>
-	<div class='col-md-2 pull-left'>
-		<a class='btn btn-primary' href = '<?= $url ?>'> Back</a>
-	</div>
+		<div class='col-md-2 pull-left'>
+			<a class='btn btn-primary' href = '<?= $url ?>'> Back </a>
+		</div>
+		<div class='col-md-10 pull-right'>
+			<p style='color:red'>Note : Please Print "Docket Print" Before Update Fabric Status</p>
+		</div>
 </div>
 <br/>
 <script src="../../../../common/js/sweetalert.min.js"></script>
 <script type="text/javascript">
 
-function verify_num(t,e){
-		if(e.keyCode == 8){
-			return false;
-		}
-		var c = /^[0-9, ]+$/;
-		var id = t.id;
-		var n = document.getElementById(id);
-		if( !((n.value).match(c)) ){
-			n.value = 0;
-			//alert('Please enter only numerics');
-			return false;
-		}
-	}
+// function verify_num(t,e){
+	
+// 		if(e.keyCode == 8){
+// 			return false;
+// 		}
+// 		var c = /^[0-9, ]+$/;
+// 		var id = t.id;
+// 		var n = document.getElementById(id);
+// 		var lot_length=n.value;
+// 		if( !((n.value).match(c)) ){
+// 			n.value ="";
+// 			//alert('Please enter only numerics');
+// 			return false;
+// 		}
+// 	}
 
 function check_validate()
-{	
+{
+	var print_valid=document.getElementById("print_validation").value;
+	var num_check=document.getElementById("sql_num_check").value;
 	var checkBox = document.getElementById("validate");
-	if (checkBox.checked == true){
-		
-		//var docket=document.getElementById("doc_no").value;
-	var total_req=parseInt(document.getElementById("tot_req").value);
-	var allocation=parseInt(document.getElementById("alloc_qty").value);
-	var selection=document.getElementById("issue_status").value;
-	var doc_tot=document.getElementById("doc_tot").value;
-	var alloc_doc=document.getElementById("alloc_doc").value;
-	// console.log(total_req);
-	if(0<allocation)
-		{
-			document.getElementById("submit").disabled=false;
-			if(total_req == allocation)
+	if(Number(print_valid)==Number(num_check)){
+		if (checkBox.checked == true){	
+			//var docket=document.getElementById("doc_no").value;
+		var total_req=parseInt(document.getElementById("tot_req").value);
+		var allocation=parseInt(document.getElementById("alloc_qty").value);
+		var selection=document.getElementById("issue_status").value;
+		var doc_tot=document.getElementById("doc_tot").value;
+		var alloc_doc=document.getElementById("alloc_doc").value;
+		// console.log(total_req);
+		if(0<allocation)
 			{
 				document.getElementById("submit").disabled=false;
-				document.getElementById('dvremark').style.display = "none";
-				//console.log("Total and alloc eq");
-			}
-			else if(total_req < allocation)
-			{
-				var diff=(allocation-total_req);
-				var numb = diff.toFixed(2);
-				if(confirm("You are sending morethan required quantity :"+numb+"Yrds. \n Are you Sure,You want to proceed..?"))
+				if(total_req == allocation)
 				{
-					document.getElementById('dvremark').style.display = "block";
-				}
-				else
-				{
-					document.getElementById("validate").checked=false;
-					document.getElementById("submit").disabled=true;
-					document.getElementById("remarks").value="";
+					document.getElementById("submit").disabled=false;
 					document.getElementById('dvremark').style.display = "none";
+					//console.log("Total and alloc eq");
 				}
+				else if(total_req < allocation)
+				{
+					var diff=(allocation-total_req);
+					var numb = diff.toFixed(2);
+					if(confirm("You are sending morethan required quantity :"+numb+"Yrds. \n Are you Sure,You want to proceed..?"))
+					{
+						document.getElementById('dvremark').style.display = "block";
+					}
+					else
+					{
+						document.getElementById("validate").checked=false;
+						document.getElementById("submit").disabled=true;
+						document.getElementById("remarks").value="";
+						document.getElementById('dvremark').style.display = "none";
+					}
+					
+				}
+				else if(allocation < total_req)
+				{
+					var diff=total_req-allocation;
+					numb = diff.toFixed(2);
+					if(confirm("You are sending lessthan required quantity :" +numb+ " Yrds. \n Are you Sure,You want to proceed..?"))
+					{
+						//alert("Test3");
+						//window.open("update.php?docket="+docket+"&check=check_out&flag=1", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+						//documnet.getElementById("dvremark").style.display='block';
+						//documnet.getElementById("dvremark").style.display= '';
+						document.getElementById('dvremark').style.display = "block";
+					}
+					else
+					{
+						//alert("Test4");
+						//window.open("update.php?docket="+docket+"check=check_out", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+						//return false;
+						//documnet.getElementById("dvremark").style.display= '';
+						document.getElementById("validate").checked=false;
+						document.getElementById("submit").disabled=true;
+						document.getElementById("remarks").value="";
+						document.getElementById('dvremark').style.display = "none";
+					}
+				}
+			}
+			else if(allocation==0 && doc_tot==alloc_doc)
+			{
 				
+				sweetAlert("You have allocated \"STOCK\" for some of the dockets ","","warning");
+				document.getElementById('dvremark').style.display = "block";
+				document.getElementById("submit").disabled=false;
 			}
-			else if(allocation < total_req)
+			else
 			{
-				var diff=total_req-allocation;
-				numb = diff.toFixed(2);
-				if(confirm("You are sending lessthan required quantity :" +numb+ " Yrds. \n Are you Sure,You want to proceed..?"))
-				{
-					//alert("Test3");
-					//window.open("update.php?docket="+docket+"&check=check_out&flag=1", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
-					//documnet.getElementById("dvremark").style.display='block';
-					//documnet.getElementById("dvremark").style.display= '';
-					document.getElementById('dvremark').style.display = "block";
-				}
-				else
-				{
-					//alert("Test4");
-					//window.open("update.php?docket="+docket+"check=check_out", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
-					//return false;
-					//documnet.getElementById("dvremark").style.display= '';
-					document.getElementById("validate").checked=false;
-					document.getElementById("submit").disabled=true;
-					document.getElementById("remarks").value="";
-					document.getElementById('dvremark').style.display = "none";
-				}
+				//alert(allocation);
+				sweetAlert("Please allocate the material to the Docket"," ","warning");
+				document.getElementById("validate").checked=false;
+				document.getElementById("submit").disabled=true;
+				document.getElementById("remarks").value="";
+				document.getElementById('dvremark').style.display = "none";
+				return false;
 			}
-		}
-		else if(allocation==0 && doc_tot==alloc_doc)
-		{
-			
-			sweetAlert("You have allocated \"STOCK\" for some of the dockets ","","warning");
-			document.getElementById('dvremark').style.display = "block";
-			document.getElementById("submit").disabled=false;
-		}
-		else
-		{
-			//alert(allocation);
-			sweetAlert("Please allocate the material to the Docket"," ","warning");
-			document.getElementById("validate").checked=false;
+		}else{
 			document.getElementById("submit").disabled=true;
-			document.getElementById("remarks").value="";
-			document.getElementById('dvremark').style.display = "none";
-			return false;
 		}
+
 	}else{
+
+		sweetAlert("You should print docket print Before Update Staus","","warning");
+		document.getElementById("validate").checked=false;
 		document.getElementById("submit").disabled=true;
+		document.getElementById("remarks").value="";
+		document.getElementById('dvremark').style.display = "none";
+		return false;
+
 	}
 	
 
@@ -442,9 +460,11 @@ if($clubbing>0)
 }
 
 
-// echo "getting req qty : ".$sql1."</br>";
+//echo "getting req qty : ".$sql1."</br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
+$for_Staus_dis=$sql_num_check;
+//echo "Rows:".$sql_num_check;
 $enable_allocate_button=0;
 $comp_printed=array();
 $docket_num=array();
@@ -454,6 +474,7 @@ $total=0;$allc_doc=0;
 //this is flag for style automatic/manual 
 $style_flag=0;
 $Disable_allocate_flag=0;
+$print_validation=0;
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {	
 	if($style_flag==0){
@@ -517,8 +538,11 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 	$docket_num[]=$sql_row1['doc_no'];
 	//echo var_dump($docket_num);
-	if(strlen($sql_row1['plan_lot_ref'])>0)
-	{
+	//echo "</br>Length :".$sql_row1['plan_lot_ref']."</br>";
+	//if(strlen($sql_row1['plan_lot_ref'])>0)
+	if($sql_row1['plan_lot_ref']!='')
+	{	
+
 		$plan_lot_ref=$sql_row1['plan_lot_ref'];
 		$allc_doc++;
 		//echo $sql_row1['category']."</br>";
@@ -532,6 +556,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			echo "<td>Clubbed</td>";
 		}
+		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
 	}
 	else
@@ -573,12 +598,12 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 				$Disable_allocate=1;
 			}
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" name=\"pms".$sql_row1['doc_no']."\" id='address' 
-			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 readonly>".$seperated_lots."</textarea><br/>";
+			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 >".$seperated_lots."</textarea><br/>";
 
 		}else{
 
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" id='address' onkeyup='return verify_num(this,event)'
-			     onchange='return verify_num(this,event)' name=\"pms".$sql_row1['doc_no']."\" cols=12 rows=10 required></textarea><br/>";
+			     onchange='return verify_num(this,event)' name=\"pms".$sql_row1['doc_no']."\" cols=12 rows=10 ></textarea><br/>";
 
 		}
 		
@@ -642,25 +667,26 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$enable_allocate_button=1;
 	} 
 	
-	
+	//echo "Print Staus".$sql_row1['print_status']."</br>";	
 if($sql_row1['print_status']>0)
 {
 	echo "<td><img src=\"correct.png\"></td>";
-	echo "<td>";
+	$print_validation=$print_validation+1;
 	
-	
-	getDetails("D",$sql_row1['doc_no']);
-	echo "</td>";
 }
 else
 {
+	
 	echo "<td></td>";
-	echo "<td></td>";
+	
+
 }
+echo "<td>";	
+	getDetails("D",$sql_row1['doc_no']);
+	echo "</td>";
 
 echo "</tr>";
-unset($lotnos_array);
-$Disable_allocate_flag=$Disable_allocate_flag+$Disable_allocate;	
+unset($lotnos_array);	
 }
 echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td></tr>";
 echo "</table>";
@@ -668,10 +694,10 @@ echo "</table>";
 if($enable_allocate_button==1)
 {	
 	//disable allocate button
-	if($Disable_allocate_flag==0){
+	// if($Disable_allocate_flag==0){
 		echo "<input type=\"submit\" name=\"allocate\" value=\"Allocate\" class=\"btn btn-success\" onclick=\"button_disable()\">";
 	// echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
-	}
+	// }
 	
 }
 echo "</form>";
@@ -689,7 +715,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 //echo sizeof($docket_num)."<br>";
 if($fabric_status=="1")
 {
-	echo '<div class="alert alert-info"><strong>Fabric Status:</strong><br>Stock Out: <font color="green">Completed</font><br>Issue to Module: <font color="red">Pending</font></div>';
+	echo '<div class="alert alert-info"><strong>Fabric Status:</strong><br>Ready For Issuing: <font color="green">Completed</font><br>Issue to Module: <font color="red">Pending</font></div>';
 }
 $sql111="select ROUND(SUM(allocated_qty),2) AS alloc,count(distinct doc_no) as doc_count from $bai_rm_pj1.fabric_cad_allocation where doc_no in (".implode(",",$docket_num).")";
 //echo $sql111."<br>";
@@ -710,19 +736,20 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 ?>
 
 <?php
-if($Disable_allocate_flag==0){
+// if($Disable_allocate_flag==0){
+if($Disable_allocate_flag==$for_Staus_dis){
 ?>
 <form method="post" onsubmit=" return validate_but();">
 <table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
 <?php
-if($fabric_status!="5" && $fabric_status!="1")
-{
-	echo '<option value="1">Stock Out</option>';
-}
-if($fabric_status=="1")
-{
-	echo '<option value="1" disabled>Stock Out</option>';
-}
+// if($fabric_status!="5" && $fabric_status!="1")
+// {
+	echo '<option value="1">Ready For Issuing</option>';
+// }
+// if($fabric_status=="1")
+// {
+// 	echo '<option value="1" disabled>Ready For Issuing</option>';
+// }
 ?>
 <option value="5" <?php if($fabric_status=="5") { echo " selected"; }?>>Issue to Cutting</option>
 </select></td><td>
@@ -733,6 +760,8 @@ if($fabric_status=="1")
 <input type="hidden" value="<?php echo $schedule; ?>" name="schedule" id="schedule"/>
 <input type="hidden" value="<?php echo $allc_doc; ?>" name="alloc_doc" id="alloc_doc"/>
 <input type="hidden" value="<?php echo sizeof($docket_num); ?>" name="doc_tot" id="doc_tot"/>
+<input type="hidden" value="<?php echo $print_validation; ?>" name="print_validation" id="print_validation"/>
+<input type="hidden" value="<?php echo $for_Staus_dis; ?>" name="sql_num_check" id="sql_num_check"/>
 <td>
 <div id="dvremark" style="display: none">
  <center>Remark:</center>
@@ -743,6 +772,7 @@ if($fabric_status=="1")
 </div>
 </td><td>
 <?php
+//echo "Fabric status :".$fabric_status;
 if($pop_restriction==0)
 {
 	echo '<input type="submit" name="submit" id="submit" class="btn btn-success" value="Update" disabled="disabled">';
@@ -756,7 +786,8 @@ echo "<input type=\"hidden\" name=\"group_docs\" value=".implode(",",$docket_num
 </td></tr></table>
 </form>
 <?php
-}
+	}
+// }
 ?>
 
 <script>
@@ -841,17 +872,20 @@ if(isset($_POST['submit']))
 					$sql22="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
 					//Uncheck this
 					mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and cutno='".$doc_no_loc."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";
-				    //echo $sql211."<br>"; 
-					$sql_result211=mysqli_query($link, $sql211) or exit("Sql Error--211: $sql211".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_num_check=mysqli_num_rows($sql_result211);
-					//echo "No's".$sql_num_check."</br>";
-					if($sql_num_check==0)
+					if($issue_status==5)
 					{
-						$sql23="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,cutno,date,updated_by,remarks,log_stamp) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".$doc_no_loc."','".date("Y-m-d")."','".$username."','".$reason."','".date("Y-m-d H:i:s")."')";
-						//echo "Sql :".$sql23."</br>"; 
-						//Uncheck this
-						mysqli_query($link, $sql23) or exit("Sql Error----4".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and cutno='".$doc_no_loc."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";
+						//echo $sql211."<br>"; 
+						$sql_result211=mysqli_query($link, $sql211) or exit("Sql Error--211: $sql211".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_num_check=mysqli_num_rows($sql_result211);
+						//echo "No's".$sql_num_check."</br>";
+						if($sql_num_check==0)
+						{
+							$sql23="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,cutno,date,updated_by,remarks,log_stamp) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".$doc_no_loc."','".date("Y-m-d")."','".$username."','".$reason."','".date("Y-m-d H:i:s")."')";
+							//echo "Sql :".$sql23."</br>"; 
+							//Uncheck this
+							mysqli_query($link, $sql23) or exit("Sql Error----4".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}
 					}
 					$sql24="update $bai_rm_pj1.fabric_cad_allocation set status=2 where tran_pin=\"$tran_pin\"";
 					//Uncheck this
