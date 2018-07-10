@@ -65,15 +65,14 @@ echo '<br>
                     echo "<th>Size Set</th>";
                     echo "<th>Total Sewing Job Quantity</th>";
                     echo "<th>Sewing Job#</th>";
-<<<<<<< HEAD
+
                     if($scanning_methods="Bundle Level")
                     {
                         echo "<th>Barcode</th>";
                     }
                     //echo "<th>TID</th>";
                     //echo "<th>Doc# Ref</th>";
-=======
->>>>>>> 3b6ed26da6207c850b0e744fde75dcc519aba003
+
                     echo "</tr>";
 
                     $sql1x="SET SESSION group_concat_max_len = 1000000";
@@ -134,7 +133,7 @@ echo '<br>
                             $des_tag=$sql_row4x["destination"];
                             $size_codes=$sql_row4x['size_code'];
                         }
-<<<<<<< HEAD
+
                         //echo $des_tag;
                         echo "<tr>";
                         if($pending!=0)
@@ -178,7 +177,6 @@ echo '<br>
                             $url5 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
                             echo "<td><a class='btn btn-info btn-sm' href='$url5?style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&cutno=".$sql_row['acutno']."' onclick=\"return popitup2('$url5?style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&cutno=".$sql_row['acutno']."')\" target='_blank'>Generate Barcodes</a></td>";
                         }
-=======
                         
                         echo "<tr bgcolor='$bg_color'>";
                             echo "<td>".$sql_row['order_del_no']."</td>";
@@ -190,7 +188,7 @@ echo '<br>
                             $url4 = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
                             echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\">Job Sheet-".$sql_row['input_job_no']."</a><br>";
                             echo"</td>";
->>>>>>> 3b6ed26da6207c850b0e744fde75dcc519aba003
+
                         echo "</tr>";
                     }
                     ?>
