@@ -1,55 +1,3 @@
-
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!-- <script type="text/javascript" src="js/jquery.min.js"></script> -->
-<!-- <script type="text/javascript" src="js/datetimepicker_css.js"></script> -->
-<!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
-<!-- <link rel="stylesheet" type="text/css" href="table.css"> -->
-<?php
-	if($_GET['msg']==1){
-		echo "<script>sweetAlert('Sewing Job Not Generated ! There are No Size Codes for the Selected Style and Schedule','','info');</script>";
-	}
-?>
-<style type="text/css">
-#div-1a {
- position:absolute;
- top:65px;
- right:0;
- width:auto;
-float:right;
-table {
-    float:left;
-    width:33%;
-}
-</style>
-<style type="text/css" media="screen">
-/*====================================================
-	- HTML Table Filter stylesheet
-=====================================================*/
-/* @import "TableFilter_EN/filtergrid.css"; */
-
-/*====================================================
-	- General html elements
-=====================================================*/
-/* body{ 
-	/* margin:15px; padding:15px; border:1px solid #666; */
-	font-family:Arial, Helvetica, sans-serif; font-size:88%; 
-} */
-h2{ margin-top: 50px; }
-caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
-pre{ font-size:13px;  padding:5px; background-color:#f4f4f4; solid #ccc;  }
-.mytable{
-	width:100%; font-size:12px;
-	}
-div.tools{ margin:5px; }
-div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
-.mytable th{ background-color:#29759c; color:#FFF; padding:2px; solid #ccc; white-space: nowrap;}
-td{ padding:2px; white-space: nowrap;}
-</style>
-<!-- <script language="javascript" type="text/javascript" src="TableFilter_EN/actb.js"></script>External script -->
-<!-- <script language="javascript" type="text/javascript" src="TableFilter_EN/tablefilter.js"></script> -->
-
-
-
 <script language="javascript" type="text/javascript">
 	
 	var url1 = '<?= getFullURL($_GET['r'],'sewing_job_create_original.php','N'); ?>';
@@ -127,17 +75,14 @@ td{ padding:2px; white-space: nowrap;}
 		}
 	});
 	
-	function calculateqty1(sizeofsizes,sizeOfColors)
+	function calculateSewingJobQty(sizeofsizes,combo_no)
 	{
-		for (var row_count = 0; row_count < sizeOfColors; row_count++)
+		for(var size=0;size < sizeofsizes; size++)
 		{
-			for(var size=0;size < sizeofsizes; size++)
-			{
-				var GarPerCart=document.getElementById('GarPerCart_'+row_count+'_'+size).value;
-				var no_of_cartons=document.getElementById('no_of_cartons').value;
-				var SewingJobQty = GarPerCart*no_of_cartons;
-				document.getElementById('SewingJobQty_'+row_count+'_'+size).value=SewingJobQty;
-			}
+			var GarPerCart=document.getElementById('GarPerCart_'+size+'_'+combo_no).value;
+			var no_of_cartons=document.getElementById('no_of_cartons_'+combo_no).value;
+			var SewingJobQty = GarPerCart*no_of_cartons;
+			document.getElementById('SewingJobQty_'+size+'_'+combo_no).value=SewingJobQty;
 		}
 	}
 </script>
@@ -250,14 +195,21 @@ td{ padding:2px; white-space: nowrap;}
 						if($tbl_carton_ref_check>0)
 						{
 							// echo "carton props added, You can proceed";
-							if($bundle==0)
+							if($bundle > 0)
 							{
-								$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule)";
+								$combo = array();
+								$get_combo_query = "SELECT DISTINCT (combo_no) AS combo FROM `brandix_bts`.`tbl_carton_size_ref` WHERE parent_id = $c_ref";
+								$combo_result=mysqli_query($link, $get_combo_query) or exit("Error while getting Combo Details");
+								while($combo_details=mysqli_fetch_array($combo_result)) 
+								{
+									$combo[] = $combo_details['combo'];
+								}
+
+								$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN ($sch_id)";
 								// echo $sewing_jobratio_sizes_query.'<br>';
 								$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 								while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
 								{
-									$parent_id = $sewing_jobratio_color_details['parent_id'];
 									$color = $sewing_jobratio_color_details['color'];
 									$ref_size = $sewing_jobratio_color_details['size'];
 									$color_main = explode(",",$color);
@@ -491,24 +443,25 @@ td{ padding:2px; white-space: nowrap;}
 																		$individual_color = $individual_sizes_details['size_title'];
 																	}
 
-																	$qty_query = "SELECT garments_per_carton FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
+																	$qty_query = "SELECT garments_per_carton,combo_no FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
 																	// echo '<br>'.$qty_query;
 																	$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
 																	while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 																	{
 																		$qty = $qty_query_details['garments_per_carton'];
+																		$comboNO = $qty_query_details['combo_no'];
 																		if ($qty == '') {
 																			$qty=0;
 																		}
 																		if (mysqli_num_rows($individual_sizes_result) >0)
 																		{
 																			if ($size_main[$size_count] == $individual_color) {
-																				echo "<td><input type='text'  readonly name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value='".$qty."'></td>";
+																				echo "<td><input type='text'  readonly name='GarPerCart[$j][]' id='GarPerCart_".$size_count."_".$comboNO."' class='form-control integer' value='".$qty."'></td>";
 																			}
 																		}
 																		else
 																		{
-																			echo "<td><input type='hidden' readonly name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' value='0' /></td>";
+																			echo "<td><input type='hidden' readonly name='GarPerCart[$j][]' id='GarPerCart_".$size_count."_".$comboNO."' value='0' /></td>";
 																		}
 																	}
 																	
@@ -548,17 +501,24 @@ td{ padding:2px; white-space: nowrap;}
 																{
 																	$individual_color = $individual_sizes_details['size_title'];
 																}
-																if (mysqli_num_rows($individual_sizes_result) >0)
+																$qty_query = "SELECT combo_no FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
+																// echo '<br>'.$qty_query;
+																$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
+																while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 																{
-																	if ($size1[$size_count] == $individual_color) {
-																		echo "<td><input type='text' required readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																	$comboNO = $qty_query_details['combo_no'];
+
+																	if (mysqli_num_rows($individual_sizes_result) >0)
+																	{
+																		if ($size1[$size_count] == $individual_color) {
+																			echo "<td><input type='text' required readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$size_count."_".$comboNO."' class='form-control integer' value=''></td>";
+																		}
+																	}
+																	else 
+																	{
+																		echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$size_count."_".$comboNO."' class='form-control integer' value='0'></td>";
 																	}
 																}
-																else 
-																{
-																	echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$row_count."_".$size_count."' class='form-control integer' value='0'></td>";
-																}
-																
 															}
 													echo "</tr>";
 													$row_count++;
@@ -582,25 +542,39 @@ td{ padding:2px; white-space: nowrap;}
 									echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
 									echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
 									echo  "<input type=\"hidden\" value=\"$c_ref\" id=\"c_ref\" name=\"c_ref\">";
-						
+
+									// var_dump($combo);
 									echo "<div class='col-md-12'>
 											<table class='table table-bordered'>
 												<tr>
+													<th>Combo</th>
 													<th>No of Cartons</th>";
 													if($scanning_methods=='Bundle Level')
 													{
 													  echo "<th>Split</th>";	
 													}	
-													echo "<th>Excess From</th><th>Control</th>
+												echo "</tr>";
+												for ($i=0; $i < sizeof($combo); $i++)
+												{ 
+													echo "<tr>
+														<td>$combo[$i]</td>
+														<input type='hidden' name=combo[] value='".$combo[$i]."'>
+														<td><input type='text' required name='no_of_cartons[]' onchange=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer' value='0'></td>
+														";
+														if($scanning_methods=='Bundle Level')
+														{
+															echo"<td><input type='text' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'></td>";
+														}
+													echo "</tr>";
+												}
+	
+										echo "</table></div>";
+										echo "<div class='col-md-4'><table class='table table-bordered'>
+												<tr>
+													<th>Excess From</th><th>Control</th>
 												</tr>
 												<tr>
-													<td><input type='text' required name='no_of_cartons' onchange=calculateqty1($sizeofsizes,$size_of_ordered_colors); id='no_of_cartons' class='form-control integer' value=''></td>
-													";
-													if($scanning_methods=='Bundle Level')
-													{
-														echo"<td><input type='text' required name='split_qty' id='split_qty' class='form-control integer' value='0'></td>";
-													}
-													echo "<td>
+													<td>
 														<select name='exces_from' id='exces_from' required class='form-control'>
 															<option value=''>Select</option>
 															<option value='1'>First Cut</option>
@@ -625,9 +599,8 @@ td{ padding:2px; white-space: nowrap;}
 														echo "<input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
 													}
 													echo "</td>
-												</tr>";
-										echo "</table>";
-									echo "</div>";
+												</tr></table></div>";
+									echo "";
 									echo "</form>";
 								} 
 								else {
@@ -635,7 +608,7 @@ td{ padding:2px; white-space: nowrap;}
 								}
 							}
 														
-							if($bundle > 0)
+							if($bundle == 0)
 							{									
 								include("input_job_mix_ch_report.php");
 							}
@@ -652,12 +625,18 @@ td{ padding:2px; white-space: nowrap;}
 					$no_of_cartons=$_POST['no_of_cartons'];
 					$exces_from=$_POST['exces_from'];
 					$c_ref=$_POST['c_ref'];
-
-					// echo $c_ref;
+					$combo=$_POST['combo'];
 					
-					$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."',no_of_cartons=".$no_of_cartons.",split_qty='".$split_qty."' where id='".$c_ref."'";
+					$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."' where id='".$c_ref."'";
 					// echo $sql."<br>";
-					$sql_result=mysqli_query($link, $sql) or exit("Failed to update Carton Details");
+					mysqli_query($link, $sql) or exit("Failed to update Carton Details");
+					for ($i=0; $i < sizeof($combo); $i++)
+					{ 
+						$sql="update $brandix_bts.`tbl_carton_size_ref` set split_qty='".$split_qty[$i]."', no_of_cartons='".$no_of_cartons[$i]."'  where parent_id='".$c_ref."' and combo_no = $combo[$i]";
+						// echo $sql."<br>";
+						mysqli_query($link, $sql) or exit("Failed to update Carton Details1");
+					}
+					
 					
 					echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
 					$url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
