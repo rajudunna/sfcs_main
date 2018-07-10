@@ -134,14 +134,6 @@
                 // echo $sql2."<br>"; 
                 mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-                $pac_stat_qry="select concat(group_concat(doc_no),0) as doc_no,concat(group_concat(input_job_no_random),0) as input_job_no_random from $bai_pro3.pac_stat_log_input_job where tid in($tid)"; 
-                //echo $pac_stat_qry."</br>"; 
-                $pac_stat_result=mysqli_query($link, $pac_stat_qry) or exit("Sql Error pac_stat_qry".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                while($pac_stat_res=mysqli_fetch_array($pac_stat_result)) 
-                { 
-                    $doc_no=$pac_stat_res["doc_no"]; 
-                    $input_job_no_random=$pac_stat_res["input_job_no_random"]; 
-                } 
                 $sql="select tid AS tid,doc_no AS doc_no,input_job_no_random from $bai_pro3.packing_summary_input where order_del_no='$schedule'"; 
                 // echo $sql."<br>"; 
                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -159,6 +151,15 @@
                 $doc_no=implode(",",array_unique($doc_no_ref));     
                 $input_job_no_random=implode(",",array_unique($input_job_no_random_ref)); 
 
+                $pac_stat_qry="select concat(group_concat(doc_no),0) as doc_no,concat(group_concat(input_job_no_random),0) as input_job_no_random from $bai_pro3.pac_stat_log_input_job where tid in($tid)"; 
+                //echo $pac_stat_qry."</br>"; 
+                $pac_stat_result=mysqli_query($link, $pac_stat_qry) or exit("Sql Error pac_stat_qry".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                while($pac_stat_res=mysqli_fetch_array($pac_stat_result)) 
+                { 
+                    $doc_no=$pac_stat_res["doc_no"]; 
+                    $input_job_no_random=$pac_stat_res["input_job_no_random"]; 
+                } 
+                
                 //echo $doc_no;
                  $delete_plan_dashbrd_qry="DELETE FROM $bai_pro3.plan_dashboard WHERE doc_no in($doc_no)"; 
                 // echo $delete_plan_dashboard_qry."<br>"; 
