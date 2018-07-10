@@ -163,6 +163,7 @@ if(isset($_POST['date']))
 				$nop=$csnb[2];
 				$buyer=$csnb[3];
 				$sec=$csnb[4];
+				$dat=date('Y-m-d');
 				// echo "<script>alert('till rework if condition');</script>";
 				//REWORK
 				if($rew_qty>=0 and $rew_qty!="")
