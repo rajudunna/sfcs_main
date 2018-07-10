@@ -524,7 +524,7 @@ else{
 				// echo $final_query100;;
 				$rej_insert_result100 = $link->query($final_query100) or exit('data error');
 			}
-			// }
+		 }
 			// $sql_message = 'Data Updated Successfully';
 	}	
 }
@@ -575,6 +575,7 @@ for($i=0;$i<sizeof($b_tid);$i++)
 			
 			
 		}
+	
 	}
 	else
 	{
