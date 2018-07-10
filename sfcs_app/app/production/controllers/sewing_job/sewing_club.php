@@ -19,8 +19,8 @@
        var valueSelected = this.value;
 	 window.location.href ="http://localhost/sfcs_app/app/production/controllers/sewing_job/sewing_club.php?style="+valueSelected
     });
-	 $("#schedule").click(function(){
-        alert("The text has been changed.");
+	 $("#schedule").change(function(){
+        //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected2 = this.value;
 	 window.location.href ="http://localhost/sfcs_app/app/production/controllers/sewing_job/sewing_club.php?schedule="+valueSelected2
