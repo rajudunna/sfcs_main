@@ -70,6 +70,7 @@
 		$schedule=$_GET['schedule'];
 		$pack_method=$_GET['pack_method'];
 	}
+
 ?>
 
 	
@@ -152,34 +153,35 @@
 					$schedule=$_POST['schedule'];	
 					$pack_method=$_POST['pack_method'];	
 				}
-
+				// echo $style_code.'<br>'.$schedule.'<br>'.$pack_method.'<br>';
 				$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$schedule,$link);
 				$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
 
 
 				$validation_query = "SELECT * FROM $brandix_bts.tbl_carton_ref WHERE carton_barcode=$schedule_original";
-				// echo $sewing_jobratio_sizes_query.'<br>';
+				// echo $validation_query.'<br>';
 				$validation_result=mysqli_query($link, $validation_query) or exit("Error while getting Job Ratio Details");
 				if (mysqli_num_rows($validation_result) > 0)
 				{
 					echo "<script>sweetAlert('Packing Ratio Already Updated for this Schedule - $schedule_original','Go to Sewing Job Creation','warning')</script>";
+					$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
+					$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+					echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
+						<table class=\"table table-bordered\">
+							<tr>
+								<th>Color</th>";
+					while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+					{
+						$parent_id = $sewing_jobratio_color_details['parent_id'];
+						$color = $sewing_jobratio_color_details['color'];
+						$size = $sewing_jobratio_color_details['size'];
+						$color1 = explode(",",$color);
+						$size1 = explode(",",$size);
+						// var_dump($size);
+					}
 					// GArments per Poly Bag Details Start
 					{
-						$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
-						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-						echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
-							<table class=\"table table-bordered\">
-								<tr>
-									<th>Color</th>";
-						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
-						{
-							$parent_id = $sewing_jobratio_color_details['parent_id'];
-							$color = $sewing_jobratio_color_details['color'];
-							$size = $sewing_jobratio_color_details['size'];
-							$color1 = explode(",",$color);
-							$size1 = explode(",",$size);
-							// var_dump($size);
-						}
+						
 						for ($i=0; $i < sizeof($size1); $i++)
 						{
 							$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
@@ -267,7 +269,7 @@
 
 					// Garments Per Carton Start
 					{
-						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original)";
+						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN ($schedule)";
 						// echo $sewing_jobratio_sizes_query.'<br>';
 						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
@@ -370,8 +372,18 @@
 					}
 					else
 					{
-
-
+						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT size_title) AS size FROM $brandix_bts.tbl_orders_sizes_master WHERE parent_id IN ($schedule)";
+						// echo $sewing_jobratio_sizes_query;
+						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+						{
+							$color = $sewing_jobratio_color_details['color'];
+							$size = $sewing_jobratio_color_details['size'];
+							$color1 = explode(",",$color);
+							$size1 = explode(",",$size);
+							// var_dump($size);
+							// var_dump($color);
+						}
 						echo "<br><br><br>";
 						if ($pack_method==1 or $pack_method==2 or $_GET['pack_method']==1 or $_GET['pack_method']==2)
 						{
@@ -531,10 +543,10 @@
 						{
 							if ($pack_method==3)
 							{
-								$title = "Single Color Multi Size";
+								$title = "Multi Color Multi Size";
 								$combo='YES';
 							} else {
-								$title = "Multi Color Multi Size";
+								$title = "Single Color Multi Size";
 								$combo='NO';
 							}
 							echo '<form method="POST" class="form-inline" name="MM_SM" action="#">';
@@ -544,11 +556,11 @@
 								echo "<input type='hidden' name='pack_method' id='pack_method' value='".$pack_method."' />";
 								echo "<input type='hidden' name='size1' id='size1' value='".$size1."' />";
 								echo "<div class='panel panel-primary'>";
-									echo "<div class='panel-heading'>Multi Color Multi Size</div>";
+									echo "<div class='panel-heading'>$title</div>";
 									echo "<div class='panel-body'>";
 										//first table
 										echo "<div class='panel panel-primary'>";
-												echo "<div class='panel-heading'>Poly Bag Ratio</div>
+												echo "<div class='panel-heading'>Number of Garments Per Poly Bag</div>
 												<div class='panel-body'>
 													<div class='table-responsive'>
 														<table class=\"table table-bordered\">
