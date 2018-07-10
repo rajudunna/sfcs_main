@@ -94,17 +94,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$col_des=$sql_row31['col_des'];
 				}
 					
-				$sql3="insert ignore into $bai_pro3.cat_stat_log (order_tid2) values (\"$ssc_code2\")";
-				// echo $sql3."<br>";
-				mysqli_query($link, $sql3) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $sql3="insert ignore into $bai_pro3.cat_stat_log (order_tid2) values (\"$ssc_code2\")";
+				// // echo $sql3."<br>";
+				// mysqli_query($link, $sql3) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$item_des=str_replace('"'," ",$item_des);
-				$item_des=str_replace("'"," ",$item_des);
-				//echo $item_des;
+				// $item_des=str_replace('"'," ",$item_des);
+				// $item_des=str_replace("'"," ",$item_des);
+				// //echo $item_des;
 				
-				$sql3="update $bai_pro3.cat_stat_log set order_tid=\"$ssc_code\", mo_status=\"$mo_status\", compo_no=\"$compo_no\", catyy=$order_yy, fab_des=\"$item_des\", col_des=\"$col_des\" where order_tid2=\"$ssc_code2\"";
-				// echo $sql3."<br>";
-				mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $sql3="update $bai_pro3.cat_stat_log set order_tid=\"$ssc_code\", mo_status=\"$mo_status\", compo_no=\"$compo_no\", catyy=$order_yy, fab_des=\"$item_des\", col_des=\"$col_des\" where order_tid2=\"$ssc_code2\"";
+				// // echo $sql3."<br>";
+				// mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 			}
 				
