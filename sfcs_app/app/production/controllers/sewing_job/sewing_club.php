@@ -29,8 +29,10 @@
 </script>
 </html>
 <?php   
-   include("../../../../common/config/config.php");
-   include("../../../../common/config/functions.php");
+   //include("../../../../common/config/config.php");
+   include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+   include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+   //include("../../../../common/config/functions.php");
   include("../../../../common/config/user_acl_v1.php");
   include("../../../../common/config/headers.php");
    include('/template/header.php');
@@ -56,6 +58,13 @@
 		$value = $_POST['myval'];
 		$value1 = explode(",",$value);
 		$list1 = "'". implode("', '", $value1) ."'";
+		//print_r($value1);
+		//echo count($value1);
+		$checked_count = count($value1);
+        //echo $checked_count;
+			//die();
+			if($checked_count > 1)
+			{
 		//print_r($value1);
 		//echo min($value1);
 		//var_dump($value1[0]);
@@ -103,6 +112,10 @@
 		
 			}
 		}
+		else{
+			echo "Please Select More than One Sewing Job to Club";
+		}
+	 }
 ?>
 <?php
 $sql="select distinct order_style_no from bai_orders_db";	
