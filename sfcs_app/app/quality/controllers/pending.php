@@ -130,11 +130,11 @@ if(isset($_POST['schedule']) or isset($_POST['filter']) or isset($_GET['schedule
 //echo " <br/>color=".$color;
 if($color=="0")
 {
-	$sql="SELECT order_style_no,order_del_no,order_col_des,fca_audit_pending,fca_fail FROM $bai_pro3.disp_mix WHERE order_del_no=$schedule and (fca_fail>0 OR fca_audit_pending>0) group by order_col_des";
+	$sql="SELECT order_style_no,order_del_no,order_col_des,fca_audit_pending,fca_fail FROM $bai_pro3.disp_mix WHERE order_del_no=$schedule and (fca_fail>=0 OR fca_audit_pending>=0) group by order_col_des";
 }
 else
 {
-	$sql="SELECT order_style_no,order_del_no,order_col_des,fca_audit_pending,fca_fail FROM $bai_pro3.disp_mix_2 WHERE order_del_no=$schedule and order_col_des=\"$color\" and (fca_fail>0 OR fca_audit_pending>0) group by order_col_des";
+	$sql="SELECT order_style_no,order_del_no,order_col_des,fca_audit_pending,fca_fail FROM $bai_pro3.disp_mix_2 WHERE order_del_no=$schedule and order_col_des=\"$color\" and (fca_fail>=0 OR fca_audit_pending>=0) group by order_col_des";
 }
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $no_of_rows = mysqli_num_rows($sql_result);
