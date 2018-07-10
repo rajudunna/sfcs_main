@@ -1,4 +1,8 @@
 <?php
+$start_timestamp = microtime(true);
+// $include_path=getenv('config_job_path');
+// include($include_path.'\sfcs_app\common\config\config_jobs.php');
+set_time_limit(6000000);
 	include('mssql_conn.php');
 	error_reporting(E_ALL & ~E_NOTICE);
 	if($conn)
@@ -9,6 +13,7 @@
 		$result = odbc_exec($conn, $query_text);
 		while($row = odbc_fetch_array($result))
 		{
+			$j=0;
 			$item_no = str_replace('"', '\"', $row['ITEM_NO']);
 			$item_name = str_replace('"', '\"', $row['ITEM_NAME']);
 			$item_des = str_replace('"', '\"', $row['ITEM_DESCRIPTION']);
@@ -31,15 +36,27 @@
 			$order_type = str_replace('"', '\"', $row['ORDER_TYPE']);
 			$warehouse = str_replace('"', '\"', $row['WAREHOUSE']); 
 	
-			$sql_lot_rodo = "INSERT IGNORE INTO bai_rm_pj1.sticker_report (lot_no) VALUES (\"".$lot_num."\")";
-			$result_lot_rodo = mysqli_query($my_conn, $sql_lot_rodo);
-			$sql_sticker_det_rodo = "UPDATE bai_rm_pj1.sticker_report SET item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = '', grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = 'RODO'  WHERE lot_no = \"".$lot_num."\"";
-			$result_rec_insert_rodo = mysqli_query($my_conn, $sql_sticker_det_rodo);
+			$sql_lot_rodo = "INSERT IGNORE INTO $bai_rm_pj1.sticker_report (lot_no) VALUES (\"".$lot_num."\")";
+			$result_lot_rodo = mysqli_query($link, $sql_lot_rodo);
+			$sql_sticker_det_rodo = "UPDATE $bai_rm_pj1.sticker_report SET item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = '', grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = 'RODO'  WHERE lot_no = \"".$lot_num."\"";
+			$result_rec_insert_rodo = mysqli_query($link, $sql_sticker_det_rodo);
+			if($result_rec_insert_rodo ){
+				$j++;
+			}
 		}
-		echo "<br>Successfully Executed<br>";
+		if($j>0)
+		{
+			print("Updated $j Records in Sticker Report Successfully ")."\n";
+
+		}
 	}
 	else
 	{
-		echo "Connection Failed";
+		print("Connection Failed")."\n";
 	}
+
+	$end_timestamp = microtime(true);
+	$duration = $end_timestamp - $start_timestamp;
+	print("Execution took ".$duration." milliseconds.");
+
 ?>
