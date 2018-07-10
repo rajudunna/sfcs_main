@@ -250,7 +250,7 @@ td{ padding:2px; white-space: nowrap;}
 						if($tbl_carton_ref_check>0)
 						{
 							// echo "carton props added, You can proceed";
-							if($bundle==0)
+							if($bundle > 0)
 							{
 								$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule)";
 								// echo $sewing_jobratio_sizes_query.'<br>';
@@ -635,7 +635,7 @@ td{ padding:2px; white-space: nowrap;}
 								}
 							}
 														
-							if($bundle > 0)
+							if($bundle == 0)
 							{									
 								include("input_job_mix_ch_report.php");
 							}
