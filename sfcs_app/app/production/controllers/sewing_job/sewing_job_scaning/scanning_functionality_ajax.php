@@ -412,7 +412,7 @@ else{
 					}
 				}
 			}	
-			$select_send_qty = "SELECT recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+			$select_send_qty = "SELECT recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
 			//echo "sele".$select_send_qty;
 			$result_select_send_qty = $link->query($select_send_qty);
 			if($result_select_send_qty->num_rows >0)
@@ -420,11 +420,12 @@ else{
 				while($row = $result_select_send_qty->fetch_assoc()) 
 				{
 					$b_old_rep_qty_new = $row['recevied_qty'];
+					$b_old_rej_qty_new = $row['rejected_qty'];
 
 				}
 			}
 				$final_rep_qty = $b_old_rep_qty_new + $b_rep_qty[$key];
-				$final_rej_qty = $b_old_rej_qty[$key] + $b_rej_qty[$key];
+				$final_rej_qty = $b_old_rej_qty_new + $b_rej_qty[$key];
 				$left_over_qty = $b_in_job_qty[$key] - $final_rep_qty - $final_rej_qty;
 				if($schedule_count){
 					$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$b_op_id;

@@ -642,7 +642,7 @@ function validating_remarks_with_qty($validating_remarks)
 			{
 				$qry_for_fetching_bal_to_report_qty = "select (send_qty-(recevied_qty+rejected_qty))AS rec_qty,remarks from $brandix_bts.bundle_creation_data where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2]";
 			}
-			// echo $qry_for_fetching_bal_to_report_qty;
+			//echo $qry_for_fetching_bal_to_report_qty;
 			$result_qry_for_fetching_bal_to_report_qty = $link->query($qry_for_fetching_bal_to_report_qty);
 			while($row = $result_qry_for_fetching_bal_to_report_qty->fetch_assoc()) 
 			{
