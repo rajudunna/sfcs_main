@@ -19,8 +19,8 @@ set_time_limit(30000000);
 
 		$date_time=date('Y-m-d h:i:s');
 		echo "<br><div class='alert alert-warning'>Data Saving under process Please wait.....</div>";
-		echo "<table class='table table-striped table-bordered'>";
-		echo "<thead><th>Type</th><th>Cut Number</th><th>Job Number</th><th>Color</th><th>Size</th><th>Quantity</th><th>Docket Number</th></thead>";
+		//echo "<table class='table table-striped table-bordered'>";
+		//echo "<thead><th>Type</th><th>Cut Number</th><th>Job Number</th><th>Color</th><th>Size</th><th>Quantity</th><th>Docket Number</th></thead>";
 		$sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."'";
 		//echo $sql1."<br>"; 
 		$result1=mysqli_query($link, $sql1) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -77,7 +77,7 @@ set_time_limit(30000000);
 				{					
 					if($diff_qty>$cut_quantity)
 					{	
-						echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros(0,$cut_num)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
+						//echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros(0,$cut_num)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
 						$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."',0,'".$cut_num."','".$color."','".$size."','".$cut_quantity."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
 						//echo "0=".$insertMiniOrderdata."<br><br>";
 						$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -86,7 +86,7 @@ set_time_limit(30000000);
 					}
 					else
 					{							
-						echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$diff_qty."</td><td>".$sql_row['docket_number']."</td></tr>";
+						//echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$diff_qty."</td><td>".$sql_row['docket_number']."</td></tr>";
 						$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."',0,'".$cut_num."','".$color."','".$size."','".$diff_qty."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
 						//echo "1=".$insertMiniOrderdata."<br><br>"; 
 						$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -94,7 +94,7 @@ set_time_limit(30000000);
 						$diff_qty=0;
 						if($cut_quantity>0)
 						{
-							echo "<tr><td>Normal</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
+							//echo "<tr><td>Normal</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
 							$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."','".$cut_num."','".$cut_num."','".$color."','".$size."','".$cut_quantity."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
 							//echo "N=".$insertMiniOrderdata."<br><br>";
 							$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -103,14 +103,14 @@ set_time_limit(30000000);
 				}
 				else
 				{
-					echo "<tr><td>Normal</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
+					//echo "<tr><td>Normal</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
 					$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."','".$cut_num."','".$cut_num."','".$color."','".$size."','".$cut_quantity."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
 					//echo "N1=".$insertMiniOrderdata."<br><br>";
 					$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 			}
 		}
-		echo "</table>";
+		//echo "</table>";
 		
 		$data_sym="$";
 		$File = "session_track.php";
