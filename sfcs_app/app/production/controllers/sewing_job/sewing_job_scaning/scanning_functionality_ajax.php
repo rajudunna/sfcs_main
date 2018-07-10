@@ -46,7 +46,10 @@ $r_no_reasons = $new_data['tot_reasons'];
 $mapped_color = $new_data['color'];
 $type = $form;
 $barcode_generation =  $new_data['barcode_generation'];
-$concurrent_flag = 0;
+validation();
+function validation()
+{
+	$concurrent_flag = 0;
 //user concatnation issue resolving method
 foreach ($b_tid as $key=>$value)
 {
@@ -84,7 +87,9 @@ foreach ($b_tid as $key=>$value)
 			}
 		}
 	}
-} 
+}
+}
+ 
 if($concurrent_flag == 1)
 {
 	echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
@@ -302,63 +307,68 @@ if($table_name == 'packing_summary_input'){
 			$reason_flag = true;
 		}
 	} 
-	//all operation codes query.. (not tested)
-	foreach($b_query as $index1 => $query){
-		if(substr($query, -1) == ','){
-			$final_query_001 = substr($query, 0, -1);
-		}else{
-			$final_query_001 = $query;
+	validation();
+	if($concurrent_flag == 0)
+	{
+		foreach($b_query as $index1 => $query){
+			if(substr($query, -1) == ','){
+				$final_query_001 = substr($query, 0, -1);
+			}else{
+				$final_query_001 = $query;
+			}
+			//echo $final_query_001;
+			$bundle_creation_result_001 = $link->query($final_query_001);
 		}
-		//echo $final_query_001;
-		$bundle_creation_result_001 = $link->query($final_query_001);
-	}
-
-	// foreach($b_query_temp as $index1 => $query_temp){
-	// 	if(substr($query_temp, -1) == ','){
-	// 		$final_query_002 = substr($query_temp, 0, -1);
-	// 	}else{
-	// 		$final_query_002 = $query_temp;
-	// 	}
-	// 	$bundle_creation_result_002 = $link->query($final_query_002);
-	// }
-	if(substr($bulk_insert, -1) == ','){
-		$final_query_000 = substr($bulk_insert, 0, -1);
-	}else{
-		$final_query_000 = $bulk_insert;
-	}
-	// echo $bulk_insert.'<br>';
-	$bundle_creation_result = $link->query($final_query_000);
-	// temp tables data insertion query execution..........
-	if(substr($bulk_insert_temp, -1) == ','){
-		$final_query_000_temp = substr($bulk_insert_temp, 0, -1);
-	}else{
-		$final_query_000_temp = $bulk_insert_temp;
-	}
-	//echo $bulk_insert.'<br>';
-	$bundle_creation_result_temp = $link->query($final_query_000_temp);
-	//$bundle_creation_post_result = $link->query($bulk_insert_post);
-	//echo $bulk_insert_rej;
-	if($reason_flag){
-		if(substr($bulk_insert_rej, -1) == ','){
-			$final_query = substr($bulk_insert_rej, 0, -1);
-		}else{
-			$final_query = $bulk_insert_rej;
-		}
-		$rej_insert_result = $link->query($final_query) or exit('data error');
-	}
-	//echo $m3_bulk_bundle_insert;
 	
-	if(strtolower($is_m3) == 'yes' && $flag_decision){
-		if(substr($m3_bulk_bundle_insert, -1) == ','){
-			$final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
+		// foreach($b_query_temp as $index1 => $query_temp){
+		// 	if(substr($query_temp, -1) == ','){
+		// 		$final_query_002 = substr($query_temp, 0, -1);
+		// 	}else{
+		// 		$final_query_002 = $query_temp;
+		// 	}
+		// 	$bundle_creation_result_002 = $link->query($final_query_002);
+		// }
+		if(substr($bulk_insert, -1) == ','){
+			$final_query_000 = substr($bulk_insert, 0, -1);
 		}else{
-			$final_query100 = $m3_bulk_bundle_insert;
+			$final_query_000 = $bulk_insert;
 		}
-		//echo $final_query100;
-		// die();
-		$rej_insert_result100 = $link->query($final_query100) or exit('data error');
+		// echo $bulk_insert.'<br>';
+		$bundle_creation_result = $link->query($final_query_000);
+		// temp tables data insertion query execution..........
+		if(substr($bulk_insert_temp, -1) == ','){
+			$final_query_000_temp = substr($bulk_insert_temp, 0, -1);
+		}else{
+			$final_query_000_temp = $bulk_insert_temp;
+		}
+		//echo $bulk_insert.'<br>';
+		$bundle_creation_result_temp = $link->query($final_query_000_temp);
+		//$bundle_creation_post_result = $link->query($bulk_insert_post);
+		//echo $bulk_insert_rej;
+		if($reason_flag){
+			if(substr($bulk_insert_rej, -1) == ','){
+				$final_query = substr($bulk_insert_rej, 0, -1);
+			}else{
+				$final_query = $bulk_insert_rej;
+			}
+			$rej_insert_result = $link->query($final_query) or exit('data error');
+		}
+		//echo $m3_bulk_bundle_insert;
+		
+		if(strtolower($is_m3) == 'yes' && $flag_decision){
+			if(substr($m3_bulk_bundle_insert, -1) == ','){
+				$final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
+			}else{
+				$final_query100 = $m3_bulk_bundle_insert;
+			}
+			//echo $final_query100;
+			// die();
+			$rej_insert_result100 = $link->query($final_query100) or exit('data error');
+		}
+		$sql_message = 'Data inserted successfully';
 	}
-	$sql_message = 'Data inserted successfully';
+	//all operation codes query.. (not tested)
+	
 	
 }
 else{
@@ -493,27 +503,30 @@ else{
 				$reason_flag = true;
 			}
 		}
-		if($reason_flag){
-			if(substr($bulk_insert_rej, -1) == ','){
-				$final_query = substr($bulk_insert_rej, 0, -1);
-			}else{
-				$final_query = $bulk_insert_rej;
+	validation();
+	if($concurrent_flag == 0)
+	{
+			if($reason_flag){
+				if(substr($bulk_insert_rej, -1) == ','){
+					$final_query = substr($bulk_insert_rej, 0, -1);
+				}else{
+					$final_query = $bulk_insert_rej;
+				}
+				//echo $final_query;
+				$rej_insert_result = $link->query($final_query) or exit('data error');
 			}
-			//echo $final_query;
-			$rej_insert_result = $link->query($final_query) or exit('data error');
-		}
-		if(strtolower($is_m3) == 'yes' && $flag_decision){
-			if(substr($m3_bulk_bundle_insert, -1) == ','){
-				$final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
-			}else{
-				$final_query100 = $m3_bulk_bundle_insert;
+			if(strtolower($is_m3) == 'yes' && $flag_decision){
+				if(substr($m3_bulk_bundle_insert, -1) == ','){
+					$final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
+				}else{
+					$final_query100 = $m3_bulk_bundle_insert;
+				}
+				// echo $final_query100;;
+				$rej_insert_result100 = $link->query($final_query100) or exit('data error');
 			}
-			// echo $final_query100;;
-			$rej_insert_result100 = $link->query($final_query100) or exit('data error');
-		}
-		// }
-		// $sql_message = 'Data Updated Successfully';
-	}
+			// }
+			// $sql_message = 'Data Updated Successfully';
+	}	
 }
 //echo "<script>$('#storingfomr').submit()</script>";
 $table_data = "<table class='table table-bordered'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Remarks</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr>";
