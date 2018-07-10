@@ -14,10 +14,9 @@ set_time_limit(6000000);
 
 		$trunc_order = "TRUNCATE TABLE $m3_inputs.order_details";
 		$sql_trunc_order = mysqli_query($link, $trunc_order);
-		
+		$j=0;
 		while($row = odbc_fetch_array($result2))
 		{
-			$j=0;
 			$facility = str_replace('"', '\"', $row['FACILITY']);
 			$cust_style_no = str_replace('"', '\"', $row['CUSTOMER_STYLE_NO']);
 			$cpo_no = str_replace('"', '\"', $row['CPO_NO']);

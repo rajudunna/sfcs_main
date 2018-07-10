@@ -14,9 +14,10 @@ set_time_limit(6000000);
 
 		$trunc_ship = "TRUNCATE TABLE $m3_inputs.shipment_plan";
 		$res_trunc_ship = mysqli_query($link, $trunc_ship);
+		$j=0;
 		while($row = odbc_fetch_array($result))
 		{
-			$j=0;
+			
 			$oborno = str_replace('"', '\"', $row['OBORNO']);
 			$oborst = str_replace('"', '\"', $row['OBORST']);
 			$oblded = str_replace('"', '\"', $row['OBLDED']);
