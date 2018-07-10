@@ -47,7 +47,7 @@ echo '<br>
 
         echo "<a class='btn btn-warning' href='$url2?schedule=$schedule' onclick=\"return popitup2('$url2?schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Split Wise</a>";
 
-        echo "<a class='btn btn-info' href='#'>Number of Cartons: $no_of_cartons Per Sewing Job</a><br><br>";
+        echo "<a class='btn btn-info'>Number of Cartons: <b>$no_of_cartons</b> Per Sewing Job</a><br><br>";
 
     echo '</div>';
 
