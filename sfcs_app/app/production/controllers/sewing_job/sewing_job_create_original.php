@@ -551,6 +551,10 @@
 														{
 															echo"<td><input type='text' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'></td>";
 														}
+														else
+														{
+															echo"<input type='hidden' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'>";
+														}
 													echo "</tr>";
 												}
 	
