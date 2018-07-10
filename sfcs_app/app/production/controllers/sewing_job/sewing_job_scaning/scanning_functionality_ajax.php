@@ -66,6 +66,22 @@ foreach ($b_tid as $key=>$value)
 			{
 				$concurrent_flag = 1;
 			}
+			else
+			{
+				$rec_qty_from_temp = "select (sum(recevied_qty)+sum(rejected_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+				//echo $rec_qty_from_temp;
+				$result_rec_qty_from_temp = $link->query($rec_qty_from_temp);
+				while($row_temp = $result_rec_qty_from_temp->fetch_assoc()) 
+				{
+					$pre_recieved_qty_temp = $row_temp['recevied_qty'];
+					$act_reciving_qty_temp = $b_rep_qty[$key];
+					if($act_reciving_qty_temp > $send_qty)
+					{
+						$concurrent_flag = 1;
+					}
+				}
+
+			}
 		}
 	}
 } 
