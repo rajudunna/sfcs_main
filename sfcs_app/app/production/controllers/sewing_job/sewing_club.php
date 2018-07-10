@@ -19,8 +19,8 @@
        var valueSelected = this.value;
 	 window.location.href ="http://localhost/sfcs_app/app/production/controllers/sewing_job/sewing_club.php?style="+valueSelected
     });
-	 $("#schedule").change(function(){
-        //alert("The text has been changed.");
+	 $("#schedule").click(function(){
+        alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected2 = this.value;
 	 window.location.href ="http://localhost/sfcs_app/app/production/controllers/sewing_job/sewing_club.php?schedule="+valueSelected2
@@ -56,6 +56,13 @@
 		$value = $_POST['myval'];
 		$value1 = explode(",",$value);
 		$list1 = "'". implode("', '", $value1) ."'";
+		//print_r($value1);
+		//echo count($value1);
+		$checked_count = count($value1);
+        //echo $checked_count;
+			//die();
+			if($checked_count > 1)
+			{
 		//print_r($value1);
 		//echo min($value1);
 		//var_dump($value1[0]);
@@ -103,6 +110,10 @@
 		
 			}
 		}
+		else{
+			echo "Please Select More than One Sewing Job to Club";
+		}
+	 }
 ?>
 <?php
 $sql="select distinct order_style_no from bai_orders_db";	
