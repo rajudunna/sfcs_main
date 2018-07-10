@@ -2,6 +2,8 @@
 <?php
 error_reporting(0);
 $schedule1=$schedule;
+
+// echo $c_ref;
 // echo $schedule.'<br>';
 // echo $schedule1.'<br>';
 // die();
@@ -28,12 +30,14 @@ if(mysqli_num_rows($sql_result)>0)
     }
 }
 
-$no_of_cartons_Query="SELECT no_of_cartons FROM $brandix_bts.`tbl_carton_ref` WHERE id = $c_ref";
-// echo '<br>'.$sql.'<br>';
+$no_of_cartons_Query="SELECT GROUP_CONCAT(DISTINCT TRIM(COLOR) ORDER BY COLOR) AS combo_color,combo_no,no_of_cartons FROM brandix_bts.`tbl_carton_size_ref` WHERE parent_id ='".$c_ref."' GROUP BY COMBO_NO";
+// echo '<br>'.$no_of_cartons_Query.'<br>';
 $sql_result=mysqli_query($link, $no_of_cartons_Query) or exit("Sql Error88 $no_of_cartons_Query".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-    $no_of_cartons=$sql_row['no_of_cartons'];
+    $combo_col[]=$sql_row['combo_color'];
+    $combo[]=$sql_row['combo_no'];
+    $no_of_cartons[]=$sql_row['no_of_cartons'];
 }
 $url1 = getFullURLLevel($_GET['r'],'print_input_sheet.php',0,'R');
 $url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'R');
@@ -47,9 +51,21 @@ echo '<br>
 
         echo "<a class='btn btn-warning' href='$url2?schedule=$schedule' onclick=\"return popitup2('$url2?schedule=$schedule')\" target='_blank'>Print Sewing Job Sheet - Split Wise</a>";
 
-        echo "<a class='btn btn-info'>Number of Cartons: <b>$no_of_cartons</b> Per Sewing Job</a><br><br>";
+       // echo "<a class='btn btn-info'>Number of Cartons: <b>$no_of_cartons</b> Per Sewing Job</a><br><br>";
 
     echo '</div>';
+
+    echo '<div class="row">';
+       
+       for($ii=0;$ii<sizeof($combo);$ii++)
+       {
+            echo "<a class='btn btn-info'>Number of Cartons: <b>$no_of_cartons[$ii]</b> Per Sewing Job of combo no - $combo[$ii] & Combo Colors (".$combo_col[$ii].")</a><br>";
+       }
+       
+       
+
+    echo '</div>';
+
 
     echo '<form name="new" method="post" action="?r='.$_GET['r'].'">';
 
@@ -144,7 +160,7 @@ echo '<br>
 
                         echo "<td>".$sql_row['order_del_no']."</td>";
                         echo "<td>".$sql_row['order_col_des']."</td>";
-                        echo "<td>".$sql_row['acutno']."</td>";
+                        echo "<td>".$cut_jobs_new."</td>";
                         echo "<td>".strtoupper($size_codes)."</td>";
                         echo "<td>".$sql_row['carton_act_qty']."</td>";
                         echo "<td>";
@@ -175,9 +191,10 @@ echo '<br>
                         if($scanning_methods=='Bundle Level')
                         {
                             $url5 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
-                            echo "<td><a class='btn btn-info btn-sm' href='$url5?style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&cutno=".$sql_row['acutno']."' onclick=\"return popitup2('$url5?style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&cutno=".$sql_row['acutno']."')\" target='_blank'>Generate Barcodes</a></td>";
+                           // echo "<td><a class='btn btn-info btn-sm' href='$url5?style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&cutno=".$cut_jobs_new."' onclick=\"return popitup2('$url5?style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&cutno=".$cut_jobs_new."')\" target='_blank'>Generate Barcodes</a></td>";
+                            echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'>Generate Barcodes</a></td>";
                         }
-                        
+                        /*
                         echo "<tr bgcolor='$bg_color'>";
                             echo "<td>".$sql_row['order_del_no']."</td>";
                             echo "<td>".$sql_row['order_col_des']."</td>";
@@ -190,6 +207,7 @@ echo '<br>
                             echo"</td>";
 
                         echo "</tr>";
+                        */
                     }
                     ?>
                 </table>
