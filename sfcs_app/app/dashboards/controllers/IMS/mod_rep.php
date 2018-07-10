@@ -154,8 +154,8 @@ table
         echo '<table style="color:black; border: 1px solid red;">'; 
         echo "<tr class=\"new\"><th>Select</th><th>Input Date</th><th>Exp. to Comp.</th><th>Style</th><th>Schedule</th><th>Color</th>"; 
         //echo "<th>CID</th><th>DOC#</th>"; 
-        echo "<th>Input Remarks</th>"; 
-        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th></tr>"; 
+        //echo "<th>Input Remarks</th>"; 
+        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th></tr>"; 
              
         $toggle=0; 
         $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref from $bai_pro3.ims_log where ims_mod_no=$module_ref  order by tid"; 
@@ -251,9 +251,9 @@ table
                 
                      
                 echo "</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>"; 
-                echo "<td>".$sql_row12['ims_remarks']."</td>"; 
+                //echo "<td>".$sql_row12['ims_remarks']."</td>"; 
 //echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>"; 
-echo "<td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".$rejected."</td><td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td></tr>"; 
+echo "<td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".$rejected."</td><td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td><td>".$sql_row12['ims_remarks']."</td></tr>"; 
              }
         } 
         echo "</table>"; 
