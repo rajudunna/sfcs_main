@@ -8,7 +8,7 @@ $form = 'P';
 $ops_dep='';
 $post_ops_code='';
 $qry_status='';
-// error_reporting(0);
+error_reporting(0);
 // $username = user();
 if($operation_code >=130 && $operation_code < 300)
 {
@@ -63,7 +63,7 @@ foreach ($b_tid as $key=>$value)
 			$total_rec_qty = $pre_recieved_qty + $act_reciving_qty;
 			if($total_rec_qty > $send_qty)
 			{
-				echo "<h1 style='color:red;'>You are Receiving More than eligible quantity.</h1>";
+				echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
 				$concurrent_flag = 1;
 			}
 		}
@@ -175,7 +175,7 @@ if($result_post_ops_check->num_rows > 0)
 }
 foreach($pre_ops_code as $index => $op_code){
 	if($op_code != $b_op_id){
-		$b_query[$op_code] = "INSERT ingonre INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES";
+		$b_query[$op_code] = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES";
 
 		// temp table data query
 
