@@ -9,7 +9,7 @@
 
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => 'utf-8', 
-		'format' => [45, 100], 
+		'format' => [40, 60], 
 		'orientation' => 'L'
 	]);
 
@@ -28,31 +28,13 @@
 					font-size: 12px;
 				}
 
-				.new_td
-				{
-					font-size:18px;
-				}
 
-				.new_td2
-				{
-					font-size:25px;
-					font-weight: bold;
-				}
-				.new_td3
-				{
-					font-size:18px;
-					font-weight: bold;
-				}
-
-				table
-				{
-					margin-left:auto;
-					margin-right:auto;
-					margin-top:auto;
-					margin-bottom:auto;
-				}
+			
 				@page {
-				margin-top: 7px;   
+				margin-top: 7px;
+				margin-left:4px;  
+				margin-right:2px;
+				margin-bottom:10px; 
 				}
 					#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
 
@@ -73,21 +55,29 @@
 			$color=$barcode_rslt['order_col_des'];
 			$style=$barcode_rslt['order_style_no'];
 			$html.= '<div>
-			<table><tr><td>Style:</td><td>'.$barcode_rslt['order_style_no'].'</td><td>Schedule:</td><td>'.$schedule.'</td></tr>
-					 <tr><td>input#:</td><td>'.$input_job.'</td><td>Size#</td><td>'.$barcode_rslt['size_code'].'</td><td>B#:</td><td>'.$barcode.'</td></tr>
+			<table>
+					 <tr><td></td></tr>	
+					 <tr><td>Style:</td><td>'.$barcode_rslt['order_style_no'].'</td><td>Schedule:</td><td>'.$schedule.'</td></tr>
+					 <tr><td></td></tr>	
+					 <tr><td>input#:</td><td>'.$input_job.'</td><td>Size#</td><td>'.$barcode_rslt['size_code'].'</td></tr>
+					 <tr><td></td></tr>	
+					 <tr><td>B#:</td><td>'.$barcode.'</td></tr>
+					 <tr><td></td></tr>	
 				 	 <tr><td>color# </td><td colspan=3>'.$barcode_rslt['order_col_des'].'</td></tr>
 					 </table></div><br><br><br><br><br><br>';
-			$operation_det="select operation_name from $brandix_bts.tbl_style_ops_master where style='$style' AND color='$color'";
+			$operation_det="SELECT tor.operation_name as operation_name,tsm.operation_name as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color'";
 			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($ops = mysqli_fetch_array($sql_result1))
 			{	
 				$operations=$ops['operation_name'];
+				$opscode=$ops['operation_code'];
 
 				$html.= '<div><table><tr><td colspace="4"><barcode code="'.$barcode.'" type="C39"/ height="0.80" size="1.1"
 				 text="1"></td><td></td></tr></table>';
 				$html.= '<table><tr><td>Style:</td><td>'.$barcode_rslt['order_style_no'].'</td><td>Schedule:</td><td>'.$schedule.'</td></tr>
-					 <tr><td colspan=4>input#:'.$input_job.' Size# '.$barcode_rslt['size_code'].' B#:'.$barcode.' ops#:'.$operations.'</td></tr>
+					 <tr><td colspan=4>input#:'.$input_job.' Size# '.$barcode_rslt['size_code'].' B#:'.$barcode.'</td></tr>
 				 	 <tr><td>color# </td><td colspan=3>'.$barcode_rslt['order_col_des'].'</td></tr>
+				 	 <tr><td colspan=4>opsc#:'.$opscode.' ops#:'.$operations.'</td></tr>
 					 </table></div><br><br><br><br><br>';			 
 			}
 		}
