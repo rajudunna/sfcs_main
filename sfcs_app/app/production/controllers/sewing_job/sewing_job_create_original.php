@@ -195,7 +195,7 @@
 						if($tbl_carton_ref_check>0)
 						{
 							// echo "carton props added, You can proceed";
-							if($bundle==0)
+							if($bundle > 0)
 							{
 								$combo = array();
 								$get_combo_query = "SELECT DISTINCT (combo_no) AS combo FROM `brandix_bts`.`tbl_carton_size_ref` WHERE parent_id = $c_ref";
@@ -608,7 +608,7 @@
 								}
 							}
 														
-							if($bundle > 0)
+							if($bundle == 0)
 							{									
 								include("input_job_mix_ch_report.php");
 							}
