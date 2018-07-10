@@ -11,9 +11,10 @@ set_time_limit(6000000);
 		$curr_date = date(Ymd);
 		$query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54','".$curr_date."','".$curr_date."',0,'%','%','GRN')";
 		$result = odbc_exec($conn, $query_text);
+		$j=0;
 		while($row = odbc_fetch_array($result))
 		{
-			$j=0;
+			
 			$item_no = str_replace('"', '\"', $row['ITEM_NO']);
 			$item_name = str_replace('"', '\"', $row['ITEM_NAME']);
 			$item_des = str_replace('"', '\"', $row['ITEM_DESCRIPTION']);
