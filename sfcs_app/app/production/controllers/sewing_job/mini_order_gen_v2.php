@@ -79,7 +79,7 @@ set_time_limit(30000000);
 					{	
 						echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros(0,$cut_num)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
 						$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."',0,'".$cut_num."','".$color."','".$size."','".$cut_quantity."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
-						echo "0=".$insertMiniOrderdata."<br><br>";
+						//echo "0=".$insertMiniOrderdata."<br><br>";
 						$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$cut_quantity=0;
 						$diff_qty=$diff_qty-$cut_quantity;
@@ -88,7 +88,7 @@ set_time_limit(30000000);
 					{							
 						echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$diff_qty."</td><td>".$sql_row['docket_number']."</td></tr>";
 						$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."',0,'".$cut_num."','".$color."','".$size."','".$diff_qty."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
-						echo "1=".$insertMiniOrderdata."<br><br>"; 
+						//echo "1=".$insertMiniOrderdata."<br><br>"; 
 						$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$cut_quantity=$cut_quantity-$diff_qty;
 						$diff_qty=0;
@@ -96,7 +96,7 @@ set_time_limit(30000000);
 						{
 							echo "<tr><td>Normal</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
 							$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."','".$cut_num."','".$cut_num."','".$color."','".$size."','".$cut_quantity."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
-							echo "N=".$insertMiniOrderdata."<br><br>";
+							//echo "N=".$insertMiniOrderdata."<br><br>";
 							$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}
 					}						
@@ -105,19 +105,20 @@ set_time_limit(30000000);
 				{
 					echo "<tr><td>Normal</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
 					$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."','".$cut_num."','".$cut_num."','".$color."','".$size."','".$cut_quantity."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
-					echo "N1=".$insertMiniOrderdata."<br><br>";
+					//echo "N1=".$insertMiniOrderdata."<br><br>";
 					$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 			}
 		}
 		echo "</table>";
-		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_generate.php',0,'N')."&id=$carton_id';</script>");
+		
 		$data_sym="$";
 		$File = "session_track.php";
 		$fh = fopen($File, 'w') or die("can't open file");
 		$stringData = "<?php ".$data_sym."status=\"\"; ?>";
 		fwrite($fh, $stringData);
-		fclose($fh);		
+		fclose($fh);
+		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_generate.php',0,'N')."&id=$carton_id';</script>");
 	}
 	else
 	{
