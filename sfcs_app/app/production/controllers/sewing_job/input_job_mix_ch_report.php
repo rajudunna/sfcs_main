@@ -62,6 +62,10 @@ echo '<br>
                     echo "<th>Size Set</th>";
                     echo "<th>Quantity</th>";
                     echo "<th>Sewing Job#</th>";
+                    if($scanning_methods="Bundle Level")
+                    {
+                        echo "<th>Barcode</th>";
+                    }
                     //echo "<th>TID</th>";
                     //echo "<th>Doc# Ref</th>";
                     echo "</tr>";
@@ -127,6 +131,8 @@ echo '<br>
                         if($pending>0)
                         {
                             echo "<input type=\"text\" name=\"jobno[]\" value=\"$job_no\"><input type=\"hidden\" name=\"tidset[]\" value=\"".$sql_row['tid']."\">";
+
+
                         }
                         else
                         {
@@ -145,6 +151,11 @@ echo '<br>
                             // }
                         }
                         echo"</td>";
+                        if($scanning_methods=='Bundle Level')
+                        {
+                            $url5 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
+                            echo "<td><a class='btn btn-info btn-sm' href='$url5?style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&cutno=".$sql_row['acutno']."' onclick=\"return popitup2('$url5?style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&cutno=".$sql_row['acutno']."')\" target='_blank'>Generate Barcodes</a></td>";
+                        }
                         echo "</tr>";
                         $i++;
 
