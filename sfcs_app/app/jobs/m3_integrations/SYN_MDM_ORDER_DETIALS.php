@@ -8,8 +8,9 @@ set_time_limit(6000000);
     if($conn)
     {
         include('mysql_db_config.php');
-		$curr_date = date(Ymd);
-		$query_text2 = "CALL BAISFCS.RPT_APL_ORDER_DETAILS('BEL','EKG',NULL,NULL,'".$curr_date."','".$curr_date."','2')";
+		$from = date("Ymd", strtotime('-2 months'));
+		$to = date("Ymd", strtotime('+3 months'));
+		$query_text2 = "CALL BAISFCS.RPT_APL_ORDER_DETAILS('BEL','EKG',NULL,NULL,'".$from."','".$to."','2')";
 		$result2 = odbc_exec($conn, $query_text2);
 
 		$trunc_order = "TRUNCATE TABLE $m3_inputs.order_details";
