@@ -639,8 +639,8 @@
 					
 					
 					echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
-					// $url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
-					// echo("<script>location.href = '".$url5."&id=$c_ref';</script>");
+					$url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
+					echo("<script>location.href = '".$url5."&id=$c_ref';</script>");
 				}
 			?> 
 		</div>
