@@ -21,22 +21,22 @@ set_time_limit(30000000);
 		$date_time=date('Y-m-d h:i:s');
 		//if($bundles>0)
 		//{
-			if($carton_method==1)
-			{
-				echo "<h2>Single Color & Single Size Carton Method</h2>";
-			}
-			else if($carton_method==2)
-			{
-				echo "<h2>Multi Color & Single Size</h2>";
-			}
-			else if($carton_method==3)
-			{
-				echo "<h2>Single Color & Multi Size Carton Method</h2>";
-			}
-			if($carton_method==4)
-			{
-				echo "<h2>Multi Color & Multi Size Carton Method</h2>";
-			}
+			// if($carton_method==1)
+			// {
+				// echo "<h2>Single Color & Single Size Carton Method</h2>";
+			// }
+			// else if($carton_method==2)
+			// {
+				// echo "<h2>Multi Color & Single Size</h2>";
+			// }
+			// else if($carton_method==3)
+			// {
+				// echo "<h2>Single Color & Multi Size Carton Method</h2>";
+			// }
+			// if($carton_method==4)
+			// {
+				// echo "<h2>Multi Color & Multi Size Carton Method</h2>";
+			// }
 			//echo "<br><div class='alert alert-warning'>Data Saving under process Please wait.....</div>";
 			echo "<table class='table table-striped table-bordered'>";
 			echo "<thead><th>Type</th><th>Cut Number</th><th>Job Number</th><th>Color</th><th>Size</th><th>Quantity</th><th>Docket Number</th></thead>";
@@ -137,7 +137,7 @@ set_time_limit(30000000);
 					}
 				}
 			}
-			//echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_generate.php',0,'N')."&id=$mini_order_ref&mode=$carton_method&split_status=$split_qty';</script>");
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_generate.php',0,'N')."&id=$mini_order_ref&mode=$carton_method';</script>");
 		// }	
 		// else
 		// {

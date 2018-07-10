@@ -120,7 +120,13 @@ $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty
 //End - To take total Job qty  
 
 //Added code to take team number // 
-
+$sql4="select color_code from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\"";
+$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row4=mysqli_fetch_array($sql_result4))
+{
+    $color_code=$sql_row4["color_code"];
+}
+// echo $color_code;
 $ssql15="SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$doc'"; 
 // echo $ssql15;     
     $result15=mysqli_query($link, $ssql15) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -183,16 +189,15 @@ $destination_list="";
 //----------------------------------------------------------------------- 
 
 //Start - To take cut no list 
-$cut_no_list="A"; 
+// $cut_no_list="A"; 
 $docket_no_list="("; 
 $ssql14="SELECT doc_no,acutno AS cut_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY order_col_des,input_job_no_random"; 
-    //echo $ssql14; 
+    // echo $ssql14; 
     $result14=mysqli_query($link, $ssql14) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row14=mysqli_fetch_array($result14)) 
     { 
-        $cut_no_list.=$row14["cut_no"].","; 
+        $cut_no_list.=chr($color_code).leading_zeros($row14["cut_no"], 3).",";
         $docket_no_list.=$row14["doc_no"].","; 
-         
     } 
     $docket_no_list=substr($docket_no_list,0,-1).")"; 
     $cut_no_list=substr($cut_no_list,0,-1); 
