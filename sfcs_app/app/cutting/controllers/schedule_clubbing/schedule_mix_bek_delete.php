@@ -233,7 +233,7 @@ if(isset($_POST['submit']))
     $style=$_POST['style']; 
     $schedule=$_POST['schedule']; 
     $color=$_POST['color'];
-	$order_joins=substr($color,-1);	
+	$order_joins='J'.substr($color,-1);	
     $docket_t_cmp=array();
     $docket_tmp=array();
 	$docket_t_c=array();
