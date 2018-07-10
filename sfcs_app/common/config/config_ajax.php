@@ -19,8 +19,6 @@ $pass=$mysql_details['db_pass'];
 $central_administration_sfcs='central_administration_sfcs';
 $tbl_view_view_menu="tbl_view_view_menu";
 $view_menu_role="view_menu_role";
-$username = getrbac_user()['uname'];
-
 $bai_pro3="bai_pro3";
 $bai_pro="bai_pro";
 $bai_pro4="bai_pro4";
