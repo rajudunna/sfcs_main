@@ -462,6 +462,39 @@
 								}
 								// Garments Per Carton End
 
+								// Combo wise no of cartons start
+								{
+									echo "<div class='col-md-12'>
+										<table class='table table-bordered'>
+											<tr>
+												<th>Combo</th>
+												<th>No of Cartons</th>";
+												if($scanning_methods=='Bundle Level')
+												{
+												  echo "<th>Garments Per Bundle</th>";	
+												}	
+											echo "</tr>";
+											for ($i=0; $i < sizeof($combo); $i++)
+											{ 
+												echo "<tr>
+													<td>$combo[$i]</td>
+													<input type='hidden' name=combo[] value='".$combo[$i]."'>
+													<td><input type='text' required name='no_of_cartons[]' onkeyup=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer' value=''></td>
+													";
+													if($scanning_methods=='Bundle Level')
+													{
+														echo"<td><input type='text' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'></td>";
+													}
+													else
+													{
+														echo"<input type='hidden' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'>";
+													}
+												echo "</tr>";
+											}	
+									echo "</table></div>";
+								}
+								// Combo wise no of cartons end
+
 								// Sewing Job Qty Start
 								{
 									echo "<br><div class='col-md-12'><b>Sewing Job Qty: </b>
@@ -524,42 +557,14 @@
 									// echo $val."--".$val1."<br>";						
 
 									echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_job_create_original.php','N').'">';
-									echo  "<input type=\"hidden\" value=\"$style_id\" id=\"style_id\" name=\"style_id\">";
-									echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
-									echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
-									echo  "<input type=\"hidden\" value=\"$c_ref\" id=\"c_ref\" name=\"c_ref\">";
+										echo  "<input type=\"hidden\" value=\"$style_id\" id=\"style_id\" name=\"style_id\">";
+										echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
+										echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
+										echo  "<input type=\"hidden\" value=\"$c_ref\" id=\"c_ref\" name=\"c_ref\">";
 
-									// var_dump($combo);
-									echo "<div class='col-md-12'>
+										// var_dump($combo);
+										echo "<div class='col-md-4'>
 											<table class='table table-bordered'>
-												<tr>
-													<th>Combo</th>
-													<th>No of Cartons</th>";
-													if($scanning_methods=='Bundle Level')
-													{
-													  echo "<th>Split</th>";	
-													}	
-												echo "</tr>";
-												for ($i=0; $i < sizeof($combo); $i++)
-												{ 
-													echo "<tr>
-														<td>$combo[$i]</td>
-														<input type='hidden' name=combo[] value='".$combo[$i]."'>
-														<td><input type='text' required name='no_of_cartons[]' onkeyup=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer' value=''></td>
-														";
-														if($scanning_methods=='Bundle Level')
-														{
-															echo"<td><input type='text' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'></td>";
-														}
-														else
-														{
-															echo"<input type='hidden' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'>";
-														}
-													echo "</tr>";
-												}
-	
-										echo "</table></div>";
-										echo "<div class='col-md-4'><table class='table table-bordered'>
 												<tr>
 													<th>Excess From</th><th>Control</th>
 												</tr>
@@ -591,8 +596,9 @@
 														// echo "<input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
 													}
 													echo "</td>
-												</tr></table></div>";
-									echo "";
+												</tr>
+											</table>
+										</div>";
 									echo "</form>";
 								} 
 								else {
