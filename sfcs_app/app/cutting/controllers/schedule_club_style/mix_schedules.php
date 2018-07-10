@@ -355,7 +355,7 @@ if(isset($_POST['fix']))
 	//Generarting new schedule number for schedule clubbing style
 	$scheduleno_sql = "SELECT order_joins FROM bai_pro3.bai_orders_db_confirm WHERE LENGTH(order_joins)>7";
 	$scheduleno_sql_result =mysqli_query($link, $scheduleno_sql);
-	$num_sql_rows = mysqli_fetch_rows($scheduleno_sql_result);
+	$num_sql_rows = mysqli_num_rows($scheduleno_sql_result);
 	$new_sch=date("ymd").str_pad($num_sql_rows, 4, '0', STR_PAD_LEFT)+1;
 
 
