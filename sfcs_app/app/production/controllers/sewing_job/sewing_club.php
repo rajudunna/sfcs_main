@@ -29,8 +29,10 @@
 </script>
 </html>
 <?php   
-   include("../../../../common/config/config.php");
-   include("../../../../common/config/functions.php");
+   //include("../../../../common/config/config.php");
+   include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+   include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+   //include("../../../../common/config/functions.php");
   include("../../../../common/config/user_acl_v1.php");
   include("../../../../common/config/headers.php");
    include('/template/header.php');
