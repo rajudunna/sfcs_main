@@ -212,7 +212,7 @@ $(document).ready(function()
 		var operation_id = $('#operation_id').val();
 		console.log(operation_id);
 		var array = [job_number,operation_id,barcode_generation];
-	$.ajax({
+			$.ajax({
 			type: "POST",
 			url: function_text+"?job_number="+array,
 			dataType: "json",

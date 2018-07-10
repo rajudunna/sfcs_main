@@ -1202,6 +1202,7 @@ function ratioQty(t,e){
 		// console.log($(this).val());
 		if ($(this).val() <= 0){
 			$(this).val();
+			$('#update').css("display",'block'); 
 			return sweetAlert('Error','Ratio should not be less than equal to 0','warning');
 		}
 	});
@@ -1218,6 +1219,7 @@ function check(){
 		console.log($('#ratioQty'+i).val());
 	}
 	if(j == 0){
+		$('#update').css("display",'block'); 
 		sweetAlert('Error','Please fill atleast 1 ratio feild and that should be equal or more than 0','error');
 		return false;
 	}
@@ -1262,11 +1264,13 @@ function chec(){
 	}
 	if(j == 1)
 	{
+		$('#update').css("display",'block'); 
 		sweetAlert('','Ratio preparing quantity is more than requested quantity.','error');
 		return false;
 	}	
 }
 $('#update').click(function(){
-  $('#update').css("display",'none');   
+	if($('#plies').val()!=0 && $('#pliespercut').val()!=0)
+		$('#update').css("display",'none');  
 });
 </script>
