@@ -9,7 +9,7 @@
 
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => 'utf-8', 
-		'format' => [40, 60], 
+		'format' => [25, 40], 
 		'orientation' => 'L'
 	]);
 
@@ -25,7 +25,7 @@
 				<head>
 				<style>
 				body {font-family: arial;
-					font-size: 12px;
+					font-size: 9px;
 				}
 
 
@@ -46,7 +46,7 @@
 				</head>
 				<body>';
 
-		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by input_job_no*1";			
+		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by input_job_no*1 ";			
 		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		while($barcode_rslt = mysqli_fetch_array($sql_barcode))
@@ -54,30 +54,36 @@
 			$barcode=$barcode_rslt['tid'];
 			$color=$barcode_rslt['order_col_des'];
 			$style=$barcode_rslt['order_style_no'];
+			$cutno=$barcode_rslt['acutno'];
+			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
 			$html.= '<div>
 			<table>
-					 <tr><td></td></tr>	
+					 <tr rowspan=2><td colspan=2> Stab Here</td><td colspan=2><svg height="25" width="25">
+  <circle cx="10" cy="10" r="8"  />
+</svg></td></tr>	
+					 
+				
 					 <tr><td>Style:</td><td>'.$barcode_rslt['order_style_no'].'</td><td>Schedule:</td><td>'.$schedule.'</td></tr>
-					 <tr><td></td></tr>	
-					 <tr><td>input#:</td><td>'.$input_job.'</td><td>Size#</td><td>'.$barcode_rslt['size_code'].'</td></tr>
-					 <tr><td></td></tr>	
-					 <tr><td>B#:</td><td>'.$barcode.'</td></tr>
-					 <tr><td></td></tr>	
-				 	 <tr><td>color# </td><td colspan=3>'.$barcode_rslt['order_col_des'].'</td></tr>
-					 </table></div><br><br><br><br><br><br>';
-			$operation_det="SELECT tor.operation_name as operation_name,tsm.operation_name as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color'";
+					 
+					 <tr><td>inputjob#:</td><td>'.$input_job.'</td><td>Size#</td><td>'.$barcode_rslt['size_code'].'</td></tr>
+				
+					 <tr><td>B#:</td><td>'.$barcode.'</td><td>Cut#:</td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
+					
+				 	 <tr><td>color# </td><td colspan=3>'.trim($barcode_rslt['order_col_des']).'</td></tr>
+					 </table></div><br>';
+			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tor.operation_code not in (10,15,200)";
 			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($ops = mysqli_fetch_array($sql_result1))
 			{	
 				$operations=$ops['operation_name'];
 				$opscode=$ops['operation_code'];
 
-				$html.= '<div><table><tr><td colspace="4"><barcode code="'.$barcode.'" type="C39"/ height="0.80" size="1.1"
+				$html.= '<div><table><tr><td colspace="4"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8"
 				 text="1"></td><td></td></tr></table>';
 				$html.= '<table><tr><td>Style:</td><td>'.$barcode_rslt['order_style_no'].'</td><td>Schedule:</td><td>'.$schedule.'</td></tr>
 					 <tr><td colspan=4>input#:'.$input_job.' Size# '.$barcode_rslt['size_code'].' B#:'.$barcode.'</td></tr>
-				 	 <tr><td>color# </td><td colspan=3>'.$barcode_rslt['order_col_des'].'</td></tr>
-				 	 <tr><td colspan=4>opsc#:'.$opscode.' ops#:'.$operations.'</td></tr>
+				 	 <tr><td>color# </td><td colspan=3>'.trim($barcode_rslt['order_col_des']).'</td></tr>
+				 	 <tr><td colspan=4>ops#:'.trim($operations).' C#: '.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
 					 </table></div><br><br><br><br><br>';			 
 			}
 		}
