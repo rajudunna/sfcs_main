@@ -4,42 +4,7 @@
 
 </head>
 <body>
-<style>
-.loader {
-   position: absolute;
-   left: 50%;
-   top: 50%;
-   height:60px;
-   width:60px;
-   margin:0px auto;
-   -webkit-animation: rotation .6s infinite linear;
-   -moz-animation: rotation .6s infinite linear;
-   -o-animation: rotation .6s infinite linear;
-   animation: rotation .6s infinite linear;
-   border-left:6px solid rgba(0,174,239,.15);
-   border-right:6px solid rgba(0,174,239,.15);
-   border-bottom:6px solid rgba(0,174,239,.15);
-   border-top:6px solid rgba(0,174,239,.8);
-   border-radius:100%;
-}
 
-@-webkit-keyframes rotation {
-   from {-webkit-transform: rotate(0deg);}
-   to {-webkit-transform: rotate(359deg);}
-}
-@-moz-keyframes rotation {
-   from {-moz-transform: rotate(0deg);}
-   to {-moz-transform: rotate(359deg);}
-}
-@-o-keyframes rotation {
-   from {-o-transform: rotate(0deg);}
-   to {-o-transform: rotate(359deg);}
-}
-@keyframes rotation {
-   from {transform: rotate(0deg);}
-   to {transform: rotate(359deg);}
-}
-</style>
 
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 <?php 
@@ -187,7 +152,6 @@ function button_disable()
  
 </script>
 <script>
-
 function dodisable()
 {
 //enableButton();
@@ -516,8 +480,6 @@ function check_qty2(x,m,n,doc)
 	<div class="panel-heading"><b><font size="4">Fabric Allocation Panel</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div>
 	<font color="red">Note:</font>Please select atleast one roll for allocation in every component</b>
 		<div class="panel-body">
-			<div class="loader"></div>
-
 <?php
 //Auto Selecting Based on Manual Decision.
 
@@ -886,10 +848,10 @@ if(isset($_POST['allocate']))
 		echo "<input type=\"hidden\" name=\"lot_db[$i]\" value=\"".implode(";",$lot_db)."\">";
 		echo "<input type=\"hidden\" name=\"min_width[$i]\" value=\"\">";
 		
-		echo "<h3><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h3>";
+		echo "<h2><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h2>";
 		
 		//To show stats
-		echo "<h4>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\"></span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h4>";
+		echo "<h3>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\"></span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h3>";
 		echo "<div class='table-responsive'><table id='example".$i."' class='table table-bordered' cellspacing='0'>";
 		
 		echo "<thead><tr id=\"$doc_ref\" bgcolor=\"RED\">";
@@ -916,8 +878,31 @@ if(isset($_POST['allocate']))
 		//echo "<th>Allocated Qnty</th>";
 		echo "</tr></thead><tbody>";
 		
+		//$sql="select * from bai_rm_pj1.fabric_status_v2 where inv_no in (select inv_no from bai_rm_pj1.sticker_report where lot_no in (".implode(",",$lot_db_2)."))";
+
 		//Current Version
 		$sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") order by shade";
+		//echo $sql;
+		//$sql="select * from bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") order by inv_no,shade,width";
+		//2012-06-12 New implementation to get fabric detail based on invoce/batch
+		/////////////////XXXXXXXXXXXXXXXXXXXXXXXXXXX//////////////////////
+		//TEMP Disabled due to execution issue at material code.
+		/*
+		$inv_batch=array();
+		$sql="select distinct concat(trim(both from inv_no),'$',trim(both from batch_no)) as inv_batch from bai_rm_pj1.sticker_report where lot_no in (".implode(",",$lot_db_2).")";
+		//echo $sql."<br>";
+		$sql_result=mysql_query($sql,$link) or exit("Sql Error11".mysql_error());
+		while($sql_row=mysql_fetch_array($sql_result))
+		{
+			$inv_batch[]="'".$sql_row['inv_batch']."'";		
+		}
+		
+		$sql="select * from bai_rm_pj1.fabric_status_v3 where concat(trim(both from inv_no),'$',trim(both from batch_no)) in (".implode(",",$inv_batch).") order by inv_no,shade,width";
+		*/
+		/////////////////XXXXXXXXXXXXXXXXXXXXXXXXXXX//////////////////////
+		//2012-06-12 New implementation to get fabric detail based on invoce/batch
+		
+		//echo "</br>Roll Details :".$sql."<br>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error12: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
@@ -941,19 +926,8 @@ if(isset($_POST['allocate']))
 			}
 			echo "<input type='hidden' id='srgp$doc_ref$j' value='".$sql_row['shrinkage_group']."'>";
 			echo "<tr bgcolor=\"$bg_color\" id=\"trchk$doc_ref$j\">";
-			$sql3="select tid,split_roll from $bai_rm_pj1.store_in where tid=".$sql_row['tid'];
-			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result3)>0)
-			{
-				while($sql_row2=mysqli_fetch_array($sql_result3))
-				{
-					if($sql_row2['split_roll'] != '') {
-						echo "<td><center><a data-toggle='modal' id='btn$doc_ref$j' data-target='#modalbtn$doc_ref$j' class='label label-warning label-lg'>".$sql_row['inv_no']."<br/>(Splitted Roll)</a></center></td>";
-					} else {
-						echo "<td>".$sql_row['inv_no']."</td>";
-					}
-				}
-			}
+			
+			echo "<td>".$sql_row['inv_no']."</td>";
 			echo "<td>".$sql_row['grn_date']."</td>";
 			echo "<td>".$sql_row['batch_no']."</td>";
 			echo "<td id='col1'>".$sql_row['item']."</td>";
@@ -1041,97 +1015,11 @@ if(isset($_POST['allocate']))
 				
 			}			
 			echo "</tr>";
-			$tid = $sql_row['tid'];
-			$n = 1; 
-			$modaldisplay.="<div id='modalbtn".$doc_ref.$j."' class='modal fade' role='dialog'>
-				<div class='modal-dialog'>
-			
-				<!-- Modal content-->
-				<div class='modal-content'>
-					<div class='modal-header'>
-					<button type='button' class='close' data-dismiss='modal'>&times;</button>
-					<h4 class='modal-title'> Roll Splitted From :</h4>
-					</div>
-					<div class='modal-body'>
-					<div class='table-responsive'>
-					<table class='table'>
-					<tr style=''background-color:'#337ab7'>
-					<th style='color:black;'>Invoice<br/>No</th>
-					<th style='color:black;'>GRN Date</th>
-					<th style='color:black;'>Batch<br/>No</th>
-					<th style='color:black;'>Item Code</th>
-					<th style='color:black;'>Lot No</th>
-					<th style='color:black;'>Shade</th>
-					<th style='color:black;'>Shrinkage<br/>Group</th>
-					<th style='color:black;'>Shrinkage<br/>Width</th>
-					<th style='color:black;'>Shrinkage<br/>Length</th>
-					<th style='color:black;'>Roll<br/>No</th>
-					<th style='color:black;'>Location</th>
-					<th style='color:black;'>Group</th>
-					<th style='color:black;'>Tkt<br/>Width</th>
-					<th style='color:black;'>Ctx<br/>Width</th>
-					<th style='color:black;'>Tkt<br/>Length</th>
-					<th style='color:black;'>Ctx<br/>Length</th>	
-					<th style='color:black;'>Balance</th>
-					<th style='color:black;'>Allocated</th>
-					<th style='color:black;'>Issued<br/>Qty</th>
-					</tr>";
-			for($m=0; $m < $n; $m++) {
-				$sql3="select tid,split_roll from $bai_rm_pj1.store_in where tid=".$tid;
-				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql_result3)>0)
-				{
-					while($sql_row2=mysqli_fetch_array($sql_result3))
-					{
-						$tid =$sql_row2['split_roll'];
-						if($sql_row2['split_roll'] != '') {
-							$sql_query ="SELECT * FROM bai_rm_pj1.fabric_status_v3 WHERE lot_no IN (SELECT lot_no FROM bai_rm_pj1.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].")";
-							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_result_new=mysqli_fetch_array($sql_result_new))
-								{
-									$tid =$sql_row2['split_roll'];
-									$modaldisplay.="<tr>
-										<td>".$sql_result_new['inv_no']."</td>
-										<td>".$sql_result_new['grn_date']."</td>
-										<td>".$sql_result_new['batch_no']."</td>
-										<td>".$sql_result_new['item']."</td>
-										<td>".$sql_result_new['lot_no']."</td>
-										<td>".$sql_result_new['shade']."</td>
-										<td>".$sql_result_new['shrinkage_group']."</td>
-										<td>".$sql_result_new['shrinkage_width']."</td>
-										<td>".$sql_result_new['shrinkage_length']."</td>
-										<td>".$sql_result_new['ref2']."</td>
-										<td>".$sql_result_new['ref1']."</td>
-										<td>".$sql_result_new['shade']."</td>
-										<td>".$sql_result_new['ref6']."</td>
-										<td>".$sql_result_new['ref3']."</td>
-										<td>".$sql_result_new['qty_rec']."</td>
-										<td>".$sql_result_new['ref5']."</td>
-										<td>".$sql_result_new['balance']."</td>
-										<td>".$allocated_qty."</td>
-										<td><span id=\"issued".$doc_ref."[$j]\"></span></td>
-										</tr>";
-										
-								}
-						}
-					}
-				}
-				
-				}
-				$modaldisplay.="</table>
-				</div>
-					</div>
-					<div class='modal-footer'>
-					<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
-					</div>
-				</div>
-			
-				</div>
-				</div>";
 			$j++;
+			
 		}
 		echo "</tbody></table></div>";
-		echo $modaldisplay;
+				
 		}//Allow only for selected lots/docs
 		
 		//Table to show all list of available items
@@ -1140,10 +1028,10 @@ if(isset($_POST['allocate']))
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\" onclick=\"check_qty(".sizeof($doc).")\">";
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\">";
 	if ($row_count == '') {
-		echo "<input type=\"button\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
+		echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
 	}
 	else {
-		echo "<input type=\"button\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
+		echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
 	}
 	// echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
 	
@@ -1232,12 +1120,11 @@ if(isset($_POST['allocate']))
 		text-decoration:none;
 		borde: 1 px solid #5cb85c;
 	}
-	h4{
+	h3{
 		background-color:#f4a82e;
 		width:36%;
 		color:white;
 		padding:2pt;
-		font-size:14px;
 	}
 	
 
@@ -1266,8 +1153,8 @@ if(isset($_POST['allocate']))
 				// onchange:true,
 				btn: true,
 				btn_text: "go",
-				enter_key: false,
-				// col_20:false,
+				enter_key: true,
+				col_20:false,
 				col_19:false,
 				rows_counter: true,
 				rows_counter_text: "Total rows: ",
@@ -1283,19 +1170,12 @@ if(isset($_POST['allocate']))
 			}
 
 			$(document).ready(function(){
-				$('.loader').hide();
 					var i;
 					var len=document.getElementById('size_doc').value;
 					for (i = 0; i <=len; i++) { 
 					$('#reset_example'+i).addClass('btn btn-warning btn-xs');
 					$('#btn19_example'+i).addClass('btn btn-success btn-xs');
 					}
-					$('.rdiv').click(function(){ 
-						document.getElementById('btn19_example0').value = "GO";
-						document.getElementById('btn19_example1').value = "GO";
-						document.getElementById('btn19_example2').value = "GO";
-					});
 			});
 		
 	</script>
-<script src="../../../../common/js/bootstrap1.min.js"></script>

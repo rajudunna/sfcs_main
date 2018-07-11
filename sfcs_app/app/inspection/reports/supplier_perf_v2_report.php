@@ -14,6 +14,10 @@ $Page_Id='SFCS_0058';
 tr.headings {
     background-color: #d9edf7;
 }
+.flt{
+	width:100%;
+}
+
 </style>
 
 <script language="javascript" type="text/javascript">
@@ -40,15 +44,19 @@ function verify_date(){
 
 </script>
 
-
-
+<body>
 <div class="panel panel-primary">
 <div class="panel-heading">Supplier Wise Performance Report</div>
 <div class="panel-body">
 
-<body>
 
 <form name="input" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
+<div>
+	<?php
+		echo "<b style='color:red' >Note:The Selected Dates are Supplier Performance Updated Dates </b>";
+	?>
+</div>
+<br>
 Start Date <input id="demo1"  class="form-control" style="width: 150px;  display: inline-block;"  type="text" data-toggle="datepicker" name="sdate" size="8" value="<?php if(isset($_POST['sdate'])) { echo $_POST['sdate']; } else { echo date("Y-m-d"); } ?>">
  End Date <input id="demo2" class="form-control" style="width: 150px;  display: inline-block;" type="text" data-toggle="datepicker"  onchange="return verify_date();" size="8" name="edate" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>">
 <input type="checkbox"  value="1" name="excemptflag">Excempt Inspection/Relaxation Results

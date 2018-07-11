@@ -820,7 +820,7 @@ tags will be replaced.-->
 	// 	}
 	// }
 	
-	$subject = 'Hai from tetsing mail';
+	$subject = 'Security Check Out ';
 	// To send HTML mail, the Content-type header must be set
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
 	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -836,7 +836,7 @@ tags will be replaced.-->
 	// 	$headers .= 'To: '.$to. "\r\n";
 	// }
 	
-	$to = 'saiyateesh@gmail.com';
+	$to = $disptach_mail;
 	$headers .= 'From: Shop Floor System Alert'. "\r\n";
 	//$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
 	

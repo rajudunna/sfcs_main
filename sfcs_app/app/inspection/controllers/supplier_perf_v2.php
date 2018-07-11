@@ -13,6 +13,9 @@ body{
 	
 	color:black;
 }
+.flt{
+	width:100%;
+}
 
 </style>
 <?php  
@@ -123,6 +126,13 @@ function popitup(url) {
 <body onload="javascript:dodisablenew();">
 
 <form name="input" method="post" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>">
+<div>
+<?php
+	echo "<b style='color:red' >Note:The Selected Dates are GRN Dates </b>";
+	?>
+</div>
+<br>
+
 <div class="row">
 <div class="col-md-2">
 <label>
