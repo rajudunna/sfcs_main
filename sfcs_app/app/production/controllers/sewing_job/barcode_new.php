@@ -9,7 +9,7 @@
 
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => 'utf-8', 
-		'format' => [25, 40], 
+		'format' => [27, 40], 
 		'orientation' => 'L'
 	]);
 
@@ -67,9 +67,9 @@
 								</td>
 							</tr>	
 							<tr><td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b></td><td>'.$schedule.'</td></tr>
-							<tr><td><b>InputJob#:</b></td><td>'.$input_job.'</td><td><b>Size#:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
+							<tr><td><b>InputJob#:</b></td><td>J'.$input_job.'</td><td><b>Size#:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
 							<tr><td><b>B#:</b></td><td>'.$barcode.'</td><td><b>Cut#:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
-							<tr><td><b>Color#:</b></td><td colspan=3>'.trim($barcode_rslt['order_col_des']).'</td></tr>
+							<tr><td><b>Col#:</b></td><td colspan=3>'.trim($barcode_rslt['order_col_des']).'</td></tr>
 						 </table>
 					 </div><br>';
 			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tor.operation_code not in (10,15,200)";
@@ -91,8 +91,8 @@
 									<td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td>
 									<td><b>Schedule:</b></td><td>'.$schedule.'</td>
 								</tr>
-								<tr><td colspan=4><b>Input#:</b>'.$input_job.' <b>Size#:</b> '.$barcode_rslt['size_code'].' <b>B#:</b>'.$barcode.'</td></tr>
-								<tr><td><b>Color#: </b></td><td colspan=3>'.trim($barcode_rslt['order_col_des']).'</td></tr>
+								<tr><td colspan=4><b>Input#:</b>J'.$input_job.' <b>Size#:</b> '.trim($barcode_rslt['size_code']).' <b>B#:</b>'.$barcode.'</td></tr>
+								<tr><td><b>Col#: </b></td><td colspan=4>'.trim($barcode_rslt['order_col_des']).'</td></tr>
 								<tr><td colspan=4><b>OPS#:</b>'.trim($operations).' <b>Cut#:</b> '.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
 							</table>
 						</div><br><br><br><br><br>';			 
