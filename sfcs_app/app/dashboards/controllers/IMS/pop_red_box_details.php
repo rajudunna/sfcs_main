@@ -148,7 +148,7 @@ $ims_doc_no=$sql_docket['ims_doc_no'];
   </tr>
   
 <?php
-$sql="SELECT input_job_rand_no_ref,ims_size,ims_color,ims_remarks,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE ims_schedule='".$schedule_ref."' and input_job_no_ref='".$job_no."' AND ims_mod_no='".$module."'
+$sql="SELECT input_job_rand_no_ref,ims_size,ims_color,ims_remarks,pac_tid,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE ims_schedule='".$schedule_ref."' and input_job_no_ref='".$job_no."' AND ims_mod_no='".$module."'
  GROUP BY ims_color,ims_size,ims_remarks ORDER BY ims_date";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -164,6 +164,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$ims_schedule=$sql_docket['ims_schedule'];
 	$ims_color=$sql_row['ims_color'];
 	$ims_remarks=$sql_row['ims_remarks'];
+	$pac_tid=$sql_row['pac_tid'];
+
 	$size_title_qry="select $title_size as title from $bai_pro3.bai_orders_db_confirm where order_style_no='$ims_style' and order_del_no='$ims_schedule' and  order_col_des='$ims_color'";
 	//echo $size_title_qry; 
 	$size_title_result=mysqli_query($link, $size_title_qry) or exit("Sql Error size_title_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -184,7 +186,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
 
 	
-     $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where qms_schedule=".$ims_schedule." and qms_color=\"".$ims_color."\" and input_job_no=\"".$input_job_rand_no_ref."\" and qms_style=\"".$ims_style."\" and qms_remarks=\"".$ims_remarks=$sql_row['ims_remarks']."\" and qms_size=\"".strtoupper($size_value)."\" and operation_id='130'";  
+     $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where qms_schedule=".$ims_schedule." and qms_color=\"".$ims_color."\" and input_job_no=\"".$input_job_rand_no_ref."\" and qms_style=\"".$ims_style."\" and qms_remarks=\"".$ims_remarks=$sql_row['ims_remarks']."\" and qms_size=\"".strtoupper($size_value)."\" and operation_id='130' and bundle_no=\"".$pac_tid."\"";  
      //echo $sql33;  
 	  $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error888".mysqli_error($GLOBALS["___mysqli_ston"]));
 	  while($sql_row33=mysqli_fetch_array($sql_result33))

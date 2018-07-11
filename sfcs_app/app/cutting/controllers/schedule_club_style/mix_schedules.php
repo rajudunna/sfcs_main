@@ -2,7 +2,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
-<?php $self_url = 'index.php?r='.$_GET['r']; ?>;
+<?php $self_url = 'index.php?r='.$_GET['r']; ?>
 <script>
 	function firstbox()
 	{

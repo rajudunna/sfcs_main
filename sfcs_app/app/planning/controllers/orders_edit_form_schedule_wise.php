@@ -127,7 +127,7 @@ function thirdbox()
 // echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
 <div class="panel panel-primary">
-<div class="panel-heading">Order Qty Update (Color Wise)</div>
+<div class="panel-heading">Order Qty Update (Schedule Wise) </div>
 <div class"panel-body">
 <?php
 $style=$_GET['style'];
@@ -281,12 +281,45 @@ if(isset($_POST['submit']))
 	while($row1=mysqli_fetch_array($sql1))
 	{
 		$count1=$row1["count(order_del_no)"];
-	}
+    }
+    
+    echo "<div class='col-sm-12'>";
+    $already_updated_query = "select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" ";
+    $already_updated_result=mysqli_query($link,$already_updated_query);
+    if(mysqli_num_rows($already_updated_result) > 0){
+        while($row = mysqli_fetch_array($already_updated_result)){
+            $counter++;
+            if($counter%2 == 0){
+                echo '<br>';
+            }
+            if($row['order_no'] != 1){
+                echo "<span> 
+                      <font size=2><b>' COLOR : <span style='color:#05dd0'>".$row['order_col_des']." '</span></b></font> 
+                    </span>&nbsp;&nbsp;";
+            }else{
+                echo "<span>
+                      <font size=2><b>' COLOR : <span style='color:#dd0505'>".$row['order_col_des']." '</span></b></font> 
+                    </font></span>&nbsp;&nbsp;";
+            }
+        }
+        if($counter > 0){
+            echo "<br/><span><font size=2 color='#0505ee'><b>
+            * You cannot update order quantities for above colors as<br/>
+            1.The order quantities are alredy updated for those colors (OR)<br/>
+            2.The Category for the above colors is already Updated
+            </font></span><br/>";
+        }
+    }else{
+        echo "<div class='row'><span class='alert alert-success'>Order Quantities Not Yet Updated </span></div><br/>";
+    }
+    echo "</div>";
+
 	//echo $count1;
 	if($count1 > 0)
 	{
+
 		echo "<div class=\"col-sm-12\"><h4 align=left style='color:red;'>
-			  <span class=\"label label-warning\">Order Quantity already Updated</span></h4></div>";
+			  <span class=\"label label-warning\">Order Quantity already Updated.Please try with different Color or schedule</span></h4></div>";
 		
 		// echo "<table class=\"table table-striped jambo_table bulk_action\">";
 		// echo "<thread><tr><th>Style</th><td>$style</td></tr></thread>";
@@ -295,6 +328,8 @@ if(isset($_POST['submit']))
 		// echo "</table><br><br><br><br>";
 		// echo "<table>";
 
+        
+         
 		echo "<div class=\"row\">";
 		echo "<div class=\"col-sm-4\">";
 		echo "<div class=\"col-sm-12\">";
@@ -1300,7 +1335,10 @@ if(isset($_POST["update"]))
 
 
 	
-	$update="update $bai_pro3.bai_orders_db set order_no=\"1\",old_order_s_s01=\"$s01_old\",old_order_s_s02=\"$s02_old\",old_order_s_s03=\"$s03_old\",old_order_s_s04=\"$s04_old\",old_order_s_s05=\"$s05_old\",old_order_s_s06=\"$s06_old\",old_order_s_s07=\"$s07_old\",old_order_s_s08=\"$s08_old\",old_order_s_s09=\"$s09_old\",old_order_s_s10=\"$s10_old\",old_order_s_s11=\"$s11_old\",old_order_s_s12=\"$s12_old\",old_order_s_s13=\"$s13_old\",old_order_s_s14=\"$s14_old\",old_order_s_s15=\"$s15_old\",old_order_s_s16=\"$s16_old\",old_order_s_s17=\"$s17_old\",old_order_s_s18=\"$s18_old\",old_order_s_s19=\"$s19_old\",old_order_s_s20=\"$s20_old\",old_order_s_s21=\"$s21_old\",old_order_s_s22=\"$s22_old\",old_order_s_s23=\"$s23_old\",old_order_s_s24=\"$s24_old\",old_order_s_s25=\"$s25_old\",old_order_s_s26=\"$s26_old\",old_order_s_s27=\"$s27_old\",old_order_s_s28=\"$s28_old\",old_order_s_s29=\"$s29_old\",old_order_s_s30=\"$s30_old\",old_order_s_s31=\"$s31_old\",old_order_s_s32=\"$s32_old\",old_order_s_s33=\"$s33_old\",old_order_s_s34=\"$s34_old\",old_order_s_s35=\"$s35_old\",old_order_s_s36=\"$s36_old\",old_order_s_s37=\"$s37_old\",old_order_s_s38=\"$s38_old\",old_order_s_s39=\"$s39_old\",old_order_s_s40=\"$s40_old\",old_order_s_s41=\"$s41_old\",old_order_s_s42=\"$s42_old\",old_order_s_s43=\"$s43_old\",old_order_s_s44=\"$s44_old\",old_order_s_s45=\"$s45_old\",old_order_s_s46=\"$s46_old\",old_order_s_s47=\"$s47_old\",old_order_s_s48=\"$s48_old\",old_order_s_s49=\"$s49_old\",old_order_s_s50=\"$s50_old\",order_s_s01=\"$s01_new\",order_s_s02=\"$s02_new\",order_s_s03=\"$s03_new\",order_s_s04=\"$s04_new\",order_s_s05=\"$s05_new\",order_s_s06=\"$s06_new\",order_s_s07=\"$s07_new\",order_s_s08=\"$s08_new\",order_s_s09=\"$s09_new\",order_s_s10=\"$s10_new\",order_s_s11=\"$s11_new\",order_s_s12=\"$s12_new\",order_s_s13=\"$s13_new\",order_s_s14=\"$s14_new\",order_s_s15=\"$s15_new\",order_s_s16=\"$s16_new\",order_s_s17=\"$s17_new\",order_s_s18=\"$s18_new\",order_s_s19=\"$s19_new\",order_s_s20=\"$s20_new\",order_s_s21=\"$s21_new\",order_s_s22=\"$s22_new\",order_s_s23=\"$s23_new\",order_s_s24=\"$s24_new\",order_s_s25=\"$s25_new\",order_s_s26=\"$s26_new\",order_s_s27=\"$s27_new\",order_s_s28=\"$s28_new\",order_s_s29=\"$s29_new\",order_s_s30=\"$s30_new\",order_s_s31=\"$s31_new\",order_s_s32=\"$s32_new\",order_s_s33=\"$s33_new\",order_s_s34=\"$s34_new\",order_s_s35=\"$s35_new\",order_s_s36=\"$s36_new\",order_s_s37=\"$s37_new\",order_s_s38=\"$s38_new\",order_s_s39=\"$s39_new\",order_s_s40=\"$s40_new\",order_s_s41=\"$s41_new\",order_s_s42=\"$s42_new\",order_s_s43=\"$s43_new\",order_s_s44=\"$s44_new\",order_s_s45=\"$s45_new\",order_s_s46=\"$s46_new\",order_s_s47=\"$s47_new\",order_s_s48=\"$s48_new\",order_s_s49=\"$s49_new\",order_s_s50=\"$s50_new\" where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\"";
+    $update="update $bai_pro3.bai_orders_db set order_no=\"1\",old_order_s_s01=\"$s01_old\",old_order_s_s02=\"$s02_old\",old_order_s_s03=\"$s03_old\",old_order_s_s04=\"$s04_old\",old_order_s_s05=\"$s05_old\",old_order_s_s06=\"$s06_old\",old_order_s_s07=\"$s07_old\",old_order_s_s08=\"$s08_old\",old_order_s_s09=\"$s09_old\",old_order_s_s10=\"$s10_old\",old_order_s_s11=\"$s11_old\",old_order_s_s12=\"$s12_old\",old_order_s_s13=\"$s13_old\",old_order_s_s14=\"$s14_old\",old_order_s_s15=\"$s15_old\",old_order_s_s16=\"$s16_old\",old_order_s_s17=\"$s17_old\",old_order_s_s18=\"$s18_old\",old_order_s_s19=\"$s19_old\",old_order_s_s20=\"$s20_old\",old_order_s_s21=\"$s21_old\",old_order_s_s22=\"$s22_old\",old_order_s_s23=\"$s23_old\",old_order_s_s24=\"$s24_old\",old_order_s_s25=\"$s25_old\",old_order_s_s26=\"$s26_old\",old_order_s_s27=\"$s27_old\",old_order_s_s28=\"$s28_old\",old_order_s_s29=\"$s29_old\",old_order_s_s30=\"$s30_old\",old_order_s_s31=\"$s31_old\",old_order_s_s32=\"$s32_old\",old_order_s_s33=\"$s33_old\",old_order_s_s34=\"$s34_old\",old_order_s_s35=\"$s35_old\",old_order_s_s36=\"$s36_old\",old_order_s_s37=\"$s37_old\",old_order_s_s38=\"$s38_old\",old_order_s_s39=\"$s39_old\",old_order_s_s40=\"$s40_old\",old_order_s_s41=\"$s41_old\",old_order_s_s42=\"$s42_old\",old_order_s_s43=\"$s43_old\",old_order_s_s44=\"$s44_old\",old_order_s_s45=\"$s45_old\",old_order_s_s46=\"$s46_old\",old_order_s_s47=\"$s47_old\",old_order_s_s48=\"$s48_old\",old_order_s_s49=\"$s49_old\",old_order_s_s50=\"$s50_old\",order_s_s01=\"$s01_new\",order_s_s02=\"$s02_new\",order_s_s03=\"$s03_new\",order_s_s04=\"$s04_new\",order_s_s05=\"$s05_new\",order_s_s06=\"$s06_new\",order_s_s07=\"$s07_new\",order_s_s08=\"$s08_new\",order_s_s09=\"$s09_new\",order_s_s10=\"$s10_new\",order_s_s11=\"$s11_new\",order_s_s12=\"$s12_new\",order_s_s13=\"$s13_new\",order_s_s14=\"$s14_new\",order_s_s15=\"$s15_new\",order_s_s16=\"$s16_new\",order_s_s17=\"$s17_new\",order_s_s18=\"$s18_new\",order_s_s19=\"$s19_new\",order_s_s20=\"$s20_new\",order_s_s21=\"$s21_new\",order_s_s22=\"$s22_new\",order_s_s23=\"$s23_new\",order_s_s24=\"$s24_new\",order_s_s25=\"$s25_new\",order_s_s26=\"$s26_new\",order_s_s27=\"$s27_new\",order_s_s28=\"$s28_new\",order_s_s29=\"$s29_new\",order_s_s30=\"$s30_new\",order_s_s31=\"$s31_new\",order_s_s32=\"$s32_new\",order_s_s33=\"$s33_new\",order_s_s34=\"$s34_new\",order_s_s35=\"$s35_new\",order_s_s36=\"$s36_new\",order_s_s37=\"$s37_new\",order_s_s38=\"$s38_new\",order_s_s39=\"$s39_new\",order_s_s40=\"$s40_new\",order_s_s41=\"$s41_new\",order_s_s42=\"$s42_new\",order_s_s43=\"$s43_new\",order_s_s44=\"$s44_new\",order_s_s45=\"$s45_new\",order_s_s46=\"$s46_new\",order_s_s47=\"$s47_new\",order_s_s48=\"$s48_new\",order_s_s49=\"$s49_new\",order_s_s50=\"$s50_new\" where order_style_no=\"$sty\" and order_del_no=\"$sch\" 
+    and order_no <> 1";
+    
+    //and order_col_des=\"$col\"";
 // echo $update;
 	//echo "<table><tr><th>$update</th></tr></table>";
 
@@ -1310,7 +1348,7 @@ if(isset($_POST["update"]))
 	}
 	else
 	{
-		$insert="insert into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\")";
+		$insert="insert ignore into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_no = 1 )";
 		// echo $insert;
         if(!mysqli_query($link, $insert))
 		{

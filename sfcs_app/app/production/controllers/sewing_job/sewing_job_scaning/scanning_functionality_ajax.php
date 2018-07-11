@@ -8,7 +8,7 @@ $form = 'P';
 $ops_dep='';
 $post_ops_code='';
 $qry_status='';
-// error_reporting(0);
+error_reporting(0);
 // $username = user();
 if($operation_code >=130 && $operation_code < 300)
 {
@@ -777,7 +777,7 @@ for($i=0;$i<sizeof($b_tid);$i++)
 			bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
 			) values ('".$b_module."','".$sec_head."','".$b_rep_qty[$i]."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$b_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
 			//echo "</br>Insert Bailog buf: ".$insert_bailogbuf."</br>";
-			if($b_rep_qty[$i] > 0)
+			if($b_rep_qty[$i] > 0 )
 			{
 				$qrybuf_status=mysqli_query($link,$insert_bailogbuf) or exit("BAI Log Buf Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
