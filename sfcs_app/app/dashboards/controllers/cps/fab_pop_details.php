@@ -812,22 +812,22 @@ if(isset($_POST['submit']))
 	$reason=$_POST['remarks'];
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
+	//echo "Issue Status : ".$issue_status;exit;
 	// echo $reason."<br>";
 	// echo $group_docs."<br>";
 	// echo sizeof($group_docs)."<br>";
 	//echo "Alloc_docketd--".$alloc_docket."--total allocted--".$doc_tot."--issue_status--".$issue_status."--total_docket--".$group_docs."--reasno---".$reason."--style--".$style."--scheudle--".$schedule."<br>";
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
-	{
+	{	
+		$sql2="update plandoc_stat_log set fabric_status='5' where doc_no='".$doc_num[$i]."'";
+		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$doc_no_loc="D".$doc_num[$i];
 		$sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_num[$i]."' and status=1";
 		//echo $sql111."</br>";
 		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result111)>0)
 		{
-			$sql2="update plandoc_stat_log set fabric_status='5' where doc_no='".$doc_num[$i]."'";
-			//Uncheck this
-			mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row2=mysqli_fetch_array($sql_result111))
 			{
 				$code=$row2['roll_id'];
