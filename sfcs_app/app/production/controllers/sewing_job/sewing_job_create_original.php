@@ -194,7 +194,7 @@
 						$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 						$pack_method = echo_title("$brandix_bts.tbl_carton_ref","carton_method","carton_barcode",$schedule,$link);
 						$tbl_carton_ref_check = echo_title("$brandix_bts.tbl_carton_ref","count(*)","style_code='".$style_id."' AND ref_order_num",$sch_id,$link);
-
+						echo '<h4><span class="label label-info">Pack Method: '.$operation[$pack_method].'</span></h4>';
 						if($tbl_carton_ref_check>0)
 						{
 							// echo "carton props added, You can proceed";
@@ -487,57 +487,7 @@
 								}
 								// Garments Per Carton End
 
-								// Sewing Job Qty Start
-								{
-									echo "<br><div class='col-md-12'><b>Sewing Job Qty: </b>
-										<table class=\"table table-bordered\">
-												<tr>
-													<th>Color</th>";
-														for ($i=0; $i < sizeof($size_main); $i++)
-														{
-															echo "<th>".$size_main[$i]."</th>";
-														}
-												echo "</tr>";
-												$row_count=0;
-												for ($j=0; $j < sizeof($color_main); $j++)
-												{
-													echo "<tr>";
-															echo "<td>$color_main[$j]</td>";
-															for ($size_count=0; $size_count < sizeof($size_main); $size_count++)
-															{
-																$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color_main[$j]."' AND size_title='".$size1[$size_count]."'";
-																// echo $individual_sizes_query.'<br>';
-																$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
-																while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
-																{
-																	$individual_color = $individual_sizes_details['size_title'];
-																}
-																$qty_query = "SELECT combo_no FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
-																// echo '<br>'.$qty_query;
-																$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
-																while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
-																{
-																	$comboNO = $qty_query_details['combo_no'];
 
-																	if (mysqli_num_rows($individual_sizes_result) >0)
-																	{
-																		if ($size1[$size_count] == $individual_color) {
-																			echo "<td><input type='text' required readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$size_count."_".$comboNO."' class='form-control integer' value=''></td>";
-																		}
-																	}
-																	else 
-																	{
-																		echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$size_count."_".$comboNO."' class='form-control integer' value='0'></td>";
-																	}
-																}
-															}
-													echo "</tr>";
-													$row_count++;
-												}
-											echo "</table></div>
-										";
-								}
-								// Sewing Job Qty End
 								if(in_array($authorized,$has_permission))
 								{
 									$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
@@ -594,6 +544,59 @@
 											echo "</table></div>";
 										}
 										// Combo wise no of cartons end
+										// Sewing Job Qty Start
+										{
+											echo "<br>
+												<div class='col-md-12'><b>Sewing Job Qty: </b>
+													<table class=\"table table-bordered\">
+														<tr>
+															<th>Color</th>";
+																for ($i=0; $i < sizeof($size_main); $i++)
+																{
+																	echo "<th>".$size_main[$i]."</th>";
+																}
+														echo "</tr>";
+														$row_count=0;
+														for ($j=0; $j < sizeof($color_main); $j++)
+														{
+															echo "<tr>";
+																	echo "<td>$color_main[$j]</td>";
+																	for ($size_count=0; $size_count < sizeof($size_main); $size_count++)
+																	{
+																		$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color_main[$j]."' AND size_title='".$size1[$size_count]."'";
+																		// echo $individual_sizes_query.'<br>';
+																		$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
+																		while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
+																		{
+																			$individual_color = $individual_sizes_details['size_title'];
+																		}
+																		$qty_query = "SELECT combo_no FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
+																		// echo '<br>'.$qty_query;
+																		$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
+																		while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
+																		{
+																			$comboNO = $qty_query_details['combo_no'];
+
+																			if (mysqli_num_rows($individual_sizes_result) >0)
+																			{
+																				if ($size1[$size_count] == $individual_color) {
+																					echo "<td><input type='text' required readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$size_count."_".$comboNO."' class='form-control integer' value=''></td>";
+																				}
+																			}
+																			else 
+																			{
+																				echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$size_count."_".$comboNO."' class='form-control integer' value='0'></td>";
+																			}
+																		}
+																	}
+															echo "</tr>";
+															$row_count++;
+														}
+													echo "</table>
+												</div>
+											";
+										}
+										// Sewing Job Qty End
 										// var_dump($combo);
 										echo "<div class='col-md-4'>
 											<table class='table table-bordered'>
@@ -657,7 +660,8 @@
 					$sch_id=$_POST['sch_id'];
 					$pack_method=$_POST['pack_method'];
 
-					if ($no_of_cartons!=0)
+					$sum = array_sum($no_of_cartons);
+					if ($sum>0)
 					{
 						$exces_from=$_POST['exces_from'];
 						$c_ref=$_POST['c_ref'];
@@ -676,13 +680,13 @@
 						
 						echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
 						$url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
-						echo("<script>location.href = '".$url5."&id=$c_ref';</script>");
+						echo "<script>location.href = '".$url5."&id=$c_ref';</script>";
 					}
 					else
 					{
 						echo "<script>sweetAlert('Number of Cartons is Zero','Cannot create Sewing Jobs','warning');</script>";
 						$url5 = getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N');
-						echo("<script>location.href = '".$url5."&style=$style_id&schedule=$sch_id';</script>");
+						echo "<script>location.href = '".$url5."&style=$style_id&schedule=$sch_id';</script>";
 					}
 				}
 			?> 
