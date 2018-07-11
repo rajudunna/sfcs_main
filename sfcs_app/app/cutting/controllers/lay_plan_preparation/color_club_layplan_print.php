@@ -423,6 +423,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+
 .xl7332599
 	{padding-top:1px;
 	padding-right:1px;
@@ -459,6 +460,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+
 .xl7532599
 	{padding-top:1px;
 	padding-right:1px;
@@ -611,6 +613,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+
 .xl8332599
 	{padding-top:1px;
 	padding-right:1px;
@@ -652,6 +655,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+
 .xl8532599
 	{padding-top:1px;
 	padding-right:1px;
@@ -696,6 +700,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+
 .xl8732599
 	{padding-top:1px;
 	padding-right:1px;
@@ -740,6 +745,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+
 .xl8932599
 	{padding-top:1px;
 	padding-right:1px;
@@ -784,6 +790,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+
 .xl9132599
 	{padding-top:1px;
 	padding-right:1px;
@@ -828,6 +835,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:normal;}
+
 .xl9332599
 	{padding-top:1px;
 	padding-right:1px;
@@ -916,6 +924,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+
 .xl9732599
 	{padding-top:1px;
 	padding-right:1px;
@@ -973,12 +982,13 @@ body{
 @media print {
 @page narrow {size: 9in 11in}
 @page rotated {size: landscape}
+
 DIV {page: narrow}
 TABLE {page: rotated}
 #non-printable { display: none; }
 #printable { display: block; }
 #logo { display: block; }
-body { zoom:75%;}
+body { zoom:60%;}
 #ad{ display:none;}
 #leftbar{ display:none;}
 #Book1_29570{ width:75%; margin-left:20px;}
@@ -988,6 +998,7 @@ body { zoom:75%;}
 <script>
 function printpr()
 {
+	window.print();
 var OLECMDID = 7;
 /* OLECMDID values:
 * 6 - print
@@ -1181,9 +1192,10 @@ tags will be replaced.-->
  <tr height=25 style='height:18.75pt'>
   <td height=25 class=xl1532599 style='height:18.75pt'></td>
   <td class=xl6432599></td>
-  <td colspan=32 class=xl8332599>Cut Distribution Plan/Production Input</td>
+  <td colspan=30 class=xl8332599>Cut Distribution Plan/Production Input</td>
   <td class=xl1532599></td>
  </tr>
+ <tr height=40></tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl1532599 style='height:15.75pt'></td>
   <td class=xl6432599></td>
@@ -1379,8 +1391,8 @@ tags will be replaced.-->
   <td colspan=15 rowspan=6 class=xl9732599>
   <?php
   
-  $style_css="style='font-size:12px; border:.5pt solid black; padding-left: 10px; padding-right:10px; border-collapse: collapse;'";
-  echo "<table style='font-size:12px; border:.5pt solid black; border-collapse: collapse;' align=left>";
+  $style_css="style='font-size:22px; border:.5pt solid black; padding-left: 10px; padding-right:10px; border-collapse: collapse;'";
+  echo "<table style='font-size:22px; border:.5pt solid black; border-collapse: collapse;' align=left>";
   
   echo "<tr>";
   
@@ -1588,7 +1600,7 @@ tags will be replaced.-->
   $binding_con = 0.12;
   if(strlen($remarks_x)>0)
   {
-  	echo "<td colspan=5 style='border:1px solid black'><strong>Remarks : $remarks_x</strong></td>";
+  	echo "<td colspan=5 style='font-size:20px;border:1px solid black'><strong>Remarks : $remarks_x</strong></td>";
   }
   else
   {
@@ -1596,7 +1608,7 @@ tags will be replaced.-->
   }
   if(strlen($binding_con)>0)
   {
-	  echo "<td colspan=4 style='border:1px solid black'><strong>Binding Consumption : $binding_con</strong></td>";
+	  echo "<td colspan=4 style='font-size:20px;border:1px solid black'><strong>Binding Consumption : $binding_con</strong></td>";
   }else{
 	  echo "<td colspan=5></td>";
   }
@@ -1714,8 +1726,8 @@ tags will be replaced.-->
   
   <?php
   
-  $style_css="style='font-size:11px; border:.5pt solid black; padding-top: 3px; padding-bottom:3px; padding-left: 15px; padding-right:15px; border-collapse: collapse;'";
-  echo "<table style='font-size:12px; border-collapse: collapse; margin-left:85px; ' align=left>";
+  $style_css="style='font-size:22px; border:.5pt solid black; padding-top: 3px; padding-bottom:3px; padding-left: 15px; padding-right:15px; border-collapse: collapse;'";
+  echo "<table style='font-size:22px; border-collapse: collapse; margin-left:85px; ' align=left>";
   
   echo "<tr>";
   
@@ -2891,6 +2903,8 @@ echo "<tr>
   <td class=xl7532599>&nbsp;</td>
   <td class=xl1532599></td>
  </tr>
+ </table>
+ <table border=0 cellpadding=0 cellspacing=0 width=2000 align=center style='border-collapse:collapse'>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl1532599 style='height:15.75pt'></td>
   <td class=xl6432599></td>
@@ -2929,7 +2943,7 @@ echo "<tr>
   <td class=xl6432599></td>
   <td class=xl1532599></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
+ <tr height=40 style='height:30pt'>
   <td height=21 class=xl1532599 style='height:15.75pt'></td>
   <td class=xl6432599></td>
   <td colspan=2 class=xl8932599 style='border-right:.5pt solid black;
@@ -3045,6 +3059,21 @@ echo "<tr>
 
 </div>
 
+<style>
+
+	.xl1532599,.xl6432599,.xl6532599,.xl6632599,.xl6732599,.xl6832599,.xl6932599,.xl7032599,.xl7132599,
+	.xl7232599,.xl7332599,.xl7432599,.xl7532599,.xl7632599,.xl7732599,.xl7832599,.xl7932599,.xl8032599,.xl8132599,
+	.xl8232599,.xl8332599,.xl8432599,.xl8532599,.xl8632599,.xl8732599,.xl8832599,.xl8932599,.xl9032599,.xl9132599,
+	.xl9232599,.xl9332599,.xl9432599,.xl9532599,.xl9632599,.xl9732599,.xl9832599{
+		font-size : 22px;
+	}
+	*{
+		font-size : 22px;
+	}
+	tr{
+		height : 40px;
+	}
+</style>
 
 <!----------------------------->
 <!--END OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD-->
