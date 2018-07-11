@@ -1363,7 +1363,7 @@ TABLE {page: rotated}
 #non-printable { display: none; }
 #printable { display: block; }
 #logo { display: block; }
-body { zoom:57%;}
+body { zoom:72%;}
 #ad{ display:none;}
 #leftbar{ display:none;}
 #CUT_PLAN_NEW_13019{ width:57%; margin-left:20px;}
@@ -1534,10 +1534,8 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
-  <td class=xl6513019></td> 
-  <td class=xl6513019></td> 
-  <td class=xl6513019></td> 
-  <td colspan=8 class=xl9413019>Cutting Department | LID: <?php echo $cid; ?></td> 
+ 
+  <td colspan=8 class=xl9413019 style='font-size:22px'>Cutting Department | LID: <?php echo $cid; ?></td> 
   <td class=xl6713019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
@@ -1609,19 +1607,23 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
  </tr> 
  <tr class=xl6513019 height=33 style='mso-height-source:userset;height:24.75pt'> 
   <td height=33 class=xl6513019 style='height:24.75pt'></td> 
-  <td colspan=32 class=xl9513019>Cut Distributions Plan/Production 
+  <td colspan=27 class=xl9513019 style='font-size:28px'>Cut Distributions Plan/Production 
   Input&amp;Output<span style='mso-spacerun:yes'></span></td> 
   <td class=xl6513019></td> 
  </tr> 
+
+ <tr height=60></tr>
+
+
  <tr class=xl6513019 height=20 style='mso-height-source:userset;height:15.0pt'> 
-  <td height=20 class=xl6513019 style='height:15.0pt'></td> 
+  <td height=30 class=xl6513019 style='height:30pt'></td> 
   <td class=xl6713019>Style :</td> 
-  <td colspan=3 class=xl9613019><?php echo $style; ?></td> 
+  <td colspan=6 class=xl9613019><?php echo $style; ?></td> 
   <td class=xl6613019></td> 
   <td colspan=3 class=xl6713019>Category :</td> 
   <td colspan=12 class=xl9613019><?php echo $category; ?></td> 
   <td class=xl6513019></td> 
-  <td class=xl6513019></td> 
+ 
   <td colspan=2 class=xl6713019>Date :</td> 
   <td colspan=3 class=xl9613019><?php echo $order_date; ?></td> 
   <td class=xl6513019></td> 
@@ -1631,15 +1633,16 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
  </tr> 
- <tr class=xl6513019 height=20 style='mso-height-source:userset;height:15.0pt'> 
+ 
+ <tr class=xl6513019 height=30 style='mso-height-source:userset;height:30pt'> 
   <td height=20 class=xl6513019 style='height:15.0pt'></td> 
   <td class=xl6713019>Sch No :</td> 
-  <td colspan=3 class=xl9713019><?php echo $delivery.chr($color_code); ?></td> 
+  <td colspan=6 class=xl9713019><?php echo $delivery.chr($color_code); ?></td> 
   <td class=xl6613019></td> 
   <td colspan=3 class=xl6713019>Fab Description :</td> 
   <td colspan=12 class=xl9713019><?php echo $fab_des; ?></td> 
   <td class=xl6513019></td> 
-  <td class=xl6513019></td> 
+
   <td colspan=2 class=xl6713019>PO / CO:</td> 
   <td colspan=3 class=xl9713019><?php echo $pono."/".$cono; ?></td> 
   <td class=xl6513019></td> 
@@ -1649,7 +1652,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
  </tr> 
- <tr class=xl6513019 height=20 style='mso-height-source:userset;height:15.0pt'> 
+ <tr class=xl6513019 height=30 style='mso-height-source:userset;height:30pt'> 
   <td height=20 class=xl6513019 style='height:15.0pt'></td> 
   <!-- 
   <td class=xl6713019>Color :</td> 
@@ -1659,12 +1662,12 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   Code:</td> 
   --> 
   <td class=xl6713019>Color :</td> 
-  <td colspan=6 class=xl9713019><?php echo $color." / ".$col_des; ?></td> 
+  <td colspan=9 class=xl9713019><?php echo $color." / ".$col_des; ?></td> 
   <td colspan=1 class=xl6713019><span style='mso-spacerun:yes'>Fab</span> 
   Code:</td> 
   <td colspan=12 class=xl9713019><?php echo $compo_no; ?></td> 
   <td class=xl6513019></td> 
-  <td class=xl6513019></td> 
+
   <td colspan=2 class=xl6713019>Assortment:</td> 
   <td colspan=3 class=xl9713019>&nbsp;</td> 
   <td class=xl6513019></td> 
@@ -1674,6 +1677,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
  </tr> 
+<tr height=40></tr>
 <tr class=xl6513019 height=11 style='mso-height-source:userset;height:8.25pt'> 
   <td height=11 class=xl6513019 style='height:8.25pt'></td> 
   <?php for($i=0;$i<32;$i++) echo "<td class=xl6613019></td>"; ?> 
@@ -1682,22 +1686,23 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td height=11 class=xl6513019 style='height:8.25pt'></td> 
   <?php for($i=0;$i<32;$i++) echo "<td class=xl6613019></td>"; ?> 
  </tr> 
+ 
  <!-- middle body code --> 
     <tr> 
     <td class=xl6613019></td> 
     <td class=xl6513019></td> 
     <td class=xl6613019></td> 
-    <td class=xl6813019><?php echo $category; ?></td> 
+    <td colspan=2  class=xl6813019><?php echo $category; ?></td> 
     <td class=xl6613019></td> 
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Savings %</td> 
-    <td class=xl7013019><?php echo $savings_new; ?>%</td> 
+    <td colspan=2  class=xl7013019><?php echo $savings_new; ?>%</td> 
     <td class=xl6613019></td> 
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>One Gmt 
     One Way</td> 
     <td class=xl6913019><?php echo $gmtway; ?></td> 
-     
+    <td colspan=2></td>
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Binding Consumption</td> 
     <td class=xl6913019><?php echo $binding_con; ?></td> 
     <td class=xl7113019></td> 
@@ -1705,12 +1710,12 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     </tr> 
     <tr> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Consumption</td> 
-    <td class=xl7613019><?php echo $body_yy; ?></td> 
+    <td colspan=2  class=xl7613019><?php echo $body_yy; ?></td> 
     <td class=xl6613019></td> 
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>CAD 
     Consumption</td> 
-    <td class=xl7613019><?php echo round($newyy2,4); ?></td> 
+    <td colspan=2 class=xl7613019><?php echo round($newyy2,4); ?></td> 
     <td class=xl6513019></td> 
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Strip 
@@ -1722,12 +1727,12 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <tr> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Material 
     Allowed</td> 
-    <td class=xl7713019><?php echo round(($order_total*$body_yy),0); ?></td> 
+    <td colspan=2 class=xl7713019><?php echo round(($order_total*$body_yy),0); ?></td> 
     <td class=xl6613019></td> 
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Used 
     <?php $fab_uom ?></td> 
-    <td class=xl7713019><?php echo round($newyy,0); ?></td> 
+    <td colspan=2 class=xl7713019><?php echo round($newyy,0); ?></td> 
     <td class=xl6513019></td> 
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Gusset 
@@ -1738,12 +1743,13 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     </tr> 
     <tr> 
     <?php for($i=0;$i<12;$i++) echo "<td class=xl6613019></td>"; ?> 
-    <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Pattern 
+    <td colspan=5 class=xl9813019 style='border-right:.5pt solid black'>Pattern 
     Version</td> 
     <td class=xl7713019><?php echo $patt_ver; ?></td> 
     <td class=xl6613019></td> 
     <td class=xl6513019></td> 
     </tr> 
+   
   <!-- end --> 
   
   
@@ -1778,7 +1784,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
  ?> 
  <tr class=xl6613019 height=23 style='mso-height-source:userset;height:17.25pt'> 
   <td height=23 class=xl6613019 style='height:17.25pt'></td> 
-  <td class=xl6613019></td> 
+  <td  colspan=2 class=xl6613019></td> 
  <?php 
    
     for($s=0;$s<sizeof($size);$s++) 
@@ -1788,11 +1794,11 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
      
     ?> 
 <td class=xl7013019>Total</td> 
-   
+
  </tr> 
  <tr class=xl6513019 height=21 style='mso-height-source:userset;height:15.75pt'> 
   <td height=21 class=xl6513019 style='height:15.75pt'></td> 
-  <td class=xl7213019 width=70 style='width:53pt'>Order Qty<span 
+  <td colspan=2 class=xl7213019 width=150 style='width:53pt'>Order Qty<span 
   style='mso-spacerun:yes'></span></td> 
   <?php 
   if($order_amend=="1") 
@@ -1836,6 +1842,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     echo "<td class=xl7513019>".$o_s[$i]."</td>"; 
     }     
     } 
+   
      
   /*echo "<td class=xl7413019> $o_s06</td> 
   <td class=xl7513019> $o_s08</td> 
@@ -1860,7 +1867,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
  <?php 
   if($order_amend=="1") 
   { 
-    echo "<td class=xl7213019 width=70 style='width:53pt'>Extra Ship</td>"; 
+    echo "<td  colspan=2  class=xl7213019 width=150 style='width:53pt'>Extra Ship</td>"; 
      
     //echo "Test-2".sizeof($c_s)."<br>"; 
     for($i=0;$i<sizeof($size);$i++) 
@@ -1873,7 +1880,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   } 
   else 
   { 
-    echo "<td class=xl7213019 width=70 style='width:53pt'>( $excess%)</td>"; 
+    echo "<td  colspan=2  class=xl7213019 width=150 style='width:53pt'>( $excess%)</td>"; 
     //echo "Test".sizeof($c_s)."<br>"; 
     for($i=0;$i<sizeof($size);$i++) 
     { 
@@ -1900,7 +1907,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
  </tr> 
  <tr class=xl6513019 height=20 style='mso-height-source:userset;height:15.0pt'> 
   <td height=20 class=xl6513019 style='height:15.0pt'></td> 
-  <td class=xl7213019 width=70 style='width:53pt'>(<?php echo "Excess ".$excess; ?>%)</td> 
+  <td  colspan=2 class=xl7213019 width=150 style='width:53pt'>(<?php echo "Excess ".$excess; ?>%)</td> 
     <?php  
     for($i=0;$i<sizeof($size);$i++) 
     { 
@@ -1911,7 +1918,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
  </tr> 
  <tr class=xl6513019 height=12 style='mso-height-source:userset;height:9.0pt'> 
   <td height=12 class=xl6513019 style='height:9.0pt'></td> 
-  <td class=xl7213019 width=70 style='width:53pt'></td> 
+  <td class=xl7213019 width=150 style='width:53pt'></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
@@ -1984,6 +1991,7 @@ else
     } 
     ?> 
   <!--<td class=xl7013019>Total</td>--> 
+ 
   <td class=xl7013019>Total</td> 
  </tr> 
  <tr class=xl6513019 height=21 style='mso-height-source:userset;height:15.75pt'> 
@@ -2488,15 +2496,14 @@ else
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
  </tr> 
+ 
 <tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'> 
   <td height=20 class=xl6613019 style='height:15.0pt'></td> 
   <td rowspan=2 class=xl10013019 style='border-bottom:.5pt solid black'>Cut No</td> 
   <td colspan=<?php echo sizeof($size)+1 ;?> class=xl10313019 style='border-right:.5pt solid black; 
-  border-left:none'>Ratio</td> 
- <td rowspan=2 class=xl10013019 style='border-bottom:.5pt solid black'>Plies</td> 
-  <td colspan=4 class=xl10313019 style='border-right:.5pt solid black; 
-   
-  border-left:none'>Verification</td> 
+  border-left:none'>Plies</td> 
+  <td rowspan=2 class=xl10013019 style='border-bottom:.5pt solid black'>Plies</td> 
+  <td colspan=4 class=xl10313019 style='border-right:.5pt solid black; border-left:none'>Verification</td> 
   <!--<td class=xl11613019 style='border-left:none' colspan=14>INPUT</td>--> 
  <!-- <td class=xl11413019>&nbsp;</td> 
   <td class=xl11413019>&nbsp;</td> 
@@ -2512,11 +2519,10 @@ else
   <td class=xl11413019>&nbsp;</td> 
   <td class=xl11613019>&nbsp;</td> --> 
   <!--<td class=xl8313019>&nbsp;</td>--> 
-    
  </tr> 
  <tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'> 
   <td height=20 class=xl6613019 style='height:15.0pt'></td> 
-  <td style='border-right:.5pt solid black;border-bottom:.5pt solid black'>Category</td> 
+  <td style='border-right:.5pt solid black;border-bottom:.5pt solid black;font-size:18px'>Category</td> 
   <?php 
     /*This is for size headers*/ 
       if($flag == 1) 
@@ -2527,7 +2533,7 @@ else
     if($size[$s]<>'') 
     { 
     $s_count=$s_count+1; 
-     
+   
     echo "<td class=xl8413019>".$size[$s]."</td>"; 
     } 
      
@@ -2654,7 +2660,7 @@ else
  $a_s13_tot=0; 
  $a_s14_tot=0; 
 
-     
+
 $sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Pilot\"  order by acutno"; 
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -2882,7 +2888,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 // embellishment start 
 if($emb_stat==1) 
     { 
-     
+       
       echo "<tr class=xl6613019 height=20 style='height:15.0pt'>"; 
       echo "<td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
       echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code)."000"."</td>"; 
@@ -3134,13 +3140,14 @@ echo "</tr>";
   <td class=xl8513019>&nbsp;</td> 
   <td class=xl6513019></td> 
  </tr> 
+ 
  <tr class=xl6513019 height=20 style='mso-height-source:userset;height:15.0pt'> 
   <td height=20 class=xl6513019 style='height:15.0pt'></td> 
   <td rowspan=2 class=xl10513019 width=70 style='border-bottom:.5pt solid black; 
   width:53pt'>Recon.</td> 
   <td colspan=2 class=xl10713019 style='border-right:.5pt solid black; 
   border-left:none'>Section</td> 
-  <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
+  <td colspan=3 class=xl10913019 style='border-right:.5pt solid black; 
   border-left:none'>Date Completed</td> 
   <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
   border-left:none'>Fabric Recived</td> 
@@ -3155,7 +3162,7 @@ echo "</tr>";
   border-left:none'>Act Saving</td> 
   <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
   border-left:none'>Shortage</td> 
-  <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
+  <td colspan=3 class=xl10913019 style='border-right:.5pt solid black; 
   border-left:none'>Deficit / Surplus</td> 
   <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
   border-left:none'>Reconsilation</td> 
@@ -3171,11 +3178,11 @@ echo "</tr>";
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
  </tr> 
- <tr class=xl6513019 height=20 style='mso-height-source:userset;height:15.0pt'> 
+ <tr class=xl6513019 height=30 style='mso-height-source:userset;height:30pt'> 
   <td height=20 class=xl6513019 style='height:15.0pt'></td> 
   <td colspan=2 class=xl11013019 style='border-right:.5pt solid black; 
   border-left:none'>&nbsp;</td> 
-  <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
+  <td colspan=3 class=xl11213019 style='border-right:.5pt solid black; 
   border-left:none'>&nbsp;</td> 
   <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
   border-left:none'>&nbsp;</td> 
@@ -3190,7 +3197,7 @@ echo "</tr>";
   border-left:none'>&nbsp;</td> 
   <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
   border-left:none'>&nbsp;</td> 
-  <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
+  <td colspan=3 class=xl11213019 style='border-right:.5pt solid black; 
   border-left:none'>&nbsp;</td> 
   <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
   border-left:none'>&nbsp;</td> 
@@ -3332,3 +3339,22 @@ if($sql_num_check==0)
 //exit; 
 
 ?> 
+
+<style>
+	
+    .xl1532599,.xl6432599,.xl6532599,.xl6632599,.xl6732599,.xl6832599,.xl6932599,.xl7032599,.xl7132599,
+	.xl7232599,.xl7332599,.xl7432599,.xl7532599,.xl7632599,.xl7732599,.xl7832599,.xl7932599,.xl8032599,.xl8132599,
+	.xl8232599,.xl8332599,.xl8432599,.xl8532599,.xl8632599,.xl8732599,.xl8832599,.xl8932599,.xl9032599,.xl9132599,
+	.xl9232599,.xl9332599,.xl9432599,.xl9532599,.xl9632599,.xl9732599,.xl9832599,.xl6713019,
+    .xl9613019,.xl9713019,.xl7013019,.xl6813019,.xl9813019,.xl7613019,.xl6913019,.xl7613019,.xl7713019,.xl7213019,
+    .xl7413019,.xl7513019,.xl7313019,.xl6713019,.xl10713019,.xl10913019,.xl10513019,.xl9213019{
+		font-size : 22px;
+	}
+    .xl10013019,.xl10313019,.xl8413019,.xl8613019,.xl8713019{
+        font-size : 20px;
+    }
+	*{
+		font-size : 22px;
+	}
+
+</style>
