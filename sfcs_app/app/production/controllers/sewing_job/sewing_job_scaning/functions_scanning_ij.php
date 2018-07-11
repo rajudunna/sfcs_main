@@ -129,12 +129,12 @@ function getjobdetails($job_number)
 		$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 		while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 		{
-			if($row['act_cut_status'] == '')
-			{
-				$result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
-				echo json_encode($result_array);
-				die();
-			}
+			// if($row['act_cut_status'] == '')
+			// {
+			// 	$result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
+			// 	echo json_encode($result_array);
+			// 	die();
+			// }
 			
 		}
 		
