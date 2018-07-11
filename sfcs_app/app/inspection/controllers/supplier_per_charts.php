@@ -169,7 +169,7 @@ table{
         chart: {
 		    renderTo: 'container',
 		    borderWidth: 3,
-			fontSize: '30px',
+			fontSize: '5px',
             borderColor: '#000000',
 			plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -194,7 +194,7 @@ table{
 					style: {
                     fontSize: '20px'
 					},
-                    format: '<b>{point.name}</b>: <b>{point.percentage:.1f}<b> %'
+                    format: '<b>{point.name}</b>'
                 },
 				showInLegend: true
             }
@@ -215,7 +215,9 @@ table{
             name: 'Received Qty',
 			color: '#000000',
 			style: {
-			fontSize: '55px'
+			fontSize: '20px',
+
+
 			},
             data:  [".$string_code1."]
         }]
@@ -431,7 +433,7 @@ table{
 					},
 					labels: {
 						style: {
-							fontSize: '20px',
+							fontSize: '10px',
 							color: '#000000',	
 							fontWeight: 'bold'
 							},
