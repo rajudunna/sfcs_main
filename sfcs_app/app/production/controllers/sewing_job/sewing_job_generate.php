@@ -81,7 +81,7 @@
 						{ 
 							$docket_number=$row12["docket_number"]; 
 							$qty=$row12["quantity"];
-							if($qty>0)
+							if($qty>0 && $garments_per_carton>0)
 							{												
 								do
 								{	
@@ -190,7 +190,7 @@
 			while($row12132=mysqli_fetch_array($result12132))
 			{				
 				$color_code=$row12132['color'];
-				$sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."' and color='".$color_code."' GROUP BY size_title ORDER BY ref_size_name*1;";
+				$sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."' and color='".$color_code."' GROUP BY size_title ORDER BY ref_size_name*1";
 				$result1=mysqli_query($link, $sql1) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($result1))
 				{						
@@ -215,7 +215,7 @@
 					{ 
 						$docket_number=$row12["docket_number"]; 
 						$qty=$row12["quantity"]; 
-						if($qty>0)
+						if($qty>0  && $garments_per_carton>0)
 						{												
 							do
 							{	

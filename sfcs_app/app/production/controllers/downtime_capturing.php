@@ -185,13 +185,13 @@ $result_time = mysqli_query($link, $sql_time) or exit("Sql Error time".mysqli_er
                             <div class="modal-body" id="brand" ng-app="chandu" ng-controller="downtimecontroller">';
                         if(mysqli_num_rows($hourly_down_time_res)==0){
                         echo "<div class='col-sm-12'><div class='col-sm-4'><select ng-model='reasons' id='reson' name='reson' class='form-control'>";
-                            echo "<option value=''>Select Reson</option>";
+                            echo "<option value=''>Select Reason</option>";
                             while($row1 = mysqli_fetch_array($resons_data_result)){
                                 echo "<option value='".$row1['code']."(".$row1['reason'].")'>".$row1['code']."(".$row1['reason'].")</option>";
                             }
                         echo "</select></div>";
                         echo "<div class='col-sm-4'><div class='col-sm-3'>Quantity</div><div class='col-sm-9'><input type='number' place-holder='Quantity' name='hours' ng-model='hours' id='hours' class='form-control'></div></div>";
-                        echo "<button class='btn btn-info col-sm-1' ng-click='addData()'>Add</button> <button class='btn btn-primary col-sm-2' ng-click='sendData()'>Save</button></div>
+                        echo "<button class='btn btn-info col-sm-1' ng-click='addData()'>Add</button> <button class='btn btn-primary col-sm-2' ng-click='sendData()' ng-show='saveinit'>Save</button></div>
                         <br/>";
 ?>
                             <div class='col-sm-12'>
@@ -240,6 +240,7 @@ app.controller('downtimecontroller', function($scope, $http) {
     $scope.downtimeData = [];
     $scope.alert_info = false;
     $scope.alert_class = 'default';
+    $scope.saveinit = true;
     $scope.alert = '';
     $scope.dtimehrs = <?= isset($hours) ? $hours : 0  ?>;
     $scope.date_y = <?= isset($_GET['mdate']) ? date('Y',strtotime($_GET['mdate'])) : 0  ?>;
@@ -261,6 +262,7 @@ app.controller('downtimecontroller', function($scope, $http) {
     };
 
 $scope.sendData = function(){
+    
     var url_serv = '<?= base64_decode($_GET['r']) ?>';
     var rv = {};
     for (var i = 0; i < $scope.downtimeData.length; ++i)
@@ -269,6 +271,7 @@ $scope.sendData = function(){
         'main_data' : rv,'date_y' :$scope.date_y ,'date_m' :$scope.date_m ,'date_d' :$scope.date_d ,'time' : $scope.time,'team' :$scope.team 
      });
     if($scope.downtimeData.length>0 && $scope.act_hrs==$scope.dtimehrs){
+        $scope.saveinit = false;
         $http({ 
             method: 'POST', 
             url: url_serv,
