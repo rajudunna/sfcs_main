@@ -254,7 +254,7 @@ width:150px;
   z-index:9999;
   color:#fff;
   font-size:12px;
-  width:180px;
+  width:250px;
   
 }
 
@@ -413,7 +413,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
                 <div style="float:left;padding-left:25px;">
                 
-                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,REPLACE(GROUP_CONCAT(DISTINCT TRIM(i.ims_size)),\"a_\",\"\") AS ims_size,GROUP_CONCAT(DISTINCT TRIM(i.ims_color)) AS ims_color,i.ims_schedule,i.rand_track,GROUP_CONCAT(DISTINCT TRIM(i.ims_remarks)) AS ims_remarks, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date FROM $bai_pro3.ims_log i,$bai_pro3.plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no AND i.ims_status !=\"DONE\" GROUP BY inputjobnorand";
+                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,REPLACE(GROUP_CONCAT(DISTINCT TRIM(i.ims_size)),\"a_\",\"\") AS ims_size,GROUP_CONCAT(DISTINCT TRIM(i.ims_color)) AS ims_color,i.ims_schedule,i.rand_track,GROUP_CONCAT(DISTINCT TRIM(i.ims_remarks)) AS ims_remarks, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date,i.pac_tid FROM $bai_pro3.ims_log i,$bai_pro3.plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no AND i.ims_status !=\"DONE\" GROUP BY inputjobnorand";
                 // echo $sqlred;
         //$sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_color,ims_schedule,rand_track  FROM ims_log WHERE ims_mod_no='$module' GROUP BY ims_doc_no"
         $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -438,14 +438,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $schedul_no=$sql_rowred['ims_schedule'];  // schedul no
             $rand_track=$sql_rowred['rand_track'];
             $ims_remarks=$sql_rowred['ims_remarks'];
-			$ims_size=$sql_rowred['ims_size'];
+			      $ims_size=$sql_rowred['ims_size'];
             $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedul_no,$link);
             $cut_no=$sql_rowred['acutno'];
             $inputno=$sql_rowred['inputjobno'];
             $inputjobnorand=$sql_rowred['inputjobnorand'];
+            $pac_tid=$sql_rowred['pac_tid'];
             $total_qty=$total_qty+$input_qty;
             $total_out=$total_out+$output_qty;
             $input_date=$sql_rowred['ims_date'];
+
+           
 			
 			$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
 			//echo $sql22;
@@ -472,9 +475,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$sizes_implode="'".implode("','",$size_value)."'";
 
              $rejected=0;
-             $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color in (".$color_ref.") and qms_size in (".$sizes_implode.") and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" and operation_id='130' and qms_remarks in (".$remarks_ref.")";
+             $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color in (".$color_ref.") and qms_size in (".$sizes_implode.") and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" and operation_id='130' and qms_remarks in (".$remarks_ref.") and bundle_no=\"".$sql_rowred['pac_tid']."\"";
                
-               // echo $sql33;
+                //echo $sql33;
 
               $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
               while($sql_row33=mysqli_fetch_array($sql_result33))

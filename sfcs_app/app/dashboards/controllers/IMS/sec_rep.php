@@ -233,7 +233,8 @@ if(isset($_GET['val']))
 				$ims_size2=substr($ims_size,2);
 				$inputjobno=$sql_row12['input_job_no_ref'];
 				$ims_remarks=$sql_row12['ims_remarks'];
-			
+			    $pac_tid=$sql_row12['pac_tid'];
+
 				$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0";
 				//mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -279,7 +280,7 @@ if(isset($_GET['val']))
 				
 				$rejected=0;
 				$good_garments=0;
-				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where qms_schedule=".$sql_row12['ims_schedule']." and qms_color=\"".$sql_row12['ims_color']."\" and qms_size=\"".strtoupper($size_value)."\" and qms_style=\"".$sql_row12['ims_style']."\" and input_job_no=\"".$sql_row12['input_job_rand_no_ref']."\" and qms_remarks=\"".$sql_row12['ims_remarks']."\" and operation_id='130'";
+				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where qms_schedule=".$sql_row12['ims_schedule']." and qms_color=\"".$sql_row12['ims_color']."\" and qms_size=\"".strtoupper($size_value)."\" and qms_style=\"".$sql_row12['ims_style']."\" and input_job_no=\"".$sql_row12['input_job_rand_no_ref']."\" and qms_remarks=\"".$sql_row12['ims_remarks']."\" and operation_id='130' and bundle_no=\"".$sql_row12['pac_tid']."\"";
 				
 				//echo $sql33;
 				//mysqli_query($link, $sql33) or exit("Sql Error".$sql33.mysqli_error($GLOBALS["___mysqli_ston"]));
