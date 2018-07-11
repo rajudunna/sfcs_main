@@ -659,7 +659,7 @@
 					$sch_id=$_POST['sch_id'];
 					$pack_method=$_POST['pack_method'];
 
-					if ($no_of_cartons!=0 && $split_qty!=0)
+					if ($no_of_cartons!=0)
 					{
 						$exces_from=$_POST['exces_from'];
 						$c_ref=$_POST['c_ref'];
@@ -682,7 +682,7 @@
 					}
 					else
 					{
-						echo "<h2>Number of Cartons or Split qty is zero<h2>";
+						echo "<script>sweetAlert('Number of Cartons is Zero','Cannot create Sewing Jobs','warning');</script>";
 						$url5 = getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N');
 						echo("<script>location.href = '".$url5."&style=$style_id&schedule=$sch_id';</script>");
 					}
