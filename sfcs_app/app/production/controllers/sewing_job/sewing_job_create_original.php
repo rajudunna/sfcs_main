@@ -25,53 +25,39 @@
 	}
 
 	$(document).ready(function(){
-		$('#generate').on('click',function(event, redirect=true){
-			var cart_method  = document.getElementById("cart_method").value;
-			var bundle_size  = document.getElementById("bundle_plies").value;
-			var bundle_per_size = document.getElementById("bundle_per_size").value;
-			var mini_order_qty  = document.getElementById("mini_order_qty").value;
-			if(cart_method=="0")
-			{
-				sweetAlert('Please Select Pack Method','','warning');
-				document.getElementById('msg1').style.display='none';
-				document.getElementById('generate').style.display='';
-				return false;
-			}else {
-				if(bundle_size>=1 && mini_order_qty>=1)
-				{
-					
-				}else{
-					sweetAlert('Please Check the values','','warning');
-					document.getElementById('generate').style.display='';
-					document.getElementById('msg1').style.display='none';
-					return false;
-				}
-			}
-
+		$('#generate').on('click',function(event, redirect=true)
+		{
 			if(redirect != false){
 				event.preventDefault();
 				submit_form($(this));
 			}
 		});
 
-		function submit_form(submit_btn){
-			var qty = $('#mini_order_qty').val();
-			sweetAlert({
-				title: "Sewing Order Quantity: "+qty,
-				text: "Are you sure to continue with this Quantity?",
-				icon: "warning",
-				buttons: true,
-				dangerMode: true,
-				buttons: ["No, Cancel It!", "Yes, I am Sure!"],
-			}).then(function(isConfirm){
-				if (isConfirm) {
-						$('#'+submit_btn.attr('id')).trigger('click',false);
-				} else {
-					sweetAlert("Request Cancelled",'','error');
-					return;
-				}
-			});
-			return;
+		function submit_form(submit_btn)
+		{
+			var exces_from=document.getElementById("exces_from").value;
+			if (exces_from == 0)
+			{
+				sweetAlert('Please Select Excess From','','warning');
+			}
+			else
+			{
+				sweetAlert({
+					title: "Are you sure to generate Sewing Jobs ???",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+					buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+				}).then(function(isConfirm){
+					if (isConfirm) {
+							$('#'+submit_btn.attr('id')).trigger('click',false);
+					} else {
+						sweetAlert("Request Cancelled",'','error');
+						return;
+					}
+				});
+				return;
+			}
 		}
 	});
 	
@@ -195,7 +181,7 @@
 						if($tbl_carton_ref_check>0)
 						{
 							// echo "carton props added, You can proceed";
-							if($bundle > 0)
+							if($bundle == 0)
 							{
 								$combo = array();
 								$get_combo_query = "SELECT DISTINCT (combo_no) AS combo FROM `brandix_bts`.`tbl_carton_size_ref` WHERE parent_id = $c_ref";
@@ -476,6 +462,39 @@
 								}
 								// Garments Per Carton End
 
+								// Combo wise no of cartons start
+								{
+									echo "<div class='col-md-12'>
+										<table class='table table-bordered'>
+											<tr>
+												<th>Combo</th>
+												<th>No of Cartons</th>";
+												if($scanning_methods=='Bundle Level')
+												{
+												  echo "<th>Garments Per Bundle</th>";	
+												}	
+											echo "</tr>";
+											for ($i=0; $i < sizeof($combo); $i++)
+											{ 
+												echo "<tr>
+													<td>$combo[$i]</td>
+													<input type='hidden' name=combo[] value='".$combo[$i]."'>
+													<td><input type='text' required name='no_of_cartons[]' onkeyup=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer' value=''></td>
+													";
+													if($scanning_methods=='Bundle Level')
+													{
+														echo"<td><input type='text' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'></td>";
+													}
+													else
+													{
+														echo"<input type='hidden' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'>";
+													}
+												echo "</tr>";
+											}	
+									echo "</table></div>";
+								}
+								// Combo wise no of cartons end
+
 								// Sewing Job Qty Start
 								{
 									echo "<br><div class='col-md-12'><b>Sewing Job Qty: </b>
@@ -538,38 +557,14 @@
 									// echo $val."--".$val1."<br>";						
 
 									echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_job_create_original.php','N').'">';
-									echo  "<input type=\"hidden\" value=\"$style_id\" id=\"style_id\" name=\"style_id\">";
-									echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
-									echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
-									echo  "<input type=\"hidden\" value=\"$c_ref\" id=\"c_ref\" name=\"c_ref\">";
+										echo  "<input type=\"hidden\" value=\"$style_id\" id=\"style_id\" name=\"style_id\">";
+										echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
+										echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
+										echo  "<input type=\"hidden\" value=\"$c_ref\" id=\"c_ref\" name=\"c_ref\">";
 
-									// var_dump($combo);
-									echo "<div class='col-md-12'>
+										// var_dump($combo);
+										echo "<div class='col-md-4'>
 											<table class='table table-bordered'>
-												<tr>
-													<th>Combo</th>
-													<th>No of Cartons</th>";
-													if($scanning_methods=='Bundle Level')
-													{
-													  echo "<th>Split</th>";	
-													}	
-												echo "</tr>";
-												for ($i=0; $i < sizeof($combo); $i++)
-												{ 
-													echo "<tr>
-														<td>$combo[$i]</td>
-														<input type='hidden' name=combo[] value='".$combo[$i]."'>
-														<td><input type='text' required name='no_of_cartons[]' onchange=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer' value='0'></td>
-														";
-														if($scanning_methods=='Bundle Level')
-														{
-															echo"<td><input type='text' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'></td>";
-														}
-													echo "</tr>";
-												}
-	
-										echo "</table></div>";
-										echo "<div class='col-md-4'><table class='table table-bordered'>
 												<tr>
 													<th>Excess From</th><th>Control</th>
 												</tr>
@@ -597,10 +592,13 @@
 													}
 													else {
 														echo "<input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
+														echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait..Sewing Job Generating.<h5></span>";
+														// echo "<input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
 													}
 													echo "</td>
-												</tr></table></div>";
-									echo "";
+												</tr>
+											</table>
+										</div>";
 									echo "</form>";
 								} 
 								else {
@@ -608,7 +606,7 @@
 								}
 							}
 														
-							if($bundle == 0)
+							if($bundle > 0)
 							{									
 								include("input_job_mix_ch_report.php");
 							}
