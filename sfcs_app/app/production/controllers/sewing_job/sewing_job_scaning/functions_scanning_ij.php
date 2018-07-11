@@ -258,17 +258,17 @@ function getjobdetails($job_number)
 		$result_style_data = $link->query($schedule_query);
 		while($row = $result_style_data->fetch_assoc()) 
 		{
-			$job_number_reference = $row['type_of_sewing'];
+			
 			$style = $job_number[1];
 			$schedule =  $job_number[2];
 			$color = $row['order_col_des'];
 			$size = $row['old_size'];
 			if($flag == 'packing_summary_input')
 			{
+				$job_number_reference = $row['type_of_sewing'];
 				if($job_number_reference == 2)
 				{
 				//	var_dump($row);
-					
 					$selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
 					$result_selecting_sample_qtys = $link->query($selecting_sample_qtys);
 					if($result_selecting_sample_qtys->num_rows > 0)
