@@ -67,7 +67,8 @@
 					margin-bottom:auto;
 				}
 				@page {
-				margin-top: 7px;   
+				margin-top: 7px;
+				margin-bottom: 2px;   
 				}
 					#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
 
@@ -94,7 +95,7 @@
 				$title_size_ref=$title_size["size"];
 			}	
 
-			$html.= '<div><table><tr><td colspace="4"><barcode code="'.$doc.'" type="C39"/ height="0.80" size="1.1"
+			$html.= '<br/><div><table><tr><td colspace="4"><barcode code="'.$doc.'" type="C39"/ height="0.80" size="1.1"
 				 text="1"></td><td></td></tr></table>
 				 <table><tr><td>Style:</td><td>'.$st.'</td><td>Barcode ID:</td><td>'.$doc.'</td></tr>
 				 <tr><td>Schedule:</td><td>'.$schedule.'</td><td>Module No:</td><td>'.$module.'</td></tr>
@@ -102,10 +103,9 @@
 				 <tr><td>Job Number:</td><td>J0'.$job_no.'</td></tr>
 				 <tr><td>Size :</td><td>'.strtoupper($title_size_ref).'</td></tr>
 				 <tr><td>Quantity</td><td>'.$rows['carton_act_qty'].'</td></tr>
-				 <tr><td></td><td></td></tr>
-				 <tr><td></td><td></td></tr>
+				
 				 </table>					 
-				 </div>';
+				 </div><br/><br/><br/>';
 		}
 	$html.='
 				</body>

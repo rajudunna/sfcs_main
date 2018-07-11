@@ -16,7 +16,7 @@
 						echo "<option value=''>Select Style</option>";
 						//echo $_GET['style']."--<br>";
 						//Changed on 2013-06-17 8:43 PM - Kirang
-						$sql="select order_style_no,style_id from $bai_pro3.bai_orders_db_confirm group by order_style_no ";
+						$sql="select order_style_no,style_id from $bai_pro3.bai_orders_db group by order_style_no ";
 						//$sql="select distinct style_id from bai_pro2.movex_styles order by style_id";
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -34,7 +34,7 @@
 	
 					<?php
 						if(isset($_GET['style']) && $_GET['style']){
-							$sql1="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no='".$_GET['style']."' order by order_del_no";
+							$sql1="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no='".$_GET['style']."' order by order_del_no";
 							//echo $sql1;die();
 							mysqli_query($link, $sql1) or exit("Sql Error schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -81,7 +81,7 @@
 					exit();
 				}
 				
-				$sql2="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='".$_GET['schedule']."' and order_style_no='".$_GET['style']."' order by order_del_no desc limit 0,1";
+				$sql2="select * from $bai_pro3.bai_orders_db where order_del_no='".$_GET['schedule']."' and order_style_no='".$_GET['style']."' order by order_del_no desc limit 0,1";
 				//echo $sql2;
 				//mysqli_query($link, $sql2) or exit("Sql Error sizes".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error sizes".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -116,7 +116,7 @@
 			echo "<option value=\"0\"></option>";
 
 			//Changed on 2013-06-17 8:43 PM - Kirang
-			$sql="select distinct style_id from bai_orders_db_confirm order by style_id";
+			$sql="select distinct style_id from bai_orders_db order by style_id";
 			//$sql="select distinct style_id from bai_pro2.movex_styles order by style_id";
 			mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 			$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
@@ -326,7 +326,7 @@
 			// }
 			
 			$date=date("y-m-d");
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_style_no='".$style."'";
+			$sql="select * from $bai_pro3.bai_orders_db where order_del_no='".$schedule."' and order_style_no='".$style."'";
 			$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{

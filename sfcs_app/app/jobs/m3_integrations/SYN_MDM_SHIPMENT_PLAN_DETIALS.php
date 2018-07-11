@@ -8,8 +8,9 @@ set_time_limit(6000000);
 	if($conn)
 	{
 		include('mysql_db_config.php');
-		$curr_date = date(Ymd);
-		$query_text = "CALL BAISFCS.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD('200','%','EKG','EKG','".$curr_date."','".$curr_date."')";
+		$from = date("Ymd", strtotime('-2 months'));
+		$to = date("Ymd", strtotime('+3 months'));
+		$query_text = "CALL BAISFCS.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD('200','%','EKG','EKG','".$from."','".$to."')";
 		$result = odbc_exec($conn, $query_text);
 
 		$trunc_ship = "TRUNCATE TABLE $m3_inputs.shipment_plan";

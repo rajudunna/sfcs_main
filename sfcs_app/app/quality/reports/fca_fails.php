@@ -139,7 +139,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $sdate=$_POST['sdate'];
 $edate=$_POST['edate'];
 
-$sql=" SELECT style,SCHEDULE,size,pcs,DATE_FORMAT(lastup,'%Y-%m-%d') AS lastup,remarks,reason,done_by FROM $bai_pro3.fca_audit_fail_db LEFT JOIN $bai_pro3.audit_ref ON fca_audit_fail_db.fail_reason=audit_ref.audit_ref 
+$sql=" SELECT style,SCHEDULE,size,pcs,DATE_FORMAT(lastup,'%Y-%m-%d') AS lastup,remarks,reason,done_by,color FROM $bai_pro3.fca_audit_fail_db LEFT JOIN $bai_pro3.audit_ref ON fca_audit_fail_db.fail_reason=audit_ref.audit_ref 
     WHERE fca_audit_fail_db.pcs>0 AND (DATE(lastup) BETWEEN '".$sdate."' AND '".$edate."')";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -162,15 +162,16 @@ if(mysqli_num_rows($sql_result)> 0) {
 			{
 				$remarks=0;
 			}
-			$sql2="select  group_concat(distinct bac_sec) as sec,color from $bai_pro.bai_log_buf where bac_no in (".$remarks.") and delivery=".$sql_row['SCHEDULE']."";
-			// echo $sql2;
+			$sql2="select group_concat(distinct bac_sec) as sec,color from $bai_pro.bai_log_buf where bac_no in (".$remarks.") and delivery=".$sql_row['SCHEDULE']."";
+			//echo $sql2;
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$sections=$sql_row2["sec"];
 				$color=$sql_row2["color"];
 			}
-			$size_value=ims_sizes('',$sql_row['SCHEDULE'],$sql_row['style'],$color,strtoupper($sql_row['size']),$link);
+			$size_value=ims_sizes('',$sql_row['SCHEDULE'],$sql_row['style'],$sql_row['color'],strtoupper($sql_row['size']),$link);
+
 			//echo "<tr><td>".$sql_row['lastup']."</td><td>".$sql_row['remarks']."</td><td>".$sec_no[array_search($module[0],$sec_db)]."</td><td>".$sql_row['style']."</td><td>".$sql_row['schedule']."</td><td>".$sql_row['size']."</td><td>".$sql_row['reason']."</td><td>".$sql_row['done_by']."</td></tr>";
 			echo "<tr><td>".$sql_row['lastup']."</td><td>".$sql_row['remarks']."</td><td>".$sections."</td><td>".$sql_row['style']."</td><td>".$sql_row['SCHEDULE']."</td><td>".$size_value."</td><td>".$sql_row['reason']."</td><td>".$sql_row['done_by']."</td></tr>";
 		
