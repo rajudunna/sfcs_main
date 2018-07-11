@@ -465,6 +465,7 @@ body { zoom:100%;}
 @media print {
 @page narrow {size: 9in 11in}
 @page rotated {size: landscape}
+@page{ margin : 0}
 DIV {page: narrow}
 #Book1_2606 {
 	 height: 11in;
