@@ -487,47 +487,6 @@
 								}
 								// Garments Per Carton End
 
-								// Combo wise no of cartons start
-								{
-									echo "<div class='col-md-12'>
-										<table class='table table-bordered'>
-											<tr>
-												<th>Combo</th>
-												<th>No of Cartons</th>";
-												if($scanning_methods=='Bundle Level')
-												{
-												  echo "<th>Garments Per Bundle</th>";	
-												}	
-											echo "</tr>";
-											$comboSize = sizeof($combo);
-
-											for ($i=0; $i < sizeof($combo); $i++)
-											{
-												$get_combo_color_query = "SELECT GROUP_CONCAT(DISTINCT color) AS color FROM `brandix_bts`.`tbl_carton_size_ref` WHERE parent_id = $c_ref  AND combo_no = $combo[$i]";
-												$combo_color_result=mysqli_query($link, $get_combo_color_query) or exit("Error while getting Combo Details");
-												while($combo_color_details=mysqli_fetch_array($combo_color_result)) 
-												{
-													$combo_color = $combo_color_details['color'];
-												}
-												echo "<tr>
-													<td>$combo[$i]</td>";
-													echo "<input type='hidden' name=combo[] value='".$combo[$i]."'>
-													<td><input type='text' required name='no_of_cartons[]' onkeyup=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer'></td>
-													";
-													if($scanning_methods=='Bundle Level')
-													{
-														echo"<td><input type='text' required name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'></td>";
-													}
-													else
-													{
-														echo"<input type='hidden' required name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'>";
-													}
-												echo "</tr>";
-											}	
-									echo "</table></div>";
-								}
-								// Combo wise no of cartons end
-
 								// Sewing Job Qty Start
 								{
 									echo "<br><div class='col-md-12'><b>Sewing Job Qty: </b>
@@ -595,7 +554,46 @@
 										echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
 										echo  "<input type=\"hidden\" value=\"$c_ref\" id=\"c_ref\" name=\"c_ref\">";
 										echo  "<input type=\"hidden\" value=\"$comboSize\" id=\"comboSize\" name=\"comboSize\">";
+										// Combo wise no of cartons start
+										{
+											echo "<div class='col-md-12'>
+												<table class='table table-bordered'>
+													<tr>
+														<th>Combo</th>
+														<th>No of Cartons</th>";
+														if($scanning_methods=='Bundle Level')
+														{
+														  echo "<th>Garments Per Bundle</th>";	
+														}	
+													echo "</tr>";
+													$comboSize = sizeof($combo);
 
+													for ($i=0; $i < sizeof($combo); $i++)
+													{
+														$get_combo_color_query = "SELECT GROUP_CONCAT(DISTINCT color) AS color FROM `brandix_bts`.`tbl_carton_size_ref` WHERE parent_id = $c_ref  AND combo_no = $combo[$i]";
+														$combo_color_result=mysqli_query($link, $get_combo_color_query) or exit("Error while getting Combo Details");
+														while($combo_color_details=mysqli_fetch_array($combo_color_result)) 
+														{
+															$combo_color = $combo_color_details['color'];
+														}
+														echo "<tr>
+															<td>$combo[$i]</td>";
+															echo "<input type='hidden' name=combo[] value='".$combo[$i]."'>
+															<td><input type='text' required name='no_of_cartons[]' onchange=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer' value=''></td>
+															";
+															if($scanning_methods=='Bundle Level')
+															{
+																echo"<td><input type='text' required name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'></td>";
+															}
+															else
+															{
+																echo"<input type='hidden' required name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'>";
+															}
+														echo "</tr>";
+													}	
+											echo "</table></div>";
+										}
+										// Combo wise no of cartons end
 										// var_dump($combo);
 										echo "<div class='col-md-4'>
 											<table class='table table-bordered'>
