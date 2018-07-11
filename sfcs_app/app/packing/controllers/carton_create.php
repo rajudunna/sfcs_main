@@ -16,7 +16,7 @@
 						echo "<option value=''>Select Style</option>";
 						//echo $_GET['style']."--<br>";
 						//Changed on 2013-06-17 8:43 PM - Kirang
-						$sql="select order_style_no,style_id from $bai_pro3.bai_orders_db_confirm group by order_style_no ";
+						$sql="select order_style_no,style_id from $bai_pro3.bai_orders_db group by order_style_no ";
 						//$sql="select distinct style_id from bai_pro2.movex_styles order by style_id";
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
