@@ -183,7 +183,7 @@ if(isset($_GET['val']))
 		
 		$rowcount_check=0;
 			
-			$sql12="select sum(ims_qty-ims_pro_qty) as balance, count(*) as count from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\"";
+			$sql12="select sum(ims_qty-ims_pro_qty) as balance, count(*) as count from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\" and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log)";
 			//echo $sql12;
 			//mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -210,7 +210,7 @@ if(isset($_GET['val']))
 				$rowcount_check=1;
 			}
 		
-		$sql="select distinct input_job_rand_no_ref,rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" order by ims_doc_no";
+		$sql="select distinct input_job_rand_no_ref,rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by ims_doc_no";
 		//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -306,7 +306,7 @@ if(isset($_GET['val']))
 				
 				if($rowcount_check==1)
 				{
-					echo "<td>".$sql_row12['bai_pro_ref']."</td>";
+					echo "<td>".$sql_row12['tid']."</td>";
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
 					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>"."J".$inputjobno."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>$rejected</td>";				
 					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
