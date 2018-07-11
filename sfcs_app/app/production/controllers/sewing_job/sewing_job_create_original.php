@@ -35,6 +35,14 @@
 
 		function submit_form(submit_btn)
 		{
+			var split_tot = 0;
+			var comboSize=document.getElementById("comboSize").value;
+			// alert(comboSize);
+			for(var size=1;size <= comboSize; size++)
+			{
+				var split=document.getElementById("split_qty_"+size).value;
+				split_tot = split_tot + split;
+			}
 			var exces_from=document.getElementById("exces_from").value;
 			if (exces_from == 0)
 			{
@@ -42,8 +50,17 @@
 			}
 			else
 			{
+				if (split_tot > 0)
+				{
+					title_to_show = "";
+				}
+				else
+				{
+					title_to_show = "Bundle Size not defined, Deafult bundle size will be applied";
+				}
 				sweetAlert({
-					title: "Are you sure to generate Sewing Jobs ???",
+					title: "Are you sure to generate Sewing Jobs?",
+					text: title_to_show,
 					icon: "warning",
 					buttons: true,
 					dangerMode: true,
@@ -185,6 +202,7 @@
 							{
 								$combo = array();
 								$get_combo_query = "SELECT DISTINCT (combo_no) AS combo FROM `brandix_bts`.`tbl_carton_size_ref` WHERE parent_id = $c_ref";
+								// echo $get_combo_query;
 								$combo_result=mysqli_query($link, $get_combo_query) or exit("Error while getting Combo Details");
 								while($combo_details=mysqli_fetch_array($combo_result)) 
 								{
@@ -406,7 +424,8 @@
 											<div class='table-responsive'>
 												<table class=\"table table-bordered\">
 													<tr>
-														<th>Color</th>";
+														<th>Color</th>
+														<th>Combo</th>";
 														// Display Sizes
 														for ($i=0; $i < sizeof($size_main); $i++)
 														{
@@ -419,6 +438,7 @@
 													{
 														echo "<tr>
 																<td>$color_main[$j]</td>";
+																$combo_count=0;
 																for ($size_count=0; $size_count < sizeof($size_main); $size_count++)
 																{
 																	$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color_main[$j]."'  AND size_title='".$size_main[$size_count]."'";
@@ -439,9 +459,14 @@
 																		if ($qty == '') {
 																			$qty=0;
 																		}
+																		if ($combo_count == 0) {
+																			echo "<td>$comboNO</td>";
+																			$combo_count++;
+																		}
 																		if (mysqli_num_rows($individual_sizes_result) >0)
 																		{
-																			if ($size_main[$size_count] == $individual_color) {
+																			if ($size_main[$size_count] == $individual_color)
+																			{
 																				echo "<td><input type='text'  readonly name='GarPerCart[$j][]' id='GarPerCart_".$size_count."_".$comboNO."' class='form-control integer' value='".$qty."'></td>";
 																			}
 																		}
@@ -474,20 +499,28 @@
 												  echo "<th>Garments Per Bundle</th>";	
 												}	
 											echo "</tr>";
+											$comboSize = sizeof($combo);
+
 											for ($i=0; $i < sizeof($combo); $i++)
-											{ 
+											{
+												$get_combo_color_query = "SELECT GROUP_CONCAT(DISTINCT color) AS color FROM `brandix_bts`.`tbl_carton_size_ref` WHERE parent_id = $c_ref  AND combo_no = $combo[$i]";
+												$combo_color_result=mysqli_query($link, $get_combo_color_query) or exit("Error while getting Combo Details");
+												while($combo_color_details=mysqli_fetch_array($combo_color_result)) 
+												{
+													$combo_color = $combo_color_details['color'];
+												}
 												echo "<tr>
-													<td>$combo[$i]</td>
-													<input type='hidden' name=combo[] value='".$combo[$i]."'>
-													<td><input type='text' required name='no_of_cartons[]' onkeyup=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer' value=''></td>
+													<td>$combo[$i]</td>";
+													echo "<input type='hidden' name=combo[] value='".$combo[$i]."'>
+													<td><input type='text' required name='no_of_cartons[]' onkeyup=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer'></td>
 													";
 													if($scanning_methods=='Bundle Level')
 													{
-														echo"<td><input type='text' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'></td>";
+														echo"<td><input type='text' required name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'></td>";
 													}
 													else
 													{
-														echo"<input type='hidden' required name='split_qty[]' id='split_qty' class='form-control integer' value='0'>";
+														echo"<input type='hidden' required name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'>";
 													}
 												echo "</tr>";
 											}	
@@ -561,6 +594,7 @@
 										echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
 										echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
 										echo  "<input type=\"hidden\" value=\"$c_ref\" id=\"c_ref\" name=\"c_ref\">";
+										echo  "<input type=\"hidden\" value=\"$comboSize\" id=\"comboSize\" name=\"comboSize\">";
 
 										// var_dump($combo);
 										echo "<div class='col-md-4'>
@@ -621,24 +655,37 @@
 				{
 					$split_qty=$_POST['split_qty'];
 					$no_of_cartons=$_POST['no_of_cartons'];
-					$exces_from=$_POST['exces_from'];
-					$c_ref=$_POST['c_ref'];
-					$combo=$_POST['combo'];
-					
-					$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."' where id='".$c_ref."'";
-					// echo $sql."<br>";
-					mysqli_query($link, $sql) or exit("Failed to update Carton Details");
-					for ($i=0; $i < sizeof($combo); $i++)
-					{ 
-						$sql="update $brandix_bts.`tbl_carton_size_ref` set split_qty='".$split_qty[$i]."', no_of_cartons='".$no_of_cartons[$i]."'  where parent_id='".$c_ref."' and combo_no = $combo[$i]";
+					$style_id=$_POST['style_id'];
+					$sch_id=$_POST['sch_id'];
+					$pack_method=$_POST['pack_method'];
+
+					if ($no_of_cartons!=0 && $split_qty!=0)
+					{
+						$exces_from=$_POST['exces_from'];
+						$c_ref=$_POST['c_ref'];
+						$combo=$_POST['combo'];
+						
+						$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."' where id='".$c_ref."'";
 						// echo $sql."<br>";
-						mysqli_query($link, $sql) or exit("Failed to update Carton Details1");
+						mysqli_query($link, $sql) or exit("Failed to update Carton Details");
+						for ($i=0; $i < sizeof($combo); $i++)
+						{ 
+							$sql="update $brandix_bts.`tbl_carton_size_ref` set split_qty='".$split_qty[$i]."', no_of_cartons='".$no_of_cartons[$i]."'  where parent_id='".$c_ref."' and combo_no = $combo[$i]";
+							// echo $sql."<br>";
+							mysqli_query($link, $sql) or exit("Failed to update Carton Details1");
+						}
+						
+						
+						echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
+						$url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
+						echo("<script>location.href = '".$url5."&id=$c_ref';</script>");
 					}
-					
-					
-					echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
-					$url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
-					echo("<script>location.href = '".$url5."&id=$c_ref';</script>");
+					else
+					{
+						echo "<h2>Number of Cartons or Split qty is zero<h2>";
+						$url5 = getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N');
+						echo("<script>location.href = '".$url5."&style=$style_id&schedule=$sch_id';</script>");
+					}
 				}
 			?> 
 		</div>

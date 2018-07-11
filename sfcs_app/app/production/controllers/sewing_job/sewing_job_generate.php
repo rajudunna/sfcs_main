@@ -81,7 +81,7 @@
 						{ 
 							$docket_number=$row12["docket_number"]; 
 							$qty=$row12["quantity"];
-							if($qty>0)
+							if($qty>0 && $garments_per_carton>0)
 							{												
 								do
 								{	
@@ -215,7 +215,7 @@
 					{ 
 						$docket_number=$row12["docket_number"]; 
 						$qty=$row12["quantity"]; 
-						if($qty>0)
+						if($qty>0  && $garments_per_carton>0)
 						{												
 							do
 							{	

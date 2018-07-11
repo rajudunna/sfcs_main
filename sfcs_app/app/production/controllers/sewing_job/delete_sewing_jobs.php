@@ -22,20 +22,7 @@
     } 
 
     function validateQty(event)  
-    { 
-        //alert("Test2"); 
-        // var key = window.event ? event.keyCode : event.which; 
-        // if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39)  
-        // { 
-        //     return true; 
-        // } 
-        // else if ( key < 48 || key > 57 ) { 
-        //     return false; 
-        // } 
-        // else  
-        // { 
-        //     return true; 
-        // } 
+    {
         event = (event) ? event : window.event; 
         var charCode = (event.which) ? event.which : event.keyCode; 
         if (charCode > 31 && (charCode < 48 || charCode > 57)) { 
@@ -197,7 +184,6 @@
             echo "</div></div>"; 
         } 
     } 
-
 ?> 
 </div> 
 </div>
