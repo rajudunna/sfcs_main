@@ -760,7 +760,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		else{
 			echo "<td class=\"bottom\" $iu_module_highlight>
 			<strong><a href=\"javascript:void(0)\" >
-			<font class=\"fontnn\" color=black style='background-color:#ff000085;'><a href='#'>$module</a></font>
+			<font class=\"fontnn\" color=black style='background-color:white;'><a href='#'>$module</a></font>
 			</a></strong>
 			  </td>
 			  <td>";
