@@ -82,7 +82,7 @@ if(isset($_GET['job_number']))
 }
 function getjobdetails($job_number)
 {
-	//var_dump($job_number);
+		//var_dump($job_number);
 		$job_number = explode(",",$job_number);
 		$job_number[4]=$job_number[1];
 		include("../../../../../common/config/config_ajax.php");
@@ -129,12 +129,12 @@ function getjobdetails($job_number)
 		$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 		while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 		{
-			// if($row['act_cut_status'] == '')
-			// {
-			// 	$result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
-			// 	echo json_encode($result_array);
-			// 	die();
-			// }
+			if($row['act_cut_status'] == '')
+			{
+				$result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
+				echo json_encode($result_array);
+				die();
+			}
 			
 		}
 		
@@ -258,6 +258,34 @@ function getjobdetails($job_number)
 		$result_style_data = $link->query($schedule_query);
 		while($row = $result_style_data->fetch_assoc()) 
 		{
+			
+			$style = $job_number[1];
+			$schedule =  $job_number[2];
+			$color = $row['order_col_des'];
+			$size = $row['old_size'];
+			if($flag == 'packing_summary_input')
+			{
+				$job_number_reference = $row['type_of_sewing'];
+				if($job_number_reference == 2)
+				{
+				//	var_dump($row);
+					$selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
+					$result_selecting_sample_qtys = $link->query($selecting_sample_qtys);
+					if($result_selecting_sample_qtys->num_rows > 0)
+					{
+						while($row_res = $result_selecting_sample_qtys->fetch_assoc()) 
+						{
+							//$result_array['sample_qtys'][] = $row_res['input_qty'];
+							$row['carton_act_qty'] = $row_res['input_qty'];
+						}
+					}
+					else
+					{
+						$result_array['status'] = 'Sample Quantities not updated!!!';
+					}
+				}
+			}
+			
 			$result_array['table_data'][] = $row;
 		}
 		$result_array['flag'] = $flag;
@@ -352,8 +380,8 @@ function getreversalscanningdetails($job_number)
 		}
 	}
 	$checking_flag = 0;
-	$ops_dep_check = "select ops_dependency from  $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and ops_dependency != 0 and ops_dependency != ''";
-	//echo $ops_dep_check;
+	$ops_dep_check = "select ops_dependency from  $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and ops_dependency != 0 and ops_dependency != '' and operation_code = '$job_number[0]'";
+//	echo $ops_dep_check;
 	$result_ops_dep_check = $link->query($ops_dep_check);
 	if($result_ops_dep_check->num_rows > 0)
 	{
@@ -361,15 +389,6 @@ function getreversalscanningdetails($job_number)
 		while($row = $result_ops_dep_check->fetch_assoc()) 
 		{
 			$ops_dependency = $row['ops_dependency'];
-		}
-		$post_ops_qry_to_find_rec_qty = "select sum(recevied_qty)as recevied_qty from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $ops_dependency and remarks='$job_number[2]' group by bundle_number order by bundle_number ";
-		$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
-		while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
-		{
-			if($checking_flag == 0)
-			{
-				$result_array['rec_qtys'][] = $row['recevied_qty'];
-			}
 		}
 		//if($recevied_qty_qty > 0)
 		{
@@ -413,23 +432,45 @@ function getreversalscanningdetails($job_number)
 				while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
 				{	
 					$result_array['rec_qtys'][] = $row['recevied_qty'];
+	  
 				}
 			}
 			else
 			{
 				$result_array['rec_qtys'][] = 0;
+	 
 			}
-		}
-		// var_dump($recevied_qty_qty);
-		//if($recevied_qty_qty > 0)
-		{
-			// $result_array['status'] = 'Next Operation Already done for this input job number';
-			// echo json_encode($result_array);
-			// die();
 		}
 		
 	}
-	
+	else
+	{
+		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number FROM  $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref =$job_number[1] AND operation_id = '$job_number[0]' group by bundle_number order by bundle_number";
+		//echo $pre_ops_validation;
+		$result_pre_ops_validation = $link->query($pre_ops_validation);
+		while($row = $result_pre_ops_validation->fetch_assoc()) 
+		{
+			$b_number =  $row['bundle_number'];
+			if($checking_flag == 1)
+			{
+				$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $ops_dependency and remarks='$job_number[2]' and bundle_number='$b_number' group by bundle_number order by bundle_number";
+				//echo $post_ops_qry_to_find_rec_qty;
+				$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
+				if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
+				{
+					while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
+					{	
+						$result_array['rec_qtys'][] = $row['recevied_qty'];
+					}
+				}
+				else
+				{
+					$result_array['rec_qtys'][] = 0;
+				}
+			}
+		}
+		
+	}
 	$job_details_qry = "SELECT id,style,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,sum(`recevied_qty`) as reported_qty,`rejected_qty` as rejected_qty,(send_qty-recevied_qty) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,operation_id,remarks from $brandix_bts.bundle_creation_data_temp where input_job_no_random_ref = '$job_number[1]' and operation_id = '$job_number[0]' and remarks = '$job_number[2]' group by bundle_number order by bundle_number";
 	// echo $job_details_qry;
 	$job_details_qry = $link->query($job_details_qry);
@@ -513,20 +554,24 @@ function validating_remarks_with_qty($validating_remarks)
 	}
 	if(in_array($validating_remarks[2],$ops_dependency) && $check_flag == 0)
 	{
-		$result_qry_for_fetching_bal_to_report_qty = "select min(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data_temp where bundle_number ='".$validating_remarks[1]."'  AND remarks = '".$validating_remarks[3]."' and  recevied_qty > 0 and operation_id in (".implode(',',$dependency_operation).")";
-		//echo $result_qry_for_fetching_bal_to_report_qty;
+		$result_qry_for_fetching_bal_to_report_qty = "select sum(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data_temp where bundle_number ='".$validating_remarks[1]."'  AND remarks = '".$validating_remarks[3]."'  and operation_id in (".implode(',',$dependency_operation).")";
+	//	echo $result_qry_for_fetching_bal_to_report_qty;
 		$result_qry_for_fetching_bal_to_report_qty = $link->query($result_qry_for_fetching_bal_to_report_qty);
 		while($row = $result_qry_for_fetching_bal_to_report_qty->fetch_assoc()) 
 		{
 			//$id_variable = $count.$row['remarks'];
-			$qty = $row['rec_qty'];
-			if($qty == '')
-			{
-				$qty = 0;
-			}
-			$html_response .= "$qty".","."1";
-			
+			$qty[] = $row['rec_qty'];
 		}
+		// var_dump()
+		if(sizeof($qty) == 0)
+		{
+			$qty = 0;
+		}
+		else
+		{
+			$qty = min($qty);
+		}
+		$html_response .= "$qty".","."1";
 	}
 	
 	else
@@ -562,6 +607,7 @@ function validating_remarks_with_qty($validating_remarks)
 		{
 			$post_ops_code = 0;
 		}
+		//echo $check_flag;
 		if($check_flag == 1)
 		{
 			$result_qry_for_fetching_bal_to_report_qty = "select min(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data_temp where bundle_number ='".$validating_remarks[1]."'  AND remarks = '".$validating_remarks[3]."' and  recevied_qty > 0 and operation_id in (".implode(',',$dependency_operation).")";
@@ -642,7 +688,7 @@ function validating_remarks_with_qty($validating_remarks)
 			{
 				$qry_for_fetching_bal_to_report_qty = "select (send_qty-(recevied_qty+rejected_qty))AS rec_qty,remarks from $brandix_bts.bundle_creation_data where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2]";
 			}
-			//echo $qry_for_fetching_bal_to_report_qty;
+			// echo $qry_for_fetching_bal_to_report_qty;
 			$result_qry_for_fetching_bal_to_report_qty = $link->query($qry_for_fetching_bal_to_report_qty);
 			while($row = $result_qry_for_fetching_bal_to_report_qty->fetch_assoc()) 
 			{
