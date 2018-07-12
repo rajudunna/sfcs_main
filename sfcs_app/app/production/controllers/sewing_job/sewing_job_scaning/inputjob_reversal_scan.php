@@ -201,30 +201,85 @@ if(isset($_POST['formSubmit']))
 		$post_code = $_POST['post_ops'];
 	}
 $concurrent_flag = 0;
-foreach ($bundle_no as $key=>$value)
+// echo "post code".$post_code;
+$ops_seq_check = "select id,ops_sequence,ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code='$operation_id'";
+$result_ops_seq_check = $link->query($ops_seq_check);
+while($row = $result_ops_seq_check->fetch_assoc()) 
 {
-	$select_send_qty = "SELECT send_qty,recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$bundle_no[$key]' AND operation_id = '$operation_id'";
-	//echo $select_send_qty;
-	$result_select_send_qty = $link->query($select_send_qty);
-	if($result_select_send_qty->num_rows >0)
+	$ops_seq = $row['ops_sequence'];
+	$seq_id = $row['id'];
+	$ops_dependency = $row['ops_dependency'];
+}
+$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id > $seq_id order by id limit 1";
+$result_post_ops_check = $link->query($post_ops_check);
+if($result_post_ops_check->num_rows > 0)
+{
+	while($row = $result_post_ops_check->fetch_assoc()) 
 	{
-		while($row = $result_select_send_qty->fetch_assoc()) 
-		{
-			$send_qty = $row['send_qty'];
-			$pre_recieved_qty = $row['recevied_qty'];
-			$act_reciving_qty = $rep_qty[$key];
-			//echo 
-			$total_rec_qty = $pre_recieved_qty - $act_reciving_qty;
-			//echo $total_rec_qty;
-			if($total_rec_qty < 0)
-			{
-				echo "<h1 style='color:red;'>You are Reversing More than eligible quantity.</h1>";
-				$concurrent_flag = 1;
-			}
-		}
+		$post_ops_code = $row['operation_code'];
 	}
 }
-if($concurrent_flag == 0)
+	
+foreach ($bundle_no as $key=>$value)
+{
+	$select_send_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $operation_id and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
+	$result_select_send_qty = $link->query($select_send_qty);
+	while($row = $result_select_send_qty->fetch_assoc()) 
+	{
+		//$send_qty = $row['send_qty'];
+		$pre_recieved_qty = $row['recevied_qty'];
+		$act_reciving_qty = $rep_qty[$key];
+		$total_rec_qty = $pre_recieved_qty - $act_reciving_qty;
+	}
+	if($post_ops_code)
+	{
+		$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $post_ops_code and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
+			//echo $post_ops_qry_to_find_rec_qty;
+			$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
+			if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
+			{
+				while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
+				{	
+					$post_rec_qty = $row['recevied_qty'];
+					echo $pre_recieved_qty."-".$post_rec_qty."-".$rep_qty[$key]."</br>";
+					if(($pre_recieved_qty - $post_rec_qty) < $rep_qty[$key])
+					{
+						$concurrent_flag = 1;
+					}
+	
+				}
+			}
+	}
+	else if($ops_dependency)
+	{
+		$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $ops_dep and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
+			//echo $post_ops_qry_to_find_rec_qty;
+			$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
+			if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
+			{
+				while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
+				{	
+					$post_rec_qty = $row['recevied_qty'];
+					if(($pre_recieved_qty - $post_rec_qty) < $rep_qty[$key])
+					{
+						$concurrent_flag = 1;
+					}
+	
+				}
+			}
+	}
+	else if($total_rec_qty < 0)
+	{
+		
+		$concurrent_flag = 1;
+	}
+
+}
+if($concurrent_flag == 1)
+{
+	echo "<h1 style='color:red;'>You are Reversing More than eligible quantity.</h1>";
+}
+else if($concurrent_flag == 0)
 {
 	foreach($ids as $key=>$value)
 	{
