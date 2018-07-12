@@ -475,9 +475,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$sizes_implode="'".implode("','",$size_value)."'";
 
              $rejected=0;
-             $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color in (".$color_ref.") and qms_size in (".$sizes_implode.") and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" and operation_id='130' and qms_remarks in (".$remarks_ref.") and bundle_no=\"".$sql_rowred['pac_tid']."\"";
+             $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color in (".$color_ref.") and qms_size in (".$sizes_implode.") and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" and operation_id='130' and qms_remarks in (".$remarks_ref.")";
                
-                //echo $sql33;
+               // echo $sql33;
 
               $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
               while($sql_row33=mysqli_fetch_array($sql_result33))

@@ -149,7 +149,7 @@ $ims_doc_no=$sql_docket['ims_doc_no'];
   
 <?php
 $sql="SELECT input_job_rand_no_ref,ims_size,ims_color,ims_remarks,pac_tid,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,MIN(ims_date) AS ims_date FROM $bai_pro3.ims_combine WHERE ims_schedule='".$schedule_ref."' and input_job_no_ref='".$job_no."' AND ims_mod_no='".$module."'
- GROUP BY ims_color,ims_size,ims_remarks ORDER BY ims_date";
+ GROUP BY ims_color,ims_size,ims_remarks,pac_tid ORDER BY ims_date";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
