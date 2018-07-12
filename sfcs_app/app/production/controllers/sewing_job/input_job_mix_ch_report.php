@@ -51,11 +51,11 @@ echo '<br>
     echo '</div>';
 
     echo '<div class="row">';       
-       for($ii=0;$ii<sizeof($combo);$ii++)
-       {
+        for($ii=0;$ii<sizeof($combo);$ii++)
+        {
             echo "<h4><span class=\"label label-info\">Number of Cartons: <b>$no_of_cartons[$ii]</b> Per Sewing Job of combo no - $combo[$ii] & Combo Colors (".$combo_col[$ii].")</span></h4>";
-       }
-        echo '<h4><span class="label label-info">Note: Yellow Color indicates Excess/Sample Job</span></h4>';
+        }
+        echo '<h4><span class="label label-info">Note: </span>Yellow Color indicates Excess/Sample Job</h4>';
     echo '</div>';
 
     echo '<form name="new" method="post" action="?r='.$_GET['r'].'">';

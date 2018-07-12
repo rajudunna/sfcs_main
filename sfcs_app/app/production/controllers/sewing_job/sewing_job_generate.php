@@ -18,22 +18,7 @@
 		$schedule_id=$row121['ref_order_num'];
 		$carton_method=$row121['carton_method'];
 	}
-	if($carton_method==1)
-	{
-		echo "<h2>Single Color & Single Size Carton Method</h2>";
-	}
-	else if($carton_method==2)
-	{
-		echo "<h2>Multi Color & Single Size  Carton Method</h2>";
-	}
-	else if($carton_method==3)
-	{
-		echo "<h2>Multi Color & Multi Size Carton Method</h2>";
-	}
-	if($carton_method==4)
-	{
-		echo "<h2>Single Color & Multi Size Carton Method</h2>";
-	}
+	echo '<h4>Pack Method: <span class="label label-info">'.$operation[$carton_method].'</span></h4>';
 	// echo "<table class='table table-striped table-bordered'>";
 	// echo "<thead><th>Docket Number</th><th>Color</th><th>Size</th><th>Size Title</th><th>Input Job Number</th><th>Rand No Number</th><th>Quantity</th></thead>";
 	

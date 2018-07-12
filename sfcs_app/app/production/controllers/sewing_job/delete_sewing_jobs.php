@@ -165,7 +165,7 @@
                 // echo $insert_log."</br>"; 
                 mysqli_query($link, $insert_log) or exit("Sql Error insert_log".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-    			echo "<script>sweetAlert('Jobs Successfully Deleted','','success')</script>";
+    			echo "<script>sweetAlert('Sewing Jobs Successfully Deleted','','success')</script>";
             }
             else if($mini_order_ref>0)
             {
@@ -174,8 +174,8 @@
                 mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 $sql2="delete from $brandix_bts.tbl_carton_ref where ref_order_num='".$sch_ref."'"; 
                 //echo $sql2."<br>"; 
-                mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                 
+                mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+                echo "<script>sweetAlert('Packing Ratio Successfully Deleted','','success')</script>";
             } 
             else 
             { 
