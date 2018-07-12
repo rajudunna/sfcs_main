@@ -1701,7 +1701,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>One Gmt 
     One Way</td> 
-    <td class=xl6913019><?php echo $gmtway; ?></td> 
+    <td colspan=2 class=xl6913019><?php echo $gmtway; ?></td> 
     <td colspan=2></td>
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Binding Consumption</td> 
     <td class=xl6913019><?php echo $binding_con; ?></td> 
@@ -1720,7 +1720,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Strip 
     Matching</td> 
-    <td class=xl7613019><?php echo $strip_match; ?></td> 
+    <td colspan=2 class=xl7613019><?php echo $strip_match; ?></td> 
     <td class=xl6613019></td> 
     <td class=xl6513019></td> 
     </tr> 
@@ -1737,7 +1737,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <td class=xl6613019></td> 
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Gusset 
     Sep</td> 
-    <td class=xl7713019><?php echo $gusset_sep; ?></td> 
+    <td colspan=2 class=xl7713019><?php echo $gusset_sep; ?></td> 
     <td class=xl7813019></td> 
     <td class=xl6513019></td> 
     </tr> 
@@ -1745,7 +1745,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <?php for($i=0;$i<12;$i++) echo "<td class=xl6613019></td>"; ?> 
     <td colspan=5 class=xl9813019 style='border-right:.5pt solid black'>Pattern 
     Version</td> 
-    <td class=xl7713019><?php echo $patt_ver; ?></td> 
+    <td colspan=2 class=xl7713019><?php echo $patt_ver; ?></td> 
     <td class=xl6613019></td> 
     <td class=xl6513019></td> 
     </tr> 
@@ -1807,7 +1807,7 @@ if($num_rows_samples >0){
 ?>
 <tr class=xl6513019 height=21 style='mso-height-source:userset;height:15.75pt'> 
   <td height=21 class=xl6513019 style='height:15.75pt'></td> 
-  <td class=xl7213019 width=70 style='width:53pt'>Samples Qty<span 
+  <td colspan=2 class=xl7213019 width=70 style='width:53pt'>Samples Qty<span 
   style='mso-spacerun:yes'></span></td> 
     <?php 
      while($samples_data=mysqli_fetch_array($samples_qry_result))
@@ -3219,28 +3219,29 @@ echo "</tr>";
  </tr> 
  <tr class=xl6513019 height=30 style='mso-height-source:userset;height:30pt'> 
   <td height=20 class=xl6513019 style='height:15.0pt'></td> 
-  <td colspan=2 class=xl11013019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td colspan=3 class=xl11213019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td class=xl7613019>&nbsp;</td> 
-  <td colspan=2 class=xl11013019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td colspan=3 class=xl11213019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td colspan=2 class=xl11213019 style='border-right:.5pt solid black; 
-  border-left:none'>&nbsp;</td> 
-  <td class=xl9313019>&nbsp;</td> 
+
+  <td colspan=2 class=xl10713019 style='border-right:.5pt solid black; 
+  border-left:none'></td> 
+  <td colspan=3 class=xl10913019 style='border-right:.5pt solid black; 
+  border-left:none'> </td> 
+  <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
+  border-left:none'> </td> 
+  <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
+  border-left:none'> </td> 
+  <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
+  border-left:none'></td> 
+  <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
+  border-left:none'> </td> 
+  <td class=xl9213019> </td> 
+  <td colspan=2 class=xl10713019 style='border-right:.5pt solid black; 
+  border-left:none'> </td> 
+  <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
+  border-left:none'></td> 
+  <td colspan=3 class=xl10913019 style='border-right:.5pt solid black; 
+  border-left:none'> </td> 
+  <td colspan=2 class=xl10913019 style='border-right:.5pt solid black; 
+  border-left:none'></td> 
+  <td class=xl9213019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
