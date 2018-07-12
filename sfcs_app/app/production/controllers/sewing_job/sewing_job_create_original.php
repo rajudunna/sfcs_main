@@ -214,9 +214,9 @@
 						$planned_colors=explode(",",$p_colors);
 						$val=sizeof($order_colors);
 						$val1=sizeof($planned_colors);
-						echo '<h4><span class="label label-info">Pack Method: '.$operation[$pack_method].'</span></h4>';
 						if($tbl_carton_ref_check>0)
 						{
+							echo '<h4>Pack Method: <span class="label label-info">'.$operation[$pack_method].'</span></h4>';
 							// echo "carton props added, You can proceed";
 							if($bundle == 0)
 							{
@@ -683,7 +683,7 @@
 												<tr>
 													<td>
 														<select name='exces_from' id='exces_from' required class='form-control'>
-															<option value=''>Select</option>
+															<option value=''>Please Select</option>
 															<option value='1'>First Cut</option>
 															<option value='2'>Last Cut</option>
 														</select>
