@@ -138,15 +138,20 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					
 					$sql212="SELECT group_concat(doc_ref separator ',') as docref1 FROM $bai_pro3.fabric_priorities where doc_ref_club in (".$docc_no.")";
+					//echo $sql212;
 					$sql_result212=mysqli_query($link, $sql212) or exit("Sql Error3".$sql212);
 					while($sql_row212=mysqli_fetch_array($sql_result212))
 					{
 						$club_doc_ref1=$sql_row212['docref1'];
 					}
+					
+					if($club_doc_ref1==''){
+                       $club_doc_ref1 = '-1';
+					}
 					$total12=0;
 					$sql11="select (p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and order_del_no in ($schedule) and act_cut_status='DONE' and clubbing=$clubbing and doc_no in($club_doc_ref1)";
 					// echo $sql11;
-					$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error3".$sql11);
+					$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error311".$sql11);
 					while($sql_row11=mysqli_fetch_array($sql_result11))
 					{
 						$total12+=$sql_row11['total'];
