@@ -1187,10 +1187,10 @@ if(isset($_POST['allocate']))
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\" onclick=\"check_qty(".sizeof($doc).")\">";
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\">";
 	if ($row_count == '') {
-		echo "<input type=\"button\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
+		echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
 	}
 	else {
-		echo "<input type=\"button\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
+		echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" onclick=\"button_disable()\" class='btn btn-success'>";
 	}
 	// echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font><br/><font color="blue">After update, this window will close automatically!</font></h2></div>';
 	
@@ -1315,7 +1315,6 @@ th{
 				// display_all_text: "Show All",
 				// onchange:true,
 				btn: true,
-				btn_text: "go",
 				enter_key: false,
 				// col_20:false,
 				col_18:false,
