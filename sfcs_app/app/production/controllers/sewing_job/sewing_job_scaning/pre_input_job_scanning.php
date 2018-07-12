@@ -1,7 +1,6 @@
 <!--- Developed by Srinivas Y -->
 <body>
 <?php
-// include("dbconf.php");
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 // error_reporting (0);
@@ -23,8 +22,9 @@ $url = getFullURL($_GET['r'],'scan_input_jobs.php','N');
 		}
 	}
 	//var_dump($final);
-//$configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Sewing Job Level'];
-$configuration_bundle_print_array = ['1'=>'Sewing Job Level'];
+$configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Sewing Job Level'];
+// if($scanning_methods == 'Bundle Level')
+// $configuration_bundle_print_array = ['1'=>'Sewing Job Level'];
 ?>
 <form method ='POST' action='<?php echo $url ?>'>
 	<div class="panel panel-primary">
@@ -67,18 +67,19 @@ $configuration_bundle_print_array = ['1'=>'Sewing Job Level'];
                         	</select>
 				</div>
 				
-				<div class='col-md-3' hidden='true'>
+				<div class='col-md-3'>
 					<label>Barcode Generation:<span style="color:red">*</span></label>
                         	<select class="form-control shift"  name="barcode_generation" id="barcode_generation" style="width:100%;" required>
                         		<option value="">Select Method</option>
 								<?php 
-									if(sizeof($configuration_bundle_print_array) == 1)
+									$selected = '';
+									foreach($configuration_bundle_print_array as $key=>$value)
 									{
-										echo"<option value='1' selected>$configuration_bundle_print_array[1]</option>";
-									}
-									else
-									{
-										foreach($configuration_bundle_print_array as $key=>$value)
+										if($scanning_methods == $value)
+										{
+											echo"<option value='$key' selected>$value</option>";
+										}
+										else
 										{
 											echo"<option value='$key'>$value</option>";
 										}
@@ -87,8 +88,9 @@ $configuration_bundle_print_array = ['1'=>'Sewing Job Level'];
 								?>
                         	</select>
 				
-				
+							
 				</div>
+				
 				<!--
 				<div class="form-group col-md-2">
                         	<label>Module:<span style="color:red">*</span></label>
