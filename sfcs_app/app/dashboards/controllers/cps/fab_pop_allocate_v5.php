@@ -556,8 +556,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 
 if(isset($_POST['allocate_new']))
 {
-	echo "hi";
-	die();
 	$doc_ref=$_POST['doc_ref']; //array
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
