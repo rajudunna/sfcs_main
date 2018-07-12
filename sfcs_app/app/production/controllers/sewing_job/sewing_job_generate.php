@@ -149,7 +149,7 @@
 			$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 			$rand=$schedule.date("ymd").$input_job_no;
 			//Excess Pieces Execution
-			$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =0 and color in ('".implode("','",$cols_tot)."') group BY cut_num order by cut_num*1"; 
+			$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =0 and color in ('".implode("','",$cols_tot)."') order by cut_num*1"; 
 			$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($row12=mysqli_fetch_array($result12)) 
 			{ 
@@ -281,7 +281,7 @@
 			$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 			$rand=$schedule.date("ymd").$input_job_no;
 			//Excess Pieces Execution
-			$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =0 and color in ('".implode("','",$cols_tot)."') group BY cut_num order by cut_num*1"; 
+			$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =0 and color in ('".implode("','",$cols_tot)."') order by cut_num*1"; 
 			$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($row12=mysqli_fetch_array($result12)) 
 			{ 
