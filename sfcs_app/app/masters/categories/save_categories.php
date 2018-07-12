@@ -8,36 +8,21 @@ $row_id=$_REQUEST['c_id'];
 // echo $row_id;die();
 $category_status=$_REQUEST['category_status'];
 $cat_select=$_REQUEST['cat_selection'];
-<<<<<<< HEAD
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-// echo $bai_pro3;die();
-=======
 
 // echo $status;die();
->>>>>>> UAT2
 // $servername = "192.168.0.110:3326";
 // $username = "baiall";
 // $password = "baiall";
 // $dbname = "bai_pro3";
-<<<<<<< HEAD
-
-// Create connection
-$conn = $link;
-=======
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 // Create connection
 // $conn = mysqli_connect($servername, $username, $password, $dbname);
->>>>>>> UAT2
 // Check connection
 // if (!$conn) {
 //     die("Connection failed: " . mysqli_connect_error());
 // }
-<<<<<<< HEAD
-=======
-
->>>>>>> UAT2
 if (empty($category_name) || empty($category_status) || empty($cat_select)) 
 {
 	$url=getFullURL($_GET['r'],'add_categories.php','N');
@@ -140,13 +125,7 @@ else
 }
 
 mysqli_close($conn);
-<<<<<<< HEAD
 header('location: '.getFullURLLevel($_GET['r'],'add_categories.php',0,'N'));
 exit;
 ?>
 <!-- index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw -->
-=======
-//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
-exit;
-?>
->>>>>>> UAT2

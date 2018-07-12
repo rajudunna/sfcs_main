@@ -112,10 +112,7 @@ if(!in_array($authorized,$has_permission))
 
 ?>
 <script>
-function hello(){
-	alert('hiiiiiiiii');
-	
-}
+
 function redirect_view()
 {
 	//x=document.getElementById('view_cat').value;

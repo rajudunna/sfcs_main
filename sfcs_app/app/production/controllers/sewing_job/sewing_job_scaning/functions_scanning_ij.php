@@ -125,18 +125,18 @@ function getjobdetails($job_number)
 		$result_array['schedule'] = $job_number[2];
 		$result_array['color_dis'] = $job_number[3];
 		$ops_dep_flag = 0;
-		$qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
-		$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
-		while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
-		{
-			if($row['act_cut_status'] == '')
-			{
-				$result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
-				echo json_encode($result_array);
-				die();
-			}
+		// $qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
+		// $result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+		//while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+		// {
+			// if($row['act_cut_status'] == '')
+			// {
+				// $result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
+				// echo json_encode($result_array);
+				// die();
+			// }
 			
-		}
+		// }
 		
 		$ops_dep_qry = "SELECT ops_dependency,operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$job_number[1]' AND color =  '$job_number[3]' AND ops_dependency != 200 AND ops_dependency != 0";
 		//echo $ops_dep_qry;
