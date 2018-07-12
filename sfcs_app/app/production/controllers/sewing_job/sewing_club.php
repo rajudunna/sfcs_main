@@ -294,7 +294,7 @@ else
 						if(club.length>0){
 						idsp = '<p>List Of Sewing Jobs to be Clubbed :</p><ul class = list-group >';
 						for(var i=0;i<club.length;i++){
-							idsp+="<li class='list-group-item'>"+club[i]+"</li>";
+							idsp+="<li class='label label-success' style='font-size:15px;'>J"+club[i]+"</li>&nbsp;";
 						}
 						idsp+='</ul>';
 						}
