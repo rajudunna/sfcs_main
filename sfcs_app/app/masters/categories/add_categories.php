@@ -36,6 +36,7 @@
     }
     $action_url = getFullURL($_GET['r'],'save_categories.php','N');
     // echo $cat_name;
+    $action = getFullURL($_GET['r'],'save_categories.php','N');
     ?>
     <!--<div class="container-fluid">
         <div class="row">-->
@@ -102,7 +103,7 @@
                         
                         
                         
-                <button id="save_btn" type="submit" class="btn btn-primary btn-sm" name="save_btn">Save</button></div></div></div>
+                <button id="save_btn" type="submit" class="btn btn-primary btn-sm"  name="save_btn">Save</button></div></div></div>
 
 
                     </div>

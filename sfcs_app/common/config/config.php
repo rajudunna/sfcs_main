@@ -44,6 +44,12 @@ $message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
+
+
+//Scanning Methods
+
+$scanning_methods = 'Bundle Level';
+
 //LDAP CODE STARTS***
 // if(substr($server_soft,0,13)=="Apache/2.4.28")
 // {

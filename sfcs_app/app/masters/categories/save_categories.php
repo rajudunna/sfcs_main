@@ -23,7 +23,6 @@ $conn=$link;
 // if (!$conn) {
 //     die("Connection failed: " . mysqli_connect_error());
 // }
-
 if (empty($category_name) || empty($category_status) || empty($cat_select)) 
 {
 	$url=getFullURL($_GET['r'],'add_categories.php','N');
@@ -126,6 +125,7 @@ else
 }
 
 mysqli_close($conn);
-//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
+header('location: '.getFullURLLevel($_GET['r'],'add_categories.php',0,'N'));
 exit;
 ?>
+<!-- index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw -->

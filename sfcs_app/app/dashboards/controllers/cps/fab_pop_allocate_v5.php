@@ -8,7 +8,7 @@
 .fade{
 	width:100%;
 }
-.loader {
+/* .loader {
    position: absolute;
    left: 50%;
    top: 50%;
@@ -41,7 +41,7 @@
 @keyframes rotation {
    from {transform: rotate(0deg);}
    to {transform: rotate(359deg);}
-}
+} */
 </style>
 
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
@@ -519,7 +519,7 @@ function check_qty2(x,m,n,doc)
 	<div class="panel-heading"><b><font size="4">Fabric Allocation Panel</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div>
 	<font color="red">Note:</font>Please select atleast one roll for allocation in every component</b>
 		<div class="panel-body">
-			<div class="loader"></div>
+			<!-- <div class="loader"></div> -->
 
 <?php
 //Auto Selecting Based on Manual Decision.
@@ -556,6 +556,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 
 if(isset($_POST['allocate_new']))
 {
+	echo "hi";
+	die();
 	$doc_ref=$_POST['doc_ref']; //array
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
@@ -781,7 +783,7 @@ if(isset($_POST['allocate_new']))
 
 if(isset($_POST['allocate']))
 {
-	echo "<form name='input' method='post' action='fab_pop_allocate_v5.php'>";
+	echo "<form name='input' method='post' action='fab_pop_allocate_v5.php' onkeypress='return event.keyCode != 13'>";
 	$doc=$_POST['doc'];
 	//$lot_db_2 = $_POST["pms$doc[0]"];
 	//var_dump($doc);
@@ -1314,14 +1316,19 @@ th{
 				loader: true,
 				// display_all_text: "Show All",
 				// onchange:true,
+				// btn: true,
+				// enter_key: false,
+				on_change: false,
 				btn: true,
 				enter_key: false,
 				// col_20:false,
+				// public_methods: true
 				col_18:false,
 				rows_counter: true,
 				rows_counter_text: "Total rows: ",
 				btn_reset: true,
 				bnt_reset_text: "Clear all ",
+				
 			};
 
 
@@ -1330,7 +1337,6 @@ th{
 			for (i = 0; i <=len; i++) { 
 				setFilterGrid( 'example'+i, MyTableFilter );
 			}
-
 			$(document).ready(function(){
 				$('.loader').hide();
 					var i;
