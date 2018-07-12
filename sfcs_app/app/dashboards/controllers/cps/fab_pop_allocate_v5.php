@@ -5,6 +5,9 @@
 </head>
 <body>
 <style>
+.fade{
+	width:100%;
+}
 .loader {
    position: absolute;
    left: 50%;
@@ -689,7 +692,9 @@ if(isset($_POST['allocate_new']))
 				}
 
 				//To update Allocated Qty
-				$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
+				$sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
+
+				// $sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
 				//Uncheck this
 				mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
@@ -893,31 +898,67 @@ if(isset($_POST['allocate']))
 		echo "<div class='table-responsive'><table id='example".$i."' class='table table-bordered' cellspacing='0'>";
 		
 		echo "<thead><tr id=\"$doc_ref\" bgcolor=\"RED\">";
-		echo "<th>Invoice<br/>No</th>";	
+		echo "<th>Invoice No</th>";	
 		echo "<th>GRN Date</th>";	
-		echo "<th>Batch<br/>No</th>";	
+		echo "<th>Batch No</th>";	
 		echo "<th id='col1'>Item Code</th>";	
 		echo "<th id='col2'>Lot No</th>";	
 		echo "<th>Shade</th>";
 		echo "<th id='col'>Shrinkage<br/>Group</th>";
 		echo "<th id='col'>Shrinkage<br/>Width</th>";	
 		echo "<th id='col'>Shrinkage<br/>Length</th>";
-		echo "<th>Roll<br/>No</th>";	
+		echo "<th>Roll No</th>";	
 		echo "<th id='col'>Location</th>";	
 		echo "<th>Group</th>";	
-		echo "<th>Tkt<br/>Width</th>";	
-		echo "<th>Ctx<br/>Width</th>";	
-		echo "<th>Tkt<br/>Length</th>";	
-		echo "<th>Ctx<br/>Length</th>";		
-		echo "<th>Balance</th>";
+		echo "<th>Tkt Width</th>";	
+		echo "<th>Ctx Width</th>";	
+		echo "<th>Tkt Length</th>";	
+		echo "<th>Ctx Length</th>";		
 		echo "<th id='col'>Allocated</th>";
-		echo "<th>Issued<br/>Qty</th>";
+		echo "<th>Issued Qty</th>";
 		echo "<th>Select</th>";
 		//echo "<th>Allocated Qnty</th>";
 		echo "</tr></thead><tbody>";
 		
+		// $status = 0;
+		// $sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") order by shade";
+		// $sql_result=mysqli_query($link, $sql) or exit("Sql Error12: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// $row_count=mysqli_num_rows($sql_result);
+		// while($sql_row=mysqli_fetch_array($sql_result))
+		// {
+		// 	$sql1="select max(log_time),doc_type,doc_no from $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid'];
+		// 			// echo "</br>Qry : ".$sql1."</br>";
+		// 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 		while($sql_row1=mysqli_fetch_array($sql_result1))
+		// 		{
+		// 			$tag=" ";
+		// 			if($sql_row1['doc_type']=="normal")
+		// 			{
+		// 				$tag="D".$sql_row1['doc_no'];
+		// 				$status = 1;
+		// 				// echo $status.$tag;
+		// 			}
+		// 			else
+		// 			{
+		// 				// echo 'doc r';
+		// 				$tag="R".$sql_row1['doc_no'];
+		// 				$status = 1;
+		// 				// echo $status.$tag;
+		// 			}
+		// 			$valid_check="display:none";
+		// 		}
+		// 		if(strlen($sql_row['shade'])==0)
+		// 		{
+		// 			$tag="Insp. <br/>Pending";
+		// 			$valid_check="display:none";
+		// 			$status = 0;
+		// 		}
+		// 		echo $status.'....<br/>';
+		// }
+
+
 		//Current Version
-		$sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") order by shade";
+		$sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") AND allotment_status='0' order by shade";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error12: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
@@ -939,6 +980,66 @@ if(isset($_POST['allocate']))
 					$inv_no=trim($sql_row['inv_no']);
 				}
 			}
+			
+			
+			$temp_var='';
+			if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
+			{
+				$temp_var.="<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
+				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
+				$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
+				$temp_var.="<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
+				$temp_var.="<input type=\"hidden\" name=\"issued_new".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
+				$temp_var.="</td>";
+				
+			}
+			else
+			{
+				$temp_var.="<td>";
+				
+				$sql1="select max(log_time),doc_type,doc_no from $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid'];
+				// $temp_var.="</br>Qry : ".$sql1."</br>";
+				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row1=mysqli_fetch_array($sql_result1))
+				{
+					$tag=" ";
+					if($sql_row1['doc_type']=="normal")
+					{
+						$tag="D".$sql_row1['doc_no'];
+						
+					}
+					else
+					{
+						// $temp_var.='doc r';
+						$tag="R".$sql_row1['doc_no'];
+					}
+					$valid_check="display:none";
+				}
+
+				if(strlen($sql_row['shade'])==0)
+				{
+					$tag="Insp. <br/>Pending";
+					$valid_check="display:none";
+				}
+				// $temp_var.=$tag.'---<br/>';
+				//To release for some time
+				$temp_var.="<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
+				//$temp_var.="<input type=\"hidden\" id=\"chk$doc_ref$j\" name=\"chk".$doc1_ref."[]\" value=\"0\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color')\">";
+				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
+				$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
+				$temp_var.="<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
+				$temp_var.="<input type=\"hidden\" name=\"issued_new".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
+				
+				if(strlen($tag)>0)
+				{
+					$temp_var.="<img src=\"lock.png\"> $tag";
+				}
+				$temp_var.="</td>";
+				
+			}
+			$result='Insp.';
+			// if($result == substr($tag, 0, 5)) 
+			{
 			echo "<input type='hidden' id='srgp$doc_ref$j' value='".$sql_row['shrinkage_group']."'>";
 			echo "<tr bgcolor=\"$bg_color\" id=\"trchk$doc_ref$j\">";
 			$sql3="select tid,split_roll from $bai_rm_pj1.store_in where tid=".$sql_row['tid'];
@@ -948,11 +1049,23 @@ if(isset($_POST['allocate']))
 				while($sql_row2=mysqli_fetch_array($sql_result3))
 				{
 					if($sql_row2['split_roll'] != '') {
-						echo "<td><center><a data-toggle='modal' id='btn$doc_ref$j' data-target='#modalbtn$doc_ref$j' class='label label-warning label-lg'>".$sql_row['inv_no']."<br/>(Splitted Roll)</a></center></td>";
+						echo "<td><center><a data-toggle='modal' id='btn$doc_ref$j' data-target='#modalbtn$doc_ref$j' class='label label-warning label-lg'>".$sql_row['inv_no']."(Splitted Roll)</a></center></td>";
 					} else {
 						echo "<td>".$sql_row['inv_no']."</td>";
 					}
 				}
+			}
+			
+			
+			/* Added new code to track allocated quantities 20140621*/
+			
+			$sql1="SELECT GROUP_CONCAT(CONCAT(IF(doc_type='normal','D','R'),doc_no)) AS doc_nos,ROUND(SUM(allocated_qty),2) AS allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE roll_id=".$sql_row['tid']." AND bai_rm_pj1.fn_roll_id_fab_scan_status(doc_no,doc_type,roll_id)=0";
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row1=mysqli_fetch_array($sql_result1))
+			{
+				
+					$tag=$sql_row1['doc_nos'];
+					$allocated_qty=$sql_row1['allocated_qty'];
 			}
 			echo "<td>".$sql_row['grn_date']."</td>";
 			echo "<td>".$sql_row['batch_no']."</td>";
@@ -969,78 +1082,14 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['ref3']."</td>";
 			echo "<td>".$sql_row['qty_rec']."</td>";
 			echo "<td>".$sql_row['ref5']."</td>";
-			echo "<td>".$sql_row['balance']."</td>";
-			
-			/* Added new code to track allocated quantities 20140621*/
-			
-			$sql1="SELECT GROUP_CONCAT(CONCAT(IF(doc_type='normal','D','R'),doc_no)) AS doc_nos,ROUND(SUM(allocated_qty),2) AS allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE roll_id=".$sql_row['tid']." AND bai_rm_pj1.fn_roll_id_fab_scan_status(doc_no,doc_type,roll_id)=0";
-			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row1=mysqli_fetch_array($sql_result1))
-			{
-				
-					$tag=$sql_row1['doc_nos'];
-					$allocated_qty=$sql_row1['allocated_qty'];
-			}
-			
 			echo "<td>".$allocated_qty."</td>";
 			echo "<td><span id=\"issued".$doc_ref."[$j]\"></span></td>";
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";
 
-			
-			if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
-			{
-				echo "<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
-				echo "<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
-				echo "<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
-				echo "<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
-				echo "<input type=\"hidden\" name=\"issued_new".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
-				echo "</td>";
-				
-			}
-			else
-			{
-				echo "<td>";
-				
-				$sql1="select max(log_time),doc_type,doc_no from $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid'];
-				// echo "</br>Qry : ".$sql1."</br>";
-				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row1=mysqli_fetch_array($sql_result1))
-				{
-					$tag=" ";
-					if($sql_row1['doc_type']=="normal")
-					{
-						$tag="D".$sql_row1['doc_no'];
-					}
-					else
-					{
-						$tag="R".$sql_row1['doc_no'];
-					}
-					$valid_check="display:none";
-				}
-
-				if(strlen($sql_row['shade'])==0)
-				{
-					$tag="Insp. <br/>Pending";
-					$valid_check="display:none";
-				}
-				
-				//To release for some time
-				echo "<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
-				//echo "<input type=\"hidden\" id=\"chk$doc_ref$j\" name=\"chk".$doc1_ref."[]\" value=\"0\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color')\">";
-				echo "<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
-				echo "<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
-				echo "<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
-				echo "<input type=\"hidden\" name=\"issued_new".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
-				
-				if(strlen($tag)>0)
-				{
-					echo "<img src=\"lock.png\"> $tag";
-				}
-				echo "</td>";
-				
-			}			
+			echo $temp_var;			
 			echo "</tr>";
+		}
 			$tid = $sql_row['tid'];
 			$n = 1; 
 			$modaldisplay.="<div id='modalbtn".$doc_ref.$j."' class='modal fade' role='dialog'>
@@ -1072,7 +1121,6 @@ if(isset($_POST['allocate']))
 					<th style='color:black;'>Ctx<br/>Width</th>
 					<th style='color:black;'>Tkt<br/>Length</th>
 					<th style='color:black;'>Ctx<br/>Length</th>	
-					<th style='color:black;'>Balance</th>
 					<th style='color:black;'>Allocated</th>
 					<th style='color:black;'>Issued<br/>Qty</th>
 					</tr>";
@@ -1107,7 +1155,6 @@ if(isset($_POST['allocate']))
 										<td>".$sql_result_new['ref3']."</td>
 										<td>".$sql_result_new['qty_rec']."</td>
 										<td>".$sql_result_new['ref5']."</td>
-										<td>".$sql_result_new['balance']."</td>
 										<td>".$allocated_qty."</td>
 										<td><span id=\"issued".$doc_ref."[$j]\"></span></td>
 										</tr>";
@@ -1187,6 +1234,9 @@ if(isset($_POST['allocate']))
 	// } );
 </script>
 <style>
+th{
+	text-align:center;
+}
    /* th, td { white-space: nowrap; }
     div.dataTables_wrapper {
         width: 2000px;
@@ -1268,7 +1318,7 @@ if(isset($_POST['allocate']))
 				btn_text: "go",
 				enter_key: false,
 				// col_20:false,
-				col_19:false,
+				col_18:false,
 				rows_counter: true,
 				rows_counter_text: "Total rows: ",
 				btn_reset: true,
@@ -1288,13 +1338,14 @@ if(isset($_POST['allocate']))
 					var len=document.getElementById('size_doc').value;
 					for (i = 0; i <=len; i++) { 
 					$('#reset_example'+i).addClass('btn btn-warning btn-xs');
-					$('#btn19_example'+i).addClass('btn btn-success btn-xs');
-					}
-					$('.rdiv').click(function(){ 
-						document.getElementById('btn19_example0').value = "GO";
-						document.getElementById('btn19_example1').value = "GO";
-						document.getElementById('btn19_example2').value = "GO";
+					$('#btn18_example'+i).addClass('btn btn-success btn-xs');
+					$('#reset_example'+i).click(function(){ 
+						// document.getElementById('btn19_example0').value = "GO";
+						// document.getElementById('btn19_example1').value = "GO";
+						// document.getElementById('btn19_example2').value = "GO";
 					});
+					}
+					
 			});
 		
 	</script>
