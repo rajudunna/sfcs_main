@@ -118,8 +118,6 @@ $(document).ready(function()
 				{
 					var mark3="<input type='hidden' name='ops_dep' value='"+response['ops_dep']+"'>";
 					$("#dynamic_table1").append(mark3);
-					var check_flag = 1;
-					var post_rec_qtys_array = response['rec_qtys'];
 				}
 				var send_qty = response['send_qty'];
 				if(response['status'])
@@ -138,7 +136,6 @@ $(document).ready(function()
 					for(var i=0;i<data.length;i++)
 					{
 						console.log(data[i].reported_qty);
-							//console.log(check_flag);
 							if(check_flag == 0)
 							{
 								var post_rec_qtys = data[i].reported_qty;
@@ -203,7 +200,32 @@ if(isset($_POST['formSubmit']))
 	{
 		$post_code = $_POST['post_ops'];
 	}
-	//var_dump($bundle_no);
+$concurrent_flag = 0;
+foreach ($bundle_no as $key=>$value)
+{
+	$select_send_qty = "SELECT send_qty,recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$bundle_no[$key]' AND operation_id = '$operation_id'";
+	//echo $select_send_qty;
+	$result_select_send_qty = $link->query($select_send_qty);
+	if($result_select_send_qty->num_rows >0)
+	{
+		while($row = $result_select_send_qty->fetch_assoc()) 
+		{
+			$send_qty = $row['send_qty'];
+			$pre_recieved_qty = $row['recevied_qty'];
+			$act_reciving_qty = $rep_qty[$key];
+			//echo 
+			$total_rec_qty = $pre_recieved_qty - $act_reciving_qty;
+			//echo $total_rec_qty;
+			if($total_rec_qty < 0)
+			{
+				echo "<h1 style='color:red;'>You are Reversing More than eligible quantity.</h1>";
+				$concurrent_flag = 1;
+			}
+		}
+	}
+}
+if($concurrent_flag == 0)
+{
 	foreach($ids as $key=>$value)
 	{
 		$fetching_id_qry = "select id,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number = $bundle_no[$key] and operation_id = $operation_id";
@@ -226,7 +248,7 @@ if(isset($_POST['formSubmit']))
 	if($ops_dep != 0)
 	{
 		$dep_ops_array_qry_raw = "select operation_code from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and ops_dependency='$ops_dep'";
-		// echo $dep_ops_array_qry_raw;
+		//echo $dep_ops_array_qry_raw;
 		$result_dep_ops_array_qry_raw = $link->query($dep_ops_array_qry_raw) or exit('query error in updating 4');
 		while($row = $result_dep_ops_array_qry_raw->fetch_assoc()) 
 		{
@@ -420,8 +442,9 @@ if(isset($_POST['formSubmit']))
 		
 		
 	}
-	$url = '?r='.$_GET['r'];
-	echo "<script>window.location = '".$url."'</script>";
+}
+$url = '?r='.$_GET['r'];
+echo "<script>window.location = '".$url."'</script>";
  }
 
 ?>
