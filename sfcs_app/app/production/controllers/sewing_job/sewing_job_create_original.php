@@ -78,7 +78,7 @@
 		}
 	});
 	
-	function calculateSewingJobQty(sizeofsizes,combo_no)
+	function pack_method_1_4_fun(sizeofsizes,combo_no)
 	{
 		for(var size=0;size < sizeofsizes; size++)
 		{
@@ -87,6 +87,20 @@
 			var SewingJobQty = GarPerCart*no_of_cartons;
 			document.getElementById('SewingJobQty_'+size+'_'+combo_no).value=SewingJobQty;
 		}
+	}
+
+	function pack_method_2_3_fun(sizeofsizes,combo_no,val)
+	{
+		for (var i = 0; i < val; i++)
+		{
+			for(var size=0;size < sizeofsizes; size++)
+			{
+				var GarPerCart=document.getElementById('GarPerCart_'+size+'_'+combo_no+'_'+i).value;
+				var no_of_cartons=document.getElementById('no_of_cartons_'+combo_no).value;
+				var SewingJobQty = GarPerCart*no_of_cartons;
+				document.getElementById('SewingJobQty_'+size+'_'+combo_no+'_'+i).value=SewingJobQty;
+			}
+		}	
 	}
 </script>
 
@@ -194,6 +208,12 @@
 						$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 						$pack_method = echo_title("$brandix_bts.tbl_carton_ref","carton_method","carton_barcode",$schedule,$link);
 						$tbl_carton_ref_check = echo_title("$brandix_bts.tbl_carton_ref","count(*)","style_code='".$style_id."' AND ref_order_num",$sch_id,$link);
+						$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
+						$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$sch_id,$link);
+						$order_colors=explode(",",$o_colors);	
+						$planned_colors=explode(",",$p_colors);
+						$val=sizeof($order_colors);
+						$val1=sizeof($planned_colors);
 						echo '<h4><span class="label label-info">Pack Method: '.$operation[$pack_method].'</span></h4>';
 						if($tbl_carton_ref_check>0)
 						{
@@ -463,16 +483,34 @@
 																			echo "<td>$comboNO</td>";
 																			$combo_count++;
 																		}
+																		if ($pack_method == 1 || $pack_method == 4)
+																		{
+																			$gar_per_cart_id = "'GarPerCart_".$size_count."_".$comboNO."'";
+																		}
+																		if ($pack_method == 3 || $pack_method == 2)
+																		{
+																			$combo_count_query = "SELECT DISTINCT(combo_no) FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id=$c_ref";
+																			// echo '<br>'.$combo_count_query;
+																			$como_count_result=mysqli_query($link, $combo_count_query) or exit("Error while getting combo count Details");
+																			if(mysqli_num_rows($como_count_result) > 1)
+																			{
+																				$gar_per_cart_id = "'GarPerCart_".$size_count."_".$comboNO."'";
+																			}
+																			else
+																			{
+																				$gar_per_cart_id = "'GarPerCart_".$size_count."_".$comboNO."_".$j."'";
+																			}
+																		}
 																		if (mysqli_num_rows($individual_sizes_result) >0)
 																		{
 																			if ($size_main[$size_count] == $individual_color)
 																			{
-																				echo "<td><input type='text'  readonly name='GarPerCart[$j][]' id='GarPerCart_".$size_count."_".$comboNO."' class='form-control integer' value='".$qty."'></td>";
+																				echo "<td><input type='text'  readonly name='GarPerCart[$j][]' id=$gar_per_cart_id class='form-control integer' value='".$qty."'></td>";
 																			}
 																		}
 																		else
 																		{
-																			echo "<td><input type='hidden' readonly name='GarPerCart[$j][]' id='GarPerCart_".$size_count."_".$comboNO."' value='0' /></td>";
+																			echo "<td><input type='hidden' readonly name='GarPerCart[$j][]' id=$gar_per_cart_id value='0' /></td>";
 																		}
 																	}
 																	
@@ -490,12 +528,7 @@
 
 								if(in_array($authorized,$has_permission))
 								{
-									$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
-									$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$sch_id,$link);
-									$order_colors=explode(",",$o_colors);	
-									$planned_colors=explode(",",$p_colors);
-									$val=sizeof($order_colors);
-									$val1=sizeof($planned_colors);
+
 									// echo $val."--".$val1."<br>";						
 
 									echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_job_create_original.php','N').'">';
@@ -504,6 +537,7 @@
 										echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
 										echo  "<input type=\"hidden\" value=\"$c_ref\" id=\"c_ref\" name=\"c_ref\">";
 										echo  "<input type=\"hidden\" value=\"$comboSize\" id=\"comboSize\" name=\"comboSize\">";
+										echo  "<input type=\"hidden\" value=\"$val\" id=\"size_of_colors\" name=\"size_of_colors\">";
 										// Combo wise no of cartons start
 										{
 											echo "<div class='col-md-12'>
@@ -528,8 +562,26 @@
 														}
 														echo "<tr>
 															<td>$combo[$i]</td>";
+															if ($pack_method == 1 || $pack_method == 4)
+															{
+																$onchange_fun = "pack_method_1_4_fun($sizeofsizes,$combo[$i]);";
+															}
+															if ($pack_method == 2 || $pack_method == 3)
+															{
+																$combo_count_query = "SELECT DISTINCT(combo_no) FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id=$c_ref";
+																// echo '<br>'.$combo_count_query;
+																$como_count_result=mysqli_query($link, $combo_count_query) or exit("Error while getting combo count Details");
+																if(mysqli_num_rows($como_count_result) > 1)
+																{
+																	$onchange_fun = "pack_method_1_4_fun($sizeofsizes,$combo[$i]);";
+																}
+																else
+																{
+																	$onchange_fun = "pack_method_2_3_fun($sizeofsizes,$combo[$i],$val);";
+																}																
+															}
 															echo "<input type='hidden' name=combo[] value='".$combo[$i]."'>
-															<td><input type='text' required name='no_of_cartons[]' onchange=calculateSewingJobQty($sizeofsizes,$combo[$i]); id='no_of_cartons_$combo[$i]' class='form-control integer' value=''></td>
+															<td><input type='text' required name='no_of_cartons[]' onchange=$onchange_fun id='no_of_cartons_$combo[$i]' class='form-control integer' value=''></td>
 															";
 															if($scanning_methods=='Bundle Level')
 															{
@@ -550,7 +602,8 @@
 												<div class='col-md-12'><b>Sewing Job Qty: </b>
 													<table class=\"table table-bordered\">
 														<tr>
-															<th>Color</th>";
+															<th>Color</th>
+															<th>Combo</th>";
 																for ($i=0; $i < sizeof($size_main); $i++)
 																{
 																	echo "<th>".$size_main[$i]."</th>";
@@ -561,6 +614,7 @@
 														{
 															echo "<tr>";
 																	echo "<td>$color_main[$j]</td>";
+																	$combo_count=0;
 																	for ($size_count=0; $size_count < sizeof($size_main); $size_count++)
 																	{
 																		$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color_main[$j]."' AND size_title='".$size1[$size_count]."'";
@@ -576,16 +630,39 @@
 																		while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 																		{
 																			$comboNO = $qty_query_details['combo_no'];
+																			if($combo_count == 0) 
+																			{
+																				echo "<td>$comboNO</td>";
+																				$combo_count++;
+																			}
 
+																			if ($pack_method == 1 || $pack_method == 4)
+																			{
+																				$sew_job_qty_id = "'SewingJobQty_".$size_count."_".$comboNO."'";
+																			}
+																			if ($pack_method == 2 || $pack_method == 3)
+																			{
+																				$combo_count_query = "SELECT DISTINCT(combo_no) FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id=$c_ref";
+																				// echo '<br>'.$combo_count_query;
+																				$como_count_result=mysqli_query($link, $combo_count_query) or exit("Error while getting combo count Details");
+																				if(mysqli_num_rows($como_count_result) > 1)
+																				{
+																					$sew_job_qty_id = "'SewingJobQty_".$size_count."_".$comboNO."'";
+																				}
+																				else
+																				{
+																					$sew_job_qty_id = "'SewingJobQty_".$size_count."_".$comboNO."_".$j."'";
+																				}														
+																			}
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' required readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$size_count."_".$comboNO."' class='form-control integer' value=''></td>";
+																					echo "<td><input type='text' required readonly='true' name='SewingJobQty[$j][]' id=$sew_job_qty_id class='form-control integer' value='0'></td>";
 																				}
 																			}
 																			else 
 																			{
-																				echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id='SewingJobQty_".$size_count."_".$comboNO."' class='form-control integer' value='0'></td>";
+																				echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id=$sew_job_qty_id class='form-control integer' value='0'></td>";
 																			}
 																		}
 																	}
