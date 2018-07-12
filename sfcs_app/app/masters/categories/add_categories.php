@@ -36,6 +36,7 @@
     }
     $action_url = getFullURL($_GET['r'],'save_categories.php','N');
     // echo $cat_name;
+    $action = getFullURL($_GET['r'],'save_categories.php','N');
     ?>
     <!--<div class="container-fluid">
         <div class="row">-->
@@ -45,7 +46,11 @@
 	</div>
 	<div class='panel-body'>
 
+<<<<<<< HEAD
+            <form action="<?= $action ?>" method = "POST">
+=======
             <form action="<?= $action_url ?>" id="formentry" method="POST" class="form-horizontal" role="form" data-parsley-validate novalidate>
+>>>>>>> UAT2
                 <input type='hidden' id='c_id' name='c_id' value="<?php echo $c_id; ?>" >
                 <div class="container-fluid shadow">
                     <div class="row">
@@ -102,7 +107,11 @@
                         
                         
                         
+<<<<<<< HEAD
+                <button id="save_btn" type="submit" class="btn btn-primary btn-sm"  name="save_btn">Save</button></div></div></div>
+=======
                 <button id="save_btn" type="submit" class="btn btn-primary btn-sm" name="save_btn">Save</button></div></div></div>
+>>>>>>> UAT2
 
 
                     </div>

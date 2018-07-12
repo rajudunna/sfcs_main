@@ -3,6 +3,12 @@
 	// $username = "baiall";
 	// $password = "baiall";
 	// $dbname = "bai_pro3";
+<<<<<<< HEAD
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+	$conn = $link;
+	
+=======
+>>>>>>> UAT2
 
 	// Create connection
 	// $conn = new mysqli($servername, $username, $password, $dbname);
@@ -13,7 +19,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM bai_pro3.`tbl_category`";
+	$sql = "SELECT * FROM $bai_pro3.`tbl_category`";
 	$result = $conn->query($sql);
 	$sno = 1;
 	$url=getFullURL($_GET['r'],'add_categories.php','N');
@@ -31,8 +37,14 @@
 				$cat_status = "In-Active";
 			}
 			$cat_selection=$row["cat_selection"];
+<<<<<<< HEAD
+			$url = getFullURLLevel($_GET['r'],'add_categories.php',0,'N');
+			$url_delete = getFullURLLevel($_GET['r'],'delete_categories.php',0,'N');
+			echo "<tr><td>".$sno++."</td><td>".$row["cat_name"]."</td><td>".$cat_status." </td><td>".$row["cat_selection"]."</td><td><a href='$url&rowid=$rowid&cat_name=$cat_name&status=$status&cat_selection=$cat_selection' class='editor_edit'>Edit</a> / <a href='$url_delete&rowid=$rowid' class='editor_remove'>Delete</a></td></tr>";
+=======
 			
 			echo "<tr><td>".$sno++."</td><td>".$row["cat_name"]."</td><td>".$cat_status." </td><td>".$row["cat_selection"]."</td><td><a href='$url&rowid=$rowid&cat_name=$cat_name&status=$status&cat_selection=$cat_selection' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+>>>>>>> UAT2
 		}
 
 		echo "</tbody></table>";
@@ -41,7 +53,7 @@
 	}
 	$conn->close();
 	?>
-
+<!-- /index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw -->
 
 <script>
 $(document).ready(function() {

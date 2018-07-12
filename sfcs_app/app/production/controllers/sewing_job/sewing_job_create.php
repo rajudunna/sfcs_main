@@ -291,17 +291,23 @@ td{ padding:2px; white-space: nowrap;}
 				<?php
 				if(isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule']))
 				{	
-					if ($_GET['style'] and $_GET['schedule']) {
+					if ($_GET['style'] and $_GET['schedule'])
+					{
 						$style_id=$_GET['style'];
 						$sch_id=$_GET['schedule'];
-					} else if ($_POST['style'] and $_POST['schedule']){
+					} 
+					else if ($_POST['style'] and $_POST['schedule'])
+					{
 						$style_id=$_POST['style'];
 						$sch_id=$_POST['schedule'];	
 					}
 					if ($style_id =='NIL' or $sch_id =='NIL') 
 					{						
 						echo " ";
-					}else{
+					}
+					else
+					{
+						// echo "Style= ".$style_id."<br>Schedule= ".$sch_id.'<br>';
 						$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
 						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
 						
@@ -309,9 +315,7 @@ td{ padding:2px; white-space: nowrap;}
 						$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$mini_order_ref,$link);
 						$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
 						$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
-						$carton_qty=1;
 
-					
 						$validation_query = "SELECT * FROM $brandix_bts.`tbl_carton_ref` WHERE style_code=".$style_id." AND ref_order_num=".$sch_id."";
 						$sql_result=mysqli_query($link, $validation_query) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result)>0)
@@ -319,25 +323,196 @@ td{ padding:2px; white-space: nowrap;}
 							// echo "carton props added, You can proceed";
 							if($bundle==0)
 							{
+								// Order Details Display Start
+								{
+									$col_array = array();
+									$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."'";
+									//echo $sizes_query;die();
+									$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2");
+									$row_count = mysqli_num_rows($sizes_result);
+									while($sizes_result1=mysqli_fetch_array($sizes_result))
+									{
+										$col_array[]=$sizes_result1['order_col_des'];
+									}
+
+									foreach ($col_array as $key1 => $value1)
+									{
+										foreach ($sizes_array as $key => $value)
+										{
+											$query = "SELECT bod.order_s_$sizes_array[$key] as order_qty, bod.title_size_$sizes_array[$key] as title, sum(psl.a_$sizes_array[$key]*psl.a_plies) AS planned_qty FROM $bai_pro3.bai_orders_db bod LEFT JOIN $bai_pro3.plandoc_stat_log psl ON psl.order_tid=bod.order_tid WHERE order_del_no=$schedule AND order_style_no='".$style."' AND order_s_$sizes_array[$key]>0 GROUP BY order_col_des";
+											// echo $query.'<br>';
+											$qty=mysqli_query($link, $query) or exit("Sql Error2");
+											while($qty_result=mysqli_fetch_array($qty))
+											{
+												// echo $qty_result['title'];
+												$sizes_order_array[] = $qty_result['title'];
+												$order_array[$col_array[$key1]][$qty_result['title']] = $qty_result['order_qty'];
+												$planned_array[$col_array[$key1]][$qty_result['title']] = $qty_result['planned_qty'];
+												$balance_array[$col_array[$key1]][$qty_result['title']] = $qty_result['order_qty']-$qty_result['planned_qty'];
+											}
+										}
+									}
+									//var_dump($order_array);
+									echo "<br><div class='col-md-12'><b>Order Details: </b>
+										<table class=\"table table-bordered\">
+											<tr>
+												<th>Details</th>
+												<th>Colors</th>";
+												foreach(array_unique($sizes_order_array) as $size)
+												{
+													echo "<th>$size</th>";
+												}	
+												
+												echo "<th>Total</th>
+											</tr>";
+
+											$counter = 0;
+											foreach ($order_array as $key => $value) 
+											{
+												$order_total = 0;
+												if($counter == 0)
+												{
+													echo "<tr><td rowspan='$row_count'>Order Qty</td>";
+												}
+												echo "<td>".$key."</td>";
+												foreach ($value as $key1 => $value1) 
+												{
+													foreach(array_unique($sizes_order_array) as $size)
+													{
+														if($key1 == $size){
+															echo "<td>".$value1."</td>";
+															$order_total += $value1;
+														}
+													}
+												}
+												echo "<td>$order_total</td></tr>";
+												$counter++;
+											}
+
+											$counter1 = 0;
+											foreach ($planned_array as $key => $value) 
+											{
+												$planned_total = 0;
+												if($counter1 == 0)
+												{
+													echo "<tr><td rowspan='$row_count'>Planned Qty</td>";
+												}
+												echo "<td>".$key."</td>";
+												foreach ($value as $key1_1 => $order_value)
+												{
+													foreach(array_unique($sizes_order_array) as $size)
+													{
+														if($key1_1 == $size){
+															echo "<td>".$order_value."</td>";
+															$planned_total += $order_value;
+														}
+													}
+												}
+												echo "<td>$planned_total</td></tr>";
+												$counter1++;
+											}
+
+											$counter3 = 0;
+											foreach ($balance_array as $key => $value) 
+											{
+												$balance_total = 0;
+												if($counter3 == 0)
+												{
+													echo "<tr><td rowspan='$row_count'>Balance Qty</td>";
+												}
+												echo "<td>".$key."</td>";
+												foreach ($value as $key1 => $balance_value) 
+												{
+													foreach(array_unique($sizes_order_array) as $size)
+													{
+														if($key1 == $size){
+															echo "<td>".$balance_value."</td>";
+															$balance_total += $balance_value;
+														}
+													}
+												}
+												echo "<td>$balance_total</td></tr>";
+												$counter3++;
+											}
+
+									echo "</table></div>";
+								}
+								// Order Details Display End
+
+								// sewing job Ratio Details Start
+								{
+									$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$sch_id AND style_code=$style_id)";
+									$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+									echo "<br><div class='col-md-12'><b>Sewing Job Ratio Details: </b>
+										<table class=\"table table-bordered\">
+											<tr>
+												<th>Color</th>";
+									while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+									{
+										$parent_id = $sewing_jobratio_color_details['parent_id'];
+										$color = $sewing_jobratio_color_details['color'];
+										$size = $sewing_jobratio_color_details['size'];
+										$color1 = explode(",",$color);
+										$size1 = explode(",",$size);
+										// var_dump($size);
+									}
+									for ($i=0; $i < sizeof($size1); $i++)
+									{
+										$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $sch_id AND ref_size_name=$size1[$i]";
+										// echo $Original_size_query;
+										$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
+										while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
+										{
+											$Ori_size = $Original_size_details['size_title'];
+										}
+										echo "<th>".$Ori_size."</th>";
+									}
+									echo "</tr>";
+									for ($j=0; $j < sizeof($color1); $j++)
+									{
+										echo "<tr>
+												<td>$color1[$j]</td>";
+												for ($i=0; $i < sizeof($size1); $i++)
+												{
+													$qty_query = "SELECT quantity FROM $brandix_bts.`tbl_carton_size_ref` WHERE ref_size_name=$size1[$i] AND parent_id=$parent_id AND color='".$color1[$j]."'";
+													// echo $qty_query;
+													$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
+													while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
+													{
+														$qty = $qty_query_details['quantity'];
+														if ($qty == '') {
+															$qty=0;
+														}
+														echo "<td>".$qty.'</td>';
+													}
+												}
+										echo "</tr>";
+									}
+									echo "</table></div>";
+								}
+								// sewing job Ratio Details End
+
 								if(in_array($authorized,$has_permission))
 								{
 									$sql="select * from $brandix_bts.tbl_min_ord_ref where ref_crt_schedule='".$sch_id."' and ref_product_style='".$style_id."'";
-									$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$sql_result=mysqli_query($link, $sql) or exit("Sql Error2");
 									if(mysqli_num_rows($sql_result)>0)
 									{
 										while($row=mysqli_fetch_array($sql_result))
 										{
 											$bundle_size=$row['miximum_bundles_per_size'];
 											$bundle_plie=$row['max_bundle_qnty'];
-											$mini_qty=$row['mini_order_qnty'];
+											// $mini_qty=$row['mini_order_qnty'];
 										}
 									}
 									else
 									{
 										$bundle_size=1;
 										$bundle_plie=0;
-										$mini_qty=$bundle_size*$bundle_plie*$carton_qty;
+										// $mini_qty=$bundle_size*$bundle_plie*$carton_qty;
 									}
+									$mini_qty=$bundle_size*$bundle_plie*$carton_qty;
+
 									$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
 									$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$sch_id,$link);
 									$order_colors=explode(",",$o_colors);	
@@ -363,11 +538,18 @@ td{ padding:2px; white-space: nowrap;}
 									echo  "<input type=\"hidden\" value=\"$style_id\" id=\"style_id\" name=\"style_id\">";
 									echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
 						
-									echo " <br><div class='col-md-12'>
+									echo "<div class='col-md-12'>
 										<table class='table table-bordered'>
 											<thead class=\"primary\">
 												<tr>
-													<th >Schedule</th><th>Total Colors</th><th>Planned Colors</th><th>Carton Method</th><th >Pack Quantity</th><th style=\"display:none;\">Sewing Job Multiples</th><th>Sewing Job Quantity</th><th>Control</th>
+													<th>Schedule</th>
+													<th>Total Colors</th>
+													<th>Planned Colors</th>
+													<th>Carton Method</th>
+													<th>Pack Quantity<br/>(Garments per Pack)</th>
+													<th>No of Packs per Carton</th>
+													<th>No of Cartons</th>
+													<th>Sewing Job Quantity</th><th>Control</th>
 												</tr>
 											</thead>";
 												echo "<tr><td rowspan=$val>$schedule</td>";
@@ -397,9 +579,19 @@ td{ padding:2px; white-space: nowrap;}
 														echo "</select></td>";
 												
 														
-														echo "<td rowspan=$val><input type=\"hidden\" value=\"$carton_qty\" id=\"carton_qty\" name=\"carton_qty\" ><input type=\"text\" class='integer form-control' value=\"$bundle_plie\" id=\"bundle_plies\" name=\"bundle_plies\" onkeyup=\"validate();\" $status></td>
-														<td style=\"display:none;\" rowspan=$val><input type=\"text\" class='integer form-control' value=\"$bundle_size\" id=\"bundle_per_size\" name=\"bundle_per_size\" onkeyup=\"validate();\" $status></td>
-														<td rowspan=$val><input type=\"text\" class='integer form-control' value=\"$mini_qty\" id=\"mini_order_qty\" name=\"mini_order_qty\" onkeyup=\"tot_sum()\" readonly></td>";
+														echo "
+														<td rowspan=$val>
+															<input type=\"text\" class='integer form-control' value=\"$carton_qty\" id=\"carton_qty\" name=\"carton_qty\" onkeyup=\"validate();\" $status>
+														</td>
+														<td rowspan=$val>
+															<input type=\"text\" class='integer form-control' value=\"$bundle_plie\" id=\"bundle_plies\" name=\"bundle_plies\" onkeyup=\"validate();\" $status>
+														</td>
+														<td rowspan=$val>
+															<input type=\"text\" class='integer form-control' value=\"$bundle_size\" id=\"bundle_per_size\" name=\"bundle_per_size\" onkeyup=\"validate();\" $status>
+														</td>
+														<td rowspan=$val>
+															<input type=\"text\" class='integer form-control' value=\"$mini_qty\" id=\"mini_order_qty\" name=\"mini_order_qty\" onkeyup=\"tot_sum()\" readonly>
+														</td>";
 														if($ii==1)
 														{
 															if($bundle>0)
