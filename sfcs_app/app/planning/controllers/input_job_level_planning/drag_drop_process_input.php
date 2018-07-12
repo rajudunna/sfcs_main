@@ -140,7 +140,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				
 				for($d=0;$d<sizeof($dockets_ref);$d++)
 				{
-					$sql="select * from $bai_pro3.plandoc_stat_log where doc_no='$dockets_ref[$d]'";
+					$sql="select *,GROUP_CONCAT(org_doc_no) as org_doc_no from $bai_pro3.plandoc_stat_log where doc_no='$dockets_ref[$d]'";
 					//echo $sql."<br>";
 					$resultr1=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_rowr1=mysqli_fetch_array($resultr1))
