@@ -12,10 +12,11 @@
     }
 </script> 
 <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
-
+<title>Split Wise</title>
 <body> 
 <?php 
     include("../../../../common/config/config.php");
+    include("../../../../common/config/functions.php");
     $schedule=$_GET["schedule"]; 
     $schedule_split=explode(",",$schedule); 
     //echo $schedule;
@@ -346,15 +347,16 @@
                     $input_job_no_random_ref=$sql_row1["input_job_no_random"]; 
                     
                     //$sql2d="select group_concat(distinct destination) as dest from plandoc_stat_log where doc_no in (".$doc_nos_des.") and acutno='".$acutno_ref."'"; 
-                    $sql2d="select group_concat(distinct destination) as dest from $bai_pro3.pac_stat_log_input_job where doc_no in (".$doc_nos_des.")"; 
-                    $result2d=mysqli_query($link, $sql2d) or die("Error-".$sql2d."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                    while($sql_row2d=mysqli_fetch_array($result2d)) 
-                    { 
-                        $destination=$sql_row2d["dest"]; 
-                    } 
+                    // $sql2d="select group_concat(distinct destination) as dest from $bai_pro3.pac_stat_log_input_job where doc_no in (".$doc_nos_des.")";
+                    // echo $sql2d.'<br>';
+                    // $result2d=mysqli_query($link, $sql2d) or die("Error-".$sql2d."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                    // while($sql_row2d=mysqli_fetch_array($result2d)) 
+                    // { 
+                    //     $destination=$sql_row2d["dest"]; 
+                    // } 
                     
                     $sql2="select group_concat(distinct trim(destination)) as dest,order_style_no as style,GROUP_CONCAT(DISTINCT order_col_des separator '<br/>') as color,order_po_no as cpo,order_date,vpo from $bai_pro3.bai_orders_db where order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color_des."\""; 
-                    //echo $sql2; 
+                    // echo $sql2; 
                     $result2=mysqli_query($link, $sql2) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row2=mysqli_fetch_array($result2)) 
                     { 
@@ -364,27 +366,25 @@
                         $po=$sql_row2["cpo"]; 
                         $del_date=$sql_row2["order_date"]; 
                         $vpo=$sql_row2["vpo"]; 
-                    } 
+                    }                 
 
-                    // $vpo_po_query="select shipment_plan.Customer_Order_No, order_details.VPO_NO FROM $m3_inputs.order_details,$m3_inputs.shipment_plan WHERE order_details.Schedule=shipment_plan.Schedule_No AND order_details.Schedule=$schedule";
-                    // // echo $vpo_po_query;
-                    // $vpo_po_result=mysqli_query($link, $vpo_po_query) or die("Error while getting VPO and PO numbers");
-                    // while($row1w=mysqli_fetch_array($vpo_po_result))
-                    // {
-                    //     $po=$row1w["Customer_Order_No"];
-                    //     $vpo=$row1w["VPO_NO"];
-                    // }                    
-
-                    $sql_cut="select group_concat(distinct acutno) as cut, sum(carton_act_qty) as totqty from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."'"; 
-                    //echo $sql_cut; 
+                    $sql_cut="select group_concat(distinct acutno) as cut, sum(carton_act_qty) as totqty, destination from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."'"; 
+                    // echo $sql_cut.'<br>'; 
                     $result_cut=mysqli_query($link, $sql_cut) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row_cut=mysqli_fetch_array($result_cut)) 
                     { 
                         $cut_job_no=$sql_row_cut["cut"]; 
-                        $totcount1=$sql_row_cut["totqty"]; 
-                        
+                        $totcount1=$sql_row_cut["totqty"];                         
+                        $destination=$sql_row_cut["destination"];                         
                     } 
-                    
+                    $sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$color."'";
+                    // echo $sql4."<br>";
+                    $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($sql_row4=mysqli_fetch_array($sql_result4))
+                    {
+                        $color_code=$sql_row4["color_code"];
+                    }
+                    $cut_jobs_new = chr($color_code).leading_zeros($cut_job_no, 3);
                     //$totcount="- (".$totcount1.")<br>"; 
                     //Display color 
                     $display_colors=str_replace(',',$totcount,$color); 
@@ -399,9 +399,9 @@
                     echo "<td height=20 style='height:15.0pt'>$destination</td>"; 
                     //echo "<td height=20 style='height:15.0pt'>".$display_colors." - (".$totcount1.")</td>"; 
                     echo "<td height=20 style='height:15.0pt'>".$display_colors."</td>"; 
-                    echo "<td height=20 style='height:15.0pt'>".$cut_job_no."</td>"; 
+                    echo "<td height=20 style='height:15.0pt'>".$cut_jobs_new."</td>"; 
                     echo "<td height=20 style='height:15.0pt'>".$del_date."</td>"; 
-                    echo "<td height=20 style='height:15.0pt'>J".$sql_row["job"]."</td>"; 
+                    echo "<td height=20 style='height:15.0pt'>J".leading_zeros($sql_row["job"], 3)."</td>"; 
                     for($i=0;$i<sizeof($size_array);$i++) 
                     {     
                         $sql7="SELECT * FROM $bai_pro3.packing_summary_input where size_code='".$orginal_size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."' and input_job_no_random='".$input_job_no_random_ref."'"; 
@@ -430,139 +430,20 @@
                     echo "</tr>"; 
                 } 
             } 
-
-            //$sql="select `order_s_xs`,     `order_s_s`,     `order_s_m`,     `order_s_l`,    `order_s_xl`,     `order_s_xxl`,     `order_s_xxxl` from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$joinSch.") "; 
-            $sql1="SELECT sum(order_s_xs) as order_s_xs, sum(order_s_s) as order_s_s, sum(order_s_m) as order_s_m, sum(order_s_l) as order_s_l,sum(order_s_xl) as order_s_xl,sum(order_s_xxl) as order_s_xxl,sum(order_s_xxxl) as order_s_xxxl,sum(order_s_s01) as order_s_s01,sum(order_s_s02) as order_s_s02,sum(order_s_s03) as order_s_s03,sum(order_s_s04) as order_s_s04, sum(order_s_s05) as order_s_s05,sum(order_s_s06) as order_s_s06,sum(order_s_s07) as order_s_s07,sum(order_s_s08) as order_s_s08,sum(order_s_s09) as order_s_s09,sum(order_s_s10) as order_s_s10,sum(order_s_s11) as order_s_s11,sum(order_s_s12) as order_s_s12,sum(order_s_s13) as order_s_s13,sum(order_s_s14) as order_s_s14,sum(order_s_s15) as order_s_s15,sum(order_s_s16) as order_s_s16,sum(order_s_s17) as order_s_s17,sum(order_s_s18) as order_s_s18,sum(order_s_s19) as order_s_s19,sum(order_s_s20) as order_s_s20,sum(order_s_s21) as order_s_s21,sum(order_s_s22) as order_s_s22,sum(order_s_s23) as order_s_s23,sum(order_s_s24) as order_s_s24,sum(order_s_s25) as order_s_s25,sum(order_s_s26) as order_s_s26,sum(order_s_s27) as order_s_s27,sum(order_s_s28) as order_s_s28,sum(order_s_s29) as order_s_s29,sum(order_s_s30) as order_s_s30,sum(order_s_s31) as order_s_s31,sum(order_s_s32) as order_s_s32,sum(order_s_s33) as order_s_s33,   sum(order_s_s34) as order_s_s34,sum(order_s_s35) as order_s_s35,sum(order_s_s36) as order_s_s36,sum(order_s_s37) as order_s_s37,sum(order_s_s38) as order_s_s38,sum(order_s_s39) as order_s_s39,sum(order_s_s40) as order_s_s40,sum(order_s_s41) as order_s_s41,sum(order_s_s42) as order_s_s42,sum(order_s_s43) as order_s_s43,sum(order_s_s44) as order_s_s44,sum(order_s_s45) as order_s_s45,sum(order_s_s46) as order_s_s46,sum(order_s_s47) as order_s_s47,sum(order_s_s48) as order_s_s48,sum(order_s_s49) as order_s_s49,sum(order_s_s50) as order_s_s50 FROM $bai_pro3.bai_orders_db_confirm where order_del_no=\"$joinSch\" "; 
-            //echo $sql1; 
-                $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                while($sql_row1=mysqli_fetch_array($sql_result1)) 
-                { 
-                    $o_s_xs=$sql_row1['order_s_xs'];
-                    $o_s_s=$sql_row1['order_s_s'];
-                    $o_s_m=$sql_row1['order_s_m'];
-                    $o_s_l=$sql_row1['order_s_l'];
-                    $o_s_xl=$sql_row1['order_s_xl'];
-                    $o_s_xxl=$sql_row1['order_s_xxl'];
-                    $o_s_xxxl=$sql_row1['order_s_xxxl'];
-                    $o_s_s01=$sql_row1['order_s_s01'];
-                    $o_s_s02=$sql_row1['order_s_s02'];
-                    $o_s_s03=$sql_row1['order_s_s03'];
-                    $o_s_s04=$sql_row1['order_s_s04'];
-                    $o_s_s05=$sql_row1['order_s_s05'];
-                    $o_s_s06=$sql_row1['order_s_s06'];
-                    $o_s_s07=$sql_row1['order_s_s07'];
-                    $o_s_s08=$sql_row1['order_s_s08'];
-                    $o_s_s09=$sql_row1['order_s_s09'];
-                    $o_s_s10=$sql_row1['order_s_s10'];
-                    $o_s_s11=$sql_row1['order_s_s11'];
-                    $o_s_s12=$sql_row1['order_s_s12'];
-                    $o_s_s13=$sql_row1['order_s_s13'];
-                    $o_s_s14=$sql_row1['order_s_s14'];
-                    $o_s_s15=$sql_row1['order_s_s15'];
-                    $o_s_s16=$sql_row1['order_s_s16'];
-                    $o_s_s17=$sql_row1['order_s_s17'];
-                    $o_s_s18=$sql_row1['order_s_s18'];
-                    $o_s_s19=$sql_row1['order_s_s19'];
-                    $o_s_s20=$sql_row1['order_s_s20'];
-                    $o_s_s21=$sql_row1['order_s_s21'];
-                    $o_s_s22=$sql_row1['order_s_s22'];
-                    $o_s_s23=$sql_row1['order_s_s23'];
-                    $o_s_s24=$sql_row1['order_s_s24'];
-                    $o_s_s25=$sql_row1['order_s_s25'];
-                    $o_s_s26=$sql_row1['order_s_s26'];
-                    $o_s_s27=$sql_row1['order_s_s27'];
-                    $o_s_s28=$sql_row1['order_s_s28'];
-                    $o_s_s29=$sql_row1['order_s_s29'];
-                    $o_s_s30=$sql_row1['order_s_s30'];
-                    $o_s_s31=$sql_row1['order_s_s31'];
-                    $o_s_s32=$sql_row1['order_s_s32'];
-                    $o_s_s33=$sql_row1['order_s_s33'];
-                    $o_s_s34=$sql_row1['order_s_s34'];
-                    $o_s_s35=$sql_row1['order_s_s35'];
-                    $o_s_s36=$sql_row1['order_s_s36'];
-                    $o_s_s37=$sql_row1['order_s_s37'];
-                    $o_s_s38=$sql_row1['order_s_s38'];
-                    $o_s_s39=$sql_row1['order_s_s39'];
-                    $o_s_s40=$sql_row1['order_s_s40'];
-                    $o_s_s41=$sql_row1['order_s_s41'];
-                    $o_s_s42=$sql_row1['order_s_s42'];
-                    $o_s_s43=$sql_row1['order_s_s43'];
-                    $o_s_s44=$sql_row1['order_s_s44'];
-                    $o_s_s45=$sql_row1['order_s_s45'];
-                    $o_s_s46=$sql_row1['order_s_s46'];
-                    $o_s_s47=$sql_row1['order_s_s47'];
-                    $o_s_s48=$sql_row1['order_s_s48'];
-                    $o_s_s49=$sql_row1['order_s_s49'];
-                    $o_s_s50=$sql_row1['order_s_s50'];
-        
-
-                    $o_total=($o_s_xs+$o_s_s+$o_s_m+$o_s_l+$o_s_xl+$o_s_xxl+$o_s_xxxl+$o_s_s01+$o_s_s02+$o_s_s03+$o_s_s04+$o_s_s05+$o_s_s06+$o_s_s07+$o_s_s08+$o_s_s09+$o_s_s10+$o_s_s11+$o_s_s12+$o_s_s13+$o_s_s14+$o_s_s15+$o_s_s16+$o_s_s17+$o_s_s18+$o_s_s19+$o_s_s20+$o_s_s21+$o_s_s22+$o_s_s23+$o_s_s24+$o_s_s25+$o_s_s26+$o_s_s27+$o_s_s28+$o_s_s29+$o_s_s30+$o_s_s31+$o_s_s32+$o_s_s33+$o_s_s34+$o_s_s35+$o_s_s36+$o_s_s37+$o_s_s38+$o_s_s39+$o_s_s40+$o_s_s41+$o_s_s42+$o_s_s43+$o_s_s44+$o_s_s45+$o_s_s46+$o_s_s47+$o_s_s48+$o_s_s49+$o_s_s50); 
-                    //echo $o_total; 
-                } 
             echo "<tr>"; 
             echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>"; 
                 
-                
-                if ( $o_s_xs!=0) {    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_xs."</th>"; } 
-                if ( $o_s_s!=0) {    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s."</th>"; } 
-                if ( $o_s_m!=0) {    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_m."</th>"; } 
-                if ( $o_s_l!=0) {    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_l."</th>"; } 
-                if ( $o_s_xl!=0) {    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_xl."</th>"; } 
-                if ( $o_s_xxl!=0) {    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_xxl."</th>"; } 
-                if ( $o_s_xxxl!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_xxxl."</th>"; } 
-                
-                if ( $o_s_s01!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s01."</th>"; }  
-                if ( $o_s_s02!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s02."</th>"; }  
-                if ( $o_s_s03!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s03."</th>"; }  
-                if ( $o_s_s04!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s04."</th>"; }  
-                if ( $o_s_s05!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s05."</th>"; }  
-                if ( $o_s_s06!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s06."</th>"; }  
-                if ( $o_s_s07!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s07."</th>"; }  
-                if ( $o_s_s08!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s08."</th>"; }  
-                if ( $o_s_s09!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s09."</th>"; }  
-                if ( $o_s_s10!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s10."</th>"; }  
-                if ( $o_s_s11!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s11."</th>"; }  
-                if ( $o_s_s12!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s12."</th>"; }  
-                if ( $o_s_s13!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s13."</th>"; }  
-                if ( $o_s_s14!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s14."</th>"; }  
-                if ( $o_s_s15!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s15."</th>"; }  
-                if ( $o_s_s16!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s16."</th>"; }  
-                if ( $o_s_s17!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s17."</th>"; }  
-                if ( $o_s_s18!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s18."</th>"; }  
-                if ( $o_s_s19!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s19."</th>"; }  
-                if ( $o_s_s20!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s20."</th>"; }  
-                if ( $o_s_s21!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s21."</th>"; }  
-                if ( $o_s_s22!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s22."</th>"; }  
-                if ( $o_s_s23!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s23."</th>"; }  
-                if ( $o_s_s24!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s24."</th>"; }  
-                if ( $o_s_s25!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s25."</th>"; }  
-                if ( $o_s_s26!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s26."</th>"; }  
-                if ( $o_s_s27!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s27."</th>"; }  
-                if ( $o_s_s28!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s28."</th>"; }  
-                if ( $o_s_s29!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s29."</th>"; }  
-                if ( $o_s_s30!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s30."</th>"; }  
-                if ( $o_s_s31!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s31."</th>"; }  
-                if ( $o_s_s32!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s32."</th>"; }  
-                if ( $o_s_s33!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s33."</th>"; }  
-                if ( $o_s_s34!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s34."</th>"; }  
-                if ( $o_s_s35!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s35."</th>"; }  
-                if ( $o_s_s36!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s36."</th>"; }  
-                if ( $o_s_s37!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s37."</th>"; }  
-                if ( $o_s_s38!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s38."</th>"; }  
-                if ( $o_s_s39!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s39."</th>"; }  
-                if ( $o_s_s40!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s40."</th>"; }  
-                if ( $o_s_s41!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s41."</th>"; }  
-                if ( $o_s_s42!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s42."</th>"; }  
-                if ( $o_s_s43!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s43."</th>"; }  
-                if ( $o_s_s44!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s44."</th>"; }  
-                if ( $o_s_s45!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s45."</th>"; }  
-                if ( $o_s_s46!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s46."</th>"; }  
-                if ( $o_s_s47!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s47."</th>"; }  
-                if ( $o_s_s48!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s48."</th>"; }  
-                if ( $o_s_s49!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s49."</th>"; }  
-                if ( $o_s_s50!=0) {    echo "<th align=\"center\" style=\"border:2px solid #000;border-bottom:1px dotted #000;\">".$o_s_s50."</th>"; }  
-                
-                echo "<th  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">$o_total</th>"; 
+                $sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) GROUP BY old_size";
+                //echo $sql1;
+                $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($sql_row1=mysqli_fetch_array($sql_result1))
+                {
+                    $o_s=$sql_row1['qty'];
+                    if ($o_s!=0) {  echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>"; }
+                    $o_total=$o_s+$o_total;
+                    //echo $o_total;
+                }
+                echo "<th  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">$o_total</th>";
                 echo "</tr>"; 
                 echo "</table></div></div></div></div><br>"; 
             ?> 
