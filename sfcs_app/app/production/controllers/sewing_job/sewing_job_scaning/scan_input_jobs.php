@@ -251,8 +251,8 @@ $(document).ready(function()
 					// var form = '<form action="<?php echo $_GET['r']?>" method="post">';
 					// $("#dynamic_table1").append(form);
 					var btn = '<div class="pull-right" id="smart_btn_arear"><input type="button" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="return check_pack();"><input type="hidden" id="count_of_data" value='+data.length+'></div>';
-					$("#dynamic_table1").append(btn);
-					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th>Status</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th>Remarks</th><th>Rejected Qty.</th><th>Rejection quantity</th></tr></thead><tbody>";
+					//$("#dynamic_table1").append(btn);
+					//var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th>Status</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th>Remarks</th><th>Rejected Qty.</th><th>Rejection quantity</th></tr></thead><tbody>";
 					var flagelem = "<input type='hidden' name='flag' id='flag' value='"+flag+"'>";
 					$("#dynamic_table1").append(markup);
 					$("#dynamic_table1").append(btn);
