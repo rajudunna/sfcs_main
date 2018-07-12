@@ -1,9 +1,9 @@
 <div style="margin-top:50px;border:1px solid #000;margin-left:5px;padding:3px;font-size:12px;">
 <h3>Color Legends</h3>
 
-<div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
+<!--<div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
 <div class="blue" ></div> Cut Completed
-</div>
+</div>-->
 <div style="width:200px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
 <div class="yellow" ></div> Fabric Issued to Cutting Module
 </div>
@@ -22,6 +22,8 @@
 <div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
 <div class="white" ></div> No Priority Available
 </div>
-
+<div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
+<div class="white" style='background-color:#ff000085;'></div>Module Wise Summary Report
+</div>
 <div style="clear: both;"> </div>
 </div>

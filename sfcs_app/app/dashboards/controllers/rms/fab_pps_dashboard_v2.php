@@ -744,12 +744,28 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		}
 		
 		echo "<tr class=\"bottom\">";
+		$url5=getFullURL($_GET['r'],'module_wise_summary.php','N');
+		$sql_count="select * from $bai_pro3.plan_dash_doc_summ where act_cut_status!=\"DONE\" and module='$module'";
+		$sql_count_result=mysqli_query($link, $sql_count) or exit("Sql Error2".mysqli_error($GLOBALS["$___mysqli_ston"]));
+		$rows5=mysqli_num_rows($sql_count_result);
+		//echo $rows5;
+		if($rows5!=''or $rows5!='0'){
 		echo "<td class=\"bottom\" $iu_module_highlight>
-				<strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\">
-						  <font class=\"fontnn\" color=black >$module</font>
+				<strong><a href=\"javascript:void(0)\" >
+						  <font class=\"fontnn\" color=black style='background-color:#ff000085;' onclick=\"Popup=window.open('$url5&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$module</font>
 				</a></strong>
 			  </td>
 			  <td>";
+		}
+		else{
+			echo "<td class=\"bottom\" $iu_module_highlight>
+			<strong><a href=\"javascript:void(0)\" >
+			<font class=\"fontnn\" color=black style='background-color:white;'><a href='#'>$module</a></font>
+			</a></strong>
+			  </td>
+			  <td>";
+
+		}	  
 	   	//To disable issuing fabric to cutting tables
 		//All yellow colored jobs will be treated as Fabric Wip
 		$cut_wip_control=3000;
@@ -811,12 +827,15 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$emb_stat=$sql_row1['emb_stat'];
 			
 			$sql_doc1="select * from $bai_pro3.plandoc_stat_log where order_tid like \"%".$schedule."%\" and acutno=$cut_no";
-			$result_doc1=mysqli_query($link, $sql_doc1) or exit("Sql Error 13".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//$result_doc1=mysqli_query($link, $sql_doc1) or exit("Sql Error 13".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$result_doc1=mysqli_query($link, $sql_doc1);
 			
 			$sql_doc="select * from $bai_pro3.plandoc_stat_log where order_tid like \"%".$schedule."%\" and acutno=$cut_no and act_cut_status=\"DONE\"";
 			//echo $sql_doc."<br>";
-			$result_doc=mysqli_query($link, $sql_doc) or exit("Sql Error 14".mysqli_error($GLOBALS["___mysqli_ston"]));
-		     if(mysqli_num_rows($result_doc)== mysqli_num_rows($result_doc1))
+			//$result_doc=mysqli_query($link, $sql_doc) or exit("Sql Error 14".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$result_doc=mysqli_query($link, $sql_doc);
+
+			if(mysqli_num_rows($result_doc)== mysqli_num_rows($result_doc1))
 			 {
 				 $cut_new="DONE";
 				 $id2="blue";
@@ -973,7 +992,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			//if($cut_new=="DONE")
 			if($cut_new=="T")
 			{
-				$id="blue";
+				//$id="blue";
+				$id="white";
+				
 			}
 			else
 			{
