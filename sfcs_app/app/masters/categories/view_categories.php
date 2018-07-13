@@ -13,7 +13,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM bai_pro3.`tbl_category`";
+	$sql = "SELECT * FROM $bai_pro3.`tbl_category`";
 	$result = $conn->query($sql);
 	$sno = 1;
 	$url=getFullURL($_GET['r'],'add_categories.php','N');
@@ -41,7 +41,7 @@
 	}
 	$conn->close();
 	?>
-
+<!-- /index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw -->
 
 <script>
 $(document).ready(function() {

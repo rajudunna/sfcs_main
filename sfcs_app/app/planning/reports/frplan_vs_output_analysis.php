@@ -176,21 +176,21 @@ if(isset($_POST['submit']))
 	$table.="</tr>";
 
 	$mod_count=array();
-	$sql="select module,count(module) as count from (SELECT group_code,bai_pro4.uExtractNumberFromString(style) as style,module,
-	".implode(",",$query_code)." FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style) as t group by module";
+	$sql="select module,count(module) as count from (SELECT group_code,$bai_pro4.uExtractNumberFromString(style) as style,module,
+	".implode(",",$query_code)." FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,$bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style) as t group by module";
 	// echo $sql."<br>";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$mod_count[$sql_row['module']]=$sql_row['count'];
 	}
 
 	$mod_chk=0;
-	$sql="SELECT group_code,bai_pro4.uExtractNumberFromString(style) as style,module,
+	$sql="SELECT group_code,$bai_pro4.uExtractNumberFromString(style) as style,module,
 	".implode(",",$query_code)."
-	FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style";
-	// echo $sql."<br>";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	FROM $bai_pro4.fastreact_plan WHERE production_date BETWEEN '$sdate' AND '$edate' GROUP BY CONCAT(group_code,$bai_pro4.uExtractNumberFromString(style),module) ORDER BY module,style";
+	 //echo $sql."<br>";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$check=0;
@@ -203,9 +203,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			
 			//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
-			// echo $sql1."<br>";
-			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module='$mod_chk' GROUP BY date";
+			 //echo $sql1."<br>";
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				$key=array_search($sql_row1['date'],$dates_between);
@@ -296,8 +296,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 {
 		//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
-			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module='$mod_chk' GROUP BY date";
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				$key=array_search($sql_row1['date'],$dates_between);

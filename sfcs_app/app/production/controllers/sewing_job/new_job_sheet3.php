@@ -120,7 +120,13 @@ $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty
 //End - To take total Job qty  
 
 //Added code to take team number // 
-
+$sql4="select color_code from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\"";
+$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row4=mysqli_fetch_array($sql_result4))
+{
+    $color_code=$sql_row4["color_code"];
+}
+// echo $color_code;
 $ssql15="SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$doc'"; 
 // echo $ssql15;     
     $result15=mysqli_query($link, $ssql15) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -183,18 +189,17 @@ $destination_list="";
 //----------------------------------------------------------------------- 
 
 //Start - To take cut no list 
-$cut_no_list="A"; 
-$docket_no_list="("; 
-$ssql14="SELECT doc_no,acutno AS cut_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY order_col_des,input_job_no_random"; 
-    //echo $ssql14; 
+// $cut_no_list="A"; 
+    // $docket_no_list="("; 
+    $ssql14="SELECT GROUP_CONCAT(DISTINCT acutno) AS cut FROM $bai_pro3.packing_summary_input WHERE order_del_no = $schedule AND input_job_no_random='$doc'"; 
+    // echo $ssql14; 
     $result14=mysqli_query($link, $ssql14) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row14=mysqli_fetch_array($result14)) 
     { 
-        $cut_no_list.=$row14["cut_no"].","; 
-        $docket_no_list.=$row14["doc_no"].","; 
-         
+        $cut_no_list=$row14["cut"].",";
+        // $docket_no_list.=$row14["doc_no"].","; 
     } 
-    $docket_no_list=substr($docket_no_list,0,-1).")"; 
+    // $docket_no_list=substr($docket_no_list,0,-1).")"; 
     $cut_no_list=substr($cut_no_list,0,-1); 
 //End - To take cut no list 
 //----------------------------------------------------------------------- 
@@ -5363,7 +5368,7 @@ tags will be replaced.-->
 </script> 
   <span style='mso-spacerun:yes'></span></td> 
   <td colspan=2 rowspan=2 class=xl26432351 style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black'>&nbsp;</td> 
-  <td colspan=2 class=xl26832351 width=103 style='border-right:1.0pt solid black;   border-left:none;width:78pt'>Version No : 003</td> 
+  <td colspan=2 class=xl26832351 width=103 style='border-right:1.0pt solid black;   border-left:none;width:78pt'>Date: </td> 
   <td colspan=3 class=xl28032351 width=132 style='border-right:1.0pt solid black;   border-left:none;width:99pt'><?php echo date("Y-m-d"); ?></td> 
  </tr> 
  <tr class=xl13432351 height=30 style='mso-height-source:userset;height:22.5pt'> 
@@ -5440,7 +5445,7 @@ tags will be replaced.-->
   <td colspan=12 class=xl22532351 style='border-right:1.0pt solid black'>Packing</td> 
  </tr> 
  <tr height=28 style='mso-height-source:userset;height:21.0pt'> 
-  <td rowspan=2 height=101 class=xl20932351 width=89 style='border-bottom:1.0pt solid black; height:75.75pt;width:67pt'>Color<span style='mso-spacerun:yes'> </span></td> 
+  <td rowspan=2 height=101 class=xl20932351 width=89 style='border-bottom:1.0pt solid black; height:75.75pt;width:67pt'>Color - Cut No<span style='mso-spacerun:yes'> </span></td> 
   <td class=xl12232351 width=2 style='width:2pt'>&nbsp;</td> 
   <td colspan=2 class=xl21132351 width=118 style='border-right:1.0pt solid black; border-left:none;width:88pt'>Sewing In<span style='mso-spacerun:yes'> </span></td> 
   <td colspan=10 class=xl21232351>Hourly Sewing Out</td> 
@@ -5484,10 +5489,19 @@ tags will be replaced.-->
     //echo $ssqlxs; 
     $resultxs=mysqli_query($link, $ssqlxs) or exit("Sql Errorxs".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($rowxs=mysqli_fetch_array($resultxs)) 
-    { 
+    {
+        $ssqlxs123="SELECT color_code FROM $bai_pro3.bai_orders_db WHERE order_del_no='".$rowxs["order_del_no"]."'  AND order_col_des = '".$rowxs["order_col_des"]."' AND order_style_no ='".$rowxs["order_style_no"]."'"; 
+        //echo $ssqlxs123; 
+        $resultxs123=mysqli_query($link, $ssqlxs123) or exit("Sql Errorxs".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        while($rowxs123=mysqli_fetch_array($resultxs123)) 
+        {
+            $color_code = $rowxs123["color_code"];
+        }
+        // echo $color_code;
+        $cut_new = chr($color_code).leading_zeros($rowxs["acutno"], 3);
          echo "<tr class=xl10632351 height=48 style='mso-height-source:userset;height:36.0pt'> 
           <td rowspan=2 height=96 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; 
-          height:72.0pt;border-top:none;width:67pt'>".$rowxs["order_col_des"]."<span 
+          height:72.0pt;border-top:none;width:67pt'>".$rowxs["order_col_des"]." - ".$cut_new."<span 
           style='mso-spacerun:yes'>                 </span></td> 
           <td class=xl9532351 style='border-left:none'>&nbsp;</td> 
           <td rowspan=2 class=xl18232351 style='border-bottom:1.0pt solid black'>".strtoupper($rowxs["size_code"])."</td> 

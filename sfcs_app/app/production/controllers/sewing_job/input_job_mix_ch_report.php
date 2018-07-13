@@ -128,12 +128,13 @@ echo '<br>
                             {
                                 $color_code=$sql_row4["color_code"];
                             }
-                             $cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
+                            $cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
                              unset($arr);
                         }
                         $doc_tag=$sql_row["doc_no"];
 
-                        $sql_des="select group_concat(distinct size_code ORDER BY size_code) as size_code from $bai_pro3.packing_summary_input where doc_no=\"$doc_tag\" and input_job_no='".$sql_row['input_job_no']."'";
+                        $sql_des="select group_concat(distinct size_code ORDER BY old_size) as size_code from $bai_pro3.packing_summary_input where order_del_no=\"".$schedule."\" and input_job_no='".$sql_row['input_job_no']."'";
+                        // echo $sql_des.'<br>';
                         $sql_result4x=mysqli_query($link, $sql_des) or exit("Sql Error44 $sql_des".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row4x=mysqli_fetch_array($sql_result4x))
                         {

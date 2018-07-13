@@ -543,7 +543,8 @@ if(isset($_POST['submit']))
 	}
 	
 	echo "<form name=\"input\" method=\"post\" action=\"".getURL(getBASE($_GET['r'])['path'])['url']."\">";
-	echo "<table class='table'>";
+	echo "<div class='table-responsive'>";
+	echo "<table class='table table-bordered'>";
 	echo "<tr><th>Sizes</th>";
 	$sizes_db=array();
 	$title_sizes_db=array();
@@ -623,10 +624,10 @@ if(isset($_POST['submit']))
 		if($qty[$i]>0)
 		{
 			if(intval($acut[$i]) >= $qty[$i]){
-				echo "<th style='color:black;'><input class='integer' type=\"text\" onchange='return validateQty(event,".(($acut[$i]-$qty[$i])-$qms_qty_ref[$i]).", ".$i.");' value=\"".(($acut[$i]-$qty[$i])-$qms_qty_ref[$i])."\" id=\"new_qty_".$i."\" name=\"qty[]\"></th>";
+				echo "<th style='color:black;'><input class='integer form-control' type=\"text\"  onchange='return validateQty(event,".(($acut[$i]-$qty[$i])-$qms_qty_ref[$i]).", ".$i.");' value=\"".(($acut[$i]-$qty[$i])-$qms_qty_ref[$i])."\" id=\"new_qty_".$i."\" name=\"qty[]\"></th>";
 				
 			}else{
-				echo "<th style='color:black;'><input class='integer' type=\"text\" onchange='return validateQty(event,".(($qty[$i]-$acut[$i])- intval($qms_qty_ref[$i])).", ".$i.");' value=\"".(($qty[$i]-$acut[$i])- intval($qms_qty_ref[$i]))."\" name=\"qty[]\" id=\"new_qty_".$i."\"></th>";
+				echo "<th style='color:black;'><input class='integer form-control' type=\"text\"  onchange='return validateQty(event,".(($qty[$i]-$acut[$i])- intval($qms_qty_ref[$i])).", ".$i.");' value=\"".(($qty[$i]-$acut[$i])- intval($qms_qty_ref[$i]))."\" name=\"qty[]\" id=\"new_qty_".$i."\"></th>";
 				
 			}
 			//echo "<th>".(($acut[$i]-$qty[$i])-$qms_qty_ref[$i])."</th>";
@@ -636,6 +637,7 @@ if(isset($_POST['submit']))
 	echo "</tr>";
 	
 	echo "</table>";
+	echo "</div>";
 	echo "<input type=\"hidden\" name=\"sizes\" value=\"".implode(",",$sizes_db)."\">";
 	echo "<input type=\"hidden\" name=\"title_sizes\" value=\"".implode(",",$title_sizes_db)."\">";
 	echo "<input type=\"hidden\" name=\"style\" value=\"".$style."\">";

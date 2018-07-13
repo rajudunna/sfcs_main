@@ -2,7 +2,7 @@
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-//$view_access=user_acl("SFCS_0240",$username,1,$group_id_sfcs);
+$view_access=user_acl("SFCS_0240",$username,1,$group_id_sfcs);
 ?>
 
 <!--<html xmlns="http://www.w3.org/1999/xhtml">-->
@@ -192,7 +192,7 @@ if($mo_status=="Y")
 	echo "<p style='margin-top: 14px;'>MO Status:"."<font color=GREEN size=5>".$mo_status."es</font></p>";
 	echo "</div>";
 	echo "<div class='col-md-2 col-sm-3 col-xs-12'>";
-	echo "<input type=\"submit\" value=\"submit\" class=\"btn btn-success\" name=\"submit\" style=\"margin-top: 17px;\" required>";	
+	echo "<input type=\"submit\" value=\"submit\" class=\"btn btn-success\" name=\"submit\" style=\"margin-top: 17px;\">";	
 	echo "</div>";
 }
 else
@@ -230,7 +230,6 @@ function get_sp_samle_order_db($fn_order_tid,$fn_size,$ims_remarks)
 foreach ($sizes_array as $key => $value) {
 	$title_sizes[$value] = "title_size_".$value;
 }
-// var_dump($title_sizes);
 if(isset($_POST['submit']))
 {
 	$style=$_POST['style'];
@@ -239,11 +238,6 @@ if(isset($_POST['submit']))
 
 	if($style != 'NIL' && $color != 'NIL' && $schedule != 'NIL') {
 		unset($sizes);
-		// $act_sizes=array("XS","s","M","L","XL","XXL","XXXL","s06","s08","s10","s12","s14","s16","s18","s20","s22","s24","s26","s28","s30");
-		// $title_sizes=array("XS","s","M","L","XL","XXL","XXXL");
-		
-		
-		
 		$sql="select * from $bai_pro3.bai_orders_db where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color'";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -299,7 +293,7 @@ if(isset($_POST['submit']))
 		echo "<table class=table table-bordered><tr><th>Style : $style</th><th>Schedule : $schedule </th><th>Color : $color</th></tr></table>";
 		
 		//To identify the layplan completed no.	
-		$count=0;;
+		$count=0;
 		$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and remarks=\"Normal\"";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -307,8 +301,6 @@ if(isset($_POST['submit']))
 			$count++;
 		}
 
-
-		
 		if($count==0)
 		{
 			echo "<form name=\"test1\" method=\"post\" action=\"".getURL(getBASE($_GET['r'])['path'])['url']."\">";
@@ -319,7 +311,8 @@ if(isset($_POST['submit']))
 
 				$exist_size=get_sp_samle_order_db($order_tid,$sizevalue,"SAMPLE");
 
-				echo "<tr><td><input type=\"hidden\" name=\"sizes[$i]\" value=\"".$sizevalue."\" size=\"5\" class=\"form-control col-md-3 col-xs-12\">".$sizevalue."</td><td>:</td>
+				echo "<tr><td><input type=\"hidden\" name=\"sizes[$i]\" value=\"".$sizevalue."\" size=\"5\" class=\"form-control col-md-3 col-xs-12\">
+				<input type=\"hidden\" name=\"sizes_ref[$i]\" value=\"".$sizekey."\" size=\"5\" class=\"form-control col-md-3 col-xs-12\">".$sizevalue."</td><td>:</td>
 					<td><input type=\"text\"  name=\"samp_input[$i]\" value=\"$exist_size\" id= \"$i\" size=\"5\" class=\"form-control col-md-3 col-xs-12 integer\"></td>";
 				echo "</tr>";
 				
@@ -329,7 +322,7 @@ if(isset($_POST['submit']))
 			echo "<input type='hidden' name='count' id='count' value='$i'>";
 
 		
-			echo "<tr><td></td><td></td><td>Enable:<input type='checkbox' name='samp_chk' id='samp_chk' value='1' onclick='active_update()'><INPUT TYPE = \"submit\" Name = \"Update\" id=\"update\" class=\"btn btn-success\" VALUE = \"Update\" disabled  onclick=\"return check_pack();\"></td></tr>";
+			echo "<tr><td></td><td></td><td><INPUT TYPE = \"submit\" Name = \"Update\" id=\"update\" class=\"btn btn-success\" VALUE = \"Update\" onclick=\"return check_pack();\"></td></tr>";
 			echo "</table></form>";
 		}
 		else
@@ -370,6 +363,7 @@ if(isset($_POST['Update']))
 	$samp_input=$_POST['samp_input'];
 	$sp_samp_input=$_POST['sp_samp_input'];
 	$sizes=$_POST['sizes'];
+	$sizes_ref=$_POST['sizes_ref'];
 	$sp_samp_chk=$_POST['sp_samp_chk'];
 	$samp_chk=$_POST['samp_chk'];
 
@@ -382,17 +376,17 @@ if(isset($_POST['Update']))
 	$sizes_data = "";
 	for($i=0;$i<sizeof($samp_input);$i++)
 	{
-		$flag=0;$flag1=0;
-		$sizes_data .= $sizes[$i]." : ".$samp_input[$i]."<br/>";
-		if($samp_input[$i]>0 and $samp_chk=='1')
+		//$flag=0;$flag1=0;
+		$sizes_data .= $sizes[$i]." : ".$samp_input[$i].":".$sizes_ref[$i]."<br/>";		
+		if($samp_input[$i]>0)
 		{
-			$sql="insert ignore into $bai_pro3.sp_sample_order_db(order_tid,size,remarks) values('$order_tid','".$sizes[$i]."','SAMPLE')";
+			$sql="insert ignore into $bai_pro3.sp_sample_order_db(order_tid,size,remarks,sizes_ref) values('$order_tid','".$sizes[$i]."','SAMPLE','".$sizes_ref[$i]."')";
 			// echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-			$sql1="update $bai_pro3.sp_sample_order_db set input_qty='$samp_input[$i]',user='$username',log_time='".date("Y-m-d H:i:s")."' where order_tid='$order_tid' and size='".$sizes[$i]."' and remarks='SAMPLE'";
+			$sql1="update $bai_pro3.sp_sample_order_db set input_qty='$samp_input[$i]',user='$username',log_time='".date("Y-m-d H:i:s")."' where order_tid='$order_tid' and size='".$sizes[$i]."' and remarks='SAMPLE' and sizes_ref='".$sizes_ref[$i]."'";
 			$sql_result=mysqli_query($link, $sql1) or exit("$sql1 Sql Error $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$flag=1;
+			//$flag=1;
 			$final_remark=$order_db_remark="Sample:$samp_input[$i]";
 			$db_sample_remark.="$sizes[$i]=$samp_input[$i];";
 			// if(mysqli_affected_rows($link) == NULL) {	
@@ -401,20 +395,21 @@ if(isset($_POST['Update']))
 			// 	break;
 			// }
 		}
-
 	}
-	if($flag!=0)
-	{
+	echo "<script>sweetAlert('Successfully Updated','','success')</script>";
+}
+	// if($flag!=0)
+	// {
 
-		$sql="insert ignore into $bai_pro3.bai_orders_db_remarks(order_tid) values(\"$order_tid\")";
-		$sql_result=mysqli_query($link, $sql) or exit("$sql Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql="update $bai_pro3.bai_orders_db_remarks set remarks='$db_sample_remark' where order_tid=\"$order_tid\"";
-		$sql_result=mysqli_query($link, $sql);
+	// 	$sql="insert ignore into $bai_pro3.bai_orders_db_remarks(order_tid) values(\"$order_tid\")";
+	// 	$sql_result=mysqli_query($link, $sql) or exit("$sql Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// 	$sql="update $bai_pro3.bai_orders_db_remarks set remarks='$db_sample_remark' where order_tid=\"$order_tid\"";
+	// 	$sql_result=mysqli_query($link, $sql);
 		// if(mysqli_affected_rows($link) == NULL) {
 		// 	$error_msg = "bai_orders_db_remarks table not updated";
 		// 	$query_done = false;
 		// }
-	}
+	//}
 	// else {
 	// 	$error_msg = "sp_sample_order_db table not updated";
 	// 	$query_done = false;
@@ -423,14 +418,14 @@ if(isset($_POST['Update']))
 	// 	mysqli_commit($link);
 	// 	echo $order_tid_data;
 	// 	echo $sizes_data;
-	echo "<script>sweetAlert('Successfully Updated','','success')</script>";
+	
 	// } else{
 	// 	mysqli_rollback($link);
 	// 	echo "Contact IT team with following Error! ".$error_msg;
 	// }
 		//	echo "<script type=\"text/javascript\"> window.close(); </script>";
 		// NEW to Eliminate duplicates
-}
+//}
 echo "</div>";
 echo "</div>";
 echo "</div>";

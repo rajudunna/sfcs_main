@@ -143,7 +143,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     <?php
                                         echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
                                         $sql2="select * from $bai_pro.unit_db order by sno"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error65896".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             if($sections_string==$sql_row2['unit_members']) 
@@ -328,7 +328,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                             $ut_chk=$_POST['ut_chk']; 
                             $ftt_ut_chk=$_POST['ftt_ut_chk']; 
                             $date=$_POST['dat']; 
-                            $team=$_POST['team']; 
+                            $team=$_POST['team'];
+                            $team = "'".$team."'";
 
                             if($team=='"A", "B"') 
                             { 
@@ -405,7 +406,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                 $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by hour(bac_lastup)"; 
                                 // echo $sql; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     // $h1[$i]=$sql_row['time']; 
@@ -521,7 +522,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 } 
                                  
                                 // echo $sql."<br>"; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     // $h1[$i]=$sql_row['time']; 
@@ -543,7 +544,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 $sec_head=""; 
                                 $sql="select * from $bai_pro.pro_sec_db where sec_no=$sec"; 
 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     $sec_head=$sql_row['sec_head']; 
@@ -551,7 +552,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                 $sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1"; 
                                 //echo $sql."<br>"; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 if($option1==1)
                                 {  
                                     echo "<table id=\"info\">"; 
@@ -646,7 +647,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $delno=$sql_row['delivery']; 
                                     $deldb="";
                                     $sql2="select distinct delivery from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $deldb=$deldb." ".$sql_row2['delivery']; 
@@ -657,7 +658,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $stylecount=0; 
 
                                     $sql2="select count(distinct bac_style) as \"count\" from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $stylecount=$sql_row2['count']; 
@@ -666,7 +667,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     if($stylecount>1) 
                                     { 
                                         $sql2="select distinct bac_style from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $styledb=$styledb.$sql_row2['bac_style']."/"; 
@@ -676,7 +677,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     else 
                                     { 
                                         $sql2="select distinct bac_style from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $styledb=$styledb.$sql_row2['bac_style']; 
@@ -688,7 +689,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $max=0; 
                                     $sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style"; 
                                     //echo $sql2; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sql_row2['qty']>=$max) 
@@ -706,7 +707,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $hoursa=0; 
 
                                     $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) and bac_no=$mod $time_query"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $hoursa=$sql_row2['hoursa']; 
@@ -805,7 +806,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         $hoursaa=0; 
 
                                         $sql2a="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" and bac_shift in (\"A\") and bac_no=$mod $time_query"; 
-                                        $sql_result2a=mysqli_query($link, $sql2a) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2a=mysqli_query($link, $sql2a) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2a=mysqli_fetch_array($sql_result2a)) 
                                         { 
                                             $hoursaa=$sql_row2a['hoursa']; 
@@ -840,7 +841,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         $hoursab=0; 
 
                                         $sql2b="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" and bac_shift in (\"B\") and bac_no=$mod $time_query"; 
-                                        $sql_result2b=mysqli_query($link, $sql2b) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2b=mysqli_query($link, $sql2b) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2b=mysqli_fetch_array($sql_result2b)) 
                                         { 
                                             $hoursab=$sql_row2b['hoursa']; 
@@ -905,7 +906,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                     $sqlx="select nop$couple as \"nop\", smv$couple as \"smv\" from $pro_style where style=\"$style_code_new\" and date=\"$date\""; 
                                     //echo $sqlx."<br/>"; 
-                                    $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
                                     { 
                                         //$smv=$sql_rowx['smv']; 
@@ -927,7 +928,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                     $sql_sth="select sum(plan_sth) as psth from $bai_pro.grand_rep where date=\"$date\" and module=$mod and shift in ($team)"; 
                                     //echo $sql_sth."<br>"; 
-                                    $sql_result_sth=mysqli_query($link, $sql_sth) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result_sth=mysqli_query($link, $sql_sth) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_rowx=mysqli_fetch_array($sql_result_sth)) 
                                     { 
                                         $psth_array[]=$sql_rowx["psth"]; 
@@ -939,7 +940,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     for($i=0; $i<sizeof($h1); $i++) 
                                     { 
                                         $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query and  Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $sum=$sql_row2['sum']; 
@@ -1033,7 +1034,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                     $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sum=$sql_row2['sum']; 
@@ -1057,7 +1058,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                     $rej_query = "SELECT ifnull(SUM(qms_qty),0) as \"rej_qty\" FROM `bai_pro3`.`bai_qms_db` WHERE log_date=\"$date\" AND qms_tran_type='3' AND SUBSTRING_INDEX(remarks,'-',1)=$mod AND SUBSTRING_INDEX(SUBSTRING_INDEX(remarks,'-',2),'-',-1) IN ($team)"; 
                                     //echo $rej_query."-".$rej_qty."<br>"; 
-                                    $rej_result2=mysqli_query($link, $rej_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $rej_result2=mysqli_query($link, $rej_query) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($rej=mysqli_fetch_array($rej_result2)) 
                                     { 
                                         $rej_qty = $rej['rej_qty']; 
@@ -1161,7 +1162,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                     $sql2="select sum(bac_Qty) as \"total\",smv, sum((bac_qty*smv)/60) as \"stha\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) and bac_no=$mod $time_query group by bac_no"; 
                                     //echo $sql2; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $total22=$sql_row2['total']; 
@@ -1175,7 +1176,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $max=0; 
                                     $sql2="select bac_style, couple,nop,smv, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style"; 
                                     //echo $sql2; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sql_row2['qty']>=$max) 
@@ -1312,7 +1313,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 { 
                                     $sum_tot = 0; 
                                     $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]";
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sum=$sql_row2['sum']; 
@@ -1409,7 +1410,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     } 
                                 } 
                                 $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_sec=$sec and  bac_shift in ($team) $time_query"; 
-                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                 { 
                                     $sum=$sql_row2['sum']; 
@@ -1427,13 +1428,13 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                 $sql="select mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\""; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
 
                                     $mod=$sql_row['mod_no']; 
                                     $sql2="select act_hours from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)";
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $phours=$sql_row2['act_hours']; 
@@ -1443,7 +1444,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $max=0; 
                                     $sql2="select bac_style, couple,nop,smv, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style"; 
                                     //echo $sql2;
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sql_row2['qty']>=$max) 
@@ -1456,8 +1457,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         } 
                                     } 
 
-                                    $sql2="select plan_pro,act_hours from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql2="select plan_pro,act_hours from $bai_pro.pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $plan_pro=$sql_row2['plan_pro']; 
@@ -1472,7 +1473,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                 $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) and bac_sec=$sec $time_query"; 
                                 //echO $sql2; 
-                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                 { 
                                     $hoursa=$sql_row2['hoursa']; 
@@ -1659,7 +1660,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 { 
                                     $sth=0; 
                                     $sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error28".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sth=$sql_row2['sth']; 
@@ -1694,7 +1695,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     //IMS    $sql2="select sum(($table_name.bac_qty*pro_style.smv)/(pro_style.nop*".$minutes.")*100) as \"eff\" from $table_name,pro_style where $table_name.bac_date=\"$date\" and pro_style.date=\"$date\" and $table_name.bac_sec=$sec and $table_name.bac_style=pro_style.style and Hour($table_name.bac_lastup) between $h1[$i] and $h2[$i]"; 
 
                                     $sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error29".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $eff=$sql_row2['eff']; 
@@ -1702,7 +1703,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                     /* NEW20100219 */ 
                                     $sql2="select count(distinct bac_no) as \"noofmodsb\" from $table_name where bac_date=\"$date\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error30".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $noofmodsb=$sql_row2['noofmodsb']; 
@@ -1730,7 +1731,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $sum=0; 
                                     $count=0; 
                                     $sql2="select bac_qty from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sql_row2['bac_qty']>0) 
@@ -1739,7 +1740,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                     $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]";
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sum=$sql_row2['sum']; 
@@ -1816,7 +1817,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     //$sql="select distinct bac_style,smv,nop from $table_name where bac_date=\"$date\" and bac_sec=$sec and bac_shift in ($team)"; 
                                     $sql="select bac_style,group_concat(distinct bac_no) as bac_no from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_shift in ($team) group by bac_style"; 
                                     //echo $sql."<br>"; 
-                                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row=mysqli_fetch_array($sql_result)) 
                                     { 
                                         $mod_style=$sql_row['bac_style']; 
@@ -1825,7 +1826,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                         $sql2="select nop,smv from $pro_style where style=\"$mod_style\" and date=\"$date\""; 
                                         //echo $sql2."<br>"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error34".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         if(mysqli_num_rows($sql_result2) > 0) 
                                         { 
                                             while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1848,7 +1849,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                         $count=0; 
                                         $sql2="select count(distinct bac_no) as \"count\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_style=\"$mod_style\" and bac_shift in ($team)";
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error35".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $count=$sql_row2['count']; 
@@ -1860,7 +1861,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         for($i=0; $i<sizeof($h1); $i++) 
                                         { 
                                             $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
-                                            $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                            $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error36".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                             { 
                                                 $sum=$sql_row2['sum']; 
@@ -1878,7 +1879,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                             { 
                                                 $sql2_rw="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
-                                                $sql_result2_rw=mysqli_query($link, $sql2_rw) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                                $sql_result2_rw=mysqli_query($link, $sql2_rw) or exit("Sql Error37".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                                 while($sql_row2_rw=mysqli_fetch_array($sql_result2_rw)) 
                                                 { 
                                                     $sum_rw=$sql_row2_rw['sum']; 
@@ -1978,12 +1979,12 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                         $plan_pcs=0; 
                                         $sql2="select mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" and mod_style=\"$mod_style\""; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error38".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $mod_no=$sql_row2['mod_no']; 
                                             $sql22="select plan_pro from $pro_plan where date=\"$date\" and mod_no=$mod_no and shift in ($team)";
-                                            $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                            $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error39".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row22=mysqli_fetch_array($sql_result22)) 
                                             { 
                                                 $plan_pcs=$plan_pcs+$sql_row22['plan_pro']; 
@@ -1998,7 +1999,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         $avgperhour2=0; 
                                         $count2=0; 
                                         $sql2="select count(distinct bac_no) as \"count\", sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_style=\"$mod_style\"  and bac_shift in ($team)"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             if(($hoursa+$hoursb)>0) 
@@ -2046,7 +2047,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     { 
 
                                         $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $sum=$sql_row2['sum']; 
@@ -2064,7 +2065,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                         { 
                                             $sql2_rw5="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
-                                            $sql_result2_rw5=mysqli_query($link, $sql2_rw5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                            $sql_result2_rw5=mysqli_query($link, $sql2_rw5) or exit("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2_rw5=mysqli_fetch_array($sql_result2_rw5)) 
                                             { 
                                                 $sum_rw5=$sql_row2_rw5['sum']; 
@@ -2191,7 +2192,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                 $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by bac_lastup"; 
                                 //echo $sql."<br>"; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error43".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     // $h1[$i]=$sql_row['time']; 
@@ -2209,8 +2210,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $i=$i+1;
                                 } 
 
-                                $sql="select mod_style, mod_no from $pro_mod where mod_sec in ($sections_group) and mod_date=\"$date\" order by mod_no"; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql="select mod_style, mod_no from $bai_pro.pro_mod where mod_sec in ($sections_group) and mod_date=\"$date\" order by mod_no"; 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 
                                 $peff_a_total=0; 
                                 $peff_g_total=0; 
@@ -2232,14 +2233,14 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $deldb=""; 
 
                                     $sql2="select distinct delivery from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $deldb=$deldb." ".$sql_row2['delivery']; 
                                     } 
                                     $styledb=""; 
                                     $sql2="select distinct bac_style from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $styledb=$styledb." ".$sql_row2['bac_style']; 
@@ -2247,8 +2248,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                     $style_col=""; 
-                                    $sql2="select nop from $pro_style where style=\"$style\" and date=\"$date\""; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql2="select nop from $bai_pro.pro_style where style=\"$style\" and date=\"$date\""; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error47".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $style_col=$sql_row2['nop']; 
@@ -2262,7 +2263,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     for($i=0; $i<sizeof($h1); $i++) 
                                     { 
                                         $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error48".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $sum=$sql_row2['sum']; 
@@ -2276,7 +2277,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                             } 
                                         } 
                                         $sql2_rw1="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$date\" and bac_no=$mod $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                        $sql_result2_rw1=mysqli_query($link, $sql2_rw1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2_rw1=mysqli_query($link, $sql2_rw1) or exit("Sql Error49".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2_rw1=mysqli_fetch_array($sql_result2_rw1)) 
                                         { 
                                             $sum_rw1=$sql_row2_rw1['sum']; 
@@ -2293,7 +2294,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                     $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query and bac_shift in ($team)"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error50".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sum=$sql_row2['sum']; 
@@ -2318,7 +2319,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" $time_query and bac_shift in ($team) and bac_no=$mod"; 
                                     /* NEWC     $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from bai_log_buf where bac_date=\"$date\" and bac_shift in ($team) and bac_no=$mod and hour(bac_lastup) in (14,15,16,17,18,19,20,21)"; 
                                     */ 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error51".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $hoursa=$sql_row2['hoursa']; 
@@ -2348,7 +2349,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     } 
 
                                     $sql2="select sum(bac_Qty) as \"total\", sum((bac_qty*smv)/60) as \"stha\" from $table_name where bac_date=\"$date\" $time_query and bac_shift in ($team) and bac_no=$mod group by bac_no"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error52".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $total22=$sql_row2['total']; 
@@ -2359,7 +2360,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $max=0; 
                                     $sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query and  bac_shift in ($team) group by bac_style"; 
                                     //echo $sql2; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error53".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sql_row2['qty']>=$max) 
@@ -2381,8 +2382,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     /* PLAN EFF, PRO */ 
                                     $peff_a=0; 
                                     $ppro_a=0; 
-                                    $sql2="select plan_eff, plan_pro from $pro_plan where date=\"$date\" and shift in ($team) and mod_no=$mod"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql2="select plan_eff, plan_pro from $bai_pro.pro_plan where date=\"$date\" and shift in ($team) and mod_no=$mod"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error54".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $peff_a=$sql_row2['plan_eff']; 
@@ -2434,7 +2435,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                     $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                     //echo $sql2."-".$i."<br>"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error55".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sum=$sql_row2['sum']; 
@@ -2450,9 +2451,9 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         } 
                                     } 
 
-                                    $sql2_rw2="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql2_rw2="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                     //echo $sql2."-".$i."<br>"; 
-                                    $sql_result2_rw2=mysqli_query($link, $sql2_rw2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2_rw2=mysqli_query($link, $sql2_rw2) or exit("Sql Error56".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2_rw2=mysqli_fetch_array($sql_result2_rw2)) 
                                     { 
                                         $sum_rw2=$sql_row2_rw2['sum']; 
@@ -2468,7 +2469,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         } 
                                     } 
 
-                                    $sql2_ut2="select sum(bac_qty) as \"sum\" from bai_trim_log where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql2_ut2="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                     //echo $sql2."-".$i."<br>"; 
                                     $sql_result2_ut2=mysqli_query($link, $sql2_ut2) or exit("Sql Error_ut".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2_ut2=mysqli_fetch_array($sql_result2_ut2)) 
@@ -2527,8 +2528,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $sum=$sql_row2['sum']; 
                                     $atotal=$atotal+$sum; 
                                 } 
-                                $sql2_rw_tot="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$date\" and bac_sec in ($sections_group)  $time_query and bac_shift in ($team)"; 
-                                $sql_result2_rw_tot=mysqli_query($link, $sql2_rw_tot) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql2_rw_tot="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_sec in ($sections_group)  $time_query and bac_shift in ($team)"; 
+                                $sql_result2_rw_tot=mysqli_query($link, $sql2_rw_tot) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row2_rw_tot=mysqli_fetch_array($sql_result2_rw_tot)) 
                                 { 
                                     $sum_rw_tot=$sql_row2_rw_tot['sum']; 
@@ -2545,14 +2546,14 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 $peff_a_total=0; 
 
 
-                                $sql="select mod_no from $pro_mod where mod_sec in ($sections_group) and mod_date=\"$date\""; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql="select mod_no from $bai_pro.pro_mod where mod_sec in ($sections_group) and mod_date=\"$date\""; 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error1112".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     $mod=$sql_row['mod_no']; 
                                     //A-Plan 
-                                    $sql2="select act_hours from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql2="select act_hours from $bai_pro.pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1113".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $phours=$sql_row2['act_hours']; 
@@ -2560,7 +2561,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $max=0; 
                                     $sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query and bac_shift in ($team) group by bac_style"; 
                                     //echo $sql2; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1114".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sql_row2['qty']>=$max) 
@@ -2574,8 +2575,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     } 
 
 
-                                    $sql2="select plan_pro from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql2="select plan_pro from $bai_pro.pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1115".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $plan_pro=$sql_row2['plan_pro']; 
@@ -2587,7 +2588,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                 $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" $time_query and bac_shift in ($team) and bac_sec in ($sections_group)"; 
-                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1116".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                 { 
                                     $hoursa=$sql_row2['hoursa']; 
@@ -2751,7 +2752,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 { 
                                     $sth=0; 
                                     $sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1117".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sth=$sql_row2['sth']; 
@@ -2787,7 +2788,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     //IMS    $sql2="select sum(($table_name.bac_qty*pro_style.smv)/(pro_style.nop*".$minutes.")*100) as \"eff\" from $table_name,pro_style where $table_name.bac_date=\"$date\" and pro_style.date=\"$date\" and $table_name.bac_sec in ($sections_group) and $table_name.bac_style=pro_style.style and Hour($table_name.bac_lastup) between $h1[$i] and $h2[$i]";
 
                                     $sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1118".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $eff=$sql_row2['eff']; 
@@ -2795,7 +2796,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                     /* NEW20100219 */ 
                                     $sql2="select count(distinct bac_no) as \"noofmodsb\" from $table_name where bac_date=\"$date\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group)"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1119".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $noofmodsb=$sql_row2['noofmodsb']; 
@@ -2823,7 +2824,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $sum=0; 
                                     $count=0; 
                                     $sql2="select bac_qty from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1120".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sql_row2['bac_qty']>0) 
@@ -2831,7 +2832,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     } 
 
                                     $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1121".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sum=$sql_row2['sum']; 
@@ -2869,8 +2870,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 /* Stylewise Report */ 
                                 $sdate=$date; 
                                 $style_summ_head=""; 
-                                $sql="select * from unit_db where unit_members=\"$sections\""; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql="select * from $bai_pro.unit_db where unit_members=\"$sections\""; 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error11124".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     $style_summ_head=$sql_row['unit_id']; 
@@ -2917,14 +2918,14 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                 //$sql="select distinct bac_style,smv,nop from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) and bac_shift in ($team)"; 
                                 $sql="select distinct bac_style from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_shift in ($team)"; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error11129".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     $mod_style=$sql_row['bac_style']; 
                                     echo "<tr><td>".$mod_style."</td>"; 
-                                    $sql2="select nop,smv from $pro_style where style=\"$mod_style\" and date=\"$date\""; 
+                                    $sql2="select nop,smv from $bai_pro.pro_style where style=\"$mod_style\" and date=\"$date\""; 
                                     // echo $sql2; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error111566".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sql_row2_smv = $sql_row2['smv']; 
@@ -2948,7 +2949,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                     $count=0; 
                                     $sql2="select count(distinct bac_no) as \"count\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_style=\"$mod_style\" and bac_shift in ($team)"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error55455".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $count=$sql_row2['count']; 
@@ -2963,7 +2964,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     for($i=0; $i<sizeof($h1); $i++) 
                                     { 
                                         $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team)"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error78445".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $sum=$sql_row2['sum']; 
@@ -2979,8 +2980,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                             } 
                                         } 
 
-                                        $sql2_rw3="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team)"; 
-                                        $sql_result2_rw3=mysqli_query($link, $sql2_rw3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql2_rw3="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team)"; 
+                                        $sql_result2_rw3=mysqli_query($link, $sql2_rw3) or exit("Sql Error5648".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2_rw3=mysqli_fetch_array($sql_result2_rw3)) 
                                         { 
                                             $sum_rw3=$sql_row2_rw3['sum']; 
@@ -2996,9 +2997,9 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                             } 
                                         } 
 
-                                        $sql2_ut3="select sum(bac_qty) as \"sum\" from bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team)"; 
+                                        $sql2_ut3="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team)"; 
                                         // echo $sql2_ut3; 
-                                        $sql_result2_ut3=mysqli_query($link, $sql2_ut3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2_ut3=mysqli_query($link, $sql2_ut3) or exit("Sql Error7846".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2_ut3=mysqli_fetch_array($sql_result2_ut3)) 
                                         { 
                                             $sum_ut3=$sql_row2_ut3['sum']; 
@@ -3055,13 +3056,13 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                     $plan_pcs=0; 
-                                    $sql2="select mod_no from $pro_mod where mod_sec in ($sections_group) and mod_date=\"$date\" and mod_style=\"$mod_style\""; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql2="select mod_no from $bai_pro.pro_mod where mod_sec in ($sections_group) and mod_date=\"$date\" and mod_style=\"$mod_style\""; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error596464".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $mod_no=$sql_row2['mod_no']; 
-                                        $sql22="select plan_pro from $pro_plan where date=\"$date\" and mod_no=$mod_no and shift in ($team)"; 
-                                        $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql22="select plan_pro from $bai_pro.pro_plan where date=\"$date\" and mod_no=$mod_no and shift in ($team)"; 
+                                        $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error4665".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row22=mysqli_fetch_array($sql_result22)) 
                                         { 
                                             $plan_pcs=$plan_pcs+$sql_row22['plan_pro']; 
@@ -3076,7 +3077,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $avgperhour2=0; 
                                     $count2=0; 
                                     $sql2="select count(distinct bac_no) as \"count\", sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) and bac_style=\"$mod_style\"  and bac_shift in ($team) $time_query"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9884".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if(($hoursa+$hoursb)>0) 
@@ -3123,7 +3124,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 for($i=0; $i<sizeof($h1); $i++) 
                                 { 
                                     $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team) $time_query"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error98785".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sum=$sql_row2['sum']; 
@@ -3139,8 +3140,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         } 
                                     } 
 
-                                    $sql2_rw41="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team) $time_query"; 
-                                    $sql_result2_rw41=mysqli_query($link, $sql2_rw41) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql2_rw41="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team) $time_query"; 
+                                    $sql_result2_rw41=mysqli_query($link, $sql2_rw41) or exit("Sql Error89684586".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2_rw41=mysqli_fetch_array($sql_result2_rw41)) 
                                     { 
                                         $sum_rw41=$sql_row2_rw41['sum']; 
@@ -3156,8 +3157,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         } 
                                     } 
 
-                                    $sql2_ut41="select sum(bac_qty) as \"sum\" from bai_trim_log where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team) $time_query"; 
-                                    $sql_result2_ut41=mysqli_query($link, $sql2_ut41) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql2_ut41="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team) $time_query"; 
+                                    $sql_result2_ut41=mysqli_query($link, $sql2_ut41) or exit("Sql Error9855".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2_ut41=mysqli_fetch_array($sql_result2_ut41)) 
                                     { 
                                         $sum_ut41=$sql_row2_ut41['sum']; 

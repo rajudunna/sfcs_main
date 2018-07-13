@@ -384,6 +384,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
       {
       
       $module=$mods[$x];
+      include("mod_rep_recon.php");
   
       ?>
             <div class="line_main">

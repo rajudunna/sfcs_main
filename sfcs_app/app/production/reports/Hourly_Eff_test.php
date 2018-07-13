@@ -306,7 +306,8 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                             $secstyles=$_POST['secstyles']; 
                             $option1=$_POST['option1']; 
                             $date=$_POST['dat']; 
-                            $team=$_POST['team']; 
+                            $team=$_POST['team'];
+                            $team = "'".$team."'"; 
                              
                             if($team=='"A", "B"') 
                             { 
