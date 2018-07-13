@@ -408,7 +408,7 @@ if(isset($_POST['submit']))
 					?>
 				</tr>
 				<tr>
-					<th class='danger'  style="width:100px;">Size</th>
+					<th class='danger'  style="width:100px;">Order Qty</th>
 					<?php
 						for($s=0;$s<sizeof($s_tit);$s++)
 							{
@@ -435,7 +435,7 @@ if(isset($_POST['submit']))
 						<td>100%</td>
 					</tr>
 					<tr>
-						<th class='success'>Size</th>
+						<th class='success'>Order Qty</th>
 						<td><?php  echo $cut_qty_total;  ?></td>
 						<td><?php if($o_total>0){echo  round(($cut_qty_total/$o_total)*100,0); }?>%</td>
 					</tr>
