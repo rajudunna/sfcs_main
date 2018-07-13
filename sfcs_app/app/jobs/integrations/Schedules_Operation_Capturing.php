@@ -64,9 +64,9 @@ while(odbc_fetch_row($result))
 	 $MONumber=odbc_result($result,8);
 	 $SMV=odbc_result($result,9);
 	 $OperationDescription=odbc_result($result,10);
-	 $OperationNumber=odbc_result($result,11);
+	 $OperationNumber=odbc_result($result,14);
 	 $SequenceNoForSorting=odbc_result($result,12);
-	 $Main_OperationNumber=odbc_result($result,14);
+	 $Main_OperationNumber=odbc_result($result,11);
 	 $WorkCenterId=odbc_result($result,13);
 	 $Main_WorkCenterId=odbc_result($result,15);
 	 //$sql41="select * from brandix_bts.tbl_style_ops_master where style='".$Style."' and schedule='".$ScheduleNumber."' and color='".$Description."' and operation_code='".$OperationNumber."'";
