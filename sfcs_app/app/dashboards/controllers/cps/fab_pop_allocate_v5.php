@@ -163,12 +163,12 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 
 <link rel='stylesheet' href="../../../../common/css/bootstrap.min.css">
 <script src="../../../../common/js/sweetalert.min.js"></script>
-<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"> --><!-- External script -->
-<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/tablefilter/2.5.0/tablefilter_min.js'></script> -->
+<link rel="stylesheet" href="../../../../common/css/jquery.dataTables.min.css"> 
+ <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/tablefilter/2.5.0/tablefilter_min.js'></script> -->
 
 <!-- <script language="javascript" type="text/javascript" src="../../../../common/js/TableFilter_EN/actb.js"></script> -->
-<script language="javascript" type="text/javascript" 
-src="../../../../common/js/TableFilter_EN/tablefilter.js"></script>
+<!-- <script language="javascript" type="text/javascript" 
+src="../../../../common/js/TableFilter_EN/tablefilter.js"></script> -->
 
 <script>
 
@@ -1305,51 +1305,62 @@ th{
 </html>
 	<script language="javascript" type="text/javascript">
 	
-	var MyTableFilter = 
-			{  
-				exact_match: false,
-				alternate_rows: true,
-				sort_select: true,
-				loader_text: "Filtering data...",
-				loader: true,
-				// display_all_text: "Show All",
-				// onchange:true,
-				// btn: true,
-				// enter_key: false,
-				on_change: false,
-				btn: true,
-				enter_key: false,
-				// col_20:false,
-				// public_methods: true
-				col_18:false,
-				rows_counter: true,
-				rows_counter_text: "Total rows: ",
-				btn_reset: true,
-				bnt_reset_text: "Clear all ",
+	// var MyTableFilter = 
+	// 		{  
+	// 			exact_match: false,
+	// 			alternate_rows: true,
+	// 			sort_select: true,
+	// 			loader_text: "Filtering data...",
+	// 			loader: true,
+	// 			// display_all_text: "Show All",
+	// 			// onchange:true,
+	// 			// btn: true,
+	// 			// enter_key: false,
+	// 			on_change: false,
+	// 			btn: true,
+	// 			enter_key: false,
+	// 			// col_20:false,
+	// 			// public_methods: true
+	// 			col_18:false,
+	// 			rows_counter: true,
+	// 			rows_counter_text: "Total rows: ",
+	// 			btn_reset: true,
+	// 			bnt_reset_text: "Clear all ",
 				
-			};
+	// 		};
 
 
 			var i;
 			var len=document.getElementById('size_doc').value;
-			for (i = 0; i <=len; i++) { 
-				setFilterGrid( 'example'+i, MyTableFilter );
-			}
+			// for (i = 0; i <=len; i++) { 
+			// 	setFilterGrid( 'example'+i, MyTableFilter );
+			// }
 			$(document).ready(function(){
-				$('.loader').hide();
-					var i;
-					var len=document.getElementById('size_doc').value;
-					for (i = 0; i <=len; i++) { 
-					$('#reset_example'+i).addClass('btn btn-warning btn-xs');
-					$('#btn18_example'+i).addClass('btn btn-success btn-xs');
-					$('#reset_example'+i).click(function(){ 
-						// document.getElementById('btn19_example0').value = "GO";
-						// document.getElementById('btn19_example1').value = "GO";
-						// document.getElementById('btn19_example2').value = "GO";
-					});
-					}
+				var len=document.getElementById('size_doc').value;
+				// $('.loader').hide();
+				// 	var i;
+				// 	var len=document.getElementById('size_doc').value;
+				// 	for (i = 0; i <=len; i++) { 
+				// 	$('#reset_example'+i).addClass('btn btn-warning btn-xs');
+				// 	$('#btn18_example'+i).addClass('btn btn-success btn-xs');
+				// 	$('#reset_example'+i).click(function(){ 
+				// 		// document.getElementById('btn19_example0').value = "GO";
+				// 		// document.getElementById('btn19_example1').value = "GO";
+				// 		// document.getElementById('btn19_example2').value = "GO";
+				// 	});
+				// 	}
+				for (i = 0; i <=len; i++) { 
+					
+					$('#example'+i).DataTable();
+				}
 					
 			});
 		
 	</script>
+	<script>
+	$(document).ready( function () {
+    $('#example0').DataTable();
+} );
+	</script>
 <script src="../../../../common/js/bootstrap1.min.js"></script>
+<script src="../../../../common/js/jquery.dataTables.min.js"></script>
