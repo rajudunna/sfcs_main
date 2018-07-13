@@ -82,7 +82,7 @@
 				Style:
 				<?php
 					// Style
-					echo "<select name=\"style\" id=\"style\"  class='form-control integer' onchange=\"firstbox();\">";
+					echo "<select name=\"style\" id=\"style\"  class='form-control' onchange=\"firstbox();\">";
 					$sql="select * from $brandix_bts.tbl_orders_style_ref order by product_style";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
@@ -103,7 +103,7 @@
 				&nbsp;&nbsp;
 				Schedule:
 				<?php
-					echo "<select class='form-control integer' name='schedule' id='schedule'>";
+					echo "<select class='form-control' name='schedule' id='schedule'>";
 					$sql="select id,product_schedule as schedule from $brandix_bts.tbl_orders_master where ref_product_style=\"$style\" group by schedule";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
@@ -124,7 +124,7 @@
 				&nbsp;&nbsp;
 				Pack Method: 
 				<?php 
-				echo "<select id=\"pack_method\" class='form-control integer' name=\"pack_method\" >";
+				echo "<select id=\"pack_method\" class='form-control' name=\"pack_method\" >";
 				for($j=0;$j<sizeof($operation);$j++)
 				{
 					$selected='';
@@ -156,14 +156,12 @@
 				// echo $style_code.'<br>'.$schedule.'<br>'.$pack_method.'<br>';
 				$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$schedule,$link);
 				$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-
-
-				$validation_query = "SELECT * FROM $brandix_bts.tbl_carton_ref WHERE carton_barcode=$schedule_original";
-				// echo $validation_query.'<br>';
-				$validation_result=mysqli_query($link, $validation_query) or exit("Error while getting Job Ratio Details");
-				if (mysqli_num_rows($validation_result) > 0)
+				$valid_result = echo_title("$brandix_bts.tbl_carton_ref","COUNT(*)","carton_barcode",$schedule_original,$link);
+				$updated_carton_method = echo_title("$brandix_bts.tbl_carton_ref","carton_method","carton_barcode",$schedule_original,$link);
+				if ($valid_result > 0)
 				{
 					echo "<script>sweetAlert('Packing Ratio Already Updated for this Schedule - $schedule_original','Go to Sewing Job Creation','warning')</script>";
+					echo '<br><br><br><div class="col-md-12"><h4>Pack Method: <span class="label label-info">'.$operation[$updated_carton_method].'</span></h4></div>';
 					$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
 					$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 					echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
@@ -448,7 +446,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
 																				}
 																			}
 																			else
@@ -456,7 +454,7 @@
 																				echo "<td><input type='hidden' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
 																			}																
 																		}
-																		echo "<td><input type='text' required name='combo[]' id='combo' class='form-control integer' value='".$combo_value."' $readonly></td>
+																		echo "<td><input type='text' size='6' maxlength='5' required name='combo[]' id='combo' class='form-control integer' value='".$combo_value."' $readonly></td>
 																	</tr>";
 																$row_count++;
 															}
@@ -481,7 +479,7 @@
 														echo "<tr>";
 															for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 															{
-																echo "<td><input type='text' required name='BagPerCart[]' id='BagPerCart_".$size_count."' class='form-control integer' onchange=calculateqty($size_count,$size_of_ordered_colors);></td>";
+																echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors);></td>";
 															}
 														echo "</tr>";
 													echo "</div></table>
@@ -518,7 +516,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' required readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
 																				}
 																			}
 																			else 
@@ -534,7 +532,7 @@
 													</div>
 												</div>
 											</div>";
-										echo "<input type='submit' class='btn btn-success' name='SS_MS_save' id='SS_MS_save' value='Save' />
+										echo "<input type='submit' class='btn btn-success confirm-submit' name='SS_MS_save' id='SS_MS_save' value='Save' />
 									</div>
 								</div>
 							</form>";
@@ -602,15 +600,15 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
 																				}
 																			}
 																			else
 																			{
-																				echo "<td><input type='hidden' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
+																				echo "<td><input type='hidden' size='6' maxlength='5' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
 																			}
 																		}
-																		echo "<td><input type='text' required name='combo[]' id='combo' value='".$combo_value."' $readonly class='form-control integer'></td>";
+																		echo "<td><input type='text' size='6' maxlength='5' required name='combo[]' id='combo' value='".$combo_value."' $readonly class='form-control integer'></td>";
 																echo "</tr>";
 																$row_count++;
 															}
@@ -623,7 +621,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-md-3 col-sm-3 col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onchange=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
+												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
 													
 												echo "</div>
 											 </div>";
@@ -659,12 +657,12 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' required readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
 																				}
 																			}
 																			else 
 																			{
-																				echo "<td><input type='hidden' readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value='0'></td>";
+																				echo "<td><input type='hidden' size='6' maxlength='5' readonly='true' name='GarPerCart[$j][]' id='GarPerCart_".$row_count."_".$size_count."' class='form-control integer' value='0'></td>";
 																			}
 																		}
 																		echo "<td><input type='text' required name='total_".$j."' id='total_".$j."' readonly='true' class='form-control integer' value=''></td>";
@@ -740,7 +738,7 @@
 						}
 					}
 				}
-				echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
+				echo "<script>sweetAlert('Packing Ratio Saved Successfully','','success')</script>";
 			}
 
 			if (isset($_POST["MM_SM_save"]))
@@ -800,7 +798,7 @@
 						}
 					}
 				}
-				echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
+				echo "<script>sweetAlert('Packing Ratio Saved Successfully','','success')</script>";
 			}
 		?>
 	</div>

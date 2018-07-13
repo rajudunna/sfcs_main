@@ -37,12 +37,16 @@
 		{
 			var split_tot = 0;
 			var comboSize=document.getElementById("comboSize").value;
-			// alert(comboSize);
-			for(var size=1;size <= comboSize; size++)
+			for(var combo_size=1;combo_size <= comboSize; combo_size++)
 			{
-				var split=document.getElementById("split_qty_"+size).value;
+				var split=document.getElementById("split_qty_"+combo_size).value;
+				if (split.length == '')
+				{
+					split=0;
+				}
 				split_tot = split_tot + split;
 			}
+				
 			var exces_from=document.getElementById("exces_from").value;
 			if (exces_from == 0)
 			{
@@ -297,7 +301,7 @@
 												</tr>";
 
 											echo "<tr>
-													<td>Planned Qty</td>";
+													<td>Cut Plan Qty</td>";
 													for ($i=0; $i < $sizeofsizes; $i++)
 													{ 
 														echo "<td>$planned_qty[$i]</td>";
@@ -532,6 +536,7 @@
 									// echo $val."--".$val1."<br>";						
 
 									echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_job_create_original.php','N').'">';
+										$comboSize = sizeof($combo);
 										echo  "<input type=\"hidden\" value=\"$style_id\" id=\"style_id\" name=\"style_id\">";
 										echo  "<input type=\"hidden\" value=\"$sch_id\" id=\"sch_id\" name=\"sch_id\">";
 										echo  "<input type=\"hidden\" value=\"$pack_method\" id=\"pack_method\" name=\"pack_method\">";
@@ -550,7 +555,7 @@
 														  echo "<th>Garments Per Bundle</th>";	
 														}	
 													echo "</tr>";
-													$comboSize = sizeof($combo);
+													
 
 													for ($i=0; $i < sizeof($combo); $i++)
 													{
@@ -581,15 +586,15 @@
 																}																
 															}
 															echo "<input type='hidden' name=combo[] value='".$combo[$i]."'>
-															<td><input type='text' required name='no_of_cartons[]' onchange=$onchange_fun id='no_of_cartons_$combo[$i]' class='form-control integer' value=''></td>
+															<td><input type='text' required name='no_of_cartons[]' onkeyup=$onchange_fun id='no_of_cartons_$combo[$i]' class='form-control integer' value=''></td>
 															";
 															if($scanning_methods=='Bundle Level')
 															{
-																echo"<td><input type='text' required name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'></td>";
+																echo"<td><input type='text' name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'></td>";
 															}
 															else
 															{
-																echo"<input type='hidden' required name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'>";
+																echo"<input type='hidden' name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'>";
 															}
 														echo "</tr>";
 													}	
@@ -736,7 +741,7 @@
 					$style_id=$_POST['style_id'];
 					$sch_id=$_POST['sch_id'];
 					$pack_method=$_POST['pack_method'];
-
+					
 					$sum = array_sum($no_of_cartons);
 					if ($sum>0)
 					{
@@ -748,7 +753,11 @@
 						// echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Failed to update Carton Details");
 						for ($i=0; $i < sizeof($combo); $i++)
-						{ 
+						{
+							if ($split_qty[$i] == '')
+							{
+								$split_qty[$i]=0;
+							}
 							$sql="update $brandix_bts.`tbl_carton_size_ref` set split_qty='".$split_qty[$i]."', no_of_cartons='".$no_of_cartons[$i]."'  where parent_id='".$c_ref."' and combo_no = $combo[$i]";
 							// echo $sql."<br>";
 							mysqli_query($link, $sql) or exit("Failed to update Carton Details1");
