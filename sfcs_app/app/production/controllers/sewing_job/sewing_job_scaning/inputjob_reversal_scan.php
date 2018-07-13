@@ -492,12 +492,70 @@ else if($concurrent_flag == 0)
 				
 			}
 		}
+		//inserting into bai_log and bai_log buff
+			$sizevalue="size_".$size_id;
+			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module.",%' OR  sec_mods LIKE '".$b_module.",%' LIMIT 0,1";
+			//echo $sections_qry;
+			$sections_qry_result=mysqli_query($link,$sections_qry) or exit("Bundles Query Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($buyer_qry_row=mysqli_fetch_array($sections_qry_result)){
+					$sec_head=$buyer_qry_row['sec_id'];
+			}
+			$ims_log_date=date("Y-m-d");
+			$bac_dat=$ims_log_date;
+			$log_time=date("Y-m-d");
+			$buyer_qry="select order_div FROM $bai_pro3.bai_orders_db WHERE order_style_no='".$b_style."' AND order_del_no='".$b_schedule."' AND order_col_des='".$b_colors."'";
+			$buyer_qry_result=mysqli_query($link,$buyer_qry) or exit("Bundles Query Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
+					$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
+				}
+			$qry_nop="select avail_A,avail_B FROM $bai_pro.pro_atten WHERE module=".$b_module." AND date='$bac_dat'";
+				$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($nop_qry_row=mysqli_fetch_array($qry_nop_result)){
+						$avail_A=$nop_qry_row['avail_A'];
+						$avail_B=$nop_qry_row['avail_B'];
+				}
+				if(mysqli_num_rows($qry_nop_result)>0){
+					if($row['shift']=='A'){
+						$nop=$avail_A;
+					}else{
+						$nop=$avail_B;
+					}
+				}else{
+					$nop=0;
+				}
+			$b_rep_qty_ins = '-'.$reversalval[$key];
+			$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
+			if($b_op_id == 130 || $b_op_id == 101)
+			{
+				$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
+				bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
+				) values ('".$b_module."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
+				//echo "Bai log : ".$insert_bailog."</br>";
+				if($reversalval[$key] > 0)
+				{
+					$qry_status=mysqli_query($link,$insert_bailog) or exit("BAI Log Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
+				if($qry_status)
+				{
+					//echo "Inserted into bai_log table successfully<br>";
+					/*Insert same data into bai_pro.bai_log_buf table*/
+					$insert_bailog_buf="insert into $bai_pro.bai_log_buf (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
+					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
+					) values ('".$b_module."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
+					//echo "Bai log Buff: ".$insert_bailog."</br>";
+					if($reversalval[$key] > 0)
+					{
+						$qry_status=mysqli_query($link,$insert_bailog_buf) or exit("BAI Log Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					}
+				}
+			}			
+		}
 		
 		
 		
 		
 	}
-}
+
 $url = '?r='.$_GET['r'];
 echo "<script>window.location = '".$url."'</script>";
  }
