@@ -776,12 +776,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 
-		$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_issue_status<>\"DONE\" ".$order_div_ref." GROUP BY order_del_no,acutno,clubbing order by priority limit $priority_limit";
+		$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" ".$order_div_ref." GROUP BY order_del_no,acutno,clubbing order by priority limit $priority_limit";
 		//echo "Module : ".$sql1."<br>";
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 		if($_GET['view']==1)
 		{
-			$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_issue_status<>\"DONE\" ".$order_div_ref." order by log_time";
+			$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" ".$order_div_ref." order by log_time limit $priority_limit";
 			$view_count=0;
 		}		
 		//filter to show only cut completed
@@ -790,7 +790,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" ".$order_div_ref." order by log_time limit $priority_limit";
 			$view_count=0;
 		}
-		 //echo $sql1."<br>";
+		 // echo $sql1."<br>";
 		mysqli_query($link, $sql1) or exit("Sql Error 25".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
@@ -998,8 +998,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{   
 
 				//changed into white due to removing from modules 05062018  
-				$id="white";
-				//$id="blue";
+				// $id="white";
+				$id="blue";
 			}
 			else
 			{
@@ -1218,7 +1218,7 @@ while($sql_rowy=mysqli_fetch_array($sql_resulty))
 		{
 			if($_GET['view']==1)
 			{
-				for($i=1;$i<=(4-$view_count);$i++)
+				for($i=1;$i<=($priority_limit-$view_count);$i++)
 				{
 					//echo "<div class=\"white\"><a href=\"test_input_job.php\"></a></div>";
 					$testurl=getFullURL($_GET['r'],'test.php','N');
@@ -1231,7 +1231,7 @@ while($sql_rowy=mysqli_fetch_array($sql_resulty))
 			}
 			else
 			{
-				for($i=1;$i<=(4-$sql_num_check);$i++)
+				for($i=1;$i<=($priority_limit-$sql_num_check);$i++)
 				{
 					//echo "<div class=\"white\"><a href=\"test_input_job.php\"></a></div>";
 					$testurl=getFullURL($_GET['r'],'test.php','N');
