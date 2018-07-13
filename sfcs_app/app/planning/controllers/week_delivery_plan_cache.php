@@ -156,9 +156,8 @@ echo '<th>Ex Factory</th><th>Rev. Ex-Factory</th>	<th>Mode</th>	<th>Packing Meth
 
 
 $x=1;
-$sql="select * from $bai_pro4.week_delivery_plan where shipment_plan_id in (select ship_tid from shipment_plan $query)";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select * from $bai_pro4.week_delivery_plan where shipment_plan_id in (select ship_tid from $bai_pro4.shipment_plan $query)";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 $shipment_plan_id=$sql_row['shipment_plan_id'];
@@ -315,7 +314,6 @@ $plan_total=$actu_sec1+$actu_sec2+$actu_sec3+$actu_sec4+$actu_sec5+$actu_sec6+$a
 
 $order_total=0;
 $sql1="select * from $bai_pro4.shipment_plan_ref where ship_tid=$shipment_plan_id";
-mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
