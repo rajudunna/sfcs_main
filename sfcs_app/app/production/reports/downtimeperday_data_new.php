@@ -104,7 +104,7 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 			
 			//actual runned styles in module
 			$sql3="select distinct styles from $bai_pro.grand_rep where module=\"$rows2[module]\" and section=\"$sec[$i]\" and shift in ($shift) and date between \"$start\" and \"$end\"";
-			echo $sql3;
+			//echo $sql3;
 			//die();
 			$style = array();
 			$styles_all = array();
