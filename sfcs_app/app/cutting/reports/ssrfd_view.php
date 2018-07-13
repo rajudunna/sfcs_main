@@ -548,7 +548,7 @@ if(isset($_POST['submit']))
 			?>
 		</tr>
 		<tr>
-			<th class='danger'>Size</th>
+			<th class='danger'>Order Qty</th>
 			<?php
 				for($s=0;$s<sizeof($s_tit);$s++)
 					{
