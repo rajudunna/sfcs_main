@@ -67,7 +67,7 @@ table{
 			<label>Invoice/Po/Batch</label>
 			<div class="row">
 				<div class="col-md-3">
-					<input type="text" name="reference" onkeypress="return validateQty(event);" value="" class="form-control" required/>
+					<input type="text" name="reference"  value="" class="form-control alpha" required/>
 				</div>
 				<div class="col-md-3">
 					<input type="submit" value="Search" name="submit" class="btn btn-success">
