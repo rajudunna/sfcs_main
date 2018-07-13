@@ -1188,8 +1188,9 @@ function verify_date(){
 error_reporting(0);
 if(isset($_POST["submit"]))
 {
-    include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    //include("..".getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    //include("..".getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
 if(file_exists("bar.php")){
     unlink("bar.php");
@@ -1409,7 +1410,7 @@ $ms_sah_plan=$ms_plan;
  
 $sql_vs="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where section in (1,3,4,5,7) and date between \"$dat\" and \"$dat1\"";
 //echo $sql_vs;
-$result_vs=mysqli_query($link, $sql_vs) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+$result_vs=mysqli_query($link, $sql_vs) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_vs=mysqli_fetch_array($result_vs))
 {
 	$vs_act_sah=$row_vs["act"];
@@ -1418,7 +1419,7 @@ while($row_vs=mysqli_fetch_array($result_vs))
 
 $sql_ms="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where section in (2,6) and date between \"$dat\" and \"$dat1\"";
 //echo $sql_ms;
-$result_ms=mysqli_query($link, $sql_ms) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+$result_ms=mysqli_query($link, $sql_ms) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_ms=mysqli_fetch_array($result_ms))
 {
 	$ms_act_sah=$row_ms["act"];
@@ -1427,7 +1428,7 @@ while($row_ms=mysqli_fetch_array($result_ms))
 
 $sql_vs_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where section in (1,3,4,5,7) and date=\"$dat1\"";
 //echo $sql_vs;
-$result_vs_today=mysqli_query($link, $sql_vs_today) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+$result_vs_today=mysqli_query($link, $sql_vs_today) or die("Error28 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_vs_today=mysqli_fetch_array($result_vs_today))
 {
 	$vs_plan_sah_today=$row_vs_today["plan"];
@@ -1436,7 +1437,7 @@ while($row_vs_today=mysqli_fetch_array($result_vs_today))
 
 $sql_ms_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where section in (2,6) and date=\"$dat1\"";
 //echo $sql_ms;
-$result_ms_today=mysqli_query($link, $sql_ms_today) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+$result_ms_today=mysqli_query($link, $sql_ms_today) or die("Error3 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_ms_today=mysqli_fetch_array($result_ms_today))
 {
 	$ms_act_sah_today=$row_ms_today["act"];
@@ -1503,7 +1504,7 @@ while($row=mysqli_fetch_array($sql_dat))
 	  echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b)/$plan_clh)*100,1)."%</td>";	
 	  
 	  $sql1="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where $sections_in and date=\"".$row["date"]."\" and source=1 and remarks!=\"Open capacity\"";
-	  $result1=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	  $result1=mysqli_query($link, $sql1) or die("Error4 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	  while($row1=mysqli_fetch_array($result1))
 	  {
 	  		 $mod_no=$row1["mod_no"];
@@ -1513,7 +1514,7 @@ while($row=mysqli_fetch_array($sql_dat))
 			 if($plan_eff_down > 0)
 			 {
 			 	$sql2="select plan_eff from $bai_pro.down_log where $sections_in and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
-				 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				 $result2=mysqli_query($link, $sql2) or die("Error5 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2=mysqli_fetch_array($result2))
 				 {
 				 	$plan_eff=$row2["plan_eff"];
@@ -1522,7 +1523,7 @@ while($row=mysqli_fetch_array($sql_dat))
 			 else
 			 {
 			 	 $sql2="select plan_eff from $bai_pro.pro_plan where $sec_in and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
-				 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				 $result2=mysqli_query($link, $sql2) or die("Error6 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2=mysqli_fetch_array($result2))
 				 {
 				 	$plan_eff=$row2["plan_eff"];
@@ -1531,13 +1532,13 @@ while($row=mysqli_fetch_array($sql_dat))
 				 {
 				 	$sql2="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
 		//echo $sql2;
-					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error7 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
 						$max_date=$sql_row2["max_date"];
 						$sql21="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
 						//echo $sql2;
-						$sql_result21=mysqli_query($link, $sql21) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_result21=mysqli_query($link, $sql21) or die("Sql Error8 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row21=mysqli_fetch_array($sql_result21))
 						{
 							$plan_eff=$sql_row21["plan_eff"];
@@ -1554,7 +1555,7 @@ while($row=mysqli_fetch_array($sql_dat))
 	  $total_ext_sah=$total_ext_sah+round($ext_sah_loss_total,2);
 	  
 	  $sql1x="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where $sections_in and date=\"".$row["date"]."\" and source=1 and remarks=\"Open capacity\"";
-	  $result1x=mysqli_query($link, $sql1x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	  $result1x=mysqli_query($link, $sql1x) or die("Error9 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	  while($row1x=mysqli_fetch_array($result1x))
 	  {
 	  		 $mod_nox=$row1x["mod_no"];
@@ -1564,7 +1565,7 @@ while($row=mysqli_fetch_array($sql_dat))
 			 if($plan_eff_downx > 0)
 			 {
 			 	$sql2x="select plan_eff from $bai_pro.down_log where $sections_in and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
-				 $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				 $result2x=mysqli_query($link, $sql2x) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2x=mysqli_fetch_array($result2x))
 				 {
 				 	$plan_effx=$row2x["plan_eff"];
@@ -1573,7 +1574,7 @@ while($row=mysqli_fetch_array($sql_dat))
 			 else
 			 {
 			 	 $sql2x="select plan_eff from $bai_pro.pro_plan where $sec_in and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
-				 $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				 $result2x=mysqli_query($link, $sql2x) or die("Error11 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2x=mysqli_fetch_array($result2x))
 				 {
 				 	$plan_effx=$row2x["plan_eff"];
@@ -1582,13 +1583,13 @@ while($row=mysqli_fetch_array($sql_dat))
 				 {
 				 	$sql2x="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
 		//echo $sql2;
-					$sql_result2x=mysqli_query($link, $sql2x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result2x=mysqli_query($link, $sql2x) or die("Sql Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2x=mysqli_fetch_array($sql_result2x))
 					{
 						$max_datex=$sql_row2x["max_date"];
 						$sql21x="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_datex."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
 						//echo $sql2;
-						$sql_result21x=mysqli_query($link, $sql21x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_result21x=mysqli_query($link, $sql21x) or die("Sql Error13 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row21x=mysqli_fetch_array($sql_result21x))
 						{
 							$plan_effx=$sql_row21x["plan_eff"];
@@ -1603,7 +1604,7 @@ while($row=mysqli_fetch_array($sql_dat))
 	  
 	  $sql11="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where $sections_in and date=\"".$row["date"]."\" and source=0 order by mod_no,shift";
 	  //echo $sql11."<br>";
-	  $result11=mysqli_query($link, $sql11) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	  $result11=mysqli_query($link, $sql11) or die("Error14 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	  while($row11=mysqli_fetch_array($result11))
 	  {
 	  	$mod_no1=$row11["mod_no"];
@@ -1614,7 +1615,7 @@ while($row=mysqli_fetch_array($sql_dat))
 		{
 			$sql21="select plan_eff from $bai_pro.pro_plan where $sec_in and date=\"".$row["date"]."\" and mod_no=\"".$mod_no1."\" and shift=\"".$shift1."\" ";
 			//echo $sql21."<br>";
-			$result21=mysqli_query($link, $sql21) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$result21=mysqli_query($link, $sql21) or die("Error15= ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row21=mysqli_fetch_array($result21))
 			{
 				$plan_eff1=$row21["plan_eff"];//echo "Mod =".$mod_no1."-".$plan_eff1;
@@ -1746,7 +1747,7 @@ for($i=0;$i<sizeof($buyer);$i++)
   
    $sql13="select mod_no,dtime,shift,date,plan_eff from $bai_pro.down_log where $sections_in and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks!=\"Open capacity\"";
  // echo $sql13;
-  $result13=mysqli_query($link, $sql13) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+  $result13=mysqli_query($link, $sql13) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
   while($row13=mysqli_fetch_array($result13))
   {
   		 $mod_no3=$row13["mod_no"];
@@ -1757,7 +1758,7 @@ for($i=0;$i<sizeof($buyer);$i++)
 		 if($plan_eff_down1 > 0)
 		 {
 		 	$sql23="select plan_eff from $bai_pro.down_log where $sections_in and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";
-			 $result23=mysqli_query($link, $sql23) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			 $result23=mysqli_query($link, $sql23) or die("Error 17= ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23=mysqli_fetch_array($result23))
 			 {
 			 	$plan_eff3=$row23["plan_eff"];
@@ -1766,7 +1767,7 @@ for($i=0;$i<sizeof($buyer);$i++)
 		 else
 		 {
 		 	 $sql23="select plan_eff from $bai_pro.pro_plan where $sec_in and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	//echo $sql23."<br>";	
-			 $result23=mysqli_query($link, $sql23) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			 $result23=mysqli_query($link, $sql23) or die("Error18 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23=mysqli_fetch_array($result23))
 			 {
 			 	$plan_eff3=$row23["plan_eff"];
@@ -1775,13 +1776,13 @@ for($i=0;$i<sizeof($buyer);$i++)
 			 {
 			 	$sql23="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$dates3."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
 	//echo $sql2;
-				$sql_result23=mysqli_query($link, $sql23) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result23=mysqli_query($link, $sql23) or die("Sql Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row23=mysqli_fetch_array($sql_result23))
 				{
 					$max_date1=$sql_row23["max_date"];
 					$sql213="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date1."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
 					//echo $sql2;
-					$sql_result213=mysqli_query($link, $sql213) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result213=mysqli_query($link, $sql213) or die("Sql Error20 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row213=mysqli_fetch_array($sql_result213))
 					{
 						$plan_eff3=$sql_row213["plan_eff"];
@@ -1809,7 +1810,7 @@ for($i=0;$i<sizeof($buyer);$i++)
   
  $sql13s="select mod_no,dtime,shift,date,plan_eff from $bai_pro.down_log where $sections_in and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks=\"Open capacity\" order by mod_no,shift";
  // echo $sql13;
-  $result13s=mysqli_query($link, $sql13s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+  $result13s=mysqli_query($link, $sql13s) or die("Error21 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
   while($row13s=mysqli_fetch_array($result13s))
   {
   		 $mod_no3s=$row13s["mod_no"];
@@ -1821,7 +1822,7 @@ for($i=0;$i<sizeof($buyer);$i++)
 		 {
 		 	$sql23s="select plan_eff from $bai_pro.down_log where $sections_in and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";
 			//echo $sql23s."<br>";
-			 $result23s=mysqli_query($link, $sql23s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			 $result23s=mysqli_query($link, $sql23s) or die("Error22 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23s=mysqli_fetch_array($result23s))
 			 {
 			 	$plan_eff3s=$row23s["plan_eff"];
@@ -1830,7 +1831,7 @@ for($i=0;$i<sizeof($buyer);$i++)
 		 else
 		 {
 		 	 $sql23s="select plan_eff from $bai_pro.pro_plan where $sec_in and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";	//echo $sql23s."<br>";	
-			 $result23s=mysqli_query($link, $sql23s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			 $result23s=mysqli_query($link, $sql23s) or die("Error23 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23s=mysqli_fetch_array($result23s))
 			 {
 			 	$plan_eff3s=$row23s["plan_eff"];
@@ -1839,12 +1840,12 @@ for($i=0;$i<sizeof($buyer);$i++)
 			 {
 			 	$sql23s="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$dates3s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";
 				//echo $sql2;
-				$sql_result23s=mysqli_query($link, $sql23s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result23s=mysqli_query($link, $sql23s) or die("Sql Error24 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row23s=mysqli_fetch_array($sql_result23s))
 				{
 					$max_date1s=$sql_row23s["max_date"];
 					$sql213s="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date1s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";		//echo $sql2;
-					$sql_result213s=mysqli_query($link, $sql213s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result213s=mysqli_query($link, $sql213s) or die("Sql Error25 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row213s=mysqli_fetch_array($sql_result213s))
 					{
 						$plan_eff3s=$sql_row213s["plan_eff"];
@@ -1873,7 +1874,7 @@ for($i=0;$i<sizeof($buyer);$i++)
   
   
   $sql113="select mod_no,dtime,shift,date from $bai_pro.down_log where $sections_in and DATE between \"".$dat."\" and \"".$dat1."\" and source=0 order by date,mod_no,shift";
-  $result113=mysqli_query($link, $sql113) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+  $result113=mysqli_query($link, $sql113) or die("Error26 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
   while($row113=mysqli_fetch_array($result113))
   {
   		 $mod_no13=$row113["mod_no"];
@@ -1882,7 +1883,7 @@ for($i=0;$i<sizeof($buyer);$i++)
 		 $dates13=$row113["date"];
 		 $sql213="select plan_eff from $bai_pro.pro_plan where $sec_in and date=\"".$dates13."\" and mod_no=\"".$mod_no13."\" and shift=\"".$shift13."\" ";
 		 //echo $sql213."-".$dtime13."<br>";
-		 $result213=mysqli_query($link, $sql213) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		 $result213=mysqli_query($link, $sql213) or die("Error27 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		 while($row213=mysqli_fetch_array($result213))
 		 {
 		 	$plan_eff13=$row213["plan_eff"];
