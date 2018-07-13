@@ -1,7 +1,7 @@
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',4,'R'); ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R'); ?>"></script>
-<style>
+<!---<style>
 table {	
 	text-align:center;
 	font-size:12px;
@@ -43,7 +43,7 @@ th{
 }
 
 
-</style>
+</style>--->
 
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
