@@ -105,7 +105,9 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 			//actual runned styles in module
 			$sql3="select distinct styles from $bai_pro.grand_rep where module=\"$rows2[module]\" and section=\"$sec[$i]\" and shift in ($shift) and date between \"$start\" and \"$end\"";
 			//echo $sql3;
-			mysqli_query($link, $sql3) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//die();
+			$style = array();
+			$styles_all = array();
 		    $row3=mysqli_query($link, $sql3) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$rows_count=mysqli_num_rows($row3);
 			//echo "ROWS = ".$rows_count;
@@ -113,10 +115,10 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 			{
 				while($rows3=mysqli_fetch_array($row3))
 				{
-				   $style[]=$rows3["styles"];
+				   $style=rtrim($rows3["styles"],',');
 				   $styles=implode(",",$style);
 				   //echo "<th>".$styles."</th>";	
-				   $styles_all[]=$styles;
+				   $styles_all=$styles;
 				   $styles="";
 				   $style=$styles;
 				}
@@ -126,7 +128,7 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 				   $style="0";
 				   $styles=implode(",",$style);
 				   //echo "<th>".$styles."</th>";	
-				   $styles_all[]=$styles;
+				   $styles_all=$styles;
 				   $styles="";
 				   $style=$styles;
 			}

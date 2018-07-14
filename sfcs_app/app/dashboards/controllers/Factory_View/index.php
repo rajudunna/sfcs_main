@@ -14,13 +14,12 @@ $legend=getFullURLLevel($_GET['r'],'factory_view.htm',0,'R');
 ?>		
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/styles.css',2,'R')?>">
 <div class="container">
-	<div class="table-responsive">
 		<div class="panel panel-primary">
 			 <div class="panel-heading"> Factory View for Production KPI <a href='<?php echo $legend; ?>' target="_blank" class='btn btn-success pull-right'>?</a></div>
 				<div class="panel-body">
-					<table align="center" class="table table-bordered">
-
-					<?php
+					<div class="table-responsive">
+                      <table align="center" class="table table-bordered">
+                     <?php
 					$sections_db=array();
 					$sqlx="select sec_id from $bai_pro3.sections_db where sec_id>0";
 					$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));

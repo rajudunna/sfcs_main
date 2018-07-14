@@ -1771,7 +1771,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$buyer=$sql_row['buyer'];
 	$pkg_no=$sql_row['pkg_no'];
 	$grn_date=$sql_row['grn_date'];
-	$lot_ref_batch=rtrim($sql_row['lot_ref_batch'],'R');
+	// $lot_ref_batch=rtrim($sql_row['lot_ref_batch'],'R');
+	$lot_ref_batch="'" .implode("','", $sql_row['lot_ref_batch']) . "'";
 	$lot_count=$sql_row['lot_count'];
 	$buyer_code=$sql_row['buyer_code'];
 	$supplier_ref_name=$sql_row['supplier'];
@@ -1823,7 +1824,6 @@ $avg_t_width=0;
 $avg_c_width=0;
 
 $sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) order by ref2+0";
-//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1951,7 +1951,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Lot No</td>
   <td colspan=4 class=xl10024082 style='border-right:1.0pt solid black;
-  border-bottom:.5pt solid black;border-left:none'><?php echo $_GET['lot_ref']/*lot_ref_batch*/; ?></td>
+  border-bottom:.5pt solid black;border-left:none'><?php echo str_replace("'", "", $_GET['lot_ref']);/*lot_ref_batch*/ ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;

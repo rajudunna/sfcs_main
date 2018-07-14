@@ -1335,7 +1335,7 @@ $section_list="'".implode("','",$sec_list)."'";
 echo "<hr/><div class='table-responsive'><div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel\" style='max-height: 800px;overflow-y: scroll;'>
 
 <table border=0 cellpadding=0 cellspacing=0 width=3739 style='border-collapse:
- collapse;table-layout:fixed;width:3204pt' >
+ collapse;width:3204pt' >
  <col width=64 style='width:48pt'>
  <col width=83 style='mso-width-source:userset;mso-width-alt:3035;width:62pt'>
  <col width=64 style='width:48pt'>

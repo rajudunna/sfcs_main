@@ -98,7 +98,7 @@ if(isset($_POST['download']))
 	$conn = odbc_connect($conn_string,$user,$password);
 	if($conn)
 	{
-		$query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54',$dateval,$dateval,0,'%','%','$mode')";
+		$query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54',$date_val,$date_val,0,'%','%','$mode')";
 		$result = odbc_exec($conn, $query_text);
 		// print_r(odbc_result_all($result));
 		$i =0;

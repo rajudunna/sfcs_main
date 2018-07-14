@@ -309,6 +309,7 @@ td {
     border: 1px solid #660000;
     padding: 1px;
     white-space: nowrap;
+	font-size:12px;
 }
 th {
 	background-color: RED;
@@ -316,5 +317,7 @@ th {
     border: 1px solid #660000;
     padding: 10px;
     white-space: nowrap;
+	font-size:12px;
+
 }
 </style>

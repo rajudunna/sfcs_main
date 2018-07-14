@@ -162,13 +162,15 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 <script src="../../../../common/js/jquery-1.12.4.js"></script>
 
 <link rel='stylesheet' href="../../../../common/css/bootstrap.min.css">
+<!-- <link rel='stylesheet' href="../../common/css/tablefilter.css"> -->
 <script src="../../../../common/js/sweetalert.min.js"></script>
-<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"> --><!-- External script -->
-<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/tablefilter/2.5.0/tablefilter_min.js'></script> -->
+<!-- <link rel="stylesheet" href="../../../../common/css/jquery.dataTables.min.css">  -->
+ <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/tablefilter/2.5.0/tablefilter_min.js'></script> -->
 
-<!-- <script language="javascript" type="text/javascript" src="../../../../common/js/TableFilter_EN/actb.js"></script> -->
+<!-- <script language="javascript" type="text/javascript" src="../../../../common/js/TableFilter_EN/actb.js"></script>
 <script language="javascript" type="text/javascript" 
-src="../../../../common/js/TableFilter_EN/tablefilter.js"></script>
+src="../../../../common/js/TableFilter_EN/tablefilter.js"></script> -->
+<script src="../../common/js/tablefilter.js"></script>
 
 <script>
 
@@ -910,11 +912,11 @@ if(isset($_POST['allocate']))
 		echo "<th>Roll No</th>";	
 		echo "<th id='col'>Location</th>";	
 		echo "<th>Group</th>";	
-		echo "<th>Tkt Width</th>";	
+		echo "<th>Tkt<br/>Width</th>";	
 		echo "<th>Ctx Width</th>";	
-		echo "<th>Tkt Length</th>";	
-		echo "<th>Ctx Length</th>";		
-		echo "<th id='col'>Allocated</th>";
+		echo "<th>Tkt<br/></th>";	
+		echo "<th>Ctx<br/>Length</th>";		
+		// echo "<th id='col'>Allocated</th>";
 		echo "<th>Issued Qty</th>";
 		echo "<th>Select</th>";
 		//echo "<th>Allocated Qnty</th>";
@@ -1082,7 +1084,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['ref3']."</td>";
 			echo "<td>".$sql_row['qty_rec']."</td>";
 			echo "<td>".$sql_row['ref5']."</td>";
-			echo "<td>".$allocated_qty."</td>";
+			// echo "<td>".$allocated_qty."</td>";
 			echo "<td><span id=\"issued".$doc_ref."[$j]\"></span></td>";
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";
@@ -1121,7 +1123,6 @@ if(isset($_POST['allocate']))
 					<th style='color:black;'>Ctx<br/>Width</th>
 					<th style='color:black;'>Tkt<br/>Length</th>
 					<th style='color:black;'>Ctx<br/>Length</th>	
-					<th style='color:black;'>Allocated</th>
 					<th style='color:black;'>Issued<br/>Qty</th>
 					</tr>";
 			for($m=0; $m < $n; $m++) {
@@ -1155,7 +1156,6 @@ if(isset($_POST['allocate']))
 										<td>".$sql_result_new['ref3']."</td>
 										<td>".$sql_result_new['qty_rec']."</td>
 										<td>".$sql_result_new['ref5']."</td>
-										<td>".$allocated_qty."</td>
 										<td><span id=\"issued".$doc_ref."[$j]\"></span></td>
 										</tr>";
 										
@@ -1305,51 +1305,92 @@ th{
 </html>
 	<script language="javascript" type="text/javascript">
 	
-	var MyTableFilter = 
-			{  
+	// var MyTableFilter = 
+	// 		{  
+	// 			exact_match: false,
+	// 			alternate_rows: true,
+	// 			sort_select: true,
+	// 			loader_text: "Filtering data...",
+	// 			loader: true,
+	// 			// display_all_text: "Show All",
+	// 			// onchange:true,
+	// 			// btn: true,
+	// 			// enter_key: false,
+	// 			on_change: false,
+	// 			btn: true,
+	// 			enter_key: false,
+	// 			// col_20:false,
+	// 			// public_methods: true
+	// 			col_18:false,
+	// 			rows_counter: true,
+	// 			rows_counter_text: "Total rows: ",
+	// 			btn_reset: true,
+	// 			bnt_reset_text: "Clear all ",
+				
+	// 		};
+
+
+	// 		var i;
+	// 		var len=document.getElementById('size_doc').value;
+	// 		for (i = 0; i <=len; i++) { 
+	// 			setFilterGrid( 'example'+i, MyTableFilter );
+	// 		}
+	// 		$(document).ready(function(){
+	// 			var len=document.getElementById('size_doc').value;
+	// 			$('.loader').hide();
+	// 				var i;
+	// 				var len=document.getElementById('size_doc').value;
+	// 				for (i = 0; i <=len; i++) { 
+	// 				$('#reset_example'+i).addClass('btn btn-warning btn-xs');
+	// 				$('#btn18_example'+i).addClass('btn btn-success btn-xs');
+	// 				$('#reset_example'+i).click(function(){ 
+	// 					// document.getElementById('btn19_example0').value = "GO";
+	// 					// document.getElementById('btn19_example1').value = "GO";
+	// 					// document.getElementById('btn19_example2').value = "GO";
+	// 				});
+	// 				$("#btn18_example"+i).before('<label>Go</label><br>');
+	// 				$("#btn18_example"+i).val('');
+					
+	// 				}
+				
+					
+	// 		});
+			// var i;
+			// var len=document.getElementById('size_doc').value;
+			// for (i = 0; i <=len; i++) {
+			// 	var tf = new TableFilter(document.querySelector('#example'+i));
+			// 	tf.init();
+			// 	$('#flt17_example'+i).hide();
+			// }
+			var filtersConfig = {
 				exact_match: false,
 				alternate_rows: true,
 				sort_select: true,
 				loader_text: "Filtering data...",
 				loader: true,
-				// display_all_text: "Show All",
-				// onchange:true,
-				// btn: true,
-				// enter_key: false,
-				on_change: false,
-				btn: true,
-				enter_key: false,
-				// col_20:false,
-				// public_methods: true
-				col_18:false,
+				// col_17:false,
 				rows_counter: true,
 				rows_counter_text: "Total rows: ",
 				btn_reset: true,
-				bnt_reset_text: "Clear all ",
-				
 			};
-
-
 			var i;
 			var len=document.getElementById('size_doc').value;
-			for (i = 0; i <=len; i++) { 
-				setFilterGrid( 'example'+i, MyTableFilter );
+			for (i = 0; i <=len; i++) {
+				var tf = new TableFilter(document.querySelector('#example'+i), filtersConfig);
+				tf.init();
+				$('.helpCont').hide();
+				$('.helpBtn').hide();
+				$('.reset').val('reset');
+				$('.reset').addClass('btn btn-warning btn-xs');
+				$('#flt17_example'+i).hide();
 			}
-			$(document).ready(function(){
-				$('.loader').hide();
-					var i;
-					var len=document.getElementById('size_doc').value;
-					for (i = 0; i <=len; i++) { 
-					$('#reset_example'+i).addClass('btn btn-warning btn-xs');
-					$('#btn18_example'+i).addClass('btn btn-success btn-xs');
-					$('#reset_example'+i).click(function(){ 
-						// document.getElementById('btn19_example0').value = "GO";
-						// document.getElementById('btn19_example1').value = "GO";
-						// document.getElementById('btn19_example2').value = "GO";
-					});
-					}
-					
-			});
 		
 	</script>
+	<!-- <script>
+	$(document).ready( function () {
+    $('#example0').DataTable();
+} );
+	</script> -->
 <script src="../../../../common/js/bootstrap1.min.js"></script>
+
+<!-- <script src="../../../../common/js/jquery.dataTables.min.js"></script> -->

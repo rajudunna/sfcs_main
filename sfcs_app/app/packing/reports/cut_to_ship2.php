@@ -72,7 +72,7 @@ echo "<div class='row'>
 //$sql="select distinct order_style_no from bai_orders_db_confirm where order_tid in (select order_tid from plandoc_stat_log)";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where style_id>0 order by order_style_no";	
+	$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where style_id!='' order by order_style_no";	
 //}
 mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
@@ -104,7 +104,7 @@ echo "<div class='col-md-3'><label>Select Schedule:</label>
 //$sql="select distinct order_style_no from bai_orders_db_confirm where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and style_id>0 order by order_del_no";	
+	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and style_id!='' order by order_del_no";	
 	//echo $sql;
 //}
 mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
@@ -136,7 +136,7 @@ echo "<div class='col-md-3'><label>Select Color: </label><select name=\"color\" 
 //$sql="select distinct order_style_no from bai_orders_db_confirm where order_tid in (select order_tid from plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and style_id>0";
+	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and style_id!=''";
 //}
 mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());

@@ -113,9 +113,11 @@ function verify_date(){
 							<?php echo str_replace('"',"",$shift); ?>
 							</span>
 						</div>
+					</div>
+					<div class="row">
 						<div class="col-md-3">
 							<label>Section : </label>
-							<span class="label label-info" style="font-size: 12px;">
+							<span class="label label-info" style="font-size: 12px;margin-left: -10px;">
 							<?php echo $section ?>
 							</span>
 						</div>
