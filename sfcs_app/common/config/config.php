@@ -48,7 +48,7 @@ $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
 //Scanning Methods
 
-$scanning_methods = 'Bundle Level';
+$scanning_methods = $conf1->get('scaning-method');
 
 //LDAP CODE STARTS***
 // if(substr($server_soft,0,13)=="Apache/2.4.28")
