@@ -221,12 +221,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <FORM method="post" name="input" action="<?= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form1_process_cut.php',0,'N');?>">
 	<input type="hidden" name="doc_no" value="<?php echo $doc_no; ?>">
 	<?php
-		if($print_status==NULL)
-		{
-			echo "Docket is yet to generate. Please contact your cutting head.";
-		}
-		else
-		{
+		// if($print_status==NULL)
+		// {
+		// 	echo "Docket is yet to generate. Please contact your cutting head.";
+		// }
+		//else
+		//{
 			$special_users=array("kirang","prabathsa","kirang");
 			echo "<input type=\"hidden\" name=\"tran_order_tid\" value=\"".$tran_order_tid."\">";
 			echo "<input type=\"hidden\" name=\"club_status\" value=\"".$club_status."\">";
@@ -320,7 +320,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			echo "<tr style='display:none;'><td><input type=\"hidden\" name=\"remarks\" value=\"$fab_remarks\"></td></tr>";
 
 			echo "</table></div>";
-		}
+		//}
 		if($statusn==0)
 		{	
 	?>
