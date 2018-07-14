@@ -776,7 +776,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 
-		$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" ".$order_div_ref." GROUP BY order_del_no,acutno,clubbing order by priority limit $priority_limit";
+		$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" ".$order_div_ref." order by priority limit $priority_limit";
 		//echo "Module : ".$sql1."<br>";
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 		if($_GET['view']==1)
