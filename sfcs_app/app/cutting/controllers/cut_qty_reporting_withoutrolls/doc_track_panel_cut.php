@@ -82,9 +82,9 @@ if(isset($_POST['submit']))
 				//echo $cat_ref."---".$fabric_status."<br>";
 			}
 			//echo $cat_ref."---".$fabric_status."<br>";
-			if($cat_ref>0 and $fabric_status==5)	
+			//if($cat_ref>0 and $fabric_status==5)	
 			//if($cat_ref>0)	
-			{
+			//{
 					
 				$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -263,12 +263,12 @@ if(isset($_POST['submit']))
 
 				}
 				echo "</table>";
-			}
-			else
-			{
+			// }
+			// else
+			// {
 				
-				echo "Requested Docket doesnot exist or Fabric Not issued to this docket. Please contact your planner/RM Team.";
-			}
+			// 	echo "Requested Docket doesnot exist or Fabric Not issued to this docket. Please contact your planner/RM Team.";
+			// }
 		}
 		else
 		{
