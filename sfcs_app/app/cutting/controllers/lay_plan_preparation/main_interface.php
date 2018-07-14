@@ -1538,7 +1538,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	if($totalplies>0 and $cat_yy>0)
 	{
-		$savings=round((($cad_consumption-$realYY)/$realYY)*100,0);		
+		$savings=round((($realYY-$cad_consumption)/$realYY)*100,0);		
 	}
 	echo "<td class=\"  \"><center>".$savings."%</center></td>";
 	
