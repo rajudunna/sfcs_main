@@ -244,7 +244,7 @@ if(isset($_POST['generate']))
 		$schedule_id=$row123['ref_order_num'];
 		$carton_method=$row123['carton_method'];
 	}
-	echo '<h4>Pack Method: <span class="label label-info">'.$operation[$carton_method].'</span></h4>';
+	//echo '<h4>Pack Method: <span class="label label-info">'.$operation[$carton_method].'</span></h4>';
 	$cols_tot=array();	
 	$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link); 
 	$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule_id,$link);

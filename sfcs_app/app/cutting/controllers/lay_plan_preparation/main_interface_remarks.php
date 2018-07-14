@@ -17,7 +17,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$remarks_y=$sql_row['remarks'];
 	$bind_con = $sql_row['binding_con'];
 }
-if(mysqli_num_rows($sql_result)==0 or strlen($remarks_y)==0)
+if(mysqli_num_rows($sql_result)==0)
 {
 	$remarks_y="N/A";	
 	$bind_con = 0;

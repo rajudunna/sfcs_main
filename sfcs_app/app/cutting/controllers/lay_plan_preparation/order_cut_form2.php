@@ -84,9 +84,14 @@ function percent_cal()
 				var val = 'in_s'+i+'_source';
 				var sample_qty = 'in_s'+i+'_sample';
 			}
+			if(document.getElementsByName(sample_qty)[0]){
+				sQty = document.getElementsByName(sample_qty)[0].value;
+			}else{
+				sQty = 0;
+			}
 			if(document.getElementsByName(val)[0] != undefined){
 				// var val = 'in_s0'+i+'_source';
-				document.getElementsByName('in_s0'+i)[0].value = Math.round(parseInt(document.getElementsByName(val)[0].value)+document.getElementsByName(val)[0].value*x/100)+parseInt(document.getElementsByName(sample_qty)[0].value);
+				document.getElementsByName('in_s0'+i)[0].value = Math.round(parseInt(document.getElementsByName(val)[0].value)+document.getElementsByName(val)[0].value*x/100)+parseInt(sQty);
 
 			}
 			
