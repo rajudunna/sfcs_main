@@ -298,8 +298,8 @@ function getjobdetails($job_number)
 		$select_modudle_qry1 = "select ims_mod_no as input_module from $bai_pro3.ims_log where input_job_rand_no_ref = $job_number[0] limit 1";
 		$result_select_modudle_qry = $link->query($select_modudle_qry1);
 	}
-	else if(mysqli_num_rows($result_select_modudle_qry)==0)
-	{	
+	if(mysqli_num_rows($result_select_modudle_qry)==0)
+	{
 		$select_modudle_qry2 = "select ims_mod_no as input_module from $bai_pro3.ims_log_backup where input_job_rand_no_ref = $job_number[0] limit 1";
 		$result_select_modudle_qry = $link->query($select_modudle_qry2);
 	}

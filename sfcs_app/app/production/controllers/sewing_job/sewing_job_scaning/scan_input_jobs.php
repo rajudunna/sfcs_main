@@ -102,7 +102,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 					</div>
 					<div  class='panel panel-primary' id="pre_pre_data" hidden='true'>
 						<div class='panel-heading'>Previous Transaction</div>
-						<div class='panel-body' id="pre_data"></div>
+						<div style='overflow-x:scroll' class='panel-body' id="pre_data"></div>
 					</div>
 				</div>
 			</div>
