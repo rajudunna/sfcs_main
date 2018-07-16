@@ -23,6 +23,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	$edate=$_POST['edate'];
 	$shift=$_POST['shift'];
 	$module=$_POST['module'];
+	$hour=$_POST['hour'];
+	$hour1=$_POST['hour1'];
 ?>
 <!--<div id="page_heading"><span style="float"><h3>Daily Production Status Report</h3></span><span style="float: right; margin-top: -20px"><b>?</b>&nbsp;</span></div>-->
 <div class="panel panel-primary">
@@ -60,13 +62,13 @@ while($sql_row=mysqli_fetch_array($result7))
 {
 	$sql_mod=$sql_row["mods"];
 }
-$module=1;
+// $module=1;
 $sql_mods=explode(",",$sql_mod);
 for($i=0;$i<sizeof($sql_mods);$i++)
 {
 	if($sql_mods[$i]==$module)
 	{
-		echo "<option value=\"".$sql_mods[$i]."\" >".str_pad($sql_mods[$i],2,"0",0)."</option>";
+		echo "<option value=\"".$sql_mods[$i]."\" selected>".str_pad($sql_mods[$i],2,"0",0)."</option>";
 	}
 	else
 	{
@@ -79,10 +81,18 @@ for($i=0;$i<sizeof($sql_mods);$i++)
 Shift: <select name="shift" id="myshift" class="form-control">
 <option value='All' <?php if($shift=="All"){ echo "selected"; } ?> >All</option>
 <?php 
-for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-<!-- $sf = $sf."'".$shifts_array[$i]."'"; -->
-<option  <?php echo 'value="'.$shifts_array[$i].'"'; ?>><?php echo $shifts_array[$i] ?></option>
+for ($i=0; $i < sizeof($shifts_array); $i++) {
+	if($shifts_array[$i]==$shift)
+	{
+	?>
+<option  <?php echo 'value="'.$shifts_array[$i].'"'; ?> selected><?php echo $shifts_array[$i] ?></option>
+	<?php
+		}
+		else {
+	?>
+	<option  <?php echo 'value="'.$shifts_array[$i].'"'; ?>><?php echo $shifts_array[$i] ?></option>
 <?php }
+}
 ?>
 <!-- <option  value="<?= $sf ?>" selected><?php echo 'ALL'; ?></option> -->
 </select></div>
@@ -101,8 +111,12 @@ Hour From: <select name="hour" id="hour" class="form-control">
 				{
 					$suffix=0;
 				}	
-					
-				echo "<option value=\"".$i."\">".$suffix."".$i." AM</option>";
+				if($i == $hour) {
+					echo "<option value=\"".$i."\" selected>".$suffix."".$i." AM</option>";
+				}
+				else {
+					echo "<option value=\"".$i."\">".$suffix."".$i." AM</option>";
+				}
 			}
 			else
 			{
@@ -112,7 +126,12 @@ Hour From: <select name="hour" id="hour" class="form-control">
 				{
 					$suffix1=0;
 				}	
-				echo "<option value=\"".$i."\">".$suffix1."".$i1." PM</option>";
+				if($i == $hour) {
+					echo "<option value=\"".$i."\" selected>".$suffix1."".$i1." PM</option>";
+				}
+				else {
+					echo "<option value=\"".$i."\">".$suffix1."".$i1." PM</option>";
+				}
 			}
 			
 		}	
@@ -132,8 +151,13 @@ To: <select name="hour1" id="hour1" class="form-control">
 				if($i<10)
 				{
 					$suffix=0;
-				}				
-				echo "<option value=\"".$i."\">".$suffix."".$i." AM</option>";
+				}	
+				if($i == $hour1) {			
+					echo "<option value=\"".$i."\" selected>".$suffix."".$i." AM</option>";
+				}
+				else {
+					echo "<option value=\"".$i."\">".$suffix."".$i." AM</option>";
+				}
 			}
 			else
 			{
@@ -142,8 +166,13 @@ To: <select name="hour1" id="hour1" class="form-control">
 				if($i1<10)
 				{
 					$suffix1=0;
-				}	
-				echo "<option value=\"".$i."\">".$suffix1."".$i1." PM</option>";
+				}
+				if($i == $hour1) {	
+					echo "<option value=\"".$i."\" selected>".$suffix1."".$i1." PM</option>";
+				}
+				else {
+					echo "<option value=\"".$i."\">".$suffix1."".$i1." PM</option>";
+				}
 			}
 			
 		}	
@@ -469,13 +498,7 @@ function getData(){
 			return true;
 		}
     }
-	console.log(document.getElementById('myshift').value);
-	$(document).ready(function(){
-    $('#myshift').val("<?php echo $_POST['shift'];?>");
-    $('#myModule').val("<?php echo $_POST['module'];?>");
-    $('#hour').val("<?php echo $_POST['hour'];?>");
-    $('#hour1').val("<?php echo $_POST['hour1'];?>");
-});
+
 </script>
 <style>
 .flt{
