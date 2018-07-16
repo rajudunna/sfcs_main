@@ -480,9 +480,11 @@ function getData(){
 		var val2 = $('#demo2').val();
 		var h1 = $('#hour').val();
 		var h2 = $('#hour1').val();
-		if(h1 > h2){
+		var h1_num = h1*1;
+		var h2_num = h2*1;
+		if(h1_num > h2_num){
 			sweetAlert('To Hour must be greater than From Hour','','warning');
-			//return false;
+			return false;
 			setTimeout(function(){
               location.href = "<?= getFullURL($_GET['r'],'transaction_log_new.php','N') ?>"
 			},10000);
