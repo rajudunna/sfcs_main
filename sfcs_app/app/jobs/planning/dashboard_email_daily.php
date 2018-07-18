@@ -226,18 +226,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 if(date("H")=="14")
 {
-	// $to  = 'gayanl@brandix.com,kasinac@brandix.com,brandixalerts@schemaxtech.com,brandixalerts@schemaxtech.com,brandixalerts@schemaxtech.com,bhavanik@brandix.com,bai1leadteam@brandix.com,bai1planningteam@brandix.com,JoeH@brandix.com,ShiranB@brandix.com,BAI1AllExecutives@brandix.com';
+	
 	 $to = $dashboard_email_dialy_H_14;
 	
 }
 else
 {
-	// $to  = 'BAI1AllExecutives@brandix.com,isteamindia@brandix.com,lalithb@brandix.com,govil@brandix.com,lilanthaw@brandix.com,harshal@brandix.com,rangar@brandix.com,duminduw@brandix.com,PriyanthaNa@brandix.com,UdayaD@brandix.com,JoeH@brandix.com,ShiranB@brandix.com,lakshithas@brandix.com,kaushalap@brandix.com,GayaneeW@brandix.com,NishanthaM@brandix.com,brandixalerts@schemaxtech.com';	//removed minura on 2018-01-06 mail from kirang
+
 	 $to = $dashboard_email_dialy;
 }
 
 
-//$to  = 'brandixalerts@schemaxtech.com';
 $subject = 'SAH Report';
 
 // To send HTML mail, the Content-type header must be set

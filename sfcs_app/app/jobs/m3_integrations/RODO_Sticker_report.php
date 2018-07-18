@@ -1,15 +1,17 @@
 <?php
 $start_timestamp = microtime(true);
-// $include_path=getenv('config_job_path');
-// include($include_path.'\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
-	include('mssql_conn.php');
-	error_reporting(E_ALL & ~E_NOTICE);
+	// include('mssql_conn.php');
+	$conn = odbc_connect($conn_string,$user_ms,$password_ms);
+	error_reporting(0);
 	if($conn)
 	{
-		include('mysql_db_config.php');
+		// include('mysql_db_config.php');
 		$curr_date = date(Ymd);
-		$query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54','".$curr_date."','".$curr_date."',0,'%','%','RODO')";
+		// $query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54','".$curr_date."','".$curr_date."',0,'%','%','RODO')";
+		$query_text = "CALL  M3BRNPRD.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54','".$curr_date."','".$curr_date."',0,'%','%','RODO')";
 		$result = odbc_exec($conn, $query_text);
 			$j=0;
 		while($row = odbc_fetch_array($result))

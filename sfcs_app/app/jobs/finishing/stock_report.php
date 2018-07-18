@@ -146,6 +146,7 @@ $packing_summary="temp_pool_db.packing_summary".date("YmdHis");
 $sql="CREATE TABLE $packing_summary ENGINE=MyISAM as (select * from packing_summary)";
 mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 */
+$buyer_stock=[];
 $fg_wh_report_summary="$bai_pro3.fg_wh_report_summary";
 $packing_summary="$bai_pro3.packing_summary";
 

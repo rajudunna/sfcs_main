@@ -1,16 +1,18 @@
 <?php
 $start_timestamp = microtime(true);
-// $include_path=getenv('config_job_path');
-// include($include_path.'\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
-	include('mssql_conn.php');
+	// include('mssql_conn.php');
+	$conn = odbc_connect($conn_string,$user_ms,$password_ms);
 	error_reporting(E_ALL & ~E_NOTICE);
 	if($conn)
 	{
-		include('mysql_db_config.php');
+		// include('mysql_db_config.php');
 		$from = date("Ymd", strtotime('-2 months'));
 		$to = date("Ymd", strtotime('+3 months'));
-		$query_text = "CALL BAISFCS.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD('200','%','EKG','EKG','".$from."','".$to."')";
+		// $query_text = "CALL BAISFCS.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD('200','%','EKG','EKG','".$from."','".$to."')";
+		$query_text = "CALL M3BRNPRD.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD('200','%','EKG','EKG','".$from."','".$to."')";
 		$result = odbc_exec($conn, $query_text);
 
 		$trunc_ship = "TRUNCATE TABLE $m3_inputs.shipment_plan";
