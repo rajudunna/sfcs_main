@@ -4,9 +4,11 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 
 ?>
-<?php	
+hkjukjn 
+<?php
+die();	
 	//getting bundle creation temp data to sync
-	
+
 	$bundles_qry="select * FROM $brandix_bts.bundle_creation_data_temp WHERE (operation_id='129' or operation_id='100') AND sync_status=0 and recevied_qty!=0";
 	$bundles_qry_result=mysqli_query($link,$bundles_qry) or exit("Bundles Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($bundles_qry_result)>0)

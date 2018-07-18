@@ -91,7 +91,7 @@ $text.= "<th>Day Actual</th>";
 $text.= "<th>Day(+/-)</th>";
 $text.= "</tr>";
 
-
+$j=0;
 $sql222_new="select distinct date from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by date";
  // echo $sql222_new;
 
@@ -101,7 +101,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 	$date=$sql_row222_new['date'];
 
 	// $text.= "<tr class='tblheading'>";
-	$j=0;
+	
 	$check=0;
 	for($i=0;$i<sizeof($module_db);$i++)
 	{
@@ -146,10 +146,10 @@ $text.= "</table></body>
 </html>";
 
 
-// echo $text."<br>";
+echo $text."<br>";
 
 
-$to  = $plan_vs_output_analysis_mail;
+// $to  = $plan_vs_output_analysis_mail;
 
 $subject = 'Daily Plan Achievement Report';
 

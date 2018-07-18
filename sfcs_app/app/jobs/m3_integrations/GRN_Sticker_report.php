@@ -1,15 +1,17 @@
 <?php
 $start_timestamp = microtime(true);
-// $include_path=getenv('config_job_path');
-// include($include_path.'\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
-	include('mssql_conn.php');
-	error_reporting(E_ALL & ~E_NOTICE);
+	// include('mssql_conn.php');
+	$conn = odbc_connect($conn_string,$user_ms,$password_ms);
+	error_reporting(0);
 	if($conn)
 	{
-		include('mysql_db_config.php');
+		// include('mysql_db_config.php');
 		$curr_date = date(Ymd);
-		$query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54','".$curr_date."','".$curr_date."',0,'%','%','GRN')";
+		// $query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54','".$curr_date."','".$curr_date."',0,'%','%','GRN')";
+		$query_text = "CALL  M3BRNPRD.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54','".$curr_date."','".$curr_date."',0,'%','%','GRN')";
 		$result = odbc_exec($conn, $query_text);
 		$j=0;
 		while($row = odbc_fetch_array($result))
@@ -39,8 +41,10 @@ set_time_limit(6000000);
 				
 			
 			$sql_lot = "INSERT IGNORE INTO $bai_rm_pj1.sticker_report (lot_no) VALUES (\"".$lot_num."\")";
+			
 			$result_lot = mysqli_query($link, $sql_lot);
 			$sql_sticker_det = "UPDATE $bai_rm_pj1.sticker_report SET item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = '', grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = 'GRN'  WHERE lot_no = \"".$lot_num."\"";
+			
 			$result_rec_insert = mysqli_query($link, $sql_sticker_det);
 			if($result_rec_insert ){
 				$j++;

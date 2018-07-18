@@ -255,20 +255,16 @@ if(date("H")>18)
 ?>
 <?php
 
-	//$to  = 'BAI2PlanningTeam@brandix.com,BAI2ManufacturingTeam@brandix.com, naveenw@brandix.com, BAI2IndustrialEngineeringTeam@brandix.com, brandixalerts@schemaxtech.com, brandixalerts@schemaxtech.com, brandixalerts@schemaxtech.com,BAI2ProductionTeam@brandix.com,AjayG@brandix.com,ShermalD@brandix.com';
-	// $to  = 'QCIIETeam@brandix.com, QCIManufacturingTeam@brandix.com, QCIProductionTeam@brandix.com, QCIIndustrialEngTeam@brandix.com, fazlulr@brandix.com, brandixalerts@schemaxtech.com';
+
 	$to  = $line_wip_track;
-	//$to  = 'brandixalerts@schemaxtech.com';
+
 	$subject = 'BEK WIP (Production) Track';
 	
 	// To send HTML mail, the Content-type header must be set
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
 	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 	
-	// Additional headers
-//$headers .= 'To: <BAI2PlanningTeam@brandix.com>; <BAI2ManufacturingTeam@brandix.com>; <BAI2IndustrialEngineeringTeam@brandix.com>; <BAI2ProductionTeam@brandix.com>; <naveenw@brandix.com>; <AjayG@brandix.com>; <ShermalD@brandix.com>'. "\r\n";
-	// $headers .= 'To: <QCIIETeam@brandix.com>; <QCIManufacturingTeam@brandix.com>; <QCIProductionTeam@brandix.com>; <QCIIndustrialEngTeam@brandix.com>;'. "\r\n";
-	//$headers .= 'To: <brandixalerts@schemaxtech.com>;<brandixalerts@schemaxtech.com>;<brandixalerts@schemaxtech.com>'. "\r\n";
+
 	$headers .= $header_from. "\r\n";
 	
 	if(mail($to, $subject, $message, $headers))

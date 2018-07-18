@@ -6,6 +6,7 @@ $include_path=getenv('config_job_path');
     <head>
 	<?php 
 	set_time_limit(90000000);
+	error_reporting(0);
 	?>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Plan SAH and Actual SAH</title>
@@ -682,7 +683,7 @@ echo '<div id="page_heading"><span style="float: left"><h3>SAH Countdown Report<
 						$date_array= array();
 						$sql = "SELECT date FROM $bai_pro.grand_rep where date between '$from' and '$todate' group by date";
 						$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
-						
+						$categ=[];
 						while($r = mysqli_fetch_array($query))
 						{
 							$categ[] = $r['date'];

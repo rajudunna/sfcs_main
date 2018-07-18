@@ -3,7 +3,7 @@
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-
+error_reporting(0);
 ?> 
 <?php  
 // function leading_zeros($value, $places){
@@ -146,7 +146,7 @@ while($sql_rowa=mysqli_fetch_array($sqlres))
 // $packing_team_heads=array("","","Ramakrishna","","Divya Mohan"); 
 // $packing_team_heads_rows=array("","","2","","2"); 
 $i=2; 
-
+// $section_mods=[];
 for($j=0; $j<sizeof($sec_db_order); $j++) 
 { 
 
@@ -156,8 +156,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 { 
     $section=$sql_rowx['sec_id']; 
     $section_head=$sql_rowx['sec_head']; 
-    $section_mods=$sql_rowx['sec_mods']; 
-     
+   $section_mods=$sql_rowx['sec_mods']; 
+
      
     if(sizeof($section_mods)>0) 
     { 
@@ -288,8 +288,8 @@ $message.= "</table><br/><br/>Message Sent Via:".$plant_name."</body>
 </html>"; 
 echo $message; 
 
-     $to  =$pop_pending_list_mail; 
-     
+    $to  =$pop_pending_list_mail; 
+
     // subject 
     $subject = 'Alert - Carton Issues'; 
      

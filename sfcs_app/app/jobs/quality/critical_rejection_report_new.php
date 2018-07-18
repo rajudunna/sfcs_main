@@ -134,8 +134,8 @@ $edate=$sdate+(60*60*24*5); // define sunday
 
 //$edate=$sdate+(60*60*24*1);
 
-// $sdate=date("Y-m-d",$sdate);
-// $edate=date("Y-m-d",$edate);
+$sdate=date("Y-m-d",$sdate);
+$edate=date("Y-m-d",$edate);
 
 // $sdate=date("2017-09-01",$sdate);
 // $edate=date("2017-09-07",$edate);
