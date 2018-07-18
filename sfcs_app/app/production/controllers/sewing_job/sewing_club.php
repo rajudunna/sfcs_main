@@ -190,8 +190,9 @@ if($rows_count_jobs == 0){
 						//echo "<th>Style</th>"; 
 						/* echo "<th>PO#</th>"; */
 						echo "<th>Schedule</th>";
-						echo "<th>Quantity</th>";
 						echo "<th>Input Job#</th>";
+						echo "<th>Quantity</th>";
+						
 						echo "<th>Clubbing Details</th>";  
 						echo "</tr></thead>";
 
@@ -219,8 +220,11 @@ if($rows_count_jobs == 0){
 								echo "<tr height=20 style='height:15.0pt'>";
 								//echo "<td height=20 style='height:15.0pt'>".$style."</td>";
 								echo "<td height=20 style='height:15.0pt'>".$sql_row["order_del_no"]."</td>";
+								$url=getFullURL($_GET['r'],'small_popup.php','R');
+								// echo "<td height=20 style='height:15.0pt'>J".$sql_row["input_job_no"]." <a class='tooltippage' id='clickme' href='#' rel='$url&schedule='".$sql_row["order_del_no"]."'&jobno='".$sql_row["input_job_no"]." title='Full Details of Input Job'>Click Here</a></td>";
+								echo "<td height=20 style='height:15.0pt'> <a class='btn btn-success btn-sm' href='$url?schedule=$del_no_new&jobno=$job_new' onclick=\"return popitup2('$url?schedule=$del_no_new&jobno=$job_new')\" target='_blank'>J".$sql_row["input_job_no"]."</a></td>";
 								 echo "<td height=20 style='height:15.0pt'>".$sql_row["carton_act_qty"]."</td>"; 
-								echo "<td height=20 style='height:15.0pt'>J".$sql_row["input_job_no"]."</td>";
+								
                                
 
 								// echo "<td>Clubbed</td>";		
