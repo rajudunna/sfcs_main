@@ -1,47 +1,18 @@
-<style type="text/css">
-/* table.gridtable {
-    font-family:arial;
-    font-size:11px;
-    color:#333333;
-    border-width: 1px;
-    border-color: #666666;
-    border-collapse: collapse;
-    
-    /*height: 100%; 
-    width: 100%;*/
-/* }
-table.gridtable th {
-    border-width: 1px;
-    padding: 3.5px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #ffffff;
-}
-table.gridtable td {
-    border-width: 1px;
-    padding: 3.5px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #ffffff;
-} */
-</style>
-
-
 <script>
     function printpr()
     {
-    var OLECMDID = 7;
-    /* OLECMDID values:
-    * 6 - print
-    * 7 - print preview
-    * 1 - open window
-    * 4 - Save As
-    */
-    var PROMPT = 1; // 2 DONTPROMPTUSER
-    var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-    document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-    WebBrowser1.ExecWB(OLECMDID, PROMPT);
-    WebBrowser1.outerHTML = "";
+        var OLECMDID = 7;
+        /* OLECMDID values:
+        * 6 - print
+        * 7 - print preview
+        * 1 - open window
+        * 4 - Save As
+        */
+        var PROMPT = 1; // 2 DONTPROMPTUSER
+        var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
+        document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+        WebBrowser1.ExecWB(OLECMDID, PROMPT);
+        WebBrowser1.outerHTML = "";
     
     }
 </script>
@@ -316,13 +287,13 @@ table.gridtable td {
                 echo "<th>Destination</th>";
                 echo "<th>Color</th>";
                 echo "<th>Cut Job#</th>";
-                echo "<th>Delivary Date</th>";
+                echo "<th>Delivery Date</th>";
                 echo "<th>Input Job#</th>";
                 
                 echo "<th>Total</th>";
                 echo "<th>Input/Output details</th>";
                 echo "</tr>";
-
+                $overall_qty = 0;
                 $sql="select distinct input_job_no as job from  $bai_pro3.packing_summary_input where order_del_no in ($schedule) order by input_job_no*1";
                 //echo $sql."</br>";
                 $result=mysqli_query($link, $sql) or die("Error-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));           
@@ -384,32 +355,15 @@ table.gridtable td {
                         echo "<td height=20 style='height:15.0pt'>$display_colors</td>";
                         echo "<td height=20 style='height:15.0pt'>".$cut_job_no."</td>";
                         echo "<td height=20 style='height:15.0pt'>".$del_date."</td>";
-                        echo "<td height=20 style='height:15.0pt'>J".$sql_row["job"]."</td>";
-                        for($i=0;$i<sizeof($sizes_array);$i++)
-                        {   
-                        
-                            //$sql7="SELECT * FROM packing_summary_input where size_code='".$size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."'";
-                            // $sql7="SELECT * FROM  $bai_pro3.packing_summary_input where size_code='".$size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and input_job_no='".$sql_row["job"]."' and doc_no IN (".$doc_nos_des.")";
-                            //echo $sql7;
-                            // $result7=mysqli_query($link, $sql7) or die("Error7-".$sql7."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            // $rows_count=mysqli_num_rows($result7);
-                            // if($rows_count > 0)
-                            // {
-                                $sql5="SELECT round(sum(carton_act_qty),0) as qty FROM packing_summary_input where old_size='".$size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."'";
-                                //$sql5="SELECT round(sum(carton_act_qty),0) as qty FROM  $bai_pro3.packing_summary_input where size_code='".$size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and input_job_no='".$sql_row["job"]."' ";
-                                //echo $sql5."<br>";
-                                $result5=mysqli_query($link, $sql5) or die("Error-".$sql5."-".mysqli_error($GLOBALS["___mysqli_ston"]));            
-                                while($sql_row5=mysqli_fetch_array($result5))
-                                {
-                                    //echo "<td class=xl787179 align=\"center\">".$sql_row5["qty"]."</td>";
-                                    $total_qty1=$total_qty1+$sql_row5["qty"];
-                                }
-                            // }
-                            // else
-                            // {
-                                // echo "<td class=xl787179 align=\"center\">0</td>";
-                                // $total_qty1=$total_qty1+0;
-                            // }            
+                        echo "<td height=20 style='height:15.0pt'>J".leading_zeros($sql_row["job"], 3)."</td>";
+
+                        $sql5="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE order_del_no in (".$sql_row1["del_no"].") and input_job_no=".$sql_row["job"];
+                        // echo $sql5."<br>";
+                        $result5=mysqli_query($link, $sql5) or die("Error-".$sql5."-".mysqli_error($GLOBALS["___mysqli_ston"]));            
+                        while($sql_row5=mysqli_fetch_array($result5))
+                        {
+                            $total_qty1=$sql_row5["qty"];
+                            $overall_qty = $overall_qty + $total_qty1;
                         }
                         echo "<td align=\"center\">".$total_qty1."</td>";
                         echo "<td>";
@@ -480,91 +434,10 @@ table.gridtable td {
                         echo "</tr>";
                     }
                 }
-
-                //$sql="select `order_s_xs`,    `order_s_s`,    `order_s_m`,    `order_s_l`,    `order_s_xl`,   `order_s_xxl`,  `order_s_xxxl` from bai_orders_db_confirm where order_del_no in (".$joinSch.") ";
-                $sql1="select sum(order_s_xs) as order_s_xs,sum(order_s_s) as order_s_s,sum(order_s_m) as order_s_m,sum(order_s_l) as order_s_l,sum(order_s_xl) as order_s_xl,sum(order_s_xxl) as order_s_xxl,sum(order_s_xxxl) as order_s_xxxl,SUM(order_s_s06) as order_s_s06,SUM(order_s_s08) as order_s_s08,SUM(order_s_s10) as order_s_s10,SUM(order_s_s12) as order_s_s12,SUM(order_s_s14) as order_s_s14,SUM(order_s_s16) as order_s_s16,SUM(order_s_s18) as order_s_s18,SUM(order_s_s20) as order_s_s20,SUM(order_s_s22) as order_s_s22,SUM(order_s_s24) as order_s_s24,SUM(order_s_s26) as order_s_s26,SUM(order_s_s28) as order_s_s28,SUM(order_s_s30) as order_s_s30 from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$joinSch\" ";
-                //echo $sql1;
-                    $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    while($sql_row1=mysqli_fetch_array($sql_result1))
-                    {
-                        $o_s_xs=$sql_row1['order_s_xs'];
-                        $o_s_s=$sql_row1['order_s_s'];
-                        $o_s_m=$sql_row1['order_s_m'];
-                        $o_s_l=$sql_row1['order_s_l'];
-                        $o_s_xl=$sql_row1['order_s_xl'];
-                        $o_s_xxl=$sql_row1['order_s_xxl'];
-                        $o_s_xxxl=$sql_row1['order_s_xxxl'];
-                        for($i=0;$i<sizeof($sizes_array);$i++)
-                        {
-                            $codes="o_s_".$sizes_array[$i];
-                            $$codes=$sql_row1["order_s_".$sizes_array[$i].""];
-                        }
-                        // $o_total=($o_s_xs+$o_s_s+$o_s_m+$o_s_l+$o_s_xl+$o_s_xxl+$o_s_xxxl);
-                        $o_total=($o_s_xs+ $o_s_s+$o_s_m+$o_s_l+$o_s_xl+$o_s_xxl+$o_s_xxxl+$o_s_s01+$o_s_s02+$o_s_s03+$o_s_s04+$o_s_s05+$o_s_s06+$o_s_s07+$o_s_s08+$o_s_s09+$o_s_s10+$o_s_s11+$o_s_s12+$o_s_s13+$o_s_s14+$o_s_s15+$o_s_s16+$o_s_s17+$o_s_s18+$o_s_s19+$o_s_s20+$o_s_s21+$o_s_s22+$o_s_s23+$o_s_s24+$o_s_s25+$o_s_s26+$o_s_s27+$o_s_s28+$o_s_s29+$o_s_s30+$o_s_s31+$o_s_s32+$o_s_s33+$o_s_s34+$o_s_s35+$o_s_s36+$o_s_s37+$o_s_s38+$o_s_s39+$o_s_s40+$o_s_s41+$o_s_s42+$o_s_s43+$o_s_s44+$o_s_s45+$o_s_s46+$o_s_s47+$o_s_s48+$o_s_s49+$o_s_s50);
-                        //echo $o_total;
-                    }
                 echo "<tr>";
                 echo "<th colspan=9  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
                 
-                
-                if ( $o_s_xs!=0) {  echo "<th align=\"center\" style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">".$o_s_xs."</th>"; }
-                if ( $o_s_s!=0) {   echo "<th align=\"center\" style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">".$o_s_s."</th>"; }
-                if ( $o_s_m!=0) {   echo "<th align=\"center\" style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">".$o_s_m."</th>"; }
-                if ( $o_s_l!=0) {   echo "<th align=\"center\" style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">".$o_s_l."</th>"; }
-                if ( $o_s_xl!=0) {  echo "<th align=\"center\" style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">".$o_s_xl."</th>"; }
-                if ( $o_s_xxl!=0) { echo "<th align=\"center\" style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">".$o_s_xxl."</th>"; }
-                if ( $o_s_xxxl!=0) {    echo "<th align=\"center\" style=\"border:1px solid #000;border-bottom:1px dotted #000;\">".$o_s_xxxl."</th>"; }
-                if($o_s_s01!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s01."</th>"; }
-    if($o_s_s02!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s02."</th>"; }
-    if($o_s_s03!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s03."</th>"; }
-    if($o_s_s04!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s04."</th>"; }
-    if($o_s_s05!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s05."</th>"; }
-    if($o_s_s06!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s06."</th>"; }
-    if($o_s_s07!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s07."</th>"; }
-    if($o_s_s08!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s08."</th>"; }
-    if($o_s_s09!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s09."</th>"; }
-    if($o_s_s10!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s10."</th>"; }
-    if($o_s_s11!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s11."</th>"; }
-    if($o_s_s12!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s12."</th>"; }
-    if($o_s_s13!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s13."</th>"; }
-    if($o_s_s14!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s14."</th>"; }
-    if($o_s_s15!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s15."</th>"; }
-    if($o_s_s16!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s16."</th>"; }
-    if($o_s_s17!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s17."</th>"; }
-    if($o_s_s18!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s18."</th>"; }
-    if($o_s_s19!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s19."</th>"; }
-    if($o_s_s20!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s20."</th>"; }
-    if($o_s_s21!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s21."</th>"; }
-    if($o_s_s22!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s22."</th>"; }
-    if($o_s_s23!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s23."</th>"; }
-    if($o_s_s24!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s24."</th>"; }
-    if($o_s_s25!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s25."</th>"; }
-    if($o_s_s26!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s26."</th>"; }
-    if($o_s_s27!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s27."</th>"; }
-    if($o_s_s28!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s28."</th>"; }
-    if($o_s_s29!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s29."</th>"; }
-    if($o_s_s30!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s30."</th>"; }
-    if($o_s_s31!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s31."</th>"; }
-    if($o_s_s32!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s32."</th>"; }
-    if($o_s_s33!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s33."</th>"; }
-    if($o_s_s34!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s34."</th>"; }
-    if($o_s_s35!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s35."</th>"; }
-    if($o_s_s36!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s36."</th>"; }
-    if($o_s_s37!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s37."</th>"; }
-    if($o_s_s38!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s38."</th>"; }
-    if($o_s_s39!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s39."</th>"; }
-    if($o_s_s40!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s40."</th>"; }
-    if($o_s_s41!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s41."</th>"; }
-    if($o_s_s42!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s42."</th>"; }
-    if($o_s_s43!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s43."</th>"; }
-    if($o_s_s44!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s44."</th>"; }
-    if($o_s_s45!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s45."</th>"; }
-    if($o_s_s46!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s46."</th>"; }
-    if($o_s_s47!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s47."</th>"; }
-    if($o_s_s48!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s48."</th>"; }
-    if($o_s_s49!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s49."</th>"; }
-    if($o_s_s50!=0) {echo "<th align='center' style='border-top:1px solid #000;border-bottom:1px dotted #000';> ".$o_s_s50."</th>"; }
-                echo "<th  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">$o_total</th>";
+                echo "<th  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">$overall_qty</th>";
                 echo "<th>";
                             $tot_in=0;
                             $tot_out=0;
