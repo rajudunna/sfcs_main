@@ -1,7 +1,6 @@
 <script>
 	function printPage(printContent) { 
 		var display_setting="toolbar=yes,menubar=yes,scrollbars=yes,width=1050, height=600"; 
-
 		var printpage=window.open("","",display_setting); 
 		printpage.document.open(); 
 		printpage.document.write('<html><head><title>Print Page</title></head>'); 
@@ -29,10 +28,16 @@
 		<br><center><a href="javascript:void(0);" onClick="printPage(printsection.innerHTML)" class="btn btn-warning">Print</a></center><br>
 		<div id="printsection">
 			<style>
-				table, th, td {
-					border: 1px solid black;
-					border-collapse: collapse;
-				}
+		        table, th, td
+		        {
+		            border: 1px solid black;
+		            border-collapse: collapse;
+		            background-color: transparent;
+		        }
+		        body
+		        {
+		            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		        }
 			</style>
 			<div class="panel panel-primary">
 				<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>
@@ -190,12 +195,12 @@
 						echo "<th>Total</th>";
 						echo "</thead></tr>";
 
-						$sql="select distinct input_job_no as job from $bai_pro3.packing_summary_input where order_del_no in ($schedule) order by input_job_no*1";
+						$sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) order by input_job_no*1";
 						// echo $sql."<br>";
 						$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result))
 						{
-
+							$type_of_sewing = $sql_row["type_of_sewing"];
 							$sql1="select GROUP_CONCAT(DISTINCT acutno) AS acutno,group_concat(distinct order_del_no) as del_no,group_concat(distinct doc_no) as doc_nos from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."' ";
 							// echo $sql1."<br>";
 							$result1=mysqli_query($link, $sql1) or die("Error88-".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -259,8 +264,14 @@
 								$display_colors=str_replace(',',$totcount,$color);
 								//$totcount=0;
 
+								if ($sql_row['type_of_sewing'] == 2)
+		                        {
+		                            $bg_color='yellow';
+		                        } else {
+		                            $bg_color='';
+		                        }
 
-								echo "<tr height=20 style='height:15.0pt'>";
+								echo "<tr height=20 style='height:15.0pt; background-color:$bg_color;'>";
 								echo "<td height=20 style='height:15.0pt'>".$style."</td>";
 								echo "<td height=20 style='height:15.0pt'>$po</td>";
 								echo "<td height=20 style='height:15.0pt'>$vpo</td>";
