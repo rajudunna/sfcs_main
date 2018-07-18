@@ -79,7 +79,7 @@
 	<div class="panel-body">
 		<div class="col-md-12">
 			<form method="POST" class="form-inline" name="packing_ratio" action="index.php?r=<?php echo $_GET['r']; ?>">
-				Style:
+				<label>Style:</label>
 				<?php
 					// Style
 					echo "<select name=\"style\" id=\"style\"  class='form-control' onchange=\"firstbox();\">";
@@ -101,7 +101,7 @@
 					echo "</select>";
 				?>
 				&nbsp;&nbsp;
-				Schedule:
+				<label>Schedule:</label>
 				<?php
 					echo "<select class='form-control' name='schedule' id='schedule'>";
 					$sql="select id,product_schedule as schedule from $brandix_bts.tbl_orders_master where ref_product_style=\"$style\" group by schedule";
@@ -122,7 +122,7 @@
 					echo "</select>";
 				?>
 				&nbsp;&nbsp;
-				Pack Method: 
+				<label>Pack Method:</label>
 				<?php 
 				echo "<select id=\"pack_method\" class='form-control' name=\"pack_method\" >";
 				for($j=0;$j<sizeof($operation);$j++)
@@ -446,7 +446,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors); value=''></td>";
 																				}
 																			}
 																			else
@@ -464,27 +464,29 @@
 											</div>";
 										
 										//second table
-										echo "<div class='panel panel-primary'>";
-												echo "<div class='panel-heading'>Number of Poly Bags Per Carton</div>";
-												echo "<div class='panel-body'>";
-													echo "<input type='hidden' name='size_size1' id='size_size1' value='".sizeof($size1)."' />";
-													echo "<div class='table-responsive'><table class='table table-bordered'>
-														<tr>";
-															// Show Sizes
-															for ($i=0; $i < sizeof($size1); $i++)
-															{
-																echo "<th>".$size1[$i]."</th>";
-															}
-														echo "</tr>";
-														echo "<tr>";
-															for ($size_count=0; $size_count < sizeof($size1); $size_count++)
-															{
-																echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors);></td>";
-															}
-														echo "</tr>";
-													echo "</div></table>
+										echo "<div class='panel panel-primary'>
+												<div class='panel-heading'>Number of Poly Bags Per Carton</div>
+												<div class='panel-body'>
+													<input type='hidden' name='size_size1' id='size_size1' value='".sizeof($size1)."' />
+													<div class='table-responsive'>
+														<table class='table table-bordered'>
+															<tr>";
+																// Show Sizes
+																for ($i=0; $i < sizeof($size1); $i++)
+																{
+																	echo "<th>".$size1[$i]."</th>";
+																}
+															echo "</tr>";
+															echo "<tr>";
+																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
+																{
+																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors);></td>";
+																}
+															echo "</tr>
+														</table>
+													</div>
 												</div>
-											</div>";
+											</div></div>";
 										
 										//third table	
 										echo "<div class='panel panel-primary'>
@@ -600,7 +602,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' value=''></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors); value=''></td>";
 																				}
 																			}
 																			else
