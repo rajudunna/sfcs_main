@@ -594,11 +594,11 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		
 		if($style_flag==0){
 			if(sizeof($lotnos_array) ==''){
-				$seperated_lots="No lot Number Found";
+				// $seperated_lots="No lot Number Found";
 				$Disable_allocate=1;
 			}
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" name=\"pms".$sql_row1['doc_no']."\" id='address' 
-			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 >".$seperated_lots."</textarea><br/>";
+			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 placeholder='No Lot Number Found, Please Enter Lot Number'>".$seperated_lots."</textarea><br/>";
 
 		}else{
 
