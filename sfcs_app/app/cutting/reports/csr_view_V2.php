@@ -55,11 +55,16 @@ function verify_date(){
 				while($res1 = mysqli_fetch_array($sec_result_all)){
 					$all_secs = $res1['sec'];
 				}
+
 			?>
 			<div class="col-md-2">
 				<label>Section: </label>
-				<select name="section" class="form-control">
-					<option value='<?= $all_secs ?>'>All</option>
+				<select name="section" class="form-control" required>
+					<option value=''>Please Select</option>
+					<?php if($all_secs){
+					echo "<option value='$all_secs'>All</option>";
+					}
+					?>
 					<?php
 						foreach($table_result as $key=>$value){
 							echo "<option value='\"".$value['tbl_id']."\"'>".$value['tbl_name']."</option>";
@@ -69,7 +74,7 @@ function verify_date(){
 			</div>
 			<div class="col-md-2">
 				<label>Shift: </label>
-				<select name="shift" class="form-control">
+				<select name="shift" class="form-control" >
 					<?php 
 					foreach($shifts_array as $key=>$shift){
 						echo "<option value=\"'$shift'\">$shift</option>";
