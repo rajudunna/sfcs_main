@@ -267,8 +267,10 @@
 								if ($sql_row['type_of_sewing'] == 2)
 		                        {
 		                            $bg_color='yellow';
+		                            $display = 'E';
 		                        } else {
 		                            $bg_color='';
+		                            $display = 'J';
 		                        }
 
 								echo "<tr height=20 style='height:15.0pt; background-color:$bg_color;'>";
@@ -281,7 +283,7 @@
 								echo "<td height=20 style='height:15.0pt'>".$color."</td>";
 								echo "<td height=20 style='height:15.0pt'>".substr($cut_jobs_new, 0,-1)."</td>";
 								echo "<td height=20 style='height:15.0pt'>".$del_date."</td>";
-								echo "<td height=20 style='height:15.0pt'>J".leading_zeros($sql_row["job"], 3)."</td>";
+								echo "<td height=20 style='height:15.0pt'>".$display.leading_zeros($sql_row["job"], 3)."</td>";
 								for($i=0;$i<sizeof($size_array);$i++)
 								{
 									$sql7="SELECT * FROM $bai_pro3.packing_summary_input where order_del_no in (".$sql_row1["del_no"].")  and size_code='".$orginal_size_array[$i]."' and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";
