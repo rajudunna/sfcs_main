@@ -2,6 +2,6 @@
     <colorRange>
         <color minValue='0' maxValue='0' code='DDDDDD'/>
     </colorRange> 
-    <value>58</value>
+    <value>0</value>
 	
 </chart>"; ?>

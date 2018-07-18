@@ -28,6 +28,11 @@ $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
 $plant_m3_wh_code='E54';
+//ms-sql jobs 
+$host_ms = "10.227.221.25";
+$user_ms = "BAISFCS";
+$password_ms = "fcs@m3pr";
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
 
 //material requirement in week_del_mail_v2
 $server="BLL-DEVRPT-01";
