@@ -28,6 +28,11 @@ $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
 $plant_m3_wh_code='E54';
+//ms-sql jobs 
+$host_ms = "10.227.221.25";
+$user_ms = "BAISFCS";
+$password_ms = "fcs@m3pr";
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
 
 //material requirement in week_del_mail_v2
 $server="BLL-DEVRPT-01";
@@ -73,8 +78,10 @@ $bai_ict="bai_ict";
 $path=$include_path."/sfcs_app/app";
 // $mail_to_test=$mail_alert[2];
 $smtp_user=$conf->get('smtp-user-name');
-// $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
-$header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
+$header_name="BEKSFCS Alert";
+$header_mail="bek_sfcs@brandix.com";
+ $header_from= 'From: BEKSFCS Alert <bek_sfcs@brandix.com>';
+// $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 $order_summary_report=$conf->get('order_summary_mail');
 $mrn_mail=$conf->get('mrn_week_summary_alert_mail');
 $inspection_rep_email=$conf->get('rm_summary_report_email');
