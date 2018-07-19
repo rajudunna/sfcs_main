@@ -360,15 +360,15 @@ $club_status=0;$a_plies_qty=0;
 
 
 <?php 
-if($print_status==NULL) 
-{ 
-    echo "<script>sweetAlert('Docket is yet to generate','Please Contact your cutting Head','error');</script>";
-    //echo "<div class='alert alert-danger'>Docket is yet to generate. Please contact your cutting head.</div>";
-    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",4000); function Redirect() {  location.href = '".getFullURL($_GET['r'],'doc_track_panel.php','N')."'; }</script>"; 
-    echo "</table></div></div></div>"; 
-} 
-else 
-{ 
+// if($print_status==NULL) 
+// { 
+//     echo "<script>sweetAlert('Docket is yet to generate','Please Contact your cutting Head','error');</script>";
+//     //echo "<div class='alert alert-danger'>Docket is yet to generate. Please contact your cutting head.</div>";
+//     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",4000); function Redirect() {  location.href = '".getFullURL($_GET['r'],'doc_track_panel.php','N')."'; }</script>"; 
+//     echo "</table></div></div></div>"; 
+// } 
+// else 
+// { 
         
     $special_users=array("kirang","prabathsa","kirang"); 
     echo "<input type=\"hidden\" name=\"tran_order_tid\" value=\"".$tran_order_tid."\">"; 
@@ -663,7 +663,7 @@ else
     echo "<input type=\"hidden\" name=\"remarks\" value=\"$fab_remarks\">"; 
     echo "<input type=\"hidden\" value='".array_sum($a_s)."' name='total'/>"; 
 
-} 
+//} 
 ?> 
 
 

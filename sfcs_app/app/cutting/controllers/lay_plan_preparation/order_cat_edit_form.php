@@ -31,22 +31,34 @@ function verify_nums(t,e){
 	}
 }
 
-
-function verify_spec(t,e){
-	if(e.keyCode == 8 || e.keyCode == 9){
-			return;
-		}
-
-	var c = /^[0-9a-zA-Z. ]+$/;
-	var id = t.id;
-	var qty = document.getElementById(id);
-
-	if( !(qty.value.match(c)) && qty.value!=null){
-		sweetAlert('Please Enter Pattern Version','','warning');
-		qty.value = 0;
-		return false;
-	}
+function verify_spec(e)
+{
+	var pver = document.getElementById('patt_ver').value;
+	document.getElementById('patt_ver').value = pver.replace('"','').replace("'","");
+	return true;
 }
+
+
+
+
+// function verify_spec(t,e){
+// 	if(e.keyCode == 8 || e.keyCode == 9){
+// 			return;
+// 		}
+
+// 	var c = /^[0-9a-zA-Z-. ]+$/;
+// 	var id = t.id;
+// 	var qty = document.getElementById(id);
+
+// 	if( !(qty.value.match(c)) && qty.value!=null){
+// 		sweetAlert('Please Enter Pattern Version','','warning');
+// 		qty.value = 0;
+// 		return false;
+// 	}
+// }
+
+
+
 
 
 function enableButton() 
@@ -153,7 +165,10 @@ echo "<option value=\"Wing\""; if($sql_row['category']=='Wing'){ echo "selected"
 echo "</select></div></td></tr>";
 
 echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Pur Width</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><input class=\"form-control float\" required type=\"text\"  name=\"in_width\" id='in_width' value=\"".$sql_row['purwidth']."\"></div></td></tr>";
-echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Pattern Ver</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><input class=\"form-control alpha\" required type=\"text\"  name=\"patt_ver\" id='patt_ver' value=\"".$sql_row['patt_ver']."\"></div></td></tr>";
+echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Pattern Ver</th><td class=\"  \">:</td><td class=\"  \">
+<div class=\"col-md-4\">
+<input class='form-control' onkeyup=\"return verify_spec(event)\"  type=\"text\"  name=\"patt_ver\" id='patt_ver' value=\"".$sql_row['patt_ver']."\"  required >
+</div></td></tr>";
 
 echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Gmt Way</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" name=\"gmt_way\">";
 echo "<option value=\"N\""; if($sql_row['gmtway']=='N'){ echo "selected"; } echo ">All Gmt One Way</option>";

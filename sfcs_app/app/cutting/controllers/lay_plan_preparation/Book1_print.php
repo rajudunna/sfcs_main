@@ -2925,7 +2925,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
     // NEW CODE 
 //RATIO AND INPUTS EDITING 
 // embellishment start 
-if($emb_stat==1) 
+//$emb_stat == 1
+if(0) 
     { 
        
       echo "<tr class=xl6613019 height=20 style='height:15.0pt'>"; 

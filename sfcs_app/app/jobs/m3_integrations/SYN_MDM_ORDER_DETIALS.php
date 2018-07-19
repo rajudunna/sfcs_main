@@ -1,16 +1,18 @@
 <?php
 $start_timestamp = microtime(true);
-// $include_path=getenv('config_job_path');
-// include($include_path.'\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
-    include('mssql_conn.php');
+    // include('mssql_conn.php');
+    $conn = odbc_connect($conn_string,$user_ms,$password_ms);
 	error_reporting(E_ALL & ~E_NOTICE);
     if($conn)
     {
-        include('mysql_db_config.php');
+     
 		$from = date("Ymd", strtotime('-2 months'));
 		$to = date("Ymd", strtotime('+3 months'));
-		$query_text2 = "CALL BAISFCS.RPT_APL_ORDER_DETAILS('BEL','EKG',NULL,NULL,'".$from."','".$to."','2')";
+		//$query_text2 = "CALL BAISFCS.RPT_APL_ORDER_DETAILS('BEL','EKG',NULL,NULL,'".$from."','".$to."','2')";
+		$query_text2 = "CALL M3BRNPRD.RPT_APL_ORDER_DETAILS('BEL','EKG',NULL,NULL,'".$from."','".$to."','2')";
 		$result2 = odbc_exec($conn, $query_text2);
 
 		$trunc_order = "TRUNCATE TABLE $m3_inputs.order_details";

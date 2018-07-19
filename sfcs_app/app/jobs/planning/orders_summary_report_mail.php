@@ -64,6 +64,7 @@ table{
 $text.="<h3>Orders Summary Report</h3>";
 $sdate=$edate=date("Y-m-d");
 
+$email_validate=0;
 $order="(order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50)";
 
 
@@ -93,7 +94,6 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 	
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-
 			$text.= "<tr>";
 			$text.= "<td>".$sql_row['order_date']."</td>";
 			$text.= "<td>".$sql_row['order_style_no']."</td>";
@@ -114,6 +114,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 			$text.= "<td>".$module[0]."</td>";
 			
 			$text.= "</tr>";
+			$email_validate++;
 	}
 	$text.= "</table></body></html>";
 
@@ -133,7 +134,8 @@ $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 // $headers .= 'From: Shop Floor System Alert <bel_sfcs@brandix.com>'. "\r\n";
 $headers .=$header_from. "\r\n";
 
-	
+	if($email_validate >0)
+	{
 		if(mail($to, $subject, $text, $headers))
 		{
 			print("mail sent successfully")."\n";
@@ -142,6 +144,13 @@ $headers .=$header_from. "\r\n";
 		{
 			print("mail failed")."\n";
 		}
+		
+	}else
+	{
+		print("mail Not Send Due to data not found")."\n";
+	}
+	
+		
 
 $end_timestamp = microtime(true);
 $duration = $end_timestamp - $start_timestamp;

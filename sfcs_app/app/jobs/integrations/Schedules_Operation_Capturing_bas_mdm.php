@@ -4,21 +4,21 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(1000000);
 
-$connect = odbc_connect("$driver_name;Server=$serverName;Database=$m3_databasename;", $uid,$pwd);
+$connect = odbc_connect("BAIDBSRV01", "sa","Brandix@7");
 
-$schedule_array=array();
-$schedule_array[]=-1;
+$styles_array=array();
+$styles_array[]=-1;
 
-$sql="SELECT DISTINCT order_del_no AS sch FROM $bai_pro3.bai_orders_db WHERE order_del_no > 0 ORDER BY order_del_no*1";
+$sql="SELECT DISTINCT order_style_no AS sch FROM $bai_pro3.bai_orders_db WHERE order_del_no > 0";
 $result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($result))
 {
-	$schedule_array[]=$sql_row["sch"];
+	$styles_array[]=$sql_row["sch"];
 }	
 
 $default_operations=array("100","101","129","130");
 
-$sql22="truncate table $bai_pro3.schedule_oprations_master_backup";
+$sql22="truncate table $bai_pro3.schedule_oprations_master_backupschedule_oprations_master_backup";
 mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sql21="insert into $bai_pro3.schedule_oprations_master_backup select * from $bai_pro3.schedule_oprations_master";
@@ -26,31 +26,12 @@ mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli
 
 $sql2="truncate table $bai_pro3.schedule_oprations_master";
 mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$k=0;
+for($i=0;$i<sizeof($styles_array);$i++)
+{
 
-$tsql="SELECT 
-[$m3_databasename].[m3].[MO].Style,
-[$m3_databasename].[m3].[MOOperation].ScheduleNumber,
-[$m3_databasename].[m3].[StyleMaster].ColorId,
-[$m3_databasename].[m3].[ColorMaster].Description,
-[$m3_databasename].[m3].[StyleMaster].SizeId,
-[$m3_databasename].[m3].[StyleMaster].ZFeature,
-[$m3_databasename].[m3].[StyleMaster].ZFeatureId,
-[$m3_databasename].[m3].[MOOperation].MONumber,
-[$m3_databasename].[m3].[MOOperation].SMV,
-[$m3_databasename].[m3].[MOOperation].OperationDescription,
-[$m3_databasename].[m3].[MOOperation].OperationNumber,
-[$m3_databasename].[m3].[StyleMaster].SequenceNoForSorting,
-[$m3_databasename].[m3].[MOOperation].WorkCenterId,
-[$m3_databasename].[m3].[OperationMaster].OperationCode,
-[$m3_databasename].[m3].[OperationMaster].WorkCenterId
-FROM [$m3_databasename].[m3].[MOOperation]
-FULL OUTER JOIN [$m3_databasename].[m3].[OperationMaster] ON [$m3_databasename].[m3].[OperationMaster].FactoryId=[$m3_databasename].[m3].[MOOperation].FactoryId and [$m3_databasename].[m3].[OperationMaster].WorkCenterId=[$m3_databasename].[m3].[MOOperation].WorkCenterId 
-INNER JOIN [$m3_databasename].[m3].[MO] ON [$m3_databasename].[m3].[MO].MONumber=[$m3_databasename].[m3].[MOOperation].MONumber
-INNER JOIN [$m3_databasename].[m3].[StyleMaster] ON [$m3_databasename].[m3].[StyleMaster].SKU=[$m3_databasename].[m3].[MOOperation].SKU
-INNER JOIN [$m3_databasename].[m3].[ColorMaster] ON [$m3_databasename].[m3].[ColorMaster].ColorId=[$m3_databasename].[m3].[StyleMaster].ColorId
-WHERE [$m3_databasename].[m3].[MO].FactoryId='".$facility_code."' and [$m3_databasename].[m3].[MOOperation].ScheduleNumber IN (".implode(",",$schedule_array).")
-ORDER BY [$m3_databasename].[m3].[StyleMaster].SequenceNoForSorting,[$m3_databasename].[m3].[MOOperation].MONumber,[$m3_databasename].[m3].[MOOperation].OperationNumber";
-// echo $tsql."<br>";
+$tsql="EXEC [M3_DB_LINK].[dbo].[OPRATION_DETAILS] '".$styles_array[$i]."'";
+
 $result = odbc_exec($connect, $tsql);
 while(odbc_fetch_row($result))
 {	
@@ -122,8 +103,18 @@ while(odbc_fetch_row($result))
 	 }
 	$sql1="insert $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber, SequenceNoForSorting,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values('".$Style."','".$ScheduleNumber."','".$ColorId."','".$Description."','".$SizeId."','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$OperationDescription."','".$OperationNumber."','".$SequenceNoForSorting."','".$WorkCenterId."','".$Main_OperationNumber."','".$Main_WorkCenterId."')";
 	// echo $sql1."<br>";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$res=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if($res )
+	{
+		$k++;
+	}
 }
+}
+	if($k>0)
+	{
+		print("Inserted $k Records in schedule_oprations_master  table Successfully ")."\n";
+
+	}
 //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"ssc_porcess4.php\"; }</script>";
 print( "Operations Successfully Integrated")."\n";
 print( memory_get_usage())."\n";

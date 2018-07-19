@@ -12,155 +12,143 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <script src="../../common/js/jquery-1.3.2.js"></script> 
 <script src="../../common/js/jquery-barcode-2.0.1.js"></script> 
 
-<?php 
-// include("header.php"); 
-// include("functions.php"); 
-include("../../../../common/config/config.php");
-include("../../../../common/config/functions.php");
-error_reporting(0);
-$ssql122="select serial_no  from  $bai_pro3.`tbl_serial_number` "; 
-     
+<?php
+    include("../../../../common/config/config.php");
+    include("../../../../common/config/functions.php");
+    error_reporting(0);
+
+    $ssql122="select serial_no  from  $bai_pro3.`tbl_serial_number` "; 
     $result122=mysqli_query($link, $ssql122) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row122=mysqli_fetch_array($result122)) 
     { 
-        $serial_no=$row122["serial_no"]; 
-         
-        //echo $serial_no; 
+        $serial_no=$row122["serial_no"];
     } 
 
-//function to extract input informat 
+    function doc_in_status($link,$result_type,$size,$doc_no,$input_ref) 
+    {
+        $ret=0; 
+         
+        switch($result_type) 
+        { 
+            case 'CUTQTY': 
+            { 
+                $sql="select (a_$size*a_plies) as cutqty from $bai_pro3.plandoc_stat_log where doc_no=$doc_no"; 
+                //echo $sql."<br>"; 
+                $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                while($sql_row=mysqli_fetch_array($sql_result)) 
+                { 
+                    $ret=$sql_row['cutqty']; 
+                } 
+                break; 
+            } 
+             
+            case 'INPUTQTY': 
+            { 
+                $sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and input_job_rand_no_ref='$input_ref'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and input_job_rand_no_ref='$input_ref' and ims_size='a_$size')) AS tmp";
+                //echo $sql."<br>"; 
+                $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                while($sql_row=mysqli_fetch_array($sql_result)) 
+                { 
+                    $ret=$sql_row['input']; 
+                } 
+                break; 
+            } 
+             
+            case 'IMSINPUTQTY': 
+            { 
+                $sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and ims_size='a_$size')) AS tmp"; 
+                //echo $sql."<br>"; 
+                $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                while($sql_row=mysqli_fetch_array($sql_result)) 
+                { 
+                    $ret=$sql_row['input']; 
+                } 
+                break; 
+            } 
+        } 
+        return $ret; 
+    } 
 
-function doc_in_status($link,$result_type,$size,$doc_no,$input_ref) 
-{ 
-    //$result_type : CUTQTY, INPUTQTY (as per input job reference), IMSINPUTQTY (as per docket) 
-    //$doc_no: Docket # 
-    //$input_refere: Input job reference random 
-     
-    $ret=0; 
-     
-    switch($result_type) 
+
+    $table_name="plan_dashboard_input"; 
+
+    if(isset($_POST["doc"]) or isset($_POST["section"])) 
     { 
-        case 'CUTQTY': 
-        { 
-            $sql="select (a_$size*a_plies) as cutqty from $bai_pro3.plandoc_stat_log where doc_no=$doc_no"; 
-            //echo $sql."<br>"; 
-            $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            while($sql_row=mysqli_fetch_array($sql_result)) 
-            { 
-                $ret=$sql_row['cutqty']; 
-            } 
-
-            break; 
-        } 
-         
-        case 'INPUTQTY': 
-        { 
-            $sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and input_job_rand_no_ref='$input_ref'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and input_job_rand_no_ref='$input_ref' and ims_size='a_$size')) AS tmp";
-            //echo $sql."<br>"; 
-            $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            while($sql_row=mysqli_fetch_array($sql_result)) 
-            { 
-                $ret=$sql_row['input']; 
-            } 
-            break; 
-        } 
-         
-        case 'IMSINPUTQTY': 
-        { 
-            $sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and ims_size='a_$size')) AS tmp"; 
-            //echo $sql."<br>"; 
-            $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            while($sql_row=mysqli_fetch_array($sql_result)) 
-            { 
-                $ret=$sql_row['input']; 
-            } 
-            break; 
-        } 
-         
+        $doc=$_POST["doc"]; 
+        $style=$_POST["style"]; 
+        $schedule=$_POST["schedule"]; 
+        $jobno=$_POST["jobno"]; 
+        $module_no=$_POST["moduleno"]; 
+        $color=$_POST["color"]; 
+        //echo $doc."<br>"; 
     } 
-     
-    return $ret; 
-     
-} 
+    else 
+    { 
+        $doc=$_GET["doc_no"]; 
+        $style=$_GET["style"]; 
+        $schedule=$_GET["schedule"]; 
+        $jobno=$_GET["jobno"]; 
+        $module_no=$_GET["moduleno"]; 
+        $color=$_GET["color"]; 
+        //echo $doc."<br>"; 
+    } 
 
+    $get_sewing_type="SELECT DISTINCT(type_of_sewing) AS type_of_sewing FROM $bai_pro3.packing_summary_input WHERE order_del_no = '$schedule' AND order_style_no = '$style' AND input_job_no = $jobno"; 
+    // echo $get_sewing_type; 
+    $result14=mysqli_query($link, $get_sewing_type) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    while($row14=mysqli_fetch_array($result14)) 
+    { 
+        $type_of_sewing=$row14["type_of_sewing"];
+    }
 
-$table_name="plan_dashboard_input"; 
+    if ($type_of_sewing == 2)
+    {
+        $display = 'E';
+    }
+    else
+    {
+        $display = 'J';
+    }
 
-if(isset($_POST["doc"]) or isset($_POST["section"])) 
-{ 
-    $doc=$_POST["doc"]; 
-    $style=$_POST["style"]; 
-    $schedule=$_POST["schedule"]; 
-    $jobno=$_POST["jobno"]; 
-    $module_no=$_POST["moduleno"]; 
-    $color=$_POST["color"]; 
-    //echo $doc."<br>"; 
-} 
-else 
-{ 
-    $doc=$_GET["doc_no"]; 
-    $style=$_GET["style"]; 
-    $schedule=$_GET["schedule"]; 
-    $jobno=$_GET["jobno"]; 
-    $module_no=$_GET["moduleno"]; 
-    $color=$_GET["color"]; 
-    //echo $doc."<br>"; 
-} 
-
-//Start - To take total Job qty  
-$ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY input_job_no_random"; 
-//echo $ssql12;     
+    $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
         $job_total_qty=$row12["job_tot"]; 
         $color_count=$row12["color_count"]; 
-        //echo $org_schs; 
     } 
-//End - To take total Job qty  
 
-//Added code to take team number // 
-$sql4="select color_code from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\"";
-$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row4=mysqli_fetch_array($sql_result4))
-{
-    $color_code=$sql_row4["color_code"];
-}
-// echo $color_code;
-$ssql15="SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$doc'"; 
-// echo $ssql15;     
+    $sql4="select color_code from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\"";
+    $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row4=mysqli_fetch_array($sql_result4))
+    {
+        $color_code=$sql_row4["color_code"];
+    }
+
+    $ssql15="SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$doc'"; 
+    // echo $ssql15;     
     $result15=mysqli_query($link, $ssql15) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row15=mysqli_fetch_array($result15)) 
     { 
         $team_number=$row15["input_module"]; 
     } 
-    if ($team_number=='') {
+    if ($team_number=='')
+    {
         $team_number='No Module <br>Assigned';
     }
 
-$sql1w="select group_concat(distinct order_date) as order_date,group_concat(distinct vpo) as po_no,group_concat(packing_method) as pac from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\""; 
-// echo $sql1w; 
-$result1w=mysqli_query($link, $sql1w) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
-while($row1w=mysqli_fetch_array($result1w)) 
-{ 
-    $po_no=$row1w["po_no"]; 
-    $del_date=$row1w["order_date"]; 
-    $packing_method=$row1w["pac"]; 
-}
-
-// $po_query="SELECT VPO_NO AS po_no FROM $m3_inputs.order_details WHERE SCHEDULE=\"".$schedule."\" LIMIT 1"; 
-// // echo $po_query; 
-// $po_result=mysqli_query($link, $po_query) or exit("Sql Error12.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
-// while($row1w=mysqli_fetch_array($po_result)) 
-// { 
-//     $po_no=$row1w["po_no"];
-// }     
-
-//Start - To take color wise total Job qty  
-$job1_qty=array(); 
-$job1_color=array(); 
-$ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,input_job_no_random"; 
-//echo $ssql12;     
+    $sql1w="select group_concat(distinct order_date) as order_date,group_concat(distinct vpo) as po_no,group_concat(packing_method) as pac from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\""; 
+    $result1w=mysqli_query($link, $sql1w) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    while($row1w=mysqli_fetch_array($result1w)) 
+    { 
+        $po_no=$row1w["po_no"]; 
+        $del_date=$row1w["order_date"]; 
+        $packing_method=$row1w["pac"]; 
+    }
+ 
+    $job1_qty=array(); 
+    $job1_color=array(); 
+    $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12.2".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
@@ -168,98 +156,94 @@ $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $
         $job_color= 
         $job1_qty[]=$row12["job_tot"]; 
         $job1_color[]=$row12["job_color"]; 
-        //echo $org_schs; 
     } 
-//End - To take color wise  total Job qty      
-//----------------------------------------------------------------------- 
-//Start - To take destination list 
-$destination_list=""; 
-     //$ssql13="SELECT DISTINCT destination FROM packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,input_job_no_random,destination"; 
-     $ssql13="SELECT DISTINCT destination FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='$doc' GROUP BY input_job_no_random,destination"; 
-     
+
+    $destination_list=""; 
+    $ssql13="SELECT DISTINCT destination FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='$doc' GROUP BY input_job_no_random,destination"; 
     //echo $ssql13; 
     $result13=mysqli_query($link, $ssql13) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row13=mysqli_fetch_array($result13)) 
     { 
         $destination_list.=$row13["destination"].","; 
-        //echo $org_schs; 
     } 
      
-//End - To take destination list 
-//----------------------------------------------------------------------- 
-
-//Start - To take cut no list 
-// $cut_no_list="A"; 
-    // $docket_no_list="("; 
-    $ssql14="SELECT GROUP_CONCAT(DISTINCT acutno) AS cut FROM $bai_pro3.packing_summary_input WHERE order_del_no = $schedule AND input_job_no_random='$doc'"; 
-    // echo $ssql14; 
-    $result14=mysqli_query($link, $ssql14) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $ssql14="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno FROM $bai_pro3.packing_summary_input WHERE order_del_no = $schedule AND input_job_no_random='$doc'"; 
+    // echo $ssql14;
+    $result14=mysqli_query($link, $ssql14) or exit("Error while getting Cut Numbers"); 
     while($row14=mysqli_fetch_array($result14)) 
-    { 
-        $cut_no_list=$row14["cut"].",";
-        // $docket_no_list.=$row14["doc_no"].","; 
-    } 
-    // $docket_no_list=substr($docket_no_list,0,-1).")"; 
-    $cut_no_list=substr($cut_no_list,0,-1); 
-//End - To take cut no list 
-//----------------------------------------------------------------------- 
+    {
+        $cut = $row14['acutno'];
+    }
 
-// Start - To take club schedule number and  list of original schedules  -  11-11-2014 - Added by ChathurangaD 
-$ssql33="SELECT order_joins from $bai_pro3.bai_orders_db where order_del_no='$schedule'"; 
-//echo $ssql33; 
-$result33=mysqli_query($link, $ssql33) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"])); 
-while($row33=mysqli_fetch_array($result33)) 
-{ 
-    $join_sch=$row33["order_joins"]; 
-    $join_sch1=$row33["order_joins"]; 
-} 
+    $total_cuts=explode(",",$cut);
+    $cut_jobs_new='';
+    for($ii=0;$ii<sizeof($total_cuts);$ii++)
+    {
+        $arr = explode("$", $total_cuts[$ii], 2);
+        $sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$color."'";
+        //echo $sql4."<br>";
+        $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row4=mysqli_fetch_array($sql_result4))
+        {
+            $color_code=$sql_row4["color_code"];
+        }
+        $cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3).",";
+        unset($arr);
+    }
+    $cut_jobs_new1=substr($cut_jobs_new,0,-1);
+    // echo $cut_jobs_new1;
+    $ssql33="SELECT order_joins from $bai_pro3.bai_orders_db where order_del_no='$schedule'"; 
+    //echo $ssql33; 
+    $result33=mysqli_query($link, $ssql33) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    while($row33=mysqli_fetch_array($result33)) 
+    { 
+        $join_sch=$row33["order_joins"]; 
+        $join_sch1=$row33["order_joins"]; 
+    } 
 
-if($join_sch1=="0") 
-{ 
-    $join_sch=$schedule; 
-    $org_schs=$schedule; 
-} 
-else if($join_sch1=="1") 
-{ 
-    $ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='j$schedule'"; 
-    //echo $ssql333; 
-    $result333=mysqli_query($link, $ssql333) or exit("Sql Error333".mysqli_error($GLOBALS["___mysqli_ston"])); 
-    while($row333=mysqli_fetch_array($result333)) 
+    if($join_sch1=="0") 
     { 
-        $org_schs=$row333["org_schs"]; 
-        //echo $org_schs; 
+        $join_sch=$schedule; 
+        $org_schs=$schedule; 
     } 
-     
-    $join_sch=$schedule."(".$org_schs.")"; 
-} 
-else if($join_sch1=="2") 
-{ 
-    $ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='j$schedule'"; 
-    //echo $ssql333; 
-    $result333=mysqli_query($link, $ssql333) or exit("Sql Error333".mysqli_error($GLOBALS["___mysqli_ston"])); 
-    while($row333=mysqli_fetch_array($result333)) 
+    else if($join_sch1=="1") 
     { 
-        $org_schs=$row333["org_schs"]; 
-        //echo $org_schs; 
+        $ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='j$schedule'"; 
+        //echo $ssql333; 
+        $result333=mysqli_query($link, $ssql333) or exit("Sql Error333".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        while($row333=mysqli_fetch_array($result333)) 
+        { 
+            $org_schs=$row333["org_schs"]; 
+            //echo $org_schs; 
+        } 
+        $join_sch=$schedule."(".$org_schs.")"; 
     } 
-     
-    $join_sch=$schedule."(".$org_schs.")"; 
-     
-     
-} 
-else 
-{ 
-    $ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='$join_sch'"; 
-    //echo $ssql333; 
-    $result333=mysqli_query($link, $ssql333) or exit("Sql Error333".mysqli_error($GLOBALS["___mysqli_ston"])); 
-    while($row333=mysqli_fetch_array($result333)) 
+    else if($join_sch1=="2") 
     { 
-        $org_schs=$row333["org_schs"]; 
-        //echo $org_schs; 
+        $ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='j$schedule'"; 
+        //echo $ssql333; 
+        $result333=mysqli_query($link, $ssql333) or exit("Sql Error333".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        while($row333=mysqli_fetch_array($result333)) 
+        { 
+            $org_schs=$row333["org_schs"]; 
+            //echo $org_schs; 
+        } 
+        $join_sch=$schedule."(".$org_schs.")"; 
     } 
-    $join_sch=substr($join_sch, 1)."(".$org_schs.")"; 
-     
-} 
+    else 
+    { 
+        $ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='$join_sch'"; 
+        //echo $ssql333; 
+        $result333=mysqli_query($link, $ssql333) or exit("Sql Error333".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        while($row333=mysqli_fetch_array($result333)) 
+        { 
+            $org_schs=$row333["org_schs"]; 
+            //echo $org_schs; 
+        } 
+        $join_sch=substr($join_sch, 1)."(".$org_schs.")"; 
+    } 
+
+
 ?> 
 <meta http-equiv=Content-Type content="text/html; charset=windows-1252"> 
 <meta name=ProgId content=Excel.Sheet> 
@@ -4341,7 +4325,7 @@ table
     border-right:none; 
     border-bottom:1.0pt solid windowtext; 
     border-left:1.0pt solid windowtext; 
-    background:#A6A6A6; 
+    background:#ffffff; 
     mso-pattern:black none; 
     white-space:normal;} 
 .xl26932351 
@@ -4583,7 +4567,7 @@ table
     border-right:none; 
     border-bottom:1.0pt solid windowtext; 
     border-left:1.0pt solid windowtext; 
-    background:#A6A6A6; 
+    background:#ffffff; 
     mso-pattern:black none; 
     white-space:normal;} 
 .xl28132351 
@@ -5259,16 +5243,7 @@ function printdiv(printpage) {
     return false;
 }
 </script>
-<body> 
-<!--[if !excel]>&nbsp;&nbsp;<![endif]--> 
-<!--The following information was generated by Microsoft Excel's Publish as Web 
-Page wizard.--> 
-<!--If the same item is republished from Excel, all information between the DIV 
-tags will be replaced.--> 
-<!-----------------------------> 
-<!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD --> 
-<!-----------------------------> 
-
+<body>
 <div id="print_this" align=center x:publishsource="Excel"> 
 
 <table border=0 cellpadding=0 cellspacing=0 width=1390 class=xl6532351  style='border-collapse:collapse;table-layout:fixed;width:1046pt'> 
@@ -5336,11 +5311,7 @@ tags will be replaced.-->
                 </tr> 
             </table> 
         </span>
-    </td> 
-  <!-- 
-  <td colspan=19 rowspan=2 class=xl24432351 style='border-bottom:1.0pt solid black'>Job 
-  Wise Garment Reconciliation Sheet<span style='mso-spacerun:yes'>    </span></td>--> 
-   
+    </td>   
    
   <td colspan=19 rowspan=2 class=xl24432351 >
     <center>Job Wise Garment Reconciliation Sheet</center>
@@ -5374,7 +5345,7 @@ tags will be replaced.-->
  <tr class=xl13432351 height=30 style='mso-height-source:userset;height:22.5pt'> 
   <td colspan=4 height=30 class=xl23232351 style='border-right:1.0pt solid black;   height:22.5pt'><?php echo $plant_name; ?></td> 
   <?php  date_default_timezone_set("Asia/Colombo");  ?> 
-  <td class=xl13632351 colspan=2 style='border-top:none;border-left:none'>Issued Date</td> 
+  <td class=xl13632351 colspan=2 style='border-top:none;border-left:none'><center>Issued Date: </center></td> 
   <td colspan=3 class=xl28332351 style='border-right:1.0pt solid black'> 
   <?php echo date("Y-m-d h:i:s")."<br>"; 
    
@@ -5391,7 +5362,7 @@ tags will be replaced.-->
     if($is_original=="0") 
     { 
         echo "(Original)"; 
-        $sqljj="INSERT INTO $bai_pro3.printed_job_sheet    (doc_no,printed_time) VALUES    ('".$doc."','".$o_printed_date."')"; 
+        $sqljj="INSERT INTO $bai_pro3.printed_job_sheet (doc_no,printed_time) VALUES ('".$doc."','".$o_printed_date."')"; 
         mysqli_query($link, $sqljj) or exit("Sql Errorjj".mysqli_error($GLOBALS["___mysqli_ston"])); 
     } 
     else 
@@ -5410,7 +5381,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl22332351 width=93 style='border-left:none;width:70pt'><b><?php echo $po_no; ?></b><span 
   style='mso-spacerun:yes'></span></td> 
   <td colspan=2 class=xl21932351>Country</td> 
-  <td colspan=3 class=xl19532351 width=89 style='border-right:1.0pt solid black; width:67pt'><b><?php echo  substr($destination_list, 0, -1); ?></b><span style='mso-spacerun:yes'> </span></td> 
+  <td colspan=3 class=xl19532351 width=89 style='border-right:1.0pt solid black; width:67pt'><b><center><?php echo  substr($destination_list, 0, -1); ?></center></b><span style='mso-spacerun:yes'> </span></td> 
   <td colspan=2 class=xl19832351 width=95 style='border-left:none;width:71pt'>Delivery Date</td> 
   <td colspan=2 class=xl25532351 width=88 style='width:66pt'><b><?php echo $del_date; ?></b></td> 
   <td class=xl13232351 width=59 style='border-top:none;width:44pt'>Ctn range</td> 
@@ -5422,15 +5393,15 @@ tags will be replaced.-->
   <td height=38 class=xl13132351 style='height:28.5pt'>Line</td> 
   <td colspan=3 class=xl20032351 style='border-right:1.0pt solid black;   border-left:none'><?php   echo $team_number; ?></td> 
   <td colspan=2 class=xl13132351 style='border-left:none'>Job No:</td> 
-  <td colspan=3 class=xl24832351 style='border-right:1.0pt solid black;   border-left:none'><b>J00<?PHP echo $jobno;?></b></td> 
+  <td colspan=3 class=xl24832351 style='border-right:1.0pt solid black;   border-left:none'><b><?php echo $display.leading_zeros($jobno, 3);?></b></td> 
   <td colspan=2 class=xl24932351>Cut No:</td> 
-  <td colspan=2 class=xl25032351 width=93 style='border-left:none;width:70pt'><center><?php echo $cut_no_list;?></center></td> 
+  <td colspan=2 class=xl25032351 width=93 style='border-left:none;width:70pt'><center><?php echo $cut_jobs_new1;?></center></td> 
   <td colspan=2 class=xl13132351 style='border-right:1.0pt solid black'>Job Qty</td> 
   <td colspan=3 class=xl23632351 width=89 style='border-right:1.0pt solid black; border-left:none;width:67pt'><?php echo $job_total_qty; ?></td> 
   <td colspan=2 class=xl23932351 style='border-left:none'>No of Carton</td> 
-  <td class=xl13032351 style='border-top:none'>Full</td> 
+  <td class=xl13032351 style='border-top:none'><center>Full</center></td> 
   <td colspan=2 class=xl22832351 style='border-left:none'></td> 
-  <td class=xl12932351 style='border-top:none;border-left:none'>Odd</td> 
+  <td class=xl12932351 style='border-top:none;border-left:none'><center>Odd</center></td> 
   <td class=xl12832351 style='border-top:none;border-left:none'></td> 
   <td colspan=2 class=xl23632351 width=103 style='border-right:1.0pt solid black; border-left:none;width:78pt'>Garment per Packs</td> 
   <td colspan=3 class=xl28632351 width=132 style='border-right:1.0pt solid black; border-left:none;width:99pt'><?php echo $packing_method; ?></td> 
@@ -5758,19 +5729,19 @@ tags will be replaced.-->
  </tr> 
  <tr class=xl6532351 height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td colspan=12 rowspan=2 height=66 class=xl30632351 style='height:49.9pt'>Comments:</td> 
-  <td colspan=2 rowspan=2 class=xl31032351 width=97 style='border-right:1.0pt solid black; width:73pt'>..............................<br> 
+  <td colspan=2 rowspan=2 class=xl31032351 width=97 style='border-right:1.0pt solid black; width:73pt'>______________<br> 
     Recoder</td> 
-  <td rowspan=2 class=xl17932351 width=62 style='width:47pt'>...................<br> Supervisor</td> 
+  <td rowspan=2 class=xl17932351 width=62 style='width:47pt'>_________<br> Supervisor</td> 
   <td class=xl7332351 style='border-top:none'>&nbsp;</td> 
-  <td rowspan=2 class=xl17932351 width=82 style='width:62pt'>........................<br> Inline QC</td> 
+  <td rowspan=2 class=xl17932351 width=82 style='width:62pt'>____________<br> Inline QC</td> 
   <td class=xl6532351></td> 
   <td colspan=4 rowspan=2 class=xl14232351 width=183 style='border-bottom:1.0pt solid black; width:137pt'>Production Supervisor<br> 
-    <br><br> .....................................</td> 
-  <td colspan=5 rowspan=2 class=xl14232351 width=259 style='border-right:1.0pt solid black; border-bottom:.5pt solid black;width:195pt'>Section Incharge<br> <br><br>...............................................................</td> 
+    <br><br>______________________</td> 
+  <td colspan=5 rowspan=2 class=xl14232351 width=259 style='border-right:1.0pt solid black; border-bottom:.5pt solid black;width:195pt'>Section Incharge<br> <br><br>________________________________</td> 
   <td colspan=3 rowspan=4 class=xl14832351 width=132 style='border-right:1.0pt solid black; border-bottom:1.0pt solid black;width:99pt'>
-    Job No:J00<?PHP echo $jobno;?><br> 
+    Job No: <?php echo $display.leading_zeros($jobno, 3);?><br> 
     Job Completed<br> 
-    <br><br><br><br>.....................................<br> 
+    <br><br><br><br>__________________<br> 
     Signature<br> 
     (Packing In Charge)</td> 
  </tr> 
@@ -5781,7 +5752,7 @@ tags will be replaced.-->
  <tr height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td colspan=3 height=33 class=xl15732351 style='height:24.95pt'>Sewing In</td> 
   <td class=xl7232351 style='border-left:none'>( - )</td> 
-  <td colspan=3 class=xl15932351 style='border-left:none'>Rejection</td> 
+  <td colspan=3 class=xl15732351 style='border-left:none'>Rejection</td> 
   <td class=xl7232351 style='border-left:none'>( +)</td> 
   <td colspan=4 class=xl7232351 style='border-left:none'>Replacement In</td> 
   <td class=xl7232351 style='border-left:none'>( - )</td> 
@@ -5789,7 +5760,7 @@ tags will be replaced.-->
   <td class=xl7132351>&nbsp;</td> 
   <td class=xl7032351 style='border-top:none'><font class="font632351">.</font><font class="font532351">=</font></td> 
   <td colspan=3 class=xl16132351 style='border-right:1.0pt solid black'>Zero (0)</td> 
-  <td colspan=5 rowspan=2 class=xl16432351 width=259 style='border-right:1.0pt solid black; border-bottom:1.0pt solid black;width:195pt'>Surplus Cordinator<br> <br><br>...............................................................</td> 
+  <td colspan=5 rowspan=2 class=xl16432351 width=259 style='border-right:1.0pt solid black; border-bottom:1.0pt solid black;width:195pt'>Surplus Cordinator<br> <br><br>_______________________________</td> 
  </tr> 
  <tr height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td colspan=3 height=33 class=xl17032351 style='height:24.95pt'>................................................</td> 
@@ -5810,11 +5781,6 @@ tags will be replaced.-->
 </table> 
 
 </div> 
-
-
-<!-----------------------------> 
-<!--END OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD--> 
-<!-----------------------------> 
 </body> 
 
 </html>

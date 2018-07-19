@@ -160,7 +160,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$usedFabric = $mklength1*$totalplies1;
 	if($cat_yy1>0 and $totalplies1>0)
 	{
-		$savings1=round((($cad_consumption-$realYY)/$realYY)*100,0);
+		$savings1=round((($realYY-$cad_consumption)/$realYY)*100,0);
 	}
 	else
 	{
