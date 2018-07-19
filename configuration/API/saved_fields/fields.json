@@ -17,10 +17,10 @@
         ]
     },
     "mysql_database_info": {
-        "db_host": "10.227.221.26",
-        "db_user": "beksfcs",
-        "db_pass": "Max@sfcs",
-        "db_port": "3306"
+        "db_host": "192.168.0.110",
+        "db_user": "baiall",
+        "db_pass": "baiall",
+        "db_port": "3326"
     },
     "mssql_database_info": {
         "db_host": "localhost",
@@ -88,14 +88,13 @@
             },
             {
                 "type": "text",
-                "required": true,
-                "label": "Super User Name",
+                "label": "Plant Alert Code",
                 "className": "form-control",
-                "name": "superuser",
-                "value": "chandu",
-                "subtype": "text"
+                "name": "plant-alert-code",
+                "subtype": "text",
+                "value": "BEK"
             },
-     		{
+            {
                 "type": "text",
                 "label": "Message Sent Name",
                 "className": "form-control",
