@@ -727,7 +727,7 @@
 						if ($GarPerCart[$i][$j]>0 && $GarPerBag[$i][$j]>0)
 						{
 							$get_ref_size_query = "SELECT ref_size_name FROM $brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM $brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style AND product_schedule=$schedule_original) AND order_col_des='".$color[$i]."' AND size_title='".$original_size[$j]."'";
-							$get_ref_size_result=mysqli_query($link, $get_ref_size_query) or exit("Error while saving child details");
+							$get_ref_size_result=mysqli_query($link, $get_ref_size_query) or exit("Error while ref_size_name details");
 							// echo $get_ref_size_query.'<br>';
 							while ($get_ref_size_deatils=mysqli_fetch_array($get_ref_size_result))
 							{
