@@ -86,16 +86,20 @@ $('form').on("submit",function(event) {
     get_url = '<?php echo $_GET['r'] ?>';
     form_url = form.attr('action');
     
-   
-    if(form_url.trim().length > 0){
-        var index = form_url.includes("ajax_handler.php");
-        if(index == false){
-            var url = form_url.split("?").pop();
-            url = "ajax_handler.php?"+url;
+
+    if(form_url !== undefined){
+        if(form_url.trim().length > 0){
+            var index = form_url.includes("ajax_handler.php");
+            if(index == false){
+                var url = form_url.split("?").pop();
+                url = "ajax_handler.php?"+url;
+            }else{
+                url = form_url;
+            }
+            
         }else{
-            url = form_url;
+            url = "ajax_handler.php?r="+get_url;
         }
-        
     }else{
         url = "ajax_handler.php?r="+get_url;
     }
@@ -132,35 +136,37 @@ $("#body a").on('click',function(event){
     var split_url;
     href_url = $(this).attr("href");
 
-    var index = href_url.includes("index.php");
-    if(index == true){
-        split_url = href_url.split("?").pop();
-        url = "ajax_handler.php?"+split_url;
-    }else{
-        url = href_url;
-    }
-    // $.blockUI({ css: { border: 'none', padding: '15px', backgroundColor:'#000', '-webkit-border-radius': '10px', '-moz-border-radius': '10px', opacity: .5, color: '#fff' } });
-    $.ajax({
-      type:'GET',
-      url: url,
-      cache:false,
-    }).done(function(resp) {
-
-        // url = new URL(url);
-        // var c = url.searchParams.get("r");
-        var sfcs_app = url.includes("sfcs_app");
-        if(sfcs_app == false){
-            var c = url.split("?").pop();
-            window.history.pushState("object or string", "Title", "?"+c);
+    if(href_url !== "#"){
+        var index = href_url.includes("index.php");
+        if(index == true){
+            split_url = href_url.split("?").pop();
+            url = "ajax_handler.php?"+split_url;
+        }else{
+            url = href_url;
         }
-        jQuery("#body").html(resp);
-        // $.unblockUI();
+        // $.blockUI({ css: { border: 'none', padding: '15px', backgroundColor:'#000', '-webkit-border-radius': '10px', '-moz-border-radius': '10px', opacity: .5, color: '#fff' } });
+        $.ajax({
+          type:'GET',
+          url: url,
+          cache:false,
+        }).done(function(resp) {
 
-    }).fail(function(erespo) {
+            // url = new URL(url);
+            // var c = url.searchParams.get("r");
+            var sfcs_app = url.includes("sfcs_app");
+            if(sfcs_app == false){
+                var c = url.split("?").pop();
+                window.history.pushState("object or string", "Title", "?"+c);
+            }
+            jQuery("#body").html(resp);
+            // $.unblockUI();
 
-        jQuery("#body").html(erespo);
+        }).fail(function(erespo) {
 
-    });
+            jQuery("#body").html(erespo);
+
+        });
+    }
 });
 
 $('[data-toggle="datepicker"]').datepicker(
@@ -171,7 +177,7 @@ $('[data-toggle="datepicker"]').datepicker(
 
 
 function Ajaxify (url) {
-    
+
     $.ajax({
         type:'GET',
         url: url,

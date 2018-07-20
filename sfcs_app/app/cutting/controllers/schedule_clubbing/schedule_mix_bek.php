@@ -15,8 +15,8 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 
 function firstbox() 
 { 
-    var url = "<?= getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N'); ?>&style="+document.test.style.value;
-    Ajaxify(url);
+    var ajax_url = "<?= getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N'); ?>&style="+document.test.style.value;
+    Ajaxify(ajax_url);
     // window.location.href = "<?= getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N'); ?>&style="+document.test.style.value 
 } 
 
