@@ -14,7 +14,6 @@ $remove_user_name = true; // set false for static username removing
 
 //SFCS Mysql Db Configurations
 $host=$mysql_details['db_host'].":".$mysql_details['db_port'];
-$host='192.168.0.110:3326';
 $user=$mysql_details['db_user'];
 $pass=$mysql_details['db_pass'];
 
