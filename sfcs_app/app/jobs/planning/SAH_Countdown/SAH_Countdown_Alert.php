@@ -48,9 +48,8 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS
 	
 	
 
-		$em=$SAH_Countdown_alert;
+	 $em=$SAH_Countdown_alert;
 
-	
 
     
 		$email = omime::create('related');
@@ -70,7 +69,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS
 		// echo $act_out_check."<br>";
 if($act_out_check>0)
 {		
-	$successful = $email->send($em, 'QCI - SAH Countdown Report', $header_from);
+	$successful = $email->send($em, 'QCI - SAH Countdown Report','From: BEKSFCS Alert <bek_sfcs@brandix.com>');
 	// $successful = $email->send($em, 'SAH Countdown Report');
 
 	

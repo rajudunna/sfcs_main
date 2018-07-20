@@ -18,7 +18,7 @@ while($sql_row=mysqli_fetch_array($result))
 
 $default_operations=array("100","101","129","130");
 
-$sql22="truncate table $bai_pro3.schedule_oprations_master_backup";
+$sql22="truncate table $bai_pro3.schedule_oprations_master_backupschedule_oprations_master_backup";
 mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sql21="insert into $bai_pro3.schedule_oprations_master_backup select * from $bai_pro3.schedule_oprations_master";

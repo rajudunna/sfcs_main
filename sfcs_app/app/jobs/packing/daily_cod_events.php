@@ -177,20 +177,17 @@ $message.=$note;
 $message.='<br/>Message Sent Via: '.$plant_name.'';
 $message.="</body></html>"; 
 
-echo $message;
-
+// echo $message;
 $to  =$daily_cod_events;
+
 $subject = 'Delivery Failures :'.$yesterday; 
 
 // To send HTML mail, the Content-type header must be set 
 $headers  = 'MIME-Version: 1.0' . "\r\n"; 
 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n"; 
+// $headers .= 'From: BEKSFCS Alert <bek_sfcs@brandix.com>'. "\r\n";
+$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
 
-// Additional headers 
-$headers .= 'To:'.$to. "\r\n"; 
-//$headers .= 'To:  <brandixalerts@schemaxtech.com>'. "\r\n"; 
-// $headers .= 'From: Shop Floor System Alert <ictsysalert@brandix.com>'. "\r\n"; 
-$headers .= $header_from. "\r\n"; 
 
 if($total_sch_count>0) 
 { 

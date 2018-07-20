@@ -164,7 +164,7 @@ if(isset($_POST['submit']))
 
 					if($category=='Body' or $category=="Front")
 					{
-						if($val_check>0)
+						// if($val_check>0)
 						{
 							if($act_cut_status=="DONE" and $plies==$a_plies)
 							{
@@ -176,12 +176,12 @@ if(isset($_POST['submit']))
 								echo "<td><a class='btn btn-sm btn-warning' href=".$create_url."&doc_no=$doc_no>Update</a></td>";
 							}
 						}
-						else
-						{
-							echo "<td>Lay Reporting Pending.</td>";
-							//$create_url_1= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
-							//echo "<td><a href=".$create_url_1."&doc_no=$doc_no>Update</a></td>";
-						}
+						// else
+						// {
+						// 	echo "<td>Lay Reporting Pending.</td>";
+						// 	//$create_url_1= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
+						// 	//echo "<td><a href=".$create_url_1."&doc_no=$doc_no>Update</a></td>";
+						// }
 					}
 					else
 					{

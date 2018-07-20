@@ -1,1 +1,1 @@
-<?php $fg_wip=15; ?>
+<?php $fg_wip=0; ?>

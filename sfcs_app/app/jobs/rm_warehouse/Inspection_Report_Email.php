@@ -282,15 +282,15 @@ $table.= "</body>
 </html>";
 // echo $table;
 		$to  = $inspection_rep_email;
+		
 		$subject = 'BEK RM - Inspection Summary';
 		
 		// To send HTML mail, the Content-type header must be set
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+		// $headers .= 'From: BEKSFCS Alert <bek_sfcs@brandix.com>'. "\r\n";
+		 $headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
 		
-		// Additional headers
-		// $headers .= 'To: '.$to. "\r\n";
-		$headers .= $header_from. "\r\n";
 
 		
 		if($email_validate>0)

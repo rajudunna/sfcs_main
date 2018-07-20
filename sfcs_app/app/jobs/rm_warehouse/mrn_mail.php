@@ -109,8 +109,8 @@ $to  = $mrn_mail;
 $subject = 'Additional Material Requests of Last Week.';
 $headers  = 'MIME-Version: 1.0' . "\r\n";
 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-$headers .= $header_from. "\r\n";
+// $headers .= 'From: BEKSFCS Alert <bek_sfcs@brandix.com>'. "\r\n";
+ $headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
 
 if($j>0)
 {

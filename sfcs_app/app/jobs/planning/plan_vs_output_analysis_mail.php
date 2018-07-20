@@ -91,7 +91,7 @@ $text.= "<th>Day Actual</th>";
 $text.= "<th>Day(+/-)</th>";
 $text.= "</tr>";
 
-
+$j=0;
 $sql222_new="select distinct date from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by date";
  // echo $sql222_new;
 
@@ -101,7 +101,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 	$date=$sql_row222_new['date'];
 
 	// $text.= "<tr class='tblheading'>";
-	$j=0;
+	
 	$check=0;
 	for($i=0;$i<sizeof($module_db);$i++)
 	{
@@ -156,10 +156,8 @@ $subject = 'Daily Plan Achievement Report';
 // To send HTML mail, the Content-type header must be set
 $headers  = 'MIME-Version: 1.0' . "\r\n";
 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-// Additional headers
-// $headers .= 'From: Shop Floor System Alert <bel_sfcs@brandix.com>'. "\r\n";
-$headers .= $header_from. "\r\n";
+$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
+// $headers .= $header_from. "\r\n";
 
 	if($j > 0)
 	{

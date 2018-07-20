@@ -575,7 +575,7 @@ else
 					//echo "<script>window.close();</script>";
 				}
 				$subject='Dear All, <br/><br/> Please Find The Weekly Delivery Plan Status Report of This Week. <br/><br/> Message Sent Via:'.$plant_name;
-				$to=$week_del_mail_v2;
+				// $to=$week_del_mail_v2;
 				email_attachment($to,$subject,' Weekly Delivery Plan Status Report','Shop Floor System Alert', 'ravindranath.yrr35@gmail.com', 'Weekly_Delivery_Plan_Status.xls', $default_filetype='application/zip');
 
 }

@@ -3,6 +3,7 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
+
 // Turn off all error reporting
 error_reporting(0);
 // Report simple running errors
@@ -226,29 +227,28 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 if(date("H")=="14")
 {
-	// $to  = 'gayanl@brandix.com,kasinac@brandix.com,brandixalerts@schemaxtech.com,brandixalerts@schemaxtech.com,brandixalerts@schemaxtech.com,bhavanik@brandix.com,bai1leadteam@brandix.com,bai1planningteam@brandix.com,JoeH@brandix.com,ShiranB@brandix.com,BAI1AllExecutives@brandix.com';
+	
 	 $to = $dashboard_email_dialy_H_14;
 	
 }
 else
 {
-	// $to  = 'BAI1AllExecutives@brandix.com,isteamindia@brandix.com,lalithb@brandix.com,govil@brandix.com,lilanthaw@brandix.com,harshal@brandix.com,rangar@brandix.com,duminduw@brandix.com,PriyanthaNa@brandix.com,UdayaD@brandix.com,JoeH@brandix.com,ShiranB@brandix.com,lakshithas@brandix.com,kaushalap@brandix.com,GayaneeW@brandix.com,NishanthaM@brandix.com,brandixalerts@schemaxtech.com';	//removed minura on 2018-01-06 mail from kirang
+
 	 $to = $dashboard_email_dialy;
 }
 
-
-//$to  = 'brandixalerts@schemaxtech.com';
+ 
 $subject = 'SAH Report';
+
 
 // To send HTML mail, the Content-type header must be set
 $headers  = 'MIME-Version: 1.0' . "\r\n";
 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 
-// Additional headers
-$headers .= 'To: '.$to. "\r\n";
-//$headers .= 'To: <brandixalerts@schemaxtech.com>'. "\r\n";
-$headers .= $header_from. "\r\n";
-//$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
+$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
+// echo $headers;
+// $headers .= $header_from. "\r\n";
+
 
 // Mail it
 
@@ -274,6 +274,10 @@ if($sql_result)
 		{
 			goto a;
 		}
+	}
+	else
+	{
+		print("mail Not Send Due to data not found")."\n";
 	}
 	
 	

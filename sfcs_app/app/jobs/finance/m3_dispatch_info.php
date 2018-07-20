@@ -162,8 +162,9 @@ fputcsv($file,$title_list);
 			}
 			fclose($file);	
 		$to=$Aod_gate_pass;
+		
 	
-email_attachment($to,'Please open the attachment for dispatch details of Brandix Essentials Limited - '.$facility.' Facility on '.$date.'.<br/><br/> Message Sent Via: '.$plant_name.'', $plant_name.'-'.$facility.' Dispatch Details ('.$date.') ',$header_from, $header_from, $file_name, $default_filetype='application/zip');
+email_attachment($to,'Please open the attachment for dispatch details of Brandix Essentials Limited - '.$facility.' Facility on '.$date.'.<br/><br/> Message Sent Via: '.$plant_name.'', $plant_name.'-'.$facility.' Dispatch Details ('.$date.') ',$header_name, $header_mail, $file_name, $default_filetype='application/zip');
 
 
 unlink($file_name);
