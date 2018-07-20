@@ -17,6 +17,7 @@
     <script src="assets/vendors/jquery/dist/jquery.min.js"></script>
     <script src="assets/vendors/select2/dist/js/select2.min.js"></script>
     <script src="assets/js/sweetalert.min.js"></script>
+    <script src="http://malsup.github.io/jquery.blockUI.js"></script>
     <!-- jquery data table -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>

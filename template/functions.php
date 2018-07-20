@@ -36,15 +36,15 @@
 				//var_dump($happ);die();
 			if(in_array($parent['menu_pid'],$happ)){
 				if(base64_encode($full_path_url) == $_GET['r'] ){
-				$list = '<li id="link_active" class=\'current-page\'><a href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
+				$list = '<li id="link_active" class=\'current-page\'><a onclick="ajaxCall(event,this.href)" href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div></li>';
 					$_SESSION['link'] = base64_encode($full_path_url);
 					
 				}elseif((isset($_SESSION['link']) && $_SESSION['link'] == base64_encode($full_path_url))){
-					$list = '<li id="session_active" class=\'current-page\'><a href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
+					$list = '<li id="session_active" class=\'current-page\'><a onclick="ajaxCall(event,this.href)" href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div></li>';
 				}else{
-					$list = '<li><a href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
+					$list = '<li><a onclick="ajaxCall(event,this.href)" href="?r='.base64_encode($full_path_url).$get_vars_data.'"  alt="'.$parent['link_description'].'">'.$parent['link_description'].'</a>
 				<div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div>
 				</li>';
 				}
@@ -87,7 +87,7 @@
 		}
 		else
 		{*/
-			$list = '<li id="main"'.$count.'><a>'.$parent['link_description'].' <span class="fa fa-chevron-down"></a>
+			$list = '<li id="main"'.$count.'><a >'.$parent['link_description'].' <span class="fa fa-chevron-down"></a>
             <div id="cmd'.$parent['link_cmd'].'" style="display:none;">'.$parent['link_location'].'</div>
             ';	
 		//}

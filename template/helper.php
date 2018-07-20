@@ -46,7 +46,8 @@ function getURL($filePath){
     if($filePath){
         $filePath = rtrim($filePath,"/");
         $path = $filePath;
-        return ['status'=>true,'url'=>$_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST']."/".$_SERVER['PHP_SELF']."?r=".base64_encode("/".$path),'r'=>base64_encode("/".$path)];
+        // return ['status'=>true,'url'=>$_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST']."/".$_SERVER['PHP_SELF']."?r=".base64_encode("/".$path),'r'=>base64_encode("/".$path)];
+        return ['status'=>true,'url'=>$_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST']."/ajax_handler.php?r=".base64_encode("/".$path),'r'=>base64_encode("/".$path)];
     }else{
         return ['status'=>false];
     }
