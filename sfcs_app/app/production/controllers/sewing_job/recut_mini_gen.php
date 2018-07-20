@@ -566,7 +566,7 @@ if($status == '')
 					$packing_mode=echo_title("$bai_pro3.packing_summary_input","packing_mode","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
 					$size_code_ref=echo_title("$brandix_bts.tbl_orders_size_ref","LOWER(size_name)","id",$size,$link);
 					$doc_numb=str_replace('R', '', "$docket_number");
-					$rand=$schedule.date("ymdH").$input_job_no;
+					$rand=$schedule.date("ymd").$input_job_no;
 					
 					echo "<tr><td>".$sno."</td><td>".$cut_num."</td><td>".$color_code."</td><td>".$size."</td><td>".$bundle_number."</td><td>".$bundle_quantity."</td><td>".$l['docket_number']."</td></tr>";
 					$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,bundle_number,quantity,docket_number,mini_order_priority) VALUES ('".date("Y-m-d h:i:s")."','".$min_ord_ref_id."','".$sno."','".$cut_num."','".$color_code."','".$size."','".$bundle_number."','".$bundle_quantity."','".$l['docket_number']."','".$sno."')";
