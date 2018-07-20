@@ -218,7 +218,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 
 <h2><center><u>Input Entry Form</u></center></h2> <br>
-<FORM method="post" name="input" action="<?= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form1_process_cut.php',0,'N');?>">
+<FORM method="post" name="input" onsubmit='activate_alert()'  action="<?= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form1_process_cut.php',0,'N');?>">
 	<input type="hidden" name="doc_no" value="<?php echo $doc_no; ?>">
 	<?php
 		// if($print_status==NULL)
@@ -328,7 +328,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable 
 	</div>
 	<div class='col-sm-2'>
-		<input type = "submit" name = "update" value = "Update" class="btn btn-primary" id="update" onclick="document.getElementById('update').style.display='none'; document.getElementById('msg').style.display='';">
+		<input type = "submit" name = "update" value = "Update" class="btn btn-primary" id="update" onclick="document.getElementById('update').style.display='inline'; ">
 	</div>
 	<?php
 	}
@@ -342,4 +342,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <span id="msg" style="display:none;"><h1><font color="red">Please wait while updating database...</font></h1></span>
 </div></div>
 </body>
+
+<script>
+	function activate_alert(){
+		document.getElementById('msg').style.display='inline';
+		document.getElementById('update').style.display='none';
+	}
+</script>
 
