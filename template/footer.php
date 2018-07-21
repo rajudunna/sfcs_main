@@ -1,8 +1,18 @@
-        </div>    
-    </div>    
-    <script src="assets/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+<footer class="footer">
+   
+    <script src="assets/js/base64.min.js"></script>
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/vendors/jquery/dist/jquery.min.js"></script>
     <script src="assets/vendors/select2/dist/js/select2.min.js"></script>
-    <script src="assets/js/custom.min.js"></script>
+    <script src="assets/js/sweetalert.min.js"></script>
+    <script src="http://malsup.github.io/jquery.blockUI.js"></script>
+    <script src="template/helperjs.js"></script>
+    <script src="assets/js/datepicker.js"></script>
+    <script src="template/helperjs.js"></script>
+    <script src="assets/vendors/select2/dist/js/select2.min.js"></script>
+    <!-- <script src="assets/js/custom.min.js"></script> -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <script>
 			$(document).ready( function () {
 			var count = 0;
@@ -23,236 +33,236 @@
 			// $('#table1').DataTable();
 			// $('#tableone').DataTable();
 		} );
-</script>
-<script>
-	var swal12 = "swal";
-	$('.float').keypress(function(e){
-		if(e.keyCode == 13)
-			return;
+    </script>
+    <script>
+        var swal12 = "swal";
+        $('.float').keypress(function(e){
+            if(e.keyCode == 13)
+                return;
 
-		var p = String.fromCharCode(e.which);
-		var c = /^[0-9. ]+$/;
-		var v = $(this).val().toString();
+            var p = String.fromCharCode(e.which);
+            var c = /^[0-9. ]+$/;
+            var v = $(this).val().toString();
 
-		if(p =='.'){
-			if($(this).val().indexOf('.') > -1 ){
-				e.preventDefault();
-			}
-		}
-		if(v.length == 0){
-			if(p =='.')
-				e.preventDefault();	
-		}	
+            if(p =='.'){
+                if($(this).val().indexOf('.') > -1 ){
+                    e.preventDefault();
+                }
+            }
+            if(v.length == 0){
+                if(p =='.')
+                    e.preventDefault();	
+            }	
 
-		if( !(p.match(c)) && p!=null ){
-			console.log('error');
-			e.preventDefault();
-			if($(this).hasClass(swal12)){
-				sweetAlert('','please enter valid input','warning');
-			}
-			//$(this).val('');
-			//v = v.value.replace(/[^0-9\.]/g,'');
-			//qty.value = qty.value.substring(0,qty.value.length-1);
-			return false;
-		}
-	});
-	$('.float').on('change',function(e){
-		
-		var p = String.fromCharCode(e.which);
-		var c = /^[0-9. ]+$/;
-		var v = $(this).val();
+            if( !(p.match(c)) && p!=null ){
+                console.log('error');
+                e.preventDefault();
+                if($(this).hasClass(swal12)){
+                    sweetAlert('','please enter valid input','warning');
+                }
+                //$(this).val('');
+                //v = v.value.replace(/[^0-9\.]/g,'');
+                //qty.value = qty.value.substring(0,qty.value.length-1);
+                return false;
+            }
+        });
+        $('.float').on('change',function(e){
+            
+            var p = String.fromCharCode(e.which);
+            var c = /^[0-9. ]+$/;
+            var v = $(this).val();
 
-		if(p =='.'){
-			if($(this).val().indexOf('.') > -1 ){
-				e.preventDefault();
-			}
-		}
-		if(v == null){
-			if(p =='.')
-				e.preventDefault();	
-		}	
-		if( !(v.match(c)) && v!=null ){
-			console.log('error');
-			if($(this).hasClass(swal12)){
-				sweetAlert('','please enter valid input','warning');
-			}
-			$(this).val('');
-			return false;
-		}
-	});
+            if(p =='.'){
+                if($(this).val().indexOf('.') > -1 ){
+                    e.preventDefault();
+                }
+            }
+            if(v == null){
+                if(p =='.')
+                    e.preventDefault();	
+            }	
+            if( !(v.match(c)) && v!=null ){
+                console.log('error');
+                if($(this).hasClass(swal12)){
+                    sweetAlert('','please enter valid input','warning');
+                }
+                $(this).val('');
+                return false;
+            }
+        });
 
-	$('.integer').keypress(function(e){
-		if(e.keyCode == 13)
-			return;
-		var p = String.fromCharCode(e.which);
-		var c = /^[0-9]+$/;
-		var v = $(this).val();
+        $('.integer').keypress(function(e){
+            if(e.keyCode == 13)
+                return;
+            var p = String.fromCharCode(e.which);
+            var c = /^[0-9]+$/;
+            var v = $(this).val();
 
-		if( !(p.match(c)) && p!=null ){
-			console.log('error');
-			if($(this).hasClass(swal12)){
-				sweetAlert('','please enter valid input','warning');
-			}
-			e.preventDefault();
-			return false;
-		}
-	});
-	$('.integer').on('change',function(e){
-		
-		var p = String.fromCharCode(e.which);
-		var c = /^[0-9]+$/;
-		var v = $(this).val();
+            if( !(p.match(c)) && p!=null ){
+                console.log('error');
+                if($(this).hasClass(swal12)){
+                    sweetAlert('','please enter valid input','warning');
+                }
+                e.preventDefault();
+                return false;
+            }
+        });
+        $('.integer').on('change',function(e){
+            
+            var p = String.fromCharCode(e.which);
+            var c = /^[0-9]+$/;
+            var v = $(this).val();
 
-		if( !(v.match(c)) && v!=null ){
-			console.log('error');
-			if($(this).hasClass(swal12)){
-				sweetAlert('','please enter valid input','warning');
-			}
-			$(this).val('');
-			return false;
-		}
-	});
+            if( !(v.match(c)) && v!=null ){
+                console.log('error');
+                if($(this).hasClass(swal12)){
+                    sweetAlert('','please enter valid input','warning');
+                }
+                $(this).val('');
+                return false;
+            }
+        });
 
-	$('.character').keypress(function(e){
-		if(e.keyCode == 13)
-			return;
-		var p = String.fromCharCode(e.which);
-		var c = /^[a-zA-Z. ]+$/;
-		var v = $(this).val();
+        $('.character').keypress(function(e){
+            if(e.keyCode == 13)
+                return;
+            var p = String.fromCharCode(e.which);
+            var c = /^[a-zA-Z. ]+$/;
+            var v = $(this).val();
 
-		if( !(p.match(c)) && p!=null ){
-			console.log('error');
-			if($(this).hasClass(swal12)){
-				sweetAlert('','please enter valid input','warning');
-			}
-			e.preventDefault();
-			return false;
-		}
-	});
-	$('.character').on('change',function(e){
-		
-		var p = String.fromCharCode(e.which);
-		var c = /^[a-zA-Z. ]+$/;
-		var v = $(this).val();
+            if( !(p.match(c)) && p!=null ){
+                console.log('error');
+                if($(this).hasClass(swal12)){
+                    sweetAlert('','please enter valid input','warning');
+                }
+                e.preventDefault();
+                return false;
+            }
+        });
+        $('.character').on('change',function(e){
+            
+            var p = String.fromCharCode(e.which);
+            var c = /^[a-zA-Z. ]+$/;
+            var v = $(this).val();
 
-		if( !(v.match(c)) && v!=null ){
-			console.log('error');
-			if($(this).hasClass(swal12)){
-				sweetAlert('','please enter valid input','warning');
-			}
-			$(this).val('');
-			return false;
-		}
-	});
+            if( !(v.match(c)) && v!=null ){
+                console.log('error');
+                if($(this).hasClass(swal12)){
+                    sweetAlert('','please enter valid input','warning');
+                }
+                $(this).val('');
+                return false;
+            }
+        });
 
-	$('.alpha').keypress(function(e){
-		if(e.keyCode == 13)
-			return;
-		var p = String.fromCharCode(e.which);
-		var c = /^[a-zA-Z0-9. ]+$/;
-		var v = $(this).val();
+        $('.alpha').keypress(function(e){
+            if(e.keyCode == 13)
+                return;
+            var p = String.fromCharCode(e.which);
+            var c = /^[a-zA-Z0-9. ]+$/;
+            var v = $(this).val();
 
-		if( !(p.match(c)) && p!=null ){
-			console.log('error');
-			if($(this).hasClass(swal12)){
-				sweetAlert('','please enter valid input','warning');
-			}
-			e.preventDefault();
-			return false;
-		}
-	});
+            if( !(p.match(c)) && p!=null ){
+                console.log('error');
+                if($(this).hasClass(swal12)){
+                    sweetAlert('','please enter valid input','warning');
+                }
+                e.preventDefault();
+                return false;
+            }
+        });
 
-	$('.alpha').on('change',function(e){
-		
-		var p = String.fromCharCode(e.which);
-		var c = /^[0-9a-zA-Z. ]+$/;
-		var v = $(this).val();
+        $('.alpha').on('change',function(e){
+            
+            var p = String.fromCharCode(e.which);
+            var c = /^[0-9a-zA-Z. ]+$/;
+            var v = $(this).val();
 
-		if( !(v.match(c)) && v!=null ){
-			console.log('error');
-			if($(this).hasClass(swal12)){
-				sweetAlert('','please enter valid input','warning');
-			}
-			$(this).val('');
-			return false;
-		}
-	});
-	function  hide_table_for_no_data(){
+            if( !(v.match(c)) && v!=null ){
+                console.log('error');
+                if($(this).hasClass(swal12)){
+                    sweetAlert('','please enter valid input','warning');
+                }
+                $(this).val('');
+                return false;
+            }
+        });
+        function  hide_table_for_no_data(){
 
-		var count = $('.table_hide table tr').length;
-		var count1 = $('.table_hide .table tr').length;
-		
-		$('table').each(function(){
-			console.log($(this).find('tr').length);
-			if($(this).find('tr').length <= 1){
-				$('.alert').hide();
-				$(this).hide();
-				var alert = '<div class="alert alert-danger"><span>No Data Found.</span></div>';
-				$(this).after(alert);
-			}
-		});
+            var count = $('.table_hide table tr').length;
+            var count1 = $('.table_hide .table tr').length;
+            
+            $('table').each(function(){
+                console.log($(this).find('tr').length);
+                if($(this).find('tr').length <= 1){
+                    $('.alert').hide();
+                    $(this).hide();
+                    var alert = '<div class="alert alert-danger"><span>No Data Found.</span></div>';
+                    $(this).after(alert);
+                }
+            });
 
-		// $('.table').each(function(){
-		// 	console.log($(this).length);
-		// 	if($(this).length <= 1){
-		// 		$('.alert').hide();
-		// 		$(this).hide();
-		// 		var alert = '<div class="alert alert-danger"><span><strong>No Data Found.</strong></span></div>';
-		// 		$(this).after(alert);
-		// 	}
-		// })
-		// console.log('table rows count: '+count);
-		// if(count <= 1 || count1 <=1){
-		// 	$('.table_hide').html('');
-		// 	$('.table').after(alert);
-		// }
-		
-	}
+            // $('.table').each(function(){
+            // 	console.log($(this).length);
+            // 	if($(this).length <= 1){
+            // 		$('.alert').hide();
+            // 		$(this).hide();
+            // 		var alert = '<div class="alert alert-danger"><span><strong>No Data Found.</strong></span></div>';
+            // 		$(this).after(alert);
+            // 	}
+            // })
+            // console.log('table rows count: '+count);
+            // if(count <= 1 || count1 <=1){
+            // 	$('.table_hide').html('');
+            // 	$('.table').after(alert);
+            // }
+            
+        }
 
-	// hide_table_for_no_data();
-	// $('.confirm-submit-form').each(function(){
-	// 	console.log($(this).attr('id'));
-	// 	$($(this).attr('id')).on('click', function(){
-	// 		submit_form($(this));
-	// 	})
-	// })
-	$('.confirm-submit').on('click',function(event, redirect=true){
-		if(redirect != false){
-			event.preventDefault();
-			console.log(redirect);
-			submit_form($(this));
-		}
-		// return;
-	});
-	function submit_form(submit_btn){
-		sweetAlert({
-			title: "Are you sure?",
-			text: "Do you want to process the request!",
-			icon: "warning",
-			buttons: true,
-			dangerMode: true,
-		}).then(function(isConfirm){
-			if (isConfirm) {
-				console.log(submit_btn.attr('id'));
-				console.log($('#'+submit_btn.attr('id')).attr('href'));
-				if($('#'+submit_btn.attr('id')).attr('href')){
-					window.location.href = $('#'+submit_btn.attr('id')).attr('href');
-				}else{
-					$('#'+submit_btn.attr('id')).trigger('click',false);
-				}
-			} else {
-				sweetAlert("Request Cancelled");
-				return;
-			}
-		});
-		return;
-	}
-</script>
-</body>
-</html>
-
-<style>
-.form-control {
-    display:initial !important;
-}
-</style>
+        // hide_table_for_no_data();
+        // $('.confirm-submit-form').each(function(){
+        // 	console.log($(this).attr('id'));
+        // 	$($(this).attr('id')).on('click', function(){
+        // 		submit_form($(this));
+        // 	})
+        // })
+        $('.confirm-submit').on('click',function(event, redirect=true){
+            if(redirect != false){
+                event.preventDefault();
+                console.log(redirect);
+                submit_form($(this));
+            }
+            // return;
+        });
+        function submit_form(submit_btn){
+            sweetAlert({
+                title: "Are you sure?",
+                text: "Do you want to process the request!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then(function(isConfirm){
+                if (isConfirm) {
+                    console.log(submit_btn.attr('id'));
+                    console.log($('#'+submit_btn.attr('id')).attr('href'));
+                    if($('#'+submit_btn.attr('id')).attr('href')){
+                        window.location.href = $('#'+submit_btn.attr('id')).attr('href');
+                    }else{
+                        $('#'+submit_btn.attr('id')).trigger('click',false);
+                    }
+                } else {
+                    sweetAlert("Request Cancelled");
+                    return;
+                }
+            });
+            return;
+        }
+    </script>
+    <div class="container-fluid clearfix">
+        <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018
+            <a href="http://www.bootstrapdash.com/" target="_blank">Schemax</a>. All rights reserved.</span>
+        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with
+        <i class="mdi mdi-heart text-danger"></i>
+        </span>
+    </div>
+</footer>
