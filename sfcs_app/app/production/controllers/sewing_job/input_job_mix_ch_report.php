@@ -75,7 +75,8 @@ echo '<br>
 
                     if($scanning_methods="Bundle Level")
                     {
-                        echo "<th>Bundle Barcode</th>";
+                        echo "<th>Bundle Barcode With Operation</th>";
+						echo "<th>Bundle Barcode</th>";
                     }
                     //echo "<th>TID</th>";
                     //echo "<th>Doc# Ref</th>";
@@ -157,7 +158,9 @@ echo '<br>
                         if($scanning_methods=='Bundle Level')
                         {
                             $url5 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
-                            echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'>Print Bundle Barcodes</a></td>";
+                            echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+							$url6 = getFullURLLevel($_GET['r'],'barcode_without_operation.php',0,'R');
+							 echo "<td><a class='btn btn-info btn-sm' href='$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
                         }
                         echo"</tr>";
                     }
