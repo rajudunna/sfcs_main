@@ -54,7 +54,9 @@ $(document).ready(function()
 	$("#job_number").change(function()
 	{
 		var job_rev_no = $("#job_number").val();
-		
+		$('#operation').empty();
+		$('select[name="operation"]').append('<option value="0">Select Operation</option>');
+		$('#dynamic_table1').html('');
 		//var job_rev_no = [job_rev_no,remarks];
 		$.ajax
 		({
