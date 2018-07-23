@@ -353,6 +353,7 @@ else if($concurrent_flag == 0)
 			$b_in_job_qty = $row['original_qty'];
 			$b_a_cut_no = $row['cut_number'];
 			$mapped_color = $row['mapped_color'];
+			$color = $row['color'];
 		}
 		$ops_name_qry = "select operation_name from $brandix_bts.tbl_orders_ops_ref where operation_code = $b_op_id";
 		$result_ops_name_qry = $link->query($ops_name_qry) or exit('query error in updating 8');
@@ -366,29 +367,35 @@ else if($concurrent_flag == 0)
 		$b_colors = $color;
 		$b_sizes = $size[$key];
 		$b_doc_num = $doc_no[$key];
-		$r_qty_array = '-'.$reversalval[$key];
-		$b_tid = $bundle_no[$key];
-		$m3_bulk_bundle_insert = "INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_remarks,sfcs_log_user,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,m3_error_code) VALUES";
-		$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'. $size_id.'","'. $b_sizes.'","'.$b_doc_num.'","'.$r_qty_array.'","","'.$remarks.'","'.$username.'","'. $b_op_id.'","'.$b_inp_job_ref.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid.'",""),';
-		//echo $m3_bulk_bundle_insert;
-		if(substr($m3_bulk_bundle_insert, -1) == ',')
+		if($reversalval[$key] > 0)
 		{
-			$final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
+			$r_qty_array = '-'.$reversalval[$key];
+			$b_tid = $bundle_no[$key];
+			$m3_bulk_bundle_insert = "INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_remarks,sfcs_log_user,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,m3_error_code) VALUES";
+			$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'. $size_id.'","'. $b_sizes.'","'.$b_doc_num.'","'.$r_qty_array.'","","'.$remarks.'","'.$username.'","'. $b_op_id.'","'.$b_inp_job_ref.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid.'",""),';
+			//echo $m3_bulk_bundle_insert;
+			if(substr($m3_bulk_bundle_insert, -1) == ',')
+			{
+				$final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
+			}
+			else
+			{
+				$final_query100 = $m3_bulk_bundle_insert;
+			}
+			$dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$b_colors' and operation_code='$b_op_id'";
+			$result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
+			while($row = $result_dep_ops_array_qry->fetch_assoc()) 
+			{
+				$is_m3 = $row['default_operration'];
+			}
+			if($is_m3 == 'Yes')
+			{
+				$rej_insert_result100 = $link->query($final_query100) or exit('data error');
+			}
+
 		}
-		else
-		{
-			$final_query100 = $m3_bulk_bundle_insert;
-		}
-		$dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$b_colors' and operation_code='$b_op_id'";
-		$result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
-		while($row = $result_dep_ops_array_qry->fetch_assoc()) 
-		{
-			$is_m3 = $row['default_operration'];
-		}
-		if($is_m3 == 'Yes')
-		{
-			$rej_insert_result100 = $link->query($final_query100) or exit('data error');
-		}
+		
+		
 		$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
 		$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$size_id.'","'. $b_sizes.'","'. $sfcs_smv.'","'.$b_tid.'","'.$b_in_job_qty.'","'.$b_in_job_qty.'","'.$r_qty_array.'","0","0","'. $b_op_id.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$remarks.'"),';
 		//echo $bulk_insert_temp;

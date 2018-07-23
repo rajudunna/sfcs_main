@@ -41,7 +41,9 @@ echo "
 		<th class=\"column-title\"><center>Delete Control</center></th>
 		<th class=\"column-title\"><center>Ratio wise Savings%</center></th>
 		<th class=\"column-title\"><center>Ratio wise CAD Consumption</center></th>
-		<th class=\"column-title\"><center>Used $fab_uom</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead>";
+		<th class=\"column-title\"><center>Used $fab_uom</center></th>
+		<th class=\"column-title\"><center>Used $fab_uom For Binding</center></th>
+		<th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead>";
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -171,6 +173,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>".$savings1."%</center></td>";
 	echo "<td class=\"  \"><center>".round($cad_consumption,4)."</center></td>";
 	echo "<td class=\"  \"><center>".round($usedFabric,2)."</center></td>";
+	echo "<td class=\"  \"><center>".$used_yards[$ratio]."</center></td>";
+
 		
 	switch ($mk_status1)
 	{

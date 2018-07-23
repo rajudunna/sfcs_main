@@ -1291,6 +1291,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		//echo " <th class=\"heading2\" style='background-color:#29759C;color:white;'>".$s_tit[$sizes_code[$s]]."</th>";
 	}
+	$used_yards[$sql_row['ratio']] = $sql_row['plies'] * $tot * $bind_con;
+	// var_dump($used_yards);
 	echo "<td class=\"  \"><center>".$tot."</center></td>";
 
 if($sql_row['mk_status']==9)
