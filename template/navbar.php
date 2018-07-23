@@ -1,4 +1,5 @@
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+
     <!-- <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center"> -->
     <!-- <a class="navbar-brand brand-logo" href="index.html"> -->
     <!-- <img src="images/logo.svg" alt="logo" /> -->
@@ -7,15 +8,17 @@
     <!-- <img src="images/logo-mini.svg" alt="logo" /> -->
     <!-- </a> -->
     <!-- </div> -->
+    
     <div class="navbar-menu-wrapper d-flex align-items-center">
+        <label class="navbar-nav navbar-nav-left header-links d-none d-md-flex"><b><font size="5px">XAPPERL</font></b></label>
         <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
-            <li class="nav-item">
-                <a href="#" class="nav-link">WorkOrders
-                </a>
-            </li>
             <li class="nav-item active">
                 <a href="#" class="nav-link">
-                    <i class="mdi mdi-elevation-rise"></i>Reports</a>
+                    <i class="mdi mdi-apps"></i><b>Dash Board</b></a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="mdi mdi-elevation-rise"></i><b>Reports</b></a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link">
@@ -152,26 +155,28 @@
                             </div>
                         </div>
                     </a>
-                <a class="dropdown-item mt-2">
-                    Manage Accounts
-                </a>
-                <a class="dropdown-item">
-                    Change Password
-                </a>
-                <a class="dropdown-item">
-                    Check Inbox
-                </a>
-                <a class="dropdown-item">
-                    Sign Out
-                </a>
-                        </div>
-                    </li>
-                </ul>
-            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-                <span class="icon-menu"></span>
-            </button>
-        </div>
+                    <a class="dropdown-item mt-2">
+                        Manage Accounts
+                    </a>
+                    <a class="dropdown-item">
+                        Change Password
+                    </a>
+                    <a class="dropdown-item">
+                        Check Inbox
+                    </a>
+                    <a class="dropdown-item">
+                        Sign Out
+                    </a>
+                </div>
+            </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+            <span class="icon-menu"></span>
+        </button>
+    </div>
+
 </nav>
+
 <style>
     .navbar.default-layout .navbar-menu-wrapper {
         width:100% !important;

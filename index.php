@@ -47,97 +47,105 @@ $whoops->register();
 
     <body>
         <div class="container-scroller">
+        
             <?php include("template/navbar.php"); ?>
+
             <div class="container-fluid page-body-wrapper">
                 <div class="main-panel">
                     <div class="content-wrapper">
                         <div class="row">
+
                             <div class="col-lg-9">
 
-                                <!-- <div class="card">
+                                <div class="card border border-secondary">
                                     <div class="card-body">
-                                    </div>
-                                </div> -->
+                                        <div ng-app="App">
+                                            <div class="right_col" role="main">
+                                                <div class="row">
+                                            
+                                                    <div class="col-md-12 col-sm-12 col-xs-12" style="min-height:640px;">
 
-                                <div ng-app="App">
-                                    <div class="right_col" role="main">
-                                        <div class="row">
-                                            <div class="col-md-12 col-sm-12 col-xs-12" style="min-height:640px;">
+                                                        <!-- <div class="col-md-12 col-sm-12 col-xs-12" style="min-height:640px" id="body">
+                                                                
+                                                        </div> -->
 
-                                                <!-- <div class="col-md-12 col-sm-12 col-xs-12" style="min-height:640px" id="body">
-                                                        
-                                                </div> -->
-
-                                                <?php
-                                                    if(isset($_GET['r']) && $_GET['r']!=''){
-                                                        if(hasviewpermission($_GET['r'])){
-                                                            $get_file_path = getFILE($_GET['r']);
-                                                            if($get_file_path){
-                                                                if($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html'){                           
-                                                                    include($_SERVER["DOCUMENT_ROOT"].$get_file_path['path']);
-                                                                }
-                                                                else{
-                                                                    if($get_file_path['type'] == 'xlsm'){
-                                                                        echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Click here to dowload Tool</a>";
-                                                                    }else{
-                                                                        echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Get ".$get_file_path['type']." file to click here..</a>";
+                                                        <?php
+                                                            if(isset($_GET['r']) && $_GET['r']!=''){
+                                                                if(hasviewpermission($_GET['r'])){
+                                                                    $get_file_path = getFILE($_GET['r']);
+                                                                    if($get_file_path){
+                                                                        if($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html'){                           
+                                                                            include($_SERVER["DOCUMENT_ROOT"].$get_file_path['path']);
+                                                                        }
+                                                                        else{
+                                                                            if($get_file_path['type'] == 'xlsm'){
+                                                                                echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Click here to dowload Tool</a>";
+                                                                            }else{
+                                                                                echo "<a class='btn btn-primary' href='".$get_file_path['path']."' target='_blank'>Get ".$get_file_path['type']." file to click here..</a>";
+                                                                            }
+                                                                        }
+                                                                    }elseif(isset($_GET['r'])){
+                                                                        echo "<div class='col-sm-12'>
+                                                                                <div class='col-sm-6'><img src='images/error-page.png'></img></div>
+                                                                                <div class='col-sm-6'>
+                                                                                    <br/><br/><br/>
+                                                                                    <h1 class='text-danger'><i class='fas fa-exclamation-triangle'></i> Error..</h1>
+                                                                                    <br/><br/><br/><br/>
+                                                                                    <h1 class='text-warning'>Page not found..</h1>
+                                                                                </div>
+                                                                            </div>";
                                                                     }
-                                                                }
-                                                            }elseif(isset($_GET['r'])){
-                                                                echo "<div class='col-sm-12'>
-                                                                        <div class='col-sm-6'><img src='images/error-page.png'></img></div>
-                                                                        <div class='col-sm-6'>
+                                                                }else{
+                                                                    echo "<div class='col-sm-12'>
+                                                                            <div class='col-sm-4'><h1 style='font-size: 150px !important;margin: 68px 0px 0px 100px;' class='text-center text-warning'><i class='fa fa-user-times'></i></h1></div>
+                                                                            <div class='col-sm-8'>
                                                                             <br/><br/><br/>
-                                                                            <h1 class='text-danger'><i class='fas fa-exclamation-triangle'></i> Error..</h1>
+                                                                            <h1 class='text-danger text-center'><i class='fa fa-ban'></i> Restricted..</h1>
                                                                             <br/><br/><br/><br/>
-                                                                            <h1 class='text-warning'>Page not found..</h1>
-                                                                        </div>
+                                                                            <h1 class='text-danger text-center'>unauthorized access..</h1>
+                                                                            </div>
+                                                                    </div>";
+                                                                }
+                                                            }elseif($link_ui == Null){
+                                                                echo "<div class='col-sm-12'>
+                                                                            <br/><br/><br/>
+                                                                            <h1 class='text-warning text-center'><i class='fa fa-unlink'></i> Warning..</h1>
+                                                                            <br/><br/><br/><br/>
+                                                                            <h1 class='text-danger text-center'>DB link fails..</h1>
+                                                                    </div>";
+                                                            }else{
+                                                                echo "<div class='col-sm-12'>
+                                                                            <h1 class='text-primary text-center'>Shop Floor Control System</h1>
+                                                                            <h1 class='text-primary text-center'><img src='images/xa1.png' alt='Logo' height='40' width='40'> XAPPERL </h1>
+                                                                            <img style='width:100%' src='images/xapperl.jpg'/>
+                                                                
                                                                     </div>";
                                                             }
-                                                        }else{
-                                                            echo "<div class='col-sm-12'>
-                                                                    <div class='col-sm-4'><h1 style='font-size: 150px !important;margin: 68px 0px 0px 100px;' class='text-center text-warning'><i class='fa fa-user-times'></i></h1></div>
-                                                                    <div class='col-sm-8'>
-                                                                    <br/><br/><br/>
-                                                                    <h1 class='text-danger text-center'><i class='fa fa-ban'></i> Restricted..</h1>
-                                                                    <br/><br/><br/><br/>
-                                                                    <h1 class='text-danger text-center'>unauthorized access..</h1>
-                                                                    </div>
-                                                            </div>";
-                                                        }
-                                                    }elseif($link_ui == Null){
-                                                        echo "<div class='col-sm-12'>
-                                                                    <br/><br/><br/>
-                                                                    <h1 class='text-warning text-center'><i class='fa fa-unlink'></i> Warning..</h1>
-                                                                    <br/><br/><br/><br/>
-                                                                    <h1 class='text-danger text-center'>DB link fails..</h1>
-                                                            </div>";
-                                                    }else{
-                                                        echo "<div class='col-sm-12'>
-                                                                    <h1 class='text-primary text-center'>Welcome to SFCS</h1>
-                                                                    <h1 class='text-center text-danger bg-info'><img src='images/favicon.ico' alt='Logo' height='40' width='40'> Brandix </h1>
-                                                                    <img style='width:60%;margin:5px 240px' src='images/brandix sew.jpg'/>
-                                                                    <h1 class='text-center bg-primary'><img src='images/logo-schemax.png' alt='Schemax'> 
-                                                                    </h1>
-                                                                    
-                                                                
-                                                            </div>";
-                                                    }
-                                                ?>
+                                                        ?>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                             </div>
+                            
                             <div class="col-lg-3">
-                                <div class="list-group" id="list-tab" role="tablist">
-                                    <a class="list-group-item d-flex justify-content-between align-items-center active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home <span class="badge badge-info badge-pill">14</span></a>
-                                    <a class="list-group-item d-flex justify-content-between align-items-center" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Profile</a>
-                                    <a class="list-group-item d-flex justify-content-between align-items-center" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Messages</a>
-                                    <a class="list-group-item d-flex justify-content-between align-items-center" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
-                                </div>
+
+                                <div class="card border border-secondary">
+                                    <div class="card-body">
+
+                                        <div class="list-group" id="list-tab" role="tablist">
+                                            <a class="list-group-item d-flex justify-content-between align-items-center active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home <span class="badge badge-info badge-pill">14</span></a>
+                                            <a class="list-group-item d-flex justify-content-between align-items-center" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Profile</a>
+                                            <a class="list-group-item d-flex justify-content-between align-items-center" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Messages</a>
+                                            <a class="list-group-item d-flex justify-content-between align-items-center" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
+                                        </div>
+                                    </div>
+                                    </div>
                             </div>
+
                         </div>
                     </div>
                     <?php include("template/footer.php"); ?>
