@@ -5374,7 +5374,7 @@ function printdiv(printpage) {
  </tr> 
  <tr height=38 style='mso-height-source:userset;height:28.5pt'> 
   <td height=38 class=xl13332351 style='height:28.5pt'>Style No:</td> 
-  <td colspan=3 class=xl25232351 style='border-right:1.0pt solid black; border-left:none'><b><?php echo $style; ?></b><span style='mso-spacerun:yes'></span></td> 
+  <td colspan=3 class=xl25232351 style='border-right:1.0pt solid black; border-left:none'><b><?php echo $style; ?></b></td> 
   <td colspan=2 class=xl21932351 style='border-right:.5pt solid black;   border-left:none'>Shedule No:</td> 
   <td colspan=3 class=xl20032351 style='border-right:1.0pt solid black;  border-left:none'><b><?php echo  $schedule; ?></b></td> 
   <td colspan=2 class=xl22132351 width=90 style='border-right:.5pt solid black;   width:68pt'>PO No:</td> 
@@ -5392,12 +5392,12 @@ function printdiv(printpage) {
  <tr height=38 style='mso-height-source:userset;height:28.5pt'> 
   <td height=38 class=xl13132351 style='height:28.5pt'>Line</td> 
   <td colspan=3 class=xl20032351 style='border-right:1.0pt solid black;   border-left:none'><?php   echo $team_number; ?></td> 
-  <td colspan=2 class=xl13132351 style='border-left:none'>Job No:</td> 
-  <td colspan=3 class=xl24832351 style='border-right:1.0pt solid black;   border-left:none'><b><?php echo $display.leading_zeros($jobno, 3);?></b></td> 
-  <td colspan=2 class=xl24932351>Cut No:</td> 
-  <td colspan=2 class=xl25032351 width=93 style='border-left:none;width:70pt'><center><?php echo $cut_jobs_new1;?></center></td> 
-  <td colspan=2 class=xl13132351 style='border-right:1.0pt solid black'>Job Qty</td> 
-  <td colspan=3 class=xl23632351 width=89 style='border-right:1.0pt solid black; border-left:none;width:67pt'><?php echo $job_total_qty; ?></td> 
+  <td colspan=2 class=xl13132351 style='border-left:none'><center>Job No</center></td> 
+  <td colspan=5 class=xl24832351 style='border-right:1.0pt solid black;   border-left:none'><b><?php echo $display.leading_zeros($jobno, 3);?></b></td> 
+  <!-- <td colspan=2 class=xl24932351>Cut No:</td>  -->
+  <!-- <td colspan=2 class=xl25032351 width=93 style='border-left:none;width:70pt'><center><?php echo $cut_jobs_new1;?></center></td>  -->
+  <td colspan=2 class=xl13132351 style='border-right:1.0pt solid black'><center>Job Qty</center></td> 
+  <td colspan=5 class=xl23632351 width=89 style='border-right:1.0pt solid black; border-left:none;width:67pt'><?php echo $job_total_qty; ?></td> 
   <td colspan=2 class=xl23932351 style='border-left:none'>No of Carton</td> 
   <td class=xl13032351 style='border-top:none'><center>Full</center></td> 
   <td colspan=2 class=xl22832351 style='border-left:none'></td> 
@@ -5416,7 +5416,7 @@ function printdiv(printpage) {
   <td colspan=12 class=xl22532351 style='border-right:1.0pt solid black'>Packing</td> 
  </tr> 
  <tr height=28 style='mso-height-source:userset;height:21.0pt'> 
-  <td rowspan=2 height=101 class=xl20932351 width=89 style='border-bottom:1.0pt solid black; height:75.75pt;width:67pt'>Color - Cut No<span style='mso-spacerun:yes'> </span></td> 
+  <td rowspan=2 height=101 class=xl20932351 width=89 style='border-bottom:1.0pt solid black; height:75.75pt;width:67pt'>Color -<br> (<b>Cut No</b>)</td> 
   <td class=xl12232351 width=2 style='width:2pt'>&nbsp;</td> 
   <td colspan=2 class=xl21132351 width=118 style='border-right:1.0pt solid black; border-left:none;width:88pt'>Sewing In<span style='mso-spacerun:yes'> </span></td> 
   <td colspan=10 class=xl21232351>Hourly Sewing Out</td> 
@@ -5471,9 +5471,8 @@ function printdiv(printpage) {
         // echo $color_code;
         $cut_new = chr($color_code).leading_zeros($rowxs["acutno"], 3);
          echo "<tr class=xl10632351 height=48 style='mso-height-source:userset;height:36.0pt'> 
-          <td rowspan=2 height=96 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; 
-          height:72.0pt;border-top:none;width:67pt'>".$rowxs["order_col_des"]." - ".$cut_new."<span 
-          style='mso-spacerun:yes'>                 </span></td> 
+          <td rowspan=2 height=96 class=xl17132351 width=89 
+          style='border-bottom:1.0pt solid black;height:72.0pt;border-top:none;width:67pt;word-wrap:break-word;'>".$rowxs["order_col_des"]."-(<b>".$cut_new."</b>)</td> 
           <td class=xl9532351 style='border-left:none'>&nbsp;</td> 
           <td rowspan=2 class=xl18232351 style='border-bottom:1.0pt solid black'>".strtoupper($rowxs["size_code"])."</td> 
           <td rowspan=2 class=xl18432351 width=59 style='border-bottom:1.0pt solid black; 

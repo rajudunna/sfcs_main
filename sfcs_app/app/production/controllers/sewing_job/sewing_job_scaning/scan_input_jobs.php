@@ -292,6 +292,10 @@ $(document).ready(function()
 							status = '<font color="red">Already Scanned</font>';
 							//$('#sampling').hide();
 						}
+						if(data[i].send_qty == 0)
+						{
+							status = '<font color="red">Previous Operation not done</font>';
+						}
 						else if(data[i].reported_qty > 0)
 						{
 							status = '<font color="green">Partially Scanned</font>';
