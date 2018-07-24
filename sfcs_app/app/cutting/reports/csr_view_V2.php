@@ -60,7 +60,7 @@ function verify_date(){
 			<div class="col-md-2">
 				<label>Section: </label>
 				<select name="section" class="form-control" required>
-					<option value=''>Please Select</option>
+					<!-- <option value=''>Please Select</option> -->
 					<?php if($all_secs){
 					echo "<option value='$all_secs'>All</option>";
 					}
