@@ -66,20 +66,16 @@ if(!(in_array($view,$has_permission)))
 	<div class="panel-body">
 		<div class="row">
 			<div class="col-md-3">
-				<form name="test" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
+				<form name="test" method="post" action="<?php getFullURL($_GET['r'],'entry_delete.php','N'); ?>">
 					<label>Enter Label Id: </label>
 					<input type="text" name="lid" value="" class="form-control integer" /required>
-			</div>
-			<div class="col-md-3">
 					<input type="submit" name="submit" value="Search" class="btn btn-success" style="margin-top:18px;" />
 				</form>
 			</div>
 			<div class="col-md-3">
-				<form name="test" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
+				<form name="test" method="post" action="<?php getFullURL($_GET['r'],'entry_delete.php','N'); ?>">
 					<label>Enter Lot #:</label>
 					<input type="text" name="lot_no_ref" value="" class="form-control integer" /required>
-			</div>
-			<div class="col-md-3">
 					<input type="submit" name="submit2" value="Search" class="btn btn-success" style="margin-top:18px;" />
 				</form>
 			</div>
