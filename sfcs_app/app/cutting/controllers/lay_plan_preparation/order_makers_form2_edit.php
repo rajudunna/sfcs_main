@@ -377,7 +377,7 @@ function verify_null(){
 	var ver = document.getElementById('d16').value;
 	var eff =  document.getElementById('d15').value;
 	var mklen = document.getElementById('d1').value;
-	if(eff == '' || (eff>100 || eff<=0)){
+	if(eff == '' || eff>100 ){
 		sweetAlert('Please enter valid Marker Efficiency','','warning');
 		return false;
 	}
