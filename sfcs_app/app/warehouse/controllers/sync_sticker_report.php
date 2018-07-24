@@ -132,7 +132,7 @@ if(isset($_POST['download']))
 		}
 		if($i >0)
 		{
-			echo "<script>sweetAlert('Total Updated Records is $i','','info');</script>";
+			echo "<script>sweetAlert('Records are Updated Successfully','','info');</script>";
 		}
 		else
 		{
