@@ -291,9 +291,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 						<input type=\"number\" class='form-control'  min=0 name=\"fab_rec\" value=".round($material,2)." step=any>
 					</div></td>
 				</tr>";
-			echo "<tr><td>Fabric Returned</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_fab_ret\" value=\"$fab_returned\"><input type=\"number\" class='form-control'  min=0 pattern='^\d+(?:\.\d{1,2})?$'  name=\"fab_ret\" value=\"0\"></div>&nbsp;<div class='col-sm-1'> <b>To</b></div><div class='col-sm-4'> <select name=\"ret_to\" class='form-control'><option value=\"0\">Cutting</option><option value=\"1\">RM</option></select></div></td></tr>";
-			echo "<tr><td>Damages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_damages\" value=\"$fab_damages\"><input type=\"number\" class='form-control' name=\"damages\"  min=0 pattern='^\d+(?:\.\d{1,2})?$'  value=\"0\"></div></td></tr>";
-			echo "<tr><td>Shortages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_shortages\" value=\"$fab_shortages\"><input type=\"number\" class='form-control' pattern='^\d+(?:\.\d{1,2})?$' name=\"shortages\"  min=0 value=\"0\"></div></td></tr>";
+			echo "<tr><td>Fabric Returned</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_fab_ret\" value=\"$fab_returned\"><input type=\"text\" class='form-control float '  min=0  name=\"fab_ret\" value=\"0\"></div>&nbsp;<div class='col-sm-1'> <b>To</b></div><div class='col-sm-4'> <select name=\"ret_to\" class='form-control'><option value=\"0\">Cutting</option><option value=\"1\">RM</option></select></div></td></tr>";
+			echo "<tr><td>Damages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_damages\" value=\"$fab_damages\"><input type=\"text\" class='form-control float' name=\"damages\"  min=0 value=\"0\"></div></td></tr>";
+			echo "<tr><td>Shortages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_shortages\" value=\"$fab_shortages\"><input type=\"text\" class='form-control float'  name=\"shortages\"  min=0 value=\"0\"></div></td></tr>";
 
 			echo "<tr><td>Bundle Location</td><td>:</td><td><div class='col-sm-4'><select name=\"bun_loc\" class='form-control'>";
 			echo "<option value='' style='background-color:#FF5500;'>Select Location</option>";
