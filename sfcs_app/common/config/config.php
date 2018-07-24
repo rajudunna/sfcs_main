@@ -24,7 +24,11 @@ $ms_sql_odbc_pass = $conf1->get('mssql-password');
 
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
-
+//ms-sql sticker_report
+$host_ms = "10.227.221.25";
+$user_ms = "BAISFCS";
+$password_ms = "fcs@m3pr";
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
 //M3 MSSQL DB Configurations
 $m3_mssql_odbc_name="bcimovsms01_bai";
 $m3_mssql_username="brandix_india_user1";
