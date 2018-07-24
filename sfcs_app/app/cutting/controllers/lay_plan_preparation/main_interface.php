@@ -1163,75 +1163,74 @@ $sql1="select * from $ord_tbl_name where order_tid=\"$tran_order_tid\"";
 $sql_result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result))
 {
-	
-for($s=0;$s<sizeof($sizes_code);$s++)
-{
-	if($sql_row1["title_size_s".$sizes_code[$s].""]<>'')
+	for($s=0;$s<sizeof($sizes_code);$s++)
 	{
-		$s_tit[$sizes_code[$s]]=$sql_row1["title_size_s".$sizes_code[$s].""];
-		//echo $s_tit[$sizes_code[$s]]."<br>";
-	}	
-}
-for($s=0;$s<sizeof($sizes_code);$s++)
-{
-	//if($sql_row["order_s".$sizes_code[$s].""]<>'')
-	//{
-		$s_ord[$s]=$sql_row1["order_s_s".$sizes_code[$s].""];
-		//echo $s_tit[$sizes_code[$s]]."<br>";
-	//}	
-}
-$size01 = $sql_row1['title_size_s01'];
-$size02 = $sql_row1['title_size_s02'];
-$size03 = $sql_row1['title_size_s03'];
-$size04 = $sql_row1['title_size_s04'];
-$size05 = $sql_row1['title_size_s05'];
-$size06 = $sql_row1['title_size_s06'];
-$size07 = $sql_row1['title_size_s07'];
-$size08 = $sql_row1['title_size_s08'];
-$size09 = $sql_row1['title_size_s09'];
-$size10 = $sql_row1['title_size_s10'];
-$size11 = $sql_row1['title_size_s11'];
-$size12 = $sql_row1['title_size_s12'];
-$size13 = $sql_row1['title_size_s13'];
-$size14 = $sql_row1['title_size_s14'];
-$size15 = $sql_row1['title_size_s15'];
-$size16 = $sql_row1['title_size_s16'];
-$size17 = $sql_row1['title_size_s17'];
-$size18 = $sql_row1['title_size_s18'];
-$size19 = $sql_row1['title_size_s19'];
-$size20 = $sql_row1['title_size_s20'];
-$size21 = $sql_row1['title_size_s21'];
-$size22 = $sql_row1['title_size_s22'];
-$size23 = $sql_row1['title_size_s23'];
-$size24 = $sql_row1['title_size_s24'];
-$size25 = $sql_row1['title_size_s25'];
-$size26 = $sql_row1['title_size_s26'];
-$size27 = $sql_row1['title_size_s27'];
-$size28 = $sql_row1['title_size_s28'];
-$size29 = $sql_row1['title_size_s29'];
-$size30 = $sql_row1['title_size_s30'];
-$size31 = $sql_row1['title_size_s31'];
-$size32 = $sql_row1['title_size_s32'];
-$size33 = $sql_row1['title_size_s33'];
-$size34 = $sql_row1['title_size_s34'];
-$size35 = $sql_row1['title_size_s35'];
-$size36 = $sql_row1['title_size_s36'];
-$size37 = $sql_row1['title_size_s37'];
-$size38 = $sql_row1['title_size_s38'];
-$size39 = $sql_row1['title_size_s39'];
-$size40 = $sql_row1['title_size_s40'];
-$size41 = $sql_row1['title_size_s41'];
-$size42 = $sql_row1['title_size_s42'];
-$size43 = $sql_row1['title_size_s43'];
-$size44 = $sql_row1['title_size_s44'];
-$size45 = $sql_row1['title_size_s45'];
-$size46 = $sql_row1['title_size_s46'];
-$size47 = $sql_row1['title_size_s47'];
-$size48 = $sql_row1['title_size_s48'];
-$size49 = $sql_row1['title_size_s49'];
-$size50 = $sql_row1['title_size_s50'];
+		if($sql_row1["title_size_s".$sizes_code[$s].""]<>'')
+		{
+			$s_tit[$sizes_code[$s]]=$sql_row1["title_size_s".$sizes_code[$s].""];
+			//echo $s_tit[$sizes_code[$s]]."<br>";
+		}	
+	}
+	for($s=0;$s<sizeof($sizes_code);$s++)
+	{
+		//if($sql_row["order_s".$sizes_code[$s].""]<>'')
+		//{
+			$s_ord[$s]=$sql_row1["order_s_s".$sizes_code[$s].""];
+			//echo $s_tit[$sizes_code[$s]]."<br>";
+		//}	
+	}
+	$size01 = $sql_row1['title_size_s01'];
+	$size02 = $sql_row1['title_size_s02'];
+	$size03 = $sql_row1['title_size_s03'];
+	$size04 = $sql_row1['title_size_s04'];
+	$size05 = $sql_row1['title_size_s05'];
+	$size06 = $sql_row1['title_size_s06'];
+	$size07 = $sql_row1['title_size_s07'];
+	$size08 = $sql_row1['title_size_s08'];
+	$size09 = $sql_row1['title_size_s09'];
+	$size10 = $sql_row1['title_size_s10'];
+	$size11 = $sql_row1['title_size_s11'];
+	$size12 = $sql_row1['title_size_s12'];
+	$size13 = $sql_row1['title_size_s13'];
+	$size14 = $sql_row1['title_size_s14'];
+	$size15 = $sql_row1['title_size_s15'];
+	$size16 = $sql_row1['title_size_s16'];
+	$size17 = $sql_row1['title_size_s17'];
+	$size18 = $sql_row1['title_size_s18'];
+	$size19 = $sql_row1['title_size_s19'];
+	$size20 = $sql_row1['title_size_s20'];
+	$size21 = $sql_row1['title_size_s21'];
+	$size22 = $sql_row1['title_size_s22'];
+	$size23 = $sql_row1['title_size_s23'];
+	$size24 = $sql_row1['title_size_s24'];
+	$size25 = $sql_row1['title_size_s25'];
+	$size26 = $sql_row1['title_size_s26'];
+	$size27 = $sql_row1['title_size_s27'];
+	$size28 = $sql_row1['title_size_s28'];
+	$size29 = $sql_row1['title_size_s29'];
+	$size30 = $sql_row1['title_size_s30'];
+	$size31 = $sql_row1['title_size_s31'];
+	$size32 = $sql_row1['title_size_s32'];
+	$size33 = $sql_row1['title_size_s33'];
+	$size34 = $sql_row1['title_size_s34'];
+	$size35 = $sql_row1['title_size_s35'];
+	$size36 = $sql_row1['title_size_s36'];
+	$size37 = $sql_row1['title_size_s37'];
+	$size38 = $sql_row1['title_size_s38'];
+	$size39 = $sql_row1['title_size_s39'];
+	$size40 = $sql_row1['title_size_s40'];
+	$size41 = $sql_row1['title_size_s41'];
+	$size42 = $sql_row1['title_size_s42'];
+	$size43 = $sql_row1['title_size_s43'];
+	$size44 = $sql_row1['title_size_s44'];
+	$size45 = $sql_row1['title_size_s45'];
+	$size46 = $sql_row1['title_size_s46'];
+	$size47 = $sql_row1['title_size_s47'];
+	$size48 = $sql_row1['title_size_s48'];
+	$size49 = $sql_row1['title_size_s49'];
+	$size50 = $sql_row1['title_size_s50'];
 
-		$flag = $sql_row1['title_flag'];
+	$flag = $sql_row1['title_flag'];
 }
 
 
@@ -1295,27 +1294,27 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	// var_dump($used_yards);
 	echo "<td class=\"  \"><center>".$tot."</center></td>";
 
-if($sql_row['mk_status']==9)
-{
-	echo "<td class=\"  \"><center>Lay Plan Prepared</center></td>";
-}
-else{
-	echo "<td class=\"  \"><center>";
-	
-	$sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref='".$sql_row['tid']."'";
-	$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result21)==0)
+	if($sql_row['mk_status']==9)
 	{
-		echo "<a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2_edit.php", "N")."&check_id=".$check_id."&tran_order_tid=".$tran_order_tid."&cat_id=".$cat_id."&ref_id=".$sql_row['tid']."\">Edit</a>";
+		echo "<td class=\"  \"><center>Lay Plan Prepared</center></td>";
 	}
-else
-{
-	$mk_status=9;
-	echo "Lay Plan Prepared";
+	else{
+		echo "<td class=\"  \"><center>";
+		
+		$sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref='".$sql_row['tid']."'";
+		$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result21)==0)
+		{
+			echo "<a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2_edit.php", "N")."&check_id=".$check_id."&tran_order_tid=".$tran_order_tid."&cat_id=".$cat_id."&ref_id=".$sql_row['tid']."\">Edit</a>";
+		}
+		else
+		{
+			$mk_status=9;
+			echo "Lay Plan Prepared";
 
-}
-			echo "</center></td>";
-}
+		}
+		echo "</center></td>";
+	}
 
 
 
@@ -1350,15 +1349,15 @@ else
 		}
 			
 	}
-echo "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
-echo "</tr>";
-$allc_ref = $sql_row['tid'];
-$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allc_ref and cuttable_ref > 0";
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row2=mysqli_fetch_array($sql_result2))
-{		
-	$used_fabric+=$sql_row2['mklength'] * $sql_row['plies'];	
-}
+	echo "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
+	echo "</tr>";
+	$allc_ref = $sql_row['tid'];
+	$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allc_ref and cuttable_ref > 0";
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{		
+		$used_fabric+=$sql_row2['mklength'] * $sql_row['plies'];	
+	}
 
 }
 echo "<tr><td colspan=3> Total Planned Quantity</center><td>";
@@ -1412,8 +1411,17 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 		</div>
 		<div id="Marker" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
-			<center><span class="pull-right"><strong>Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;
-    color: white;">'.$overall_savings."%"."</span>";?> &nbsp;&nbsp;|&nbsp;&nbsp; Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?></strong></span><center><br/>
+				<center>
+					<span class="pull-right">
+						<strong>
+							Overall Used <?php echo $fab_uom.': <span style="background-color: #f0ad4e;color: white;">'.$used_fabric."</span>";?>
+							&nbsp;&nbsp;|&nbsp;&nbsp;
+							Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;color: white;">'.$overall_savings."%"."</span>";?>
+							&nbsp;&nbsp;|&nbsp;&nbsp;
+							Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?>
+						</strong>
+					</span>
+				<center><br/>
 				<?php include("main_interface_5.php"); ?>
 			</div>
 		</div>

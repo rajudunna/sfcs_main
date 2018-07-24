@@ -655,6 +655,8 @@ echo '&nbsp;&nbsp;&nbsp;Priorities:<select name="view_priority" id="view_priorit
 if($_GET['view_priority']=="4") { echo '<option value="4" selected>4</option>'; } else { echo '<option value="4">4</option>'; }
 if($_GET['view_priority']=="6") { echo '<option value="6" selected>6</option>'; } else { echo '<option value="6">6</option>'; }
 if($_GET['view_priority']=="8") { echo '<option value="8" selected>8</option>'; } else { echo '<option value="8">8</option>'; }
+if($_GET['view_priority']=="12") { echo '<option value="12" selected>12</option>'; } else { echo '<option value="12">12</option>'; }
+if($_GET['view_priority']=="16") { echo '<option value="16" selected>16</option>'; } else { echo '<option value="16">16</option>'; }
 echo '</select>';
 
 if(isset($_GET['view_priority']))
