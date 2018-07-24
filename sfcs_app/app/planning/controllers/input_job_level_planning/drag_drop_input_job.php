@@ -268,7 +268,7 @@ $has_perm=haspermission($_GET['r']);
 	}
 	function do_disable(){
 		console.log('welcome');
-		  document.getElementById("saveButton").disabled = true;
+		  document.getElementsByClassName("saveButton").disabled = true;
 		
 	}
 	
@@ -662,8 +662,8 @@ $code_db=explode("*",$code);
 <h4><span class="label label-info">Note: Yellow Color indicates Excess/Sample Job</span></h4>
 <form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()">
 	<input type="hidden" name="listOfItems" value="">
-	<input class='btn btn-success btn-sm pull-right' type="button" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
-</form>
+	<input class='btn btn-success btn-sm pull-right' type="button" class="saveButton" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
+<!-- </form> -->
 <br>
 <div id="dhtmlgoodies_dragDropContainer">
 	<!-- <div id="topBar">
@@ -910,6 +910,11 @@ $code_db=explode("*",$code);
 	</div>
 
 	</div>
+<!-- <form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()">
+	<input type="hidden" name="listOfItems" value=""> -->
+	<input class='btn btn-success btn-sm pull-right' type="button" class="saveButton" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
+</form>
+<br>
 </div>
 	</div>
 	</div>

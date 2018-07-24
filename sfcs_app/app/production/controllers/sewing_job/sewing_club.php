@@ -3,7 +3,7 @@
 include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 ?>
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<!--<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>-->
 <script>
  $(document).ready(function(){
 	var url1 = '<?= getFullURL($_GET['r'],'sewing_club.php','N'); ?>';
