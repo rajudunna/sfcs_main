@@ -10,17 +10,12 @@ error_reporting(0);
 ini_set('display_errors', 'On');
 ?>
 <?php
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 ?>
 
 
 <?php
-//echo $username;
-// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-// $username=strtolower($username_list[1]);
 
 //Special Input Processing Block
 {
@@ -70,35 +65,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 	}
 }
 ?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>POP - IMS Track Panel</title>
 <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 <link rel=\"stylesheet\" href=".getFullURL($_GET['r'],'common/css/ddcolortabs.css',4,'R')." type=\"text/css\" media=\"all\" />
-
-<?php
-
-
-echo "<script language=\"javascript\" type=\"text/javascript\">";
-
-echo "function popitup(url) {";
-echo "	newwindow=window.open(url,"."'"."name"."'".",'"."scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0"."'".");";
-echo "	if (window.focus) {newwindow.focus()}";
-echo "	return false;";
-echo "}";
-echo "</script>";
-
-echo "<script language=\"javascript\" type=\"text/javascript\">";
-
-echo "function popitup2(url) {";
-echo "	newwindow=window.open(url,"."'"."name"."'".",'"."scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0"."'".");";
-echo "	if (window.focus) {newwindow.focus()}";
-echo "	return false;";
-echo "}";
-echo "</script>";
-?>
-
 
 <style>
 body{
@@ -189,7 +157,9 @@ table
 				
 				$ims_doc_no=$sql_row12['ims_doc_no'];
 				$input_job_no=$sql_row12['input_job_no_ref'];
-			
+
+				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
+
 				$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0";
 				$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -222,7 +192,7 @@ table
 				echo "</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['tid']."</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>";
 				echo "<td>".$sql_row12['ims_remarks']."</td>";
 //echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
-echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>J".leading_zeros($input_job_no,3)."</td><td>".strtoupper(substr($sql_row12['ims_size'],2))."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td></tr>";
+echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".$display_prefix1."</td><td>".strtoupper(substr($sql_row12['ims_size'],2))."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td></tr>";
 			}
 		}
 		echo "</table>";
