@@ -47,6 +47,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 		//echo $value;  
 		//die();
 		$value1 = explode(",",$value);
+		//var_dump($value1);
 		$list1 = "'". implode("', '", $value1) ."'";
 		//print_r($value1);
 		//echo count($value1);
@@ -59,11 +60,13 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 		//echo min($value1);
 		//var_dump($value1[0]);
 		//echo $schedule;
-		$value2 = min($value1);
+		$value2 = min_vals($value1);
+		//echo $value2;
+		//die();
 		$list = "'". implode("', '", $value1) ."'";
 		//echo $list;
-		$count_sch_qry3="SELECT input_job_no_random FROM bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no =$value2";
-		$result13=mysqli_query($link, $count_sch_qry3) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$count_sch_qry3="SELECT input_job_no_random FROM bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no ='$value2'";
+		$result13=mysqli_query($link, $count_sch_qry3) or die("Error110-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row2=mysqli_fetch_array($result13);
 		$input_job_random_min = $row2['input_job_no_random'];
 		// echo $input_job_random_min;
@@ -91,11 +94,11 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 							$input_job=$row2["input_job_no"];
 							$input_job_random=$row2["input_job_no_random"];
 							$count_sch_qry2 = "UPDATE bai_pro3.pac_stat_log_input_job SET input_job_no = '$value2', input_job_no_random = '$input_job_random_min'
-							WHERE input_job_no = $input_job and input_job_no_random = '$input_job_random'";
+							WHERE input_job_no = '$input_job' and input_job_no_random = '$input_job_random'";
 							//echo $count_sch_qry2 ;
-							$result12=mysqli_query($link, $count_sch_qry2) or die("Error100-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$result12=mysqli_query($link, $count_sch_qry2) or die("Error108-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
-							// die();
+							 //die();
 							//echo 'Input Job NO '.$input_job.'clubbed to '.$value2.' and Random Number '.$input_job_random_min.' </br>';
 							//echo "Updated data successfully\n";
 							
@@ -369,4 +372,19 @@ div#example_filter {
 </body>
 
 </html>
+<?php 
+function min_vals($ary){
+	$temp = '';
+	foreach($ary as $v){
+		if($temp!=''){
+			if($temp>$v){
+				$temp = $v;
+			}
+		}else{
+			$temp = $v;
+		}
+	}
+	return $temp;
+}
+?>
 
