@@ -9,7 +9,7 @@
 
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => 'utf-8', 
-		'format' => [32, 40], 
+		'format' => [50, 101], 
 		'orientation' => 'L'
 	]);
 
@@ -25,14 +25,14 @@
 				<head>
 				<style>
 				body {font-family: arial;
-					font-size: 9px;
+					font-size: 12px;
 				}
 
 
 			
 				@page {
-				margin-top: 7px;
-				margin-left:4px;  
+				margin-top: 10px;
+				margin-left:20px;  
 				margin-right:2px;
 				margin-bottom:10px; 
 				}
@@ -67,7 +67,7 @@
 			$html.= '<div>
 						<table>
 							<tr rowspan=2>
-								<td colspan=2><b>Stab Here:</b></td>
+								<td colspan=10><b>Stab Here:</b></td>
 								<td colspan=2>
 									<svg height="25" width="25">
 										<circle cx="10" cy="10" r="8"  />
@@ -75,17 +75,13 @@
 								</td>
 							</tr>	
 							<tr><td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b></td><td>'.$schedule.'</td></tr>
-							<tr><td><b>InputJob#:</b></td><td>J'.$input_job.'</td><td><b>Size#:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
-							<tr><td><b>B#:</b></td><td>'.$barcode.'</td><td><b>Cut#:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
-							<tr><td><b>Col#:</b></td><td colspan=3>'.trim($barcode_rslt['order_col_des']).'</td></tr>
+							<tr><td><b>Job Number:</b></td><td>J'.$input_job.'</td><td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
+							<tr><td><b>Barcode ID:</b></td><td>'.$barcode.'</td><td><b>Cut No:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
+							<tr><td><b>Color:</b></td><td colspan=3>'.substr($barcode_rslt['order_col_des'],0,35).'</td></tr>
 							<tr><td><b>Qty:</b>'.$quantity.'</td></tr>
 							</table>
-							<table>
-								<tr>
-									<td colspace="4"><barcode code="'.$barcode.'" type="C39"/ height="0.80" size="0.8" text="1"></td>
-									<td></td>
-								</tr>
-							</table>
+							<div style="margin-left:60px;"><barcode code="'.$barcode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
+									
 						 
 					 </div><br>';
 			
