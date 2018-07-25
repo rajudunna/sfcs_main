@@ -379,7 +379,7 @@ echo "<tr><td>Marker LENGTH 6</td><td>:</td><td><input class=\"form-control floa
 
 echo "<tr><td>Marker Efficiency</td>
 		  <td>:</td>
-		  <td colspan='2'><INPUT class=\"form-control float\" type=\"text\" min=0 value=\"0\" id='mk_eff' name=\"in_mkeff\" size=\"10\" required>
+		  <td colspan='2'><INPUT class=\"form-control float\" type=\"text\" min=0 value=\"0\" id='mk_eff' name=\"in_mkeff\" size=\"10\">
 		  </td>
 	 </tr>";
 echo "<tr><td>Marker Version</td><td>:</td>
