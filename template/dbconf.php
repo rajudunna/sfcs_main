@@ -1,7 +1,7 @@
 <?php
 
 // Turn off all error reporting
-error_reporting(0);
+// error_reporting(0);
 // Report simple running errors
 //error_reporting(E_ERROR | E_WARNING | E_PARSE);
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
@@ -24,6 +24,8 @@ $link_ui = mysqli_connect("$host","$user","$password","$database",$db_obj['db_po
   } 
 
   $mssql = $conf_tool->getMssqlDBConfig();
+
+  
   //var_dump($mssql);
 ?>
 

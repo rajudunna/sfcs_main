@@ -1,5 +1,5 @@
 <?php
-//include('dbconf.php');
+include('dbconf.php');
 //GLOBAL $happ;
 
   function hasChild($parent_id)
@@ -150,7 +150,7 @@
     return $mainlist;
   }
 ?>
-<script>
+<!-- <script>
 $(document).ready(function(){
 	var class_id = null;
 	var link_className = $('#link_active').attr('class');
@@ -173,4 +173,4 @@ $(document).ready(function(){
 	// });
 	
 });
-</script>
+</script> -->
