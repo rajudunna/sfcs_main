@@ -22,7 +22,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	
 	function firstbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value
+		var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value;
+		Ajaxify(ajax_url);
 	}
 
 	function secondbox()

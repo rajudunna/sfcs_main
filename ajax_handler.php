@@ -119,8 +119,7 @@ $('form').on("submit",function(event) {
         var c = url.split("?").pop();
         window.history.pushState("object or string", "Title", "?"+c);
         jQuery("#body").html(resp);
-        
-        setTimeout(function(){ myLoadStop(); alert('hai') }, 3000);
+        myLoadStop();
 
     }).fail(function(erespo) {
 
@@ -162,7 +161,7 @@ $("#body a").on('click',function(event){
                 window.history.pushState("object or string", "Title", "?"+c);
             }
             jQuery("#body").html(resp);
-            setTimeout(function(){ myLoadStop(); alert('hai') }, 3000);
+            myLoadStop();
 
         }).fail(function(erespo) {
 
@@ -189,7 +188,7 @@ function Ajaxify (url) {
     }).done(function(resp) {
        
         jQuery("#body").html(resp);
-        setTimeout(function(){ myLoadStop(); alert('hai') }, 3000);
+        myLoadStop();
 
     }).fail(function(erespo) {
 

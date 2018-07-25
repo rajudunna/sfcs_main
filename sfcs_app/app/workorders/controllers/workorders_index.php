@@ -1,6 +1,6 @@
-<div class="box">
+<div class="box box-info">
   <div class="box-header with-border">
-    <h3 class="box-title">Bordered Table</h3>
+    <h3 class="box-title">Workorders List</h3>
   </div>
   <!-- /.box-header -->
   <div class="box-body">
