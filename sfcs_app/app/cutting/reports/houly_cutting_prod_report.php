@@ -42,11 +42,7 @@ if(isset($_POST['submit']))
 			</style>
 			
 		<?php
-<<<<<<< HEAD
 		echo "<div class=\"table-responsive\"><table class='table'><tr class='danger'><th rowspan=2>Cutting<br>Section</th><th colspan=$total_hours>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
-=======
-		echo "<table class='table'><tr class='table table-bordered'><th rowspan=2>Cutting<br>Section</th><th colspan=$total_hours>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
->>>>>>> dac8a1b08e794889b945c7e5c0531bf06a70cc63
 	   	echo "<tr class='warning'>";
 	   	$query='';
 	   	for ($i=0; $i < $total_hours; $i++)
