@@ -1996,26 +1996,50 @@ echo "
 	</tr>
 </thead>
 <tbody>";
-for($i=0;$i<sizeof($roll_det);$i++){
-	echo "<tr>
-		<td colspan=3 class='manual_height' style='width:200px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$roll_det[$i]."</td>
-		<td colspan=3  class='manual_height' style='width:300px;font-size:16px; border:.5pt solid black; border-collapse: collapse;'>".$item_name[$i]."</td>
-		<td colspan=3  class='width:250px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$width_det[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$leng_det[$i]."</td>
-		<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$batch_det[$i]."</td>
-		<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$shade_det[$i]."</td>
-		<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$locan_det[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_len[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height'style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_len[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>
-		<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
+if(sizeof($roll_det)>0)
+ {
+	for($i=0;$i<sizeof($roll_det);$i++){
+		echo "<tr>
+			<td colspan=3 class='manual_height' style='width:200px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$roll_det[$i]."</td>
+			<td colspan=3  class='manual_height' style='width:300px;font-size:16px; border:.5pt solid black; border-collapse: collapse;'>".$item_name[$i]."</td>
+			<td colspan=3  class='width:250px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$width_det[$i]."</td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$leng_det[$i]."</td>
+			<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$batch_det[$i]."</td>
+			<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$shade_det[$i]."</td>
+			<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$locan_det[$i]."</td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_len[$i]."</td>
+			<td colspan=3  class='width:150px;manual_height'style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_len[$i]."</td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>		
 
-		</tr>";
+			</tr>";
+	}
 }
+else {
+	for($i=0;$i<16;$i++){
+		echo "<tr>
+			<td colspan=3 class='manual_height' style='width:200px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='manual_height' style='width:300px;font-size:16px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:250px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height'style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>		
+			</tr>"; 
+	}
+ }
 echo "</tbody></table>";	
 
 // for($i=0;$i<sizeof($roll_det);$i++)

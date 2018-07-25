@@ -204,6 +204,7 @@ $(document).ready(function()
 	$('#loading-image').hide();
 	$("#job_number").change(function()
 	{
+		$('#dynamic_table1').html('');
 		$('#loading-image').show();
 		var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 		var barcode_generation = "<?php echo $barcode_generation?>";
@@ -286,25 +287,26 @@ $(document).ready(function()
 						}
 						var readonly ='';
 						var temp_var_bal = 0;
-						if(data[i].balance_to_report == 0)
+						//console.log(data[i].reported_qty);
+						if(Number(data[i].reported_qty) > 0)
 						{
-							readonly = "readonly";
-							status = '<font color="red">Already Scanned</font>';
-							//$('#sampling').hide();
+							status = '<font color="green">Partially Scanned</font>';
+						}
+						if(data[i].send_qty != 0 && Number(data[i].reported_qty) == 0)
+						{
+							status = '<font color="green">Scanning Pending</font>';
 						}
 						if(data[i].send_qty == 0)
 						{
 							status = '<font color="red">Previous Operation not done</font>';
 						}
-						else if(data[i].reported_qty > 0)
+						if(data[i].send_qty != 0)
 						{
-							status = '<font color="green">Partially Scanned</font>';
+							if(Number(data[i].reported_qty)+Number(data[i].rejected_qty) == data[i].send_qty)
+							{
+								status = '<font color="red">Already Scanned</font>';
+							}
 						}
-						else
-						{
-							status = '<font color="green">Scanning Pending</font>';
-						}
-						
 						if(data[i].flag == 'packing_summary_input')
 						{
 							temp_var_bal = data[i].carton_act_qty;
@@ -336,6 +338,7 @@ $(document).ready(function()
 							}
 							val=i;
 							$('#loading-image').show();
+							$('#flag_validation').val(0);
 							validating_remarks_qty(val,remarks);
 						}
 					}
@@ -396,7 +399,7 @@ $("#reason").change(function(){
 	var result = $('#reason').val();
 	console.log(tot);
 	console.log(result);
-	if(result > tot)
+	if(Number(result) > Number(tot))
 	{
 		sweetAlert("","No. Of reasons should not greater than rejection quantity","error");
 		$('#reason').val(0);

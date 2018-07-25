@@ -268,7 +268,7 @@ $has_perm=haspermission($_GET['r']);
 	}
 	function do_disable(){
 		console.log('welcome');
-		  document.getElementById("saveButton").disabled = true;
+		  document.getElementsByClassName("saveButton").disabled = true;
 		
 	}
 	
@@ -554,8 +554,9 @@ document.forms["myForm"].submit();
 //include("../".getFullURL($_GET['r'],'dbconf.php','R')); 
 //include("../".getFullURL($_GET['r'],"functions.php",'R')); 
 // include('dbconf.php');
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R'));
 $style=$_GET['style'];
 $schedule=$_GET['schedule'];
 $color=$_GET['color'];
@@ -624,20 +625,12 @@ $module_ref_no=$_GET["module"];
 	//docketno-colorcode cutno-cut_status
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$input_job_no = 'J'.leading_zeros($sql_row['input_job_no'], 3);
-		$code.=$sql_row['input_job_no_random']."-".$input_job_no."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."-".$sql_row['type_of_sewing']."*";
+		$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+		// $input_job_no = 'J'.leading_zeros($sql_row['input_job_no'], 3);
+		$code.=$sql_row['input_job_no_random']."-".$display_prefix1."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."-".$sql_row['type_of_sewing']."*";
 		//echo "Doc=".$doc_no."<br>";
 		$style=$sql_row['order_style_no'];
 	}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -662,8 +655,8 @@ $code_db=explode("*",$code);
 <h4><span class="label label-info">Note: Yellow Color indicates Excess/Sample Job</span></h4>
 <form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()">
 	<input type="hidden" name="listOfItems" value="">
-	<input class='btn btn-success btn-sm pull-right' type="button" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
-</form>
+	<input class='btn btn-success btn-sm pull-right' type="button" class="saveButton" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
+<!-- </form> -->
 <br>
 <div id="dhtmlgoodies_dragDropContainer">
 	<!-- <div id="topBar">
@@ -825,33 +818,19 @@ $code_db=explode("*",$code);
 							// add by Chathuranga	
 							
 							
-							
-							$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$color_code1.$acutno1,80)."\n".str_pad("Qty:".$total_qty1,90);
+							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+							$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+
+							$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);
 							if($style1!=NULL)
 							{
 								if($style==$style1  and $schedule==$schedule1)
 								{
-									if ($type_of_sewing == 2)
-									{
-										$check = 'yellow'; // yellow for excess/sample cut
-										$font_color = 'black';
-									} else {
-										$check = '#f02009';
-										$font_color = '#f6f6f6';
-									}
-									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;background-color:$check;" title="'.$title.'"><strong><font color="$font_color">J'.$cut_no1."(".$style_id_new.')</font></strong></li>';
+									echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
 								}
 								else
 								{
-									if ($type_of_sewing == 2)
-									{
-										$check = 'yellow'; // yellow for excess/sample cut
-										$font_color = 'black';
-									} else {
-										$check = '#f02009';
-										$font_color = '#a94442';
-									}
-									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;background-color:$check;" title="'.$title.'"><strong><font color="$font_color">J'.$cut_no1."(".$style_id_new.')</font></strong></li>';
+									echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
 								}
 							}	
 							
@@ -910,6 +889,11 @@ $code_db=explode("*",$code);
 	</div>
 
 	</div>
+<!-- <form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()">
+	<input type="hidden" name="listOfItems" value=""> -->
+	<input class='btn btn-success btn-sm pull-right' type="button" class="saveButton" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
+</form>
+<br>
 </div>
 	</div>
 	</div>

@@ -1999,6 +1999,8 @@ echo "
 	</tr>
 </thead>
 <tbody>";
+if(sizeof($roll_det)>0)
+ {
 for($i=0;$i<sizeof($roll_det);$i++){
 	echo "<tr>
 		<td colspan=3 class='manual_height' style='width:200px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'>".$roll_det[$i]."</td>
@@ -2019,6 +2021,28 @@ for($i=0;$i<sizeof($roll_det);$i++){
 
 		</tr>";
 }
+ }
+ else {
+	for($i=0;$i<16;$i++){
+		echo "<tr>
+			<td colspan=3 class='manual_height' style='width:200px;font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='manual_height' style='width:300px;font-size:16px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:250px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:200px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height'style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>
+			<td colspan=3  class='width:150px;manual_height' style='font-size:18px; border:.5pt solid black; border-collapse: collapse;'></td>		
+			</tr>"; 
+	}
+ }
 echo "</tbody></table>";	
 
 // for($i=0;$i<sizeof($roll_det);$i++)

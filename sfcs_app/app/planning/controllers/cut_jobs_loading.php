@@ -454,7 +454,8 @@ if(isset($_POST['submit']))
 	//docketno-colorcode cutno-cut_status
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$code.=$sql_row['input_job_no_random']."-"."J".$sql_row['input_job_no']."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."*";
+		$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+		$code.=$sql_row['input_job_no_random']."-".$display_prefix1."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."*";
 		//echo "Doc=".$doc_no."<br>";
 		$style=$sql_row['order_style_no'];
 	}

@@ -10,11 +10,8 @@ error_reporting(0);
 ini_set('display_errors', 'On');
 ?>
 <?php
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
-
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
@@ -77,10 +74,6 @@ $username=strtolower($username_list[1]);
     } 
 } 
 ?> 
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>POP - IMS Track Panel</title>
 <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 <link rel=\"stylesheet\" href=".getFullURL($_GET['r'],'common/css/ddcolortabs.css',4,'R')." type=\"text/css\" media=\"all\" />
 
@@ -143,8 +136,7 @@ table
         echo "<th>Cut No</th><th>Input Job No</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th></tr>"; 
              
         $toggle=0; 
-        $sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref order by tid"; 
-        mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        $sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref order by tid";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row=mysqli_fetch_array($sql_result)) 
         { 
@@ -162,8 +154,7 @@ table
             } 
              
             $req_date=""; 
-            $sql12="select req_date from $bai_pro3.ims_exceptions where ims_rand_track=$rand_track"; 
-            mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            $sql12="select req_date from $bai_pro3.ims_exceptions where ims_rand_track=$rand_track";  
             $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
             { 
@@ -171,16 +162,15 @@ table
             } 
             $input_job_no=0; 
             $sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC"; 
-            mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            // echo $sql12.'<br>'; 
             $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
-            { 
-                 
+            {                  
                 $ims_doc_no=$sql_row12['ims_doc_no']; 
-                $input_job_no=$sql_row12['input_job_no_ref']; 
+                $input_job_no=$sql_row12['input_job_no_ref'];
+                $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
              
                 $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0"; 
-                mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                  
                 while($sql_row22=mysqli_fetch_array($sql_result22)) 
@@ -188,7 +178,6 @@ table
                     $order_tid=$sql_row22['order_tid']; 
                      
                     $sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
-                    mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row33=mysqli_fetch_array($sql_result33)) 
                     { 
@@ -213,7 +202,7 @@ table
                 echo "</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['tid']."</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>"; 
                 echo "<td>".$sql_row12['ims_remarks']."</td>"; 
 //echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>"; 
-echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>J".leading_zeros($input_job_no,3)."</td><td>".strtoupper(substr($sql_row12['ims_size'],2))."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td></tr>"; 
+echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".$display_prefix1."</td><td>".strtoupper(substr($sql_row12['ims_size'],2))."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td></tr>"; 
             } 
         } 
         echo "</table>"; 
