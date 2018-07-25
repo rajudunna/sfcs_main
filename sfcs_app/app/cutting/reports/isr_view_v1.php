@@ -183,6 +183,7 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 		echo "<td>".$sql_row['ims_color']."</td>";
 		echo "<td>".$sql_row['ims_mod_no']."</td>";
 		echo "<td>".$sql_row['ims_doc_no']."</td>";
+		$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row['ims_schedule'],$sql_row['ims_color'],$sql_row['input_job_no_ref'],$link);
 		
 		$sql111="select order_div from $bai_pro3.bai_orders_db where order_del_no=".$sql_row['ims_schedule'];
 		//echo $sql1;
@@ -265,10 +266,10 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 		
 		
 		
-$div=trim($division);
-//echo $div;
-$sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devision=\"$div\" ";
-//echo $sql3311;
+	$div=trim($division);
+	//echo $div;
+	$sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devision=\"$div\" ";
+	//echo $sql3311;
 	mysqli_query($link, $sql3311) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result3311=mysqli_query($link, $sql3311) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row3311=mysqli_fetch_array($sql_result3311))
@@ -349,8 +350,7 @@ $sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devi
 		//echo strtoupper(str_replace("a_","",$size_db_base[$AAA]));
 		//echo "<td>'".strtoupper(str_replace("a_","",$size_db[array_search($sql_row['ims_size'],$size_db_base)]))."</td>";
 		
-		
-		echo "<td>J".leading_zeros($sql_row['input_job_no_ref'],3)."</td>";
+		echo "<td>".$display_prefix1."</td>";
 		$act_size=get_size("$bai_pro3.bai_orders_db_confirm","title_size_".$scode."","order_del_no='".$sql_row['ims_schedule']."' and order_col_des",$sql_row['ims_color'],$link);
 	//	echo $act_size."<br>";
 		echo "<td>".strtoupper($act_size)."</td>";		
@@ -373,6 +373,8 @@ $sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devi
 		echo "<td>".$sql_row['ims_mod_no']."</td>";
 		echo "<td>".$sql_row['ims_doc_no']."</td>";
 		
+		$display_prefix = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row['ims_schedule'],$sql_row['ims_color'],$sql_row['input_job_no_ref'],$link);
+		
 		//$size_db=array("a_xs","a_s","a_m","a_l","a_xl","a_xxl","a_xxxl","a_s06","a_s08","a_s10","a_s12","a_s14","a_s16","a_s18","a_s20","a_s22","a_s24","a_s26","a_s28","a_s30");
 		$size_db=$size_db_base;
 		
@@ -390,10 +392,7 @@ $sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devi
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			echo "<td>".chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3)."</td>";
-			
-			//$division=$sql_row1['order_div'];
-			
-		
+			//$division=$sql_row1['order_div'];		
 		}
 		
 		//********************************* Edited by chathuranga
@@ -456,10 +455,9 @@ $sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devi
 		$s49="49";
 		$s50="50";
 		
-$div=trim($division);
-//echo $div;
-$sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devision=\"$div\"";
-	mysqli_query($link, $sql3311) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$div=trim($division);
+	//echo $div;
+	$sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devision=\"$div\"";
 	$sql_result3311=mysqli_query($link, $sql3311) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row3311=mysqli_fetch_array($sql_result3311))
 	{
@@ -534,7 +532,7 @@ $sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devi
 		{
 			echo "<td></td>";
 		}
-		echo "<td>J".leading_zeros($sql_row['input_job_no_ref'],3)."</td>";
+		echo "<td>".$display_prefix."</td>";
 		$scode= str_replace("a_","",$sql_row['ims_size']);
 		//$AAA=$size_db_base[array_search($sql_row12['ims_size'],$size_db_actual)];
 		$act_size=get_size("$bai_pro3.bai_orders_db_confirm","title_size_".$scode."","order_del_no='".$sql_row['ims_schedule']."' and order_col_des",$sql_row['ims_color'],$link);

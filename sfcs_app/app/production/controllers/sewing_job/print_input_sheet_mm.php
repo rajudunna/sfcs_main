@@ -396,15 +396,9 @@
                             //Display color 
                             $display_colors=str_replace(',',$totcount,$color); 
                             //$totcount=0; 
-                                
-                            if ($sql_row['type_of_sewing'] == 2)
-                            {
-                                $bg_color='yellow';
-                                $display = 'E';
-                            } else {
-                                $display = 'J';
-                                $bg_color='';
-                            }
+                            $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_des,$sql_row["job"],$link);
+                            $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_des,$sql_row["job"],$link);
+
                             echo "<tr height=20 style='height:15.0pt; background-color:$bg_color;'>"; 
                             echo "<td height=20 style='height:15.0pt'>".$style."</td>"; 
                             echo "<td height=20 style='height:15.0pt'>$po</td>"; 
@@ -415,7 +409,7 @@
                             echo "<td height=20 style='height:15.0pt'>".$display_colors."</td>"; 
                             echo "<td height=20 style='height:15.0pt'>".$cut_jobs_new."</td>"; 
                             echo "<td height=20 style='height:15.0pt'>".$del_date."</td>"; 
-                            echo "<td height=20 style='height:15.0pt'>".$display.leading_zeros($sql_row["job"], 3)."</td>"; 
+                            echo "<td height=20 style='height:15.0pt'>".$display."</td>"; 
                             for($i=0;$i<sizeof($size_array);$i++) 
                             {     
                                 $sql7="SELECT * FROM $bai_pro3.packing_summary_input where size_code='".$orginal_size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."' and input_job_no_random='".$input_job_no_random_ref."'"; 

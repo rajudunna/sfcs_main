@@ -20,11 +20,11 @@ $html ='
 
 body {
 	font-family: arial;
-	font-size: 20px;
+	font-size: 15px;
 }
 
 b {
-	font-size:30px;
+	font-size:20px;
 }
 
 table {
@@ -39,7 +39,7 @@ td {
 }
 
 @page {
-margin-top: 10px;
+margin-top: 5px;
 }
 
 .barcode {
@@ -67,12 +67,14 @@ $tot_labels=mysqli_num_rows($sql_result);
 $x=1;
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
-	
+	$location_name=$sql_row['location_id'];
+	//$location_name1="N0-525JMLK";
 	$html.= '<div><table>';
-				$html.= '<tr><td><barcode code="'.str_pad($sql_row['sno'],20,"0",STR_PAD_LEFT).'" type="I25" class="barcode" height="3" /></tr>';
+				//$html.= '<tr><td><barcode code="'.str_pad($location_name,20,"0",STR_PAD_LEFT).'" type="C93"/ class="barcode" height="3" /></tr>';
+				$html.= '<tr><td><barcode code="'.$location_name.'" type="C93"/ class="barcode" height="1.5" /></tr>';
 				$html.= '<tr><td></td></tr>';
 				$html.= '<tr><td></td></tr>';
-				$html.= '<tr><td id="loca_prop"><center><b>'.$sql_row['location_id'].'</b></center></td></tr>';
+				$html.= '<tr><td id="loca_prop"><center><b>'.$location_name.'</b></center></td></tr>';
 				// $html.= "<tr><td>ITEM  NAME : <strong>$item_name</strong></td></tr>";  
 				// $html.= "<tr><td>COLOR : <strong>$item_desc</strong> / Shade : <strong>$ref4</strong></td></tr>";
 				// $html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  / REF NO : <strong>$remarks</strong></td></tr>";
