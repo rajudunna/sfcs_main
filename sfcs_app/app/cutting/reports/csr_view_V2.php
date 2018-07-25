@@ -29,6 +29,7 @@ function verify_date(){
 			$section=$_POST['section'];
 			$shift=$_POST['shift'];
 			$reptype=$_POST['reptype'];
+			
 		?>
 		<div class="panel panel-primary">
 		<div class="panel-heading">Cutting Status Report</div>
@@ -67,7 +68,12 @@ function verify_date(){
 					?>
 					<?php
 						foreach($table_result as $key=>$value){
-							echo "<option value='\"".$value['tbl_id']."\"'>".$value['tbl_name']."</option>";
+							if($value['tbl_id']==str_replace('"','',$section)){
+								echo "<option value='\"".$value['tbl_id']."\"' selected>".$value['tbl_name']."</option>";
+							}
+							else {
+								echo "<option value='\"".$value['tbl_id']."\"'>".$value['tbl_name']."</option>";
+							}
 						}
 					?>
 				</select>
@@ -76,12 +82,23 @@ function verify_date(){
 				<label>Shift: </label>
 				<select name="shift" class="form-control" >
 					<?php 
-					foreach($shifts_array as $key=>$shift){
-						echo "<option value=\"'$shift'\">$shift</option>";
-						$all_shifts = $all_shifts."'$shift',";
+					$dummy_count = 0;
+					$shift_all_selected = 'selected';
+					foreach($shifts_array as $key=>$shift1){
+						if($shift1 == str_replace("'",'',$shift)){
+							echo "<option value=\"'$shift1'\" selected>$shift1</option>";
+							$dummy_count++;
+						}else{
+							echo "<option value=\"'$shift1'\">$shift1</option>";
+						}
+						$all_shifts = $all_shifts."'$shift1',";
+					}
+					if($dummy_count > 0){
+						$shift_all_selected = '';
 					}
 				?>
-				<option value="<?= rtrim($all_shifts,',') ?>" selected>All</option>
+					<option value="<?= rtrim($all_shifts,',') ?>" <?= $shift_all_selected ?>>All</option>
+			
 				</select>
 			</div>
 			<div class="col-md-2">
@@ -242,6 +259,7 @@ function verify_date(){
 							// echo "</tr>";  //header closing here
 							//$row_count++;
 						//}
+						echo '</tr>';
 						echo  "<tr>
 								 <td>".$cut_details_explode[0]."</td> 
 								 <td>".$cut_details_explode[2]."</td> 
@@ -435,7 +453,7 @@ function verify_date(){
               
 			/*echo "<th class='tblheading'>01</th><th class='tblheading'>02</th><th class='tblheading'>03</th><th class='tblheading'>04</th><th class='tblheading'>05</th><th class='tblheading'>06</th><th class='tblheading'>07</th><th class='tblheading'>08</th><th class='tblheading'>09</th><th class='tblheading'>10</th><th class='tblheading'>11</th><th class='tblheading'>12</th><th class='tblheading'>13</th><th class='tblheading'>14</th><th class='tblheading'>15</th><th class='tblheading'>16</th><th class='tblheading'>17</th><th class='tblheading'>18</th><th class='tblheading'>19</th><th class='tblheading'>20</th><th class='tblheading'>21</th><th class='tblheading'>22</th><th class='tblheading'>23</th><th class='tblheading'>24</th><th class='tblheading'>25</th><th class='tblheading'>26</th><th class='tblheading'>27</th><th class='tblheading'>28</th><th class='tblheading'>29</th><th class='tblheading'>30</th><th class='tblheading'>31</th><th class='tblheading'>32</th><th class='tblheading'>33</th><th class='tblheading'>34</th><th class='tblheading'>35</th><th class='tblheading'>36</th><th class='tblheading'>37</th><th class='tblheading'>38</th><th class='tblheading'>39</th><th class='tblheading'>40</th><th class='tblheading'>41</th><th class='tblheading'>42</th><th class='tblheading'>43</th><th class='tblheading'>44</th><th class='tblheading'>45</th><th class='tblheading'>46</th><th class='tblheading'>47</th><th class='tblheading'>48</th><th class='tblheading'>49</th><th class='tblheading'>50</th>";*/
 				$inner_count = 0;
-				echo "<td>$date</td>
+				echo "<tr><td>$date</td>
 						<td>$act_shift</td> 
 						<td>$act_section</td> 
 						<td>".leading_zeros($doc_no,9)."</td> 
