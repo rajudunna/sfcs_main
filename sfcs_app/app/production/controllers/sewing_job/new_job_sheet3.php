@@ -93,23 +93,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
         //echo $doc."<br>"; 
     } 
 
-    $get_sewing_type="SELECT DISTINCT(type_of_sewing) AS type_of_sewing FROM $bai_pro3.packing_summary_input WHERE order_del_no = '$schedule' AND order_style_no = '$style' AND input_job_no = $jobno"; 
-    // echo $get_sewing_type; 
-    $result14=mysqli_query($link, $get_sewing_type) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"])); 
-    while($row14=mysqli_fetch_array($result14)) 
-    { 
-        $type_of_sewing=$row14["type_of_sewing"];
-    }
-
-    if ($type_of_sewing == 2)
-    {
-        $display = 'E';
-    }
-    else
-    {
-        $display = 'J';
-    }
-
+    $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$jobno,$link);
     $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
@@ -5393,7 +5377,7 @@ function printdiv(printpage) {
   <td height=38 class=xl13132351 style='height:28.5pt'>Line</td> 
   <td colspan=3 class=xl20032351 style='border-right:1.0pt solid black;   border-left:none'><?php   echo $team_number; ?></td> 
   <td colspan=2 class=xl13132351 style='border-left:none'><center>Job No</center></td> 
-  <td colspan=5 class=xl24832351 style='border-right:1.0pt solid black;   border-left:none'><b><?php echo $display.leading_zeros($jobno, 3);?></b></td> 
+  <td colspan=5 class=xl24832351 style='border-right:1.0pt solid black;   border-left:none'><b><?php echo $display;?></b></td> 
   <!-- <td colspan=2 class=xl24932351>Cut No:</td>  -->
   <!-- <td colspan=2 class=xl25032351 width=93 style='border-left:none;width:70pt'><center><?php echo $cut_jobs_new1;?></center></td>  -->
   <td colspan=2 class=xl13132351 style='border-right:1.0pt solid black'><center>Job Qty</center></td> 
@@ -5738,7 +5722,7 @@ function printdiv(printpage) {
     <br><br>______________________</td> 
   <td colspan=5 rowspan=2 class=xl14232351 width=259 style='border-right:1.0pt solid black; border-bottom:.5pt solid black;width:195pt'>Section Incharge<br> <br><br>________________________________</td> 
   <td colspan=3 rowspan=4 class=xl14832351 width=132 style='border-right:1.0pt solid black; border-bottom:1.0pt solid black;width:99pt'>
-    Job No: <?php echo $display.leading_zeros($jobno, 3);?><br> 
+    Job No: <?php echo $display;?><br> 
     Job Completed<br> 
     <br><br><br><br>__________________<br> 
     Signature<br> 
