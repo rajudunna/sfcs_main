@@ -1,3 +1,5 @@
+ <!-- Loading Division -->
+   
 <header class="main-header">
     <!-- Logo -->
     <!-- Header Navbar: style can be found in header.less -->
@@ -15,7 +17,7 @@
 
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Dashboards <span class="sr-only">(current)</span></a></li>
+                    <li class="active"><a href="#"><i class="fa fa-dashboard"></i> Dashboards <span class="sr-only">(current)</span></a></li>
                     <li><a onclick="ajaxCall(event,this.href)" href="?r=L3NmY3NfYXBwL2FwcC93b3Jrb3JkZXJzL2NvbnRyb2xsZXJzL3dvcmtvcmRlcnNfaW5kZXgucGhw">WorkOrders</a></li>
                     <li><a href="#">Production</a></li>
                     <li><a href="#">Reports</a></li>
@@ -106,7 +108,6 @@
                             </li>
                         </ul>
                     </li>
-
                 </ul>
             </div>
         </div>

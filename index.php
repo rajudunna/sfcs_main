@@ -1,6 +1,21 @@
+<?php
+    ob_start();
+    session_start();
+    ini_set('max_execution_time', 30000);
+    if(!isset($_GET['r'])){
+        unset($_SESSION['link']);
+    }
+    require_once("configuration/API/confr.php");
+    include "template/helper.php";
+    require_once 'sfcs_app/common/vendor/autoload.php';
+
+    $whoops = new \Whoops\Run;
+    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+    $whoops->register();
+
+?>
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -62,29 +77,22 @@
         .panel.panel-warning {
             border-top-color: #f39c12;
         }
-
+        body::-webkit-scrollbar {
+            width: 6px;
+        }
+         
+        body::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        }
+         
+        body::-webkit-scrollbar-thumb {
+          background: linear-gradient(120deg, #5983e8, #00e4d0);
+          /* outline: 1px solid slategrey; */
+        }
     </style>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-
-    <?php
-        ob_start();
-        session_start();
-        ini_set('max_execution_time', 30000);
-        if(!isset($_GET['r'])){
-            unset($_SESSION['link']);
-        }
-        require_once("configuration/API/confr.php");
-        include "template/helper.php";
-        require_once 'sfcs_app/common/vendor/autoload.php';
-
-        $whoops = new \Whoops\Run;
-        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-        $whoops->register();
-
-    ?>
-    
 
     <!-- Loading Division -->
     <div id="overlay" style="display:none;"> 
@@ -110,7 +118,7 @@
                     <div class="col-lg-9" id="body">
                     </div>
                     <div class="col-lg-3">
-                        <div class="box box-solid">
+                        <div class="box box-info">
                             <div class="box-header with-border">
                               <h3 class="box-title">Workorders</h3>
 
@@ -158,7 +166,7 @@ function onloadAjaxCall(get_r){
         {   
             window.history.pushState("object or string", "Title", "?r="+get_r);
             jQuery("#body").html(response);
-            setTimeout(function(){ myLoadStop(); }, 700000);
+            myLoadStop();
             
         }
     });
