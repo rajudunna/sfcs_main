@@ -64,18 +64,14 @@ function verify_con(e){
 	percent_cal();
 	
 }
-
 function percent_cal()
 {
-    
-	var x=parseFloat(document.input.cuttable_percent.value);
+    var x = document.getElementById("excess").value;
 	if(isNaN(x)){
-		// alert();
 		var x = 0;
 	}
-	// console.log(x);
-    if(x>=0)
-	{
+    //if(x>=0)
+	//{
 		for(var i=1; i<=50; i++){
 			if(i < 10){
 				var val = 'in_s0'+i+'_source';
@@ -92,115 +88,9 @@ function percent_cal()
 			if(document.getElementsByName(val)[0] != undefined){
 				// var val = 'in_s0'+i+'_source';
 				document.getElementsByName('in_s0'+i)[0].value = Math.round(parseInt(document.getElementsByName(val)[0].value)+document.getElementsByName(val)[0].value*x/100)+parseInt(sQty);
-
-			}
-			
-		}
-		// document.input.in_s01.value=Math.round(parseInt(document.input.in_s01_source.value)+document.input.in_s01_source.value*x/100);
-		// document.input.in_s02.value=Math.round(parseInt(document.input.in_s02_source.value)+document.input.in_s02_source.value*x/100);
-		// document.input.in_s03.value=Math.round(parseInt(document.input.in_s03_source.value)+document.input.in_s03_source.value*x/100);
-		// document.input.in_s04.value=Math.round(parseInt(document.input.in_s04_source.value)+document.input.in_s04_source.value*x/100);
-		// document.input.in_s05.value=Math.round(parseInt(document.input.in_s05_source.value)+document.input.in_s05_source.value*x/100);
-		// document.input.in_s06.value=Math.round(parseInt(document.input.in_s06_source.value)+document.input.in_s06_source.value*x/100);
-		// document.input.in_s07.value=Math.round(parseInt(document.input.in_s07_source.value)+document.input.in_s07_source.value*x/100);
-		// document.input.in_s08.value=Math.round(parseInt(document.input.in_s08_source.value)+document.input.in_s08_source.value*x/100);
-		// document.input.in_s09.value=Math.round(parseInt(document.input.in_s09_source.value)+document.input.in_s09_source.value*x/100);
-		// document.input.in_s10.value=Math.round(parseInt(document.input.in_s10_source.value)+document.input.in_s10_source.value*x/100);
-		// document.input.in_s11.value=Math.round(parseInt(document.input.in_s11_source.value)+document.input.in_s11_source.value*x/100);
-		// document.input.in_s12.value=Math.round(parseInt(document.input.in_s12_source.value)+document.input.in_s12_source.value*x/100);
-		// document.input.in_s13.value=Math.round(parseInt(document.input.in_s13_source.value)+document.input.in_s13_source.value*x/100);
-		// document.input.in_s14.value=Math.round(parseInt(document.input.in_s14_source.value)+document.input.in_s14_source.value*x/100);
-		// document.input.in_s15.value=Math.round(parseInt(document.input.in_s15_source.value)+document.input.in_s15_source.value*x/100);
-		// document.input.in_s16.value=Math.round(parseInt(document.input.in_s16_source.value)+document.input.in_s16_source.value*x/100);
-		// document.input.in_s17.value=Math.round(parseInt(document.input.in_s17_source.value)+document.input.in_s17_source.value*x/100);
-		// document.input.in_s18.value=Math.round(parseInt(document.input.in_s18_source.value)+document.input.in_s18_source.value*x/100);
-		// document.input.in_s19.value=Math.round(parseInt(document.input.in_s19_source.value)+document.input.in_s19_source.value*x/100);
-		// document.input.in_s20.value=Math.round(parseInt(document.input.in_s20_source.value)+document.input.in_s20_source.value*x/100);
-		// document.input.in_s21.value=Math.round(parseInt(document.input.in_s21_source.value)+document.input.in_s21_source.value*x/100);
-		// document.input.in_s22.value=Math.round(parseInt(document.input.in_s22_source.value)+document.input.in_s22_source.value*x/100);
-		// document.input.in_s23.value=Math.round(parseInt(document.input.in_s23_source.value)+document.input.in_s23_source.value*x/100);
-		// document.input.in_s24.value=Math.round(parseInt(document.input.in_s24_source.value)+document.input.in_s24_source.value*x/100);
-		// document.input.in_s25.value=Math.round(parseInt(document.input.in_s25_source.value)+document.input.in_s25_source.value*x/100);
-		// document.input.in_s26.value=Math.round(parseInt(document.input.in_s26_source.value)+document.input.in_s26_source.value*x/100);
-		// document.input.in_s27.value=Math.round(parseInt(document.input.in_s27_source.value)+document.input.in_s27_source.value*x/100);
-		// document.input.in_s28.value=Math.round(parseInt(document.input.in_s28_source.value)+document.input.in_s28_source.value*x/100);
-		// document.input.in_s29.value=Math.round(parseInt(document.input.in_s29_source.value)+document.input.in_s29_source.value*x/100);
-		// document.input.in_s30.value=Math.round(parseInt(document.input.in_s30_source.value)+document.input.in_s30_source.value*x/100);
-		// document.input.in_s31.value=Math.round(parseInt(document.input.in_s31_source.value)+document.input.in_s31_source.value*x/100);
-		// document.input.in_s32.value=Math.round(parseInt(document.input.in_s32_source.value)+document.input.in_s32_source.value*x/100);
-		// document.input.in_s33.value=Math.round(parseInt(document.input.in_s33_source.value)+document.input.in_s33_source.value*x/100);
-		// document.input.in_s34.value=Math.round(parseInt(document.input.in_s34_source.value)+document.input.in_s34_source.value*x/100);
-		// document.input.in_s35.value=Math.round(parseInt(document.input.in_s35_source.value)+document.input.in_s35_source.value*x/100);
-		// document.input.in_s36.value=Math.round(parseInt(document.input.in_s36_source.value)+document.input.in_s36_source.value*x/100);
-		// document.input.in_s37.value=Math.round(parseInt(document.input.in_s37_source.value)+document.input.in_s37_source.value*x/100);
-		// document.input.in_s38.value=Math.round(parseInt(document.input.in_s38_source.value)+document.input.in_s38_source.value*x/100);
-		// document.input.in_s39.value=Math.round(parseInt(document.input.in_s39_source.value)+document.input.in_s39_source.value*x/100);
-		// document.input.in_s40.value=Math.round(parseInt(document.input.in_s40_source.value)+document.input.in_s40_source.value*x/100);
-		// document.input.in_s41.value=Math.round(parseInt(document.input.in_s41_source.value)+document.input.in_s41_source.value*x/100);
-		// document.input.in_s42.value=Math.round(parseInt(document.input.in_s42_source.value)+document.input.in_s42_source.value*x/100);
-		// document.input.in_s43.value=Math.round(parseInt(document.input.in_s43_source.value)+document.input.in_s43_source.value*x/100);
-		// document.input.in_s44.value=Math.round(parseInt(document.input.in_s44_source.value)+document.input.in_s44_source.value*x/100);
-		// document.input.in_s45.value=Math.round(parseInt(document.input.in_s45_source.value)+document.input.in_s45_source.value*x/100);
-		// document.input.in_s46.value=Math.round(parseInt(document.input.in_s46_source.value)+document.input.in_s46_source.value*x/100);
-		// document.input.in_s47.value=Math.round(parseInt(document.input.in_s47_source.value)+document.input.in_s47_source.value*x/100);
-		// document.input.in_s48.value=Math.round(parseInt(document.input.in_s48_source.value)+document.input.in_s48_source.value*x/100);
-		// document.input.in_s49.value=Math.round(parseInt(document.input.in_s49_source.value)+document.input.in_s49_source.value*x/100);
-		// document.input.in_s50.value=Math.round(parseInt(document.input.in_s50_source.value)+document.input.in_s50_source.value*x/100);
-
-	}
-	// else
-	// {
-	// document.input.in_s01.value=document.input.in_s01_source.value
-	// document.input.in_s02.value=document.input.in_s02_source.value
-	// document.input.in_s03.value=document.input.in_s03_source.value
-	// document.input.in_s04.value=document.input.in_s04_source.value
-	// document.input.in_s05.value=document.input.in_s05_source.value
-	// document.input.in_s06.value=document.input.in_s06_source.value
-	// document.input.in_s07.value=document.input.in_s07_source.value
-	// document.input.in_s08.value=document.input.in_s08_source.value
-	// document.input.in_s09.value=document.input.in_s09_source.value
-	// document.input.in_s10.value=document.input.in_s10_source.value
-	// document.input.in_s11.value=document.input.in_s11_source.value
-	// document.input.in_s12.value=document.input.in_s12_source.value
-	// document.input.in_s13.value=document.input.in_s13_source.value
-	// document.input.in_s14.value=document.input.in_s14_source.value
-	// document.input.in_s15.value=document.input.in_s15_source.value
-	// document.input.in_s16.value=document.input.in_s16_source.value
-	// document.input.in_s17.value=document.input.in_s17_source.value
-	// document.input.in_s18.value=document.input.in_s18_source.value
-	// document.input.in_s19.value=document.input.in_s19_source.value
-	// document.input.in_s20.value=document.input.in_s20_source.value
-	// document.input.in_s21.value=document.input.in_s21_source.value
-	// document.input.in_s22.value=document.input.in_s22_source.value
-	// document.input.in_s23.value=document.input.in_s23_source.value
-	// document.input.in_s24.value=document.input.in_s24_source.value
-	// document.input.in_s25.value=document.input.in_s25_source.value
-	// document.input.in_s26.value=document.input.in_s26_source.value
-	// document.input.in_s27.value=document.input.in_s27_source.value
-	// document.input.in_s28.value=document.input.in_s28_source.value
-	// document.input.in_s29.value=document.input.in_s29_source.value
-	// document.input.in_s30.value=document.input.in_s30_source.value
-	// document.input.in_s31.value=document.input.in_s31_source.value
-	// document.input.in_s32.value=document.input.in_s32_source.value
-	// document.input.in_s33.value=document.input.in_s33_source.value
-	// document.input.in_s34.value=document.input.in_s34_source.value
-	// document.input.in_s35.value=document.input.in_s35_source.value
-	// document.input.in_s36.value=document.input.in_s36_source.value
-	// document.input.in_s37.value=document.input.in_s37_source.value
-	// document.input.in_s38.value=document.input.in_s38_source.value
-	// document.input.in_s39.value=document.input.in_s39_source.value
-	// document.input.in_s40.value=document.input.in_s40_source.value
-	// document.input.in_s41.value=document.input.in_s41_source.value
-	// document.input.in_s42.value=document.input.in_s42_source.value
-	// document.input.in_s43.value=document.input.in_s43_source.value
-	// document.input.in_s44.value=document.input.in_s44_source.value
-	// document.input.in_s45.value=document.input.in_s45_source.value
-	// document.input.in_s46.value=document.input.in_s46_source.value
-	// document.input.in_s47.value=document.input.in_s47_source.value
-	// document.input.in_s48.value=document.input.in_s48_source.value
-	// document.input.in_s49.value=document.input.in_s49_source.value
-	// }
-	// ind_per_cal(x);
+			}			
+		}		
+	//}	
 }
 
 function ind_per_cal(x)
@@ -954,3 +844,6 @@ echo "</form>";
 </div></div>
 </body>
 
+<script>
+percent_cal();
+</script>
