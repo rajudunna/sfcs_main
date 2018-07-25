@@ -11,7 +11,7 @@ if(isset($_POST['id']))
 ?>
 <body id='main'> 
 	<div class="panel panel-primary"> 
-		<div class="panel-heading">Input Jobs Reversal Scanning</div>
+		<div class="panel-heading">Sewing Jobs Reversal Scanning</div>
 		<div class='panel-body'>
 			<div class="alert alert-success" style="display:none;">
 				<a href="#" class="close" data-dismiss="alert">&times;</a>
@@ -19,7 +19,7 @@ if(isset($_POST['id']))
 			</div>
 			<div class='row'>
 				<div class="form-group col-md-3">
-					<label>Input Job Number:<span style="color:red">*</span></label>
+					<label>Sewing Job Number:<span style="color:red">*</span></label>
 					<input type="text"  id="job_number" class="form-control" required placeholder="Scan the Job..."/>
 				</div>
 				<div class='form-group col-md-3'>
@@ -132,7 +132,7 @@ $(document).ready(function()
 					var s_no=0;;
 					var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
 					$("#dynamic_table1").append(btn);
-					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Input Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
+					var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Size</th><th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
 					$("#dynamic_table1").append(markup);
 					$("#dynamic_table1").append(btn);
 					for(var i=0;i<data.length;i++)
@@ -224,13 +224,15 @@ if($result_post_ops_check->num_rows > 0)
 	
 foreach ($bundle_no as $key=>$value)
 {
+	$act_reciving_qty = $reversalval[$key];
+	//echo "rep_qty_rep".$rep_qty[$key]."</br>";
+//	echo "rep_qty".$act_reciving_qty."</br>";
 	$select_send_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $operation_id and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
 	$result_select_send_qty = $link->query($select_send_qty);
 	while($row = $result_select_send_qty->fetch_assoc()) 
 	{
 		//$send_qty = $row['send_qty'];
 		$pre_recieved_qty = $row['recevied_qty'];
-		$act_reciving_qty = $rep_qty[$key];
 		$total_rec_qty = $pre_recieved_qty - $act_reciving_qty;
 	}
 	if($post_ops_code)
@@ -243,8 +245,8 @@ foreach ($bundle_no as $key=>$value)
 				while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
 				{	
 					$post_rec_qty = $row['recevied_qty'];
-					echo $pre_recieved_qty."-".$post_rec_qty."-".$rep_qty[$key]."</br>";
-					if(($pre_recieved_qty - $post_rec_qty) < $rep_qty[$key])
+					//echo $pre_recieved_qty."-".$post_rec_qty."-".$act_reciving_qty."</br>";
+					if(($pre_recieved_qty - $post_rec_qty) < $act_reciving_qty)
 					{
 						$concurrent_flag = 1;
 					}
@@ -262,7 +264,7 @@ foreach ($bundle_no as $key=>$value)
 				while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
 				{	
 					$post_rec_qty = $row['recevied_qty'];
-					if(($pre_recieved_qty - $post_rec_qty) < $rep_qty[$key])
+					if(($pre_recieved_qty - $post_rec_qty) < $act_reciving_qty)
 					{
 						$concurrent_flag = 1;
 					}
@@ -392,23 +394,24 @@ else if($concurrent_flag == 0)
 			{
 				$rej_insert_result100 = $link->query($final_query100) or exit('data error');
 			}
+				
+			$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
+			$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$size_id.'","'. $b_sizes.'","'. $sfcs_smv.'","'.$b_tid.'","'.$b_in_job_qty.'","'.$b_in_job_qty.'","'.$r_qty_array.'","0","0","'. $b_op_id.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$remarks.'"),';
+			//echo $bulk_insert_temp;
+			if(substr($bulk_insert_temp, -1) == ',')
+			{
+					$final_query_000_temp = substr($bulk_insert_temp, 0, -1);
+			}
+			else
+			{
+					$final_query_000_temp = $bulk_insert_temp;
+			}
+			$bundle_creation_result_temp = $link->query($final_query_000_temp) or exit('query error in updating 8');
+			//Checking with ims_log 
 
 		}
 		
-		
-		$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
-		$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$size_id.'","'. $b_sizes.'","'. $sfcs_smv.'","'.$b_tid.'","'.$b_in_job_qty.'","'.$b_in_job_qty.'","'.$r_qty_array.'","0","0","'. $b_op_id.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$remarks.'"),';
-		//echo $bulk_insert_temp;
-		if(substr($bulk_insert_temp, -1) == ',')
-		{
-				$final_query_000_temp = substr($bulk_insert_temp, 0, -1);
-		}
-		else
-		{
-				$final_query_000_temp = $bulk_insert_temp;
-		}
-		$bundle_creation_result_temp = $link->query($final_query_000_temp) or exit('query error in updating 8');
-		//Checking with ims_log 
+	
 		if($b_op_id == 100 || $b_op_id == 129)
 		{
 			$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$remarks'";
