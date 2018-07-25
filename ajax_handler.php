@@ -107,7 +107,7 @@ $('form').on("submit",function(event) {
     var from_data=form.serializeArray();
     from_data.push({ name: $("input[type=submit]").attr("name"), value: $("input[type=submit]").attr("value") });
 
-    // $.blockUI({ css: { border: 'none', padding: '15px', backgroundColor:'#000', '-webkit-border-radius': '10px', '-moz-border-radius': '10px', opacity: .5, color: '#fff' } }); 
+    myLoad1();
     $.ajax({
       type:'POST',
       url: url,
@@ -119,7 +119,8 @@ $('form').on("submit",function(event) {
         var c = url.split("?").pop();
         window.history.pushState("object or string", "Title", "?"+c);
         jQuery("#body").html(resp);
-        // $.unblockUI();
+        
+        setTimeout(function(){ myLoadStop(); alert('hai') }, 3000);
 
     }).fail(function(erespo) {
 
@@ -144,7 +145,7 @@ $("#body a").on('click',function(event){
         }else{
             url = href_url;
         }
-        // $.blockUI({ css: { border: 'none', padding: '15px', backgroundColor:'#000', '-webkit-border-radius': '10px', '-moz-border-radius': '10px', opacity: .5, color: '#fff' } });
+        myLoad1();
         $.ajax({
           type:'GET',
           url: url,
@@ -159,7 +160,7 @@ $("#body a").on('click',function(event){
                 window.history.pushState("object or string", "Title", "?"+c);
             }
             jQuery("#body").html(resp);
-            // $.unblockUI();
+            setTimeout(function(){ myLoadStop(); alert('hai') }, 3000);
 
         }).fail(function(erespo) {
 
@@ -178,6 +179,7 @@ $('[data-toggle="datepicker"]').datepicker(
 
 function Ajaxify (url) {
 
+    myLoad1();
     $.ajax({
         type:'GET',
         url: url,
@@ -185,7 +187,7 @@ function Ajaxify (url) {
     }).done(function(resp) {
        
         jQuery("#body").html(resp);
-        // $.unblockUI();
+        setTimeout(function(){ myLoadStop(); alert('hai') }, 3000);
 
     }).fail(function(erespo) {
 

@@ -42,3 +42,7 @@
    
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <!-- AdminLTE for demo purposes -->
+
+    <!-- Loading Event -->
+
+    <script type="text/javascript" src="template/loading/loading.js"></script>

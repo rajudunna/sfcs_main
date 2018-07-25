@@ -67,6 +67,7 @@
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
+
     <?php
         ob_start();
         session_start();
@@ -83,7 +84,20 @@
         $whoops->register();
 
     ?>
+    
+
+    <!-- Loading Division -->
+    <div id="overlay" style="display:none;"> 
+        <!-- <br>&nbsp;&nbsp;&nbsp;<button onclick="myLoadStop()">Stop</button> -->
+        <div id="load1" class="circle" style="display:none;"></div>
+        <div id="load2" class="circle" style="display:none;"></div>
+        <div id="load3" class="circle" style="display:none;"></div>
+        <div id="load4" class="circle" style="display:none;"></div>
+        <div id="load5" class="circle" style="display:none;"></div>
+    </div>
+
     <div class="wrapper">
+
         <?php include("template/navbar.php");?>
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -136,7 +150,7 @@ function onloadAjaxCall(get_r){
 
     var url = "ajax_handler.php?r="+get_r;
     
-    // $.blockUI({ css: { border: 'none', padding: '15px', backgroundColor:'#000', '-webkit-border-radius': '10px', '-moz-border-radius': '10px', opacity: .5, color: '#fff' } });
+    myLoad1();
     return $.ajax ({ 
         url:url,
         type: "GET",
@@ -144,7 +158,8 @@ function onloadAjaxCall(get_r){
         {   
             window.history.pushState("object or string", "Title", "?r="+get_r);
             jQuery("#body").html(response);
-            // $.unblockUI();
+            setTimeout(function(){ myLoadStop(); }, 700000);
+            
         }
     });
 
