@@ -9,7 +9,7 @@
 
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => 'utf-8', 
-		'format' => [29, 40], 
+		'format' => [50, 101], 
 		'orientation' => 'L'
 	]);
 
@@ -25,14 +25,14 @@
 				<head>
 				<style>
 				body {font-family: arial;
-					font-size: 9px;
+					font-size: 12px;
 				}
 
 
 			
 				@page {
-				margin-top: 7px;
-				margin-left:4px;  
+				margin-top: 15px;
+				margin-left:20px;  
 				margin-right:2px;
 				margin-bottom:10px; 
 				}
@@ -59,19 +59,20 @@
 			$html.= '<div>
 						<table>
 							<tr rowspan=2>
-								<td colspan=2><b>Stab Here:</b></td>
+								<td colspan=10><b>Stab Here:</b></td>
 								<td colspan=2>
 									<svg height="25" width="25">
 										<circle cx="10" cy="10" r="8"  />
 									</svg>
 								</td>
-							</tr>	
-							<tr><td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b></td><td>'.$schedule.'</td></tr>
-							<tr><td><b>InputJob#:</b></td><td>J'.$input_job.'</td><td><b>Size#:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
-							<tr><td><b>B#:</b></td><td>'.$barcode.'</td><td><b>Cut#:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
-							<tr><td><b>Col#:</b></td><td colspan=3>'.substr($barcode_rslt['order_col_des'],0,25).'</td></tr>
+							</tr>
+							<br><br>
+							<tr><td colspan=4><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b>'.$schedule.'</td></tr>
+							<tr><td colspan=4><b>Job Number:</b>J'.$input_job.'</td><td><b>Size:</b>'.$barcode_rslt['size_code'].'</td></tr>
+							<tr><td colspan=4><b>Barcode ID:</b>'.$barcode.'</td><td><b>Cut No:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
+							<tr><td colspan=4><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,30).'</td></tr>
 						 </table>
-					 </div><br>';
+					 </div><br><br><br>';
 			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and tor.operation_code not in (10,15,200)";
 			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($ops = mysqli_fetch_array($sql_result1))
@@ -87,28 +88,28 @@
 				}	
 				
 				$html.= '<div>
+							<div style="margin-left:50px;"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
+									
 							<table>
 								<tr>
-									<td colspace="4"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></td>
-									<td></td>
-								</tr>
-							</table>
-							<table>
-								<tr>
-									<td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td>
-									<td><b>Schedule:</b></td><td>'.$schedule.'</td>
+									<td colspan=4><b>Barcode ID:</b>'.$barcode.' </td>
+									<td> <b>Qty:</b>'.$quantity.'</td>
 								</tr>
 								<tr>
-									<td colspan=4><b>Input#:</b>J'.$input_job.' &nbsp;&nbsp; <b>Size#:</b> '.trim($barcode_rslt['size_code']).' </td>
+									<td colspan=4><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td>
+									<td><b>Schedule:</b>'.$schedule.'</td>
 								</tr>
 								<tr>
-									<td colspan=4><b>B#:</b>'.$barcode.' &nbsp;&nbsp; <b>Qty:</b>'.$quantity.'</td>
+									<td colspan=4><b>Job Number:</b>J'.$input_job.' </td>
+									<td> <b>Size:</b> '.trim($barcode_rslt['size_code']).' </td>
 								</tr>
+								
 								<tr>
-									<td colspan=4><b>Col#: </b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+									<td colspan=2><b>Color: </b> </td><td> '.substr($barcode_rslt['order_col_des'],0,30).'</td>
 								</tr>
 								<tr>	
-									<td colspan=4><b>OPS#:</b>'.trim($operations).' &nbsp;&nbsp; <b>Cut#:</b> '.chr($color_code).leading_zeros($cutno, 3).'</td>
+									<td colspan=4><b>Operation:</b>'.trim($operations).' </td>
+									<td> <b>Cut No:</b> '.chr($color_code).leading_zeros($cutno, 3).'</td>
 								</tr>
 								
 							</table>
