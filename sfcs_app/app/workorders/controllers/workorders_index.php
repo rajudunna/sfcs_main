@@ -22,7 +22,7 @@
           <td>26526</td>
           <td>BLACK</td>
           <td>PREPARED</td>
-          <td><a href="#" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></a></td>
+          <td><a href="?r=L3NmY3NfYXBwL2FwcC93b3Jrb3JkZXJzL2NvbnRyb2xsZXJzL3dvcmtvcmRlcnNfdmlldy5waHA=" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></a></td>
         </tr>
       <?php } ?>
     </table>
