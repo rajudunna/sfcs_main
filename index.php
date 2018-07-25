@@ -1,3 +1,21 @@
+<?php
+
+    ob_start();
+    session_start();
+    ini_set('max_execution_time', 30000);
+    if(!isset($_GET['r'])){
+        unset($_SESSION['link']);
+    }
+    require_once("configuration/API/confr.php");
+    include "template/helper.php";
+    require_once 'sfcs_app/common/vendor/autoload.php';
+
+    $whoops = new \Whoops\Run;
+    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+    $whoops->register();
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -67,25 +85,7 @@
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-
-    <?php
-        ob_start();
-        session_start();
-        ini_set('max_execution_time', 30000);
-        if(!isset($_GET['r'])){
-            unset($_SESSION['link']);
-        }
-        require_once("configuration/API/confr.php");
-        include "template/helper.php";
-        require_once 'sfcs_app/common/vendor/autoload.php';
-
-        $whoops = new \Whoops\Run;
-        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-        $whoops->register();
-
-    ?>
     
-
     <!-- Loading Division -->
     <div id="overlay" style="display:none;"> 
         <!-- <br>&nbsp;&nbsp;&nbsp;<button onclick="myLoadStop()">Stop</button> -->
