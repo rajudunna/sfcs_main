@@ -414,7 +414,7 @@ function getreversalscanningdetails($job_number)
 	//echo $post_ops_code;
 	if($post_ops_code != 0)
 	{
-		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $job_number[0] group by bundle_number order by bundle_number";
+		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number FROM  $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $post_ops_code group by bundle_number order by bundle_number";
 		//echo $pre_ops_validation;
 		$result_pre_ops_validation = $link->query($pre_ops_validation);
 		while($row = $result_pre_ops_validation->fetch_assoc()) 
@@ -425,6 +425,15 @@ function getreversalscanningdetails($job_number)
 			$send_qty = $row['send_qty'];
 			$result_array['post_ops'][] = $post_id;
 			$result_array['send_qty'][] = $send_qty;
+
+		}
+		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $job_number[0] group by bundle_number order by bundle_number";
+		//echo $pre_ops_validation;
+		$result_pre_ops_validation = $link->query($pre_ops_validation);
+		while($row = $result_pre_ops_validation->fetch_assoc()) 
+		{
+			$b_number =  $row['bundle_number'];
+			$sizes[] =  $row['size_title'];
 			$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $post_ops_code and remarks='$job_number[2]' and bundle_number='$b_number' group by bundle_number order by bundle_number";
 			//echo $post_ops_qry_to_find_rec_qty;
 			$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
@@ -446,7 +455,7 @@ function getreversalscanningdetails($job_number)
 	}
 	else
 	{
-		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number FROM  $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref =$job_number[1] AND operation_id = '$job_number[0]' group by bundle_number order by bundle_number";
+		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $job_number[0] group by bundle_number order by bundle_number";
 		//echo $pre_ops_validation;
 		$result_pre_ops_validation = $link->query($pre_ops_validation);
 		while($row = $result_pre_ops_validation->fetch_assoc()) 

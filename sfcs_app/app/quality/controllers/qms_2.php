@@ -105,7 +105,7 @@ if(isset($_GET['tid']))
 	$locationid=$_GET['location'];
 	$qms_qty=$_GET['qms_qty1'];
 	
-	$sql1="select qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,ref1 from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
+	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,ref1 from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result1))
@@ -117,6 +117,7 @@ if(isset($_GET['tid']))
 		$rejections_ref=$sql_row["ref1"];
 		$style=$sql_row["qms_style"];
 		$color=$sql_row["qms_color"];
+		$bundle_no_ref=$sql_row["bundle_no"];
 	}
 	
 	$ops_sequence="SELECT ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND operation_code='".$operation_id."'";
@@ -180,11 +181,11 @@ if(isset($_GET['tid']))
 	// echo "<br>Form=".$form."<br><br>";
 	$rejections_ref_explode=explode("$",$rejections_ref);
 	
-	$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_title='".$qms_size."'";
+	$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_title='".$qms_size."'";
 	// echo $bts_update."<br>";
 	mysqli_query($link, $bts_update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	
-	$bts_insert="insert into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,rejected_qty,docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id) select cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,'".(-1*$qms_qty)."',docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id from $brandix_bts.bundle_creation_data_temp where input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_title='".$qms_size."' limit 1";
+	$bts_insert="insert into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,rejected_qty,docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id) select cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,'".(-1*$qms_qty)."',docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id from $brandix_bts.bundle_creation_data_temp where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_title='".$qms_size."' limit 1";
 	// echo $bts_insert;
 	mysqli_query($link,$bts_insert) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	
