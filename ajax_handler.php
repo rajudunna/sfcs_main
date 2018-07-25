@@ -131,13 +131,15 @@ $('form').on("submit",function(event) {
 });
 
 $("#body a").on('click',function(event){
+
     event.preventDefault();
     var url;
     var href_url;
     var split_url;
     href_url = $(this).attr("href");
+    data_toggle = $(this).attr("data-toggle");
 
-    if(href_url !== "#"){
+    if(href_url !== "#" && data_toggle == undefined){
         var index = href_url.includes("index.php");
         if(index == true){
             split_url = href_url.split("?").pop();
