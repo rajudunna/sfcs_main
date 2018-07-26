@@ -31,7 +31,7 @@
 		<?php
             try{
                 include('dbconf.php');
-                if($link_ui != Null){
+                if($link_ui){
                     include("functions.php");
                     echo CategoryList(8);
                 }
@@ -44,7 +44,7 @@
                 $ma = 'User Access';
                 GLOBAL $link_ui;
                 $query = "SELECT * FROM tbl_menu_list WHERE parent_id=(SELECT menu_pid FROM tbl_menu_list WHERE link_description='".$ma."')";
-                $res = mysqli_query($link_ui, $query);
+                $res = mysqli_query($link_ui, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
                 
         ?>
         <li><a><i class='fa fa-cog'></i>Settings <span class="fa fa-chevron-down"></span></a>
@@ -119,7 +119,7 @@
         </nav>
     </div>
 </div>
-<?php if(!isset($_GET['r'])){ ?>
+<?php if(!isset($_GET['r']) && $link_ui){ ?>
   <!-- Modal -->
   <div class="modal fade" id="myModalab" role="dialog">
 <?php 
