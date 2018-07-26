@@ -63,7 +63,7 @@
 			{	
 				$quantity=$qty['carton_act_qty'];
 			}	
-			
+			$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 			$html.= '<div>
 						<table>
 							<tr rowspan=2>
@@ -75,7 +75,7 @@
 								</td>
 							</tr>	
 							<tr><td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b></td><td>'.$schedule.'</td></tr>
-							<tr><td><b>Job Number:</b></td><td>J'.$input_job.'</td><td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
+							<tr><td><b>Job Number:</b></td><td>'.$display1.'</td><td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
 							<tr><td><b>Barcode ID:</b></td><td>'.$barcode.'</td><td><b>Cut No:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
 							<tr><td><b>Color:</b></td><td colspan=3>'.substr($barcode_rslt['order_col_des'],0,35).'</td></tr>
 							<tr><td><b>Qty:</b>'.$quantity.'</td></tr>
