@@ -1,6 +1,7 @@
 <?php
 //include("header.php");
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_jobs.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 $schedule=$_GET['schedule'];
 // $schedule='469623';
 $style=$_GET['style'];
@@ -904,6 +905,7 @@ tags will be replaced.-->
 			$size_code[]=strtoupper($row['size_code']);
 			$size_code_qty[]=$row['carton_act_qty'];
 		}
+		$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color[$ii],$input_job_no,$link);
 	//	echo sizeof($size_code)."--".sizeof($size_code_qty)."<br>";
  ?>
  
@@ -957,7 +959,7 @@ tags will be replaced.-->
  <tr height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6330411 style='height:15.0pt'></td>
   <td class=xl7930411 dir=LTR width=85 style='border-top:none;width:64pt'>Job No :</td>
-  <td colspan=3 class=xl8330411 dir=LTR width=192 style='border-left:none;width:144pt'><?php echo $input_job_no;?></td>
+  <td colspan=3 class=xl8330411 dir=LTR width=192 style='border-left:none;width:144pt'><?php echo $display_prefix1;?></td>
   <td class=xl7830411 dir=LTR width=64 style='width:48pt'></td>
   <td class=xl6330411></td>
   <td class=xl6330411></td>

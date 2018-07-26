@@ -225,7 +225,9 @@ if($rows_count_jobs == 0){
 								echo "<td height=20 style='height:15.0pt'>".$sql_row["order_del_no"]."</td>";
 								$url=getFullURL($_GET['r'],'small_popup.php','R');
 								// echo "<td height=20 style='height:15.0pt'>J".$sql_row["input_job_no"]." <a class='tooltippage' id='clickme' href='#' rel='$url&schedule='".$sql_row["order_del_no"]."'&jobno='".$sql_row["input_job_no"]." title='Full Details of Input Job'>Click Here</a></td>";
-								echo "<td height=20 style='height:15.0pt'> <a class='btn btn-success btn-sm' href='$url?schedule=$del_no_new&jobno=$job_new' onclick=\"return popitup2('$url?schedule=$del_no_new&jobno=$job_new')\" target='_blank'>J".$sql_row["input_job_no"]."</a></td>";
+								$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='".$sql_row["order_del_no"]."' and input_job_no",$sql_row["input_job_no"],$link);
+								$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row["order_del_no"],$get_color,$sql_row["input_job_no"],$link);
+								echo "<td height=20 style='height:15.0pt'> <a class='btn btn-success btn-sm' href='$url?schedule=$del_no_new&jobno=$job_new' onclick=\"return popitup2('$url?schedule=$del_no_new&jobno=$job_new')\" target='_blank'>".$display_prefix1."</a></td>";
 								 echo "<td height=20 style='height:15.0pt'>".$sql_row["carton_act_qty"]."</td>"; 
 								
                                
