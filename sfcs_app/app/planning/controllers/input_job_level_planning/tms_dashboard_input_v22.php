@@ -667,7 +667,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$doc_no_ref=$row2['doc_no'];
 					$schedule_no=$row2['order_del_no'];
 				}
-				$get_color = echo_title("$brandix_bts.packing_summary_input","order_col_des","order_del_no='$schedule' and input_job_no",$input_job_no,$link);
+				$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$schedule' and input_job_no",$input_job_no,$link);
 				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
 				if($clubbed_schedule_ref > 0)
 				{
