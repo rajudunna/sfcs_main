@@ -56,6 +56,7 @@
 			$style=$barcode_rslt['order_style_no'];
 			$cutno=$barcode_rslt['acutno'];
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
+			$display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 			$html.= '<div>
 						<table>
 							<tr rowspan=2>
@@ -68,7 +69,7 @@
 							</tr>
 							<br><br>
 							<tr><td colspan=4><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b>'.$schedule.'</td></tr>
-							<tr><td colspan=4><b>Job Number:</b>J'.$input_job.'</td><td><b>Size:</b>'.$barcode_rslt['size_code'].'</td></tr>
+							<tr><td colspan=4><b>Job Number:</b>'.$display.'</td><td><b>Size:</b>'.$barcode_rslt['size_code'].'</td></tr>
 							<tr><td colspan=4><b>Barcode ID:</b>'.$barcode.'</td><td><b>Cut No:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
 							<tr><td colspan=4><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,30).'</td></tr>
 						 </table>
@@ -86,7 +87,7 @@
 				{	
 					$quantity=$qty['carton_act_qty'];
 				}	
-				
+				$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 				$html.= '<div>
 							<div style="margin-left:50px;"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
 									
@@ -100,7 +101,7 @@
 									<td><b>Schedule:</b>'.$schedule.'</td>
 								</tr>
 								<tr>
-									<td colspan=4><b>Job Number:</b>J'.$input_job.' </td>
+									<td colspan=4><b>Job Number:</b>'.$display1.' </td>
 									<td> <b>Size:</b> '.trim($barcode_rslt['size_code']).' </td>
 								</tr>
 								
