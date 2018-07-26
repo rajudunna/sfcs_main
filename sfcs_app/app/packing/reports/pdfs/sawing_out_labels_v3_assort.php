@@ -1,5 +1,6 @@
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');   ?>
 <?php include('../../common/php/functions.php'); ?>
 <?php require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/js/mpdf7/vendor/autoload.php'; ?>
 
@@ -136,7 +137,8 @@
 			$html.= '<tr><td colspan=4>Color:  <font size=2><b>'.$col.'</b></font></td></tr>';
 			$html.= '<tr><td>Assort:</td><td><font size=2>'.$ratio.'</font></td><td>Module:</td>
 			         <td class="new_td3"><b>'.$mod.'</b></td></tr>';
-			$html.= '<tr><td>Jobs:</td><td>J00'. $job_no.'</td><td>Size:<span new_td3><b>'.$size1.'</b></span></td>
+			$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$col,$job_no,$link);
+			$html.= '<tr><td>Jobs:</td><td>'.$display_prefix1.'</td><td>Size:<span new_td3><b>'.$size1.'</b></span></td>
 					 <td>Qty:<span new_td3><b>'.$qty.'</b></span></td></tr>';
 			$html.= '<tr><td>Carton:</td><td>#'.$j.'</td>
 					 <td><span new_td3><b><span style="font-size:150%;color:black;">***</span></b></span></td></tr>';

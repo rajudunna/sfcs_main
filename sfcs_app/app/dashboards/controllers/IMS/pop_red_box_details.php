@@ -91,6 +91,7 @@ $sqljob="SELECT SUM(carton_act_qty) AS Job_tot,input_job_no FROM $bai_pro3.pac_s
 //echo $sqljob."<br>";
 $sql_job1=mysqli_query($link, $sqljob) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_job2=mysqli_fetch_array($sql_job1);
+
 $job_no=$sql_job2['input_job_no'];
 //echo substr($input_job_rand_ref,0,6)."<br>";
 $schedule_ref=substr($input_job_rand_ref,0,6);
@@ -105,7 +106,7 @@ $ims_remarks=$sql_docket['ims_remarks'];
 $ims_size=$sql_docket['ims_size'];
 $ims_size2=substr($ims_size,2);
 $ims_doc_no=$sql_docket['ims_doc_no'];
-
+$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_docket['ims_schedule'],$sql_docket['ims_color'],$job_no,$link);
 ?>
 <table width="400" border="0" cellpadding="3" align="center">
   <tr>
@@ -123,7 +124,7 @@ $ims_doc_no=$sql_docket['ims_doc_no'];
   </tr>
   <tr>
     <td class="header2">Job No</td>
-    <td class="header3">J<?php echo $job_no;?></td>
+    <td class="header3"><?php echo $display_prefix1 ;?></td>
     <td style="border:0px;">&nbsp;</td>
     <td class="header2">Job qty</td>
     <td class="header3"><?php echo $job_tot;?></td>
