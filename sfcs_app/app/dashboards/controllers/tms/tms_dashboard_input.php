@@ -746,7 +746,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					//Circle if the total panel Input is issued to module
 				}
 				$firststy=substr($order_tid,0,strpos($order_tid," "));
-				$get_color = echo_title("$brandix_bts.packing_summary_input","order_col_des","order_del_no='$schedule' and input_job_no",$input_job_no,$link);
+				$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$schedule' and input_job_no",$input_job_no,$link);
 				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
 				$title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Job_No:".$display_prefix1,80);
 				
