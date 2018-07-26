@@ -2,13 +2,37 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <?php
-// include("dbconf.php");
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
-// error_reporting (0);
+
+	if ($_GET['operation_id']) {
+		$input_job_no_random_ref=$_GET['input_job_no_random_ref'];
+		$operation_code=$_GET['operation_id'];
+		$style=$_GET['style'];
+		$schedule=$_GET['schedule'];
+		$module=$_GET['module'];
+		$operation_name = echo_title("$brandix_bts.tbl_orders_ops_ref","operation_name","operation_code",$operation_code,$link).- $operation_code;
+		$color = echo_title("$bai_pro3.packing_summary_input","order_col_des","input_job_no_random",$input_job_no_random_ref,$link);
+		$shift=$_GET['shift'];
+		// $operation_name='Sewing In - 129'; 
+		$barcode_generation=1;
+	} else {
+		$schedule=$_POST['schedule'];
+		$color=$_POST['color'];
+		$style=$_POST['style'];
+		$shift=$_POST['shift'];
+		$module=$_POST['module'];
+		$operation_name=$_POST['operation_name'];
+		$operation_code=$_POST['operation_id'];
+		$barcode_generation=$_POST['barcode_generation'];
+	}
+
+
+
+
 
 $url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
-$operation_code = $_POST['operation_id'];
 // echo $operation_code;
 $form = 'G';
 if($operation_code >=130 && $operation_code < 300)
@@ -24,34 +48,31 @@ if(isset($_POST['flag_validation']))
 	echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
 	//echo "<script>document.getElementById('message').innerHTML='<b>Please wait a while</b>'</script>";
 }
-$barcode_generation =  $_POST['barcode_generation'];
 $configuration_bundle_print_array = ['0'=>'Bundle Number','1'=>'Sewing Job Number'];
 $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 // echo $label_name_to_show;
+
 ?>
 <script type="text/javascript">
-	function validateQty(event) 
+	function validateQty(e,t) 
 	{
-		event = (event) ? event : window.event;
-		var charCode = (event.which) ? event.which : event.keyCode;
-		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-			return false;
-		}
-		return true;
+		if(e.keyCode == 13)
+				return;
+			var p = String.fromCharCode(e.which);
+			var c = /^[0-9]+$/;
+			var v = document.getElementById(t.id);
+			
+			if( !(v.value.match(c)) && v.value!=null ){
+				v.value = '';
+				return false;
+			}
+			return true;
 	}
 </script>
 <body>
-	<form action="index.php?r=<?php echo $_GET['r']?>" method="post" id="storingfomr">
-		<input type="hidden" name="operation_name" id="op_name" value="<?php echo $_POST['operation_name'];?>">
-		<input type="hidden" name="shift" id="shift" value="<?php echo $_POST['shift'];?>">
-		<input type="hidden" name="operation_id" id='operation_id' value="<?php echo $_POST['operation_id'];?>">
-		<input type="hidden" name="barcode_generation" id='barcode_generation' value="<?php echo $_POST['barcode_generation'];?>">
-		<input type="hidden" name="next_form" id='next_form'>
-	</form>
-
-	
-	</form>
-	<button onclick="location.href = '<?php echo $url;?>&shift=<?php echo $_POST['shift'];?>&schedule=<?php echo $_POST['schedule'];?>&color=<?php echo $_POST['color'];?>&style=<?php echo $_POST['style'];?>&module=<?php echo $_POST['module'];?>'; return false;" class="btn btn-primary">Click here to go Back</button>
+    <?php if($_POST['operation_name']) {?>
+	<button onclick="location.href = '<?php echo $url;?>&shift=<?php echo $shift;?>&schedule=<?php echo $schedule;?>&color=<?php echo $color;?>&style=<?php echo $style;?>&module=<?php echo $module;?>'; return false;" class="btn btn-primary">Click here to go Back</button>
+	 <?php } ?>
 
 	<div class="panel panel-primary"> 
 		<input type="hidden" name="flag_validation" id='flag_validation'>
@@ -61,7 +82,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 				<a href="#" class="close" data-dismiss="alert">&times;</a>
 				<strong>Info! </strong><span class="sql_message"></span>
 			</div>
-			<center style='color:red;'><h3>Operation You Are Scanning Is &nbsp;<span style='color:green;'><?php echo $_POST['operation_name'];?></span>&nbsp; On The Shift &nbsp;&nbsp;<span style='color:green;'><?php echo $_POST['shift'];?> <span style='color:red;'></h3></center>
+			<center style='color:red;'><h3>Operation You Are Scanning Is &nbsp;<span style='color:green;'><?php echo $operation_name;?></span>&nbsp; On The Shift &nbsp;&nbsp;<span style='color:green;'><?php echo $shift;?> <span style='color:red;'></h3></center>
 			<div class='row'>
 				<div class='col-md-6'>
 					<input type='text' id='changed_rej' name='changed_rej' hidden='true'>
@@ -69,21 +90,21 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<table class="table table-bordered">
 							<tr>
 								<td>Style</td>
-								<td id='style_show'></td>
+								<td id='style_show'><?= $style ?></td>
 							</tr>
 							<tr>
 								<td>Schedule</td>
-								<td id='schedule_show'></td>
+								<td id='schedule_show'><?= $schedule ?></td>
 							</tr>
 							<tr>
 								<td>Mapped Color</td>
-								<td id='color_show'></td>
+								<td id='color_show'><?= $color ?></td>
 							</tr>
 						</table>
 						<center>
 						<div class="form-group col-md-6">
 							<label><?php echo $label_name_to_show ?><span style="color:red"></span></label>
-							<input type="text"  id="job_number" class="form-control integer" required placeholder="Scan the Job..."/>
+							<input type="text" id="job_number" onkeyup="validateQty(event,this);" value='<?= $input_job_no_random_ref ?>' class="form-control integer" required placeholder="Scan the Job..."/>
 						</div>
 						<div class = "form-group col-md-6">
 							<label>Assigning To Module</label><br>
@@ -122,10 +143,10 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<input type="hidden" name="color" id="mapped_color">
 						<input type="hidden" name="job_number" id="hid_job">
 						<input type="hidden" name="module" id="module">
-						<input type="hidden" name="operation_name" id="op_name" value="<?php echo $_POST['operation_name'];?>">
-						<input type="hidden" name="shift" id="shift" value="<?php echo $_POST['shift'];?>">
-						<input type="hidden" name="operation_id" id='operation_id' value="<?php echo $_POST['operation_id'];?>">
-						<input type="hidden" name="barcode_generation" id='barcode_generation' value="<?php echo $_POST['barcode_generation'];?>">
+						<input type="hidden" name="operation_name" id="op_name" value="<?php echo $operation_name;?>">
+						<input type="hidden" name="shift" id="shift" value="<?php echo $shift;?>">
+						<input type="hidden" name="operation_id" id='operation_id' value="<?php echo $operation_code;?>">
+						<input type="hidden" name="barcode_generation" id='barcode_generation' value="<?php echo $barcode_generation;?>">
 						<input type="hidden" name="response_flag" id='response_flag'>
 						
 						<div id ="dynamic_table1">
@@ -150,7 +171,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 				                <div class="panel-body">
 						           	<div class="form-group col-md-4" id="res">
 			                            <label>No of Reasons:</label>
-					                	<input type="text" onkeypress="return validateQty(event);" name="no_reason" min=0 id="reason" class="form-control"  onchange="validating_with_qty()" placeholder="Enter no of reasons"/>
+					                	<input type="text" onkeyup="validateQty(event,this);" name="no_reason" min=0 id="reason" class="form-control"  onchange="validating_with_qty()" onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' placeholder="Enter no of reasons"/>
 					                </div>
 		                            <table class="table table-bordered" id='reson_dynamic_table' width="100" style="height: 50px; overflow-y: scroll;">
 		                            	<thead>
@@ -177,7 +198,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 													?>
 												</select>
 												</td>
-												<td><input class='form-control input-sm  integer' id='quantity'  name='quantity[]' onkeypress="return validateQty(event);" onchange='validating_cumulative()'></td>
+												<td><input type='text' class='form-control input-sm' id='quantity'  name='quantity[]' onkeyup='validateQty(event,this);' onchange='validating_cumulative(event,this)'></td>
 											</tr>
 		                            </table>
 		                        </div>
@@ -202,9 +223,11 @@ $(document).ready(function()
 	
 	$('#job_number').focus();
 	$('#loading-image').hide();
+	<?php if ($_POST['operation_name']) {?>
 	$("#job_number").change(function()
 	{
-		$('#dynamic_table1').html('');
+	<?php }?>
+        $('#dynamic_table1').html('');
 		$('#loading-image').show();
 		var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 		var barcode_generation = "<?php echo $barcode_generation?>";
@@ -287,8 +310,7 @@ $(document).ready(function()
 						}
 						var readonly ='';
 						var temp_var_bal = 0;
-						//console.log(data[i].reported_qty);
-						if(Number(data[i].reported_qty) > 0)
+							if(Number(data[i].reported_qty) > 0)
 						{
 							status = '<font color="green">Partially Scanned</font>';
 						}
@@ -307,6 +329,7 @@ $(document).ready(function()
 								status = '<font color="red">Already Scanned</font>';
 							}
 						}
+						
 						if(data[i].flag == 'packing_summary_input')
 						{
 							temp_var_bal = data[i].carton_act_qty;
@@ -322,7 +345,8 @@ $(document).ready(function()
 						
 						// var markup1 = "<tr><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>0</td><td><input class='form-control input-md' id='"+i+"reporting' name='reporting_qty[]' onchange = 'validate_reporting("+i+") '></td><td><input class='form-control input-md' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")'></td><td id='"+i+"balance'>"+data[i].balance_to_report+"</td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td></tr>";
 						s_no++;
-						var markup1 = "<tr class="+hidden_class+"><td>"+s_no+"</td><td>"+status+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code.toUpperCase()+"</td><td>"+data[i].carton_act_qty+"</td><input type='hidden' name='old_size[]' value = '"+data[i].old_size+"'><td>"+data[i].reported_qty+"</td><td id='"+i+"remarks_validate_html'>"+temp_var_bal+"</td><td><input type='text' onkeypress='return validateQty(event);' class='form-control input-md twotextboxes' id='"+i+"reporting' value='0' required name='reporting_qty[]' onchange = 'validate_reporting_report("+i+") '"+readonly+"></td><td class="+hidden_class_for_remarks+">"+sampling+"</td><td>"+data[i].rejected_qty+"</td><td><input type='text' onkeypress='return validateQty(event);' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")' "+readonly+"></td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><td class='hide'><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><td class='hide'><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td><td class='hide'><input type='hidden' name='old_rep_qty[]' id='"+i+"old_rep_qty' value='"+data[i].reported_qty+"'></td><td class='hide'><input type='hidden' name='old_rej_qty[]' id='"+i+"old_rej_qty' value='"+data[i].rejected_qty+"'></td></tr>";
+						var test = '1';
+						var markup1 = "<tr class="+hidden_class+"><td>"+s_no+"</td><td>"+status+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code.toUpperCase()+"</td><td>"+data[i].carton_act_qty+"</td><input type='hidden' name='old_size[]' value = '"+data[i].old_size+"'><td>"+data[i].reported_qty+"</td><td id='"+i+"remarks_validate_html'>"+temp_var_bal+"</td><td><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty[]' onchange = 'validate_reporting_report("+i+") '"+readonly+"></td><td class="+hidden_class_for_remarks+">"+sampling+"</td><td>"+data[i].rejected_qty+"</td><td><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")' "+readonly+"></td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><td class='hide'><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><td class='hide'><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td><td class='hide'><input type='hidden' name='old_rep_qty[]' id='"+i+"old_rep_qty' value='"+data[i].reported_qty+"'></td><td class='hide'><input type='hidden' name='old_rej_qty[]' id='"+i+"old_rej_qty' value='"+data[i].rejected_qty+"'></td></tr>";
 						$("#dynamic_table").append(markup1);
 						$("#dynamic_table").hide();
 						console.log(data[i].flag);
@@ -338,7 +362,7 @@ $(document).ready(function()
 							}
 							val=i;
 							$('#loading-image').show();
-							$('#flag_validation').val(0);
+                            $('#flag_validation').val(0);
 							validating_remarks_qty(val,remarks);
 						}
 					}
@@ -349,7 +373,9 @@ $(document).ready(function()
 			}			    
 		});
 		
+	<?php if ($_POST['operation_name']) {?>
 	});
+	<?php }?>
 		
 	
 });
@@ -417,22 +443,31 @@ $("#reason").change(function(){
 	}
 	
 });
-function validating_cumulative()
+function validating_cumulative(e,t)
 {
-	var result = 0;
-	$('input[name="quantity[]"]').each(function(){
-		result += Number($(this).val());
-	});
-	var  tot = $('#changed_rej').val();
-	if(Number(tot) == Number(result))
-	{
-		$('#footer').show();
-	}
-	else
-	{
-		// sweetAlert('','Please Check Rejection Quantity','error');
-		$('#footer').hide();
-	}
+		var result = 0;
+		$('input[name="quantity[]"]').each(function(){
+			if(isNaN($(this).val()))
+			{
+				$(this).val('');
+			}
+			else
+			{
+				result += Number($(this).val());
+			}
+		});
+		var  tot = $('#changed_rej').val();
+		if(Number(tot) == Number(result))
+		{
+			$('#footer').show();
+		}
+		else
+		{
+			// sweetAlert('','Please Check Rejection Quantity','error');
+			$('#footer').hide();
+		}
+		
+	
 }
 
 function validating_remarks_qty(val,remarks)

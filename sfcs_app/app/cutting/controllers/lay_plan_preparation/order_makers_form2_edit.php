@@ -355,7 +355,7 @@ else
 	}
 }
 
-echo "<tr><td>Marker Efficiency</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"  id='d15' name=\"in_mkeff\" value=\"".$mkeff."\" size=\"10\" required></div></div></td></tr>";
+echo "<tr><td>Marker Efficiency</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"  id='d15' name=\"in_mkeff\" value=\"".$mkeff."\" size=\"10\"></div></div></td></tr>";
 echo "<tr><td>Marker Version</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control alpha\"type=\"text \" required  id='d16' name=\"in_mkver\" value=\"".$mkver."\" size=\"10\" ></div> </td></tr>";
 
 echo "<tr><td>Remarks (Marker File Name): </td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control\" id=\"remarks_id\"  type=\"text\"  name=\"remarks\" value=\"".$mk_remarks."\" onkeyup=\"validate_remarks()\"></div></td></tr>";
