@@ -861,8 +861,8 @@ $code_db=explode("*",$code);
 						
 						//echo $sql1."<br>";
 						
-					echo '</ul>
-				';
+					echo '</ul>';
+				
 				
 			}
 			echo "</div>";
