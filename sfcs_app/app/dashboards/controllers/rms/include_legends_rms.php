@@ -22,8 +22,8 @@
 <div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
 <div class="white" ></div> No Priority Available
 </div>
-<div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
+<!--<div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
 <div class="white" style='background-color:#ff000085;'></div>Module Wise Summary Report
-</div>
+</div>-->
 <div style="clear: both;"> </div>
 </div>
