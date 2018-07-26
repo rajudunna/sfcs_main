@@ -756,7 +756,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		if($rows5!=''or $rows5!='0'){
 		echo "<td class=\"bottom\" $iu_module_highlight>
 				<strong><a href=\"javascript:void(0)\" >
-						  <font class=\"fontnn\" color=black style='background-color:#ff000085;' onclick=\"Popup=window.open('$url5&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$module</font>
+						  <font class=\"fontnn\" color=black  onclick=\"Popup=window.open('$url5&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$module</font>
 				</a></strong>
 			  </td>
 			  <td>";
