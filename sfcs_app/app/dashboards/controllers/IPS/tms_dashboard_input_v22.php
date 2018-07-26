@@ -875,20 +875,40 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$club_c_code=array_unique($club_c_code);
 			
 			$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".'J'.leading_zeros($input_job_no,3),50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50);
-				$ui_url=getFullURL($_GET['r'],'input_status_update_input.php','R');		
+				$ui_url=getFullURL($_GET['r'],'input_status_update_input.php','R');	
+
+				$ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
+				$operation_id='129';
+				$shift='G';
+
+
 				if(in_array($authorizeLevel_1,$has_permission))
 				{
-					if($id=="blue" or $id=="yellow")
+					if($id=="blue" || $id=="yellow")
 					{
-						echo "<div id=\"S$schedule\" style=\"float:left;\">
-								<div id=\"SJ$input_job_no\" style=\"float:left;\">
-									<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a>
+						if($id=="yellow")
+						{
+
+							echo "<div id=\"S$schedule\" style=\"float:left;\">
+									<div id=\"SJ$input_job_no\" style=\"float:left;\">
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a>
+										</div>
 									</div>
-								</div>
-							</div>";
+								</div>";
+						}
+						else
+						{
+							echo "<div id=\"S$schedule\" style=\"float:left;\">
+									<div id=\"SJ$input_job_no\" style=\"float:left;\">
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_id&shift=$shift\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_id&shift=$shift','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a>
+										</div>
+									</div>
+								</div>";
+	                    }
 					}
 					else
 					{
+						
 						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a></div></div></div>";
 					}
 				}
