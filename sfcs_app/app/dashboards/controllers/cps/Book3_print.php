@@ -3314,9 +3314,6 @@ $item_name[] = $sql_row['item'];
 	  		$total+=$leng_det[$i];
 	  		// $leng_det[$i];	
 	   }
-	 ?>
- 
-<?php
  }	
  else {
 	for($i =0; $i<16; $i++){
