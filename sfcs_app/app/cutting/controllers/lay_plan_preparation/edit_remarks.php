@@ -57,10 +57,10 @@ if(isset($_POST['submit']))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	if($sql_result){
-		echo "<script>sweetAlert('Order remarks Updated Successfully','','success')</script>";
+		echo "<script>sweetAlert('Binding Consumption Updated Successfully','','success')</script>";
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_x&style=$style_x&schedule=$schedule_x\"; }</script>";
 	}else{
-		echo "<script>sweetAlert('Order remarks Updation Failed','Please try again','error')</script>";
+		echo "<script>sweetAlert('Binding Consumption Updation Failed','Please try again','error')</script>";
 	}
 }
 
