@@ -412,7 +412,7 @@ if(isset($_POST["update"])){
 <script>
 function calculateExcess(){
 	var rowscount = document.getElementById('rowscount').value;
-	for(var i=0;i<2;i++){
+	for(var i=0;i<rowscount;i++){
 		var k= 11;
 		for(var j=1;j<=50;j++){
 			if(i<10){
