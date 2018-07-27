@@ -3346,7 +3346,7 @@ $item_name[] = $sql_row['item'];
    <?php
 	}	
 }
-?>
+?>	
 
 		
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
