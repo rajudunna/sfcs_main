@@ -79,9 +79,15 @@ echo $frdate.' - '.$frdate1;
 				<form action="index.php" method='GET'>
 				<input type='hidden' name='r' value='<?= $_GET["r"]; ?>'>
 				<br>
-				<br>
-				Date : <input type='text' width="40" value='<?php echo $frdate;  ?>' name='pro_date'> <input type='text' width="40" value='<?php echo $frdate;  ?>' name='pro_date1'>
-				<input type='submit' value='Filter'>
+				<div class='col-md-3'>
+			From Date:		<input type='text' width="40" data-toggle='datepicker' class="form-control" value='<?php echo $frdate;  ?>' name='pro_date' id='demo1'>
+				</div>
+				<div class='col-md-3'>
+			To Date:	<input type='text' width="40" data-toggle='datepicker' class="form-control" value='<?php echo $frdate1;  ?>' name='pro_date1' id='demo2'>
+				</div>
+				<div class='col-md-3'>
+					<input type='submit' class="btn btn-success" style='margin-top: 16px;' onclick='return verify_date()' value='Filter' name='submit'>
+				</div>
 				</form>
 
   <hr>
