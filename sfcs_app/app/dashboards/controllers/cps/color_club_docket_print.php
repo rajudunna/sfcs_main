@@ -3743,20 +3743,6 @@ echo "</tbody></table>";
 
  
  <tr height=30 style='height:15.75pt'>
-  <td></td>
-  <td  colspan=2 class=xl7217319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>Excess</td>
-  <td  colspan=3 class=xl8217319></td>
- </tr>
- 
-
- 
- <tr height=30 style='height:15.75pt'>
  </tr>
 
  <tr height=30 style='height:30pt'>
