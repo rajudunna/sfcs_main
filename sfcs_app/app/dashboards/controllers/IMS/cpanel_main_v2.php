@@ -488,7 +488,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 
 
-
+              $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedul_no,$color_name,$inputno,$link);
 
           ?>
                   
@@ -497,7 +497,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
                   Docket No : <?php echo $docket_no."<br/>"; ?>
-                  Job No : <?php echo"J". $inputno."<br/>"; ?>
+                  Job No : <?php echo $display."<br/>"; ?>
                   Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
                   Input Date : <?php echo $input_date."<br/>"; ?>
                   <?php echo "-------------------------</br>"; ?>
