@@ -5,42 +5,28 @@ Deascription: We can club the two colors for single cut plan.
 
 -->
 <?php
-//echo getFullURLLevel($_GET['r'],'common/config/config.php',4,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
-
 ?>
- 
-<!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
 
 
-<script>
-	
-	// $('#show').prop('disabled', true);
-	// document.getElementById('show').disabled = true;
-	
+<script>	
 	function firstbox()
 	{
 		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value
 	}
 
 	function secondbox()
-	{
-		
+	{		
 		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
-		
 	}
 
 	function thirdbox()
 	{
-		// document.getElementById('show').disabled = false;
-		// $('#show').prop('disabled', false);
 		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&category="+document.test.category.value		
 	}
+
 	function check_style()
 	{
-
 		var style=document.getElementById('style').value;
 		if(style=='')
 		{
@@ -52,6 +38,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			return true;
 		}
 	}
+
 	function check_style_sch_cat()
 	{
 		var style=document.getElementById('style').value;
@@ -66,10 +53,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		}
 		else if(sch=='' && cat=='')
 		{
-
 			sweetAlert('Please Select schedule and category','','warning');
 			return false;
-		
 		}
 		else if(cat=='')
 		{
@@ -81,6 +66,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			return true;
 		}
 	}
+
 	function check_style_sch()
 	{
 		var style=document.getElementById('style').value;
@@ -94,10 +80,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		}
 		else if(sch=='')
 		{
-
 			sweetAlert('Please Select schedule','','warning');
-			return false;
-		
+			return false;		
 		}
 		else
 		{
@@ -108,18 +92,21 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 </script>
 
 <style>
-
-th,td{ color : #000 }
+	th,td{ color : #000 }
 </style>
 
-<?php //include("../menu_content.php"); ?>
 
 <?php
-	//echo q$bai_pro3;
 	$style=$_GET['style'];
 	$schedule=$_GET['schedule']; 
 	$category=$_GET['category'];
-	
+
+	if ($_POST['style'])
+	{
+		$style=$_POST['style'];
+		$schedule=$_POST['schedule'];
+		$category=$_POST['category'];
+	}	
 ?>
 
 
@@ -213,17 +200,11 @@ $sql="select print_status from $bai_pro3.plandoc_stat_log where order_tid in (se
 	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $doc_count=mysqli_num_rows($sql_result);
-//Exception
-//$doc_count=0;
 
 if($total_schedules==$lay_plan_generated and $doc_count==0 || $category!='')
 {
 	echo "<input type=\"submit\" id='show' value=\"Show\" name=\"submit\" class=\"btn btn-success\" onclick=\"return check_style_sch_cat();\" style=\"margin-top: 18px;\">";
 }
-// if(){
-// 	echo "<input type=\"submit\" id='show' value=\"Show\" name=\"submit\" class=\"btn btn-success\" onclick=\"return check_style_sch_cat();\" style=\"margin-top: 18px;\">";
-	
-// }
 ?>
 
 </form>
@@ -235,10 +216,10 @@ if(isset($_POST['submit']))
 	$schedule=$_POST['schedule'];
 	$category=$_POST['category'];
 	
-	if($style=='' || $schedule=='' || $category==''){
+	if($style=='' || $schedule=='' || $category=='')
+	{
 		echo "<script>sweetAlert('You did not select style or schedule or category','','warning');</script>";
 		die();
-		
 	}
 	
 	$row_count = 0;
@@ -314,7 +295,7 @@ if(isset($_POST['submit']))
 
 		
 		$order_ratio_stat=$sql_row['clubbing'];
-		
+		$input="";
 		if($order_ratio_stat>$existing_id)
 		{
 			$existing_id=$order_ratio_stat;
@@ -326,10 +307,8 @@ if(isset($_POST['submit']))
 		{
 			$order_ratio_stat="<input type=\"checkbox\" name=\"cb_ids[$i]\" value=\"".$sql_row['cat_ref']."\">".$sql_row['cat_ref'];
 			$input="<input type=\"text\" id = \"tot[$i]\" name=\"tot[$i]\" class=\"select2_single form-control integer\">";
-			//echo "<input type='text' name='tot[$i]' value='$total'>";
 			$i++;
 		}
-		//echo "<tr><td><input type=\"checkbox\" value=\"".$sql_row['order_tid']."\">".$sql_row['order_col_des']."</td>";
 		echo "<tr><td>".$order_ratio_stat."</td><td>".$sql_row['order_tid']."</td><td>".$sql_row['category']."</td><td>".$sql_row['purwidth']."</td><td>".$total."</td><td>".$input."</td></tr>";
 	}
 	echo "</table></div></div>";
@@ -337,8 +316,8 @@ if(isset($_POST['submit']))
 
 	echo "<div class='col-md-3'><input type=\"hidden\" name=\"new_id\" value=\"$existing_id\" class='form-control'>";
 	echo "Plies:<select name='plies_ref' class='form-control'>
-			<option value='max' selected>max</option>
-			<option value='min'>min</option>
+			<option value='max' selected>Max</option>
+			<option value='min'>Min</option>
 			</select></div>";
 
 	echo '<div class="col-md-3">Clubing Ratio: <input type="text" name="clb_ratio" value="0" class="form-control integer"></div>';
@@ -399,11 +378,6 @@ if(isset($_POST['club']))
 			$new_key++;
 		}
 	}
-	//print_r($tot);
-	//print_r($cat_ids);
-	
-	//$cat_id[0] = explode(":",$cat_ids);
-	//print_r($cat_id[0]);
 
 	if(sizeof($tot)==sizeof($cat_ids))
 	{
@@ -415,9 +389,7 @@ if(isset($_POST['club']))
 			echo "<script>swal('Colors Already Clubbed ','','info')</script>";
 			exit();
 		}
-		// $sql="Select (order_s_s06+order_s_s08+order_s_s10+order_s_s12+order_s_s14+order_s_s16+order_s_s18+order_s_s20+order_s_s22+order_s_s24+order_s_s26+order_s_s28+order_s_s30) as sum  from bai_orders_db 
-		//       where order_tid in (select order_tid from cat_stat_log where tid in (".implode(",",$_POST['cb_ids'])."))";
-		//echo $sql."<br/>";
+
 		if(mysqli_query($link, $sql) or exit("Sql Error 31".mysqli_error($GLOBALS["___mysqli_ston"])))	
 		//$sql="update cat_stat_log set clubbing=$new_id where tid in (".implode(",",$_POST['cb_ids']).")";
 		$sql="update $bai_pro3.cat_stat_log set clubbing='$new_id' where tid in ($cb_ids_array)";
@@ -435,14 +407,14 @@ if(isset($_POST['club']))
 		$club_count=sizeof($_POST['cb_ids']);
 		if($plies_ref=="max")
 		{
-		// $sql="select max(pliespercut) as plies from allocate_stat_log where cat_ref in (".implode(",",$_POST['cb_ids']).")";
-		$sql="select max(pliespercut) as plies from $bai_pro3.allocate_stat_log where cat_ref in ('$cb_ids_array')";
+			// $sql="select max(pliespercut) as plies from allocate_stat_log where cat_ref in (".implode(",",$_POST['cb_ids']).")";
+			$sql="select max(pliespercut) as plies from $bai_pro3.allocate_stat_log where cat_ref in ('$cb_ids_array')";
 
 		}
 		if($plies_ref=="min")
 		{
-		// $sql="select min(pliespercut) as plies from allocate_stat_log where cat_ref in (".implode(",",$_POST['cb_ids']).")";
-		$sql="select min(pliespercut) as plies from $bai_pro3.allocate_stat_log where cat_ref in ('$cb_ids_array')";
+			// $sql="select min(pliespercut) as plies from allocate_stat_log where cat_ref in (".implode(",",$_POST['cb_ids']).")";
+			$sql="select min(pliespercut) as plies from $bai_pro3.allocate_stat_log where cat_ref in ('$cb_ids_array')";
 
 		}
 		//echo $sql."<br/>";
@@ -540,15 +512,12 @@ if(isset($_POST['club']))
 				//echo "<br/>".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$m++;
-			}
-			
-			
+			}			
 			unset($amend_doc);
 			unset($amend_plies);
 			unset($new_doc_plies);
 			unset($new_doc_ref);		
 		}
-
 	}
 	else
 	{
