@@ -2006,7 +2006,6 @@ function printpr()
 	// document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
 	// WebBrowser1.ExecWB(OLECMDID, PROMPT);
 	// WebBrowser1.outerHTML = "";
-   
 }
 </script>
 
