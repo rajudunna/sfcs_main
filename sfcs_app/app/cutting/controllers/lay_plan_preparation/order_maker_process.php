@@ -113,7 +113,10 @@ if(isset($_POST['update']))
 		$in_mkeff=$_POST['in_mkeff'];
 		$in_mkver=$_POST['in_mkver'];
 		$in_pwidth=$_POST['in_pwidth']; //
-		
+		if($in_mkeff == '')
+		{
+		    $in_mkeff = 0;
+		}
 		
 		if(strlen(trim($in_mkver))>=1) //System will not update, if no data is not available
 		{

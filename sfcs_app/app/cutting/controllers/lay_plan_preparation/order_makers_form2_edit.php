@@ -376,8 +376,12 @@ echo "</form>";
 function verify_null(){
 	var ver = document.getElementById('d16').value;
 	var eff =  document.getElementById('d15').value;
+	if(eff == '')
+	{
+		eff = 0;
+	}
 	var mklen = document.getElementById('d1').value;
-	if(eff == '' || eff>100 ){
+	if(eff>100 ){
 		sweetAlert('Please enter valid Marker Efficiency','','warning');
 		return false;
 	}
