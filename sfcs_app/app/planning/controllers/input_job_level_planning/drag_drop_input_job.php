@@ -660,9 +660,6 @@ $code_db=explode("*",$code);
 </div>
 <div class="panel-body">
 <h4><span class="label label-info">Note: Yellow Color indicates Excess/Sample Job</span></h4>
-<form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()">
-	<input type="hidden" name="listOfItems" value="">
-	<input class='btn btn-success btn-sm pull-right' type="button" class="saveButton" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
 <!-- </form> -->
 <br>
 <div id="dhtmlgoodies_dragDropContainer">
@@ -706,6 +703,13 @@ $code_db=explode("*",$code);
 			
 		</ul>
 		</div>
+
+		
+<form action="http://localhost//index.php?r=L3NmY3NfYXBwL2FwcC9wbGFubmluZy9jb250cm9sbGVycy9pbnB1dF9qb2JfbGV2ZWxfcGxhbm5pbmcvZHJhZ19kcm9w        X3Byb2Nlc3NfaW5wdXQucGhw" method="post" name="myForm" onclick="saveDragDropNodes()" style="position: fixed;margin-top: 320px;margin-left: 35px;">
+<input type="hidden" name="listOfItems" value="">
+<input class="btn btn-success btn-sm pull-right" type="button" name="saveButton" id="saveButton" onclick="do_disable()" value="Save">
+</form>
+
 	</div>	
 	
 
