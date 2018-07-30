@@ -42,7 +42,7 @@ if(isset($_POST['submit']))
 			</style>
 			
 		<?php
-		echo "<table class='table'><tr class='table table-bordered'><th rowspan=2>Cutting<br>Section</th><th colspan=$total_hours>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
+		echo "<div class=\"table-responsive\"><table class='table'><tr class='danger'><th rowspan=2>Cutting<br>Section</th><th colspan=$total_hours>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
 	   	echo "<tr class='warning'>";
 	   	$query='';
 	   	for ($i=0; $i < $total_hours; $i++)
@@ -95,7 +95,7 @@ if(isset($_POST['submit']))
 
 		// Section A End
 		echo "<tr class='danger'><th>Total:</th><th colspan=$total_hours></th><th>$grand_tot_cut_qty</th><th>$tot_yards</th><th>$grand_tot_no_of_doc</th></tr>";
-		echo "</table>
+		echo "</table></div>
 	</div>";
 }
 		?>
