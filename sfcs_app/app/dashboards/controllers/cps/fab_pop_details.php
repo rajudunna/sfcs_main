@@ -414,16 +414,16 @@ echo "</table>";
 
 echo "<h2>Cut Docket Print</h2>";
 
-$path='Book3_print.php';
+$path='Book3_print1.php';
 if(substr($style_ref,0,1)!="P" or substr($style_ref,0,1)!="K" or substr($style_ref,0,1)!="L" or substr($style_ref,0,1)!="O")
 {
 	if($mns_status>0)
 	{
-		$path='Book3_print.php';;  // For M&S Men Briefs
+		$path='Book3_print1.php';;  // For M&S Men Briefs
 	}
 	else
 	{
-		$path='Book3_print.php';; // FOR M&S Ladies Briefs
+		$path='Book3_print1.php';; // FOR M&S Ladies Briefs
 	}
 	
 }
@@ -431,7 +431,7 @@ else
 {
 	if(substr($style_ref,0,1)=="Y")
 	{
-		$path='Book3_print.php';; // FOR M&S Ladies Briefs	
+		$path='Book3_print1.php';; // FOR M&S Ladies Briefs	
 	}
 }
 
