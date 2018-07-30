@@ -556,7 +556,11 @@ function verify_null(){
 		sweetAlert('Please enter valid Marker Length','','warning');
 		return false;
 	}
-	if(eff == '' || eff>100){
+	if(eff == '')
+	{
+		eff = 0;
+	}
+	if(eff>100){
 		sweetAlert('Please enter valid Marker Efficiency','','warning');
 		return false;
 	}
