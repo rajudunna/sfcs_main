@@ -460,7 +460,7 @@ window.onload = startBlink;
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $has_permission=haspermission($_GET['r']);
-include('functions.php');
+
 ?>
 <script language="JavaScript">
 <!--
