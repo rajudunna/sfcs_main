@@ -73,6 +73,25 @@ $whoops->register();
             </div>";
     }
 ?>
+ <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="modalClose()">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left custom-btn" data-dismiss="modal" onclick="modalClose()">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
 <script type="text/javascript">
 
  
@@ -137,15 +156,17 @@ $("#body a").on('click',function(event){
     var split_url;
     href_url = $(this).attr("href");
     data_toggle = $(this).attr("data-toggle");
-
     if(href_url !== "#" && data_toggle == undefined){
-        var index = href_url.includes("index.php");
-        if(index == true){
-            split_url = href_url.split("?").pop();
-            url = "ajax_handler.php?"+split_url;
-        }else{
-            url = href_url;
-        }
+        // var index = href_url.includes("index.php");
+        // if(index == true){
+        //     split_url = href_url.split("?").pop();
+        //     url = "ajax_handler.php?"+split_url;
+        // }else{
+        //     url = href_url;
+        // }
+
+        split_url = href_url.split("?").pop();
+        url = "ajax_handler.php?"+split_url;
         myLoad1();
         $.ajax({
           type:'GET',
@@ -195,6 +216,33 @@ function Ajaxify (url) {
         jQuery("#body").html(erespo);
 
     });
+}
+
+var size;
+var color;
+var name;
+
+function modal(size,color,name){
+    size = size;
+    color = color;
+    name = name;
+    $(".modal-title").html('<b>'+name+'</b>');
+    $('.modal-dialog').addClass('modal-'+size);
+    $('.modal').addClass('modal-'+color);
+    $('.custom-btn').removeClass('btn-default');
+    if(color.trim().length > 0){
+        if(color != "default"){
+            $('.custom-btn').addClass('btn-outline');
+        }
+    }
+    $('#myModal').modal('toggle');
+}
+
+function modalClose(){
+    $('.modal-dialog').removeClass('modal-'+size);
+    $('.modal').removeClass('modal-'+color);
+    $('.custom-btn').removeClass('btn-outline');
+    $('.custom-btn').addClass('btn-default');
 }
 
 </script>

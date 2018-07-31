@@ -45,4 +45,6 @@
 
     <!-- Loading Event -->
 
+    <script src="../../template/bower_components/PACE/pace.min.js"></script>
+
     <script type="text/javascript" src="template/loading/loading.js"></script>

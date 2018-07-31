@@ -21,6 +21,8 @@
 
     <link rel="stylesheet" href="assets/vendors/select2/dist/css/select2.min.css" />
 
+    <link rel="stylesheet" href="../../template/plugins/pace/pace.min.css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>

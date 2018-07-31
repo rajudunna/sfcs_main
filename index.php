@@ -89,6 +89,9 @@
           background: linear-gradient(120deg, #5983e8, #00e4d0);
           /* outline: 1px solid slategrey; */
         }
+        .box{
+            border-radius: 6px;
+        }
     </style>
 </head>
 
@@ -113,30 +116,8 @@
             <section class="content-header">
             </section>
             <!-- Main content -->
-            <section class="content">
-                <div class="row">
-                    <div class="col-lg-9" id="body">
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="box box-info">
-                            <div class="box-header with-border">
-                              <h3 class="box-title">Workorders</h3>
-
-                              <div class="box-tools">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                </button>
-                              </div>
-                            </div>
-                            
-                            <div class="box-body no-padding">
-                              <ul class="nav nav-pills nav-stacked">
-                                <?php include("template/new_sidebar.php");?>
-                              </ul>
-                            </div>
-                        <!-- /.box-body -->
-                        </div>
-                    </div>
-                </div>
+            <section class="content" id="body">
+                
             </section>
             <!-- /.content -->
         </div>
@@ -150,12 +131,15 @@
 
 <script>
 
+$(document).ajaxStart(function() { Pace.restart(); }); 
+var qs = decodeURIComponent(location.search);
+$('a[href="' + qs + '"]').parents('li').addClass('active');
+
 var get_r = '<?php echo $_GET['r'] ?>';
 
 window.onload = onloadAjaxCall(get_r);
 
 function onloadAjaxCall(get_r){
-
     var url = "ajax_handler.php?r="+get_r;
     
     myLoad1();
@@ -174,14 +158,13 @@ function onloadAjaxCall(get_r){
 }
 
 function ajaxCall(e,get){
-
     e.preventDefault();
     var get_url = new URL(get);
     var r = get_url.searchParams.get("r");
 
     var url = "ajax_handler.php?r="+r;
     
-    // $.blockUI({ css: { border: 'none', padding: '15px', backgroundColor:'#000', '-webkit-border-radius': '10px', '-moz-border-radius': '10px', opacity: .5, color: '#fff' } });
+    myLoad1();
     return $.ajax ({ 
         url:url,
         type: "GET",
@@ -189,20 +172,22 @@ function ajaxCall(e,get){
         {   
             window.history.pushState("object or string", "Title", get_url);
             jQuery("#body").html(response);
-            // $.unblockUI();
+            myLoadStop();
         }
     });
 
 }
 
 $(document).ready(function () {
-    $('.nav li a').click(function(e) {
+    $('.custom-nav li a').click(function(e) {
 
-        $('.nav li.active').removeClass('active');
+        $('.custom-nav li.active').removeClass('active');
 
         var $parent = $(this).parent();
         $parent.addClass('active');
         e.preventDefault();
     });
+
+   
 });
 </script>

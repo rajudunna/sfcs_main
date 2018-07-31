@@ -1,40 +1,39 @@
-<div class="box box-info">
-  <div class="box-header with-border">
-    <h3 class="box-title">Workorders List</h3>
-  </div>
+
   <!-- /.box-header -->
+
+  <div class="box-header"><div class="col-md-12"><h4><b>Workorders List</b><a href="" class="btn btn-info btn-sm" style="float: right;border-radius: 16px;"><img src="/images/controls.png" ></a><input type="text" name="search" class="form-control" placeholder="Search" style="width:200px;float:right;border-radius: 16px;margin-right: 15px;"></h4></div></div>
   <div class="box-body">
-    <table class="table table-bordered">
-      <tr>
-        <th style="width: 10px">#</th>
-        <th>Workorder NO</th>
-        <th>Style</th>
-        <th style="width: 40px">Schedule</th>
-        <th style="width: 40px">Color</th>
-        <th style="width: 40px">Status</th>
-        <th style="width: 40px">Action</th>
-      </tr>
-      <?php for($i=0; $i < 8; $i++){?>
-        <tr>
-          <td><?= $i+1;?></td>
-          <td>1012</td>
-          <td>FRONT</td>
-          <td>26526</td>
-          <td>BLACK</td>
-          <td>PREPARED</td>
-          <td><a href="?r=L3NmY3NfYXBwL2FwcC93b3Jrb3JkZXJzL2NvbnRyb2xsZXJzL3dvcmtvcmRlcnNfdmlldy5waHA=" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></a></td>
-        </tr>
-      <?php } ?>
-    </table>
+    <?php for($i=0; $i<30; $i++){ ?>
+      <a href="?r=<?= base64_encode('/sfcs_app/app/workorders/controllers/workorders_view.php');?>">
+        <div class="col-lg-2 col-md-2 col-sm-2">
+          <div class="box box-solid">
+            <div class="box-body">
+              <div class="col-md-3">
+                <span><b>#00<?= $i+1; ?></b></span><br>
+                STYLE00<?= $i+1; ?>/SCH00<?= $i+1; ?>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    <?php } ?>
+    <div class="col-md-12">
+      <ul class="pagination pull-right">
+        <li class="disabled"><a href="#">&laquo;</a></li>
+        <li class="active"><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#">&raquo;</a></li>
+      </ul>
+    </div>
   </div>
-  <!-- /.box-body -->
-  <div class="box-footer clearfix">
-    <ul class="pagination pagination-sm no-margin pull-right">
-      <li><a href="#">&laquo;</a></li>
-      <li><a href="#">1</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li><a href="#">&raquo;</a></li>
-    </ul>
-  </div>
-</div>
+
+
+
+<style type="text/css">
+  .box:hover {
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+  }
+</style>

@@ -12,15 +12,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><b>XAPPERL</b></a>
+                <a class="navbar-brand" href="#"><b>X</b>pparel | <small style="font-size: 12px;"><b>S</b>hopfloor</small></a>
             </div>
 
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#"><i class="fa fa-dashboard"></i> Dashboards <span class="sr-only">(current)</span></a></li>
+            <div class="navbar-custom-menu" style="float: left;">
+                <ul class="nav navbar-nav custom-nav">
+                    <li ><a href="#"><i class="fa fa-dashboard"></i> Dashboards <span class="sr-only">(current)</span></a></li>
                     <li><a onclick="ajaxCall(event,this.href)" href="?r=L3NmY3NfYXBwL2FwcC93b3Jrb3JkZXJzL2NvbnRyb2xsZXJzL3dvcmtvcmRlcnNfaW5kZXgucGhw">WorkOrders</a></li>
                     <li><a href="#">Production</a></li>
                     <li><a href="#">Reports</a></li>
+                </ul>
+            </div>
+            <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
                     <!-- Messages: style can be found in dropdown.less-->
                     
                     <!-- Notifications: style can be found in dropdown.less -->
