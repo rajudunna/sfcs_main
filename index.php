@@ -96,7 +96,6 @@
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-
     <!-- Loading Division -->
     <div id="overlay" style="display:none;"> 
         <!-- <br>&nbsp;&nbsp;&nbsp;<button onclick="myLoadStop()">Stop</button> -->
