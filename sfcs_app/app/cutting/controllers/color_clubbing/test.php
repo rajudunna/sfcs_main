@@ -48,7 +48,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	
 		if(style=='' && sch=='' && cat=='')
 		{
-			sweetAlert('Please Select Style Schedule and category','','warning');
+			sweetAlert('Please Select Style,Schedule and category','','warning');
 			return false;
 		}
 		else if(sch=='' && cat=='')
@@ -120,7 +120,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 echo "<div class='row'>";
 echo "<div class='col-md-3'>Select Style: <select name=\"style\" id=\"style\" onchange=\"firstbox();\" class=\"select2_single form-control\">";
-$sql="select distinct order_style_no from $bai_pro3.bai_orders_db group by order_style_no";	
+$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm group by order_style_no";	
 // echo "working".$sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -147,7 +147,7 @@ echo "</select></div>";
 echo "<div class='col-md-3'>Select Schedule: <select name=\"schedule\" id=\"schedule\"  onclick=\"return check_style();\"  onchange=\"secondbox();\"  class=\"select2_single form-control\">";
 $sql_result='';
 if($style){
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
+	$sql="select order_del_no from $bai_pro3.order_cat_doc_mk_mix where style_id=\"$style\" group by order_del_no";	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 echo "<option value='' selected>NIL</option>";
@@ -295,6 +295,12 @@ if(isset($_POST['submit']))
 
 		
 		$order_ratio_stat=$sql_row['clubbing'];
+		$order_tid = $sql_row['order_tid'];
+
+		//validation query to restrict dockets in color clubbing
+		$rawsql = "SELECT * FROM plandoc_stat_log WHERE order_tid = '$order_tid' AND plan_module IS NOT NULL";
+		$rawsql_result = mysqli_query($link, $rawsql) or exit("clubbing validation".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$rawsql_rows = mysqli_num_rows($rawsql_result);		
 		$input="";
 		if($order_ratio_stat>$existing_id)
 		{
@@ -305,8 +311,12 @@ if(isset($_POST['submit']))
 
 		if($order_ratio_stat==0)
 		{
-			$order_ratio_stat="<input type=\"checkbox\" name=\"cb_ids[$i]\" value=\"".$sql_row['cat_ref']."\">".$sql_row['cat_ref'];
+			if($rawsql_rows<=0){
+			$order_ratio_stat="<input type=\"checkbox\" name=\"cb_ids[$i]\" value=\"".$sql_row['cat_ref']."\">";
 			$input="<input type=\"text\" id = \"tot[$i]\" name=\"tot[$i]\" class=\"select2_single form-control integer\">";
+			}else if($rawsql_rows>0){
+				$order_ratio_stat= "Already Planned";
+			}
 			$i++;
 		}
 		echo "<tr><td>".$order_ratio_stat."</td><td>".$sql_row['order_tid']."</td><td>".$sql_row['category']."</td><td>".$sql_row['purwidth']."</td><td>".$total."</td><td>".$input."</td></tr>";
@@ -346,7 +356,8 @@ if(isset($_POST['club']))
 	
 	$coun = 0;
 	$sum_keys = 0;
-
+if(sizeof($cat_ids)>1){
+	if(sizeof($clb_ratio)>1){
 	if(count($tot) > 0){
 		foreach($tot as $key => $val)
 		{
@@ -521,8 +532,14 @@ if(isset($_POST['club']))
 	}
 	else
 	{
-		echo "<script>swal('Process stopped due to ratio has not entered for some colours. Please enter the ratio for all selected colours')</script>";
+		echo "<script>swal('Error','Process stopped due to ratio has not entered for some colours. Please enter the ratio for all selected colours',error')</script>";
 	}
+}else{
+	echo "<script>swal('Error','Please enter packing ratio to proceed with color clubbing','error')</script>";
+}
+}else{
+	echo "<script>swal('Error','Please choose more than one category to proceed with color clubbing','error')</script>";
+}
 }
 ?>
 
