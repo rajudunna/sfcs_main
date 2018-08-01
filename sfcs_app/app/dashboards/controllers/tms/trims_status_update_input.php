@@ -297,7 +297,7 @@ if($schedule!=''){
 	// echo $url;
 	$url = $url."?tid=$tid&job_no=$input_job_no&schedule=$schedule&color=$color&size=$size";
 	echo "<a href=\"$url\" class=\"btn btn-warning btn-sm\" target=\"_blank\" onclick=\"return popitup('$url')\">
-			<i class='fa fa-print'></i>&nbsp;&nbsp;<button id='print_label' class='equal btn btn-success'>Print Labels</button> </a><br/>";	
+			<i class='fa fa-print'></i>&nbsp;&nbsp;<button id='print_label' class='equal btn btn-success'>Packing Stickers</button> </a><br/>";	
 	}
 }
 
