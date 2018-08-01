@@ -1,14 +1,16 @@
 <body>
-<div id="page_heading"><span style="float"><h3>Sewing Jobs Generation</h3></span><span style="float: right"><b></b>&nbsp;</span></div>
 <?php
 set_time_limit(30000000);
 // include("dbconf.php");
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
     include("session_track.php");
+    echo '<div class="panel panel-primary">
+    			<div class="panel-body">';
 	$status="";
 	if($status == '' || $status == '1')
 	{
+		
 		$carton_id=$_GET['id'];
 		$data_sym="$";
 		$File = "session_track.php";
@@ -18,7 +20,8 @@ set_time_limit(30000000);
 		fclose($fh);
 
 		$date_time=date('Y-m-d h:i:s');
-		echo "<br><div class='alert alert-warning'>Data Saving under process Please wait.....</div>";
+		echo '<h3><font face="verdana" color="green">Please wait while we Generate Sewing Jobs...</font></h3>';
+		// echo "<br><div class='alert alert-warning'>Data Saving under process Please wait.....</div>";
 		//echo "<table class='table table-striped table-bordered'>";
 		//echo "<thead><th>Type</th><th>Cut Number</th><th>Job Number</th><th>Color</th><th>Size</th><th>Quantity</th><th>Docket Number</th></thead>";
 		$sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."'";
@@ -126,4 +129,5 @@ set_time_limit(30000000);
 		echo "<h2>Another User Generating Cartons . Please try again.</h2>";
 		session_unset();
 	}
+	echo "</div></div>";
 ?>
