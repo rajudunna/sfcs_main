@@ -3,7 +3,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_jobs.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 $schedule=$_GET['schedule'];
-ini_set('max_execution_time', 300); 
+ini_set('max_execution_time', 800); 
 // $schedule='469623';
 $style=$_GET['style'];
 // $style='T152AB83       ';
