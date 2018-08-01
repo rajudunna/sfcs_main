@@ -100,12 +100,9 @@
 		];
 	?>
 	<div class="col-md-3 col-lg-3 col-sm-3">
-		<?php
-			foreach ($sidemenus as $key => $value) { 
-		?>
 		<div class="box box-info">
             <div class="box-header with-border">
-              <h3 class="box-title"><?= $key; ?></h3>
+              <h3 class="box-title">Work Orders</h3>
 
               <div class="box-tools">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -114,17 +111,110 @@
             </div>
             <div class="box-body no-padding">
               <ul class="nav nav-pills nav-stacked">
-               	<?php		
-					foreach ($value as $key1 => $value1) {
-						echo '<li class=""><a href="#" onclick="modal(\'\',\'\',this.name)" name="'.$value1.'">'.$value1.'</a>';
-					}
-				?>
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/stack-overflow.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Add Excess Quantity</p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
+						( <a href="#" onclick="modal('','',this.name)" name="Add Excess Quantity BY Color">By Color</a> | <a href="#" onclick="modal('','',this.name)" name="Add Excess Quantity BY Schedule">By Schedule</a> )
+						</p>
+					</div>
+				</li>
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/sigma.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Add Sample Quantity">Add Sample Quantity</a></p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">Where the sample qty is added here</p>
+					</div>
+				</li>
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/merge.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Clubbing</p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
+						( <a href="#" onclick="modal('','',this.name)" name="Clubbing By Color">By Color</a> | <a href="#" onclick="modal('','',this.name)" name="Clubbing By Schedule">By Schedule</a> )
+						</p>
+					</div>
+				</li>
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/rug.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Manage Layplan<">Manage Layplan</a></p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
+					</div>
+				</li>
               </ul>
             </div>
         </div>
-    	<?php } ?>
+        <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Pre Production</h3>
+              <div class="box-tools">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body no-padding">
+              <ul class="nav nav-pills nav-stacked">
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Manage Packing List [delete]">Manage Packing List [delete]</a></p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
+					</div>
+				</li>
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/check-in.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
+					</div>
+				</li>
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/cart.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
+					</div>
+				</li>
+              </ul>
+            </div>
+        </div>
+              <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Quality</h3>
+              <div class="box-tools">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body no-padding">
+              <ul class="nav nav-pills nav-stacked">
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/shipped.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Reserve for dispatch">Reserve for dispatch</a></p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
+					</div>
+				</li>
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/check-out.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Security Checkout">Security Checkout</a></p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
+					</div>
+				</li>
+				<li class="">
+					<div clas="col-md-6" style="padding: 12px;">
+						<img src="/images/employee.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Destroy">Destroy</a></p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
+					</div>
+				</li>
+              </ul>
+            </div>
+        </div>
 	</div>
-
 </div>
 <style type="text/css">
 

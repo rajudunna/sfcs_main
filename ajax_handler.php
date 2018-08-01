@@ -227,7 +227,10 @@ function modal(size,color,name){
     color = color;
     name = name;
     $(".modal-title").html('<b>'+name+'</b>');
-    $('.modal-dialog').addClass('modal-'+size);
+    if(size.trim().length > 0){
+        $('.modal-dialog').removeClass('modal-lg');
+        $('.modal-dialog').addClass('modal-'+size);
+    }
     $('.modal').addClass('modal-'+color);
     $('.custom-btn').removeClass('btn-default');
     if(color.trim().length > 0){
@@ -243,6 +246,7 @@ function modalClose(){
     $('.modal').removeClass('modal-'+color);
     $('.custom-btn').removeClass('btn-outline');
     $('.custom-btn').addClass('btn-default');
+    $('.modal-dialog').addClass('modal-lg');
 }
 
 </script>
