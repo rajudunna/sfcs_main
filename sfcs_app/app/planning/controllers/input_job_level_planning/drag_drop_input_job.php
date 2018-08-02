@@ -830,7 +830,7 @@ $code_db=explode("*",$code);
 							{
 								if($style==$style1  and $schedule==$schedule1)
 								{
-									echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+									echo '<li id="'.$doc_no.'"  style="background-color:red;" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
 								}
 								else
 								{
