@@ -2,11 +2,7 @@
 	include("../../config/config.php");
 	include("../../config/functions.php");
 	require_once 'vendor/autoload.php';
-	$mpdf = new \Mpdf\Mpdf([
-        'mode' => 'utf-8', 
-        'format' => [50, 80], 
-        'orientation' => 'L'
-]);
+	$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8','format' => [50, 80],'orientation' => 'L']);
 ?>
 
 <?php $lot_no=$_GET['lot_no']; ?>
@@ -15,17 +11,13 @@
 $html ='
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html;"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <style>
 
-body {
-	font-family: arial;
-	font-size: 15px;
-}
-
-b {
-	font-size:20px;
-}
+// body {
+// 	font-family: arial;
+// 	font-size: 10px;
+// }
 
 table {
 	margin-left:0px;
@@ -39,7 +31,7 @@ td {
 }
 
 @page {
-margin-top: 25px;
+margin-top: 5px;
 }
 
 .barcode {
@@ -47,12 +39,12 @@ margin-top: 25px;
     margin: 0;
     vertical-align: top;
 	color: #000044;
-	height: 50mm;
+	height: 0mm;
 }
 .barcodecell {
     text-align: center;
 	vertical-align: middle;
-	height:10mm;
+	height:0mm;
 }
 
 
@@ -60,48 +52,26 @@ margin-top: 25px;
 </head>
 <body>';
 
-$sql="SELECT * FROM $bai_rm_pj1.location_db where status='1' order by sno ASC";
+$sql="SELECT * FROM $bai_rm_pj1.location_db where status=1 order by sno ASC";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_labels=mysqli_num_rows($sql_result);
 $x=1;
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
-	$location_name1=$sql_row['location_id'];
-	$location_name=$sql_row['location_id'];
-	//$location_name1="N0-525JMLK";
-	$html.= '<div><table>';
-				//$html.= '<tr><td><barcode code="'.str_pad($location_name,20,"0",STR_PAD_LEFT).'" type="C93"/ class="barcode" height="3" /></tr>';
-				$html.= '<tr><td><barcode code="'.str_pad($location_name1,20,"0",STR_PAD_LEFT).'" type="C93"/ class="barcode" height="3" size="0.8" text="1"></tr>';
-				$html.= '<tr><td></td></tr>';
-				$html.= '<tr><td></td></tr>';
-				$html.= '<tr><td id="loca_prop"><center><b>'.$location_name.'</b></center></td></tr>';
-				// $html.= "<tr><td>ITEM  NAME : <strong>$item_name</strong></td></tr>";  
-				// $html.= "<tr><td>COLOR : <strong>$item_desc</strong> / Shade : <strong>$ref4</strong></td></tr>";
-				// $html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  / REF NO : <strong>$remarks</strong></td></tr>";
-				// $html.= "<tr><td>LOT No : <b>$lot_no </b></td></tr>";
-				// $html.= "<tr><td>REC # : <strong>$rec_no </strong>/ GRN Date : <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
-				// $html.= "<tr><td>BATCH # : <b>$batch_no</b> / BOX # : <b>$ref2</b> </td></td></tr>";
-				// $html.= "<tr><td>".'<barcode code="'.leading_zeros($tid,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".leading_zeros($tid,8)."</strong></tr>";
-
-	$html.= '</table></div>';
-
-		if($x!=$tot_labels)
-		{
-			
-		$html.='<pagebreak />';
-		}
-		$x++;
-		
+	$html.='<table><tr><td><barcode code="'.$sql_row['location_id'].'" type="C39"/ class="barcode" height="2" size="1" width="5" text="1"></td></tr>';
+	$html.='<tr><td></br><center><h1>'.$sql_row['location_id']."</h1></center></td></tr></table>";
+	$html.='<pagebreak />';		
 }
 
 $html.='</body></html>';
-//echo $html;
+
+// echo $html;
 
 //==============================================================
 //==============================================================
 
 $mpdf->WriteHTML($html); 
 $mpdf->Output();
-exit();
+//exit();
 ?>
