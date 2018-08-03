@@ -14,12 +14,12 @@ $html ='
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <style>
 
-// body {
-// 	font-family: arial;
-// 	font-size: 10px;
-// }
+body {
+	//font-family: arial;
+	font-size: 20px;
+}
 
-table {
+tr {
 	margin-left:0px;
 	margin-right:0px;
 	margin-top:0px;
@@ -32,20 +32,22 @@ td {
 
 @page {
 margin-top: 5px;
+margin-bottom: 5px;
 }
 
-.barcode {
-    
+.barcode {  
     margin: 0;
     vertical-align: top;
 	color: #000044;
 	height: 0mm;
 }
+
 .barcodecell {
     text-align: center;
 	vertical-align: middle;
 	height:0mm;
 }
+
 
 
 </style>
@@ -59,9 +61,13 @@ $tot_labels=mysqli_num_rows($sql_result);
 $x=1;
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
-	$html.='<table><tr><td><barcode code="'.$sql_row['location_id'].'" type="C39"/ class="barcode" height="2" size="1" width="5" text="1"></td></tr>';
-	$html.='<tr><td></br><center><h1>'.$sql_row['location_id']."</h1></center></td></tr></table>";
-	$html.='<pagebreak />';		
+	$html.='<table><tr><td><center><barcode code="'.$sql_row['location_id'].'" type="C39"/ class="barcode" height="2.5"></center></td></tr></table>';
+	//$html.="</br></br>";
+	$html.='<table style="font-size: 52px"><tr><td><b><center>'.$sql_row['location_id']."</center></b></td></tr></table>";
+	$x++;
+	if($tot_labels==$x){
+		$html.='<pagebreak />';
+	}
 }
 
 $html.='</body></html>';
