@@ -726,3 +726,17 @@ function validating()
 
 </style>
 	
+<?php
+if(isset($_GET['sidemenu'])){
+	//echo "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii";
+	echo "<style>
+          .left_col,.top_nav{
+          	display:none !important;
+          }
+          .right_col{
+          	width: 100% !important;
+    margin-left: 0 !important;
+          }
+	</style>";
+}
+?>
