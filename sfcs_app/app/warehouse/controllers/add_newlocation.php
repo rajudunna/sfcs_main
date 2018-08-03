@@ -131,7 +131,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 									<option value="Fabric" '.$fabric.'>Fabric</option>
 									<option value="Trim" '.$trim.'>Trim</option>
 								</select>&nbsp;&nbsp;';
-								echo '<b>Location : </b><input type="text" id="loc_name" name="loc_name" class="form-control" size="15" placeholder="Location Name" value="'.$loc_id.'" required>&nbsp;&nbsp;&nbsp;';
+								echo '<b>Location : </b><input type="text" id="loc_name" name="loc_name" class="form-control" size="15"  maxlength="10" placeholder="Location Name" value="'.$loc_id.'" required>&nbsp;&nbsp;&nbsp;';
 								echo '<input type="text" id="flag_status" name="flag_status" value="'.$flag_status.'" /hidden>';
 							echo "</div>";
 							echo'<div class="form-group">';
