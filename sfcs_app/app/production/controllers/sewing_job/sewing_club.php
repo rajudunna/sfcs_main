@@ -193,6 +193,7 @@ if($rows_count_jobs == 0){
 						//echo "<th>Style</th>"; 
 						/* echo "<th>PO#</th>"; */
 						echo "<th>Schedule</th>";
+						echo "<th>Cutting Job</th>";
 						echo "<th>Input Job#</th>";
 						echo "<th>Quantity</th>";
 						
@@ -207,10 +208,39 @@ if($rows_count_jobs == 0){
 						$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result))
 						{
-
+							
 							    $del_no_new=$sql_row["order_del_no"];
 								// echo $del_no_new;
 								$job_new=$sql_row["input_job_no"];
+								
+								
+								//getting cut job numbers
+								$get_cut_no="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno from $bai_pro3.packing_summary_input WHERE order_del_no = '$del_no_new' and input_job_no='$job_new' ";
+								// echo $get_cut_no.'<br>';
+								$result_cut_no=mysqli_query($link, $get_cut_no) or die("Error92-".$get_cut_no."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($sql_row_cut_no=mysqli_fetch_array($result_cut_no))
+								{
+									$total_cuts=explode(",",$sql_row_cut_no['acutno']);
+									$cut_jobs_new='';
+									for($ii=0;$ii<sizeof($total_cuts);$ii++)
+									{
+										$arr = explode("$", $total_cuts[$ii], 2);;
+										// $col = $arr[0];
+										$sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$arr[0]."'";
+										//echo $sql4."<br>";
+										$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($sql_row4=mysqli_fetch_array($sql_result4))
+										{
+											$color_code=$sql_row4["color_code"];
+										}
+										$cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
+										unset($arr);
+									}
+								}
+								
+								
+								
+								
 								// echo $job_new;
 								$count_sch_qry="select * from brandix_bts.bundle_creation_data_temp where schedule='".$del_no_new."' and input_job_no='".$job_new."'";
 								// echo $count_sch_qry;
@@ -223,6 +253,7 @@ if($rows_count_jobs == 0){
 								echo "<tr height=20 style='height:15.0pt'>";
 								//echo "<td height=20 style='height:15.0pt'>".$style."</td>";
 								echo "<td height=20 style='height:15.0pt'>".$sql_row["order_del_no"]."</td>";
+								echo "<td height=20 style='height:15.0pt'>".$cut_jobs_new."</td>";
 								$url=getFullURL($_GET['r'],'small_popup.php','R');
 								// echo "<td height=20 style='height:15.0pt'>J".$sql_row["input_job_no"]." <a class='tooltippage' id='clickme' href='#' rel='$url&schedule='".$sql_row["order_del_no"]."'&jobno='".$sql_row["input_job_no"]." title='Full Details of Input Job'>Click Here</a></td>";
 								$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='".$sql_row["order_del_no"]."' and input_job_no",$sql_row["input_job_no"],$link);
