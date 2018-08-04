@@ -313,8 +313,9 @@ $(document).ready(function() {
   
     //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
     console.log('y = '+e.pageY);
-    $('#tooltip').css('top', e.pageY - 150 );
-    $('#tooltip').css('left', e.pageX - 300 );
+    $('#tooltip').css('top',50);
+    $('#tooltip').css('left', e.pageX - 250 );
+    $('#tooltip').css('position','absolute');
     
   }).mouseout(function() {
   
@@ -425,8 +426,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
                 
                 <?php 
 
-                $sqlwip="SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no  FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' ";
-            // echo $sqlwip;
+                $sqlwip="SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no  FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE'";
+             //echo $sqlwip;
         $sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         
         
@@ -523,13 +524,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
               $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedul_no,$color_name,$inputno,$link);
 
-              $scanning_query=" select * from $brandix_bts.tbl_ims_ops limit 1";
-              $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-              while($sql_row=mysqli_fetch_array($scanning_result))
-              {
-                $operation_name=$sql_row['operation_name'];
-                $operation_code=$sql_row['operation_code'];
-              } 
+              // $scanning_query=" select * from $brandix_bts.tbl_ims_ops limit 1";
+              // $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+              // while($sql_row=mysqli_fetch_array($scanning_result))
+              // {
+              //   $operation_name=$sql_row['operation_name'];
+              //   $operation_code=$sql_row['operation_code'];
+              // } 
                
                $shift='G';
                $sidemenu=true;
@@ -561,6 +562,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
                      $rev_qty=0;
                      $rev_query="select sum(qms_qty) as rej_qty from $bai_pro3.bai_qms_db where remarks like '$module-%'
                                  and input_job_no IN ('".implode("','",$ijrs)."')";
+                      // echo $rev_query;           
                      $result=mysqli_query($link, $rev_query) or exit("Sql Error rev qty".mysqli_error($GLOBALS["___mysqli_ston"]));
                     // echo $rev_query;
                      $ijrs = array();
