@@ -26,6 +26,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 .black_back{
   background : #000;
   padding : 5px;
+  color:white;
 }
 
 .blue {
