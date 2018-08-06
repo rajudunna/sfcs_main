@@ -233,13 +233,13 @@ if(isset($_POST['update']))
 			if($rows==0)
 			{
 				$sql="INSERT INTO $bai_pro3.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
-				echo $sql."<br>";
+				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			else
 			{
 				$sql="update $bai_pro3.`line_forecast` set qty ='$fc_qty[$i]', reason ='$fr_reason[$i]' where module ='$fr_mod[$i]' and  date ='$daten'";
-				echo $sql."<br>";
+				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));				
 			}				
 		}
