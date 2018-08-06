@@ -242,7 +242,7 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($result)>0)
 	{
-		$msg="<table border='1px' class=\"table table-bordered\"  id=\"table1\"><tr><th>Style</th><th>Schedule No</th><th>Color</th><th>Date</th><th>Quantity</th><th>Control</th></tr>";
+		$msg="<table border='1px' class=\"table table-bordered\"  id=\"table1\"><tr><th>Style</th><th>ScheduleNo</th><th>Color</th><th>Qms_remarks</th><th>Bundle_no</th><th>Operation_id</th><th>Input_job_no</th><th>Date</th><th>Quantity</th><th>Control</th></tr>";
 		while($row=mysqli_fetch_array($result))
 		{
 			$tid=$row["qms_tid"];
@@ -251,7 +251,7 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 			
 			$url = '?r='.$_GET['r'];
 			
-			$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
+			$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$row["qms_remarks"]."</td><td>".$row["bundle_no"]."</td><td>".$row["operation_id"]."</td><td>".$row["input_job_no"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
 		}
 		$msg.="</table>";
 		echo $msg;
