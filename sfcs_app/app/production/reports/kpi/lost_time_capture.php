@@ -249,7 +249,6 @@ table tr:hover td {
 			$sout_time=$row6['time'];
 			$arr = explode(":", "$sout_time");
 			$num = $arr[0];
-			
 			if($num=='8'){
 				$out1=$row6['output_qty'];
 				$tout1=$tout1+$out1;
