@@ -99,6 +99,7 @@ if(isset($_POST['submit']))
 		</tr> 
 <?php  
 	$frv=array(); 
+	$frv_id=array(); 
 	$mod_names=array(); 
 	$sql="select * from $bai_pro3.plan_modules order by module_id*1"; 
 	$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -111,26 +112,28 @@ if(isset($_POST['submit']))
 		{ 
 			while($row1=mysqli_fetch_array($result1))
 			{				
-				$frv[$row['module_id']]=$row1['qty'];
+				$frv[$row['module_id']]=$row1['fr_qty'];
 				$frv_id[$row['module_id']]=$row1['fr_id'];
 			}			
 		} 
 		else 
 		{ 
-			$frv[$row['module_id']]=0; 
+			$frv[$row['module_id']]=0;
+			$frv_id[$row['module_id']]=0;			
 		}     
 	} 
     for($i=0;$i<sizeof($mod_names);$i++) 
     { 
+
  ?> 
     <tr id=<?php echo $i; ?>> 
         <td> 
 		<?php echo $mod_names[$i]; ?> 
-		<input type="hidden" value="0" name="module<?php echo $i; ?>" id="module<?php echo $i; ?>" value='<?php echo $mod_names[$i];  ?>'>
-		<input type="hidden" value="0" name="fr_id<?php echo $i; ?>" id="fr_id<?php echo $i; ?>" value='<?php echo $frv_id[$mod_names[$i]];  ?>'>		
+		<input type="hidden" value="<?php echo $mod_names[$i]; ?>" name="module<?php echo $i; ?>" id="module<?php echo $i; ?>" value='<?php echo $mod_names[$i];  ?>'>
+		<input type="hidden" value="<?php echo $frv_id[$mod_names[$i]];  ?>" name="fr_id<?php echo $i; ?>" id="fr_id<?php echo $i; ?>">		
         </td> 
         <td> 
-        <input type="hidden"  name="fr<?php echo $i; ?>" id="fr<?php echo $i; ?>" value='<?php echo $frv[$mod_names[$i]];  ?>'> 
+        <input type="hidden" name="fr<?php echo $i; ?>" id="fr<?php echo $i; ?>" value='<?php echo $frv[$mod_names[$i]];  ?>'> 
 		<?php  echo $frv[$mod_names[$i]];  ?> 
         </td> 
         <td> 
@@ -168,11 +171,11 @@ if(isset($_POST['submit']))
 }
 if(isset($_POST['update']))
 {
-	$daten=$_POST['daten']
-	$fr_id=$_POST['fr_id']
-	$fr_qty=$_POST['lfr']
-	$fr_mod=$_POST['module']
-	$fr_reason=$_POST['line_reson']
+	$daten=$_POST['daten'];
+	$fr_id=$_POST['fr_id'];
+	$fr_qty=$_POST['lfr'];
+	$fr_mod=$_POST['module'];
+	$fr_reason=$_POST['line_reson'];
 	
 	
 }
