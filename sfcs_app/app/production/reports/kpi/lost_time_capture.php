@@ -193,18 +193,22 @@ table tr:hover td {
 			if($num=='8'){
 				$out1=$row6['output_qty'];
 				$tout1=$tout1+$out1;
+				$dres1=array();
 				$dres1[]=$row6['dreason'];
 			}else if($num=='9'){
 				$out2=$row6['output_qty'];
 				$tout2=$tout2+$out2;
+				$dres2=array();
 				$dres2[]=$row6['dreason'];
 			}else if($num=='10'){
 				$out3=$row6['output_qty'];
 				$tout3=$tout3+$out3;
+				$dres3=array();
 				$dres3[]=$row6['dreason'];
 			}else if($num=='11'){
 				$out4=$row6['output_qty'];
 				$tout4=$tout4+$out4;
+				$dres4=array();
 				$dres4[]=$row6['dreason'];
 			}else if($num=='12'){
 				$out5=$row6['output_qty'];
@@ -216,28 +220,34 @@ table tr:hover td {
 			}else if($num=='13'){
 				$out6=$row6['output_qty'];
 				$tout6=$tout6+$out6;
+				$dres6=array();
 				$dres6[]=$row6['dreason'];
 				
 			}else if($num=='14'){
 				$out7=$row6['output_qty'];
 				$tout7=$tout7+$out7;
+				$dres7=array();
 				$dres7[]=$row6['dreason'];
 				
 			}else if($num=='15'){
 				$out8=$row6['output_qty'];
 				$tout8=$tout8+$out8;
+				$dres8=array();
 				$dres8[]=$row6['dreason'];	
 			}else if($num=='16'){
 				$out9=$row6['output_qty'];
 				$tout9=$tout9+$out9;
+				$dres9=array();
 				$dres9[]=$row6['dreason'];	
 			}else if($num=='17'){
 				$out10=$row6['output_qty'];
 				$tout10=$tout10+$out10;
+				$dres10=array();
 				$dres10[]=$row6['dreason'];	
 			}else if($num=='18'){
 				$out11=$row6['output_qty'];
 				$tout11=$tout11+$out11;
+				$dres11=array();
 				$dres11[]=$row6['dreason'];	
 			}
 		$out=$out1+$out2+$out3+$out4+$out5+$out6+$out6+$out7+$out8+$out9+$out10+$out11;
