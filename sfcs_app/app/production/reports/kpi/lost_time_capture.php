@@ -185,7 +185,6 @@ table tr:hover td {
 	$res5=mysqli_query($link,$sql4);
 	
 	$sql6="SELECT time,dreason,output_qty FROM $bai_pro2.hourly_downtime where date='$frdate' AND team='$team' AND dreason!='N'";
-	// echo $sql6;
 	$res6=mysqli_query($link,$sql6) or exit('$sql6 error'. mysqli_error($link));
 		while($row6=mysqli_fetch_array($res6)){
 			$sout_time=$row6['time'];
@@ -211,7 +210,7 @@ table tr:hover td {
 			}else if($num=='12'){
 				$out5=$row6['output_qty'];
 				$tout5=$tout5+$out5;
-				//$dres5=array();
+				$dres5=array();
 				$dres5[]=$row6['dreason'];
 				
 				
