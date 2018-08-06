@@ -17,15 +17,19 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 .green_back{
   background : #00ff00;
-  padding : 5px;
+ padding: 2px;
+  height:20px;
 } 
 .red_back{
   background : #ff0000;
-  padding : 5px;
+  padding:2px;
+  height:20px;
 } 
 .black_back{
   background : #000;
-  padding : 5px;
+  color:white;
+  padding:2px;
+  height:20px;
 }
 
 .blue {
@@ -176,18 +180,26 @@ a{
 {
   width:20px;height:20px;float:left;margin-right:5px;background-color:#F00;line-height:0px;font-size:0px;
   margin-bottom:5px;
+  padding-left : 3px;
+  padding-right : 3px;
+ 
 }
 
 .green_box
 {
   width:20px;height:20px;float:left;margin-right:5px;background-color:#0F0;line-height:0px;font-size:0px;
   margin-bottom:5px;
+padding-top:10px;
+  
+ 
 }
 
 .green_box1
 {
   width:auto;height:20px;float:left;margin-right:5px;background-color:#06FF00;line-height:15px;
-  margin-bottom:5px;display: inline;padding : 5px;
+  margin-bottom:5px;display: inline;
+  padding-top:10px;
+  
 }
 .blue_box
 {
@@ -204,6 +216,7 @@ a{
 {
   width:20px;height:20px;float:left;margin-right:5px;background-color:#000;line-height:0px;font-size:12px;
   margin-bottom:5px;padding-top:10px;padding-left:10px;color:white;
+
 }
 .clear
 {
@@ -339,7 +352,7 @@ $(document).ready(function() {
     console.log(e);
     //e.pageY + 0.5 * e.view.parent.pageYOffset
     $('#tooltip').css('top',);
-    $('#tooltip').css('left', e.pageX - 250 );
+    $('#tooltip').css('left', e.pageX - 265 );
     $('#tooltip').css('display', 'inline' );
      $('#tooltip').css('position', 'absolute' );
   }).mouseout(function() {
