@@ -773,6 +773,29 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+	
+.xl7742018
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Trebuchet MS", sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:bottom;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;}		
+	
 .xl774118
 	{padding-top:1px;
 	padding-right:1px;
@@ -3244,18 +3267,19 @@ $item_name[] = $sql_row['item'];
   <td class=xl764118>Lot No</td>
   <td class=xl764118>Label</td>
   <td class=xl764118>Shade</td>
-  <td class=xl774118>Roll No</td>
+  <td class=xl7742018>Roll</br>No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Width</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Allocated Qty</td>
   <td class=xl774118>Plies</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Net<br/>Length</td>
   <td class=xl774118>Damage</td>
   <td class=xl774118>Joints</td>
   <td class=xl774118>Ends</td>
 
   <td colspan=2 class=xl1064118>Shortages</td>
-  <td colspan=3 rowspan=2 class=xl1064118>Binding Length</td>  
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Binding Length</td> 
   <td colspan=3 rowspan=2 class=xl1064118>Comments</td>
  </tr> <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
@@ -3304,7 +3328,8 @@ $item_name[] = $sql_row['item'];
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
-	  <td colspan=3 class=xl684118><?php echo round(($leng_det[$i]*$binding_con*$a_ratio_tot),2); ?></td>
+	  <td class=xl814118>&nbsp;</td>
+	  <td colspan=1 class=xl684118><?php echo round(($leng_det[$i]*$binding_con*$a_ratio_tot),2); ?></td>
 	  <td colspan=3 class=xl684118 style='border-left:none'></td>
 	  <td class=xl654118></td>
 	  </tr>
@@ -3313,6 +3338,35 @@ $item_name[] = $sql_row['item'];
 	  		$total+=$leng_det[$i];
 	  		// $leng_det[$i];	
 	   }
+	   
+	   	for($i =0; $i<16-sizeof($roll_det); $i++){
+   ?>
+	   <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+	 <td height=20 class=xl654118 style='height:30pt'></td>
+	 <td class=xl804118></td>
+	 <td class=xl804118></td>
+	 <td class=xl814118 style='font-size: 100%;'></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td class=xl814118></td>
+	 <td colspan=1 class=xl684118></td>
+	 <td colspan=3 class=xl684118 style='border-left:none'></td>
+	 <td class=xl654118></td>
+	 </tr>
+   <?php
+	}
+	   
  }	
  else {
 	for($i =0; $i<16; $i++){
@@ -3335,7 +3389,8 @@ $item_name[] = $sql_row['item'];
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
-	 <td colspan=3 class=xl684118></td>
+	 <td class=xl814118></td>
+	 <td colspan=1 class=xl684118></td>
 	 <td colspan=3 class=xl684118 style='border-left:none'></td>
 	 <td class=xl654118></td>
 	 </tr>
@@ -3572,7 +3627,7 @@ function refreshParent() {
 </script>"; 
 ?>
 <style>
-.xl744118,.xl694118,.xl774118,.xl684118,.xl704118,.xl724118,.xl1064118,.xl764118,.xl814118,.xl804118,.xl674118,.xl654118,.xl1124118,.xl1144118,.xl714118{
+.xl744118,.xl694118,.xl774118,.xl684118,.xl704118,.xl724118,.xl1064118,.xl764118,.xl7742018,.xl814118,.xl804118,.xl674118,.xl654118,.xl1124118,.xl1144118,.xl714118{
 	font-size : 22px;
 	font-wight : bold;
 }
@@ -3580,7 +3635,7 @@ function refreshParent() {
 	font-size : 22px;
 	font-weight : bold;
 }
-.xl804118,.xl814118,.xl684118,.xl764118,.xl774118,.xl1064118,.xl704118,.xl654118,.xl1024118{
+.xl804118,.xl814118,.xl684118,.xl764118,.xl7742018,.xl774118,.xl1064118,.xl704118,.xl654118,.xl1024118{
 	font-size : 22px;
 	font-weight : bold;
 }
