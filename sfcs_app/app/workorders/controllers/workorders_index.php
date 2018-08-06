@@ -4,7 +4,7 @@
   <div class="box-header"><div class="col-md-12"><h4><b>Workorders List</b><a href="" class="btn btn-info btn-sm" style="float: right;border-radius: 16px;"><img src="/images/controls.png" ></a><input type="text" name="search" class="form-control" placeholder="Search" style="width:200px;float:right;border-radius: 16px;margin-right: 15px;"></h4></div></div>
   <div class="box-body">
     <?php for($i=0; $i<30; $i++){ ?>
-      <a href="?r=<?= base64_encode('/sfcs_app/app/workorders/controllers/workorders_view.php');?>">
+      <a href="?r=<?= base64_encode('/sfcs_app/app/workorders/controllers/workorders_view.php');?>" myattribute="body">
         <div class="col-lg-2 col-md-2 col-sm-2">
           <div class="box box-solid">
             <div class="box-body">

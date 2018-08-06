@@ -20,19 +20,20 @@ $view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
 
 function firstbox()
 {
-	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value
+	var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value
+	Ajaxify(ajax_url);
 }
 
 function secondbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
-	window.location.href = uriVal;
+	var ajax_url = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	Ajaxify(ajax_url);
 }
 
 function thirdbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
-	window.location.href = uriVal;
+	var ajax_url = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	Ajaxify(ajax_url);
 }
 $(document).ready(function() {
 	$('#schedule').on('click',function(e){

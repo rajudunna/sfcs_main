@@ -29,15 +29,16 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	function secondbox()
 	{
 		
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
-		
+		var ajax_url = "index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		Ajaxify(ajax_url);
 	}
 
 	function thirdbox()
 	{
 		// document.getElementById('show').disabled = false;
 		// $('#show').prop('disabled', false);
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&category="+document.test.category.value		
+		var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&category="+document.test.category.value		
+		Ajaxify(ajax_url);
 	}
 	function check_style()
 	{

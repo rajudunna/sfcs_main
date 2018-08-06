@@ -2,7 +2,7 @@
 	<div class="col-md-9 col-sm-9 col-lg-9">
 		<div class="box box-info">
 			<div class="box-header with-border">
-				<h3 class="box-title">#WO-001</h3>
+				<h3 class="box-title"><a href="#" >#WO-001</a></h3>
 			</div>
 			<div class="box-body">
 				<div class="row">
@@ -116,14 +116,14 @@
 						<img src="/images/stack-overflow.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Add Excess Quantity</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-						( <a href="#" onclick="modal('','',this.name)" name="Add Excess Quantity BY Color">By Color</a> | <a href="#" onclick="modal('','',this.name)" name="Add Excess Quantity BY Schedule">By Schedule</a> )
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/orders_edit_form.php') ?>" name="Add Excess Quantity BY Color" onclick="modal('','',this.name)">By Color</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/orders_edit_form_schedule_wise.php') ?>" onclick="modal('','',this.name)" name="Add Excess Quantity BY Schedule">By Schedule</a> )
 						</p>
 					</div>
 				</li>
 				<li class="">
 					<div clas="col-md-6" style="padding: 12px;">
 						<img src="/images/sigma.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Add Sample Quantity">Add Sample Quantity</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/orders_edit_form_schedule_wise.php') ?>" name="Add Sample Quantity" onclick="modal('','',this.name)">Add Sample Quantity</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">Where the sample qty is added here</p>
 					</div>
 				</li>
@@ -132,14 +132,14 @@
 						<img src="/images/merge.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Clubbing</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-						( <a href="#" onclick="modal('','',this.name)" name="Clubbing By Color">By Color</a> | <a href="#" onclick="modal('','',this.name)" name="Clubbing By Schedule">By Schedule</a> )
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/color_clubbing/test.php') ?>" name="Clubbing By Color" onclick="modal('','',this.name)">By Color</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_clubbing/schedule_mix_bek.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">By Schedule</a> )
 						</p>
 					</div>
 				</li>
 				<li class="">
 					<div clas="col-md-6" style="padding: 12px;">
 						<img src="/images/rug.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Manage Layplan<">Manage Layplan</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/lay_plan_preparation/test.php') ?>" onclick="modal('','',this.name)" name="Manage Layplan">Manage Layplan</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
 					</div>
 				</li>
@@ -180,7 +180,7 @@
               </ul>
             </div>
         </div>
-              <div class="box box-info">
+        <div class="box box-info">
             <div class="box-header with-border">
               <h3 class="box-title">Quality</h3>
               <div class="box-tools">

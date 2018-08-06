@@ -52,7 +52,7 @@
             border-top: 3px solid #d2d6de;
             margin-bottom: 20px;
             width: 100%;
-            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
+            /*box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);*/
         }
         .panel-primary {
             border-color: #fff;
@@ -131,15 +131,19 @@
 <script>
 
 $(document).ajaxStart(function() { Pace.restart(); }); 
+
 var qs = decodeURIComponent(location.search);
 $('a[href="' + qs + '"]').parents('li').addClass('active');
 
-var get_r = '<?php echo $_GET['r'] ?>';
-
-window.onload = onloadAjaxCall(get_r);
+var get_url = window.location.href;
+var r = get_url.split("?").pop();
+// var r = get_url.searchParams.get("r");
+if(r != null){
+    window.onload = onloadAjaxCall(r);
+}
 
 function onloadAjaxCall(get_r){
-    var url = "ajax_handler.php?r="+get_r;
+    var url = "ajax_handler.php?"+get_r;
     
     myLoad1();
     return $.ajax ({ 
@@ -147,7 +151,7 @@ function onloadAjaxCall(get_r){
         type: "GET",
         success: function(response)
         {   
-            window.history.pushState("object or string", "Title", "?r="+get_r);
+            window.history.pushState("object or string", "Title", "?"+get_r);
             jQuery("#body").html(response);
             myLoadStop();
             

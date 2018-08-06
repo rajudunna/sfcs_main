@@ -73,20 +73,20 @@ $whoops->register();
             </div>";
     }
 ?>
- <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="modalClose()">
-          <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"></h4>
-      </div>
-      <div class="modal-body">
-        <p>One fine body&hellip;</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-left custom-btn" data-dismiss="modal" onclick="modalClose()">Close</button>
-      </div>
+        <button type="button" class="close" aria-label="Close" onclick="modalClose()">
+        <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body" id="modal-body">
+            <p>One fine body&hellip;</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left custom-btn" onclick="modalClose()">Close</button>
+        </div>
     </div>
     <!-- /.modal-content -->
   </div>
@@ -102,10 +102,10 @@ $('form').on("submit",function(event) {
     var get_url;
     var form_url;
     
-    get_url = '<?php echo $_GET['r'] ?>';
+    get_url = window.location.href;
+    get_url = get_url.split("=").pop();
     form_url = form.attr('action');
     
-
     if(form_url !== undefined){
         if(form_url.trim().length > 0){
             var index = form_url.includes("ajax_handler.php");
@@ -124,38 +124,45 @@ $('form').on("submit",function(event) {
     }
    
     var from_data=form.serializeArray();
-    from_data.push({ name: $("input[type=submit]").attr("name"), value: $("input[type=submit]").attr("value") });
+
+    if($("input[type=submit]").attr("name") !== undefined){
+        from_data.push({ name: $("input[type=submit]").attr("name"), value: $("input[type=submit]").attr("value") });
+    }else{
+        from_data.push({ name: $("button[type=submit]").attr("name"), value: $("button[type=submit]").attr("value") });
+    }
+
 
     myLoad1();
-    $.ajax({
-      type:'POST',
-      url: url,
-      cache:false,
-      data: from_data
-    }).done(function(resp) {
-        // url = new URL(url);
-        // var c = url.searchParams.get("r");
-        var c = url.split("?").pop();
-        window.history.pushState("object or string", "Title", "?"+c);
-        jQuery("#body").html(resp);
-        myLoadStop();
+        $.ajax({
+          type:'POST',
+          url: url,
+          cache:false,
+          data: from_data
+        }).done(function(resp) {
+            // url = new URL(url);
+            // var c = url.searchParams.get("r");
+            // var c = url.split("?").pop();
+            // window.history.pushState("object or string", "Title", "?"+c);
+            jQuery("#modal-body").html(resp);
+            $('#myModal').modal('show'); 
 
-    }).fail(function(erespo) {
-
-        jQuery("#body").html(erespo);
-
-    });
-
+        }).fail(function(erespo) {
+            jQuery("#modal-body").html(erespo);
+            $('#myModal').modal('show'); 
+        });
+    myLoadStop();
 });
 
 $("#body a").on('click',function(event){
 
     event.preventDefault();
+
     var url;
     var href_url;
     var split_url;
     href_url = $(this).attr("href");
     data_toggle = $(this).attr("data-toggle");
+    myattribute = $(this).attr("myattribute");
     if(href_url !== "#" && data_toggle == undefined){
         // var index = href_url.includes("index.php");
         // if(index == true){
@@ -176,17 +183,34 @@ $("#body a").on('click',function(event){
 
             // url = new URL(url);
             // var c = url.searchParams.get("r");
-            var sfcs_app = url.includes("sfcs_app");
-            if(sfcs_app == false){
-                var c = url.split("?").pop();
-                window.history.pushState("object or string", "Title", "?"+c);
+            
+            if(myattribute == "body"){
+                var sfcs_app = url.includes("sfcs_app");
+                if(sfcs_app == false){
+                    var c = url.split("?").pop();
+                    c = c+'&style=A0023SS9'
+                    window.history.pushState("object or string", "Title", "?"+c);
+                }
+                jQuery("#body").html(resp);
+            }else{
+                jQuery("#modal-body").html(resp);
+                // $('select[name^="style"] option[value="A0023SS9       "]').attr("selected","selected");
+                // $('select[name^="style"]').attr('disabled', 'disabled').trigger('change');
+                // $('select[name^="style"]').trigger('change');
+                
+                $('#myModal').modal('show');
             }
-            jQuery("#body").html(resp);
+           
             myLoadStop();
 
         }).fail(function(erespo) {
 
-            jQuery("#body").html(erespo);
+            if(myattribute == "body"){
+                jQuery("#body").html(erespo);
+            }else{
+                jQuery("#modal-body").html(erespo);
+                $('#myModal').modal('show');
+            }
 
         });
     }
@@ -199,23 +223,34 @@ $('[data-toggle="datepicker"]').datepicker(
 }).attr("readonly","true").css({"background-color": "#fff"});
 
 
-function Ajaxify (url) {
+function Ajaxify (href_url) {
+    
+    var url;
+    var index = href_url.includes("index.php");
+    if(index == true){
+        split_url = href_url.split("?").pop();
+        url = "ajax_handler.php?"+split_url;
+    }else{
+        url = href_url;
+    }
 
-    myLoad1();
     $.ajax({
         type:'GET',
         url: url,
         cache:false,
     }).done(function(resp) {
        
-        jQuery("#body").html(resp);
-        myLoadStop();
+        jQuery("#modal-body").html(resp);
+        $('#myModal').modal('show');
+        // $.unblockUI();
 
     }).fail(function(erespo) {
 
-        jQuery("#body").html(erespo);
+        jQuery("#modal-body").html(erespo);
+        $('#myModal').modal('show');
 
     });
+   
 }
 
 var size;
@@ -241,12 +276,31 @@ function modal(size,color,name){
     $('#myModal').modal('toggle');
 }
 
+
 function modalClose(){
-    $('.modal-dialog').removeClass('modal-'+size);
-    $('.modal').removeClass('modal-'+color);
-    $('.custom-btn').removeClass('btn-outline');
-    $('.custom-btn').addClass('btn-default');
-    $('.modal-dialog').addClass('modal-lg');
+    event.preventDefault();
+    swal({
+      title: "Are you sure?",
+      text: "You want to stop the transaction",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+            $('.modal-dialog').removeClass('modal-'+size);
+            $('.modal').removeClass('modal-'+color);
+            $('.custom-btn').removeClass('btn-outline');
+            $('.custom-btn').addClass('btn-default');
+            $('.modal-dialog').addClass('modal-lg');
+            swal("Your transaction has been stopped !", {icon: "warning"});
+            $('#myModal').modal('hide');
+            $("#modal-body").html("");
+
+      } else {
+            // $('#myModal').modal('show');
+      }
+    });
 }
 
 </script>
