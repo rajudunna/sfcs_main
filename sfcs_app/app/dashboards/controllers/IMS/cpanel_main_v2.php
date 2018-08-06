@@ -115,11 +115,11 @@ a{
 .section_main_box
 {
   width:220px;
-  height:800px;
+  height:auto;
   
   float:left;
   margin-right:20px;
-  border:1px dotted #CCC;
+  border:1px solid #CCC;
 }
 
 .sections_heading1
@@ -129,7 +129,7 @@ a{
    font-size:16px;
    padding-top:5px;
    padding-bottom:5px;
-   border-bottom:1px dotted #666;
+   border-bottom:1px solid #666;
 }
 .sections_heading1 a
 {
@@ -169,6 +169,12 @@ a{
 {
   width:20px;height:20px;float:left;margin-right:5px;background-color:#0F0;line-height:0px;font-size:0px;
   margin-bottom:5px;
+}
+
+.green_box1
+{
+  width:auto;height:20px;float:left;margin-right:5px;background-color:#06FF00;line-height:15px;
+  margin-bottom:5px;display: inline;
 }
 
 .yellow_box
@@ -216,18 +222,23 @@ a{
       color:#333;
     }
     .tooltip span {
-      margin-left: -999em;
+      margin-left: -1500em;
       position: absolute;
     }
     .tooltip:hover span {
       border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
       box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
       font-family: Calibri, Tahoma, Geneva, sans-serif;
-      position: absolute; left: 1em; top: 2em; z-index: 99;
-      margin-left: 0; width: 150px;
+      position: absolute; 
+      left: 0em; top: 0em; z-index: 99;
+      margin-left: -100px; width: 150px;
+      margin-top: -100px;
+
+
     }
     .tooltip:hover img {
-      border: 0; margin: -10px 0 0 -55px;
+      border: 0; 
+      margin: -10px 0 0 -55px;
       float: left; position: absolute;
     }
     .tooltip:hover em {
@@ -247,7 +258,7 @@ a{
     /* Tooltip */
 .red-tooltip + .tooltip > .tooltip-inner {
 background-color: black;
-width:150px;
+width:350px;
 }
 #tooltip {
   position:absolute;
@@ -295,14 +306,14 @@ $(document).ready(function() {
     $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
         
     //Show the tooltip with faceIn effect
-    $('#tooltip').fadeIn('500');
-    $('#tooltip').fadeTo('10',0.9);
+    $('#tooltip').fadeIn('100');
+    //$('#tooltip').fadeTo('10',0.9);
     
   }).mousemove(function(e) {
   
     //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
-    $('#tooltip').css('top', e.pageY - 50 );
-    $('#tooltip').css('left', e.pageX - 250 );
+    $('#tooltip').css('top', e.pageY - 150 );
+    $('#tooltip').css('left', e.pageX - 300 );
     
   }).mouseout(function() {
   
@@ -359,20 +370,27 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	<div class="panel-body">
     <div style="padding-top:15px;">
     <div class="table-responsive">
+      <div class='col-sm-12'>
    <?php $sqlx="select * from $bai_pro3.sections_db where sec_id>0";
   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-  
+  $break_counter = 0;
   while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
   {
+    $break_counter++;
+    
     $section=$sql_rowx['sec_id'];
     $section_head=$sql_rowx['sec_head'];
     $section_mods=$sql_rowx['sec_mods']; 
     
     $mods=array();
     $mods=explode(",",$section_mods);
+
+        if($break_counter == 5){
+            $break_counter = 1;
+            echo "</div><span style='height:50px'></span><div class='col-sm-12'>";
+        }
     ?>
     <div class="section_main_box">
-        
           <div class="sections_heading1">
             <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'sec_rep.php','R');?>?section=<?php echo $section; ?>', 'myPop1',800,600);" >Section <?php echo $section; ?><br />
           <!-- <span style="font-size:12px;color:#C0F"><?php echo $section_head; ?></span> -->
@@ -387,6 +405,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
       include("mod_rep_recon.php");
   
       ?>
+
+      <?php
+       $rev_qty=0;
+       $rev_query="select sum(qms_qty) as rej_qty from $bai_pro3.bai_qms_db where remarks like '$module-%'";
+       //echo $rev_query;
+       $result=mysqli_query($link, $rev_query) or exit("Sql Error rev qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+      // echo $rev_query;
+       while($row=mysqli_fetch_array($result))
+       {
+         $rev_qty=$row['rej_qty'];
+       }
+
+      ?>
             <div class="line_main">
               <div class="line_no">  <!-- module number DIV start -->
                 
@@ -395,25 +426,22 @@ while($sql_row=mysqli_fetch_array($sql_result))
         $sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         
         
-        while($sql_rowwip=mysqli_fetch_array($sql_resultwip)){
+        while($sql_rowwip=mysqli_fetch_array($sql_resultwip))
+        {
         ?>
         
-                <a href="#" data-toggle="tooltip" title="M-<?php echo $module; ?> WIP :  <?php echo $sql_rowwip['WIP']; 
+                <a href="#" data-toggle="tooltip" title="M-<?php echo $module; ?> WIP :  <?php echo $sql_rowwip['WIP'] - $rev_qty; 
         $wip='0';
         $wip=$sql_rowwip['WIP'];
-        ?>" class="red-tooltip" onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);"><?php echo $module; ?></a>
+        ?>" class="red-tooltip" 
+            onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);">
+            <?php echo $module; ?></a>
         <?php } ?>
                
                 </div>  <!-- module number DIV END -->
-                <!-- <span class="classic">M-<?php echo $module; ?> WIP :  <?php echo $sql_rowwip['WIP']; 
-        $wip='0';
-        $wip=$sql_rowwip['WIP'];
-        ?></span> -->
-
-
-
-                <div style="float:left;padding-left:25px;">
                 
+               <div style="float:left;padding-left:25px;">
+               
                 <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,REPLACE(GROUP_CONCAT(DISTINCT TRIM(i.ims_size)),\"a_\",\"\") AS ims_size,GROUP_CONCAT(DISTINCT TRIM(i.ims_color)) AS ims_color,i.ims_schedule,i.rand_track,GROUP_CONCAT(DISTINCT TRIM(i.ims_remarks)) AS ims_remarks, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date,i.pac_tid FROM $bai_pro3.ims_log i,$bai_pro3.plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no AND i.ims_status !=\"DONE\" GROUP BY inputjobnorand";
                 // echo $sqlred;
         //$sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_color,ims_schedule,rand_track  FROM ims_log WHERE ims_mod_no='$module' GROUP BY ims_doc_no"
@@ -490,9 +518,21 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
               $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedul_no,$color_name,$inputno,$link);
 
+              $scanning_query=" select * from $brandix_bts.tbl_ims_ops limit 1";
+              $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+              while($sql_row=mysqli_fetch_array($scanning_result))
+              {
+                $operation_name=$sql_row['operation_name'];
+                $operation_code=$sql_row['operation_code'];
+              } 
+               
+               $shift='G';
+               $sidemenu=true;
+              $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
+
           ?>
                   
-                  <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'pop_red_box_details.php','R');?>?module=<?php echo $module; ?>&docket=<?php echo $rand_track;?>&input_job_no=<?php echo $inputno; ?>&input_job_rand_ref=<?php echo $inputjobnorand; ?>&ims_remarks=<?php echo $ims_remarks; ?>', 'myPop1',800,600);"  title="
+                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&shift=<?php echo $shift; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
@@ -512,6 +552,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
                   
                   </div></a>
                   <?php } ?>
+
+                   <?php if($wip!=0){ ?>
+                        <span class="green_box1">
+                            WIP :  <?php echo $wip - $rev_qty; 
+                        $wip=0;
+                    ?></span>
+                   <?php } ?>
                   
                   <?php         
           if(($total_qty-$total_out)<=1000) {         //  WIP <=2 000 then appear Green box
@@ -536,138 +583,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
               </div>                  
               <div class="clear"></div>
             </div>
-            
             <?php } // modules Loop -End ?>
-
-
-<!-- ADDED NEW -->
-             <?php
-            //       $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module='$module' and act_cut_issue_status<>\"DONE\" order by priority limit 1";
-            // $sql_result1=mysqli_query($link,$sql1) or exit("Sql Error".mysqli_error());
-            // $sql_num_check=mysqli_num_rows($sql_result1);
-            // while($sql_row1=mysqli_fetch_array($sql_result1)){
-            //         $cut_new=$sql_row1['act_cut_status'];
-            //   $cut_input_new=$sql_row1['act_cut_issue_status'];
-            //   $rm_new=strtolower(chop($sql_row1['rm_date']));
-            //   $rm_update_new=strtolower(chop($sql_row1['rm_date']));
-            //   $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
-            //   $doc_no=$sql_row1['doc_no'];
-            //   $order_tid=$sql_row1['order_tid'];
-            //   //$fabric_status=$sql_row1['fabric_status'];
-            //   $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
-
-            //   $style=$sql_row1['order_style_no'];
-            //   $schedule=$sql_row1['order_del_no'];
-            //   $color=$sql_row1['order_col_des'];
-            //   $total_qty=$sql_row1['total'];
-              
-            //   $cut_no=$sql_row1['acutno'];
-            //   $color_code=$sql_row1['color_code'];
-            //   $log_time=$sql_row1['log_time'];
-            //   $emb_stat=$sql_row1['emb_stat'];
-              
-              
-            //   $sql11="select sum(ims_pro_qty) as \"bac_qty\", sum(emb) as \"emb_sum\" from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
-            //   mysqli_query($link,$sql11) or exit("Sql Error".mysqli_error());
-              
-            //   $sql_result11=mysqli_query($link,$sql11) or exit("Sql Error".mysqli_error());
-            //   $input_count=mysqli_num_rows($sql_result11);
-            //   while($sql_row11=mysqli_fetch_array($sql_result11))
-            //   {
-            //     $output=$sql_row11['bac_qty'];
-            //     $emb_sum=$sql_row11['emb_sum'];
-            //     if($emb_sum==NULL)
-            //     {
-            //       $input_count=0;
-            //     }
-            //   } 
-            
-            //     if($cut_new=="DONE"){ $cut_new="T";} else { $cut_new="F"; }
-            //     if($rm_update_new==""){ $rm_update_new="F"; } else { $rm_update_new="T"; }
-            //     if($rm_new=="0000-00-00 00:00:00" or $rm_new=="") { $rm_new="F"; } else { $rm_new="T";  }
-            //     if($input_temp==1) { $input_temp="T"; } else { $input_temp="F"; }
-            //     if($cut_input_new=="DONE") { $cut_input_new="T";  } else { $cut_input_new="F"; }
-                
-            //     $check_string=$cut_new.$rm_update_new.$rm_new.$input_temp.$cut_input_new;
-            //     $rem="Nil";
-                
-            //     //NEW FSP
-            //     if($fabric_status!=5)
-            //     {
-            //       $fabric_status=$sql_row1['ft_status'];
-            //     }
-            //     //NEW FSP
-              
-            //     if($cut_new=="T"){
-            //       $id="blue";
-            //     }
-              
-            //     $title=str_pad("Style:".$style,80).str_pad("Schedule:".$schedule,80).str_pad("Color:".$color,80).str_pad("Job_No:".chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3),80).str_pad("Total_Qty:".$total_qty,80).str_pad("Log_Time:".$log_time,80).str_pad("Remarks:".$rem,80);
-
-            //     //Embellishment Tracking
-            //     if($emb_sum=="")
-            //     {
-            //       $emb_sum=0;
-            //     }
-            //     if($input_count=="")
-            //     {
-            //       $input_count=0;
-            //     }
-            //     $emb_stat_title="";
-            //     //echo $emb_stat."-".$emb_sum."-".$input_count."$";
-            //     if(($emb_stat==1 or $emb_stat==3) and $emb_sum>0)
-            //     {
-            //       $emb_stat_title="<font color=black size=2>X</font>";
-            //     }
-            //     else
-            //     {
-            //       if(($emb_stat==1 or $emb_stat==3) and $emb_sum==0 and $input_count>0)
-            //       {
-            //         $emb_stat_title="<font color=black size=2>&#8730;</font>";
-            //       }
-            //       else
-            //       {
-            //         if(($emb_stat==1 or $emb_stat==3))
-            //         {
-            //           $emb_stat_title="<font color=black size=2>X</font>";
-            //         }
-            //       }
-            //     }
-            //     //echo $emb_sum;
-            //     //Embellishment Tracking
-                
-            //     $sql11="select trims_status from $bai_pro3.trims_dashboard where doc_ref=$doc_no";
-            //     $sql_result11=mysqli_query($link,$sql11) or exit("Sql Error".mysqli_error());
-            //     while($sql_row11=mysqli_fetch_array($sql_result11))
-            //     {
-            //       $trims_status=$sql_row11['trims_status']; 
-            //     }
-                
-            //     $add_css="behavior: url(border-radius-ie8.htc);  border-radius: 10px;";
-            //     if($trims_status>0){
-            //       $add_css="";
-            //     }
-            // }
-            //         if($id=="blue"){
-            //       echo "<div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; $add_css\" title=\"$title\" >$emb_stat_title</div>"; 
-            //       }
-             
-            ?>
-<!--  ENDED NEW  -->
-
-
-
-
-
-
-
-
             
       </div>
         
         <?php } //section Loop -End ?> 
-    
-  <div style="width:220px;height:500px;float:left;">
+     </div><span style='height:50px'></span>
+     <div style='height:300px'>-</div>
+  <div style="width:220px;height:500px;float:none;">
     <table width="100%" class="description">
   <!-- <tr>
     <td>Empty Slot</td>
@@ -690,6 +613,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 </div>
 </div>
 </div>
+
 </body>
 <script>
 $(document).ready(function(){
