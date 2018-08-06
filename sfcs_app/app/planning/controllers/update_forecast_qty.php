@@ -57,8 +57,6 @@ function check_tot()
 			{
 				if(ln_reas<>'NIL')
 				{
-					alert(lfr);
-					alert(fr_qty);
 					status=1;
 				}
 			}
