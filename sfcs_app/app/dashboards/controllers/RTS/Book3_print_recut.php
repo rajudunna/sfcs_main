@@ -183,7 +183,15 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 12">
 <link rel=File-List href=<?= getFullURL($_GET['r'],'Book3_files/filelist.xml','N'); ?>>
-
+<style>
+.left_col,.top_nav{
+display:none !important;
+}
+.right_col{
+width: 100% !important;
+margin-left: 0 !important;
+}
+</style>
 <!--[if !mso]>
 <style>
 v\:* {behavior:url(#default#VML);}
@@ -3734,18 +3742,19 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td class=xl764118>Lot No</td>
   <td class=xl764118>Label</td>
   <td class=xl764118>Shade</td>
-  <td class=xl774118>Roll No</td>
+  <td class=xl774118>Roll</br> No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Width</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Allocated Qty</td>
   <td class=xl774118>Plies</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Net<br/>Length</td>
   <td class=xl774118>Damage</td>
   <td class=xl774118>Joints</td>
   <td class=xl774118>Ends</td>
 
   <td colspan=2 class=xl1064118>Shortages</td>
-  <td colspan=3 rowspan=2 class=xl1064118>Binding Length</td>  
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Binding<br/>Length</td>  
   <td colspan=3 rowspan=2 class=xl1064118>Comments</td>
  </tr> <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
@@ -3768,6 +3777,11 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
  </tr>
 </thead>
 <tbody>";
+
+$tot_tick_len=0;
+$tot_ctex_len=0;
+$tot_alloc_qty=0;
+$tot_bind_len=0;
 if(sizeof($roll_det)>0)
  {
 	for($i=0;$i<sizeof($roll_det);$i++){
@@ -3780,22 +3794,72 @@ if(sizeof($roll_det)>0)
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $roll_id[$i]; ?></td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $shade_det[$i]; ?></td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $roll_det[$i]; ?></td>
-			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $tkt_len[$i]; ?></td>
-			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $ctex_len[$i]; ?></td>
-			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $ctex_width[$i]; ?></td>
-			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $leng_det[$i]; ?></td>
+			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
+			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i]; ?></td>
+			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_width[$i]; ?></td>
+			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $leng_det[$i]; $tot_alloc_qty=$tot_alloc_qty+$leng_det[$i]; ?></td>
+			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
+			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
+			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
+			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
+			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'>&nbsp;</td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'>&nbsp;</td>
-			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'>&nbsp;</td>
-			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'>&nbsp;</td>
-			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'>&nbsp;</td>
-			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'>&nbsp;</td>
-			<td colspan=3 class=xl684118 style='text-align:center;padding-bottom:5pt;'><?php echo round(($ctex_width[$i]-$tkt_width[$i]),2); ?></td>
+			<td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($ctex_width[$i]-$tkt_width[$i]),2); $tot_bind_len=$tot_bind_len+($ctex_width[$i]-$tkt_width[$i]);
+			?></td>
 			<td colspan=3 class=xl684118 style='border-left:none; text-align:center;padding-bottom:5pt;'></td>
 			<td class=xl654118 style='text-align:center;padding-bottom:5pt;'></td>
 		</tr>
 	<?php
 	}
+	for($i=0;$i<16-sizeof($roll_det);$i++){
+		echo "<tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+		<td height=20 class=xl654118 style='height:30pt'></td>
+		<td class=xl804118></td>
+		<td class=xl804118></td>
+		<td class=xl814118 style='font-size: 100%;'></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td class=xl814118></td>
+		<td colspan=1 class=xl684118></td>
+		<td colspan=3 class=xl684118 style='border-left:none'></td>
+		<td class=xl654118></td>
+		</tr>"; 
+	}
+	?>
+	<tr>
+	<td colspan=7 class=xl684118>Total </td>
+	<?php
+	// for($i=0;$i<sizeof($roll_det);$i++)
+	// {
+		echo "<td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_tick_len."</td>
+			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_ctex_len."</td>
+			  <td class=xl814118></td>
+			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_alloc_qty."</td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
+			  <td class=xl814118></td>";
+	// }
+	?>
+	</tr>
+	<?php
 }
 else {
 	for($i=0;$i<16;$i++){
@@ -3817,7 +3881,8 @@ else {
 		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
-		<td colspan=3 class=xl684118></td>
+		<td class=xl814118></td>
+		<td colspan=1 class=xl684118></td>
 		<td colspan=3 class=xl684118 style='border-left:none'></td>
 		<td class=xl654118></td>
 		</tr>"; 
