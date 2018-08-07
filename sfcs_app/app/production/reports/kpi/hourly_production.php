@@ -153,7 +153,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	$newDate = date("Y-m-d", strtotime($date));
 	//echo $newDate.'<br>';
 	$team=$row['team'];
-	echo $team;
+	// echo $team;
 	//get styles which run in lines
 	$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
 	$res1=mysqli_query($link,$sql1);
