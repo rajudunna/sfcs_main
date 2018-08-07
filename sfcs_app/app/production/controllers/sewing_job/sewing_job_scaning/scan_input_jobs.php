@@ -281,10 +281,10 @@ $(document).ready(function()
 					$("#dynamic_table1").append(markup);
 					$("#dynamic_table1").append(btn);
 					$("#dynamic_table1").append(flagelem);
-					var hidden_class='';
 					// var endform = '</form>';
 					for(var i=0;i<data.length;i++)
 					{
+						var hidden_class='';
 						var remarks_check_flag = 0;
 						console.log(data[i].input_job_no);
 						if(data[i].input_job_no != 0)
@@ -332,17 +332,20 @@ $(document).ready(function()
 						
 						if(data[i].flag == 'packing_summary_input')
 						{
-							temp_var_bal = data[i].carton_act_qty;
+							temp_var_bal = data[i].balance_to_report;
 							$('#flag_validation').val(1);
 						}
+						console.log(barcode_generation);
+						console.log(data[i].tid);
+						console.log(job_number);
 						if(barcode_generation == 0)
 						{
-							if(data[i].tid != job_number)
+							if(Number(data[i].tid) != Number(job_number))
 							{
 								var hidden_class='hidden';
 							}
 						}
-						
+					//	console.log(hidden_class);
 						// var markup1 = "<tr><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>0</td><td><input class='form-control input-md' id='"+i+"reporting' name='reporting_qty[]' onchange = 'validate_reporting("+i+") '></td><td><input class='form-control input-md' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")'></td><td id='"+i+"balance'>"+data[i].balance_to_report+"</td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td></tr>";
 						s_no++;
 						var test = '1';
@@ -494,6 +497,11 @@ function validating_remarks_qty(val,remarks)
 		{
 			var array = response.split(',');
 			max = array[0];
+			if(max == '')
+			{
+				array[0] = 0;
+			}
+			console.log(array[0]);
 			var html_id = val+"remarks_validate_html";
 			$('#'+html_id).html(array[0]);
 			$('#response_flag').val(1);
