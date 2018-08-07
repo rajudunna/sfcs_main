@@ -14,11 +14,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 function firstbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+document.test.style.value 
+    var ajax_url ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+document.test.style.value ;Ajaxify(ajax_url);
+
 } 
 function secondbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value 
+    var ajax_url ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value ;
+	Ajaxify(ajax_url);
+
 }
 
 

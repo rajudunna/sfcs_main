@@ -28,11 +28,14 @@ var flag = 0;
 
 function firstbox(){ 
     var schedule = document.getElementById('schedule');
-    window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+schedule.value;
+    var ajax_url ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+schedule.value;
+    Ajaxify(ajax_url);
+
 } 
 
 function secondbox() { 
-    window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+    var ajax_url ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;Ajaxify(ajax_url);
+
 } 
 
 function verify_sch(){  

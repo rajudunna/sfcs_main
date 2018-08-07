@@ -557,7 +557,11 @@ else if($concurrent_flag == 0)
 	}
 
 $url = '?r='.$_GET['r'];
-echo "<script>window.location = '".$url."'</script>";
+echo "<script>
+		var ajax_url = '".$url."';
+		Ajaxify(ajax_url);
+	</script>";
+
  }
 
 ?>

@@ -81,7 +81,7 @@ table
 
 function firstbox()
 {
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&section="+document.select_module.select_section.value
+	var ajax_url ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&section="+document.select_module.select_section.value;Ajaxify(ajax_url);
 }
 function second_box(){
 	var sdate = document.getElementById('sdate').value;
@@ -243,7 +243,7 @@ function second_box(){
 			sweetAlert('Please Select Valid Date','','warning');
 			document.getElementById("sdate").value = "<?php  echo date("Y-m-d");  ?>";
 		}
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value
+		var ajax_url ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value;Ajaxify(ajax_url);
 
 	}
 	</script>

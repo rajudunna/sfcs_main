@@ -112,7 +112,8 @@ if(isset($_POST['submit']))
 	$url = getFullURL($_GET['r'],'sawing_out_list.php','N');
 	//echo $url;
 	echo '<script type="text/javascript">
-			window.location = "'.$url.'&schedule='.$schedule.'"
+			var ajax_url = "'.$url.'&schedule='.$schedule.'";
+			Ajaxify(ajax_url);
 		  </script>'; 
 	// echo '<script type="text/javascript">window.location = "sawing_out_list.php&schedule='.$schedule.'"</script>'; 
 	

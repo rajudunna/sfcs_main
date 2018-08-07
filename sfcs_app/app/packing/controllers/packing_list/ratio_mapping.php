@@ -22,19 +22,24 @@ else if($_SERVER['SERVER_NAME']=="bai3net")
 	function firstbox()
 	{
 		var url = '<?= getFullURL($_GET['r'],'ratio_mapping.php','N'); ?>';
-		window.location.href = url+"&style="+document.ratio_mapping.style.value
+		var ajax_url = url+"&style="+document.ratio_mapping.style.value;Ajaxify(ajax_url);
+
 	}
 
 	function secondbox()
 	{
 		var url = '<?= getFullURL($_GET['r'],'ratio_mapping.php','N'); ?>';
-		window.location.href = url+"&style="+document.ratio_mapping.style.value+"&schedule="+document.ratio_mapping.schedule.value
+		var ajax_url = url+"&style="+document.ratio_mapping.style.value+"&schedule="+document.ratio_mapping.schedule.value;
+		Ajaxify(ajax_url);
+
 	}
 
 	function thirdbox()
 	{
 		var url = '<?= getFullURL($_GET['r'],'ratio_mapping.php','N'); ?>';
-		window.location.href = url+"&style="+document.ratio_mapping.style.value+"&schedule="+document.ratio_mapping.schedule.value
+		var ajax_url = url+"&style="+document.ratio_mapping.style.value+"&schedule="+document.ratio_mapping.schedule.value;
+		Ajaxify(ajax_url);
+
 	}
 </script>
 

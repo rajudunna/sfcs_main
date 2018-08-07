@@ -9,7 +9,8 @@ $has_permission=haspermission($_GET['r']);
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r']?>&batch="+document.test.txtbatch.value
+	var ajax_url ="index.php?r=<?= $_GET['r']?>&batch="+document.test.txtbatch.value;Ajaxify(ajax_url);
+
 }
 function hide()
 {

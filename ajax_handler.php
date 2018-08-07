@@ -153,7 +153,7 @@ $('form').on("submit",function(event) {
     myLoadStop();
 });
 
-$("#body a").on('click',function(event){
+$("#body a").unbind().bind('click',function(event){
 
     event.preventDefault();
 

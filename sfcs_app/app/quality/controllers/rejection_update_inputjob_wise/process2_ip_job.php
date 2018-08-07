@@ -454,7 +454,8 @@ if(isset($_POST['Update']))
 		}
 	}else{
 		$url =  getFullURLLevel($_GET['r'],'reject_update_panel2_ip_job.php',0,'N');
-		echo "<script>sweetAlert('Form Validation failed.').then((value) => { window.location.href = '$url'});</script>";
+		echo "<script>sweetAlert('Form Validation failed.').then((value) => { var ajax_url = '$url'});Ajaxify(ajax_url);
+		</script>";
 	}
 }
 

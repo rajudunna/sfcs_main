@@ -280,7 +280,8 @@ if($status == '' || $status == '1')
 				echo "<script>
 							var url = '".getFullURLLevel($_GET['r'],'sewing_job_create.php',0,'N')."';
 							
-									window.location.href=url+'&msg='+1;
+							var ajax_url =url+'&msg='+1;Ajaxify(ajax_url);
+
 							
 				</script>";
 				}
@@ -450,7 +451,8 @@ if($status == '' || $status == '1')
 				}else{
 					echo "<script>
 							var url = '".getFullURLLevel($_GET['r'],'sewing_job_create.php',0,'N')."';
-									window.location.href=url+'&msg='+1;	
+							var ajax_url =url+'&msg='+1;Ajaxify(ajax_url);
+	
 						 </script>";
 				}
 				
@@ -580,7 +582,8 @@ if($status == '' || $status == '1')
 				}else{
 					echo "<script>
 							var url = '".getFullURLLevel($_GET['r'],'sewing_job_create.php',0,'N')."';
-									window.location.href=url+'&msg='+1;	
+							var ajax_url =url+'&msg='+1;	Ajaxify(ajax_url);
+
 						 </script>";
 
 				}
@@ -741,7 +744,8 @@ if($status == '' || $status == '1')
 				}else{
 					echo "<script>
 							var url = '".getFullURLLevel($_GET['r'],'sewing_job_create.php',0,'N')."';
-									window.location.href=url+'&msg='+1;	
+							var ajax_url =url+'&msg='+1;Ajaxify(ajax_url);
+	
 						 </script>";
 				}
 				
@@ -881,7 +885,8 @@ if($status == '' || $status == '1')
 					}else{
 						echo "<script>
 							var url = '".getFullURLLevel($_GET['r'],'sewing_job_create.php',0,'N')."';
-									window.location.href=url+'&msg='+1;	
+							var ajax_url =url+'&msg='+1;	Ajaxify(ajax_url);
+
 						 </script>";
 					}
 

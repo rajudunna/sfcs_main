@@ -28,17 +28,18 @@ td,th{
 <script>
 	function firstbox()
 	{
-		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value
+		var ajax_url ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value;
+		Ajaxify(ajax_url);
 	}
 
 	function secondbox()
 	{
-		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		var ajax_url ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;Ajaxify(ajax_url);
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+		var ajax_url ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;Ajaxify(ajax_url);
 	}
 	function negative(){
 		var element = document.getElementById('crts');

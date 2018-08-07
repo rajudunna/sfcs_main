@@ -8,21 +8,27 @@
 
 	function firstbox()
 	{
-		window.location.href ="?r=<?= $_GET['r']; ?>&style="+document.test.style.value
+		var ajax_url ="?r=<?= $_GET['r']; ?>&style="+document.test.style.value;Ajaxify(ajax_url);
+
 	}
 
 	function secondbox()
 	{
-		window.location.href ="?r=<?= $_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		var ajax_url ="?r=<?= $_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;Ajaxify(ajax_url);
+
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="?r=<?= $_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+		var ajax_url ="?r=<?= $_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+		Ajaxify(ajax_url);
+
 	}
 	function fourthbox()
 	{
-		window.location.href ="?r=<?= $_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&ratiopacksize="+document.test.ratiopacksize.value
+		var ajax_url ="?r=<?= $_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&ratiopacksize="+document.test.ratiopacksize.value;
+		Ajaxify(ajax_url);
+
 	}
 </script>
 

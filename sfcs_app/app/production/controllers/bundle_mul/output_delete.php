@@ -50,7 +50,8 @@ td{ padding:2px; white-space: nowrap;}
 function firstbox()
 {
 	//alert("report");
-	window.location.href ="module_change.php?module_id="+document.module_change.module_id.value
+	var ajax_url ="module_change.php?module_id="+document.module_change.module_id.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()
