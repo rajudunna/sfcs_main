@@ -204,6 +204,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
 
 
                         $tab.="<tr><td>".$r['HOUR']."</td><td>$actual_qty</td><td>$forcast_qty</td><td>$plan_qty</td><td>$btn</td></tr>";
+                        
                     }
                     $tab.="</tbody>
                     </table>";
