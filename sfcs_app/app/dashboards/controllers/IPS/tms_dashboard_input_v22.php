@@ -842,7 +842,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			
 			$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.") and act_cut_status=\"DONE\"";
-			echo $sql11x1."<br>";
+			// echo $sql11x1."<br>";
 			$sql_result11x1=mysqli_query($link, $sql11x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result11x1)>0)
 			{
