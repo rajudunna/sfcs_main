@@ -195,7 +195,7 @@ if(isset($_POST['submit']))
         $result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($row=mysqli_fetch_array($result)) 
         {
-        	if ($lfr_reason[$i] == $row["reason_name"])
+        	if ($lfr_reason[$mod_names[$i]] == $row["reason_name"])
         	{
         		$selected = 'selected';
         	} else {
@@ -215,7 +215,7 @@ if(isset($_POST['submit']))
 	<input type="hidden" value="<?php echo sizeof($mod_names); ?>" name="tot_mod" id="tot_mod">
 	<input type="hidden" value="<?php echo $today; ?>" name="daten" id="daten">
 	<?php
-	if(array_sum($lfr_qty)==0 || in_array($authorized,$has_permission))
+	if(array_sum($lfr_qty)==0 || in_array($update,$has_permission))
 	{
 	?>
 	<div class='col-sm-3'><br>
