@@ -23,6 +23,7 @@
 							<th><center>Sewing Job Number</center></th>
 							<th><center>From Module</center></th>
 							<th><center>To Module</center></th>
+							<th><center>UserName</center></th>
 							<th><center>Moved On</center></th>
 						</tr>
 					</thead>
@@ -38,6 +39,7 @@
 										<td><center>".$sql_rowr1["input_job_no_random"]."</center></td>
 										<td><center>".$sql_rowr1["from_module"]."</center></td>
 										<td><center>".$sql_rowr1["to_module"]."</center></td>
+										<td><center>".$sql_rowr1["username"]."</center></td>
 										<td><center>".$sql_rowr1["log_time"]."</center></td>
 									</tr>
 								";
