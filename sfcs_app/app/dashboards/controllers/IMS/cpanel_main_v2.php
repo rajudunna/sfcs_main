@@ -312,6 +312,7 @@ $(document).ready(function() {
   }).mousemove(function(e) {
   
     //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
+    console.log('y = '+e.pageY);
     $('#tooltip').css('top', e.pageY - 150 );
     $('#tooltip').css('left', e.pageX - 300 );
     
@@ -407,6 +408,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
       ?>
 
       <?php
+      /*
        $rev_qty=0;
        $rev_query="select sum(qms_qty) as rej_qty from $bai_pro3.bai_qms_db where remarks like '$module-%'";
        //echo $rev_query;
@@ -416,13 +418,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
        {
          $rev_qty=$row['rej_qty'];
        }
-
+          */
       ?>
             <div class="line_main">
               <div class="line_no">  <!-- module number DIV start -->
                 
-                <?php $sqlwip="SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no  FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' ";
-            
+                <?php 
+
+                $sqlwip="SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no  FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' ";
+            // echo $sqlwip;
         $sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         
         
@@ -430,7 +434,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
         {
         ?>
         
-                <a href="#" data-toggle="tooltip" title="M-<?php echo $module; ?> WIP :  <?php echo $sql_rowwip['WIP'] - $rev_qty; 
+                <a href="#" data-toggle="tootip" tile="M-<?php echo $module; ?> WIP :  <?php echo $sql_rowwip['WIP']; 
         $wip='0';
         $wip=$sql_rowwip['WIP'];
         ?>" class="red-tooltip" 
@@ -442,7 +446,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
                 
                <div style="float:left;padding-left:25px;">
                
-                <?php $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,REPLACE(GROUP_CONCAT(DISTINCT TRIM(i.ims_size)),\"a_\",\"\") AS ims_size,GROUP_CONCAT(DISTINCT TRIM(i.ims_color)) AS ims_color,i.ims_schedule,i.rand_track,GROUP_CONCAT(DISTINCT TRIM(i.ims_remarks)) AS ims_remarks, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date,i.pac_tid FROM $bai_pro3.ims_log i,$bai_pro3.plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no AND i.ims_status !=\"DONE\" GROUP BY inputjobnorand";
+                <?php 
+                $sqlred="SELECT SUM(i.ims_qty) AS Input,SUM(i.ims_pro_qty) AS Output,i.ims_doc_no,i.ims_style,REPLACE(GROUP_CONCAT(DISTINCT TRIM(i.ims_size)),\"a_\",\"\") AS ims_size,GROUP_CONCAT(DISTINCT TRIM(i.ims_color)) AS ims_color,i.ims_schedule,i.rand_track,GROUP_CONCAT(DISTINCT TRIM(i.ims_remarks)) AS ims_remarks, p.acutno,i.input_job_no_ref AS inputjobno,i.input_job_rand_no_ref AS inputjobnorand,i.ims_date,i.pac_tid FROM $bai_pro3.ims_log i,$bai_pro3.plandoc_stat_log p WHERE i.ims_mod_no='$module' AND i.ims_doc_no=p.doc_no AND i.ims_status !=\"DONE\" GROUP BY inputjobnorand";
                 // echo $sqlred;
         //$sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_color,ims_schedule,rand_track  FROM ims_log WHERE ims_mod_no='$module' GROUP BY ims_doc_no"
         $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -476,7 +481,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $total_qty=$total_qty+$input_qty;
             $total_out=$total_out+$output_qty;
             $input_date=$sql_rowred['ims_date'];
-
+            $ijrs[] = $inputjobnorand;
            
 			
 			$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
@@ -502,7 +507,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}
 			
 			$sizes_implode="'".implode("','",$size_value)."'";
-
+      
              $rejected=0;
              $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color in (".$color_ref.") and qms_size in (".$sizes_implode.") and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" and operation_id='130' and qms_remarks in (".$remarks_ref.")";
                
@@ -518,13 +523,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
               $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedul_no,$color_name,$inputno,$link);
 
-              $scanning_query=" select * from $brandix_bts.tbl_ims_ops limit 1";
-              $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-              while($sql_row=mysqli_fetch_array($scanning_result))
-              {
-                $operation_name=$sql_row['operation_name'];
-                $operation_code=$sql_row['operation_code'];
-              } 
+              // $scanning_query=" select * from $brandix_bts.tbl_ims_ops limit 1";
+              // $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+              // while($sql_row=mysqli_fetch_array($scanning_result))
+              // {
+              //   $operation_name=$sql_row['operation_name'];
+              //   $operation_code=$sql_row['operation_code'];
+              // } 
                
                $shift='G';
                $sidemenu=true;
@@ -551,14 +556,24 @@ while($sql_row=mysqli_fetch_array($sql_result))
                   " rel="tooltip"><div class="red_box"  >
                   
                   </div></a>
-                  <?php } ?>
-
-                   <?php if($wip!=0){ ?>
+                  <?php 
+                }//closing while for red blocks
+                     $rev_qty=0;
+                     $rev_query="select sum(qms_qty) as rej_qty from $bai_pro3.bai_qms_db where remarks like '$module-%'
+                                 and input_job_no IN ('".implode("','",$ijrs)."')";
+                     $result=mysqli_query($link, $rev_query) or exit("Sql Error rev qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    // echo $rev_query;
+                     $ijrs = array();
+                     while($row=mysqli_fetch_array($result))
+                     {
+                       $rev_qty=$row['rej_qty'];
+                     }
+                     if($wip!=0){ ?>
                         <span class="green_box1">
                             WIP :  <?php echo $wip - $rev_qty; 
                         $wip=0;
                     ?></span>
-                   <?php } ?>
+                  <?php } ?>
                   
                   <?php         
           if(($total_qty-$total_out)<=1000) {         //  WIP <=2 000 then appear Green box
