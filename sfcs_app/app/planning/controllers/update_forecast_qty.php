@@ -217,13 +217,13 @@ if(isset($_POST['submit']))
 	<?php
 	if(array_sum($lfr_qty)==0 || in_array($update,$has_permission))
 	{
-	?>
-	<div class='col-sm-3'><br>
-	<input type="submit" name="update" id="update" value="Update" class="btn btn-primary">
-	</div>	
-<?php
-}
-?>	
+		?>
+		<div class='col-sm-3'><br>
+		<input type="submit" name="update" id="update" value="Update" class="btn btn-primary">
+		</div>	
+		<?php
+	}
+	?>	
 	
 	</div>
 			
@@ -239,8 +239,6 @@ if(isset($_POST['update']))
 	$fr_qty=$_POST['fr'];
 	$fr_mod=$_POST['module'];
 	$fr_reason=$_POST['line_reson'];
-	// var_dump($fc_qty);
-	// die();
 	for($i=0;$i<sizeof($fr_mod);$i++)
 	{
 		if($fr_qty[$i]>0 || $fc_qty[$i]>0)
@@ -250,18 +248,22 @@ if(isset($_POST['update']))
 			$rows=mysqli_num_rows($result1);
 			if($rows==0)
 			{
-				$sql="INSERT INTO $bai_pro3.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
+				$sql="INSERT IGNORE INTO $bai_pro3.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
 				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				
 			}
 			else
 			{
 				$sql="update $bai_pro3.`line_forecast` set qty ='$fc_qty[$i]', reason ='$fr_reason[$i]' where module ='$fr_mod[$i]' and  date ='$daten'";
 				//echo $sql."<br>";
-				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));				
-			}				
+				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));	
+				
+			}
+			
 		}
 	}
+	echo "<script>sweetAlert('Successfully Forecast Updated.','','success');</script>";
 }
  ?> 
      
