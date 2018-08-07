@@ -591,7 +591,7 @@ if(sizeof($remove_docs)>0)
 }
 // Remove Docs
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+$sqlx="select * from $bai_pro3.sections_db where sec_id=1";
 //echo $sqlx;
 // mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -613,14 +613,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		 $order_div_ref='';
 	}	
 	// Ticket #424781 change the buyer division display based on the pink,logo,IU as per plan_modules
-	$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
+	$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1 limit 1";
     if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
     {
-		$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
+		$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1 limit 1";
 	}
 	else
 	{
-		$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1"; 
+		$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1 limit 1"; 
 	}
 	//echo $sql1d."<br>";
 	$sql_num_checkd=0;
@@ -842,9 +842,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			
 			$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.") and act_cut_status=\"DONE\"";
-			//echo $sql11x1."<br>";
+			echo $sql11x1."<br>";
 			$sql_result11x1=mysqli_query($link, $sql11x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result11x1)>0 and $id=="yellow")
+			if(mysqli_num_rows($sql_result11x1)>0)
 			{
 				$id="blue";
 			} 
