@@ -28,7 +28,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 ?>
 <!--<div id="page_heading"><span style="float"><h3>Daily Production Status Report</h3></span><span style="float: right; margin-top: -20px"><b>?</b>&nbsp;</span></div>-->
 <div class="panel panel-primary">
-<div class="panel-heading">Production Status Report</div>
+<div class="panel-heading">Production Status Report (Sewing Out)</div>
 <div class="panel-body">
 <div class="form-group">
 <form name="text" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">

@@ -3,10 +3,13 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/functions.php',3,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R') );  ?>
 
 <style>
-th,td{ color : #000;}
+	.flt{
+		width:100%;
+	}
+	
 </style>
 
 <?php
@@ -44,8 +47,9 @@ function verify_date(e){
 
 
 </style>
-<script language="javascript" type="text/javascript" 
-		src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter_en/table_filter.js', 3, 'R');?>" ></script>
+
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 <!-- </head> -->
 <body onload="javascript:dodisable()">
 <div class="panel panel-primary">
@@ -197,13 +201,11 @@ if(isset($_POST["submit"]))
 	}
 	echo "<div id='report'>";
 	echo "<h2><label>Selected Period :-</label> From : <span class='label label-success'>".$hour_from."".$time_stamp."</span> To : <span class='label label-success'>".$hour_to."".$time_stamp1."</h2></span>";
-	echo "<div class='table-responsive' style='max-height:600px;overflow-y:scroll'>";
-	echo "<table id=\"table1\" class=\"table table-bordered\">";
+	echo "<div class='table-responsive col-md-12' style='max-height:600px;overflow-y:scroll'>";
+	echo "<table id=\"table1\" class=\"table table-bordered\" style='width:100%'>";
 	echo "<tr class='danger'><th>Docket</th><th>Docket Ref</th><th>TID</th><th>Size</th><th>Remarks</th><th>Status</th><th>Last Updated</th><th>Carton Act Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
 	$packing_tid_list=array();
 	$sql="select * from $bai_pro3.packing_summary where tid in (select tid from $bai_pro3.pac_stat_log where scan_date between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and status=\"DONE\" order by scan_date)";
-	//echo "<br>".$sql."<br>";
-	// mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 	if(mysqli_num_rows($sql_result))
 	{
@@ -232,7 +234,9 @@ if(isset($_POST["submit"]))
 
 		echo "<tr><td>".$sql_row['doc_no']."</td><td>".$sql_row['doc_no_ref']."</td><td>".$sql_row['tid']."</td><td>".$size_value."</td><td>".$sql_row['remarks']."</td><td>".(strlen($sql_row['status'])==0?"Pending":$sql_row['status'])."</td><td>".$sql_row['lastup']."</td><td>".$sql_row['carton_act_qty']."</td><td>".$sql_row['order_style_no']."</td><td>".$sql_row['order_del_no']."</td><td>".$sql_row['order_col_des']."</td></tr>";
 	}
-	echo '<tr><td>Total:</td><td id="table2" style="background-color:#FFFFCC; color:red;"></td></tr>';
+	echo '<tr><th colspan=7 style="text-align:right">Total:</th><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td><td colspan=3></td></tr>';
+		echo "</table>";
+	
 	}
 	else
 	{
@@ -240,10 +244,10 @@ if(isset($_POST["submit"]))
 			    $('#report').hide();
 		 	  </script>";
 	}
-	echo "</table>
-	</div>
-	</div>";
+
 }
+echo "</div>
+	</div>";
 
 
 ?>
@@ -251,37 +255,44 @@ if(isset($_POST["submit"]))
 <script language="javascript" type="text/javascript">
 //<![CDATA[
 	//setFilterGrid( "table1111" );
-
+$('#reset_table1').addClass('btn btn-warning');
 var fnsFilters = {
 	
 	rows_counter: true,
 	sort_select: true,
-		on_change: true,
-		display_all_text: " [ Show all ] ",
-		loader_text: "Filtering data...",  
-	loader: true,
-	loader_text: "Filtering data...",
+	// on_change: true,
+	// display_all_text: " [ Show all ] ",
+	// loader_text: "Filtering data...",  
+	// loader: true,
+	// loader_text: "Filtering data...",
 	btn_reset: true,
-		alternate_rows: true,
-		btn_reset_text: "Clear",
+	alternate_rows: true,
+	btn_reset_text: "Clear",
 	col_operation: { 
-						id: ["table2"],
-						 col: [7],  
+						id: ["table1Tot1"],
+						col: [7],  
 						operation: ["sum"],
-						 decimal_precision: [1],
+						decimal_precision: [1],
 						write_method: ["innerHTML"] 
 					},
 	rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]
-							
-	
-		
 	};
 	
 	 setFilterGrid("table1",fnsFilters);
 //]]>
+	$(document).ready(function(){
+		$('#reset_table1').addClass('btn btn-warning btn-xs');
+	});
 </script>
 
 </div>
 </div>
 </div>
 </div>
+<style>
+#reset_table1{
+	width : 80px;
+	color : #fff;
+	margin : 10px;
+}
+</style>

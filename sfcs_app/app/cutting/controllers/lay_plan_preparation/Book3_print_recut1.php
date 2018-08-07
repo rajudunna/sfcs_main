@@ -1352,7 +1352,7 @@ ZHJzL2Rvd25yZXYueG1sUEsBAi0ACgAAAAAAAAAhADhzEd/zBQAA8wUAABUAAAAAAAAAAAAAAAAA
   <![if !vml]><span style='mso-ignore:vglayout;
   position:absolute;z-index:5;margin-left:11px;margin-top:1px;width:327px;
   height:68px'><img width=327 height=68
-  src=<?= '../../common/images/Book1_15551_image003.gif'?> alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span><![endif]><span
+  src=<?= '/sfcs_app/common/images/BEK_image1.png'?> alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span><![endif]><span
   style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>
    <tr>
@@ -2360,7 +2360,7 @@ for($i=0;$i<sizeof($roll_det);$i++)
 echo "</tr>";
 
 echo "</table>";
-echo $lot_ref; 
+// echo $lot_ref; 
 
 echo "</td>";
 echo "</tr>";
@@ -2379,7 +2379,7 @@ echo "</tr>";
   <td class=xl6315551></td>
   <td class=xl6315551></td>
   <td class=xl6315551></td>
-  <td class=xl6315551 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
+  <td class=xl6315551 colspan="2"><u><strong>Quality Authorisation</strong></u></td>
  </tr>
  <tr class=xl6415551 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6415551 style='height:15.0pt'></td>

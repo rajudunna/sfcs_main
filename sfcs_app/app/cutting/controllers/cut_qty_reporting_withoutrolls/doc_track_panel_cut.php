@@ -45,7 +45,6 @@ if(isset($_POST['submit']))
 	while($sql_row12=mysqli_fetch_array($sql_result12))
 	{
 		$valnew=$sql_row12['org_doc_no'];
-		//$status_doc=$sql_row12['org_doc_no'];
 	}
 	if($valnew==0 || $valnew=='1')
 	{
@@ -82,9 +81,8 @@ if(isset($_POST['submit']))
 				//echo $cat_ref."---".$fabric_status."<br>";
 			}
 			//echo $cat_ref."---".$fabric_status."<br>";
-			//if($cat_ref>0 and $fabric_status==5)	
-			//if($cat_ref>0)	
-			//{
+			if($cat_ref>0 and $fabric_status==5)	
+			{
 					
 				$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -164,7 +162,7 @@ if(isset($_POST['submit']))
 
 					if($category=='Body' or $category=="Front")
 					{
-						// if($val_check>0)
+						//if($val_check>0)
 						{
 							if($act_cut_status=="DONE" and $plies==$a_plies)
 							{
@@ -221,7 +219,7 @@ if(isset($_POST['submit']))
 						$acs_remarks=$sql_row2['remarks'];
 					}
 					echo "<td>$acs_date</td><td>$acs_section</td><td>$acs_shift</td><td>$acs_fab_received</td><td>$acs_fab_returned</td><td>$acs_damages</td><td>$acs_shortages</td>";
-				//echo "<td>$acs_remarks</td>";
+					//echo "<td>$acs_remarks</td>";
 
 
 					if($act_cut_issue_status=="DONE")
@@ -263,12 +261,11 @@ if(isset($_POST['submit']))
 
 				}
 				echo "</table>";
-			// }
-			// else
-			// {
-				
-			// 	echo "Requested Docket doesnot exist or Fabric Not issued to this docket. Please contact your planner/RM Team.";
-			// }
+			}
+			else
+			{				
+			 	echo "Requested Docket doesn't exist or Docket Not printed or Fabric Not issued to this docket. Please contact your planner/RM Team.";
+			}
 		}
 		else
 		{

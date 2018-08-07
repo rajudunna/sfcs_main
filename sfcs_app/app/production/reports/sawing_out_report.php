@@ -98,7 +98,7 @@ function verify_date()
 </script>	
 
 <div class="panel panel-primary">
-<div class="panel-heading">SEWING OUT REPORT</div>
+<div class="panel-heading">Carton Out Report</div>
 <div class="panel-body">
 
 <?php $date = new DateTime('now', new DateTimeZone('Asia/Kolkata'));
