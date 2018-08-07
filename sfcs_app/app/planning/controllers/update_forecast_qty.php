@@ -28,16 +28,25 @@ function check_stat(i,j)
 {
 	var fr_qty=Number(document.getElementById("fr"+j).value);
 	var lfr=Number(document.getElementById("lfr"+j).value);
-	if(lfr<fr_qty)
+	var lfr_ori=Number(document.getElementById("lfr_ori"+j).value);
+	if (i=='NIL' )
 	{
-		if(i=='NIL')
-		{	
-			document.getElementById("row_val"+j).style.backgroundColor="red";
-		}
-		else
+		document.getElementById("lfr"+j).value = lfr_ori;
+		document.getElementById("row_val"+j).style.backgroundColor="";
+	}
+	else
+	{
+		if(lfr<fr_qty)
 		{
-			document.getElementById("row_val"+j).style.backgroundColor="";
-		}	
+			if(i=='NIL')
+			{	
+				document.getElementById("row_val"+j).style.backgroundColor="red";
+			}
+			else
+			{
+				document.getElementById("row_val"+j).style.backgroundColor="";
+			}	
+		}
 	}
 }
 
@@ -50,13 +59,15 @@ function check_tot()
 	{		
 		var lfr=Number(document.getElementById("lfr"+k).value);
 		var fr_qty=Number(document.getElementById("fr"+k).value);
-		var ln_reas=Number(document.getElementById("line_reson"+k).value);
+		var ln_reas=document.getElementById("line_reson"+k).value;
+
 		if(lfr>0)
 		{
 			if(lfr<fr_qty)
 			{
-				if(ln_reas<>'NIL')
+				if(ln_reas=='NIL')
 				{
+
 					status=1;
 				}
 			}
@@ -65,12 +76,12 @@ function check_tot()
 	}	
 	if(checkn==1)
 	{
-		sweetAlert('Please Fill Any module Forecast!','','warning')
+		sweetAlert('Please Fill Any module Forecast!','','warning');
 		return false;
 	}
 	else if(status==1)
 	{
-		sweetAlert('Please select the reasons if Forecast is less than Plan Qty!!','','warning')
+		sweetAlert('Please select the reasons if Forecast is less than Plan Qty!!','','warning');
 		return false;
 	}
 	else if(status==0)
@@ -150,6 +161,7 @@ if(isset($_POST['submit']))
 			while($row12=mysqli_fetch_array($result12))
 			{				
 				$lfr_qty[$row['module_id']]=$row12['qty'];
+				$lfr_reason[$row['module_id']]=$row12['reason'];
 			}			
 		} 
 		else 
@@ -173,16 +185,23 @@ if(isset($_POST['submit']))
         </td> 
         <td> 
 		<input type="text" value="<?php echo $lfr_qty[$mod_names[$i]]; ?>" class="integer form-control" onfocus="if(this.value==0){this.value=''}" onblur="javascript: if(this.value==''){this.value=0;}" name="lfr[<?php echo $i; ?>]" id="lfr<?php echo $i; ?>" onchange="check_data(this.value,<?php echo $i; ?>)"> 
+		<input type="hidden" value="<?php echo $lfr_qty[$mod_names[$i]]; ?>" name="lfr_ori[<?php echo $i; ?>]" id="lfr_ori<?php echo $i; ?>">
         </td> 
         <td>         
         <?php 
 		echo "<select name='line_reson[".$i."]' class='form-control' id='line_reson".$i."' onchange='check_stat(this.value,$i)'>";
         $sql="select * from $bai_pro3.line_reason order by id*1"; 
-		echo "<option value='NIL'>-------Select Reason-------</option>";
+		echo "<option value='NIL'>Select Reason</option>";
         $result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($row=mysqli_fetch_array($result)) 
         {
-			echo "<option value='".$row["reason_name"]."'>".$row["reason_name"]."</option>";	
+        	if ($lfr_reason[$i] == $row["reason_name"])
+        	{
+        		$selected = 'selected';
+        	} else {
+        		$selected = '';
+        	}
+			echo "<option value='".$row["reason_name"]."' $selected>".$row["reason_name"]."</option>";	
         } 
 		echo "</select>";
         ?> 
@@ -196,7 +215,8 @@ if(isset($_POST['submit']))
 	<input type="hidden" value="<?php echo sizeof($mod_names); ?>" name="tot_mod" id="tot_mod">
 	<input type="hidden" value="<?php echo $today; ?>" name="daten" id="daten">
 	<?php
-	if(array_sum($lfr_qty)==0 || in_array($authorized_level1,$has_permission))
+	if(array_sum($lfr_qty)==0 || in_array($authorized,$has_permission))
+	{
 	?>
 	<div class='col-sm-3'><br>
 	<input type="submit" name="update" id="update" value="Update" class="btn btn-primary">
@@ -251,3 +271,9 @@ if(isset($_POST['update']))
 </div> 
 </div> 
 </div> 
+<script type="text/javascript">
+	$('[data-toggle="datepicker"]').datepicker({
+	format: 'yyyy-mm-dd',
+	endDate: new Date()
+});
+</script>

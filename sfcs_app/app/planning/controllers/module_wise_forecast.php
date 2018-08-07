@@ -112,7 +112,6 @@
 						$date = $_POST['date'];
 						$module = $_POST['module'];
 						// echo $date.'<br>'.$module;
-						$self_url = getFullURL($_GET['r'],'module_wise_forecast.php','N');
 						$get_fr_details_query = "SELECT * FROM $bai_pro2.`fr_data` WHERE frdate = '$date' AND team = '$module'";
 						// echo $get_fr_details_query;
 						$fr_details_result = mysqli_query($link, $get_fr_details_query) or exit("Error while getting FR details for the date: $date and module: $module");
