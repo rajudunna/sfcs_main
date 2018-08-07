@@ -100,7 +100,7 @@ $(document).ready(function()
 				if(response['post_ops'])
 				{
 					var post_ops_data = response['post_ops'];
-					var send_qty = response['send_qty'];
+					//var send_qty = response['send_qty'];
 					if(response['rec_qtys'])
 					{
 						var post_rec_qtys_array = response['rec_qtys'];
@@ -111,9 +111,9 @@ $(document).ready(function()
 					{
 						// console.log(response['post_ops'][ops]);
 						var mark1 = "<input type='hidden' name='post_ops[]' value='"+response['post_ops'][ops]+"'>";
-						var mark2 = "<input type='hidden' name='send_qty[]' value='"+response['send_qty'][ops]+"'>";
+						//var mark2 = "<input type='hidden' name='send_qty[]' value='"+response['send_qty'][ops]+"'>";
 						$("#dynamic_table1").append(mark1);
-						$("#dynamic_table1").append(mark2);
+						//$("#dynamic_table1").append(mark2);
 					}
 				}
 				if(response['ops_dep'])
@@ -146,7 +146,7 @@ $(document).ready(function()
 								var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
 							}
 							s_no++;
-							var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color' value='"+data[i].order_col_des+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
+							var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
 							$("#dynamic_table").append(markup1);
 					}
 				}
@@ -197,14 +197,85 @@ if(isset($_POST['formSubmit']))
 	$doc_no = $_POST['doc_no'];
 	$operation_id = $_POST['operation_id'];
 	$remarks = $_POST['remarks'];
+	$size_id = $_POST['size_id'];
+	$input_job_no_random = $_POST['input_job_no_random'];
+	$mapped_color = $_POST['mapped_color'];
 	//var_dump($ops_dep);
 	if($_POST['post_ops'])
 	{
 		$post_code = $_POST['post_ops'];
 	}
-$concurrent_flag = 0;
+	foreach($bundle_no as $key => $value)
+	{
+		//$remarks = $remarks[$key];
+		$query_to_fetch_individual_bundles = "select *  FROM $bai_pro3.packing_summary_input where order_col_des = '$color[$key]' and size_code = '$size[$key]' and input_job_no_random = $input_job_no_random order by tid DESC";
+		$cumulative_reversal_qty = $reversalval[$key];
+		//echo $query_to_fetch_individual_bundles;
+		$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$remaining_val_to_reverse = 0;
+		while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+		{
+			$b_colors_1[] =  $nop_qry_row['order_col_des'];
+			$b_sizes_1[] =  $nop_qry_row['size_code'];
+			$b_size_code_1[] = $nop_qry_row['old_size'];
+			$b_in_job_qty[] = $nop_qry_row['carton_act_qty'];
+			$b_a_cut_no_1[] = $nop_qry_row['acutno'];
+			$b_doc_num_1[] = $nop_qry_row['doc_no'];
+			$b_inp_job_ref[] = $nop_qry_row['input_job_no'];
+			$b_remarks_1 = $remarks;
+			$bundle_individual_number = $nop_qry_row['bundle_number'];
+			$bundle_individual_number = $nop_qry_row['tid'];
+			$actual_bundles[] = $nop_qry_row['tid'];
+			$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
+			//echo $query_to_fetch_individual_bundle_details;
+			$result_query_to_fetch_individual_bundle_details=mysqli_query($link,$query_to_fetch_individual_bundle_details) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if($remaining_val_to_reverse > 0)
+			{
+				$cumulative_reversal_qty = $remaining_val_to_reverse;
+			}
+			while($row_result_query_to_fetch_individual_bundle_details=mysqli_fetch_array($result_query_to_fetch_individual_bundle_details))
+			{
+					
+				$rec_qty = $row_result_query_to_fetch_individual_bundle_details['recevied_qty'];
+				//echo $bundle_individual_number.'-'.$rec_qty.'-'.$cumulative_reversal_qty.'</br>';
+				if($rec_qty > 0)
+				{
+					if($cumulative_reversal_qty <= $rec_qty)
+					{
+						$actual_reversal_val_array [] = $cumulative_reversal_qty;
+						$cumulative_reversal_qty = 0;
+					}
+					else
+					{
+						$actual_reversal_val_array [] = $rec_qty;
+						$remaining_val_to_reverse = $cumulative_reversal_qty - $rec_qty;
+					}
+					
+				}
+				else
+				{
+					$actual_reversal_val_array [] = $rec_qty;
+				}
+			}
+			
+		}
+	}
+	$color =array();
+	$bundle_no = array();
+	$size = array();
+	$doc_no = array();
+	$size_id = array();
+	$reversalval = array();
+	//$color = $b_colors_1;
+	$size_id = $b_sizes_1;
+	$size = $b_size_code_1;
+	$doc_no = $b_doc_num_1;
+	$remarks =$b_remarks_1;
+	$bundle_no = $actual_bundles;
+	$concurrent_flag = 0;
+	$reversalval = $actual_reversal_val_array;
 // echo "post code".$post_code;
-$ops_seq_check = "select id,ops_sequence,ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code='$operation_id'";
+$ops_seq_check = "select id,ops_sequence,ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code='$operation_id'";
 $result_ops_seq_check = $link->query($ops_seq_check);
 while($row = $result_ops_seq_check->fetch_assoc()) 
 {
@@ -212,7 +283,7 @@ while($row = $result_ops_seq_check->fetch_assoc())
 	$seq_id = $row['id'];
 	$ops_dependency = $row['ops_dependency'];
 }
-$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id > $seq_id order by id limit 1";
+$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = $ops_seq and id > $seq_id order by id limit 1";
 $result_post_ops_check = $link->query($post_ops_check);
 if($result_post_ops_check->num_rows > 0)
 {
@@ -220,8 +291,7 @@ if($result_post_ops_check->num_rows > 0)
 	{
 		$post_ops_code = $row['operation_code'];
 	}
-}
-	
+}	
 foreach ($bundle_no as $key=>$value)
 {
 	$act_reciving_qty = $reversalval[$key];
@@ -285,7 +355,7 @@ if($concurrent_flag == 1)
 }
 else if($concurrent_flag == 0)
 {
-	foreach($ids as $key=>$value)
+	foreach($bundle_no as $key=>$value)
 	{
 		$fetching_id_qry = "select id,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number = $bundle_no[$key] and operation_id = $operation_id";
 		$result_fetching_id_qry = $link->query($fetching_id_qry)  or exit('query error in updating1');
@@ -299,14 +369,14 @@ else if($concurrent_flag == 0)
 		$result_query = $link->query($update_present_qry) or exit('query error in updating2');
 		if($post_code)
 		{
-			$update_post_ops_code_qry = "update $brandix_bts.bundle_creation_data set send_qty = $act_rec_qty where id=$post_code[$key]";
-			//echo $update_post_ops_code_qry;
-			$result_query_post = $link->query($update_post_ops_code_qry) or exit('query error in updating3');
+			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$act_rec_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$bundle_no[$key]."' and operation_id = ".$post_code[0];
+			//echo $query_post_dep;
+			$result_query = $link->query($query_post_dep) or exit('query error in updating6');
 		}
 	}
 	if($ops_dep != 0)
 	{
-		$dep_ops_array_qry_raw = "select operation_code from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and ops_dependency='$ops_dep'";
+		$dep_ops_array_qry_raw = "select operation_code from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$mapped_color' and ops_dependency='$ops_dep'";
 		//echo $dep_ops_array_qry_raw;
 		$result_dep_ops_array_qry_raw = $link->query($dep_ops_array_qry_raw) or exit('query error in updating 4');
 		while($row = $result_dep_ops_array_qry_raw->fetch_assoc()) 
@@ -328,13 +398,13 @@ else if($concurrent_flag == 0)
 				$pre_recieved_qty = $row['recieved_qty'];
 			}
 			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$bundle_no[$key]."' and operation_id = ".$ops_dep;
-			//echo $query_post_dep;
+			echo $query_post_dep;
 			$result_query = $link->query($query_post_dep) or exit('query error in updating6');
 			
 		}
 	}
 	//echo "workings";
-	foreach($ids as $key=>$value)
+	foreach($bundle_no as $key=>$value)
 	{
 		//echo "working";
 		$retriving_data = "select * from $brandix_bts.bundle_creation_data where bundle_number = $bundle_no[$key] and operation_id = $operation_id";
@@ -349,13 +419,13 @@ else if($concurrent_flag == 0)
 			$b_module = $row['assigned_module'];
 			$b_shift = $row['shift'];
 			$sfcs_smv = $row['sfcs_smv'];
-			//$b_op_name = $row['m3_ops_des'];
 			$b_inp_job_ref = $row['input_job_no'];
 			$size_id = $row['size_id'];
 			$b_in_job_qty = $row['original_qty'];
 			$b_a_cut_no = $row['cut_number'];
 			$mapped_color = $row['mapped_color'];
 			$color = $row['color'];
+			$size_title = $row['size_title'];
 		}
 		$ops_name_qry = "select operation_name from $brandix_bts.tbl_orders_ops_ref where operation_code = $b_op_id";
 		$result_ops_name_qry = $link->query($ops_name_qry) or exit('query error in updating 8');
@@ -367,14 +437,14 @@ else if($concurrent_flag == 0)
 		}
 		//echo $b_op_name;
 		$b_colors = $color;
-		$b_sizes = $size[$key];
+		$b_sizes = $size_id[$key];
 		$b_doc_num = $doc_no[$key];
 		if($reversalval[$key] > 0)
 		{
 			$r_qty_array = '-'.$reversalval[$key];
 			$b_tid = $bundle_no[$key];
 			$m3_bulk_bundle_insert = "INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_remarks,sfcs_log_user,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,m3_error_code) VALUES";
-			$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'. $size_id.'","'. $b_sizes.'","'.$b_doc_num.'","'.$r_qty_array.'","","'.$remarks.'","'.$username.'","'. $b_op_id.'","'.$b_inp_job_ref.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid.'",""),';
+			$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'. $size_id.'","'. $size_title.'","'.$b_doc_num.'","'.$r_qty_array.'","","'.$remarks.'","'.$username.'","'. $b_op_id.'","'.$b_inp_job_ref.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid.'",""),';
 			//echo $m3_bulk_bundle_insert;
 			if(substr($m3_bulk_bundle_insert, -1) == ',')
 			{
@@ -396,7 +466,7 @@ else if($concurrent_flag == 0)
 			}
 				
 			$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
-			$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$size_id.'","'. $b_sizes.'","'. $sfcs_smv.'","'.$b_tid.'","'.$b_in_job_qty.'","'.$b_in_job_qty.'","'.$r_qty_array.'","0","0","'. $b_op_id.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$remarks.'"),';
+			$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$size_id.'","'. $size_title.'","'. $sfcs_smv.'","'.$b_tid.'","'.$b_in_job_qty.'","'.$b_in_job_qty.'","'.$r_qty_array.'","0","0","'. $b_op_id.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$remarks.'"),';
 			//echo $bulk_insert_temp;
 			if(substr($bulk_insert_temp, -1) == ',')
 			{
@@ -410,8 +480,21 @@ else if($concurrent_flag == 0)
 			//Checking with ims_log 
 
 		}
-		
-	
+		$checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
+			//echo $checking_output_ops_code;
+		$result_checking_output_ops_code = $link->query($checking_output_ops_code);
+		if($result_checking_output_ops_code->num_rows > 0)
+		{
+			while($row_result_checking_output_ops_code = $result_checking_output_ops_code->fetch_assoc()) 
+			{
+				$output_ops_code = $row_result_checking_output_ops_code['operation_code'];
+			}
+		}
+		else
+		{
+			$output_ops_code = 130;
+		}
+		//echo 'ops_code.'.$b_op_id;
 		if($b_op_id == 100 || $b_op_id == 129)
 		{
 			$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$remarks'";
@@ -436,7 +519,7 @@ else if($concurrent_flag == 0)
 				}
 			}
 		}
-		else
+		else if($b_op_id == $output_ops_code)
 		{
 			$ops_seq_check = "select id,ops_sequence from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$b_op_id'";
 			// echo $ops_seq_check;
@@ -449,9 +532,16 @@ else if($concurrent_flag == 0)
 			$selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
 			//echo $selecting_output_from_seq_query;
 			$result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
-			while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
+			if($result_selecting_output_from_seq_query->num_rows > 0)
 			{
-				$input_ops_code = $row['operation_code'];
+				while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
+				{
+					$input_ops_code = $row['operation_code'];
+				}
+			}
+			else
+			{
+				$input_ops_code = 129;
 			}
 			if($input_ops_code == 100 || $input_ops_code == 129)
 			{
@@ -567,9 +657,8 @@ else if($concurrent_flag == 0)
 		
 		
 	}
-
-$url = '?r='.$_GET['r'];
-echo "<script>window.location = '".$url."'</script>";
+	$url = '?r='.$_GET['r'];
+	echo "<script>window.location = '".$url."'</script>";
  }
 
 ?>
