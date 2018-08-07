@@ -278,6 +278,7 @@ $has_perm=haspermission($_GET['r']);
 	}
 	function initDrag(e)	// Mouse button is pressed down on a LI
 	{
+		var col = $(this).attr('data-color');
 		if(document.all)e = event;
 		var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
 		var sl = Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
@@ -292,8 +293,12 @@ $has_perm=haspermission($_GET['r']);
 			contentToBeDragged_next = this.nextSibling;
 			if(!this.tagName && contentToBeDragged_next.nextSibling)contentToBeDragged_next = contentToBeDragged_next.nextSibling;
 		}
-		timerDrag();
-		return false;
+		if(col == 'blue' || col == 'red'){
+			timerDrag();
+			return false;
+		}else{
+			return;
+		}
 	}
 	
 	function timerDrag()
@@ -317,6 +322,7 @@ $has_perm=haspermission($_GET['r']);
 	
 	function moveDragContent(e)
 	{
+
 		if(dragTimer<10){
 			if(contentToBeDragged){
 				if(contentToBeDragged_next){
@@ -563,16 +569,6 @@ $color=$_GET['color'];
 $cutno=$_GET['cutno'];
 $module_ref_no=$_GET["module"];
 
-
-
-
-
-
-
-
-
-
-
 	$newfiltertable="temp_pool_db.plan_doc_summ_input_v2_".$username;
 	$sql="DROP TABLE IF EXISTS $newfiltertable";
 	//echo $sql."<br/>";
@@ -652,7 +648,28 @@ $code_db=explode("*",$code);
 <?php echo "Style:$style | Schedule: $schedule | color: $color"; ?>
 </div>
 <div class="panel-body">
-<h4><span class="label label-info">Note: Yellow Color indicates Excess/Sample Job</span></h4>
+<div>
+<h4>Color Legends</h4>
+<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: white;color: red;">
+<div>Different Style and Schedule Jobs</div>
+</div>&nbsp;&nbsp;&nbsp;
+<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: yellow;color: red;margin-left: 5px;">
+<div> Different Style & Schedule, Excess / Sample Jobs</div>
+</div>
+<div style="margin-top: 5px; border: 1px solid;background-color: green;color: white;float: left;margin-left: 4px;">
+<div> Same Style and Schedule if Fabric requested Jobs</div>
+</div>
+<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: red;color: black;">
+<div>Same Style and Schedule if Fabric not requested Jobs</div>
+</div>
+<div style="margin-top: 4px;border: 2px solid yellow;background-color: green;color: white;float: left; margin-left: 5px;">
+<div>Same Style and Schedule if Fabric requested for Excess/Sample Jobs</div>
+</div>
+<div style="margin-top: 4px;border: 2px solid yellow;background-color: white;color: red;float: left;">
+<div>Same Style and Schedule if Fabric is not requested for Excess/Sample Jobs</div> 
+</div>
+<div style="clear: both;"> </div>
+</div>
 <!-- </form> -->
 <br>
 <div id="dhtmlgoodies_dragDropContainer">
@@ -660,10 +677,9 @@ $code_db=explode("*",$code);
 		<img src='images/heading3.gif'>
 	</div> -->
 	<div id="dhtmlgoodies_listOfItems">
-		<div style="position: fixed;width: 150px;height:300px;overflow:  scroll;">
+		<div style="position: fixed;width: 150px;height:230px;overflow:scroll;margin-top: 30px;">
 			<p>Jobs</p>		
-		<ul id="allItems">
-		
+		<ul id="allItems">		
 		<?php
 			//exmaple : <li id="node101101">Student A</li>
 			for($i=0;$i<sizeof($code_db)-1;$i++)
@@ -671,24 +687,26 @@ $code_db=explode("*",$code);
 				$code_db_new=array();
 				$code_db_new=explode("-",$code_db[$i]);
 				// var_dump($code_db_new);
-				if($code_db_new[2]=="DONE")
-				{
-					$check= "#0c10e1";
-					$font_color = 'white';
-				}
-				else
-				{
-					$check="#0c10e1"; // red
-					$font_color = 'white';
-				}
-
+				// if($code_db_new[2]=="DONE")
+				// {
+				// 	$check= "blue";
+				// 	$font_color = 'white';
+				// }
+				// else
+				// {
+				// 	$check="blue"; // red
+				// 	$font_color = 'white';
+				// }
 				if ($code_db_new[7] == 2)
 				{
 					$check = 'yellow'; // yellow for excess/sample cut
 					$font_color = 'black';
+				}else{
+					$check="blue"; // red
+					$font_color = 'white';
 				}
 
-				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check; border-color:#b8daff; color:#f6f6f6;\">
+				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" data-color='blue' style=\" background-color:$check; border-color:#b8daff; color:#f6f6f6;\">
 							<strong><font color='$font_color'>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</font></strong>
 						</li>";
 			}
@@ -698,7 +716,7 @@ $code_db=explode("*",$code);
 		</div>
 
 		
-<form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()" style="position: fixed;margin-top: 320px;margin-left: 35px;">
+<form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()" style="position: fixed;margin-left: 47px;">
 <input type="hidden" name="listOfItems" value="">
 <input class="btn btn-success btn-sm pull-right" type="button" name="saveButton" id="saveButton" onclick="do_disable()" value="Save">
 </form>
@@ -819,6 +837,11 @@ $code_db=explode("*",$code);
 								$style_id_new=$sql_row_id["sid"];
 							}
 								
+							$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
+							$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$resulted_rows = mysqli_num_rows($get_fab_req_result);
+
+
 							// add by Chathuranga	
 							
 							
@@ -830,11 +853,29 @@ $code_db=explode("*",$code);
 							{
 								if($style==$style1  and $schedule==$schedule1)
 								{
-									echo '<li id="'.$doc_no.'"  style="background-color:red;" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+									if($resulted_rows>0){
+										if($bg_color1 == 'white'){
+											echo '<li id="'.$doc_no.'"  style="background-color:green;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}else if($bg_color1 == 'yellow'){
+											echo '<li id="'.$doc_no.'"  style="background-color:green;border: 4px solid yellow;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+										
+									}else{
+										if($bg_color1 == 'white'){
+										echo '<li id="'.$doc_no.'"  style="background-color:red;" data-color="red" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}else if($bg_color1 == 'yellow'){
+											echo '<li id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+									}
+									
 								}
 								else
 								{
-									echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+									// if($resulted_rows>0){
+									// 	echo '<li id="'.$doc_no.'"  style="background-color:green;border: 2px solid '.$bg_color1.';" data-color ="green" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+									// }else{
+										echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+									//}									
 								}
 							}	
 							
@@ -908,5 +949,5 @@ $code_db=explode("*",$code);
 </body>
 
 </html>
-
+<script src="../../common/js/jquery-1.3.2.js"></script>
 

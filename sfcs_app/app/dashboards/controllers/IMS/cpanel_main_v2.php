@@ -14,7 +14,24 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 <link rel=\"stylesheet\" href=".getFullURL($_GET['r'],'common/css/ddcolortabs.css',4,'R')." type=\"text/css\" media=\"all\" />
 <style>
-  
+
+.green_back{
+  background : #00ff00;
+ padding: 2px;
+  height:20px;
+} 
+.red_back{
+  background : #ff0000;
+  padding:2px;
+  height:20px;
+} 
+.black_back{
+  background : #000;
+  color:white;
+  padding:2px;
+  height:20px;
+}
+
 .blue {
   width:20px;
   height:20px;
@@ -163,24 +180,43 @@ a{
 {
   width:20px;height:20px;float:left;margin-right:5px;background-color:#F00;line-height:0px;font-size:0px;
   margin-bottom:5px;
+  padding-left : 3px;
+  padding-right : 3px;
+ 
 }
 
 .green_box
 {
   width:20px;height:20px;float:left;margin-right:5px;background-color:#0F0;line-height:0px;font-size:0px;
   margin-bottom:5px;
+padding-top:10px;
+  
+ 
 }
 
 .green_box1
 {
   width:auto;height:20px;float:left;margin-right:5px;background-color:#06FF00;line-height:15px;
   margin-bottom:5px;display: inline;
+  padding-top:10px;
+  
+}
+.blue_box
+{
+  width:20px;height:20px;float:left;margin-right:5px;background-color:#15a5f2;line-height:0px;font-size:0px;
+  margin-bottom:5px;border:1px;
 }
 
 .yellow_box
 {
   width:30px;height:20px;float:left;margin-right:5px;background-color:#FFFF00;line-height:0px;font-size:12px;
   margin-bottom:5px;padding-top:10px;padding-left:10px;
+}
+.black_box1
+{
+  width:20px;height:20px;float:left;margin-right:5px;background-color:#000;line-height:0px;font-size:12px;
+  margin-bottom:5px;padding-top:10px;padding-left:10px;color:white;
+
 }
 .clear
 {
@@ -312,10 +348,13 @@ $(document).ready(function() {
   }).mousemove(function(e) {
   
     //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
-    console.log('y = '+e.pageY);
-    $('#tooltip').css('top', e.pageY - 150 );
-    $('#tooltip').css('left', e.pageX - 300 );
-    
+    console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset);
+    console.log(e);
+    //e.pageY + 0.5 * e.view.parent.pageYOffset
+    $('#tooltip').css('top',);
+    $('#tooltip').css('left', e.pageX - 265 );
+    $('#tooltip').css('display', 'inline' );
+     $('#tooltip').css('position', 'absolute' );
   }).mouseout(function() {
   
     //Put back the title attribute's value
@@ -370,7 +409,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	</div>
 	<div class="panel-body">
     <div style="padding-top:15px;">
-    <div class="table-responsive">
+    <div class="table-responsiv">
       <div class='col-sm-12'>
    <?php $sqlx="select * from $bai_pro3.sections_db where sec_id>0";
   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -425,8 +464,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
                 
                 <?php 
 
-                $sqlwip="SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no  FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' ";
-            // echo $sqlwip;
+                $sqlwip="SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no  FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE'";
+             //echo $sqlwip;
         $sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         
         
@@ -553,7 +592,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
                    // echo "Balance :".(int)$input_qty - (int)$output_qty."";
                   ?>
                     Remarks: <?php echo $ims_remarks."<br/>"; ?>
-                  " rel="tooltip"><div class="red_box"  >
+                  " rel="tooltip"><div class="blue_box"  >
                   
                   </div></a>
                   <?php 
@@ -561,6 +600,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
                      $rev_qty=0;
                      $rev_query="select sum(qms_qty) as rej_qty from $bai_pro3.bai_qms_db where remarks like '$module-%'
                                  and input_job_no IN ('".implode("','",$ijrs)."')";
+                      // echo $rev_query;           
                      $result=mysqli_query($link, $rev_query) or exit("Sql Error rev qty".mysqli_error($GLOBALS["___mysqli_ston"]));
                     // echo $rev_query;
                      $ijrs = array();
@@ -568,8 +608,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
                      {
                        $rev_qty=$row['rej_qty'];
                      }
-                     if($wip!=0){ ?>
-                        <span class="green_box1">
+                     if($wip!=0){
+                      if($wip>=217 && $wip<=750) { 
+                        $span_color = 'green'; 
+                      }else if($wip<=216){
+                        $span_color = 'red';
+                      }else if($wip>=751){
+                        $span_color = 'black';
+                      }
+                      ?>
+                        <span class="<?= $span_color ?>_back">
                             WIP :  <?php echo $wip - $rev_qty; 
                         $wip=0;
                     ?></span>
@@ -604,28 +652,32 @@ while($sql_row=mysqli_fetch_array($sql_result))
         
         <?php } //section Loop -End ?> 
      </div><span style='height:50px'></span>
-     <div style='height:300px'>-</div>
-  <div style="width:220px;height:500px;float:none;">
-    <table width="100%" class="description">
-  <!-- <tr>
-    <td>Empty Slot</td>
-    <td><div class="green_box" style="margin-left:15px;"></div></td>
-  </tr> -->
-  <tr>
-    <td>Allocated Cut</td>
-    <td><div class="red_box" style="margin-left:15px;"></div></td>
-  </tr>
- <!--  <tr>
-    <td>Line WIP &gt; 1000</td>
-    <td><div class="yellow_box" style="margin-left:15px;width:20px;padding-top:0px;"></div></td>
-  </tr> -->
-</table>
+     <div style='height:300px'></div>
+  </div>   
 </div>
-    
-    
-  </div>
 
-</div>
+<br/><br/><br/>
+<span style='height:50px'></span>
+  <div class='col-sm-2' style="width:220px;height:auto;float:left;margin-top:0;border : 1px solid black">
+   <table width="100%" class="description" style='float : none'>
+      <tr>
+        <td>Allocated Jobs</td>
+        <td><div class="blue_box" style="margin-left:15px;"></div></td>
+      </tr>
+      <tr>
+        <td>Line WIP &ge; 217 && &le; 750</td>
+        <td><div class="green_box" style="margin-left:15px;"></div></td>
+      </tr>
+      <tr>
+        <td>Line WIP &le; 216</td>
+        <td><div class="red_box" style="margin-left:15px;"></div></td>
+      </tr>
+      <tr>
+        <td>Line WIP &ge; 751</td>
+        <td><div class="black_box1" style="margin-left:15px;"></div></td>
+      </tr>
+    </table>
+  </div>
 </div>
 </div>
 
