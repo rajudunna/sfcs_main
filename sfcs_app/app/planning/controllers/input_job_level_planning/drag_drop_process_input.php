@@ -5,7 +5,7 @@
 // include("dbconf.php"); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 	
-
+$userName = getrbac_user()['uname'];
 
 	$list=$_POST['listOfItems'];
 	//echo $list."<br>";
@@ -41,7 +41,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					$original_module=$sql_row_org_module["input_module"];
 				}
 
-				$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, log_time) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."',  '".$original_module."', 'No Module', NOW())";
+				$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, username, log_time) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."',  '".$original_module."', 'No Module', '".$userName."', NOW())";
 				// echo $insert_log_query.";<br>";
 				// die();
 				mysqli_query($link, $insert_log_query) or die("Error while saving the track details1");
@@ -69,17 +69,23 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				}
 			}
 
-			$backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$items[1]."'";
-			// echo $backup_query.";<br>";
-			mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+			// $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$items[1]."'";
+			// // echo $backup_query.";<br>";
+			// mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
 
 			$sql="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$items[1]."'";
 			// echo $sql.";<br>";
 			mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+			$plan_moduleqry="update $bai_pro3.plandoc_stat_log set plan_module= NULL where doc_no in (".$doc_no_ref_input.")";
+			$plan_moduleqry_result=mysqli_query($link, $plan_moduleqry) or exit("plan_moduleqry update error first".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 			$sql="delete from $bai_pro3.plan_dashboard where doc_no in (".$doc_no_ref_input.")";
 			// echo $sql.";<br>";
 			mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+			$plan_moduleqry1="update $bai_pro3.plandoc_stat_log set plan_module= NULL where doc_no in (".implode(",",$org_docs).")";
+			$plan_moduleqry_result1=mysqli_query($link, $plan_moduleqry1) or exit("plan_moduleqry update error second".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql="delete from $bai_pro3.plan_dashboard where doc_no in (".implode(",",$org_docs).")";
 			// echo $sql.";<br>";
@@ -103,7 +109,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				}
 				if ($original_module != $items[0])
 				{
-					$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, log_time) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."', '".$original_module."', '".$items[0]."', NOW())";
+					$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, username, log_time) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."', '".$original_module."', '".$items[0]."', '".$userName."', NOW())";
 					// echo $insert_log_query.";<br>";
 					// die();
 					mysqli_query($link, $insert_log_query) or die("Error while saving the track details2");
@@ -119,7 +125,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					$order_del_no1=$sql_row_schedule["order_del_no"];
 					$input_job_no1=$sql_row_schedule["input_job_no"];
 				}
-				$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no, from_module, to_module, log_time) VALUES('".$items[2]."', '".$order_del_no1."', '".$items[1]."', '".$input_job_no1."', 'No Module', '".$items[0]."', NOW())";
+				$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no, from_module, to_module, username, log_time) VALUES('".$items[2]."', '".$order_del_no1."', '".$items[1]."', '".$input_job_no1."', 'No Module', '".$items[0]."', '".$userName."', NOW())";
 				// echo $insert_log_query.";<br>";
 				// die();
 				mysqli_query($link, $insert_log_query) or die("Error while saving the track details3 == ".$insert_log_query);
@@ -279,9 +285,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	
 	if(sizeof($remove_docs)>0)
 	{
-		$backup_query1="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
-		// echo $backup_query1.";<br>";
-		mysqli_query($link, $backup_query1) or exit("Error while saving backup plan_dashboard_input_backup1");
+		// $backup_query1="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
+		// // echo $backup_query1.";<br>";
+		// mysqli_query($link, $backup_query1) or exit("Error while saving backup plan_dashboard_input_backup1");
 
 		$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
 		//echo $sqlx.";<br>";
