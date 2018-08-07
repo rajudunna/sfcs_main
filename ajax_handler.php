@@ -189,7 +189,6 @@ $("#body a").on('click',function(event){
                 var sfcs_app = url.includes("sfcs_app");
                 if(sfcs_app == false){
                     var c = url.split("?").pop();
-                    c = c+'&style=A0023SS9'
                     window.history.pushState("object or string", "Title", "?"+c);
                 }
                 jQuery("#body").html(resp);
