@@ -76,26 +76,32 @@ body
 function firstbox()
 {
 	var url1 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url1+"&style="+document.test.style.value;
+	var ajax_url =url1+"&style="+document.test.style.value;Ajaxify(ajax_url);
+
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value
 }
 
 function secondbox()
 {
 	var url2 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url2+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	var ajax_url =url2+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;Ajaxify(ajax_url);
+
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value
 }
 function thirdbox()
 {
 	var url3 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url3+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	var ajax_url =url3+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	Ajaxify(ajax_url);
+
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
 function fourthbox()
 {
 	var url4 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url4+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value;
+	var ajax_url =url4+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value;
+	Ajaxify(ajax_url);
+
 }
 
 $(document).ready(function() {
@@ -453,7 +459,8 @@ if(isset($_POST['submit']))
 	$color=$_POST['color'];
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop_input_job.php?style=$style&schedule=$schedule&code=$code\"; }</script>";
 	// echo("<script>window.open('".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&code=$code');</script>");
-	echo "<script>window.location = '".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&cutno=$cutno&color=$color';</script>";
+	echo "<script>var ajax_url	= '".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&cutno=$cutno&color=$color';Ajaxify(ajax_url);
+	</script>";
 	// echo "<script>window.close ();</script>";
 	
 	}

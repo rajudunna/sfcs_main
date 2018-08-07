@@ -35,7 +35,7 @@ if(isset($_GET['select']))
 		//echo $url;
 		// header("Location: ".$url);
 		echo '<script>
-				window.location.href="'.$url.'";
+				var ajax_url ="'.$url.'";Ajaxify(ajax_url);Ajaxify(ajax_url);
 		</script>';
 		
 	}
@@ -45,7 +45,7 @@ if(isset($_GET['select']))
 		//echo $sql;
 		// header('Location:'.$sql);
 		echo '<script>
-				window.location.href="'.$url.'";
+				var ajax_url ="'.$url.'";Ajaxify(ajax_url);
 		</script>';
 	}
 	

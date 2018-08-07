@@ -228,6 +228,7 @@
 			</div>
 		</div>
 	</div>
+	
 	<?php
 		$sidemenus = [
 			'Workorders' => [
@@ -262,7 +263,7 @@
             <div class="box-body no-padding">
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/stack-overflow.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Add Excess Quantity</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
@@ -271,14 +272,14 @@
 					</div>
 				</li>
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/sigma.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/orders_edit_form_schedule_wise.php') ?>" name="Add Sample Quantity" onclick="modal('','',this.name)">Add Sample Quantity</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">Where the sample qty is added here</p>
 					</div>
 				</li>
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/merge.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Clubbing</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
@@ -287,7 +288,7 @@
 					</div>
 				</li>
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/rug.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/lay_plan_preparation/test.php') ?>" onclick="modal('','',this.name)" name="Manage Layplan">Manage Layplan</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
@@ -307,23 +308,25 @@
             <div class="box-body no-padding">
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Manage Packing List [delete]">Manage Packing List [delete]</a></p>
-						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Manage Packing List</p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/pac_gen_sewing_job.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_list/delete_wrong_packing_lists.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
+						</p>
 					</div>
 				</li>
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/check-in.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_check_point_handover_select.php') ?>" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
 					</div>
 				</li>
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/cart.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/controllers/pending.php') ?>" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
 					</div>
 				</li>
@@ -341,21 +344,21 @@
             <div class="box-body no-padding">
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/shipped.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Reserve for dispatch">Reserve for dispatch</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/test.php') ?>" onclick="modal('','',this.name)" name="Reserve for dispatch">Reserve for dispatch</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
 					</div>
 				</li>
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/check-out.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Security Checkout">Security Checkout</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/logistics/controllers/security_check.php') ?>" onclick="modal('','',this.name)" name="Security Checkout">Security Checkout</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
 					</div>
 				</li>
 				<li class="">
-					<div clas="col-md-6" style="padding: 12px;">
+					<div class="col-md-12" style="padding: 12px;">
 						<img src="/images/employee.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Destroy">Destroy</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>

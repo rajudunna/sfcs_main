@@ -245,7 +245,8 @@ $result_oper2 = $conn->query($qry_get_suppliers);
 
 <script type="text/javascript">
 $("#clear").click(function(){
-    window.location.href="/material_approval.php";
+    var ajax_url ="/material_approval.php";Ajaxify(ajax_url);
+
 });
 $(document).ready(function(){
 	$('#loading-image').hide();

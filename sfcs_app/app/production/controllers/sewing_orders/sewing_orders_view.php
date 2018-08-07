@@ -15,20 +15,24 @@
         console.log('welcome');
         var style_id=document.getElementById('style_id').value;
         $('#show').hide();
-        window.location.href ="sewing_orders_view.php?style_id="+style_id
+        var ajax_url ="sewing_orders_view.php?style_id="+style_id;Ajaxify(ajax_url);
+
     }
 	function reload_schedule(){
         var schedule_num=document.getElementById('schedule_id').value;
 		var style_id=document.getElementById('style_id').value;
         $('#show').hide();
-        window.location.href ="sewing_orders_view.php?style_id="+style_id+"&schedule_id="+schedule_num
+        var ajax_url ="sewing_orders_view.php?style_id="+style_id+"&schedule_id="+schedule_num;Ajaxify(ajax_url);
+
     }
 	function reload_color(){
 		var style_id=document.getElementById('style_id').value;
         var schedule_num=document.getElementById('schedule_id').value;
 		var color_num=document.getElementById('color_id').value;
         $('#show').hide();
-        window.location.href ="sewing_orders_view.php?style_id="+style_id+"&schedule_id="+schedule_num+"&color_id="+color_num
+        var ajax_url ="sewing_orders_view.php?style_id="+style_id+"&schedule_id="+schedule_num+"&color_id="+color_num;
+		Ajaxify(ajax_url);
+
     }
 	function check_uncheck_checkbox(isChecked) {
 		if(isChecked) {

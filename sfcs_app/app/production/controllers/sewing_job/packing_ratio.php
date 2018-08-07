@@ -32,7 +32,8 @@
 	function firstbox()
 	{
 		var url1 = '<?= getFullUrl($_GET['r'],'packing_ratio.php','N'); ?>';
-		window.location.href =url1+"&style="+document.packing_ratio.style.value;
+		var ajax_url =url1+"&style="+document.packing_ratio.style.value;Ajaxify(ajax_url);
+
 	}
 
 	function check_val()

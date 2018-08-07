@@ -50,7 +50,8 @@ td{ padding:2px; white-space: nowrap;}
 function firstbox()
 {
 	var url1 = '<?= getFullUrl($_GET['r'],'module_change.php','N'); ?>';
-	window.location.href =url1+ "&module_id="+document.module_change.module_id.value
+	var ajax_url =url1+ "&module_id="+document.module_change.module_id.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()

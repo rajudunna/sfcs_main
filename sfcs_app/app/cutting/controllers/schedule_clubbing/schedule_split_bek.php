@@ -19,16 +19,20 @@ $add_excess_qty_to_first_sch=1; //0-Yes, 1-NO
 
 function firstbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+document.test.style.value 
+    var ajax_url ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+document.test.style.value ;Ajaxify(ajax_url);
+
 } 
 function secondbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value 
+    var ajax_url ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;Ajaxify(ajax_url);
+ 
 } 
 
 function thirdbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value 
+    var ajax_url ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	Ajaxify(ajax_url);
+ 
 } 
 </script> 
 </head> 

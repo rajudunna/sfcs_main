@@ -53,7 +53,8 @@ function firstbox()
 {
 	//alert("report");
 	var url1 = <?= getFullURL($_GET['r'],'mini_order_report.php','N');?>
-	window.location.href = url1+"&style="+document.mini_order_report.style.value;
+	var ajax_url = url1+"&style="+document.mini_order_report.style.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()

@@ -20,20 +20,22 @@ $view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
 
 function firstbox()
 {
-	var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value
-	Ajaxify(ajax_url);
+	var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()
 {
-	var ajax_url = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
-	Ajaxify(ajax_url);
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	var ajax_url = uriVal;Ajaxify(ajax_url);
+
 }
 
 function thirdbox()
 {
-	var ajax_url = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
-	Ajaxify(ajax_url);
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	var ajax_url = uriVal;Ajaxify(ajax_url);
+
 }
 $(document).ready(function() {
 	$('#schedule').on('click',function(e){

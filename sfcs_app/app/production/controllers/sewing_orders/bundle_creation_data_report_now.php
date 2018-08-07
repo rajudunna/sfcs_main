@@ -91,10 +91,13 @@ td{ padding:2px; white-space: nowrap;}
     var url1 = '<?= getFullUrl($_GET['r'],'bundle_creation_data_report_now.php','N'); ?>';
 
   function selectstyle(){ 
-    window.location.href =url1+"&style="+document.form1.style.value 
+    var ajax_url =url1+"&style="+document.form1.style.value;Ajaxify(ajax_url);
+ 
   } 
   function selectschedule(){ 
-    window.location.href =url1+"&style="+document.form1.style.value+"&schedule="+document.form1.schedule.value 
+    var ajax_url =url1+"&style="+document.form1.style.value+"&schedule="+document.form1.schedule.value ;
+    Ajaxify(ajax_url);
+
   } 
 </script> 
 <?php 

@@ -23,25 +23,30 @@
     function reload_style(){
         console.log('welcome');
         var style_id=document.getElementById('style_id').value;
-        window.location.href =url1+"&style_id="+style_id
+        var ajax_url =url1+"&style_id="+style_id;Ajaxify(ajax_url);
+
     }
 	function reload_schedule(){
         var schedule_num=document.getElementById('schedule_id').value;
 		var style_id=document.getElementById('style_id').value;
-        window.location.href =url1+"&style_id="+style_id+"&schedule="+schedule_num
+        var ajax_url =url1+"&style_id="+style_id+"&schedule="+schedule_num;Ajaxify(ajax_url);
+
     }
 	function reload_color(){
 		var style_id=document.getElementById('style_id').value;
         var schedule_num=document.getElementById('schedule_id').value;
 		var color_num=document.getElementById('color_id').value;
-        window.location.href =url1+"&style_id="+style_id+"&schedule="+schedule_num+"&color="+encodeURI(color_num)
+        var ajax_url =url1+"&style_id="+style_id+"&schedule="+schedule_num+"&color="+encodeURI(color_num);Ajaxify(ajax_url);
+
     }
 	function reload_cut(){
 		var style_id=document.getElementById('style_id').value;
         var schedule_num=document.getElementById('schedule_id').value;
 		var color_num=document.getElementById('color_id').value;
 		var cut_num=document.getElementById('cut_id').value;
-        window.location.href =url1+"&style_id="+style_id+"&schedule="+schedule_num+"&color="+encodeURI(color_num)+"&cut="+cut_num
+        var ajax_url =url1+"&style_id="+style_id+"&schedule="+schedule_num+"&color="+encodeURI(color_num)+"&cut="+cut_num;
+		Ajaxify(ajax_url);
+
     }
 </script> 
 <style type="text/css">

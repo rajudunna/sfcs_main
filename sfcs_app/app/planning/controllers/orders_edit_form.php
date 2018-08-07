@@ -47,15 +47,15 @@ function firstbox()
 
 function secondbox()
 {
-	var ajax_url ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
-	Ajaxify(ajax_url);
+		var ajax_url ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;Ajaxify(ajax_url);
+
 	
 }
 
 function thirdbox()
 {
-	var ajax_url ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
-	Ajaxify(ajax_url);
+	var ajax_url ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;Ajaxify(ajax_url);
+	
 }
 	function check_style()
 	{
