@@ -5,50 +5,83 @@
 <script type="text/javascript"> 
  
 function check_data(i,j) 
-{ 
-	var fr_qty=document.getElementById("fr"+j).value;
-	if(i<fr_qty)
+{
+	var fr_qty=Number(document.getElementById("fr"+j).value);
+	var val1=Number(i);
+	if(val1>0)
 	{
-		document.getElementById(j).style.backgroundColor="red";
-	}
-} 
-function check_stat(i,j) 
-{ 
-	var fr_qty=document.getElementById("fr"+j).value;
-	var lfr=document.getElementById("lfr"+j).value;
-	if(lfr<fr_qty)
-	{
-		if(i==0)
-		{	
-			document.getElementById(j).style.backgroundColor="red";
+		if(val1<fr_qty)
+		{
+			document.getElementById("row_val"+j).style.backgroundColor="red";
 		}
 		else
 		{
-			document.getElementById(j).style.backgroundColor="";
-		}	
+			document.getElementById("row_val"+j).style.backgroundColor="";
+		}
+	}
+	else
+	{
+		document.getElementById("row_val"+j).style.backgroundColor="";
+	}		
+} 
+function check_stat(i,j) 
+{
+	var fr_qty=Number(document.getElementById("fr"+j).value);
+	var lfr=Number(document.getElementById("lfr"+j).value);
+	var lfr_ori=Number(document.getElementById("lfr_ori"+j).value);
+	if (i=='NIL' )
+	{
+		document.getElementById("lfr"+j).value = lfr_ori;
+		document.getElementById("row_val"+j).style.backgroundColor="";
+	}
+	else
+	{
+		if(lfr<fr_qty)
+		{
+			if(i=='NIL')
+			{	
+				document.getElementById("row_val"+j).style.backgroundColor="red";
+			}
+			else
+			{
+				document.getElementById("row_val"+j).style.backgroundColor="";
+			}	
+		}
 	}
 }
 
 function check_tot() 
 { 	
-	var mod_list=document.getElementById("tot_mod").value;
+	var mod_list=Number(document.getElementById("tot_mod").value);
 	var status=0;
-	for(var k=0;k<mod_list.length;k++)
+	var checkn=1;
+	for(var k=0;k<mod_list;k++)
 	{		
-		var lfr=document.getElementById("lfr"+k).value;
-		var fr_qty=document.getElementById("fr"+k).value;
+		var lfr=Number(document.getElementById("lfr"+k).value);
+		var fr_qty=Number(document.getElementById("fr"+k).value);
 		var ln_reas=document.getElementById("line_reson"+k).value;
+
 		if(lfr>0)
 		{
 			if(lfr<fr_qty)
 			{
-				status=1;
+				if(ln_reas=='NIL')
+				{
+
+					status=1;
+				}
 			}
+			checkn=0;
 		}
-	}
-	if(status==1)
+	}	
+	if(checkn==1)
 	{
-		sweetAlert('Please select the reasons if Forecast is less than Plan Qty!!','','warning')
+		sweetAlert('Please Fill Any module Forecast!','','warning');
+		return false;
+	}
+	else if(status==1)
+	{
+		sweetAlert('Please select the reasons if Forecast is less than Plan Qty!!','','warning');
 		return false;
 	}
 	else if(status==0)
@@ -106,7 +139,7 @@ if(isset($_POST['submit']))
 	while($row=mysqli_fetch_array($result)) 
 	{     
 		$mod_names[]=$row['module_id']; 
-		$sql1="SELECT * FROM bai_pro2.fr_data WHERE frdate='$today' AND team='".$row['module_id']."'"; 
+		$sql1="SELECT * FROM $bai_pro2.fr_data WHERE frdate='$today' AND team='".$row['module_id']."'"; 
 		$result1=mysqli_query($link, $sql1) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($result1)) 
 		{ 
@@ -120,34 +153,55 @@ if(isset($_POST['submit']))
 		{ 
 			$frv[$row['module_id']]=0;
 			$frv_id[$row['module_id']]=0;			
-		}     
+		} 
+		$sql12="SELECT * FROM $BAI_PRO3.line_forecast WHERE date='$today' AND module='".$row['module_id']."'"; 
+		$result12=mysqli_query($link, $sql12) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"])); 
+		if(mysqli_num_rows($result12)) 
+		{ 
+			while($row12=mysqli_fetch_array($result12))
+			{				
+				$lfr_qty[$row['module_id']]=$row12['qty'];
+				$lfr_reason[$row['module_id']]=$row12['reason'];
+			}			
+		} 
+		else 
+		{ 
+			$lfr_qty[$row['module_id']]=0;
+		}	
 	} 
     for($i=0;$i<sizeof($mod_names);$i++) 
     { 
 
  ?> 
-    <tr id=<?php echo $i; ?>> 
+    <tr id="row_val<?php echo $i; ?>"> 
         <td> 
 		<?php echo $mod_names[$i]; ?> 
-		<input type="hidden" value="<?php echo $mod_names[$i]; ?>" name="module<?php echo $i; ?>" id="module<?php echo $i; ?>" value='<?php echo $mod_names[$i];  ?>'>
-		<input type="hidden" value="<?php echo $frv_id[$mod_names[$i]];  ?>" name="fr_id<?php echo $i; ?>" id="fr_id<?php echo $i; ?>">		
+		<input type="hidden" value="<?php echo $mod_names[$i]; ?>" name="module[<?php echo $i; ?>]" id="module<?php echo $i; ?>" value='<?php echo $mod_names[$i];  ?>'>
+		<input type="hidden" value="<?php echo $frv_id[$mod_names[$i]];  ?>" name="fr_id[<?php echo $i; ?>]" id="fr_id<?php echo $i; ?>">		
         </td> 
         <td> 
-        <input type="hidden" name="fr<?php echo $i; ?>" id="fr<?php echo $i; ?>" value='<?php echo $frv[$mod_names[$i]];  ?>'> 
+        <input type="hidden" name="fr[<?php echo $i; ?>]" id="fr<?php echo $i; ?>" value='<?php echo $frv[$mod_names[$i]];  ?>'> 
 		<?php  echo $frv[$mod_names[$i]];  ?> 
         </td> 
         <td> 
-		<input type="text" value="0" class="integer" onfocus="if(this.value==0){this.value=''}" onblur="javascript: if(this.value==''){this.value=0;}" name="lfr<?php echo $i; ?>" id="lfr<?php echo $i; ?>" onchange="check_data(this.value,<?php echo $i; ?>)"> 
+		<input type="text" value="<?php echo $lfr_qty[$mod_names[$i]]; ?>" class="integer form-control" onfocus="if(this.value==0){this.value=''}" onblur="javascript: if(this.value==''){this.value=0;}" name="lfr[<?php echo $i; ?>]" id="lfr<?php echo $i; ?>" onchange="check_data(this.value,<?php echo $i; ?>)"> 
+		<input type="hidden" value="<?php echo $lfr_qty[$mod_names[$i]]; ?>" name="lfr_ori[<?php echo $i; ?>]" id="lfr_ori<?php echo $i; ?>">
         </td> 
         <td>         
         <?php 
-		echo "<select name='line_reson".$i."' id='line_reson".$i."' onchange='check_stat(this.value,$i)'>";
+		echo "<select name='line_reson[".$i."]' class='form-control' id='line_reson".$i."' onchange='check_stat(this.value,$i)'>";
         $sql="select * from $bai_pro3.line_reason order by id*1"; 
-		echo "<option value=0>-------Select Reason-------</option>";
+		echo "<option value='NIL'>Select Reason</option>";
         $result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($row=mysqli_fetch_array($result)) 
         {
-			echo "<option value='".$row["reason_name"]."'>".$row["reason_name"]."</option>";	
+        	if ($lfr_reason[$mod_names[$i]] == $row["reason_name"])
+        	{
+        		$selected = 'selected';
+        	} else {
+        		$selected = '';
+        	}
+			echo "<option value='".$row["reason_name"]."' $selected>".$row["reason_name"]."</option>";	
         } 
 		echo "</select>";
         ?> 
@@ -160,9 +214,17 @@ if(isset($_POST['submit']))
 	</table>
 	<input type="hidden" value="<?php echo sizeof($mod_names); ?>" name="tot_mod" id="tot_mod">
 	<input type="hidden" value="<?php echo $today; ?>" name="daten" id="daten">
-<div class='col-sm-3'><br>
-	<input type="submit" name="submit" id="submit" value="Update" class="btn btn-primary">
-	</div>	
+	<?php
+	if(array_sum($lfr_qty)==0 || in_array($update,$has_permission))
+	{
+		?>
+		<div class='col-sm-3'><br>
+		<input type="submit" name="update" id="update" value="Update" class="btn btn-primary">
+		</div>	
+		<?php
+	}
+	?>	
+	
 	</div>
 			
 	
@@ -173,11 +235,35 @@ if(isset($_POST['update']))
 {
 	$daten=$_POST['daten'];
 	$fr_id=$_POST['fr_id'];
-	$fr_qty=$_POST['lfr'];
+	$fc_qty=$_POST['lfr'];
+	$fr_qty=$_POST['fr'];
 	$fr_mod=$_POST['module'];
 	$fr_reason=$_POST['line_reson'];
-	
-	
+	for($i=0;$i<sizeof($fr_mod);$i++)
+	{
+		if($fr_qty[$i]>0 || $fc_qty[$i]>0)
+		{
+			$sql1="select * from  $bai_pro3.`line_forecast` where date='$daten' and module='$fr_mod[$i]'";
+			$result1=mysqli_query($link, $sql1) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
+			$rows=mysqli_num_rows($result1);
+			if($rows==0)
+			{
+				$sql="INSERT IGNORE INTO $bai_pro3.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
+				//echo $sql."<br>";
+				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+			}
+			else
+			{
+				$sql="update $bai_pro3.`line_forecast` set qty ='$fc_qty[$i]', reason ='$fr_reason[$i]' where module ='$fr_mod[$i]' and  date ='$daten'";
+				//echo $sql."<br>";
+				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));	
+				
+			}
+			
+		}
+	}
+	echo "<script>sweetAlert('Successfully Forecast Updated.','','success');</script>";
 }
  ?> 
      
@@ -187,3 +273,9 @@ if(isset($_POST['update']))
 </div> 
 </div> 
 </div> 
+<script type="text/javascript">
+	$('[data-toggle="datepicker"]').datepicker({
+	format: 'yyyy-mm-dd',
+	endDate: new Date()
+});
+</script>

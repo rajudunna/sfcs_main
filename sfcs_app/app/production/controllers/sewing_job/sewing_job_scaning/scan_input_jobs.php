@@ -287,7 +287,7 @@ $(document).ready(function()
 					{
 						var hidden_class='';
 						var hidden_class_sewing_in='';
-						if (operation_id == 129)
+						if (operation_id == 129 || operation_id == 130)
 						{
 							var hidden_class_sewing_in='hidden';
 						}
@@ -339,12 +339,15 @@ $(document).ready(function()
 						
 						if(data[i].flag == 'packing_summary_input')
 						{
-							temp_var_bal = data[i].carton_act_qty;
+							temp_var_bal = data[i].balance_to_report;
 							$('#flag_validation').val(1);
 						}
+						console.log(barcode_generation);
+						console.log(data[i].tid);
+						console.log(job_number);
 						if(barcode_generation == 0)
 						{
-							if(data[i].tid != job_number)
+							if(Number(data[i].tid) != Number(job_number))
 							{
 								var hidden_class='hidden';
 							}
@@ -502,6 +505,11 @@ function validating_remarks_qty(val,remarks)
 		{
 			var array = response.split(',');
 			max = array[0];
+			if(max == '')
+			{
+				array[0] = 0;
+			}
+			console.log(array[0]);
 			var html_id = val+"remarks_validate_html";
 			$('#'+html_id).html(array[0]);
 			$('#response_flag').val(1);

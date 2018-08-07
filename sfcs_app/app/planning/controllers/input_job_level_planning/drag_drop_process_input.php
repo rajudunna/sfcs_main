@@ -5,13 +5,14 @@
 // include("dbconf.php"); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 	
-
+$userName = getrbac_user()['uname'];
 
 	$list=$_POST['listOfItems'];
-	////echo $list."<br>";
+	//echo $list."<br>";
 	$list_db=array();
 	$list_db=explode(";",$list);
-	
+	// var_dump($list_db);
+	// die();
 	//$sql="update plan_dashboard set priority=NULL"; // New 2011-01-04
 	//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 	
@@ -25,10 +26,26 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		//module-doc_no
 		
 		if($items[0]=="allItems")
-		{						
-			$sql="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$items[1]."'";
-			// echo $sql.";<br>";
-			mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+		{	
+			$get_original_module="SELECT packing_summary_input.`doc_no`, packing_summary_input.`order_del_no`, plan_dashboard_input.`input_job_no_random_ref`, packing_summary_input.`input_job_no`, plan_dashboard_input.`input_module` FROM $bai_pro3.`plan_dashboard_input` LEFT JOIN $bai_pro3.`packing_summary_input` ON plan_dashboard_input.`input_job_no_random_ref`=packing_summary_input.`input_job_no_random` WHERE plan_dashboard_input. input_job_no_random_ref='".$items[1]."'";
+			// echo $get_original_module.";<br>";
+			$result_org_module=mysqli_query($link, $get_original_module) or die("Error while getting original module0");
+			if (mysqli_num_rows($result_org_module) > 0)
+			{
+				while($sql_row_org_module=mysqli_fetch_array($result_org_module))
+				{
+					$doc_no=$sql_row_org_module["doc_no"];
+					$order_del_no=$sql_row_org_module["order_del_no"];
+					$input_job_no_random_ref=$sql_row_org_module["input_job_no_random_ref"];
+					$input_job_no=$sql_row_org_module["input_job_no"];
+					$original_module=$sql_row_org_module["input_module"];
+				}
+
+				$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, username, log_time) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."',  '".$original_module."', 'No Module', '".$userName."', NOW())";
+				// echo $insert_log_query.";<br>";
+				// die();
+				mysqli_query($link, $insert_log_query) or die("Error while saving the track details1");
+			}
 			
 			$sqly="SELECT group_concat(doc_no) as doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$items[1]."' ORDER BY acutno";
 			//echo $sqly.";<br>";
@@ -37,6 +54,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			{
 				$doc_no_ref_input=$sql_rowy["doc_no"];
 			}
+
 			$org_docs=array();
 			$org_docs[] = '-1';
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.")";
@@ -49,10 +67,25 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					$org_docs[]=$sql_rowr1["org_doc_no"];
 					//echo "Org--doc_no".$org_doc_no."<br>";
 				}
-			}	
+			}
+
+			// $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$items[1]."'";
+			// // echo $backup_query.";<br>";
+			// mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+
+			$sql="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$items[1]."'";
+			// echo $sql.";<br>";
+			mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+			$plan_moduleqry="update $bai_pro3.plandoc_stat_log set plan_module= NULL where doc_no in (".$doc_no_ref_input.")";
+			$plan_moduleqry_result=mysqli_query($link, $plan_moduleqry) or exit("plan_moduleqry update error first".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 			$sql="delete from $bai_pro3.plan_dashboard where doc_no in (".$doc_no_ref_input.")";
 			// echo $sql.";<br>";
 			mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+			$plan_moduleqry1="update $bai_pro3.plandoc_stat_log set plan_module= NULL where doc_no in (".implode(",",$org_docs).")";
+			$plan_moduleqry_result1=mysqli_query($link, $plan_moduleqry1) or exit("plan_moduleqry update error second".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql="delete from $bai_pro3.plan_dashboard where doc_no in (".implode(",",$org_docs).")";
 			// echo $sql.";<br>";
@@ -61,6 +94,45 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		}
 		else
 		{
+			$get_original_module="SELECT packing_summary_input.`doc_no`, packing_summary_input.`order_del_no`, plan_dashboard_input.`input_job_no_random_ref`, packing_summary_input.`input_job_no`, plan_dashboard_input.`input_module` FROM $bai_pro3.`plan_dashboard_input` LEFT JOIN $bai_pro3.`packing_summary_input` ON plan_dashboard_input.`input_job_no_random_ref`=packing_summary_input.`input_job_no_random` WHERE plan_dashboard_input. input_job_no_random_ref='".$items[1]."'";
+			// echo $get_original_module.";<br>";
+			$result_org_module=mysqli_query($link, $get_original_module) or die("Error while getting original module1");
+			if (mysqli_num_rows($result_org_module) > 0)
+			{
+				while($sql_row_org_module=mysqli_fetch_array($result_org_module))
+				{
+					$doc_no=$sql_row_org_module["doc_no"];
+					$order_del_no=$sql_row_org_module["order_del_no"];
+					$input_job_no_random_ref=$sql_row_org_module["input_job_no_random_ref"];
+					$input_job_no=$sql_row_org_module["input_job_no"];
+					$original_module=$sql_row_org_module["input_module"];
+				}
+				if ($original_module != $items[0])
+				{
+					$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, username, log_time) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."', '".$original_module."', '".$items[0]."', '".$userName."', NOW())";
+					// echo $insert_log_query.";<br>";
+					// die();
+					mysqli_query($link, $insert_log_query) or die("Error while saving the track details2");
+				}				
+			} 
+			else
+			{
+				$get_schedule="SELECT `order_del_no`, input_job_no FROM $bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$items[1]."'";
+				// echo $get_schedule.";<br>";
+				$result_schedule=mysqli_query($link, $get_schedule) or die("Error while getting schedule No");
+				while($sql_row_schedule=mysqli_fetch_array($result_schedule))
+				{
+					$order_del_no1=$sql_row_schedule["order_del_no"];
+					$input_job_no1=$sql_row_schedule["input_job_no"];
+				}
+				$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no, from_module, to_module, username, log_time) VALUES('".$items[2]."', '".$order_del_no1."', '".$items[1]."', '".$input_job_no1."', 'No Module', '".$items[0]."', '".$userName."', NOW())";
+				// echo $insert_log_query.";<br>";
+				// die();
+				mysqli_query($link, $insert_log_query) or die("Error while saving the track details3 == ".$insert_log_query);
+			}
+			
+			
+
 			$sql="insert ignore into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
 			///echo $sql.";<br>";
 			mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -186,7 +258,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							///echo $sqlx1.";<br>";
 							mysqli_query($link, $sqlx12) or exit("Sql Error62.3".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}						
-					
 					}		
 					/*else
 					{
@@ -198,8 +269,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					$x++;
 				}
 			}
-			
-			
 		}
 	}
 	
@@ -215,7 +284,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	}
 	
 	if(sizeof($remove_docs)>0)
-	{	
+	{
+		// $backup_query1="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
+		// // echo $backup_query1.";<br>";
+		// mysqli_query($link, $backup_query1) or exit("Error while saving backup plan_dashboard_input_backup1");
+
 		$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
 		//echo $sqlx.";<br>";
 		mysqli_query($link, $sqlx) or exit("Sql Error11.2");
