@@ -152,7 +152,7 @@
 									</table>	 
 		                 </div>
 
-									<div class="tab-pane active" id="tab_4">
+									<div class="tab-pane" id="tab_4">
 									<table class="table table-bordered">
 									<thead>
 									<tr>
@@ -188,7 +188,7 @@
 									</table>	 
 									</div>
 
-									<div class="tab-pane active" id="tab_5">
+									<div class="tab-pane" id="tab_5">
 									<table class="table table-bordered">
 									<thead>
 									<tr>
