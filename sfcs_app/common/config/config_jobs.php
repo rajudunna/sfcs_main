@@ -35,10 +35,10 @@ $password_ms = "fcs@m3pr";
 $conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
 
 //material requirement in week_del_mail_v2
-$server="BLL-DEVRPT-01";
+$server="GD-RPTSQL";
 $database="M3_BEL";
-$userid="BELMacroReader";
-$password="bel@macrosm3";
+$userid="BAIMacroReaders";
+$password="BAI@macrosm3";
 
 // bel data upload Sqlsrv Connections
 $sqsrv_server = "berwebsrv01";

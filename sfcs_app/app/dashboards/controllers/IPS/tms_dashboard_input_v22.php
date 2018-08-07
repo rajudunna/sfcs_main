@@ -842,9 +842,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			
 			$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.") and act_cut_status=\"DONE\"";
-			//echo $sql11x1."<br>";
+			// echo $sql11x1."<br>";
 			$sql_result11x1=mysqli_query($link, $sql11x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result11x1)>0 and $id=="yellow")
+			if(mysqli_num_rows($sql_result11x1)>0)
 			{
 				$id="blue";
 			} 
@@ -884,6 +884,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
 				$operation_id='129';
 				$shift='G';
+				$sidemenu=true;
 
 
 				if(in_array($authorizeLevel_1,$has_permission))
@@ -904,7 +905,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						{
 							echo "<div id=\"S$schedule\" style=\"float:left;\">
 									<div id=\"SJ$input_job_no\" style=\"float:left;\">
-										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_id&shift=$shift\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_id&shift=$shift','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a>
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_id&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_id&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a>
 										</div>
 									</div>
 								</div>";

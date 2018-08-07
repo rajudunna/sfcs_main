@@ -1414,8 +1414,6 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 				<center>
 					<span class="pull-right">
 						<strong>
-							Overall Used <?php echo $fab_uom.': <span style="background-color: #f0ad4e;color: white;">'.$used_fabric."</span>";?>
-							&nbsp;&nbsp;|&nbsp;&nbsp;
 							Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;color: white;">'.$overall_savings."%"."</span>";?>
 							&nbsp;&nbsp;|&nbsp;&nbsp;
 							Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?>

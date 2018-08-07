@@ -68,6 +68,8 @@ function check_validate()
 	var print_valid=document.getElementById("print_validation").value;
 	var num_check=document.getElementById("sql_num_check").value;
 	var checkBox = document.getElementById("validate");
+	console.log(print_valid);
+	console.log(num_check);
 	if(Number(print_valid)==Number(num_check)){
 		if (checkBox.checked == true){	
 			//var docket=document.getElementById("doc_no").value;
@@ -414,16 +416,16 @@ echo "</table>";
 
 echo "<h2>Cut Docket Print</h2>";
 
-$path='Book3_print.php';
+$path='Book3_print1.php';
 if(substr($style_ref,0,1)!="P" or substr($style_ref,0,1)!="K" or substr($style_ref,0,1)!="L" or substr($style_ref,0,1)!="O")
 {
 	if($mns_status>0)
 	{
-		$path='Book3_print.php';;  // For M&S Men Briefs
+		$path='Book3_print1.php';;  // For M&S Men Briefs
 	}
 	else
 	{
-		$path='Book3_print.php';; // FOR M&S Ladies Briefs
+		$path='Book3_print1.php';; // FOR M&S Ladies Briefs
 	}
 	
 }
@@ -431,7 +433,7 @@ else
 {
 	if(substr($style_ref,0,1)=="Y")
 	{
-		$path='Book3_print.php';; // FOR M&S Ladies Briefs	
+		$path='Book3_print1.php';; // FOR M&S Ladies Briefs	
 	}
 }
 
@@ -676,10 +678,12 @@ if($sql_row1['print_status']>0)
 }
 else
 {
-	
-	echo "<td></td>";
-	
-
+	if($clubbing>0){
+		echo "<td><img src=\"correct.png\"></td>";
+		$print_validation=$print_validation+1;
+	}else{
+		echo "<td></td>";
+	}
 }
 echo "<td>";	
 	getDetails("D",$sql_row1['doc_no']);

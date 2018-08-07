@@ -15,8 +15,8 @@ function echo_title($table_name,$field,$compare,$key,$link)
 
 function get_sewing_job_prefix($field,$prefix_table,$pack_summ_input,$schedule,$color,$sewing_job_no,$link)
 {
-	$sql="SELECT $field as result FROM $prefix_table WHERE type_of_sewing IN (SELECT DISTINCT type_of_sewing FROM $pack_summ_input WHERE order_del_no='$schedule' AND order_col_des='$color' AND input_job_no='$sewing_job_no')";
-	// echo $sql."<br>";
+	$sql="SELECT $field as result FROM $prefix_table WHERE type_of_sewing IN (SELECT DISTINCT type_of_sewing FROM $pack_summ_input WHERE order_del_no='$schedule' AND input_job_no='$sewing_job_no')";
+	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
