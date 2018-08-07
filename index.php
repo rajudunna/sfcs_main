@@ -52,13 +52,13 @@
             border-top: 3px solid #d2d6de;
             margin-bottom: 20px;
             width: 100%;
-            /*box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);*/
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
         }
         .panel-primary {
             border-color: #fff;
         }
         .panel.panel-primary {
-            border-top-color: #3c8dbc;
+            border-top-color: #00c0ef;
         }
         .panel-heading {
             border-bottom: 1px solid #f4f4f4 !important;
