@@ -12,14 +12,16 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected = this.value;
-	  window.location.href =url1+"&style="+valueSelected
+	   var ajax_url =url1+"&style="+valueSelected;Ajaxify(ajax_url);
+
     });
 	 $("#schedule").change(function(){
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected2 = this.value;
 	   var style1 = $("#style").val();
-	   window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
+	   var ajax_url =url1+"&style="+style1+"&schedule="+valueSelected2;Ajaxify(ajax_url);
+
 	 //window.location.href ="http://localhost/sfcs_app/app/production/controllers/sewing_job/sewing_club.php?schedule="+valueSelected2
 	 
 	 //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value

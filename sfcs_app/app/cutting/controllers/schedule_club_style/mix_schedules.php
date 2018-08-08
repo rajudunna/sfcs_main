@@ -6,22 +6,28 @@
 <script>
 	function firstbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value;
+		var ajax_url ="<?= $self_url ?>&style="+document.test.style.value;Ajaxify(ajax_url);
+
 	}
 
 	function midbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value+"&po="+document.test.po.value;
+		var ajax_url ="<?= $self_url ?>&style="+document.test.style.value+"&po="+document.test.po.value;Ajaxify(ajax_url);
+
 	}
 
 	function secondbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&po="+document.test.po.value
+		var ajax_url ="<?= $self_url ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&po="+document.test.po.value;
+		Ajaxify(ajax_url);
+
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&po="+document.test.po.value
+		var ajax_url ="<?= $self_url ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&po="+document.test.po.value;
+		Ajaxify(ajax_url);
+
 	}
 
 	function SetAllCheckBoxes(FormName, FieldName, CheckValue)

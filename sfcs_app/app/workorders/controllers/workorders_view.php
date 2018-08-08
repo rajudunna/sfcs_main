@@ -1,3 +1,37 @@
+
+<script>
+
+	$( document ).ready(function() {
+
+		var style = "<?= $_GET["style"] ?>";
+		var schedule = "<?= $_GET["schedule"] ?>";
+
+		var loadurl = '/sfcs_app/app/workorders/controllers/lots_tab.php';
+		var targ = '#tab_1';
+		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
+			$(targ).html(data)
+		});
+		$(this).tab('show')
+	});
+
+	$('[data-toggle="tabajax"]').click(function(e) {
+
+		e.preventDefault();
+
+		var style = "<?= $_GET["style"] ?>";
+		var schedule = "<?= $_GET["schedule"] ?>";
+
+		var loadurl = $(this).attr('href')
+		var targ = $(this).attr('data-target')
+		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
+			$(targ).html(data)
+		});
+		$(this).tab('show')
+		
+	});
+
+</script>
+
 <div class="row">
 	<div class="col-md-9 col-sm-9 col-lg-9">
 		<div class="box box-info">
@@ -28,206 +62,39 @@
 					</div>
 				</div>
 				<br>
+
+				<!-- Ajax Tab Section -->
 				<div class="nav-tabs-custom">
-		            <ul class="nav nav-tabs">
-		              <li class="active"><a href="#tab_1" data-toggle="tab">LOTS</a></li>
-		              <li><a href="#tab_2" data-toggle="tab">WO Info</a></li>
-		              <li><a href="#tab_3" data-toggle="tab">Supplier Cliams</a></li>
-		              <li><a href="#tab_4" data-toggle="tab">Dockets</a></li>
-		              <li><a href="#tab_5" data-toggle="tab">Jobs</a></li>
-		              <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
-		            </ul>
-		            <div class="tab-content">
-		              <div class="tab-pane active" id="tab_1">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th></th>
-									<th>Trim/Fabric</th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>Style/Color/Schedule/Allow Status</td>
-									<td></td>
-									<td>Ready for Layplan</td>
-									<td><a href="#" class="btn btn-primary btn-xs">Receive</a> |
-									    <a href="#" class="btn btn-danger btn-xs">Delete</a> |
-									    <a href="#" class="btn btn-info btn-xs">Transfer</a> |
-									    <a href="#" class="btn btn-success btn-xs">Inspect</a> |
-									    <a href="#" class="btn btn-warning btn-xs">Claim</a>    
-                  </td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>
-		                </div>
-		              <!-- /.tab-pane -->
-		              <div class="tab-pane" id="tab_2">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th></th>
-									<th>Trim/Fabric</th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>Style/Color/Sched
-									ule/Allow Status</td>
-									<td></td>
-									<td>Ready for Layplan</td>
-									<td><a href="#" class="btn btn-primary btn-xs">Receive</a> |
-									    <a href="#" class="btn btn-danger btn-xs">Delete</a> |
-									    <a href="#" class="btn btn-info btn-xs">Transfer</a> |
-									    <a href="#" class="btn btn-success btn-xs">Inspect</a> |
-									    <a href="#" class="btn btn-warning btn-xs">Claim</a>    
-              		</td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>	                
-		              </div>
-		              <!-- /.tab-pane -->
-		              <div class="tab-pane" id="tab_3">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th>Complaint number</th>
-									<th>Suplier</th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>Style/Color/Schedule/Allow Status</td>
-									<td></td>
-									<td></td>
-									<td><a href="#" class="btn btn-success btn-xs">Update</a> |
-									    <a href="#" class="btn btn-primary btn-xs">Print</a> |
-									    <a href="#" class="btn btn-info btn-xs">Mail status</a> |
-									    <a href="#" class="btn btn-danger btn-xs">Delete</a> 
-              		</td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>	 
-		                 </div>
 
-									<div class="tab-pane" id="tab_4">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th>Docket Number</th>
-									<th></th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>#</td>
-									<td></td>
-									<td></td>
-									<td><a href="#" class="btn btn-success btn-xs">Update</a> |
-									    <a href="#" class="btn btn-primary btn-xs">Cuts</a> |
-									    <a href="#" class="btn btn-info btn-xs">Quantity</a> 
-              		</td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>	 
-									</div>
+					<ul class="nav nav-tabs" id="myTab">
+						<li class="active"><a href="/sfcs_app/app/workorders/controllers/lots_tab.php" data-target='#tab_1' data-toggle="tabajax">LOTS</a></li>
+						<li><a href="/sfcs_app/app/workorders/controllers/wo_info_tab.php" data-target='#tab_2' data-toggle="tabajax">WO Info</a></li>
+						<li><a href="/sfcs_app/app/workorders/controllers/supplier_claim_tab.php" data-target='#tab_3' data-toggle="tabajax">Supplier Cliams</a></li>
+						<li><a href="/sfcs_app/app/workorders/controllers/dockets_tab.php" data-target='#tab_4' data-toggle="tabajax">Dockets</a></li>
+						<li><a href="/sfcs_app/app/workorders/controllers/jobs_tab.php" data-target='#tab_5' data-toggle="tabajax">Jobs</a></li>
+						<li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+					</ul>
 
-									<div class="tab-pane" id="tab_5">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th>Jobs</th>
-									<th></th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>#</td>
-									<td></td>
-									<td></td>
-									<td><a href="#" class="btn btn-success btn-xs">Operations</a>
-              		</td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>	 
-									</div>
-		              <!-- /.tab-pane -->
-		            </div>
-		        <!-- /.tab-content -->
-		      </div>
+		      <div class="tab-content">
+
+						<div class="tab-pane active" id="tab_1"></div>
+				
+						<div class="tab-pane" id="tab_2"></div>
+						
+						<div class="tab-pane" id="tab_3"></div>
+
+						<div class="tab-pane" id="tab_4"></div>
+										
+						<div class="tab-pane" id="tab_5"></div>
+
+					</div>
+		             
+		  	</div>
+		      
 			</div>
 		</div>
 	</div>
+	
 	<?php
 		$sidemenus = [
 			'Workorders' => [
@@ -262,7 +129,11 @@
             <div class="box-body no-padding">
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_1" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/stack-overflow.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Add Excess Quantity</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
@@ -271,14 +142,22 @@
 					</div>
 				</li>
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_2" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/sigma.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/orders_edit_form_schedule_wise.php') ?>" name="Add Sample Quantity" onclick="modal('','',this.name)">Add Sample Quantity</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">Where the sample qty is added here</p>
 					</div>
 				</li>
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_3" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/merge.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Clubbing</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
@@ -287,7 +166,11 @@
 					</div>
 				</li>
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_4" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/rug.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/lay_plan_preparation/test.php') ?>" onclick="modal('','',this.name)" name="Manage Layplan">Manage Layplan</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
@@ -307,23 +190,37 @@
             <div class="box-body no-padding">
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_5" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Manage Packing List [delete]">Manage Packing List [delete]</a></p>
-						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Manage Packing List</p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/pac_gen_sewing_job.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_list/delete_wrong_packing_lists.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
+						</p>
 					</div>
 				</li>
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_6" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/check-in.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_check_point_handover_select.php') ?>" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
 					</div>
 				</li>
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_7" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/cart.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/controllers/pending.php') ?>" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
 					</div>
 				</li>
@@ -341,21 +238,33 @@
             <div class="box-body no-padding">
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_8" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/shipped.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Reserve for dispatch">Reserve for dispatch</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/test.php') ?>" onclick="modal('','',this.name)" name="Reserve for dispatch">Reserve for dispatch</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
 					</div>
 				</li>
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_9" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/check-out.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Security Checkout">Security Checkout</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/logistics/controllers/security_check.php') ?>" onclick="modal('','',this.name)" name="Security Checkout">Security Checkout</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
 					</div>
 				</li>
 				<li class="">
+<<<<<<< HEAD
 					<div class="col-md-12" id="divid_10" style="padding: 12px;">
+=======
+					<div class="col-md-12" style="padding: 12px;">
+>>>>>>> dedc0e6f5f955f1d83d79c4792c5824dd86c3678
 						<img src="/images/employee.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Destroy">Destroy</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>

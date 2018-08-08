@@ -51,19 +51,24 @@ td{ padding:2px; white-space: nowrap;}
 function firstbox()
 {
 	//alert("test");
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style_id="+document.mini_order_report.style_id.value
+	var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style_id="+document.mini_order_report.style_id.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()
 {
 	//alert('test');
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style_id="+document.mini_order_report.style_id.value+"&sch_id="+document.mini_order_report.sch_id.value
+	var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style_id="+document.mini_order_report.style_id.value+"&sch_id="+document.mini_order_report.sch_id.value;
+	Ajaxify(ajax_url);
+
 }
 
 function thirdbox()
 {
 	//alert('test');
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style_id="+document.mini_order_report.style_id.value+"&sch_id="+document.mini_order_report.sch_id.value+"&mini_order_num="+document.mini_order_report.mini_order_num.value
+	var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style_id="+document.mini_order_report.style_id.value+"&sch_id="+document.mini_order_report.sch_id.value+"&mini_order_num="+document.mini_order_report.mini_order_num.value;
+	Ajaxify(ajax_url);
+
 }
 
 function check_val1()

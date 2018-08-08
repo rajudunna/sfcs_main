@@ -22,13 +22,16 @@
 	document.getElementById('loading').style.display = 'block';
         console.log('welcome');
         var style_id=document.getElementById('style_id').value;
-        window.location.href ="sewing_orders_form.php?style_id="+style_id
+        var ajax_url ="sewing_orders_form.php?style_id="+style_id;Ajaxify(ajax_url);
+
     }
 	function reload_schedule(){
 	document.getElementById('loading').style.display = 'block';
         var schedule_num=document.getElementById('schedule_id').value;
 		var style_id=document.getElementById('style_id').value;
-        window.location.href ="sewing_orders_form.php?style_id="+style_id+"&schedule="+schedule_num
+        var ajax_url ="sewing_orders_form.php?style_id="+style_id+"&schedule="+schedule_num;
+		Ajaxify(ajax_url);
+
     }
 	function reload_color(){
 	document.getElementById('loading').style.display = 'block';
@@ -36,7 +39,9 @@
         var schedule_num=document.getElementById('schedule_id').value;
 		var color_num=document.getElementById('color_id').value;
 		//alert(color_num);
-        window.location.href ="sewing_orders_form.php?style_id="+style_id+"&schedule="+schedule_num+"&color="+color_num
+        var ajax_url ="sewing_orders_form.php?style_id="+style_id+"&schedule="+schedule_num+"&color="+color_num;
+		Ajaxify(ajax_url);
+
     }
 	function reload_cut(){
 	document.getElementById('loading').style.display = 'block';
@@ -45,7 +50,9 @@
 		var color_num=document.getElementById('color_id').value;
 		var cut_num=document.getElementById('cut_id').value;
 		//console.log(cut_num);
-        window.location.href ="sewing_orders_form.php?style_id="+style_id+"&schedule="+schedule_num+"&color="+color_num+"&cut_id="+cut_num
+        var ajax_url ="sewing_orders_form.php?style_id="+style_id+"&schedule="+schedule_num+"&color="+color_num+"&cut_id="+cut_num;
+		Ajaxify(ajax_url);
+
     }
 	function sewing_orders(){
 	document.getElementById('loading').style.display = 'block';
@@ -54,7 +61,9 @@
 		var color_num=document.getElementById('color_id').value;
 		var cut_num=document.getElementById('cut_id').value;
 		var operation_code=document.getElementById('operation_code').value;
-        window.location.href ="sewing_orders_form.php?style_id="+style_id+"&schedule="+schedule_num+"&color="+color_num+"&cut_id="+cut_num+"&operation_code="+operation_code
+        var ajax_url ="sewing_orders_form.php?style_id="+style_id+"&schedule="+schedule_num+"&color="+color_num+"&cut_id="+cut_num+"&operation_code="+operation_code;
+		Ajaxify(ajax_url);
+
 	}
 	function check_uncheck_checkbox(isChecked) {
 		if(isChecked) {

@@ -76,20 +76,25 @@ body
 function firstbox()
 {
 	var url1 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url1+"&style="+document.test.style.value;
+	var ajax_url =url1+"&style="+document.test.style.value;
+	Ajaxify(ajax_url);
+
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value
 }
 
 function secondbox()
 {
 	var url2 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url2+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	var ajax_url =url2+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	Ajaxify(ajax_url);
+
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value
 }
 function thirdbox()
 {
 	var url3 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url3+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	var ajax_url =url3+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;Ajaxify(ajax_url);
+
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
 

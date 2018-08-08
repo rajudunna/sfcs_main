@@ -361,9 +361,11 @@
 
 		var style=document.getElementById('style').value;
 		if(style != ''){
-			window.location = path+"&style="+style;
+			var ajax_url = path+"&style="+style;
+			Ajaxify(ajax_url);
 		}else{
-			window.location = path;
+			var ajax_url = path;
+			Ajaxify(ajax_url);
 		}
 		
 	}
@@ -372,11 +374,14 @@
 		var schedule=document.getElementById('schedule').value;
 		var style=document.getElementById('style').value;
 		if(schedule != '' && style!=''){
-			window.location = path+"&schedule="+schedule+"&style="+style;
+			var ajax_url = path+"&schedule="+schedule+"&style="+style;
+			Ajaxify(ajax_url);
 		}else if(style != ''){
-			window.location = path+"&style="+style;
+		    var ajax_url = path+"&style="+style;
+			Ajaxify(ajax_url);
 		}else{
-			window.location = path;
+			var ajax_url = path;
+			Ajaxify(ajax_url);
 		}	
 	}
 

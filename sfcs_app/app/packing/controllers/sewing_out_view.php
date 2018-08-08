@@ -52,7 +52,8 @@ if(isset($_POST['submit']))
 	if($rowq){
 		$url = getFullURL($_GET['r'],'sawing_out_list.php','N');
 		echo '<script type="text/javascript">
-					window.location = "'.$url.'&schedule='.$schedule.'"
+					var ajax_url = "'.$url.'&schedule='.$schedule.'";
+					Ajaxify(ajax_url);
 		  	  </script>'; 
 	}
 	else{
@@ -76,7 +77,7 @@ if(isset($_POST['submit2']))
 		$url = getFullURL($_GET['r'],'sawing_out_list_1.php','N');
 		//echo $url;
 		echo '<script type="text/javascript">
-				window.location = "'.$url.'&schedule='.$schedule.'"
+				var ajax_url = "'.$url.'&schedule='.$schedule.'"; Ajaxify(ajax_url);
 		  	  </script>'; 
 	}else{
 		echo '<div class="alert alert-danger" role="alert">Schedule Not Processed Yet</div>';

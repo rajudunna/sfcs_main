@@ -63,17 +63,21 @@ function check1(x)
 var url = "<?= getFullURL($_GET['r'],'sample_room.php','N');?>";
 function firstbox()
 {
-	window.location.href = url+"&style="+document.test.style.value
+	var ajax_url = url+"&style="+document.test.style.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()
 {
-	window.location.href = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	var ajax_url = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	Ajaxify(ajax_url);
+
 }
 
 function thirdbox()
 {
-	window.location.href = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	var ajax_url= url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;Ajaxify(ajax_url);
+
 }
 </script>
 

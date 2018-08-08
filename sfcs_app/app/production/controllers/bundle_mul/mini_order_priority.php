@@ -52,7 +52,8 @@ function firstbox()
 	var url1 = '<?= getFullUrl($_GET['r'],'mini_order_priority.php','N'); ?>';
 	
 	//swal("report");
-	window.location.href = url1 + "&style="+document.mini_order_report.style.value
+	var ajax_url = url1 + "&style="+document.mini_order_report.style.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()
