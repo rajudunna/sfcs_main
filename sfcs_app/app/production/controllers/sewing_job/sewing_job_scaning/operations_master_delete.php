@@ -12,13 +12,15 @@
 		if ($deleteReply==1) {?>
 			<script type="text/javascript">
 				sweetAlert("Sucessfully Deleted the Operation","","success");
-				window.location.href="<?= getFullURLLevel($_GET['r'],'operations_creation.php',0,'N'); ?>";
+				var ajax_url ="<?= getFullURLLevel($_GET['r'],'operations_creation.php',0,'N'); ?>";Ajaxify(ajax_url);
+
 				exit();
 			</script>
 		<?php	}else{	?>
 			<script type="text/javascript">
 				alert("Falied to delete the Operation");
-				window.location.href="<?= getFullURLLevel($_GET['r'],'operations_creation.php',0,'N'); ?>";						
+				var ajax_url ="<?= getFullURLLevel($_GET['r'],'operations_creation.php',0,'N'); ?>";	Ajaxify(ajax_url);
+					
 			</script>
 		<?php }
 	}

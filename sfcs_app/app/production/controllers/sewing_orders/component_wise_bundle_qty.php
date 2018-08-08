@@ -21,22 +21,30 @@
 
 		function getstyle(){
 			document.getElementById('loading').style.display = 'block';
-			window.location.href =url1+"&style="+document.test.style.value
+			var ajax_url =url1+"&style="+document.test.style.value;Ajaxify(ajax_url);
+
 		}
 
 		function getschedule(){
 			document.getElementById('loading').style.display = 'block';
-			window.location.href =url1+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+			var ajax_url =url1+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;Ajaxify(ajax_url);
+			Ajaxify(ajax_url);
+
+
 		}
 
 		function getcolor(){
 			document.getElementById('loading').style.display = 'block';
-			window.location.href =url1+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+			var ajax_url =url1+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+			Ajaxify(ajax_url);
+
 		}
 
 		function getcut(){
 			document.getElementById('loading').style.display = 'block';
-			window.location.href =url1+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cut="+document.test.cut.value
+			var ajax_url =url1+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cut="+document.test.cut.value;
+			Ajaxify(ajax_url);
+
 		}
 
 		function myFunction() {

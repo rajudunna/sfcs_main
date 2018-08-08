@@ -12,7 +12,8 @@
 function firstbox()
 {
 	var url1 = '<?= getFullUrl($_GET['r'],'carton_ratio.php','N'); ?>';
-	window.location.href =url1+"&style="+document.mini_order_report.style.value;
+	var ajax_url =url1+"&style="+document.mini_order_report.style.value;Ajaxify(ajax_url);
+
 }
 
 function check_val()

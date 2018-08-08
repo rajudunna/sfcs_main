@@ -225,7 +225,8 @@
              text: 'Candidates are successfully shortlisted!',
              icon: 'success',
            })
-		   window.location.href=url;
+		   var ajax_url=url;Ajaxify(ajax_url);
+
 		   //.then(function() {
              // form.submit();
            // });

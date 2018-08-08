@@ -36,7 +36,8 @@
     echo '<div class="panel panel-default" style="color:green"><center><h3>Successfully updated!</h3></center</div>';
     echo ("<SCRIPT LANGUAGE='JavaScript'>
     window.alert('Succesfully Updated')
-    window.location.href='$view_emp_data'&date=$today';
+    var ajax_url ='$view_emp_data'&date=$today';Ajaxify(ajax_url);
+
     </SCRIPT>");
    
 ?>

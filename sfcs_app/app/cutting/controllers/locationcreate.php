@@ -46,7 +46,8 @@
 					</div>
 					<script type="text/javascript">
 						setTimeout(function () {
-							window.location.href="<?= $self ?>";
+							var ajax_url="<?= $self ?>";
+							Ajaxify(ajax_url);
 						},1000);
 					</script>
 
@@ -61,7 +62,8 @@
 						</div>
 						<script type="text/javascript">
 							setTimeout(function () {
-								window.location.href="<?= $self ?>";
+								var ajax_url="<?= $self ?>";
+								Ajaxify(ajax_url);
 							},1000);
 						</script>
 					<?php	
@@ -73,7 +75,8 @@
 						</div>
 						<script type="text/javascript">
 							setTimeout(function () {
-								window.location.href="<?= $self ?>";
+								var ajax_url="<?= $self ?>";
+								Ajaxify(ajax_url);
 							},1000);
 						</script>
 					<?php 
@@ -89,7 +92,8 @@
 					</div>
 					<script type="text/javascript">
 						setTimeout(function () {
-							window.location.href="<?= $self ?>";
+							var ajax_url="<?= $self ?>";
+							Ajaxify(ajax_url);
 						},1000);
 					</script>
 				<?php	
@@ -101,7 +105,8 @@
 					</div>
 					<script type="text/javascript">
 						setTimeout(function () {
-							window.location.href="<?= $self ?>";
+							var ajax_url="<?= $self ?>";
+							Ajaxify(ajax_url);
 						},1000);
 					</script>
 				<?php 
@@ -120,7 +125,8 @@
 					</div>
 					<script type="text/javascript">
 						setTimeout(function () {
-							window.location.href="<?= $self ?>";
+							var ajax_url="<?= $self ?>";
+							Ajaxify(ajax_url);
 						},1000);
 					</script>
 			<?php	}else{	?>
@@ -129,7 +135,8 @@
 					</div>
 					<script type="text/javascript">
 						setTimeout(function () {
-							window.location.href="<?= $self ?>";
+							var ajax_url="<?= $self ?>";
+							Ajaxify(ajax_url);
 						},1000);
 					</script>
 			<?php }
@@ -220,7 +227,7 @@
 												}).then((isConfirm)=>{
 													if (isConfirm) {
 														sweetAlert("Deleted!","","success");
-														window.location.href = "<?= $self_url ?>&del_id=<?= $resValues[$i]['loc_id']?>";
+														var ajax_url = "<?= $self_url ?>&del_id=<?= $resValues[$i]['loc_id']?>";Ajaxify(ajax_url);
 													} else {
 														sweetAlert("Cancelled","","error");
 													}

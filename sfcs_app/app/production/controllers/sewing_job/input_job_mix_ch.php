@@ -42,12 +42,15 @@ table,tr,td,th
 
 function secondbox() 
 { 
-    window.location.href ="input_job_mix_ch.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value 
+    var ajax_url ="input_job_mix_ch.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+    Ajaxify(ajax_url);
+ 
 } 
 
 function firstbox() 
 { 
-    window.location.href ="input_job_mix_ch.php?style="+document.test.style.value 
+    var ajax_url ="input_job_mix_ch.php?style="+document.test.style.value;Ajaxify(ajax_url);
+
 } 
 
 

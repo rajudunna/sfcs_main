@@ -49,7 +49,8 @@ function firstbox()
 	//alert("report");
 	var url1 = '<?= getFullUrl($_GET['r'],'mini_order_deletion.php','N'); ?>';
 	
-	window.location.href = url1 + "&style="+document.mini_order_report.style.value;
+	var ajax_url = url1 + "&style="+document.mini_order_report.style.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()
@@ -57,7 +58,9 @@ function secondbox()
 	//alert('test');
 	var url1 = '<?= getFullUrl($_GET['r'],'mini_order_deletion.php','N'); ?>';
 	
-	window.location.href = url1 + "&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value;
+	var ajax_url = url1 + "&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value;
+	Ajaxify(ajax_url);
+
 }
 
 function check_val1()

@@ -51,7 +51,8 @@ td{ padding:2px; white-space: nowrap;}
 function firstbox()
 {
 	//alert("report");
-	window.location.href ="miniorder_recon.php?style="+document.mini_order_report.style.value
+	var ajax_url ="miniorder_recon.php?style="+document.mini_order_report.style.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()

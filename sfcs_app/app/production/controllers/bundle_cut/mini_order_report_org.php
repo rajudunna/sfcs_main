@@ -50,13 +50,16 @@ td{ padding:2px; white-space: nowrap;}
 function firstbox()
 {
 	//alert("report");
-	window.location.href ="mini_order_report.php?style="+document.mini_order_report.style.value
+	var ajax_url ="mini_order_report.php?style="+document.mini_order_report.style.value;Ajaxify(ajax_url);
+
 }
 
 function secondbox()
 {
 	//alert('test');
-	window.location.href ="mini_order_report.php?style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
+	var ajax_url ="mini_order_report.php?style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value;
+	Ajaxify(ajax_url);
+
 }
 
 function check_val()
