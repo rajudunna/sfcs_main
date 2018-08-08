@@ -70,6 +70,19 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 			}
 			return true;
 	}
+	function validateQty1(e,t) 
+	{
+		if(e.keyCode == 13)
+				return;
+			var p = String.fromCharCode(e.which);
+			var c = /^[0-9]*\.?[0-9]*$/;
+			var v = document.getElementById(t.id);
+			if( !(v.value.match(c)) && v.value!=null ){
+				v.value = '';
+				return false;
+			}
+			return true;
+	}
 </script>
 <body>
     <?php if($_POST['operation_name']) {?>
@@ -106,7 +119,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<center>
 						<div class="form-group col-lg-6 col-sm-12">
 							<label><?php echo $label_name_to_show ?><span style="color:red"></span></label>
-							<input type="text" id="job_number" onkeyup="validateQty(event,this);" value='<?= $input_job_no_random_ref ?>' class="form-control integer" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
+							<input type="text" id="job_number" onkeyup="validateQty1(event,this);" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
 						</div>
 						<div class = "form-group col-lg-6 col-sm-12">
 							<label>Assigning To Module</label><br>
@@ -135,7 +148,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 		
 		<div class='panel panel-primary'>
 			<div class='panel-heading'><?php echo $label_name_to_show;?> Data</div>
-				<div class="ajax-loader" id="loading-image" style="margin-left: 486px;margin-top: 35px;border-radius: -80px;width: 88px;">
+				<div class="ajax-loader" id="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
 					<img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
 				</div>
 			<form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
