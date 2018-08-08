@@ -254,12 +254,12 @@
             <div class="box-header with-border">
               <h3 class="box-title">Work Orders</h3>
 
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              <div class="box-tools" id="ic">
+                <button type="button" class="btn btn-box-tool" data-toggle="collapse"  data-target="#box1"><i class="fa fa-minus" id='icc'></i>
                 </button>
               </div>
             </div>
-            <div class="box-body no-padding">
+            <div class="box-body no-padding accordion-body collapse in" id='box1'>
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
 					<div clas="col-md-6" style="padding: 12px;">
@@ -299,12 +299,12 @@
         <div class="box box-info">
             <div class="box-header with-border">
               <h3 class="box-title">Pre Production</h3>
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              <div class="box-tools" id=ic1>
+                <button type="button"  class="btn btn-box-tool"  data-toggle="collapse" data-target="#box2" ><i class="fa fa-minus" id="icc1"></i>
                 </button>
               </div>
             </div>
-            <div class="box-body no-padding">
+            <div class="box-body no-padding accordion-body collapse in" id='box2'>
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
 					<div clas="col-md-6" style="padding: 12px;">
@@ -333,12 +333,12 @@
         <div class="box box-info">
             <div class="box-header with-border">
               <h3 class="box-title">Quality</h3>
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              <div class="box-tools" id="ic2">
+                <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target="#box3"><i class="fa fa-minus"  id="icc2"></i>
                 </button>
               </div>
             </div>
-            <div class="box-body no-padding">
+            <div class="box-body no-padding accordion-body collapse in" id='box3' >
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
 					<div clas="col-md-6" style="padding: 12px;">
@@ -420,5 +420,18 @@
 }
 .btn-breadcrumb .btn.btn-default:hover:not(:last-child):before {
   border-left: 10px solid #adadad;
-}  
+} 
 </style>
+<script>
+$(document).ready(function () { 
+                $('#ic').click(function () {
+                    $('#icc').toggleClass('fa-minus fa-plus');
+                });
+								$('#ic1').click(function () {
+                    $('#icc1').toggleClass('fa-minus fa-plus');
+                });
+								$('#ic2').click(function () {
+                    $('#icc2').toggleClass('fa-minus fa-plus');
+                });
+            });
+	</script>
