@@ -1,3 +1,29 @@
+
+<script>
+
+	$( document ).ready(function() {
+		
+		var loadurl = '/sfcs_app/app/workorders/controllers/lots_tab.php';
+		var targ = '#tab_1';
+		$.get(loadurl, function(data) {
+			$(targ).html(data)
+		});
+		$(this).tab('show')
+	});
+
+	$('[data-toggle="tabajax"]').click(function(e) {
+		e.preventDefault()
+		var loadurl = $(this).attr('href')
+		var targ = $(this).attr('data-target')
+		$.get(loadurl, function(data) {
+			$(targ).html(data)
+
+		});
+		$(this).tab('show')
+	});
+
+</script>
+
 <div class="row">
 	<div class="col-md-9 col-sm-9 col-lg-9">
 		<div class="box box-info">
@@ -28,203 +54,36 @@
 					</div>
 				</div>
 				<br>
+
+				<!-- Ajax Tab Section -->
 				<div class="nav-tabs-custom">
-		            <ul class="nav nav-tabs">
-		              <li class="active"><a href="#tab_1" data-toggle="tab">LOTS</a></li>
-		              <li><a href="#tab_2" data-toggle="tab">WO Info</a></li>
-		              <li><a href="#tab_3" data-toggle="tab">Supplier Cliams</a></li>
-		              <li><a href="#tab_4" data-toggle="tab">Dockets</a></li>
-		              <li><a href="#tab_5" data-toggle="tab">Jobs</a></li>
+
+		            <ul class="nav nav-tabs" id="myTab">
+		              <li class="active"><a href="/sfcs_app/app/workorders/controllers/lots_tab.php" data-target='#tab_1' data-toggle="tabajax">LOTS</a></li>
+		              <li><a href="/sfcs_app/app/workorders/controllers/wo_info_tab.php" data-target='#tab_2' data-toggle="tabajax">WO Info</a></li>
+		              <li><a href="/sfcs_app/app/workorders/controllers/supplier_claim_tab.php" data-target='#tab_3' data-toggle="tabajax">Supplier Cliams</a></li>
+		              <li><a href="/sfcs_app/app/workorders/controllers/dockets_tab.php" data-target='#tab_4' data-toggle="tabajax">Dockets</a></li>
+		              <li><a href="/sfcs_app/app/workorders/controllers/jobs_tab.php" data-target='#tab_5' data-toggle="tabajax">Jobs</a></li>
 		              <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
 		            </ul>
+
 		            <div class="tab-content">
-		              <div class="tab-pane active" id="tab_1">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th></th>
-									<th>Trim/Fabric</th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>Style/Color/Schedule/Allow Status</td>
-									<td></td>
-									<td>Ready for Layplan</td>
-									<td><a href="#" class="btn btn-primary btn-xs">Receive</a> |
-									    <a href="#" class="btn btn-danger btn-xs">Delete</a> |
-									    <a href="#" class="btn btn-info btn-xs">Transfer</a> |
-									    <a href="#" class="btn btn-success btn-xs">Inspect</a> |
-									    <a href="#" class="btn btn-warning btn-xs">Claim</a>    
-                  </td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>
-		                </div>
-		              <!-- /.tab-pane -->
-		              <div class="tab-pane" id="tab_2">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th></th>
-									<th>Trim/Fabric</th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>Style/Color/Sched
-									ule/Allow Status</td>
-									<td></td>
-									<td>Ready for Layplan</td>
-									<td><a href="#" class="btn btn-primary btn-xs">Receive</a> |
-									    <a href="#" class="btn btn-danger btn-xs">Delete</a> |
-									    <a href="#" class="btn btn-info btn-xs">Transfer</a> |
-									    <a href="#" class="btn btn-success btn-xs">Inspect</a> |
-									    <a href="#" class="btn btn-warning btn-xs">Claim</a>    
-              		</td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>	                
-		              </div>
-		              <!-- /.tab-pane -->
-		              <div class="tab-pane" id="tab_3">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th>Complaint number</th>
-									<th>Suplier</th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>Style/Color/Schedule/Allow Status</td>
-									<td></td>
-									<td></td>
-									<td><a href="#" class="btn btn-success btn-xs">Update</a> |
-									    <a href="#" class="btn btn-primary btn-xs">Print</a> |
-									    <a href="#" class="btn btn-info btn-xs">Mail status</a> |
-									    <a href="#" class="btn btn-danger btn-xs">Delete</a> 
-              		</td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>	 
-		                 </div>
 
-									<div class="tab-pane" id="tab_4">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th>Docket Number</th>
-									<th></th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>#</td>
-									<td></td>
-									<td></td>
-									<td><a href="#" class="btn btn-success btn-xs">Update</a> |
-									    <a href="#" class="btn btn-primary btn-xs">Cuts</a> |
-									    <a href="#" class="btn btn-info btn-xs">Quantity</a> 
-              		</td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>	 
-									</div>
+		              	<div class="tab-pane active" id="tab_1"></div>
+					
+						<div class="tab-pane" id="tab_2"></div>
+						
+						<div class="tab-pane" id="tab_3"></div>
 
-									<div class="tab-pane" id="tab_5">
-									<table class="table table-bordered">
-									<thead>
-									<tr>
-									<th>Jobs</th>
-									<th></th>
-									<th>Status</th>
-									<th></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-									<td>#</td>
-									<td></td>
-									<td></td>
-									<td><a href="#" class="btn btn-success btn-xs">Operations</a>
-              		</td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									</tr>
-									</tbody>
-									</table>	 
-									</div>
-		              <!-- /.tab-pane -->
-		            </div>
-		        <!-- /.tab-content -->
-		      </div>
+						<div class="tab-pane" id="tab_4"></div>
+										
+						<div class="tab-pane" id="tab_5"></div>
+
+					</div>
+		             
+		        </div>
+		       
+		     
 			</div>
 		</div>
 	</div>
