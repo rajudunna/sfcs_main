@@ -115,17 +115,19 @@
 	console.log(url);
 	function firstbox()
 	{
-		window.location.href = url+"&style="+document.test.style.value;
+		var ajax_url = url+"&style="+document.test.style.value;
+		Ajaxify(ajax_url);
 	}
 
 	function secondbox()
 	{
-		window.location.href = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+		var ajax_url = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+		Ajaxify(ajax_url);
 	}
 
 	function thirdbox()
 	{
-		window.location.href = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+		var ajax_url = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value; Ajaxify(ajax_url);
 		var url001 = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
 	}
 </script>
@@ -373,7 +375,8 @@ if(isset($_POST['submit']))
 	if(array_sum($acut) == 0){
 		echo '<script>sweetAlert("There is no excess cut for selected style, schedule and color.")
 					.then((value) => {
-						window.location.href = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+						var ajax_url= url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+						Ajaxify(ajax_url);
 					});</script>';
 		
 	}else {

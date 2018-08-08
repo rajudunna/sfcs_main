@@ -130,12 +130,14 @@
 		if ($deleteReply) {?>
 			<script type="text/javascript">
 				alert("Sucessfully Deleted the Operation");
-				window.location.href="operations_creation.php";
+				var ajax_url ="operations_creation.php";Ajaxify(ajax_url);
+
 			</script>
 		<?php	}else{	?>
 			<script type="text/javascript">
 				alert("Falied to delete the Operation");
-				window.location.href="operations_creation.php";						
+				var ajax_url ="operations_creation.php";Ajaxify(ajax_url);
+						
 			</script>
 		<?php }
 	}

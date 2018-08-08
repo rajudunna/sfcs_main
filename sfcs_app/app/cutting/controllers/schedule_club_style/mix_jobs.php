@@ -11,17 +11,22 @@
 <script>
 	function firstbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value
+		var ajax_url ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value;Ajaxify(ajax_url);
+
 	}
 
 	function secondbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		var ajax_url ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+		Ajaxify(ajax_url);
+
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+		var ajax_url ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+		Ajaxify(ajax_url);
+
 	}
 </script>
 

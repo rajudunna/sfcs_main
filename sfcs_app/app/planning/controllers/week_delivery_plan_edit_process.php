@@ -113,7 +113,7 @@ if(isset($_POST['update']))
 	//header("location:$back_url");
 	echo "<script>
 			setTimeout(function(){
-				window.location.href='$back_url';
+				var ajax_url ='$back_url'; Ajaxify(ajax_url);
 			},2000);
 		</script>";
 }	

@@ -138,6 +138,7 @@ $result = $conn->query($qry_get_product_style);
 //var dono = "<?php echo isset($_GET['dono']) ? $_GET['dono'] : ''; ?>";
 //$("#dono").val(dono);
 $("#clear").click(function(){
-    window.location.href="/material_approval.php";
+    var ajax_url="/material_approval.php";Ajaxify(ajax_url);
+
 });
 </script>

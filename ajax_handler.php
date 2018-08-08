@@ -97,6 +97,7 @@ $whoops->register();
  
 $('form').on("submit",function(event) {
     event.preventDefault(); 
+
     var form = $(this);
     var url;
     var get_url;
@@ -153,10 +154,10 @@ $('form').on("submit",function(event) {
     myLoadStop();
 });
 
-$("#body a").on('click',function(event){
+$("#body a").unbind().bind('click',function(event){
 
     event.preventDefault();
-
+    
     var url;
     var href_url;
     var split_url;
@@ -188,7 +189,6 @@ $("#body a").on('click',function(event){
                 var sfcs_app = url.includes("sfcs_app");
                 if(sfcs_app == false){
                     var c = url.split("?").pop();
-                    c = c+'&style=A0023SS9'
                     window.history.pushState("object or string", "Title", "?"+c);
                 }
                 jQuery("#body").html(resp);
@@ -223,8 +223,7 @@ $('[data-toggle="datepicker"]').datepicker(
 }).attr("readonly","true").css({"background-color": "#fff"});
 
 
-function Ajaxify (href_url) {
-    
+function Ajaxify (href_url,body=0) {
     var url;
     var index = href_url.includes("index.php");
     if(index == true){
@@ -240,14 +239,23 @@ function Ajaxify (href_url) {
         cache:false,
     }).done(function(resp) {
        
-        jQuery("#modal-body").html(resp);
-        $('#myModal').modal('show');
+        if(body == "body"){
+            jQuery("#body").html(resp);
+        }else{
+            jQuery("#modal-body").html(resp);
+            $('#myModal').modal('show');
+        }
+       
         // $.unblockUI();
 
     }).fail(function(erespo) {
 
-        jQuery("#modal-body").html(erespo);
-        $('#myModal').modal('show');
+         if(body == "body"){
+            jQuery("#body").html(resp);
+        }else{
+            jQuery("#modal-body").html(resp);
+            $('#myModal').modal('show');
+        }
 
     });
    

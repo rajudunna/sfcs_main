@@ -63,7 +63,8 @@ body
 <script type='text/javascript'>
 function firstbox()
 {
-	window.location.href ="pending.php?color="+document.test.style.value
+	var ajax_url ="pending.php?color="+document.test.style.value;Ajaxify(ajax_url);
+
 }
 </script>	
 </head>

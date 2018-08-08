@@ -7,12 +7,15 @@
 <script>
 	function firstbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value
+		var ajax_url ="<?= $self_url ?>&style="+document.test.style.value;Ajaxify(ajax_url);
+
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value+"&color="+document.test.color.value
+		var ajax_url ="<?= $self_url ?>&style="+document.test.style.value+"&color="+document.test.color.value;
+		Ajaxify(ajax_url);
+
 	}
 
 	function SetAllCheckBoxes(FormName, FieldName, CheckValue)
