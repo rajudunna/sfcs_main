@@ -88,7 +88,6 @@ echo "<div class=\"table-responsive\">
 						{
 							$ratio=$sql_row2['ratio'];
 						}
-
 						echo "
 						<tr class=\"  \">";
 							//echo "<td class=\"  \"><center>".$mk_ref1."</center></td>";
@@ -167,14 +166,13 @@ echo "<div class=\"table-responsive\">
 							{
 								$savings1=0;
 							}
-
 							echo "<td class=\"  \"><center>".$savings1."%</center></td>";
 							echo "<td class=\"  \"><center>".round($cad_consumption,4)."</center></td>";
 							echo "<td class=\"  \"><center>".round($usedFabric,2)."</center></td>";
-							echo "<td class=\"  \"><center>".$used_yards[$ratio]."</center></td>";
+							echo "<td class=\"  \"><center>".$used_yards[$category1][$ratio]."</center></td>";
 
 							$grand_tot_used_fab = $grand_tot_used_fab + round($usedFabric,2);
-							$grand_tot_used_binding = $grand_tot_used_binding + $used_yards[$ratio];
+							$grand_tot_used_binding = $grand_tot_used_binding + $used_yards[$category1][$ratio];
 								
 							switch ($mk_status1)
 							{
