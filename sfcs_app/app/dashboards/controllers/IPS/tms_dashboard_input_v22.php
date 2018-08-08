@@ -585,6 +585,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 }
 if(sizeof($remove_docs)>0)
 {
+	$backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
+	// echo $backup_query.";<br>";
+	mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+
 	$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
 	//echo $sqlx.";<br>";
 	mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));			
@@ -682,7 +686,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$input_trims_status=$row["input_trims_status"];
 			
 			$add_css="behavior: url(border-radius-ie8.htc);  border-radius: 10px;";
-			if($input_trims_status>1)
+			if($input_trims_status>0)
 			{
 				$add_css="";
 			}
@@ -841,10 +845,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$id="yellow";
 			}
 			
-			$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.") and act_cut_status=\"DONE\"";
+			$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.") and act_cut_status<>\"DONE\"";
 			// echo $sql11x1."<br>";
 			$sql_result11x1=mysqli_query($link, $sql11x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result11x1)>0)
+			if(mysqli_num_rows($sql_result11x1)==0)
 			{
 				$id="blue";
 			} 
