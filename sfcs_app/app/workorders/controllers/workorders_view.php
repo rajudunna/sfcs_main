@@ -2,24 +2,32 @@
 <script>
 
 	$( document ).ready(function() {
-		
+
+		var style = "<?= $_GET["style"] ?>";
+		var schedule = "<?= $_GET["schedule"] ?>";
+
 		var loadurl = '/sfcs_app/app/workorders/controllers/lots_tab.php';
 		var targ = '#tab_1';
-		$.get(loadurl, function(data) {
+		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
 			$(targ).html(data)
 		});
 		$(this).tab('show')
 	});
 
 	$('[data-toggle="tabajax"]').click(function(e) {
-		e.preventDefault()
+
+		e.preventDefault();
+
+		var style = "<?= $_GET["style"] ?>";
+		var schedule = "<?= $_GET["schedule"] ?>";
+
 		var loadurl = $(this).attr('href')
 		var targ = $(this).attr('data-target')
-		$.get(loadurl, function(data) {
+		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
 			$(targ).html(data)
-
 		});
 		$(this).tab('show')
+		
 	});
 
 </script>
@@ -58,19 +66,19 @@
 				<!-- Ajax Tab Section -->
 				<div class="nav-tabs-custom">
 
-		            <ul class="nav nav-tabs" id="myTab">
-		              <li class="active"><a href="/sfcs_app/app/workorders/controllers/lots_tab.php" data-target='#tab_1' data-toggle="tabajax">LOTS</a></li>
-		              <li><a href="/sfcs_app/app/workorders/controllers/wo_info_tab.php" data-target='#tab_2' data-toggle="tabajax">WO Info</a></li>
-		              <li><a href="/sfcs_app/app/workorders/controllers/supplier_claim_tab.php" data-target='#tab_3' data-toggle="tabajax">Supplier Cliams</a></li>
-		              <li><a href="/sfcs_app/app/workorders/controllers/dockets_tab.php" data-target='#tab_4' data-toggle="tabajax">Dockets</a></li>
-		              <li><a href="/sfcs_app/app/workorders/controllers/jobs_tab.php" data-target='#tab_5' data-toggle="tabajax">Jobs</a></li>
-		              <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
-		            </ul>
+					<ul class="nav nav-tabs" id="myTab">
+						<li class="active"><a href="/sfcs_app/app/workorders/controllers/lots_tab.php" data-target='#tab_1' data-toggle="tabajax">LOTS</a></li>
+						<li><a href="/sfcs_app/app/workorders/controllers/wo_info_tab.php" data-target='#tab_2' data-toggle="tabajax">WO Info</a></li>
+						<li><a href="/sfcs_app/app/workorders/controllers/supplier_claim_tab.php" data-target='#tab_3' data-toggle="tabajax">Supplier Cliams</a></li>
+						<li><a href="/sfcs_app/app/workorders/controllers/dockets_tab.php" data-target='#tab_4' data-toggle="tabajax">Dockets</a></li>
+						<li><a href="/sfcs_app/app/workorders/controllers/jobs_tab.php" data-target='#tab_5' data-toggle="tabajax">Jobs</a></li>
+						<li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+					</ul>
 
-		            <div class="tab-content">
+		      <div class="tab-content">
 
-		              	<div class="tab-pane active" id="tab_1"></div>
-					
+						<div class="tab-pane active" id="tab_1"></div>
+				
 						<div class="tab-pane" id="tab_2"></div>
 						
 						<div class="tab-pane" id="tab_3"></div>
@@ -81,9 +89,8 @@
 
 					</div>
 		             
-		        </div>
-		       
-		     
+		  	</div>
+		      
 			</div>
 		</div>
 	</div>
