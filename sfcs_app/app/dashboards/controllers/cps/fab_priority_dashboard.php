@@ -9,7 +9,7 @@ Changes Log:
 -->
 <?php
 $double_modules=array();
-include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
@@ -78,7 +78,7 @@ if(($hour>=7.45 and $hour<=10.45) or ($hour>=12.30 and $hour<=14.00) or ($hour>=
 } 
 */
 ?>
-<script type="text/javascript" src="../../../../common/js/jquery.js"></script>
+<!-- <script type="text/javascript" src="../../../../common/js/jquery.js"></script> -->
 <!-- <script type='text/javascript' src='jquery-1.6.2.js'></script> -->
 <!--Ticket #177328  Add the java script for Text blinking -->
 <script type="text/javascript">
