@@ -561,8 +561,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 
               $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedul_no,$color_name,$inputno,$link);
+              $application='IMS';
 
-              $scanning_query=" select * from $brandix_bts.tbl_ims_ops limit 1";
+              $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+              //echo $scanning_query;
               $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
               while($sql_row=mysqli_fetch_array($scanning_result))
               {
