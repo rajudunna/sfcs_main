@@ -129,7 +129,10 @@ function redirect_view()
     var y=document.filter.ex_fact.value;
     // var z=document.filter.status.value;
     // window.location = "index.php?r=<?= $_GET['r'] ?>&view_div="+encodeURIComponent(x)+"&ex_fact="+y+"&status="+z;
-	window.location = "index.php?r=<?= $_GET['r'] ?>&view_div="+encodeURIComponent(x)+"&ex_fact="+y;
+	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view_div="+encodeURIComponent(x)+"&ex_fact="+y;
+    Ajaxify(ajax_url);
+
+    
 }
 
 </script>

@@ -560,7 +560,9 @@ function redirect_view()
 	//x=document.getElementById('view_cat').value;
 	y=document.getElementById('cust_view').value;
 	//window.location = "pps_dashboard_v2.php?view=2&view_cat="+x+"&view_div="+y;
-	window.location = "cpanel_main_v2.php?cust_view="+y;
+	var ajax_url = "cpanel_main_v2.php?cust_view="+y;
+	Ajaxify(ajax_url);
+
 }
 </script>
 

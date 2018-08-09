@@ -119,7 +119,9 @@ function redirect_view()
 //  x=document.getElementById('view_cat').value;
   y=document.getElementById('view_div').value;
   //window.location = "fab_priority_dashboard.php?view=2&view_cat="+x+"&view_div="+y;
-  window.location = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view=2&view_div="+y;
+  var ajax_url = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view=2&view_div="+y;
+  Ajaxify(ajax_url);
+
 }
 
 function redirect_dash()
@@ -127,7 +129,9 @@ function redirect_dash()
   x=document.getElementById('view_cat').value;
   y=document.getElementById('view_div').value;
   z=document.getElementById('view_dash').value;
-  window.location = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view="+z+"&view_cat="+x+"&view_div="+y;
+ var ajax_url = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view="+z+"&view_cat="+x+"&view_div="+y;
+ Ajaxify(ajax_url);
+
 }
 
 
