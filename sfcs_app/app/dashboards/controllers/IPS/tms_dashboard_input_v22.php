@@ -376,14 +376,18 @@ if(!in_array($authorized,$has_permission))
 	function redirect_view()
 	{
 		y=document.getElementById('view_div').value;
-		window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input_v22.php','N') ?>+&view=2&view_div="+encodeURIComponent(y);
+		var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input_v22.php','N') ?>+&view=2&view_div="+encodeURIComponent(y);
+		Ajaxify(ajax_url);
+
 	}
 
 	function redirect_dash()
 	{
 		y=document.getElementById('view_div').value;
 		z=document.getElementById('view_dash').value;
-		window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input_v22.php','N') ?>+&view="+z+"&view_div="+encodeURIComponent(y);
+		var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input_v22.php','N') ?>+&view="+z+"&view_div="+encodeURIComponent(y);
+		Ajaxify(ajax_url);
+
 	}
 </script>
 

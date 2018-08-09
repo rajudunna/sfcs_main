@@ -16,7 +16,7 @@ window.open(Site,'PopupName','toolbar=no,statusbar=yes,menubar=yes,location=no,s
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 ?>
-<body onLoad="<?php echo "window.location="."'".getFullURL($_GET['r'],'test_new.php','N')."'"; ?>">
+<body onLoad="<?php echo "var ajax_url ="."'".getFullURL($_GET['r'],'test_new.php','N')."'";'Ajaxify(ajax_url)'; ?>">
 
 </body>
 

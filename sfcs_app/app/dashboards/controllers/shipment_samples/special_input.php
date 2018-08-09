@@ -72,7 +72,9 @@ $username=strtolower($username_list[1]);
 				$url = getFullURLLevel($_GET['r'],'cheat_system.php',0,'N');
 				//header("Location:../cheat_system.php");
 				echo "<script>
-                        window.location.href = '$url';
+				var ajax_url = '$url';
+						Ajaxify(ajax_url);
+
 				     </script>";
 			}
 
