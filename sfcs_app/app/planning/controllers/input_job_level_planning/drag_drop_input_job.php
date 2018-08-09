@@ -645,7 +645,12 @@ $code_db=explode("*",$code);
 <div class="col-md-12">
 <div class="panel panel-primary">
 <div class="panel-heading">
-<?php echo "Style:$style | Schedule: $schedule | color: $color"; ?>
+
+<?php 
+$url2 = getFullURLLevel($_GET['r'],'jobs_movement_track.php',0,'N');
+echo "<b>Style:</b> $style | <b>Schedule:</b> $schedule | <b>Color:</b> $color"; 
+echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url2' onclick=\"return popitup2('$url2')\" target='_blank'>Sewing Jobs Movement Track</a>";
+?>
 </div>
 <div class="panel-body">
 <div>
@@ -653,16 +658,16 @@ $code_db=explode("*",$code);
 <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: white;color: red;">
 <div>Different Style and Schedule Jobs</div>
 </div>&nbsp;&nbsp;&nbsp;
-<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: yellow;color: red;margin-left: 5px;">
+<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: yellow;color: red;margin-left: 30px;">
 <div> Different Style & Schedule, Excess / Sample Jobs</div>
 </div>
-<div style="margin-top: 5px; border: 1px solid;background-color: green;color: white;float: left;margin-left: 4px;">
+<div style="margin-top: 5px; border: 1px solid #000;background-color: green;color: white;float: left;margin-left: 30px;">
 <div> Same Style and Schedule if Fabric requested Jobs</div>
 </div>
 <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: red;color: black;">
 <div>Same Style and Schedule if Fabric not requested Jobs</div>
 </div>
-<div style="margin-top: 4px;border: 2px solid yellow;background-color: green;color: white;float: left; margin-left: 5px;">
+<div style="margin-top: 4px;border: 2px solid yellow;background-color: green;color: white;float: left; margin-left: 30px;">
 <div>Same Style and Schedule if Fabric requested for Excess/Sample Jobs</div>
 </div>
 <div style="margin-top: 4px;border: 2px solid yellow;background-color: white;color: red;float: left;">
@@ -677,7 +682,7 @@ $code_db=explode("*",$code);
 		<img src='images/heading3.gif'>
 	</div> -->
 	<div id="dhtmlgoodies_listOfItems">
-		<div style="position: fixed;width: 150px;height:230px;overflow:scroll;margin-top: 30px;">
+		<div style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;">
 			<p>Jobs</p>		
 		<ul id="allItems">		
 		<?php
