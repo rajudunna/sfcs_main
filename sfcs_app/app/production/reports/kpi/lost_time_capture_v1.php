@@ -161,8 +161,52 @@ table tr:hover td {
    ?>
 <div class="table-responsive">
   <table class="table table-bordered">
-    
-	<?php  if($row=mysqli_fetch_array($res)){ 
+    	<thead>
+	<tr style="background-color:#ec407a;display:none;">
+        <th colspan="12"></th>
+		<th style="border:1px solid #ec407a;">Time</th>
+		<th colspan="17" style="border:1px solid #ec407a;"></th>
+      </tr>
+      <tr style="background-color:#6995d6;color:white">
+        <th>Team</th>
+        
+        <th>Style</th>
+		<th style="display:none;">Sch</th>
+		<th>FR Plan</th>
+		<th>Forecast</th>
+		
+		<th>Planned <br> Status</th>
+		<th>Reason</th>
+		<th>Pcs</th>
+		
+		<th rowspan="2">8.30 A.M.</th>
+		<th>Pcs</th>
+		<th>9.30 A.M.</th>
+		<th>Pcs</th>
+		<th>10.30 A.M</th>
+		<th>Pcs</th>
+		<th>11.30 A.M</th>
+		<th>Pcs</th>
+		<th>12.30 P.M.</th>
+		<th>Pcs</th>
+		<th>1.30 P.M.</th>
+		<th>Pcs</th>
+		<th>2.30 P.M.</th>
+		<th>Pcs</th>
+		<th>3.30 P.M.</th>
+		<th>Pcs</th>
+		<th>4.30 P.M.</th>
+		<th>Pcs</th>
+		<th>5.30 P.M.</th>
+		<th>Pcs</th>
+		<th>6.30 P.M.</th>
+		<th>Pcs</th>
+		<th></th>
+		
+		
+      </tr>
+    </thead>
+	<?php  while($row=mysqli_fetch_array($res)){ 
 		
 	 // echo $frdate;
     $date=$row['frdate'];
@@ -253,51 +297,7 @@ table tr:hover td {
 	
 	
 	?>
-	<thead>
-	<tr style="background-color:#ec407a;display:none;">
-        <th colspan="12"></th>
-		<th style="border:1px solid #ec407a;">Time</th>
-		<th colspan="17" style="border:1px solid #ec407a;"></th>
-      </tr>
-      <tr style="background-color:#6995d6;color:white">
-        <th>Team</th>
-        
-        <th>Style</th>
-		<th style="display:none;">Sch</th>
-		<th>FR Plan</th>
-		<th>Forecast</th>
-		
-		<th>Planned <br> Status</th>
-		<th>Reason</th>
-		<th>Pcs</th>
-		
-		<th rowspan="2">8.30 A.M.</th>
-		<th>Pcs</th>
-		<th>9.30 A.M.</th>
-		<th>Pcs</th>
-		<th>10.30 A.M</th>
-		<th>Pcs</th>
-		<th>11.30 A.M</th>
-		<th>Pcs</th>
-		<th>12.30 P.M.</th>
-		<th>Pcs</th>
-		<th>1.30 P.M.</th>
-		<th>Pcs</th>
-		<th>2.30 P.M.</th>
-		<th>Pcs</th>
-		<th>3.30 P.M.</th>
-		<th>Pcs</th>
-		<th>4.30 P.M.</th>
-		<th>Pcs</th>
-		<th>5.30 P.M.</th>
-		<th>Pcs</th>
-		<th>6.30 P.M.</th>
-		<th>Pcs</th>
-		<th></th>
-		
-		
-      </tr>
-    </thead>
+
     <tbody>
 	<?php
 	echo '<tr style="border-bottom:2px solid black;">
@@ -514,10 +514,10 @@ table tr:hover td {
 	
 	
 	}
-	else
-	{
-		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
-	} 
+	// else
+	// {
+		// echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
+	// } 
 	
 }?>
       

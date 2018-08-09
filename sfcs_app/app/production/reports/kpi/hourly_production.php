@@ -61,7 +61,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
      if(isset($_GET['submit']))
 	 {
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
-     //echo $sql;
+     // echo $sql;
 	$res=mysqli_query($link,$sql); 
 	
 
@@ -105,8 +105,47 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
     <div class="table-area">
   <table class="table table-bordered">
  
-    
-	<?php  if($row=mysqli_fetch_array($res)){ 
+    	<thead>
+	
+	<!-- <tr style="background-color: #337ab7; color: white;"> -->
+	<tr style="background:#6995d6;color:white;"> 
+	  <th>Team</th>
+	  <th>NOP</th>
+	  <th>Style</th>
+	  <th style='display:none;'>Sch</th>
+	  <th>FR Plan</th>
+	  <th>Forecast</th>
+	  <th>SMV</th>
+	  <th>Hours</th>
+	  <th>Target <br>PCS/Hr</th>
+	  
+	  <th rowspan="2">8.30</th>
+	  <th>9.30</th>
+	  <th>10.30</th>
+	  <th>11.30</th>
+	  <th>12.30</th>
+	  <th>1.30</th>
+	  <th>2.30</th>
+	  <th>3.30</th>
+	  <th>4.30</th>
+	  <th>5.30</th>
+	  <th>6.30</th>
+	  <th>Total Pcs</th>
+	  <th>Scanned Pcs</th>
+	  <th>Scanned SAH</th>
+	  <th>FR SAH</th>
+	  <th>Forecast SAH</th>
+	  <th>Actual SAH</th>
+	  <th>SAH Diff</th>
+	  <th>Plan Eff</th>
+	  <th>Act Eff</th>
+	  <th style="display:none;">Act Pcs</th>
+	  <th>Balance Pcs</th>
+	  <th>Hit rate</th>
+	  <th>Request Pcs/Hr</th>
+	</tr>
+  </thead>
+	<?php  while($row=mysqli_fetch_array($res)){ 
 		
 	 // echo $frdate;
     $date=$row['frdate'];
@@ -114,7 +153,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	$newDate = date("Y-m-d", strtotime($date));
 	//echo $newDate.'<br>';
 	$team=$row['team'];
-	
+	echo $team;
 	//get styles which run in lines
 	$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
 	$res1=mysqli_query($link,$sql1);
@@ -190,46 +229,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	
 	
 	?>
-	<thead>
-	
-	<!-- <tr style="background-color: #337ab7; color: white;"> -->
-	<tr style="background:#6995d6;color:white;"> 
-	  <th>Team</th>
-	  <th>NOP</th>
-	  <th>Style</th>
-	  <th style='display:none;'>Sch</th>
-	  <th>FR Plan</th>
-	  <th>Forecast</th>
-	  <th>SMV</th>
-	  <th>Hours</th>
-	  <th>Target <br>PCS/Hr</th>
-	  
-	  <th rowspan="2">8.30</th>
-	  <th>9.30</th>
-	  <th>10.30</th>
-	  <th>11.30</th>
-	  <th>12.30</th>
-	  <th>1.30</th>
-	  <th>2.30</th>
-	  <th>3.30</th>
-	  <th>4.30</th>
-	  <th>5.30</th>
-	  <th>6.30</th>
-	  <th>Total Pcs</th>
-	  <th>Scanned Pcs</th>
-	  <th>Scanned SAH</th>
-	  <th>FR SAH</th>
-	  <th>Forecast SAH</th>
-	  <th>Actual SAH</th>
-	  <th>SAH Diff</th>
-	  <th>Plan Eff</th>
-	  <th>Act Eff</th>
-	  <th style="display:none;">Act Pcs</th>
-	  <th>Balance Pcs</th>
-	  <th>Hit rate</th>
-	  <th>Request Pcs/Hr</th>
-	</tr>
-  </thead>
+
   
   <tbody>
 	<tr style="border-bottom:2px solid black;">
@@ -725,9 +725,9 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	
 	
 	}
-	else{
-		echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
-	} 
+	// else{
+		// echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
+	// } 
 	
 }?>
       
