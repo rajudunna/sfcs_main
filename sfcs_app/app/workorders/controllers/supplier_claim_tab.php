@@ -5,10 +5,10 @@
         <tr>
             <th>S.no</th>
             <th>Supplier Name</th>
-            <th>Product Category</th>
-            <th>Lot Number</th>
-            <th>Batch Number</th>
-            <th>PO Number</th>
+            <th>Product</th>
+            <th>Lot No</th>
+            <th>Batch No</th>
+            <th>PO No</th>
             <th>Roll Qty</th>
             <th>Length Qty</th>
             <th>Uom</th>
