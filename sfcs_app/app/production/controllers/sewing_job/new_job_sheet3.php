@@ -5440,8 +5440,9 @@ function printdiv(printpage) {
   <td class=xl11032351 width=52 style='border-top:none;width:39pt'>Sign</td> 
  </tr> 
   <?php  
-    $ssqlxs="SELECT * FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\" order BY order_col_des,input_job_no_random,size_code"; 
-    //echo $ssqlxs; 
+    // $ssqlxs="SELECT * FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\" order BY order_col_des,input_job_no_random,size_code"; 
+    $ssqlxs="SELECT *, SUM(carton_act_qty) AS cum_qty FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\" GROUP BY doc_no,order_col_des,size_code ORDER BY input_job_no_random"; 
+    // echo $ssqlxs; 
     $resultxs=mysqli_query($link, $ssqlxs) or exit("Sql Errorxs".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($rowxs=mysqli_fetch_array($resultxs)) 
     {
@@ -5460,7 +5461,7 @@ function printdiv(printpage) {
           <td class=xl9532351 style='border-left:none'>&nbsp;</td> 
           <td rowspan=2 class=xl18232351 style='border-bottom:1.0pt solid black'>".strtoupper($rowxs["size_code"])."</td> 
           <td rowspan=2 class=xl18432351 width=59 style='border-bottom:1.0pt solid black; 
-          width:44pt'>".$rowxs["carton_act_qty"]."</td> 
+          width:44pt'>".$rowxs["cum_qty"]."</td> 
           <td class=xl10932351>&nbsp;</td> 
           <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
           <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
