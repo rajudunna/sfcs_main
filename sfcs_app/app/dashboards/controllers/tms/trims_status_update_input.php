@@ -280,28 +280,29 @@ while($row4=mysqli_fetch_array($result4))
 echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
 // }
 echo "<br><br>";
-if($schedule!=''){
-	$sql1="SELECT tid,input_job_number,size_code,color,SUM(carton_act_qty) AS tqty,carton_act_qty,module FROM $bai_pro3.pac_stat_log where schedule='$schedule' and input_job_number=$jobno GROUP BY input_job_number,size_code,color  ORDER BY input_job_number*1 ASC";
-	$sql_result=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($rows=mysqli_fetch_array($sql_result)){
-		$input_job_no=$rows['input_job_number'];
-		$tid=$rows['tid'];
-		$color=$rows['color'];
-		$size=$rows['size_code'];
-	}
-	if($tid == ''){
-		echo "<h4><u>packing list not generated</u><h4>";
-		}
-	else {
-	$url = getFullURLLevel($_GET['r'],"sfcs_app/app/packing/reports/pdfs/sawing_out_labels1.php",3,'R');
+// if($schedule!=''){
+	// $sql1="SELECT tid,input_job_number,size_code,color,SUM(carton_act_qty) AS tqty,carton_act_qty,module FROM $bai_pro3.pac_stat_log where schedule='$schedule' and input_job_number=$jobno GROUP BY input_job_number,size_code,color  ORDER BY input_job_number*1 ASC";
+	// $sql_result=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($rows=mysqli_fetch_array($sql_result)){
+		// $input_job_no=$rows['input_job_number'];
+		// $tid=$rows['tid'];
+		// $color=$rows['color'];
+		// $size=$rows['size_code'];
+	// }
+	// if($tid == ''){
+		// echo "<h4><u>packing list not generated</u><h4>";
+		// }
+	// else {
+	// $url = getFullURLLevel($_GET['r'],"sfcs_app/app/packing/reports/pdfs/sawing_out_labels1.php",3,'R');
 	// echo $url;
-	$url = $url."?tid=$tid&job_no=$input_job_no&schedule=$schedule&color=$color&size=$size";
-	echo "<a href=\"$url\" class=\"btn btn-warning btn-sm\" target=\"_blank\" onclick=\"return popitup('$url')\">
-			<i class='fa fa-print'></i>&nbsp;&nbsp;<button id='print_label' class='equal btn btn-success'>Packing Stickers</button> </a><br/>";	
-	}
-}
+	// $url = $url."?tid=$tid&job_no=$input_job_no&schedule=$schedule&color=$color&size=$size";
+	// echo "<a href=\"$url\" class=\"btn btn-warning btn-sm\" target=\"_blank\" onclick=\"return popitup('$url')\">
+			// <i class='fa fa-print'></i>&nbsp;&nbsp;<button id='print_label' class='equal btn btn-success'>Packing Stickers</button> </a><br/>";	
+	// }
+// }
 
-
+$url5 = getFullURLLevel($_GET['r'],'sfcs_app/app/production/controllers/sewing_job/barcode_new.php',5,'R');
+        echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$jobno."&schedule=".$schedule."' onclick=\"return popitup2('$url5?input_job=".$jobno."&schedule=".$schedule."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Bundle Barcode</a></td>";
 
 	
 $balance_tot=0;
