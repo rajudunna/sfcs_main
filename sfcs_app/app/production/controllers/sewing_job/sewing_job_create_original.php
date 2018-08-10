@@ -414,7 +414,7 @@
 									{
 										$poly_bags_per_carton=array();
 										$size_title=array();
-										$poly_bags_per_carton_query = "SELECT poly_bags_per_carton,size_title FROM $brandix_bts.`tbl_carton_size_ref` WHERE parent_id=$c_ref GROUP BY size_title DESC";
+										$poly_bags_per_carton_query = "SELECT poly_bags_per_carton,size_title FROM $brandix_bts.`tbl_carton_size_ref` WHERE parent_id=$c_ref GROUP BY size_title ORDER BY ref_size_name";
 										// echo $poly_bags_per_carton_query;
 										$poly_bags_per_carton_result=mysqli_query($link, $poly_bags_per_carton_query) or exit("Error while getting poly_bags_per_carton Details");
 										while($poly_bags_per_carton_details=mysqli_fetch_array($poly_bags_per_carton_result)) 
