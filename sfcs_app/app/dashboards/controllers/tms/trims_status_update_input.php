@@ -1,6 +1,9 @@
 <!-- 2013-11-25/DharaniD/Ticket #988194
 Revised CSS files for interface standardization,Add the Validation on trims status.-->
-
+<head>
+	<link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
+	<title></title>
+</head>
 <?php
 error_reporting(0);
 //include("header.php");
@@ -80,8 +83,7 @@ function doc_in_status($link,$result_type,$size,$doc_no,$input_ref)
 
 ?>
 <div class='panel panel-primary'>
-	<div class='panel-heading'>
-<title>Trims Status Update Form</title>
+	<div class='panel-heading'>Trims Status Update Form</div>
 <script>
 function popitup(url) {
 newwindow=window.open(url,'name','scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0');
