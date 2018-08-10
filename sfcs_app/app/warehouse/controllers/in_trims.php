@@ -6,7 +6,6 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
 $url = '/sfcs_app/app/warehouse/controllers/in_trims.php';
 $out_trims_scanner = '/sfcs_app/app/warehouse/controllers/out_trims_scanner.php';
 ?>
-
 <script>
 function focus_box()
 {
@@ -29,6 +28,91 @@ body
 {
 	font-family:arial;
 }
+.equal{
+		width : 80px;
+		text-align:center;
+		margin-top:60pt;
+	}
+   
+    button{
+        text-align:right
+    }
+    .panel-primary{
+        margin : 2px 250px 2px 250px;
+        padding : 20px 5px 20px 5px;
+        border:1px solid blue;
+        text-align:center;
+    }
+    .panel-heading {
+        font-weight:bold;
+        text-align:left;
+    }
+    .label-success{
+        background-color:#5cb85c;
+        color:white;
+        text-align:left;
+        border-radius:5px;
+        margin-left:-760px;
+        padding : 4px 10px 4px 10px;
+    }
+    .btn-success {
+        background-color:green;
+        color:white;
+        margin-top:-20pt;
+        border-radius:5px;
+        margin-right:-410px;
+        margin-bottom:20px;
+        padding : 4px 10px 4px 10px;
+    }
+    .btn-danger {
+        background-color:#d9534f;
+        color:white;
+        border-radius:5px;
+        margin-top:-10pt;
+        margin-right:-410px;
+        margin-bottom:20px;
+        padding : 4px 10px 4px 10px;
+    }
+    .label-danger {
+        background-color:#d9534f;
+        color:white;
+        border-radius:5px;
+		margin-top:-10pt;
+    }
+    #location {
+        margin-left:20px;
+    }
+    #cartonid{
+        margin-top:-50pt;
+        margin-left:-318pt;
+        padding:5px;
+    }
+    #cartonid2{
+        margin-top:15px;
+        /* margin-left:-420pt; */
+        padding:5px;
+    }
+    #label2{
+        margin-top:-10px;
+        margin-left:-400pt;
+    }
+    #check_in{
+        margin-top:-30px;
+        background-color:#337ab7;
+        padding:8px;
+        color:white;
+        border-radius:8px;
+    }
+    h2{
+        margin-left:-450px;
+    }
+    #status {
+        font-size:14pt;
+        margin-left:100pt;
+    }
+    /* h3{
+        margin-top:-20px;
+    } */
 </style>
 
 <body onload="focus_box()">
@@ -45,7 +129,7 @@ body
 			$location=$_GET['location'];
 			
 			$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0 and status=1";
-			$sql_result=mysqli_query($link, $sql);
+			$sql_result=mysqli_query($link, $sql);	
 			if(mysqli_num_rows($sql_result)>0)
 			{
 				echo "<h2><label class='label1'>Location  : </label>&nbsp;&nbsp;<span class='label label-success' id='location'>$location</span></h2>";
@@ -79,7 +163,7 @@ body
 		<form name="input" method="post" action="?r=<?= $url ?>" enctype="multipart/form data" id="form">
 		<div class="row">
 		<div class="form-group col-md-3">
-		<input type="text" name="cartonid" id="cartonid" class="form-control" onkeyup="document.input.submit();"  value="">
+		<input type="text" name="cartonid" id="cartonid" class="form-control"  oninput="document.input.submit();"  value="">
 		</div>
 		</div>
 		<div class="row">
@@ -114,8 +198,8 @@ body
 					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_affected_rows($link)>0)
 					{
-						echo "<div id='status'>Status: <span class='label label-success'>Success!</span> $code</div>";
-						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"in_trims.php?location=$location\"; }</script>";
+						echo "<h3>Status: <span class='label label-success'>Success!</span> $code</h3>";
+						// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"in_trims.php?location=$location\"; }</script>";
 					}else{
 						$sql1="select * from $bai_rm_pj1.store_in_deleted where tid=\"$code\" ";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -225,91 +309,3 @@ body
 	</div>
 </div>
 </body>
-
-</div>
-
-<style>
-	.equal{
-		width : 80px;
-		text-align:center;
-	}
-   
-    button{
-        text-align:right
-    }
-    .panel-primary{
-        margin : 2px 250px 2px 250px;
-        padding : 20px 5px 20px 5px;
-        border:1px solid blue;
-        text-align:center;
-    }
-    .panel-heading {
-        font-weight:bold;
-        text-align:left;
-    }
-    .label-success{
-        background-color:#5cb85c;
-        color:white;
-        text-align:left;
-        border-radius:5px;
-        margin-left:-760px;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-success {
-        background-color:green;
-        color:white;
-        margin-top:-20pt;
-        border-radius:5px;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-        margin-top:-10pt;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .label-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-    }
-    #location {
-        margin-left:20px;
-    }
-    #cartonid{
-        margin-top:-40pt;
-        margin-left:-318pt;
-        padding:5px;
-    }
-    #cartonid2{
-        margin-top:-15px;
-        /* margin-left:-420pt; */
-        padding:5px;
-    }
-    #label2{
-        margin-top:-10px;
-        margin-left:-400pt;
-    }
-    #check_in{
-        margin-top:-30px;
-        background-color:#337ab7;
-        padding:8px;
-        color:white;
-        border-radius:8px;
-    }
-    h2{
-        margin-left:-450px;
-    }
-    #status {
-        font-size:14pt;
-        margin-left:-10pt;
-    }
-    /* h3{
-        margin-top:-20px;
-    } */
-</style>
