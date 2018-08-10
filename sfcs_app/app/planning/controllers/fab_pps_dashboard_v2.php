@@ -114,35 +114,38 @@ if(!in_array($username,$special_users))
 
 function redirect_view()
 {
+	
 	//x=document.getElementById('view_cat').value;
 	y=document.getElementById('view_div').value;
 	//window.location = "fab_pps_dashboard_v2.php?view=2&view_cat="+x+"&view_div="+y;
 	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view=2&view_div="+encodeURIComponent(y);
-  Ajaxify(ajax_url);
+  Ajaxify(ajax_url,'production_body');
 
 }
 
 function redirect_dash()
 {
+	
 	//x=document.getElementById('view_cat').value;
 	y=document.getElementById('view_div').value;
 	z=document.getElementById('view_dash').value;
 	a=document.getElementById('view_priority').value;
 	//window.location = "fab_pps_dashboard_v2.php?view="+z+"&view_cat="+x+"&view_div="+y;
 	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
-  Ajaxify(ajax_url);
+  Ajaxify(ajax_url,'production_body');
 
 }
 
 function redirect_priority()
 {
+	
 	//x=document.getElementById('view_cat').value;
 	y=document.getElementById('view_div').value;
 	z=document.getElementById('view_dash').value;
 	a=document.getElementById('view_priority').value;
 	//window.location = "pps_dashboard_v2.php?view="+z+"&view_cat="+x+"&view_div="+y;
 	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
-  Ajaxify(ajax_url);
+  Ajaxify(ajax_url,'production_body');
 
 }
 

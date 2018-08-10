@@ -239,8 +239,8 @@ function Ajaxify (href_url,body=0) {
         cache:false,
     }).done(function(resp) {
        
-        if(body == "body"){
-            jQuery("#body").html(resp);
+        if(body == "body" || body == "production_body"){
+            jQuery("#"+body).html(resp);
         }else{
             jQuery("#modal-body").html(resp);
             $('#myModal').modal('show');
@@ -250,8 +250,8 @@ function Ajaxify (href_url,body=0) {
 
     }).fail(function(erespo) {
 
-         if(body == "body"){
-            jQuery("#body").html(resp);
+         if(body == "body" || body == "production_body"){
+            jQuery("#"+body).html(resp);
         }else{
             jQuery("#modal-body").html(resp);
             $('#myModal').modal('show');
@@ -301,7 +301,6 @@ function modalClose(){
             $('.custom-btn').removeClass('btn-outline');
             $('.custom-btn').addClass('btn-default');
             $('.modal-dialog').addClass('modal-lg');
-            swal("Your transaction has been stopped !", {icon: "warning"});
             $('#myModal').modal('hide');
             $("#modal-body").html("");
 
