@@ -285,7 +285,7 @@ function getjobdetails($job_number)
 				if($flag == 'packing_summary_input')
 				{
 					$job_number_reference = $row['type_of_sewing'];
-					if($job_number_reference == 2)
+					if($job_number_reference == 3)
 					{
 					//	var_dump($row);
 						$selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
@@ -524,7 +524,7 @@ function getjobdetails($job_number)
 			if($flag == 'packing_summary_input')
 			{
 				$job_number_reference = $row['type_of_sewing'];
-				if($job_number_reference == 2)
+				if($job_number_reference == 3)
 				{
 				//	var_dump($row);
 					$selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
