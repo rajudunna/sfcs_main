@@ -83,7 +83,9 @@ Service Request #525434/ kirang/ 2014-01-10: Add the ordercut details in RTS das
 	{
 		y=document.getElementById('view_div').value;
 		x=document.getElementById('view_cat').value;
-		window.location = "<?= getFullURL($_GET['r'],'fab_pps_recut_dashboard_v4.php','N') ?>+&view=2&view_cat="+x+"&view_div="+encodeURIComponent(y);
+		var ajax_url = "<?= getFullURL($_GET['r'],'fab_pps_recut_dashboard_v4.php','N') ?>+&view=2&view_cat="+x+"&view_div="+encodeURIComponent(y);
+		Ajaxify(ajax_url);
+
 
 		/* Old Code for Re-direction*/
 		// url = "<?= getFullURL($_GET['r'],'fab_pps_recut_dashboard_v4.php','N') ?>";

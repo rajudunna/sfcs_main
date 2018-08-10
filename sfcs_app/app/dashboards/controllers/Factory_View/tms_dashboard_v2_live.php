@@ -71,7 +71,9 @@ function redirect_view()
 {
 	x=document.getElementById('view_cat').value;
 	y=document.getElementById('view_div').value;
-	window.location = "fab_pps_dashboard_v2.php?view=2&view_cat="+x+"&view_div="+y;
+	var ajax_url = "fab_pps_dashboard_v2.php?view=2&view_cat="+x+"&view_div="+y;
+	Ajaxify(ajax_url);
+
 }
 
 function redirect_dash()
@@ -80,7 +82,9 @@ function redirect_dash()
 	//y=document.getElementById('view_div').value;
 	z=document.getElementById('view_dash').value;
 	//window.location = "fab_pps_dashboard_v2.php?view="+z+"&view_cat="+x+"&view_div="+y;
-	window.location = "fab_pps_dashboard_v2.php?view="+z;
+	var ajax_url = "fab_pps_dashboard_v2.php?view="+z;
+	Ajaxify(ajax_url);
+
 }
 
 

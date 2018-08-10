@@ -8,13 +8,32 @@
 
 		var loadurl = '/sfcs_app/app/workorders/controllers/lots_tab.php';
 		var targ = '#tab_1';
+
 		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
 			$(targ).html(data)
 		});
 		$(this).tab('show')
+
+		$('[data-toggle="tab"]:first').click();
 	});
 
-	$('[data-toggle="tabajax"]').click(function(e) {
+	// $('[data-toggle="model"]').click(function(e) {
+
+	// 	e.preventDefault();
+
+	// 	var style = "<?= $_GET["style"] ?>";
+	// 	var schedule = "<?= $_GET["schedule"] ?>";
+
+	// 	var loadurl = $(this).attr('href')
+	// 	var targ = $(this).attr('data-target')
+	// 	$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
+	// 		$(targ).html(data)
+	// 	});
+	// 	$(this).tab('show')
+		
+	// });
+
+	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
 
 		e.preventDefault();
 
@@ -27,7 +46,7 @@
 			$(targ).html(data)
 		});
 		$(this).tab('show')
-		
+
 	});
 
 </script>
@@ -67,11 +86,11 @@
 				<div class="nav-tabs-custom">
 
 					<ul class="nav nav-tabs" id="myTab">
-						<li class="active"><a href="/sfcs_app/app/workorders/controllers/lots_tab.php" data-target='#tab_1' data-toggle="tabajax">LOTS</a></li>
-						<li><a href="/sfcs_app/app/workorders/controllers/wo_info_tab.php" data-target='#tab_2' data-toggle="tabajax">WO Info</a></li>
-						<li><a href="/sfcs_app/app/workorders/controllers/supplier_claim_tab.php" data-target='#tab_3' data-toggle="tabajax">Supplier Cliams</a></li>
-						<li><a href="/sfcs_app/app/workorders/controllers/dockets_tab.php" data-target='#tab_4' data-toggle="tabajax">Dockets</a></li>
-						<li><a href="/sfcs_app/app/workorders/controllers/jobs_tab.php" data-target='#tab_5' data-toggle="tabajax">Jobs</a></li>
+						<li class="active tab"><a href="/sfcs_app/app/workorders/controllers/lots_tab.php" data-target='#tab_1' data-toggle="tab">LOTS</a></li>
+						<li class="tab"><a href="/sfcs_app/app/workorders/controllers/wo_info_tab.php" data-target='#tab_2' data-toggle="tab">WO Info</a></li>
+						<li class="tab"><a href="/sfcs_app/app/workorders/controllers/supplier_claim_tab.php" data-target='#tab_3' data-toggle="tab">Supplier Cliams</a></li>
+						<li class="tab"><a href="/sfcs_app/app/workorders/controllers/dockets_tab.php" data-target='#tab_4' data-toggle="tab">Dockets</a></li>
+						<li class="tab"><a href="/sfcs_app/app/workorders/controllers/jobs_tab.php" data-target='#tab_5' data-toggle="tab">Jobs</a></li>
 						<li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
 					</ul>
 
@@ -117,19 +136,19 @@
 		];
 	?>
 	<div class="col-md-3 col-lg-3 col-sm-3">
-		<div class="box box-info">
+		<div class="box box-info" >
             <div class="box-header with-border">
               <h3 class="box-title">Work Orders</h3>
 
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              <div class="box-tools" id="ic">
+                <button type="button" class="btn btn-box-tool" data-toggle="collapse"  data-target="#box1"><i class="fa fa-minus" id='icc'></i>
                 </button>
               </div>
             </div>
-            <div class="box-body no-padding">
+            <div class="box-body no-padding accordion-body collapse in" id='box1'>
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_1" style="padding: 12px;">
 						<img src="/images/stack-overflow.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Add Excess Quantity</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
@@ -138,23 +157,23 @@
 					</div>
 				</li>
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_2" style="padding: 12px;">
 						<img src="/images/sigma.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/orders_edit_form_schedule_wise.php') ?>" name="Add Sample Quantity" onclick="modal('','',this.name)">Add Sample Quantity</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/controllers/ship_sample_input.php') ?>" name="Add Sample Quantity" onclick="modal('','',this.name)">Add Sample Quantity</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">Where the sample qty is added here</p>
 					</div>
 				</li>
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_3" style="padding: 12px;">
 						<img src="/images/merge.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Clubbing</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/color_clubbing/test.php') ?>" name="Clubbing By Color" onclick="modal('','',this.name)">By Color</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_clubbing/schedule_mix_bek.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">By Schedule</a> )
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/color_clubbing/test.php') ?>"  name="Clubbing By Color" onclick="modal('','',this.name)">By Color</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_clubbing/schedule_mix_bek.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">By Schedule</a> )
 						</p>
 					</div>
 				</li>
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_4" style="padding: 12px;">
 						<img src="/images/rug.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/lay_plan_preparation/test.php') ?>" onclick="modal('','',this.name)" name="Manage Layplan">Manage Layplan</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
@@ -166,15 +185,15 @@
         <div class="box box-info">
             <div class="box-header with-border">
               <h3 class="box-title">Pre Production</h3>
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              <div class="box-tools" id=ic1>
+                <button type="button"  class="btn btn-box-tool"  data-toggle="collapse" data-target="#box2" ><i class="fa fa-minus" id="icc1"></i>
                 </button>
               </div>
             </div>
-            <div class="box-body no-padding">
+            <div class="box-body no-padding accordion-body collapse in" id='box2'>
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_5" style="padding: 12px;">
 						<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Manage Packing List</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
@@ -183,14 +202,14 @@
 					</div>
 				</li>
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_6" style="padding: 12px;">
 						<img src="/images/check-in.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_check_point_handover_select.php') ?>" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
 					</div>
 				</li>
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_7" style="padding: 12px;">
 						<img src="/images/cart.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/controllers/pending.php') ?>" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
@@ -202,29 +221,29 @@
         <div class="box box-info">
             <div class="box-header with-border">
               <h3 class="box-title">Quality</h3>
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              <div class="box-tools" id="ic2">
+                <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target="#box3"><i class="fa fa-minus"  id="icc2"></i>
                 </button>
               </div>
             </div>
-            <div class="box-body no-padding">
+            <div class="box-body no-padding accordion-body collapse in" id='box3' >
               <ul class="nav nav-pills nav-stacked">
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_8" style="padding: 12px;">
 						<img src="/images/shipped.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/test.php') ?>" onclick="modal('','',this.name)" name="Reserve for dispatch">Reserve for dispatch</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
 					</div>
 				</li>
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_9" style="padding: 12px;">
 						<img src="/images/check-out.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/logistics/controllers/security_check.php') ?>" onclick="modal('','',this.name)" name="Security Checkout">Security Checkout</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
 					</div>
 				</li>
 				<li class="">
-					<div class="col-md-12" style="padding: 12px;">
+					<div class="col-md-12" id="divid_10" style="padding: 12px;">
 						<img src="/images/employee.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Destroy">Destroy</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
@@ -235,7 +254,17 @@
         </div>
 	</div>
 </div>
+
 <style type="text/css">
+.box .nav-stacked>li>div {
+    border-bottom: 1px solid #f4f4f4;
+    margin: 0;
+}
+
+.active_div {
+		border-left:solid;
+		border-left-color: #00c0ef;
+}
 
 .btn-default{
 	background-color: #fff;
@@ -289,5 +318,54 @@
 }
 .btn-breadcrumb .btn.btn-default:hover:not(:last-child):before {
   border-left: 10px solid #adadad;
+<<<<<<< HEAD
+} 
+</style>
+<script>
+$(document).ready(function () { 
+                $('#ic').click(function () {
+                    $('#icc').toggleClass('fa-minus fa-plus');
+                });
+								$('#ic1').click(function () {
+                    $('#icc1').toggleClass('fa-minus fa-plus');
+                });
+								$('#ic2').click(function () {
+                    $('#icc2').toggleClass('fa-minus fa-plus');
+                });
+            });
+	</script>
+=======
 }  
 </style>
+
+<script>
+// $('a').click(function(){
+
+  // var pid = 'parentNode';
+  // var div_id = this.parentNode.id;
+  // if(div_id!=''){
+	  // $(".col-md-12").removeClass('active_div');
+	  // $("#"+div_id).addClass("active_div");
+  // }else{
+	  // var div_id_child = this.parentNode.parentNode.id;
+	  // if(div_id_child!=''){
+		  // $(".col-md-12").removeClass('active_div');
+		  // $("#"+div_id_child).addClass("active_div");
+	  // }
+  // }
+	
+// });
+ $('a').click(function(){
+		 var $main = $(this).closest('.col-md-12');
+		 $(".col-md-12").removeClass('active_div');
+		 $("#"+$main.attr('id')).addClass("active_div");
+	 });
+</script>
+
+
+
+
+
+
+
+>>>>>>> 565414bc3fe35257a21155d1da4b56b1b58211c5
