@@ -1198,7 +1198,7 @@ if($barcode_generation == 1)
 	//echo "<script>$('#storingfomr').submit()</script>";
 		if($concurrent_flag == 0)
 		{
-			$table_data = "<table class='table table-bordered'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Remarks</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr>";
+			$table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Remarks</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
 			$checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
 			//echo $checking_output_ops_code;
 			$result_checking_output_ops_code = $link->query($checking_output_ops_code);
@@ -1372,10 +1372,10 @@ if($barcode_generation == 1)
 				{
 					//echo $b_rej_qty[$i];
 					$size = strtoupper($b_sizes[$i]);
-					$table_data .= "<tr><td>$b_inp_job_ref[$i]</td><td>$b_tid[$i]</td><td>$b_colors[$i]</td><td>$size</td><td>$b_remarks[$i]</td><td>$b_rep_qty[$i]</td><td>$b_rej_qty[$i]</td></tr>";
+					$table_data .= "<tr><td data-title='Job No'>$b_inp_job_ref[$i]</td><td data-title='Bundle No'>$b_tid[$i]</td><td data-title='Color'>$b_colors[$i]</td><td data-title='Size'>$size</td><td data-title='Remarks'>$b_remarks[$i]</td><td data-title='Reported Qty'>$b_rep_qty[$i]</td><td data-title='Rejected Qty'>$b_rej_qty[$i]</td></tr>";
 				}
 			}
-			$table_data .= "</table>";
+			$table_data .= "</tbody></table></div></div></div>";
 			echo $table_data;
 		}
 	}
