@@ -29,7 +29,7 @@
 
             <div class="col-md-5">
                 <div class="col-padding" >
-                    <input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-change="scanned()" placeholder="scan here" autofocus>
+                    <input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-blur="scanned()" placeholder="scan here" autofocus>
                     <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_barcode_details_new.php',0,'R') ?>'">
                 </div>
             </div>
