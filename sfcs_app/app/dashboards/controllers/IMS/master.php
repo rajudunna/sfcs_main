@@ -63,15 +63,24 @@ if(isset($_POST['submit']))
 	//var_dump($details);
 	$operation_name=$details[1];
 	$operation_code=$details[0];
+	$application=$_POST['apn'];
+
 
 	// echo $operation_name."<br>";
 	// echo $operation_code."<br>";
+	//echo $application;
+	 $already_query = "select * from $brandix_bts.tbl_ims_ops where appilication = '$application'";
+	 $already_result = mysqli_query($link,$already_query);
+	 if(mysqli_num_rows($already_result)>0){
+	 	$insert_query = "UPDATE $brandix_bts.tbl_ims_ops set operation_name = '$operation_name',operation_code = '$operation_code'
+	 	                 where appilication = '$application' ";
+	 	                 //echo $insert_query;
+
+	 }else{
+	    $insert_query = "INSERT INTO $brandix_bts.tbl_ims_ops (operation_name,operation_code,appilication) VALUES('$operation_name','$operation_code','$application')";
+	}
 	
-	$already_query = "delete from $brandix_bts.tbl_ims_ops ";
-	$already_result = mysqli_query($link,$already_query);
-	
-	    $insert_query = "INSERT INTO $brandix_bts.tbl_ims_ops (operation_name,operation_code) VALUES('$operation_name','$operation_code')";
-	    $res_do_num = mysqli_query($link,$insert_query);
+	$res_do_num = mysqli_query($link,$insert_query);
 
 	echo "<script>sweetAlert('Saved Successfully','','success')</script>";
 }
@@ -92,13 +101,21 @@ if(isset($_POST['submit']))
 					<div class="form-group">
 						<form name="test" class="form-inline" action="index.php?r=<?php echo $_GET['r']; ?>" method="POST" id='form_submt'>
 							<!-- <div class="row"> -->
+								
 								<div class="form-group">
+                                    <b>Appilication<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+									<select class="form-control" id="apn" name="apn" required>
+										<option value="">Select</option>
+										<option value="IPS">IPS</option>
+										<option value="IMS">IMS</option>
+									</select>
+
 									<b>Operation Name<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
 									<select class="form-control" id="opn" name="opn" required>
 										<option value="">Select</option>
 									
 									<?php
-										$get_operations="SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15,129,200) group by operation_code order by operation_code";
+										$get_operations="SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15,200) group by operation_code order by operation_code";
 										$result=mysqli_query($link,$get_operations);
 										while ($test = mysqli_fetch_array($result))
 										{
@@ -129,7 +146,7 @@ if(isset($_POST['submit']))
 	$res_do_num=mysqli_query($link,$query_select);
 	echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
 	echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
-	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Operation Code</th></tr></thead><tbody>";
+	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Appilication Name</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Controllers</th></tr></thead><tbody>";
 	$i=1;
 	while($res_result = mysqli_fetch_array($res_do_num))
 	{
@@ -145,12 +162,13 @@ if(isset($_POST['submit']))
 		
 		echo "<tr>
 			<td>".$i++."</td>
+			<td>".$res_result['appilication']."</td>
 			<td>".$res_result['operation_name']."</td>
 			<td>".$res_result['operation_code']."</td>";
 
-				// $eurl = getFullURLLevel($_GET['r'],'edit_delete.php',0,'N');
-				// $url_delete = getFullURLLevel($_GET['r'],'master.php',0,'N').'&del_id='.$res_result['id'];
-				// if(in_array($edit,$has_permission)){ echo "<td><a href='$eurl&id=".$res_result['id']."' class='btn btn-info'>Edit</a></td>"; } 
+				$eurl = getFullURLLevel($_GET['r'],'edit_delete.php',0,'N');
+				$url_delete = getFullURLLevel($_GET['r'],'master.php',0,'N').'&del_id='.$res_result['id'];
+				if(in_array($edit,$has_permission)){ echo "<td><a href='$eurl&id=".$res_result['appilication']."' class='btn btn-info'>Edit</a></td>"; } 
 				// if(in_array($delete,$has_permission)){ 
 				// 	echo "<td><a href='$url_delete' class='btn btn-danger confirm-submit' id='del' >Delete</a></td>";
 				// }
