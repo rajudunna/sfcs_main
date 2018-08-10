@@ -9,7 +9,7 @@ Changes Log:
 -->
 <?php
 $double_modules=array();
-include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
@@ -78,7 +78,7 @@ if(($hour>=7.45 and $hour<=10.45) or ($hour>=12.30 and $hour<=14.00) or ($hour>=
 } 
 */
 ?>
-<script type="text/javascript" src="../../../../common/js/jquery.js"></script>
+<!-- <script type="text/javascript" src="../../../../common/js/jquery.js"></script> -->
 <!-- <script type='text/javascript' src='jquery-1.6.2.js'></script> -->
 <!--Ticket #177328  Add the java script for Text blinking -->
 <script type="text/javascript">
@@ -119,7 +119,9 @@ function redirect_view()
 //  x=document.getElementById('view_cat').value;
   y=document.getElementById('view_div').value;
   //window.location = "fab_priority_dashboard.php?view=2&view_cat="+x+"&view_div="+y;
-  window.location = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view=2&view_div="+y;
+  var ajax_url = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view=2&view_div="+y;
+  Ajaxify(ajax_url);
+
 }
 
 function redirect_dash()
@@ -127,7 +129,9 @@ function redirect_dash()
   x=document.getElementById('view_cat').value;
   y=document.getElementById('view_div').value;
   z=document.getElementById('view_dash').value;
-  window.location = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view="+z+"&view_cat="+x+"&view_div="+y;
+ var ajax_url = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view="+z+"&view_cat="+x+"&view_div="+y;
+ Ajaxify(ajax_url);
+
 }
 
 

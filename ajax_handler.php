@@ -185,13 +185,13 @@ $("#body a").unbind().bind('click',function(event){
             // url = new URL(url);
             // var c = url.searchParams.get("r");
             
-            if(myattribute == "body"){
+            if(myattribute == "body" || myattribute == 'production_body'){
                 var sfcs_app = url.includes("sfcs_app");
                 if(sfcs_app == false){
                     var c = url.split("?").pop();
                     window.history.pushState("object or string", "Title", "?"+c);
                 }
-                jQuery("#body").html(resp);
+                jQuery("#"+myattribute).html(resp);
             }else{
                 jQuery("#modal-body").html(resp);
                 // $('select[name^="style"] option[value="A0023SS9       "]').attr("selected","selected");
@@ -205,8 +205,8 @@ $("#body a").unbind().bind('click',function(event){
 
         }).fail(function(erespo) {
 
-            if(myattribute == "body"){
-                jQuery("#body").html(erespo);
+            if(myattribute == "body" || myattribute == 'production_body'){
+                jQuery("#"+myattribute).html(erespo);
             }else{
                 jQuery("#modal-body").html(erespo);
                 $('#myModal').modal('show');

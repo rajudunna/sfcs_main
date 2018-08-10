@@ -16,15 +16,20 @@ $double_modules=array();
 //$rbac_username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$rbac_username=strtolower($rbac_username_list[1]);
 //$rbac_username="sfcsproject1";
-//$authorized=array("sfcsproject1");//production
+// $authorized=array("sfcsproject1");//production
 //$authorized1=array("sfcsproject1");//trims
 ?>
 
 <?php
 set_time_limit(200000);
-include("header.php"); 
+$url = $_SERVER['DOCUMENT_ROOT'].'/template/header.php';
+include($url); 
 ?>
-
+<?php 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+$has_permission=haspermission($_GET['r']);
+include('functions.php');
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -78,20 +83,26 @@ function redirect_priority()
 {
 	y=document.getElementById('view_div').value;
 	a=document.getElementById('view_priority').value;
-	window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	Ajaxify(ajax_url);
+
 x}
 function redirect_view()
 {
 	y=document.getElementById('view_div').value;
 	a=document.getElementById('view_priority').value;
-	window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	Ajaxify(ajax_url);
+
 }
 
 function redirect_dash()
 {
 	y=document.getElementById('view_div').value;
 	a=document.getElementById('view_priority').value;
-	window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	Ajaxify(ajax_url);
+
 }
 
 
@@ -456,11 +467,7 @@ window.onload = startBlink;
 </head>
 
 <body>
-<?php 
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-$has_permission=haspermission($_GET['r']);
-include('functions.php');
-?>
+
 <script language="JavaScript">
 <!--
 

@@ -16,14 +16,14 @@
         <?php
 
             // $style = $_GET['style'];
-            // $shedule = $_GET['shedule'];
+            // $schedule = $_GET['schedule'];
 
             $style = 'JJP316F8';
-            $shedule = '520178';
+            $schedule = '520178';
         
             include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
 
-            $sql_select_query = "select order_style_no as style,order_del_no as shedule,bai_orders_db.order_tid,compo_no,lot_no,batch_no,product_group,qty_rec as qty from bai_pro3.bai_orders_db left join bai_pro3.cat_stat_log on cat_stat_log.order_tid = bai_orders_db.order_tid left join bai_rm_pj1.stock_report on bai_rm_pj1.stock_report.item = bai_pro3.cat_stat_log.compo_no where order_style_no='$style' and order_del_no='$shedule'";
+            $sql_select_query = "select order_style_no as style,order_del_no as schedule,bai_orders_db.order_tid,compo_no,lot_no,batch_no,product_group,qty_rec as qty from bai_pro3.bai_orders_db left join bai_pro3.cat_stat_log on cat_stat_log.order_tid = bai_orders_db.order_tid left join bai_rm_pj1.stock_report on bai_rm_pj1.stock_report.item = bai_pro3.cat_stat_log.compo_no where order_style_no='$style' and order_del_no='$schedule'";
             $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             if ($query_result->num_rows > 0) {

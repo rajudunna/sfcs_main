@@ -294,7 +294,8 @@ function redirect_view()
 	y=document.getElementById('cust_view').value;
 	//window.location = "pps_dashboard_v2.php?view=2&view_cat="+x+"&view_div="+y;
 	//window.location = "cpanel_main_v2.php?cust_view="+y;
-	window.location = "cpanel_ship_sample_ims.php?cust_view="+y;
+	var ajax_url = "cpanel_ship_sample_ims.php?cust_view="+y;
+  Ajaxify(ajax_url);
 }
 </script>
 

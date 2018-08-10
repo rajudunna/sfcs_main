@@ -118,7 +118,9 @@ function redirect_view()
 	//x=document.getElementById('view_cat').value;
 	y=document.getElementById('view_div').value;
 	//window.location = "fab_pps_dashboard_v2.php?view=2&view_cat="+x+"&view_div="+y;
-	window.location = "index.php?r=<?= $_GET['r'] ?>&view=2&view_div="+encodeURIComponent(y);
+	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view=2&view_div="+encodeURIComponent(y);
+	Ajaxify(ajax_url);
+
 }
 
 function redirect_dash()
@@ -128,7 +130,9 @@ function redirect_dash()
 	z=document.getElementById('view_dash').value;
 	a=document.getElementById('view_priority').value;
 	//window.location = "fab_pps_dashboard_v2.php?view="+z+"&view_cat="+x+"&view_div="+y;
-	window.location = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	Ajaxify(ajax_url);
+
 }
 
 function redirect_priority()
@@ -138,7 +142,9 @@ function redirect_priority()
 	z=document.getElementById('view_dash').value;
 	a=document.getElementById('view_priority').value;
 	//window.location = "pps_dashboard_v2.php?view="+z+"&view_cat="+x+"&view_div="+y;
-	window.location = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+	Ajaxify(ajax_url);
+
 }
 
 

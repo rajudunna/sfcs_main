@@ -12,7 +12,7 @@ Changes Log:
 // include($_SERVER['DOCUMENT_ROOT']."server/group_def.php");
 // $view_access=user_acl("SFCS_0208",$username,1,$group_id_sfcs);
 // $users=user_acl("SFCS_0208",$username,43,$group_id_sfcs);
-include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/fabric_requisition.php");

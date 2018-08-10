@@ -8,13 +8,32 @@
 
 		var loadurl = '/sfcs_app/app/workorders/controllers/lots_tab.php';
 		var targ = '#tab_1';
+
 		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
 			$(targ).html(data)
 		});
 		$(this).tab('show')
+
+		$('[data-toggle="tab"]:first').click();
 	});
 
-	$('[data-toggle="tabajax"]').click(function(e) {
+	// $('[data-toggle="model"]').click(function(e) {
+
+	// 	e.preventDefault();
+
+	// 	var style = "<?= $_GET["style"] ?>";
+	// 	var schedule = "<?= $_GET["schedule"] ?>";
+
+	// 	var loadurl = $(this).attr('href')
+	// 	var targ = $(this).attr('data-target')
+	// 	$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
+	// 		$(targ).html(data)
+	// 	});
+	// 	$(this).tab('show')
+		
+	// });
+
+	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
 
 		e.preventDefault();
 
@@ -27,7 +46,7 @@
 			$(targ).html(data)
 		});
 		$(this).tab('show')
-		
+
 	});
 
 </script>
@@ -67,11 +86,11 @@
 				<div class="nav-tabs-custom">
 
 					<ul class="nav nav-tabs" id="myTab">
-						<li class="active"><a href="/sfcs_app/app/workorders/controllers/lots_tab.php" data-target='#tab_1' data-toggle="tabajax">LOTS</a></li>
-						<li><a href="/sfcs_app/app/workorders/controllers/wo_info_tab.php" data-target='#tab_2' data-toggle="tabajax">WO Info</a></li>
-						<li><a href="/sfcs_app/app/workorders/controllers/supplier_claim_tab.php" data-target='#tab_3' data-toggle="tabajax">Supplier Cliams</a></li>
-						<li><a href="/sfcs_app/app/workorders/controllers/dockets_tab.php" data-target='#tab_4' data-toggle="tabajax">Dockets</a></li>
-						<li><a href="/sfcs_app/app/workorders/controllers/jobs_tab.php" data-target='#tab_5' data-toggle="tabajax">Jobs</a></li>
+						<li class="active tab"><a href="/sfcs_app/app/workorders/controllers/lots_tab.php" data-target='#tab_1' data-toggle="tab">LOTS</a></li>
+						<li class="tab"><a href="/sfcs_app/app/workorders/controllers/wo_info_tab.php" data-target='#tab_2' data-toggle="tab">WO Info</a></li>
+						<li class="tab"><a href="/sfcs_app/app/workorders/controllers/supplier_claim_tab.php" data-target='#tab_3' data-toggle="tab">Supplier Cliams</a></li>
+						<li class="tab"><a href="/sfcs_app/app/workorders/controllers/dockets_tab.php" data-target='#tab_4' data-toggle="tab">Dockets</a></li>
+						<li class="tab"><a href="/sfcs_app/app/workorders/controllers/jobs_tab.php" data-target='#tab_5' data-toggle="tab">Jobs</a></li>
 						<li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
 					</ul>
 
@@ -140,7 +159,7 @@
 				<li class="">
 					<div class="col-md-12" id="divid_2" style="padding: 12px;">
 						<img src="/images/sigma.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/orders_edit_form_schedule_wise.php') ?>" name="Add Sample Quantity" onclick="modal('','',this.name)">Add Sample Quantity</a></p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/controllers/ship_sample_input.php') ?>" name="Add Sample Quantity" onclick="modal('','',this.name)">Add Sample Quantity</a></p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">Where the sample qty is added here</p>
 					</div>
 				</li>
