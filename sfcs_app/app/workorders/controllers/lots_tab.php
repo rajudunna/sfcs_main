@@ -1,29 +1,45 @@
 
-
-<table class="table table-bordered">
+<link rel='stylesheet' href='https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'>
+<table class="table table-bordered" id='table1'>
     <thead>
         <tr>
             <th>S.no</th>
             <th>Lot Number</th>
             <th>Batch Number</th>
-            <th>Qyantity</th>
+            <th>Quantity</th>
             <th>Prodct Group</th>
-            <th>Actions</th>
+            <th width='40%'>Actions</th>
         </tr>
     </thead>
     <tbody>
-
         <?php
-
-            // $style = $_GET['style'];
-            // $schedule = $_GET['schedule'];
+            //$style = $_GET['style'];
+            //$shedule = $_GET['shedule'];
 
             $style = 'JJP316F8';
             $schedule = '520178';
-        
+            $start = 0;
+            $limit = 15;
             include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
 
-            $sql_select_query = "select order_style_no as style,order_del_no as schedule,bai_orders_db.order_tid,compo_no,lot_no,batch_no,product_group,qty_rec as qty from bai_pro3.bai_orders_db left join bai_pro3.cat_stat_log on cat_stat_log.order_tid = bai_orders_db.order_tid left join bai_rm_pj1.stock_report on bai_rm_pj1.stock_report.item = bai_pro3.cat_stat_log.compo_no where order_style_no='$style' and order_del_no='$schedule'";
+            //getting total records count 
+            $sql_count_query = "select count(*) as total 
+                                from bai_pro3.bai_orders_db 
+                                left join bai_pro3.cat_stat_log on cat_stat_log.order_tid = bai_orders_db.order_tid 
+                                left join bai_rm_pj1.stock_report on bai_rm_pj1.stock_report.item = bai_pro3.cat_stat_log.compo_no where order_style_no='$style' and order_del_no='$schedule'";
+            $count_result = mysqli_query($link_ui, $sql_count_query) or exit("Sql Error In getting total count");
+            if(mysqli_num_rows($count_result)>0){
+                $row = mysqli_fetch_array($count_result); 
+                $total = $row['total'];
+            }else{
+                $total = 0;
+            }
+            
+            $query = "select order_style_no as style,order_del_no as shedule,bai_orders_db.order_tid,compo_no,lot_no,batch_no,product_group,qty_rec as qty from bai_pro3.bai_orders_db left join bai_pro3.cat_stat_log on cat_stat_log.order_tid = bai_orders_db.order_tid left join bai_rm_pj1.stock_report on bai_rm_pj1.stock_report.item = bai_pro3.cat_stat_log.compo_no"; 
+            $query_last = '';
+            $sql_select_query = $query.$query_last." where order_style_no='$style' and order_del_no='$schedule' 
+                                LIMIT $limit offset $start";
+
             $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             if ($query_result->num_rows > 0) {
@@ -36,23 +52,30 @@
                     $batch_number = $row["batch_no"];
                     $qty = $row["qty"];
                     $product_group = $row["product_group"];
-                    
                     // $url = $_SERVER['DOCUMENT_ROOT'].'/ui/role_creation_ui?uname='.$row["user_name"];
                     // $url1 = getFullURL($_GET['r'],'user_name_updation.php','N');
                     // $url2 = getFullURL($_GET['r'],'user_assigned_role_updation.php','N');
-
                     echo "<tr>
                             <td>".$sno."</td>
-                            <td>".$lot_number."</td>
+                            <td id='lot$i'>".$lot_number."</td>
                             <td>".$batch_number."</td>
                             <td>".$qty."</td>
                             <td>".$product_group."</td>
+<<<<<<< HEAD
                             <td class='btn-group'>     
                                 <a href='#' class='btn btn-primary btn-sm'>Receive</a>
                                 <a href='#' class='btn btn-danger btn-sm'>Delete</a> 
                                 <a href='#' class='btn btn-info btn-sm'>Transfer</a> 
                                 <a href='#' class='btn btn-warning btn-sm'>Inspect</a> 
                                 <a href='#' class='btn btn-success btn-sm'>Claim</a>    
+=======
+                            <td class='append_buttons' id='column$i'><div class='btn-group'>
+                                <a href='#' class='btn btn-primary btn-sm'>Receive</a>
+                                <a href='#' class='btn btn-danger btn-sm'>Delete</a>
+                                <a href='#' class='btn btn-info btn-sm'>Transfer</a>
+                                <a href='#' class='btn btn-warning btn-sm'>Inspect</a>
+                                <a href='#' class='btn btn-success btn-sm'>Claim</a> </div>   
+>>>>>>> 0b51f32c8a0b62d6b8b7b900c3b6064610faa07e
                             </td>
                         </tr>";
                 }
@@ -66,8 +89,53 @@
         ?>
     </tbody>
 </table>
+<<<<<<< HEAD
+=======
+      
+<script>
+    $(document).ready(function() {
+        var url = "<?php  echo base64_encode('/sfcs_app/app/workorders/controllers/server_processing.php'); ?>";
+        var fields = {'lot_no':'lot_no','batch_no':'batch_no','qty_rec':'qty','product_group':'product_group'};
+        var values = {'order_del_no':'<?= $schedule ?>','order_style_no':'<?= $style ?>'};
+        var query = "<?= $query ?>";
+        
+        var table = $('#table1').DataTable({
+            "bSort":false,
+            "processing": true,
+            "serverSide": true,
+            "lengthChange": true,
+            "dataSrc": "",
+            "ajax": {
+                url: 'ajax_calls.php?r='+url,
+                method:'GET',
+                data:{'fields':fields,'values':values,'limit':'<?= $limit ?>','total':'<?= $total ?>','query':query,'query_last':'<?= $query_last ?>','href_attr':'lot_no'},
+            }, 
+            "pageLength": 15,
+            "deferLoading": <?= $total ?>           
+        });
+        // $('#table1_filter input').unbind();
+        // $('#table1_filter input').bind('keyup', function(e){
+        //     if(e.keyCode == 13) {
+        //         console.log(table);
+        //         table.fnFilter( this.value, $(this).attr('id') );
+        //     }
+        // });
+    });
+>>>>>>> 0b51f32c8a0b62d6b8b7b900c3b6064610faa07e
 
+    function afterAjax(){
+        $('.append_something').each(function(){
+            var lot = $(this).find('input')[0].value;
+            $(this).find('input').after("<div class='btn-group'><a href='#' class='btn btn-primary btn-sm'>Receive</a><a href='#' class='btn btn-danger btn-sm'>Delete</a><a href='#' class='btn btn-info btn-sm'>Transfer</a><a href='#' class='btn btn-warning btn-sm'>Inspect</a><a href='#' class='btn btn-success btn-sm'>Claim</a> </div>");
+        });
+    }
+</script>
 
+<style>
+.current{
+    background: linear-gradient(120deg, #00e4d0, #5983e8);
+}
+</style>
 
 
 

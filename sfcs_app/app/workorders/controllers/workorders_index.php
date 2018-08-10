@@ -8,7 +8,7 @@
   session_start();
   $start = 0;
   $offset = 24;
-
+  unset($_SESSION['filter']);
   if(isset($_GET['limit'])){
     $offset = $_SESSION['limit'] = $_GET['limit'];
   }
@@ -37,12 +37,7 @@
   <div class="box-header">
     <div class="col-md-12">
       <h4><b>Workorders List</b>
-        <a href="" class="btn btn-info btn-sm" style="float: right;border-radius: 16px;">
-          <img src="/images/controls.png" >
-        </a>
-        <input type="text" id='search' name="search" onkeypress='filter(this,event)' class="form-control" placeholder="Search" 
-               style="width:200px;float:right;border-radius: 16px;margin-right: 15px;"
-               value="<?= isset($_GET['filter']) ? $_GET['filter'] : ''; ?> ">
+       
       </h4>
     </div>
   </div>
@@ -50,14 +45,20 @@
     
     <div class='col-sm-12'>
       <label for='limit' class='pull-left' style='padding-top:3px'>Show Records :</label>
-      <div class='col-sm-2'>
+      <div class='col-sm-1'>
         <select name='limit' id='limit' onchange='loadData(this)' class='form-control input-sm' style='border-radius : 5px'>
-          <option value='24'>Please Select</option>
+          <option value='24'>Choose</option>
           <option value='50'  <?= $_GET['limit']==50 ? 'selected' : '' ?> >50</option>
           <option value='100' <?= $_GET['limit']==100 ? 'selected' : '' ?>>100</option>
           <option value='200' <?= $_GET['limit']==200 ? 'selected' : '' ?>>200</option>
         </select>
       </div>
+      <a href="" class="btn btn-info btn-sm" style="float: right;border-radius: 16px;">
+          <img src="/images/controls.png" >
+      </a>
+      <input type="text" id='search' name="search" onkeypress='filter(this,event)' class="form-control" placeholder="Search" 
+             style="width:200px;float:right;border-radius: 16px;margin-right: 15px;"
+             value="<?= isset($_GET['filter']) ? $_GET['filter'] : ''; ?> ">
     </div><br/><br/>
     
     <?php 
@@ -131,6 +132,7 @@
         if($page > $pages || $page <= 0 || $page == 2){
           $page = 1;
         }
+
         //limiting pages to available size
         if($pages < $size_length)
           $size_length = $pages;
@@ -171,16 +173,17 @@
     .blue{
       color : #1252ff;
     }
-  </style>
+</style>
 
 
-<script>
+<script>  
+  
   function filter(t,e){
     if(e.keyCode == 13){
       var filter_code = t.value;
       var limit = document.getElementById('limit').value;
       var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&limit="+limit+"&filter="+filter_code;
-      console.log(ajax_url);
+      //console.log(ajax_url);
       Ajaxify(ajax_url,'body');
     }
   }
@@ -188,7 +191,7 @@
   function loadData(t){
     var limit = t.value;
     var filter = document.getElementById('search').value;
-    console.log(limit);
+    //console.log(limit);
     var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&limit="+limit+"&filter="+filter;;
     Ajaxify(ajax_url,'body');
   }
