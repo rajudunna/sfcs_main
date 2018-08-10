@@ -47,11 +47,12 @@
                             <td>".$batch_number."</td>
                             <td>".$qty."</td>
                             <td>".$product_group."</td>
-                            <td><a href='#' class='btn btn-primary btn-xs'>Receive</a> |
-                                <a href='#' class='btn btn-danger btn-xs'>Delete</a> |
-                                <a href='#' class='btn btn-info btn-xs'>Transfer</a> |
-                                <a href='#' class='btn btn-warning btn-xs'>Inspect</a> |
-                                <a href='#' class='btn btn-success btn-xs'>Claim</a>    
+                            <td class='btn-group'>     
+                                <a href='#' class='btn btn-primary btn-sm'>Receive</a>
+                                <a href='#' class='btn btn-danger btn-sm'>Delete</a> 
+                                <a href='#' class='btn btn-info btn-sm'>Transfer</a> 
+                                <a href='#' class='btn btn-warning btn-sm'>Inspect</a> 
+                                <a href='#' class='btn btn-success btn-sm'>Claim</a>    
                             </td>
                         </tr>";
                 }
@@ -65,8 +66,9 @@
         ?>
     </tbody>
 </table>
-      
 
 
 
-   
+
+
+

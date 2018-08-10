@@ -129,7 +129,7 @@ function thirdbox()
 
 <div class="panel panel-primary">
 <div class="panel-heading">Order Qty Update (Schedule Wise) </div>
-<div class"panel-body">
+<div class="panel-body">
 <?php
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
@@ -138,7 +138,7 @@ $color=$_GET['color'];
 ?>
 
 <form name="test" action="index.php?r=<?php echo $_GET['r']; ?>" method="post">
-<div class="form-group">
+<div class="row">
 <?php
 // include("dbconf.php");
 echo "<div class=\"col-sm-12\"><div class=\"row\"><div class=\"col-sm-3\">
@@ -241,9 +241,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 
-	echo "<div class=\"col-sm-1\">
-			<label for='submit'><br/></label>
-			<button type=\"submit\" onclick=\"return check_style_sch_col();\"  class=\" form-control btn btn-success\" name=\"submit\">Show</button></div>";	
+echo "<div class=\"col-sm-3\">
+<label for='submit'><br/></label>
+<button type=\"submit\" onclick=\"return check_style_sch_col();\"  class=\" form-control btn btn-success\" name=\"submit\">Show</button></div>";	
 
 echo "</div></div>";
 
@@ -319,7 +319,7 @@ if(isset($_POST['submit']))
 	if($count1 > 0)
 	{
 
-		echo "<div class=\"col-sm-12\"><h4 align=left style='color:red;'>
+		echo "<div class=\"row col-sm-12\"><h4 align=left style='color:red;'>
 			  <span class=\"label label-warning\">Order Quantity already Updated.Please try with different Color or schedule</span></h4></div>";
 		
 		// echo "<table class=\"table table-striped jambo_table bulk_action\">";
@@ -333,7 +333,6 @@ if(isset($_POST['submit']))
          
 		echo "<div class=\"row\">";
 		echo "<div class=\"col-sm-4\">";
-		echo "<div class=\"col-sm-12\">";
 		echo "<div class=\"table-responsive\">";
 		//echo "<table class=\"table table-striped jambo_table bulk_action\">";
 		echo "<table class='table table-bordered'>";
@@ -352,8 +351,8 @@ if(isset($_POST['submit']))
 		echo "</table>";
 		echo "</div></div></div></div>";
 
-		echo "<div class=\"col-sm-12\">";
-		echo "<div class=\"table-responsive\">";
+		echo "<div class=\"row\">";
+		echo "<div class=\"col-md-12 table-responsive\">";
 		//echo "<table class=\"table table-striped table-bordered jambo_table bulk_action\">";
 		echo "<table class=\"table table-striped table-bordered\">";
 		echo "<thead><tr class='info'>
@@ -666,7 +665,7 @@ if(isset($_POST['submit']))
 		// echo "<table>";
 		echo "<div class=\"row\">";
 		echo "<div class=\"col-sm-4\">";
-		echo "<div class=\"col-sm-12\">";
+		
 		echo "<table class=\"table table-striped jambo_table bulk_action\">";		
 
 		echo "<tr>";
@@ -798,11 +797,11 @@ if(isset($_POST['submit']))
 		</td></tr>";
 		
 		echo "</table></div>";
-		echo "</div>";
+		
 		echo "</div>";
 
         // echo "</table><br><br><br><br><br><br><br><br>";
-		echo "<div class=\"col-sm-12\"><div class=\"table-responsive\"><table class=\"table table-bordered\">";
+		echo "<div class=\"row col-sm-12\"><div class=\"table-responsive\"><table class=\"table table-bordered\">";
 		echo "<thead><tr class=\"info\"><th><center>Size</center></th><th><center>Current Order Quantity</center></th><th><center>Old Order Quantity</center></th><th><center>Size Excess %</center></th><th><center>New Order Quantity</center></th></tr><thead>";
 		
 		$qry4= "select * from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\"";

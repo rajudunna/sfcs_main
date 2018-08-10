@@ -62,10 +62,11 @@
                             <td>".$reject_len_qty."</td>
                             <td>".$uom."</td>
                             <td>".$complaint_category."</td>
-                            <td><a href='#' class='btn btn-primary btn-xs'>Update</a> |
-                                <a href='#' class='btn btn-danger btn-xs'>Print</a> |
-                                <a href='#' class='btn btn-info btn-xs'>Mail Status</a> |
-                                <a href='#' class='btn btn-warning btn-xs'>Delete</a>
+                            <td class='btn-group'>
+                                <a href='#' class='btn btn-primary btn-sm'>Update</a>
+                                <a href='#' class='btn btn-success btn-sm'>Print</a>
+                                <a href='#' class='btn btn-info btn-sm'>Mail Status</a>
+                                <a href='#' class='btn btn-danger btn-sm'>Delete</a>
                             </td>
                         </tr>";
                 }
@@ -79,6 +80,11 @@
         ?>
     </tbody>
 </table>
+<style>
+td {
+    width: 300px;
+  }
+</style>
       
 
 
