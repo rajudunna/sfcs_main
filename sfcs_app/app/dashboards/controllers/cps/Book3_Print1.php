@@ -189,8 +189,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$plan_log_time=$sql_row['log_time'];
 }
 	
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-//echo $sql;
+$sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
 // mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -285,7 +284,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 <?php
 
-$sql="select *,fn_savings_per_cal(DATE,cat_ref,'$delivery','$color') as savings from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no=$doc_id";
+$sql="select *,fn_savings_per_cal(DATE,cat_ref,'$delivery','$color') as savings from $bai_pro3.plandoc_stat_log where doc_no=$doc_id";
 //echo $sql."<br>";
 // mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
