@@ -343,6 +343,25 @@
                 "value": "yards"
             },
             {
+                "type": "select",
+                "required": true,
+                "label": "Scaning Methods",
+                "className": "form-control",
+                "name": "scaning-method",
+                "values": [
+                    {
+                        "label": "Bundle Level",
+                        "value": "Bundle Level",
+                        "selected": true
+                    },
+                    {
+                        "label": "Sewing Job Level",
+                        "value": "Sewing Job Level"
+                    }
+                ],
+                "value": "Bundle Level"
+            },
+            {
                 "type": "checkbox-group",
                 "required": true,
                 "label": "Category Display in Dashboard",

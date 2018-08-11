@@ -486,7 +486,7 @@
 														</table>
 													</div>
 												</div>
-											</div></div>";
+											</div>";
 										
 										//third table	
 										echo "<div class='panel panel-primary'>
