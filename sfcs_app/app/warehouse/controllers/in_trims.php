@@ -243,7 +243,7 @@ body
 					if(mysqli_affected_rows($link)>0)
 					{
 						echo "<div id='location1'>Status: <span class='label label-success'>Success!</span> $code</div>";
-						// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"in_trims.php?location=$location\"; }</script>";
+						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"in_trims.php?location=$location\"; }</script>";
 					}else{
 						$sql1="select * from $bai_rm_pj1.store_in_deleted where tid=\"$code\" ";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
