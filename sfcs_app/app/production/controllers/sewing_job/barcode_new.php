@@ -55,6 +55,7 @@
 			$color=$barcode_rslt['order_col_des'];
 			$style=$barcode_rslt['order_style_no'];
 			$cutno=$barcode_rslt['acutno'];
+			$quantity=$barcode_rslt['carton_act_qty'];
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
 			$display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 			$html.= '<div>
@@ -79,14 +80,7 @@
 			while($ops = mysqli_fetch_array($sql_result1))
 			{	
 				$operations=$ops['operation_name'];
-				$opscode=$ops['operation_code'];
-				
-				$quantityqry="SELECT carton_act_qty FROM $bai_pro3.`packing_summary_input` WHERE order_del_no='$schedule' AND order_col_des='$color'  AND m3_size_code='$barcode_rslt[size_code]' AND input_job_no='$input_job' AND acutno='$cutno'";
-				$sql_result2=mysqli_query($link, $quantityqry) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($qty = mysqli_fetch_array($sql_result2))
-				{	
-					$quantity=$qty['carton_act_qty'];
-				}	
+				$opscode=$ops['operation_code'];				
 				$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 				$html.= '<div>
 							<div style="margin-left:50px;"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
