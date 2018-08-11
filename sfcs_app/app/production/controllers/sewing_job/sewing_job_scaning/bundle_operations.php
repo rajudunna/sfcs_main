@@ -525,8 +525,8 @@ $(document).ready(function(){
 		}
 		if($('#component2').val() == '' && $("input:radio[name=optradio2]:checked").val() == 'Yes')
 		{
-			sweetAlert("Please Enter Component Name.","","warning");
-			flag = 0;
+			//sweetAlert("Please Enter Component Name.","","warning");
+			//flag = 0;
 		}
 		if(flag == 1)
 		{
@@ -707,8 +707,8 @@ $("#edit").click(function()
 	}
 	if($('component1').val() == '')
 	{
-		sweetAlert("Please Enter Component Name","","warning");
-		flag= 0;
+		// sweetAlert("Please Enter Component Name","","warning");
+		// flag= 0;
 	}
 	if(flag == 1)
 	{

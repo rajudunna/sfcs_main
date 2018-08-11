@@ -480,7 +480,20 @@ else if($concurrent_flag == 0)
 			//Checking with ims_log 
 
 		}
-		
+		$checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
+			//echo $checking_output_ops_code;
+		$result_checking_output_ops_code = $link->query($checking_output_ops_code);
+		if($result_checking_output_ops_code->num_rows > 0)
+		{
+			while($row_result_checking_output_ops_code = $result_checking_output_ops_code->fetch_assoc()) 
+			{
+				$output_ops_code = $row_result_checking_output_ops_code['operation_code'];
+			}
+		}
+		else
+		{
+			$output_ops_code = 130;
+		}
 		//echo 'ops_code.'.$b_op_id;
 		if($b_op_id == 100 || $b_op_id == 129)
 		{
@@ -506,7 +519,7 @@ else if($concurrent_flag == 0)
 				}
 			}
 		}
-		else if($b_op_id == 130)
+		else if($b_op_id == $output_ops_code)
 		{
 			$ops_seq_check = "select id,ops_sequence from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$b_op_id'";
 			// echo $ops_seq_check;
