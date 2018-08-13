@@ -108,12 +108,13 @@ echo '<br>
                             $temp+=$sql_row['carton_act_qty'];
                             $color=$sql_row['order_col_des'];
                         }
-                        if ($sql_row['type_of_sewing'] == 2)
-                        {
-                            $bg_color='yellow';
-                        } else {
-                            $bg_color='';
-                        }
+                        $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+                        // if ($sql_row['type_of_sewing'] == 2)
+                        // {
+                        //     $bg_color='yellow';
+                        // } else {
+                        //     $bg_color='';
+                        // }
                         
                         $sql4="select order_tid from $bai_pro3.bai_orders_db where order_del_no=\"".$sql_row["sch_mix"]."\"";
                         $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
