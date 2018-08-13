@@ -48,36 +48,45 @@
 			}
 				
 			var exces_from=document.getElementById("exces_from").value;
-			if (exces_from == 0)
+			var mix_jobs=document.getElementById("mix_jobs").value;
+			// alert(mix_jobs);
+			if (mix_jobs == '')
 			{
-				sweetAlert('Please Select Excess From','','warning');
+				sweetAlert('Please Select Mix Jobs','','warning');
 			}
 			else
 			{
-				if (split_tot > 0)
+				if (exces_from == 0)
 				{
-					title_to_show = "";
+					sweetAlert('Please Select Excess From','','warning');
 				}
 				else
 				{
-					title_to_show = "Bundle Size not defined, Deafult bundle size will be applied";
-				}
-				sweetAlert({
-					title: "Are you sure to generate Sewing Jobs?",
-					text: title_to_show,
-					icon: "warning",
-					buttons: true,
-					dangerMode: true,
-					buttons: ["No, Cancel It!", "Yes, I am Sure!"],
-				}).then(function(isConfirm){
-					if (isConfirm) {
-							$('#'+submit_btn.attr('id')).trigger('click',false);
-					} else {
-						sweetAlert("Request Cancelled",'','error');
-						return;
+					if (split_tot > 0)
+					{
+						title_to_show = "";
 					}
-				});
-				return;
+					else
+					{
+						title_to_show = "Bundle Size not defined, Deafult bundle size will be applied";
+					}
+					sweetAlert({
+						title: "Are you sure to generate Sewing Jobs?",
+						text: title_to_show,
+						icon: "warning",
+						buttons: true,
+						dangerMode: true,
+						buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+					}).then(function(isConfirm){
+						if (isConfirm) {
+								$('#'+submit_btn.attr('id')).trigger('click',false);
+						} else {
+							sweetAlert("Request Cancelled",'','error');
+							return;
+						}
+					});
+					return;
+				}
 			}
 		}
 	});
@@ -680,20 +689,34 @@
 										}
 										// Sewing Job Qty End
 										// var_dump($combo);
-										echo "<div class='col-md-4'>
+										echo "<div class='col-md-6'>
 											<table class='table table-bordered'>
 												<tr>
-													<th>Excess From</th><th>Control</th>
+													<th style='display: none;'><center>Mix Cut Jobs</center></th>
+													<th><center>Excess From</center></th>
+													<th><center>Control</center></th>
 												</tr>
 												<tr>
-													<td>
-														<select name='exces_from' id='exces_from' required class='form-control'>
-															<option value=''>Please Select</option>
-															<option value='1'>First Cut</option>
-															<option value='2'>Last Cut</option>
-														</select>
+													<td style='display: none;'>
+														<center>
+															<select name='mix_jobs' id='mix_jobs' required class='form-control'>
+																<option value=''>Please Select</option>
+																<option value='1'>Yes</option>
+																<option value='2' selected>No</option>
+															</select>
+														</center>
 													</td>
-													<td>";
+													<td>
+														<center>
+															<select name='exces_from' id='exces_from' required class='form-control'>
+																<option value=''>Please Select</option>
+																<option value='1'>First Cut</option>
+																<option value='2'>Last Cut</option>
+															</select>
+														<center>
+													</td>
+													<td>
+														<center>";
 													$count = 0;
 													for ($i=0; $i < $sizeofsizes; $i++)
 													{
@@ -712,7 +735,7 @@
 														echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait..Sewing Job Generating.<h5></span>";
 														// echo "<input type=\"submit\" class=\"btn btn-success\" value=\"Generate\" name=\"generate\" id=\"generate\" />";
 													}
-													echo "</td>
+													echo "</center></td>
 												</tr>
 											</table>
 										</div>";
@@ -745,11 +768,12 @@
 					$sum = array_sum($no_of_cartons);
 					if ($sum>0)
 					{
+						$merge_status=$_POST['mix_jobs'];
 						$exces_from=$_POST['exces_from'];
 						$c_ref=$_POST['c_ref'];
 						$combo=$_POST['combo'];
 						
-						$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."' where id='".$c_ref."'";
+						$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."', merge_status='".$merge_status."' where id='".$c_ref."'";
 						// echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Failed to update Carton Details");
 						for ($i=0; $i < sizeof($combo); $i++)
