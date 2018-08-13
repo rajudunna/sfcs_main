@@ -61,12 +61,21 @@
                             <td>".$batch_number."</td>
                             <td>".$qty."</td>
                             <td>".$product_group."</td>
+<<<<<<< HEAD
+                            <td class='btn-group'>     
+                                <a href='#' class='btn btn-primary btn-sm'>Receive</a>
+                                <a href='#' class='btn btn-danger btn-sm'>Delete</a> 
+                                <a href='#' class='btn btn-info btn-sm'>Transfer</a> 
+                                <a href='#' class='btn btn-warning btn-sm'>Inspect</a> 
+                                <a href='#' class='btn btn-success btn-sm'>Claim</a>    
+=======
                             <td class='append_buttons' id='column$i'><div class='btn-group'>
                                 <a href='#' class='btn btn-primary btn-sm'>Receive</a>
                                 <a href='#' class='btn btn-danger btn-sm'>Delete</a>
                                 <a href='#' class='btn btn-info btn-sm'>Transfer</a>
                                 <a href='#' class='btn btn-warning btn-sm'>Inspect</a>
                                 <a href='#' class='btn btn-success btn-sm'>Claim</a> </div>   
+>>>>>>> 0b51f32c8a0b62d6b8b7b900c3b6064610faa07e
                             </td>
                         </tr>";
                 }
@@ -80,6 +89,8 @@
         ?>
     </tbody>
 </table>
+<<<<<<< HEAD
+=======
       
 <script>
     $(document).ready(function() {
@@ -110,6 +121,7 @@
         //     }
         // });
     });
+>>>>>>> 0b51f32c8a0b62d6b8b7b900c3b6064610faa07e
 
     function afterAjax(){
         $('.append_something').each(function(){
@@ -125,4 +137,6 @@
 }
 </style>
 
-   
+
+
+
