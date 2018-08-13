@@ -61,7 +61,7 @@
                     "option-1"
                 ]
             },
-            {
+            { 
                 "type": "text",
                 "required": true,
                 "label": "Super User Name",
