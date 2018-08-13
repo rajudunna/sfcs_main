@@ -778,18 +778,21 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 
-		$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" ".$order_div_ref." GROUP BY acutno,clubbing order by priority limit $priority_limit";
+		$sql1="SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing<>'0' ".$order_div_ref." GROUP BY clubbing UNION 
+		SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
 		//echo "Module : ".$sql1."<br>";
 		//Filter view to avoid Cut Completed and Fabric Issued Modules
 		if($_GET['view']==1)
 		{
-			$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" ".$order_div_ref." GROUP BY acutno,clubbing order by log_time limit $priority_limit";
+			$sql1="SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_staus_new='5' AND clubbing<>'0' ".$order_div_ref." GROUP BY clubbing UNION 
+			SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
 			$view_count=0;
 		}		
 		//filter to show only cut completed
 		if($_GET['view']==3)
 		{
-			$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" ".$order_div_ref." GROUP BY acutno,clubbing order by log_time limit $priority_limit";
+			$sql1="SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status='DONE' AND clubbing<>'0' ".$order_div_ref." GROUP BY clubbing UNION 
+			SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status='DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
 			$view_count=0;
 		}
 		//echo "Modulewise data : ".$sql1."<br>";
