@@ -5,7 +5,8 @@ Revised CSS files for interface standardization,Add the Validation on trims stat
 error_reporting(0);
 //include("header.php");
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/trims_status_update_input.php");
