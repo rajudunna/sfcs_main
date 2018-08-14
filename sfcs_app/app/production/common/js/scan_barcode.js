@@ -8,7 +8,8 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.scanned_barcode_details = [];
     $scope.session_barcodes = [];
      
-    $scope.scanned = function(){
+    $scope.scanned = function(event){
+        if(event.charCode == 13){
         $('#loading-image').show();
         $scope.last_barcode = $scope.barcode;
         $scope.last_barcode_status = 'In-Progress';
@@ -108,8 +109,10 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                 timer: 1000
             });
         }
+    }
 
     }
+    
 
 });
 angular.bootstrap($('#scanBarcode'), ['scanning_interface']);
