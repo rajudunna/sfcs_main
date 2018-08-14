@@ -92,7 +92,7 @@ set_time_limit(30000000);
 					{
 						if($sample > 0)
 						{
-							if($sample>=$cut_quantity)
+							if($sample>$cut_quantity)
 							{	
 								// echo "<tr><td>Sample</td><td>$cut_num</td><td>".chr($color_code).leading_zeros(0,$cut_num)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
 								$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."',3,'".$cut_num."','".$color."','".$size."','".$cut_quantity."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
@@ -146,6 +146,7 @@ set_time_limit(30000000);
 							$insertMiniOrderdata="INSERT INTO $brandix_bts.tbl_miniorder_data(date_time,mini_order_ref,mini_order_num,cut_num,color,size,quantity,docket_number,size_ref,size_tit,combo_code) VALUES ('".$date_time."','".$carton_id."',1,'".$cut_num."','".$color."','".$size."','".$cut_quantity."','".$sql_row['docket_number']."','".$size_code."','".$size_tit."','".$combo_code."')";
 							//echo "N1=".$insertMiniOrderdata."<br><br>";
 							$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$cut_quantity=0;
 						}
 					}while($cut_quantity>0);
 				}
