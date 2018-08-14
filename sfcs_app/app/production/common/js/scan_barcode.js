@@ -15,6 +15,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
         $scope.last_barcode_status = 'In-Progress';
         $scope.last_barcode_status_remarks = '';
         $scope.showtable = true;
+            $('.bgcolortable').css("background-color", "white");
         if($scope.barcode != ''){
             if($scope.barcode.includes('-')){
                 var split = $scope.barcode.split('-');
@@ -26,11 +27,11 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                         $('#loading-image').hide();
                         $scope.last_barcode_status = 'Error';
                         $scope.last_barcode_status_remarks = 'Please Check Barcode you scanned';
-                        swal({
-                            title: "Error",
-                            text: "Please Check Barcode you scanned",
-                            timer: 1000
-                        });
+                        // swal({
+                        //     title: "Error",
+                        //     text: "Please Check Barcode you scanned",
+                        //     timer: 1000
+                        // });
                         // swal('Please Check Barcode you scanned.');
                         $scope.barcode = '';
                     }else{
@@ -48,16 +49,23 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                         $http(req).then(function(response) {
                             console.log(response);
                             console.log(response.data.msg);
+                            console.log(angular.isString(response.data));
                             if(response.data.status){
                                 $('#loading-image').hide();
                                 $scope.last_barcode_status = 'Not Done';
                                 $scope.last_barcode_status_remarks = response.data.status;
-                                swal({
-                                    title: "Error",
-                                    text: response.data.status,
-                                    timer: 2000
-                                });
+                                $('.bgcolortable').css("background-color", "#d04d4d70");
+                                // swal({
+                                //     title: "Error",
+                                //     text: response.data.status,
+                                //     timer: 2000
+                                // });
                                 // swal(response.data.status);
+                            } else if (angular.isString(response.data)){
+                                $('#loading-image').hide();
+                                $scope.last_barcode_status = 'Not Done';
+                                $scope.last_barcode_status_remarks = 'Connection Error';
+                                $('.bgcolortable').css("background-color", "#d04d4d70");
                             }else{
                                 $scope.showscanlist = true;
                                 $scope.scanned_barcode_details.push({
@@ -67,6 +75,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                 $scope.last_barcode_status = 'Completed';
                                 $scope.last_barcode_status_remarks = 'Bundle qty inserted.';
                                 console.log($scope.scanned_barcode_details);
+                                $('.bgcolortable').css("background-color", "#00800085");
                             }
 
                         });
@@ -76,23 +85,25 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                 }else{
                     $scope.last_barcode_status = 'Error';
                     $scope.last_barcode_status_remarks = 'Please Check Barcode you scanned';
-                    swal({
-                        title: "Error",
-                        text: "Please Check Barcode you scanned",
-                        timer: 1000
-                    });
+                    $('.bgcolortable').css("background-color", "#d04d4d70");
+                    // swal({
+                    //     title: "Error",
+                    //     text: "Please Check Barcode you scanned",
+                    //     timer: 1000
+                    // });
                     $('#loading-image').hide();
                 }
                 $scope.showtable = true;
 
             }else{
-                swal({
-                    title: "Error",
-                    text: "Please Check Barcode you scanned",
-                    timer: 1000
-                });
+                // swal({
+                //     title: "Error",
+                //     text: "Please Check Barcode you scanned",
+                //     timer: 1000
+                // });
                 $scope.last_barcode_status = 'Error';
                 $scope.last_barcode_status_remarks = 'Please Check Barcode you scanned';
+                $('.bgcolortable').css("background-color", "#d04d4d70");
                 $('#loading-image').hide();
             }
             $scope.barcode = '';
@@ -100,14 +111,15 @@ app.controller('scanctrl', function ($scope, $http, $window) {
         }else{
             $scope.last_barcode_status = 'Error';
             $scope.last_barcode_status_remarks = 'Please Check Barcode you scanned';
+            $('.bgcolortable').css("background-color", "#d04d4d70");
             //$('#barcode_scan').focus();
             $('#loading-image').hide();
 
-            swal({
-                title: "Error",
-                text: "Please Check Barcode you scanned",
-                timer: 1000
-            });
+            // swal({
+            //     title: "Error",
+            //     text: "Please Check Barcode you scanned",
+            //     timer: 1000
+            // });
         }
     }
 
