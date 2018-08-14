@@ -7,7 +7,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.showscanlist = false;
     $scope.scanned_barcode_details = [];
     $scope.session_barcodes = [];
-    
+     
     $scope.scanned = function(){
         $('#loading-image').show();
         $scope.last_barcode = $scope.barcode;
