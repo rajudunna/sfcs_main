@@ -922,41 +922,7 @@ if(isset($_POST['allocate']))
 		//echo "<th>Allocated Qnty</th>";
 		echo "</tr></thead><tbody>";
 		
-		// $status = 0;
-		// $sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") order by shade";
-		// $sql_result=mysqli_query($link, $sql) or exit("Sql Error12: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// $row_count=mysqli_num_rows($sql_result);
-		// while($sql_row=mysqli_fetch_array($sql_result))
-		// {
-		// 	$sql1="select max(log_time),doc_type,doc_no from $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid'];
-		// 			// echo "</br>Qry : ".$sql1."</br>";
-		// 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// 		while($sql_row1=mysqli_fetch_array($sql_result1))
-		// 		{
-		// 			$tag=" ";
-		// 			if($sql_row1['doc_type']=="normal")
-		// 			{
-		// 				$tag="D".$sql_row1['doc_no'];
-		// 				$status = 1;
-		// 				// echo $status.$tag;
-		// 			}
-		// 			else
-		// 			{
-		// 				// echo 'doc r';
-		// 				$tag="R".$sql_row1['doc_no'];
-		// 				$status = 1;
-		// 				// echo $status.$tag;
-		// 			}
-		// 			$valid_check="display:none";
-		// 		}
-		// 		if(strlen($sql_row['shade'])==0)
-		// 		{
-		// 			$tag="Insp. <br/>Pending";
-		// 			$valid_check="display:none";
-		// 			$status = 0;
-		// 		}
-		// 		echo $status.'....<br/>';
-		// }
+		
 
 
 		//Current Version
