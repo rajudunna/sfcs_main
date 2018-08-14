@@ -88,14 +88,13 @@
             },
             {
                 "type": "text",
-                "required": true,
-                "label": "Super User Name",
+                "label": "Plant Alert Code",
                 "className": "form-control",
-                "name": "superuser",
-                "value": "chandu",
-                "subtype": "text"
+                "name": "plant-alert-code",
+                "subtype": "text",
+                "value": "BEK"
             },
-     		{
+            {
                 "type": "text",
                 "label": "Message Sent Name",
                 "className": "form-control",
@@ -341,25 +340,6 @@
                     }
                 ],
                 "value": "yards"
-            },
-            {
-                "type": "select",
-                "required": true,
-                "label": "Scaning Methods",
-                "className": "form-control",
-                "name": "scaning-method",
-                "values": [
-                    {
-                        "label": "Bundle Level",
-                        "value": "Bundle Level",
-                        "selected": true
-                    },
-                    {
-                        "label": "Sewing Job Level",
-                        "value": "Sewing Job Level"
-                    }
-                ],
-                "value": "Bundle Level"
             },
             {
                 "type": "checkbox-group",
