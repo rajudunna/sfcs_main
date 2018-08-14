@@ -351,3 +351,8 @@ body
 	</div>
 </div>
 </body>
+<script>
+$("#cartonid").on("paste",function(e){
+    $("#location").focus();
+});
+</script>
