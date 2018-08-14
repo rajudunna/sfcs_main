@@ -1,7 +1,7 @@
 <!-- 2013-11-25/DharaniD/Ticket #988194
 Revised CSS files for interface standardization,Add the Validation on trims status.-->
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 //var_dump($php_self);
 array_pop($php_self);
@@ -35,8 +35,11 @@ $has_permission=haspermission($url_r);
 
 </script>
 <?php
-include("../../../../common/config/config.php");
-include("../../../../common/config/functions.php");
+
+// include("../../../../common/config/config.php");
+// include("../../../../common/config/functions.php");
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 error_reporting(0);
 $has_permission = haspermission($_GET['r']);
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -325,8 +328,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //echo "<h4>Ratio Sheet</h4>";
 
- echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
-	
+//  echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
+
+ $url = getFullURLLevel($_GET['r'],'/production/controllers/sewing_job/print_input_sheet.php',3,'R');
+ echo "<a class='btn btn-info btn-sm' href=\"#\" onclick=\"return popitup_new('$url?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
  //echo "<br><a class='btn btn-info btn-sm' href=\"print_input_sheet_dest.php?schedule=$org_schs\" onclick=\"return popitup_new('print_input_sheet_dest.php?schedule=$org_schs')\">Print Input Job Sheet - Destination Wise</a><br>";
 
 // $production_review_sheet_users=array("chathurangad","beracut","nizzarm","sureshr","gayancha","kumuduv","gayanbu","udenim","samanthikaw","dulanjalik","ayomis","dinushag");

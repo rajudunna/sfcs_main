@@ -13,7 +13,7 @@
             <th>Length Qty</th>
             <th>Uom</th>
             <th>Complaint Category</th>
-            <th style='width:40%' class='act'>Actions</th>
+            <th width="40%">Actions</th>
         </tr>
     </thead>
     <tbody>
