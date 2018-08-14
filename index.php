@@ -28,6 +28,10 @@
         .main-footer {
             margin-left: 0px;
         }
+
+        .modal-lg {
+            width: 1150px;
+        }
         
         .skin-blue .main-header .logo {
             background-color: #3c8dbc;

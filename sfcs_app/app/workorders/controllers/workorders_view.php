@@ -318,7 +318,6 @@
 }
 .btn-breadcrumb .btn.btn-default:hover:not(:last-child):before {
   border-left: 10px solid #adadad;
-<<<<<<< HEAD
 } 
 </style>
 <script>
@@ -334,7 +333,6 @@ $(document).ready(function () {
                 });
             });
 	</script>
-=======
 }  
 </style>
 
@@ -368,4 +366,3 @@ $(document).ready(function () {
 
 
 
->>>>>>> 565414bc3fe35257a21155d1da4b56b1b58211c5
