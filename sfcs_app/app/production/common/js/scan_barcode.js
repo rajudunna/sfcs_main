@@ -14,14 +14,14 @@ app.controller('scanctrl', function ($scope, $http, $window) {
         $scope.last_barcode_status = 'In-Progress';
         $scope.last_barcode_status_remarks = '';
         $scope.showtable = true;
-        if($scope.barcode != null){
+        if($scope.barcode != ''){
             if($scope.barcode.includes('-')){
                 var split = $scope.barcode.split('-');
                 if(split.length == 2){
                     var bundle_num = split[0];
                     var op_no = split[1];
                     if (isNaN(bundle_num) || isNaN(op_no)){
-                        $('#barcode_scan').focus();
+                        //$('#barcode_scan').focus();
                         $('#loading-image').hide();
                         $scope.last_barcode_status = 'Error';
                         $scope.last_barcode_status_remarks = 'Please Check Barcode you scanned';
@@ -95,11 +95,11 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                 $('#loading-image').hide();
             }
             $scope.barcode = '';
-            $('#barcode_scan').focus();
+            //$('#barcode_scan').focus();
         }else{
             $scope.last_barcode_status = 'Error';
             $scope.last_barcode_status_remarks = 'Please Check Barcode you scanned';
-            $('#barcode_scan').focus();
+            //$('#barcode_scan').focus();
             $('#loading-image').hide();
 
             swal({
