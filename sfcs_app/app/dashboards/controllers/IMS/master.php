@@ -108,6 +108,7 @@ if(isset($_POST['submit']))
 										<option value="">Select</option>
 										<option value="IPS">IPS</option>
 										<option value="IMS">IMS</option>
+										<option value="IMS_OUT">IMS_OUT</option>
 									</select>
 
 									<b>Operation Name<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
