@@ -34,10 +34,11 @@ body
 	border:1px solid blue;
 }
 .equal{
-		width : 80px;
+		width : 40pt;
+		font-size:10pt;
 		text-align:center;
 		margin-top:60pt;
-		margin-left:20%;
+		margin-left:30pt;
 		display:block;
 	}
    
@@ -102,38 +103,51 @@ body
 		width:105%;
 	}
 	#location {
-		margin-left:35%;
-		margin-top:-13.5%;
-		width:35%;
+		margin-left:180pt;
+		margin-top:-35pt;
+		width:48pt;
     }
+	.label{
+		font-size:10pt;
+	}
     #cartonid{
         /* margin-top:-50pt; */
-		margin-left:-120%;
-		margin-top:-25%;
-        padding-top:-11%;
-		padding-right:7%;
+		margin-left:-170pt;
+		margin-top:-80pt;
+        padding-top:-11pt;
+		padding-right:7pt;
 		display:block;
+		font-size:10pt;
+		width:70pt;
     }
     #cartonid2{
-        margin-top:15%;
-        margin-left:-120%;
+		font-size:10pt;
+		width:70pt;
+        margin-top:10pt;
+        margin-left:-170pt;
         /* margin-left:-420pt; */
-		padding:5px;
+		padding:3px;
 		display:block;
     }
     #label2{
         margin-top:-10px;
         margin-left:-190%;
     }
+	label{
+		font-size:10pt;
+	}
     #check_in{
-        margin-top:-18%;
-        margin-left:-10%;
+        margin-top:-20pt;
+        margin-left:-45pt;
         background-color:#337ab7;
-        padding:8px;
+        padding:5px;
         color:white;
 		border-radius:8px;
 		display:block;
     }
+	button {
+		width:10pt;
+	}
     h2{
         margin-left:-450px;
 	}
@@ -145,7 +159,7 @@ body
         margin-left:10%;
 	}
 	.label1{
-		margin-left:-58%;
+		margin-left:-8%;
 		display:block;
 	}
 	.text-left{
