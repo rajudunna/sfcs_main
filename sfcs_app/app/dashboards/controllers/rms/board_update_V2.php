@@ -95,8 +95,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<td align=\"right\">Style:<br/>Schedule:<br/>Job:<br/>Total Qty:</td>";
 		$module=$mods[$x];
 		
-		$sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing<>'0' GROUP BY clubbing,acutno UNION 
-		SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing='0' GROUP BY doc_no order by priority LIMIT 14";
+		$sql1="SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' GROUP BY doc_no order by priority LIMIT 14";
 		// echo $sql1."<br/>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
