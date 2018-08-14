@@ -57,7 +57,7 @@
                     // $url2 = getFullURL($_GET['r'],'user_assigned_role_updation.php','N');
                     echo "<tr>
                             <td>".$sno."</td>
-                            <td id='lot$i'>".$lot_number."</td>
+                            <td>".$lot_number."</td>
                             <td>".$batch_number."</td>
                             <td>".$qty."</td>
                             <td>".$product_group."</td>

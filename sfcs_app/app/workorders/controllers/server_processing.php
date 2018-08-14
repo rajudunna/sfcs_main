@@ -34,6 +34,8 @@
     $query_count = $query.$append;
     $query = $query.$append." limit $limit offset $start";
 
+    // echo $query;
+    // die();
     //THE BELOW VARIABLES ARE ALL FOR DATATABLES
     $data = [];
     $data['array'] = 1;
@@ -44,10 +46,8 @@
     $query_result = mysqli_query($link_ui, $query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($query_result) == 0){
             $data['data'][0][] = '';
-            $data['data'][0][] = '';
-            $data['data'][0][] = '';
-            $data['data'][0][] = '';
-            $data['data'][0][] = '';
+            foreach($fields as $field=>$dup)
+                $data['data'][0][] ='';
             $data['data'][0][] = '';
     }else{
         while($row = mysqli_fetch_array($query_result)){
