@@ -66,7 +66,7 @@ $has_permission=haspermission($url_r);
   <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
   <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
-  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/filtergrid.css',0,'R'); ?>">
+  <!-- <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/filtergrid.css',0,'R'); ?>"> -->
 <style type="text/css" media="screen">
 
 /*====================================================
@@ -77,10 +77,10 @@ $has_permission=haspermission($url_r);
 /*====================================================
 	- General html elements
 =====================================================*/
-body{ 
+/* body{ 
 	margin:15px; padding:15px; border:0px solid #666;
 	font-family:Arial, Helvetica, sans-serif; font-size:12px; 
-}
+} */
 a {
 	margin:0px; padding:0px;
 }
@@ -255,7 +255,7 @@ function GetSelectedItem()
 ?>
 </table><br/><br/>
 
-<form action="#" method="POST" name="apply">
+<form action="<?= getFullURL($_GET['r'],'fabric_requisition.php','N');?>" method="POST" name="apply">
 	<table class="table table-bordered">
 		<tr>
 

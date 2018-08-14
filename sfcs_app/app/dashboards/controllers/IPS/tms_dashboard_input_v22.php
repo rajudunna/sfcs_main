@@ -377,7 +377,7 @@ if(!in_array($authorized,$has_permission))
 	{
 		y=document.getElementById('view_div').value;
 		var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input_v22.php','N') ?>+&view=2&view_div="+encodeURIComponent(y);
-		Ajaxify(ajax_url);
+		Ajaxify(ajax_url,'body');
 
 	}
 
@@ -386,7 +386,7 @@ if(!in_array($authorized,$has_permission))
 		y=document.getElementById('view_div').value;
 		z=document.getElementById('view_dash').value;
 		var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input_v22.php','N') ?>+&view="+z+"&view_div="+encodeURIComponent(y);
-		Ajaxify(ajax_url);
+		Ajaxify(ajax_url,'body');
 
 	}
 </script>
@@ -639,11 +639,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
 			$mods[]=$sql_row1d["modx"];
 		}
-	$popup_url = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'R');
+	$popup_url = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'N');
 	echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;">';
 	echo "<p>";
 	echo "<table>";
-	echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+	echo "<tr><th colspan=2><h2><a href=\"$popup_url&section_no=$section\" >SECTION - $section</a></h2></th></th></tr>";
 
 	//$mods=array();  // commented for module division seperation
 	//$mods=explode(",",$section_mods);  // commented for module division seperation
@@ -879,21 +879,21 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$club_c_code=array_unique($club_c_code);
 			
 			$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".'J'.leading_zeros($input_job_no,3),50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50);
-				$ui_url=getFullURL($_GET['r'],'input_status_update_input.php','R');		
+				$ui_url=getFullURL($_GET['r'],'input_status_update_input.php','N');		
 				if(in_array($authorizeLevel_1,$has_permission))
 				{
 					if($id=="blue" or $id=="yellow")
 					{
 						echo "<div id=\"S$schedule\" style=\"float:left;\">
 								<div id=\"SJ$input_job_no\" style=\"float:left;\">
-									<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a>
+									<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url&jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" ><font style=\"color:black;\">$letter$ft_status</font></a>
 									</div>
 								</div>
 							</div>";
 					}
 					else
 					{
-						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a></div></div></div>";
+						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url&jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" ><font style=\"color:black;\">$letter$ft_status</font></a></div></div></div>";
 					}
 				}
 				else
@@ -912,7 +912,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				
 				$urll = getFullURLLevel($_GET["r"],'cut_jobs_loading.php',0,'N');
 				// echo $urll;
-				echo "<div id=\"\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\"><a href=\"javascript:void(0)\" onclic=\"Popup=window.open('".$urll."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1200,height=800, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:15px;color:#000000;\"></font></a></div></div></div>";
+				echo "<div id=\"\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\"><a href=\"$urll\" ><font style=\"font-size:15px;color:#000000;\"></font></a></div></div></div>";
 
 			}
 			else

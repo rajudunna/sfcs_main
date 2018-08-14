@@ -13,7 +13,7 @@
             <th>Length Qty</th>
             <th>Uom</th>
             <th>Complaint Category</th>
-            <th>Actions</th>
+            <th width="40%">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -80,11 +80,7 @@
         ?>
     </tbody>
 </table>
-<style>
-td {
-    width: 300px;
-  }
-</style>
+
       
 
 
