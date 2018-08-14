@@ -333,8 +333,6 @@ $(document).ready(function () {
                 });
             });
 	</script>
-}  
-</style>
 
 <script>
 // $('a').click(function(){

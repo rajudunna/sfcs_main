@@ -87,7 +87,7 @@
         var fields = {'lot_no':'lot_no','batch_no':'batch_no','qty_rec':'qty','product_group':'product_group'};
         var values = {'order_del_no':'<?= $schedule ?>','order_style_no':'<?= $style ?>'};
         var query = "<?= $query ?>";
-        
+        var href_attr = {'lot_no':'lot_no'};
         var table = $('#table1').DataTable({
             "bSort":false,
             "processing": true,
@@ -97,7 +97,7 @@
             "ajax": {
                 url: 'ajax_calls.php?r='+url,
                 method:'GET',
-                data:{'fields':fields,'values':values,'limit':'<?= $limit ?>','total':'<?= $total ?>','query':query,'query_last':'<?= $query_last ?>','href_attr':'lot_no'},
+                data:{'fields':fields,'values':values,'limit':'<?= $limit ?>','total':'<?= $total ?>','query':query,'query_last':'<?= $query_last ?>','href_attr':href_attr},
             }, 
             "pageLength": 15,
             "deferLoading": <?= $total ?>           
@@ -114,7 +114,7 @@
     function afterAjax(){
         $('.append_something').each(function(){
             var lot = $(this).find('input')[0].value;
-            $(this).find('input').after("<div class='btn-group'><a href='#' class='btn btn-primary btn-sm'>Receive</a><a href='#' class='btn btn-danger btn-sm'>Delete</a><a href='#' class='btn btn-info btn-sm'>Transfer</a><a href='#' class='btn btn-warning btn-sm'>Inspect</a><a href='#' class='btn btn-success btn-sm'>Claim</a> </div>");
+            $(this).find('p').after("<div class='btn-group'><a href='#' class='btn btn-primary btn-sm'>Receive</a><a href='#' class='btn btn-danger btn-sm'>Delete</a><a href='#' class='btn btn-info btn-sm'>Transfer</a><a href='#' class='btn btn-warning btn-sm'>Inspect</a><a href='#' class='btn btn-success btn-sm'>Claim</a> </div>");
         });
     }
 </script>

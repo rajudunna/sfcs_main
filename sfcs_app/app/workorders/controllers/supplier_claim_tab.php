@@ -103,7 +103,8 @@
         var fields = {'supplier_name':'supplier_name','product_categoy':'product_categoy','reject_batch_no':'reject_batch_no','reject_lot_no':'reject_lot_no','reject_po_no':'reject_po_no','reject_roll_qty':'reject_roll_qty','reject_len_qty':'reject_len_qty','uom':'uom','complaint_category':'complaint_category'};
         var values = {'order_del_no':'<?= $schedule ?>','order_style_no':'<?= $style ?>'};
         var query = "<?= $query ?>";
-        
+        var href_attr = {'reject_lot_no':'reject_lot_no'};
+
         var table = $('#table2').DataTable({
             "bSort":false,
             "processing": true,
@@ -113,7 +114,7 @@
             "ajax": {
                 url: 'ajax_calls.php?r='+url,
                 method:'GET',
-                data:{'fields':fields,'values':values,'limit':'<?= $limit ?>','total':'<?= $total ?>','query':query,'query_last':'<?= $query_last ?>','href_attr':'reject_lot_no'},
+                data:{'fields':fields,'values':values,'limit':'<?= $limit ?>','total':'<?= $total ?>','query':query,'query_last':'<?= $query_last ?>','href_attr':href_attr},
             }, 
             "pageLength": 15,
             "deferLoading": <?= $total ?>           
@@ -123,7 +124,7 @@
     function afterAjax(){
         $('.append_something').each(function(){
             var lot = $(this).find('input')[0].value;
-            $(this).find('input').after("<div  class='btn-group'><a href='#' class='btn btn-primary btn-sm'>Update</a><a href='#' class='btn btn-success btn-sm'>Print</a><a href='#' class='btn btn-info btn-sm'>Mail Status</a><a href='#' class='btn btn-danger btn-sm'>Delete</a></div>");
+            $(this).find('p').after("<div  class='btn-group'><a href='#' class='btn btn-primary btn-sm'>Update</a><a href='#' class='btn btn-success btn-sm'>Print</a><a href='#' class='btn btn-info btn-sm'>Mail Status</a><a href='#' class='btn btn-danger btn-sm'>Delete</a></div>");
             $('.act').css('width','400px');
         });
     }
