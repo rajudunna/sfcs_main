@@ -322,19 +322,6 @@
 </style>
 <script>
 $(document).ready(function () { 
-<<<<<<< HEAD
-                $('#ic').click(function () {
-                    $('#icc').toggleClass('fa-minus fa-plus');
-                });
-								$('#ic1').click(function () {
-                    $('#icc1').toggleClass('fa-minus fa-plus');
-                });
-								$('#ic2').click(function () {
-                    $('#icc2').toggleClass('fa-minus fa-plus');
-                });
-            });
-	</script>
-=======
 		$('#ic').click(function () {
 				$('#icc').toggleClass('fa-minus fa-plus');
 		});
@@ -347,7 +334,6 @@ $(document).ready(function () {
 });
 </script> 
 </style>
->>>>>>> e4656deefcb23a3b864281bb4c9cdd6c996855a2
 
 <script>
 // $('a').click(function(){
