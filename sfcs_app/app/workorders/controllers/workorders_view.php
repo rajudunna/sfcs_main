@@ -245,8 +245,10 @@
 				<li class="">
 					<div class="col-md-12" id="divid_10" style="padding: 12px;">
 						<img src="/images/employee.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="#" onclick="modal('','',this.name)" name="Destroy">Destroy</a></p>
-						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Destroy</p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/surplus/controllers/location_map.php') ?>" name="Location Map" onclick="modal('','',this.name)">Location Map</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/surplus/controllers/location_update.php') ?>" onclick="modal('','',this.name)" name="Update Location">Update Location</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/surplus/controllers/reserve_for_destroy_panel.php') ?>" onclick="modal('','',this.name)" name="Reserve for Audit/Internal Destroy">Reserve for Audit/Internal Destroy</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/surplus/controllers/confirm_destroy_internal.php') ?>" onclick="modal('','',this.name)" name="Confirm Destroy (Internal)">Confirm Destroy (Internal)</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/surplus/controllers/confirm_destroy.php') ?>" onclick="modal('','',this.name)" name="Confirm Destroy (Offered)">Confirm Destroy (Offered)</a>)
+						</p>
 					</div>
 				</li>
               </ul>
