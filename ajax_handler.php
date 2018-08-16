@@ -178,7 +178,7 @@ function anchortag(event,href_url=0){
 
             function GetURLParameter(sParam)
             {
-                var sPageURL = window.location.search.substring(1);
+                var sPageURL = url.substring(1);
                 var sURLVariables = sPageURL.split('&');
                 for (var i = 0; i < sURLVariables.length; i++)
                 {
@@ -189,11 +189,13 @@ function anchortag(event,href_url=0){
                     }
                 }
             }
-            var style = GetURLParameter("style");
-            style = decodeURIComponent(style);
+          
+            var lot = GetURLParameter("lot");
+            lot = decodeURIComponent(lot);
 
-            var schedule = GetURLParameter("schedule");
-            schedule = decodeURIComponent(schedule);
+            var batch = GetURLParameter("batch");
+            batch = decodeURIComponent(batch);
+
            
             if(myattribute == "body"){
                 var sfcs_app = url.includes("sfcs_app");
@@ -211,11 +213,9 @@ function anchortag(event,href_url=0){
             }else{
 
                 jQuery("#modal-body").html(resp);
-                $('select[name^="style"] option[value="'+style+'"]').attr("selected","selected");
-                $('select[name^="style"]').attr('disabled', 'disabled').trigger('change');
-                $('select[name="schedule"] option[value="547293"]').attr("selected","selected");
-                // $('select[name^="schedule"]').attr('disabled', 'disabled').trigger('change');
-                // $('select[name^="style"]').trigger('change');
+               
+                $('input[name="lot_no"]').val(lot);
+                $('input[name="reference"]').val(batch);
                 
                 $('#myModal').modal('show');
             }
