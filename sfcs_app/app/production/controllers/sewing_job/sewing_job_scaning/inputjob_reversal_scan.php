@@ -629,7 +629,22 @@ else if($concurrent_flag == 0)
 				}
 			$b_rep_qty_ins = '-'.$reversalval[$key];
 			$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
-			if($b_op_id == 130 || $b_op_id == 101)
+			$appilication_out = 'Down_Time';
+			$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
+		    //echo $checking_output_ops_code;
+			$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
+			if($result_checking_output_ops_code_out->num_rows > 0)
+			{
+			   while($row_result_checking_output_ops_code_out = $result_checking_output_ops_code_out->fetch_assoc()) 
+			   {
+                 $output_ops_code_out = $row_result_checking_output_ops_code_out['operation_code'];
+			   }
+			}
+			else
+			{
+		    $output_ops_code_out = 130;
+			}
+			if($b_op_id == $output_ops_code_out)
 			{
 				$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 				bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
