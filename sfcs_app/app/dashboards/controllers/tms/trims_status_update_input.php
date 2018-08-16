@@ -124,7 +124,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 </style>
 </head>
 <body>
-<form action="trims_status_update_input.php" method="POST">
+<!-- <form action="trims_status_update_input.php" method="POST"> -->
+<form action=<?= getFullURLLevel($_GET['r'],'trims_status_update_input.php',0,'N'); ?> method="POST">
 <?php 
 include("functions.php");?>
 
@@ -264,9 +265,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 // echo "<h4>Ratio Sheet</h4>";
 // echo "<a class='btn btn-info btn-sm' href=\"print_input_sheet.php?schedule=$org_schs\" onclick=\"return popitup_new('print_input_sheet.php?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
+$popup_url = getFullURLLevel($_GET['r'],'sheet_v2.php',0,'R');
 
 echo "<h4>Consumption Report </h4>";
-echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$org_schs&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$org_schs&style=$style&input_job=$jobno')\">Print Input Job Sheet - Sewing / Packing Requirement</a><br><br>";
+echo "<a class='btn btn-info btn-sm' href=\"#\" onclick=\"return popitup_new('$popup_url?schedule=$org_schs&style=$style&input_job=$jobno')\">Print Input Job Sheet - Sewing / Packing Requirement</a><br><br>";
 
 $sql4="select input_trims_status as t_status from $table_name where input_job_no_random_ref='$doc'";
 //echo $sql4;
@@ -277,7 +279,8 @@ while($row4=mysqli_fetch_array($result4))
 }
 if($t_status==1)
 {
-echo "<a class='btn btn-info btn-sm' href=\"new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a>";
+	$popup_url = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
+echo "<a class='btn btn-info btn-sm' href=\#\" onclick=\"return popitup_new('$popup_url?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a>";
 }
 echo "<br><br>";
 	
