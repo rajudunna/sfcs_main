@@ -88,7 +88,7 @@
         var fields = {'lot_no':'lot_no','batch_no':'batch_no','qty_rec':'qty','product_group':'product_group'};
         var values = {'order_del_no':'<?= $schedule ?>','order_style_no':'<?= $style ?>'};
         var query = "<?= $query ?>";
-        
+        var href_attr = {'lot_no':'lot_no'};
         var table = $('#table1').DataTable({
             "bSort":false,
             "processing": true,
@@ -98,7 +98,7 @@
             "ajax": {
                 url: 'ajax_calls.php?r='+url,
                 method:'GET',
-                data:{'fields':fields,'values':values,'limit':'<?= $limit ?>','total':'<?= $total ?>','query':query,'query_last':'<?= $query_last ?>','href_attr':'lot_no'},
+                data:{'fields':fields,'values':values,'limit':'<?= $limit ?>','total':'<?= $total ?>','query':query,'query_last':'<?= $query_last ?>','href_attr':href_attr},
             }, 
             "pageLength": 15,
             "deferLoading": <?= $total ?>           
@@ -115,12 +115,16 @@
     function afterAjax(){
         $('.append_something').each(function(){
             var lot = $(this).find('input')[0].value;
+<<<<<<< HEAD
+            $(this).find('p').after("<div class='btn-group'><a href='#' class='btn btn-primary btn-sm'>Receive</a><a href='#' class='btn btn-danger btn-sm'>Delete</a><a href='#' class='btn btn-info btn-sm'>Transfer</a><a href='#' class='btn btn-warning btn-sm'>Inspect</a><a href='#' class='btn btn-success btn-sm'>Claim</a> </div>");
+=======
             var receive = '<?= '?r='.base64_encode('/sfcs_app/app/warehouse/controllers/insert_v1.php'); ?>';
             var delete1 = '<?= '?r='.base64_encode('/sfcs_app/app/warehouse/controllers/entry_delete.php'); ?>';
             var transfer = '<?= '?r='.base64_encode('/sfcs_app/app/warehouse/controllers/location_transfer.php'); ?>';
             var inspect = '<?= '?r='.base64_encode('/sfcs_app/app/inspection/controllers/C_Tex_Index.php'); ?>';
             var claim = '<?= '?r='.base64_encode('/sfcs_app/app/inspection/controllers/Supplier_Claim_Request_Form.php'); ?>';
             $(this).find('input').after("<div class='btn-group'><a href='"+receive+"' class='btn btn-primary btn-sm' onclick='anchortag(event,this.href);'>Receive</a><a href='"+delete1+"' class='btn btn-danger btn-sm' onclick='anchortag(event,this.href);'>Delete</a><a href='"+transfer+"' class='btn btn-info btn-sm' onclick='anchortag(event,this.href);'>Transfer</a><a href='"+inspect+"' class='btn btn-warning btn-sm' onclick='anchortag(event,this.href);'>Inspect</a><a href='"+claim+"' class='btn btn-success btn-sm' onclick='anchortag(event,this.href);'>Claim</a> </div>");
+>>>>>>> e4656deefcb23a3b864281bb4c9cdd6c996855a2
         });
     }
     
