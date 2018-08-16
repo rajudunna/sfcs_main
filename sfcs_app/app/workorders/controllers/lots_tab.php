@@ -123,6 +123,7 @@
             $(this).find('input').after("<div class='btn-group'><a href='"+receive+"' class='btn btn-primary btn-sm' onclick='anchortag(event,this.href);'>Receive</a><a href='"+delete1+"' class='btn btn-danger btn-sm' onclick='anchortag(event,this.href);'>Delete</a><a href='"+transfer+"' class='btn btn-info btn-sm' onclick='anchortag(event,this.href);'>Transfer</a><a href='"+inspect+"' class='btn btn-warning btn-sm' onclick='anchortag(event,this.href);'>Inspect</a><a href='"+claim+"' class='btn btn-success btn-sm' onclick='anchortag(event,this.href);'>Claim</a> </div>");
         });
     }
+    
 </script>
 
 <style>
