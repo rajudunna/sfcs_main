@@ -344,12 +344,15 @@ function modalClose(){
             $('.custom-btn').addClass('btn-default');
             $('.modal-dialog').addClass('modal-lg');
             $('#myModal').modal('hide');
-            $("#modal-body").html("");
+            // $("#modal-body").html("");
             $('table').DataTable().ajax.reload(null, false);
       } else {
             // $('#myModal').modal('show');
       }
     });
 }
+$(".modal").on("hidden.bs.modal", function(){
+    $(".modal-body").html("");
+});
 
 </script>
