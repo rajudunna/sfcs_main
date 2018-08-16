@@ -1,6 +1,14 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); ?>
-
+		<style>
+			.left_col,.top_nav{
+			display:none !important;
+			}
+			.right_col{
+			width: 100% !important;
+			margin-left: 0 !important;
+			}
+		</style>
 <?php
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];
@@ -628,6 +636,28 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	border-top:.5pt solid windowtext;
 	border-right:.5pt solid windowtext;
 	border-bottom:none;
+	border-left:.5pt solid windowtext;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.x0008
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Trebuchet MS", sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:bottom;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
 	border-left:.5pt solid windowtext;
 	mso-background-source:auto;
 	mso-pattern:auto;
@@ -2435,130 +2465,219 @@ $lot_det=array();
 $roll_id=array();
 $ctex_len=array();
 $tkt_len=array();
+$plies=array();
 $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='recut'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-
-$roll_det[]=$sql_row['ref2'];
-$width_det[]=round($sql_row['roll_width'],2);
-$leng_det[]=$sql_row['allocated_qty'];
-$batch_det[]=trim($sql_row['batch_no']);
-$shade_det[]=$sql_row['ref4']."-".$sql_row['inv_no'];
-$locan_det[]=$sql_row['ref1'];
-$lot_det[]=$sql_row['lot_no'];
-$roll_id[]=$sql_row['roll_id'];
-$ctex_len[]=$sql_row['ref5'];
-$tkt_len[]=$sql_row['qty_rec'];
+	$roll_det[]=$sql_row['ref2'];
+	$width_det[]=round($sql_row['roll_width'],2);
+	$leng_det[]=$sql_row['allocated_qty'];
+	$batch_det[]=trim($sql_row['batch_no']);
+	$shade_det[]=$sql_row['ref4']."-".$sql_row['inv_no'];
+	$locan_det[]=$sql_row['ref1'];
+	$lot_det[]=$sql_row['lot_no'];
+	$roll_id[]=$sql_row['roll_id'];
+	$ctex_len[]=$sql_row['ref5'];
+	$tkt_len[]=$sql_row['qty_rec'];
+	$plies[]=$sql_row['plies'];
 } 
+$tot_alloc_length = 0;
+$tot_width = 0;
+$tot_ctex_len = 0;
+$tot_tick_lenth = 0;
+$tot_lenth_variation = 0;
+$tot_plies = 0;
+?>
+<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
+	<tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
+		<td height=20 class=xl674118 style='height:15.0pt'></td>
+		<td class=x0008>Roll<br>No</td>
+		<td class=x0008 style="width: 108px;" >Lot No</td>
+		<td class=x0008>Label Id</td>
+		<td class=x0008>Width</td>
+		<td class=x0008>Allocated Length</td>
+		<td class=x0008>Plies</td>
+		<td class=x0008 style="width: 70px;">Batch</td>
+		<td class=x0008>Shade</td>
+		<td class=x0008 style="width: 108px;">Location</td>
+		<td class=x0008 >C-Tex Length</td>
+		<td class=x0008 >Ticket Length</td>
+		<td class=x0008>Length Variation</td>
+	</tr>
+	<tr>
+		<?php
+		for($i=0;$i<sizeof($roll_det);$i++)
+		{
+			echo "
+				<tr>
+					<td height=20 class=xl674118 style='height:15.0pt'></td>
+					<td class=x0008>".$roll_det[$i]."</td>
+					<td class=x0008>".$lot_det[$i]."</td>
+					<td class=x0008>".$roll_id[$i]."</td>
+					<td class=x0008>".$width_det[$i]."</td>
+					<td class=x0008>".$leng_det[$i]."</td>
+					<td class=x0008>".$plies[$i]."</td>
+					<td class=x0008>".$batch_det[$i]."</td>
+					<td class=x0008>".$shade_det[$i]."</td>
+					<td class=x0008>".$locan_det[$i]."</td>
+					<td class=x0008>".$ctex_len[$i]."</td>
+					<td class=x0008>".$tkt_len[$i]."</td>
+					<td class=x0008>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
+				</tr>";
+			$tot_alloc_length = $tot_alloc_length + $leng_det[$i];
+			$tot_plies = $tot_plies + $plies[$i];
+			$tot_width = $tot_width + $width_det[$i];
+			$tot_ctex_len = $tot_ctex_len + $ctex_len[$i];
+			$tot_tick_lenth = $tot_tick_lenth + $tkt_len[$i];
+			$tot_lenth_variation = $tot_lenth_variation + round(($ctex_len[$i]-$tkt_len[$i]),2);
+		}
 
-echo "<table style='font-size:16px; border:.5pt solid black; border-collapse: collapse;'>";
+		for($i =0; $i<14-sizeof($roll_det); $i++)
+		{
+			echo "
+				<tr>
+					<td height=20 class=xl674118 style='height:15.0pt'></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+				</tr>";
+		}
+		?>
+	</tr>
+	<tr>
+		<td height=20 class=xl674118 style='height:15.0pt'></td>
+		<td colspan=3 class=x0008>Total </td>
+		<?php
+			echo "<td class=x0008>".$tot_width."</td>
+				<td class=x0008>".$tot_alloc_length."</td>
+				<td class=x0008>".$tot_plies."</td>
+				<td colspan=3 class=x0008></td>
+				<td class=x0008>".$tot_ctex_len."</td>
+				<td class=x0008>".$tot_tick_lenth."</td>
+				<td class=x0008>".$tot_lenth_variation."</td>
+				";
+		?>
+		
+	</tr>
+</table>
+<?php
 
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Roll No</td>";
+// echo "<table style='font-size:16px; border:.5pt solid black; border-collapse: collapse;'>";
 
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_det[$i]."</td>";
-}
-echo "</tr>";
+// 	echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Roll No</td>";
 
-
-//2012-06-12 New implementation to get fabric detail based on invoce/batch
-echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Lot No</td>";
-//echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Label ID</td>";
-
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	//2012-06-12 New implementation to get fabric detail based on invoce/batch
-	echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>";
-	//echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>";
-}
-echo "</tr>";
-
-//2012-06-12 New implementation to get fabric detail based on invoce/batch
-//echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Lot No</td>";
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Label ID</td>";
-
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	//2012-06-12 New implementation to get fabric detail based on invoce/batch
-	//echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>";
-	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>";
-}
-echo "</tr>";
-
-
-
-
-
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Width</td>";
-
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$width_det[$i]."</td>";
-}
-echo "</tr>";
-
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Allocated Length</td>";
-
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$leng_det[$i]."</td>";
-}
-echo "</tr>";
-
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Batch</td>";
-
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$batch_det[$i]."</td>";
-}
-echo "</tr>";
-
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Shade</td>";
-
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$shade_det[$i]."</td>";
-}
-echo "</tr>";
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_det[$i]."</td>";
+// 	}
+// 	echo "</tr>";
 
 
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>";
+// 	//2012-06-12 New implementation to get fabric detail based on invoce/batch
+// 	echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Lot No</td>";
+// 	//echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Label ID</td>";
 
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$locan_det[$i]."</td>";
-}
-echo "</tr>";
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		//2012-06-12 New implementation to get fabric detail based on invoce/batch
+// 		echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>";
+// 		//echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>";
+// 	}
+// 	echo "</tr>";
 
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Length</td>";
+// 	//2012-06-12 New implementation to get fabric detail based on invoce/batch
+// 	//echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Lot No</td>";
+// 	echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Label ID</td>";
 
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_len[$i]."</td>";
-}
-echo "</tr>";
-
-echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Length</td>";
-
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_len[$i]."</td>";
-}
-echo "</tr>";
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		//2012-06-12 New implementation to get fabric detail based on invoce/batch
+// 		//echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>";
+// 		echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>";
+// 	}
+// 	echo "</tr>";
 
 
-echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Length Variation</td>";
 
-for($i=0;$i<sizeof($roll_det);$i++)
-{
-	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>";
-}
-echo "</tr>";
 
-echo "</table>";
-echo $lot_ref; 
+
+// 	echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Width</td>";
+
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$width_det[$i]."</td>";
+// 	}
+// 	echo "</tr>";
+
+// 	echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Allocated Length</td>";
+
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$leng_det[$i]."</td>";
+// 	}
+// 	echo "</tr>";
+
+// 	echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Batch</td>";
+
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$batch_det[$i]."</td>";
+// 	}
+// 	echo "</tr>";
+
+// 	echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Shade</td>";
+
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$shade_det[$i]."</td>";
+// 	}
+// 	echo "</tr>";
+
+
+// 	echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>";
+
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$locan_det[$i]."</td>";
+// 	}
+// 	echo "</tr>";
+
+// 	echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Length</td>";
+
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_len[$i]."</td>";
+// 	}
+// 	echo "</tr>";
+
+// 	echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Length</td>";
+
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_len[$i]."</td>";
+// 	}
+// 	echo "</tr>";
+
+
+// 	echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Length Variation</td>";
+
+// 	for($i=0;$i<sizeof($roll_det);$i++)
+// 	{
+// 		echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>";
+// 	}
+// 	echo "</tr>";
+
+// echo "</table>";
 echo "</td>";
 echo "</tr>";
 
