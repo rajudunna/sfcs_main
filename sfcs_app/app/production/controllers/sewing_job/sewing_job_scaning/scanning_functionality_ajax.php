@@ -1200,13 +1200,9 @@ if($barcode_generation == 1)
 		if($concurrent_flag == 0)
 		{
 			$table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Remarks</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
-<<<<<<< HEAD
-			//$checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
-=======
 			// $checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
 			$appilication = 'IMS_OUT';
 			$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
->>>>>>> 31bf092446fd61e9b58bd77fa83e11c2b6fe8eea
 			//echo $checking_output_ops_code;
 			$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where id=6";
 			$result_checking_output_ops_code = $link->query($checking_output_ops_code);
@@ -1352,9 +1348,6 @@ if($barcode_generation == 1)
 						$nop=0;
 					}
 				$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
-<<<<<<< HEAD
-				if($b_op_id == $output_ops_code)
-=======
 				$appilication_out = "Down_Time";
 			    $checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
 			   // echo $checking_output_ops_code_out;
@@ -1371,7 +1364,6 @@ if($barcode_generation == 1)
 				 $output_ops_code_out = 130;
 			    }
 				if($b_op_id == $output_ops_code_out)
->>>>>>> 31bf092446fd61e9b58bd77fa83e11c2b6fe8eea
 				{
 					$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
