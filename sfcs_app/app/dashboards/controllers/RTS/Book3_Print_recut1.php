@@ -2460,12 +2460,14 @@ $width_det=array();
 $leng_det=array();
 $batch_det=array();
 $shade_det=array();
-$locan_det=array();
+$locan_det=array(); 
 $lot_det=array();
 $roll_id=array();
+$plies=array();
+$item=array();
 $ctex_len=array();
 $tkt_len=array();
-$plies=array();
+$shade_det=array();
 $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='recut'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -2481,29 +2483,36 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$ctex_len[]=$sql_row['ref5'];
 	$tkt_len[]=$sql_row['qty_rec'];
 	$plies[]=$sql_row['plies'];
+	$item[]=$sql_row['item'];
 } 
-$tot_alloc_length = 0;
-$tot_width = 0;
-$tot_ctex_len = 0;
-$tot_tick_lenth = 0;
-$tot_lenth_variation = 0;
-$tot_plies = 0;
+$tot_plies=0;  $tot_ctex=0;  $tot_tick_len=0;  $tot_length = 0;  $tot_width = 0;
 ?>
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
 	<tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
 		<td height=20 class=xl674118 style='height:15.0pt'></td>
-		<td class=x0008>Roll<br>No</td>
-		<td class=x0008 style="width: 108px;" >Lot No</td>
-		<td class=x0008>Label Id</td>
-		<td class=x0008>Width</td>
-		<td class=x0008>Allocated Length</td>
-		<td class=x0008>Plies</td>
-		<td class=x0008 style="width: 70px;">Batch</td>
-		<td class=x0008>Shade</td>
-		<td class=x0008 style="width: 108px;">Location</td>
-		<td class=x0008 >C-Tex Length</td>
-		<td class=x0008 >Ticket Length</td>
-		<td class=x0008>Length Variation</td>
+		<td class=x0008 rowspan="2">Batch</td>
+		<td class=x0008 rowspan="2">Fabric Name</td>
+		<td class=x0008 style="width: 80px;"  rowspan="2">Lot No</td>
+		<td class=x0008 rowspan="2">Label</td>
+		<td class=x0008 rowspan="2">Shade</td>
+		<td class=x0008 rowspan="2">Roll<br>No</td>
+		<td class=x0008 rowspan="2">Ticket<br>Length</td>
+		<td class=x0008 rowspan="2">C-Tex<br>Length</td>
+		<td class=x0008 rowspan="2">C-Tex<br>Width</td>
+		<td class=x0008 rowspan="2">Allocated<br>Qty</td>
+		<td class=x0008 rowspan="2">Plies</td>
+		<td class=x0008 rowspan="2">Net Length</td>
+		<td class=x0008 rowspan="2">Damage<br>Excess</td>
+		<td class=x0008 rowspan="2">Joints</td>
+		<td class=x0008 rowspan="2">Ends</td>
+		<td class=x0008 colspan="2">Shortages</td>
+		<td class=x0008 rowspan="2">Binding<br>Length</td>
+		<td class=x0008 rowspan="2">Comments</td>
+	</tr>
+	<tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
+		<td height=20 class=xl674118 style='height:15.0pt'></td>
+		<td class=x0008>+</td>
+		<td class=x0008>-</td>
 	</tr>
 	<tr>
 		<?php
@@ -2512,25 +2521,31 @@ $tot_plies = 0;
 			echo "
 				<tr>
 					<td height=20 class=xl674118 style='height:15.0pt'></td>
-					<td class=x0008>".$roll_det[$i]."</td>
+					<td class=x0008>".$batch_det[$i]."</td>
+					<td class=x0008>".$item[$i]."</td>
 					<td class=x0008>".$lot_det[$i]."</td>
 					<td class=x0008>".$roll_id[$i]."</td>
+					<td class=x0008>".$shade_det[$i]."</td>
+					<td class=x0008>".$roll_det[$i]."</td>
+					<td class=x0008>".$tkt_len[$i]."</td>
+					<td class=x0008>".$ctex_len[$i]."</td>
 					<td class=x0008>".$width_det[$i]."</td>
 					<td class=x0008>".$leng_det[$i]."</td>
 					<td class=x0008>".$plies[$i]."</td>
-					<td class=x0008>".$batch_det[$i]."</td>
-					<td class=x0008>".$shade_det[$i]."</td>
-					<td class=x0008>".$locan_det[$i]."</td>
-					<td class=x0008>".$ctex_len[$i]."</td>
-					<td class=x0008>".$tkt_len[$i]."</td>
-					<td class=x0008>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
 				</tr>";
-			$tot_alloc_length = $tot_alloc_length + $leng_det[$i];
-			$tot_plies = $tot_plies + $plies[$i];
+			$tot_tick_len = $tot_tick_len + $tkt_len[$i];
+			$tot_ctex = $tot_ctex + $ctex_len[$i];
 			$tot_width = $tot_width + $width_det[$i];
-			$tot_ctex_len = $tot_ctex_len + $ctex_len[$i];
-			$tot_tick_lenth = $tot_tick_lenth + $tkt_len[$i];
-			$tot_lenth_variation = $tot_lenth_variation + round(($ctex_len[$i]-$tkt_len[$i]),2);
+			$tot_plies = $tot_plies + $plies[$i];
+			$tot_length = $tot_length + $leng_det[$i];
 		}
 
 		for($i =0; $i<14-sizeof($roll_det); $i++)
@@ -2550,24 +2565,36 @@ $tot_plies = 0;
 					<td class=x0008></td>
 					<td class=x0008></td>
 					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
+					<td class=x0008></td>
 				</tr>";
 		}
 		?>
 	</tr>
 	<tr>
 		<td height=20 class=xl674118 style='height:15.0pt'></td>
-		<td colspan=3 class=x0008>Total </td>
+		<td colspan=6 class=x0008>Total </td>
 		<?php
-			echo "<td class=x0008>".$tot_width."</td>
-				<td class=x0008>".$tot_alloc_length."</td>
-				<td class=x0008>".$tot_plies."</td>
-				<td colspan=3 class=x0008></td>
-				<td class=x0008>".$tot_ctex_len."</td>
-				<td class=x0008>".$tot_tick_lenth."</td>
-				<td class=x0008>".$tot_lenth_variation."</td>
-				";
+			echo "
+				<td class=x0008>".$tot_tick_len."</td>
+				<td class=x0008>".$tot_ctex."</td>
+				<td class=x0008>".$tot_width."</td>
+				<td class=x0008>".$tot_length."</td>
+				<td class=x0008>".$tot_plies."</td>";
 		?>
-		
+		<td class=x0008></td>
+		<td class=x0008></td>
+		<td class=x0008></td>
+		<td class=x0008></td>
+		<td class=x0008></td>
+		<td class=x0008></td>
+		<td class=x0008></td>
+		<td class=x0008></td>
 	</tr>
 </table>
 <?php

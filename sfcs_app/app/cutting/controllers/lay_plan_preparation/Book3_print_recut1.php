@@ -1,13 +1,11 @@
-<?php include('../../../../common/config/config.php'); ?>
-<?php //include("../".getFullURL($_GET['r'], "", "R").""); ?>
-<?php include('../../../../common/config/functions.php'); ?>   
-<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
-<?php
-$order_tid=$_GET['order_tid'];
-$cat_ref=$_GET['cat_ref'];
-$doc_id=$_GET['doc_id'];
+<?php 
+	include('../../../../common/config/config.php');
+	include('../../../../common/config/functions.php');
+	ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 
+	$order_tid=$_GET['order_tid'];
+	$cat_ref=$_GET['cat_ref'];
+	$doc_id=$_GET['doc_id'];
 
-$cut_table=array("0","T1","T1","T2","T2","T3","T3","T4","T4","T5","T5","T6","T6","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","T7","T7","T8","T8","T9","T9","T10","T10","T11","T11","T12","T12","","","","","","","","","","","","","","");
 
 $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1232,17 +1230,12 @@ tags will be replaced.-->
 
 <div id="Book1_15551" align=center x:publishsource="Excel">
 
-<table border=0 cellpadding=0 cellspacing=0 width=758 style='border-collapse:
- collapse;table-layout:fixed;width:568pt'>
+<table border=0 cellpadding=0 cellspacing=0 width=758 style='border-collapse: collapse;table-layout:fixed;width:568pt'>
  <col width=24 style='mso-width-source:userset;mso-width-alt:877;width:18pt'>
- <col class=xl6315551 width=64 span=6 style='mso-width-source:userset;
- mso-width-alt:2340;width:48pt'>
- <col class=xl6315551 width=67 style='mso-width-source:userset;mso-width-alt:
- 2450;width:50pt'>
- <col class=xl6315551 width=64 span=4 style='mso-width-source:userset;
- mso-width-alt:2340;width:48pt'>
- <col class=xl6315551 width=27 style='mso-width-source:userset;mso-width-alt:
- 987;width:20pt'>
+ <col class=xl6315551 width=64 span=6 style='mso-width-source:userset; mso-width-alt:2340;width:48pt'>
+ <col class=xl6315551 width=67 style='mso-width-source:userset;mso-width-alt: 2450;width:50pt'>
+ <col class=xl6315551 width=64 span=4 style='mso-width-source:userset; mso-width-alt:2340;width:48pt'>
+ <col class=xl6315551 width=27 style='mso-width-source:userset;mso-width-alt: 987;width:20pt'>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl1515551 width=24 style='height:15.75pt;width:18pt' colspan=8><?php echo '<div id="bcTarget1" style="width:auto;"></div><script>$("#bcTarget1").barcode("R'.$doc_id.'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'; ?></td>
   <!-- <td class=xl6315551 width=64 style='width:48pt'></td>
@@ -1687,11 +1680,8 @@ L21lZGlhL2ltYWdlMS5wbmdQSwUGAAAAAAYABgCEAQAABQsAAAAA
     <x:CF>Bitmap</x:CF>
     <x:AutoPict/>
    </x:ClientData>
-  </v:shape><![endif]--><![if !vml]><span style='mso-ignore:vglayout;
-  position:absolute;z-index:7;margin-left:41px;margin-top:12px;width:219px;
-  height:62px'><img width=219 height=62
-  src=<?='../../common/images/Book1_15551_image007.gif'?> v:shapes="Text_x0020_Box_x0020_15 AutoShape_x0020_17 Rectangle_x0020_18"></span><![endif]><span
-  style='mso-ignore:vglayout2'>
+  </v:shape><![endif]--><![if !vml]>
+  <span style='mso-ignore:vglayout;  position:absolute;z-index:7;margin-left:41px;margin-top:12px;width:219px;  height:62px'><img width=219 height=62  src=<?='../../common/images/Book1_15551_image007.gif'?> v:shapes="Text_x0020_Box_x0020_15 AutoShape_x0020_17 Rectangle_x0020_18"></span><![endif]><span  style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>
    <tr>
     <td height=20 class=xl6315551 width=64 style='height:15.0pt;width:48pt'></td>
@@ -2369,6 +2359,11 @@ $locan_det=array();
 $lot_det=array();
 $roll_id=array();
 $plies=array();
+$item=array();
+$ctex_len=array();
+$tkt_len=array();
+$shade_det=array();
+
 $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='recut'";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2383,23 +2378,38 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$lot_det[]=$sql_row['lot_no'];
 	$roll_id[]=$sql_row['roll_id'];
 	$plies[]=$sql_row['plies'];
+	$item[]=$sql_row['item'];
+	$ctex_len[]=$sql_row['ref5'];
+	$tkt_len[]=$sql_row['qty_rec'];
 }
-$tot_plies=0;
-$tot_length = 0;
-$tot_width = 0;
+$tot_plies=0;  $tot_ctex=0;  $tot_tick_len=0;  $tot_length = 0;  $tot_width = 0;
 ?>
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
 	<tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
 		<td height=20 class=xl674118 style='height:15.0pt'></td>
-		<td class=xl764118>Roll<br>No</td>
-		<td class=xl764118 style="width: 80px;" >Lot No</td>
-		<td class=xl764118>Label Id</td>
-		<td class=xl764118>Width</td>
-		<td class=xl764118>Length</td>
-		<td class=xl764118>Plies</td>
-		<td class=xl764118>Batch</td>
-		<td class=xl764118>Shade</td>
-		<td class=xl764118>Location</td>
+		<td class=xl764118 rowspan="2">Batch</td>
+		<td class=xl764118 rowspan="2">Fabric Name</td>
+		<td class=xl764118 style="width: 80px;"  rowspan="2">Lot No</td>
+		<td class=xl764118 rowspan="2">Label</td>
+		<td class=xl764118 rowspan="2">Shade</td>
+		<td class=xl764118 rowspan="2">Roll<br>No</td>
+		<td class=xl764118 rowspan="2">Ticket<br>Length</td>
+		<td class=xl764118 rowspan="2">C-Tex<br>Length</td>
+		<td class=xl764118 rowspan="2">C-Tex<br>Width</td>
+		<td class=xl764118 rowspan="2">Allocated<br>Qty</td>
+		<td class=xl764118 rowspan="2">Plies</td>
+		<td class=xl764118 rowspan="2">Net Length</td>
+		<td class=xl764118 rowspan="2">Damage<br>Excess</td>
+		<td class=xl764118 rowspan="2">Joints</td>
+		<td class=xl764118 rowspan="2">Ends</td>
+		<td class=xl764118 colspan="2">Shortages</td>
+		<td class=xl764118 rowspan="2">Binding<br>Length</td>
+		<td class=xl764118 rowspan="2">Comments</td>
+	</tr>
+	<tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
+		<td height=20 class=xl674118 style='height:15.0pt'></td>
+		<td class=xl764118>+</td>
+		<td class=xl764118>-</td>
 	</tr>
 	<tr>
 		<?php
@@ -2408,16 +2418,28 @@ $tot_width = 0;
 			echo "
 				<tr>
 					<td height=20 class=xl674118 style='height:15.0pt'></td>
-					<td class=xl764118>".$roll_det[$i]."</td>
+					<td class=xl764118>".$batch_det[$i]."</td>
+					<td class=xl764118>".$item[$i]."</td>
 					<td class=xl764118>".$lot_det[$i]."</td>
 					<td class=xl764118>".$roll_id[$i]."</td>
+					<td class=xl764118>".$shade_det[$i]."</td>
+					<td class=xl764118>".$roll_det[$i]."</td>
+					<td class=xl764118>".$tkt_len[$i]."</td>
+					<td class=xl764118>".$ctex_len[$i]."</td>
 					<td class=xl764118>".$width_det[$i]."</td>
 					<td class=xl764118>".$leng_det[$i]."</td>
 					<td class=xl764118>".$plies[$i]."</td>
-					<td class=xl764118>".$batch_det[$i]."</td>
-					<td class=xl764118>".$shade_det[$i]."</td>
-					<td class=xl764118>".$locan_det[$i]."</td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>		
+					<td class=xl764118></td>
+					<td class=xl764118></td>
 				</tr>";
+			$tot_tick_len = $tot_tick_len + $tkt_len[$i];
+			$tot_ctex = $tot_ctex + $ctex_len[$i];
 			$tot_width = $tot_width + $width_det[$i];
 			$tot_plies = $tot_plies + $plies[$i];
 			$tot_length = $tot_length + $leng_det[$i];
@@ -2437,19 +2459,39 @@ $tot_width = 0;
 					<td class=xl764118></td>
 					<td class=xl764118></td>
 					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
+					<td class=xl764118></td>
 				</tr>";
 		}
 		?>
 	</tr>
 	<tr>
 		<td height=20 class=xl674118 style='height:15.0pt'></td>
-		<td colspan=3 class=xl764118>Total </td>
+		<td colspan=6 class=xl764118>Total </td>
 		<?php
-			echo "<td class=xl764118>".$tot_width."</td>
+			echo "
+				<td class=xl764118>".$tot_tick_len."</td>
+				<td class=xl764118>".$tot_ctex."</td>
+				<td class=xl764118>".$tot_width."</td>
 				<td class=xl764118>".$tot_length."</td>
 				<td class=xl764118>".$tot_plies."</td>";
 		?>
-		<td colspan=3 class=xl764118></td>
+		<td class=xl764118></td>
+		<td class=xl764118></td>
+		<td class=xl764118></td>
+		<td class=xl764118></td>
+		<td class=xl764118></td>
+		<td class=xl764118></td>
+		<td class=xl764118></td>
+		<td class=xl764118></td>
 	</tr>
 </table>
 <?php
