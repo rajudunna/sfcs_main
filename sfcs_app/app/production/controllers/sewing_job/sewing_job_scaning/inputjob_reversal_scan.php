@@ -283,7 +283,7 @@ while($row = $result_ops_seq_check->fetch_assoc())
 	$seq_id = $row['id'];
 	$ops_dependency = $row['ops_dependency'];
 }
-$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = $ops_seq and id > $seq_id order by id limit 1";
+$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
 $result_post_ops_check = $link->query($post_ops_check);
 if($result_post_ops_check->num_rows > 0)
 {
@@ -398,7 +398,7 @@ else if($concurrent_flag == 0)
 				$pre_recieved_qty = $row['recieved_qty'];
 			}
 			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$bundle_no[$key]."' and operation_id = ".$ops_dep;
-			echo $query_post_dep;
+		//	echo $query_post_dep;
 			$result_query = $link->query($query_post_dep) or exit('query error in updating6');
 			
 		}
@@ -629,7 +629,22 @@ else if($concurrent_flag == 0)
 				}
 			$b_rep_qty_ins = '-'.$reversalval[$key];
 			$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
-			if($b_op_id == 130 || $b_op_id == 101)
+			$appilication_out = 'Down_Time';
+			$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
+		    //echo $checking_output_ops_code;
+			$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
+			if($result_checking_output_ops_code_out->num_rows > 0)
+			{
+			   while($row_result_checking_output_ops_code_out = $result_checking_output_ops_code_out->fetch_assoc()) 
+			   {
+                 $output_ops_code_out = $row_result_checking_output_ops_code_out['operation_code'];
+			   }
+			}
+			else
+			{
+		    $output_ops_code_out = 130;
+			}
+			if($b_op_id == $output_ops_code_out)
 			{
 				$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 				bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
