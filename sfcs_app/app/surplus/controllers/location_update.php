@@ -76,7 +76,7 @@ echo '<div class="panel panel-primary"><div class="panel-heading">Update Locatio
 		<div class="panel-body">';
 echo '<form name="update" method="post" action='.getURL(getBASE($_GET['r'])['path'])['url'].'>';
 echo "<div  class ='table-responsive' style='overflow:scroll;max-height:700px'>";
-$table="<table class='table table-bordered' id='table1'>";
+$table="<table class='table table-bordered' id='table2'>";
 $table.="<thead>";
 $table.="<tr class='success'>";
 $table.='<th>SNo</th>';
@@ -179,7 +179,7 @@ if(mysqli_num_rows($sql_result)>0) {
 			echo $table;
 			$y++;
 	}
-	echo '<tr><td colspan=6>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td><td></tr>';
+	echo '<tr><td colspan=6>Total Quantity:</td><td id="table2Tot1" style="background-color:#FFFFCC; color:red;"></td><td></tr>';
 	$table='</tbody>
 	</table>
 	</div>';
@@ -199,30 +199,30 @@ echo '</div>';
 ?>
 
 <script language="javascript" type="text/javascript">
-	$('#reset_table1').addClass('btn btn-warning');
+	$('#reset_table2').addClass('btn btn-warning');
 	var fnsFilters = {
 		rows_counter: true,
 		sort_select: true,
-		btn_reset: true,
+		// btn_reset: true,
 		alternate_rows: true,
 		btn_reset_text: "Clear",
 	col_operation: { 
-						id: ["table1Tot1"],
+						id: ["table2Tot1"],
 						col: [6],  
 						operation: ["sum"],
 						decimal_precision: [1],
 						write_method: ["innerHTML"] 
 					},
-	rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]
+	rows_always_visible: [grabTag(grabEBI('table2'),"tr").length]
 	};
-	 setFilterGrid("table1",fnsFilters);
+	 setFilterGrid("table2",fnsFilters);
 	$(document).ready(function(){
-		$('#reset_table1').addClass('btn btn-warning btn-xs');
+		$('#reset_table2').addClass('btn btn-warning btn-xs');
 	});
 </script>
 
 <style>
-#reset_table1{
+#reset_table2{
 	width : 80px;
 	color : #fff;
 	margin : 10px;
