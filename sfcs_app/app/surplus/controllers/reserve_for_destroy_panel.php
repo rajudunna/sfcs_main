@@ -365,7 +365,7 @@ if(isset($_POST['schsbt']))
 	// echo $count_res;
 	if($count_res>0){
 	$table ="<br/><div class='table-responsive' style='overflow:scroll;max-height:700px' id='table'>";	
-	$table.=" <table class='table table-bordered' id='table1'>";
+	$table.=" <table class='table table-bordered' id='table2'>";
 	$table.="<thead>";
 	$table.="<tr>";
 	$table.='<th>SNo</th>';
@@ -498,7 +498,7 @@ if(isset($_POST['schsbt']))
 		}
 	}
 	// echo "<br>Qry :".$sql."</br>";
-	echo '<tr><td colspan=5>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
+	echo '<tr><td colspan=5>Total Quantity:</td><td id="table2Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
 	$table='</tbody></table></div>';
 	echo $table;
 	echo '<br/><br/>';
@@ -507,7 +507,7 @@ if(isset($_POST['schsbt']))
 	}else{
 		echo "</br></br><div class='alert alert-danger'>No Data Found</div>";
 	}
-	// echo '<tr><td colspan=5>Total Quantity:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
+	// echo '<tr><td colspan=5>Total Quantity:</td><td id="table2Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
 	
 	
 	// echo '<br/><br/>';
@@ -541,21 +541,21 @@ if(isset($_POST['schsbt']))
 	var fnsFilters = {
 		rows_counter: false,
 		sort_select: true,
-		btn_reset: true,
+		// btn_reset: true,
 		alternate_rows: true,
 		btn_reset_text: "Clear",
 		col_operation: { 
-							id: ["table1Tot1"],
+							id: ["table2Tot1"],
 							col: [5],  
 							operation: ["sum"],
 							decimal_precision: [1],
 							write_method: ["innerHTML"] 
 						},
-	rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]	
+	rows_always_visible: [grabTag(grabEBI('table2'),"tr").length]	
 	};
-	 setFilterGrid("table1",fnsFilters);
+	 setFilterGrid("table2",fnsFilters);
 	 $(document).ready(function(){
-		$('#reset_table1').addClass('btn btn-warning btn-xs');
+		$('#reset_table2').addClass('btn btn-warning btn-xs');
 	});
 	//]]>
 </script>
@@ -568,7 +568,7 @@ if(isset($_POST['schsbt']))
 
 
 <style>
-#reset_table1{
+#reset_table2{
 	width : 80px;
 	color : #fff;
 	margin : 10px;
