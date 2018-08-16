@@ -702,7 +702,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				// 	$check="blue"; // red
 				// 	$font_color = 'white';
 				// }
-				if ($code_db_new[7] == 2)
+				if ($code_db_new[7] == 2 || $code_db_new[7] == 3)
 				{
 					$check = 'yellow'; // yellow for excess/sample cut
 					$font_color = 'black';

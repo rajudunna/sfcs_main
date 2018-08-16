@@ -1,8 +1,10 @@
 
 <?php
 
-include('dbconf.php');
-
+// include('dbconf.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+var_dump($link);
 /*
 M3 Status Code Reference.
 
@@ -43,7 +45,7 @@ Id	Name	Description
 	{
 		//$files=glob("./".$folders_list[$i]."/*_$facility_code"."_*.csv");
 		//modified the file path from _* due to change in APID 2017-05-06 KiranG
-		$files=glob("./".$folders_list[$i]."/RM_Dashboard.csv");
+		$files=glob($include_path."/sfcs_app/app/jobs/FFSP_Integration/".$folders_list[$i]."/RM_Dashboard.csv");
 		//echo "./".$folders_list[$i]."/$facility_code"."_"."*.csv";
 		//var_dump($files);
 		foreach($files as $filepath)
@@ -95,12 +97,11 @@ Id	Name	Description
 						
 						$sql1="update bai_pro3.bai_orders_db set ft_status=$ft_status,st_status=$st_status,pt_status=$pt_status where order_del_no='".$data[1]."' and order_col_des='".$data[2]."'";
 						echo "Orders DB: ".$sql1."<br/>";
-						mysqli_query($sql1,$link) or exit("Sql Error".mysql_error());
+						mysqli_query($link,$sql1)or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						
 						$sql2="update bai_pro3.bai_orders_db_confirm set ft_status=$ft_status,st_status=$st_status,pt_status=$pt_status where order_del_no='".$data[1]."' and order_col_des='".$data[2]."'";
 						echo "Orders DB Confirm: ".$sql1."<br/>";
-						mysqli_query($sql2,$link) or exit("Sql Error".mysql_error());
-					
+						mysqli_query($link,$sql2)or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					}
 					
 					$i++;
@@ -113,7 +114,7 @@ Id	Name	Description
 	}
 	
 
-	echo "<script language=\"javascript\"> setTimeout(\"CloseWindow()\",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script>";
+	// echo "<script language=\"javascript\"> setTimeout(\"CloseWindow()\",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script>";
 
 
 //@mysql_close($link_secure_m3or);

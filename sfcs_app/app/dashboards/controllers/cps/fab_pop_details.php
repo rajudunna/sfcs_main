@@ -416,49 +416,20 @@ echo "</table>";
 
 echo "<h2>Cut Docket Print</h2>";
 
-$path='Book3_print1.php';
-if(substr($style_ref,0,1)!="P" or substr($style_ref,0,1)!="K" or substr($style_ref,0,1)!="L" or substr($style_ref,0,1)!="O")
-{
-	if($mns_status>0)
-	{
-		$path='Book3_print1.php';;  // For M&S Men Briefs
-	}
-	else
-	{
-		$path='Book3_print1.php';; // FOR M&S Ladies Briefs
-	}
-	
-}
-else
-{
-	if(substr($style_ref,0,1)=="Y")
-	{
-		$path='Book3_print1.php';; // FOR M&S Ladies Briefs	
-	}
-}
-
-//for clubbing docket track
-if($clubbing>0)
-{
-	$path="color_club_docket_print.php";
-}
-
 echo "<form name=\"ins\" method=\"post\" action=\"fab_pop_allocate_v5.php\">"; //new_Version
 echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">"; //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
 echo "<input type=\"hidden\" value=\"$style_ref\" name=\"style_ref\">";  
 echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
 //$sql1="SELECT plandoc_stat_log.plan_lot_ref,plandoc_stat_log.cat_ref,plandoc_stat_log.print_status,plandoc_stat_log.doc_no,cat_stat_log.category from plandoc_stat_log left join cat_stat_log on plandoc_stat_log.cat_ref=cat_stat_log.tid  where plandoc_stat_log.order_tid=\"$order_id_ref\" and plandoc_stat_log.acutno=$cut_no_ref";
 
-$sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.acutno=$cut_no_ref";
+$sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.acutno=$cut_no_ref";
 
 // $sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.acutno=$cut_no_ref and order_cat_doc_mk_mix.doc_no=$doc_no";
 
 //Color Clubbing New Code
 if($clubbing>0)
 {
-	$sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.acutno=$cut_no_ref";
-	
-	// $sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.acutno=$cut_no_ref and order_cat_doc_mk_mix.doc_no=$doc_no";
+	$sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.acutno=$cut_no_ref";
 }
 
 
@@ -482,6 +453,16 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	if($style_flag==0){
 			$docno_lot=$sql_row1['doc_no'];
 			$componentno_lot=$sql_row1['compo_no'];
+			
+			$clubbing=$sql_row1['clubbing'];
+			if($clubbing>0)
+			{
+				$path="color_club_docket_print.php";
+			}
+			else
+			{
+				$path='Book3_print1.php';
+			}
 			
 			// echo "<br>DocNo: ".$docno_lot.'Component No: '.$componentno_lot;
 			//getting lot numbers with reference style code and component no
@@ -519,6 +500,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	echo "<td>".$sql_row1['compo_no']."</td>";
 	echo "<td>".$sql_row1['col_des'].'-'.$sql_row1['doc_no']."</td>";
 	$extra=0;
+	//echo "<br>1=".$sql_row1['material_req'];
 	//if(substr($style_ref,0,1)=="M") { $extra=round(($material_req*0.01),2); }
 	{ $extra=round(($sql_row1['material_req']*$sql_row1['savings']),2); }
 	echo "<td>".($sql_row1['material_req']+$extra)."</td>";

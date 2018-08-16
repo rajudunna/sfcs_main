@@ -49,7 +49,7 @@
 
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
-$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+$url_r = base64_encode(implode('/',$php_self)."/fab_pps_recut_dashboard_v4.php");
 $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
 ?>
 <br/>
@@ -65,7 +65,7 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 	include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 	$php_self = explode('/',$_SERVER['PHP_SELF']);
 	array_pop($php_self);
-	$url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5.php");
+	$url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5_new.php");
 	$has_permission=haspermission($url_r);
 ?>
 	<!-- <meta charset="utf-8">
@@ -758,10 +758,9 @@ if(isset($_POST['allocate_new']))
 	//Exit Code
 	
 	echo "<h2>Successfully Updated.</h2>";
-	//this is for after allocating article redirect to cps dashboard.removed sfcsui
 	$php_self = explode('/',$_SERVER['PHP_SELF']);
 	array_pop($php_self);
-	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+	$url_r = base64_encode(implode('/',$php_self)."/fab_pps_recut_dashboard_v4.php");
 	$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
 	echo"<script>swal('Successfully Updated.','','success')</script>";
 	echo"<script>location.href = '".$url."';</script>"; 
@@ -783,7 +782,7 @@ if(isset($_POST['allocate_new']))
 
 if(isset($_POST['allocate']))
 {
-	echo "<form name='input' method='post' action='fab_pop_allocate_v5.php' onkeypress='return event.keyCode != 13'>";
+	echo "<form name='input' method='post' action='fab_pop_allocate_v5_new.php' onkeypress='return event.keyCode != 13'>";
 	$doc=$_POST['doc'];
 	//$lot_db_2 = $_POST["pms$doc[0]"];
 	//var_dump($doc);
@@ -893,7 +892,7 @@ if(isset($_POST['allocate']))
 		echo "<input type=\"hidden\" name=\"lot_db[$i]\" value=\"".implode(";",$lot_db)."\">";
 		echo "<input type=\"hidden\" name=\"min_width[$i]\" value=\"\">";
 		
-		echo "<h3><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h3>";
+		// echo "<h3><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h3>";
 		
 		//To show stats
 		echo "<h4>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\"></span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h4>";
