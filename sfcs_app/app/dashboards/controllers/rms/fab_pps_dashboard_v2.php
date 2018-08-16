@@ -974,6 +974,7 @@
                                         $total_qty+=$sql_row11['total'];
                                         $colors_db[]=trim($sql_row11['order_col_des']);
                                     } 
+                                   
                                 }
                                 else
                                 {
@@ -997,18 +998,9 @@
                                 {
                                     $fab_status = 5;
                                 }
-    
-
-                                $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref_club = '".implode(",",$club_docs)."'";
-                                // echo "Fab Requested Query : ".$fab_request_query."<br>";
+                                $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
                                 $fab_request_result=mysqli_query($link, $fab_request_query) or exit("error while getting fab Requested details");
-
-                                // $material_available_query="SELECT * FROM $bai_rm_pj1.`sticker_report` WHERE item IN (SELECT compo_no FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM $bai_pro3.`plandoc_stat_log` WHERE doc_no=$doc_no));";
-                                // //echo "Fab Requested Query : ".$material_available_query."<br>";
-                                // $mat_available_result=mysqli_query($link, $material_available_query) or exit("error while getting fab Requested details");
-
-                                // echo $fabric_status."--".implode(",",$club_docs).' == '.mysqli_num_rows($fab_request_result).' == '.$ft_status.'<br>';
-
+    
                                 if ($fab_status==5)
                                 {
                                     $final_cols = 'yellow';
