@@ -73,7 +73,7 @@
 								</div>
 								<div class="col-sm-2">
 									 <div class="dropdown" hidden='true'>
-										<b>Default Operation</b>
+										<b>Report To ERP</b>
 										<select class="form-control" id="sel1" name="sel1" required>
 										<option value="">Please Select</option><option value='yes'>Yes</option><option value='No' selected>No</option></select>	
 									</div>
@@ -145,7 +145,7 @@
 	$res_do_num=mysqli_query($link,$query_select);
 	echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
 	echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
-	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>M3 Operation</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
+	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
 	$i=1;
 	while($res_result = mysqli_fetch_array($res_do_num)){
 		//var_dump($res_result);
