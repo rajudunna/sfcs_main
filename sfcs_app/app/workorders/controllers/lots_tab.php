@@ -63,10 +63,10 @@
                             <td>".$product_group."</td>
                             <td class='append_buttons' id='column$i'><div class='btn-group'>
                                 <a href='?r=".base64_encode('/sfcs_app/app/warehouse/controllers/insert_v1.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-primary btn-sm' onclick='anchortag(event,this.href);' data_toggle='anil'>Receive</a>
-                                <a href='?r=".base64_encode('/sfcs_app/app/warehouse/controllers/entry_delete.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-danger btn-sm'>Delete</a>
-                                <a href='?r=".base64_encode('/sfcs_app/app/warehouse/controllers/location_transfer.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-info btn-sm'>Transfer</a>
-                                <a href='?r=".base64_encode('/sfcs_app/app/inspection/controllers/C_Tex_Index.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-warning btn-sm'>Inspect</a>
-                                <a href='?r=".base64_encode('/sfcs_app/app/inspection/controllers/Supplier_Claim_Request_Form.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-success btn-sm'>Claim</a> </div>   
+                                <a href='?r=".base64_encode('/sfcs_app/app/warehouse/controllers/entry_delete.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-danger btn-sm' onclick='anchortag(event,this.href);'>Delete</a>
+                                <a href='?r=".base64_encode('/sfcs_app/app/warehouse/controllers/location_transfer.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-info btn-sm' onclick='anchortag(event,this.href);'>Transfer</a>
+                                <a href='?r=".base64_encode('/sfcs_app/app/inspection/controllers/C_Tex_Index.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-warning btn-sm' onclick='anchortag(event,this.href);'>Inspect</a>
+                                <a href='?r=".base64_encode('/sfcs_app/app/inspection/controllers/Supplier_Claim_Request_Form.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-success btn-sm' onclick='anchortag(event,this.href);'>Claim</a> </div>   
                             </td>
                         </tr>";
                 }

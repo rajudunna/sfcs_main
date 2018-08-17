@@ -189,13 +189,14 @@ function anchortag(event,href_url=0){
                     }
                 }
             }
-          
             var lot = GetURLParameter("lot");
             lot = decodeURIComponent(lot);
 
             var batch = GetURLParameter("batch");
             batch = decodeURIComponent(batch);
 
+            var style = GetURLParameter("style");
+            style = decodeURIComponent(style);
            
             if(myattribute == "body"){
                 var sfcs_app = url.includes("sfcs_app");

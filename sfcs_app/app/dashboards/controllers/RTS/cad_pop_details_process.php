@@ -2,8 +2,7 @@
 //KiranG - 2015-09-02 : passing link as parameter in update_m3_or function to avoid missing user name. SR#
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
+
 
 //$authorized=array("kirang","herambaj","kishorek","sarojiniv","kirang","demiank","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","rambabub","chaitanyag","kirang","kirang","herambaj","kishorek","sarojiniv","kirang","demiank","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","rambabub","chaitanyag","kirang","sreenivasg");
 //$authorized=array("kirang");
@@ -19,7 +18,8 @@ if(!(in_array(strtolower($username),$authorized)))
 {
 	header("Location:restrict.php");
 }
-
+$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+$username=$username_list[1];
 ?>
 
 <?php
@@ -225,7 +225,7 @@ if(isset($_POST['issue']))
 		}
 	}
 	
-	echo "<h2>Successfully Updated</h2>";
+	echo "<div class='alert alert-success'>Successfully Updated</div>";
 }
 
 ?>
@@ -252,7 +252,7 @@ if(isset($_POST['update']))
 	$sql="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$doc_nos."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	echo "<h2>Successfully Updated</h2>";
+	echo "<div class='alert alert-success'>Successfully Updated</div>";
 }
 
 ?>
@@ -314,7 +314,7 @@ if(isset($_POST['submit']))
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 	}
-	echo "<h2>Successfully Updated</h2>";
+	echo "<div class='alert alert-success'>Successfully Updated</div>";
 	
 	
 }
