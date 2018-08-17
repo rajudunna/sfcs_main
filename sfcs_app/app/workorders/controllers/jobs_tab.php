@@ -143,11 +143,6 @@
     
     </tbody>
 </table>
-<style>
-td {
-    width: 300px;
-  }
-</style>
       
 <script>      
     $(document).ready(function() {
