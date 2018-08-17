@@ -56,10 +56,10 @@
       <a href="" class="btn btn-info btn-sm" style="float: right;border-radius: 16px;">
           <img src="/images/controls.png" >
       </a>
-      <input type="text" id='search' name="search" onkeypress='filter(this,event)' class="form-control" placeholder="Search" 
+      <input type="text" id='search' name="search" onkeypress='filter(this,event)' class="form-control" placeholder="Search Style (or) Schedule" 
              style="width:200px;float:right;border-radius: 16px;margin-right: 15px;"
              value="<?= isset($_GET['filter']) ? $_GET['filter'] : ''; ?> ">
-    </div><br/><br/>
+    </div><br/><br/><br/>
     
     <?php 
       $action = base64_encode("/sfcs_app/app/workorders/controllers/workorders_view.php");
@@ -177,6 +177,10 @@
 
 
 <script>  
+
+  $(document).ready(function(){
+     $('#search').val(null);
+  });
   
   function filter(t,e){
     if(e.keyCode == 13){
