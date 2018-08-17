@@ -123,7 +123,7 @@ $('form').on("submit",function(event) {
     }else{
         url = "ajax_handler.php?r="+get_url;
     }
-   
+
     var from_data=form.serializeArray();
 
     if($("input[type=submit]").attr("name") !== undefined){
@@ -154,25 +154,19 @@ $('form').on("submit",function(event) {
     myLoadStop();
 });
 
-$("#body a").unbind().bind('click',function(event){
-
+function anchortag(event,href_url=0){
     event.preventDefault();
-    
     var url;
     var href_url;
     var split_url;
-    href_url = $(this).attr("href");
+    if(href_url == 0){
+        href_url = $(this).attr("href");
+    }else{
+        href_url = href_url;
+    }
     data_toggle = $(this).attr("data-toggle");
     myattribute = $(this).attr("myattribute");
     if(href_url !== "#" && data_toggle == undefined){
-        // var index = href_url.includes("index.php");
-        // if(index == true){
-        //     split_url = href_url.split("?").pop();
-        //     url = "ajax_handler.php?"+split_url;
-        // }else{
-        //     url = href_url;
-        // }
-
         split_url = href_url.split("?").pop();
         url = "ajax_handler.php?"+split_url;
         myLoad1();
@@ -182,22 +176,49 @@ $("#body a").unbind().bind('click',function(event){
           cache:false,
         }).done(function(resp) {
 
-            // url = new URL(url);
-            // var c = url.searchParams.get("r");
-            
-            if(myattribute == "body" || myattribute == 'production_body'){
+            function GetURLParameter(sParam)
+            {
+                var sPageURL = url.substring(1);
+                var sURLVariables = sPageURL.split('&');
+                for (var i = 0; i < sURLVariables.length; i++)
+                {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam)
+                    {
+                        return sParameterName[1];
+                    }
+                }
+            }
+          
+            var lot = GetURLParameter("lot");
+            lot = decodeURIComponent(lot);
+
+            var batch = GetURLParameter("batch");
+            batch = decodeURIComponent(batch);
+
+           
+            if(myattribute == "body"){
                 var sfcs_app = url.includes("sfcs_app");
+                var menu = GetURLParameter("menu");
                 if(sfcs_app == false){
                     var c = url.split("?").pop();
                     window.history.pushState("object or string", "Title", "?"+c);
                 }
-                jQuery("#"+myattribute).html(resp);
+                if(menu == "production"){
+                    $("#production_body").remove();
+                    jQuery("#"+myattribute).append("<div id='production_body'>"+resp+"</div>");
+                }else{
+                    jQuery("#"+myattribute).html(resp);
+                }
             }else{
+
                 jQuery("#modal-body").html(resp);
-                // $('select[name^="style"] option[value="A0023SS9       "]').attr("selected","selected");
-                // $('select[name^="style"]').attr('disabled', 'disabled').trigger('change');
-                // $('select[name^="style"]').trigger('change');
-                
+               
+                $('input[name="lot_no"]').val(lot);
+                $('input[name="reference"]').val(batch);
+                $('input[name="lot_no_ref"]').val(lot);
+                $('input[name="lot_no1"]').val(lot);
+             
                 $('#myModal').modal('show');
             }
            
@@ -205,7 +226,7 @@ $("#body a").unbind().bind('click',function(event){
 
         }).fail(function(erespo) {
 
-            if(myattribute == "body" || myattribute == 'production_body'){
+            if(myattribute == "body"){
                 jQuery("#"+myattribute).html(erespo);
             }else{
                 jQuery("#modal-body").html(erespo);
@@ -214,7 +235,10 @@ $("#body a").unbind().bind('click',function(event){
 
         });
     }
-});
+}
+
+$("#body a").unbind().bind('click',anchortag);
+
 
 $('[data-toggle="datepicker"]').datepicker(
 {
@@ -238,9 +262,29 @@ function Ajaxify (href_url,body=0) {
         url: url,
         cache:false,
     }).done(function(resp) {
-       
-        if(body == "body" || body == "production_body"){
-            jQuery("#"+body).html(resp);
+
+        function GetURLParameter(sParam)
+        {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++)
+            {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam)
+                {
+                    return sParameterName[1];
+                }
+            }
+        }
+
+        if(body == "body"){
+            var menu = GetURLParameter("menu");
+            if(menu == "production"){
+                $("#production_body").remove();
+                jQuery("#"+body).append("<div id='production_body'>"+resp+"</div>");
+            }else{
+                jQuery("#"+body).html(resp);
+            }
         }else{
             jQuery("#modal-body").html(resp);
             $('#myModal').modal('show');
@@ -250,7 +294,7 @@ function Ajaxify (href_url,body=0) {
 
     }).fail(function(erespo) {
 
-         if(body == "body" || body == "production_body"){
+         if(body == "body"){
             jQuery("#"+body).html(resp);
         }else{
             jQuery("#modal-body").html(resp);
@@ -302,12 +346,15 @@ function modalClose(){
             $('.custom-btn').addClass('btn-default');
             $('.modal-dialog').addClass('modal-lg');
             $('#myModal').modal('hide');
-            $("#modal-body").html("");
-
+            // $("#modal-body").html("");
+            $('table').DataTable().ajax.reload(null, false);
       } else {
             // $('#myModal').modal('show');
       }
     });
 }
+$(".modal").on("hidden.bs.modal", function(){
+    $(".modal-body").html("");
+});
 
 </script>

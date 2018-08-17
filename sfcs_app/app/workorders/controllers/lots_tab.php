@@ -62,11 +62,11 @@
                             <td>".$qty."</td>
                             <td>".$product_group."</td>
                             <td class='append_buttons' id='column$i'><div class='btn-group'>
-                                <a href='#' class='btn btn-primary btn-sm'>Receive</a>
-                                <a href='#' class='btn btn-danger btn-sm'>Delete</a>
-                                <a href='#' class='btn btn-info btn-sm'>Transfer</a>
-                                <a href='#' class='btn btn-warning btn-sm'>Inspect</a>
-                                <a href='#' class='btn btn-success btn-sm'>Claim</a> </div>   
+                                <a href='?r=".base64_encode('/sfcs_app/app/warehouse/controllers/insert_v1.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-primary btn-sm' onclick='anchortag(event,this.href);' data_toggle='anil'>Receive</a>
+                                <a href='?r=".base64_encode('/sfcs_app/app/warehouse/controllers/entry_delete.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-danger btn-sm'>Delete</a>
+                                <a href='?r=".base64_encode('/sfcs_app/app/warehouse/controllers/location_transfer.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-info btn-sm'>Transfer</a>
+                                <a href='?r=".base64_encode('/sfcs_app/app/inspection/controllers/C_Tex_Index.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-warning btn-sm'>Inspect</a>
+                                <a href='?r=".base64_encode('/sfcs_app/app/inspection/controllers/Supplier_Claim_Request_Form.php')."&lot=$lot_number&batch=$batch_number' class='btn btn-success btn-sm'>Claim</a> </div>   
                             </td>
                         </tr>";
                 }
@@ -82,12 +82,13 @@
 </table>
       
 <script>
+
     $(document).ready(function() {
         var url = "<?php  echo base64_encode('/sfcs_app/app/workorders/controllers/server_processing.php'); ?>";
         var fields = {'lot_no':'lot_no','batch_no':'batch_no','qty_rec':'qty','product_group':'product_group'};
         var values = {'order_del_no':'<?= $schedule ?>','order_style_no':'<?= $style ?>'};
         var query = "<?= $query ?>";
-        
+        var href_attr = {'lot_no':'lot_no', 'batch_no':'batch_no'};
         var table = $('#table1').DataTable({
             "bSort":false,
             "processing": true,
@@ -97,7 +98,7 @@
             "ajax": {
                 url: 'ajax_calls.php?r='+url,
                 method:'GET',
-                data:{'fields':fields,'values':values,'limit':'<?= $limit ?>','total':'<?= $total ?>','query':query,'query_last':'<?= $query_last ?>','href_attr':'lot_no'},
+                data:{'fields':fields,'values':values,'limit':'<?= $limit ?>','total':'<?= $total ?>','query':query,'query_last':'<?= $query_last ?>','href_attr':href_attr},
             }, 
             "pageLength": 15,
             "deferLoading": <?= $total ?>           
@@ -113,10 +114,18 @@
 
     function afterAjax(){
         $('.append_something').each(function(){
+            $(this).find('#add_some').html("");
             var lot = $(this).find('input')[0].value;
-            $(this).find('input').after("<div class='btn-group'><a href='#' class='btn btn-primary btn-sm'>Receive</a><a href='#' class='btn btn-danger btn-sm'>Delete</a><a href='#' class='btn btn-info btn-sm'>Transfer</a><a href='#' class='btn btn-warning btn-sm'>Inspect</a><a href='#' class='btn btn-success btn-sm'>Claim</a> </div>");
+            var batch = $(this).find('input')[1].value;
+            var receive = '<?= '?r='.base64_encode('/sfcs_app/app/warehouse/controllers/insert_v1.php'); ?>&lot='+lot+'&batch='+batch;
+            var delete1 = '<?= '?r='.base64_encode('/sfcs_app/app/warehouse/controllers/entry_delete.php'); ?>&lot='+lot+'&batch='+batch;
+            var transfer = '<?= '?r='.base64_encode('/sfcs_app/app/warehouse/controllers/location_transfer.php'); ?>&lot='+lot+'&batch='+batch;
+            var inspect = '<?= '?r='.base64_encode('/sfcs_app/app/inspection/controllers/C_Tex_Index.php'); ?>&lot='+lot+'&batch='+batch;
+            var claim = '<?= '?r='.base64_encode('/sfcs_app/app/inspection/controllers/Supplier_Claim_Request_Form.php'); ?>&lot='+lot+'&batch='+batch;
+            $(this).find('#add_some').html("<div class='btn-group'><a href='"+receive+"' class='btn btn-primary btn-sm' onclick='anchortag(event,this.href);'>Receive</a><a href='"+delete1+"' class='btn btn-danger btn-sm' onclick='anchortag(event,this.href);'>Delete</a><a href='"+transfer+"' class='btn btn-info btn-sm' onclick='anchortag(event,this.href);'>Transfer</a><a href='"+inspect+"' class='btn btn-warning btn-sm' onclick='anchortag(event,this.href);'>Inspect</a><a href='"+claim+"' class='btn btn-success btn-sm' onclick='anchortag(event,this.href);'>Claim</a> </div>");
         });
     }
+    
 </script>
 
 <style>

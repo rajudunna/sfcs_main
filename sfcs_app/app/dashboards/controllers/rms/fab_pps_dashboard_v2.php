@@ -119,7 +119,7 @@ function redirect_view()
 	y=document.getElementById('view_div').value;
 	//window.location = "fab_pps_dashboard_v2.php?view=2&view_cat="+x+"&view_div="+y;
 	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view=2&view_div="+encodeURIComponent(y);
-	Ajaxify(ajax_url,'production_body');
+	Ajaxify(ajax_url,'body');
 
 }
 
@@ -131,7 +131,7 @@ function redirect_dash()
 	a=document.getElementById('view_priority').value;
 	//window.location = "fab_pps_dashboard_v2.php?view="+z+"&view_cat="+x+"&view_div="+y;
 	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
-	Ajaxify(ajax_url,'production_body');
+	Ajaxify(ajax_url,'body');
 
 }
 
@@ -143,7 +143,7 @@ function redirect_priority()
 	a=document.getElementById('view_priority').value;
 	//window.location = "pps_dashboard_v2.php?view="+z+"&view_cat="+x+"&view_div="+y;
 	var ajax_url = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
-	Ajaxify(ajax_url,'production_body');
+	Ajaxify(ajax_url,'body');
 
 }
 
@@ -221,12 +221,12 @@ function blink_new_priority(x)
 
 
 <style>
-body
+/* body
 {
 	background-color:#eeeeee;
 	color: #000000;
 	font-family: Trebuchet MS;
-}
+} */
 a {text-decoration: none;}
 
 table
@@ -724,7 +724,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<table>";
 		$url=getFullURL($_GET['r'],'board_update.php','N');
 		// echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
-		echo "<tr><th colspan=2><h2><a href=\"$url&section_no=$section\" onclick=\"if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+		echo "<tr><th colspan=2><h2><a href=\"$url&section_no=$section\">SECTION - $section</a></h2></th></th></tr>";
+		// echo "<tr><th colspan=2><h2><a href=\"$url&section_no=$section\" onclick=\"if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+
 
 		//$mods=explode(",",$section_mods);
 		
@@ -761,7 +763,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		if($rows5!=''or $rows5!='0'){
 		echo "<td class=\"bottom\" $iu_module_highlight>
 				<strong><a href=\"$url5&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" >
-						  <font class=\"fontnn\" color=black style='background-color:#ff000085;' onclick=\" if (window.focus) {Popup.focus()} return false;\">$module</font>
+						  <font class=\"fontnn\" color=black style='background-color:#ff000085;' >$module</font>
 				</a></strong>
 			  </td>
 			  <td>";
@@ -1159,7 +1161,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				if(in_array($authorized,$has_permission) and $id!="yellow" and $id!="blue")
 				{
 				$url1=getFullURL($_GET['r'],'fabric_requisition.php','N');
-				echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\" if (window.focus) {Popup.focus()} return false;\">$iustyle $emb_stat_title</a>";
+				echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" >$iustyle $emb_stat_title</a>";
 				echo $schedule;
 				echo "</div></div>";
 				}
@@ -1185,7 +1187,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				if(in_array($authorized,$has_permission) and $id!="yellow" and $id!="blue")
 				{
 				$url1=getFullURL($_GET['r'],'fabric_requisition.php','N');
-				echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\" if (window.focus) {Popup.focus()} return false;\">$emb_stat_title</a>";
+				echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" >$emb_stat_title</a>";
 			
 					//if($module==3)
 					//{

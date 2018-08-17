@@ -26,7 +26,7 @@
 			<?php
 				include("surplus_auto_correct_function.php");
 
-				$table="<table class='table table-bordered table-stripped' id='table1'>";
+				$table="<table class='table table-bordered table-stripped' id='table2'>";
 				$table.="<thead>";
 				$table.="<tr class='success'>";
 				$table.='<th><center>S.NO</center></th>';
@@ -56,7 +56,7 @@
 						echo $table;
 						$i++;
 					}
-					echo '<tr><th colspan=4 style="text-align:right">Total Filled Quantity:</th><td id="table1Tot1" style="background-color:#FFFFCC; color:red;text-align:right;"></td><td></td></tr>';
+					echo '<tr><th colspan=4 style="text-align:right">Total Filled Quantity:</th><td id="table2Tot1" style="background-color:#FFFFCC; color:red;text-align:right;"></td><td></td></tr>';
 					$table='</tbody></table>';
 					echo $table;
 					echo "</br>";
@@ -73,41 +73,41 @@
 </div>
 
 <script language="javascript" type="text/javascript">
-	$('#reset_table1').addClass('btn btn-warning');
+	$('#reset_table2').addClass('btn btn-warning');
 	var fnsFilters = {
 		rows_counter: true,
 		sort_select: true,
-		btn_reset: true,
+		// btn_reset: true,
 		alternate_rows: true,
-		btn_reset_text: "Clear",
+		// btn_reset_text: "Clear",
 		col_operation: { 
-							id: ["table1Tot1"],
+							id: ["table2Tot1"],
 							col: [4],  
 							operation: ["sum"],
 							decimal_precision: [1],
 							write_method: ["innerHTML"] 
 						},
-		rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]	
+		rows_always_visible: [grabTag(grabEBI('table2'),"tr").length]	
 	};
-	 setFilterGrid("table1",fnsFilters);
+	 setFilterGrid("table2",fnsFilters);
 
 	$(document).ready(function(){
-		$('#reset_table1').addClass('btn btn-warning btn-xs');
+		$('#reset_table2').addClass('btn btn-warning btn-xs');
 	});
 </script>
 <!-- <script language="javascript" type="text/javascript">  
-	// var totRowIndex = tf_Tag(tf_Id('table1'),"tr").length;  
+	// var totRowIndex = tf_Tag(tf_Id('table2'),"tr").length;  
 	var fnsFilters = {
 			rows_counter: true,
 			col_operation: { 
-							id: ["table1Tot1"],
+							id: ["table2Tot1"],
 							col: [4],  
 							operation: ["sum"],
 							decimal_precision: [1],
 							write_method: ["innerHTML"] 
 						},
 		};
-    var tf7 = setFilterGrid("table1",fnsFilters);
+    var tf7 = setFilterGrid("table2",fnsFilters);
 </script>   --> 
 
 <!-- <script language="javascript" type="text/javascript">  
@@ -125,14 +125,14 @@ var totRowIndex = tf_Tag(tf_Id('table7'),"tr").length;
                             },  
                     rows_always_visible: [totRowIndex]  
                 };  
-var tf7 = setFilterGrid( "table1",table7_Props );  
+var tf7 = setFilterGrid( "table2",table7_Props );  
 //*** Note ***  
 //You can also write operation results in elements outside the table.  
 //]]>  
 </script>   -->
 
 <style>
-#reset_table1{
+#reset_table2{
 	width : 80px;
 	color : #fff;
 	margin : 10px;

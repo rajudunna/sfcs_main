@@ -120,7 +120,7 @@ function redirect_view()
   y=document.getElementById('view_div').value;
   //window.location = "fab_priority_dashboard.php?view=2&view_cat="+x+"&view_div="+y;
   var ajax_url = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view=2&view_div="+y;
-  Ajaxify(ajax_url,'production_body');
+  Ajaxify(ajax_url,'body');
 
 }
 
@@ -130,7 +130,7 @@ function redirect_dash()
   y=document.getElementById('view_div').value;
   z=document.getElementById('view_dash').value;
  var ajax_url = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view="+z+"&view_cat="+x+"&view_div="+y;
- Ajaxify(ajax_url,'production_body');
+ Ajaxify(ajax_url,'body');
 
 }
 
