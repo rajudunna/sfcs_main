@@ -1,6 +1,9 @@
 /.xlsx
 .xlsa
 
+configuration/API/saved_fields/*.*
+/configuration/API/saved_fields/*.*
+
 /sfcs_app/common/config/config.php
 /sfcs_app/common/config/config_ajax.php
 /sfcs_app/common/config/config_jobs.php

@@ -72,7 +72,7 @@ $result_oper = $link->query($qry_get_operation_name);
 		<div id ="dynamic_table1">
 		</div>
 <?php
-$qry_get_operation_name = "SELECT id,operation_name,default_operation,operation_code FROM $brandix_bts.tbl_orders_ops_ref where default_operation !=  'Yes'";
+$qry_get_operation_name = "SELECT id,operation_name,default_operation,operation_code FROM $brandix_bts.tbl_orders_ops_ref";
 //echo $qry_get_product_style;
 $result_oper = $link->query($qry_get_operation_name);
 $qry_get_suppliers = "SELECT id,supplier_name from $brandix_bts.tbl_suppliers_master group by supplier_name";
@@ -90,11 +90,12 @@ $result_oper2 = $link->query($qry_get_suppliers);
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Manual Operation</h4>
+          <h4 class="modal-title">Operation</h4>
         </div>
         <div class="modal-body">
 				<input type="hidden" name="rowIndex" id="rowIndex">
 				<input type="hidden" name="rowId" id="rowId">
+				<input type = "hidden" name = "first_ops_id" id = "first_ops_id" value = "0">
 				<input type="hidden" name="chaged_id" id="chaged_id">
 				<input type="hidden" name="changed_value" id="changed_value">
 				<input type="hidden" name="actual_value" id="actual_value">
@@ -110,7 +111,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 				<div class = "col-sm-12">
 						<label for="style">Operation Name <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 						</br>				
-								<select id="oper_name" style="width:100%;">
+								<select id="oper_name" style="width:100%;"  class="form-control">
 									<option value='0'>Select Operation Name</option>
 									<?php				    	
 										if ($result_oper->num_rows > 0) {
@@ -123,14 +124,16 @@ $result_oper2 = $link->query($qry_get_suppliers);
 										}
 									?>
 								</select>
-								<label for="inputsm" hidden='true'>Is M3 Operation? <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-								<input type="hidden" id="oper_def1" type="text">
+								</br></br><label for="inputsm">Report To ERP <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+								<!--<input type="hidden" id="oper_def1" type="text"> -->
+								<label class="radio-inline"><input type="radio" name="reporttoerpradio" value ="Yes" id='reporttoerpradio'>Yes</label>
+								<label class="radio-inline"><input type="radio" name="reporttoerpradio" value = "No" id= 'reporttoerpradio'>No</label>
 								<label for="inputsm" hidden='true'>Operation Code <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label></br>
 								<input type="hidden" id="oper_code1" type="text" hidden='true'>
-								<label for="inputsm">M3 SMV <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field">
+								<label for="inputsm" hidden='true'>M3 SMV <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field">
 								<!-- <font color='red'>*</font></span> -->
 								</label>
-								<input class="form-control input-sm float" id="m3_smv1" type="text">
+								<input class="form-control input-sm float" id="m3_smv1" type="hidden" value='0' >
 								<label for="title" id='m3_smv_label'>Select M3-SMV: <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 								<select name="m3_smv" id='m3_smv' class='form-contro'>
 								<option value='0'>Select M3-SMV</option>
@@ -154,14 +157,14 @@ $result_oper2 = $link->query($qry_get_suppliers);
 					<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 					<label class="radio-inline"><input type="radio" name="optradio2" value ="Yes" id='optradio2' onclick="autooperseq1()">Yes</label>
 					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()">No</label><br><br>
-					<label>Operation Group <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)'>
+					<label>Operation Group </label>
+					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)' value='0'>
 					<label>Next Operation</label>
 					<input class="form-control input-sm integer" id="oper_depe2" type="text">
-					<label>Component <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></label>
+					<label>Component</label>
 					<input class="form-control input-sm" id="component2" type="text">
 					<label></label><br/>
-					<button class="btn btn-primary btn-sm" id='add-row1'>Add Manual Operation </button>
+					<button class="btn btn-primary btn-sm" hidden='true' id='add-row1'>Add Manual Operation </button>
 				</div>
 			</div>
 		</div>
@@ -208,28 +211,34 @@ $result_oper2 = $link->query($qry_get_suppliers);
 		   <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
-			<label for="style">Embellishment Supplier</label>		      
-						<select id="supplier" name="supplier" style="width:100%">
-							<option value='0'>Select Supplier</option>
-							<?php				    	
-								if ($result_oper2->num_rows > 0) {
-									while($row = $result_oper2->fetch_assoc()) {
-									//$row_value = $row['operation_name']."(".$row['operation_code'].")";
-										echo "<option value='".$row['id']."'>".$row['supplier_name']."</option>";
-									}
-								} else {
-									echo "<option value=''>No Data Found..</option>";
+		<label>Operation Code <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+		<input class="form-control input-sm integer" id="ops_code1" type="text">
+		</br></br><label for="inputsm">Report To ERP <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+		<!--<input type="hidden" id="oper_def1" type="text"> -->
+		<label class="radio-inline"><input type="radio" name="reporttoerpradio1" value ="Yes" id='erp_Yes'>Yes</label>
+		<label class="radio-inline"><input type="radio" name="reporttoerpradio1" value = "No" id= 'erp_None'>No</label>
+		</br></br><label for="style">Embellishment Supplier</label>		      
+					<select id="supplier" name="supplier" style="width:100%">
+						<option value='0'>Select Supplier</option>
+						<?php				    	
+							if ($result_oper2->num_rows > 0) {
+								while($row = $result_oper2->fetch_assoc()) {
+								//$row_value = $row['operation_name']."(".$row['operation_code'].")";
+									echo "<option value='".$row['id']."'>".$row['supplier_name']."</option>";
 								}
-							?>
-						</select></br></br>
+							} else {
+								echo "<option value=''>No Data Found..</option>";
+							}
+						?>
+					</select></br></br>
 			<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 			<label class="radio-inline"><input type="radio" name="optradio" value ="Yes" id='Yes' onclick="autooperseq1()">Yes</label>
 			<label class="radio-inline"><input type="radio" name="optradio" value = "No" id= 'None' onclick="autooperseq()">No</label><br><br>
-			<label>Operation Group <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-			<input class="form-control input-sm integer" id="oper_seq1" type="text"  onchange='verify_num_seq2(this)'>
+			<label>Operation Group</label>
+			<input class="form-control input-sm integer" id="oper_seq1" type="text"  onchange='verify_num_seq2(this)' value = '0'>
 			<label>Next Operation</label>
 			<input class="form-control input-sm integer" id="oper_depe1" type="text">
-			<label>Component <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></label>
+			<label>Component</label>
 			<input class="form-control input-sm" id="component1" type="text">
 			<br></br></br>
 			<button class="btn btn-primary btn-sm" id="edit">Update</button>
@@ -256,7 +265,7 @@ $("#clear").click(function(){
 $(document).ready(function(){
 	$('#m3_smv').hide();
 	$('#loading-image').hide();
-	$('#oper_name').select2();
+	//$('#oper_name').select2();
 	$('#supplier2').select2();
 	$('#supplier').select2();
 	$("#oper_name").change(function()
@@ -328,15 +337,15 @@ $(document).ready(function(){
 						{
 							var data = jQuery.parseJSON(response);
 							console.log(data.length);
-							var markup = "<table class = 'table table-striped' id='dynamic_table'><tbody><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Group</th><th>Is M3 Operation?</th><th>M3_SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Next Operations</th><th>Component</th><th>Controls</th><th>";
+							var markup = "<table class = 'table table-striped' id='dynamic_table'><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Group</th><th>Report To ERP</th><th>M3_SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Next Operations</th><th>Component</th><th></th><th style='text-align:center;'>Controls</th><th><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,0);'><i class='fa fa-plus' aria-hidden='true'></i></button></th>";
 							<?php
 								if(in_array($update,$has_permission))
 								{	?>
-									markup+="<button type='button' class='btn btn-info btn-sm particular' id='particular' onclick='value_edition();'>Add Manual Operation</i></button>";
+									//markup+="<button type='button' class='btn btn-info btn-sm particular' id='particular' hidden='true'>Add Manual Operation</i></button>";
 									<?php	
 								} 
 							?>
-							markup+="</th></tr></thead><tbody>";
+							markup+="</tr></thead>";
 							$("#dynamic_table1").append(markup);
 							for(var i=0;i<data.length;i++)
 							{
@@ -372,7 +381,7 @@ $(document).ready(function(){
 										if(in_array($delete,$has_permission))
 										{	?>
 											var deleting_html = "<td><button type='button' id='deletable' class='btn btn-danger btn-sm'  onclick='default_oper("+data[i].main_id+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td>";
-											<?php	
+											<?php
 										} 
 									?>
 									
@@ -385,7 +394,7 @@ $(document).ready(function(){
 								{
 									var editing_class = '';
 								}
-								var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td  id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none'>"+style_name+"</td><td class='none'>"+data[i]['color']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"smv>"+data[i]['smv']+"</td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"supplier_id hidden='true'>"+data[i].emb_supplier+"</td><td id="+data[i].main_id+"supplier>"+data[i].supplier_name+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td><td>";
+								var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none'>"+style_name+"</td><td class='none'>"+data[i]['color']+"</td><td class='none' id="+data[i].main_id+"ops_order>"+data[i]['operation_order']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td  id="+data[i].main_id+"rep_to_erp>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"smv>"+data[i]['smv']+"</td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"supplier_id hidden='true'>"+data[i].emb_supplier+"</td><td id="+data[i].main_id+"supplier>"+data[i].supplier_name+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td><td>";
 								<?php
 									if(in_array($edit,$has_permission))
 									{	?>
@@ -393,8 +402,8 @@ $(document).ready(function(){
 										<?php	
 									} 
 								?>
-
-								markup1+="</td>"+deleting_html+"</tr>";
+								var adding_html	= "<td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+data[i].main_id+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td>";
+								markup1+=deleting_html+adding_html+"</tr>";
 								s_no++;
 								 $("#dynamic_table").append(markup1);
 							}
@@ -518,6 +527,11 @@ $(document).ready(function(){
 			sweetAlert("Please Enter Barcode Yes/No.","","warning");
 			flag = 0;
 		}
+		if($("input:radio[name=reporttoerpradio]:checked").val() == undefined)
+		{
+			sweetAlert("Please Enter Report To Erp As Yes/No.","","warning");
+			flag = 0;
+		}
 		if($('#oper_seq2').val() == '')
 		{
 			sweetAlert("Please Enter Operation Group","","warning");
@@ -525,8 +539,8 @@ $(document).ready(function(){
 		}
 		if($('#component2').val() == '' && $("input:radio[name=optradio2]:checked").val() == 'Yes')
 		{
-			sweetAlert("Please Enter Component Name.","","warning");
-			flag = 0;
+			//sweetAlert("Please Enter Component Name.","","warning");
+			//flag = 0;
 		}
 		if(flag == 1)
 		{
@@ -534,15 +548,17 @@ $(document).ready(function(){
 			var pro_style_name = $('#pro_style option:selected').text();
 			var oper_name_id = $('#oper_name').val();
 			var oper_name = $('#oper_name option:selected').text();
-			var oper_def = $('#oper_def1').val();
+			//var oper_def = $('#oper_def1').val();
 			var style = $('#style option:selected').text();
 			var color = $('#color option:selected').text();
 			var m3_smv =$('#m3_smv1').val();
 			console.log(m3_smv);
-			var oper_def1 = "'"+oper_def+"'";
+			//var oper_def1 = "'"+oper_def+"'";
 			var color1 = "'"+color+"'";
 			var style1 = "'"+pro_style_name+"'";
 			var barcode = $("input:radio[name=optradio2]:checked").val();
+			var oper_def = $("input:radio[name=reporttoerpradio]:checked").val();
+			var oper_def1 = "'"+oper_def+"'";
 			var barcode1 =  "'"+barcode+"'";
 			var supplier = $('#supplier2 option:selected').text();
 			var supplier_id = $('#supplier2').val();
@@ -558,9 +574,44 @@ $(document).ready(function(){
 			}
 			//alert(oper_dep);
 			var component = $('#component2').val();
+			if(component == '')
+			{
+				component = '';
+			}
 			var component1 =  "'"+component+"'";
 			var s = $('#oper_code1').val();
-			var saving_data = [style_id,oper_name_id,s,0,m3_smv,m3_smv,s,oper_def1,s,style1,color1,2,barcode1,supplier_id,oper_seq,oper_dep,component1];
+			//logic implimentation for operation_order
+		    var pre_ops_order = Number($('#rowId').val());
+			var first_ops_order = Number($('#first_ops_id').val());
+			//var pre_ops_order = 10.111;
+			if(first_ops_order == 0)
+			{
+				var pre_ops_order_string = "'"+pre_ops_order+"'";
+				pre_ops_order_string = pre_ops_order_string.slice(1, -1);
+				if(isInteger(pre_ops_order))
+				{
+					var actual_ops_order = Number(pre_ops_order) + Number(0.1)
+				}
+				else
+				{
+					Number.prototype.countDecimals = function () {
+						if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
+						return this.toString().split(".")[1].length || 0; 
+					}
+					var no_of_decimals = pre_ops_order.countDecimals();
+					console.log(pre_ops_order_string);
+					pre_ops_order_string += '1';
+					var actual_ops_order = Number(pre_ops_order_string);
+				}
+
+			}
+			else
+			{
+				var actual_ops_order = pre_ops_order;
+			}
+			//console.log(pre_ops_order_string);
+
+			var saving_data = [style_id,oper_name_id,actual_ops_order,0,m3_smv,m3_smv,s,oper_def1,s,style1,color1,2,barcode1,supplier_id,oper_seq,oper_dep,component1];
 			//console.log(saving_data);
 			  $.ajax
 				({
@@ -569,7 +620,8 @@ $(document).ready(function(){
 						data: {saving: $('#saving').val()},
 						success: function(response)
 						{
-							//console.log(response);
+							console.log(response);
+							//response = 'None';
 							if(response == 'None')
 							{
 								sweetAlert("Please eneter valid Next Operation.","","warning");
@@ -580,22 +632,44 @@ $(document).ready(function(){
 							}
 							else
 							{
-								
+								var data = jQuery.parseJSON(response);
+								var response = data['last_id'];
+								var changing = data['changed_ids'];
+								$.each(changing, function( key, value )
+								{
+									var id = key+"ops_order";
+									console.log(id);
+									document.getElementById(id).innerHTML = value; 
+								});
+								//var response = data['last_id'];
+								//var 
+								//var response = response['last_id'];
 								if(supplier == 'Select Supplier')
 								{
 									supplier = '';
 								}
-								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td id="+response+"ops_code>"+s+"</td><td class='none'>"+pro_style_name+"</td><td class='none'>"+color+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td>"+oper_def+"</td><td id="+response+"smv>"+m3_smv+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"supplier_id hidden='true'>"+supplier_id+"</td><td id="+response+"supplier>"+supplier+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td></tr>";
-								$('#dynamic_table').append(markup);	
+								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td class='none'>"+pro_style_name+"</td><td class='none'>"+color+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td id="+response+"rep_to_erp>"+oper_def+"</td><td id="+response+"smv>"+m3_smv+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"supplier_id hidden='true'>"+supplier_id+"</td><td id="+response+"supplier>"+supplier+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></td></button><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
+								//$('#dynamic_table').append(markup);	
+								var row = $("#rowIndex").val();
+								//$('#dynamic_table > tbody > tr').eq(row-1).after(markup);
+								if(row != 0 && first_ops_order == 0)
+                                {
+                                    $('#dynamic_table > tbody > tr').eq(row-1).after(markup);
+                                }
+                                else
+                                {
+									//$('#dynamic_table > tbody > tr').eq(0-1).after(markup);
+									$("#dynamic_table").prepend(markup);
+                                }
 								var changed_id = $("#chaged_id").val();
 								var changed_value = $("#actual_value").val();
-							  if(changed_value == '')
-							  {
-								  changed_value = Number($("#"+changed_id+"smv").html()) - Number($('#m3_smv1').val());
-								  //alert($('#m3_smv1').val());
-								  changed_value_rep = changed_value.toFixed(3)
-								  $("#"+changed_id+"smv").html(changed_value_rep);
-							  }
+								if(changed_value == '')
+								{
+									changed_value = Number($("#"+changed_id+"smv").html()) - Number($('#m3_smv1').val());
+									//alert($('#m3_smv1').val());
+									changed_value_rep = changed_value.toFixed(3)
+									$("#"+changed_id+"smv").html(changed_value_rep);
+								}
 								  var saving_changes = [changed_id,changed_value];
 									$.ajax
 									({
@@ -617,6 +691,7 @@ $(document).ready(function(){
 								document.getElementById('component1').readOnly=false;
 								document.getElementById('component2').readOnly=false;
 								//alert("Operation Successfully Inserted");
+								//location.reload(true);
 							}
 						}
 					
@@ -625,6 +700,12 @@ $(document).ready(function(){
 		//$("input:radio[name=optradio2]:checked").val('No') ;
 		//$('#oper_seq2').val(0);			
 	  });
+	  function isInteger(value) {
+    if ((undefined === value) || (null === value)) {
+        return false;
+    }
+    return value % 1 == 0;
+}
 	 $("#m3_smv").change(function()
 	{
 		if($("#m3_smv1").val() == '')
@@ -685,11 +766,14 @@ $("#edit").click(function()
 	var id = $('#editable_id').val();
 	var barcode = $("input:radio[name=optradio]:checked").val();
 	var barcode_text = "'"+barcode+"'";
+	var report_to_erp = $("input:radio[name=reporttoerpradio1]:checked").val();
+	var report_to_erp_text = "'"+report_to_erp+"'";
 	var supplier = $('#supplier option:selected').text();
 	var supplier_id = $('#supplier').val();
 	var oper_seq = $('#oper_seq1').val();
 	var oper_dep = $('#oper_depe1').val();
 	var component = $('#component1').val();
+	var ops_code1 = $('#ops_code1').val();
 	var style = $('#pro_style option:selected').text();
 	var color = $('#color option:selected').text();
 	var component1 = "'"+component+"'";
@@ -705,14 +789,19 @@ $("#edit").click(function()
 		sweetAlert("Please Enter Barcode Yes/No.","","warning");
 		flag = 0;
 	}
+	if($("input:radio[name=reporttoerpradio1]:checked").val() == undefined)
+	{
+		sweetAlert("Please Enter Report To ERP Yes/No.","","warning");
+		flag = 0;
+	}
 	if($('component1').val() == '')
 	{
-		sweetAlert("Please Enter Component Name","","warning");
-		flag= 0;
+		// sweetAlert("Please Enter Component Name","","warning");
+		// flag= 0;
 	}
 	if(flag == 1)
 	{
-		editable_data = [id,barcode_text,supplier_id,oper_seq,oper_dep,component1,style,color];
+		editable_data = [id,barcode_text,supplier_id,oper_seq,oper_dep,component1,style,color,ops_code1,report_to_erp_text];
 	$.ajax
 		({
 			
@@ -738,6 +827,8 @@ $("#edit").click(function()
 						$("#"+id+"seq").html(oper_seq);
 						$("#"+id+"dep").html(oper_dep);
 						$("#"+id+"comp").html(component);
+						$("#"+id+"ops_code").html(ops_code1);
+						$("#"+id+"rep_to_erp").html(report_to_erp);
 					}
 					else if(response == 0)
 					{
@@ -776,6 +867,7 @@ function sequence_checking_per_edit()
 					data: {},
 					success: function(response)
 					{
+							console.log(response);
 							//alert(response);
 							if(response == 0)
 							{
@@ -1026,7 +1118,7 @@ $('#m3_smv1').change(function()
 				}
 		});
 });
-function value_edition()
+function value_edition(btn,id_of_main)
 {
 	console.log("working");
 	var style = $('#pro_style option:selected').text();
@@ -1045,8 +1137,29 @@ function value_edition()
 					{
 						sweetAlert("You can't add the operation because scanning already started for this style","","warning");
 					}
+					else if(id_of_main != 0)
+					{
+						var table = document.getElementById("dynamic_table1");
+						var row = btn.parentNode.parentNode;
+						var ind = row.rowIndex;
+						var value_ind = id_of_main+"ops_order";
+						console.log(value_ind);
+						var ind_value_ops_order = document.getElementById(value_ind).innerText;
+						console.log(ind_value_ops_order);
+						document.getElementById('rowIndex').value = ind;
+						document.getElementById('rowId').value = ind_value_ops_order;
+
+						$('#myModal').modal('toggle');
+					}
 					else
 					{
+						var first_ops_check = 0;
+						var table = document.getElementById("dynamic_table1");
+						var row = btn.parentNode.parentNode;
+						var ind = row.rowIndex;
+						document.getElementById('rowIndex').value = 0;
+						document.getElementById('rowId').value = 1;
+						document.getElementById('first_ops_id').value = 1;
 						$('#myModal').modal('toggle');
 					}
 				}
@@ -1140,6 +1253,8 @@ function myfunctionedit(val,id)
 					sup_id = id+"supplier_id";
 					oper_id = id+"operation_name";
 					oper_act_id = id+"operation_id";
+					ops_code = id+"ops_code";
+					rep_to_erp = id+"rep_to_erp";
 					oper_act_id = document.getElementById(oper_act_id).innerText;
 					//var barcode = "#"+actual_barcode;
 					barcode = document.getElementById(actual_barcode).innerText;
@@ -1148,10 +1263,13 @@ function myfunctionedit(val,id)
 					comp = document.getElementById(comp).innerText;
 					sup_id = document.getElementById(sup_id).innerText;
 					oper_na = document.getElementById(oper_id).innerText;
+					oper_code = document.getElementById(ops_code).innerText;
+					actual_rep_to_erp = document.getElementById(rep_to_erp).innerText;
 					document.getElementById('oper_seq1').value = seqence;
 					document.getElementById('operation_name_id').value = oper_act_id;
 					document.getElementById('operation_name_seq').value = seqence;
 					document.getElementById('operation_name_comp').value = comp;
+					document.getElementById('ops_code1').value = oper_code;
 					if(seqence != '')
 					{
 						document.getElementById('component1').readOnly=true;
@@ -1176,6 +1294,19 @@ function myfunctionedit(val,id)
 					{
 						document.getElementById("Yes").checked = false;
 						document.getElementById("None").checked = false;
+					}
+					if(actual_rep_to_erp == 'Yes')
+					{
+						document.getElementById("erp_Yes").checked = true;
+					}
+					else if(actual_rep_to_erp == 'No')
+					{
+						document.getElementById("erp_None").checked = true;
+					}
+					else
+					{
+						document.getElementById("erp_Yes").checked = false;
+						document.getElementById("erp_None").checked = false;
 					}
 					//alert(sup_id);
 					if(sup_id == '')
@@ -1206,41 +1337,41 @@ function autooperseq()
 }
 function autooperseq1()
 {
-	document.getElementById('oper_seq2').value = '';
-	document.getElementById('oper_seq1').value = '';
+	document.getElementById('oper_seq2').value = 0;
+	document.getElementById('oper_seq1').value = 0;
 	document.getElementById('component2').value = '';
 	document.getElementById('component1').value = '';
 }
 function verify_num_seq2 ()
 {
-	var barcode = $("input:radio[name=optradio]:checked").val();
-	var val = document.getElementById('oper_seq1').value;
-	console.log(barcode);
-	if(barcode == 'No' && val != 0 || barcode == 'undefined')
-	{
-		sweetAlert("Please Set Barcode As Yes","","warning");
-		document.getElementById('oper_seq1').value = 0;
-	}
-	else
-	{
-			sequence_checking_per_edit();
-	}
+	// var barcode = $("input:radio[name=optradio]:checked").val();
+	// var val = document.getElementById('oper_seq1').value;
+	// console.log(barcode);
+	// if(barcode == 'No' && val != 0 || barcode == 'undefined')
+	// {
+	// 	sweetAlert("Please Set Barcode As Yes","","warning");
+	// 	document.getElementById('oper_seq1').value = 0;
+	// }
+	// else
+	// {
+	// 		sequence_checking_per_edit();
+	// }
 }
 function verify_num_seq1()
 {
-	var barcode = $("input:radio[name=optradio2]:checked").val();
-	console.log(barcode);
-	var val = document.getElementById('oper_seq2').value;
-	console.log(barcode);
-	if(barcode == 'No' && val != 0 || barcode == undefined)
-	{
-		sweetAlert("Please Set Barcode As Yes","","warning");
-		document.getElementById('oper_seq2').value = 0;
-	}
-	else
-	{
-			sequence_checking_per();
-	}
+	// var barcode = $("input:radio[name=optradio2]:checked").val();
+	// console.log(barcode);
+	// var val = document.getElementById('oper_seq2').value;
+	// console.log(barcode);
+	// if(barcode == 'No' && val != 0 || barcode == undefined)
+	// {
+	// 	sweetAlert("Please Set Barcode As Yes","","warning");
+	// 	document.getElementById('oper_seq2').value = 0;
+	// }
+	// else
+	// {
+	// 		sequence_checking_per();
+	// }
 }
 
 </script>

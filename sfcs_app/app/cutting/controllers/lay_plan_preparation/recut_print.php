@@ -4,7 +4,6 @@ Ticket #: 252392-Kirang/2014-02-07
 This amendement was done based on the confirmation to issue excess (1%) material depending on the savings.
 //Binding Consumption / YY Calculation //20151016-KIRANG-Imported Binding inclusive concept.
 -->
-<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "dbconf.php", "1", "R").""); ?>
 <?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "", "1", "R").""); ?>
 <?php include('../../../../common/config/config.php'); ?>
@@ -14,35 +13,35 @@ This amendement was done based on the confirmation to issue excess (1%) material
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
-$sql12="select MIN(mini_order_num) as min_no,MAX(mini_order_num) as max_no from $brandix_bts.tbl_miniorder_data where docket_number='".$doc_id."'";
-$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-if(mysqli_num_rows($sql_result12)>0)
-{
-	while($sql_row12=mysqli_fetch_array($sql_result12))
-	{
-		if($sql_row12['min_no']== $sql_row12['max_no'])
-		{
-			$mini_order_num=$sql_row12['min_no'];
-		}
-		else
-		{
-			$mini_order_num=$sql_row12['min_no']."-".$sql_row12['max_no'];
-		}
-	}
-}
-else
-{
-	$mini_order_num=0;
-}
+// $sql12="select MIN(mini_order_num) as min_no,MAX(mini_order_num) as max_no from $brandix_bts.tbl_miniorder_data where docket_number='".$doc_id."'";
+// echo $sql12;die();
+// $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// if(mysqli_num_rows($sql_result12)>0)
+// {
+// 	while($sql_row12=mysqli_fetch_array($sql_result12))
+// 	{
+// 		if($sql_row12['min_no']== $sql_row12['max_no'])
+// 		{
+// 			$mini_order_num=$sql_row12['min_no'];
+// 		}
+// 		else
+// 		{
+// 			$mini_order_num=$sql_row12['min_no']."-".$sql_row12['max_no'];
+// 		}
+// 	}
+// }
+// else
+// {
+// 	$mini_order_num=0;
+// }
 //echo $mini_order_num."<br>";
-$cut_table=array("0","T1","T1","T2","T2","T3","T3","T4","T4","T5","T5","T6","T6","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","T7","T7","T8","T8","T9","T9","T10","T10","T11","T11","T12","T12","","","","","","","","","","","","","","");
 ?>
 
 
 <?php
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-
+// echo $sql;die();
 // mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($link));
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -181,7 +180,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 
 $sql="select * from $bai_pro3.plan_dashboard where doc_no='$doc_id'";
-// echo $sql;
+// echo $sql;die();
 // mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -189,13 +188,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$plan_log_time=$sql_row['log_time'];
 }
 	
-$sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
+$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+//echo $sql;
 // mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$category=$sql_row['category'];
+	$plies=$sql_row['plies'];
 	$gmtway=$sql_row['gmtway'];
 	$fab_des=$sql_row['fab_des'];
 	$body_yy=$sql_row['catyy'];
@@ -284,8 +285,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 <?php
 
-$sql="select *,fn_savings_per_cal(DATE,cat_ref,'$delivery','$color') as savings from $bai_pro3.plandoc_stat_log where doc_no=$doc_id";
-//echo $sql."<br>";
+$sql="select *,fn_savings_per_cal(DATE,cat_ref,'$delivery','$color') as savings from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no=$doc_id";
 // mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -351,8 +351,8 @@ $a_s48=$sql_row['a_s48'];
 $a_s49=$sql_row['a_s49'];
 $a_s50=$sql_row['a_s50'];
 
-	$a_ratio_tot=$a_s01+$a_s02+$a_s03+$a_s04+$a_s05+$a_s06+$a_s07+$a_s08+$a_s09+$a_s10+$a_s11+$a_s12+$a_s13+$a_s14+$a_s15+$a_s16+$a_s17+$a_s18+$a_s19+$a_s20+$a_s21+$a_s22+$a_s23+$a_s24+$a_s25+$a_s26+$a_s27+$a_s28+$a_s29+$a_s30+$a_s31+$a_s32+$a_s33+$a_s34+$a_s35+$a_s36+$a_s37+$a_s38+$a_s39+$a_s40+$a_s41+$a_s42+$a_s43+$a_s44+$a_s45+$a_s46+$a_s47+$a_s48+$a_s49+$a_s50;
-	
+	// $a_ratio_tot=$a_s01+$a_s02+$a_s03+$a_s04+$a_s05+$a_s06+$a_s07+$a_s08+$a_s09+$a_s10+$a_s11+$a_s12+$a_s13+$a_s14+$a_s15+$a_s16+$a_s17+$a_s18+$a_s19+$a_s20+$a_s21+$a_s22+$a_s23+$a_s24+$a_s25+$a_s26+$a_s27+$a_s28+$a_s29+$a_s30+$a_s31+$a_s32+$a_s33+$a_s34+$a_s35+$a_s36+$a_s37+$a_s38+$a_s39+$a_s40+$a_s41+$a_s42+$a_s43+$a_s44+$a_s45+$a_s46+$a_s47+$a_s48+$a_s49+$a_s50;
+	$a_ratio_tot=array_sum($a_s);
 	$cutno=$sql_row['acutno'];
 	$plies=$sql_row['p_plies']; //20110911
 	$docketno=$sql_row['doc_no'];
@@ -485,7 +485,7 @@ if($print_status==NULL)
 
 */
 // echo $docketno.'<br>';
-$child_dockets_query="SELECT doc_no AS doc_no FROM $bai_pro3.plandoc_stat_log WHERE org_doc_no='$docketno'";
+$child_dockets_query="SELECT doc_no AS doc_no FROM $bai_pro3.recut_v2 WHERE doc_no='$docketno'";
 $child_dockets_result=mysqli_query($link, $child_dockets_query) or exit("error while getting original doc nos");
 while($sql_row=mysqli_fetch_array($child_dockets_result))
 {
@@ -773,29 +773,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
-	
-.xl7742018
-	{padding-top:1px;
-	padding-right:1px;
-	padding-left:1px;
-	mso-ignore:padding;
-	color:windowtext;
-	font-size:10.0pt;
-	font-weight:400;
-	font-style:normal;
-	text-decoration:none;
-	font-family:"Trebuchet MS", sans-serif;
-	mso-font-charset:0;
-	mso-number-format:General;
-	text-align:center;
-	vertical-align:bottom;
-	border-top:.5pt solid windowtext;
-	border-right:.5pt solid windowtext;
-	border-bottom:none;
-	border-left:none;
-	mso-background-source:auto;
-	mso-pattern:auto;}		
-	
 .xl774118
 	{padding-top:1px;
 	padding-right:1px;
@@ -818,6 +795,29 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+	
+.xl7742018
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Trebuchet MS", sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:bottom;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;}	
+	
 .xl784118
 	{padding-top:1px;
 	padding-right:1px;
@@ -2028,7 +2028,6 @@ function printpr()
 	// document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
 	// WebBrowser1.ExecWB(OLECMDID, PROMPT);
 	// WebBrowser1.outerHTML = "";
-   
 }
 </script>
 
@@ -2101,7 +2100,7 @@ tags will be replaced.-->
  <col width=21 style='mso-width-source:userset;mso-width-alt:768;width:16pt'>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
   <td height=21 class=xl664118 width=24 style='height:15.75pt;width:18pt' colspan="8"><a
-  name="RANGE!A1:Q57"></a><?php echo '<div id="bcTarget1" style="width:auto;"></div><script>$("#bcTarget1").barcode("D'.$doc_id.'", "code39",{barWidth:2,barHeight:30,moduleSize:5,fontSize:5});</script>'; ?></td>
+  name="RANGE!A1:Q57"></a><?php echo '<div id="bcTarget1" style="width:auto;"></div><script>$("#bcTarget1").barcode("R'.$doc_id.'", "code39",{barWidth:2,barHeight:30,moduleSize:5,fontSize:5});</script>'; ?></td>
   <!-- <td class=xl654118 width=64 style='width:48pt'></td>
   <td class=xl654118 width=64 style='width:48pt'></td>
   <td class=xl654118 width=64 style='width:48pt'></td>
@@ -2124,7 +2123,7 @@ tags will be replaced.-->
  </tr>
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td colspan=3 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
+  <td colspan=3 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="500" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2172,7 +2171,7 @@ tags will be replaced.-->
   <td class=xl1014118></td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
-  <td colspan=3 style='font-size:24px;font-weight:bold'>Cutting Docket</td>
+  <td colspan=3 style='font-size:24px;font-weight:bold'>Recut Docket</td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
   <td colspan=2 style='border-right:1px solid black;font-size:20px;font-weight:bold;text-align:right' style='border-right:.5pt solid black'>Docket
@@ -2195,7 +2194,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "ORIGINAL"; } else {echo "DUPLICATE";}?></strong></td>
+  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "COPY"; } else {echo "COPY";}?></strong></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -2959,12 +2958,12 @@ tags will be replaced.-->
  </tr>
 
 <?php
-if (mysqli_num_rows($child_dockets_result)>0)
+if (mysqli_num_rows($cld_dockets_result)>0)
 {
 	for($i=0;$i<sizeof($original_docs);$i++)
 	{
 		// echo  "<td>".$original_docs[$s]."</td>";
-		$size_query = 'SELECT * FROM `plandoc_stat_log` WHERE doc_no='.$original_docs[$i].'';
+		$size_query = 'SELECT * FROM `recut_v2` WHERE doc_no='.$original_docs[$i].'';
 		// echo $size_query;
 		$size_result = mysqli_query($link, $size_query) or exit("error while getting details for child doc nos");
 		while($sql_row=mysqli_fetch_array($size_result))
@@ -2976,52 +2975,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
 				$planned_s[$sizes_code[$s]]=$sql_row["p_s".$sizes_code[$s].""];
 			}				
 		}
-		if($flag == 1)
-		{
-			?> <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'></tr>
-			<tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-				<td height=20 class=xl654118 style='height:15.0pt'></td>
-				<td class=xl654118>Child Docket: </td>
-				<?php
-					echo "<td class=xl694118>".$original_docs[$i]."</td>";
-				?>
-				<td class=xl654118></td>
-			</tr>
-			<tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-				<td height=20 class=xl654118 style='height:15.0pt'></td>
-				<td class=xl654118>Size</td>
-				<?php
-					for($s=0;$s<sizeof($s_tit);$s++)
-					{
-						echo "<td class=xl694118>".$s_tit[$sizes_code[$s]]."</td>";
-					}
-				?>
-				<td class=xl654118></td>
-			</tr>
-			<tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-				<td height=20 class=xl654118 style='height:15.0pt'></td>
-				<td class=xl654118>Plies</td>
-				<?php
-					for($s=0;$s<sizeof($s_tit);$s++)
-					{
-						echo "<td class=xl694118>".$planned_plies."</td>";
-					}
-				?>
-				<td class=xl654118></td>
-			</tr>
-			<tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-				<td height=20 class=xl654118 style='height:15.0pt'></td>
-				<td class=xl654118>Quantity</td>
-				<?php
-					for($s=0;$s<sizeof($s_tit);$s++)
-					{
-						echo "<td class=xl694118>".$planned_s[$sizes_code[$s]]*$planned_plies."</td>";
-					}
-				?>
-				<td class=xl654118></td>
-			</tr>
-			<?php
-		}
+		
 	}
 }
 ?>
@@ -3054,7 +3008,6 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:70pt'>No of Plies</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Pur Width</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Marker Length</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Cutting Wastage %</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Binding Cons.</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:90pt'>Fab. Requirement for lay</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:90pt'>Fab. Requirement for Binding</td>
@@ -3079,12 +3032,11 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:70pt'><?php echo $plies; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $purwidth; ?></td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $purlength; ?></td>
-  <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $cuttable_wastage*100;?></td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $binding_con; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_lay = $purlength*(1+$cuttable_wastage)*$plies; echo round($fab_lay,2).'<br/>('.$fab_uom.')';?></td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $binding_con*$plies*$a_ratio_tot; echo round($fab_bind,2).'<br/>('.$fab_uom.')'; ?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($bind_con,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $actwidth; ?></td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($fab_bind+$fab_lay,2).'<br/>('.$fab_uom.')'; ?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($bind_con+$fab_lay,2).'<br/>('.$fab_uom.')'; ?></td>
 <!--<td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
 { $extra=round((($act_mk_length*$plies)*$savings),2); }  echo round((($act_mk_length*$plies)+$extra+$bind_con),2); //Extra 1% added to avoid cad saving manual mrn claims. ?></td>-->
@@ -3153,7 +3105,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td rowspan="2" colspan="16" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
-  $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id";
+  $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='recut'  group by roll_id";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -3165,6 +3117,7 @@ $leng_det[]=$sql_row['allocated_qty'];
 $batch_det[]=trim($sql_row['batch_no']);
 $shade_det[]=$sql_row['ref4'];
 $invoice_no[]=$sql_row['inv_no'];
+$plies1[]=$sql_row['plies'];
 $locan_det[]=$sql_row['ref1'];
 $lot_det[]=$sql_row['lot_no'];
 $roll_id[]=$sql_row['roll_id'];
@@ -3274,12 +3227,12 @@ $item_name[] = $sql_row['item'];
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Allocated Qty</td>
   <td class=xl774118>Plies</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Net<br/>Length</td>
-  <td class=xl774118>Damage</td>
-  <td class=xl774118>Joints</td>
-  <td class=xl774118>Ends</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Damage<br/>Excess</td>
+  <td class=xl7742018 style="width: 85px;">Joints</td>
+  <td class=xl7742018 style="width: 85px;">Ends</td>
 
-  <td colspan=2 class=xl1064118>Shortages</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Binding Length</td> 
+  <td colspan=2 class=xl1064118 style="width: 122px;">Shortages</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Binding Length</td>  
   <td colspan=3 rowspan=2 class=xl1064118>Comments</td>
  </tr> <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
@@ -3290,7 +3243,6 @@ $item_name[] = $sql_row['item'];
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
-  <td class=xl744118>Excess</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>+</td>
@@ -3305,10 +3257,12 @@ $item_name[] = $sql_row['item'];
  //$count=sizeof($roll_det);
  //echo $count."<br>";
  $total='';
- $tot_tick_len=0;
+ 
+$tot_tick_len=0;
 $tot_ctex_len=0;
 $tot_alloc_qty=0;
 $tot_bind_len=0;
+ 
  if(sizeof($roll_det)>0)
  {
 	 for($i=0;$i<sizeof($roll_det);$i++)
@@ -3326,8 +3280,8 @@ $tot_bind_len=0;
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_width[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $leng_det[$i]; $tot_alloc_qty=$tot_alloc_qty+$leng_det[$i];?></td>
-	  <td class=xl814118>&nbsp;</td>
-	  <td class=xl814118>&nbsp;</td>
+	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php// echo $plies1[$i]; ?></td>
+	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
@@ -3342,36 +3296,35 @@ $tot_bind_len=0;
 	  		// $total+=$leng_det[$i];
 	  		// $leng_det[$i];	
 	   }
-	   
-	   	for($i =0; $i<16-sizeof($roll_det); $i++){
-   ?>
-	   <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
-	 <td height=20 class=xl654118 style='height:30pt'></td>
-	 <td class=xl804118></td>
-	 <td class=xl804118></td>
-	 <td class=xl814118 style='font-size: 100%;'></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td colspan=1 class=xl684118></td>
-	 <td colspan=3 class=xl684118 style='border-left:none'></td>
-	 <td class=xl654118></td>
-	 </tr>
-   <?php
-	}
-	 ?>
-	 <tr>
+	 for($i =0; $i<16-sizeof($roll_det); $i++){
+	?>
+		<tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+	  <td height=20 class=xl654118 style='height:30pt'></td>
+	  <td class=xl804118></td>
+	  <td class=xl804118></td>
+	  <td class=xl814118 style='font-size: 100%;'></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td colspan=1 class=xl684118></td>
+	  <td colspan=3 class=xl684118 style='border-left:none'></td>
+	  <td class=xl654118></td>
+	  </tr>
+	<?php
+	 }
+ ?>
+ 			 <tr>
 	<td colspan=7 class=xl684118>Total </td>
 	<?php
 	// for($i=0;$i<sizeof($roll_det);$i++)
@@ -3392,37 +3345,37 @@ $tot_bind_len=0;
 	// }
 	?>
 	</tr>
-<?php	 
- }	
+<?php
+ }
  else {
-	for($i =0; $i<16; $i++){
-   ?>
-	   <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
-	 <td height=20 class=xl654118 style='height:30pt'></td>
-	 <td class=xl804118></td>
-	 <td class=xl804118></td>
-	 <td class=xl814118 style='font-size: 100%;'></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td colspan=1 class=xl684118></td>
-	 <td colspan=3 class=xl684118 style='border-left:none'></td>
-	 <td class=xl654118></td>
-	 </tr>
-   <?php
-	}	
-}
+	 for($i =0; $i<16; $i++){
+	?>
+		<tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+	  <td height=20 class=xl654118 style='height:30pt'></td>
+	  <td class=xl804118></td>
+	  <td class=xl804118></td>
+	  <td class=xl814118 style='font-size: 100%;'></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td class=xl814118></td>
+	  <td colspan=1 class=xl684118></td>
+	  <td colspan=3 class=xl684118 style='border-left:none'></td>
+	  <td class=xl654118></td>
+	  </tr>
+	<?php
+	 }	
+ }
 ?>	
 
 		
@@ -3637,9 +3590,9 @@ $tot_bind_len=0;
 
 if($print_status=="0000-00-00" || $print_status == "")
 {
-	$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
+	$sql="update $bai_pro3.recut_v2 set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
  	//echo $sql;
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 }
 

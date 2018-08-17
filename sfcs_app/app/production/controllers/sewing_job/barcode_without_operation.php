@@ -55,14 +55,9 @@
 			$color=$barcode_rslt['order_col_des'];
 			$style=$barcode_rslt['order_style_no'];
 			$cutno=$barcode_rslt['acutno'];
+			$quantity=$barcode_rslt['carton_act_qty'];
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
 			
-			$quantityqry="SELECT carton_act_qty FROM $bai_pro3.`packing_summary_input` WHERE order_del_no='$schedule' AND order_col_des='$color'  AND m3_size_code='$barcode_rslt[size_code]' AND input_job_no='$input_job' AND acutno='$cutno'";
-			$sql_result2=mysqli_query($link, $quantityqry) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($qty = mysqli_fetch_array($sql_result2))
-			{	
-				$quantity=$qty['carton_act_qty'];
-			}	
 			$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 			$html.= '<div>
 						<table>

@@ -43,7 +43,7 @@ function gettabledata($params)
 	$params = explode(",",$params);
 	include("../../../../../common/config/config_ajax.php");
 
-	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by tos.id";
+	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by tos.operation_order";
 	//echo $qry_get_table_data_oper_data;
 	$result_style_data = $link->query($qry_get_table_data_oper_data);
 	if ($result_style_data->num_rows > 0) {
@@ -133,7 +133,7 @@ function Getdata($oper_name)
 	}
 	else
 	{
-		$operation_name_validation = "SELECT count(*)as cnt from $brandix_bts.tbl_style_ops_master where operation_name = $oper_name[0] and color = '$oper_name[1]' and style = '$oper_name[2]' and ops_sequence = $oper_name[3]";
+		$operation_name_validation = "SELECT count(*)as cnt from $brandix_bts.tbl_style_ops_master where operation_name = $oper_name[0] and color = '$oper_name[1]' and style = '$oper_name[2]'";
 		$result_validate = $link->query($operation_name_validation);
 		while($row_validate = $result_validate->fetch_assoc()) 
 		{
@@ -236,15 +236,89 @@ function savingdata($saving)
    {
 	    //var_dump($saving);
 		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,ops_dependency,component) values ($saving)";
-		// echo $saving_sub_oper_data_qry;
+		//echo $saving_sub_oper_data_qry;
 		$spdr = $link->query($saving_sub_oper_data_qry);
 		//echo $saving_sub_oper_data_qry;
 		$last_id = mysqli_insert_id($link);
 		//echo $last_id;
+		$array_changed_order_ids_values = array();
+		//$last_id = 1;
 		if($last_id != null)
 		{
-			echo $last_id;
+			//$array_changed_order_ids_values['last_id']= $last_id;
+			$check_decimal_or_not = numberOfDecimals($saving1[2]);
+			if($check_decimal_or_not > 0)
+			{
+				$sub_ops_code = explode(".",$saving1[2]);
+			//var_dump($sub_ops_code); 
+				$sub_ops_code_compare = $sub_ops_code[0];
+				$sub_ops_code_compare = "%".(string)$sub_ops_code_compare.".%";
+				// $temp = "'%".$sub_ops_code_compare."%'";
+				// echo "Hi".$temp."</br>";
+				//echo $sub_ops_code_compare;
+				$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode) values ($saving)";
+				$checking_for_same_ops_order = "select id,operation_order from $brandix_bts.tbl_style_ops_master where CAST(operation_order AS CHAR) >= $saving1[2] and id != $last_id and style = $saving1[9] and color = $saving1[10] and CAST(operation_order AS CHAR) like '$sub_ops_code_compare' order by operation_order";
+			// echo $checking_for_same_ops_order;
+				$result_checking_for_same_ops_order = $link->query($checking_for_same_ops_order);
+				if($result_checking_for_same_ops_order->num_rows > 0)
+				{
+					while($row_result_checking_for_same_ops_order = $result_checking_for_same_ops_order->fetch_assoc())
+					{
+						$ops_order = $row_result_checking_for_same_ops_order['operation_order'];
+						$updating_id = $row_result_checking_for_same_ops_order['id'];
+					// echo $ops_order;
+						$act_ops_order_str = (string)$ops_order.'1';
+					// echo $act_ops_order_str;
+						$act_ops_order = (float)$act_ops_order_str;
+						$updating_qry = "update $brandix_bts.tbl_style_ops_master set operation_order = $act_ops_order where id = $updating_id";
+						$array_changed_order_ids_values[$updating_id]=$act_ops_order;
+					// echo $updating_qry;
+						$link->query($updating_qry);
+					} 
+				}
+			}
+			else
+			{
+				$fetching_all_rows= "select * from $brandix_bts.tbl_style_ops_master where id != $last_id and style = $saving1[9] and color = $saving1[10] order by operation_order ASC";
+				//echo $fetching_all_rows;
+				$result_fetching_all_rows = $link->query($fetching_all_rows);
+				if($result_fetching_all_rows->num_rows > 0)
+				{
+					//echo "workig";
+					while($row = $result_fetching_all_rows->fetch_assoc())
+					{
+						$pre_dev_value = $row['operation_order'];
+						$id = $row['id'];
+						$integer_digit_explode = explode('.',$pre_dev_value);
+						//var_dump($integer_digit_explode);
+						//echo sizeof($integer_digit_explode).'</br>';
+						if(sizeof($integer_digit_explode) > 1)
+						{
+							$act_digit = $integer_digit_explode[0] + 1;
+							$actual_ops_order = $act_digit.'.'."$integer_digit_explode[1]";
+							$update_qry= "update $brandix_bts.tbl_style_ops_master set operation_order = $actual_ops_order where id = $id";
+							$array_changed_order_ids_values[$id]=$actual_ops_order;
+							//$link->query($update_qry);
+
+						}
+						else
+						{
+							$update_qry= "update $brandix_bts.tbl_style_ops_master set operation_order = $pre_dev_value+1 where id = $id";
+							$array_changed_order_ids_values[$id]=$pre_dev_value+1;
+							//$link->query($update_qry);
+						}
+						$updating = $link->query($update_qry);
+					
+						//echo $update_qry.'</br>';
+					}
+
+				}
+			}
+			
 		}
+		$result_array['last_id'] = $last_id;
+		$result_array['changed_ids'] = $array_changed_order_ids_values;
+		echo json_encode($result_array);
    }
    else
    {
@@ -319,18 +393,48 @@ function deleting($parameters)
         $smv = $row['smv'];
    }
    $smv_value =  $smv;
-   $query_delete_man = "select smv from $brandix_bts.tbl_style_ops_master where id = $parameters[1]";
-  // echo $query_delete_man;
+   $query_delete_man = "select smv,style,color,operation_order from $brandix_bts.tbl_style_ops_master where id = $parameters[1]";
+ // echo $query_delete_man;
 	$result_chck_man = $link->query($query_delete_man);
 	  while($rows = $result_chck_man->fetch_assoc()){
-        $m3_man = $rows['smv'];
+		$m3_man = $rows['smv'];
+		$style = $rows['style'];
+		$color = $rows['color'];
+		$ops_order = $rows['operation_order'];
    }
    $m3_manual_value = $m3_man;
    $actual_smv_value = $smv_value + $m3_man;
    $delete_query = "delete from $brandix_bts.tbl_style_ops_master where id = $parameters[1]";
-   $link->query($delete_query);
+   $deleteable = $link->query($delete_query);
    $query_update_smv_m3 = "update $brandix_bts.tbl_style_ops_master set smv = $actual_smv_value where id = $parameters[0]";
    $link->query($query_update_smv_m3);
+   if($deleteable)
+	{
+		//echo $ops_order;
+		// $sub_ops_code = explode(".",$ops_order);
+		// $sub_ops_code_compare = $sub_ops_code[0];
+		// $sub_ops_code_compare = "%".(string)$sub_ops_code_compare.".%";
+		// $checking_for_same_ops_order = "select id,operation_order from $brandix_bts.tbl_style_ops_master where CAST(operation_order AS CHAR) > '$ops_order'  and style = '$style' and color = '$color' and CAST(operation_order AS CHAR) like '$sub_ops_code_compare' order by operation_order";
+        //     //echo $checking_for_same_ops_order;
+        //     $result_checking_for_same_ops_order = $link->query($checking_for_same_ops_order);
+        //     if($result_checking_for_same_ops_order->num_rows > 0)
+        //     {
+        //         while($row_result_checking_for_same_ops_order = $result_checking_for_same_ops_order->fetch_assoc())
+        //         {
+        //             $ops_order = $row_result_checking_for_same_ops_order['operation_order'];
+        //             $updating_id = $row_result_checking_for_same_ops_order['id'];
+        //            // echo $ops_order;
+		// 			$act_ops_order_str = (string)$ops_order;
+		// 			$act_ops_order_str = substr($ops_order, 0, -1);
+        //            // echo $act_ops_order_str;
+        //             $act_ops_order = (float)$act_ops_order_str;
+        //             $updating_qry = "update $brandix_bts.tbl_style_ops_master set operation_order = $act_ops_order where id = $updating_id";
+        //            // echo $updating_qry;
+        //            $link->query($updating_qry);
+        //         } 
+        //     }
+	}
+
    echo $actual_smv_value;  	
 }
 if(isset($_GET['editable_data']))
@@ -365,11 +469,11 @@ function updating($editable_data)
 	{
 		if($editable_data[4] == '')
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],ops_dependency='',component=$editable_data[5] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],ops_dependency='',component=$editable_data[5],operation_code = $editable_data[8],default_operration = $editable_data[9] where id=$editable_data[0]";
 		}
 		else
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],ops_dependency=$editable_data[4],component=$editable_data[5] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],ops_dependency=$editable_data[4],component=$editable_data[5],operation_code = $editable_data[8],default_operration = $editable_data[9] where id=$editable_data[0]";
 		}
 
 		//echo $qry_updation;
@@ -469,6 +573,10 @@ function seq_validation1($seq_params)
 			}
 			//echo "component is".$component;
 			echo $component;
+			if($component == '')
+			{
+				echo 1;
+			}
 			
 		}
 		else
@@ -628,6 +736,20 @@ function adding_validation_fun($adding_validation)
 		$flag = 0;
 	}
 	echo $flag;
+}
+function numberOfDecimals($value)
+{
+    if ((int)$value == $value)
+    {
+        return 0;
+    }
+    else if (! is_numeric($value))
+    {
+        // throw new Exception('numberOfDecimals: ' . $value . ' is not a number!');
+        return false;
+    }
+
+    return strlen($value) - strrpos($value, '.') - 1;
 }
 
 

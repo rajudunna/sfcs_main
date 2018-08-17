@@ -1,8 +1,10 @@
 <?php
 
 //configuration files
+
 function know_my_config($input)
 {
+	include("config.php");
 	switch ($input)
 	{
 		case "facility":
@@ -12,17 +14,17 @@ function know_my_config($input)
 		}
 		case "mysqlhost":
 		{
-			return '192.168.0.110:3323';
+			return $host;
 			break;
 		}
 		case "mysqlun":
 		{
-			return 'baiall';
+			return $user;
 			break;
 		}
 		case "mysqlpass":
 		{
-			return 'baiall';
+			return $pass;
 			break;
 		}
 		case "mssqldns":

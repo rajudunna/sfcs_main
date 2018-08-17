@@ -678,12 +678,13 @@ if($barcode_generation == 1)
 		{
 			$dep_ops_codes[] = $row['operation_code'];	
 		}
-		$ops_seq_check = "select id,ops_sequence from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$b_op_id'";
+		$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$b_op_id'";
 		$result_ops_seq_check = $link->query($ops_seq_check);
 		while($row = $result_ops_seq_check->fetch_assoc()) 
 		{
 			$ops_seq = $row['ops_sequence'];
 			$seq_id = $row['id'];
+			$ops_order = $row['operation_order'];
 		}
 		if($ops_dep)
 		{
@@ -724,7 +725,7 @@ if($barcode_generation == 1)
 				}
 			}
 		}
-		$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq and id > $seq_id order by id limit 1";
+		$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
 		$result_post_ops_check = $link->query($post_ops_check);
 		if($result_post_ops_check->num_rows > 0)
 		{
@@ -1199,8 +1200,11 @@ if($barcode_generation == 1)
 		if($concurrent_flag == 0)
 		{
 			$table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Remarks</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
-			$checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
+			// $checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
+			$appilication = 'IMS_OUT';
+			$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
 			//echo $checking_output_ops_code;
+			$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where id=6";
 			$result_checking_output_ops_code = $link->query($checking_output_ops_code);
 			if($result_checking_output_ops_code->num_rows > 0)
 			{
@@ -1344,7 +1348,22 @@ if($barcode_generation == 1)
 						$nop=0;
 					}
 				$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
-				if($b_op_id == 130 || $b_op_id == 101)
+				$appilication_out = "Down_Time";
+			    $checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
+			   // echo $checking_output_ops_code_out;
+			    $result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
+			    if($result_checking_output_ops_code_out->num_rows > 0)
+			    {
+			        while($row_result_checking_output_ops_code_out = $result_checking_output_ops_code_out->fetch_assoc()) 
+			       {
+                      $output_ops_code_out = $row_result_checking_output_ops_code_out['operation_code'];
+			       }
+			    }
+			    else
+			    {
+				 $output_ops_code_out = 130;
+			    }
+				if($b_op_id == $output_ops_code_out)
 				{
 					$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
