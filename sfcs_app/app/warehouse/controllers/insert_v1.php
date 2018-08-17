@@ -479,7 +479,7 @@ echo"<table width='400' id='upload'>
 		</form>
 	</table></br>"; */
 // echo "<div class='panel panel-default'><div class='panel-body'>";
-echo "<div class='row col-md-12' style='width:102%;'><table id='table' class='table table-bordered'>";
+echo "<div class='row col-md-12' style='width:102%;'><table id='table1' class='table table-bordered'>";
 echo "<tr><td><div class=\"col-md-12 col-md-offset-3\"><input type=\"text\" size=\"5\" value=\"1\" name=\"s_start\" class='integer'>&nbsp;&nbsp;<a href=\"#\" onclick=\"javascript:fill_sr();\" class=\"btn btn-info btn-xs\" style='margin-top:4px;'>Fill Series</a></div></td>
 	<td>
 	<div class='row'>
@@ -598,12 +598,12 @@ $(document).ready(function()
 		if ($('#selectsearch1').val() == 'Yes')
 		{
 			$('#upload').show();
-			$('#table').hide();
+			$('#table1').hide();
 		}
 		if ($('#selectsearch1').val() == 'No')
 		{
 			$('#upload').hide();
-			$('#table').show();
+			$('#table1').show();
 		}
 	});
 
