@@ -219,6 +219,10 @@ function anchortag(event,href_url=0){
                 $('input[name="reference"]').val(batch);
                 $('input[name="lot_no_ref"]').val(lot);
                 $('input[name="lot_no1"]').val(lot);
+                $('input[name="submit"]').click();
+                $('input[name="show"]').click();
+                $('input[name="submit2"]').click();
+                //  document.getElementById("myBtn").click();
              
                 $('#myModal').modal('show');
             }
