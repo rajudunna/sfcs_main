@@ -203,25 +203,25 @@
 			$flag = 0;
 		}
 		echo "<tr>
-			<td>".$i++."</td>
+			<td>".$res_result['id']."</td>
 			<td>".$res_result['operation_name']."</td>
 			<td>".$res_result['default_operation']."</td>
 			<td>".$res_result['operation_code']."</td>
 			<td>".$res_result['type']."</td>
 			<td>".$res_result['short_cut_code']."</td>";
-			// if($res_result['default_operation'] == 'No' && $flag == 1)
-			// {
+			if($res_result['default_operation'] == 'No' && $flag == 1)
+			{
 				$eurl = getFullURLLevel($_GET['r'],'operations_master_edit.php',0,'N');
 				$url_delete = getFullURLLevel($_GET['r'],'operations_master_delete.php',0,'N').'&del_id='.$res_result['id'];
 				if(in_array($edit,$has_permission)){ echo "<td><a href='$eurl&id=".$res_result['id']."' class='btn btn-info'>Edit</a>"; } 
 				if(in_array($delete,$has_permission)){ 
-					echo "<a href='<?= $url_delete ?>' class='btn btn-danger confirm-submit' id='del' >Delete</a></td>";
+					echo "<a href='$url_delete' class='btn btn-danger confirm-submit' id='del' >Delete</a></td>";
 				}
-			// }
-			// else
-			// {
-			// 	echo "<td></td>";
-			// }
+			}
+			else
+			{
+				echo "<td></td>";
+			}
 		echo "</tr>";
 	}
 	echo "</tbody></table></div></div></div></div>";
