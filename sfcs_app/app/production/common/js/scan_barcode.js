@@ -7,7 +7,11 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.showscanlist = false;
     $scope.scanned_barcode_details = [];
     $scope.session_barcodes = [];
-     
+    
+    $scope.shift = '';
+    $scope.$watch('shift', function(shift){
+        $scope.shift = shift;
+    });
     $scope.scanned = function(event){
         if(event.charCode == 13){
         $('#loading-image').show();
@@ -36,7 +40,8 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                         $scope.barcode = '';
                     }else{
                         var params = $.param({
-                            barcode: $scope.last_barcode
+                            barcode: $scope.last_barcode,
+                            shift: $scope.shift
                         });
                         var req = {
                             method: 'POST',

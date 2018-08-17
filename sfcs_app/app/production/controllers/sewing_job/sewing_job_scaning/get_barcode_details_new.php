@@ -1,6 +1,7 @@
 <?php
     // include("../../../../../common/config/config_ajax.php");
     $barcode = $_POST['barcode'];
+    $shift = $_POST['shift'];
 
     $bundle_no = explode('-', $barcode)[0];
     $op_no = explode('-', $barcode)[1];
@@ -266,7 +267,7 @@
                 $b_a_cut_no[] = $row['acutno'];
                 $b_module = '1';
                 $b_remarks[] = 'Normal';
-                $b_shift = 'G';
+                $b_shift = $shift;
                 if($flag == 'bundle_creation_data'){
                     $mapped_color = $row['mapped_color'];
                 }else{
