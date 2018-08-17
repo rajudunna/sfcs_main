@@ -142,7 +142,8 @@ $('a[href="' + qs + '"]').parents('li').addClass('active');
 
 var get_url = window.location.href;
 var r = get_url.split("?").pop();
-// var r = get_url.searchParams.get("r");
+var menu = get_url.split("menu=").pop();
+// var menu = get_url.searchParams.get("menu");
 if(r != null){
     window.onload = onloadAjaxCall(r);
 }

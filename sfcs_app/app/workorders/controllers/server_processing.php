@@ -63,7 +63,7 @@
                 $value = $row[$attr]!='' ? $row[$attr] : 0;
                 $button_append.= "<input type='hidden' value='$value'>";
             }
-            $button_append.= "<p></p></span>";
+            $button_append.= "<p id='add_some'></p></span>";
 
             $data['data'][$i][] = $start+$i+1;
             $form_check = 0;
