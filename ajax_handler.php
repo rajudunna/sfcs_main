@@ -132,7 +132,7 @@ $('form').on("submit",function(event) {
         from_data.push({ name: $("button[type=submit]").attr("name"), value: $("button[type=submit]").attr("value") });
     }
 
-
+    console.log(from_data);
     myLoad1();
         $.ajax({
           type:'POST',

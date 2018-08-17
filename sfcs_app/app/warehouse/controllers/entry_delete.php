@@ -65,190 +65,185 @@ if(!(in_array($view,$has_permission)))
 	<div class="panel-heading"><b>Delete RM Receiving Form</b></div>
 	<div class="panel-body">
 		<div class="row">
-			<div class="col-md-3">
-				<form name="test" method="post" action="<?php getFullURL($_GET['r'],'entry_delete.php','N'); ?>">
+			<!-- <div class="col-md-3">
+				<form name="test" method="POST" action="<?= getFullURL($_GET['r'],'entry_delete.php','N'); ?>">
 					<label>Enter Label Id: </label>
 					<input type="text" name="lid" value="" class="form-control integer" /required>
 					<input type="submit" name="submit" value="Search" class="btn btn-success" style="margin-top:18px;" />
 				</form>
-			</div>
+			</div> -->
 			<div class="col-md-3">
-				<form name="test" method="post" action="<?php getFullURL($_GET['r'],'entry_delete.php','N'); ?>">
+				<form name="test" method="POST" action="<?= getFullURL($_GET['r'],'entry_delete.php','N'); ?>">
 					<label>Enter Lot #:</label>
 					<input type="text" name="lot_no_ref" value="" class="form-control integer" /required>
-					<input type="submit" name="submit2" value="Search" class="btn btn-success" style="margin-top:18px;" />
+					<input type="submit" name="submit" value="Search" class="btn btn-success" style="margin-top:18px;" />
 				</form>
 			</div>
 		</div>
 		<hr>
 	
 <?php
+// if(isset($_POST['submit']))
+// {
+// 	$lid=$_POST['lid'];
+// 	$sql="select lot_no,qty_rec,qty_issued,qty_ret,ref1,ref4 from $bai_rm_pj1.store_in where tid=\"$lid\"";
+// 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+// 	if(mysqli_affected_rows($link)>0)
+// 	{
+// 		while($sql_row=mysqli_fetch_array($sql_result))
+// 		{
+// 			$qty_rec=round($sql_row['qty_rec'],2);
+// 			$qty_issued=$sql_row['qty_issued'];
+// 			$qty_ret=$sql_row['qty_ret'];
+// 			$ref1=$sql_row['ref1'];
+// 			$ref4=$sql_row['ref4'];
+// 			$lot_no=$sql_row['lot_no'];
+// 		}
+	
+// 		$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"$lot_no\"";
+		
+// 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 		while($sql_row=mysqli_fetch_array($sql_result))
+// 		{
+// 			$product_group=$sql_row['product_group'];
+// 			$item=$sql_row['item'];
+// 			$item_name=$sql_row['item_name'];
+// 			$item_desc=$sql_row['item_desc'];
+// 			$inv_no=$sql_row['inv_no'];
+// 			$po_no=$sql_row['po_no'];
+// 			$rec_no=$sql_row['rec_no'];
+// 			$rec_qty=$sql_row['rec_qty'];
+// 			$batch_no=$sql_row['batch_no'];
+// 			$buyer=$sql_row['buyer'];
+// 			$pkg_no=$sql_row['pkg_no'];
+// 			$grn_date=$sql_row['grn_date'];
+			
+// 		}
+		
+// 		echo "<table class='table table-bordered'>";
+// 		echo "<tr><td>Lot No</td><td>:</td><td>$lot_no</td></tr>";
+// 		echo "<tr><td>Batch</td><td>:</td><td>$batch_no</td></tr>";
+// 		echo "<tr><td>Item Description</td><td>:</td><td>$item_desc</td></tr>";
+// 		echo "<tr><td>Item Name</td><td>:</td><td>$item_name</td></tr>";
+// 		echo "<tr><td>Product</td><td>:</td><td>$product_group</td></tr>";
+// 		echo "<tr><td>Qty Recieved</td><td>:</td><td>$qty_rec</td></tr>";
+// 		echo "<tr><td>GRN Date</td><td>:</td><td>$grn_date</td></tr>";
+		
+// 		echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'entry_delete.php','N').'">';
+// 		echo '<tr><td>Reason</td><td>:</td><td><div class="row"><div class="col-md-4"><input type="text" name="reason"  id="reason2" class="form-control" required ></div></div></td></tr>';
+		
+// 		if(in_array($authorized,$has_permission))
+// 		{
+// 			echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none"; ></td></tr>';
+// 		}
+// 		else
+// 		{
+// 			if($qty_rec>0 and $qty_issued==0 and $qty_ret==0 and strlen($ref1)==0 and strlen($ref4)==0)
+// 			{				
+// 				echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none";></td></tr>';
+// 			}	
+// 		}
+// 		echo '</form>';
+// 		echo "</table>";
+// 	}
+// 	else
+// 	{
+// 		echo "<script>sweetAlert('please enter valid label id.','','warning')</script>";
+// 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
+// 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  Ajaxify('$url'); }</script>";
+// 	}
+	
+// }
+
+
+// if(isset($_POST['delete']))
+// {
+// 	$lid=$_POST['lid'];
+// 	$reason=$_POST['reason'];
+		
+
+// 	$query = "select qty_issued from $bai_rm_pj1.store_in where tid='$lid'";
+	
+// 	$result = mysqli_query($link,$query);
+// 	while($row = mysqli_fetch_array($result)){
+// 		$issued_qty = $row['qty_issued'];
+// 	}
+	
+
+	
+// 	if((int)$issued_qty > 0){
+	
+// 		echo "<script>sweetAlert('Quantity is issued already','you should not delete it','warning');</script>";
+// 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
+// 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500); function Redirect() {  Ajaxify('$url'); }</script>";
+	
+// 	}else{
+// 		$sql="insert into $bai_rm_pj1.store_in_deleted select * from $bai_rm_pj1.store_in where tid=".$lid;
+
+// 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error4=".mysqli_error($link));
+		
+// 		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+
+// 		$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."$".$reason."' where tid=".$id;
+
+// 		$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 		$num3=mysqli_affected_rows($link);
+		
+
+		
+// 		$sql_store_in="select lot_no from $bai_rm_pj1.store_in where tid=".$lid;
+// 		$sql_result_store_in=mysqli_query($link, $sql_store_in) or exit($sql_store_in."<br/>Sql Error_store_in=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+// 		while($sql_row_store_in=mysqli_fetch_array($sql_result_store_in))
+// 		{
+// 			$lot_no=$sql_row_store_in['lot_no'];
+// 		}
+		
+// 		$sql_lot="select sum(qty_rec) as 'qty_rec' FROM $bai_rm_pj1.store_in_deleted where lot_no='$lot_no' group by lot_no";
+// 		$sql_result_lot=mysqli_query($link, $sql_lot) or exit($sql_lot."<br/>Sql Error_lot=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+// 		while($sql_row_lot=mysqli_fetch_array($sql_result_lot))
+// 		{
+// 			$qty_rec=$sql_row_lot['qty_rec'];
+// 		}
+		
+// 		$sql_sticker="select rec_qty from $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+// 		$sql_result_sticker=mysqli_query($link, $sql_sticker) or exit($sql_sticker."<br/>Sql Error_sticker=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+// 		while($sql_row_sticker=mysqli_fetch_array($sql_result_sticker))
+// 		{
+// 			$rec_qty=$sql_row_sticker['rec_qty'];
+// 		}
+		
+// 		if(round($qty_rec,2)==round($rec_qty,2))
+// 		{
+// 			$sql6="insert into $bai_rm_pj1.sticker_report_deleted select * from $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+	 
+// 			$sql_result6=mysqli_query($link, $sql6) or exit($sql6."<br/>Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 			$num6=mysqli_affected_rows($link);
+// 			if($num6>0)
+// 			{
+// 				$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+
+// 				$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 			}
+// 		}
+// 			$sql1="delete from $bai_rm_pj1.store_in where tid=\"$lid\"";
+// 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+	
+// 		echo "<script>sweetAlert('Label id Successfully Deleted','','success');</script>";
+// 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
+// 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  Ajaxify('$url'); }</script>";
+// 	}
+// }
+
+
 if(isset($_POST['submit']))
 {
-	$lid=$_POST['lid'];
-	
-	$sql="select lot_no,qty_rec,qty_issued,qty_ret,ref1,ref4 from $bai_rm_pj1.store_in where tid=\"$lid\"";
-	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-	if(mysqli_affected_rows($link)>0)
-	{
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$qty_rec=round($sql_row['qty_rec'],2);
-			$qty_issued=$sql_row['qty_issued'];
-			$qty_ret=$sql_row['qty_ret'];
-			$ref1=$sql_row['ref1'];
-			$ref4=$sql_row['ref4'];
-			$lot_no=$sql_row['lot_no'];
-		}
-	
-		$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"$lot_no\"";
-		//echo $sql;
-		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$product_group=$sql_row['product_group'];
-			$item=$sql_row['item'];
-			$item_name=$sql_row['item_name'];
-			$item_desc=$sql_row['item_desc'];
-			$inv_no=$sql_row['inv_no'];
-			$po_no=$sql_row['po_no'];
-			$rec_no=$sql_row['rec_no'];
-			$rec_qty=$sql_row['rec_qty'];
-			$batch_no=$sql_row['batch_no'];
-			$buyer=$sql_row['buyer'];
-			$pkg_no=$sql_row['pkg_no'];
-			$grn_date=$sql_row['grn_date'];
-			
-		}
-		
-		echo "<table class='table table-bordered'>";
-		echo "<tr><td>Lot No</td><td>:</td><td>$lot_no</td></tr>";
-		echo "<tr><td>Batch</td><td>:</td><td>$batch_no</td></tr>";
-		echo "<tr><td>Item Description</td><td>:</td><td>$item_desc</td></tr>";
-		echo "<tr><td>Item Name</td><td>:</td><td>$item_name</td></tr>";
-		echo "<tr><td>Product</td><td>:</td><td>$product_group</td></tr>";
-		echo "<tr><td>Qty Recieved</td><td>:</td><td>$qty_rec</td></tr>";
-		echo "<tr><td>GRN Date</td><td>:</td><td>$grn_date</td></tr>";
-		
-		echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'entry_delete.php','N').'">';
-		echo '<tr><td>Reason</td><td>:</td><td><div class="row"><div class="col-md-4"><input type="text" name="reason"  id="reason2" class="form-control" required ></div></div></td></tr>';
-		
-		if(in_array($authorized,$has_permission))
-		{
-			echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none"; ></td></tr>';
-		}
-		else
-		{
-			if($qty_rec>0 and $qty_issued==0 and $qty_ret==0 and strlen($ref1)==0 and strlen($ref4)==0)
-			{				
-				echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none";></td></tr>';
-			}	
-		}
-		echo '</form>';
-		echo "</table>";
-	}
-	else
-	{
-		//echo "<table class='table table-bordered'><tr class='danger'><td>Details not available, please enter label id.</td></tr></table>";
-		echo "<script>sweetAlert('please enter valid label id.','','warning')</script>";
-		$url = getFullURL($_GET['r'],'entry_delete.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
-	}
-	
-}
-
-
-if(isset($_POST['delete']))
-{
-	$lid=$_POST['lid'];
-	$reason=$_POST['reason'];
-		
-
-	$query = "select qty_issued from $bai_rm_pj1.store_in where tid='$lid'";
-	
-	$result = mysqli_query($link,$query);
-	while($row = mysqli_fetch_array($result)){
-		$issued_qty = $row['qty_issued'];
-	}
-	
-
-	
-	if((int)$issued_qty > 0){
-	
-		echo "<script>sweetAlert('Quantity is issued already','you should not delete it','warning');</script>";
-		$url = getFullURL($_GET['r'],'entry_delete.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500); function Redirect() {  location.href = \"$url\"; }</script>";
-	
-	}else{
-		$sql="insert into $bai_rm_pj1.store_in_deleted select * from $bai_rm_pj1.store_in where tid=".$lid;
-		//echo $sql;
-		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error4=".mysqli_error($link));
-		
-		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-		//echo $id;
-		$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."$".$reason."' where tid=".$id;
-		// echo  "<br/>".$sql3;	 
-		$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$num3=mysqli_affected_rows($link);
-		
-
-		
-		$sql_store_in="select lot_no from $bai_rm_pj1.store_in where tid=".$lid;
-		$sql_result_store_in=mysqli_query($link, $sql_store_in) or exit($sql_store_in."<br/>Sql Error_store_in=".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		while($sql_row_store_in=mysqli_fetch_array($sql_result_store_in))
-		{
-			$lot_no=$sql_row_store_in['lot_no'];
-		}
-		
-		$sql_lot="select sum(qty_rec) as 'qty_rec' FROM $bai_rm_pj1.store_in_deleted where lot_no='$lot_no' group by lot_no";
-		$sql_result_lot=mysqli_query($link, $sql_lot) or exit($sql_lot."<br/>Sql Error_lot=".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		while($sql_row_lot=mysqli_fetch_array($sql_result_lot))
-		{
-			$qty_rec=$sql_row_lot['qty_rec'];
-		}
-		
-		$sql_sticker="select rec_qty from $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
-		$sql_result_sticker=mysqli_query($link, $sql_sticker) or exit($sql_sticker."<br/>Sql Error_sticker=".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		while($sql_row_sticker=mysqli_fetch_array($sql_result_sticker))
-		{
-			$rec_qty=$sql_row_sticker['rec_qty'];
-		}
-		
-		//echo "<br/>store in qty recived".round($qty_rec,2);
-		
-		//echo "<br/> stikcer recived qty".round($rec_qty,2);
-		
-		if(round($qty_rec,2)==round($rec_qty,2))
-		{
-			$sql6="insert into $bai_rm_pj1.sticker_report_deleted select * from $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
-			//echo "<br/>".$sql6;	 
-			$sql_result6=mysqli_query($link, $sql6) or exit($sql6."<br/>Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$num6=mysqli_affected_rows($link);
-			if($num6>0)
-			{
-				$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
-				//echo "<br/>".$sql7;
-				$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
-			}
-		}
-			$sql1="delete from $bai_rm_pj1.store_in where tid=\"$lid\"";
-			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		// echo "<table class='table table-bordered'><tr class='success'><td>Label Id Successfully Deleted</td></tr></table>";
-		echo "<script>sweetAlert('Label id Successfully Deleted','','success');</script>";
-		$url = getFullURL($_GET['r'],'entry_delete.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
-	}
-}
-
-
-if(isset($_POST['submit2']))
-{
 	$lot_no=$_POST['lot_no_ref'];
+
 
 	$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
     $sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -334,7 +329,7 @@ if(isset($_POST['submit2']))
 		//echo "<table class='table table-bordered'><tr class='danger'><td>Details not available, please enter lot no.</td></tr></table>";
 		echo "<script>sweetAlert('please enter valid lot no','','warning')</script>";
         $url = getFullURL($_GET['r'],'entry_delete.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  Ajaxify('$url'); }</script>";
 
 	}
 
@@ -431,14 +426,14 @@ if(isset($_POST['put']))
 				//echo "<h2><font color=green>Lot number deleted successfully</font></h2>";
 				echo "<script>sweetAlert('Lot Number Deleted Successfully','','Success')</script>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  Ajaxify('$url'); }</script>";
 			}				
 			else
 			{
 				echo "<script>sweetAlert('Unable To Delete','Please Cross Check Details','error')</script>";
 				//echo "<h2><font color=red>Transaction un-successful, please cross check the details.</font></h2>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = \"$url\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  Ajaxify('$url'); }</script>";
 			}		
 	
 		}									
@@ -486,7 +481,7 @@ if(isset($_POST['put']))
 				echo "<script>sweetAlert('Successfully Updated','','success')</script>";
 				echo "<h2><font color=green>Successfully Updated!!</font></h2>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() { Ajaxify('$url'); }</script>";
 			}
 		}																																													
 	}
@@ -494,7 +489,7 @@ if(isset($_POST['put']))
 	{
 		echo "<script>sweetAlert('Deletion Cant Possible',' Because total issued quantity and total returned quantity is not equal for this lot number','error');</script>";
 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",5000); function Redirect() {  location.href = \"$url\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",5000); function Redirect() {  Ajaxify('$url'); }</script>";
 		//echo "<table class='table table-bordered'><tr class='danger'><td style='text-align:center;'>Deletion Can't Possible. Because total issued quantity and total returned quantity is not equal for this lot number</td></tr></table>";
 	}
 	
