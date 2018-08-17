@@ -1,6 +1,6 @@
 
 <link rel='stylesheet' href='https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'>
-<table class="table table-bordered" id='table1'>
+<table class="table table-bordered" id='table2'>
     <thead>
         <tr>
             <th>S.no</th>
@@ -89,7 +89,7 @@
         var values = {'order_del_no':'<?= $schedule ?>','order_style_no':'<?= $style ?>'};
         var query = "<?= $query ?>";
         var href_attr = {'lot_no':'lot_no', 'batch_no':'batch_no'};
-        var table = $('#table1').DataTable({
+        var table = $('#table2').DataTable({
             "bSort":false,
             "processing": true,
             "serverSide": true,
@@ -103,8 +103,8 @@
             "pageLength": 15,
             "deferLoading": <?= $total ?>           
         });
-        // $('#table1_filter input').unbind();
-        // $('#table1_filter input').bind('keyup', function(e){
+        // $('#table2_filter input').unbind();
+        // $('#table2_filter input').bind('keyup', function(e){
         //     if(e.keyCode == 13) {
         //         console.log(table);
         //         table.fnFilter( this.value, $(this).attr('id') );
