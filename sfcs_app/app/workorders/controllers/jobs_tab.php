@@ -41,7 +41,7 @@
             $jobs_cats = [];
             $job_num_query = "SELECT group_concat(input_job_no_random) as nums
                               FROM bai_pro3.packing_summary_input 
-                              WHERE order_style_no='$style' and order_del_no='$schedule' LIMIT 15";            
+                              WHERE order_style_no='$style' and order_del_no='$schedule' ";            
             $job_num_result = mysqli_query($link_ui, $job_num_query) or 
                               exit("Sql Error2 = $job_num_query".mysqli_error($GLOBALS["___mysqli_ston"]));
             if($job_num_result->num_rows > 0){
@@ -100,7 +100,7 @@
             //JOBS to dispaly on screen
             $jobs_query = "SELECT input_job_no_random,order_col_des,m3_size_code,carton_act_qty,input_job_no 
                            FROM bai_pro3.packing_summary_input 
-                           WHERE order_style_no='$style' and order_del_no='$schedule' LIMIT 15";            
+                           WHERE order_style_no='$style' and order_del_no='$schedule'";            
             $jobs_result = mysqli_query($link_ui, $jobs_query) or 
                            exit("Sql Error2 = $jobs_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -118,7 +118,7 @@
                         $class =  $jobs_cats[$rand_ref][$key];
                         if(trim($class) === 'btn-danger')
                             $append = str_replace('$disabled','disabled',$append);
-                        $class=' btn-success btn-disabled';
+                        $class=' btn-success';
                         $append = str_replace('$controls'.$key.'-',$class,$append);
                     }
                 
@@ -149,7 +149,18 @@ td {
   }
 </style>
       
-
-
+<script>      
+    $(document).ready(function() {
+        var table = $('#table_ajax_3').DataTable({
+            "bSort":false,
+            "processing": true,
+            "serverSide": false,
+            "lengthChange": true,
+            "dataSrc": "",
+            "pageLength": 15,
+            "deferLoading": <?= $sno ?>
+        });
+    });
+</script>
 
    
