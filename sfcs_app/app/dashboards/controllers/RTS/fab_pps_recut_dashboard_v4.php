@@ -43,7 +43,7 @@ Service Request #525434/ kirang/ 2014-01-10: Add the ordercut details in RTS das
 
 <!-- <script type="text/javascript" src="jquery.js"></script> -->
 
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.js',4,'R'); ?>"></script>
+
 <?php
 
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -84,7 +84,7 @@ Service Request #525434/ kirang/ 2014-01-10: Add the ordercut details in RTS das
 		y=document.getElementById('view_div').value;
 		x=document.getElementById('view_cat').value;
 		var ajax_url = "<?= getFullURL($_GET['r'],'fab_pps_recut_dashboard_v4.php','N') ?>+&view=2&view_cat="+x+"&view_div="+encodeURIComponent(y);
-		Ajaxify(ajax_url);
+		Ajaxify(ajax_url,'body');
 
 
 		/* Old Code for Re-direction*/
@@ -691,7 +691,8 @@ window.onload = startBlink;
 		echo "<p>";
 		echo "<table>";
 		$url = getFullURL($_GET['r'],'board_update_recut.php','N');
-		echo "<tr><th colspan=2><h2><a href=\"$url\" onclick=\"Popup=window.open('$url&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";					
+		echo "<tr><th colspan=2><h2><a href=\"$url&section_no=$section\" >SECTION - $section</a></h2></th></th></tr>";	
+		// echo "<tr><th colspan=2><h2><a href=\"$url&section_no=$section\" onclick=\"Popup=window.open('$url&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";				
 		$mods=array();
 		$mods=explode(",",$section_mods);
 		
@@ -964,7 +965,9 @@ window.onload = startBlink;
 
 							if($test != "")
 							{
-								echo "<div id=\"S$schedule\" style=\"float:left;\"><div class=\"$id\" title=\"".$title."\"><a href=\"$path\" onclick=\"Popup=window.open('$path"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><center><font color=#ffffff>$emb_sty</font></center></a></div></div>";
+								echo "<div id=\"S$schedule\" style=\"float:left;\"><div class=\"$id\" title=\"".$title."\"><a href=\"$path\"><center><font color=#ffffff>$emb_sty</font></center></a></div></div>";
+
+								// echo "<div id=\"S$schedule\" style=\"float:left;\"><div class=\"$id\" title=\"".$title."\"><a href=\"$path\" onclick=\"Popup=window.open('$path"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><center><font color=#ffffff>$emb_sty</font></center></a></div></div>";
 							}
 							
 							
@@ -997,7 +1000,8 @@ window.onload = startBlink;
 		echo "<p>";
 		echo "<table>";
 		$url = getFullURL($_GET['r'],'board_update.php','N');
-		echo "<tr><th colspan=2><h2><a href='$url&section_no=$section' onclick=\"Popup=window.open('$url&section_no=$section','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">RCut <br/>EMB<br/>CUT<br/>TOP</a></h2></th></th></tr>";
+		echo "<tr><th colspan=2><h2><a href='$url&section_no=$section' >RCut <br/>EMB<br/>CUT<br/>TOP</a></h2></th></th></tr>";
+		// echo "<tr><th colspan=2><h2><a href='$url&section_no=$section' onclick=\"Popup=window.open('$url&section_no=$section','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">RCut <br/>EMB<br/>CUT<br/>TOP</a></h2></th></th></tr>";
 		
 		$mods=array("ENP","CUT","TOP");
 		$mods_ex=array("Emb","Cut","Smp");
@@ -1254,7 +1258,8 @@ window.onload = startBlink;
 		}
 							if($test != "")
 							{
-								echo "<div id=\"S$schedule\" style=\"float:left;\"><div class=\"$id\" title=\"".$title."\"><a href=\"$path\" onclick=\"Popup=window.open('$path"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><center><font color=white>$emb_sty</font></center></a></div></div>";;
+								echo "<div id=\"S$schedule\" style=\"float:left;\"><div class=\"$id\" title=\"".$title."\"><a href=\"$path\"><center><font color=white>$emb_sty</font></center></a></div></div>";
+								// echo "<div id=\"S$schedule\" style=\"float:left;\"><div class=\"$id\" title=\"".$title."\"><a href=\"$path\" onclick=\"Popup=window.open('$path"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><center><font color=white>$emb_sty</font></center></a></div></div>";
 							}
 							
 						
