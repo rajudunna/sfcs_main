@@ -125,10 +125,11 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 //echo $get_log_data;
                 // $get_fr_data = "
                 // SELECT style,schedule,color,FLOOR(fr_qty/hours) AS qty FROM $bai_pro2.fr_data WHERE DATE(frdate)='".date('Y-m-d',strtotime($_GET['mdate']))."' AND team='".$_GET['module']."'";
-                $get_fr_data = "SELECT sum(FLOOR(fr_qty/hours))/count(hours) AS qty,sum(hours)/count(hours) as day_hrs FROM $bai_pro2.fr_data WHERE DATE(frdate)='".date('Y-m-d',strtotime($_GET['mdate']))."' AND team='".$_GET['module']."'";
+                $get_fr_data = "SELECT sum(FLOOR(fr_qty/hours)) AS qty,avg(hours) as day_hrs FROM $bai_pro2.fr_data WHERE DATE(frdate)='".date('Y-m-d',strtotime($_GET['mdate']))."' AND team='".$_GET['module']."'";
                 $result_fr_data = mysqli_query($link, $get_fr_data) or exit("Sql Error fr".mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo $get_fr_data;
-                $get_timings = "SELECT time_value,CONCAT(time_display,' ',day_part) AS HOUR FROM $bai_pro3.tbl_plant_timings";
+                $get_timings = "SELECT time_value,CONCAT(time_display,' ',day_part) AS HOUR FROM $bai_pro3.tbl_plant_timings where time_value < ".date('H');
+                //echo $get_timings;
                 $result_timings = mysqli_query($link, $get_timings) or exit("Sql Error fr".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 $forcast_qry = "SELECT qty FROM $bai_pro3.line_forecast WHERE DATE='".date('Y-m-d',strtotime($_GET['mdate']))."' AND module='".$_GET['module']."'";
@@ -171,7 +172,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 // }
                 // $tab2.="</tbody></table>";
 
-                    $tab = "<table class='table table-bordered'><thead><tr><th>Time</th><th>Actual</th><th>Forcast</th><th>Plan</th><th>Actions</th></tr></thead>
+                    $tab = "<table class='table table-bordered'><thead><tr><th>Time</th><th>Plan</th><th>Forcast</th><th>Actual</th><th>Actions</th></tr></thead>
                     <tbody>";
                     $plan_qty_fetch = mysqli_fetch_array($result_fr_data);
                     $plan_qty = $plan_qty_fetch['qty']>0 ? $plan_qty_fetch['qty'] : 0 ;
@@ -203,7 +204,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
 
 
 
-                        $tab.="<tr><td>".$r['HOUR']."</td><td>$actual_qty</td><td>$forcast_qty</td><td>$plan_qty</td><td>$btn</td></tr>";
+                        $tab.="<tr><td>".$r['HOUR']."</td><td>$plan_qty</td><td>".round($forcast_qty,2)."</td><td>$actual_qty</td><td>$btn</td></tr>";
                         
                     }
                     $tab.="</tbody>
@@ -224,6 +225,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                             </div>
                             <div class="modal-body" id="brand" ng-app="chandu" ng-controller="downtimecontroller">';
                         if(mysqli_num_rows($hourly_down_time_res)==0){
+                            echo "Downtime Quantity : <b>{{dtimehrs}}</b>";
                         echo "<div class='col-sm-12'><div class='col-sm-4'><select ng-model='reasons' id='reson' name='reson' class='form-control'>";
                             echo "<option value=''>Select Reason</option>";
                             while($row1 = mysqli_fetch_array($resons_data_result)){
