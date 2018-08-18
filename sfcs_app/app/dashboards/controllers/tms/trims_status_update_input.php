@@ -119,8 +119,8 @@ pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1
 .mytable1{
 	font-size:12px;
 }
-th{ background-color:#29759C; color:#FFF; padding:2px; border:1px solid #ccc; }
-td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; white-space:nowrap;background-color: #FFF}
+ thead{ background-color:#29759C; color:#FFF; padding:2px; border:1px solid #ccc; } 
+tbody{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; white-space:nowrap;background-color: #FFF} 
 </style>
 </head>
 <body>
@@ -285,7 +285,8 @@ echo "<a class='btn btn-info btn-sm' href=\#\" onclick=\"return popitup_new('$po
 echo "<br><br>";
 	
 $balance_tot=0;
-echo "<table class='table'>";
+echo "<table class='table table-bordered'>";
+echo "<thead>";
 echo "<tr>";
 // echo "<th>Schedule </th>";
 echo "<th>Color </th>";
@@ -301,7 +302,7 @@ echo "<th>Allocated Quantity</th>";
 // echo "<th>Input Quantity</th>";
 //echo "<th>TID</th>";
 //echo "<th>Doc# Ref</th>";
-echo "</tr>";
+echo "</tr></thead>";
 $sql121="SELECT GROUP_CONCAT(DISTINCT(doc_no) ORDER BY doc_no) AS docket_ref FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'";
 $sql_result121=mysqli_query($link, $sql121) or exit("Sql Error8832 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row121=mysqli_fetch_array($sql_result121))
@@ -334,7 +335,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 			
 		}
 		
-		echo "<tr>";
+		echo "<tbody><tr>";
 		// echo "<td>".$sql_row['order_del_no']."</td>";
 		echo "<td><input type=\"hidden\" name=\"input_color[]\" value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</td>";
 		echo "<td><input type=\"hidden\" name=\"input_cat_ref[]\" value=\"".$sql_row['cat_ref']."\"><input type=\"hidden\" name=\"input_cut_no_ref[]\" value=\"".$sql_row['acutno']."\"><input type=\"hidden\" name=\"input_doc_no[]\" value=\"".$sql_row['doc_no']."\"><input type=\"hidden\" name=\"input_job_no_ref[]\" value=\"".$sql_row['input_job_no']."\">".$sql_row['acutno']."<input type=\"hidden\" name=\"input_qty[]\" $textbox_disable value=\"0\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
@@ -360,7 +361,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 		 {
 		 	echo "<td><input type=\"text\" name=\"input_qty[]\" $textbox_disable value=\"0\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
 		 }
-		echo "</tr>";
+		echo "</tr></tbody>";
 		
 		$i++;
 		$balance_tot=$balance_tot+$balance;   //Total balance qty in selected Input Job#  - 03-11-2014  - ChathurangaD
@@ -372,7 +373,9 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 
 <table>
 <tr>
+<thead>
 <th>Trims Status</th>
+</thead>
 <td>
 <div class="form-inline">
 <div class="form-group">

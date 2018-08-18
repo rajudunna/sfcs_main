@@ -57,11 +57,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$schedule_back=$sql_row['order_del_no'];
 }
 
-
+$rurl = getFullURL($_GET['r'], "main_interface.php","N")."&color=".$color_back."&style=".$style_back."&schedule=".$schedule_back;
 echo "<script type=\"text/javascript\"> 
 		setTimeout(\"Redirect()\",0); 
 		function Redirect(){	 
-				location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"; 
+			Ajaxify('".$rurl."');	
 			}
 	</script>";	
 //echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<<<< Click here to Go Back</a>";

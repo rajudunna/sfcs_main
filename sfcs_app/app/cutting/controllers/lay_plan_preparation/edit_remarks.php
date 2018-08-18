@@ -9,7 +9,7 @@ Changes Log:
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/functions.php',4,'R')); ?>
 
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/header_scripts.php',4,'R')); ?>
+<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/header_scripts.php',4,'R')); ?>
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
@@ -40,9 +40,12 @@ Changes Log:
 
 if(isset($_POST['submit']))
 {
+
+	
 	$rem=$_POST['rem'];
 	$style_x=$_POST['style_x'];
 	$schedule_x=$_POST['schedule_x'];
+	
 	$color_x=$_POST['color_x'];
 	$o_tid=$_POST['o_tid'];
 	$bind_con=$_POST['bind_con'];
@@ -58,7 +61,10 @@ if(isset($_POST['submit']))
 	
 	if($sql_result){
 		echo "<script>sweetAlert('Order remarks Updated Successfully','','success')</script>";
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_x&style=$style_x&schedule=$schedule_x\"; }</script>";
+		// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_x&style=$style_x&schedule=$schedule_x\"; }</script>";
+		$url = getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_x&style=$style_x&schedule=$schedule_x";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {
+			Ajaxify('".$url."');}</script>";
 	}else{
 		echo "<script>sweetAlert('Order remarks Updation Failed','Please try again','error')</script>";
 	}

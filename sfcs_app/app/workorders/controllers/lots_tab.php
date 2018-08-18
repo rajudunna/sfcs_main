@@ -1,10 +1,6 @@
 
 <link rel='stylesheet' href='https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'>
-<<<<<<< HEAD
-<table class="table table-bordered" id='table_ajax_1'>
-=======
 <table class="table table-bordered" id='table2'>
->>>>>>> c6fc0350a0ca7deeb7297209c28dd22d735391b8
     <thead>
         <tr>
             <th>S.no</th>
@@ -93,11 +89,7 @@
         var values = {'order_del_no':'<?= $schedule ?>','order_style_no':'<?= $style ?>'};
         var query = "<?= $query ?>";
         var href_attr = {'lot_no':'lot_no', 'batch_no':'batch_no'};
-<<<<<<< HEAD
         var table = $('#table_ajax_1').DataTable({
-=======
-        var table = $('#table2').DataTable({
->>>>>>> c6fc0350a0ca7deeb7297209c28dd22d735391b8
             "bSort":false,
             "processing": true,
             "serverSide": true,
