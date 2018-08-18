@@ -28,11 +28,13 @@
         $schedule=$_POST["schedule"];
         //$schedule="399160"; //for testing
         $schedule_split=explode(",",$schedule);
-        $sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
-        $result=mysqli_query($link, $sql) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $rowcount=mysqli_num_rows($result);
-        if($rowcount>0)
-        {
+		if($schedule!='')
+		{
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
+			$result=mysqli_query($link, $sql) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$rowcount=mysqli_num_rows($result);
+			if($rowcount>0)
+			{
             
         
     ?>
@@ -500,8 +502,9 @@
             ?>
         </div>
     </div>
-</div>
-<?php
+	</div>
+	<?php
+	}
 }
 else
 {
