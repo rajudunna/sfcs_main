@@ -84,7 +84,7 @@ function redirect_priority()
 	y=document.getElementById('view_div').value;
 	a=document.getElementById('view_priority').value;
 	var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
-	Ajaxify(ajax_url);
+	Ajaxify(ajax_url,'body');
 
 x}
 function redirect_view()
@@ -92,7 +92,7 @@ function redirect_view()
 	y=document.getElementById('view_div').value;
 	a=document.getElementById('view_priority').value;
 	var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
-	Ajaxify(ajax_url);
+	Ajaxify(ajax_url,'body');
 
 }
 
@@ -101,7 +101,7 @@ function redirect_dash()
 	y=document.getElementById('view_div').value;
 	a=document.getElementById('view_priority').value;
 	var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
-	Ajaxify(ajax_url);
+	Ajaxify(ajax_url,'body');
 
 }
 

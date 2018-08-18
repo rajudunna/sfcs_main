@@ -13,7 +13,7 @@ $url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
 $has_permission=haspermission($url_r); 
 // $authorized=user_acl("SFCS_0199",$username,50,$group_id_sfcs); 
 ?>
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+
 <!--
 Ticket #: 252392-Kirang/2014-02-07
 This amendement was done based on the confirmation to issue excess (1%) material depending on the savings.
@@ -31,21 +31,22 @@ Changes Log:
 
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
-$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+// $url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
 // $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
-$url = "?r=".$url_r;
+$url = getFullURL($_GET['r'],'fab_priority_dashboard.php','N');
+// $url = "?r=".$url_r;
 ?>
 <br/>
 <div class='row'>
 		<div class='col-md-2 pull-left'>
-			<a class='btn btn-primary' href = '<?= $url ?>'> Back </a>
+			<!-- <a class='btn btn-primary' href = '<?= $url ?>' onclick="anchortag(event,this.href)"> Back </a> -->
 		</div>
 		<div class='col-md-10 pull-right'>
 			<p style='color:red'>Note : Please Print "Docket Print" Before Update Fabric Status</p>
 		</div>
 </div>
 <br/>
-<script src="../../../../common/js/sweetalert.min.js"></script>
+
 <script type="text/javascript">
 
 // function verify_num(t,e){
@@ -253,19 +254,19 @@ if(!(in_array($authorized,$has_permission)))
 
 
 <style>
-body
+/* body
 {
 	font-family: Trebuchet MS;
-}
+} */
 </style>
 
 <style>
 body
-{
+/* {
 	background-color:#ffffff;
 	color: #000000;
 	font-family: Trebuchet MS;
-}
+} */
 a {text-decoration: none;}
 
 table
@@ -338,7 +339,7 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait
 	$style='';
 	$schedule='';
 include("fab_detail_track_include.php");
-echo "<table class='table table-bordered'>";
+echo "<div class='table-responsive'><table class='table table-bordered'>";
 echo "<tr>";
 echo "<th>Style</th>";
 echo "<th>Schedule</th>";
@@ -374,7 +375,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	// echo $style_ref." is style-ref";
 	$del_ref=$sql_row1['order_del_no'];
 	
-	$sizes_table.="<table><tr><th>Size</th><th>Qty</th></tr>";
+	$sizes_table.="<div class='table-responsive'><table><tr><th>Size</th><th>Qty</th></tr>";
 	if($sql_row1['xs']>0){ $sizes_table.="<tr><td>XS</td><td>".$sql_row1['xs']."</td></tr>";}
 	if($sql_row1['s']>0){ $sizes_table.="<tr><td>S</td><td>".$sql_row1['s']."</td></tr>";}
 	if($sql_row1['m']>0){ $sizes_table.="<tr><td>M</td><td>".$sql_row1['m']."</td></tr>";}
@@ -396,7 +397,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	if($sql_row1['s28']>0){ $sizes_table.="<tr><td>S28</td><td>".$sql_row1['s28']."</td></tr>";}
 	if($sql_row1['s30']>0){ $sizes_table.="<tr><td>S30</td><td>".$sql_row1['s30']."</td></tr>";}
 	$sizes_table.="<tr><td>Total QTY</td><td>".$sql_row1['total']."</td>";
-	$sizes_table.="</table>";
+	$sizes_table.="</table></div>";
 
 	$mns_status=$sql_row1['xs']+$sql_row1['s']+$sql_row1['m']+$sql_row1['l']+$sql_row1['xl']+$sql_row1['xxl']+$sql_row1['xxxl'];
 	
@@ -404,7 +405,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$clubbing=$sql_row1['clubbing'];
 }
 
-echo "</table>";
+echo "</table></div>";
 
 //echo $sizes_table;
 
@@ -442,10 +443,10 @@ if($clubbing>0)
 	$path="color_club_docket_print.php";
 }
 
-echo "<form name=\"ins\" method=\"post\" action=\"fab_pop_allocate_v5.php\">"; //new_Version
+echo "<form name=\"ins\" method=\"post\" action='".getFullURL($_GET['r'],'fab_pop_allocate_v5.php','N')."'>"; //new_Version
 echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">"; //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
 echo "<input type=\"hidden\" value=\"$style_ref\" name=\"style_ref\">";  
-echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
+echo "<div class='table-responsive'><table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
 //$sql1="SELECT plandoc_stat_log.plan_lot_ref,plandoc_stat_log.cat_ref,plandoc_stat_log.print_status,plandoc_stat_log.doc_no,cat_stat_log.category from plandoc_stat_log left join cat_stat_log on plandoc_stat_log.cat_ref=cat_stat_log.tid  where plandoc_stat_log.order_tid=\"$order_id_ref\" and plandoc_stat_log.acutno=$cut_no_ref";
 
 $sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.acutno=\"$cut_no_ref\"";
@@ -549,9 +550,11 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$allc_doc++;
 		//echo $sql_row1['category']."</br>";
 		//echo var_dump($comp_printed)."</br>";
+		$path = getFullURL($_GET['r'],$path,'R');
 		if(!in_array($sql_row1['category'],$comp_printed))
 		{
-			echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+			echo "<td><a href='#' onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-primary btn-sm'>Print</a></td>";
+			// echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-primary btn-sm'>Print</a></td>";
 			$comp_printed[]=$sql_row1['category'];
 		}
 		else
@@ -691,7 +694,7 @@ echo "</tr>";
 unset($lotnos_array);	
 }
 echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td></tr>";
-echo "</table>";
+echo "</table></div>";
 //echo $Disable_allocate_flag;
 if($enable_allocate_button==1)
 {	
@@ -742,7 +745,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 if($Disable_allocate_flag==$for_Staus_dis){
 ?>
 <form method="post" onsubmit=" return validate_but();">
-<table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
+<div class="table-responsive"><table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
 <?php
 // if($fabric_status!="5" && $fabric_status!="1")
 // {
@@ -785,7 +788,7 @@ else
 }
 echo "<input type=\"hidden\" name=\"group_docs\" value=".implode(",",$docket_num).">";
 ?>
-</td></tr></table>
+</td></tr></table></div>
 </form>
 <?php
 	}

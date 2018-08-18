@@ -1,5 +1,5 @@
 
-<table class="table table-bordered" id='table5'>
+<table class="table table-bordered" id='table7'>
     <thead>
         <tr>
             <th>S.no</th>
@@ -143,15 +143,10 @@
     
     </tbody>
 </table>
-<style>
-td {
-    width: 300px;
-  }
-</style>
       
 <script>      
     $(document).ready(function() {
-        var table = $('#table_ajax_3').DataTable({
+        var table = $('#table7').DataTable({
             "bSort":false,
             "processing": true,
             "serverSide": false,
