@@ -314,16 +314,18 @@ while($sql_row=mysqli_fetch_array($order_joins_result))
 	$order_joins=$sql_row['order_joins'];
 }
 if ($order_joins>'0' or $order_joins>0) {
+	$rurl = getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
   echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
 			sweetAlert('Successfully Generated','','success');
-			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+			Ajaxify('".$rurl."');
 			}
 		</script>";
 } else {
+		$eurl = getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=".$tran_order_tid."&color=".$color."&style=".$style."&schedule=".$schedule;
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 			function Redirect() {
-				location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$tran_order_tid&color=$color&style=$style&schedule=$schedule\";
+				Ajaxify('".$eurl."');
 				}
 			</script>";
 }

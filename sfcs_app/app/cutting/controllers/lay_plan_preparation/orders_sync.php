@@ -140,11 +140,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$update_query="update $bai_pro3.bai_orders_db_confirm set bts_status=2 where order_tid='$order_tid'";
 		$result10=mysqli_query($link, $update_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
-		
+	$rurl = getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
   echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
   		function Redirect() {
-  			sweetAlert('Successfully Generated','','success');
-  			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+			  sweetAlert('Successfully Generated','','success');
+			 	 Ajaxify('".$rurl."');
   			}
   		</script>";
 ?>
