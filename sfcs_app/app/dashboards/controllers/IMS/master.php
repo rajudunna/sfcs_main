@@ -64,11 +64,14 @@ if(isset($_POST['submit']))
 	$operation_name=$details[1];
 	$operation_code=$details[0];
 	$application=$_POST['apn'];
-
+    $log_time=date('Y-m-d H:i:s');
 
 	// echo $operation_name."<br>";
 	// echo $operation_code."<br>";
 	//echo $application;
+    // $log_query = "INSERT IGNORE INTO $brandix_bts.log_table (appilication,operation_name,operation_code,log_time) values ('$application','$operation_name','$operation_code','$log_time')";
+	// $log_res = mysqli_query($link,$log_query);
+	
 	 $already_query = "select * from $brandix_bts.tbl_ims_ops where appilication = '$application'";
 	 $already_result = mysqli_query($link,$already_query);
 	 if(mysqli_num_rows($already_result)>0){
@@ -109,6 +112,7 @@ if(isset($_POST['submit']))
 										<option value="IPS">IPS</option>
 										<option value="IMS">IMS</option>
 										<option value="IMS_OUT">IMS_OUT</option>
+										<option value="Down_Time">Down_Time</option>
 									</select>
 
 									<b>Operation Name<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
