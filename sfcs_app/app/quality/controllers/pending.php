@@ -35,6 +35,10 @@ body
     function noBack() {
         window.history.forward();
     }
+	function verify_enter(e){
+		if(e.keyCode==13)
+			return false;
+	}
 </script>
 
  <script language="JavaScript">
@@ -83,7 +87,7 @@ function firstbox()
 <div class='col-md-3'>
   <label>Schedule No:</label>
   <input type="text" class='form-control integer' size=5  id="schedule" name='schedule'
-  onblur="javascript:  show_content(schedule);" value="" required>
+  onblur="javascript:  show_content(schedule);" onkeypress='return verify_enter(event)' value="" required>
 </div>
 <div class='col-md-4'>
   <span id='show_content'></span>

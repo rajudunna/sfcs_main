@@ -1,5 +1,5 @@
 
-<table class="table table-bordered" id='table5'>
+<table class="table table-bordered" id='table_ajax_3'>
     <thead>
         <tr>
             <th>S.no</th>
@@ -7,7 +7,7 @@
             <th>Color</th>
             <th>Size</th>
             <th>Qty</th>
-            <th style='width:40%'>Actions</th>
+            <th style='width:50% !important'>Actions</th>
         </tr>
     </thead>
 
@@ -16,7 +16,7 @@
             error_reporting(0);
             $style = $_GET['style'];
             $schedule = $_GET['schedule'];
-
+            $limit = 100;
             $style = 'A43CKA1        ';
             $schedule = '426627';
             $color = '';
@@ -85,12 +85,15 @@
                 // $code[] = $row['operation_code'];
                 $opname[$row['operation_code']] = $row['operation_name'];
                 $colors[$row['operation_code']] = '#ff0000';
-            }      
+            }    
+            //echo $operations_query;
+            //die();  
             $append='';
             $before='before';
             $controls = 'controls';
             $disabled = 'disabled';
             foreach($opname as $key=>$value){
+            
                 if($value=='')
                     continue;
                 $append.="<a style='margin:3px;' href='?r=$$before&operation_id=$key' type='button' class='btn btn-sm
@@ -100,7 +103,7 @@
             //JOBS to dispaly on screen
             $jobs_query = "SELECT input_job_no_random,order_col_des,m3_size_code,carton_act_qty,input_job_no 
                            FROM bai_pro3.packing_summary_input 
-                           WHERE order_style_no='$style' and order_del_no='$schedule'";            
+                           WHERE order_style_no='$style' and order_del_no='$schedule' LIMIT $limit";            
             $jobs_result = mysqli_query($link_ui, $jobs_query) or 
                            exit("Sql Error2 = $jobs_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -143,23 +146,16 @@
     
     </tbody>
 </table>
-<style>
-td {
-    width: 300px;
-  }
-</style>
       
 <script>      
-    $(document).ready(function() {
+      $('#tab5').click(function(){   
         var table = $('#table_ajax_3').DataTable({
             "bSort":false,
-            "processing": true,
+            "processing": false,
             "serverSide": false,
-            "lengthChange": true,
-            "dataSrc": "",
             "pageLength": 15,
             "deferLoading": <?= $sno ?>
-        });
+        })
     });
 </script>
 

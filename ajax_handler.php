@@ -217,11 +217,12 @@ function anchortag(event,href_url=0){
                
                 $('input[name="lot_no"]').val(lot);
                 $('input[name="reference"]').val(batch);
+                $('input[name="txtbatch"]').val(batch);
                 $('input[name="lot_no_ref"]').val(lot);
                 $('input[name="lot_no1"]').val(lot);
-                $('input[name="submit"]').click();
-                $('input[name="show"]').click();
-                $('input[name="submit2"]').click();
+                // $('input[name="submit"]').click();
+                // $('input[name="show"]').click();
+                // $('input[name="submit2"]').click();
                 //  document.getElementById("myBtn").click();
              
                 $('#myModal').modal('show');
@@ -351,7 +352,7 @@ function modalClose(){
             $('.custom-btn').addClass('btn-default');
             $('.modal-dialog').addClass('modal-lg');
             $('#myModal').modal('hide');
-            // $("#modal-body").html("");
+            $("#modal-body").html("");
             $('table').DataTable().ajax.reload(null, false);
       } else {
             // $('#myModal').modal('show');

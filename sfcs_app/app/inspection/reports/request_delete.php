@@ -245,7 +245,8 @@ $complaint_no=$_GET["complaint_no"];
 				setTimeout(redirect,100);
 				function redirect(){
 					sweetAlert('Deleted successfully','','success');
-			        location.href = '$url_back';
+					//location.href = '$url_back';
+					Ajaxify('".$url_back."');
 				}
 			</script>";
 		
