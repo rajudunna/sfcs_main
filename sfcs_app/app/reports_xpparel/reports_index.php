@@ -86,7 +86,7 @@
                 <div class="box-body no-padding accordion-body collapse out" id='sewing_col'>
                     <ul class="nav nav-pills nav-stacked">
                       <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/daily_sah_report_V5.php') ?>"><i class="fa fa-circle-o"></i>&nbsp;Daily SAH Report</a></li>
-                      <li><a href=""><i class="fa fa-circle-o"></i>&nbsp;Hourly Efficiency</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/Hourly_Eff_test.php') ?>"><i class="fa fa-circle-o"></i>&nbsp;Hourly Efficiency</a></li>
                       <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/reports/transaction_log_new.php') ?>"><i class="fa fa-circle-o"></i>&nbsp;Production Status Report (Sewing Out)</a></li>
                       <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/job_summary_view.php') ?>"><i class="fa fa-circle-o"></i>&nbsp;Schedule wise Job Reconciliation Reports</a></li>
                     </ul>
