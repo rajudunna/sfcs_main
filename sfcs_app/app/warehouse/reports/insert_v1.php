@@ -319,9 +319,9 @@ echo "<div class='panel panel-default'>
 				<div class='col-md-3'>
 					<b>Print Labels : </b>";
 					if($qty>0){
-						echo "<a href=\"$url?lot_no=$lot_no\" onclick=\"Popup=window.open('$url?lot_no=$lot_no"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class=\"fa fa-print\"></i>&nbsp;Print Labels Here</a>";
+						echo "<a href='#' onclick=\"Popup=window.open('$url?lot_no=$lot_no"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class=\"fa fa-print\"></i>&nbsp;Print Labels Here</a>";
 					}else{
-						echo "<a href=\"#\" class=\"btn btn-danger btn-xs\"><i class=\"fa fa-print\"></i>&nbsp;No Rolls Updated</a>";
+						echo "<a href='#' class=\"btn btn-danger btn-xs\"><i class=\"fa fa-print\"></i>&nbsp;No Rolls Updated</a>";
 					}
 		echo "</div>
 			</div>

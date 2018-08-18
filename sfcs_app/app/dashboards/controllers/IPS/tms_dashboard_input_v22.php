@@ -377,7 +377,7 @@ if(!in_array($authorized,$has_permission))
 	{
 		y=document.getElementById('view_div').value;
 		var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input_v22.php','N') ?>+&view=2&view_div="+encodeURIComponent(y);
-		Ajaxify(ajax_url,'body');
+		Ajaxify(ajax_url,'production_body');
 
 	}
 
@@ -386,7 +386,7 @@ if(!in_array($authorized,$has_permission))
 		y=document.getElementById('view_div').value;
 		z=document.getElementById('view_dash').value;
 		var ajax_url = "<?= getFullURL($_GET['r'],'tms_dashboard_input_v22.php','N') ?>+&view="+z+"&view_div="+encodeURIComponent(y);
-		Ajaxify(ajax_url,'body');
+		Ajaxify(ajax_url,'production_body');
 
 	}
 </script>

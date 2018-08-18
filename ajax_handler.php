@@ -143,13 +143,38 @@ $('form').on("submit",function(event) {
             // url = new URL(url);
             // var c = url.searchParams.get("r");
             // var c = url.split("?").pop();
-            // window.history.pushState("object or string", "Title", "?"+c);
-            jQuery("#modal-body").html(resp);
-            $('#myModal').modal('show'); 
+            function WindowGetURLParameter(sParam)
+            {
+                var sPageURL = window.location.search.substring(1);
+                var sURLVariables = sPageURL.split('&');
+                for (var i = 0; i < sURLVariables.length; i++)
+                {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam)
+                    {
+                        return sParameterName[1];
+                    }
+                }
+            }
+            var c = url.split("?").pop();
+            var menu = WindowGetURLParameter("menu");
+            if(menu == 'reports'){
+                jQuery("#report_body").html(resp);
+                window.history.pushState("object or string", "Title", "?"+c+"&menu="+menu);
+            }else{
+                jQuery("#modal-body").html(resp);
+                $('#myModal').modal('show'); 
+            }
+           
 
         }).fail(function(erespo) {
-            jQuery("#modal-body").html(erespo);
-            $('#myModal').modal('show'); 
+            if(menu == 'reports'){
+                jQuery("#report_body").html(erespo);
+                window.history.pushState("object or string", "Title", "?"+c+"&menu="+menu);
+            }else{
+                jQuery("#modal-body").html(erespo);
+                $('#myModal').modal('show'); 
+            }
         });
     myLoadStop();
 });
@@ -214,17 +239,20 @@ function anchortag(event,href_url=0){
 
             var schedule = WindowGetURLParameter("schedule");
             schedule = decodeURIComponent(schedule);
-           
-            if(myattribute == "body"){
+            var menu = WindowGetURLParameter("menu");
+
+            if(myattribute == "body" || myattribute == "report_body" || myattribute == "production_body" || menu == "reports"){
                 var sfcs_app = url.includes("sfcs_app");
-                var menu = GetURLParameter("menu");
                 if(sfcs_app == false){
                     var c = url.split("?").pop();
-                    window.history.pushState("object or string", "Title", "?"+c);
+                    window.history.pushState("object or string", "Title", "?"+c+"&menu="+menu);
                 }
                 if(menu == "production"){
-                    $("#production_body").remove();
-                    jQuery("#"+myattribute).append("<div id='production_body'>"+resp+"</div>");
+                    // $("#production_body").remove();
+                    // jQuery("#"+myattribute).append("<div id='production_body'>"+resp+"</div>");
+                    jQuery("#production_body").html(resp);
+                }else if(menu == "reports"){
+                    jQuery("#report_body").html(resp);
                 }else{
                     jQuery("#"+myattribute).html(resp);
                 }
@@ -239,10 +267,10 @@ function anchortag(event,href_url=0){
 
                 $('select[name^="style"] option[value="'+style+'"]').attr("selected","selected");
                 $('select[name^="style"]').trigger('change');
+                
                 $('select[name="schedule"] option[value="547293"]').attr("selected","selected");
                 $('input[name="schlist"]').val(schedule);
                 $('input[name="schedule"]').val(schedule);
-                
              
                 $('#myModal').modal('show');
             }
@@ -302,14 +330,9 @@ function Ajaxify (href_url,body=0) {
             }
         }
 
-        if(body == "body"){
+        if(body == "body" || body == "production_body"){
             var menu = GetURLParameter("menu");
-            if(menu == "production"){
-                $("#production_body").remove();
-                jQuery("#"+body).append("<div id='production_body'>"+resp+"</div>");
-            }else{
-                jQuery("#"+body).html(resp);
-            }
+            jQuery("#"+body).html(resp);
         }else{
             jQuery("#modal-body").html(resp);
             $('#myModal').modal('show');
@@ -371,15 +394,12 @@ function modalClose(){
             $('.custom-btn').addClass('btn-default');
             $('.modal-dialog').addClass('modal-lg');
             $('#myModal').modal('hide');
-            // $("#modal-body").html("");
+            $('#modal-body').html('');
             $('table').DataTable().ajax.reload(null, false);
       } else {
             // $('#myModal').modal('show');
       }
     });
 }
-$(".modal").on("hidden.bs.modal", function(){
-    $(".modal-body").html("");
-});
 
 </script>
