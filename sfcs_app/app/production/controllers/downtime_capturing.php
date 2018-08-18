@@ -120,7 +120,8 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
             if(isset($_GET['module']) && $_GET['module']!='' && isset($_GET['mdate']) && $_GET['mdate']!=''){
                 echo "<hr/>";
                 //$get_log_data = "SELECT bac_style,color,delivery,sum(bac_Qty) as bac_Qty FROM $bai_pro.bai_log WHERE DATE(bac_lastup) = '".date('Y-m-d',strtotime($_GET['mdate']))."' AND HOUR(bac_lastup) = '".$_GET['mtime']."' AND bac_no = '".$_GET['module']."' group by bac_style,delivery,color";
-                $get_log_data = "SELECT time_value,CONCAT(time_display,' ',day_part) AS HOUR,SUM(bac_Qty) AS bac_Qty FROM $bai_pro.bai_log LEFT JOIN $bai_pro3.tbl_plant_timings ON tbl_plant_timings.time_value=HOUR(bai_log.bac_lastup) WHERE DATE(bac_lastup) = '".date('Y-m-d',strtotime($_GET['mdate']))."' AND bac_no = '".$_GET['module']."'";
+                $get_log_data = "SELECT time_value,CONCAT(time_display,' ',day_part) AS HOUR,SUM(bac_Qty) AS bac_Qty FROM $bai_pro.bai_log LEFT JOIN $bai_pro3.tbl_plant_timings ON tbl_plant_timings.time_value=HOUR(bai_log.bac_lastup) WHERE DATE(bac_lastup) = '".date('Y-m-d',strtotime($_GET['mdate']))."' AND bac_no = '".$_GET['module']."' group by time_value";
+                //echo $get_log_data;
                 $result_log_data = mysqli_query($link, $get_log_data) or exit("Sql Error log".mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo $get_log_data;
                 // $get_fr_data = "
