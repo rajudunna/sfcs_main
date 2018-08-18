@@ -120,7 +120,10 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
             if(isset($_GET['module']) && $_GET['module']!='' && isset($_GET['mdate']) && $_GET['mdate']!=''){
                 echo "<hr/>";
                 //$get_log_data = "SELECT bac_style,color,delivery,sum(bac_Qty) as bac_Qty FROM $bai_pro.bai_log WHERE DATE(bac_lastup) = '".date('Y-m-d',strtotime($_GET['mdate']))."' AND HOUR(bac_lastup) = '".$_GET['mtime']."' AND bac_no = '".$_GET['module']."' group by bac_style,delivery,color";
-                $get_log_data = "SELECT time_value,CONCAT(time_display,' ',day_part) AS HOUR,SUM(bac_Qty) AS bac_Qty FROM $bai_pro.bai_log LEFT JOIN $bai_pro3.tbl_plant_timings ON tbl_plant_timings.time_value=HOUR(bai_log.bac_lastup) WHERE DATE(bac_lastup) = '".date('Y-m-d',strtotime($_GET['mdate']))."' AND bac_no = '".$_GET['module']."' group by time_value";
+                //$get_log_data = "SELECT time_value,CONCAT(time_display,' ',day_part) AS HOUR,SUM(bac_Qty) AS bac_Qty FROM $bai_pro.bai_log LEFT JOIN $bai_pro3.tbl_plant_timings ON tbl_plant_timings.time_value=HOUR(bai_log.bac_lastup) WHERE DATE(bac_lastup) = '".date('Y-m-d',strtotime($_GET['mdate']))."' AND bac_no = '".$_GET['module']."' group by time_value";
+
+                $get_log_data = "SELECT CAST(SUBSTRING_INDEX(out_time, ':', 1) AS SIGNED) AS time_value,CONCAT(CAST(SUBSTRING_INDEX(out_time, ':', 1) AS SIGNED),'-',CAST(SUBSTRING_INDEX(out_time, ':', 1)+1 AS SIGNED)) AS HOUR,IF(qty>0,qty,0) AS bac_Qty  FROM bai_pro2.hout WHERE out_date='".date('Y-m-d',strtotime($_GET['mdate']))."' AND team='".$_GET['module']."'";
+
                 //echo $get_log_data;
                 $result_log_data = mysqli_query($link, $get_log_data) or exit("Sql Error log".mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo $get_log_data;
@@ -129,7 +132,14 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 $get_fr_data = "SELECT sum(FLOOR(fr_qty/hours)) AS qty,avg(hours) as day_hrs FROM $bai_pro2.fr_data WHERE DATE(frdate)='".date('Y-m-d',strtotime($_GET['mdate']))."' AND team='".$_GET['module']."'";
                 $result_fr_data = mysqli_query($link, $get_fr_data) or exit("Sql Error fr".mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo $get_fr_data;
-                $get_timings = "SELECT time_value,CONCAT(time_display,' ',day_part) AS HOUR FROM $bai_pro3.tbl_plant_timings where time_value < ".date('H');
+                if(date('Y-m-d',strtotime($_GET['mdate'])) == date('Y-m-d')){
+                    $apend = " where time_value < ".date('H');
+                }elseif(strtotime($_GET['mdate'])>strtotime(date('Y-m-d'))){
+                    $apend = " where time_value = 0";
+                }else{
+                    $apend = '';
+                }
+                $get_timings = "SELECT time_value,CONCAT(time_display,' ',day_part) AS HOUR FROM $bai_pro3.tbl_plant_timings ".$apend;
                 //echo $get_timings;
                 $result_timings = mysqli_query($link, $get_timings) or exit("Sql Error fr".mysqli_error($GLOBALS["___mysqli_ston"]));
 
