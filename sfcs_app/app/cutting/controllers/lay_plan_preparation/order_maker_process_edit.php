@@ -85,15 +85,21 @@ if(isset($_POST['update']))
 		}
 		if($style_code=="")
 		{
+			$rurl = getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 				echo "<H2>User Style ID was not available for this schedule, Please check with the Planning Team.</H2>" ;
 				
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() { 
+					Ajaxify('".$rurl."');
+					  }</script>";
 		}
 		else if($pack_method=="")
 		{
+			$rurl = getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 				echo "<H2>Packing Method was not available for this schedule, Please update the Shipment Plan for this schedule.</H2>" ;
 				
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {
+					Ajaxify('".$rurl."');
+				 }</script>";
 		}
 		else
 		{
@@ -210,17 +216,21 @@ if(isset($_POST['update']))
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}
+			$surl = getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 			echo "<script>sweetAlert('Updated Successfully','','success')</script>";
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";	
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() { 
+				Ajaxify('".$surl."');
+			 }</script>";	
 		}
 		else
 		{
+			$rurl = getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=".$tran_order_tid."&cat_ref=".$cat_ref."&cuttable_ref=".$cuttable_ref."&allocate_ref=".$allocate_ref."&mk_ref=".$mk_ref."&lock_status=".$lock_status;
 			//echo "<h2 class='alert alert-danger'>Marker Version is not available.</h2>";
 			echo "<script type='text/javascript'>
 					setTimeout('Redirect()',3000);
 					function Redirect(){
 							sweetAlert('Marker Version is not available','','error');
-							location.href='".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid&cat_ref=$cat_ref&cuttable_ref=$cuttable_ref&allocate_ref=$allocate_ref&mk_ref=$mk_ref&lock_status=$lock_status';
+							Ajaxify('".$surl."');
 					}                                     
 					</script>";	
 		}

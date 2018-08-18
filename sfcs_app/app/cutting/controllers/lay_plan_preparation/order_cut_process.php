@@ -90,9 +90,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 }
 // echo getFullURLLevel($_GET['r'], "main_interface.php", "1", "N");
+	// echo "<script type=\"text/javascript\">
+	// 		sweetAlert('Success','Cuttable Quantities Updated Successfully...','success');
+	// 		setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule."\"; }
+	// 	</script>";
+	$rurl = getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 	echo "<script type=\"text/javascript\">
 			sweetAlert('Success','Cuttable Quantities Updated Successfully...','success');
-			setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule."\"; }
+			setTimeout(\"Redirect()\",0); function Redirect() {  Ajaxify('".$rurl."'); }
 		</script>";
 	
 }

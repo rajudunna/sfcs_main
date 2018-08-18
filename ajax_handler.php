@@ -132,7 +132,7 @@ $('form').on("submit",function(event) {
         from_data.push({ name: $("button[type=submit]").attr("name"), value: $("button[type=submit]").attr("value") });
     }
 
-
+    console.log(from_data);
     myLoad1();
         $.ajax({
           type:'POST',
@@ -262,8 +262,13 @@ function anchortag(event,href_url=0){
                
                 $('input[name="lot_no"]').val(lot);
                 $('input[name="reference"]').val(batch);
+                $('input[name="txtbatch"]').val(batch);
                 $('input[name="lot_no_ref"]').val(lot);
                 $('input[name="lot_no1"]').val(lot);
+                // $('input[name="submit"]').click();
+                // $('input[name="show"]').click();
+                // $('input[name="submit2"]').click();
+                //  document.getElementById("myBtn").click();
 
                 $('select[name^="style"] option[value="'+style+'"]').attr("selected","selected");
                 $('select[name^="style"]').trigger('change');

@@ -1410,8 +1410,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 		</div>
 		<div id="Marker" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
-			<center><span class="pull-right"><strong>Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;
-    color: white;">'.$overall_savings."%"."</span>";?> &nbsp;&nbsp;|&nbsp;&nbsp; Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?></strong></span><center><br/>
+			<center><span class="pull-right"><strong>Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;color: white;">'.$overall_savings."%"."</span>";?> &nbsp;&nbsp;|&nbsp;&nbsp; Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?></strong></span><center><br/>
 				<?php include("main_interface_5.php"); ?>
 			</div>
 		</div>
@@ -1437,8 +1436,6 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 			</div>
 			<div id="docket_creation" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 				<div class="panel-body">
-					
-
 <?php
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
@@ -1747,7 +1744,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	echo "<td class=\"  \"><center>";
 	if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){
-		echo "<a class=\"btn btn-xs btn-info\" href=\"$path\" onclick=\"return popitup("."'".$path."'".")\">View Cut Plan</a>";
+		echo "<a class=\"btn btn-xs btn-info\" href=\"#\" onclick=\"return popitup("."'".$path."'".")\">View Cut Plan</a>";
 	} 
 	else{
 		echo $wrong_icon;
@@ -1755,7 +1752,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "</center></td>";
 	if(in_array($authorized,$permission))
 	{
-	echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-info\" href=\"$path1\" onclick=\"return popitup("."'".$path1."'".")\">View Fabric Cut Plan</a>";} else {echo $wrong_icon;} echo "</center></td>";
+	echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-info\" href=\"#\" onclick=\"return popitup("."'".$path1."'".")\">View Fabric Cut Plan</a>";} else {echo $wrong_icon;} echo "</center></td>";
 	}
 	//$red_url = getFullURL($_GET['r'], "doc_view_form.php","N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new";
 	//$pop_url = getFullURL($_GET['r'],"doc_view_form.php","R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new";

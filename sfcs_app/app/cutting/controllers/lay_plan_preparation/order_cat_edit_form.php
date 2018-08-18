@@ -293,8 +293,10 @@ if($sql_num_check==0)
 }
 if($flag == 1)
 {
+	$url = getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule";
 	echo "<script>swal('Order category Updated Successfully','','success')</script>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  
+		Ajaxify('".$url."'); }</script>";
 }
 	
 	
