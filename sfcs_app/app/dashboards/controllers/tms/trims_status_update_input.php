@@ -280,7 +280,7 @@ while($row4=mysqli_fetch_array($result4))
 if($t_status==1)
 {
 	$popup_url = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
-echo "<a class='btn btn-info btn-sm' href=\#\" onclick=\"return popitup_new('$popup_url?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a>";
+echo "<a class='btn btn-info btn-sm' href='#' onclick=\"return popitup_new('$popup_url?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a>";
 }
 echo "<br><br>";
 	
