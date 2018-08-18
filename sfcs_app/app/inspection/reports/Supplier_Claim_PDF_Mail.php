@@ -1833,7 +1833,8 @@ $url_back = $url_back."&sdate=$sdate&edate=$edate&stat=$stat&bat=$bat&show=1";
 echo "<script>
 				setTimeout(redirect, 1000);
 				function redirect(){
-			       location.href='$url_back';
+				//    location.href='$url_back';
+				Ajaxify('".$url_back."');
 				}
 			</script>";
  ?>
