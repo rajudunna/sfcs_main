@@ -6,12 +6,14 @@
     <li class="list-group-item">fifth item</li>
     <li class="list-group-item">sixth item</li>
   </ul> -->
-<!-- <div class="col-sm-10 container-fluid" style="height: 1000px">
+<!-- <div class="col-sm-9 container-fluid">
   
-</div>
- -->
+</div> -->
+
 
 <div class="container-fluid">
+    <div class = "row">
+      <div class = "col-md-9" id = 'report_card'></div>
     <div class="col-md-3 pull-right">
       
           <div class="box box-solid ">
@@ -165,7 +167,8 @@
               </div>
           </div>
     </div>
-  </div>
+    </div>
+</div>
 <script type="text/javascript">
   $(document).ready(function ()
   {
