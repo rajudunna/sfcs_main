@@ -1,9 +1,5 @@
 
-<<<<<<< HEAD
 <table class="table table-bordered" id='table_ajax_3'>
-=======
-<table class="table table-bordered" id='table7'>
->>>>>>> aa5e0bfd2347aa133c6ccd8f7e14cba0a93734e9
     <thead>
         <tr>
             <th>S.no</th>
@@ -152,13 +148,8 @@
 </table>
       
 <script>      
-<<<<<<< HEAD
       $('#tab5').click(function(){   
         var table = $('#table_ajax_3').DataTable({
-=======
-    $(document).ready(function() {
-        var table = $('#table7').DataTable({
->>>>>>> aa5e0bfd2347aa133c6ccd8f7e14cba0a93734e9
             "bSort":false,
             "processing": false,
             "serverSide": false,
