@@ -2,7 +2,7 @@
 include('../../../common/config/config.php');
 include('../../../common/config/m3_api_calls.php');
 $store_data = [];
-$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm WHERE order_style_no='JJA012S9' AND order_del_no=549217 AND order_col_des = '69 - NAVY BOTTOM              '";
+$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm";
 $result=mysqli_query($link, $get_details) or exit("error at getting style and shedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row = mysqli_fetch_array($result))
 {
