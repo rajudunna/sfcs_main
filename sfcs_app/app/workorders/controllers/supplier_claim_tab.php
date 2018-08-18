@@ -1,6 +1,6 @@
 
 
-<table class="table table-bordered" id='table2'>
+<table class="table table-bordered" id='table4'>
     <thead>
         <tr>
             <th>S.no</th>
@@ -105,7 +105,7 @@
         var query = "<?= $query ?>";
         var href_attr = {'reject_lot_no':'reject_lot_no'};
 
-        var table = $('#table2').DataTable({
+        var table = $('#table4').DataTable({
             "bSort":false,
             "processing": true,
             "serverSide": true,
