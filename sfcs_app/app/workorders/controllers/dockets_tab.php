@@ -1,4 +1,4 @@
-<table class="table table-bordered" id='table_ajax_3'>
+<table class="table table-bordered" id='table6'>
     <thead>
         <tr>
             <th>S.no</th>
@@ -85,7 +85,7 @@
         var format = {'3':"chr($color_code).'00'.$acutno",'4':'nil'};
         var href_attr = {'order_tid':'order_tid','cat_ref':'cat_ref','doc_no':'doc_no','acutno':'acutno'};
             
-        var table = $('#table_ajax_3').DataTable({
+        var table = $('#table6').DataTable({
             "bSort":false,
             "processing": true,
             "serverSide": true,

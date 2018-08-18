@@ -1,6 +1,6 @@
 
 
-<table class="table table-bordered" id='table_ajax_2'>
+<table class="table table-bordered" id='table4'>
     <thead>
         <tr>
             <th>S.no</th>
@@ -113,7 +113,7 @@
                         'ref_no':'ref_no'};
         var format = {'6':'nil','7':'nil','8':'nil'}; 
 
-        var table = $('#table_ajax_2').DataTable({
+        var table = $('#table4').DataTable({
             "bSort":false,
             "processing": true,
             "serverSide": true,

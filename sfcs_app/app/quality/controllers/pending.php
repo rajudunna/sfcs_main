@@ -104,7 +104,6 @@ function firstbox()
 function show_content(schedule, colors)
 {
 	var get_schedule_id=$(schedule).val();
-	// alert(get_schedule_id);
 	if(get_schedule_id != '') {
 		$.post('<?= $url ?>',{get_id:get_schedule_id, color: colors},function(result)
 		{

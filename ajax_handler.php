@@ -132,7 +132,7 @@ $('form').on("submit",function(event) {
         from_data.push({ name: $("button[type=submit]").attr("name"), value: $("button[type=submit]").attr("value") });
     }
 
-
+    console.log(from_data);
     myLoad1();
         $.ajax({
           type:'POST',
@@ -189,14 +189,31 @@ function anchortag(event,href_url=0){
                     }
                 }
             }
+
+            function WindowGetURLParameter(sParam)
+            {
+                var sPageURL = window.location.search.substring(1);
+                var sURLVariables = sPageURL.split('&');
+                for (var i = 0; i < sURLVariables.length; i++)
+                {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam)
+                    {
+                        return sParameterName[1];
+                    }
+                }
+            }
             var lot = GetURLParameter("lot");
             lot = decodeURIComponent(lot);
 
             var batch = GetURLParameter("batch");
             batch = decodeURIComponent(batch);
 
-            var style = GetURLParameter("style");
+            var style = WindowGetURLParameter("style");
             style = decodeURIComponent(style);
+
+            var schedule = WindowGetURLParameter("schedule");
+            schedule = decodeURIComponent(schedule);
            
             if(myattribute == "body"){
                 var sfcs_app = url.includes("sfcs_app");
@@ -220,10 +237,20 @@ function anchortag(event,href_url=0){
                 $('input[name="txtbatch"]').val(batch);
                 $('input[name="lot_no_ref"]').val(lot);
                 $('input[name="lot_no1"]').val(lot);
+<<<<<<< HEAD
                 // $('input[name="submit"]').click();
                 // $('input[name="show"]').click();
                 // $('input[name="submit2"]').click();
                 //  document.getElementById("myBtn").click();
+=======
+
+                $('select[name^="style"] option[value="'+style+'"]').attr("selected","selected");
+                $('select[name^="style"]').trigger('change');
+                $('select[name="schedule"] option[value="547293"]').attr("selected","selected");
+                $('input[name="schlist"]').val(schedule);
+                $('input[name="schedule"]').val(schedule);
+                
+>>>>>>> aa5e0bfd2347aa133c6ccd8f7e14cba0a93734e9
              
                 $('#myModal').modal('show');
             }

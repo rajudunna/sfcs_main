@@ -89,15 +89,17 @@ if(isset($_POST['Update']))
 			$schedule=$sql_row['order_del_no'];
 		}
 		
+		$surl = getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
 				sweetAlert('Allocated Successfully','','success');	 
-				location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";	
+				Ajaxify('".$surl."'); }</script>";	
 	}else{	
+		$furl = getFullURL($_GET['r'], 'order_allocation_form2.php', 'N')."&tran_order_tid=".$tran_order_tid."&check_id=".$check_id."&cat_id=".$cat_id."&total_cuttable_qty=".$total_cuttable_qty;
 		echo "<script type='text/javascript'>
 				sweetAlert('Allocation Failed','Please Fill Max Plies Per Cut','error');
 			   setTimeout('Redirect()',0);
 			   function Redirect(){
-					location.href='".getFullURL($_GET['r'], 'order_allocation_form2.php', 'N')."&tran_order_tid=$tran_order_tid&check_id=$check_id&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty';
+				Ajaxify('".$furl."');	;
 			   }
 			   </script>";
 

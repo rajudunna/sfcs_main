@@ -44,25 +44,26 @@
 } */
 </style>
 
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+
 <?php 
 
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
-$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+// $url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+// $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+$url = getFullURL($_GET['r'],'fab_priority_dashboard.php','N');
 ?>
 <br/>
 <div class='row'>
-	<div class='col-md-2 pull-left'>
+	<!-- <div class='col-md-2 pull-left'>
 		<a class='btn btn-primary' href = '<?= $url ?>'> << Back</a>
-	</div>
+	</div> -->
 </div>
 <br/>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 <?php
     //error_reporting(0);
-	include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+	// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 	$php_self = explode('/',$_SERVER['PHP_SELF']);
 	array_pop($php_self);
 	$url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5.php");
@@ -83,11 +84,7 @@ $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST
 		display: none; 
 		} */
 
-		body
-		{
-			font-family: Trebuchet MS;
-			/* font-size: 14px; */
-		}
+		
 		.btnflt{
 			width:100%;
 		}
@@ -757,14 +754,14 @@ if(isset($_POST['allocate_new']))
 	
 	//Exit Code
 	
-	echo "<h2>Successfully Updated.</h2>";
+	echo "<div class='alert alert-success'>Successfully Updated.</div>";
 	//this is for after allocating article redirect to cps dashboard.removed sfcsui
 	$php_self = explode('/',$_SERVER['PHP_SELF']);
 	array_pop($php_self);
 	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
 	$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
 	echo"<script>swal('Successfully Updated.','','success')</script>";
-	echo"<script>location.href = '".$url."';</script>"; 
+	// echo"<script>location.href = '".$url."';</script>"; 
 
 	// if($process_cat==1)
 	// {
@@ -783,7 +780,7 @@ if(isset($_POST['allocate_new']))
 
 if(isset($_POST['allocate']))
 {
-	echo "<form name='input' method='post' action='fab_pop_allocate_v5.php' onkeypress='return event.keyCode != 13'>";
+	echo "<form name='input' method='post' action='".getFullURL($_GET['r'],'fab_pop_allocate_v5.php','N')."' onkeypress='return event.keyCode != 13'>";
 	$doc=$_POST['doc'];
 	//$lot_db_2 = $_POST["pms$doc[0]"];
 	//var_dump($doc);

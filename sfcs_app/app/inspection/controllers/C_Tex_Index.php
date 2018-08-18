@@ -10,7 +10,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		<div class="panel-heading">Roll-Wise Fabric Inspection Update
 		</div>
 			<div class="panel-body">
-				<form class="form-horizontal form-label-left" method="post" name="input2">
+				<form class="form-horizontal form-label-left" method="post" name="input2" action="<?= getFullURL($_GET['r'],'C_Tex_Index.php','N'); ?>">
 				  	<div class="form-group">
 				    	<label class="control-label col-md-3 col-sm-3 col-xs-12" >
 				    		Enter Batch No <span class="required"></span>
@@ -56,7 +56,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		if(strlen($lot_no)>0)
 		{
 ?>
-		<form id="myForm" name="input" method="post">
+		<form id="myForm" name="input" method="post" action="<?= getFullURL($_GET['r'],'C_Tex_Index.php','N'); ?>"
+>
 <?php
 
 
@@ -106,12 +107,14 @@ if(isset($_POST['put']))
 	if($lot_ref)
 	{
 		
-		$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
+		// $url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
+		$url = getFullURL($_GET['r'],'C_Tex_Interface_V6.php','N');
 
 		echo "<script type='text/javascript'>";
 		echo "setTimeout('Redirect()',0);";
 		echo "var url='".$url."&batch_no=".urlencode($lot_no)."&lot_ref=".urlencode($lot_ref)."';";
-		echo "function Redirect(){location.href=url;}</script>";
+		// echo "function Redirect(){location.href=url;}</script>";
+		echo "function Redirect(){ Ajaxify(url);} </script>";
 
 	}
 	else
