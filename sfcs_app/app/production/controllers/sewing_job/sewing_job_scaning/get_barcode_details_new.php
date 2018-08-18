@@ -775,6 +775,48 @@
         }
         if($concurrent_flag == 0)
         {
+            $rep_sum_qty = array_sum($b_rep_qty);
+            $tod_date = date('Y-m-d');
+            $cur_hour = date('H:00');
+            $cur_h = date('H');
+            $hout_ops_qry = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='Down_Time'";
+
+            $hout_ops_result = $link->query($hout_ops_qry);
+
+			if($hout_ops_result->num_rows > 0)
+			{
+				while($hout_ops_result_data = $hout_ops_result->fetch_assoc()) 
+				{
+					$hout_ops_code = $hout_ops_result_data['operation_code'];
+				}
+
+				
+				if($b_op_id == $hout_ops_code){
+					$hout_data_qry = "select * from $bai_pro2.hout where out_date = '$tod_date' and left(out_time,2) = '$cur_h' and team = '$b_module'";
+					// echo $hout_data_qry;
+					$hout_data_result = $link->query($hout_data_qry);
+
+					if($hout_data_result->num_rows > 0)
+					{
+						while($hout_result_data = $hout_data_result->fetch_assoc()) 
+						{
+							$row_id = $hout_result_data['id'];
+							$hout_date = $hout_result_data['out_date'];
+							$out_time = $hout_result_data['out_time'];
+							$team = $hout_result_data['team'];
+							$qty = $hout_result_data['qty'];
+						}
+						$upd_qty = $qty + $rep_sum_qty;
+						$hout_update_qry = "update $bai_pro2.hout set qty = '$upd_qty' where id= $row_id";
+						$hout_update_result = $link->query($hout_update_qry);
+						// update
+					}else{
+						$hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks) values('$tod_date','$cur_hour','$b_module','$rep_sum_qty', '1', 'NA')";
+						$hout_insert_result = $link->query($hout_insert_qry);
+						// insert
+					}
+				}
+			}
             // $table_data = "<table class='table table-bordered'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Remarks</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr>";
             $checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
             //echo $checking_output_ops_code;
