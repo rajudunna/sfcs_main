@@ -65,8 +65,10 @@ $view_access=user_acl("SFCS_0071",$username,1,$group_id_sfcs);
 
 echo "<select name=\"style\" id='sty' onchange='verify(event)' class='form-control'>";
 echo "<option value='0'>Select</option>";
-$sql2="select distinct style from $bai_pro.pro_style where style in(SELECT DISTINCT style FROM $bai_pro.down_log where style<>'')";
+//$sql2="select distinct style from $bai_pro.pro_style where style in(SELECT DISTINCT style FROM $bai_pro.down_log where style<>'')";
+$sql2="SELECT DISTINCT style FROM $bai_pro.down_log";
 //mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -78,6 +80,8 @@ if(isset($_POST['style'])){
 	echo "<option value=".$_POST['style']." selected>".$_POST['style']."</option>";
 }
 echo "</select>";
+
+
 
 ?>
 </div>
