@@ -10,35 +10,20 @@ $view_access=user_acl("SFCS_0003",$username,1,$group_id_sfcs);
 function firstbox()
 {
 	
-<<<<<<< HEAD
 	var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value;
 	Ajaxify(ajax_url,'report_body'); 
-=======
-	    var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value;
-		Ajaxify(ajax_url,'report_body');
->>>>>>> 61712cd266fd6211988b9c3c8270d49c7fc9252d
 }
 
 function secondbox()
 {
 	var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
-<<<<<<< HEAD
 	Ajaxify(ajax_url,'report_body'); 
-=======
-	Ajaxify(ajax_url,'report_body');
->>>>>>> 61712cd266fd6211988b9c3c8270d49c7fc9252d
 }
 
 function thirdbox()
 {
-<<<<<<< HEAD
 	var uri="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
 	var ajax_url = uri; Ajaxify(ajax_url,'report_body'); 
-=======
-	var ajax_url = "<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
-	Ajaxify(ajax_url,'report_body');
-	// window.location.href = uri; 
->>>>>>> 61712cd266fd6211988b9c3c8270d49c7fc9252d
 	//document.testx.submit();
 }
 function check_all()
