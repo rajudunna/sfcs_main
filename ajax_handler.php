@@ -335,8 +335,8 @@ function Ajaxify (href_url,body=0) {
             }
         }
 
-        if(body == "body" || body == "production_body"){
-            var menu = GetURLParameter("menu");
+        if(body == "body" || body == "production_body" || body == "report_body"){
+            // var menu = GetURLParameter("menu");
             jQuery("#"+body).html(resp);
         }else{
             jQuery("#modal-body").html(resp);
