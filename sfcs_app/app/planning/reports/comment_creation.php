@@ -61,17 +61,20 @@ function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDe
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value
+	var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function secondbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function thirdbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 </script>
 
@@ -434,7 +437,7 @@ $(document).ready(function(e) {
 		var pages = $("#pages").msDropdown({on:{change:function(data, ui) {
 												var val = data.value;
 												if(val!="")
-													window.location = val;
+												var ajax_url = val; Ajaxify('ajax_url,'report'_body'); 
 											}}}).data("dd");
 
 		var pagename = document.location.pathname.toString();

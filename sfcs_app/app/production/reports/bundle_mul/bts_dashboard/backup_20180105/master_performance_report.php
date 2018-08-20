@@ -802,7 +802,8 @@ FROM
 	else
 	{
 		echo '	<script type="text/javascript">            function Redirect() {
-               window.location="cpk_report_5.html";
+			var ajax_url ="cpk_report_5.html";
+			   Ajaxify('ajax_url,'report'_body'); 
             }
 Redirect();
       </script>';
@@ -922,7 +923,8 @@ Redirect();
 	else
 	{
 		echo '	<script type="text/javascript">            function Redirect() {
-               window.location="cpk_report_6.html";
+			var ajax_url ="cpk_report_6.html";
+			   Ajaxify('ajax_url,'report'_body'); 
             }
 Redirect();
       </script>';

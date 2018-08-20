@@ -39,13 +39,15 @@ $has_perm=haspermission($_GET['r']);
 function mainbox()
 {
 	y=document.test.buyer_div.value;
-	window.location.href ="<?= getFullURL($_GET['r'],'analysis_rep3.php','N').'&buyer_div=' ?>"+encodeURIComponent(y)+"&sdate="+document.test.sdate.value+"&edate="+document.test.edate.value	
+	var ajax_url ="<?= getFullURL($_GET['r'],'analysis_rep3.php','N').'&buyer_div=' ?>"+encodeURIComponent(y)+"&sdate="+document.test.sdate.value+"&edate="+document.test.edate.value;
+	Ajaxify('ajax_url,'report'_body'); 	
 }
 
 function firstbox()
 {
 	y=document.test.buyer_div.value;
-	window.location.href ="<?= getFullURL($_GET['r'],'analysis_rep3.php','N').'&buyer_div=' ?>"+encodeURIComponent(y)+"&sdate="+document.test.sdate.value+"&edate="+document.test.edate.value+"&style="+document.test.style_name.value	
+	var ajax_url ="<?= getFullURL($_GET['r'],'analysis_rep3.php','N').'&buyer_div=' ?>"+encodeURIComponent(y)+"&sdate="+document.test.sdate.value+"&edate="+document.test.edate.value+"&style="+document.test.style_name.value;
+	Ajaxify('ajax_url,'report'_body'); 	
 }
 
 function checkAll(ele) {

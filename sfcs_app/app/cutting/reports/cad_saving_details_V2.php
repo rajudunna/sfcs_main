@@ -12,18 +12,31 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config
 function firstbox()
 {
 	var ajax_url ="cad_saving_details.php?schedule="+document.test.schedule.value;
+<<<<<<< HEAD
+	Ajaxify('ajax_url,'report'_body'); 
+=======
 	Ajaxify(ajax_url,'report_body');
+>>>>>>> 25e39153b9301740d927dfedfec97ec64c38c878
 }
 
 function secondbox()
 {
 	var ajax_url ="cad_saving_details.php?schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+<<<<<<< HEAD
+	Ajaxify('ajax_url,'report'_body'); 
+=======
 	Ajaxify(ajax_url,'report_body');
+>>>>>>> 25e39153b9301740d927dfedfec97ec64c38c878
 }
 
 function thirdbox()
 {
+<<<<<<< HEAD
+	var ajax_url ="cad_saving_details.php?schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
+	Ajaxify('ajax_url,'report'_body'); 
+=======
 	var ajax_url ="cad_saving_details.php?schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value
+>>>>>>> 25e39153b9301740d927dfedfec97ec64c38c878
 	document.testx.submit();
 	Ajaxify(ajax_url,'report_body');
 }

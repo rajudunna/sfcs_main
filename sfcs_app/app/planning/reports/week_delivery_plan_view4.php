@@ -133,7 +133,7 @@ if(isset($_POST['submit']) or isset($_GET['division']))
 	{
 		$query="where $order_div_ref ex_factory_date_new >=\"2018-04-01\" and priority<>-1";
 	}
-	echo '<div class="table-responsive col-sm-12"><table id="tableone" name="tableone" class="table table-bordered"><thead>';
+	echo '<div class="table-responsive col-sm-12" style="max-height:600px;overflow:scroll"><table id="tableone" name="tableone" class="table table-bordered"><thead>';
 	
 	
 	echo '<tr>		<th>S. No</th>	<th class="filter">Buyer Division</th>	<th class="filter">MPO</th>	<th class="filter">CPO</th>	<th>Customer Order No</th>	<th>Z-Feature</th><th class="filter">Style No.</th>	<th class="filter">Schedule No.</th>	<th>Colour</th><th>Sizes</th>	<th>Order Total</th><th class="filter">Current Status</th><th>Total</th>	<th>Quantity</th><th class="filter">Ex Factory</th><th class="filter">Rev. Ex-Factory</th>	<th class="filter">Mode</th><th class="filter">Rev. Mode</th>	<th class="filter">Packing Method</th>	<th>Plan End Date</th>	<th class="filter">Exe. Sections</th><th>Embellishment</th><th>Planning Remarks</th><th>Production Remarks</th><th>Commitments</th></tr>';

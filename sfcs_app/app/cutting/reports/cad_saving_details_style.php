@@ -275,17 +275,20 @@ function ds_onclick(d, m, y) {
 
 function firstbox()
 {
-	window.location.href ="<?php 'index.php?r='.$_GET['r'];  ?>cad_saving_details.php&schedule="+document.test.schedule.value
+	var ajax_url ="<?php 'index.php?r='.$_GET['r'];  ?>cad_saving_details.php&schedule="+document.test.schedule.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function secondbox()
 {
-	window.location.href ="<?php 'index.php?r='.$_GET['r']; ?>cad_saving_details.php&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	var ajax_url ="<?php 'index.php?r='.$_GET['r']; ?>cad_saving_details.php&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function thirdbox()
 {
-	window.location.href ="<?php 'index.php?r='.$_GET['r']; ?>cad_saving_details.php&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value
+	var ajax_url ="<?php 'index.php?r='.$_GET['r']; ?>cad_saving_details.php&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
+	Ajaxify('ajax_url,'report'_body'); 
 	document.testx.submit();
 }
 
