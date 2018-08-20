@@ -78,7 +78,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
                     </br>
 					<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 					<label class="radio-inline"><input type="radio" name="optradio2" value ="Yes" id='optradio2' onclick="autooperseq1()">Yes</label>
-					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()">No</label><br><br>
+					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()" checked>No</label><br><br>
 					<label>Operation Group</label>
 					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)' value = '0'>
 					<label>Next Operation</label>
@@ -103,11 +103,15 @@ $result_oper2 = $link->query($qry_get_suppliers);
         </div>
         <div class="modal-body">
 			<div class="row">
-				<div class="col-md-4" id = "proceed" >
-					<center><button class="btn btn-primary btn-lg" id='proceed'>Proceed</button></center>
+				<div class="col-md-3">
 				</div>
-				<div class="col-md-4" id = "no">
-					<center><button class="btn btn-primary btn-lg" id='No' data-dismiss="modal">No</button></center>
+				<div class="col-md-3" id = "proceed" >
+					<button class="btn btn-danger btn-lg" id='proceed'>Proceed</button>
+				</div>
+				<div class="col-md-3" >
+				<button class="btn btn-primary btn-lg" id='No' data-dismiss="modal">No</button>
+				</div>
+				<div class="col-md-3">
 				</div>
 			</div>
 			
@@ -132,7 +136,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 		</div>
 			<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 			<label class="radio-inline"><input type="radio" name="optradio" value ="Yes" id='Yes' onclick="autooperseq1()">Yes</label>
-			<label class="radio-inline"><input type="radio" name="optradio" value = "No" id= 'None' onclick="autooperseq()">No</label><br><br>
+			<label class="radio-inline"><input type="radio" name="optradio" value = "No" id= 'None' onclick="autooperseq()" checked>No</label><br><br>
 			<label>Operation Group </label>
 			<input class="form-control input-sm integer" id="oper_seq1" type="text"  onchange='verify_num_seq2(this)' value = '0'>
 			<label>Next Operation</label>
@@ -302,11 +306,11 @@ $(document).ready(function(){
 			sweetAlert("Please Enter Barcode Yes/No.","","warning");
 			flag = 0;
 		}
-		if($('#oper_seq2').val() == '')
-		{
-			sweetAlert("Please Enter Operation Group","","warning");
-			flag = 0;
-		}
+		// if($('#oper_seq2').val() == '')
+		// {
+		// 	sweetAlert("Please Enter Operation Group","","warning");
+		// 	flag = 0;
+		// }
 		if($('#component2').val() == '' && $("input:radio[name=optradio2]:checked").val() == 'Yes')
 		{
 			//sweetAlert("Please Enter Component Name.","","warning");
@@ -332,6 +336,10 @@ $(document).ready(function(){
 			if(component == '')
 			{
 				component = '';
+			}
+			if(oper_seq == '')
+			{
+				oper_seq = 0;
 			}
 			var component1 =  "'"+component+"'";
 			var s = $('#oper_code1').val();
@@ -411,7 +419,7 @@ $(document).ready(function(){
 									$("#dynamic_table").prepend(markup);
                                 }
 								$('#myModal').modal('toggle');
-								$('#myModal').find('input:text').val('');
+								// $('#myModal').find('input:text').val('');
 								$("#oper_name").val(0);
 								document.getElementById('component1').readOnly=false;
 								document.getElementById('component2').readOnly=false;
@@ -423,7 +431,9 @@ $(document).ready(function(){
 				});	
 		}
 		//$("input:radio[name=optradio2]:checked").val('No') ;
-		//$('#oper_seq2').val(0);			
+		$('#oper_seq2').val('0');
+		$('#oper_depe2').val('');
+		$('#component2').val('');			
 	  });
 	  function isInteger(value) {
         if ((undefined === value) || (null === value)) {
@@ -458,11 +468,11 @@ $("#edit").click(function()
 	var ops_code1 = $('#ops_code1').val();
 	console.log(ops_code1);
 	var component1 = "'"+component+"'";
-	if(oper_seq == '')
-	{
-		sweetAlert("Please Enter Operation Group","","warning");
-		flag = 0;
-	}
+	// if(oper_seq == '')
+	// {
+	// 	sweetAlert("Please Enter Operation Group","","warning");
+	// 	flag = 0;
+	// }
 	if($("input:radio[name=optradio]:checked").val() == undefined)
 	{
 		sweetAlert("Please Enter Barcode Yes/No.","","warning");
@@ -472,6 +482,10 @@ $("#edit").click(function()
 	{
 		// sweetAlert("Please Enter Component Name","","warning");
 		// flag= 0;
+	}
+	if(oper_seq == '')
+	{
+		oper_seq = 0;
 	}
 	if(flag == 1)
 	{
@@ -628,12 +642,12 @@ $('#oper_depe2').change(function()
 {
 	var flag = 1;
 	var seq = $('#oper_seq2').val();
-	if(seq == '')
-	{
-		sweetAlert("Please Enter Operation Group First","","warning");
-		$('#oper_depe2').val('');
-		flag = 0;
-	}
+	// if(seq == '')
+	// {
+	// 	sweetAlert("Please Enter Operation Group First","","warning");
+	// 	$('#oper_depe2').val('');
+	// 	flag = 0;
+	// }
 	if(flag == 1)
 	{
 		var pro_style_name = $('#pro_style option:selected').text();
