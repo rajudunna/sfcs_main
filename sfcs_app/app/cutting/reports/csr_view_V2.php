@@ -313,7 +313,8 @@ function verify_date(){
 						<th class='tblheading'>Category</th>
 						<th class='tblheading'>Cut No</th>
 						<th>Size</th>
-						<th>Qty</th>";
+						<th>Qty</th>
+						</tr>";
 			}
 
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -435,7 +436,7 @@ function verify_date(){
               
 			/*echo "<th class='tblheading'>01</th><th class='tblheading'>02</th><th class='tblheading'>03</th><th class='tblheading'>04</th><th class='tblheading'>05</th><th class='tblheading'>06</th><th class='tblheading'>07</th><th class='tblheading'>08</th><th class='tblheading'>09</th><th class='tblheading'>10</th><th class='tblheading'>11</th><th class='tblheading'>12</th><th class='tblheading'>13</th><th class='tblheading'>14</th><th class='tblheading'>15</th><th class='tblheading'>16</th><th class='tblheading'>17</th><th class='tblheading'>18</th><th class='tblheading'>19</th><th class='tblheading'>20</th><th class='tblheading'>21</th><th class='tblheading'>22</th><th class='tblheading'>23</th><th class='tblheading'>24</th><th class='tblheading'>25</th><th class='tblheading'>26</th><th class='tblheading'>27</th><th class='tblheading'>28</th><th class='tblheading'>29</th><th class='tblheading'>30</th><th class='tblheading'>31</th><th class='tblheading'>32</th><th class='tblheading'>33</th><th class='tblheading'>34</th><th class='tblheading'>35</th><th class='tblheading'>36</th><th class='tblheading'>37</th><th class='tblheading'>38</th><th class='tblheading'>39</th><th class='tblheading'>40</th><th class='tblheading'>41</th><th class='tblheading'>42</th><th class='tblheading'>43</th><th class='tblheading'>44</th><th class='tblheading'>45</th><th class='tblheading'>46</th><th class='tblheading'>47</th><th class='tblheading'>48</th><th class='tblheading'>49</th><th class='tblheading'>50</th>";*/
 				$inner_count = 0;
-				echo "<td>$date</td>
+				echo "<tr><td>$date</td>
 						<td>$act_shift</td> 
 						<td>$act_section</td> 
 						<td>".leading_zeros($doc_no,9)."</td> 

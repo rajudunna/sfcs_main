@@ -43,7 +43,11 @@ function show_pop3(){
 function firstbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
+<<<<<<< HEAD
 	Ajaxify(ajax_url,'report_body');
+=======
+	Ajaxify(ajax_url,'report_body'); 
+>>>>>>> 61712cd266fd6211988b9c3c8270d49c7fc9252d
 }
 
 

@@ -1,14 +1,16 @@
-<?php 
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
-?>
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+
 $view_access=user_acl("SFCS_0011",$username,1,$group_id_sfcs); 
+$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+$username=strtolower($username_list[1]);
 ?>
+
+
+
 <style>
 /* #pch{
 	width : 30px;
@@ -69,7 +71,7 @@ function verify_date(){
 			</div>
 			
 		</form>
-		<hr>
+		<br/>
 <?php
 
 if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
@@ -105,7 +107,7 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 	$module_db=array();
 	$section_db=array();
 	$author_db=array();
-	$sql="select * from $bai_pro3.sections_db where sec_id>0";
+	$sql="select * from $bai_pro3.sections_db where sec_id>0 limit 2";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -260,7 +262,7 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 }
 else
 {
-echo "<h4 style='color:red'>No Data Found</h4>";
+	echo "<div class='col-sm-12'><h3 style='color:red'>No Data Found</h3></div>";
 
 }
 }
