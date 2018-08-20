@@ -61,16 +61,6 @@ body
 			echo "<h2><label>Location  : </label>&nbsp;&nbsp;<span class='label label-danger'>Scan Location !</span></h2>";
 			$location="";
 		}
-
-           
-			echo "<br><div class='pull-right '>
-            <div><h4>
-                <a href=$url>
-                    <button class='equal btn btn-success'>In</button></a><Br/>
-                <a href=$out_trims_scanner>
-                    <button class='equal btn btn-danger'>T-Out</button></a> </h4>
-            </div>
-         </div>";
     
 		?>
 
@@ -92,7 +82,14 @@ body
 		</form>
 		
 		<?php
-
+echo "<br><div>
+<div><h4>
+	<a href=$url>
+		<button class='equal btn btn-success'>In</button></a><Br/>
+	<a href=$out_trims_scanner>
+		<button class='equal btn btn-danger'>T-Out</button></a> </h4>
+</div>
+</div>";
 		//Normal Process
 		if(isset($_POST['cartonid']) or isset($_POST['check']))
 		{
