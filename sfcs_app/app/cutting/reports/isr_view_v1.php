@@ -5,7 +5,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/menu_content.php',1,'R'));
 $table_csv = getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
-$excel_form_action = getFullURL($_GET['r'],'export_excel1.php','R');
+$excel_form_action = getFullURL($_GET['r'],'export_excel1.php','N');
+$excel_form_action = base64_encode('/sfcs_app/app/cutting/reports/export_excel1.php');
 function get_size($table_name,$field,$compare,$key,$link)
 {
 	//GLOBAL $menu_table_name;
@@ -148,9 +149,9 @@ if(isset($_POST['submit']))
 
 // echo "<span class='pull-right'><strong><a href=".getFullURL($_GET['r'],'isr_view_v1_excel.php','N')."&from_date=$from_date&to_date=$to_date class='btn btn-sm btn-success'>Export to Excel</a></strong></span>	";
 	echo '<span class="pull-right">
-			<form action="'.$excel_form_action.'" method ="post" > 
+			<form action="index.php?r='.$excel_form_action.'" method ="post" > 
 				<input type="hidden" name="csv_text" id="csv_text">
-				<input class="btn btn-info btn-sm" type="submit" value="Export to Excel" onclick="getCSVData()">
+				<input class="btn btn-info btn-sm" type="submit" name="exporting_to_excel" value="Export to Excel" onclick="getCSVData()">
 			</form></span>
 		';	
 echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";

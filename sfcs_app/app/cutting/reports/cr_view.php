@@ -23,26 +23,27 @@ xmlns="http://www.w3.org/TR/REC-html40">
 
 function firstbox()
 {
+	console.log('Hello');
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function secondbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function thirdbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function fourthbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 
@@ -133,11 +134,11 @@ if(isset($_POST['category']))
 		<span style="float"><b>Consumption Report</b></span>
 	</div>
 	<div class="panel-body">
-		<form name="test" action="<?php getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post">
+		<form name="test" action="index.php?r=<?= $_GET['r'] ?>" method="post">
 			<div class="col-sm-2 form-group">
 				<label for='style'>Select Style</label>
 				<?php
-				echo "<select class='form-control' name=\"style\" onchange=\"firstbox();\" id='style'>";
+				echo "<select class='form-control' name=\"style\" onchange=\"firstbox()\" id='style'>";
 				echo "<option value=\"NIL\" selected>Select</option>";
 				//$sql="select distinct order_style_no from bai_orders_db";
 				$sql="SELECT DISTINCT order_style_no FROM $bai_pro3.bai_orders_db bd JOIN $bai_pro3.cat_stat_log cl ON bd.order_tid=cl.order_tid and cl.category<>\"\" order by bd.order_style_no";
