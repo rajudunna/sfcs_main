@@ -183,7 +183,7 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
         //$ex_factory=$sql_row['ex_factory'];
     }
 
-    $sql="select group_concat(distinct ex_factory_date_new) as ex_factory from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\"";
+    $sql="select group_concat(distinct ex_factory_date_new) as ex_factory from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" order by ex_factory_date_new";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row=mysqli_fetch_array($sql_result))
     {
@@ -209,7 +209,7 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
         echo '</select>';
         ?>
         </div>
-		<div class='col-md-2'><label>Ex-Factor</label>
+		<div class='col-md-2'><label>Ex-Factory</label>
         <?php
         echo '<select name="ex_fact" id="ex_fact" onchange="redirect_view()" class="form-control" style="background-color:#FFDDFF;">';
         $temp=array();
@@ -230,8 +230,8 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
     <div class='col-md-12' style='max-height:600px;overflow-y:scroll;'>
     <table class="table-responsive">
     <?php
-    echo "<tr><th colspan=4>Orders  : $count</th><th colspan=2>Packing : ".($c_pack+$c_fg+$c_fca+$sent_count)."</th><th colspan=2>FG : ".($c_fg+$c_fca+$sent_count)."</th><th colspan=2>FCA : ".($c_fca+$sent_count)."</th><th colspan=2>Shipped : $sent_count</th></tr>";
-    echo "<tr><th>Status</th><th>Style</th><th>Schedule</th><th>Color</th><th>Order</th><th>Cut</th><th>Input</th><th>Output</th>";
+    echo "<tr><th colspan=4>Orders  : $count</th><th colspan=2>Packing : ".($c_pack+$c_fg+$c_fca+$sent_count)."</th><th colspan=2>FG : ".($c_fg+$c_fca+$sent_count)."</th><th colspan=2>FCA : ".($c_fca+$sent_count)."</th><th colspan=3>Shipped : $sent_count</th></tr>";
+    echo "<tr><th>Status</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Order</th><th>Cut</th><th>Input</th><th>Output</th>";
     echo "<th>FG Qty</th><th>FCA</th><th>Ex-Fac</th><th>Cartons</th>";
 
     $grand_order=0;
@@ -262,43 +262,12 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
         $in=$sql_row['act_in'];
         $out=$sql_row['output'];
         $pendingcarts=$sql_row['cart_pending'];
+		$size=$sql_row['size'];
         //$ex_factory_date=$sql_row['ex_factory_date'];
         //$rev_exfactory=$sql_row['rev_exfactory'];
 
         $ex_factory_date=$sql_row['ex_factory_date_new'];
         $rev_exfactory=$sql_row['ex_factory_date_new'];
-
-
-        //NEW ORDER QTY TRACK
-/*
-        $sql1="select * from bai_pro4.shipfast_sum where shipment_plan_id=".$sql_row['ship_tid'];
-        $sql_result1=mysql_query($sql1,$link2) or exit("Sql Error".mysql_error());
-        while($sql_row1=mysql_fetch_array($sql_result1))
-        {
-            $size_xs1=$sql_row1['size_xs'];
-            $size_s1=$sql_row1['size_s'];
-            $size_m1=$sql_row1['size_m'];
-            $size_l1=$sql_row1['size_l'];
-            $size_xl1=$sql_row1['size_xl'];
-            $size_xxl1=$sql_row1['size_xxl'];
-            $size_xxxl1=$sql_row1['size_xxxl'];
-            $size_s061=$sql_row1['size_s06'];
-            $size_s081=$sql_row1['size_s08'];
-            $size_s101=$sql_row1['size_s10'];
-            $size_s121=$sql_row1['size_s12'];
-            $size_s141=$sql_row1['size_s14'];
-            $size_s161=$sql_row1['size_s16'];
-            $size_s181=$sql_row1['size_s18'];
-            $size_s201=$sql_row1['size_s20'];
-            $size_s221=$sql_row1['size_s22'];
-            $size_s241=$sql_row1['size_s24'];
-            $size_s261=$sql_row1['size_s26'];
-            $size_s281=$sql_row1['size_s28'];
-            $size_s301=$sql_row1['size_s30'];
-
-        }
-        $order=$size_xs1+$size_s1+$size_m1+$size_l1+$size_xl1+$size_xxl1+$size_xxxl1+$size_s061+$size_s081+$size_s101+$size_s121+$size_s141+$size_s161+$size_s181+$size_s201+$size_s221+$size_s241+$size_s261+$size_s281+$size_s301; */
-        //NEW ORDER QTY TRACK
 
         $order=$sql_row['ord_qty_new'];
 
@@ -427,7 +396,7 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
             } 
             return false;\" 
             style=\"text-decoration:none; color:$col;\">$style</a>$add_back</td>
-        <td>$add_front$schedule$add_back</td><td>$add_front$color$add_back</td><td>$add_front$order$add_back</td><td>$add_front$cut$add_back</td><td>$add_front$in$add_back</td><td>$add_front$out$add_back</td>";
+        <td>$add_front$schedule$add_back</td><td>$add_front$color$add_back</td><td>$add_front$size$add_back</td><td>$add_front$order$add_back</td><td>$add_front$cut$add_back</td><td>$add_front$in$add_back</td><td>$add_front$out$add_back</td>";
 
 
         $col="#66FF33";
@@ -458,7 +427,7 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
         $grand_internal_audited+=$internal_audited;
     }
 
-    echo "<tr><td colspan=4 style=\"border-top:1px solid white; text-align:left;\">Grand Total</td><td  style=\"border-top:1px solid white;\">$grand_order</td><td  style=\"border-top:1px solid white;\">$grand_cut</td><td  style=\"border-top:1px solid white;\">$grand_input</td><td  style=\"border-top:1px solid white;\">$grand_output</td>";
+    echo "<tr><td colspan=5 style=\"border-top:1px solid white; text-align:left;\">Grand Total</td><td  style=\"border-top:1px solid white;\">$grand_order</td><td  style=\"border-top:1px solid white;\">$grand_cut</td><td  style=\"border-top:1px solid white;\">$grand_input</td><td  style=\"border-top:1px solid white;\">$grand_output</td>";
 //echo "<td  style=\"border-top:1px solid white;\">$grand_plan</td><td  style=\"border-top:1px solid white;\">$grand_variance</td>";
 echo "<td  style=\"border-top:1px solid white;\">$grand_fg</td>";
 echo "<td  style=\"border-top:1px solid white;\">$grand_internal_audited</td><td  style=\"border-top:1px solid white;\">$grand_fca</td><td  style=\"border-top:1px solid white;\">$grand_carts</td>";
