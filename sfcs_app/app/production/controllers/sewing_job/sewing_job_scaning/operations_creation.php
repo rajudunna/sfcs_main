@@ -203,7 +203,7 @@
 			$flag = 0;
 		}
 		echo "<tr>
-			<td>".$res_result['id']."</td>
+			<td>".$i++."</td>
 			<td>".$res_result['operation_name']."</td>
 			<td>".$res_result['default_operation']."</td>
 			<td>".$res_result['operation_code']."</td>
