@@ -99,7 +99,7 @@ if(isset($_POST['Update']))
 				sweetAlert('Allocation Failed','Please Fill Max Plies Per Cut','error');
 			   setTimeout('Redirect()',0);
 			   function Redirect(){
-				Ajaxify('".$furl."');	;
+				Ajaxify('".$furl."');	
 			   }
 			   </script>";
 

@@ -269,7 +269,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 					}
 					$url=getFullURL($_GET['r'],'Supplier_Print_PDF.php','N');
 					
-					echo "<td><a class='btn btn-xs btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"retur popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
+					echo "<td><a class='btn btn-xs btn-primary' href=\"#\" onclick=\"return popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
 				
 					if($mail_status == 0)
 					{
@@ -304,7 +304,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 							echo "<td>Not Agreed</td>";
 						}
 						
-						echo "<td><a class='btn btn-xs btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"return popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
+						echo "<td><a class='btn btn-xs btn-primary' href=\"#\" onclick=\"return popitup('$url&sno=$complaint_no&status=2')\" >Print</a></td>";
 						
 						if($mail_status == 0)
 						{
@@ -321,7 +321,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 				{
 					
 					$url2=getFullURL($_GET['r'],'request_delete.php','N');
-					$url2 = $url2."&tid=$ref_no&&complaint_no=$complaint_no&sdate=$startdate&edate=$enddate&stat=$status&bat=$batch";
+					$url2 = $url2."&tid=$ref_no&complaint_no=$complaint_no&sdate=$startdate&edate=$enddate&stat=$status&bat=$batch";
 					echo "<td><a id='delete_btn' class=\"btn btn-sm btn-danger confirm-submit\" href=\"$url2\" >Delete</a></td>";
 				}
 				echo "</tr>";

@@ -1,33 +1,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',2,'R')); ?>
 
-<!-- <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?> -->
-<script>
-/*function popitup(url) {
-newwindow=window.open(url,'name','scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0');
-if (window.focus) {newwindow.focus()}
-return false;
-}*/
-</script>
-
-<script>
-function popitup(url) {
-	var password=prompt("Please enter password","");
-	if (password == "Bai@#")
-	{
-		newwindow=window.open(url,'name','scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0');
-		if (window.focus) {newwindow.focus()}
-	}
-	return false;
-}
-
-function popitup_new(url) {
-
-newwindow=window.open(url,'name','scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0');
-if (window.focus) {newwindow.focus()}
-return false;
-}
-</script>
 
 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
@@ -325,13 +299,13 @@ $color_code=$sql_row33['color_code']; //Color Code
 	*/
 	echo "<td>".$a_plies."</td>";
 	
-	$path="".getFullURLLevel($_GET['r'], "Book3_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_id&doc_id=$pcutdocid&cut_no=$pcutno";
+	$path=getFullURLLevel($_GET['r'], "Book3_print.php", "0", "R")."?order_tid=".$tran_order_tid."&cat_ref=".$cat_id."&doc_id=".$pcutdocid."&cut_no=".$pcutno;
 	if($clubbing>0)
 	{
-		$path="".getFullURLLevel($_GET['r'], "color_club_docket_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_id&doc_id=$pcutdocid&cat_title=$category&clubbing=$clubbing&cut_no=$pcutno";
+		$path=getFullURLLevel($_GET['r'], "color_club_docket_print.php", "0", "R")."?order_tid=".$tran_order_tid."&cat_ref=".$cat_id."&doc_id=".$pcutdocid."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$pcutno;
 	}
 	
-	echo "<td><a class=\"btn btn-xs btn-info\" href=\"$path\"\">View</a></td>";
+	echo "<td><a class=\"btn btn-xs btn-info\" href=\"#\" onclick=\"return popitup("."'".$path."'".")\">View</a></td>";
 	
 	// if($rev_check=="T" && $count==0)
 	// {

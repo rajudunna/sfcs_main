@@ -148,8 +148,12 @@
 </table>
       
 <script>      
+<<<<<<< HEAD
     //  $('#tab5').click(function(){   
     $(document).ready(function(){
+=======
+      $('#tab5').click(function(){   
+>>>>>>> 63ea37622c74ecf2c17072ec1e9d01cc501244c0
         var table = $('#table_ajax_3').DataTable({
             "bSort":false,
             "processing": false,

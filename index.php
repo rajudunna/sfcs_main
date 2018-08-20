@@ -157,10 +157,51 @@ function onloadAjaxCall(get_r){
         type: "GET",
         success: function(response)
         {   
+            function WindowGetURLParameter(sParam)
+            {
+                var sPageURL = window.location.search.substring(1);
+                var sURLVariables = sPageURL.split('&');
+                for (var i = 0; i < sURLVariables.length; i++)
+                {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam)
+                    {
+                        return sParameterName[1];
+                    }
+                }
+            }
+            var type = WindowGetURLParameter("type");
             window.history.pushState("object or string", "Title", "?"+get_r);
-            jQuery("#body").html(response);
+            if(menu == 'reports'){
+                var report_url = "<?= 'ajax_handler.php?r='.base64_encode('/sfcs_app/app/reports_xpparel/reports_index.php');?>";
+                $.ajax({
+                    url:report_url,
+                    type: "GET",
+                    success: function(data){
+                        jQuery("#body").html(data);
+                        $("#report_body").html(response);
+                    }
+                });
+               
+            }else if(menu == 'production'){
+                if(type !== undefined){
+                    var report_url = "<?= 'ajax_handler.php?r='.base64_encode('/sfcs_app/app/production_xpparel/production_index.php');?>";
+                    $.ajax({
+                        url:report_url,
+                        type: "GET",
+                        success: function(data){
+                            jQuery("#body").html(data);
+                            $("#production_body").html(response);
+                        }
+                    });
+                }else{
+                    jQuery("#body").html(response);
+                }
+
+            }else{
+                jQuery("#body").html(response);
+            }
             myLoadStop();
-            
         }
     });
 
