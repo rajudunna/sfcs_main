@@ -2,7 +2,7 @@
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-include($include_path.'\sfcs_app\common\config\m3_api_calls.php');
+include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
 // include('../../../common/config/config.php');
 // include('../../../common/config/m3_api_calls.php');
 $store_data = [];
