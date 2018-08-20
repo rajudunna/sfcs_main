@@ -1,5 +1,5 @@
 <?php 
-class m3_api_calls {	
+class rest_api_calls {	
 	public function getCurlRequest($url){			
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -8,6 +8,6 @@ class m3_api_calls {
 		return $output;
 	}
 }
-$obj = new m3_api_calls();	
+$obj = new rest_api_calls();	
 
 ?>
