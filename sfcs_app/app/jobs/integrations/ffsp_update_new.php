@@ -1,6 +1,10 @@
 <?php
-include('../../../common/config/config.php');
-include('../../../common/config/m3_api_calls.php');
+$start_timestamp = microtime(true);
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+include($include_path.'\sfcs_app\common\config\m3_api_calls.php');
+// include('../../../common/config/config.php');
+// include('../../../common/config/m3_api_calls.php');
 $store_data = [];
 $get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm";
 $result=mysqli_query($link, $get_details) or exit("error at getting style and shedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -60,14 +64,23 @@ foreach($store_data as $data){
 	
 	
     $sql1="update bai_pro3.bai_orders_db set ft_status=$ft_status,st_status=$st_status,pt_status=$pt_status where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
-	//echo $sql1."<br/>";
-    mysqli_query($link,$sql1)or exit("Error updating bai_order_db".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $sql_result1=mysqli_query($link,$sql1)or exit("Error updating bai_order_db".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    if($sql_result1)
+    {
+        print("Updated bai_orders_db Sucessfully")."\n";
+    }
     
     $sql2="update bai_pro3.bai_orders_db_confirm set ft_status=$ft_status,st_status=$st_status,pt_status=$pt_status where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
 	//echo $sql2."<br/>";
-    mysqli_query($link,$sql2)or exit("Error updating bai_order_db_confirm".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $sql_result2=mysqli_query($link,$sql2)or exit("Error updating bai_order_db_confirm".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    if($sql_result2)
+    {
+        print("Updated bai_orders_db_confirm Sucessfully")."\n";
+    }
 }
 
 
-
+	$end_timestamp = microtime(true);
+	$duration = $end_timestamp - $start_timestamp;
+	print("Execution took ".$duration." milliseconds.");
 ?>
