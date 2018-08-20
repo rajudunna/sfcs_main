@@ -24,25 +24,25 @@ xmlns="http://www.w3.org/TR/REC-html40">
 function firstbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function secondbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function thirdbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body');
 }
 
 function fourthbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body');
 }
 
 

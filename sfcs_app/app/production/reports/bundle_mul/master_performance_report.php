@@ -918,8 +918,8 @@ FROM
 	else
 	{
 		echo '	<script type="text/javascript">            function Redirect() {
-			var ajax_url ="cpk_report_5.html"; 
-			   Ajaxify('ajax_url,'report'_body'); 
+			var ajax_url ="cpk_report_5.html"
+			Ajaxify(ajax_url,"report_body");
             }
 Redirect();
       </script>';
@@ -1039,8 +1039,8 @@ Redirect();
 	else
 	{
 		echo '	<script type="text/javascript">            function Redirect() {
-			var ajax_url ="cpk_report_6.html";
-			   Ajaxify('ajax_url,'report'_body'); 
+			var ajax_url ="cpk_report_6.html"
+			Ajaxify(ajax_url,"report_body");
             }
 Redirect();
       </script>';

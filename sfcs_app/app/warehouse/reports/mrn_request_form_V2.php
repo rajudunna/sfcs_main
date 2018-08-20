@@ -33,7 +33,7 @@ if($flag==0)
 	function secondbox()
 	{
 		var ajax_url = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
-		Ajaxify('ajax_url,'report'_body'); 
+		Ajaxify(ajax_url,'report_body');
 	}
 
 	function thirdbox()
@@ -41,20 +41,20 @@ if($flag==0)
 		
 
 		var ajax_url = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
-		Ajaxify('ajax_url,'report'_body'); 
+		Ajaxify(ajax_url,'report_body');
 	}
 
 	function fourthbox()
 	{
 		
 		var ajax_url = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value;
-		Ajaxify('ajax_url,'report'_body'); 
+		Ajaxify(ajax_url,'report_body'); 
 	}
 
 	function fifthbox()
 	{
 		var ajax_url = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value+"&batchno="+document.test.batchno.value;
-		Ajaxify('ajax_url,'report'_body'); 
+		Ajaxify(ajax_url,'report_body');
 	}
 
 	//CR# 376 // kirang // 2015-05-05 // Referred the Batch number details to restrict the request of quantity requirement.

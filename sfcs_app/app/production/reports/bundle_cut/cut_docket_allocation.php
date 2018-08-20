@@ -51,14 +51,14 @@ function firstbox()
 {
 	//alert("report");
 	var ajax_url ="../mini_order_report/cut_docket_allocation.php?style="+document.mini_order_report.style.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function secondbox()
 {
 	//alert('test');
 	var ajax_url ="../mini_order_report/cut_docket_allocation.php?style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function check_val()

@@ -15,19 +15,19 @@ var url = "<?= getFullURL($_GET['r'],'cut_to_ship2.php','N'); ?>";
 function firstbox()
 {
 	var ajax_url = url+"&style="+document.input.style.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function secondbox()
 {
 	var ajax_url =url+"&style="+document.input.style.value+"&schedule="+document.input.schedule.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function thirdbox()
 {
 	var ajax_url =url+"&style="+document.input.style.value+"&schedule="+document.input.schedule.value+"&color="+document.input.color.value;
-	Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 </script>
 
