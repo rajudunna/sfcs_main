@@ -39,7 +39,7 @@ if(isset($_POST['submit']))
 {
     $schedule=$_POST['schedule'];
     // $unconditional_remove=$_POST['unconditional_remove'];
-    $sql="SELECT DISTINCT input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '$schedule%' ORDER BY input_job_no*1";
+    $sql="SELECT input_job_no,input_job_no_random FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '$schedule%' group by input_job_no ORDER BY input_job_no*1 ";
     // echo $sql;
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
     $rowcount=mysqli_num_rows($sql_result);
@@ -50,8 +50,9 @@ if(isset($_POST['submit']))
 	    while($sql_row=mysqli_fetch_array($sql_result))
 	    {
 	        $input_job_no=$sql_row['input_job_no'];
+	        $input_job_no_ran=$sql_row['input_job_no_random'];
 	        $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
-	        echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no' class='btn btn-warning'>".$input_job_no."</a>"."";
+	        echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no&rand_no=$input_job_no_ran' class='btn btn-warning'>".$input_job_no."</a>"."";
 	    }
 	    echo "</div>";
     } else {
