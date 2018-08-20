@@ -125,11 +125,19 @@ $('form').on("submit",function(event) {
     }
 
     var from_data=form.serializeArray();
+  
+    // if($("input[type=submit]").attr("name") !== undefined){
+    //     from_data.push({ name: $("input[type=submit]").attr("name"), value: $("input[type=submit]").attr("value") });
+    // }else{
+    //     from_data.push({ name: $("button[type=submit]").attr("name"), value: $("button[type=submit]").attr("value") });
+    // }
 
     if($("input[type=submit]").attr("name") !== undefined){
-        from_data.push({ name: $("input[type=submit]").attr("name"), value: $("input[type=submit]").attr("value") });
+        var input = $(this).find("input[type=submit]");
+        from_data.push({ name: input[0].name, value: input[0].value });
     }else{
-        from_data.push({ name: $("button[type=submit]").attr("name"), value: $("button[type=submit]").attr("value") });
+        var button = $(this).find("button[type=submit]");
+        from_data.push({ name: button[0].name, value: button[0].value });
     }
 
     console.log(from_data);

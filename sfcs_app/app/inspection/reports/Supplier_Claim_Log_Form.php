@@ -304,7 +304,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 							echo "<td>Not Agreed</td>";
 						}
 						
-						echo "<td><a class='btn btn-xs btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"return popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
+						echo "<td><a class='btn btn-xs btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"return popitup('$url&sno=$complaint_no&status=2')\" onclick=\"Popup1=window.open('$url&sno=$complaint_no&status=2','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 						
 						if($mail_status == 0)
 						{
