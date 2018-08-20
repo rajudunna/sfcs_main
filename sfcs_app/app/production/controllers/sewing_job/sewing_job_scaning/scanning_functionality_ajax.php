@@ -356,10 +356,10 @@ if($barcode_generation == 1)
 					{
 						$bundle_pending_qty =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+ $nop_qry_row['rejected_qty']);
 						//echo "pending_qty:".$bundle_individual_number.'-'.$bundle_pending_qty.'</br>';
-						if($remaining_qty_rec != 0)
-						{
-							$bundle_pending_qty = $remaining_qty_rec;
-						}
+						// if($remaining_qty_rec != 0)
+						// {
+						// 	$bundle_pending_qty = $remaining_qty_rec;
+						// }
 						if($bundle_pending_qty > 0 && $cumulative_qty > 0)
 						{
 							if($bundle_pending_qty <= $cumulative_qty)
