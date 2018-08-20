@@ -11,18 +11,21 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config
 
 function firstbox()
 {
-	window.location.href ="cad_saving_details.php?schedule="+document.test.schedule.value
+	var ajax_url ="cad_saving_details.php?schedule="+document.test.schedule.value;
+	Ajaxify(ajax_url,'report_body');
 }
 
 function secondbox()
 {
-	window.location.href ="cad_saving_details.php?schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	var ajax_url ="cad_saving_details.php?schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	Ajaxify(ajax_url,'report_body');
 }
 
 function thirdbox()
 {
-	window.location.href ="cad_saving_details.php?schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value
+	var ajax_url ="cad_saving_details.php?schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value
 	document.testx.submit();
+	Ajaxify(ajax_url,'report_body');
 }
 function verify_date(){
 	var from_date = $('#sdate').val();
@@ -76,7 +79,7 @@ function verify_date(){
 		<span style="float"><b>CAD Saving Details - Exfactory Date</b></span>
 	</div>
 	<div class="panel-body">
-		<form id="testx" name="test" action="<?php $_SERVER['PHP_SELF']; ?>" method="POST">
+		<form id="testx" name="test" action="<?= getFullURL($_GET['r'],'cad_saving_details_V2.php','N');?>" method="POST">
 			<div class="col-sm-3 form-group">
 				<label for="sdat"><b>Start Date</b></label>
 				<input  class="form-control " type="text" id="sdate" name="sdat" data-toggle="datepicker" size=8  value="<?php  if(isset($_POST['sdat'])) { echo $_POST['sdat']; } else { echo date("Y-m-d"); } ?>"/></td>
@@ -85,51 +88,51 @@ function verify_date(){
 				<label for="edat">End Date</label>
 				<input  class="form-control " type="text" id="edate" name="edat" data-toggle="datepicker" size=8 onchange="return verify_date();" value="<?php  if(isset($_POST['edat'])) { echo $_POST['edat']; } else { echo date("Y-m-d"); } ?>"/></td>
 			</div>
-			  <?php
-			$sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+				<?php
+					$sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$buyer_code[]=$sql_row["buyer_div"];
-				$buyer_name[]=$sql_row["buyer_name"];
-			}
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row=mysqli_fetch_array($sql_result))
+					{
+						$buyer_code[]=$sql_row["buyer_div"];
+						$buyer_name[]=$sql_row["buyer_name"];
+					}
 
-			  
-			  ?>
+					
+				?>
 			<div class="col-sm-3 form-group">
-			<label>Buyer Division: </label>
-		<select name="division" class="form-control">
+				<label>Buyer Division: </label>
+				<select name="division" class="form-control">
 
-			<option value='All' <?php if($_POST['division']=="All"){ echo "selected"; } ?> >All</option>
-		<?php
-			for($i=0;$i<sizeof($buyer_name);$i++)
-			{
-				if($buyer_name[$i]==$_POST['division']) 
-				{ 
-					echo "<option value=\"".($buyer_name[$i])."\" selected>".$buyer_code[$i]."</option>";	
-				}
-				else
-				{
-					echo "<option value=\"".($buyer_name[$i])."\"  >".$buyer_code[$i]."</option>";			
-				}
-			}
-		?>
-		</select>
-		</div>
-		<div class="col-sm-1">
-			<br>
-			<input class="btn btn-success" type="submit" name="submit" value="Filter" onclick="return verify_date();"/>
-		</div>
+					<option value='All' <?php if($_POST['division']=="All"){ echo "selected"; } ?> >All</option>
+				<?php
+					for($i=0;$i<sizeof($buyer_name);$i++)
+					{
+						if($buyer_name[$i]==$_POST['division']) 
+						{ 
+							echo "<option value=\"".($buyer_name[$i])."\" selected>".$buyer_code[$i]."</option>";	
+						}
+						else
+						{
+							echo "<option value=\"".($buyer_name[$i])."\"  >".$buyer_code[$i]."</option>";			
+						}
+					}
+				?>
+				</select>
+			</div>
+			<div class="col-sm-1">
+				<br>
+				<input class="btn btn-success" type="submit" name="submit" value="Filter" onclick="return verify_date();"/>
+			</div>
 		</form>
-		<hr>
+		
 
 
 
 <?php
 if(isset($_POST["submit"]))
 {
-	
+	echo "<br>";
 	echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing report...</font></h1></center></div>";
 	
 	ob_end_flush();
@@ -508,17 +511,15 @@ if(isset($_POST["submit"]))
 				$docketnos="";
 			}
 		}
+		echo "</table></div>";
 	}else{
-		echo "<div class='alert alert-danger'><b>No Data Found</b></div>";
+		echo "<div class='col-sm-12 alert alert-danger'><b>No Data Found</b></div>";
 	}
 
-	echo "</table>
-	</div>";
 }
 ?>
 </div><!-- panel body -->
 </div><!-- panel -->
-</div>
 <script language="javascript" type="text/javascript">
 	var table3Filters = {
 	col_0: "select",
