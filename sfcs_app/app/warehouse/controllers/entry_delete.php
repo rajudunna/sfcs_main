@@ -285,9 +285,9 @@ if(isset($_POST['submit']))
 
 			$diff=round(($rec_qty-$qty),2);
 
-			echo "<table class='table table-bordered'>";
-
 			echo '<form name="test" id="myForm" action='.getFullURL($_GET['r'],'entry_delete.php','N').'  method="POST">';
+			echo "<table class='table table-bordered'>";
+			
 			echo "<tr><td>Lot No</td><td>:</td><td>$lot_no</td></tr>";
 			echo "<tr><td>Batch</td><td>:</td><td>$batch_no</td></tr>";
 			echo "<tr><td>PO No</td><td>:</td><td>$po_no</td></tr>";
@@ -314,8 +314,9 @@ if(isset($_POST['submit']))
 			//  onclick="javascript:button_disable();"
 
 			echo "</td></tr>";
-			echo '</form>';
+			
 			echo "</table>";
+			echo '</form>';
 
 	}
 	else
