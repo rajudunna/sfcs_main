@@ -12,7 +12,7 @@ $view_access=user_acl("SFCS_0106",$username,1,$group_id_sfcs);
 }
 </style>
 
-<script type="text/javascript" language="javascript">
+<!-- <script type="text/javascript" language="javascript">
     window.onload = function () {
         noBack();
     }
@@ -20,7 +20,7 @@ $view_access=user_acl("SFCS_0106",$username,1,$group_id_sfcs);
     function noBack() {
         window.history.forward();
     }
-</script>
+</script> -->
 
  <script language="JavaScript">
 
@@ -59,11 +59,11 @@ function checkandupdate()
 			<b style='font-size : 13px'>Security Checkout Panel</b>
 		</div>
 		<div class='panel-body'>
-			<form name="test" action="index.php?r=<?= $_GET['r'] ?>" method="post" enctype="multipart/form data">
+			<form action="index.php?r=<?= $_GET['r'] ?>" method="post" enctype="multipart/form data">
 				<div class="row">
 					<div class="col-sm-2 right big"><label>Enter Dispatch Number : </label></div>
 					<div class='col-sm-2'><input class='form-control integer' type="text" name="note_no" value=""></div>
-					<div class='col-sm-1'><input class='btn btn-success' type="Submit" name="submit" Value="Submit" id="submitbtn" onclick="javascript:checkandupdate();"></div>
+					<div class='col-sm-1'><input class='btn btn-success' type='submit' name='submit' Value="Submit" id="submitbtn" ></div>
 				</div>
 			</form>
 			<hr>
@@ -100,10 +100,11 @@ if(isset($_POST['submit']) or isset($_GET['note_no']))
 		$url = getFullURL($_GET['r'],"dispatch_note_email.php",'N');
 		// echo "$url?note_no=$note_no";
 		// header("location: $url&note_no=$note_no");
-		// die();
+		// die()
 		echo "<script>
-				window.location.href = '$url&note_no=$note_no';
+				Ajaxify('$url&note_no=$note_no');
 			</script>";
+	
 	// }else{
 	// 	echo '<script>sweetAlert("The Disptach Number do not Exist","","warning")</script>';
 	// }

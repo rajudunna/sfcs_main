@@ -63,7 +63,7 @@ jQuery(document).ready(function($){
 <?php
 $hour=date("H.i");
 
-echo '<META HTTP-EQUIV="refresh" content="180">';	
+//echo '<META HTTP-EQUIV="refresh" content="180">';	
 		
 //if(($hour>=7.45 and $hour<=10.00) or ($hour>=15.15 and $hour<=16.45)) //OLD
 /*if(($hour>=7.45 and $hour<=10.45) or ($hour>=12.30 and $hour<=14.00) or ($hour>=16.00 and $hour<=17.30)){
@@ -1287,3 +1287,13 @@ if((in_array($authorized,$has_permission)))
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'include_legends_rms.php',0,'R'));
 ?>
 </div>
+
+<script>
+	var url = '<?= $_GET['r']; ?>'; 
+	$(document).ready(function(){
+		setTimeout(function(){
+			console.log('hai');
+			window.location.reload();
+		},300*1000);
+	});
+</script>

@@ -328,7 +328,7 @@ function check_all()
 		<span style="float"><b>CAD Saving Report - Style</b></span>
 	</div>
 	<div class="panel-body">
-		<form id="testx" name="test" action="<?php getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="POST">
+		<form id="testx" name="test" action="<?= getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="POST">
 			<div class="row">
 				<div class="col-sm-3 form-group">
 					<label for="style">Select Style:</label>

@@ -5,7 +5,7 @@
 td,th{ color : #000 }
 </style>
 
-<script type="text/javascript" language="javascript">
+<!-- <script type="text/javascript" language="javascript">
     window.onload = function () {
         noBack();
     }
@@ -13,7 +13,7 @@ td,th{ color : #000 }
     function noBack() {
         window.history.forward();
     }
-</script>
+</script> -->
 
  <script language="JavaScript">
 
@@ -105,7 +105,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$sql_row['exit_date']."</td>";
 
 	if($status == 2){
-		echo "<td><a class='btn btn-warning btn-xs' href='index.php?r=".$_GET['r']."&note_no=".$sql_row['disp_note_no']."'>Confirm Exit</a></td>";
+		echo "<td><a class='btn btn-warning btn-xs' onclick='anchortag(event,this.href)' href='ajax_handler.php?r=".$_GET['r']."&note_no=".$sql_row['disp_note_no']."'>Confirm Exit</a></td>";
 	}else if($status==3){
 		echo "<td></td>";
 	}else{

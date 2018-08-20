@@ -226,7 +226,8 @@ if(isset($_POST['submitx']))
 	mysqli_query($link, $sql2) or die("Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	echo "<script>sweetAlert('Data Updated Successfully','','success')</script>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURL($_GET['r'], "Supplier_Claim_Request_Form.php", "N")."\"; }</script>";	
+	$url = getFullURL($_GET['r'], "Supplier_Claim_Request_Form.php", "N");
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  Ajaxify('".$url."','report_body'); }</script>";	
 }
 ?>
 	 

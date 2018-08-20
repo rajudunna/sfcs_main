@@ -127,7 +127,7 @@ function verify_nums(t){
 
 <body>
 
-<form name="filter" method="post" action="">
+<form name="filter" method="post" action="index.php?r=<?= $_GET['r']; ?>">
 
 	<div class='col-md-3'>
 		<label>Schedules:</label> 
@@ -307,7 +307,7 @@ if(isset($_POST['schsbt']))
 	if(strlen($schlist)>0 or $showall=="1")
 	{
 
-	echo '<form name="update" method="post" action="'.getURL(getBASE($_GET['r'])['path'])['url'].'">';
+	echo '<form name="update" method="post" action="index.php?r='.$_GET['r'].'">';
 
 	//Serial number and Post variable index key
 	$x=0;
@@ -494,7 +494,7 @@ if(isset($_POST['schsbt']))
 				$('#enable').hide();
 			});</script>";
 
-		echo "</br></br><div class='alert alert-danger'>No Data Found</div>";
+		echo "<br/><br/><br/><br/><br/><div class='alert alert-danger'>No Data Found</div>";
 		}
 	}
 	// echo "<br>Qry :".$sql."</br>";
@@ -505,7 +505,7 @@ if(isset($_POST['schsbt']))
 	echo '<input type="checkbox" name="enable" id="enable" onclick="enable_button('.$x.')">Enable<input type="submit" class="btn btn-success" name="confirm" id="add" value="Confirm and Reserve" disabled="true" onclick="enable_button('.$x.')">';
 	echo '</form>';
 	}else{
-		echo "</br></br><div class='alert alert-danger'>No Data Found</div>";
+		echo "<br/><br/><br/><br/><br/><div class='alert alert-danger'>No Data Found</div>";
 	}
 	// echo '<tr><td colspan=5>Total Quantity:</td><td id="table2Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
 	
