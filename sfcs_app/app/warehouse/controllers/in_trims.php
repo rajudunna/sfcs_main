@@ -1,5 +1,3 @@
-<meta http-equiv="X-UA-Compatible" content="IE=10; IE=9; IE=8; IE=7; IE=6; IE=5; IE=EDGE" />
-
 <?php 
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
@@ -8,6 +6,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
 $url = '/sfcs_app/app/warehouse/controllers/in_trims.php';
 $out_trims_scanner = '/sfcs_app/app/warehouse/controllers/out_trims_scanner.php';
 ?>
+
 <script>
 function focus_box()
 {
@@ -28,158 +27,14 @@ function check_docket(e){
 <style>
 body
 {
-	width:auto;
 	font-family:arial;
-	display:inline-block;
-	border:1px solid blue;
 }
-.equal{
-		width : 40pt;
-		font-size:10pt;
-		text-align:center;
-		margin-top:60pt;
-		margin-left:30pt;
-		display:block;
-	}
-   
-    button{
-		text-align:right
-		display:block;
-    }
-    .panel-primary{
-        margin : 2px 250px 2px 250px;
-        padding : 20px 5px 20px 5px;
-        /* border:1px solid blue; */
-		text-align:center;
-		display:block;
-    }
-    .panel-heading {
-        font-weight:bold;
-        text-align:left;
-    }
-    .label-success{
-        background-color:#5cb85c;
-        color:white;
-		width:25%;
-		border-radius:5px;
-		margin-left:-120%;
-		display:block;
-	}
-	.label-success1{
-        background-color:#5cb85c;
-        color:white;
-		text-align:left;
-		width:15%;
-        border-radius:5px;
-		display:block;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-success {
-        background-color:green;
-        color:white;
-        margin-top:-30pt;
-        border-radius:5px;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-        margin-top:-15pt;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .label-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-		margin-top:-10pt;
-    }
-    #location1 {
-		margin-top:-7.5%;
-		width:105%;
-	}
-	#location {
-		margin-left:180pt;
-		margin-top:-35pt;
-		width:48pt;
-    }
-	.label{
-		font-size:10pt;
-	}
-    #cartonid{
-        /* margin-top:-50pt; */
-		margin-left:-170pt;
-		margin-top:-80pt;
-        padding-top:-11pt;
-		padding-right:7pt;
-		display:block;
-		font-size:10pt;
-		width:70pt;
-    }
-    #cartonid2{
-		font-size:10pt;
-		width:70pt;
-        margin-top:10pt;
-        margin-left:-170pt;
-        /* margin-left:-420pt; */
-		padding:3px;
-		display:block;
-    }
-    #label2{
-        margin-top:-10px;
-        margin-left:-190%;
-    }
-	label{
-		font-size:10pt;
-	}
-    #check_in{
-        margin-top:-20pt;
-        margin-left:-45pt;
-        background-color:#337ab7;
-        padding:5px;
-        color:white;
-		border-radius:8px;
-		display:block;
-    }
-	button {
-		width:10pt;
-	}
-    h2{
-        margin-left:-450px;
-	}
-	a{
-		text-decoration:none;
-	}
-    #status {
-        font-size:14pt;
-        margin-left:10%;
-	}
-	.label1{
-		margin-left:-8%;
-		display:block;
-	}
-	.text-left{
-		display:block;
-	}
-	.loc{
-        margin-left:100%;
-	}
-    /* h3{
-        margin-top:-20px;
-    } */
 </style>
 
 <body onload="focus_box()">
 <div class='panel panel-primary'>
-	<div class='panel-heading'>
-		Online Barcode Scanning
-	</div>
 	<div class='panel-body'>
-		<div class='text-left'><span class="label label-success">In</span></div>
+		<!--<div class=' text-left'><h4><span class="label label-success">In</span></h4></div>-->
 		<?php
 
 		if(isset($_GET['location']))
@@ -187,14 +42,15 @@ body
 			$location=$_GET['location'];
 			
 			$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0 and status=1";
-			$sql_result=mysqli_query($link, $sql);	
+			//echo "$sql";
+			$sql_result=mysqli_query($link, $sql);
 			if(mysqli_num_rows($sql_result)>0)
 			{
-				echo "<div class='loc'><h2><label class='label1'>Location  : </label>&nbsp;&nbsp;<span class='label label-success1' id='location'>$location</span></h2></div>";
+				echo "<h2><label class='label1'>Location  : </label>&nbsp;&nbsp;<span class='label label-success' id='location'>$location</span></h2>";
 			}
 			else
 			{
-				echo "<div class='loc'><h2><label class='label1'>Location  : </label>&nbsp;&nbsp;<span class='label label-danger'>Scan Valid Location !</span></h2></div>";
+				echo "<h2><label class='label1'>Location  : </label>&nbsp;&nbsp;<span class='label label-danger'>Scan Valid Location !</span></h2>";
 				$location="";
 			}
 			
@@ -202,7 +58,7 @@ body
 		}
 		else
 		{
-			echo "<div class='loc'><h2><label>Location  : </label>&nbsp;&nbsp;<span class='label label-danger'>Scan Location !</span></h2></div>";
+			echo "<h2><label>Location  : </label>&nbsp;&nbsp;<span class='label label-danger'>Scan Location !</span></h2>";
 			$location="";
 		}
 
@@ -221,13 +77,13 @@ body
 		<form name="input" method="post" action="?r=<?= $url ?>" enctype="multipart/form data" id="form">
 		<div class="row">
 		<div class="form-group col-md-3">
-		<input type="text" name="cartonid" id="cartonid" class="form-control"  oninput="document.input.submit();"  value="">
+		<input type="text" name="cartonid" id="cartonid" class="form-control" onkeyup="document.input.submit();"  value="">
 		</div>
 		</div>
 		<div class="row">
 		<div class="form-group col-md-3">
-		<!-- <label id="label2">Manual Entry: </label> -->
-		<input type="text" class="form-control" size="19" value="" id='cartonid2' name="cartonid2" placeholder="Manual Entry">
+		<br/>Enter Lable ID:<br/>
+		<input type="text" class="form-control" size="19" value="" id='cartonid2' name="cartonid2">
 		</div>
 		<input type="submit" id="check_in" name="check2" value="Check In" onclick='return check_docket(event)' class="btn btn-primary">
 		<input type="hidden" name="location" value="<?php echo $location; ?>">
@@ -256,14 +112,14 @@ body
 					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_affected_rows($link)>0)
 					{
-						echo "<div id='location1'>Status: <span class='label label-success'>Success!</span> $code</div>";
+						echo "<div id='status'>Status: <span class='label label-success'>Success!</span> $code</div>";
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"in_trims.php?location=$location\"; }</script>";
 					}else{
 						$sql1="select * from $bai_rm_pj1.store_in_deleted where tid=\"$code\" ";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result1)>0)
 						{
-						echo "<div id='location1'>Status  : $code-<span class='label label-warning'>Label Deleted</span> </div>";
+						echo "<h3>Status  : $code-<span class='label label-warning'>Label Deleted</span> </h3>";
 
 						}
 						else
@@ -272,12 +128,12 @@ body
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($sql_result2)>0)
 							{
-								echo "<div id='location1'>Status  : $code-<span class='label label-info'>Label Already Scanned</span> </div>";
+								echo "<h3>Status  : $code-<span class='label label-info'>Label Already Scanned</span> </h3>";
 							}
 							else
 							{
 
-							echo "<div id='location1'>Status  :$code- <span class='label label-warning'>Label Not Found</span> </div>";
+							echo "<h3>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h3>";
 
 							}
 						}
@@ -290,7 +146,7 @@ body
 				}
 				else
 				{
-					echo "<div id='location'>Status: <span class='label label-danger'>Scan Location!</span></div>";
+					echo "<h3>Status: <span class='label label-danger'>Scan Location!</span></h3>";
 				}
 			}
 			else
@@ -361,12 +217,11 @@ body
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = 'in_trims.php?location=".$code."'; }</script>";
 			}
 		}
+
+		//echo "<div class='pull-right text-right'><div ><h2><font color=\"green\">In</font></h2><br/><h2><a href='$url'><button class='btn btn-primary'>In</button></a> <Br/><a href='".getFullURL($_GET['r'],'out.php','N')."'><button class='btn btn-primary'>F-Out</button></a><Br/><a href='".getFullURL($_GET['r'],'out_trims_scanner.php','N')."'><button class='btn btn-primary'>T-Out</button></a> </h2></div></div>";
 		?>
 	</div>
 </div>
 </body>
-<script>
-$("#cartonid").on("paste",function(e){
-    $("#location").focus();
-});
-</script>
+
+</div>
