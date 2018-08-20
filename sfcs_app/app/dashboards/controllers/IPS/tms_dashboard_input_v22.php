@@ -711,8 +711,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
 		
 				$ft_status_min="";
-				//if($schedule!="")
-				//{
+				if($schedule!="")
+				{
 					$sel_fab_sts="select max(ft_status) as ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.")";
 					$result_fab_sts=mysqli_query($link, $sel_fab_sts) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row_fab_sts=mysqli_fetch_array($result_fab_sts))
@@ -894,7 +894,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 					}				
 					$y++;
-				//}
+				}
 			}
 			for($j=$y+1;$j<=4;$j++)
 			{
