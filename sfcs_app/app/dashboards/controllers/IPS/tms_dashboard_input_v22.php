@@ -333,7 +333,7 @@ $has_permission = haspermission($_GET['r']);
 <title>IPS Dashboard</title>
 <?php
 
-	echo '<META HTTP-EQUIV="refresh" content="120">';	
+	//echo '<META HTTP-EQUIV="refresh" content="30">';	
 ?>
 <!--<script type="text/javascript" src="jquery.js"></script>-->
 
@@ -595,7 +595,7 @@ if(sizeof($remove_docs)>0)
 }
 // Remove Docs
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+$sqlx="select * from $bai_pro3.sections_db where sec_id>0 ";
 //echo $sqlx;
 // mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -974,3 +974,14 @@ include "include_legends_ips.php";
 </div>
 </body>
 </html>
+
+
+<script>
+	var url = '<?= $_GET['r']; ?>'; 
+	$(document).ready(function(){
+		setTimeout(function(){
+			console.log('hai');
+			window.location.reload();
+		},300*1000);
+	});
+</script>

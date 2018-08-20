@@ -35,7 +35,7 @@ include('functions.php');
 <head>
 <?php
 
-	echo '<META HTTP-EQUIV="refresh" content="120">';	
+	//echo '<META HTTP-EQUIV="refresh" content="120">';	
 ?>
 
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
@@ -820,3 +820,14 @@ include('include_legends_tms.php');
 <br/>	
 </body>
 </html> 
+
+
+<script>
+	var url = '<?= $_GET['r']; ?>'; 
+	$(document).ready(function(){
+		setTimeout(function(){
+			console.log('hai');
+			window.location.reload();
+		},300*1000);
+	});
+</script>

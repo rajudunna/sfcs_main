@@ -27,7 +27,7 @@ Service Request #525434/ kirang/ 2014-01-10: Add the ordercut details in RTS das
 
   
 	$hour=date("H.i");
-	echo '<META HTTP-EQUIV="refresh" content="120">';
+	//echo '<META HTTP-EQUIV="refresh" content="120">';
 
 	/*
 			
@@ -1298,3 +1298,13 @@ window.onload = startBlink;
 </div>
 </div>
 
+
+<script>
+	var url = '<?= $_GET['r']; ?>'; 
+	$(document).ready(function(){
+		setTimeout(function(){
+			console.log('hai');
+			window.location.reload();
+		},300*1000);
+	});
+</script>

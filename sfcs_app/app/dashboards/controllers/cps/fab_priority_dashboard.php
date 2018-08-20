@@ -67,7 +67,7 @@ set_time_limit(200000);
 <link rel="stylesheet" href="../../../../common/css/bootstrap.min.css">
 <?php
 $hour=date("H.i");
-echo '<META HTTP-EQUIV="refresh" content="120">';
+//echo '<META HTTP-EQUIV="refresh" content="120">';
 
 /*    
 //if(($hour>=7.45 and $hour<=10.00) or ($hour>=15.15 and $hour<=16.45)) //OLD
@@ -1705,3 +1705,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'cps.htm',0,'R'
 //mysql_close($link_new2);
 
 ?>
+
+
+<script>
+	var url = '<?= $_GET['r']; ?>'; 
+	$(document).ready(function(){
+		setTimeout(function(){
+			console.log('hai');
+			window.location.reload();
+		},300*1000);
+	});
+</script>
