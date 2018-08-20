@@ -35,17 +35,20 @@
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value
+	var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function secondbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function thirdbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	var ajax_url ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 </script>
 <link href="style.css" rel="stylesheet" type="text/css" />

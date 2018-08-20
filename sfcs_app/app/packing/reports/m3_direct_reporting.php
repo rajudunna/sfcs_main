@@ -20,17 +20,20 @@ td,th{
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>&style="+document.input.style.value
+	var ajax_url ="index.php?r=<?php echo $_GET['r'] ?>&style="+document.input.style.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function secondbox()
 {
-	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>&style="+document.input.style.value+"&schedule="+document.input.schedule.value
+	var ajax_url ="index.php?r=<?php echo $_GET['r'] ?>&style="+document.input.style.value+"&schedule="+document.input.schedule.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function thirdbox()
 {
-	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>&style="+document.input.style.value+"&schedule="+document.input.schedule.value+"&color="+document.input.color.value
+	var ajax_url ="index.php?r=<?php echo $_GET['r'] ?>&style="+document.input.style.value+"&schedule="+document.input.schedule.value+"&color="+document.input.color.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 </script>
 

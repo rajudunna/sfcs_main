@@ -26,30 +26,35 @@ if($flag==0)
 	var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>';
 	function firstbox()
 	{
-		window.location.href = pgurl+"&style="+document.test.style.value
+		var ajax_url = pgurl+"&style="+document.test.style.value;
+		Ajaxify('ajax_url,'report'_body'); 
 	}
 
 	function secondbox()
 	{
-		window.location.href = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		var ajax_url = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+		Ajaxify('ajax_url,'report'_body'); 
 	}
 
 	function thirdbox()
 	{
 		
 
-		window.location.href = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+		var ajax_url = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+		Ajaxify('ajax_url,'report'_body'); 
 	}
 
 	function fourthbox()
 	{
 		
-		window.location.href = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value
+		var ajax_url = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value;
+		Ajaxify('ajax_url,'report'_body'); 
 	}
 
 	function fifthbox()
 	{
-		window.location.href = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value+"&batchno="+document.test.batchno.value
+		var ajax_url = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value+"&batchno="+document.test.batchno.value;
+		Ajaxify('ajax_url,'report'_body'); 
 	}
 
 	//CR# 376 // kirang // 2015-05-05 // Referred the Batch number details to restrict the request of quantity requirement.

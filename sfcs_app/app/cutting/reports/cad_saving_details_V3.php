@@ -10,18 +10,20 @@ $view_access=user_acl("SFCS_0003",$username,1,$group_id_sfcs);
 function firstbox()
 {
 	
-	    window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value
+	var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function secondbox()
 {
-	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	var ajax_url ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 function thirdbox()
 {
 	var uri="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
-	window.location.href = uri; 
+	var ajax_url = uri; Ajaxify('ajax_url,'report'_body'); 
 	//document.testx.submit();
 }
 function check_all()

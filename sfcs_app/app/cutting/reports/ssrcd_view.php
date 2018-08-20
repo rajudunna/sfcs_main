@@ -42,21 +42,25 @@ function show_pop3(){
 
 function firstbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
+	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 
 
 function secondbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 function thirdbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 function fourthbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value
+	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
+	Ajaxify('ajax_url,'report'_body'); 
 }
 </script>
 
