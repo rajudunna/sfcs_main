@@ -28,7 +28,7 @@ $start_date=min($dates);
 $end_date=max($dates);
 
 $sql="select ship_tid,schedule_no,color,size from $bai_pro4.shipment_plan where ex_factory_date between \"".trim($start_date)."\" and  \"".trim($end_date)."\" order by schedule_no*1,color,size";
-echo $sql;
+// echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -38,14 +38,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$ship_tid=$sql_row["ship_tid"];
 	
 	$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des='".$color."'";
-	echo $sql1."<br>";
+	// echo $sql1."<br>";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result1) > 0)
 	{	
 		for($i=0;$i<sizeof($sizes_array);$i++)
 		{
 			$sql2="select title_size_".$sizes_array[$i]." as size_ref,order_tid,order_s_".$sizes_array[$i]." order_qty from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des='".$color."'";
-			echo $sql2."<br>";
+			// echo $sql2."<br>";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
@@ -64,13 +64,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		
 		$update_order_qty="update bai_pro4.week_delivery_plan set original_order_qty='".$order_qty."' where shipment_plan_id='".$ship_tid."'";
-		echo $update_order_qty."<br>";
+		// echo $update_order_qty."<br>";
 		mysqli_query($link, $update_order_qty) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$sql5="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\")";
-		echo $sql5."<br>";
+		// echo $sql5."<br>";
 		$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-		echo mysqli_num_rows($sql_result5)."<br>";
+		// echo mysqli_num_rows($sql_result5)."<br>";
 		if(mysqli_num_rows($sql_result5) > 0)
 		{
 			while($sql_row5=mysqli_fetch_array($sql_result5))
@@ -78,7 +78,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$cat_ref=$sql_row5["tid"];
 				$cut_total=0;
 				$sql3="select p_".$size_data_ref."*a_plies as cut_total from $bai_pro3.plandoc_stat_log where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
-				echo $sql3."<br/>";
+				// echo $sql3."<br/>";
 				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row3=mysqli_fetch_array($sql_result3))
 				{
@@ -86,7 +86,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				}
 				
 				$sql4="select p_".$size_data_ref."*a_plies as cut_total from $bai_pro3.recut_v2 where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
-				echo $sql4."<br/>";
+				// echo $sql4."<br/>";
 				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row4=mysqli_fetch_array($sql_result4))
 				{
@@ -96,7 +96,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$input_total=0;
 				$output_total=0;
 				$sql5="select coalesce(SUM(ims_qty),0) AS input,coalesce(SUM(ims_pro_qty),0) AS output from $bai_pro3.ims_log where ims_schedule='".$schedule."' and ims_color='".$color."'  and ims_size='a_".$size_data_ref."'";
-				echo $sql5."<br/>";
+				// echo $sql5."<br/>";
 				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row5=mysqli_fetch_array($sql_result5))
 				{
@@ -105,7 +105,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				}
 				
 				$sql6="select coalesce(SUM(ims_qty),0) AS input,coalesce(SUM(ims_pro_qty),0) AS output from $bai_pro3.ims_log_backup where ims_schedule='".$schedule."' and ims_color='".$color."'  and ims_size='a_".$size_data_ref."'";
-				echo $sql6."<br/>";
+				// echo $sql6."<br/>";
 				$sql_result6=mysqli_query($link, $sql6) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row6=mysqli_fetch_array($sql_result6))
 				{
@@ -136,10 +136,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				}
 			}
 		}	
-		echo $schedule."-".$color."-".$ship_tid."-".$size_data."-".$size_ref."-".$size."-".$size_data_ref."-".$order_tid."-".$order_qty."-".$cut_total."-".$input_total."-".$output_total."-".$fcamca."-".$shipped."-".$pendingcarts."<br>";
+		// echo $schedule."-".$color."-".$ship_tid."-".$size_data."-".$size_ref."-".$size."-".$size_data_ref."-".$order_tid."-".$order_qty."-".$cut_total."-".$input_total."-".$output_total."-".$fcamca."-".$shipped."-".$pendingcarts."<br>";
 		
 		$sql32="update $table_ref set size_comp_".$size_data_ref."='".$output_total."',act_cut='".$cut_total."',act_fca='".$fcamca."', act_mca='".$fcamca."', act_fg='".$fgqty."', act_ship='".$shipped."', cart_pending='".$pendingcarts."' where shipment_plan_id='".$ship_tid."'";
-		echo $sql32."-A<br/>";
+		// echo $sql32."-A<br/>";
 		mysqli_query($link, $sql32) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 }
