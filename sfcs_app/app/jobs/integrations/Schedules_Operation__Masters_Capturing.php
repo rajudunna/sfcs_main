@@ -1,15 +1,39 @@
-<?php 
+<?php
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
-include($include_path.'\sfcs_app\common\config\config_jobs.php');
-include($include_path.'\sfcs_app\common\config\m3_api_calls.php');
+//include($include_path.'\sfcs_app\common\config\config_jobs.php');
+include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\m3_api_calls.php');
 set_time_limit(1000000);
 
 //details from config tool
 $comapny_no=200;
 $facility_id='Q01';
 
+$obj1 = new get_api_call(); 
+$url="http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelOperations?CONO=200&FACI=Q01&MFNO=7512409&PRNO=M05083AB%20%20%200190";
+$result = $obj1->getCurlRequest($url);
+//$resultObj = json_decode($result,true);
 
+$decoded = json_decode($result,true);
+
+//var_dump($decoded);
+$selected_arr = ['OPDS','MFNO','PLG1','PITI','OPNO'];
+$name_values = array_column($decoded['MIRecord'], 'NameValue');
+foreach ($name_values as $key => $value) 
+{
+	
+	// echo var_dump($value)."</br>";
+	// echo $value['Name']['MFNO'];
+	// foreach ($value as $key1 => $value1) 
+	// {
+	// 		if(in_array($value1['Name'] , $selected_arr)) {
+	// 			echo "</br>".$value1['Name']."-".$value1['Value'];
+	// 			$all_data_array[$value1['Name']][] = $value1['Value'];
+	// 		}
+	// }
+}
+
+/*
 //getting mo numbers from mo_details table
 $qry_modetails="SELECT DISTINCT(mo_no) AS mo_num,item_code,style,SCHEDULE,color,size,zfeature  FROM $bai_pro3.mo_details WHERE ops_master_status='0'";
 $result_qry_modetails=mysqli_query($link, $qry_modetails) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -17,13 +41,8 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 {
 	echo "MO Number :".$sql_row['mo_num']."- Item Code : ".$sql_row['item_code']."- Style : ".$sql_row['style']."- Schedule : ".$sql_row['SCHEDULE']."- Color : ".$sql_row['color']."- Size : ".$sql_row['size']."- Zfeature : ".$sql_row['zfeature']."</br>";
 	
-	/*
 	
-	//sending api with parameters
-	$url  = 'http://eka-mvxsod-01.brandixlk.org:22105//m3api-rest/execute/PMS100MI/SelOperations?CONO='.$comapny_no.'&FACI='.$facility_id.'&MFNO='.$sql_row['mo_num'].'&PRNO='.$sql_row['item_code'];	
-	$url = str_replace(" ", '%20', $url);	
-    $result = $obj->getCurlRequest($url);	
-	$resultObj = json_decode($result);
+	
 
 	//getting request values 
 	$operation_desc = $resultObj[0]->OPDS;
@@ -52,11 +71,11 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 	// echo $sql1."<br>";
 	//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-
+/*
 }
 
 
 exit;
-
+*/
 ?>
 
