@@ -170,7 +170,7 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
         $query_add.=" and priority in (".$_GET['status'].")";
     }
     // $sql ='SELECT GROUP_CONCAT(DISTINCT ex_factory_date_new) AS ex_factory, COUNT(*) AS "count", SUM(IF(priority=1,1,0)) AS "c_fca", SUM(IF(priority=-1,1,0)) AS "sent", SUM(IF(priority=2,1,0)) AS "c_fg", SUM(IF(priority=3,1,0)) AS "c_sw", SUM(IF(priority=3,1,0)) AS "c_pack" FROM bai_pro4.week_delivery_plan_ref WHERE ex_factory_date_new BETWEEN "2017-03-19" AND "2018-02-05" ';
-    $sql="select group_concat(distinct ex_factory_date_new) as ex_factory, count(*) as \"count\", sum(if(priority=1,1,0)) as \"c_fca\", sum(if(priority=-1,1,0)) as \"sent\", sum(if(priority=2,1,0)) as \"c_fg\", sum(if(priority=3,1,0)) as \"c_sw\", sum(if(priority=3,1,0)) as \"c_pack\" from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" $query_add";
+    $sql="select group_concat(distinct ex_factory_date_new ORDER BY ex_factory_date_new ASC) as ex_factory, count(*) as \"count\", sum(if(priority=1,1,0)) as \"c_fca\", sum(if(priority=-1,1,0)) as \"sent\", sum(if(priority=2,1,0)) as \"c_fg\", sum(if(priority=3,1,0)) as \"c_sw\", sum(if(priority=3,1,0)) as \"c_pack\" from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" $query_add";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row=mysqli_fetch_array($sql_result))
     {
@@ -183,7 +183,7 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
         //$ex_factory=$sql_row['ex_factory'];
     }
 
-    $sql="select group_concat(distinct ex_factory_date_new) as ex_factory from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" order by ex_factory_date_new";
+    $sql="select group_concat(distinct ex_factory_date_new ORDER BY ex_factory_date_new ASC) as ex_factory from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" ";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row=mysqli_fetch_array($sql_result))
     {

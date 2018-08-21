@@ -64,10 +64,10 @@ body
     
 		?>
 
-		<form name="input" method="post" action="?r=<?= $url ?>" enctype="multipart/form data" id="form">
+		<form name="input" method="post" action="<?= $_SERVER['PHP_SELF'] ?>" enctype="multipart/form data" id="form">
 		<div class="row">
 		<div class="form-group col-md-3">
-		<input type="text" name="cartonid" id="cartonid" class="form-control" onkeyup="document.input.submit();"  value="">
+		<input type="text" name="cartonid" id="cartonid" class="form-control" onkeydown="document.input.submit();"  value="">
 		</div>
 		</div>
 		<div class="row">
@@ -222,3 +222,17 @@ echo "<br><div>
 </body>
 
 </div>
+<script>
+$('#cartonid').on({
+    keypress: function() { typed_into = true; },
+    change: function() {
+		alert('hi');
+        if (typed_into) {
+            alert('type');
+            typed_into = false; //reset type listener
+        } else {
+            alert('not type');
+        }
+    }
+});
+</script>
