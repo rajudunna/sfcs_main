@@ -10,31 +10,15 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <link rel="stylesheet" type="text/css" href="<?= '../'.getFullURL($_GET['r'],'js/style.css','R') ?>">
 <link rel="stylesheet" type="text/css" href="<?= '../'.getFullURL($_GET['r'],'table.css','R') ?>">
-<style type="text/css">
-#div-1a {
- position:absolute;
- top:65px;
- right:0;
- width:auto;
- float:right;
-}
-th{
-	background-color:#29759c;
-	color:white;
-	text-align:center;
-}
-</style>
 
 
 <div class="panel panel-primary">
 <div class="panel-heading">Embellishment Panel WIP</div>
 <div class="panel-body">
-
+<div style='max-height:600px;overflow:scroll'>
 <?php
 
-
-
-echo "<table class='table table-bordered' id='table1'><tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>EMB PANEL WIP</th><th>EX-Factory</th></tr>";
+echo "<table class='table table-bordered' id='table1'><tr class='info'><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>EMB PANEL WIP</th><th>EX-Factory</th></tr>";
 
 $sql="select order_tid,group_concat(doc_no) as doc_no,SUM((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl+a_s01+a_s02+a_s03+a_s04+a_s05+a_s06+a_s07+a_s08+a_s09+a_s10+a_s11+a_s12+a_s13+a_s14+a_s15+a_s16+a_s17+a_s18+a_s19+a_s20+a_s21+a_s22+a_s23+a_s24+a_s25+a_s26+a_s27+a_s28+a_s29+a_s30+a_s31+a_s32+a_s33+a_s34+a_s35+a_s36+a_s37+a_s38+a_s39+a_s40+a_s41+a_s42+a_s43+a_s44+a_s45+a_s46+a_s47+a_s48+a_s49+a_s50)*a_plies) AS pcs from $bai_pro3.order_cat_doc_mk_mix where act_cut_status=\"DONE\" and date >= \"2015-01-01\" and act_cut_issue_status!=\"DONE\" and category in (\"Body\",\"Front\") group by order_tid order by doc_no";
 //echo $sql."<br>";
@@ -134,6 +118,7 @@ if($flag==0) {
 echo "</table>";
 
 ?>
+</div>
 
 <script language="javascript" type="text/javascript">
 //<![CDATA[

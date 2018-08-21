@@ -5,59 +5,20 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 ?>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!---<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/css/table.css',4,'R'); ?>">
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',4,'R') ?>"></script>
-<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',4,'R'); ?>">
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',4,'R') ?>"></script>
-<style type="text/css">
-#div-1a {
- position:absolute;
- top:65px;
- right:0;
- width:auto;
- float:right;
-</style>
-<style type="text/css" media="screen">
-/*====================================================
-	- HTML Table Filter stylesheet
-=====================================================*/
-@import "TableFilter_EN/filtergrid.css";
 
-/*====================================================
-	- General html elements
-=====================================================*/
-body{ 
-	/* margin:15px; padding:15px; border:1px solid #666; */
-	font-family:Arial, Helvetica, sans-serif; font-size:88%; 
-}
-
-
-h2{ margin-top: 50px; }
-caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
-pre{ font-size:13px;  padding:5px; background-color:#f4f4f4; solid #ccc;  }
-.mytable{
-	width:100%; font-size:12px;
-	}
-div.tools{ margin:5px; }
-div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
-.mytable th{ background-color:#29759c; color:#FFF; width: 100px; padding:2px; solid #ccc; white-space: nowrap;}
-td{ padding:2px; width: 100px; white-space: nowrap;}
-
-</style>--->
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',4,'R') ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R') ?>"></script>
 <script language="javascript" type="text/javascript"></script>
 
-<!---<div id="page_heading"><span style="float:"><h3>Packing WIP</h3></span><span style="float: right">&nbsp;</span></div>--->
+
 
 <div class="panel panel-primary">
 <div class="panel-heading">Packing WIP</div>
 <div class="panel-body">
-
+<div style='overflow:scroll;max-height:600px'>
 <?php
     set_time_limit(6000000);
 	//$msg="<table border='1px' class='mytable' id='table1'><tr><th>Schedule No</th><th>Doc No</th><th>Cut No</th><th>Scanned Qty</th><th>Unscanned Qty</th><th>Input</th><th>Output</th></tr>";
-	$msg="<div class='table table-responsive'><table class='table table-bordered'  id='table1'><tr><th class='text-center'>Buyer Division</th><th class='text-center'>Style</th><th class='text-center'>CO</th><th class='text-center'>Schedule</th><th class='text-center'>Color</th><th class='text-center'>Packing WIP</th><th class='text-center'>EX-Factory</th></tr>";
+	$msg="<table class='table table-bordered'  id='table1'><tr class='info'><th class='text-center'>Buyer Division</th><th class='text-center'>Style</th><th class='text-center'>CO</th><th class='text-center'>Schedule</th><th class='text-center'>Color</th><th class='text-center'>Packing WIP</th><th class='text-center'>EX-Factory</th></tr>";
 $sqlw="select distinct order_del_no as del_no FROM $bai_pro3.packing_summary WHERE date(lastup) >= \"2015-01-01\"";
 //echo $sqlw;
 $resultw=mysqli_query($link, $sqlw) or die("Sql error--1".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
@@ -191,8 +152,8 @@ while($roww=mysqli_fetch_array($resultw))
 	$msg.="</table></div>";
 	echo $msg;
 ?>
+
 <script language="javascript" type="text/javascript">
-//<![CDATA[
 	var table6_Props = 	{
 							rows_counter: true,
 							btn_reset: true,
@@ -201,16 +162,10 @@ while($roww=mysqli_fetch_array($resultw))
 						};
 	setFilterGrid( "table1",table6_Props );
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
-//]]>
+		$('#reset_table1').find('a').addClass('table_resets');
 </script>
 
 </div>
 </div>
 </div>
-<style>
-th{
-	background-color:#29759c;
-	color:white;
-	text-align:center;
-}
-</style>
+
