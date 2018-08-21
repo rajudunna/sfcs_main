@@ -703,7 +703,6 @@
                                 SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status='DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
                                 $view_count=0;
                             }
-                            // echo "Modulewise data : ".$sql1."<br>";
                             $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
                             $sql_num_check=mysqli_num_rows($sql_result1);
                             while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -719,7 +718,6 @@
                                 $ord_style=$sql_row1['order_style_no'];
                                 //$fabric_status=$sql_row1['fabric_status'];
                                 $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
-                                
                                 $bundle_location="";
                                 if(sizeof(explode("$",$sql_row1['bundle_location']))>1)
                                 {
@@ -729,8 +727,7 @@
                                 if(sizeof(explode("$",$sql_row1['plan_lot_ref']))>1)
                                 {
                                     $fabric_location=end(explode("$",$sql_row1['plan_lot_ref']));
-                                }           
-                                
+                                }                               
                                 $style=$sql_row1['order_style_no'];
                                 $schedule=$sql_row1['order_del_no'];
                                 $color=$sql_row1['order_col_des'];
@@ -740,220 +737,8 @@
                                 $color_code=$sql_row1['color_code'];
                                 $log_time=$sql_row1['log_time'];
                                 $emb_stat=$sql_row1['emb_stat'];
-                                
-                                // $sql_doc1="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
-                                // //$result_doc1=mysqli_query($link, $sql_doc1) or exit("Sql Error 13".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                // $result_doc1=mysqli_query($link, $sql_doc1);
-                                
-                                // $sql_doc="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no and act_cut_status=\"DONE\"";
-                                // //echo $sql_doc."<br>";
-                                // //$result_doc=mysqli_query($link, $sql_doc) or exit("Sql Error 14".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                // $result_doc=mysqli_query($link, $sql_doc);
-
-                                // if(mysqli_num_rows($result_doc)== mysqli_num_rows($result_doc1))
-                                // {
-                                //     $cut_new="DONE";
-                                //     $id2="blue";
-                                // }
-                                // else
-                                // {
-                                //     $sql11x="select * from fabric_priorities where doc_ref=$doc_no and hour(issued_time)+minute(issued_time)>0";
-                                //     $sql_result11x=mysqli_query($link, $sql11x) or exit("Sql Error 15");
-                                //     //echo "Fab Priorities : ".$sql11x."<br>";
-                                //     if(mysqli_num_rows($sql_result11x)>0)
-                                //     {
-                                //         $id12='yellow';
-                                //     }
-                                //     else if(mysqli_num_rows($sql_result11x)==0)
-                                //     {
-                                //         $id12="lgreen"; 
-                                //         $sql11x1="select * from fabric_priorities where doc_ref=$doc_no";
-                                //         $sql_result11x1=mysqli_query($link, $sql11x1) or exit("Sql Error 16");
-                                //         if(mysqli_num_rows($sql_result11x1)==0)
-                                //         {
-                                //             $id12="yash";   
-                                //         }
-                                //     }
-                                //     else
-                                //     {
-                                //         $id12="yash";   
-                                //     }
-                                // }
-                                // //Exception for M&S WIP - 7000
-                                
-                                // $sql11="select sum(ims_pro_qty) as \"bac_qty\", sum(emb) as \"emb_sum\" from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";          
-                                // $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 17".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                // $input_count=mysqli_num_rows($sql_result11);
-                                // while($sql_row11=mysqli_fetch_array($sql_result11))
-                                // {
-                                //     $output=$sql_row11['bac_qty'];
-                                //     $emb_sum=$sql_row11['emb_sum'];
-                                //     if($emb_sum==NULL)
-                                //     {
-                                //         $input_count=0;
-                                //     }
-                                // } 
-                                
-                                // if($cut_new=="DONE"){ $cut_new="T";} else { $cut_new="F"; }
-                                // if($rm_update_new==""){ $rm_update_new="F"; } else { $rm_update_new="T"; }
-                                // if($rm_new=="0000-00-00 00:00:00" or $rm_new=="") { $rm_new="F"; } else { $rm_new="T";  }
-                                // if($input_temp==1) { $input_temp="T";   } else { $input_temp="F"; }
-                                // if($cut_input_new=="DONE") { $cut_input_new="T";    } else { $cut_input_new="F"; }
-                                
-                                // $check_string=$cut_new.$rm_update_new.$rm_new.$input_temp.$cut_input_new;
-                                // $rem="Nil";
-                                
-                                //NEW FSP
-                                if($fabric_status!=5)
-                                {
-                                    //echo "1=".$fabric_status."-".$sql1."<br>";
-                                    $ft_status=$sql_row1['ft_status'];
-                                    //echo "2=".$fabric_status."-".$sql1."<br>";
-                                    //To get the status of join orders
-                                    $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins=2";
-                                    //echo $sql11."<br>";
-                                    $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    
-                                    if(mysqli_num_rows($sql_result11)>0)
-                                    {
-                                        $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_joins=\"J$schedule\"";
-                                        //echo $sql11."<br>";
-                                        $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 19".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                        while($sql_row11=mysqli_fetch_array($sql_result11))
-                                        {
-                                            $join_ft_status=$sql_row11['ft_status'];
-                                            if($sql_row11['ft_status']==0 or $sql_row11['ft_status']>1)
-                                            {
-                                                break;
-                                            }
-                                        }
-                                        //echo "3=".$fabric_status."-".$sql11."<br>";
-                                        $ft_status=$join_ft_status;
-                                    }
-                                    //To get the status of join orders
-                                }
-                                //NEW FSP
-                                //echo "4=".$fabric_status."-".$sql1."<br>";
-                                // switch ($fabric_status)
-                                // {
-                                //     case "1":
-                                //     {
-                                //         $id="green";                    
-                                //         $rem="Available";
-                                //         break;
-                                //     }
-                                //     case "0":
-                                //     {                                   
-                                //         $id="red";
-                                //         $rem="Not Available";
-                                //         break;
-                                //     }
-                                //     case "2":
-                                //     {
-                                //         $id="red";
-                                //         $rem="In House Issue";
-                                //         break;
-                                //     }
-                                //     case "3":
-                                //     {
-                                //         $id="red";
-                                //         $rem="GRN issue";
-                                //         break;
-                                //     }
-                                //     case "4":
-                                //     {
-                                //         $id="red";
-                                //         $rem="Put Away Issue";
-                                //         break;
-                                //     }       
-                                //     case "5":
-                                //     {
-                                //         $sql1x1="select doc_ref from $bai_pro3.fabric_priorities where doc_ref=$doc_no and hour(issued_time)+minute(issued_time)>0";
-                                //         $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error 20".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                //         if(mysqli_num_rows($sql_result1x1)>0)
-                                //         {
-                                //             $id="yellow";
-                                //         }
-                                //         else
-                                //         {
-                                //             $id="green";
-                                //         }
-                                //         break;
-                                //     }               
-                                //     default:
-                                //     {
-                                //         $id="yash";
-                                //         $rem="Not Update";
-                                //         break;
-                                //     }
-                                // }
-
-                                //To highlight colors when it was requested.
-                                //echo "color - id :".$id."</br>";
-                                // $sql11x="select * from $bai_pro3.fabric_priorities where doc_ref=\"$doc_no\"";
-                                // $sql_result11x=mysqli_query($link, $sql11x) or exit("Sql Error 21".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                // //echo $sql11x."<br>";
-                                // if(mysqli_num_rows($sql_result11x)>0 and $id!="yellow")
-                                // {
-                                //     $id="lgreen";   
-                                // } 
-                                    
-                                //if($cut_new=="DONE")
-                                //echo "Color Id : ".$id."</br>";
-                                // if($cut_new=="T")
-                                // {   
-
-                                //     //changed into white due to removing from modules 05062018  
-                                //     // $id="white";
-                                //     $id="blue";
-                                // }
-                                // else
-                                // {
-                                //     //echo $id;
-                                //     if($id!='yellow')
-                                //     {
-                                //         $id=$id12;      
-                                //     }               
-                                // }
-                                //echo "4=".$id."-".$fabric_status."-".$sql1."-".$sql11x."<br>";
-                                //echo "COlor Status id12 : ".$id12."</br>";
-                                // if($id!="blue" and $id!="yellow" and $blink_check==0)
-                                // {
-                                //     //For Section Level Blinking
-                                //     if($blink_minimum==0)
-                                //     {
-                                //         $blink_minimum=$fab_wip;
-                                //         $blink_docs[$bindex]=$doc_no;
-                                //     }
-                                //     else
-                                //     {
-                                //         if($fab_wip<$blink_minimum)
-                                //         {
-                                //             $blink_minimum=$fab_wip;
-                                //             $blink_docs[$bindex]=$doc_no;
-                                //         }   
-                                //     }
-                                //     $blink_check=1;
-                                // }
-                                    
-                                    
-                                //Filter view to avoid Cut Completed and Fabric Issued Modules
-                                // if($_GET['view']==1)
-                                // {
-                                //     if($cut_new=="T" or $fabric_status==5)
-                                //     {
-                                //         continue;                   
-                                //     }
-                                //     else
-                                //     {
-                                //         $view_count++;
-                                //     }
-                                //     if($view_count==5)
-                                //     {
-                                //         break;
-                                //     }
-                                // }
-
+                                $ft_status=$sql_row1['ft_status'];
+                                         
                                 //For Color Clubbing
                                 unset($club_c_code);
                                 unset($club_docs);
@@ -963,8 +748,9 @@
                                 
                                 if($sql_row1['clubbing']>0)
                                 {
-                                    $total_qty=0;
-                                    $sql11="select order_col_des,color_code,doc_no,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where UPPER(category) in (".$in_categories.") and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno='".$cut_no."'";
+                                    $tids=array();
+									$total_qty=0;
+                                    $sql11="select order_tid,order_col_des,color_code,doc_no,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where UPPER(category) in (".$in_categories.") and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno='".$cut_no."'";
                                     //echo "</br>RMS tool Tip:".$sql11."</br>";
                                     $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 22".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -973,16 +759,55 @@
                                         $club_docs[]=$sql_row11['doc_no'];
                                         $total_qty+=$sql_row11['total'];
                                         $colors_db[]=trim($sql_row11['order_col_des']);
-                                    } 
-                                   
+										$tids[]=$sql_row11['order_tid'];
+                                    }
+									$sql111="select min(st_status) as s_status,min(ft_status) as f_status from $bai_pro3.bai_orders_db_confirm where order_tid in ('".implode("','",$tids)."')";
+									$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));
+									while($sql_row112=mysqli_fetch_array($sql_result111))
+									{
+										$ft_status=$sql_row112['f_status'];
+									}									
+									// $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins=2";
+                                    // $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));                                    
+                                    // if(mysqli_num_rows($sql_result11)>0)
+                                    // {
+                                        // $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_joins=\"J$schedule\"";
+                                        // $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 19".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        // while($sql_row11=mysqli_fetch_array($sql_result11))
+                                        // {
+                                            // $join_ft_status=$sql_row11['ft_status'];
+                                            // if($sql_row11['ft_status']==0 or $sql_row11['ft_status']>1)
+                                            // {
+                                                // break;
+                                            // }
+                                        // }
+										// $ft_status=$join_ft_status;
+                                    // }
                                 }
                                 else
                                 {
                                     $colors_db[]=$color;
                                     $club_c_code[]=chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);
                                     $club_docs[]=$doc_no;
+									$tids=array();
+									//NEW FSP if it has schedule Clubbing 
+									$sql11="select * from $bai_pro3.plandoc_stat_log where org_doc_no='".$doc_no."'";
+                                    $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));                                    
+                                    if(mysqli_num_rows($sql_result11)>0)
+                                    {
+                                        while($sql_row11=mysqli_fetch_array($sql_result11))
+                                        {
+											$tids[]=$sql_row11['order_tid'];
+                                        }
+										$sql111="select min(st_status) as s_status,min(ft_status) as f_status from $bai_pro3.bai_orders_db_confirm where order_tid in ('".implode("','",$tids)."')";
+										$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($sql_row112=mysqli_fetch_array($sql_result11))
+                                        {
+											$ft_status=$sql_row112['f_status'];
+										}
+									}
                                 }
-                                
+                                unset($tids);
                                 $colors_db=array_unique($colors_db);
                                 $club_c_code=array_unique($club_c_code);
                                 $club_docs=array_unique($club_docs);
@@ -1006,12 +831,12 @@
                                     $final_cols = 'yellow';
                                     $rem="Fabric issued";
                                 }
-                                else if (mysqli_num_rows($fab_request_result)>0)
+                                elseif (mysqli_num_rows($fab_request_result)>0)
                                 {
                                     $final_cols = 'green';
                                     $rem="Fabric requested";
                                 }
-                                else if ($fabric_status < 5)
+                                elseif ($fabric_status < 5)
                                 {
                                     switch ($ft_status)
                                     {

@@ -1,21 +1,3 @@
-<!--
-Core Module:In this interface we can get module wise trims allocation details.
-
-Description: We can see the trims availability status.
-
-Changes Log:2013-11-25/DharaniD/Ticket #988194 change order in trims status ie($trims_statusx)
-2014-02-01/DharaniD/Ticket #663887 change the buyer division display based on the pink,logo,IU as per plan_modules  
-2014-02-08/DharaniD/Ticket #424781 Disply buyer division from the database level plan_module table, change the display buyer name as per plan_modules table.  
-
-2014-02-08/DharaniD/Ticket #688771 Display IU modues Priorit boxes with "IU" Symbol , if it is emblishment display "IX".
-
-2014-07-10/ DharaniD / service request #359982 / Add IU for new schedule like L____W(or)X(or)Y(or)Z and  O____W(or)X(or)Y(or)Z (previously L____Y(or)Z and  O____Y(or)Z)
-
-edited by sudheer and chandu in 23-04-2018 at 17.6868° N, 83.2185° E
--->
-
-
-
 <style>
 body
 {
@@ -117,7 +99,7 @@ border: 1px solid black;
 .green {
   width:20px;
   height:20px;
-  background-color: #00ff00;
+  background-color: #339900;
   display:block;
   float: left;
   margin: 2px;
@@ -134,13 +116,13 @@ border: 1px solid black;
 
 .green a:hover {
   text-decoration:none;
-  background-color: #00ff00;
+  background-color: #339900;
 }
 
 .lgreen {
   width:20px;
   height:20px;
-  background-color: #339900;
+  background-color: #59ff05;
   display:block;
   float: left;
   margin: 2px;
@@ -159,7 +141,7 @@ border: 1px solid black;
 
 .lgreen a:hover {
   text-decoration:none;
-  background-color: #339900;
+  background-color: #59ff05;
   
 }
 
@@ -495,18 +477,12 @@ document.oncontextmenu=new Function("sweetAlert('Function Disabled!','','warning
 <?php
 
 $newtempname="plan_doc_summ_input_".$username;
-// echo $newtempname;
 $sql="DROP TABLE IF EXISTS temp_pool_db.$newtempname";
 //echo $sql."<br/>";
 mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 //$sql="CREATE  TABLE temp_pool_db.$newtempname ENGINE = MYISAM SELECT MIN(st_status) AS st_status,order_style_no,input_job_no_random,GROUP_CONCAT(DISTINCT order_del_no) AS order_del_no,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no FROM plan_doc_summ_input GROUP BY input_job_no_random";
-$sql="CREATE  TABLE $temp_pool_db.$newtempname ENGINE = myisam SELECT st_status,act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty AS total,input_job_no AS acutno,GROUP_CONCAT(DISTINCT CHAR(color_code)) AS color_code,input_job_no,input_job_no_random,input_job_no_random_ref FROM $bai_pro3.plan_dash_doc_summ_input GROUP BY input_job_no_random_ref ORDER BY input_priority";
-if($username='sfcsproject1'){
-	//echo $sql."<br/>";
-}
-
-
+$sql="CREATE  TABLE $temp_pool_db.$newtempname ENGINE = myisam SELECT st_status,ft_status,act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty AS total,input_job_no AS acutno,GROUP_CONCAT(DISTINCT CHAR(color_code)) AS color_code,input_job_no,input_job_no_random,input_job_no_random_ref FROM $bai_pro3.plan_dash_doc_summ_input GROUP BY input_job_no_random_ref ORDER BY input_priority";
 mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 //echo "<font size=4>LIVE TRIMS STATUS DASHBOARD";
@@ -581,7 +557,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 }
 if(sizeof($remove_docs)>0)
 {
-	$backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
+	$backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
 	// echo $backup_query.";<br>";
 	mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
 
@@ -694,34 +670,29 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					$tstatus='Status Not update';
 				}			
-				$sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM $temp_pool_db.$newtempname WHERE input_job_no_random='$input_job_no_random_ref'";	
-				
+				$sql2="SELECT MIN(st_status) AS st_status,MIN(ft_status) AS ft_status,order_style_no,GROUP_CONCAT(DISTINCT order_del_no) AS order_del_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,
+				GROUP_CONCAT(DISTINCT doc_no) AS doc_no FROM $temp_pool_db.$newtempname WHERE input_job_no_random='$input_job_no_random_ref'";
 				$result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row2=mysqli_fetch_array($result2))
 				{
 					$trims_status=$row2['st_status'];
 					$style=$row2['order_style_no'];
 					$schedule=$row2['order_del_no'];
+					$order_col=$row2['order_col_des'];
 					$input_job_no=$row2['input_job_no'];
-					$doc_no_ref=$row2['doc_no'];
+					$doc_no_ref=echo_title("$bai_pro3.packing_summary_input","group_concat(distinct doc_no)","input_job_no_random",$input_job_no_random_ref,$link);
 					$schedule_no=$row2['order_del_no'];
+					$ft_status=$row2['ft_status'];
 				}
-				
-				$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$schedule' and input_job_no",$input_job_no,$link);
+				$get_color = $order_col;
 				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
-		
 				$ft_status_min="";
-				//if($schedule!="")
-				//{
-					$sel_fab_sts="select max(ft_status) as ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.")";
-					$result_fab_sts=mysqli_query($link, $sel_fab_sts) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($row_fab_sts=mysqli_fetch_array($result_fab_sts))
-					{
-						$ft_status=$row_fab_sts['ft_status'];
-					}			
+				if($schedule!="")
+				{
 					$doc_no_ref_explode=explode(",",$doc_no_ref);
 					$num_docs=sizeof($doc_no_ref_explode);
 					$sql1x1="select * from $bai_pro3.plandoc_stat_log where act_cut_status<>'DONE' and doc_no in ($doc_no_ref)";
+					//echo $sql1x1."<bR>";
 					$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result1x1)>0)
 					{
@@ -732,6 +703,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$cut_status="5";
 					}
 					$sql1x11="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' and doc_no in ($doc_no_ref)";
+					//echo $sql1x11."<br>";
 					$sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result1x11)>0)
 					{
@@ -741,33 +713,39 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$fabric_status="5";
 					}
-					$sql1x115="select * from $bai_pro3.fabric_priorities where doc_ref not in ($doc_no_ref)";
+					$sql1x115="select * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no_ref)";
 					$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result1x115)>0)
 					{
-						$fabric_req="0";
+						if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
+						{
+							$fabric_req="0";
+						}
+						else
+						{
+							$fabric_req="5";
+						}	
 					}
 					else
 					{
-						$fabric_req="5";
-					}	
-					
+						$fabric_req="0";
+					}
 					if($cut_status=="5")
 					{
 						$id="blue";					
 						$rem="Cut Completed";
 					}
-					else if($fabric_status=='5')
+					elseif($fabric_status=='5')
 					{
 						$id="yellow";					
 						$rem="Fabric Issued";	
 					}
-					else if($fabric_req=="5")
+					elseif($fabric_req=="5")
 					{
 						$id="green";					
 						$rem="Fabric Requested";
 					}
-					else if($fabric_status<5)
+					elseif($fabric_status<"5")
 					{
 						switch ($ft_status)
 						{
@@ -855,7 +833,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							{
 								echo "<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a>
+											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
 										</div>
 									</div>";
@@ -866,7 +844,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 								{
 									echo "<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a>
+											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
 										</div>
 									</div>";
@@ -875,7 +853,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 								{
 									echo "<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a>
+											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
 										</div>
 									</div>";
@@ -885,16 +863,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						else
 						{
 							
-							echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a></div></div></div>";
+							echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
 						}
 					}
 					else
 					{
-						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"#\" ><font style=\"color:black;\">$letter$ft_status</font></a></div></div></div>";
+						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"#\" ><font style=\"color:black;\"></font></a></div></div></div>";
 
 					}				
 					$y++;
-				//}
+				}
 			}
 			for($j=$y+1;$j<=4;$j++)
 			{
@@ -946,6 +924,12 @@ if((in_array(strtolower($authorized),$has_permission)))
 <div style="clear: both;"> </div>
 
 <?php
+$sql="DROP TABLE IF EXISTS temp_pool_db.$newtempname";
+mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+$sql="DROP TABLE IF EXISTS $table_name";
+mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 include "include_legends_ips.php";
 ?>
 </div>
