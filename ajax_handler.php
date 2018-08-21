@@ -166,8 +166,13 @@ $('form').on("submit",function(event) {
             }
             var c = url.split("?").pop();
             var menu = WindowGetURLParameter("menu");
-            if(menu == 'reports'){
-                jQuery("#report_body").html(resp);
+            if(menu == 'reports' || menu == 'production'){
+                if(menu == 'reports'){
+                    jQuery("#report_body").html(resp);
+                }
+                if(menu == 'production'){
+                    jQuery("#production_body").html(resp);
+                }
                 window.history.pushState("object or string", "Title", "?"+c+"&menu="+menu);
             }else{
                 jQuery("#modal-body").html(resp);
