@@ -168,7 +168,7 @@
 						<img src="/images/merge.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Clubbing</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/color_clubbing/test.php') ?>"  name="Clubbing By Color" onclick="modal('','',this.name)">By Color</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_clubbing/schedule_mix_bek.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">By Schedule</a> )
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/color_clubbing/test.php') ?>"  name="Clubbing By Color" onclick="modal('','',this.name)">By Color</a> | <b>By Schedule</b> : <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_schedules.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">Mix</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_jobs.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">Mix Split</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_schedules_delete.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">Mix Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_jobs_delete.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">Mix Split Delete</a> ) 
 						</p>
 					</div>
 				</li>

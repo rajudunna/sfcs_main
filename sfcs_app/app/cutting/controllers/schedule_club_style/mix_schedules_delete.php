@@ -53,7 +53,7 @@ if(isset($_POST['submit']))
 ?>
 
 <div class='panel panel-primary'>
-	<div class='panel panel-heading'>Schedule Mix Delete Panel</div>
+	<div class='panel-heading'>Schedule Mix Delete Panel</div>
 	<div class='panel-body'>
 
 <form name="test" action="index.php?r=<?= $_GET['r'] ?>" method="post">
