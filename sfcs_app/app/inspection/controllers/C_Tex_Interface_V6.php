@@ -2128,7 +2128,9 @@ tags will be replaced.-->
    <td class=xl11024082 colspan=2 rowspan=2><?php
    echo '<input type="hidden" id="print_report"  name="print_report" value="'.$print_report.'">';
     if($print_report>0) 
-   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
+   	{
+		   $rurl = "'".getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R')."?lot_no=".$lot_no."&lot_ref=".$lot_ref."'";
+		    echo '<h3><center><a class="btn btn-warning" href="#" onclick= "return popitup('.$rurl.')" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
   
  <td class=xl11024082></td> 
  </tr>
@@ -2682,10 +2684,13 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 
 	echo "<h2>Please Wait While Updating Data.</h2>";
 	$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
+	$rurl = $url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref;
 	echo "<script type='text/javascript'>";
 	echo "setTimeout('Redirect()',0);";
-	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."';";
-	echo "function Redirect(){location.href=url;}</script>";	
+	// echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."';";
+	echo "function Redirect(){
+		Ajaxify('".$rurl."');
+	}</script>";	
 }
 ?>
 
@@ -3132,6 +3137,11 @@ function change_head(x,y)
 	document.getElementById('head_check').value=1;
 	document.getElementById(y).style.background="#FFCCFF";
 
+}
+function popitup(url) {
+	newwindow=window.open(url,name,scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0);
+	if (window.focus) {newwindow.focus()}
+	return false;
 }
 
 </script>

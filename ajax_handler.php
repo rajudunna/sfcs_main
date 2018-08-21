@@ -146,7 +146,7 @@ $('form').on("submit",function(event) {
           type:'POST',
           url: url,
           cache:false,
-          data: from_data
+          data: from_data,
         }).done(function(resp) {
             // url = new URL(url);
             // var c = url.searchParams.get("r");
