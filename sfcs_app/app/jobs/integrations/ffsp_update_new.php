@@ -1,8 +1,8 @@
 <?php
-$start_timestamp = microtime(true);
+error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-include($include_path.'\sfcs_app\common\config\m3_api_calls.php');
+include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
 // include('../../../common/config/config.php');
 // include('../../../common/config/m3_api_calls.php');
 $store_data = [];
@@ -16,13 +16,18 @@ while($row = mysqli_fetch_array($result))
     $details['color'] = $row['order_col_des'];
     array_push($store_data,$details);
 }
-
+$count=0;
 //looping the data to send it in API
 foreach($store_data as $data){
+
     $url  = 'http://gd-app-01/rmd/api/ScheduleStatus?style='.$data['style'].'&schedule='.$data['schedule'].'&color='.$data['color'];	
 	$url = str_replace(" ", '%20', $url);	
+	$start_timestamp = microtime(true);
     $result = $obj->getCurlRequest($url);	
 	$resultObj = json_decode($result);
+	$end_timestamp = microtime(true);
+	$duration = $end_timestamp - $start_timestamp;
+	print("Execution took ".$duration." milliseconds.")."\n";
 	
 	$style = $resultObj[0]->Style;
 	$schedule = $resultObj[0]->Schedule;
@@ -77,10 +82,9 @@ foreach($store_data as $data){
     {
         print("Updated bai_orders_db_confirm Sucessfully")."\n";
     }
+	$count++;
 }
 
-
-	$end_timestamp = microtime(true);
-	$duration = $end_timestamp - $start_timestamp;
-	print("Execution took ".$duration." milliseconds.");
+print("Total Records :".$count)."\n";
+	
 ?>
