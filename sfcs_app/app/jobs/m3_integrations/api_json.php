@@ -1,45 +1,40 @@
 
 <?php
-error_reporting(0);
-$host = "192.168.0.110:3326"; 
-$user = "baiall"; 
-$pass = "baiall"; 
-$link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-mysqli_select_db($link,'bai_pro3') or die("Error in selecting the database:");
-$service_url = 'http://localhost:81/sfcs_app/app/jobs/integrations/json_m3.php';
-$curl = curl_init($service_url);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-$curl_response = curl_exec($curl);
-if ($curl_response === false) {
-    $info = curl_getinfo($curl);
-    curl_close($curl);
-    die('error occured during curl exec. Additioanl info: ' . var_export($info));
-}
-// var_dump($curl_response);
-// die();
-curl_close($curl);
-$decoded = json_decode(($curl_response),true);
+$start_timestamp = microtime(true);
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+include($include_path.'\sfcs_app\common\config\m3_api_call.php');
+
+$obj1 = new get_api_call();	
+$url="http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelOperations?CONO=200&FACI=Q01&MFNO=7512409&PRNO=M05083AB%20%20%200190";
+$result = $obj1->getCurlRequest($url);	
+$decoded = json_decode($result,true);
+
 // var_dump($decoded);
-//$selected_arr = ['OPDS', 'MFNO', 'PLG1' , 'PITI' , 'OPNO' , 'MAQT', 'SCQT'];
-$selected_arr = [ 'MFNO'  , 'OPNO' , 'MAQT', 'SCQT'];
-foreach ($decoded as $key => $value) {
-    foreach ($value['NameValue'] as $key1 => $value1) {
-        if(in_array($value1['Name'] , $selected_arr)) 
-        {
-            $name[$value1['Name']][$key]= $value1['Value'];
- 
-        }
-
-    }
-
-}
-
-foreach($name as $key => $value)
+$selected_arr = ['OPDS','MFNO','PLG1','PITI','OPNO','MAQT','SCQT'];
+$name_values = array_column($decoded['MIRecord'], 'NameValue');
+foreach ($name_values as $key => $value) 
 {
-    $test[$key]=implode(",",$name[$key]);
-    $test1[$key]=$name[$key];
-
+    foreach ($value as $key1 => $value1) 
+    {
+        if(in_array($value1['Name'] , $selected_arr)) {
+            $all_data_array[$value1['Name']][] = $value1['Value'];
+        }
+    }
 }
+
+echo "<br>";
+echo "<br>";
+
+echo "<br>";
+
+
+foreach($all_data_array as $key => $value){
+    $test[$key]=implode(",",$all_data_array[$key]);
+    $test1[$key]=$all_data_array[$key];
+}
+
+
  var_dump($test1);
  echo "</br>";
       $req_fields = ['MAQT','SCQT'];
