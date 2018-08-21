@@ -219,8 +219,6 @@ body
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = 'in_trims.php?location=".$code."'; }</script>";
 			}
 		}
-
-		//echo "<div class='pull-right text-right'><div ><h2><font color=\"green\">In</font></h2><br/><h2><a href='$url'><button class='btn btn-primary'>In</button></a> <Br/><a href='".getFullURL($_GET['r'],'out.php','N')."'><button class='btn btn-primary'>F-Out</button></a><Br/><a href='".getFullURL($_GET['r'],'out_trims_scanner.php','N')."'><button class='btn btn-primary'>T-Out</button></a> </h2></div></div>";
 		?>
 	</div>
 </div>
