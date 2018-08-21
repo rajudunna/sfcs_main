@@ -65,7 +65,7 @@
 //echo $style.$schedule.$color;
 ?>
 <div class='panel panel-primary'>
-	<div class='panel panel-heading'>Schedule Clubbing (Style)</div>
+	<div class='panel-heading'>Schedule Clubbing (Style)</div>
 	<div class='panel-body'>
 		<form name="test" action="index.php?r=<?= $_GET['r'] ?>" method="post">
 		<?php	

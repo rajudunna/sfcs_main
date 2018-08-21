@@ -110,8 +110,8 @@ if(isset($_POST["submit"]))
 	{
 		// header("Location:exp_mod_week_data_old.php?dat1=$start&dat2=$end&sec=$sec&cat=$cat");
 		echo '<script>
-		var ajax_url ="'.$exp_mod_week_data_old.'&dat1='.$start.'&dat2='.$end.'&sec='.$sec.'&cat='.$cat.'";
-		Ajaxify('ajax_url,'report'_body'); 
+		var ajax_url ="'.$exp_mod_week_data_old.'&dat1='.$start.'&dat2='.$end.'&sec='.$sec.'&cat='.$cat.'"
+		Ajaxify(ajax_url,"report_body");
 		</script>';
 		
 
@@ -120,8 +120,8 @@ if(isset($_POST["submit"]))
 	{
 		// header("Location:exp_mod_shift_data.php?dat1=$start&dat2=$end&sec=$sec&cat=$cat");	
 		echo '<script>
-		var ajax_url ="'.$exp_mod_shift_data.'&dat1='.$start.'&dat2='.$end.'&sec='.$sec.'&cat='.$cat.'";
-			Ajaxify('ajax_url,'report'_body'); 
+		var ajax_url ="'.$exp_mod_shift_data.'&dat1='.$start.'&dat2='.$end.'&sec='.$sec.'&cat='.$cat.'"
+		Ajaxify(ajax_url,"report_body"); 
 		</script>';
 		// header("Location:'.$exp_mod_shift_data.'?dat1='.$start.'&dat2='.$end.'&sec='.$sec.'&cat='.$cat.'");
 	}

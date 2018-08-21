@@ -166,11 +166,21 @@ $('form').on("submit",function(event) {
             }
             var c = url.split("?").pop();
             var menu = WindowGetURLParameter("menu");
-            if(menu == 'reports'){
-                jQuery("#report_body").html(resp);
+            if(menu == 'reports' || menu == 'production'){
+                if(menu == 'reports'){
+                    jQuery("#report_body").html(resp);
+                }
+                if(menu == 'production'){
+                    jQuery("#production_body").html(resp);
+                }
                 window.history.pushState("object or string", "Title", "?"+c+"&menu="+menu);
             }else{
                 jQuery("#modal-body").html(resp);
+                $('input[name="lot_no"]').val(localStorage.getItem('lot'));
+                $('input[name="reference"]').val(localStorage.getItem('batch'));
+                $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
+                $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
+                $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
                 $('#myModal').modal('show'); 
             }
            
@@ -188,7 +198,10 @@ $('form').on("submit",function(event) {
 });
 
 function anchortag(event,href_url=0){
+
     event.preventDefault();
+
+    alert(localStorage.getItem("batch"));
     var url;
     var href_url;
     var split_url;
@@ -236,9 +249,26 @@ function anchortag(event,href_url=0){
                     }
                 }
             }
+
+            if(localStorage.getItem("lot")===null) {
+                localStorage.lot = GetURLParameter("lot");
+            }
+
+            if(localStorage.getItem("batch")===null) {
+                localStorage.batch = GetURLParameter("batch");
+            }
+
+            if(localStorage.getItem("style")===null) {
+                localStorage.style = GetURLParameter("style");
+            }
+
+            if(localStorage.getItem("schedule")===null) {
+                localStorage.schedule = GetURLParameter("schedule");
+            }
+
             var lot = GetURLParameter("lot");
             lot = decodeURIComponent(lot);
-
+            
             var batch = GetURLParameter("batch");
             batch = decodeURIComponent(batch);
 
@@ -247,8 +277,10 @@ function anchortag(event,href_url=0){
 
             var schedule = WindowGetURLParameter("schedule");
             schedule = decodeURIComponent(schedule);
+
             var menu = WindowGetURLParameter("menu");
 
+          
             if(myattribute == "body" || myattribute == "report_body" || myattribute == "production_body" || menu == "reports"){
                 var sfcs_app = url.includes("sfcs_app");
                 if(sfcs_app == false){
@@ -268,11 +300,11 @@ function anchortag(event,href_url=0){
 
                 jQuery("#modal-body").html(resp);
                
-                $('input[name="lot_no"]').val(lot);
-                $('input[name="reference"]').val(batch);
-                $('input[name="txtbatch"]').val(batch);
-                $('input[name="lot_no_ref"]').val(lot);
-                $('input[name="lot_no1"]').val(lot);
+                $('input[name="lot_no"]').val(localStorage.getItem('lot'));
+                $('input[name="reference"]').val(localStorage.getItem('batch'));
+                $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
+                $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
+                $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
                 // $('input[name="submit"]').click();
                 // $('input[name="show"]').click();
                 // $('input[name="submit2"]').click();
@@ -314,6 +346,7 @@ $('[data-toggle="datepicker"]').datepicker(
 
 
 function Ajaxify (href_url,body=0) {
+
     var url;
     var index = href_url.includes("index.php");
     if(index == true){
@@ -348,6 +381,11 @@ function Ajaxify (href_url,body=0) {
             jQuery("#"+body).html(resp);
         }else{
             jQuery("#modal-body").html(resp);
+            $('input[name="lot_no"]').val(localStorage.getItem('lot'));
+            $('input[name="reference"]').val(localStorage.getItem('batch'));
+            $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
+            $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
+            $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
             $('#myModal').modal('show');
         }
        
@@ -409,6 +447,7 @@ function modalClose(){
             $('#myModal').modal('hide');
             $('#modal-body').html('');
             $('table').DataTable().ajax.reload(null, false);
+            localStorage.clear();
       } else {
             // $('#myModal').modal('show');
       }

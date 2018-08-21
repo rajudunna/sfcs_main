@@ -51,21 +51,21 @@ function firstbox()
 {
 	//alert("test");
 	var ajax_url ="../mini_order_report/check_list.php?style_id="+document.mini_order_report.style_id.value;
-		Ajaxify('ajax_url,'report'_body'); 
+	Ajaxify(ajax_url,'report_body'); 
 }
 
 function secondbox()
 {
 	//alert('test');
 	var ajax_url ="../mini_order_report/check_list.php?style_id="+document.mini_order_report.style_id.value+"&sch_id="+document.mini_order_report.sch_id.value;
-	Ajaxify('ajax_url,'report'_body');
+	Ajaxify(ajax_url,'report_body');
 }
 
 function thirdbox()
 {
 	//alert('test');
 	var ajax_url ="../mini_order_report/check_list.php?style_id="+document.mini_order_report.style_id.value+"&sch_id="+document.mini_order_report.sch_id.value+"&min_id="+document.mini_order_report.mini_order_num.value;
-	Ajaxify('ajax_url,'report'_body');
+	Ajaxify(ajax_url,'report_body');
 }
 
 function check_val1()

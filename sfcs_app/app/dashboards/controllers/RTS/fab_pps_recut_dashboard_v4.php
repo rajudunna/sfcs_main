@@ -1,4 +1,4 @@
-
+<br>
 <!--
 Core Module:In this interface we can get module wise fabric allocation details.
 
