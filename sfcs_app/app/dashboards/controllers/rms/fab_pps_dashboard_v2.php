@@ -791,7 +791,7 @@
                                     $club_docs[]=$doc_no;
 									$tids=array();
 									//NEW FSP if it has schedule Clubbing 
-									$sql11="select * from $bai_pro3.pladoc_stat_log where org_doc_no='".$doc_no."'";
+									$sql11="select * from $bai_pro3.plandoc_stat_log where org_doc_no='".$doc_no."'";
                                     $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));                                    
                                     if(mysqli_num_rows($sql_result11)>0)
                                     {
