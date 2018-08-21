@@ -138,7 +138,54 @@
 $(document).ajaxStart(function() { Pace.restart(); }); 
 
 var qs = decodeURIComponent(location.search);
-$('a[href="' + qs + '"]').parents('li').addClass('active');
+
+function GetURLParameter(sParam)
+{
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++)
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam)
+        {
+            return sParameterName[1];
+        }
+    }
+}
+
+var menu = GetURLParameter("menu");
+if(menu == "reports"){
+    $('a[href="?r=L3NmY3NfYXBwXGFwcFxyZXBvcnRzX3hwcGFyZWwvcmVwb3J0c19pbmRleC5waHA=&menu=reports"]').parents('li').addClass('active');
+}
+if(menu == "production"){
+    $('a[href="?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uX3hwcGFyZWwvcHJvZHVjdGlvbl9pbmRleC5waHA=&menu=production"]').parents('li').addClass('active');
+}
+if(menu == "workorders"){
+    $('a[href="?r=L3NmY3NfYXBwL2FwcC93b3Jrb3JkZXJzL2NvbnRyb2xsZXJzL3dvcmtvcmRlcnNfaW5kZXgucGhw&menu=workorders"]').parents('li').addClass('active');
+}
+
+function removeParam(key, sourceURL) {
+    var rtn = sourceURL.split("?")[0],
+        param,
+        params_arr = [],
+        queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+    if (queryString !== "") {
+        params_arr = queryString.split("&");
+        for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+            param = params_arr[i].split("=")[0];
+            if (param === key) {
+                params_arr.splice(i, 1);
+            }
+        }
+        rtn = rtn + "?" + params_arr.join("&");
+    }
+    return rtn;
+}
+
+var alteredURL = removeParam("menu", qs);
+
+$('a[href="?r=L3NmY3NfYXBwL2FwcC9pbnNwZWN0aW9uL3JlcG9ydHMvU3VwcGxpZXJfQ2xhaW1fTG9nX0Zvcm0ucGhw&type=inspection"]').addClass('active');
+
 
 var get_url = window.location.href;
 var r = get_url.split("?").pop();
@@ -174,16 +221,19 @@ function onloadAjaxCall(get_r){
             var type = WindowGetURLParameter("type");
             window.history.pushState("object or string", "Title", "?"+get_r);
             if(menu == 'reports'){
-                var report_url = "<?= 'ajax_handler.php?r='.base64_encode('/sfcs_app/app/reports_xpparel/reports_index.php');?>";
-                $.ajax({
-                    url:report_url,
-                    type: "GET",
-                    success: function(data){
-                        jQuery("#body").html(data);
-                        $("#report_body").html(response);
-                    }
-                });
-               
+                if(type !== undefined){
+                    var report_url = "<?= 'ajax_handler.php?r='.base64_encode('/sfcs_app/app/reports_xpparel/reports_index.php');?>";
+                    $.ajax({
+                        url:report_url,
+                        type: "GET",
+                        success: function(data){
+                            jQuery("#body").html(data);
+                            $("#report_body").html(response);
+                        }
+                    });
+                }else{
+                    $("#body").html(response);
+                }
             }else if(menu == 'production'){
                 if(type !== undefined){
                     var report_url = "<?= 'ajax_handler.php?r='.base64_encode('/sfcs_app/app/production_xpparel/production_index.php');?>";

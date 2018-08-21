@@ -32,7 +32,7 @@ $view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs);
 <div class="panel panel-primary">
 	<div class="panel-heading">Mixed Schedule : Job Segregation Panel (PO Level)</div>
 	<div class="panel-body">
-	<form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'R') ?>">
+	<form name="test" method="post" action="<?= getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'N') ?>">
 
 	<?php
 		$style=$_GET['style'];

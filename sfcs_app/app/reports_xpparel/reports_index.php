@@ -160,46 +160,55 @@ h5{
     </div>
 </div>
 <script type="text/javascript">
-  $(document).ready(function ()
-  {
-      $('#cut_b').click(function()
-      {
-          $('#cut').toggleClass('fa-minus fa-plus');
-      });
 
-      $('#insp_b').click(function()
-      {
-          $('#insp').toggleClass('fa-minus fa-plus');
-      });
+$(document).ready(function ()
+{
+    $('#cut_b').click(function()
+    {
+        $('#cut').toggleClass('fa-minus fa-plus');
+    });
 
-      $('#plan_b').click(function()
-      {
-          $('#plan').toggleClass('fa-minus fa-plus');
-      });
+    $('#insp_b').click(function()
+    {
+        $('#insp').toggleClass('fa-minus fa-plus');
+    });
 
-      $('#sew_b').click(function()
-      {
-          $('#sew').toggleClass('fa-minus fa-plus');
-      });
+    $('#plan_b').click(function()
+    {
+        $('#plan').toggleClass('fa-minus fa-plus');
+    });
 
-      $('#qual_b').click(function()
-      {
-          $('#qual').toggleClass('fa-minus fa-plus');
-      });
+    $('#sew_b').click(function()
+    {
+        $('#sew').toggleClass('fa-minus fa-plus');
+    });
 
-      $('#sup_chain_b').click(function()
-      {
-          $('#sup_chain').toggleClass('fa-minus fa-plus');
-      });
+    $('#qual_b').click(function()
+    {
+        $('#qual').toggleClass('fa-minus fa-plus');
+    });
 
-      $('#kpi_b').click(function()
-      {
-          $('#kpi').toggleClass('fa-minus fa-plus');
-      });
+    $('#sup_chain_b').click(function()
+    {
+        $('#sup_chain').toggleClass('fa-minus fa-plus');
+    });
 
-      $('#frr_b').click(function()
-      {
-          $('#frr').toggleClass('fa-minus fa-plus');
-      });
-  });
+    $('#kpi_b').click(function()
+    {
+        $('#kpi').toggleClass('fa-minus fa-plus');
+    });
+
+    $('#frr_b').click(function()
+    {
+        $('#frr').toggleClass('fa-minus fa-plus');
+    });
+
+    $('li').click(function() {
+        // $('.nav-pills nav-stacked > li').removeClass('active');
+        // $( this ).parent().find( 'li' ).removeClass( );
+        $('.nav-pills > li > a').parent().removeClass('active');
+        $(this).addClass('active');
+       
+    });
+});
 </script>

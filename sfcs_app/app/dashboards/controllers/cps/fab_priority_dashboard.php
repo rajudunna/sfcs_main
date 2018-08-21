@@ -1708,11 +1708,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'cps.htm',0,'R'
 
 
 <script>
-	var url = '<?= $_GET['r']; ?>'; 
-	$(document).ready(function(){
-		setTimeout(function(){
-			console.log('hai');
-			window.location.reload();
+	var url = '<?= "?r=".$_GET['r']; ?>'; 
+	$(document).ready(function(e){
+		setTimeout(function(e){
+      $('#myModal').modal('hide');
+      $("#cut").trigger('click');
 		},300*1000);
 	});
 </script>

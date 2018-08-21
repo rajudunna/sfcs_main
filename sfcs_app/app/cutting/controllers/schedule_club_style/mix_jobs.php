@@ -34,7 +34,7 @@
 <div class="panel panel-primary">
 	<div class="panel-heading">Schedule Segregation Panel</div>
 	<div class="panel-body">
-	<form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'mix_jobs.php',0,'R') ?>">
+	<form name="test" method="post" action="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N') ?>">
 	<?php
 		$style=$_GET['style'];
 		$schedule=$_GET['schedule']; 
