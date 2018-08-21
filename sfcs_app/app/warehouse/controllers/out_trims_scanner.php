@@ -69,16 +69,6 @@ body
 <!--<div class=' text-left '><h4><span class="label label-success">T-OUT</span></h4></div>-->
 
 <?php
-
-	echo "<br><div class='pull-right'>
-				<div><h3>
-					<a href='$url'>
-						<button class='equal btn btn-success'>In</button></a><Br/>
-					<a href='$out_trims_scanner'>
-						<button class='equal btn btn-danger'>T-Out</button></a> </h3>
-				</div>
-			 </div>";
-
 if(isset($_GET['location']))
 {
 	$location=$_GET['location'];
@@ -322,7 +312,14 @@ if($_GET["bal"] > 0)
 
 
 //echo "<div class='pull-right'><h2><font color=\"red\">T-Out</font></h2><br/><h2><a href='".getFullURL($_GET['r'],'index.php','N')."'><button class='btn btn-primary'>In</button></a> <Br/><a href='".getFullURL($_GET['r'],'out.php','N')."'><button class='btn btn-primary'>F-Out</button></a><Br/><a href='$out_trims_scanner'><button class='btn btn-primary'>T-Out</button></a> </h2></div>";
-
+echo "<br><div class='pull-right'>
+				<div><h3>
+					<a href='$url'>
+						<button class='equal btn btn-success'>In</button></a><Br/>
+					<a href='$out_trims_scanner'>
+						<button class='equal btn btn-danger'>T-Out</button></a> </h3>
+				</div>
+			 </div>";
 ?>
 </div></div>
 </body>
