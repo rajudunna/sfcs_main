@@ -473,7 +473,7 @@
                 }
                 echo "<tr>";
 
-                echo "<th colspan=9  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
+                echo "<th colspan=9  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Cut</th>";
                 for ($i=0; $i < $cols_size; $i++)
                 {
                     echo "<th style=\"border-top:1px solid #000;border-bottom:1px dotted #000;font-size:14px;\">".$size_total[$i]."</th>";
@@ -492,7 +492,7 @@
                                 $tot_out=$sql_row1111['tot_out'];
                                 $tot_balance=$sql_row1111['tot_balance'];
                             }
-
+                            $o_total=0;
                             $balance=$overall_qty-$tot_in;
                             $sql123="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" ";
                             //echo $sql123;
@@ -550,7 +550,7 @@
                                 $o_s_s49=$sql_row['order_s_s49'];
                                 $o_s_s50=$sql_row['order_s_s50'];
 
-                                $o_total=($o_s_s01+$o_s_s02+$o_s_s03+$o_s_s04+$o_s_s05+$o_s_s06+$o_s_s07+$o_s_s08+$o_s_s09+$o_s_s10+$o_s_s11+$o_s_s12+$o_s_s13+$o_s_s14+$o_s_s15+$o_s_s16+$o_s_s17+$o_s_s18+$o_s_s19+$o_s_s20+$o_s_s21+$o_s_s22+$o_s_s23+$o_s_s24+$o_s_s25+$o_s_s26+$o_s_s27+$o_s_s28+$o_s_s29+$o_s_s30+$o_s_s31+$o_s_s32+$o_s_s33+$o_s_s34+$o_s_s35+$o_s_s36+$o_s_s37+$o_s_s38+$o_s_s39+$o_s_s40+$o_s_s41+$o_s_s42+$o_s_s43+$o_s_s44+$o_s_s45+$o_s_s46+$o_s_s47+$o_s_s48+$o_s_s49+$o_s_s50);
+                                $o_total+=($o_s_s01+$o_s_s02+$o_s_s03+$o_s_s04+$o_s_s05+$o_s_s06+$o_s_s07+$o_s_s08+$o_s_s09+$o_s_s10+$o_s_s11+$o_s_s12+$o_s_s13+$o_s_s14+$o_s_s15+$o_s_s16+$o_s_s17+$o_s_s18+$o_s_s19+$o_s_s20+$o_s_s21+$o_s_s22+$o_s_s23+$o_s_s24+$o_s_s25+$o_s_s26+$o_s_s27+$o_s_s28+$o_s_s29+$o_s_s30+$o_s_s31+$o_s_s32+$o_s_s33+$o_s_s34+$o_s_s35+$o_s_s36+$o_s_s37+$o_s_s38+$o_s_s39+$o_s_s40+$o_s_s41+$o_s_s42+$o_s_s43+$o_s_s44+$o_s_s45+$o_s_s46+$o_s_s47+$o_s_s48+$o_s_s49+$o_s_s50);
                             }
 
                             
