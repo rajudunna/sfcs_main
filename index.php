@@ -196,6 +196,7 @@ if(r != null){
 }
 
 function onloadAjaxCall(get_r){
+    localStorage.clear();
     var url = "ajax_handler.php?"+get_r;
     
     myLoad1();
