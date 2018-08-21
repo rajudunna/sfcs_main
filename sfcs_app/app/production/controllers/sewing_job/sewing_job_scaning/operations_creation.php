@@ -66,19 +66,18 @@
 									</div>
 								</div>
 								<div class="col-sm-2">
+									 <div class="dropdown">
+										<b>Report To ERP<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+										<select class="form-control" id="sel1" name="sel1" required>
+										<option value="">Please Select</option><option value='yes' selected>Yes</option><option value='No' >No</option></select>	
+									</div>
+								</div>
+								<div class="col-sm-2" hidden="true">
 									<b>Sewing Order Code</b><input type="text" class="form-control" id="sw_cod" name="sw_cod">
 								</div>
 								<div class="col-sm-2">
 									<button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
 								</div>
-								<div class="col-sm-2">
-									 <div class="dropdown" hidden='true'>
-										<b>Report To ERP</b>
-										<select class="form-control" id="sel1" name="sel1" required>
-										<option value="">Please Select</option><option value='yes'>Yes</option><option value='No' selected>No</option></select>	
-									</div>
-								</div>
-								 
 							</div>
 						</form>
 					</div>	
@@ -145,9 +144,10 @@
 	$res_do_num=mysqli_query($link,$query_select);
 	echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
 	echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
-	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
+	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th style='text-align:  center;'>Action</th><th></th></tr></thead><tbody>";
 	$i=1;
-	while($res_result = mysqli_fetch_array($res_do_num)){
+	while($res_result = mysqli_fetch_array($res_do_num))
+	{
 		//var_dump($res_result);
 		//checking the operation scanned or not
 		$ops_code = $res_result['operation_code'];
@@ -171,13 +171,13 @@
 			<td>".$res_result['default_operation']."</td>
 			<td>".$res_result['operation_code']."</td>
 			<td>".$res_result['type']."</td>";
-			if($res_result['default_operation'] == 'No' && $flag == 1)
+			if($flag == 1)
 			{
 				$eurl = getFullURLLevel($_GET['r'],'operations_master_edit.php',0,'N');
-				$url_delete = getFullURLLevel($_GET['r'],'operations_master_delete.php',0,'N').'&del_id='.$res_result['id'];
+				$url_delete = getFullURLLevel($_GET['r'],'operations_master_delete.php',0,'N');
 				if(in_array($edit,$has_permission)){ echo "<td><a href='$eurl&id=".$res_result['id']."' class='btn btn-info'>Edit</a></td>"; } 
 				if(in_array($delete,$has_permission)){ 
-					echo "<td><a href='<?= $url_delete ?>' class='btn btn-danger confirm-submit' id='del' >Delete</a></td>";
+					echo "<td><a href='$url_delete&id=".$res_result['id']."' class='btn btn-danger confirm-submit' id='del$i' >Delete</a></td>";
 				}
 			}
 			else
