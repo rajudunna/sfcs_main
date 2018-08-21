@@ -16,7 +16,7 @@
             $schedule=$_GET['sch']; 
             $job_no=$_GET['job']; 
             $job_no_ran=$_GET['rand_no']; 
-             $url_s = getFullURLLevel($_GET['r'],'input_job_split.php',0,'N');
+            $url_s = getFullURLLevel($_GET['r'],'input_job_split.php',0,'N');
             //echo $schedule.' '.$job_no; 
             echo '<h4><b>Schedule : <a href="#" class="btn btn-success">'.$schedule.'</a></b></h4>'; 
             echo '<a href="'.$url_s.'" class="btn btn-primary pull-right">Click here to go Back</a>'; 
@@ -37,16 +37,21 @@
                 { 
                     $i++;
                     $input_job_no_random=$row['input_job_no_random']; 
+                    $input_job_no=$row['input_job_no']; 
                     $style=$row['order_style_no']; 
                     $schedule=$row['order_del_no']; 
                     $color=$row['order_col_des']; 
                     $size=$row['size_code']; 
                     $qty=$row['carton_act_qty']; 
-                    $tid=$row['tid']; 
+                    $tid=$row['tid'];
+                    $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no,$link);
+
                     //echo '<form action='.getFullURLLevel($_GET['r'],'split_success.php',0,'N').' method="post">'; 
                     echo "<input type='hidden' name='tid[]' value='$tid'>"; 
+                    echo "<input type='hidden' name='input_job_no_random' value='$input_job_no_random'>"; 
+                    echo "<input type='hidden' name='input_job_no' value='$input_job_no'>"; 
                     echo "<input type='hidden' id='qty$i' value='$qty'>";
-                    echo '<tr><td>'.$style.'</td><td>'.$schedule.'</td><td>'.$color.'</td><td>'.$size.'</td><td>'.$job_no.'</td><td>'.$qty."</td><td><input type='text' width='20' name='qty[]' id='$i' onkeyup='verify_split(this)' class='integer form-control'></td></tr>"; 
+                    echo '<tr><td>'.$style.'</td><td>'.$schedule.'</td><td>'.$color.'</td><td>'.$size.'</td><td>'.$display.'</td><td>'.$qty."</td><td><input type='text' width='20' name='qty[]' id='$i' onkeyup='verify_split(this)' class='integer form-control'></td></tr>"; 
                     //echo '</form>'; 
                 } 
 				echo "<input type='hidden' id='total' value='$i'>";
