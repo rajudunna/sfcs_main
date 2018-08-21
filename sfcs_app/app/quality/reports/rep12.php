@@ -58,13 +58,13 @@ if(isset($_POST['filter'])){
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	if(mysqli_num_rows($sql_result) > 0){
-		echo "<br><br/>";
+		echo "<div class='row' style='height:50px'></div>";
 		echo "<div class='col-sm-12'>";
 		echo '<form action='.getFullURL($_GET['r'],'export_excel.php','R').' method ="post" > 
 				<input type="hidden" name="csv_text" id="csv_text">
 				<input type="submit" class="btn btn-warning" value="Export to Excel" onclick="getCSVData()">
 			  </form>';
-		echo "</div>";	  
+		echo "</div><br/><br/><br/>";	  
 
 		echo "<div class='col-sm-12' style='max-height : 600px;overflow:scroll;'>";
 		echo "<table id=\"example1\" class=\"table table-bordered\">";
@@ -79,14 +79,13 @@ if(isset($_POST['filter'])){
 				</tr>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
+			$size = '';
+			$size = ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],$sql_row['qms_size'],$link);
 				
 			echo "<tr>";
-			
 			echo "<td>".$sql_row['qms_style']."</td>";
 			echo "<td>".$sql_row['qms_schedule']."</td>";
 			echo "<td class=\"lef\">".$sql_row['qms_color']."</td>";
-			$size = '';
-			$size = ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],$sql_row['qms_size'],$link);
 			echo "<td>".strtoupper($size)."</td>";
 			echo "<td>".$sql_row['qms_qty']."</td>";
 			echo "<td>".$sql_row['location_id']."</td>";
