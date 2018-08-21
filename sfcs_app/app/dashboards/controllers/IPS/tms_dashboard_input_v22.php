@@ -581,7 +581,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 }
 if(sizeof($remove_docs)>0)
 {
-	$backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
+	$backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
 	// echo $backup_query.";<br>";
 	mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
 
@@ -741,9 +741,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$fabric_status="5";
 					}
-					$sql1x115="select * from $bai_pro3.fabric_priorities where doc_ref not in ($doc_no_ref)";
+					$sql1x115="select * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no_ref)";
 					$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(mysqli_num_rows($sql_result1x115)>0)
+					if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
 					{
 						$fabric_req="0";
 					}
