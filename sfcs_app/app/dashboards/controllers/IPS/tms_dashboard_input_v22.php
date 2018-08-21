@@ -741,9 +741,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$fabric_status="5";
 					}
-					$sql1x115="select * from $bai_pro3.fabric_priorities where doc_ref not in ($doc_no_ref)";
+					$sql1x115="select * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no_ref)";
 					$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(mysqli_num_rows($sql_result1x115)>0)
+					if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
 					{
 						$fabric_req="0";
 					}
