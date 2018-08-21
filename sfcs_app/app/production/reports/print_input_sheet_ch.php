@@ -28,11 +28,13 @@
         $schedule=$_POST["schedule"];
         //$schedule="399160"; //for testing
         $schedule_split=explode(",",$schedule);
-        $sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
-        $result=mysqli_query($link, $sql) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $rowcount=mysqli_num_rows($result);
-        if($rowcount>0)
-        {
+		if($schedule!='')
+		{
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
+			$result=mysqli_query($link, $sql) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$rowcount=mysqli_num_rows($result);
+			if($rowcount>0)
+			{
             
         
     ?>
@@ -257,27 +259,35 @@
 
 
 
-                $size_array=array();
+                $size_array_final=array();
+                $size_total=array();
 
-                for($p=0;$p<sizeof($schs_array);$p++)
+                // for($p=0;$p<sizeof($schs_array);$p++)
+                // {
+                //     for($q=0;$q<sizeof($sizes_array);$q++)
+                //     {
+                //         $sql6="select sum(order_s_".$sizes_array[$q].") as order_qty from  $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schs_array[$p].") ";   
+                //         $result6=mysqli_query($link, $sql6) or die("Error3 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+                //         while($row6=mysqli_fetch_array($result6))
+                //         {       
+                //             if($row6["order_qty"] > 0)
+                //             {
+                //                 if(!in_array($sizes_array[$q],$size_array))
+                //                 {
+                //                     $size_array[]=$sizes_array[$q];
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
+                $sql6="SELECT DISTINCT size_code FROM $bai_pro3.`packing_summary_input` WHERE order_del_no in (".$schedule.")  ORDER BY old_size";
+                // echo $sql6;
+                $result612=mysqli_query($link, $sql6) or die("Error3 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($row6=mysqli_fetch_array($result612))
                 {
-                    for($q=0;$q<sizeof($sizes_array);$q++)
-                    {
-                        $sql6="select sum(order_s_".$sizes_array[$q].") as order_qty from  $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schs_array[$p].") ";   
-                        $result6=mysqli_query($link, $sql6) or die("Error3 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($row6=mysqli_fetch_array($result6))
-                        {       
-                            if($row6["order_qty"] > 0)
-                            {
-                                if(!in_array($sizes_array[$q],$size_array))
-                                {
-                                    $size_array[]=$sizes_array[$q];
-                                }
-                            }
-                        }
-                    }
+                    $size_array_final[]=$row6['size_code'];
                 }
-
+                $cols_size = sizeof($size_array_final);
                 echo "<table class='table table-bordered'>";
                 echo "<tr style='background-color:#286090;color:white;'>";
                 echo "<th>Style</th>";
@@ -289,13 +299,16 @@
                 echo "<th>Cut Job#</th>";
                 echo "<th>Delivery Date</th>";
                 echo "<th>Input Job#</th>";
-                
+                for ($i=0; $i < $cols_size; $i++)
+                { 
+                    echo "<th>".$size_array_final[$i]."</th>";
+                }
                 echo "<th>Total</th>";
                 echo "<th>Input/Output details</th>";
                 echo "</tr>";
                 $overall_qty = 0;
                 $sql="select distinct input_job_no as job from  $bai_pro3.packing_summary_input where order_del_no in ($schedule) order by input_job_no*1";
-                //echo $sql."</br>";
+                // echo $sql."</br>";
                 $result=mysqli_query($link, $sql) or die("Error-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));           
                 while($sql_row=mysqli_fetch_array($result))
                 {
@@ -342,10 +355,11 @@
                         }
                         //Display color
                         $display_colors=str_replace(',','<br>',$color);
+                        $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
+                        $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_des,$sql_row["job"],$link);
                         
-                            
                         $total_qty1=0;
-                        echo "<tr height=20 style='height:15.0pt'>";
+                        echo "<tr height=20 style='height:15.0pt; background-color:$bg_color;''>";
                         echo "<td height=20 style='height:15.0pt'>".$style."</td>";
                         echo "<td height=20 style='height:15.0pt'>$po</td>";
                         echo "<td height=20 style='height:15.0pt'>$vpo</td>";
@@ -355,16 +369,39 @@
                         echo "<td height=20 style='height:15.0pt'>$display_colors</td>";
                         echo "<td height=20 style='height:15.0pt'>".$cut_job_no."</td>";
                         echo "<td height=20 style='height:15.0pt'>".$del_date."</td>";
-                        echo "<td height=20 style='height:15.0pt'>J".leading_zeros($sql_row["job"], 3)."</td>";
+                        echo "<td height=20 style='height:15.0pt'>".$display."</td>";
 
-                        $sql5="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE order_del_no in (".$sql_row1["del_no"].") and input_job_no=".$sql_row["job"];
-                        // echo $sql5."<br>";
-                        $result5=mysqli_query($link, $sql5) or die("Error-".$sql5."-".mysqli_error($GLOBALS["___mysqli_ston"]));            
-                        while($sql_row5=mysqli_fetch_array($result5))
-                        {
-                            $total_qty1=$sql_row5["qty"];
-                            $overall_qty = $overall_qty + $total_qty1;
+                        for ($i=0; $i < $cols_size; $i++)
+                        { 
+                            $sql5="SELECT round(sum(carton_act_qty),0) as qty FROM packing_summary_input where size_code='".$size_array_final[$i]."' and order_del_no in (".$sql_row1["del_no"].") and input_job_no='".$sql_row["job"]."' ";
+                            // echo $sql5."<br>";
+                            $result5=mysqli_query($link,$sql5) or die("Error-".$sql5);         
+                            while($sql_row5=mysqli_fetch_array($result5))
+                            {
+                                if ($sql_row5["qty"] > 0)
+                                {
+                                    echo "<td height=20 style='height:15.0pt'>".$sql_row5["qty"]."</td>";
+                                    $total_qty1=$total_qty1+$sql_row5["qty"];
+                                    $size_total[$i] = $size_total[$i] + $sql_row5["qty"];
+                                }
+                                else
+                                {
+                                    echo "<td height=20 style='height:15.0pt'>0</td>";
+                                    $total_qty1=$total_qty1+0;
+                                    $size_total[$i] = $size_total[$i] + 0;
+                                }
+                            }
                         }
+                        // var_dump($size_total);
+                        // $sql5="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE order_del_no in (".$sql_row1["del_no"].") and input_job_no=".$sql_row["job"];
+                        // // echo $sql5."<br>";
+                        // $result5=mysqli_query($link, $sql5) or die("Error-".$sql5."-".mysqli_error($GLOBALS["___mysqli_ston"]));            
+                        // while($sql_row5=mysqli_fetch_array($result5))
+                        // {
+                        //     $total_qty1=$sql_row5["qty"];
+                        //     $overall_qty = $overall_qty + $total_qty1;
+                        // }
+                        $overall_qty = $overall_qty + $total_qty1;
                         echo "<td align=\"center\">".$total_qty1."</td>";
                         echo "<td>";
                         
@@ -435,8 +472,12 @@
                     }
                 }
                 echo "<tr>";
+
                 echo "<th colspan=9  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
-                
+                for ($i=0; $i < $cols_size; $i++)
+                {
+                    echo "<th style=\"border-top:1px solid #000;border-bottom:1px dotted #000;font-size:14px;\">".$size_total[$i]."</th>";
+                }
                 echo "<th  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">$overall_qty</th>";
                 echo "<th>";
                             $tot_in=0;
@@ -451,18 +492,82 @@
                                 $tot_out=$sql_row1111['tot_out'];
                                 $tot_balance=$sql_row1111['tot_balance'];
                             }
-                            echo "<table class='table table-bordered'><tr style='background-color:#286090;color:white;'><th>Total Sewing IN</th><th>Total Sewing OUT</th><th>Total Sewing Balance</th></tr>";
-                            echo "<tr><th>$tot_in</th><th>$tot_out</th><th>$tot_balance</th></tr>";
+
+                            $balance=$overall_qty-$tot_in;
+                            $sql123="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" ";
+                            //echo $sql123;
+                            $sql_result123=mysqli_query($link, $sql123) or exit("Sql Errorzzzz".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row=mysqli_fetch_array($sql_result123))
+                            {
+                                $o_s_s01=$sql_row['order_s_s01'];
+                                $o_s_s02=$sql_row['order_s_s02'];
+                                $o_s_s03=$sql_row['order_s_s03'];
+                                $o_s_s04=$sql_row['order_s_s04'];
+                                $o_s_s05=$sql_row['order_s_s05'];
+                                $o_s_s06=$sql_row['order_s_s06'];
+                                $o_s_s07=$sql_row['order_s_s07'];
+                                $o_s_s08=$sql_row['order_s_s08'];
+                                $o_s_s09=$sql_row['order_s_s09'];
+                                $o_s_s10=$sql_row['order_s_s10'];
+                                $o_s_s11=$sql_row['order_s_s11'];
+                                $o_s_s12=$sql_row['order_s_s12'];
+                                $o_s_s13=$sql_row['order_s_s13'];
+                                $o_s_s14=$sql_row['order_s_s14'];
+                                $o_s_s15=$sql_row['order_s_s15'];
+                                $o_s_s16=$sql_row['order_s_s16'];
+                                $o_s_s17=$sql_row['order_s_s17'];
+                                $o_s_s18=$sql_row['order_s_s18'];
+                                $o_s_s19=$sql_row['order_s_s19'];
+                                $o_s_s20=$sql_row['order_s_s20'];
+                                $o_s_s21=$sql_row['order_s_s21'];
+                                $o_s_s22=$sql_row['order_s_s22'];
+                                $o_s_s23=$sql_row['order_s_s23'];
+                                $o_s_s24=$sql_row['order_s_s24'];
+                                $o_s_s25=$sql_row['order_s_s25'];
+                                $o_s_s26=$sql_row['order_s_s26'];
+                                $o_s_s27=$sql_row['order_s_s27'];
+                                $o_s_s28=$sql_row['order_s_s28'];
+                                $o_s_s29=$sql_row['order_s_s29'];
+                                $o_s_s30=$sql_row['order_s_s30'];
+                                $o_s_s31=$sql_row['order_s_s31'];
+                                $o_s_s32=$sql_row['order_s_s32'];
+                                $o_s_s33=$sql_row['order_s_s33'];
+                                $o_s_s34=$sql_row['order_s_s34'];
+                                $o_s_s35=$sql_row['order_s_s35'];
+                                $o_s_s36=$sql_row['order_s_s36'];
+                                $o_s_s37=$sql_row['order_s_s37'];
+                                $o_s_s38=$sql_row['order_s_s38'];
+                                $o_s_s39=$sql_row['order_s_s39'];
+                                $o_s_s40=$sql_row['order_s_s40'];
+                                $o_s_s41=$sql_row['order_s_s41'];
+                                $o_s_s42=$sql_row['order_s_s42'];
+                                $o_s_s43=$sql_row['order_s_s43'];
+                                $o_s_s44=$sql_row['order_s_s44'];
+                                $o_s_s45=$sql_row['order_s_s45'];
+                                $o_s_s46=$sql_row['order_s_s46'];
+                                $o_s_s47=$sql_row['order_s_s47'];
+                                $o_s_s48=$sql_row['order_s_s48'];
+                                $o_s_s49=$sql_row['order_s_s49'];
+                                $o_s_s50=$sql_row['order_s_s50'];
+
+                                $o_total=($o_s_s01+$o_s_s02+$o_s_s03+$o_s_s04+$o_s_s05+$o_s_s06+$o_s_s07+$o_s_s08+$o_s_s09+$o_s_s10+$o_s_s11+$o_s_s12+$o_s_s13+$o_s_s14+$o_s_s15+$o_s_s16+$o_s_s17+$o_s_s18+$o_s_s19+$o_s_s20+$o_s_s21+$o_s_s22+$o_s_s23+$o_s_s24+$o_s_s25+$o_s_s26+$o_s_s27+$o_s_s28+$o_s_s29+$o_s_s30+$o_s_s31+$o_s_s32+$o_s_s33+$o_s_s34+$o_s_s35+$o_s_s36+$o_s_s37+$o_s_s38+$o_s_s39+$o_s_s40+$o_s_s41+$o_s_s42+$o_s_s43+$o_s_s44+$o_s_s45+$o_s_s46+$o_s_s47+$o_s_s48+$o_s_s49+$o_s_s50);
+                            }
+
+                            
+                            echo "<table class='table table-bordered'><tr style='background-color:#286090;color:white;'><th>Order Quantity</th><th>Total Sewing IN</th><th>Total Sewing OUT</th><th>Balance to Sewing In</th><th>Balance to Sewing Out</th></tr>";
+                            echo "<tr><th>$o_total</th><th>$tot_in</th><th>$tot_out</th><th>$balance</th><th>$tot_balance</th></tr>";
                             echo "</table>";
                 echo "</th>";
                 echo "</tr>";
-
+               
                 echo "</table></div>";
+
             ?>
         </div>
     </div>
-</div>
-<?php
+	</div>
+	<?php
+	}
 }
 else
 {

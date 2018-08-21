@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+    $shift = $_POST['shift'];
 ?>
 
 <style>
@@ -18,14 +19,17 @@
   opacity: 0.4;
   filter: alpha(opacity=40); /* For IE8 and earlier */
 }
+th,td{
+    color: black;
+}
 </style>
 <div class="ajax-loader" id="loading-image" style="display: none">
     <center><img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
 <div class="panel panel-primary " id="scanBarcode" ng-app="scanning_interface" ng-cloak>
-    <div class="panel-heading">Bundle Barcode Scanning</div>
+    <div class="panel-heading" >Bundle Barcode Scanning</div>
     <div class="panel-body"  ng-controller="scanctrl">
-        <div class="row jumbotron ">
+        <div class="row jumbotron " ng-init="shift='<?= $shift ?>'">
 
             <div class="col-md-5">
                 <div class="col-padding" >
@@ -36,19 +40,19 @@
             <div class="vline"></div>
             <div class="col-md-5 pull-right">
                 <div class="col-padding table-responsive" >
-                    <table class="table table-bordered" ng-show="showtable == true">
+                    <table class="table table-bordered bgcolortable" ng-show="showtable == true">
                         <thead>
                             <tr>
                                 <th width="30%">Last Scan</th>
-                                <td width="30%" bgcolor="white">{{last_barcode}}</td>
+                                <th width="30%" >{{last_barcode}}</th>
                             </tr>
                             <tr>
                                 <th width="30%">Status</th>
-                                <td width="30%" bgcolor="white">{{last_barcode_status}}</td>
+                                <td width="30%">{{last_barcode_status}}</td>
                             </tr>
                             <tr>
                                 <th width="30%">Status Remarks</th>
-                                <td width="30%" bgcolor="white">{{last_barcode_status_remarks}}</td>
+                                <th width="30%">{{last_barcode_status_remarks}}</th>
                             </tr>
                         </thead>
                     </table>

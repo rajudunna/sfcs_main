@@ -306,8 +306,9 @@ echo "</table>";
 	
 	echo "<br><h2>Cut Docket Print</h2>";
 	
-	$path2 = getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N');
-	$path3 = getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'N');
+	// $path2 = getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N');
+	$path2 = getFullURLLevel($_GET['r'],'cutting/controllers/lay_plan_preparation/recut_print.php',3,'R');
+	$path3 = getFullURLLevel($_GET['r'],'cutting/controllers/lay_plan_preparation/recut_print.php',3,'R');
 	$path4 = getFullURLLevel($_GET['r'],'cad_pop_details_process.php',0,'N');
 	$path="..";
 	if(substr($style_ref,0,1)!="P" || substr($style_ref,0,1)!="K" || substr($style_ref,0,1)!="L" || substr($style_ref,0,1)!="O")
@@ -344,7 +345,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	if(strlen($sql_row1['plan_lot_ref'])>0)
 	{
 	
-		echo "<td><a href=\"$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+		echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 	}
 	if($sql_row1['print_status']>0)
 {

@@ -39,7 +39,7 @@ if(isset($_POST['submit']))
 {
     $schedule=$_POST['schedule'];
     // $unconditional_remove=$_POST['unconditional_remove'];
-    $sql="SELECT DISTINCT input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '$schedule%' ORDER BY input_job_no*1";
+    $sql="SELECT input_job_no,input_job_no_random, order_del_no, order_col_des FROM $bai_pro3.packing_summary_input WHERE input_job_no_random LIKE '$schedule%' group by input_job_no ORDER BY input_job_no*1 ";
     // echo $sql;
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
     $rowcount=mysqli_num_rows($sql_result);
@@ -49,9 +49,13 @@ if(isset($_POST['submit']))
 	    echo "<span style='color:black;text-weight:bold;'>Select Sewing Job Number You want To Split: </span><br><br>";
 	    while($sql_row=mysqli_fetch_array($sql_result))
 	    {
+            $order_del_no=$sql_row['order_del_no'];
+            $order_col_des=$sql_row['order_col_des'];
 	        $input_job_no=$sql_row['input_job_no'];
+	        $input_job_no_ran=$sql_row['input_job_no_random'];
+            $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$order_col_des,$input_job_no,$link);
 	        $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
-	        echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no' class='btn btn-warning'>".$input_job_no."</a>"."";
+	        echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no&rand_no=$input_job_no_ran' class='btn btn-warning'>".$display."</a>"."";
 	    }
 	    echo "</div>";
     } else {
