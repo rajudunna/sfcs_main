@@ -82,11 +82,13 @@ if(isset($_POST['filter']))
 		$export_excel = getFullURLLevel($_GET['r'],'export_excel.php',0,'R');
 		echo '<form action="'.$export_excel.'" method ="post" >
 				<input type="hidden" name="csv_text" id="csv_text">
+				<div class="row">
 				<input type="submit" class="btn btn-success btn-xs pull-right" id="export" style="background-color:#57b756;" value="Export to Excel" onclick="getCSVData()">
-				</form>';
-
-		echo "<div class='table-responsive' style='max-height:800px;overflow-y:scroll;'><table id=\"example1\" class='table table-bordered table-striped'>";
-		echo "<tr class='tblheading'>
+				</div>
+				</form><br/>';
+		echo "<div class='row'>";
+		echo "<div class='table-responsive' style='max-height:600px;overflow:scroll;'><table id=\"example1\" class='table table-bordered table-striped'>";
+		echo "<tr class='info'>
 			<th>Date</th>
 			<th>Module</th>
 			<th>Section</th>
@@ -289,8 +291,8 @@ if(isset($_POST['filter']))
 	}else {
 		echo "<div style='color:Red' font-size:12px;><center><b><h3>! No data Found</h3></b></center></div>";
 	}
+	echo "</div></div>";
 }
-
 
 ?>
 
@@ -302,46 +304,6 @@ function getCSVData(){
 </script>
 
 <style>
-
-
-table tr
-{
-	border: 1px solid grey;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid grey;
-	text-align: center;
-	white-space:nowrap;
-	color:black;
-}
-
-table td.lef
-{
-	border: 1px solid grey;
-	text-align: left;
-	white-space:nowrap; 
-}
-table th
-{
-	border: 1px solid grey;
-	text-align: center;
-    background-color: #003366;
-	color: WHITE;
-	white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-	background-color: white;
-}
 /* #filter {
     width: 5em;  height: 3em;
 }
@@ -350,13 +312,11 @@ table{
 	margin-left:520px;
 	
 } */
-}
-
-}
 </style>
 </div></div>
 </div>
 </div>
+
 <script >
 function verify_date()
 {

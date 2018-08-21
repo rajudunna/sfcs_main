@@ -62,7 +62,7 @@ else
 			</form>
 		</div>
 
-		<div class="table table-responsive">
+		<div>
 			<?php
 				
 				if(isset($_POST['filter']))
@@ -100,8 +100,9 @@ else
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
 					if(mysqli_num_rows($sql_result)>0){
-						echo "<br><table class='table table-bordered'>";
-						echo "<tr class='tblheading'>
+						echo "<br><div style='overflow:scroll;max-height:600px'>
+						<table class='table table-bordered'>";
+						echo "<tr class='info'>
 						<th>Log Date</th>
 						<th>Style</th>
 						<th>Schedule</th>
@@ -123,13 +124,14 @@ else
 						</tr>";
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
+							$size_value=ims_sizes($order_tid,$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],$sql_row['qms_size'],$link);
+
 							echo "<tr>";
 							echo "<td>".$sql_row['log_date']."</td>";
 							echo "<td>".$sql_row['qms_style']."</td>";
 							echo "<td>".$sql_row['qms_schedule']."</td>";
 							echo "<td>".$sql_row['qms_color']."</td>";
 							//echo "<td>".$sql_row['qms_size']."</td>";
-							$size_value=ims_sizes($order_tid,$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],$sql_row['qms_size'],$link);
 							echo "<td>".$size_value."</td>";
 							echo "<td>".$sql_row['good_panels']."</td>";
 							echo "<td>".$sql_row['rejected']."</td>";
@@ -146,7 +148,7 @@ else
 							echo "<td>".$sql_row['disposed']."</td>";
 							echo "</tr>";
 						}
-						echo "</table>";
+						echo "</table></div>";
 					} else {
 						echo "<div><b>No Data Found!</b></div>";
 					}

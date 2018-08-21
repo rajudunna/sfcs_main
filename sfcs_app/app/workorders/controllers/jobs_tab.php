@@ -93,7 +93,6 @@
             $controls = 'controls';
             $disabled = 'disabled';
             foreach($opname as $key=>$value){
-            
                 if($value=='')
                     continue;
                 $append.="<a style='margin:3px;' href='?r=$$before&operation_id=$key' type='button' class='btn btn-sm
@@ -127,6 +126,8 @@
                 
                     $url=base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php')."&module=1.1&input_job_no_random_ref=$rand_ref&style=$style&schedule=$schedule&shift=G&sidemenu=1";
                     $buttons = str_replace('$before',$url,$append);
+                    if($buttons == '')
+                        $buttons = 'No operations for scanning';
                     
                     echo "<tr>";
                     echo    "<td>".$sno++."</td>";
@@ -148,12 +149,8 @@
 </table>
       
 <script>      
-<<<<<<< HEAD
     //  $('#tab5').click(function(){   
     $(document).ready(function(){
-=======
-      $('#tab5').click(function(){   
->>>>>>> 63ea37622c74ecf2c17072ec1e9d01cc501244c0
         var table = $('#table_ajax_3').DataTable({
             "bSort":false,
             "processing": false,

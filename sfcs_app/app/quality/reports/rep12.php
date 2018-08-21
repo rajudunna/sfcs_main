@@ -58,6 +58,7 @@ if(isset($_POST['filter'])){
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	if(mysqli_num_rows($sql_result) > 0){
+		echo "<br><br/>";
 		echo "<div class='col-sm-12'>";
 		echo '<form action='.getFullURL($_GET['r'],'export_excel.php','R').' method ="post" > 
 				<input type="hidden" name="csv_text" id="csv_text">
@@ -67,7 +68,7 @@ if(isset($_POST['filter'])){
 
 		echo "<div class='col-sm-12' style='max-height : 600px;overflow:scroll;'>";
 		echo "<table id=\"example1\" class=\"table table-bordered\">";
-		echo "<tr>
+		echo "<tr class='info'>
 				<th>Style</th>
 				<th>Schedule</th>
 				<th>Color</th>
