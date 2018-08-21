@@ -64,9 +64,9 @@ body
 </style>
 <body onload="focus_box()">
 <div class='panel panel-primary'>
-<div class='panel-heading'>Online Barcode Scanning</div>
+<!--<div class='panel-heading'>Online Barcode Scanning</div>-->
 <div class='panel-body'>
-<div class=' text-left '><h4><span class="label label-success">T-OUT</span></h4></div>
+<!--<div class=' text-left '><h4><span class="label label-success">T-OUT</span></h4></div>-->
 
 <?php
 
@@ -87,7 +87,7 @@ if(isset($_GET['location']))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result)>0)
 	{
-		echo "<h2>Docket  : <span class='label label-success1'>$location</span></h2>";
+		echo "<h2>Docket  : <span class='label label-success'>$location</span></h2>";
 	}
 	else
 	{
@@ -299,8 +299,8 @@ if(isset($_POST['check2']))
 </div>
 <div class="row" id='manual'>
 <div class='form-group col-md-3'>
-<!-- <label>Manual Entry:</label> -->
-<input type="text" id='carton2' class='form-control alpha' size="19" value="<?php if($_GET["code"] > 0){echo $_GET["code"];} ?>"  name="cartonid2" placeholder="Manual Entry"><br/>
+</br>Manual Entry:</br>
+<input type="text" id='carton2' class='form-control alpha' size="19" value="<?php if($_GET["code"] > 0){echo $_GET["code"];} ?>"  name="cartonid2"><br/>
 </div>
 <?php 
 
@@ -327,142 +327,6 @@ if($_GET["bal"] > 0)
 </div></div>
 </body>
 </html>
-
-
-<style>
-	body
-{
-	width:auto;
-	font-family:arial;
-	display:inline-block;
-	border:1px solid blue;
-}
-.equal{
-		width : 80px;
-		text-align:center;
-		margin-top:60%;
-		margin-left:40%;
-		display:block;
-	}
-   
-    button{
-		text-align:right
-		display:block;
-    }
-    .panel-primary{
-        margin : 2px 250px 2px 250px;
-        padding : 20px 5px 20px 5px;
-        /* border:1px solid blue; */
-		text-align:center;
-		display:block;
-    }
-    .panel-heading {
-        font-weight:bold;
-        text-align:left;
-    }
-    .label-success{
-        background-color:#5cb85c;
-        color:white;
-		width:25%;
-		border-radius:5px;
-		margin-left:-120%;
-		display:block;
-	}
-	.label-success1{
-        background-color:#5cb85c;
-        color:white;
-		text-align:left;
-		width:15%;
-        border-radius:5px;
-		display:block;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-success {
-        background-color:green;
-        color:white;
-        margin-top:-30pt;
-        border-radius:5px;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-        margin-top:-15pt;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .label-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-		margin-top:-10pt;
-    }
-    #location1 {
-		margin-top:-7.5%;
-		width:105%;
-	}
-	#location {
-		margin-left:35%;
-		margin-top:-13.5%;
-		width:35%;
-    }
-    #docket{
-        /* margin-top:-50pt; */
-		margin-left:-120%;
-		margin-top:25%;
-        padding-top:-11%;
-		padding-right:7%;
-		display:block;
-    }
-    #carton2{
-        margin-top:15%;
-        margin-left:-120%;
-        /* margin-left:-420pt; */
-		padding:5px;
-		display:block;
-    }
-    #label2{
-        margin-top:-10px;
-        margin-left:-190%;
-    }
-    #check_in{
-        margin-top:-25%;
-        margin-left:-10%;
-        background-color:#337ab7;
-        padding:8px;
-        color:white;
-		border-radius:8px;
-		display:block;
-    }
-    h2{
-        margin-left:-380px;
-        margin-top:-45%;
-	}
-	h3{
-        margin-top:5%;
-	}
-	a{
-		text-decoration:none;
-	}
-    #status {
-        font-size:14pt;
-        margin-left:10%;
-	}
-	.label1{
-		margin-left:-58%;
-		display:block;
-	}
-	.text-left{
-		display:block;
-	}
-	.loc{
-        margin-left:100%;
-	}
-</style>
 
 
 
