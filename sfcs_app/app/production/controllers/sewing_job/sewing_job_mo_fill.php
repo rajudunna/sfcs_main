@@ -187,10 +187,11 @@
 									$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `doc_no`, `mo_no`, `bundle_no`, `bundle_quantity`, `op_code`, `op_desc`, `input_job_no`, `input_job_random`) VALUES ('".date("Y-m-d H:i:s")."', '".$row12341['doc_no']."', '".$lastmo."', '".$row12341['tid']."', '".$qty."', '".$ops_m_id[$lastmo][$ops[$jjj]]."', '".$ops_m_name[$lastmo][$ops[$jjj]]."', '".$row12341['input_job_no']."', '".$row12341['input_job_no_random']."')";
 									$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 									//echo "Excess---".$sql."<br>";
-									$qty=0;
+									
 								}							
-							}
-						}	
+							}							
+						}
+						$qty=0;						
 					}
 				}
 			}
