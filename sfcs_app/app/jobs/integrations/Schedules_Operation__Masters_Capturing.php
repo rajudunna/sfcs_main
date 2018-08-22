@@ -1,81 +1,84 @@
 <?php
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
-//include($include_path.'\sfcs_app\common\config\config_jobs.php');
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\m3_api_calls.php');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+include($include_path.'\sfcs_app\common\config\m3_api_calls.php');
 set_time_limit(1000000);
 
 //details from config tool
 $comapny_no=200;
-$facility_id='Q01';
+$facility_id='EKG';
 
-$obj1 = new get_api_call(); 
-$url="http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelOperations?CONO=200&FACI=Q01&MFNO=7512409&PRNO=M05083AB%20%20%200190";
-$result = $obj1->getCurlRequest($url);
-//$resultObj = json_decode($result,true);
 
-$decoded = json_decode($result,true);
-
-//var_dump($decoded);
-$selected_arr = ['OPDS','MFNO','PLG1','PITI','OPNO'];
-$name_values = array_column($decoded['MIRecord'], 'NameValue');
-foreach ($name_values as $key => $value) 
-{
-	
-	// echo var_dump($value)."</br>";
-	// echo $value['Name']['MFNO'];
-	// foreach ($value as $key1 => $value1) 
-	// {
-	// 		if(in_array($value1['Name'] , $selected_arr)) {
-	// 			echo "</br>".$value1['Name']."-".$value1['Value'];
-	// 			$all_data_array[$value1['Name']][] = $value1['Value'];
-	// 		}
-	// }
-}
-
-/*
 //getting mo numbers from mo_details table
-$qry_modetails="SELECT DISTINCT(mo_no) AS mo_num,item_code,style,SCHEDULE,color,size,zfeature  FROM $bai_pro3.mo_details WHERE ops_master_status='0'";
+$qry_modetails="SELECT mo_no AS mo_num,item_code,style,SCHEDULE,color,size,zfeature,product_sku  FROM $bai_pro3.mo_details WHERE ops_master_status='0' group by mo_num,product_sku";
 $result_qry_modetails=mysqli_query($link, $qry_modetails) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($result_qry_modetails))
 {
-	echo "MO Number :".$sql_row['mo_num']."- Item Code : ".$sql_row['item_code']."- Style : ".$sql_row['style']."- Schedule : ".$sql_row['SCHEDULE']."- Color : ".$sql_row['color']."- Size : ".$sql_row['size']."- Zfeature : ".$sql_row['zfeature']."</br>";
+	//echo "MO Number :".$sql_row['mo_num']."- Item Code : ".$sql_row['item_code']."- Style : ".$sql_row['style']."- Schedule : ".$sql_row['SCHEDULE']."- Color : ".$sql_row['color']."- Size : ".$sql_row['size']."- Zfeature : ".$sql_row['zfeature']."</br>";
+
+	$mo_num=$sql_row['mo_num'];
+	$FG_code=$sql_row['product_sku'];
 	
+	//For testing API
+	// $mo_num='1991686';
+	// $FG_code= 'ASL18SF8   0026';
+
+	$obj1 = new get_api_call(); 
+	$url="http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelOperations?CONO=200&FACI=".$facility_id."&MFNO=".$mo_num."&PRNO=".$FG_code;
+	//echo "Api :$url".
+	$result = $obj1->getCurlRequest($url);
+	$decoded = json_decode($result,true);
+	$vals = (conctruct_array($decoded['MIRecord']));
+	foreach ($vals as $value) 
+	{
+		//echo "Oper Desc: ".$value['OPDS']."MO No:".$value['MFNO']."Work Station Id :".$value['PLG1']."SMV :".$value['PITI']."Operation :".$value['OPNO']."</br>";
+		
+		//getting values from api call
+		$MONumber=$value['MFNO'];
+		$SMV=$value['PITI'];
+		$operation_desc=$value['OPDS'];
+		$operation_code=$value['OPNO'];
+		$WorkCenterId=$value['PLG1'];
+		
+		//getting values from MO details
+		$Style=$sql_row['style'];
+		$ScheduleNumber=$sql_row['SCHEDULE'];
+		$ColorId=$sql_row['color'];
+		$Description=$sql_row['color'];
+		$SizeId=$sql_row['size'];
+		$ZFeature=$sql_row['zfeature'];
+		$ZFeatureId=$sql_row['zfeature'];
+
+		//insertion query for schedule_oprations_master table
+		$sql1="insert $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values('".$Style."','".$ScheduleNumber."','".$ColorId."','".$Description."','".$SizeId."','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$operation_code."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId."')";
+
+		//echo $sql1."<br>";
+		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+		//Update status for updated mo's and FG_codes
+		$update_mo_details="UPDATE mo_details SET ops_master_status=1 WHERE mo_number='$mo_num' AND product_sku='$FG_code'";
+		$result = mysqli_query($link, $update_mo_details)
 	
-	
 
-	//getting request values 
-	$operation_desc = $resultObj[0]->OPDS;
-	$MONumber = $resultObj[0]->MFNO;
-	$WorkCenterId = $resultObj[0]->PLG1;
-	$SMV = $resultObj[0]->PITI;
-	$operation_code = $resultObj[0]->OPNO;
-
-	//getting values from MO details
-	$Style=$sql_row['style'];
-	$ScheduleNumber=$sql_row['SCHEDULE'];
-	$ColorId=$sql_row['color'];
-	$Description=$sql_row['color'];
-	$SizeId=$sql_row['size'];
-	$ZFeature=$sql_row['zfeature'];
-	$ZFeatureId=$sql_row['zfeature'];
+	}
 
 
 
-
-	//insertion query for schedule_oprations_master table
-	$sql1="insert $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values('".$Style."','".$ScheduleNumber."','".$ColorId."','".$Description."','".$SizeId."','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_code."','".$operation_code."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId."')";
-
-	*/
-
-	// echo $sql1."<br>";
-	//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-/*
 }
 
+//construct key values and 
+function conctruct_array($req){
+	$return_ar = [];
+	foreach($req as $ar1){
+		$temp = [];
+		foreach($ar1['NameValue'] as $ar2){
+			$temp[$ar2['Name']] = $ar2['Value'];
+		}
+		$return_ar[] = $temp;
+	}
+	return $return_ar;
+}
 
-exit;
-*/
 ?>
 
