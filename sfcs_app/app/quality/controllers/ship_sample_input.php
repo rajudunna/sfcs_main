@@ -377,6 +377,7 @@ if(isset($_POST['Update']))
 	// $link->autocommit(FALSE);
 	$query_done = true;
 	$sizes_data = "";
+
 	for($i=0;$i<sizeof($samp_input);$i++)
 	{
 		//$flag=0;$flag1=0;
