@@ -12,13 +12,13 @@
     $cono='200';
     $faci='EKG';
     $selected_arr = ['OPDS','MFNO','PLG1','PITI','OPNO','MAQT','SCQT'];
-
-    $sql_mo="SELECT  mo_no,item_code FROM $bai_pro3.mo_details  where mo_no in (select distinct mo_no from $bai_pro3.m3_transactions ) group by mo_no,item_code";
+    $date = date('Y-m-d');
+    $sql_mo="SELECT  mo_no,product_sku FROM $bai_pro3.mo_details  where mo_no in (select distinct mo_no from $bai_pro3.m3_transactions where DATE(date_time)='$date') group by mo_no,product_sku";
     $result_mo=mysqli_query($link, $sql_mo) or exit("Sql Error mo".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row_mo=mysqli_fetch_array($result_mo))
     {
         $mo_nos[]=$row_mo['mo_no'];
-        $pr_nos[]=$row_mo['item_code'];
+        $pr_nos[]=$row_mo['product_sku'];
     }
 
     // $mo_nos = ['7512409','1991686','1991678'];
