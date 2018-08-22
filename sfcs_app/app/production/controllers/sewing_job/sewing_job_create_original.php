@@ -40,13 +40,14 @@
 			for(var combo_size=1;combo_size <= comboSize; combo_size++)
 			{
 				var split=document.getElementById("split_qty_"+combo_size).value;
-				if (split.length == '')
+				// confirm("split_qty_"+combo_size+" => "+split);
+				if (split == -1 || split == '')
 				{
-					split=0;
+					sweetAlert('Enter valid Garments Per Bundle','','warning');
+					return;
 				}
 				split_tot = split_tot + split;
 			}
-				
 			var exces_from=document.getElementById("exces_from").value;
 			var mix_jobs=document.getElementById("mix_jobs").value;
 			// alert(mix_jobs);
@@ -599,11 +600,11 @@
 															";
 															if($scanning_methods=='Bundle Level')
 															{
-																echo"<td><input type='text' name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'></td>";
+																echo"<td><input type='text' name='split_qty[]' required id='split_qty_$combo[$i]' class='form-control integer' value='-1'></td>";
 															}
 															else
 															{
-																echo"<input type='hidden' name='split_qty[]' id='split_qty_$combo[$i]' class='form-control integer' value='0'>";
+																echo"<input type='hidden' name='split_qty[]' required id='split_qty_$combo[$i]' class='form-control integer' value='0'>";
 															}
 														echo "</tr>";
 													}	

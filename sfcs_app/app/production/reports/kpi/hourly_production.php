@@ -145,7 +145,8 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	  <th>Request Pcs/Hr</th>
 	</tr>
   </thead>
-	<?php  while($row=mysqli_fetch_array($res)){ 
+	<?php  while($row=mysqli_fetch_array($res))
+	{ 
 		
 	 // echo $frdate;
     $date=$row['frdate'];
@@ -701,18 +702,29 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 				
 		}
 	
-	if($team==36){
+	}
+	if($team==36)
+	{
 	
-	?>
+		?>
+		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		
+		<tr style="background-color:#c5e1a5;font-weight: bold;"><td>Plant A</td><td></td><td></td><td><?php  echo $sumfrplanqtyp1; ?></td><td><?php  echo $sumfrqtyp1; ?></td><td></td><td></td><td></td><td><?php echo $tout1p1;  ?> </td><td><?php echo $tout2p1;  ?></td><td><?php echo $tout3p1;  ?></td><td><?php echo $tout4p1;  ?></td><td><?php echo $tout5p1;  ?></td><td><?php echo $tout6p1;  ?></td><td><?php echo $tout7p1;  ?></td><td><?php echo $tout8p1;  ?></td><td><?php echo $tout9p1;  ?></td><td><?php echo $tout10p1;  ?></td><td><?php echo $tout11p1;  ?></td><td><?php echo $toutfp1;  ?></td><td><?php echo $sumscanpcs_a;  ?></td><td><?php echo $sumscansah_a;  ?></td><td><?php echo $sumpsahp1;  ?></td><td><?php echo $forecastsaha;  ?></td><td><?php echo $sumasahp1;  ?></td><td><?php echo $sahdiffp1;  ?></td><td><?php echo round($sumpeffp1/18).'%';  ?></td><td><?php echo round($sumaeffp1/18).'%';  ?></td><td><?php echo $sumbpcsp1;  ?></td><td><?php echo round($sumhitratea/18);  ?>%</td><td><?php echo $sumpcshra;  ?></td></tr>
+		<tr style="background-color:#c5e1a5;font-weight: bold;"><td>Plant B</td><td></td><td></td><td><?php  echo $sumfrplanqtyp2; ?></td><td><?php  echo $sumfrqtyp2; ?></td><td></td><td></td><td></td><td><?php echo $tout1p2;  ?> </td><td><?php echo $tout2p2;  ?></td><td><?php echo $tout3p2;  ?></td><td><?php echo $tout4p2;  ?></td><td><?php echo $tout5p2;  ?></td><td><?php echo $tout6p2;  ?></td><td><?php echo $tout7p2;  ?></td><td><?php echo $tout8p2;  ?></td><td><?php echo $tout9p2;  ?></td><td><?php echo $tout10p2;  ?></td><td><?php echo $tout11p2;  ?></td><td><?php echo $toutfp2;  ?></td><td><?php echo $sumscanpcs_b;  ?></td><td><?php echo $sumscansah_b;  ?></td><td><?php echo $sumpsahp2;  ?></td><td><?php echo $forecastsahb;  ?></td><td><?php echo $sumasahp2;  ?></td><td><?php echo $sahdiffp2;  ?></td><td><?php echo round($sumpeffp2/18).'%';  ?></td><td><?php echo round($sumaeffp2/18).'%';  ?></td><td><?php echo $sumbpcsp2;  ?></td><td><?php echo round($sumhitrateb/18);  ?>%</td><td><?php echo $sumpcshrb;  ?></td></tr>
+		<tr style="background-color:#1b5e20;color:white;font-weight: bold;"><td>Factory</td><td></td><td></td><td><?php  echo $sumfrplanqty; ?></td><td><?php  echo $sumfrqty; ?></td><td></td><td></td><td></td><td><?php echo $tout1;  ?></td><td><?php echo $tout2;  ?></td><td><?php echo $tout3;  ?></td><td><?php echo $tout4;  ?></td><td><?php echo $tout5;  ?></td><td><?php echo $tout6;  ?></td><td><?php echo $tout7;  ?></td><td><?php echo $tout8;  ?></td><td><?php echo $tout9;  ?></td><td><?php echo $tout10;  ?></td><td><?php echo $tout11;  ?></td><td><?php echo $toutf;  ?></td><td><?php echo $sumscanpcs;  ?></td><td><?php echo $sumscansah;  ?></td><td><?php echo $sumpsah;  ?></td><td><?php echo $forecastsah;  ?></td><td><?php echo $sumasah;  ?></td><td><?php echo $sahdiff;  ?></td><td><?php echo round($sumpeff/$i).'%';  ?></td><td><?php echo round($sumaeff/$i).'%';  ?></td><td><?php echo $sumbpcs;  ?></td><td><?php echo round($sumhitrate/36);  ?>%</td><td><?php echo $sumpcshr;  ?></td></tr>
+	
+	
+	
+	<?php    } else { ?>
+	
 	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 	
 	<tr style="background-color:#c5e1a5;font-weight: bold;"><td>Plant A</td><td></td><td></td><td><?php  echo $sumfrplanqtyp1; ?></td><td><?php  echo $sumfrqtyp1; ?></td><td></td><td></td><td></td><td><?php echo $tout1p1;  ?> </td><td><?php echo $tout2p1;  ?></td><td><?php echo $tout3p1;  ?></td><td><?php echo $tout4p1;  ?></td><td><?php echo $tout5p1;  ?></td><td><?php echo $tout6p1;  ?></td><td><?php echo $tout7p1;  ?></td><td><?php echo $tout8p1;  ?></td><td><?php echo $tout9p1;  ?></td><td><?php echo $tout10p1;  ?></td><td><?php echo $tout11p1;  ?></td><td><?php echo $toutfp1;  ?></td><td><?php echo $sumscanpcs_a;  ?></td><td><?php echo $sumscansah_a;  ?></td><td><?php echo $sumpsahp1;  ?></td><td><?php echo $forecastsaha;  ?></td><td><?php echo $sumasahp1;  ?></td><td><?php echo $sahdiffp1;  ?></td><td><?php echo round($sumpeffp1/18).'%';  ?></td><td><?php echo round($sumaeffp1/18).'%';  ?></td><td><?php echo $sumbpcsp1;  ?></td><td><?php echo round($sumhitratea/18);  ?>%</td><td><?php echo $sumpcshra;  ?></td></tr>
 	<tr style="background-color:#c5e1a5;font-weight: bold;"><td>Plant B</td><td></td><td></td><td><?php  echo $sumfrplanqtyp2; ?></td><td><?php  echo $sumfrqtyp2; ?></td><td></td><td></td><td></td><td><?php echo $tout1p2;  ?> </td><td><?php echo $tout2p2;  ?></td><td><?php echo $tout3p2;  ?></td><td><?php echo $tout4p2;  ?></td><td><?php echo $tout5p2;  ?></td><td><?php echo $tout6p2;  ?></td><td><?php echo $tout7p2;  ?></td><td><?php echo $tout8p2;  ?></td><td><?php echo $tout9p2;  ?></td><td><?php echo $tout10p2;  ?></td><td><?php echo $tout11p2;  ?></td><td><?php echo $toutfp2;  ?></td><td><?php echo $sumscanpcs_b;  ?></td><td><?php echo $sumscansah_b;  ?></td><td><?php echo $sumpsahp2;  ?></td><td><?php echo $forecastsahb;  ?></td><td><?php echo $sumasahp2;  ?></td><td><?php echo $sahdiffp2;  ?></td><td><?php echo round($sumpeffp2/18).'%';  ?></td><td><?php echo round($sumaeffp2/18).'%';  ?></td><td><?php echo $sumbpcsp2;  ?></td><td><?php echo round($sumhitrateb/18);  ?>%</td><td><?php echo $sumpcshrb;  ?></td></tr>
 	<tr style="background-color:#1b5e20;color:white;font-weight: bold;"><td>Factory</td><td></td><td></td><td><?php  echo $sumfrplanqty; ?></td><td><?php  echo $sumfrqty; ?></td><td></td><td></td><td></td><td><?php echo $tout1;  ?></td><td><?php echo $tout2;  ?></td><td><?php echo $tout3;  ?></td><td><?php echo $tout4;  ?></td><td><?php echo $tout5;  ?></td><td><?php echo $tout6;  ?></td><td><?php echo $tout7;  ?></td><td><?php echo $tout8;  ?></td><td><?php echo $tout9;  ?></td><td><?php echo $tout10;  ?></td><td><?php echo $tout11;  ?></td><td><?php echo $toutf;  ?></td><td><?php echo $sumscanpcs;  ?></td><td><?php echo $sumscansah;  ?></td><td><?php echo $sumpsah;  ?></td><td><?php echo $forecastsah;  ?></td><td><?php echo $sumasah;  ?></td><td><?php echo $sahdiff;  ?></td><td><?php echo round($sumpeff/$i).'%';  ?></td><td><?php echo round($sumaeff/$i).'%';  ?></td><td><?php echo $sumbpcs;  ?></td><td><?php echo round($sumhitrate/36);  ?>%</td><td><?php echo $sumpcshr;  ?></td></tr>
-	
-	
-	
-	<?php    }
+
+	<?php
+	}
 	
 	$out1=$out2=$out3=$out4=$out5=$out6=$out7=$out8=$out9=$out10=$out11="";
 	$forecastqty=0;
@@ -722,9 +734,6 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	$plan_eff=0;
 	$act_eff=0;
 	$status="";
-	
-	
-	}
 	// else{
 		// echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
 	// } 
