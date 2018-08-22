@@ -336,7 +336,7 @@ if($barcode_generation == 1)
 			$r_qty = explode(",", $r_qtys[$value]);
 			$remarks = $b_remarks[$key];
 			$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = $b_job_no AND operation_id = '$b_op_id' order by bundle_number ASC";
-			//echo $query_to_fetch_individual_bundles;
+			// $query_to_fetch_individual_bundles;
 			$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// var_dump($b_rep_qty);
 			$cumulative_qty = $b_rep_qty[$key];
@@ -364,7 +364,7 @@ if($barcode_generation == 1)
 					$bundle_individual_number = $nop_qry_row['bundle_number'];
 					if($cumulative_qty > 0)
 					{
-						$bundle_pending_qty =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+ $nop_qry_row['rejected_qty']);
+						$bundle_pending_qty =  $nop_qry_row['send_qty'] - ($nop_qry_row['recevied_qty']+ $nop_qry_row['rejected_qty']);
 						//echo "pending_qty:".$bundle_individual_number.'-'.$bundle_pending_qty.'</br>';
 						// if($remaining_qty_rec != 0)
 						// {
