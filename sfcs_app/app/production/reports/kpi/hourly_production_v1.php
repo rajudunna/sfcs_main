@@ -41,7 +41,7 @@ if(isset($_GET['submit']))
 {
 	$total_hours = $plant_end_time - $plant_start_time;
 	list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
-
+	$minutes_29 = $minutes-1;
    	// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
 	// // echo $sql;
 	// $res=mysqli_query($link,$sql);	
@@ -64,12 +64,15 @@ if(isset($_GET['submit']))
 					  <?php 
 							$query='';
 							$hours_array = array();
+							$hour_end = array();
 						   	for ($i=0; $i < $total_hours; $i++)
 							{
 								$hours_array[] = $hour;
+								$from_hour = $hour.":".$minutes;
 								$hour1=$hour++ + 1;
-								$to_hour = $hour1.":00";
-								echo "<th>$to_hour</th>";
+								$to_hour = $hour1.":".$minutes_29;
+								$hour_end[] = $hour1;
+								echo "<th><center>$from_hour<br>to<br>$to_hour</center></th>";
 							}
 						?>
 					  <th>Total Pcs</th>
@@ -82,21 +85,28 @@ if(isset($_GET['submit']))
 					  <th>Plan Eff</th>
 					  <th>Act Eff</th>
 					  <th style="display:none;">Act Pcs</th>
-					  <th>Balance Pcs</th>
+					  <th>Balance pcs against Forecast</th>
 					  <th>Hit rate</th>
-					  <th>Request Pcs/Hr</th>
+					  <th style="display:none;">Request Pcs/Hr</th>
 					</tr>
 				</thead>
 	    
 				<?php 
 				$section_query = "SELECT DISTINCT(section_id) FROM $bai_pro3.`plan_modules`";
 				$section_result=mysqli_query($link,$section_query);
+
+				$grand_tot_qty_time_array = array(); $grand_tot_plan_sah=0;
+				$grand_tot_fr_qty = 0; $grand_tot_forecast_qty=0; $grand_tot_total_qty=0; $grand_tot_scanned_qty=0; 
+				$grand_tot_scanned_sah=0; $grand_tot_forecast_sah=0; $grand_tot_act_sah=0; $grand_tot_sah_diff=0;
+				$grand_tot_plan_eff=0; $grand_tot_act_eff=0; $grand_tot_hitrate=0; $grand_tot_required=0; $section_count=0;
+
 				while($Sec=mysqli_fetch_array($section_result))
 				{
+					$section_count++; $sec_tot_plan_sah=0;
 					$sec_tot_fr_qty = 0; $sec_tot_forecast_qty=0; $sec_tot_total_qty=0; $sec_tot_scanned_qty=0; 
 					$sec_tot_scanned_sah=0; $sec_tot_forecast_sah=0; $sec_tot_act_sah=0; $sec_tot_sah_diff=0;
 					$sec_tot_plan_eff=0; $sec_tot_act_eff=0; $sec_tot_hitrate=0; $sec_tot_required=0; $module_count=0;
-					$section = $Sec['section_id'];
+					$section = $Sec['section_id'];  $sec_tot_qty_array = array(); $sec_tot_balance=0;
 					// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
 					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.`plan_modules` ON fr_data.`team` = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team ORDER BY fr_data.team*1;";
 					// echo $sql.'<br>';
@@ -147,16 +157,16 @@ if(isset($_GET['submit']))
 					  
 							<tbody>
 								<tr>
-									<td><?php  echo $team;  ?></td>
-									<td><?php  echo $nop;  ?></td>
-									<td>
+									<td><center><?php  echo $team;  ?></center></td>
+									<td><center><?php  echo $nop;  ?></center></td>
+									<td><center>
 										<?php 
 											while($row1=mysqli_fetch_array($res1))
 											{
 												echo $row1['style'].'<br>';
 											}
 										?>
-									</td>
+									</center></td>
 									<td style='display:none;'>	
 										<?php 
 											while($row2=mysqli_fetch_array($res2))
@@ -164,8 +174,8 @@ if(isset($_GET['submit']))
 												echo $row2['schedule'].'<br>';
 											}
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php 
 											while($row3=mysqli_fetch_array($res3))
 											{
@@ -174,8 +184,8 @@ if(isset($_GET['submit']))
 												$sec_tot_fr_qty = $sec_tot_fr_qty + $frqty;
 											}
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php 
 											while($row4=mysqli_fetch_array($res4))
 											{
@@ -184,8 +194,8 @@ if(isset($_GET['submit']))
 												$sec_tot_forecast_qty = $sec_tot_forecast_qty + $forecastqty;
 											}
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php
 											while($row5=mysqli_fetch_array($res5))
 											{
@@ -193,36 +203,61 @@ if(isset($_GET['submit']))
 												echo round($row5['smv'],2).'<br>';
 											}
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php 
 											$hours=$row['hours'];
 											echo $row['hours'];  
 										?>
-									</td>
+									</center></td>
 									<td style="background-color:#e1bee7;">
 										<?php  
 											$pcsphr=$forecastqty/10;
 											echo round($pcsphr);
 										?>
-									</td>
+									</center></td>
 									<?php
 										for ($i=0; $i < sizeof($hours_array); $i++)
 										{
 											// echo $hours_array[$i].'<br>';
 											$hour_iniate = $hours_array[$i];
-											$sql6_1="SELECT qty FROM `bai_pro2`.hout WHERE out_date='$frdate' AND team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":00') AND TIME('".$hour_iniate.":59'));";
+											$hour_ending = $hour_end[$i];
+											$sql6_1="SELECT qty,status FROM $bai_pro2.hout WHERE out_date='$frdate' AND team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":00') AND TIME('".$hour_ending.":00'));";
 											// echo $sql6_1.'<br><br>';
 											$res6_1=mysqli_query($link,$sql6_1);
 											if (mysqli_num_rows($res6_1) > 0)
 											{
 												while($row6_1=mysqli_fetch_array($res6_1))
 												{
+													$status = $row6_1['status'];
 													$row = $row6_1['qty'];
+
+													/*
+													if($out10<$pcsphr )
+													{
+													 	if($status10=="f")
+													 	{ ?>
+															<td  style="background-color:#ef9a9a;">  <?php  echo $out10;  ?> </td>
+															<?php
+														}
+														else
+														{
+															 ?>
+															  <td  style="background-color:#ff5252;">  <?php  echo $out10;  ?>  </td>
+														 	<?php 
+														} 
+													}
+													else
+													{ ?>
+													  <td> <?php echo $out10;  ?>  </td>
+													  <?php  
+													}*/
+
 													if ($row >= round($pcsphr))
 													{
 														$total_qty = $total_qty + $row;
-														echo "<td>".$row."</td>";
+														$sec_tot_qty_array[$i] = $sec_tot_qty_array[$i] + $row6_1['qty'];
+														echo "<td><center>".$row."</center></td>";
 													} 
 													else if ($row < round($pcsphr))
 													{
@@ -232,11 +267,14 @@ if(isset($_GET['submit']))
 														if (mysqli_num_rows($res6_12) > 0)
 														{
 															$total_qty = $total_qty + $row;
-															echo "<td>".$row."</td>";
+															$sec_tot_qty_array[$i] = $sec_tot_qty_array[$i] + $row6_1['qty'];
+															echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
 														}
 														else
 														{
-															echo "<td><a class='btn btn-danger'><i class='fa fa-exclamation-circle' aria-hidden='true'></i></a></td>";
+															$img_url = getFullURLLevel($_GET['r'], 'common/images/sign.jpg', 2, 'R');
+															// echo "<td style='background-color:#FFBF00;''><center><i class='fa fa-exclamation-circle ' aria-hidden='true'></i></center></td>";
+															echo "<td><img src='$img_url' alt=\"Sign\" height=\"42\" width=\"42\"></td>";
 														}
 													}
 												}
@@ -244,91 +282,99 @@ if(isset($_GET['submit']))
 											else
 											{
 												$total_qty = $total_qty + 0;
-												echo "<td> - </td>";
+												if ($hour_iniate > date('H') and $frdate == date('Y-m-d'))
+												{
+													echo "<td><center> - </center></td>";
+												}
+												else
+												{
+													echo "<td><center> 0 </center></td>";
+												}
 											}				
 										}
 									?>
-									<td style="background-color:#d7ccc8;">
+									<td style="background-color:#d7ccc8;"><center>
 										<b>
 										<?php  
 											echo $total_qty; 
 											$sec_tot_total_qty = $sec_tot_total_qty + $total_qty;
 										?>
 										</b>
-									</td>
-									<td style="background-color:#d7ccc8;">
+									</center></td>
+									<td style="background-color:#d7ccc8;"><center>
 										<b><?php  
 											echo $sumscqty; 
 											$sec_tot_scanned_qty = $sec_tot_scanned_qty + $sumscqty;
 										?>
 										</b>
-									</td>
-									<td style="background-color:#d7ccc8;">
+									</center></td>
+									<td style="background-color:#d7ccc8;"><center>
 										<b><?php  
 											$scanned_sah=round(($sumscqty*$smv)/60);
 											echo $scanned_sah; 
 											$sec_tot_scanned_sah = $sec_tot_scanned_sah + $scanned_sah; 
 										?></b>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php 
 											$plan_sah=round(($frqty*$smv)/60); 
 											echo $plan_sah; 
 											$sec_tot_plan_sah = $sec_tot_plan_sah + $plan_sah;
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php
 											$forecast_sah=round(($forecastqty*$smv)/60);
 											echo $forecast_sah;	
 											$sec_tot_forecast_sah = $sec_tot_forecast_sah + $forecast_sah;
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php  
 											$act_sah=round(($total_qty*$smv)/60);
 											echo $act_sah;
 											$sec_tot_act_sah = $sec_tot_act_sah + $act_sah;
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php
 											$sah_diff=$plan_sah-$act_sah;
 											echo $sah_diff;
 											$sec_tot_sah_diff = $sec_tot_sah_diff + $sah_diff;
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php
-											$plan_eff=round((($forecastqty*$smv)/($nop*$hours*60))*100);
+											$plan_eff=round((($frqty*$smv)/($nop*$hours*60))*100);
 											echo $plan_eff.'%';
 											$sec_tot_plan_eff = $sec_tot_plan_eff+ $plan_eff;
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php
-											$act_eff_hour=$ntime-8;
-											if($act_eff_hour<=0)
-											{
-												$act_eff=round((($total_qty*$smv)/($nop*60))*100);
-											}
-											else
-											{
-												$act_eff=round((($total_qty*$smv)/($nop*$act_eff_hour*60))*100);
-											}
+											$act_eff=round((($total_qty*$smv)/($nop*$hours*60))*100);
+											// $act_eff_hour=$ntime-8;
+											// if($act_eff_hour<=0)
+											// {
+											// 	$act_eff=round((($total_qty*$smv)/($nop*60))*100);
+											// }
+											// else
+											// {
+											// 	$act_eff=round((($total_qty*$smv)/($nop*$act_eff_hour*60))*100);
+											// }
 											echo $act_eff.'%';
 											$sec_tot_act_eff = $sec_tot_act_eff + $act_eff;
 										?>
-									</td>
-									<td style="display:none;"></td>
-									<td>
+									</center></td>
+									<td style="display:none;"></center></td>
+									<td><center>
 										<?php
 											$balance=$forecastqty-$total_qty;
 											echo $balance;
 											$sec_tot_balance = $sec_tot_balance + $balance;
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td><center>
 										<?php
 											if($forecastqty !=0)
 											{
@@ -341,8 +387,8 @@ if(isset($_GET['submit']))
 											echo $hitrate.'%';
 											$sec_tot_hitrate = $sec_tot_hitrate + $hitrate;
 										?>
-									</td>
-									<td>
+									</center></td>
+									<td style="display:none;"><center>
 										<?php
 											$noh=18-$ntime;
 											if($noh!=0)
@@ -356,64 +402,151 @@ if(isset($_GET['submit']))
 											echo round($required);
 											$sec_tot_required = $sec_tot_required + round($required);
 										?>
-									</td>
-									<?php
-										$out=0;  
-										$i++;
-									?>
+									</center></td>
 								</tr>
 									<?php
 						}
 							?>
 							<tr style="background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
-								<td>Section - <?php  echo $section; ?></td>
+								<td>Section - <?php  echo $section; ?></center></td>
 								<td></td>
 								<td></td>
-								<td><?php  echo $sec_tot_fr_qty; ?></td>
-								<td><?php  echo $sec_tot_forecast_qty; ?></td>
+								<td><center><?php  echo $sec_tot_fr_qty; $grand_tot_fr_qty = $grand_tot_fr_qty + $sec_tot_fr_qty; ?></center></td>
+								<td><center><?php  echo $sec_tot_forecast_qty; $grand_tot_forecast_qty = $grand_tot_forecast_qty + $sec_tot_forecast_qty ?></center></td>
 								<td></td>
 								<td></td>
 								<td></td>
 								<?php
 									for ($i=0; $i < sizeof($hours_array); $i++)
 									{
-										// echo $hours_array[$i].'<br>';
-										$hour_iniate = $hours_array[$i];
-										$sql6_1="SELECT qty FROM `bai_pro2`.hout WHERE out_date='$frdate' AND team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":00') AND TIME('".$hour_iniate.":59'));";
-										// echo $sql6_1.'<br><br>';
-										$res6_1=mysqli_query($link,$sql6_1);
-										if (mysqli_num_rows($res6_1) > 0)
+										// echo "<td><center>".$sec_tot_qty_array[$i]."</center></td>";
+										if ($sec_tot_qty_array[$i] > 0)
 										{
-											while($row6_1=mysqli_fetch_array($res6_1))
-											{
-												$row = $row6_1['qty'];
-												echo "<td>".$row."</td>";
-											}
+											$grand_tot_qty_time_array[$i] = $grand_tot_qty_time_array[$i] + $sec_tot_qty_array[$i];
+											echo "<td><center>".$sec_tot_qty_array[$i]."</center></td>";
 										}
 										else
 										{
-											echo "<td> 0 </td>";
-										}				
+											$grand_tot_qty_time_array[$i] = $grand_tot_qty_time_array[$i] + 0;
+											echo "<td><center>0</center></td>";
+										}			
 									}
 								?>
-								<td><?php echo $sec_tot_total_qty;  ?></td>
-								<td><?php echo $sec_tot_scanned_qty;  ?></td>
-								<td><?php echo $sec_tot_scanned_sah;  ?></td>
-								<td><?php echo $sec_tot_plan_sah;  ?></td>
-								<td><?php echo $sec_tot_forecast_sah;  ?></td>
-								<td><?php echo $sec_tot_act_sah;  ?></td>
-								<td><?php echo $sec_tot_sah_diff;  ?></td>
-								<td><?php echo $sec_tot_plan_eff/$module_count.'%';  ?></td>
-								<td><?php echo $sec_tot_act_eff/$module_count.'%';  ?></td>
-								<td><?php echo $sec_tot_balance;  ?></td>
-								<td><?php echo $sec_tot_hitrate/$module_count.'%';  ?></td>
-								<td><?php echo $sec_tot_required;  ?></td>
+								<td><center>
+									<?php 
+										echo $sec_tot_total_qty; 
+										$grand_tot_total_qty=$grand_tot_total_qty+$sec_tot_total_qty;  
+									?>
+								</center></td>
+								<td><center>
+									<?php 
+										echo $sec_tot_scanned_qty; 
+										$grand_tot_scanned_qty=$grand_tot_scanned_qty+$sec_tot_scanned_qty; 
+									?>
+								</center></td>
+								<td><center>
+									<?php
+										echo $sec_tot_scanned_sah; 
+										$grand_tot_scanned_sah=$grand_tot_scanned_sah+$sec_tot_scanned_sah; 
+									?>
+								</center></td>
+								<td><center>
+									<?php 
+										echo $sec_tot_plan_sah; 
+										$grand_tot_plan_sah=$grand_tot_plan_sah+$sec_tot_plan_sah; 
+									?>
+								</center></td>
+								<td><center>
+									<?php 
+										echo $sec_tot_forecast_sah; 
+										$grand_tot_forecast_sah=$grand_tot_forecast_sah+$sec_tot_forecast_sah; 
+									?>
+								</center></td>
+								<td><center>
+									<?php 
+										echo $sec_tot_act_sah; 
+										$grand_tot_act_sah=$grand_tot_act_sah+$sec_tot_act_sah; 
+									?>
+								</center></td>
+								<td><center>
+									<?php 
+										echo $sec_tot_sah_diff; 
+										$grand_tot_sah_diff=$grand_tot_sah_diff+$sec_tot_sah_diff; 
+									?>
+								</center></td>
+								<td><center>
+									<?php
+										$sec_plan_eff=round((($sec_tot_plan_sah)/($nop*$hours))*100);
+										echo $sec_plan_eff.'%';  
+									?>
+								</center></td>
+								<td><center>
+									<?php
+										$sec_act_eff = round((($sec_tot_act_sah)/($nop*$hours))*100);
+										echo $sec_act_eff.'%';  
+									?>
+								</center></td>
+								<td><center>
+									<?php 
+										echo $sec_tot_balance;
+										$grand_tot_balance=$grand_tot_balance+$sec_tot_balance; 
+									?>
+								</center></td>
+								<td><center>
+									<?php
+										$sec_hitrate=round(($sec_tot_total_qty/$sec_tot_forecast_qty)*100);
+										echo $sec_hitrate.'%';  
+									?>
+								</center></td>
+								<td style="display:none;"><center><?php echo $sec_tot_required; $grand_tot_required=$grand_tot_required+$sec_tot_required; ?></center></td>
 							</tr>
 						</tbody>
 						<?php
 					}
-				}
-}?>
+				}?>
+				<tr style="background-color:green;color:white;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
+						<td><center>Factory</center></td>
+						<td></td>
+						<td></td>
+						<td><center><?php  echo $grand_tot_fr_qty; ?></center></td>
+						<td><center><?php  echo $grand_tot_forecast_qty; ?></center></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<?php
+							for ($i=0; $i < sizeof($hours_array); $i++)
+							{
+								if ($grand_tot_qty_time_array[$i] > 0)
+								{
+									echo "<td><center>$grand_tot_qty_time_array[$i]</center></td>";			
+								} 
+								else
+								{
+									echo "<td><center> 0 </center></td>";
+								}
+								
+							}
+						?>
+						<td><center><?php echo $grand_tot_total_qty;  ?></center></td>
+						<td><center><?php echo $grand_tot_scanned_qty;  ?></center></td>
+						<td><center><?php echo $grand_tot_scanned_sah;  ?></center></td>
+						<td><center><?php echo $grand_tot_plan_sah;  ?></center></td>
+						<td><center><?php echo $grand_tot_forecast_sah;  ?></center></td>
+						<td><center><?php echo $grand_tot_act_sah;  ?></center></td>
+						<td><center><?php echo $grand_tot_sah_diff;  ?></center></td>
+						<?php 
+							$grand_plan_eff=round((($grand_tot_plan_sah)/($nop*$hours))*100);
+							$grand_act_eff=round((($grand_tot_act_sah)/($nop*$hours))*100);
+							$grand_hitrate=round(($grand_tot_total_qty/$grand_tot_forecast_qty)*100);
+						?>
+						<td><center><?php echo $grand_plan_eff.'%';  ?></center></td>
+						<td><center><?php echo $grand_act_eff.'%';  ?></center></td>
+						<td><center><?php echo $grand_tot_balance;  ?></center></td>
+						<td><center><?php echo $grand_hitrate.'%';  ?></center></td>
+						<td style="display:none;"><center><?php echo $grand_tot_required;  ?></center></td>
+					</tr>
+<?php
+} ?>
 	      
 				
 			</table>
