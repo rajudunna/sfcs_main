@@ -40,15 +40,14 @@
 			for(var combo_size=1;combo_size <= comboSize; combo_size++)
 			{
 				var split=document.getElementById("split_qty_"+combo_size).value;
-				// confirm(split);
-				if (document.getElementById("split_qty_"+combo_size).value == '-1' || document.getElementById("split_qty_"+combo_size).value == -1)
+				// confirm("split_qty_"+combo_size+" => "+split);
+				if (split == -1 || split == '')
 				{
-					sweetAlert('Please Select Mix Jobs','','warning');
-					// split=0;
+					sweetAlert('Enter valid Garments Per Bundle','','warning');
+					return;
 				}
 				split_tot = split_tot + split;
 			}
-			confirm('hihi');
 			var exces_from=document.getElementById("exces_from").value;
 			var mix_jobs=document.getElementById("mix_jobs").value;
 			// alert(mix_jobs);
