@@ -276,6 +276,7 @@ $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gaya
 	}
 	function initDrag(e)	// Mouse button is pressed down on a LI
 	{
+		alert("initdrag");
 		if(document.all)e = event;
 		var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
 		var sl = Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
@@ -296,6 +297,7 @@ $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gaya
 	
 	function timerDrag()
 	{
+		alert("timerDrag");
 		if(dragTimer>=0 && dragTimer<10){
 			dragTimer++;
 			setTimeout('timerDrag()',10);
@@ -315,6 +317,7 @@ $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gaya
 	
 	function moveDragContent(e)
 	{
+		alert("moveDragContent");
 		if(dragTimer<10){
 			if(contentToBeDragged){
 				if(contentToBeDragged_next){
@@ -491,6 +494,7 @@ document.forms["myForm"].submit();
 	
 	function initDragDropScript()
 	{
+		alert("init");
 		dragContentObj = document.getElementById('dragContent');
 		dragDropIndicator = document.getElementById('dragDropIndicator');
 		dragDropTopContainer = document.getElementById('dhtmlgoodies_dragDropContainer');

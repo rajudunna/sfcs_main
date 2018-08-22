@@ -232,8 +232,8 @@
 								<li class="">
 									<div class="col-md-12" id="divid_7" style="padding: 12px;">
 										<img src="/images/sewing-machine.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_create_original.php') ?>" onclick="modal('','',this.name)" name="Sewing Generation">Sewing Generation</a></p>
-										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
+										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Sewing</p>
+										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">( <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_create_original.php') ?>" onclick="modal('','',this.name)" name="Sewing Generation">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/input_job_level_planning/cut_jobs_loading.php') ?>" onclick="modal('','',this.name)" name="Input Job Level Planning">Input Job Level Planning</a> )</p>
 									</div>
 								</li>
               </ul>
