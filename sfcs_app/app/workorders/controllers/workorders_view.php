@@ -211,7 +211,7 @@
 										<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Manage Packing List</p>
 										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-										( <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/packing_ratio.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/delete_sewing_jobs.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
+										( <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/pac_gen_sewing_job.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/packing_ratio.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Packing Ratio</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/delete_sewing_jobs.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
 										</p>
 									</div>
 								</li>
