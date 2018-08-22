@@ -5,7 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 ?>
 
-<div class="container" id='main'>
+<div  id='main'>
 	<div class="panel panel-primary">
 		<div class="panel-heading">Roll-Wise Fabric Inspection Update
 		</div>
@@ -167,7 +167,7 @@ if(isset($_POST['submit1']))
 			echo "setTimeout('Redirect()',0);";
 			echo "var url='".$url."&batch_no=".urlencode($batch_no)."&lot_ref=".urlencode($lot_no1)."';";
 
-			echo "function Redirect(){location.href=url;}</script>";
+			echo "function Redirect(){Ajaxify(url);}</script>";
 		}
 	}
 	else

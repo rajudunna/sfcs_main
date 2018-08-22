@@ -559,7 +559,7 @@ function getCSVData(){
 	csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(data);
 	$("#exportsags").attr({
 		"href": csvData,
-		"download": "download_something.csv"
+		"download": "input_status_report.csv"
 	});
 }
 </script>
