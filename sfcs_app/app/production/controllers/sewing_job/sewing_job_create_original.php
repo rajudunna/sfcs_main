@@ -132,7 +132,7 @@
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>Create Sewing Jobs</b></div>
 	<div class="panel-body">
-		<div class="col-md-12">
+		
 			<?php
 			echo "<form name=\"mini_order_report\" action=\"?r=".$_GET["r"]."\" class=\"form-inline\" method=\"post\" >";
 				?>
@@ -182,12 +182,12 @@
 				&nbsp;&nbsp;
 				<input type="submit" name="submit" id="submit" class="btn btn-success " onclick="return check_val();" value="Submit">
 			</form>
-		</div>
-
-		<div class="col-md-12">
+		
+	
 			<?php
 				if(isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule']))
 				{	
+					echo "<hr>";
 					if ($_GET['style'] and $_GET['schedule'])
 					{
 						$style_id=$_GET['style'];
@@ -221,7 +221,7 @@
 						$val1=sizeof($planned_colors);
 						if($tbl_carton_ref_check>0)
 						{
-							echo '<h4>Pack Method: <span class="label label-info">'.$operation[$pack_method].'</span></h4>';
+							echo '<h5>Pack Method: <span class="label label-info">'.$operation[$pack_method].'</span></h5>';
 							// echo "carton props added, You can proceed";
 							if($bundle == 0)
 							{
@@ -276,10 +276,10 @@
 									}
 
 									$url1 = getFullURLLevel($_GET['r'],'pop_up_sewing_job_det.php',0,'R');
-									echo "<br><a class='btn btn-success' href='$url1?schedule=$schedule' onclick=\"return popitup2('$url1?schedule=$sch_id&style=$style_id')\" target='_blank'>Click Here For Color Wise Order Details</a>";
+									echo "<br><a class='btn btn-success btn-sm' href='#' onclick=\"return popitup2('$url1?schedule=$sch_id&style=$style_id')\" target='_blank'>Click Here For Color Wise Order Details</a><br/>";
 
 									echo "<br>
-									<div class='col-md-12'><b>Order Details: </b>
+									<div class='col-md-12 row'><b>Order Details: </b>
 										<table class=\"table table-bordered\">
 											<tr>
 												<th>Details</th>";
@@ -344,7 +344,7 @@
 								{
 									$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$sch_id AND style_code=$style_id)";
 									$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-									echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
+									echo "<br><div class='col-md-12 row'><b>Garments Per Poly Bag: </b>
 										<table class=\"table table-bordered\">
 											<tr>
 												<th>Color</th>";
@@ -402,7 +402,7 @@
 										$poly_bags_per_carton_result=mysqli_query($link, $poly_bags_per_carton_query) or exit("Error while getting poly_bags_per_carton Details");
 										while($poly_bags_per_carton_details=mysqli_fetch_array($poly_bags_per_carton_result)) 
 										{
-											echo "<br><div class='col-md-4'>
+											echo "<br><div class='col-md-4 row'>
 														<table class=\"table table-bordered\">
 															<tr><th>Number of Poly Bags Per Carton:</th><th>".$poly_bags_per_carton_details['poly_bags_per_carton']."</th>
 															</tr>
@@ -424,7 +424,7 @@
 											$size_title[]=$poly_bags_per_carton_details['size_title'];
 										}
 
-										echo "<br><div class='col-md-12'><b>Number of Poly Bags Per Carton: </b>
+										echo "<br><div class='col-md-12 row'><b>Number of Poly Bags Per Carton: </b>
 										<table class=\"table table-bordered\">
 											<tr>";
 											for ($i=0; $i < sizeof($size_title); $i++)
@@ -445,7 +445,7 @@
 								// Garments Per Carton Start
 								{
 									echo "
-										<div class='col-md-12'><b>Garments Per Carton: </b>
+										<div class='col-md-12 row'><b>Garments Per Carton: </b>
 											<div class='table-responsive'>
 												<table class=\"table table-bordered\">
 													<tr>
@@ -546,7 +546,7 @@
 										echo  "<input type=\"hidden\" value=\"$val\" id=\"size_of_colors\" name=\"size_of_colors\">";
 										// Combo wise no of cartons start
 										{
-											echo "<div class='col-md-12'>
+											echo "<div class='col-md-12 row'>
 												<table class='table table-bordered'>
 													<tr>
 														<th>Combo</th>
@@ -605,7 +605,7 @@
 										// Sewing Job Qty Start
 										{
 											echo "<br>
-												<div class='col-md-12'><b>Sewing Job Qty: </b>
+												<div class='col-md-12 row'><b>Sewing Job Qty: </b>
 													<table class=\"table table-bordered\">
 														<tr>
 															<th>Color</th>
@@ -681,7 +681,7 @@
 										}
 										// Sewing Job Qty End
 										// var_dump($combo);
-										echo "<div class='col-md-4'>
+										echo "<div class='col-md-4 row'>
 											<table class='table table-bordered'>
 												<tr>
 													<th>Excess From</th><th>Control</th>
@@ -767,16 +767,18 @@
 						
 						echo "<h2>Sewing orders Generation under process Please wait.....<h2>";
 						$url5 = getFullURLLevel($_GET['r'],'mini_order_gen_v2.php',0,'N');
-						echo "<script>location.href = '".$url5."&id=$c_ref';</script>";
+						$url = $url5."&id=".$c_ref;
+						echo "<script>Ajaxify('".$url."');</script>";
 					}
 					else
 					{
 						echo "<script>sweetAlert('Number of Cartons is Zero','Cannot create Sewing Jobs','warning');</script>";
 						$url5 = getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N');
-						echo "<script>location.href = '".$url5."&style=$style_id&schedule=$sch_id';</script>";
+						$url = $url5."&style=".$style_id."&schedule=".$sch_id;
+						echo "<script>Ajaxify('".$url."');</script>";
 					}
 				}
 			?> 
-		</div>
+		
 	</div>
 </div>

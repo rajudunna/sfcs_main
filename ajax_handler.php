@@ -201,7 +201,6 @@ function anchortag(event,href_url=0){
 
     event.preventDefault();
 
-    alert(localStorage.getItem("batch"));
     var url;
     var href_url;
     var split_url;
