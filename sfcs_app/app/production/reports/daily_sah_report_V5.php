@@ -67,7 +67,7 @@ for (var i = 0; i < value.length; i++) {
 	}
 </script>
 <style id="SAH -JUN_13441_Styles">
-<!--table
+table
 	{mso-displayed-decimal-separator:"\.";
 	mso-displayed-thousand-separator:"\,";}
 .xl15212
@@ -1193,7 +1193,6 @@ for (var i = 0; i < value.length; i++) {
 	background:#EBF1DE;
 	mso-pattern:black none;
 	white-space:nowrap;}
--->
 </style>
 <style id="SAH -JUN_13441_Styles">
 
@@ -1571,7 +1570,7 @@ for($i=0;$i<sizeof($sec_array);$i++)
 			}
 			else
 			{
-				echo "No Shift";
+				//echo "No Shift";
 			}
 	  }
 	  if(!in_array($sec_array[$i],$exp_sec))	  
@@ -1749,7 +1748,7 @@ for($i=0;$i<sizeof($sec_array);$i++)
 		}
 		else
 		{
-			echo "No Shift";
+			//echo "No Shift";
 		}
   }	  
                       
@@ -1808,7 +1807,7 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 		}
 		else
 		{
-			echo "No Shift";
+			//echo "No Shift";
 		}
   }
   
@@ -2014,7 +2013,7 @@ while($rows=mysqli_fetch_array($sql))
 	}
 	else
 	{
-		echo "No Shift";
+		//echo "No Shift";
 	}
 } 
 

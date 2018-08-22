@@ -192,7 +192,6 @@ if(mysqli_num_rows($sql_result)> 0) {
 
 
 <script language="javascript" type="text/javascript">
-//<![CDATA[	
 	var table2_Props = 	{					
 					col_1: "select",
 					col_2: "select",
@@ -206,8 +205,12 @@ if(mysqli_num_rows($sql_result)> 0) {
 					sort_select: true,
 					loader: true
 				};
-	setFilterGrid( "table_one",table2_Props );
-//]]>		
+	setFilterGrid("table_one",table2_Props );
+	$(document).ready(function(){
+		$('#reset_table_one').addClass('btn btn-warning btn-xs');
+		$('#reset_table_one').find('a').addClass('table_resets');
+	});
+
 </script>
 </div></div>
 </body>

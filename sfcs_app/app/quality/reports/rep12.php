@@ -62,7 +62,7 @@ if(isset($_POST['filter'])){
 		echo "<div class='col-sm-12'>";
 		echo '<form action='.getFullURL($_GET['r'],'export_excel.php','R').' method ="post" > 
 				<input type="hidden" name="csv_text" id="csv_text">
-				<input type="submit" class="btn btn-warning" value="Export to Excel" onclick="getCSVData()">
+				<a id="exportsags" href="#" onclick="getCSVData()" class="btn btn-sm btn-info table_resets" >Export To Exccel</a>
 			  </form>';
 		echo "</div><br/><br/><br/>";	  
 
@@ -114,7 +114,12 @@ if(isset($_POST['filter'])){
 <script type="text/javascript">
 function getCSVData(){
  	var csv_value=$('#example1').table2CSV({delivery:'value'});
- 	$("#csv_text").val(csv_value);	
+	var data = csv_value;   
+	csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(data);
+	$("#exportsags").attr({
+		"href": csvData,
+		"download": "surplus_stock_report.csv"
+	});	
 }
 </script>
 
