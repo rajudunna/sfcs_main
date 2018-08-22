@@ -688,12 +688,13 @@ if($barcode_generation == 1)
 		{
 			$dep_ops_codes[] = $row['operation_code'];	
 		}
-		$ops_seq_check = "select id,ops_sequence from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$b_op_id'";
+		$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$b_op_id'";
 		$result_ops_seq_check = $link->query($ops_seq_check);
 		while($row = $result_ops_seq_check->fetch_assoc()) 
 		{
 			$ops_seq = $row['ops_sequence'];
 			$seq_id = $row['id'];
+			$ops_order = $row['operation_order'];
 		}
 		if($ops_dep)
 		{
@@ -734,7 +735,7 @@ if($barcode_generation == 1)
 				}
 			}
 		}
-		$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq and id > $seq_id order by id limit 1";
+		$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
 		$result_post_ops_check = $link->query($post_ops_check);
 		if($result_post_ops_check->num_rows > 0)
 		{
@@ -1251,6 +1252,7 @@ if($barcode_generation == 1)
 			$appilication = 'IMS_OUT';
 			$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
 			//echo $checking_output_ops_code;
+			$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where id=6";
 			$result_checking_output_ops_code = $link->query($checking_output_ops_code);
 			if($result_checking_output_ops_code->num_rows > 0)
 			{
