@@ -162,7 +162,7 @@
 				if ($valid_result > 0)
 				{
 					echo "<script>sweetAlert('Packing Ratio Already Updated for this Schedule - $schedule_original','Go to Sewing Job Creation','warning')</script>";
-					echo '<br><br><br><div class="col-md-12"><h4>Pack Method: <span class="label label-info">'.$operation[$updated_carton_method].'</span></h4></div>';
+					echo '<br><br><br><div class="col-md-12"><h5>Pack Method: <span class="label label-info">'.$operation[$updated_carton_method].'</span></h5></div>';
 					$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
 					$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 					echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
