@@ -175,7 +175,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                         }else{
                             $btn="<div class='label label-info'>Down time updated.</div>";
                         }
-                    }elseif($actual_qty<$plan_qty){
+                    }elseif($actual_qty<$plan_qty && $forcast_qty==0){
                         $hours = $plan_qty - $actual_qty;
                         $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND TIME= '".$r['time_value'].":30' AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
