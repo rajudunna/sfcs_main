@@ -1,118 +1,15 @@
 <!DOCTYPE html>
 <?php
-//load the database configuration file
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
-$has_perm=haspermission($_GET['r']);
+	//load the database configuration file
+	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+	$has_perm=haspermission($_GET['r']);
 ?>
   <title>Lost Time Capturing Report</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
- <!--<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'css/bootstrap.min.css',0,'R'); ?>">
-  <script src="<?= getFullURLLevel($_GET['r'],'js/bootstrap.min.js',0,'R'); ?>"></script>
-  <script src="<?= getFullURLLevel($_GET['r'],'js/jquery.js',0,'R'); ?>"></script>-->
- <style type="text/css">
- td {
-	 color:black;
- }
- /* table a:link {
-	color: #666;
-	font-weight: bold;
-	text-decoration:none;
-}
-table a:visited {
-	color: #999999;
-	font-weight:bold;
-	text-decoration:none;
-}
-table a:active,
-table a:hover {
-	color: #bd5a35;
-	text-decoration:underline;
-}
-table {
-	font-family:Arial, Helvetica, sans-serif;
-	color:#666;
-	font-size:12px;
-	text-shadow: 1px 1px 0px #fff;
-	background:#eaebec;
-	margin:20px;
-	border:#ccc 1px solid;
-
-	-moz-border-radius:3px;
-	-webkit-border-radius:3px;
-	border-radius:3px;
-
-	-moz-box-shadow: 0 1px 2px #d1d1d1;
-	-webkit-box-shadow: 0 1px 2px #d1d1d1;
-	box-shadow: 0 1px 2px #d1d1d1;
-}
-table th {
-	padding:21px 25px 22px 25px;
-	border-top:1px solid #fafafa;
-	border-bottom:1px solid #e0e0e0;
-
-	background:#039be5;
-	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
-	background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
-}
-table th:first-child {
-	text-align: left;
-	padding-left:20px;
-}
-table tr:first-child th:first-child {
-	-moz-border-radius-topleft:3px;
-	-webkit-border-top-left-radius:3px;
-	border-top-left-radius:3px;
-}
-table tr:first-child th:last-child {
-	-moz-border-radius-topright:3px;
-	-webkit-border-top-right-radius:3px;
-	border-top-right-radius:3px;
-}
-table tr {
-	text-align: center;
-	padding-left:20px;
-}
-table td:first-child {
-	text-align: left;
-	padding-left:20px;
-	border-left: 0;
-}
-table td {
-	padding:18px;
-	border-top: 1px solid #ffffff;
-	border-bottom:1px solid #e0e0e0;
-	border-left: 1px solid #e0e0e0;
-
-	background: #fafafa;
-	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
-	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
-}
-table tr.even td {
-	background: #f6f6f6;
-	background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
-	background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
-}
-table tr:last-child td {
-	border-bottom:0;
-}
-table tr:last-child td:first-child {
-	-moz-border-radius-bottomleft:3px;
-	-webkit-border-bottom-left-radius:3px;
-	border-bottom-left-radius:3px;
-}
-table tr:last-child td:last-child {
-	-moz-border-radius-bottomright:3px;
-	-webkit-border-bottom-right-radius:3px;
-	border-bottom-right-radius:3px;
-}
-table tr:hover td {
-	background: #f2f2f2;
-	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
-	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);	
-}
-  */
  
+ <style type="text/css">
+	td {
+		color:black;
+	}
 </style>
 	<?php   
 		//Starting get process for hourly efficiency report through FR Plan.				   
@@ -129,8 +26,8 @@ table tr:hover td {
 <div class="panel panel-primary">
 <div class="panel-heading">Lost Hour Capturing Report-<?php  echo $frdate;  ?></div>
 <div class="panel-body">
-<div class="container">
-<form action='index.php' method='GET'>
+<div class="col-sm-12">
+<form action='?r=<?= $_GET["r"]; ?>' method='GET'>
 	<input type='hidden' name='r' value='<?= $_GET["r"]; ?>'>
 	<br>
 	<div class="col-sm-3">
@@ -142,7 +39,7 @@ table tr:hover td {
 	</div>
 </form>
   <!--<center><h2 style="color:#4a148c;"><b><i>Lost Hour Capturing Report - <?php  echo $frdate;  ?></i></b></h2></center>-->
-  <hr>
+ 
    
    <?php
    if(isset($_GET['submit'])){
@@ -440,15 +337,10 @@ table tr:hover td {
 	
 	<?php  $out=0;  
 	$i++;
-	?>
-	
-	
+	?>	
 	</tr>
 	
-	
-	
-	
-	
+
 	<?php    
 	$dres1=$dres2=$dres3=$dres4=$dres5=$dres6=$dres7=$dres8=$dres9=$dres10=$dres11="";
 	$out1=$out2=$out3=$out4=$out5=$out6=$out7=$out8=$out9=$out10=$out11="";

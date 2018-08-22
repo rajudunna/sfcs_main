@@ -60,7 +60,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			//$msg="<table border='1px' class='mytable' id='table1'><tr><th>Schedule No</th><th>Doc No</th><th>Cut No</th><th>Scanned Qty</th><th>Unscanned Qty</th><th>Input</th><th>Output</th></tr>";
 			$msg="
 			<div class='table-responsive'><table class='table table-bordered table-striped' id='table1'>
-			<thead><tr><th>Buyer Division</th><th>Style</th><th>Schedule</th><th>Color</th><th>FG WIP</th><th>EX-Factory</th></tr></thead>";
+			<thead><tr class='info'><th>Buyer Division</th><th>Style</th><th>Schedule</th><th>Color</th><th>FG WIP</th><th>EX-Factory</th></tr></thead>";
 			$sqlw="select distinct order_del_no as del_no FROM $bai_pro3.packing_summary WHERE date(lastup) >= \"2015-01-01\"";
 			$resultw=mysqli_query($link, $sqlw) or die("Sql error--1".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 			//echo $sqlw;
@@ -173,6 +173,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	setFilterGrid( "table1",table6_Props );
 	$(document).ready(function(){
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
+		$('#reset_table1').find('a').addClass('table_resets');
 	});
 // ]]>
 </script>

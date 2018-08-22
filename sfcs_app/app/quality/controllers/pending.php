@@ -82,7 +82,7 @@ function firstbox()
 <div class="panel panel-primary">
 <div class="panel-heading">FCA Pending List</div>
 <div class="panel-body">
-<form name="test" method="post" action="<?php $_GET['r']; ?>">
+<form name="test" method="post" action="index.php?r=<?= $_GET['r']; ?>">
 
 <div class='col-md-3'>
   <label>Schedule No:</label>
@@ -206,6 +206,7 @@ if($no_of_rows > 0) {
 	}
 	echo "</table>";
 }else{ ?>
+	<div style='height:50px'><br/></div>
 	<div class="alert alert-warning">
   		<strong>Info!</strong> No Data Found.
 	</div>

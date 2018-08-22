@@ -7,55 +7,15 @@
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',4,'R'); ?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R'); ?>"></script>
-<style>
-table {	
-	text-align:center;
-	font-size:12px;
-	width:100%;
-	padding: 1em 1em 1em 1em;
-	/* margin-top:-1em; */
-	color:black;
-}
-th{
-	background-color:#29759c;
-	color:white;
-	text-align:center;
-}
 
-.fltrow{
-	color:#FFFFFF;
-	text-align:center;
-}
-.table-responsive{
-	margin-top:-40pt;
-}
-/* .rdiv{
-	color: black;
-    display: inline-block;
-    background-color: #ec971f;
-    padding: 0.1em 0.1em 0.1em 0.1em;
-    margin-bottom: 1em;
-    text-align: left;
-    /* margin-left: 70em; */
-	/* margin-top:5em;	 */
-/* } */ 
-.ldiv{
-	color: black;
-    display: inline-block;
-    background-color: #dbd4d4;
-    padding: 0.3em 0.3em 0.3em 0.3em;
-    margin-bottom: 1em;
-    margin-top: -6em;
-    text-align: right;
-    margin-left: 0em;
-}
-</style>
 <div class="panel panel-primary">
 <div class="panel-heading">Fabric WIP</div>
-<div class="panel-body"><br>
+<div class="panel-body">
+<div style='overflow:scroll;max-height:600px'>
+<br>
 <?php
 
-echo "<div class='table-responsive'><table class='table table-bordered table-striped' id='table1'><thead><tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>Fabric WIP Yards</th><th>Fabric WIP Pcs</th><th>EX-Factory</th></tr></thead>";
+echo "<div class='table-responsive'><table class='table table-bordered table-striped' id='table1'><thead><tr class='info'><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>Fabric WIP Yards</th><th>Fabric WIP Pcs</th><th>EX-Factory</th></tr></thead>";
 
 $sql=mysqli_query($link, "select order_tid,SUM(material_req) AS fabric_wip_yards,GROUP_CONCAT(doc_no) AS DOCNO,SUM((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl+a_s06+a_s08+a_s10++a_s12+a_s14+a_s16+a_s18+a_s20+a_s22+a_s24+a_s26+a_s28+a_s30)*a_plies) AS pcs from $bai_pro3.order_cat_doc_mk_mix WHERE fabric_status=5 and date >= \"2015-01-01\" AND act_cut_status=\"\" and category in (\"Body\",\"Front\") GROUP BY ORDER_TID ORDER BY DOC_NO");
 while($row=mysqli_fetch_array($sql))
@@ -128,8 +88,10 @@ echo "</table></div>";
 							loader_text: "Filtering data..."
 						};
 	setFilterGrid( "table1",table6_Props );
+
 	$(document).ready(function(){
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
+		$('#reset_table1').find('a').addClass('table_resets');
 	});
 // ]]>
 </script>

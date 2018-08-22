@@ -111,7 +111,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                     <!--<div id="page_heading"><h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3><span style="float: right"><b>?</b>&nbsp;</span></div>--> 
                     <!--<h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3>--> 
                     <?php  
-                        include("../../../common/config/config.php");
+                        include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
                         error_reporting(0);
                         $secstyles=$_POST['secstyles']; 
                         $sections_string=$_POST['section']; 
@@ -124,7 +124,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                     ?> 
 
 
-                    <form method="POST" class="form-inline" action="<?php $_SERVER['PHP_SELF']; ?>" onsubmit="showHideDiv()"> 
+                    <form method="POST" class="form-inline" action="<?= $_GET['r']; ?>" onsubmit="showHideDiv()"> 
                         <table id="filter">
                             <tr>
                                 <td valign="top">

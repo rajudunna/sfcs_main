@@ -10,7 +10,7 @@
   $offset = 24;
   unset($_SESSION['filter']);
   if(isset($_GET['limit'])){
-    $offset = $_SESSION['limit'] = $_GET['limit'];
+    $offset = $_SESSION['limit'] = $_GET['limit'] > 0 ? $_GET['limit']  : $offset;
   }
 
   if(isset($_GET['paginate'])){
@@ -27,6 +27,7 @@
                     order_style_no like '%$filter%' LIMIT $offset OFFSET $start";
   $total_rows_q = "select count(*) as count from  bai_pro3.bai_orders_db WHERE order_del_no LIKE '%$filter%' OR 
                     order_style_no like '%$filter%'";
+  //echo $details_query;
   $details_result = mysqli_query($link,$details_query); 
   $total_rows = mysqli_query($link,$total_rows_q);
   while($row = mysqli_fetch_array($total_rows)){
