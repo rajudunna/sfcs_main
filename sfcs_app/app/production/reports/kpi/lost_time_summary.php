@@ -6,53 +6,10 @@
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 
 ?>
-<!-- <html lang="en"> -->
-<!-- <head> -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
-  <!-- <script src="js/bootstrap.min.js"></script> -->
-  <!-- <script src="js/jquery.js"></script> -->
-  
-  <!-- <style>
-	tr th{
-	max-width:100px !important;
-	width:100px !important;
-	
-	
-	}
-	tr td {
-       border-bottom:2px solid #00e5ff !important;
-	   padding: 1px !important;
-	   
-    }
-	tr {
-      max-height: 35px !important;
-      height: 35px !important;
-    }
-	
-  </style> -->
-  <!-- <style>
-.table1 th{
- background-color:#d8d8d8;
-}
-.table1 tr{
-	   max-height: 20px !important;
-      height: 20px !important;
 
-}
-.table1, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-	margin:0 0 0 0px;
-	height:40% !important;
-}
-</style> -->
-<!-- </head> -->
 <body>
 
-
-<div class="container">
+<div class="">
 				<?php   
 				   //Starting get process for hourly efficiency report through FR Plan.
 				   
@@ -80,7 +37,7 @@ echo $frdate.' - '.$frdate1;
 </div>
 <div class="panel-body">
 				
-				<form action="index.php" method='GET'>
+				<form action="?r=<?= $_GET["r"]; ?>" method='GET'>
 				<input type='hidden' name='r' value='<?= $_GET["r"]; ?>'>
 				<br>
 				<div class='col-md-3'>
@@ -289,23 +246,20 @@ function verify_date()
 	    return true;
 	}
 }
-
-// <script language="javascript" type="text/javascript">
-//<![CDATA[	
-	var table2_Props = 	{					
-					// col_1: "select",
-					// col_2: "select",
-					// col_3: "select",
-					display_all_text: " [ Show all ] ",
-					btn_reset: true,
-					bnt_reset_text: "Clear all ",
-					rows_counter: true,
-					rows_counter_text: "Total Rows: ",
-					alternate_rows: true,
-					sort_select: true,
-					loader: true
-				};
+var table2_Props = 	{					
+				// col_1: "select",
+				// col_2: "select",
+				// col_3: "select",
+				display_all_text: " [ Show all ] ",
+				btn_reset: true,
+				bnt_reset_text: "Clear all ",
+				rows_counter: true,
+				rows_counter_text: "Total Rows: ",
+				alternate_rows: true,
+				sort_select: true,
+				loader: true
+			};
 	setFilterGrid( "table_one",table2_Props );
-//]]>		
-// </script>
+	$('#reset_table_one').find('a').addClass('table_resets');
+	
 </script>

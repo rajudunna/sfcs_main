@@ -146,8 +146,9 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 // var_dump($sql_result);
 if(mysqli_num_rows($sql_result)> 0) {
 
-	echo '<div class="table-responsive"><table id="table_one"  class="table table-bordered" >';
-	echo "<tr class='tblheading'><th>Date</th><th>Modules</th><th>Section</th><th>Style</th><th>Schedule</th><th>Size</th><th>Reason</th><th>Updated By</th></tr>";
+	echo '<div style="overflow:scroll;max-height:600px"><table id="table_one"  class="table table-bordered" >';
+	echo "<tr class='info'><th>Date</th><th>Modules</th><th>Section</th><th>Style</th><th>Schedule</th>
+	<th>Size</th><th>Reason</th><th>Updated By</th></tr>";
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 			//2012-05-21

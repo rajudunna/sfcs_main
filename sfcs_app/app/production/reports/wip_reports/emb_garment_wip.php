@@ -18,23 +18,17 @@
 </head>
 <body>
 <!--<div id="page_heading"><span style="float: "><h3>Embellishment Garment WIP</h3></span><span style="float: right">&nbsp;</span></div>-->
-<style>
-th{
-	background-color:#29759c;
-	color:white;
-	text-align:center;
-}
-</style>
+
 <br/>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Embellishment Garment WIP</div>
 <div class="panel-body">
-
+<div style='overflow:scroll;max-height:600px'>
 <?php
     set_time_limit(6000000);
 	//$msg="<table border='1px' class='mytable' id='table1'><tr><th>Schedule No</th><th>Doc No</th><th>Cut No</th><th>Scanned Qty</th><th>Unscanned Qty</th><th>Input</th><th>Output</th></tr>";
-	$msg="<table id='table1' class='table table-bordered'><tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>EMB GARMENT WIP</th><th>EX-Factory</th></tr>";
+	$msg="<table id='table1' class='table table-bordered'><tr class='info'><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>EMB GARMENT WIP</th><th>EX-Factory</th></tr>";
     $sql="select order_style_no,order_col_des,order_del_no,doc_no,acutno,size_code,if(status ='DONE',sum(carton_act_qty),0) as carton,if(status='EGR',sum(carton_act_qty),0) as carton1,if(status='EGS',sum(carton_act_qty),0) as carton2 from $bai_pro3.packing_summary WHERE date(lastup) >= \"2015-01-01\" and STATUS IN (\"EGR\",\"EGS\") group by order_del_no order by order_del_no, doc_no,size_code";
 	//echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or die("Sql error--1".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
@@ -99,7 +93,6 @@ th{
 	echo $msg;
 ?>
 <script language="javascript" type="text/javascript">
-//<![CDATA[
 	var table6_Props = 	{
 							rows_counter: true,
 							btn_reset: true,
@@ -108,7 +101,8 @@ th{
 						};
 	setFilterGrid( "table1",table6_Props );
 	$('#reset_table2').addClass('btn btn-warning btn-xs');
-//]]>
+	$('#reset_table2').find('a').addClass('table_resets');
+
 </script>
 
 </div>

@@ -149,9 +149,9 @@ if(isset($_POST['submit']))
 
 // echo "<span class='pull-right'><strong><a href=".getFullURL($_GET['r'],'isr_view_v1_excel.php','N')."&from_date=$from_date&to_date=$to_date class='btn btn-sm btn-success'>Export to Excel</a></strong></span>	";
 	echo '<span class="pull-right">
-			<form action="index.php?r='.$excel_form_action.'" method ="post" > 
+			<form action="index.php?r='.$excel_form_action.'" method ="post" class="excelnot"> 
 				<input type="hidden" name="csv_text" id="csv_text">
-				<input class="btn btn-info btn-sm" type="submit" name="exporting_to_excel" value="Export to Excel" onclick="getCSVData()">
+				<a id="exportsags" href="#" onclick="getCSVData()" class="btn btn-info btn-sm table_resets">Export to Excel</a>
 			</form></span>
 		';	
 echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
@@ -553,7 +553,13 @@ $sql3311="SELECT * FROM $bai_pro3.tbl_size_lable WHERE tbl_size_lable.buyer_devi
 </div>
 <script>
 function getCSVData(){
- var csv_value=$('#report').table2CSV({delivery:'value'});
- $("#csv_text").val(csv_value);	
+	var csv_value=$('#report').table2CSV({delivery:'value'});
+	//$("#csv_text").val(csv_value);	
+	var data = csv_value;	
+	csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(data);
+	$("#exportsags").attr({
+		"href": csvData,
+		"download": "download_something.csv"
+	});
 }
 </script>

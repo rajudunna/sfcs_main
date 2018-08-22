@@ -5,9 +5,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',4,'R'); ?>">
-
-<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/css/table.css',4,'R'); ?>">
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',4,'R'); ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R'); ?>"></script>
@@ -18,6 +15,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <div class="panel panel-primary">
 <div class="panel-heading">Sewing WIP</div>
 <div class="panel-body">
+<div style='overflow:scroll;max-height:700px'>
 
 <?php
 
@@ -28,7 +26,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$section3=array("33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48");
 //$section4=array("49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64");
 
-echo "<div class='table-responsive'><table class='table table-bordered table-striped' id='table1'><tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>Section</th><th>Module</th><th>Sewing Wip</th><th>EX-Factory</th></tr>";
+echo "<table class='table table-bordered table-striped' id='table1'><tr class='info'><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>Section</th><th>Module</th><th>Sewing Wip</th><th>EX-Factory</th></tr>";
 
 $sql="select sum(ims_qty) as ims_qty,sum(ims_pro_qty) as ims_pro_qty,ims_style,ims_schedule,ims_color,ims_mod_no from $bai_pro3.ims_log where ims_date >= \"2015-01-01\" and ims_qty!=ims_pro_qty and ims_mod_no > 0 group by ims_style,ims_schedule,ims_color,ims_mod_no order by ims_doc_no";
 
@@ -219,6 +217,7 @@ echo "</table></div>";
 	setFilterGrid( "table1",table6_Props );
 	$(document).ready(function(){
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
+		$('#reset_table1').find('a').addClass('table_resets');
 	});
 //]]>
 </script>
@@ -227,16 +226,7 @@ echo "</table></div>";
 </div>
 </div>
 <style type="text/css">
-/* #div-1a {
- position:absolute;
- top:65px;
- right:0;
- width:auto;
- float:right;
-} */
-.flt{
-	color:black;
-}
+
 #reset_table1{
 	width : 80px;
 	color : #fff;
@@ -244,23 +234,5 @@ echo "</table></div>";
 	margin-left : 0px;
 	margin-bottom:15pt;
 }
-.table-responsive{
-	margin-top:10pt;
-}
 
-table {	
-	text-align:center;
-	font-size:12px;
-	width:100%;
-	color:black;
-}
-th{
-	background-color:#003366;
-	color:white;
-	text-align:center;
-}
-.fltrow{
-	color:#FFFFFF;
-	text-align:center;
-}
 </style>

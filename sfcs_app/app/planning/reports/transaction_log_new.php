@@ -34,6 +34,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <form name="text" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
 <div class="col-md-12">
 <div class="col-md-2">
+
+
 Start : <input data-toggle="datepicker" class="form-control" type="text" id="demo1" name="sdate" value="<?php  if($sdate==""){ echo date("Y-m-d"); } else { echo $sdate; } ?>" size="10"> 
 </div>
 <div class="col-md-2">
@@ -101,6 +103,8 @@ for ($i=0; $i < sizeof($shifts_array); $i++) {
 
 Hour From: <select name="hour" id="hour" class="form-control">
 	<?php
+
+
 	echo "<option value=\"Day\">Day All</option>";	
 		for($i=6;$i<=22;$i++)
 		{
@@ -191,6 +195,7 @@ To: <select name="hour1" id="hour1" class="form-control">
 if(isset($_POST['submit']))
 {
 	
+echo "<br/><br/>";	
 echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="post" > 
 
 <input type="hidden" id="csv_text" name="csv_text" >

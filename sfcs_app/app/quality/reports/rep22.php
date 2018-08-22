@@ -27,30 +27,6 @@ function verify_dates(){
 }
 </script>
 <style>
-td {
-	font-weight:bold;
-	color:black;
-}
-
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-	background-color: #003366;
-	color: WHITE;
-	white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-	background-color: white;
-}
-
-
 .BG {
 /* background-image:url($Diag); */
 background-repeat:no-repeat;/*dont know if you want this to repeat, ur choice.*/
@@ -65,7 +41,7 @@ background-position:center middle;
 				<div class='col-md-2'><label>Start Date</lable><input id="demo1" class="form-control" type="text" data-toggle='datepicker' name="sdate" size="8" value="<?php if(isset($_POST['sdate'])) { echo $_POST['sdate']; } else { echo date("Y-m-d"); } ?>"></div>
 				<div class='col-md-2'><label>End Date</lable><input id="demo2" class="form-control" type="text" data-toggle='datepicker' size="8" name="edate" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>"></div>
 				<div class='col-md-2'><label>Style Level</label><input type="checkbox" class="checkbox" name="style_level" value="1" <?php if(isset($_POST['style_level'])) { echo "checked"; }?>></div>
-				<div class='col-md-1'><label>Shift Level </label><input type="checkbox" class="checkbox" name="shift_level" value="2" <?php if(isset($_POST['shift_level'])) { echo "checked"; }?>></div>
+				<div class='col-md-2'><label>Shift Level </label><input type="checkbox" class="checkbox" name="shift_level" value="2" <?php if(isset($_POST['shift_level'])) { echo "checked"; }?>></div>
 				<div class='col-md-2'><label>Section</label>
 					<?php
 						$section_dd = $_POST['section'];
@@ -130,8 +106,8 @@ background-position:center middle;
 			}
 			
 
-			echo "<br/><hr/><br/><div class='table-responsive'><table class='table table-bordered'>";
-			echo "<tr class='tblheading'>
+			echo "<br/><hr/><br/><div style='overflow:scroll;max-height:600px' ><table class='table table-bordered'>";
+			echo "<tr class='info'>
 				<th rowspan=3>Module</th>
 				<th rowspan=3>Shift</th>
 				<th rowspan=3>Style</th>

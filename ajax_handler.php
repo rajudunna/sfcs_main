@@ -336,7 +336,7 @@ function anchortag(event,href_url=0){
     }
 }
 
-$("#body a").unbind().bind('click',anchortag);
+$("#body a:not(.table_resets)").unbind().bind('click',anchortag);
 
 
 $('[data-toggle="datepicker"]').datepicker(
