@@ -168,7 +168,7 @@
 						<img src="/images/merge.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Clubbing</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/color_clubbing/test.php') ?>"  name="Clubbing By Color" onclick="modal('','',this.name)">By Color</a> | <b>By Schedule</b> : <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_schedules.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">Mix</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_jobs.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">Mix Split</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_schedules_delete.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">Mix Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_jobs_delete.php') ?>" onclick="modal('','',this.name)" name="Clubbing By Schedule">Mix Split Delete</a> ) 
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/color_clubbing/test.php') ?>"  name="Clubbing By Color" onclick="modal('','',this.name)">By Color</a> | <b>By Schedule</b> : <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_schedules.php') ?>" onclick="modal('','',this.name)" name="Schedule Mix">Mix</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_jobs.php') ?>" onclick="modal('','',this.name)" name="Schedule Mix Split">Mix Split</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_schedules_delete.php') ?>" onclick="modal('','',this.name)" name="Schedule Mix Delete">Mix Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/schedule_club_style/mix_jobs_delete.php') ?>" onclick="modal('','',this.name)" name="Schedule Mix Split Delete">Mix Split Delete</a> ) 
 						</p>
 					</div>
 				</li>
@@ -192,29 +192,36 @@
             </div>
             <div class="box-body no-padding accordion-body collapse in" id='box2'>
               <ul class="nav nav-pills nav-stacked">
-				<li class="">
-					<div class="col-md-12" id="divid_5" style="padding: 12px;">
-						<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Manage Packing List</p>
-						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/pac_gen_sewing_job.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_list/delete_wrong_packing_lists.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
-						</p>
-					</div>
-				</li>
-				<li class="">
-					<div class="col-md-12" id="divid_6" style="padding: 12px;">
-						<img src="/images/check-in.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_check_point_handover_select.php') ?>" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
-						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
-					</div>
-				</li>
-				<li class="">
-					<div class="col-md-12" id="divid_7" style="padding: 12px;">
-						<img src="/images/cart.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/controllers/pending.php') ?>" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
-						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
-					</div>
-				</li>
+								<li class="">
+									<div class="col-md-12" id="divid_5" style="padding: 12px;">
+										<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Manage Packing List</p>
+										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
+										( <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/packing_ratio.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/delete_sewing_jobs.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
+										</p>
+									</div>
+								</li>
+								<li class="">
+									<div class="col-md-12" id="divid_6" style="padding: 12px;">
+										<img src="/images/check-in.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_check_point_handover_select.php') ?>" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
+										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
+									</div>
+								</li>
+								<li class="">
+									<div class="col-md-12" id="divid_7" style="padding: 12px;">
+										<img src="/images/cart.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/controllers/pending.php') ?>" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
+										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
+									</div>
+								</li>
+								<li class="">
+									<div class="col-md-12" id="divid_7" style="padding: 12px;">
+										<img src="/images/sewing-machine.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_create_original.php') ?>" onclick="modal('','',this.name)" name="Sewing Generation">Sewing Generation</a></p>
+										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
+									</div>
+								</li>
               </ul>
             </div>
         </div>
@@ -323,7 +330,7 @@
 } 
 </style>
 <script>
-$(document).ready(function () { 
+	$(document).ready(function () { 
 			$('#ic').click(function () {
 					$('#icc').toggleClass('fa-minus fa-plus');
 			});
@@ -334,7 +341,7 @@ $(document).ready(function () {
 					$('#icc2').toggleClass('fa-minus fa-plus');
 			});
 	});
-	</script>
+</script>
 
 <script>
 // $('a').click(function(){
@@ -353,11 +360,11 @@ $(document).ready(function () {
   // }
 	
 // });
- $('a').click(function(){
-		 var $main = $(this).closest('.col-md-12');
-		 $(".col-md-12").removeClass('active_div');
-		 $("#"+$main.attr('id')).addClass("active_div");
-	 });
+$('a').click(function(){
+	var $main = $(this).closest('.col-md-12');
+	$(".col-md-12").removeClass('active_div');
+	$("#"+$main.attr('id')).addClass("active_div");
+});
 </script>
 
 

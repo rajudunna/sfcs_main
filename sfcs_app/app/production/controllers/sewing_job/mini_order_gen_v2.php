@@ -118,7 +118,8 @@ set_time_limit(30000000);
 		$stringData = "<?php ".$data_sym."status=\"\"; ?>";
 		fwrite($fh, $stringData);
 		fclose($fh);
-		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_generate.php',0,'N')."&id=$carton_id';</script>");
+		$url = getFullURLLevel($_GET['r'],'sewing_job_generate.php',0,'N')."&id=".$carton_id;
+		echo("<script>Ajaxify('".$url."')</script>");
 	}
 	else
 	{

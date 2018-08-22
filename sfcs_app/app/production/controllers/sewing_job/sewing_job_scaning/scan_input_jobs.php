@@ -1,3 +1,4 @@
+<br>
 <head>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
@@ -51,11 +52,11 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 
 	
 	</form>
-	<button onclick="location.href = '<?php echo $url;?>&shift=<?php echo $_POST['shift'];?>&schedule=<?php echo $_POST['schedule'];?>&color=<?php echo $_POST['color'];?>&style=<?php echo $_POST['style'];?>&module=<?php echo $_POST['module'];?>'; return false;" class="btn btn-primary">Click here to go Back</button>
+	
 
 	<div class="panel panel-primary"> 
 		<input type="hidden" name="flag_validation" id='flag_validation'>
-		<div class="panel-heading">Scan <?php echo $label_name_to_show ?></div>
+		<div class="panel-heading">Scan <?php echo $label_name_to_show ?><button onclick="Ajaxify( '<?php echo $url;?>&shift=<?php echo $_POST['shift'];?>&schedule=<?php echo $_POST['schedule'];?>&color=<?php echo $_POST['color'];?>&style=<?php echo $_POST['style'];?>&module=<?php echo $_POST['module'];?>','production_body');" class="btn btn-warning btn-xs pull-right">Click here to go Back</button></div>
 		<div class='panel-body'>
 			<div class="alert alert-success" style="display:none;">
 				<a href="#" class="close" data-dismiss="alert">&times;</a>
