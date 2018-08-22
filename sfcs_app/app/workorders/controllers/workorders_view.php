@@ -10,7 +10,14 @@
 		var targ = '#tab_1';
 
 		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
-			$(targ).html(data)
+			$(targ).html(data);
+			if(localStorage.getItem("style")===null) {
+					localStorage.style = style;
+			}
+
+			if(localStorage.getItem("schedule")===null) {
+					localStorage.schedule = schedule;
+			}
 		});
 		$(this).tab('show')
 
@@ -43,7 +50,14 @@
 		var loadurl = $(this).attr('href')
 		var targ = $(this).attr('data-target')
 		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
-			$(targ).html(data)
+			$(targ).html(data);
+			if(localStorage.getItem("style")===null) {
+					localStorage.style = style;
+			}
+
+			if(localStorage.getItem("schedule")===null) {
+					localStorage.schedule = schedule;
+			}
 		});
 		$(this).tab('show')
 

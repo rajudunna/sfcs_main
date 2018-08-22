@@ -201,7 +201,6 @@ function anchortag(event,href_url=0){
 
     event.preventDefault();
 
-    alert(localStorage.getItem("batch"));
     var url;
     var href_url;
     var split_url;
@@ -250,27 +249,29 @@ function anchortag(event,href_url=0){
                 }
             }
 
+            var lot = GetURLParameter("lot");
+            lot = decodeURIComponent(lot);
+
+            var batch = GetURLParameter("batch");
+            batch = decodeURIComponent(batch);
+            
+    
+            if(localStorage.lot == "undefined"){
+               localStorage.lot = lot;
+            }
+
+            if(localStorage.batch == "undefined"){
+               localStorage.batch = batch;
+            }
+
             if(localStorage.getItem("lot")===null) {
-                localStorage.lot = GetURLParameter("lot");
+                localStorage.lot = lot;
             }
 
             if(localStorage.getItem("batch")===null) {
-                localStorage.batch = GetURLParameter("batch");
+                localStorage.batch = batch
             }
 
-            if(localStorage.getItem("style")===null) {
-                localStorage.style = GetURLParameter("style");
-            }
-
-            if(localStorage.getItem("schedule")===null) {
-                localStorage.schedule = GetURLParameter("schedule");
-            }
-
-            var lot = GetURLParameter("lot");
-            lot = decodeURIComponent(lot);
-            
-            var batch = GetURLParameter("batch");
-            batch = decodeURIComponent(batch);
 
             var style = WindowGetURLParameter("style");
             style = decodeURIComponent(style);
@@ -448,6 +449,8 @@ function modalClose(){
             $('#modal-body').html('');
             $('table').DataTable().ajax.reload(null, false);
             localStorage.clear();
+            // localStorage.removeItem('lot');
+            // localStorage.removeItem('batch');
       } else {
             // $('#myModal').modal('show');
       }
