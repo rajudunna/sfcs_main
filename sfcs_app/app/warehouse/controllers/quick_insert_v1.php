@@ -168,7 +168,9 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		}
 	}
 	$url=  getFullURL($_GET['r'],'quick_insert_v1.php','N');
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&ref=$ref\"; }</script>";
+	$furl = $url."&ref=".$ref;
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() { 
+		Ajaxify('".$furl."'); }</script>";
   
 }
 

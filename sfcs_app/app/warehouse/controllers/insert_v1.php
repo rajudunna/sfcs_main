@@ -348,7 +348,7 @@ switch (trim($product_group))
 		break;
 	}
 }
-
+$url= "'". getFullURL($_GET['r'],'samplefile.csv','R')."'";
 echo '<div class="panel panel-default">
 		<div class="panel-body">
 			<div class="row">
@@ -366,7 +366,7 @@ echo '<div class="panel panel-default">
 						<option value="No">No</option>
 						<option value="Yes">Yes</option>
 					</select>
-					<div id="upload">Select file:<input type="file" name="file" id="file" accept=".csv" /></br><a href="'.$url=  getFullURL($_GET['r'],'samplefile.csv','R').'" class="btn btn-warning btn-xs"><i class="fa fa-download"></i>  Download Sample CSV file</a></div>
+					<div id="upload">Select file:<input type="file" name="file" id="file" accept=".csv" /></br><a href="#" onclick= "return popitup('.$url.')" class="btn btn-warning btn-xs"><i class="fa fa-download"></i>  Download Sample CSV file</a></div>
 				</div>
 				<div class="col-md-3">
 					<input type="hidden" value="'.$lot_no.'" name="lot_no">
@@ -564,6 +564,17 @@ echo '</form></div>';
 </div>
 </div>
 <script>
+
+function popitup(url) {
+
+	newwindow=window.open(url,name,scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0);
+	if (window.focus) {newwindow.focus()}
+	return false;
+};
+
+
+
+
 jQuery(document).ready(function($){
    $('#course1').keypress(function (e) {
        var regex = new RegExp("^[0-9a-zA-Z\]+$");

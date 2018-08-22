@@ -1,2 +1,8 @@
 Note: 2018-08-14 06:38:06Select Query<br>
 2018-08-14 06:38:06Mail was already sent<br>
+Note: 42018-08-22 11:23:38Select Query<br>
+2018-08-22 11:23:38Mail Start<br>
+2018-08-22 11:23:40Mail failed to sent<br>
+Note: 42018-08-22 11:23:40Select Query<br>
+2018-08-22 11:23:40Mail Start<br>
+2018-08-22 11:23:41Mail failed to sent<br>

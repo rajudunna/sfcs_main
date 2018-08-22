@@ -10,7 +10,14 @@
 		var targ = '#tab_1';
 
 		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
-			$(targ).html(data)
+			$(targ).html(data);
+			if(localStorage.getItem("style")===null) {
+					localStorage.style = style;
+			}
+
+			if(localStorage.getItem("schedule")===null) {
+					localStorage.schedule = schedule;
+			}
 		});
 		$(this).tab('show')
 
@@ -43,7 +50,14 @@
 		var loadurl = $(this).attr('href')
 		var targ = $(this).attr('data-target')
 		$.get(loadurl,{ style: style, schedule: schedule}, function(data) {
-			$(targ).html(data)
+			$(targ).html(data);
+			if(localStorage.getItem("style")===null) {
+					localStorage.style = style;
+			}
+
+			if(localStorage.getItem("schedule")===null) {
+					localStorage.schedule = schedule;
+			}
 		});
 		$(this).tab('show')
 
@@ -197,7 +211,7 @@
 										<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Manage Packing List</p>
 										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-										( <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/packing_ratio.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/delete_sewing_jobs.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
+										( <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/pac_gen_sewing_job.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/packing_ratio.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Packing Ratio</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/delete_sewing_jobs.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
 										</p>
 									</div>
 								</li>
@@ -218,8 +232,8 @@
 								<li class="">
 									<div class="col-md-12" id="divid_7" style="padding: 12px;">
 										<img src="/images/sewing-machine.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_create_original.php') ?>" onclick="modal('','',this.name)" name="Sewing Generation">Sewing Generation</a></p>
-										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
+										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Sewing</p>
+										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">( <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_create_original.php') ?>" onclick="modal('','',this.name)" name="Sewing Generation">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/input_job_level_planning/cut_jobs_loading.php') ?>" onclick="modal('','',this.name)" name="Input Job Level Planning">Input Job Level Planning</a> )</p>
 									</div>
 								</li>
               </ul>

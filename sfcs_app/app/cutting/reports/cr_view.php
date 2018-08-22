@@ -37,21 +37,13 @@ function secondbox()
 function thirdbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
-<<<<<<< HEAD
-	Ajaxify(ajax_url,'report_body');
-=======
 	Ajaxify(ajax_url,'report_body'); 
->>>>>>> 61712cd266fd6211988b9c3c8270d49c7fc9252d
 }
 
 function fourthbox()
 {
 	var ajax_url ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
-<<<<<<< HEAD
-	Ajaxify(ajax_url,'report_body');
-=======
 	Ajaxify(ajax_url,'report_body'); 
->>>>>>> 61712cd266fd6211988b9c3c8270d49c7fc9252d
 }
 
 

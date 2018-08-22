@@ -162,7 +162,7 @@
 				if ($valid_result > 0)
 				{
 					echo "<script>sweetAlert('Packing Ratio Already Updated for this Schedule - $schedule_original','Go to Sewing Job Creation','warning')</script>";
-					echo '<br><br><br><div class="col-md-12"><h4>Pack Method: <span class="label label-info">'.$operation[$updated_carton_method].'</span></h4></div>';
+					echo '<br><br><br><div class="col-md-12"><h5>Pack Method: <span class="label label-info">'.$operation[$updated_carton_method].'</span></h5></div>';
 					$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
 					$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 					echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
@@ -394,7 +394,8 @@
 								$title = "Multi Color Single Size";
 								$combo='YES';
 							}
-							echo '<form method="POST" class="form-inline" name="SS_MS" action="#">';
+							
+							echo '<form method="POST" class="form-inline" name="SS_MS" action="index.php?r='.$_GET['r'].'">';
 								echo "<input type='hidden' name='style' id='style' value='".$style_code."' />";
 								echo "<input type='hidden' name='schedule' id='schedule' value='".$schedule."' />";
 								echo "<input type='hidden' name='schedule_original' id='schedule' value='".$schedule_original."' />";
@@ -461,8 +462,7 @@
 															}
 														echo "</table>
 													</div>
-												</div>
-											</div>";
+												</div></div>";
 										
 										//second table
 										echo "<div class='panel panel-primary'>
@@ -487,7 +487,7 @@
 														</table>
 													</div>
 												</div>
-											</div></div>";
+											</div>";
 										
 										//third table	
 										echo "<div class='panel panel-primary'>
@@ -537,8 +537,9 @@
 											</div>";
 										echo "<input type='submit' class='btn btn-success confirm-submit' name='SS_MS_save' id='SS_MS_save' value='Save' />
 									</div>
-								</div>
+								</div>	
 							</form>";
+							
 						}
 						if ($pack_method==3 or $pack_method==4)
 						{
@@ -550,7 +551,7 @@
 								$title = "Single Color Multi Size";
 								$combo='NO';
 							}
-							echo '<form method="POST" class="form-inline" name="MM_SM" action="#">';
+							echo '<form method="POST" class="form-inline" name="MM_SM" action="index.php?r='.$_GET['r'].'">';
 								echo "<input type='hidden' name='style' id='style' value='".$style_code."' />";
 								echo "<input type='hidden' name='schedule' id='schedule' value='".$schedule."' />";
 								echo "<input type='hidden' name='schedule_original' id='schedule' value='".$schedule_original."' />";

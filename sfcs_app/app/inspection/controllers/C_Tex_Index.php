@@ -1,11 +1,10 @@
 <?php
-
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 ?>
 
-<div class="container" id='main'>
+<div  id='main'>
 	<div class="panel panel-primary">
 		<div class="panel-heading">Roll-Wise Fabric Inspection Update
 		</div>
@@ -20,7 +19,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					    </div>
 					    <input type="submit" class="btn btn-primary" onclick="return check_bat();"  name="submit" value="Search">
 					 </div>
+					 </form>
 				  		<div class='col-sm-12'><b class='text-center col-sm-10'>(OR)</b></div>
+					<form class="form-horizontal form-label-left" method="post" name="input2" action="<?= getFullURL($_GET['r'],'C_Tex_Index.php','N'); ?>">
 			  		<div class="form-group">
 				    	<label class="control-label col-md-3" for="last-name">
 				    		Enter Lot No<span class="required"></span>
@@ -40,7 +41,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	if(isset($_POST['submit']))
 	{
 		$lot_no=$_POST['lot_no'];
-
 	}
 	else
 	{
@@ -56,8 +56,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		if(strlen($lot_no)>0)
 		{
 ?>
-		<form id="myForm" name="input" method="post" action="<?= getFullURL($_GET['r'],'C_Tex_Index.php','N'); ?>"
->
+		<form id="myForm" name="input" method="post" action="<?= getFullURL($_GET['r'],'C_Tex_Index.php','N'); ?>">
 <?php
 
 
@@ -127,7 +126,6 @@ if(isset($_POST['put']))
 if(isset($_POST['submit1']))
 {
 	$lot_no1=$_POST['lot_no1'];
-	
 	$sql_query = "select count(*) as count from $bai_rm_pj1.store_in where lot_no="."'".$lot_no1."'";
 	$res_query = mysqli_query($link, $sql_query);
 	while($sql_row=mysqli_fetch_array($res_query))
@@ -161,13 +159,19 @@ if(isset($_POST['submit1']))
 		}else
 		{
 			$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
-			
+			$furl = $url."&batch_no=".urlencode($batch_no)."&lot_ref=".urlencode($lot_no1);
 
 			echo "<script type='text/javascript'>";
 			echo "setTimeout('Redirect()',0);";
+<<<<<<< HEAD
+			echo "function Redirect(){
+				Ajaxify('".$furl."');
+			}</script>";
+=======
 			echo "var url='".$url."&batch_no=".urlencode($batch_no)."&lot_ref=".urlencode($lot_no1)."';";
 
-			echo "function Redirect(){location.href=url;}</script>";
+			echo "function Redirect(){Ajaxify(url);}</script>";
+>>>>>>> 11df5e3f499fb0da700be6274d3fe92195174397
 		}
 	}
 	else

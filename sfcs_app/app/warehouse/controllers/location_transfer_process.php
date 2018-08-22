@@ -74,7 +74,10 @@ if($_POST['put'])
 		echo '<div class="alert alert-danger">  <strong>Warning!</strong> No Location Transfer Done.</div>';
 	}
 	echo '<br><br><div class="alert alert-warning"> <strong>Please Wait!</strong> You Will be Redirected Back...	</div>';
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = '".getFullURL($_GET['r'],'location_transfer.php','N')."&lot_no=".$lot_no_new."'; }</script>";
+	$rurl = getFullURL($_GET['r'],'location_transfer.php','N')."&lot_no=".$lot_no_new;
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  
+		Ajaxify('".$rurl."');
+	 }</script>";
 	
 }
 

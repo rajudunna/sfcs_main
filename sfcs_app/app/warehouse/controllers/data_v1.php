@@ -146,6 +146,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
                  
 					//	echo "<script>sweetAlert('Stock Updated Successfully...','Please Wait','success')</script>";
+					$uurl = $url."&lot_no=".$lot_no;
 					echo "<script>
 						swal({
 							title: 'Stock Updated Successfully',
@@ -155,15 +156,19 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						  })
 						</script>";
 
-						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&lot_no=$lot_no\"; }</script>";
+						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  
+							Ajaxify('".$uurl."');
+						 }</script>";
 						// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert_v1.php?lot_no=$lot_no\"; }</script>";
 					}	
 				}else{
 					echo "<script>sweetAlert('File format not supported','please upload .csv format','warning')</script>";
 				}
 			}catch(Exception $e){
+				$furl = $url."&lot_no=".$lot_no;
 				echo "<script>sweetAlert('Uploaded File has invalid quantities','please verify','warning'); </script>";
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"$url&lot_no=$lot_no\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {         Ajaxify('".$furl."');
+						}</script>";
 			}
 		}				
 	}
@@ -181,7 +186,6 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		$available=$_POST['available'];
 
 		$total_qty=array_sum($qty);
-
 
 		if($convert==1)
 		{
@@ -245,12 +249,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 			}
 			if($qty_count > 0){
 				echo "<script>
-						swal({
-							title: 'Stock Updated Successfully',
-							text: 'please wait...',
-							type: 'warning',
-							buttons:false,
-						  })
+						swal('Stock Updated Succesfully','','success')
 						</script>";
 				//echo "<script>sweetAlert('Stock Updated Successfully....','Please Wait','success');</script>";
 			}else{
@@ -258,7 +257,10 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 			}
 			//echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='green'>Stock Updated Successfully.... Please Wait</font></h1></center></div>";
 			$url = getFullURL($_GET['r'],'insert_v1.php','N');
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() { location.href = \"$url&lot_no=$lot_no\"; }</script>";
+			$furl = $url."&lot_no=".$lot_no;
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() { 
+				Ajaxify('".$furl."');
+			 }</script>";
 		}	
 	}
 }
