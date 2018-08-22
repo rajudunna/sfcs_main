@@ -145,7 +145,8 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	  <th>Request Pcs/Hr</th>
 	</tr>
   </thead>
-	<?php  while($row=mysqli_fetch_array($res)){ 
+	<?php  while($row=mysqli_fetch_array($res))
+	{ 
 		
 	 // echo $frdate;
     $date=$row['frdate'];
@@ -701,6 +702,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 				
 		}
 	
+	}
 	if($team==36)
 	{
 	
@@ -732,9 +734,6 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	$plan_eff=0;
 	$act_eff=0;
 	$status="";
-	
-	
-	}
 	// else{
 		// echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
 	// } 
