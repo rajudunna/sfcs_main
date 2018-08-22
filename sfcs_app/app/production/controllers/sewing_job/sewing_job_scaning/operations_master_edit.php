@@ -50,7 +50,7 @@ function validateQty(event)
 		}else{
 			// echo "Connected successfully";
 		} */
-		$qry_insert = "select * from $$brandix_bts.tbl_orders_ops_ref where id=".$id;	
+		$qry_insert = "select * from $brandix_bts.tbl_orders_ops_ref where id=".$id;	
 		$res_do_num = mysqli_query($link,$qry_insert);
 		//$row=[];
 		while($res_result = mysqli_fetch_array($res_do_num)){
@@ -98,6 +98,15 @@ function validateQty(event)
 										</div>
 									</div>
 									<div class="col-sm-2">
+									 <div class="dropdown">
+										<b>Report To ERP<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+										<select class="form-control" id="sel1" name="sel1" required>
+										<option value="">Please Select</option>
+										<option value='yes' <?php echo $row[0]['default_operation']== 'Yes'? 'selected' : ''?>>Yes</option>
+										<option value='No' <?php echo $row[0]['default_operation']== 'No'? 'selected' : ''?>>No</option></select>	
+									</div>
+								</div>
+									<div class="col-sm-2" hidden="true">
 										<b>Sewing Order Code</b><input type="text" class="form-control" id="sw_cod" name="sw_cod" value= "<?php echo $row[0]['operation_description']?>">
 									</div> 
 									<div class="col-sm-2">

@@ -107,6 +107,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 				<input type="hidden" name="operation_name_seq" id="operation_name_seq">
 				<input type="hidden" name="operation_name_comp" id="operation_name_comp">
 				<input type="hidden" name="dep_flag" id="dep_flag">
+				<input type = "hidden" name = "pre_ops_code" id = "pre_ops_code">
 			<div class="row">
 				<div class = "col-sm-12">
 						<label for="style">Operation Name <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
@@ -134,7 +135,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 								<!-- <font color='red'>*</font></span> -->
 								</label>
 								<input class="form-control input-sm float" id="m3_smv1" type="hidden" value='0' >
-								<label for="title" id='m3_smv_label'>Select M3-SMV: <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+								<label for="title" id='m3_smv_label' hidden='true'>Select M3-SMV: <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 								<select name="m3_smv" id='m3_smv' class='form-contro'>
 								<option value='0'>Select M3-SMV</option>
 								</select>
@@ -156,7 +157,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 								</select><br></br>
 					<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 					<label class="radio-inline"><input type="radio" name="optradio2" value ="Yes" id='optradio2' onclick="autooperseq1()">Yes</label>
-					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()">No</label><br><br>
+					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()" checked>No</label><br><br>
 					<label>Operation Group </label>
 					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)' value='0'>
 					<label>Next Operation</label>
@@ -183,17 +184,22 @@ $result_oper2 = $link->query($qry_get_suppliers);
 			<div class="row">
 				<!-- <div class="col-md-4" id="yes">
 					<center><button class="btn btn-danger btn-lg" id='yes'>Yes</button></center>
-				</div>  -->
-				<div class="col-md-4"  hidden='true' id='m3_opss'>
-					<select name="m3_ops" class="form-control" id='m3_ops' style="style">
-						<option value='0'>Select M3-SMV</option>
+				</div>  
+				<div class="col-md-3">
+					<select name="m3_ops" class="form-control" id='m3_ops' style="style" hidden='true'>
+							<option value='0'>Select M3-SMV</option>
 					</select>
 				</div>
-				<div class="col-md-4" id = "proceed" >
-					<center><button class="btn btn-primary btn-lg" id='proceed'>Proceed</button></center>
+				-->
+				<div class="col-md-3">
 				</div>
-				<div class="col-md-4" id = "no">
-					<center><button class="btn btn-primary btn-lg" id='No' data-dismiss="modal">No</button></center>
+				<div class="col-md-3" id = "proceed" >
+					<button class="btn btn-danger btn-lg" id='proceed'>Proceed</button>
+				</div>
+				<div class="col-md-3" >
+				<button class="btn btn-primary btn-lg" id='No' data-dismiss="modal">No</button>
+				</div>
+				<div class="col-md-3">
 				</div>
 			</div>
 			
@@ -369,23 +375,7 @@ $(document).ready(function(){
 								{
 									data[i].ops_dependency = '';
 								}
-								
-								var deleting = data[i].from_m3_check;
-								if(deleting == 1)
-								{
-									var deleting_html = "<td></td>";
-								}
-								else
-								{
-									<?php
-										if(in_array($delete,$has_permission))
-										{	?>
-											var deleting_html = "<td><button type='button' id='deletable' class='btn btn-danger btn-sm'  onclick='default_oper("+data[i].main_id+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td>";
-											<?php
-										} 
-									?>
-									
-								}
+
 								if(data[i]['operation_code'] == 10 || data[i]['operation_code'] == 15|| data[i]['operation_code'] == 200)
 								{
 									var editing_class = 'none';
@@ -394,6 +384,7 @@ $(document).ready(function(){
 								{
 									var editing_class = '';
 								}
+								var editing_class = '';
 								var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none'>"+style_name+"</td><td class='none'>"+data[i]['color']+"</td><td class='none' id="+data[i].main_id+"ops_order>"+data[i]['operation_order']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td  id="+data[i].main_id+"rep_to_erp>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"smv>"+data[i]['smv']+"</td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"supplier_id hidden='true'>"+data[i].emb_supplier+"</td><td id="+data[i].main_id+"supplier>"+data[i].supplier_name+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td><td>";
 								<?php
 									if(in_array($edit,$has_permission))
@@ -403,6 +394,7 @@ $(document).ready(function(){
 									} 
 								?>
 								var adding_html	= "<td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+data[i].main_id+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td>";
+								var deleting_html = "<td><button type='button' id='deletable' class='btn btn-danger btn-sm'  onclick='default_oper("+data[i].main_id+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td>";
 								markup1+=deleting_html+adding_html+"</tr>";
 								s_no++;
 								 $("#dynamic_table").append(markup1);
@@ -683,7 +675,7 @@ $(document).ready(function(){
 										
 									});
 								$('#myModal').modal('toggle');
-								$('#myModal').find('input:text').val('');
+								//$('#myModal').find('input:text').val('');
 								$('#m3_smv1').val(0);
 								$("#oper_name").val(0);
 								$("#supplier2").val(0);
@@ -698,7 +690,9 @@ $(document).ready(function(){
 				});	
 		}
 		//$("input:radio[name=optradio2]:checked").val('No') ;
-		//$('#oper_seq2').val(0);			
+		$('#oper_seq2').val('0');
+		$('#oper_depe2').val('');
+		$('#component2').val('')		
 	  });
 	  function isInteger(value) {
     if ((undefined === value) || (null === value)) {
@@ -759,7 +753,29 @@ $("#cancel").click(function()
 		}
 	}
 });
+$('#ops_code1').change(function()
+	{
+		var ops_code_next = $('#ops_code1').val();
+		var style = $('#pro_style option:selected').text();
+		var color = $('#color option:selected').text();
+		var pre_ops_code = $('#pre_ops_code').val();
+		var ops_code_next_ary = [ops_code_next,style,color];
+		$.ajax
+			({
+					type: "POST",
+					url:function_file+"?r=getdata&ops_code_next="+ops_code_next_ary,
+					data: {ops_code_next: $('#ops_code_next').val()},
+					success: function(response)
+					{
+						if(response == 1)
+						{
+							sweetAlert("This Operation Code is already exists","","warning");
+							$('#ops_code1').val(pre_ops_code);
+						}
+					}
 
+			});
+	});
 $("#edit").click(function()
 {
 	var flag = 1;
@@ -1049,13 +1065,17 @@ $('#oper_depe1').change(function()
 // });
 $('#proceed').click(function()
 {
+	// alert();
 	var del_row_id = $('#row_index_del').val();
 	flag = 0;
+	// $('#m3_ops').val(0);
 	var deletable_val = $('#m3_ops').val();
 	var editable_val = $('#deletable_id').val();
 	smv = document.getElementById(editable_val+"smv").innerText;
 	// console.log(s)
+	var deletable_val = 0;
 	var parameters = [deletable_val,editable_val];
+	var smv = 0;
 	if(smv != 0)
 	{
 		//$('#m3_opss').show();
@@ -1270,6 +1290,7 @@ function myfunctionedit(val,id)
 					document.getElementById('operation_name_seq').value = seqence;
 					document.getElementById('operation_name_comp').value = comp;
 					document.getElementById('ops_code1').value = oper_code;
+					document.getElementById('pre_ops_code').value = oper_code;
 					if(seqence != '')
 					{
 						document.getElementById('component1').readOnly=true;

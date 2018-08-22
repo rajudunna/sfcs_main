@@ -386,24 +386,24 @@ function deleting($parameters)
 	$parameters = explode(",",$parameters);
 	include("../../../../../common/config/config_ajax.php");
 
-	//var_dump($deletable_id);
-	$query_delete_m3 = "select smv from $brandix_bts.tbl_style_ops_master where id = $parameters[0]";
-	$result_chck = $link->query($query_delete_m3);
-	  while($row = $result_chck->fetch_assoc()){
-        $smv = $row['smv'];
-   }
-   $smv_value =  $smv;
-   $query_delete_man = "select smv,style,color,operation_order from $brandix_bts.tbl_style_ops_master where id = $parameters[1]";
- // echo $query_delete_man;
-	$result_chck_man = $link->query($query_delete_man);
-	  while($rows = $result_chck_man->fetch_assoc()){
-		$m3_man = $rows['smv'];
-		$style = $rows['style'];
-		$color = $rows['color'];
-		$ops_order = $rows['operation_order'];
-   }
-   $m3_manual_value = $m3_man;
-   $actual_smv_value = $smv_value + $m3_man;
+// 	//var_dump($deletable_id);
+// 	$query_delete_m3 = "select smv from $brandix_bts.tbl_style_ops_master where id = $parameters[0]";
+// 	$result_chck = $link->query($query_delete_m3);
+// 	  while($row = $result_chck->fetch_assoc()){
+//         $smv = $row['smv'];
+//    }
+//    $smv_value =  $smv;
+//    $query_delete_man = "select smv,style,color,operation_order from $brandix_bts.tbl_style_ops_master where id = $parameters[1]";
+//  // echo $query_delete_man;
+// 	$result_chck_man = $link->query($query_delete_man);
+// 	  while($rows = $result_chck_man->fetch_assoc()){
+// 		$m3_man = $rows['smv'];
+// 		$style = $rows['style'];
+// 		$color = $rows['color'];
+// 		$ops_order = $rows['operation_order'];
+//    }
+//    $m3_manual_value = $m3_man;
+//    $actual_smv_value = $smv_value + $m3_man;
    $delete_query = "delete from $brandix_bts.tbl_style_ops_master where id = $parameters[1]";
    $deleteable = $link->query($delete_query);
    $query_update_smv_m3 = "update $brandix_bts.tbl_style_ops_master set smv = $actual_smv_value where id = $parameters[0]";
@@ -750,6 +750,29 @@ function numberOfDecimals($value)
     }
 
     return strlen($value) - strrpos($value, '.') - 1;
+}
+if(isset($_GET['ops_code_next']))
+{
+	$ops_code_next = $_GET['ops_code_next'];
+	if($ops_code_next != '')
+	{
+		ops_code_next_fun($ops_code_next);
+	}
+}
+function ops_code_next_fun($ops_code_next)
+{
+	// echo "hi";
+	$flag = 0;
+	$ops_code_next = explode(",",$ops_code_next);
+	include("../../../../../common/config/config_ajax.php");
+	$ops_exists_validation = "select operation_code from  $brandix_bts.tbl_style_ops_master where style='$ops_code_next[1]' and color = '$ops_code_next[2]' and operation_code = '$ops_code_next[0]'";
+	$result_ops_exists_validation = $link->query($ops_exists_validation);
+	if(mysqli_num_rows($result_ops_exists_validation) > 0)
+	{
+		$flag =1;
+	}
+	echo $flag;
+	
 }
 
 
