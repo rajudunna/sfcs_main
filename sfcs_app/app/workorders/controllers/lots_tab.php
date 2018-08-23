@@ -13,11 +13,11 @@
     </thead>
     <tbody>
         <?php
-            //$style = $_GET['style'];
-            //$shedule = $_GET['shedule'];
+            $style = $_GET['style'];
+            $schedule = $_GET['schedule'];
 
-            $style = 'JJP316F8';
-            $schedule = '520178';
+            // $style = 'JJP316F8';
+            // $schedule = '520178';
             $start = 0;
             $limit = 15;
             include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
@@ -39,7 +39,7 @@
             $query_last = '';
             $sql_select_query = $query.$query_last." where order_style_no='$style' and order_del_no='$schedule' 
                                 LIMIT $limit offset $start";
-
+            // echo $sql_select_query;
             $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             if ($query_result->num_rows > 0) {
