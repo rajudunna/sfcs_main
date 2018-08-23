@@ -237,14 +237,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			//include("board_update_email.php");
 		}
 	}	
-	echo "<h2 style='color:blue'>Sucessfully Updated... <br/> Please wait while redirect to IPS Dashboard....</h2>";
+	echo "<div class='alert alert-success'>Sucessfully Updated... <br/> Please wait while redirect to IPS Dashboard....</div>";
 			// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"tms_dashboard_input_v22.php\"; }</script>";
-		$url =getFullURLLevel($_GET['r'],'dashboards/controllers/IPS/tms_dashboard_input_v22.php',3,'N');
-		
-		
+		// $url =getFullURLLevel($_GET['r'],'dashboards/controllers/IPS/tms_dashboard_input_v22.php',3,'N').'&type=sewing&menu=production';
+		$url = 'index.php?r='.base64_encode('/sfcs_app/app/dashboards/controllers/IPS/tms_dashboard_input_v22.php').'&type=sewing&menu=production';
 		echo"<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1); 
 		function Redirect() {  
-			location.href = '$url'; 
+			window.open('".$url."', '_blank');
 		}</script>";
 
 ?>
