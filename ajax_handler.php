@@ -218,7 +218,31 @@ function anchortag(event,href_url=0){
     if(href_url !== "#" && data_toggle == undefined){
         split_url = href_url.split("?").pop();
         url = "ajax_handler.php?"+split_url;
+        
+        // function DoLoadingeWork(loadType){
+
+        //     switch(loadType) {
+        //     case "sewing":
+        //         myLoad2();
+        //         console.log('sewing');
+        //         break;
+        //     case "cut":
+        //         myLoad3();
+        //         break;
+        //     case "material":
+        //         myLoad4();
+        //         break;
+        //     default:
+        //         myLoad1();
+        //     }
+        // }
+ 
+
+        // var loadType = "sewing";
+        // DoLoadingeWork(loadType);
+
         myLoad1();
+
         $.ajax({
           type:'GET',
           url: url,
@@ -310,6 +334,7 @@ function anchortag(event,href_url=0){
                 $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
                 $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
                 $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
+
                 // $('input[name="submit"]').click();
                 // $('input[name="show"]').click();
                 // $('input[name="submit2"]').click();
@@ -326,6 +351,8 @@ function anchortag(event,href_url=0){
             }
            
             myLoadStop();
+            // console.log('stoped');
+            // StopLoadingWork();
 
         }).fail(function(erespo) {
 

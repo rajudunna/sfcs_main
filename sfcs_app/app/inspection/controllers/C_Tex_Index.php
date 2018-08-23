@@ -163,15 +163,9 @@ if(isset($_POST['submit1']))
 
 			echo "<script type='text/javascript'>";
 			echo "setTimeout('Redirect()',0);";
-<<<<<<< HEAD
 			echo "function Redirect(){
 				Ajaxify('".$furl."');
 			}</script>";
-=======
-			echo "var url='".$url."&batch_no=".urlencode($batch_no)."&lot_ref=".urlencode($lot_no1)."';";
-
-			echo "function Redirect(){Ajaxify(url);}</script>";
->>>>>>> 11df5e3f499fb0da700be6274d3fe92195174397
 		}
 	}
 	else
