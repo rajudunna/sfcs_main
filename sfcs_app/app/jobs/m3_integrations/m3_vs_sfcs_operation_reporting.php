@@ -1,42 +1,39 @@
-
 <?php
 	$start_timestamp = microtime(true);
 	error_reporting(0);
     $include_path=getenv('config_job_path');
 	include($include_path.'\sfcs_app\common\config\config_jobs.php');
 	include($include_path.'\sfcs_app\common\config\m3_api_calls.php');
-
     $details=[];
     $arr1 = [];
     $arr2 = [];
     $cono='200';
     $faci='EKG';
     $selected_arr = ['OPDS','MFNO','PLG1','PITI','OPNO','MAQT','SCQT'];
-
-    $sql_mo="SELECT  mo_no,item_code FROM $bai_pro3.mo_details  where mo_no in (select distinct mo_no from $bai_pro3.m3_transactions ) group by mo_no,item_code";
+    $date = date('Y-m-d');
+    $sql_mo="SELECT  mo_no,product_sku FROM $bai_pro3.mo_details  where mo_no in (select distinct mo_no from $bai_pro3.m3_transactions where DATE(date_time)='$date') group by mo_no,product_sku";
+    // echo $sql_mo;
     $result_mo=mysqli_query($link, $sql_mo) or exit("Sql Error mo".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row_mo=mysqli_fetch_array($result_mo))
     {
         $mo_nos[]=$row_mo['mo_no'];
-        $pr_nos[]=$row_mo['item_code'];
+        $pr_nos[]=$row_mo['product_sku'];
     }
-
     // $mo_nos = ['7512409','1991686','1991678'];
     // $pr_nos = ['M05083AB%20%20%200190','ASL18SF8%20%20%200026','ACZ06SF8%20%20%200006'];
     foreach($mo_nos as $key=>$monos)
     {
         $start = microtime(true);
         $obj1 = new get_api_call(); 
-        $url="http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelOperations?CONO=$cono&FACI=$faci&MFNO=$monos&PRNO=".$pr_nos[$key];
-        $url = str_replace(" ", '%20', $url);
-        echo $url."<br>";
+        $url="http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelOperations?CONO=".$cono."&FACI=".$faci."&MFNO=".trim($monos)."&PRNO=".trim($pr_nos[$key]);
+        $url1 = str_replace(' ', '%20', $url);
+        // echo $url1."<br>";
         $end = microtime(true);
-        $dur = $start - $end;
-        print($dur." seconds")."\n";
-        $result = $obj1->getCurlRequest($url);  
+        $dur = $end - $start;
+        print("API call Execution takes ".$dur." seconds")."\n";
+        $result = $obj1->getCurlRequest($url1);  
         $decoded = json_decode($result,true);
-        
-		// var_dump($decoded);
+        // var_dump($decoded);
         if($decoded['@type'])
         {
 		    continue;
@@ -89,8 +86,6 @@
                   {
                     $arr2[] = $value2;
                   }
-                // $common1[$key] = array_diff($arr1,$arr2);
-                // $common2[$key] = array_diff($arr2,$arr1);
                 }
             }
             $mf_nos[] = $test1['MFNO'][0];
@@ -152,57 +147,57 @@
     <th>SFCS Good Quantity</th>
     <th>SFCS Rejected Quantity</th>
     </tr>";
-    $sno=0;
-    $sql1="select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,mo_no,op_code,input_job_random from $bai_pro3.mo_operation_quantites where mo_no in (".implode(',',$mf_nos).") 
-           and  op_code in (". $test["OPNO"].") group by mo_no,op_code";
-    // echo $sql1;
-    $result1=mysqli_query($link, $sql1) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($row=mysqli_fetch_array($result1))
+    if(sizeof($details))
     {
-        $sql12 = "select style,schedule,group_concat(color) as color,group_concat(size) as size from $bai_pro3.mo_details where mo_no ='".$row['mo_no']."'";
-        // echo $sql12;
-        $result12 = mysqli_query($link,$sql12);
-        while($row12=mysqli_fetch_array($result12))
+        $sno=0;
+        $sql1="select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,mo_no,op_code,input_job_random from $bai_pro3.mo_operation_quantites where mo_no in (".implode(',',$mf_nos).") 
+            and  op_code in (". $test["OPNO"].") group by mo_no,op_code";
+        // echo $sql1;
+        $result1=mysqli_query($link, $sql1) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row=mysqli_fetch_array($result1))
         {
-            $style=$row12['style'];
-            $schedule=$row12['schedule'];
-            $color=$row12['color']; 
-            $size=$row12['size'];   
-                
-        }
-        $mono = $row['mo_no'];
-        $opcode = $row['op_code'];
-        $m3_good = $details[$mono][$mono]['MAQT'][trim($opcode)];
-        $m3_rej = $details[$mono][$mono]['SCQT'][trim($opcode)];
+            $sql12 = "select style,schedule,group_concat(color) as color,group_concat(size) as size from $bai_pro3.mo_details where mo_no ='".$row['mo_no']."'";
+            // echo $sql12;
+            $result12 = mysqli_query($link,$sql12);
+            while($row12=mysqli_fetch_array($result12))
+            {
+                $style=$row12['style'];
+                $schedule=$row12['schedule'];
+                $color=$row12['color']; 
+                $size=$row12['size'];   
+            }
+            $mono = $row['mo_no'];
+            $opcode = $row['op_code'];
+            $m3_good = $details[$mono][$mono]['MAQT'][trim($opcode)];
+            $m3_rej = $details[$mono][$mono]['SCQT'][trim($opcode)];
+            $sfcs_good = $row['good_quantity'];
+            $sfcs_rej = $row['rejected_quantity'];
+            if($m3_good == $sfcs_good && $m3_rej == $sfcs_rej )
+            {
 
-        $sfcs_good = $row['good_quantity'];
-        $sfcs_rej = $row['rejected_quantity'];
-
-        if($m3_good == $sfcs_good && $m3_rej == $sfcs_rej )
-        {
-
-        }
-        else
-        {
-            $message.= "<tr>
-            <td>".++$sno."</td>
-            <td>".$mono."</td>
-            <td>".$opcode."</td>
-            <td>".$style."</td>
-            <td>".$schedule."</td>
-            <td>".$color."</td>
-            <td>".$size."</td>
-            <td>".$m3_good."</td>
-            <td>".$m3_rej."</td>
-            <td>".$sfcs_good."</td>
-            <td>".$sfcs_rej."</td>
-            </tr>";
+            }
+            else
+            {
+                $message.= "<tr>
+                <td>".++$sno."</td>
+                <td>".$mono."</td>
+                <td>".$opcode."</td>
+                <td>".$style."</td>
+                <td>".$schedule."</td>
+                <td>".$color."</td>
+                <td>".$size."</td>
+                <td>".$m3_good."</td>
+                <td>".$m3_rej."</td>
+                <td>".$sfcs_good."</td>
+                <td>".$sfcs_rej."</td>
+                </tr>";
+            }
         }
     }
 
     $message.= "</table><br/><br/>Message Sent Via:".$plant_name."</body> 
     </html>";
-    // echo $message;
+    echo $message;
     $to  ="saiyateesh@gmail.com,"; 
     // subject 
     $subject = 'M3 Quantities and SFCS Quantities'; 
@@ -211,8 +206,7 @@
     $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n"; 
     // $headers .= 'From: BEKSFCS Alert <yateesh603@gmail.com>'. "\r\n";
     $headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
-    // $headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
-    
+    $sno=0;
     // Mail it 
     if($sno >0){
         if(mail($to, $subject, $message, $headers)) 
@@ -223,8 +217,6 @@
             print("mail not send due to no Mismatches")."\n"; 
 
     }
-
     $end_timestamp = microtime(true);
     $duration = $end_timestamp - $start_timestamp;
     print("Execution took ".$duration." seconds.");
-    
