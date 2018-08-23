@@ -9,15 +9,26 @@
 <body>
 
 <?php   
-	//Starting get process for hourly efficiency report through FR Plan.
-	
+	$plant_modules=array();
+	$plant_name=array();
+
 	if($_GET['pro_date'])
 	{
 		$frdate=$_GET['pro_date'];
-		$ntime=18;	
-	}else{
+		$ntime=18;				   
+	}
+	else
+	{
 		$frdate=date("Y-m-d");
 		$ntime=date('H');
+	}
+
+	$plant_details_query="SELECT * FROM $bai_pro2.tbl_mini_plant_master;";
+	$plant_details_result=mysqli_query($link,$plant_details_query);
+	while ($row = mysqli_fetch_array($plant_details_result))
+	{
+		$plant_name[] = $row['plant_name'];
+		$plant_modules[] = explode(',', $row['plant_modules']);
 	}
 ?>
 <div class="panel panel-primary">
@@ -62,7 +73,6 @@ if(isset($_GET['submit']))
 					  <th>Hours</th>
 					  <th>Target <br>PCS/Hr</th>
 					  <?php 
-							$query='';
 							$hours_array = array();
 							$hour_end = array();
 						   	for ($i=0; $i < $total_hours; $i++)
@@ -95,10 +105,17 @@ if(isset($_GET['submit']))
 				$section_query = "SELECT DISTINCT(section_id) FROM $bai_pro3.`plan_modules`";
 				$section_result=mysqli_query($link,$section_query);
 
-				$grand_tot_qty_time_array = array(); $grand_tot_plan_sah=0;
-				$grand_tot_fr_qty = 0; $grand_tot_forecast_qty=0; $grand_tot_total_qty=0; $grand_tot_scanned_qty=0; 
-				$grand_tot_scanned_sah=0; $grand_tot_forecast_sah=0; $grand_tot_act_sah=0; $grand_tot_sah_diff=0;
-				$grand_tot_plan_eff=0; $grand_tot_act_eff=0; $grand_tot_hitrate=0; $grand_tot_required=0; $section_count=0;
+				$tot_reported_plantWise=array(); $tot_frqty_plantWise=array(); $tot_forecast_qty_plantWise=array();
+				$tot_scanned_plantWise=array(); $tot_scanned_sah_plantWise=array(); $tot_fr_sah_plantWise=array();
+				$tot_forecast_sah_plantWise=array(); $tot_act_sah_plantWise=array(); $tot_sah_diff_plantWise=array();
+				$tot_plan_eff_plantWise=array(); $tot_act_eff_plantWise=array(); $tot_balance_plantWise=array();
+				$tot_hit_rate_plantWise=array();	$grand_tot_qty_time_array1 = array();
+
+				// $grand_tot_qty_time_array = array(); $grand_tot_plan_sah=0;
+				// $grand_tot_fr_qty = 0; $grand_tot_forecast_qty=0; $grand_tot_total_qty=0; $grand_tot_scanned_qty=0; 
+				// $grand_tot_scanned_sah=0; $grand_tot_forecast_sah=0; $grand_tot_act_sah=0; $grand_tot_sah_diff=0;
+				// $grand_tot_plan_eff=0; $grand_tot_act_eff=0; $grand_tot_hitrate=0; $grand_tot_required=0; 
+				$section_count=0;
 
 				while($Sec=mysqli_fetch_array($section_result))
 				{
@@ -182,6 +199,13 @@ if(isset($_GET['submit']))
 												$frqty=$row3['sumfrqty'];
 												echo $row3['sumfrqty'].'<br>';
 												$sec_tot_fr_qty = $sec_tot_fr_qty + $frqty;
+												for ($i=0; $i < sizeof($plant_name); $i++) 
+												{
+													if (in_array($team, $plant_modules[$i]))
+													{
+														$tot_frqty_plantWise[$i] = $tot_frqty_plantWise[$i] + $frqty;
+													}							 	
+												}
 											}
 										?>
 									</center></td>
@@ -192,6 +216,13 @@ if(isset($_GET['submit']))
 												$forecastqty=$row4['qty'];
 												echo $row4['qty'].'<br>';
 												$sec_tot_forecast_qty = $sec_tot_forecast_qty + $forecastqty;
+												for ($i=0; $i < sizeof($plant_name); $i++) 
+												{
+													if (in_array($team, $plant_modules[$i]))
+													{
+														$tot_forecast_qty_plantWise[$i] = $tot_forecast_qty_plantWise[$i] + $forecastqty;
+													}							 	
+												}
 											}
 										?>
 									</center></td>
@@ -222,61 +253,59 @@ if(isset($_GET['submit']))
 											// echo $hours_array[$i].'<br>';
 											$hour_iniate = $hours_array[$i];
 											$hour_ending = $hour_end[$i];
-											$sql6_1="SELECT qty,status FROM $bai_pro2.hout WHERE out_date='$frdate' AND team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":00') AND TIME('".$hour_ending.":00'));";
+											$sql6_1="SELECT SUM(qty) as qty FROM $bai_pro2.hout WHERE out_date='$frdate' AND team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":".$minutes."') AND TIME('".$hour_ending.":".$minutes_29."'));";
 											// echo $sql6_1.'<br><br>';
 											$res6_1=mysqli_query($link,$sql6_1);
 											if (mysqli_num_rows($res6_1) > 0)
 											{
 												while($row6_1=mysqli_fetch_array($res6_1))
-												{
-													$status = $row6_1['status'];
+												{											
 													$row = $row6_1['qty'];
-
-													/*
-													if($out10<$pcsphr )
+													if ($row != '' || $row != NULL )
 													{
-													 	if($status10=="f")
-													 	{ ?>
-															<td  style="background-color:#ef9a9a;">  <?php  echo $out10;  ?> </td>
-															<?php
-														}
-														else
-														{
-															 ?>
-															  <td  style="background-color:#ff5252;">  <?php  echo $out10;  ?>  </td>
-														 	<?php 
-														} 
-													}
-													else
-													{ ?>
-													  <td> <?php echo $out10;  ?>  </td>
-													  <?php  
-													}*/
-
-													if ($row >= round($pcsphr))
-													{
-														$total_qty = $total_qty + $row;
-														$sec_tot_qty_array[$i] = $sec_tot_qty_array[$i] + $row6_1['qty'];
-														echo "<td><center>".$row."</center></td>";
-													} 
-													else if ($row < round($pcsphr))
-													{
-														$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND dhour = '$hour_iniate' AND team='$team';";
-														// echo $sql6_2.'<br><br>';
-														$res6_12=mysqli_query($link,$sql6_2);
-														if (mysqli_num_rows($res6_12) > 0)
+														if ($row >= round($pcsphr))
 														{
 															$total_qty = $total_qty + $row;
 															$sec_tot_qty_array[$i] = $sec_tot_qty_array[$i] + $row6_1['qty'];
-															echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
-														}
-														else
+															for ($k=0; $k < sizeof($plant_name); $k++) 
+															{
+																if (in_array($team, $plant_modules[$k]))
+																{
+																	$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+																}
+															}
+															echo "<td><center>".$row."</center></td>";
+														} 
+														else if ($row < round($pcsphr))
 														{
-															$img_url = getFullURLLevel($_GET['r'], 'common/images/sign.jpg', 2, 'R');
-															// echo "<td style='background-color:#FFBF00;''><center><i class='fa fa-exclamation-circle ' aria-hidden='true'></i></center></td>";
-															echo "<td><img src='$img_url' alt=\"Sign\" height=\"42\" width=\"42\"></td>";
+															$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND dhour = '$hour_iniate' AND team='$team';";
+															// echo $sql6_2.'<br><br>';
+															$res6_12=mysqli_query($link,$sql6_2);
+															if (mysqli_num_rows($res6_12) > 0)
+															{
+																$total_qty = $total_qty + $row;
+																$sec_tot_qty_array[$i] = $sec_tot_qty_array[$i] + $row6_1['qty'];
+																for ($k=0; $k < sizeof($plant_name); $k++) 
+																{
+																	if (in_array($team, $plant_modules[$k]))
+																	{
+																		$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+																	}
+																}
+																echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
+															}
+															else
+															{
+																$img_url = getFullURLLevel($_GET['r'], 'common/images/sign.jpg', 2, 'R');
+																// echo "<td style='background-color:#FFBF00;''><center><i class='fa fa-exclamation-circle ' aria-hidden='true'></i></center></td>";
+																echo "<td><img src='$img_url' alt=\"Sign\" height=\"42\" width=\"42\"></td>";
+															}
 														}
 													}
+													else
+													{
+														echo "<td><center>0</center></td>";
+													}												
 												}
 											}
 											else
@@ -298,6 +327,13 @@ if(isset($_GET['submit']))
 										<?php  
 											echo $total_qty; 
 											$sec_tot_total_qty = $sec_tot_total_qty + $total_qty;
+											for ($i=0; $i < sizeof($plant_name); $i++) 
+											{
+												if (in_array($team, $plant_modules[$i]))
+												{
+													$tot_reported_plantWise[$i] = $tot_reported_plantWise[$i] + $total_qty;
+												}
+											}
 										?>
 										</b>
 									</center></td>
@@ -305,6 +341,13 @@ if(isset($_GET['submit']))
 										<b><?php  
 											echo $sumscqty; 
 											$sec_tot_scanned_qty = $sec_tot_scanned_qty + $sumscqty;
+											for ($i=0; $i < sizeof($plant_name); $i++) 
+											{
+												if (in_array($team, $plant_modules[$i]))
+												{
+													$tot_scanned_plantWise[$i] = $tot_scanned_plantWise[$i] + $sumscqty;
+												}							 	
+											}
 										?>
 										</b>
 									</center></td>
@@ -312,7 +355,14 @@ if(isset($_GET['submit']))
 										<b><?php  
 											$scanned_sah=round(($sumscqty*$smv)/60);
 											echo $scanned_sah; 
-											$sec_tot_scanned_sah = $sec_tot_scanned_sah + $scanned_sah; 
+											$sec_tot_scanned_sah = $sec_tot_scanned_sah + $scanned_sah;
+											for ($i=0; $i < sizeof($plant_name); $i++) 
+											{
+												if (in_array($team, $plant_modules[$i]))
+												{
+													$tot_scanned_sah_plantWise[$i] = $tot_scanned_sah_plantWise[$i] + $scanned_sah;
+												}							 	
+											}
 										?></b>
 									</center></td>
 									<td><center>
@@ -320,6 +370,13 @@ if(isset($_GET['submit']))
 											$plan_sah=round(($frqty*$smv)/60); 
 											echo $plan_sah; 
 											$sec_tot_plan_sah = $sec_tot_plan_sah + $plan_sah;
+											for ($i=0; $i < sizeof($plant_name); $i++) 
+											{
+												if (in_array($team, $plant_modules[$i]))
+												{
+													$tot_fr_sah_plantWise[$i] = $tot_fr_sah_plantWise[$i] + $plan_sah;
+												}							 	
+											}
 										?>
 									</center></td>
 									<td><center>
@@ -327,6 +384,13 @@ if(isset($_GET['submit']))
 											$forecast_sah=round(($forecastqty*$smv)/60);
 											echo $forecast_sah;	
 											$sec_tot_forecast_sah = $sec_tot_forecast_sah + $forecast_sah;
+											for ($i=0; $i < sizeof($plant_name); $i++) 
+											{
+												if (in_array($team, $plant_modules[$i]))
+												{
+													$tot_forecast_sah_plantWise[$i] = $tot_forecast_sah_plantWise[$i] + $forecast_sah;
+												}							 	
+											}
 										?>
 									</center></td>
 									<td><center>
@@ -334,6 +398,13 @@ if(isset($_GET['submit']))
 											$act_sah=round(($total_qty*$smv)/60);
 											echo $act_sah;
 											$sec_tot_act_sah = $sec_tot_act_sah + $act_sah;
+											for ($i=0; $i < sizeof($plant_name); $i++) 
+											{
+												if (in_array($team, $plant_modules[$i]))
+												{
+													$tot_act_sah_plantWise[$i] = $tot_act_sah_plantWise[$i] + $act_sah;
+												}							 	
+											}
 										?>
 									</center></td>
 									<td><center>
@@ -341,6 +412,13 @@ if(isset($_GET['submit']))
 											$sah_diff=$plan_sah-$act_sah;
 											echo $sah_diff;
 											$sec_tot_sah_diff = $sec_tot_sah_diff + $sah_diff;
+											for ($i=0; $i < sizeof($plant_name); $i++) 
+											{
+												if (in_array($team, $plant_modules[$i]))
+												{
+													$tot_sah_diff_plantWise[$i] = $tot_sah_diff_plantWise[$i] + $sah_diff;
+												}							 	
+											}
 										?>
 									</center></td>
 									<td><center>
@@ -386,6 +464,13 @@ if(isset($_GET['submit']))
 											}
 											echo $hitrate.'%';
 											$sec_tot_hitrate = $sec_tot_hitrate + $hitrate;
+											for ($i=0; $i < sizeof($plant_name); $i++) 
+											{
+												if (in_array($team, $plant_modules[$i]))
+												{
+													$tot_balance_plantWise[$i] = $tot_balance_plantWise[$i] + $hitrate;
+												}							 	
+											}
 										?>
 									</center></td>
 									<td style="display:none;"><center>
@@ -419,17 +504,17 @@ if(isset($_GET['submit']))
 								<?php
 									for ($i=0; $i < sizeof($hours_array); $i++)
 									{
-										// echo "<td><center>".$sec_tot_qty_array[$i]."</center></td>";
-										if ($sec_tot_qty_array[$i] > 0)
+										if ($grand_tot_qty_time_array1[$plant_name[$j]][$i] > 0)
 										{
-											$grand_tot_qty_time_array[$i] = $grand_tot_qty_time_array[$i] + $sec_tot_qty_array[$i];
-											echo "<td><center>".$sec_tot_qty_array[$i]."</center></td>";
-										}
+											echo "<td><center>".
+											$grand_tot_qty_time_array1[$plant_name[$j]][$i]
+											."</center></td>";			
+										} 
 										else
 										{
-											$grand_tot_qty_time_array[$i] = $grand_tot_qty_time_array[$i] + 0;
-											echo "<td><center>0</center></td>";
-										}			
+											echo "<td><center> 0 </center></td>";
+										}
+										
 									}
 								?>
 								<td><center>
@@ -503,22 +588,28 @@ if(isset($_GET['submit']))
 						</tbody>
 						<?php
 					}
-				}?>
-				<tr style="background-color:green;color:white;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
-						<td><center>Factory</center></td>
+				}
+				
+				for ($j=0; $j < sizeof($plant_name); $j++)
+				{
+					?>
+					<tr style="background-color:green;color:white;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
+						<td><center><?php  echo $plant_name[$j]; ?></center></td>
 						<td></td>
 						<td></td>
-						<td><center><?php  echo $grand_tot_fr_qty; ?></center></td>
-						<td><center><?php  echo $grand_tot_forecast_qty; ?></center></td>
+						<td><center><?php  echo $tot_frqty_plantWise[$j]; ?></center></td>
+						<td><center><?php  echo $tot_forecast_qty_plantWise[$j]; ?></center></td>
 						<td></td>
 						<td></td>
 						<td></td>
 						<?php
 							for ($i=0; $i < sizeof($hours_array); $i++)
 							{
-								if ($grand_tot_qty_time_array[$i] > 0)
+								if ($grand_tot_qty_time_array1[$plant_name[$j]][$i] > 0)
 								{
-									echo "<td><center>$grand_tot_qty_time_array[$i]</center></td>";			
+									echo "<td><center>".
+									$grand_tot_qty_time_array1[$plant_name[$j]][$i]
+									."</center></td>";			
 								} 
 								else
 								{
@@ -527,25 +618,26 @@ if(isset($_GET['submit']))
 								
 							}
 						?>
-						<td><center><?php echo $grand_tot_total_qty;  ?></center></td>
-						<td><center><?php echo $grand_tot_scanned_qty;  ?></center></td>
-						<td><center><?php echo $grand_tot_scanned_sah;  ?></center></td>
-						<td><center><?php echo $grand_tot_plan_sah;  ?></center></td>
-						<td><center><?php echo $grand_tot_forecast_sah;  ?></center></td>
-						<td><center><?php echo $grand_tot_act_sah;  ?></center></td>
-						<td><center><?php echo $grand_tot_sah_diff;  ?></center></td>
+						<td><center><?php echo $tot_reported_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_scanned_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_scanned_sah_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_fr_sah_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_forecast_sah_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_act_sah_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_sah_diff_plantWise[$j];  ?></center></td>
 						<?php 
-							$grand_plan_eff=round((($grand_tot_plan_sah)/($nop*$hours))*100);
-							$grand_act_eff=round((($grand_tot_act_sah)/($nop*$hours))*100);
-							$grand_hitrate=round(($grand_tot_total_qty/$grand_tot_forecast_qty)*100);
+							$tot_plan_eff_plantWise[$j]=round((($tot_fr_sah_plantWise[$j])/($nop*$hours))*100);
+							$tot_act_eff_plantWise[$j]=round((($tot_act_sah_plantWise[$j])/($nop*$hours))*100);
+							$tot_hit_rate_plantWise[$j]=round(($tot_reported_plantWise[$j]/$tot_forecast_qty_plantWise[$j])*100);
 						?>
-						<td><center><?php echo $grand_plan_eff.'%';  ?></center></td>
-						<td><center><?php echo $grand_act_eff.'%';  ?></center></td>
-						<td><center><?php echo $grand_tot_balance;  ?></center></td>
-						<td><center><?php echo $grand_hitrate.'%';  ?></center></td>
+						<td><center><?php echo $tot_plan_eff_plantWise[$j].'%';  ?></center></td>
+						<td><center><?php echo $tot_act_eff_plantWise[$j].'%';  ?></center></td>
+						<td><center><?php echo $tot_forecast_qty_plantWise[$j]-$tot_reported_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_hit_rate_plantWise[$j].'%';  ?></center></td>
 						<td style="display:none;"><center><?php echo $grand_tot_required;  ?></center></td>
 					</tr>
-<?php
+			<?php	}
+
 } ?>
 	      
 				
