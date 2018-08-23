@@ -283,7 +283,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 										} 
 										else if ($row < round($pcsphr))
 										{
-											$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND dhour = '$hour_iniate' AND team='$team';";
+											$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND HOUR(time) BETWEEN TIME('".$hour_iniate."') AND TIME('".$hour_ending."') AND team='$team';";
 											// echo $sql6_2.'<br><br>';
 											$res6_12=mysqli_query($link,$sql6_2);
 											if (mysqli_num_rows($res6_12) > 0)
@@ -295,8 +295,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 													{
 														$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
 													}
-												}
-												
+												}												
 												echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
 											}
 											else
