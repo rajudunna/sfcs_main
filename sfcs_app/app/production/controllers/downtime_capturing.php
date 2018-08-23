@@ -16,6 +16,7 @@ if(isset($_POST) && isset($_POST['date_y'])){
     $datt = $_POST['date_y']."-".$_POST['date_m']."-".$_POST['date_d'];
     //echo $datt;die();
     $date = date('Y-m-d',strtotime($datt));
+    $dhour_value = $_POST['time'];
     $time = $_POST['time'].":30";
     $team = $_POST['team'];
     foreach($_POST['main_data'] as $iv){
@@ -38,7 +39,7 @@ if(isset($_POST) && isset($_POST['date_y'])){
             '".$team."', 
             '".$reason."', 
             '".$qty."', 
-            ''
+            '".$dhour_value."'
             );
         ";
        // echo $ins_qry;
