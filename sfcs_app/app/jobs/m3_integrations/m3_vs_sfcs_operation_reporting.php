@@ -3,7 +3,7 @@
 	error_reporting(0);
     $include_path=getenv('config_job_path');
 	include($include_path.'\sfcs_app\common\config\config_jobs.php');
-	include($include_path.'\sfcs_app\common\config\m3_api_calls.php');
+	include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
     $details=[];
     $arr1 = [];
     $arr2 = [];
@@ -31,7 +31,7 @@
         $end = microtime(true);
         $dur = $end - $start;
         print("API call Execution takes ".$dur." seconds")."\n";
-        $result = $obj1->getCurlRequest($url1);  
+        $result = $obj1->getCurlAuthRequest($url1);  
         $decoded = json_decode($result,true);
         // var_dump($decoded);
         if($decoded['@type'])
@@ -206,7 +206,7 @@
     $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n"; 
     // $headers .= 'From: BEKSFCS Alert <yateesh603@gmail.com>'. "\r\n";
     $headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
-    $sno=0;
+  
     // Mail it 
     if($sno >0){
         if(mail($to, $subject, $message, $headers)) 
