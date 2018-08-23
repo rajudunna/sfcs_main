@@ -790,6 +790,7 @@ if(isset($_GET['validating_remarks']))
 }
 function validating_remarks_with_qty($validating_remarks)
 {
+	$validating_remarks = explode(",",$validating_remarks);
 	if($validating_remarks[5] == 0)
 	{
 		$flag = 0;
@@ -1032,7 +1033,6 @@ function validating_remarks_with_qty($validating_remarks)
 		// include("dbconf1.php");
 		//include("remarks_array.php");
 		include("../../../../../common/config/config_ajax.php");
-		$validating_remarks = explode(",",$validating_remarks);
 		//echo $validating_remarks[5];
 		//var_dump($validating_remarks);
 		$query_to_fetch_individual_bundles = "select tid,order_col_des,old_size,size_code,carton_act_qty,acutno,input_job_no  FROM $bai_pro3.packing_summary_input where tid=$validating_remarks[1]";
