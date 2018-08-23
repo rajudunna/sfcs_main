@@ -63,7 +63,7 @@ $slno = 0;
             foreach($mo_row as $key => $value){
                 $mo_no = $mo_row['mo_no'];
                 $api_url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelMaterials?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no ;
-                $api_data = $obj->getCurlRequest1($api_url);
+                $api_data = $obj->getCurlAuthRequest($api_url);
                 $api_data = json_decode($api_data, true);         
                 $name_values = array_column($api_data['MIRecord'], 'NameValue');
 
