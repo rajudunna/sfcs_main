@@ -17,8 +17,8 @@
             $style = $_GET['style'];
             $schedule = $_GET['schedule'];
             $limit = 100;
-            $style = 'A43CKA1        ';
-            $schedule = '426627';
+            // $style = 'A43CKA1        ';
+            // $schedule = '426627';
             $color = '';
 
             include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
@@ -102,7 +102,7 @@
             //JOBS to dispaly on screen
             $jobs_query = "SELECT input_job_no_random,order_col_des,m3_size_code,carton_act_qty,input_job_no 
                            FROM bai_pro3.packing_summary_input 
-                           WHERE order_style_no='$style' and order_del_no='$schedule' LIMIT $limit";            
+                           WHERE order_style_no='$style' and order_del_no='$schedule' ";            
             $jobs_result = mysqli_query($link_ui, $jobs_query) or 
                            exit("Sql Error2 = $jobs_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 
