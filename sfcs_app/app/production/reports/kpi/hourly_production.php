@@ -18,16 +18,37 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 <body>
 
 <div class="container">
-				<?php   
-				   //Starting get process for hourly efficiency report through FR Plan.
-				   
-				   if($_GET['pro_date']){
-					   $frdate=$_GET['pro_date'];
-					   $ntime=18;				   
-				   }else{
-					   $frdate=date("Y-m-d");
-					   $ntime=date('H');
-				   }
+				<?php
+				$grand_tot_qty_time_array1 = array();
+				   	$plant_modules=array();
+					$plant_name=array();
+
+					if($_GET['pro_date'])
+					{
+						$frdate=$_GET['pro_date'];
+						$ntime=18;				   
+					}
+					else
+					{
+						$frdate=date("Y-m-d");
+						$ntime=date('H');
+					}
+
+					$plant_details_query="SELECT * FROM $bai_pro2.tbl_mini_plant_master;";
+					$plant_details_result=mysqli_query($link,$plant_details_query);
+					while ($row = mysqli_fetch_array($plant_details_result))
+					{
+						$plant_name[] = $row['plant_name'];
+						$plant_modules[] = explode(',', $row['plant_modules']);
+					}
+
+					// for ($i=0; $i < sizeof($plant_name); $i++)
+					// { 
+					// 	echo $plant_name[$i].' == ';
+					// 	var_dump($plant_modules[$i]);
+					// 	echo '<br><br>';
+					// }
+					// die();
 				?>
 <div class="panel panel-primary">
 	<div class="panel-heading">Hourly Production Report</div>
@@ -71,12 +92,11 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 					<th>Hours</th>
 					<th>Target <br>PCS/Hr</th>
 					<?php 
-						$query='';
 						$hours_array = array();
+						$hour_end = array();
 					   	for ($i=0; $i < $total_hours; $i++)
 						{
 							$hours_array[] = $hour;
-							$hour_end = array();
 							$from_hour = $hour.":".$minutes;
 							$hour1=$hour++ + 1;
 							$to_hour = $hour1.":".$minutes_29;
@@ -100,10 +120,12 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 				</tr>
 			</thead>
 			<?php 
-			$grand_tot_qty_time_array = array(); $grand_tot_plan_sah=0;
-			$grand_tot_fr_qty = 0; $grand_tot_forecast_qty=0; $grand_tot_total_qty=0; $grand_tot_scanned_qty=0; 
-			$grand_tot_scanned_sah=0; $grand_tot_forecast_sah=0; $grand_tot_act_sah=0; $grand_tot_sah_diff=0;
-			$grand_tot_plan_eff=0; $grand_tot_act_eff=0; $grand_tot_hitrate=0; $grand_tot_required=0; $module_count=0;
+				$tot_reported_plantWise=array(); $tot_frqty_plantWise=array(); $tot_forecast_qty_plantWise=array();
+				$tot_scanned_plantWise=array(); $tot_scanned_sah_plantWise=array(); $tot_fr_sah_plantWise=array();
+				$tot_forecast_sah_plantWise=array(); $tot_act_sah_plantWise=array(); $tot_sah_diff_plantWise=array();
+				$tot_plan_eff_plantWise=array(); $tot_act_eff_plantWise=array(); $tot_balance_plantWise=array();
+				$tot_hit_rate_plantWise=array();	$grand_tot_qty_time_array1 = array(); 
+			
 			while($row=mysqli_fetch_array($res))
 			{
 				$module_count++;
@@ -135,7 +157,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 
 				// $sql6="SELECT out_time,qty,status FROM $bai_pro2.hout where out_date='$frdate' AND team='$team'";
 				// $res6=mysqli_query($link,$sql6);
-
+				
 				// $sql6="SELECT $query remarks FROM $bai_pro2.hout where out_date='$frdate' AND team='$team'";
 				// echo $sql6.'<br><br>';
 				// $res6=mysqli_query($link,$sql6);
@@ -182,7 +204,13 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 							{
 								$frqty=$row3['sumfrqty'];
 								echo $row3['sumfrqty'].'<br>';
-								$grand_tot_fr_qty = $grand_tot_fr_qty+ $frqty;
+								for ($i=0; $i < sizeof($plant_name); $i++) 
+								{
+									if (in_array($team, $plant_modules[$i]))
+									{
+										$tot_frqty_plantWise[$i] = $tot_frqty_plantWise[$i] + $frqty;
+									}							 	
+								}
 							}
 						?>
 					</center></td>
@@ -192,7 +220,13 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 							{
 								$forecastqty=$row4['qty'];
 								echo $row4['qty'].'<br>';
-								$grand_tot_forecast_qty = $grand_tot_forecast_qty+ $forecastqty;
+								for ($i=0; $i < sizeof($plant_name); $i++) 
+								{
+									if (in_array($team, $plant_modules[$i]))
+									{
+										$tot_forecast_qty_plantWise[$i] = $tot_forecast_qty_plantWise[$i] + $forecastqty;
+									}							 	
+								}
 							}
 						?>
 					</center></td>
@@ -223,7 +257,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 							// echo $hours_array[$i].'<br>';
 							$hour_iniate = $hours_array[$i];
 							$hour_ending = $hour_end[$i];
-							$sql6_1="SELECT qty,status FROM $bai_pro2.hout WHERE out_date='$frdate' AND team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":00') AND TIME('".$hour_iniate.":59'));";
+							$sql6_1="SELECT SUM(qty) as qty FROM $bai_pro2.hout WHERE out_date='$frdate' AND team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":".$minutes."') AND TIME('".$hour_ending.":".$minutes_29."'));";
 							// echo $sql6_1.'<br><br>';
 							$res6_1=mysqli_query($link,$sql6_1);
 							if (mysqli_num_rows($res6_1) > 0)
@@ -231,29 +265,53 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 								while($row6_1=mysqli_fetch_array($res6_1))
 								{
 									$row = $row6_1['qty'];
-									$total_qty = $total_qty + $row;
-									if ($row >= round($pcsphr))
+									if ($row != '' || $row != NULL )
 									{
-										$grand_tot_qty_time_array[$i] = $grand_tot_qty_time_array[$i] + $row6_1['qty'];
-										echo "<td><center>".$row."</center></td>";
-									} 
-									else if ($row < round($pcsphr))
+										if ($row >= round($pcsphr))
+										{
+											$total_qty = $total_qty + $row;
+											for ($k=0; $k < sizeof($plant_name); $k++) 
+											{
+												if (in_array($team, $plant_modules[$k]))
+												{
+													// echo $plant_modules[$k][];
+													$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+
+												}
+											}
+											
+											echo "<td><center>".$row."</center></td>";
+										} 
+										else if ($row < round($pcsphr))
+										{
+											$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND dhour = '$hour_iniate' AND team='$team';";
+											// echo $sql6_2.'<br><br>';
+											$res6_12=mysqli_query($link,$sql6_2);
+											if (mysqli_num_rows($res6_12) > 0)
+											{
+												$total_qty = $total_qty + $row;
+												for ($k=0; $k < sizeof($plant_name); $k++) 
+												{
+													if (in_array($team, $plant_modules[$k]))
+													{
+														$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+													}
+												}
+												
+												echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
+											}
+											else
+											{
+												$img_url = getFullURLLevel($_GET['r'], 'common/images/sign.jpg', 2, 'R');
+												// echo $img_url;
+												// echo "<td style='background-color:#FFBF00;'><center><i class='fa fa-exclamation-circle ' aria-hidden='true'></i></center></td>";
+												echo "<td><img src='$img_url' alt=\"Sign\" height=\"42\" width=\"42\"></td>";
+											}
+										}
+									}
+									else
 									{
-										$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND dhour = '$hour_iniate' AND team='$team';";
-										// echo $sql6_2.'<br><br>';
-										$res6_12=mysqli_query($link,$sql6_2);
-										if (mysqli_num_rows($res6_12) > 0)
-										{
-											$grand_tot_qty_time_array[$i] = $grand_tot_qty_time_array[$i] + $row6_1['qty'];
-											echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
-										}
-										else
-										{
-											$img_url = getFullURLLevel($_GET['r'], 'common/images/sign.jpg', 2, 'R');
-											// echo $img_url;
-											// echo "<td style='background-color:#FFBF00;'><center><i class='fa fa-exclamation-circle ' aria-hidden='true'></i></center></td>";
-											echo "<td><img src='$img_url' alt=\"Sign\" height=\"42\" width=\"42\"></td>";
-										}
+										echo "<td><center>0</center></td>";
 									}
 								}
 							}
@@ -274,16 +332,28 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 					<td style="background-color:#d7ccc8;"><center>
 						<b>
 						<?php  
-							echo $total_qty; 
-							$grand_tot_total_qty = $grand_tot_total_qty + $total_qty; 
+							echo $total_qty;
+							for ($i=0; $i < sizeof($plant_name); $i++) 
+							{
+								if (in_array($team, $plant_modules[$i]))
+								{
+									$tot_reported_plantWise[$i] = $tot_reported_plantWise[$i] + $total_qty;
+								}
+							} 
 						?>
 						</b>
 					</center></td>
 					<td style="background-color:#d7ccc8;"><center>
 						<b>
 						<?php  
-							echo $sumscqty; 
-							$grand_tot_scanned_qty = $grand_tot_scanned_qty + $sumscqty;
+							echo $sumscqty;
+							for ($i=0; $i < sizeof($plant_name); $i++) 
+							{
+								if (in_array($team, $plant_modules[$i]))
+								{
+									$tot_scanned_plantWise[$i] = $tot_scanned_plantWise[$i] + $sumscqty;
+								}							 	
+							}
 						?>
 						</b>
 					</center></td>
@@ -291,61 +361,78 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 						<b>
 						<?php 
 							$scanned_sah=round(($sumscqty*$smv)/60);
-							echo $scanned_sah; 
-							$grand_tot_scanned_sah = $grand_tot_scanned_sah + $scanned_sah; 
+							echo $scanned_sah;
+							for ($i=0; $i < sizeof($plant_name); $i++) 
+							{
+								if (in_array($team, $plant_modules[$i]))
+								{
+									$tot_scanned_sah_plantWise[$i] = $tot_scanned_sah_plantWise[$i] + $scanned_sah;
+								}							 	
+							}
 						?>
 						</b>
 					</center></td>
 					<td><center>
 						<?php 
 							$plan_sah=round(($frqty*$smv)/60); 
-							echo $plan_sah; 
-							$grand_tot_plan_sah = $grand_tot_plan_sah + $plan_sah;	
+							echo $plan_sah;
+							for ($i=0; $i < sizeof($plant_name); $i++) 
+							{
+								if (in_array($team, $plant_modules[$i]))
+								{
+									$tot_fr_sah_plantWise[$i] = $tot_fr_sah_plantWise[$i] + $plan_sah;
+								}							 	
+							}	
 						?>
 					</center></td>
 					<td><center>
 						<?php
 							$forecast_sah=round(($forecastqty*$smv)/60);
-							echo $forecast_sah;	
-							$grand_tot_forecast_sah = $grand_tot_forecast_sah + $forecast_sah;
+							echo $forecast_sah;
+							for ($i=0; $i < sizeof($plant_name); $i++) 
+							{
+								if (in_array($team, $plant_modules[$i]))
+								{
+									$tot_forecast_sah_plantWise[$i] = $tot_forecast_sah_plantWise[$i] + $forecast_sah;
+								}							 	
+							}
 						?>
 					</center></td>
 					<td><center>
 						<?php  
 							$act_sah=round(($total_qty*$smv)/60);
 							echo $act_sah;
-							$grand_tot_act_sah = $grand_tot_act_sah + $act_sah;
+							for ($i=0; $i < sizeof($plant_name); $i++) 
+							{
+								if (in_array($team, $plant_modules[$i]))
+								{
+									$tot_act_sah_plantWise[$i] = $tot_act_sah_plantWise[$i] + $act_sah;
+								}							 	
+							}
 						?>
 					</center></td>
 					<td><center>
 						<?php
 							$sah_diff=$plan_sah-$act_sah;
 							echo $sah_diff;
-							$grand_tot_sah_diff = $grand_tot_sah_diff + $sah_diff;
+							for ($i=0; $i < sizeof($plant_name); $i++) 
+							{
+								if (in_array($team, $plant_modules[$i]))
+								{
+									$tot_sah_diff_plantWise[$i] = $tot_sah_diff_plantWise[$i] + $sah_diff;
+								}							 	
+							}
 						?>
 					</center></td>
 					<td><center>
 						<?php
 							$plan_eff=round((($frqty*$smv)/($nop*$hours*60))*100);
 							echo $plan_eff.'%';
-							$grand_tot_plan_eff = $grand_tot_plan_eff + $plan_eff;
 						?>
 					</center></td>
 					<td><center>
 						<?php
 							$act_eff=round((($total_qty*$smv)/($nop*$hours*60))*100);
-							$grand_tot_act_eff = $grand_tot_act_eff + $act_eff;
-							// $act_eff_hour=$ntime-8;
-							// if($act_eff_hour<=0)
-							// {
-							// 	$act_eff=round((($total_qty*$smv)/($nop*60))*100);
-							// 	$grand_tot_act_eff = $grand_tot_act_eff + $act_eff;
-							// }
-							// else
-							// {
-							// 	$act_eff=round((($total_qty*$smv)/($nop*$act_eff_hour*60))*100);
-							// 	$grand_tot_act_eff = $grand_tot_act_eff + $act_eff;
-							// }
 							echo $act_eff.'%';
 						?>
 					</center></td>
@@ -354,7 +441,6 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 						<?php
 							$balance=$forecastqty-$total_qty;
 							echo $balance;
-							$grand_tot_balance = $grand_tot_balance + $balance;
 						?>
 					</center></td>
 					<td><center>
@@ -362,14 +448,19 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 						if($forecastqty !=0)
 						{
 							$hitrate=round(($total_qty/$forecastqty)*100);
-							$grand_tot_hitrate = $grand_tot_hitrate + $hitrate;
 						}
 						else
 						{
 							$hitrate=0;
-							$grand_tot_hitrate = $grand_tot_hitrate + $hitrate;
 						}
 						echo $hitrate.'%';
+						for ($i=0; $i < sizeof($plant_name); $i++) 
+						{
+							if (in_array($team, $plant_modules[$i]))
+							{
+								$tot_balance_plantWise[$i] = $tot_balance_plantWise[$i] + $hitrate;
+							}							 	
+						}
 						?>
 					</center></td>
 					<td style="display:none;"><center>
@@ -395,50 +486,55 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 				
 				<?php
 				
-			} ?>
-				<tr style="background-color:green;color:white;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
-					<td><center>Factory</center></td>
-					<td></td>
-					<td></td>
-					<td><center><?php  echo $grand_tot_fr_qty; ?></center></td>
-					<td><center><?php  echo $grand_tot_forecast_qty; ?></center></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<?php
-						for ($i=0; $i < sizeof($hours_array); $i++)
-						{
-							if ($grand_tot_qty_time_array[$i] > 0)
+			} 
+				for ($j=0; $j < sizeof($plant_name); $j++)
+				{
+					?>
+					<tr style="background-color:green;color:white;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
+						<td><center><?php  echo $plant_name[$j]; ?></center></td>
+						<td></td>
+						<td></td>
+						<td><center><?php  echo $tot_frqty_plantWise[$j]; ?></center></td>
+						<td><center><?php  echo $tot_forecast_qty_plantWise[$j]; ?></center></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<?php
+							for ($i=0; $i < sizeof($hours_array); $i++)
 							{
-								echo "<td><center>$grand_tot_qty_time_array[$i]</center></td>";			
-							} 
-							else
-							{
-								echo "<td><center> 0 </center></td>";
+								if ($grand_tot_qty_time_array1[$plant_name[$j]][$i] > 0)
+								{
+									echo "<td><center>".
+									$grand_tot_qty_time_array1[$plant_name[$j]][$i]
+									."</center></td>";			
+								} 
+								else
+								{
+									echo "<td><center> 0 </center></td>";
+								}
+								
 							}
-							
-						}
-					?>
-					<td><center><?php echo $grand_tot_total_qty;  ?></center></td>
-					<td><center><?php echo $grand_tot_scanned_qty;  ?></center></td>
-					<td><center><?php echo $grand_tot_scanned_sah;  ?></center></td>
-					<td><center><?php echo $grand_tot_plan_sah;  ?></center></td>
-					<td><center><?php echo $grand_tot_forecast_sah;  ?></center></td>
-					<td><center><?php echo $grand_tot_act_sah;  ?></center></td>
-					<td><center><?php echo $grand_tot_sah_diff;  ?></center></td>
-					<?php 
-						$grand_plan_eff=round((($grand_tot_plan_sah)/($nop*$hours))*100);
-						$grand_act_eff=round((($grand_tot_act_sah)/($nop*$hours))*100);
-						$grand_hitrate=round(($grand_tot_total_qty/$grand_tot_forecast_qty)*100);
-					?>
-					<td><center><?php echo $grand_plan_eff.'%';  ?></center></td>
-					<td><center><?php echo $grand_act_eff.'%';  ?></center></td>
-					<td><center><?php echo $grand_tot_balance;  ?></center></td>
-					<td><center><?php echo $grand_hitrate.'%';  ?></center></td>
-					<td style="display:none;"><center><?php echo $grand_tot_required;  ?></center></td>
-				</tr>
-			
-	<?php	}
+						?>
+						<td><center><?php echo $tot_reported_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_scanned_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_scanned_sah_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_fr_sah_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_forecast_sah_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_act_sah_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_sah_diff_plantWise[$j];  ?></center></td>
+						<?php 
+							$tot_plan_eff_plantWise[$j]=round((($tot_fr_sah_plantWise[$j])/($nop*$hours))*100);
+							$tot_act_eff_plantWise[$j]=round((($tot_act_sah_plantWise[$j])/($nop*$hours))*100);
+							$tot_hit_rate_plantWise[$j]=round(($tot_reported_plantWise[$j]/$tot_forecast_qty_plantWise[$j])*100);
+						?>
+						<td><center><?php echo $tot_plan_eff_plantWise[$j].'%';  ?></center></td>
+						<td><center><?php echo $tot_act_eff_plantWise[$j].'%';  ?></center></td>
+						<td><center><?php echo $tot_forecast_qty_plantWise[$j]-$tot_reported_plantWise[$j];  ?></center></td>
+						<td><center><?php echo $tot_hit_rate_plantWise[$j].'%';  ?></center></td>
+						<td style="display:none;"><center><?php echo $grand_tot_required;  ?></center></td>
+					</tr>
+			<?php	}
+			}
 ?>
       
 			</tbody>
