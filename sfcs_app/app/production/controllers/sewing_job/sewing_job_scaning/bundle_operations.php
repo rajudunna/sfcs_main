@@ -213,7 +213,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title"><center>Operations Update For The Operation <div id='operation_name_edit'></div></center></h4>
+          <h4 class="modal-title"><center>Operations Update For The Operation <b><div id='operation_name_edit'></div></b></center></h4>
 		   <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
@@ -759,7 +759,8 @@ $('#ops_code1').change(function()
 		var style = $('#pro_style option:selected').text();
 		var color = $('#color option:selected').text();
 		var pre_ops_code = $('#pre_ops_code').val();
-		var ops_code_next_ary = [ops_code_next,style,color];
+		var erp_value = $("input:radio[name=reporttoerpradio1]:checked").val();
+		var ops_code_next_ary = [ops_code_next,style,color,erp_value];
 		$.ajax
 			({
 					type: "POST",
@@ -767,9 +768,15 @@ $('#ops_code1').change(function()
 					data: {ops_code_next: $('#ops_code_next').val()},
 					success: function(response)
 					{
+					console.log(response);
 						if(response == 1)
 						{
 							sweetAlert("This Operation Code is already exists","","warning");
+							$('#ops_code1').val(pre_ops_code);
+						}
+						if(response == 2)
+						{
+							sweetAlert("This Operation Code does not exists in M3","","warning");
 							$('#ops_code1').val(pre_ops_code);
 						}
 					}
@@ -1148,7 +1155,7 @@ function value_edition(btn,id_of_main)
 		({
 			
 				type: "POST",
-				url:function_file+"?r=getdata&adding_validation="+dependency_ops_ary,
+				url:function_file+"?r=getdataa&adding_validation="+dependency_ops_ary,
 				data: {},
 				success: function(response)
 				{
