@@ -4,45 +4,9 @@
 </head>
 <?php
 error_reporting(0);
-// class get_api_call {
-function getCurlRequest($url){
-	$basic_auth=base64_encode('BEL_SFCS:brandix@321');
-	$curl = curl_init();
-	curl_setopt_array($curl, array(
-		CURLOPT_PORT => "22105",
-		CURLOPT_URL => $url,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_ENCODING => "",
-		CURLOPT_MAXREDIRS => 10,
-		CURLOPT_TIMEOUT => 30,
-		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-		CURLOPT_CUSTOMREQUEST => "GET",
-		CURLOPT_HTTPHEADER => array(
-			"Accept: application/json",
-			"Authorization: Basic ".$basic_auth,
-			"Cache-Control: no-cache",
-			"Content-Type: application/json"
-			// "Postman-Token: df10b2f5-8494-4d56-a7b0-d41c05016563"
-			),
-		));
-
-	$response = curl_exec($curl);
-	$err = curl_error($curl);
-
-	curl_close($curl);
-
-        if ($err) 
-        {
-            return "cURL Error #:" . $err;
-        } 
-        else
-        {
-            return $response;
-        }
-	}
-// }
 //include("header.php");
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_jobs.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 
 $plant_code = 'EKG';
@@ -92,19 +56,15 @@ $slno = 0;
         $all_data[]=$row;
 
         $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'  ";
-        // echo $mo_sql;
         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 
         while($mo_row=mysqli_fetch_array($mo_sql_result))
         {
-            // $mo_details = ['1991686', '1991678'];
-            foreach($mo_details as $key => $value){
-                // $mo_no = $mo_row['mo_no'];
-                $mo_no = $value;
-                // $mo_data[] = $mo_row;
+            foreach($mo_row as $key => $value){
+                $mo_no = $mo_row['mo_no'];
                 $api_url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelMaterials?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no ;
-                $api_data = getCurlRequest($api_url);
-                $api_data = json_decode($api_data, true);
+                $api_data = $obj->getCurlRequest1($api_url);
+                $api_data = json_decode($api_data, true);         
                 $name_values = array_column($api_data['MIRecord'], 'NameValue');
 
                 foreach ($name_values as $key => $value2) {
@@ -152,8 +112,6 @@ $slno = 0;
         }
         
     }
-    // var_dump($mo_data);
-
 }
 ?>
 </tbody>
