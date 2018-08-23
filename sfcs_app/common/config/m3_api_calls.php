@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php 
 class m3_api_calls {	
 	public function getCurlRequest($url){			
@@ -12,7 +11,6 @@ class m3_api_calls {
 $obj = new m3_api_calls();	
 
 ?>
-=======
 <?php
 
 class get_api_call {
@@ -56,4 +54,3 @@ class get_api_call {
 
 
 
->>>>>>> 762-convert-m3-integration-to-rest-api-communication-day-end-validation-report
