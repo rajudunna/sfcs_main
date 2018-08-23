@@ -20,7 +20,7 @@ $result_rejections = $link->query($qery_rejection_resons);
 
 $bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
 
-$m3_bulk_bundle_insert_0 = "INSERT INTO m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_remarks,sfcs_log_user,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,m3_error_code) VALUES";
+//$m3_bulk_bundle_insert_0 = "INSERT INTO m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_remarks,sfcs_log_user,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,m3_error_code) VALUES";
 
 $table_name = 'packing_summary_input';
 $b_job_no = $new_data['job_number'];
@@ -230,7 +230,7 @@ if($barcode_generation == 1)
 							$remarks_var = $b_module.'-'.$b_shift.'-'.$type;
 							$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
 
-							$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
+							//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 
 							}
 							
@@ -285,7 +285,7 @@ if($barcode_generation == 1)
 								$remarks_var = $b_module.'-'.$b_shift.'-'.$type;
 								$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
 
-								$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
+								//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 							}
 							else 
 							{
@@ -356,10 +356,10 @@ if($barcode_generation == 1)
 					{
 						$bundle_pending_qty =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+ $nop_qry_row['rejected_qty']);
 						//echo "pending_qty:".$bundle_individual_number.'-'.$bundle_pending_qty.'</br>';
-						if($remaining_qty_rec != 0)
-						{
-							$bundle_pending_qty = $remaining_qty_rec;
-						}
+						// if($remaining_qty_rec != 0)
+						// {
+						// 	$bundle_pending_qty = $remaining_qty_rec;
+						// }
 						if($bundle_pending_qty > 0 && $cumulative_qty > 0)
 						{
 							if($bundle_pending_qty <= $cumulative_qty)
@@ -475,7 +475,7 @@ if($barcode_generation == 1)
 							$remarks_var = $b_module.'-'.$b_shift.'-'.$type;
 							$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
 
-							$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
+							//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 
 							}
 							
@@ -530,7 +530,7 @@ if($barcode_generation == 1)
 								$remarks_var = $b_module.'-'.$b_shift.'-'.$type;
 								$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
 
-								$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
+								//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 							}
 							else 
 							{
@@ -572,16 +572,16 @@ if($barcode_generation == 1)
 		// echo $final_query;
 		$rej_insert_result = $link->query($final_query) or exit('data error');
 
-		if(substr($m3_bulk_bundle_insert_0, -1) == ',')
-		{
-			$final_query_m3 = substr($m3_bulk_bundle_insert_0, 0, -1);
-		}
-		else
-		{
-			$final_query_m3 = $m3_bulk_bundle_insert_0;
-		}
+		// if(substr($m3_bulk_bundle_insert_0, -1) == ',')
+		// {
+			// $final_query_m3 = substr($m3_bulk_bundle_insert_0, 0, -1);
+		// }
+		// else
+		// {
+			// $final_query_m3 = $m3_bulk_bundle_insert_0;
+		// }
 		// echo $final_query_m3;
-		$rej_insert_result_m3 = $link->query($final_query_m3) or exit('data error');
+		//$rej_insert_result_m3 = $link->query($final_query_m3) or exit('data error');
 	}
 	$b_tid = array();
 	$b_rep_qty = array();
@@ -1372,7 +1372,116 @@ if($barcode_generation == 1)
 				{
 					//echo $b_rej_qty[$i];
 					$size = strtoupper($b_sizes[$i]);
-					$table_data .= "<tr><td data-title='Job No'>$b_inp_job_ref[$i]</td><td data-title='Bundle No'>$b_tid[$i]</td><td data-title='Color'>$b_colors[$i]</td><td data-title='Size'>$size</td><td data-title='Remarks'>$b_remarks[$i]</td><td data-title='Reported Qty'>$b_rep_qty[$i]</td><td data-title='Rejected Qty'>$b_rej_qty[$i]</td></tr>";
+					$table_data .= "<tr><td data-title='Job No'>$b_inp_job_ref[$i]</td><td data-title='Bundle No'>$b_tid[$i]</td><td data-title='Color'>$b_colors[$i]</td><td data-title='Size'>$size</td><td data-title='Remarks'>$b_remarks[$i]</td><td data-title='Reported Qty'>$b_rep_qty[$i]</td><td data-title='Rejected Qty'>
+</td></tr>";
+				}
+				//Mo quantity updation and m3_transaction insertion
+				// for positives
+				for($i=0;$i<sizeof($b_tid);$i++)
+				{
+					//760 CR additions Started
+					$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where bundle_no = $b_tid[$i] and op_code = $b_op_id";
+					$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$total_bundle_present_qty = $b_rep_qty[$i] + $b_rej_qty[$i];
+					$total_bundle_rej_present_qty = $b_rej_qty[$i];
+					$total_bundle_rec_present_qty = $b_rep_qty[$i];
+					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+					{
+						$total_bundle_present_qty = $total_bundle_rec_present_qty;
+						// echo $total_bundle_present_qty;
+						if($total_bundle_present_qty > 0)
+						{
+							$mo_number = $nop_qry_row['mo_no'];
+							$mo_quantity = $nop_qry_row['bundle_quantity'];
+							$good_quantity_past = $nop_qry_row['good_quantity'];
+							$rejected_quantity_past = $nop_qry_row['rejected_quantity'];
+							$id = $nop_qry_row['id'];
+							$balance_max_updatable_qty = $mo_quantity - ($good_quantity_past + $rejected_quantity_past);
+							// echo $balance_max_updatable_qty .'-'. $total_bundle_rec_present_qty;
+							if($balance_max_updatable_qty > 0)
+							{
+								if($balance_max_updatable_qty >= $total_bundle_rec_present_qty)
+								{
+									$to_update_qty = $total_bundle_rec_present_qty; 
+									$actual_rep_qty = $good_quantity_past+$total_bundle_rec_present_qty;
+									$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $actual_rep_qty where id= $id";
+									$total_bundle_rec_present_qty = 0;
+								}
+								else
+								{
+									$to_update_qty = $balance_max_updatable_qty; 
+									$actual_rep_qty = $good_quantity_past+$balance_max_updatable_qty;
+									$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $actual_rep_qty where id= $id";
+									$total_bundle_rec_present_qty = $total_bundle_rec_present_qty - $balance_max_updatable_qty;
+								}
+								//echo $update_qry.'</br>';
+								$ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number',$to_update_qty,'','Normal',user(),'',$b_module,'$b_shift',$b_op_id,'',$id,'','')";
+								//echo $inserting_into_m3_tran_log;
+								mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
+						}
+						
+					}
+							
+				}
+				// die();
+				//for rejections
+				for($i=0;$i<sizeof($b_tid);$i++)
+				{
+					$value_b = $b_tid[$i];
+					$r_qty = explode(",", $r_qty[$value_b]);
+					$r_reasons = explode(",", $r_reasons[$value_b]);
+					//var_dump($r_qty);
+					foreach($r_qty as $key=>$value)
+					{
+						$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where bundle_no = $b_tid[$i] and op_code = $b_op_id";
+						$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$total_bundle_rej_present_qty = $r_qty[$key];
+						while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+						{
+							$total_bundle_present_qty = $total_bundle_rej_present_qty;
+							$mo_number = $nop_qry_row['mo_no'];
+							$mo_quantity = $nop_qry_row['bundle_quantity'];
+							$good_quantity_past = $nop_qry_row['good_quantity'];
+							$rejected_quantity_past = $nop_qry_row['rejected_quantity'];
+							$id = $nop_qry_row['id'];
+							//$mo_no = $nop_qry_row['id'];
+							$balance_max_updatable_qty = $mo_quantity - ($good_quantity_past + $rejected_quantity_past);
+							// echo $total_bundle_present_qty;
+							if($total_bundle_present_qty > 0)
+							{
+								if($balance_max_updatable_qty > 0)
+								{
+									if($balance_max_updatable_qty >= $total_bundle_rej_present_qty)
+									{
+										$to_update_qty = $total_bundle_rej_present_qty;
+										$actual_rej_qty = $rejected_quantity_past+$total_bundle_rej_present_qty;
+										$update_qry = "update $bai_pro3.mo_operation_quantites set rejected_quantity = $actual_rej_qty where id= $id";
+										$total_bundle_rej_present_qty = 0;
+									}
+									else
+									{
+										$to_update_qty = $balance_max_updatable_qty;
+										$actual_rej_qty = $rejected_quantity_past+$balance_max_updatable_qty;
+										$update_qry = "update $bai_pro3.mo_operation_quantites set rejected_quantity = $actual_rej_qty where id= $id";
+										$total_bundle_rej_present_qty = $total_bundle_rej_present_qty - $balance_max_updatable_qty;
+									}
+									//echo $update_qry.'</br>';
+									$ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
+									//echo $update_qry.'</br>';
+									// echo $r_reasons[$key];
+									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number',$to_update_qty,'$r_reasons[$key]','Normal',user(),'',$b_module,'$b_shift',$b_op_id,'',$id,'','')";
+									//echo $inserting_into_m3_tran_log.'</br>';
+									mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+								}
+							}
+						}
+					}
+					
+							
 				}
 			}
 			$table_data .= "</tbody></table></div></div></div>";
