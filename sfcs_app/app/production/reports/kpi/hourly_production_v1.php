@@ -304,7 +304,14 @@ if(isset($_GET['submit']))
 													}
 													else
 													{
-														echo "<td><center>0</center></td>";
+														if ($hour_iniate > date('H') and $frdate == date('Y-m-d'))
+														{
+															echo "<td><center> - </center></td>";
+														}
+														else
+														{
+															echo "<td><center> 0 </center></td>";
+														}
 													}												
 												}
 											}

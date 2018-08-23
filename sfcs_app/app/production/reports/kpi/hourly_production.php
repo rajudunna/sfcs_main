@@ -276,7 +276,6 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 												{
 													// echo $plant_modules[$k][];
 													$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
-
 												}
 											}
 											
@@ -311,7 +310,14 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 									}
 									else
 									{
-										echo "<td><center>0</center></td>";
+										if ($hour_iniate > date('H') and $frdate == date('Y-m-d'))
+										{
+											echo "<td><center> - </center></td>";
+										}
+										else
+										{
+											echo "<td><center> 0 </center></td>";
+										}
 									}
 								}
 							}
