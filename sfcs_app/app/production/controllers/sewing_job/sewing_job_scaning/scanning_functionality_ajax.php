@@ -1396,7 +1396,7 @@ if($barcode_generation == 1)
 						$nop=0;
 					}
 				$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
-				$appilication_out = "Down_Time";
+				$appilication_out = "IMS_OUT";
 			    $checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
 			   // echo $checking_output_ops_code_out;
 			    $result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
