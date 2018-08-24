@@ -1,8 +1,8 @@
 <?php
     // include("../../../../../common/config/config_ajax.php");
+    error_reporting(0);
     $barcode = $_POST['barcode'];
     $shift = $_POST['shift'];
-
     $bundle_no = explode('-', $barcode)[0];
     $op_no = explode('-', $barcode)[1];
     // $status = true;
