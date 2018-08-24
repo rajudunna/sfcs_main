@@ -761,18 +761,32 @@ if(isset($_GET['ops_code_next']))
 }
 function ops_code_next_fun($ops_code_next)
 {
-	// echo "hi";
 	$flag = 0;
 	$ops_code_next = explode(",",$ops_code_next);
 	include("../../../../../common/config/config_ajax.php");
-	$ops_exists_validation = "select operation_code from  $brandix_bts.tbl_style_ops_master where style='$ops_code_next[1]' and color = '$ops_code_next[2]' and operation_code = '$ops_code_next[0]'";
-	$result_ops_exists_validation = $link->query($ops_exists_validation);
-	if(mysqli_num_rows($result_ops_exists_validation) > 0)
+	//qurey
+	if($ops_code_next[3] == 'Yes')
 	{
-		$flag =1;
+		$schedule_operation_existance = "select OperationNumber from $bai_pro3.schedule_oprations_master where Style='$ops_code_next[1]' and Description = '$ops_code_next[2]' and OperationNumber = '$ops_code_next[0]'";
+		$schedule_operation_existance_validation = $link->query($schedule_operation_existance);
+		if(mysqli_num_rows($schedule_operation_existance_validation) > 0)
+		{
+		}
+		else 
+		{
+			$flag = 2;
+		}
+	}
+	if($flag !=2)
+	{
+		$ops_exists_validation = "select operation_code from  $brandix_bts.tbl_style_ops_master where style='$ops_code_next[1]' and color = '$ops_code_next[2]' and operation_code = '$ops_code_next[0]'";
+		$result_ops_exists_validation = $link->query($ops_exists_validation);
+		if(mysqli_num_rows($result_ops_exists_validation) > 0)
+		{
+			$flag =1;
+		}
 	}
 	echo $flag;
-	
 }
 
 
