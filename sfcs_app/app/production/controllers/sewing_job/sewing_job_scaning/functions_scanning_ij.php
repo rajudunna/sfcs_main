@@ -83,6 +83,7 @@ if(isset($_GET['job_number']))
 function getjobdetails($job_number)
 {
 	$job_number = explode(",",$job_number);
+	// var_dump($job_number);
 	if($job_number[2] == 1)
 	{
 		$job_number[4]=$job_number[1];
@@ -104,7 +105,7 @@ function getjobdetails($job_number)
 				$job_number[0] = $row['input_job_no_random'];
 			}
 			$map_col_query = "select order_style_no,order_del_no,order_col_des from $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]' order by tid";
-			//echo $map_col_query;
+			//	echo $map_col_query;
 			$result_map_col_query = $link->query($map_col_query);
 			if($result_map_col_query->num_rows > 0)
 			{
@@ -382,7 +383,7 @@ function getjobdetails($job_number)
 		}
 		$result_array['style'] = $job_number[1];
 		$result_array['schedule'] = $job_number[2];
-		$result_array['color_dis'] = $job_number[3];
+		$result_array['color_dis'] = $maped_color;
 		$ops_dep_flag = 0;
 		$qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
 		$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
@@ -444,7 +445,7 @@ function getjobdetails($job_number)
 			// echo json_encode($result_array);
 			// die();
 		// }
-		$ops_seq_check = "select id,ops_sequence from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$job_number[3]' and operation_code='$job_number[4]'";
+		$ops_seq_check = "select id,ops_sequence from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and operation_code='$job_number[4]'";
 		//echo $ops_seq_check;
 		$result_ops_seq_check = $link->query($ops_seq_check);
 		if($result_ops_seq_check->num_rows > 0)
@@ -462,7 +463,7 @@ function getjobdetails($job_number)
 			die();
 		}
 		
-		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$job_number[3]' and id < $seq_id and ops_sequence = $ops_seq";
+		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and id < $seq_id and ops_sequence = $ops_seq";
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
 		{
@@ -797,7 +798,7 @@ function validating_remarks_with_qty($validating_remarks)
 		// include("dbconf1.php");
 		//include("remarks_array.php");
 		include("../../../../../common/config/config_ajax.php");
-		$validating_remarks = explode(",",$validating_remarks);
+		// $validating_remarks = explode(",",$validating_remarks);
 		//echo $validating_remarks[5];
 		//var_dump($validating_remarks);
 		if($validating_remarks[5] == 0)
@@ -820,13 +821,13 @@ function validating_remarks_with_qty($validating_remarks)
 		}
 		$ops_dep_array_qry = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_dependency != 0 and ops_dependency != 'NULL' group by ops_dependency";
 		$result_ops_dep_array_qry = $link->query($ops_dep_array_qry);
-		//echo $ops_dep_array_qry;
+		// echo $ops_dep_array_qry;
 		while($row = $result_ops_dep_array_qry->fetch_assoc()) 
 		{
 			$ops_dependency[] = $row['ops_dependency'];
 		}
 		$qry_for_fetching_bal_to_report_qty_pre = "select * from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2] and remarks='$validating_remarks[3]' order by bundle_number";
-		//echo $qry_for_fetching_bal_to_report_qty_pre;
+		// echo $qry_for_fetching_bal_to_report_qty_pre;
 		$result_qry_for_fetching_bal_to_report_qty_pre = $link->query($qry_for_fetching_bal_to_report_qty_pre);
 		if($result_qry_for_fetching_bal_to_report_qty_pre->num_rows > 0 && in_array($validating_remarks[2],$ops_dependency))
 		{
@@ -836,7 +837,7 @@ function validating_remarks_with_qty($validating_remarks)
 		{
 			$check_flag = 0;
 		}
-		//echo $check_flag;
+		// echo $check_flag;
 		$fetching_dependency_ops_qry = "select operation_code from  $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_dependency = $validating_remarks[2]";
 		$result_fetching_dependency_ops_qry = $link->query($fetching_dependency_ops_qry);
 		while($row = $result_fetching_dependency_ops_qry->fetch_assoc()) 
@@ -990,6 +991,7 @@ function validating_remarks_with_qty($validating_remarks)
 			}
 			else
 			{
+				// echo $post_ops_code;
 				if($post_ops_code != 0)
 				{
 					$qry_for_fetching_bal_to_report_qty = "select (sum(recevied_qty))as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id = $post_ops_code and remarks = '$validating_remarks[3]' order by bundle_number";
