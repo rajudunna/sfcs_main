@@ -193,6 +193,15 @@
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
 					</div>
 				</li>
+				<li class="">
+					<div class="col-md-12" id="divid_1" style="padding: 12px;">
+						<img src="/images/stack-overflow.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Cut Reporting</p>
+						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/cut_qty_reporting_withrolls/doc_track_panel.php') ?>" name="Cut Quantity Reporting With Roll" onclick="modal('','',this.name)">With Roll</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/cut_qty_reporting_withoutrolls/doc_track_panel_cut.php') ?>" onclick="modal('','',this.name)" name="Cut Quantity Reporting With Roll">Without Roll</a> )
+						</p>
+					</div>
+				</li>
               </ul>
             </div>
         </div>
@@ -205,38 +214,38 @@
               </div>
             </div>
             <div class="box-body no-padding accordion-body collapse in" id='box2'>
-              <ul class="nav nav-pills nav-stacked">
-								<li class="">
-									<div class="col-md-12" id="divid_5" style="padding: 12px;">
-										<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Manage Packing List</p>
-										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-										( <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/pac_gen_sewing_job.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/packing_ratio.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Packing Ratio</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/delete_sewing_jobs.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
-										</p>
-									</div>
-								</li>
-								<li class="">
-									<div class="col-md-12" id="divid_6" style="padding: 12px;">
-										<img src="/images/check-in.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_check_point_handover_select.php') ?>" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
-										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
-									</div>
-								</li>
-								<li class="">
-									<div class="col-md-12" id="divid_7" style="padding: 12px;">
-										<img src="/images/cart.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/controllers/pending.php') ?>" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
-										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
-									</div>
-								</li>
-								<li class="">
-									<div class="col-md-12" id="divid_7" style="padding: 12px;">
-										<img src="/images/sewing-machine.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
-										<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Sewing</p>
-										<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">( <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_create_original.php') ?>" onclick="modal('','',this.name)" name="Sewing Generation">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/input_job_level_planning/cut_jobs_loading.php') ?>" onclick="modal('','',this.name)" name="Input Job Level Planning">Input Job Level Planning</a> )</p>
-									</div>
-								</li>
-              </ul>
+                <ul class="nav nav-pills nav-stacked">
+					<li class="">
+						<div class="col-md-12" id="divid_5" style="padding: 12px;">
+							<img src="/images/order.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+							<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Manage Packing List</p>
+							<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
+							( <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/pac_gen_sewing_job.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/packing_ratio.php') ?>" name="Packing List Generation" onclick="modal('','',this.name)">Packing Ratio</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/delete_sewing_jobs.php') ?>" onclick="modal('','',this.name)" name="Packing List Delete">Delete</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/partial_breakup.php') ?>" onclick="modal('','',this.name)" name="Split Lables">Split Lables</a> )
+							</p>
+						</div>
+					</li>
+					<li class="">
+						<div class="col-md-12" id="divid_6" style="padding: 12px;">
+							<img src="/images/check-in.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+							<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/packing/controllers/packing_check_point_handover_select.php') ?>" onclick="modal('','',this.name)" name="Check-In Cartons">Check-In Cartons</a></p>
+							<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">stored packing material will be deleted</p>
+						</div>
+					</li>
+					<li class="">
+						<div class="col-md-12" id="divid_7" style="padding: 12px;">
+							<img src="/images/cart.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+							<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;"><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/controllers/pending.php') ?>" onclick="modal('','',this.name)" name="Audit [delete]">Audit [delete]</a></p>
+							<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">How the fabric is cutted into  ratios here</p>
+						</div>
+					</li>
+					<li class="">
+						<div class="col-md-12" id="divid_7" style="padding: 12px;">
+							<img src="/images/sewing-machine.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
+							<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Sewing</p>
+							<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;color: #888;">( <a href="<?= '?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_create_original.php') ?>" onclick="modal('','',this.name)" name="Sewing Generation">Generation</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/controllers/input_job_level_planning/cut_jobs_loading.php') ?>" onclick="modal('','',this.name)" name="Input Job Level Planning">Input Job Level Planning</a> )</p>
+						</div>
+					</li>
+          		</ul>
             </div>
         </div>
         <div class="box box-info">

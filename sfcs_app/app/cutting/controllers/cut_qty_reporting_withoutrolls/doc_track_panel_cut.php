@@ -8,7 +8,7 @@ $view_access=user_acl("SFCS_0087",$username,1,$group_id_sfcs);
 <div class="panel panel-primary">
 <div class="panel-heading">Cut Quantity Reporting (Without Roll)</div>
 <div class="panel-body">
-<form method="post" name="input" action="#">
+<form method="post" name="input" action="<?= getFullURL($_GET['r'],'doc_track_panel_cut.php','N');?>">
 <div class="row">
 <div class="col-sm-3">
 Enter Docket Number: <input type="text" name="docket_id" class="form-control integer" size=15>
@@ -23,12 +23,14 @@ Enter Docket Number: <input type="text" name="docket_id" class="form-control int
 		return ret;
 	}
 </script>
-</div></br>
-<?php echo "<input type=\"submit\" value=\"search\" class=\"btn btn-primary\" name=\"submit\" id=\"submit\" onclick=\"document.getElementById('submit').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
+</div>
+<div class="col-sm-3">
+<?php echo "<input type=\"submit\" value=\"search\" class=\"btn btn-primary\" style=\"margin-top:20px;\" name=\"submit\" id=\"submit\" onclick=\"document.getElementById('submit').style.display='none'; document.getElementById('msg1').style.display='';\"/>";
  ?>
- 
-<a href="<?= getFullURLLevel($_GET['r'],'doc_track_panel.php',0,'N'); ?>"class="btn btn-info pull-right" style="margin-top:22px;">Go to Recut Status Reporting >> </a></h3>
-
+ </div>
+<div class="col-sm-3 col-md-offset-3">
+<a href="<?= getFullURLLevel($_GET['r'],'doc_track_panel.php',0,'N'); ?>"class="btn btn-info btn-sm pull-right" style="margin-top:22px;">Go to Recut Status Reporting >> </a></h3>
+</div>
 </div>
 
 </form>
@@ -37,7 +39,7 @@ Enter Docket Number: <input type="text" name="docket_id" class="form-control int
 
 if(isset($_POST['submit']))
 {
-	
+	echo "<br>";
 	$docket_id=$_POST['docket_id'];	
 	$valnew=0;
 	$sql12="select * from $bai_pro3.plandoc_stat_log where doc_no='$docket_id'";

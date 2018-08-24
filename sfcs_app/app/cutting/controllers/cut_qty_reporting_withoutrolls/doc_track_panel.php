@@ -55,10 +55,12 @@ table{
 <label>Enter Recut- Docket Number: </label>
 <input type="text" name="docket_id" size=15 class="form-control integer swal">
 </div>
-
+<div class="col-md-3">
 <input type="submit" value="search" name="submit" class="btn btn-primary" style="margin-top:22px;">
-<a href="<?= getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')?>" class="btn btn-info pull-right" style="margin-top:22px;">Go to Cut Status Reporting >> </a>
-
+</div>
+<div class="col-md-3 col-md-offset-3">
+<a href="<?= getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')?>" class="btn btn-info btn-sm pull-right" style="margin-top:22px;">Go to Cut Status Reporting >> </a>
+</div>
 </div>
 <!--
 Enter Recut- CID Number: <input type="text" name="cid" size=15>
