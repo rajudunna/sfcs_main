@@ -46,9 +46,9 @@
     
     <div class='col-sm-12'>
       <label for='limit' class='pull-left' style='padding-top:3px'>Show Records :</label>
-      <div class='col-sm-1'>
+      <div class='col-sm-2'>
         <select name='limit' id='limit' onchange='loadData(this)' class='form-control input-sm' style='border-radius : 5px'>
-          <option value='24'>Choose</option>
+          <option value='24'>Choose Records Count Here</option>
           <option value='50'  <?= $_GET['limit']==50 ? 'selected' : '' ?> >50</option>
           <option value='100' <?= $_GET['limit']==100 ? 'selected' : '' ?>>100</option>
           <option value='200' <?= $_GET['limit']==200 ? 'selected' : '' ?>>200</option>
