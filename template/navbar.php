@@ -19,8 +19,8 @@
                 <ul class="nav navbar-nav custom-nav">
                     <li ><a href="#"><i class="fa fa-dashboard"></i> Dashboards <span class="sr-only">(current)</span></a></li>
                     <li><a onclick="ajaxCall(event,this.href)" href="?r=L3NmY3NfYXBwL2FwcC93b3Jrb3JkZXJzL2NvbnRyb2xsZXJzL3dvcmtvcmRlcnNfaW5kZXgucGhw&menu=workorders">WorkOrders</a></li>
-                    <li><a onclick="ajaxCall(event,this.href)" href="?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uX3hwcGFyZWwvcHJvZHVjdGlvbl9pbmRleC5waHA=&menu=production">Production</a></li>
-                    <li><a onclick="ajaxCall(event,this.href)" href="?r=L3NmY3NfYXBwXGFwcFxyZXBvcnRzX3hwcGFyZWwvcmVwb3J0c19pbmRleC5waHA=&menu=reports">Reports</a></li>
+                    <li><a onclick="ajaxCall(event,this.href)" href="?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uX3hwcGFyZWwvcHJvZHVjdGlvbl9pbmRleC5waHA=&menu=production&type=production">Production</a></li>
+                    <li><a onclick="ajaxCall(event,this.href)" href="?r=L3NmY3NfYXBwXGFwcFxyZXBvcnRzX3hwcGFyZWwvcmVwb3J0c19pbmRleC5waHA=&menu=reports&type=reports">Reports</a></li>
                 </ul>
             </div>
             <div class="navbar-custom-menu">
