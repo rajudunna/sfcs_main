@@ -14,8 +14,7 @@
 	while($row12106=mysqli_fetch_array($result1216)) 
 	{
 		$category[]=$row12106['codes'];
-		$category_name[]=$row12106['category'];
-		
+		$category_name[]=$row12106['category'];		
 	}
 	for($l=0;$l<sizeof($category_name);$l++)
 	{
