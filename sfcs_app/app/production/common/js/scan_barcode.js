@@ -66,11 +66,6 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                 //     timer: 2000
                                 // });
                                 // swal(response.data.status);
-                            } else if (angular.isString(response.data)){
-                                $('#loading-image').hide();
-                                $scope.last_barcode_status = 'Not Done';
-                                $scope.last_barcode_status_remarks = 'Connection Error';
-                                $('.bgcolortable').css("background-color", "#d04d4d70");
                             }else{
                                 $scope.showscanlist = true;
                                 $scope.scanned_barcode_details.push({
