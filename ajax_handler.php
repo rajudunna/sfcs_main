@@ -329,11 +329,11 @@ function anchortag(event,href_url=0){
 
                 jQuery("#modal-body").html(resp);
                
-                $('input[name="lot_no"]').val(localStorage.getItem('lot'));
-                $('input[name="reference"]').val(localStorage.getItem('batch'));
-                $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
-                $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
-                $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
+                // $('input[name="lot_no"]').val(localStorage.getItem('lot'));
+                // $('input[name="reference"]').val(localStorage.getItem('batch'));
+                // $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
+                // $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
+                // $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
 
                 // $('input[name="submit"]').click();
                 // $('input[name="show"]').click();
@@ -413,11 +413,11 @@ function Ajaxify (href_url,body=0) {
             jQuery("#"+body).html(resp);
         }else{
             jQuery("#modal-body").html(resp);
-            $('input[name="lot_no"]').val(localStorage.getItem('lot'));
-            $('input[name="reference"]').val(localStorage.getItem('batch'));
-            $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
-            $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
-            $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
+            // $('input[name="lot_no"]').val(localStorage.getItem('lot'));
+            // $('input[name="reference"]').val(localStorage.getItem('batch'));
+            // $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
+            // $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
+            // $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
             $('#myModal').modal('show');
         }
        
