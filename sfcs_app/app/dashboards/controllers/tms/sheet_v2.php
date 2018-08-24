@@ -54,7 +54,6 @@ if(mysqli_num_rows($sql_result) > 0){
         $size_qty = $row['carton_act_qty'];
 
         $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'  ";
-        //echo $mo_sql."<br/>";
         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
         $mo_numrows=mysqli_num_rows($mo_sql_result);
         if($mo_numrows>0){
@@ -70,51 +69,51 @@ if(mysqli_num_rows($sql_result) > 0){
                         $value2[] = ['Name' => 'color', 'Value' => $color];
                         $value2[] = ['Name' => 'size', 'Value' => $size_name];
                         $value2[] = ['Name' => 'size_qty', 'Value' => $size_qty];
-
                         $final_data[] = array_column($value2, 'Value', 'Name');
                     }
             }       
            
-        }else{?>
+        }
+    }
+    if(count($final_data) >0){
+        foreach ($final_data as $key1 => $value1) {
+            $op_query = "select * from $brandix_bts.tbl_style_ops_master where style= '".$style."' and color = '".$value1['color']."' and operation_order = '".$value1['OPNO']."' and m3_smv > 0";
+            $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
+            if(mysqli_num_rows($op_sql_result) > 0){
+                $value1['trim_type'] = 'STRIM';
+                $api_selected_valuess = $value1;
+            }
+            
+            $op_ptrim_query = "select * from $brandix_bts.tbl_style_ops_master where style= '".$style."' and color = '".$value1['color']."' and operation_order = '".$value1['OPNO']."' and operation_order = 200";
+            $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
+            if(mysqli_num_rows($op_ptrim_sql_result) > 0){
+                $value1['trim_type'] = 'PTRIM';
+                $api_selected_valuess = $value1;
+            }
+            if($api_selected_valuess){ $slno++; ?>
+                <tr>
+                    <td><?= $slno ?></td>
+                    <td><?= $style?></td>
+                    <td><?= $schedule ?></td>
+                    <td><?= $api_selected_valuess['color'] ?></td>
+                    <td><?= $api_selected_valuess['size'] ?></td>
+                    <td><?= $api_selected_valuess['size_qty'] ?></td>
+                    <td><?= $api_selected_valuess['MFNO'] ?></td>
+                    <td><?= $api_selected_valuess['trim_type'] ?></td>
+                    <td><?= $api_selected_valuess['MSEQ'] ?></td>
+                    <td><?= $api_selected_valuess['MTNO'] ?></td>
+                    <td><?= $api_selected_valuess['CNQT'] ?></td>
+                    <td><?= $api_selected_valuess['OPNO'] ?></td>
+                    <td><?= $api_selected_valuess['PRNO'] ?></td>
+                    <td><?= number_format($api_selected_valuess['CNQT'] * $api_selected_valuess['size_qty'], 4, '.', ''); ?></td>
+                </tr>
+            <?php }
+        }
+    }else{?>
             <tr>   
                 <td colspan=14><center><strong>No Records Found</strong></center></td>
             </tr>
-        <?php }
-    }
-    foreach ($final_data as $key1 => $value1) {
-        $op_query = "select * from $brandix_bts.tbl_style_ops_master where style= '".$style."' and color = '".$value1['color']."' and operation_order = '".$value1['OPNO']."' and m3_smv > 0";
-        $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
-        if(mysqli_num_rows($op_sql_result) > 0){
-            $value1['trim_type'] = 'STRIM';
-            $api_selected_valuess = $value1;
-        }
-        
-        $op_ptrim_query = "select * from $brandix_bts.tbl_style_ops_master where style= '".$style."' and color = '".$value1['color']."' and operation_order = '".$value1['OPNO']."' and operation_order = 200";
-        $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
-        if(mysqli_num_rows($op_ptrim_sql_result) > 0){
-            $value1['trim_type'] = 'PTRIM';
-            $api_selected_valuess = $value1;
-        }
-
-        if($api_selected_valuess){ $slno++; ?>
-            <tr>
-                <td><?= $slno ?></td>
-                <td><?= $style?></td>
-                <td><?= $schedule ?></td>
-                <td><?= $api_selected_valuess['color'] ?></td>
-                <td><?= $api_selected_valuess['size'] ?></td>
-                <td><?= $api_selected_valuess['size_qty'] ?></td>
-                <td><?= $api_selected_valuess['MFNO'] ?></td>
-                <td><?= $api_selected_valuess['trim_type'] ?></td>
-                <td><?= $api_selected_valuess['MSEQ'] ?></td>
-                <td><?= $api_selected_valuess['MTNO'] ?></td>
-                <td><?= $api_selected_valuess['CNQT'] ?></td>
-                <td><?= $api_selected_valuess['OPNO'] ?></td>
-                <td><?= $api_selected_valuess['PRNO'] ?></td>
-                <td><?= number_format($api_selected_valuess['CNQT'] * $api_selected_valuess['size_qty'], 4, '.', ''); ?></td>
-            </tr>
-        <?php }
-    }    
+        <?php }    
 }
 
 ?>
