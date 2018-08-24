@@ -28,7 +28,8 @@ $start_date=min($dates);
 $end_date=max($dates);
 
 $sql="select ship_tid,schedule_no,color,size from $bai_pro4.shipment_plan where ex_factory_date between \"".trim($start_date)."\" and  \"".trim($end_date)."\" order by schedule_no*1,color,size";
-// echo $sql;
+// $sql="select ship_tid,schedule_no,color,size from $bai_pro4.shipment_plan where schedule_no=534148";
+echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -38,7 +39,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$ship_tid=$sql_row["ship_tid"];
 	
 	$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des='".$color."'";
-	// echo $sql1."<br>";
+	echo $sql1."<br>";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result1) > 0)
 	{	
@@ -64,8 +65,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		
 		$update_order_qty="update bai_pro4.week_delivery_plan set original_order_qty='".$order_qty."' where shipment_plan_id='".$ship_tid."'";
-		// echo $update_order_qty."<br>";
-		mysqli_query($link, $update_order_qty) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
+		echo $update_order_qty."<br>";
+		$update_data=mysqli_query($link, $update_order_qty) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if($update_data){
+			echo "Updated week_delivery_plan Successfully<br>";
+		}
 		
 		$sql5="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\")";
 		// echo $sql5."<br>";
@@ -138,9 +142,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}	
 		// echo $schedule."-".$color."-".$ship_tid."-".$size_data."-".$size_ref."-".$size."-".$size_data_ref."-".$order_tid."-".$order_qty."-".$cut_total."-".$input_total."-".$output_total."-".$fcamca."-".$shipped."-".$pendingcarts."<br>";
 		
-		$sql32="update $table_ref set size_comp_".$size_data_ref."='".$output_total."',act_cut='".$cut_total."',act_fca='".$fcamca."', act_mca='".$fcamca."', act_fg='".$fgqty."', act_ship='".$shipped."', cart_pending='".$pendingcarts."' where shipment_plan_id='".$ship_tid."'";
-		// echo $sql32."-A<br/>";
-		mysqli_query($link, $sql32) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql32="update $table_ref set size_comp_".$size_data_ref."='".$output_total."',actu_sec1='".$output_total."',act_cut='".$cut_total."',act_in='".$input_total."',act_fca='".$fcamca."', act_mca='".$fcamca."', act_fg='".$fgqty."', act_ship='".$shipped."', cart_pending='".$pendingcarts."' where shipment_plan_id='".$ship_tid."'";
+		echo $sql32."------A<br/>";
+		$updated_data=mysqli_query($link, $sql32) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if($updated_data){
+			echo "Updated ".$table_ref."successfully<br>" ;
+		}
 	}
 }
 
