@@ -12,7 +12,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><b>X</b>pparel | <small style="font-size: 12px;"><b>S</b>hopfloor</small></a>
+                <a class="navbar-brand" href="#"><b>X</b>PPAREL | <small style="font-size: 12px;"><b>S</b>hop<b>F</b>loor</small></a>
             </div>
 
             <div class="navbar-custom-menu" style="float: left;">
