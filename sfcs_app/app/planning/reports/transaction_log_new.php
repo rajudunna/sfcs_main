@@ -41,7 +41,8 @@ Start : <input data-toggle="datepicker" class="form-control" type="text" id="dem
 <div class="col-md-2">
 End : <input data-toggle="datepicker"  class="form-control" type="text" id="demo2" name="edate" value="<?php  if($edate==""){ echo date("Y-m-d"); } else { echo $edate; } ?>" size="10">
 </div>
-<div class="col-md-1">
+<div class='col-md-3'>
+<div class="col-md-6">
 Section: <select name="module" id="myModule" class="form-control">
 <option value="0" <?php  if($module=="All")?>selected>All</option>
 <?php
@@ -79,7 +80,7 @@ for($i=0;$i<sizeof($sql_mods);$i++)
 }	
 ?>
 </select></div>
-<div class="col-md-1">
+<div class="col-md-6">
 Shift: <select name="shift" id="myshift" class="form-control">
 <option value='All' <?php if($shift=="All"){ echo "selected"; } ?> >All</option>
 <?php 
@@ -98,6 +99,7 @@ for ($i=0; $i < sizeof($shifts_array); $i++) {
 ?>
 <!-- <option  value="<?= $sf ?>" selected><?php echo 'ALL'; ?></option> -->
 </select></div>
+</div>
 
 <div class="col-md-2">
 
@@ -450,7 +452,11 @@ else{
 	display_all_text: "Display all"
 	}
 	setFilterGrid("table1",table3Filters);
-	$('#reset_table1').addClass('btn btn-warning btn-xs');
+	$(document).ready(function(){
+		$('#reset_table1').addClass('btn btn-warning btn-xs');
+		$('#reset_table1').find('a').addClass('table_resets');
+	})
+
 	
 </script>
 <script language="javascript">

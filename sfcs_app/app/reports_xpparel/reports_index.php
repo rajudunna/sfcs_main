@@ -19,9 +19,9 @@ h5{
                 </div>
                 <div class="box-body no-padding accordion-body collapse out" id='incpection_col'>
                     <ul class="nav nav-pills nav-stacked">
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/inspection/reports/C_Tex_Index_view.php').'&type=inspection'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Inspection Report</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/inspection/reports/Supplier_Claim_Log_Form.php').'&type=inspection'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Supplier Claim Log</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/inspection/reports/supplier_perf_v2_report.php').'&type=inspection'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Supplier Performance Report</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/inspection/reports/C_Tex_Index_view.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Inspection Report</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/inspection/reports/Supplier_Claim_Log_Form.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Supplier Claim Log</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/inspection/reports/supplier_perf_v2_report.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Supplier Performance Report</a></li>
                     </ul>
                 </div>
             </div>
@@ -36,16 +36,16 @@ h5{
                 </div>
                 <div class="box-body no-padding accordion-body collapse out" id='cutting_col'>
                       <ul class="nav nav-pills nav-stacked">
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/cad_saving_details_style.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;CAD Saving Report - Style</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/cad_saving_details_V2.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;CAD Saving Details - Exfactory</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/cad_saving_details_V3.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;CAD Saving Details - Schedule</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/cr_view.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Consumption Report</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/csr_view_V2.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Cutting Status Report</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/isr_view_v1.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Input Status Report</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/recut_details.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Recut Details report</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/ssrcd_view.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Style Status Report - Cut Details</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/ssrfd_view.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Style Status Report - Fabric Details</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/rms_pending.php').'&type=cutting'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;RMS Requisition Report</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/cad_saving_details_style.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;CAD Saving Report - Style</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/cad_saving_details_V2.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;CAD Saving Details - Exfactory</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/cad_saving_details_V3.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;CAD Saving Details - Schedule</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/cr_view.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Consumption Report</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/csr_view_V2.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Cutting Status Report</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/isr_view_v1.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Input Status Report</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/recut_details.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Recut Details report</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/ssrcd_view.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Style Status Report - Cut Details</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/ssrfd_view.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Style Status Report - Fabric Details</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/reports/rms_pending.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;RMS Requisition Report</a></li>
                       </ul>
                 </div>
             </div>
@@ -60,9 +60,9 @@ h5{
               </div>
               <div class="box-body no-padding accordion-body collapse out" id='planning_col'>
                   <ul class="nav nav-pills nav-stacked">
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/reports/week_delivery_plan_view3_V2.php').'&type=planning';?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Weekly Delivery Report</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/reports/week_delivery_plan_view4.php').'&type=planning'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Delivery Failure Report</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/reports/orders_summary_report.php').'&type=planning'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Orders Summary Report</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/reports/week_delivery_plan_view3_V2.php');?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Weekly Delivery Report</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/reports/week_delivery_plan_view4.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Delivery Failure Report</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/reports/orders_summary_report.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Orders Summary Report</a></li>
                   </ul>
               </div>
             </div>
@@ -77,10 +77,10 @@ h5{
                 </div>
                 <div class="box-body no-padding accordion-body collapse out" id='sewing_col'>
                     <ul class="nav nav-pills nav-stacked">
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/daily_sah_report_V5.php').'&type=sewing'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Daily SAH Report</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/Hourly_Eff_test.php').'&type=sewing'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Hourly Efficiency</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/reports/transaction_log_new.php').'&type=sewing'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Production Status Report (Sewing Out)</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/job_summary_view.php').'&type=sewing'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Schedule wise Job Reconciliation Reports</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/daily_sah_report_V5.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Daily SAH Report</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/Hourly_Eff_test.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Hourly Efficiency</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/planning/reports/transaction_log_new.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Production Status Report (Sewing Out)</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/job_summary_view.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Schedule wise Job Reconciliation Reports</a></li>
                     </ul>
                 </div>
             </div>
@@ -95,12 +95,12 @@ h5{
                 </div>
                 <div class="box-body no-padding accordion-body collapse out" id='quality_col'>
                     <ul class="nav nav-pills nav-stacked">
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/critical_rejection_report.htm').'&type=quality'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Critical Rejection Report - Above 0.4%</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/rep1.php').'&type=quality'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Daily Rejection Analysis</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/rep22.php').'&type=quality'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Daily Rejection Detail Report - Module Level</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/fca_fails.php').'&type=quality'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;FCA Failed Log Status</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/day_summary_report.php').'&type=quality'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Quality Journal</a></li>
-                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/rep12.php').'&type=quality'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Surplus Stock Report</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/critical_rejection_report.htm'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Critical Rejection Report - Above 0.4%</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/rep1.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Daily Rejection Analysis</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/rep22.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Daily Rejection Detail Report - Module Level</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/fca_fails.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;FCA Failed Log Status</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/day_summary_report.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Quality Journal</a></li>
+                      <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/quality/reports/rep12.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Surplus Stock Report</a></li>
                     </ul>
                 </div>
             </div>
@@ -115,9 +115,9 @@ h5{
                 </div>
                 <div class="box-body no-padding accordion-body collapse out" id='supply_chain_col'>
                     <ul class="nav nav-pills nav-stacked">
-                    <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/warehouse/reports/mrn_form_log.php').'&type=supplychain'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;(AMT) MRN Transaction Log</a></li>
-                    <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/warehouse/reports/report_new.html').'&type=supplychain'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;RM Stock Report</a></li>
-                    <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/warehouse/reports/fab_iss_track_details_V4.php').'&type=supplychain'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Fabric Issued Track</a></li>
+                    <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/warehouse/reports/mrn_form_log.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;(AMT) MRN Transaction Log</a></li>
+                    <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/warehouse/reports/report_new.html'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;RM Stock Report</a></li>
+                    <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/warehouse/reports/fab_iss_track_details_V4.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Fabric Issued Track</a></li>
                     </ul>
                 </div>
             </div>
@@ -131,8 +131,8 @@ h5{
                 </div>
                 <div class="box-body no-padding accordion-body collapse out" id='kpi_col'>
                     <ul class="nav nav-pills nav-stacked">
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/kpi/lost_time_capture.php').'&type=kpi'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Lost Hour Capturing Report</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/kpi/lost_time_summary.php').'&type=kpi'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Lost Hour Summary Report</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/kpi/lost_time_capture.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Lost Hour Capturing Report</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/kpi/lost_time_summary.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Lost Hour Summary Report</a></li>
                     </ul>
                 </div>
             </div>
@@ -146,13 +146,13 @@ h5{
                 </div>
                 <div class="box-body no-padding accordion-body collapse out" id='fin_col'>
                     <ul class="nav nav-pills nav-stacked">
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/cutting_wip.php').'&type=financial'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Cutting WIP</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/emb_garment_wip.php').'&type=financial'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Embellishment Garment WIP</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/emb_panel_wip.php').'&type=financial'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Embellishment Panel WIP</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/fabric_wip.php').'&type=financial'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Fabric WIP</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/fg_wip.php').'&type=financial'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;FG WIP</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/packing_wip_report.php').'&type=financial'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Packing WIP</a></li>
-                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/sewing_wip.php').'&type=financial'; ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Sewing WIP</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/cutting_wip.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Cutting WIP</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/emb_garment_wip.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Embellishment Garment WIP</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/emb_panel_wip.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Embellishment Panel WIP</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/fabric_wip.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Fabric WIP</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/fg_wip.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;FG WIP</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/packing_wip_report.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Packing WIP</a></li>
+                        <li><a href="<?= '?r='.base64_encode('/sfcs_app/app/production/reports/wip_reports/sewing_wip.php'); ?>" myattribute='report_body'><i class="fa fa-circle-o"></i>&nbsp;Sewing WIP</a></li>
                     </ul>
                 </div>
             </div>

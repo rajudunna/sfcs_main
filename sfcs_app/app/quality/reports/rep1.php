@@ -83,7 +83,7 @@ if(isset($_POST['filter']))
 		echo '<form action="'.$export_excel.'" method ="post" >
 				<input type="hidden" name="csv_text" id="csv_text">
 				<div class="row">
-				<input type="submit" class="btn btn-success btn-xs pull-right" id="export" style="background-color:#57b756;" value="Export to Excel" onclick="getCSVData()">
+				<a id="exportsags" href="#" onclick="getCSVData()" class="btn btn-sm btn-info table_resets" >Export To Exccel</a>
 				</div>
 				</form><br/>';
 		echo "<div class='row'>";
@@ -297,9 +297,14 @@ if(isset($_POST['filter']))
 ?>
 
 <script>
-function getCSVData(){
-	var csv_value=$('#example1').table2CSV({delivery:'value'});
-		$("#csv_text").val(csv_value);	
+	function getCSVData(){
+		var csv_value=$('#example1').table2CSV({delivery:'value'});    
+		var data = csv_value;   
+		csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(data);
+		$("#exportsags").attr({
+			"href": csvData,
+			"download": "daily_rejection_analysis.csv"
+		});		
 	}
 </script>
 

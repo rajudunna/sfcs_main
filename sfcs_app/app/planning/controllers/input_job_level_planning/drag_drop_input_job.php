@@ -11,7 +11,7 @@ $has_perm=haspermission($_GET['r']);
 
 <html>
 <head>
-<META HTTP-EQUIV="refresh" content="900" URL="tms_dashboard_input.php">
+<!-- <META HTTP-EQUIV="refresh" content="900" URL="tms_dashboard_input.php"> -->
 <!-- <link rel="stylesheet" href="styles/bootstrap.min.css"> -->
 <style type="text/css">
 	body{
@@ -192,7 +192,11 @@ $has_perm=haspermission($_GET['r']);
 	}
 	</style>	
 	<script type="text/javascript">
-	/************************************************************************************************************
+	$('#myModal').on('show.bs.modal', function () {
+		console.log('HAI');
+		initDragDropScript();
+	});
+	/***********************************************************************************************************
 	(C) www.dhtmlgoodies.com, November 2005
 	
 	Update log:
@@ -268,7 +272,7 @@ $has_perm=haspermission($_GET['r']);
 	}
 	function do_disable(){
 		console.log('welcome');
-		  document.getElementById("saveButton").disabled = true;
+		document.getElementById("saveButton").disabled = true;
 		
 	}
 	
@@ -474,6 +478,8 @@ $has_perm=haspermission($_GET['r']);
 	*/
 	function saveDragDropNodes()
 	{
+		console.log('Came IN');
+
 		var saveString = "";
 		var uls = dragDropTopContainer.getElementsByTagName('UL');
 		for(var no=0;no<uls.length;no++){	// LOoping through all <ul>
@@ -486,9 +492,10 @@ $has_perm=haspermission($_GET['r']);
 		}		
 		
 		//document.getElementById('saveContent').innerHTML = '<h1>Ready to save these nodes:</h1> ' + saveString.replace(/;/g,';<br>') + '<p>Format: ID of ul |(pipe) ID of li;(semicolon)</p><p>You can put these values into a hidden form fields, post it to the server and explode the submitted value there</p>';
-document.forms['myForm'].listOfItems.value = saveString;
-document.forms["myForm"].submit();
-		
+		document.forms['myForm'].listOfItems.value = saveString;
+		//document.forms["myForm"].submit();
+		console.log('Assign completed');
+		return true;
 	}
 	
 	function initDragDropScript()
@@ -541,7 +548,7 @@ document.forms["myForm"].submit();
 		}
 	}
 	
-	window.onload = initDragDropScript;
+	
 	</script>
 
 
@@ -630,28 +637,17 @@ $module_ref_no=$_GET["module"];
 		$style=$sql_row['order_style_no'];
 	}
 
+	// echo "Style :".$style."</br>";
+	// echo "schedule :".$schedule."</br>";
+	// echo "code :".$code."</br>";
+	// echo "module_ref_no :".$module_ref_no."</br>";
 
-
-
-
-
-
-
-
-
-
-
-// echo "Style :".$style."</br>";
-// echo "schedule :".$schedule."</br>";
-// echo "code :".$code."</br>";
-// echo "module_ref_no :".$module_ref_no."</br>";
-
-$code_db=array();
-$code_db=explode("*",$code);
-// var_dump($code_db);
-// echo "Code Size:".sizeof($code_db)."</br>";
-// exit;
-?>		
+	$code_db=array();
+	$code_db=explode("*",$code);
+	// var_dump($code_db);
+	// echo "Code Size:".sizeof($code_db)."</br>";
+	// exit;
+?>
 <br/>
 <div class="col-md-12">
 <div class="panel panel-primary">
@@ -660,9 +656,13 @@ $code_db=explode("*",$code);
 </div>
 <div class="panel-body">
 <h4><span class="label label-info">Note: Yellow Color indicates Excess/Sample Job</span></h4>
-<form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()">
+<form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" >
+	<!--  onclick='saveDragDropNodes()' -->
 	<input type="hidden" name="listOfItems" value="">
-	<input class='btn btn-success btn-sm pull-right' type="button" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
+	<!-- <input type="button" class='btn btn-success btn-sm pull-right' name="saveButton" id='saveButton' 
+		   onclick='do_disable()' value="Save"> -->
+	<input type="submit" onclick='return saveDragDropNodes()' class='btn btn-success btn-sm pull-right' name="saveButton" id='saveButton' 
+		   value="Save">	   
 </form>
 <br>
 <div id="dhtmlgoodies_dragDropContainer">
