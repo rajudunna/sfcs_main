@@ -155,10 +155,10 @@ function GetURLParameter(sParam)
 
 var menu = GetURLParameter("menu");
 if(menu == "reports"){
-    $('a[href="?r=L3NmY3NfYXBwXGFwcFxyZXBvcnRzX3hwcGFyZWwvcmVwb3J0c19pbmRleC5waHA=&menu=reports"]').parents('li').addClass('active');
+    $('a[href="?r=L3NmY3NfYXBwXGFwcFxyZXBvcnRzX3hwcGFyZWwvcmVwb3J0c19pbmRleC5waHA=&menu=reports&type=reports"]').parents('li').addClass('active');
 }
 if(menu == "production"){
-    $('a[href="?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uX3hwcGFyZWwvcHJvZHVjdGlvbl9pbmRleC5waHA=&menu=production"]').parents('li').addClass('active');
+    $('a[href="?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uX3hwcGFyZWwvcHJvZHVjdGlvbl9pbmRleC5waHA=&menu=production&type=production"]').parents('li').addClass('active');
 }
 if(menu == "workorders"){
     $('a[href="?r=L3NmY3NfYXBwL2FwcC93b3Jrb3JkZXJzL2NvbnRyb2xsZXJzL3dvcmtvcmRlcnNfaW5kZXgucGhw&menu=workorders"]').parents('li').addClass('active');
@@ -222,6 +222,8 @@ function onloadAjaxCall(get_r){
             window.history.pushState("object or string", "Title", "?"+get_r);
             if(menu == 'reports'){
                 if(type !== undefined){
+                    $("#body").html(response);
+                }else{
                     var report_url = "<?= 'ajax_handler.php?r='.base64_encode('/sfcs_app/app/reports_xpparel/reports_index.php');?>";
                     $.ajax({
                         url:report_url,
@@ -231,11 +233,11 @@ function onloadAjaxCall(get_r){
                             $("#report_body").html(response);
                         }
                     });
-                }else{
-                    $("#body").html(response);
                 }
             }else if(menu == 'production'){
                 if(type !== undefined){
+                    jQuery("#body").html(response);
+                }else{
                     var report_url = "<?= 'ajax_handler.php?r='.base64_encode('/sfcs_app/app/production_xpparel/production_index.php');?>";
                     $.ajax({
                         url:report_url,
@@ -245,8 +247,6 @@ function onloadAjaxCall(get_r){
                             $("#production_body").html(response);
                         }
                     });
-                }else{
-                    jQuery("#body").html(response);
                 }
 
             }else{

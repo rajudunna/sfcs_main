@@ -166,18 +166,26 @@ $('form').on("submit",function(event) {
             }
             var c = url.split("?").pop();
             var menu = WindowGetURLParameter("menu");
+            var modal = WindowGetURLParameter("modal");
             if(menu == 'reports' || menu == 'production' ){
-                if(menu == 'reports'){
-                    jQuery("#report_body").html(resp);
+                if(modal === undefined ){
+                    if(menu == 'reports'){
+                        jQuery("#report_body").html(resp);
+                    }
+                    if(menu == 'production'){
+                        jQuery("#production_body").html(resp);
+                    }
+                    window.history.pushState("object or string", "Title", "?"+c+"&menu="+menu);
+                }else{
+                    jQuery("#modal-body").html(resp);
+                    $('#myModal').modal('show');
                 }
-                if(menu == 'production'){
-                    jQuery("#production_body").html(resp);
-                }
+               
                 // if(menu == 'workorders'){
                 //     jQuery("#modal-body").html(resp);
                 //     $('#myModal').modal('show');
                 // }
-                window.history.pushState("object or string", "Title", "?"+c+"&menu="+menu);
+                
             }else{
                 jQuery("#modal-body").html(resp);
                 // $('input[name="lot_no"]').val(localStorage.getItem('lot'));
@@ -329,11 +337,11 @@ function anchortag(event,href_url=0){
 
                 jQuery("#modal-body").html(resp);
                
-                $('input[name="lot_no"]').val(localStorage.getItem('lot'));
-                $('input[name="reference"]').val(localStorage.getItem('batch'));
-                $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
-                $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
-                $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
+                // $('input[name="lot_no"]').val(localStorage.getItem('lot'));
+                // $('input[name="reference"]').val(localStorage.getItem('batch'));
+                // $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
+                // $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
+                // $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
 
                 // $('input[name="submit"]').click();
                 // $('input[name="show"]').click();
@@ -413,11 +421,11 @@ function Ajaxify (href_url,body=0) {
             jQuery("#"+body).html(resp);
         }else{
             jQuery("#modal-body").html(resp);
-            $('input[name="lot_no"]').val(localStorage.getItem('lot'));
-            $('input[name="reference"]').val(localStorage.getItem('batch'));
-            $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
-            $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
-            $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
+            // $('input[name="lot_no"]').val(localStorage.getItem('lot'));
+            // $('input[name="reference"]').val(localStorage.getItem('batch'));
+            // $('input[name="txtbatch"]').val(localStorage.getItem('batch'));
+            // $('input[name="lot_no_ref"]').val(localStorage.getItem('lot'));
+            // $('input[name="lot_no1"]').val(localStorage.getItem('lot'));
             $('#myModal').modal('show');
         }
        

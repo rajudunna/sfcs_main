@@ -24,9 +24,12 @@
 </div>
 <span id="error" style="color: Red; display: none"></span>
 
-						
-<input type="submit" class="btn btn-primary" value="search" name="submit" style="margin-top:22px;"><a href="<?= getFullURLLevel($_GET['r'],'doc_track_panel_recut.php',0,'N'); ?>" class="btn btn-info pull-right" style="margin-top:22px;">Go to Recut Status Reporting >> </a>
-
+<div class="col-md-3">					
+<input type="submit" class="btn btn-primary" value="search" name="submit" style="margin-top:22px;">
+</div>
+<div class="col-md-3 col-md-offset-3">
+<a href="<?= getFullURLLevel($_GET['r'],'doc_track_panel_recut.php',0,'N'); ?>" class="btn btn-info btn-sm pull-right" style="margin-top:22px;">Go to Recut Status Reporting >> </a>
+</div>
 
 <!--
 Enter CID Number: <input type="text" name="cid" size=15>
