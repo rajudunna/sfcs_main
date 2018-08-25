@@ -1,16 +1,14 @@
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
-	
-	if (isset($_GET['id'])) 
+	// die();
+	if (isset($_GET['del_id'])) 
 	{
         echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";
-		$id = $_GET['id'];
+		$id = $_GET['del_id'];
 		$deleteQuery = "DELETE FROM $brandix_bts.tbl_orders_ops_ref WHERE id=".$id;
-		// echo $deleteQuery;
-		// die();
 		$deleteReply = mysqli_query($link,$deleteQuery);
-		// mysql_query($deleteQuery, $link) or exit("Problem Deleting the Operation/".mysql_error());
+		//mysql_query($deleteQuery, $link) or exit("Problem Deleting the Operation/".mysql_error());
 		if ($deleteReply==1) {?>
 			<script type="text/javascript">
 				sweetAlert("Sucessfully Deleted the Operation","","success");
