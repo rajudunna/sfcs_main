@@ -1159,10 +1159,13 @@ function value_edition(btn,id_of_main)
 				data: {},
 				success: function(response)
 				{
-					
 					if(response == 1)
 					{
 						sweetAlert("You can't add the operation because scanning already started for this style","","warning");
+					}
+					else if(response == 4)
+					{
+						sweetAlert("You can't add the operation because because already layplan prepared for this style and color","","warning");
 					}
 					else if(id_of_main != 0)
 					{
@@ -1211,6 +1214,8 @@ function default_oper(value,btn)
 				data: {},
 				success: function(response)
 				{
+					console.log(response);
+					
 					if(response == 1)
 					{
 						$('#myModal1').modal('toggle');
@@ -1221,12 +1226,14 @@ function default_oper(value,btn)
 						if(smv != 0)
 						{
 							$('#m3_opss').show();
-						}
-						
+						}	
 					}
 					else if(response == 3)
 					{
 						sweetAlert("You can't delete this operation because this operation using as Next operation.","","warning");
+					}
+					else if(response == 4){
+						sweetAlert("You can't delete this operation because already layplan prepared for this operation.","","warning");
 					}
 					else
 					{
@@ -1267,6 +1274,10 @@ function myfunctionedit(val,id)
 				if(response == 2)
 				{
 					sweetAlert("You can't Edit this operation because this operation Group already sent for scanning.","","warning");
+					flag=0;
+				}
+				else if(response == 4){
+					sweetAlert("You can't Edit this operation because already layplan prepared for this style and color.","","warning");
 					flag=0;
 				}
 				else
