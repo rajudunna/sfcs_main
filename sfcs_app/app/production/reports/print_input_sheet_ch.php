@@ -437,7 +437,7 @@
                         $temp_module=0;
                         echo "<div class='table-responsive'>";
                         echo "<table class=\"table table-bordered\"><tr><th>Input Date</th><th>Module#</th><th>Color</th><th>Size</th><th>Input Qty</th><th>Output Qty</th></tr>";
-                        $sql55="SELECT * FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' order by ims_mod_no,ims_date,ims_color";
+                        $sql55="SELECT ims_date,ims_doc_no,ims_color,ims_mod_no,ims_size,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' GROUP BY ims_date,ims_doc_no,ims_color,ims_size ORDER BY ims_date,ims_mod_no,ims_color";
                         //echo $sql5."<br>";
                         $result55=mysqli_query($link, $sql55) or die("Error-".$sql55."-".mysqli_error($GLOBALS["___mysqli_ston"]));         
                         while($sql_row55=mysqli_fetch_array($result55))
