@@ -7,6 +7,7 @@
 	// Create connection
 	// $conn = new mysqli($servername, $username, $password, $dbname);
 	// Check connection
+	//
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$conn=$link;
 	if ($conn->connect_error) {
@@ -25,7 +26,7 @@
 		while($row = $result->fetch_assoc()) {
 			$rowid=$row["id"];
 			$short_key_code=$row["short_key_code"];
-			echo "<tr><td>".$sno++."</td><td>".$row["short_key_code"]."</td><td><a href='$url&rowid=$rowid&short_key_code=$short_key_code' class='editor_edit btn btn-warning btn-xs'>Edit</a><a href='$url1&rowid1=$rowid' class='confirm-submit editor_remove btn btn-danger btn-xs' id='del'>Delete</a></td></tr>";
+			echo "<tr><td>".$sno++."</td><td>".$row["short_key_code"]."</td><td><a href='$url&rowid=$rowid&short_key_code=$short_key_code' class='editor_edit btn btn-warning btn-xs'>Edit</a><a href='$url1&rowid1=$rowid' class='confirm-submit editor_remove btn btn-danger btn-xs' id='del$rowid'>Delete</a></td></tr>";
 		}
 
 		echo "</tbody></table>";

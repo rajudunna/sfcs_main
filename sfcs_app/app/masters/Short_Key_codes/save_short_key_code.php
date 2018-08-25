@@ -12,6 +12,7 @@ $row_id=$_REQUEST['c_id'];
 // $username = "baiall";
 // $password = "baiall";
 // $dbname = "bai_pro3";
+//
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
