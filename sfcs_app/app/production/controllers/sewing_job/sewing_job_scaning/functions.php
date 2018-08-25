@@ -664,7 +664,8 @@ function dependency_ops_validation($dependency_ops_ary)
 	//var_dump($dependency_ops_ary);
 	include("../../../../../common/config/config_ajax.php");
 
-	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db_confirm where style_id='$dependency_ops_ary[1]' and order_col_des='$dependency_ops_ary[2]'";
+	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no='$dependency_ops_ary[1]' and order_col_des='$dependency_ops_ary[2]'";
+	echo $check_for_order_id_query;
 	$check_for_order_id = $link->query($check_for_order_id_query);
     foreach($check_for_order_id as $key=> $value){
         $order_tid_new = str_replace(' ', '', $value["order_tid"]);
@@ -729,7 +730,8 @@ function adding_validation_fun($adding_validation)
 	$adding_validation = explode(",",$adding_validation);
 	include("../../../../../common/config/config_ajax.php");
 
-	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db_confirm where style_id='$adding_validation[0]' and order_col_des='$adding_validation[1]'";
+	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no='$adding_validation[0]' and order_col_des='$adding_validation[1]'";
+	//echo $check_for_order_id_query;
 	$check_for_order_id = $link->query($check_for_order_id_query);
     foreach($check_for_order_id as $key=> $value){
         $order_tid_new = str_replace(' ', '', $value["order_tid"]);
