@@ -17,8 +17,8 @@
             $style = $_GET['style'];
             $schedule = $_GET['schedule'];
             $limit = 100;
-            $style = 'A43CKA1        ';
-            $schedule = '426627';
+            // $style = 'A43CKA1        ';
+            // $schedule = '426627';
             $color = '';
 
             include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
