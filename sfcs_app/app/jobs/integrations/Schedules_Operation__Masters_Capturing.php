@@ -2,7 +2,7 @@
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-include($include_path.'\sfcs_app\common\config\m3_api_calls.php');
+include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
 set_time_limit(1000000);
 
 
@@ -25,10 +25,9 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 	// $mo_num='1991686';
 	// $FG_code= 'ASL18SF8   0026';
 
-	$obj1 = new get_api_call(); 
 	$url="http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelOperations?CONO=200&FACI=".$facility_id."&MFNO=".$mo_num."&PRNO=".$FG_code;
 	//echo "Api :$url".
-	$result = $obj1->getCurlRequest($url);
+	$result = $obj->getCurlAuthRequest($url);
 	$decoded = json_decode($result,true);
 	$vals = (conctruct_array($decoded['MIRecord']));
 	foreach ($vals as $value) 
@@ -59,13 +58,10 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 
 		//Update status for updated mo's and FG_codes
 		$update_mo_details="UPDATE mo_details SET ops_master_status=1 WHERE mo_number='$mo_num' AND product_sku='$FG_code'";
-		$result = mysqli_query($link, $update_mo_details)
+		$result = mysqli_query($link, $update_mo_details);
 	
 
 	}
-
-
-
 }
 
 //construct key values and 
