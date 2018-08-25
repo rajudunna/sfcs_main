@@ -1,16 +1,7 @@
 <div class="row">
 <div class="col-lg-12">
 
-<div class="btn-group" role="group">
-    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Operations
-        <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu">
-        <li><a href="?r=<?= base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/bundle_operations.php'); ?>"  myattribute="production_body" id="scanning">Mapping</a></li>
-        <li><a href="?r=<?= base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/pre_input_job_scanning.php'); ?>" myattribute="production_body" id="scanning">Scanning</a></li>
-    </ul>
-</div>
+
 
 
 <div class="row">
@@ -20,7 +11,18 @@
 				  <h3 class="box-title"><a href="#" >Production </a></h3>
 			  </div>
         <div class="box-body">
-            <a href="?r=<?= base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/pre_input_job_scanning.php'); ?>" class="btn btn-primary btn-sm" myattribute="production_body" id="scanning">Operation Scanning</a>
+
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Operations
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="?r=<?= base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/bundle_operations.php'); ?>"  myattribute="production_body" id="scanning">Mapping</a></li>
+                    <li><a href="?r=<?= base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/pre_input_job_scanning.php'); ?>" myattribute="production_body" id="scanning">Scanning</a></li>
+                </ul>
+            </div>
+            
             <div class="btn-group pull-right" role="group" aria-label="..." myattribute="production_body">
                 <div class='pull-left' style='padding-top:7px'><font style='font-size:15px'>WorkArea :&nbsp</label></div>
                 <a href="?r=L3NmY3NfYXBwL2FwcC9kYXNoYm9hcmRzL2NvbnRyb2xsZXJzL0lQUy90bXNfZGFzaGJvYXJkX2lucHV0X3YyMi5waHANCg==" class="btn btn-default" myattribute="production_body" id="sewing">Sewing</a>
