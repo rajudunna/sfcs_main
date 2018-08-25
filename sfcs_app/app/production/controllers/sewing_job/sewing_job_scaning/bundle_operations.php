@@ -1,9 +1,4 @@
-<!--- Developed by Srinivas Y --->
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Operations Mapping</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<br>
 <script>
 function verify_num(t){
 	
@@ -17,8 +12,7 @@ function verify_num(t){
 	}
 }
 </script>
-</head>
-<body>
+
 <?php
 //code by Srinu
 // include("dbconf.php");
@@ -40,7 +34,7 @@ $result_oper = $link->query($qry_get_operation_name);
 	Database: Removed NOT NULL option for the table 'tbl_style_ops_master'
 	by Theja on 06-02-2018
 -->
-<div class='container'>
+
 	<div class="panel panel-primary">
 		<div class="panel-heading"><strong>Operations Mapping</strong></div>
 		<div class="panel-body">
@@ -243,10 +237,8 @@ $result_oper2 = $link->query($qry_get_suppliers);
 	<div class="ajax-loader" id="loading-image" style="margin-left: 486px;margin-top: 35px;border-radius: -80px;width: 88px;">
 		<img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
 	</div>
-	</body>
-</html>
-</div>
-</div>
+
+
 <script type="text/javascript">
 var function_file = "<?php echo getFullURL($_GET['r'],'functions.php','R'); ?>";
 

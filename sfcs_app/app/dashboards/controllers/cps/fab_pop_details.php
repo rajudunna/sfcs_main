@@ -247,10 +247,10 @@ if(!(in_array($authorized,$has_permission)))
 <html>
 <head>
 
-<link rel="stylesheet" type="text/css" href="../../../../common/css/page_style.css" />
+<!-- <link rel="stylesheet" type="text/css" href="../../../../common/css/page_style.css" />
 <link rel="stylesheet" href="../../../../common/css/bootstrap.min.css">
 <script src="../../../../common/js/jquery.min.js"></script>
-<script src="../../../../common/js/bootstrap.min.js"></script>
+<script src="../../../../common/js/bootstrap.min.js"></script> -->
 
 
 <style>
