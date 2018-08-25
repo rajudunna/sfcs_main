@@ -50,13 +50,13 @@ function validateQty(event)
 		}else{
 			// echo "Connected successfully";
 		} */
-		$qry_insert = "select * from $$brandix_bts.tbl_orders_ops_ref where id=".$id;	
+		$qry_insert = "select * from $brandix_bts.tbl_orders_ops_ref where id=".$id;	
 		$res_do_num = mysqli_query($link,$qry_insert);
 		//$row=[];
 		while($res_result = mysqli_fetch_array($res_do_num)){
 			$row[] = $res_result;
 		}
-		//var_dump($row);
+	
 		?>
 			<!--Added 	(1)Back Button in panel heading 
 						(2)semi-garment form
@@ -80,14 +80,14 @@ function validateQty(event)
 									<b></b><input type='hidden' class='form-control' id='id' name='id' required value = <?php echo $_GET['id'] ?> />
 								</div>
 								<div class="row">
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										<b>Operation Name<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b>
 										<input type="text" class="form-control" id="opn" name="opn" value= "<?php echo $row[0]['operation_name']?>" required>
 									</div> 
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										<b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b><input type="number" onkeypress="return validateQty(event);" min="400" class="form-control" id="opc" name="opc" value= "<?php echo $row[0]['operation_code']?>" required>
 									</div>
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										 <div class="dropdown">
 											<b>Type</b>
 											<select class="form-control" id="sel" name="sel" required>
@@ -97,9 +97,23 @@ function validateQty(event)
 											</select>	
 										</div>
 									</div>
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										<b>Sewing Order Code</b><input type="text" class="form-control" id="sw_cod" name="sw_cod" value= "<?php echo $row[0]['operation_description']?>">
+									</div>
+								</div><br/>
+								<div class="row">
+									<div class="col-sm-3">
+										<b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id" value= "<?php echo $row[0]['work_center_id']?>">
 									</div> 
+									<div class="col-sm-3">
+										<b>Category</b>
+										<select class="form-control" id="category" name="category" required>
+											<option value='' <?php echo $row[0]['category']== 'please select'? 'selected' : ''?>>Please Select</option>
+											<option value='cutting' <?php echo $row[0]['category']== 'cutting'? 'selected' : ''?>>Cutting</option>
+											<option value='sewing' <?php echo $row[0]['category']== 'sewing'? 'selected' : ''?>>Sewing</option>
+											<option value='packing' <?php echo $row[0]['category']== 'packing'? 'selected' : ''?>>Packing</option>
+										</select>
+									</div>  
 									<div class="col-sm-2">
 										<button type="submit" class="btn btn-info" style="margin-top:18px;">Update</button>
 									</div>
@@ -132,6 +146,12 @@ function validateQty(event)
 		if(isset($_GET["sw_cod"])){
 			$sw_cod= $_GET["sw_cod"];
 		}
+		if(isset($_GET["work_center_id"])){
+			$work_center_id= $_GET["work_center_id"];
+		}
+		if(isset($_GET["category"])){
+			$category= $_GET["category"];
+		}
 		if($operation_name!="" && $operation_code!=""){
 			
 			$checking_qry = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where operation_code = $operation_code and id <> $id";
@@ -145,7 +165,7 @@ function validateQty(event)
 			// echo $cnt;
 			if($cnt == 0)
 			{
-				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code' where id='$id'";
+				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code', work_center_id='".$work_center_id."', category='".$category."' where id='$id'";
 				//echo $qry_insert1;
 				$res_do_num1 = mysqli_query($link,$qry_insert1);
 				echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";

@@ -49,13 +49,13 @@
 					<div class="form-group">
 						<form name="test" action="index.php?r=<?php echo $_GET['r']; ?>" method="POST" id='form_submt'>
 							<div class="row">
-								<div class="col-sm-2">
+								<div class="col-sm-3">
 									<b>Operation Name<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control" id="opn" name="opn" required>
 								</div> 
-								<div class="col-sm-2">
+								<div class="col-sm-3">
 									<b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="number" onkeypress="return validateQty(event);" min="400" class="form-control" id="opc" name="opc" required>
 								</div>
-								<div class='col-sm-2'>
+								<div class='col-sm-3'>
 									 <div class="dropdown">
 										<b>Type</b>
 										<select class="form-control" id="sel" name="sel" required>
@@ -65,8 +65,22 @@
 										</select>	
 									</div>
 								</div>
-								<div class="col-sm-2">
+								<div class="col-sm-3">
 									<b>Sewing Order Code</b><input type="text" class="form-control" id="sw_cod" name="sw_cod">
+								</div>
+							</div><br/>
+							<div class="row">
+							<div class="col-sm-3">
+									<b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id">
+								</div>
+								<div class="col-sm-3">
+									<b>Category</b>
+									<select class="form-control"id='category' name='category' title="It's Mandatory field" required>
+									<option value="">Please Select</option>
+									<option value='cutting'>Cutting</option>
+									<option value='sewing'>Sewing</option>
+									<option value='packing'>Packing</option>
+									</select>
 								</div>
 								<div class="col-sm-2">
 									<button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
@@ -92,6 +106,8 @@
 	$default_operation = "";
 	$operation_code = "";
 	$sw_cod="";
+	$work_center="";
+	$category="";
 
 	if(isset($_POST["opn"])){
 		$operation_name= $_POST["opn"];
@@ -107,6 +123,12 @@
 	}
 	if(isset($_POST["sw_cod"])){
 		$sw_cod = $_POST["sw_cod"];
+	}
+	if(isset($_POST["work_center_id"])){
+		$work_center_id = $_POST["work_center_id"];
+	}
+	if(isset($_POST["category"])){
+		$category = $_POST["category"];
 	}
 	
 	/* $servername = "localhost";
@@ -131,7 +153,7 @@
 		}
 		if($cnt == 0)
 		{
-			$qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod')";
+			$qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,work_center_id,category)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$work_center_id','$category')";
 			$res_do_num = mysqli_query($link,$qry_insert);
 			echo "<script>sweetAlert('Saved Successfully','','success')</script>";
 		}
@@ -145,7 +167,7 @@
 	$res_do_num=mysqli_query($link,$query_select);
 	echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
 	echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
-	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>M3 Operation</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
+	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>M3 Operation</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
 	$i=1;
 	while($res_result = mysqli_fetch_array($res_do_num)){
 		//var_dump($res_result);
@@ -170,14 +192,17 @@
 			<td>".$res_result['operation_name']."</td>
 			<td>".$res_result['default_operation']."</td>
 			<td>".$res_result['operation_code']."</td>
-			<td>".$res_result['type']."</td>";
+			<td>".$res_result['type']."</td>
+			<td>".$res_result['work_center_id']."</td>
+			<td>".$res_result['category']."</td>";
+
 			if($res_result['default_operation'] == 'No' && $flag == 1)
 			{
 				$eurl = getFullURLLevel($_GET['r'],'operations_master_edit.php',0,'N');
 				$url_delete = getFullURLLevel($_GET['r'],'operations_master_delete.php',0,'N').'&del_id='.$res_result['id'];
-				if(in_array($edit,$has_permission)){ echo "<td><a href='$eurl&id=".$res_result['id']."' class='btn btn-info'>Edit</a></td>"; } 
+				if(in_array($edit,$has_permission)){ echo "<td style='text-align:center;'><a href='$eurl&id=".$res_result['id']."' class='btn btn-info'>Edit</a>"; } 
 				if(in_array($delete,$has_permission)){ 
-					echo "<td><a href='<?= $url_delete ?>' class='btn btn-danger confirm-submit' id='del' >Delete</a></td>";
+					echo "<a href='<?= $url_delete ?>' class='btn btn-danger confirm-submit' id='del' >Delete</a></td>";
 				}
 			}
 			else
