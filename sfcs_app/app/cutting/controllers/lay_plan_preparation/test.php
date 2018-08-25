@@ -429,24 +429,27 @@ if(isset($_POST['submit']))
 		{
 			if($flag==1)
 			{
+				$url = getFullURLLevel($_GET['r'], "main_interface.php", "1", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 				if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 				{
-					print_r($s1);
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "1", "N")."&color=$color&style=$style&schedule=$schedule\";}</script>"; 
+					// print_r($s1);
+
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){ Ajaxify('".$url."'); }</script>"; 
 				}else{
-					print_r($s1);
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "1", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+					// print_r($s1);
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  Ajaxify('".$url."'); }</script>";
     			}
 			}
 			else
 			{
+				$url = getFullURL($_GET['r'], "main_interface.php", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 				if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = ".getFullURL($_GET['r'], 'main_interface.php', 'N')."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  Ajaxify('".$url."'); }</script>";
 				}
 				else
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = ".getFullURL($_GET['r'], 'main_interface.php', 'N')."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  Ajaxify('".$url."'); }</script>";
 				}
 			}
 			break;	
@@ -648,13 +651,14 @@ if(isset($_POST['submit2']))
 			{
 				if($flag==1)
 				{
+					$url = getFullURL($_GET['r'], "main_interface.php", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 					
 					if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 					{
 						echo "<script> 
 								setTimeout(\"Redirect()\",0); 
 								function Redirect() {  
-									location.href = '".getFullURLLevel($_GET['r'], 'main_interface.php', '0', 'N')."&color=$color&style=$style&schedule=$schedule'; 
+									Ajaxify('".$url."');
 								}
 							</script>";
 					}
@@ -663,7 +667,7 @@ if(isset($_POST['submit2']))
 						echo "<script> 
 								setTimeout(\"Redirect()\",0); 
 								function Redirect() {  
-									location.href = '".getFullURLLevel($_GET['r'], 'main_interface.php', '0', 'N')."&color=$color&style=$style&schedule=$schedule'; 
+									Ajaxify('".$url."');
 								}
 							</script>";
 					}
@@ -671,13 +675,14 @@ if(isset($_POST['submit2']))
 				}
 				else
 				{
+					$url = getFullURL($_GET['r'], "main_interface.php", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 					
 					if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 					{
 						echo "<script> 
 								setTimeout(\"Redirect()\",0); 
 								function Redirect() {  
-									location.href = '".getFullURL($_GET['r'],'main_interface.php', 'N')."&color=$color&style=$style&schedule=$schedule'; 
+									Ajaxify('".$url."');
 								}
 							</script>";
 					}
@@ -686,7 +691,7 @@ if(isset($_POST['submit2']))
 						echo "<script> 
 								setTimeout(\"Redirect()\",0); 
 								function Redirect() {  
-									location.href = '".getFullURL($_GET['r'],'main_interface.php', 'N')."&color=$color&style=$style&schedule=$schedule'; 
+									Ajaxify('".$url."');
 								}
 							</script>";
 					}
@@ -900,6 +905,7 @@ if(isset($_POST['submit3']))
 		
 		default:
 		{
+			$url = getFullURL($_GET['r'], "main_interface.php", "N")."&color=".$color."&style=".$style."&schedule=".$schedule;
 			if($flag==1)
 			{
 				if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
@@ -907,7 +913,7 @@ if(isset($_POST['submit3']))
 					echo "<script> 
 							setTimeout(\"Redirect()\",0); 
 							function Redirect() {  
-								location.href = '".getFullURLLevel($_GET['r'],'main_interface.php','0','N')."&color=$color&style=$style&schedule=$schedule'; 
+								Ajaxify('".$url."');
 							}
 						</script>";
 				}
@@ -916,7 +922,7 @@ if(isset($_POST['submit3']))
 					echo "<script type=\"text/javascript\"> 
 							setTimeout(\"Redirect()\",0); 
 							function Redirect() {  
-								location.href = '".getFullURLLevel($_GET['r'],'main_interface.php','0','N')."&color=$color&style=$style&schedule=$schedule'; 
+								Ajaxify('".$url."');
 							}
 						</script>";
 				}
@@ -928,7 +934,7 @@ if(isset($_POST['submit3']))
 				{
 					echo "<script> 
 							setTimeout(\"Redirect()\",0); function Redirect() {  
-								location.href = '".getFullURL($_GET['r'],'main_interface.php','N')."&color=$color&style=$style&schedule=$schedule'; 
+								Ajaxify('".$url."'); 
 							}
 						</script>";
 				}
@@ -936,7 +942,7 @@ if(isset($_POST['submit3']))
 				{
 					echo "<script> 
 							setTimeout(\"Redirect()\",0); function Redirect() {  
-								location.href = '".getFullURL($_GET['r'],'main_interface.php','N')."&color=$color&style=$style&schedule=$schedule'; 
+								Ajaxify('".$url."'); 
 							}
 						</script>";
 				}
