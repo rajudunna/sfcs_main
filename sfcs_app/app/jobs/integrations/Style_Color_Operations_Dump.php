@@ -11,7 +11,7 @@ while($sql_row=mysqli_fetch_array($result))
 	$style=$sql_row["order_style_no"];
 	$color=$sql_row["order_col_des"];
 	
-	$bundle_creation_data_check="select * from $brandix_bts.bundle_creation_data where style='".$style."' and color='".$color."' ";
+	$bundle_creation_data_check="select * from $brandix_bts.tbl_style_ops_master where style='".$style."' and color='".$color."' ";
 	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($bundle_creation_data_check_result)==0)
 	{
