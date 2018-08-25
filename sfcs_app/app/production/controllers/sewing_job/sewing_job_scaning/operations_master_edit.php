@@ -104,7 +104,7 @@ function validateQty(event)
 										<b>Report To ERP<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
 										<select class="form-control" id="sel1" name="sel1" required>
 										<option value="">Please Select</option>
-										<option value='yes' <?php echo $row[0]['default_operation']== 'Yes'? 'selected' : ''?>>Yes</option>
+										<option value='yes' <?php echo $row[0]['default_operation']== 'yes'? 'selected' : ''?>>Yes</option>
 										<option value='No' <?php echo $row[0]['default_operation']== 'No'? 'selected' : ''?>>No</option></select>	
 									</div>
 								</div>
@@ -117,9 +117,17 @@ function validateQty(event)
 									<option value='0'>Select Short Code</option>
 									<?php				    	
 										if ($result_oper->num_rows > 0) {
-											while($row = $result_oper->fetch_assoc()) {
-											$row_value = $row['short_key_code'];
-												echo "<option value='".$row['short_key_code']."'>".$row_value."</option>";
+											while($row_short = $result_oper->fetch_assoc()) {
+											$row_value = $row_short['short_key_code'];
+												if($row_short['short_key_code'] == $row[0]['short_cut_code'])
+												{
+													$selected = 'selected';
+												}
+												else
+												{
+													$selected = '';
+												}
+												echo "<option value='".$row_short['short_key_code']."' $selected>".$row_value."</option>";
 											}
 										} else {
 											echo "<option value=''>No Data Found..</option>";
@@ -183,7 +191,7 @@ function validateQty(event)
 			}
 			if($cnt == 0 && $cnt_short == 0)
 			{
-				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code' where id='$id'";
+				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation' where id='$id'";
 				//echo $qry_insert1;
 				$res_do_num1 = mysqli_query($link,$qry_insert1);
 				echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";

@@ -55,7 +55,7 @@
 									<b>Operation Name<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control" id="opn" name="opn" required>
 								</div> 
 								<div class="col-sm-2">
-									<b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="number" onkeypress="return validateQty(event);" min="400" class="form-control" id="opc" name="opc" required>
+									<b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="number" onkeypress="return validateQty(event);" class="form-control" id="opc" name="opc" required>
 								</div>
 								<div class='col-sm-2'>
 									 <div class="dropdown">
@@ -79,8 +79,8 @@
 								</div>
 								<div class = "col-sm-2">
 								<label for="style">Short Key Code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>			
-									<select id="short_key_code" style="width:100%;" name="short_key_code" class="form-control">
-									<option value='0'>Select Short Code</option>
+									<select id="short_key_code" style="width:100%;" name="short_key_code" class="form-control" required>
+									<option value=''>Select Short Code</option>
 									<?php				    	
 										if ($result_oper->num_rows > 0) {
 											while($row = $result_oper->fetch_assoc()) {
@@ -97,14 +97,6 @@
 								<div class="col-sm-2">
 									<button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
 								</div>
-								<div class="col-sm-2">
-									 <div class="dropdown" hidden='true'>
-										<b>Report To ERP</b>
-										<select class="form-control" id="sel1" name="sel1" required>
-										<option value="">Please Select</option><option value='yes'>Yes</option><option value='No' selected>No</option></select>	
-									</div>
-								</div>
-								 
 							</div>
 						</form>
 					</div>	
@@ -196,7 +188,7 @@
 		//var_dump($res_result);
 		//checking the operation scanned or not
 		$ops_code = $res_result['operation_code'];
-		$query_check = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where operation_code = $ops_code";
+		$query_check = "select count(*)as cnt from $brandix_bts.default_operation_workflow where operation_code = $ops_code";
 		$res_query_check=mysqli_query($link,$query_check);
 		while($result = mysqli_fetch_array($res_query_check))
 		{
@@ -217,13 +209,13 @@
 			<td>".$res_result['operation_code']."</td>
 			<td>".$res_result['type']."</td>
 			<td>".$res_result['short_cut_code']."</td>";
-			if($res_result['default_operation'] == 'No' && $flag == 1)
+			if($flag == 1)
 			{
 				$eurl = getFullURLLevel($_GET['r'],'operations_master_edit.php',0,'N');
 				$url_delete = getFullURLLevel($_GET['r'],'operations_master_delete.php',0,'N').'&del_id='.$res_result['id'];
 				if(in_array($edit,$has_permission)){ echo "<td><a href='$eurl&id=".$res_result['id']."' class='btn btn-info'>Edit</a>"; } 
 				if(in_array($delete,$has_permission)){ 
-					echo "<a href='$url_delete' class='btn btn-danger confirm-submit' id='del' >Delete</a></td>";
+					echo "<a href='$url_delete' class='btn btn-danger confirm-submit' id='del$i' >Delete</a></td>";
 				}
 			}
 			else
