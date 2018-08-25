@@ -66,7 +66,7 @@
                 </tr>";
         }
     } else {
-        echo "<div class='alert alert-info' align='center'>No Data Found</div>";
+        echo "<tr><td colspan=6><div class='alert alert-danger' align='center'>No Data Found</div></td></tr>";
     }    
     $link_ui->close();
 

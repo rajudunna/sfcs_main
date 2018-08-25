@@ -14,11 +14,11 @@
 
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
-    // $style = $_GET['style'];
-    // $schedule = $_GET['schedule'];
+    $style = $_GET['style'];
+    $schedule = $_GET['schedule'];
 
-    $style = 'A0023SS9       ';
-    $schedule = '547289';
+    // $style = 'A0023SS9       ';
+    // $schedule = '547289';
     $start = 0;
     $limit = 15;
     $total = 0;
@@ -77,7 +77,7 @@
                 </tr>";
         }
     } else {
-        echo "<div class='alert alert-info' align='center'>No Data Found</div>";
+        echo "<tr><td colspan=7><div class='alert alert-danger' align='center'>No Data Found</div></td></tr>";
     }    
     $link_ui->close();
 
