@@ -136,100 +136,96 @@ th,td{ color : #000 }
 
 
 echo "<div class='row'>";
-echo "<div class='col-md-3'>Select Style: <select name=\"style\" id=\"style\" onchange=\"firstbox();\" class=\"select2_single form-control\">";
-$sql="select distinct order_style_no from $bai_pro3.bai_orders_db group by order_style_no";	
-// echo "working".$sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-echo "<option value='' selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
+echo "<div class='col-md-3'>Select Style: 
+		<select name=\"style\" id=\"style\" onchange=\"firstbox();\" class=\"select2_single form-control\">";
+		$sql="select distinct order_style_no from $bai_pro3.bai_orders_db group by order_style_no";	
+		// echo "working".$sql;
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
-}
+		echo "<option value='' selected>NIL</option>";
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
+			{
+				echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+			}
 
-}
+		}
+	echo "</select>
+	</div>";
 
-echo "</select></div>";
-?>
+echo "<div class='col-md-3'>Select Schedule: 
+		<select name=\"schedule\" id=\"schedule\"  onclick=\"return check_style();\"  onchange=\"secondbox();\"  class=\"select2_single form-control\">";
+		$sql_result='';
+		if($style){
+			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
+		echo "<option value='' selected>NIL</option>";
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
+			{
+				echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
+			}
+		}
+	echo "</select>
+	</div>";
 
-<?php
-
-echo "<div class='col-md-3'>Select Schedule: <select name=\"schedule\" id=\"schedule\"  onclick=\"return check_style();\"  onchange=\"secondbox();\"  class=\"select2_single form-control\">";
-$sql_result='';
-if($style){
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-}
-echo "<option value='' selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
-}
-}
-
-echo "</select></div>";
-$style_schedule=$style."".$schedule;
-$style_schedule=str_replace(' ', '', $style_schedule);
-$sql_result = '';
-if($schedule){
-	$sql="select distinct category from $bai_pro3.order_cat_doc_mix where REPLACE(order_tid,' ','') like \"%$style_schedule%\"";
-	// echo "Qry :".$sql."</br>";	
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-}
-echo "<div class='col-md-3'>Select Category: <select name=\"category\" id=\"category\" onclick=\"return check_style_sch();\" onchange=\"thirdbox();\" class=\"select2_single form-control\">";
-echo "<option value='' selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	if(str_replace(" ","",$sql_row['category'])==str_replace(" ","",$category)) {
-		echo "<option value=\"".$sql_row['category']."\" selected>".$sql_row['category']."</option>";
-	} else {
-		echo "<option value=\"".$sql_row['category']."\">".$sql_row['category']."</option>";
+	$style_schedule=$style."".$schedule;
+	$style_schedule=str_replace(' ', '', $style_schedule);
+	$sql_result = '';
+	if($schedule){
+		$sql="select distinct category from $bai_pro3.order_cat_doc_mix where REPLACE(order_tid,' ','') like \"%$style_schedule%\"";
+		// echo "Qry :".$sql."</br>";	
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
-}
+	echo "<div class='col-md-3'>Select Category: 
+			<select name=\"category\" id=\"category\" onclick=\"return check_style_sch();\" onchange=\"thirdbox();\" class=\"select2_single form-control\">";
+		echo "<option value='' selected>NIL</option>";
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			if(str_replace(" ","",$sql_row['category'])==str_replace(" ","",$category)) {
+				echo "<option value=\"".$sql_row['category']."\" selected>".$sql_row['category']."</option>";
+			} else {
+				echo "<option value=\"".$sql_row['category']."\">".$sql_row['category']."</option>";
+			}
+		}	
+		echo "</select>
+		</div>";
 
+	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";	
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$total_schedules=mysqli_num_rows($sql_result);
 
-echo "</select></div>";
+	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";	
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$lay_plan_generated=mysqli_num_rows($sql_result);
 
-
-$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";	
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$total_schedules=mysqli_num_rows($sql_result);
-
-$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";	
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$lay_plan_generated=mysqli_num_rows($sql_result);
-
-$sql="select print_status from $bai_pro3.plandoc_stat_log where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\") and print_status is not null and plan_module is not null";
+	$sql="select print_status from $bai_pro3.plandoc_stat_log where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\") and print_status is not null and plan_module is not null";
+		
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$doc_count=mysqli_num_rows($sql_result);
 	
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$doc_count=mysqli_num_rows($sql_result);
-//Exception
-//$doc_count=0;
-
-if($total_schedules==$lay_plan_generated and $doc_count==0 || $category!='')
-{
-	echo "<input type=\"submit\" id='show' value=\"Show\" name=\"submit\" class=\"btn btn-success\" onclick=\"return check_style_sch_cat();\" style=\"margin-top: 18px;\">";
-}
-// if(){
-// 	echo "<input type=\"submit\" id='show' value=\"Show\" name=\"submit\" class=\"btn btn-success\" onclick=\"return check_style_sch_cat();\" style=\"margin-top: 18px;\">";
-	
-// }
+	if($total_schedules==$lay_plan_generated and $doc_count==0 || $category!='')
+	{
+		echo "<input type=\"submit\" id='show' value=\"Show\" name=\"submit\" class=\"btn btn-success\" onclick=\"return check_style_sch_cat();\" style=\"margin-top: 18px;\">";
+	}
+	// if(){
+	// 	echo "<input type=\"submit\" id='show' value=\"Show\" name=\"submit\" class=\"btn btn-success\" onclick=\"return check_style_sch_cat();\" style=\"margin-top: 18px;\">";
+		
+	// }
 ?>
-
+	</div><!-- row -->
 </form>
 
 <?php
@@ -241,15 +237,15 @@ if(isset($_POST['submit']))
 	
 	if($style=='' || $schedule=='' || $category==''){
 		echo "<script>sweetAlert('You did not select style or schedule or category','','warning');</script>";
-		die();
-		
+		exit();	
 	}
 	
 	$row_count = 0;
 	// echo "<div class='row'>";
-	echo "<br><br><div class='col-md-12'>";
-	echo "<form name=\"test2\" method=\"post\" action='?r=".$_GET['r']."'>";
-	echo "<table class='table table-bordered'>";
+	echo "<br><br><form name=\"test2\" method=\"post\" action='?r=".$_GET['r']."'>";
+	echo "<div class='row'>
+			<div class='table-responsive'>";
+	echo "		<table class='table table-bordered'>";
 	$existing_id=0;
 	echo "<tr class='success'><th>Group</th><th>Style/Schedule/Color</th><th>Category</th><th>Purchase Width</th><th>Order Quantity</th><th>Packing Method Ratio</th></tr>";
 	$sql="select sum(p_xs*p_plies) as xs, sum(p_s*p_plies) as s, sum(p_m*p_plies) as m, sum(p_l*p_plies) as l, sum(p_xl*p_plies) as xl, sum(p_xxl*p_plies) as xxl, sum(p_xxxl*p_plies) as xxxl, sum(p_s01*p_plies) as s01,sum(p_s02*p_plies) as s02,sum(p_s03*p_plies) as s03,sum(p_s04*p_plies) as s04,sum(p_s05*p_plies) as s05,sum(p_s06*p_plies) as s06,sum(p_s07*p_plies) as s07,sum(p_s08*p_plies) as s08,sum(p_s09*p_plies) as s09,sum(p_s10*p_plies) as s10,sum(p_s11*p_plies) as s11,sum(p_s12*p_plies) as s12,sum(p_s13*p_plies) as s13,sum(p_s14*p_plies) as s14,sum(p_s15*p_plies) as s15,sum(p_s16*p_plies) as s16,sum(p_s17*p_plies) as s17,sum(p_s18*p_plies) as s18,sum(p_s19*p_plies) as s19,sum(p_s20*p_plies) as s20,sum(p_s21*p_plies) as s21,sum(p_s22*p_plies) as s22,sum(p_s23*p_plies) as s23,sum(p_s24*p_plies) as s24,sum(p_s25*p_plies) as s25,sum(p_s26*p_plies) as s26,sum(p_s27*p_plies) as s27,sum(p_s28*p_plies) as s28,sum(p_s29*p_plies) as s29,sum(p_s30*p_plies) as s30,sum(p_s31*p_plies) as s31,sum(p_s32*p_plies) as s32,sum(p_s33*p_plies) as s33,sum(p_s34*p_plies) as s34,sum(p_s35*p_plies) as s35,sum(p_s36*p_plies) as s36,sum(p_s37*p_plies) as s37,sum(p_s38*p_plies) as s38,sum(p_s39*p_plies) as s39,sum(p_s40*p_plies) as s40,sum(p_s41*p_plies) as s41,sum(p_s42*p_plies) as s42,sum(p_s43*p_plies) as s43,sum(p_s44*p_plies) as s44,sum(p_s45*p_plies) as s45,sum(p_s46*p_plies) as s46,sum(p_s47*p_plies) as s47,sum(p_s48*p_plies) as s48,sum(p_s49*p_plies) as s49,sum(p_s50*p_plies) as s50, category,order_tid,purwidth,clubbing,cat_ref from $bai_pro3.order_cat_doc_mix where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\") and category=\"$category\" group by order_tid,category order by purwidth";
@@ -336,20 +332,25 @@ if(isset($_POST['submit']))
 		//echo "<tr><td><input type=\"checkbox\" value=\"".$sql_row['order_tid']."\">".$sql_row['order_col_des']."</td>";
 		echo "<tr><td>".$order_ratio_stat."</td><td>".$sql_row['order_tid']."</td><td>".$sql_row['category']."</td><td>".$sql_row['purwidth']."</td><td>".$total."</td><td>".$input."</td></tr>";
 	}
-	echo "</table></div></div>";
+	echo "</table>
+		</div>
+	</div>";
 	echo "<div class='row'>";
-
-	echo "<div class='col-md-3'><input type=\"hidden\" name=\"new_id\" value=\"$existing_id\" class='form-control'>";
-	echo "Plies:<select name='plies_ref' class='form-control'>
-			<option value='max' selected>max</option>
-			<option value='min'>min</option>
-			</select></div>";
-
-	echo '<div class="col-md-3">Clubing Ratio: <input type="text" name="clb_ratio" value="0" class="form-control integer"></div>';
-    echo "<input type=\"submit\" id='club' name=\"club\" value=\"Club\" class=\"btn btn-success\" style=\"margin-top: 18px;\">";
-	echo "</form></div>";
-	echo "<h2 style='color:Red;'>Note: Please use clubbing only colours having same purchase width.</h2>";
+	echo "	<div class='col-md-3'><input type=\"hidden\" name=\"new_id\" value=\"$existing_id\" class='form-control'>";
+	echo "	Plies:<select name='plies_ref' class='form-control'>
+					<option value='max' selected>max</option>
+					<option value='min'>min</option>
+				</select>
+			</div>";
+	echo '	<div class="col-md-3">Clubing Ratio: <input type="text" name="clb_ratio" value="0" class="form-control integer"></div>';
+	echo "	<div class=\"col-md-3\"><input type=\"submit\" id='club' name=\"club\" value=\"Club\" class=\"btn btn-success\"
+	 		style=\"margin-top: 18px;\"></div>";
 	echo "</div>";
+	echo "<br/><br/>";
+	echo "<div class='col-sm-12'>";
+	echo "	<div class='alert alert-danger'>Note: Please use clubbing only colours having same purchase width.</div>";
+	echo "</div>";
+	echo "</form>";
 	if($row_count==0){
 		echo '<script>
 				sweetAlert("No Data Found","Try With Other schedule,color,category","warning");
