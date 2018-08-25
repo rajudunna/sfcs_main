@@ -156,18 +156,18 @@ $url = getFullURL($_GET['r'],'fab_priority_dashboard.php','N');
 		}
 		</style>
 
-<script src="../../../../common/js/jquery-1.12.4.js"></script>
+<!-- <script src="../../../../common/js/jquery-1.12.4.js"></script>
 
-<link rel='stylesheet' href="../../../../common/css/bootstrap.min.css">
+<link rel='stylesheet' href="../../../../common/css/bootstrap.min.css"> -->
 <!-- <link rel='stylesheet' href="../../common/css/tablefilter.css"> -->
-<script src="../../../../common/js/sweetalert.min.js"></script>
+<!-- <script src="../../../../common/js/sweetalert.min.js"></script> -->
 <!-- <link rel="stylesheet" href="../../../../common/css/jquery.dataTables.min.css">  -->
  <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/tablefilter/2.5.0/tablefilter_min.js'></script> -->
 
 <!-- <script language="javascript" type="text/javascript" src="../../../../common/js/TableFilter_EN/actb.js"></script>
 <script language="javascript" type="text/javascript" 
 src="../../../../common/js/TableFilter_EN/tablefilter.js"></script> -->
-<script src="../../common/js/tablefilter.js"></script>
+<!-- <script src="../../common/js/tablefilter.js"></script> -->
 
 <script>
 
@@ -1388,6 +1388,6 @@ th{
     $('#example0').DataTable();
 } );
 	</script> -->
-<script src="../../../../common/js/bootstrap1.min.js"></script>
+<!-- <script src="../../../../common/js/bootstrap1.min.js"></script> -->
 
 <!-- <script src="../../../../common/js/jquery.dataTables.min.js"></script> -->
