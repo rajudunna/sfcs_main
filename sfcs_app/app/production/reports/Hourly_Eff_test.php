@@ -13,7 +13,14 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
         <script language="javascript" type="text/javascript" src="../common/js/datetimepicker_css.js"></script> 
         <link rel="stylesheet" href="style.css" type="text/css" media="all" /> 
         <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
-        <style> 
+        <style>
+        table{
+            width:100%;
+        } 
+            td,th {
+                border-collapse: separate;
+                border: 1px solid black;
+            }
             @media print { 
                 @page narrow {size: 11in 9in} 
                 @page rotated {size: landscape} 
@@ -127,11 +134,11 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                     <form method="POST" class="form-inline" action="<?php $_SERVER['PHP_SELF']; ?>" onsubmit="showHideDiv()"> 
                         <table id="filter">
                             <tr>
-                                <td valign="top">
+                                <td style='border:none'>
 									<label for="demo1">Select Date: </label>
                                 	<input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
 								</td>
-                                <td valign="top">
+                                <td style='border:none'>
                                  	<label for="section">Select Unit: </label>
                                     <?php
                                         echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
@@ -151,7 +158,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                         echo "</select>"; 
                                     ?> 
 								</td>
-								<td valign="top">
+								<td style='border:none'>
 									<label for="team">Select Team: </label>
                                     <select name="team" id="team" class="form-control"> 
                                         <?php 
@@ -161,10 +168,10 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                         ?>
                                     </select> 
                                 </td>
-                                <td valign="top"> 
+                                <td style='border:none'> 
                                    <label for="hour_filter" valign="top">Select Hour: </label>
 								</td>
-                                <td valign="top">
+                                <td style='border:none'>
                                     <select name="hour_filter[]" id="hour_filter" class="form-control" multiple> 
                                         <?php 
 	                                        if($hour_filter[0]!="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" and sizeof($hour_filter)!=0) 
@@ -193,16 +200,16 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                         ?> 
                                     </select> 
                                 </td>
-                                <td valign="top">
+                                <td style='border:none'>
                                 	<label for="secstyles">Style Break: </label> 
                                     <input type="checkbox" class="checkbox" id='secstyles' name="secstyles" value="1" <?php if($secstyles==1) echo "checked"; ?>>
 								</td>
-								<td valign="top">
+								<td style='border:none'>
 									<label for="option1">Hourly Break: </label> 
                                     <input type="checkbox" class="checkbox" name="option1" id="option1" value="1" <?php if($option1==1) echo "checked"; ?>>
                                     <!-- To display/stop/hourly break --> 
                                 </td>
-                                <td valign="top"><input type="submit" name="submit" class="btn btn-primary" value="Filter" id="filter"/>  
+                                <td style='border:none'><input type="submit" name="submit" class="btn btn-primary" value="Filter" id="filter"/>  
                                     <?php 	
                                         $team_ref=str_replace('"',"*",$team); 
                                         // echo "<form action=\"Hourly_Eff_Print.php?section=$sections_string&secstyles=$secstyles&option1=$option1&dat=$date&team=$team\"><input type=\"submit\" value=\"Print\"></form>"; 
@@ -362,8 +369,9 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     $headers[$i]=$time; 
                                     $i=$i+1;
                                 }
+                                echo "<hr/>";
                                 echo "<table id=\"info\">"; 
-                                echo "<tr><th style='background-color:#29759C; color: white;'>Section</th><th style='background-color:#29759C;'>Head</th>"; 
+                                echo "<tr><th style='background-color:#29759C;'>Section</th><th style='background-color:#29759C;'>Head</th>"; 
 
                                 for($i=0;$i<sizeof($headers);$i++) 
                                 { 
