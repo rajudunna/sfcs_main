@@ -108,7 +108,7 @@
                 "className": "form-control",
                 "name": "plant-start-time",
                 "subtype": "text",
-                "value": "6:30:00"
+                "value": "7:30:00"
             },
             {
                 "type": "text",
