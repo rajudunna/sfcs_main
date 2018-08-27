@@ -21,6 +21,16 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
         <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
 
         <style> 
+            table {
+                width:100%
+            }
+            td,th {
+                border-collapse: separate;
+                border: 1px solid black;
+            }
+            th{
+                text-align:center;
+            }
             @media print { 
                 @page narrow {size: 11in 9in} 
                 @page rotated {size: landscape} 
@@ -134,11 +144,11 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                     <form method="POST" class="form-inline" action="<?php echo $_SERVER['PHP_SELF'];?>" onsubmit="showHideDiv()"> 
                         <table id="filter">
                             <tr>
-                            	<td valign="top">
+                            	<td style='border:none;'>
 									<label for="demo1">Select Date: </label>
                                 	<input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>    <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
 								</td>
-			                	<td valign="top">
+			                	<td style='border:none;'>
                                  	<label for="section">Select Unit: </label>
                                     <?php
                                         echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
@@ -158,7 +168,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         echo "</select>"; 
                                     ?> 
 								</td>
-								<td valign="top">
+								<td style='border:none;'>
 									<label for="team">Select Team: </label>
                                     <select name="team" id="team" class="form-control"> 
                                         <?php 
@@ -168,10 +178,10 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         ?>
                                     </select> 
                                 </td>
-                                <td valign="top"> 
+                                <td style='border:none;'> 
                                    <label for="hour_filter" valign="top">Select Hour: </label>
 								</td>
-                                <td valign="top">
+                                <td style='border:none;'>
                                     <select name="hour_filter[]" id="hour_filter" class="form-control" multiple> 
                                         <?php 
 	                                        if($hour_filter[0]!="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" and sizeof($hour_filter)!=0) 
@@ -200,13 +210,13 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         ?> 
                                     </select> 
                                 </td>
-                                <td valign="top"> 
+                                <td style='border:none;'> 
                                     <input type="checkbox" name="secstyles" value="1" <?php if($secstyles==1) echo "checked"; ?>><b>Style Break</b><br/> 
                                     <input type="checkbox" name="option1"  value="1" <?php if($option1==1) echo "checked"; ?>><b>Hourly Break</b><br/> 
                                     <input type="checkbox" name="colorind"  value="1" <?php if($colorind==1) echo "checked"; ?>><b>SAH Color Indication</b><br> 
                                     <input type="checkbox" name="ftt_chk"  value="1" <?php if($ftt_chk==1) echo "checked"; ?>><b>FTT%</b>
                                 </td>
-                                <td valign="top"> 
+                                <td style='border:none;'> 
                                     <input type="checkbox" name="ftt_ut_chk" value="1" <?php if($ftt_ut_chk==1) echo "checked"; ?>><b>FTT Calculation without U/T<b><br> 
                                     <input type="checkbox" name="rw_chk"  value="1" <?php if($rw_chk==1) echo "checked"; ?>><b>R/W</b><br> 
                                     <input type="checkbox" name="ut_chk"  value="1" <?php if($ut_chk==1) echo "checked"; ?>><b>U/T</b><br> 
@@ -423,8 +433,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $headers[$i]=$time; 
                                     $i=$i+1; 
                                 } 
-
-                                echo "<table id=\"info\">"; 
+                                echo "<hr/>";
+                                echo "<table id=\"info\" style='border:1px solid black;'>"; 
                                 echo "<tr><th style='background-color:#29759C; color: white;' rowspan=2>Section</th> 
                                 <th style='background-color:#29759C; color: white;' rowspan=2>Head</th>"; 
 
