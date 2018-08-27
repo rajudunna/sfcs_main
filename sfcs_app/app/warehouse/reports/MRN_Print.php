@@ -1867,13 +1867,13 @@ tags will be replaced.-->
   <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6614212 style='height:15.75pt'>&nbsp;</td>
   <td class=xl1514212></td>
-  <td colspan=2 class=xl8514212>Length</td>
+  <td colspan=2 class=xl8514212>Allocated Quantity</td>
   <?php
   	$sql1="select * from $bai_rm_pj1.store_in where tid in ($lable_ids)";
 	$result1=mysqli_query($link, $sql1) or die("Error125=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
-		echo "<td colspan=2 class=xl8514212>".$row1["qty_rec"]."</td>";
+		echo "<td colspan=2 class=xl8514212>".$row1["qty_allocated"]."</td>";
 	}
   ?>
   <td class=xl1514212></td>
