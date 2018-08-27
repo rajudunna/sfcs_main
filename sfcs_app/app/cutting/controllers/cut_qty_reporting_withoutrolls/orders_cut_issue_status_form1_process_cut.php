@@ -469,7 +469,8 @@ if(isset($_POST['update']))
 echo "<div class=\"alert alert-success\">
 <strong>Successfully Cutting Reported.</strong>
 </div>";
-echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
+$url = getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N');
+echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  Ajaxify('".$url."'); }</script>";
 
 ?>
 

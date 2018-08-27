@@ -198,7 +198,7 @@
 						<img src="/images/scissors.png" style="float: left;border: 1px solid;border-radius: 35px;width: 45px;opacity: 0.7;">
 						<p style="padding-left: 58px;font-size: 16px;margin: 0 0 0px;">Cut Reporting</p>
 						<p style="padding-left: 58px;margin: 0 0 0px;font-size: 13px;">
-						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/cut_qty_reporting_withrolls/doc_track_panel.php') ?>" name="Cut Quantity Reporting With Roll" onclick="modal('','',this.name)">With Roll</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/cut_qty_reporting_withoutrolls/doc_track_panel_cut.php') ?>" onclick="modal('','',this.name)" name="Cut Quantity Reporting With Roll">Without Roll</a> )
+						( <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/cut_qty_reporting_withrolls/doc_track_panel.php') ?>" name="Cut Quantity Reporting With Roll" onclick="modal('','',this.name)">With Roll</a> | <a href="<?= '?r='.base64_encode('/sfcs_app/app/cutting/controllers/cut_qty_reporting_withoutrolls/doc_track_panel_cut.php') ?>" onclick="modal('','',this.name)" name="Cut Quantity Reporting Without Roll">Without Roll</a> )
 						</p>
 					</div>
 				</li>
