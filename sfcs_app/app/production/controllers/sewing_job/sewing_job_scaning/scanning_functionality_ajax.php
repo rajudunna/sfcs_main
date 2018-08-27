@@ -1252,7 +1252,8 @@ if($barcode_generation == 1)
 			$appilication = 'IMS_OUT';
 			$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
 			//echo $checking_output_ops_code;
-			$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where id=6";
+			// $checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where id=6";
+			//$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where id=6";
 			$result_checking_output_ops_code = $link->query($checking_output_ops_code);
 			if($result_checking_output_ops_code->num_rows > 0)
 			{
@@ -1314,20 +1315,20 @@ if($barcode_generation == 1)
 				else if($b_op_id == $output_ops_code)
 				{
 					//getting input ops code from output ops with operation sequence
-					$selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
-					//echo $selecting_output_from_seq_query;
-					$result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
-					if($result_selecting_output_from_seq_query->num_rows > 0)
-					{
-						while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
-						{
-							$input_ops_code = $row['operation_code'];
-						}
-					}
-					else
-					{
+					// $selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
+					// //echo $selecting_output_from_seq_query;
+					// $result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
+					// if($result_selecting_output_from_seq_query->num_rows > 0)
+					// {
+					// 	while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
+					// 	{
+					// 		$input_ops_code = $row['operation_code'];
+					// 	}
+					// }
+					// else
+					// {
 						$input_ops_code = 129;
-					}
+					//}
 					//echo 'input_ops_code'.$input_ops_code;
 					if($input_ops_code == 100 || $input_ops_code == 129)
 					{
@@ -1396,7 +1397,7 @@ if($barcode_generation == 1)
 						$nop=0;
 					}
 				$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
-				$appilication_out = "Down_Time";
+				$appilication_out = "IMS_OUT";
 			    $checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
 			   // echo $checking_output_ops_code_out;
 			    $result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);

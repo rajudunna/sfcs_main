@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+    $shift = $_POST['shift'];
 ?>
 
 <style>
@@ -26,9 +27,9 @@ th,td{
     <center><img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
 <div class="panel panel-primary " id="scanBarcode" ng-app="scanning_interface" ng-cloak>
-    <div class="panel-heading">Bundle Barcode Scanning</div>
+    <div class="panel-heading" >Bundle Barcode Scanning</div>
     <div class="panel-body"  ng-controller="scanctrl">
-        <div class="row jumbotron ">
+        <div class="row jumbotron " ng-init="shift='<?= $shift ?>'">
 
             <div class="col-md-5">
                 <div class="col-padding" >
