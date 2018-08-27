@@ -347,7 +347,7 @@ echo "<th>Color</th>";
 echo "<th>Job No</th>";
 echo "</tr>";
 
-$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,total,acutno,order_tid,order_style_no,order_del_no,xs,s,m,l,xl,xxl,xxxl,s06,s08,s10,s12,s14,s16,s18,s20,s22,s24,s26,s28,s30,clubbing from $bai_pro3.plan_dash_doc_summ where doc_no=$doc_no";
+$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,total,acutno,order_tid,order_style_no,order_del_no,xs,s,m,l,xl,xxl,xxxl,s06,s08,s10,s12,s14,s16,s18,s20,s22,s24,s26,s28,s30,clubbing from $bai_pro3.plan_dash_doc_summ where doc_no='$doc_no'";
 //echo "Geeting cut ref no : ".$sql1;
 //mysql_query($sql1,$link) or exit("Sql Error1".mysql_error());
 //echo $sql1;
@@ -708,7 +708,7 @@ if($enable_allocate_button==1)
 echo "</form>";
 //NEW Implementation for Docket generation from RMS
 
-$sql1="SELECT fabric_status from $bai_pro3.plan_dashboard where doc_no=$doc_no";
+$sql1="SELECT fabric_status from $bai_pro3.plan_dashboard where doc_no='$doc_no'";
 //mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
@@ -722,7 +722,7 @@ if($fabric_status=="1")
 {
 	echo '<div class="alert alert-info"><strong>Fabric Status:</strong><br>Ready For Issuing: <font color="green">Completed</font><br>Issue to Module: <font color="red">Pending</font></div>';
 }
-$sql111="select ROUND(SUM(allocated_qty),2) AS alloc,count(distinct doc_no) as doc_count from $bai_rm_pj1.fabric_cad_allocation where doc_no in (".implode(",",$docket_num).")";
+$sql111="select ROUND(SUM(allocated_qty),2) AS alloc,count(distinct doc_no) as doc_count from $bai_rm_pj1.fabric_cad_allocation where doc_no in ('".implode(",",$docket_num)."')";
 //echo $sql111."<br>";
 $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -966,9 +966,10 @@ if(isset($_POST['submit']))
 		//this is for after allocating article redirect to cps dashboard.removed sfcsui
 		$php_self = explode('/',$_SERVER['PHP_SELF']);
 		array_pop($php_self);
-		$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-		$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
-		echo"<script>location.href = '".$url."';</script>"; 
+		// $url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+		// $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+		$url = getFullURL($_GET['r'],'fab_priority_dashboard.php','N');
+		echo"<script>location.reload();</script>"; 
 		
 }
 ?>
