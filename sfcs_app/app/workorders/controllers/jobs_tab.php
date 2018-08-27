@@ -33,7 +33,7 @@
                     $color = $row['order_col_des'];
                 }
             }else{
-                echo "<tr><td colspan=5><div class='alert alert-info' align='center'>No Jobs Data Found</div></td></tr>";
+                echo "<tr><td colspan=6><div class='alert alert-info' align='center'>No Jobs Data Found with color</div></td></tr>";
                 exit(0);
             }
             ////////////////////////////////////////////////////
@@ -70,7 +70,7 @@
                 // echo $jobs_nums['nums'];
                 // die();                 
             }else{
-                echo "<tr><td colspan=5><div class='alert alert-info' align='center'>No Job Numbers Found</div></td></tr>";
+                echo "<tr><td colspan=6><div class='alert alert-info' align='center'>No Job Numbers Found</div></td></tr>";
                 exit(0);
             }
             /////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@
             //JOBS to dispaly on screen
             $jobs_query = "SELECT input_job_no_random,order_col_des,m3_size_code,carton_act_qty,input_job_no 
                            FROM bai_pro3.packing_summary_input 
-                           WHERE order_style_no='$style' and order_del_no='$schedule' ";            
+                           WHERE order_style_no='$style' and order_del_no='$schedule' LIMIT $limit";            
             $jobs_result = mysqli_query($link_ui, $jobs_query) or 
                            exit("Sql Error2 = $jobs_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -140,11 +140,10 @@
                     echo "</tr>";
                 }
             }else{
-                echo "<tr><td colspan=5><div class='alert alert-info' align='center'>No Data Found</div></td></tr>";
+                echo "<tr><td colspan=6><div class='alert alert-danger' align='center'>No Data Found</div></td></tr>";
             }
             $link_ui->close();
         ?>
-    
     </tbody>
 </table>
       

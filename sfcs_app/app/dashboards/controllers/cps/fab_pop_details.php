@@ -744,7 +744,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 // if($Disable_allocate_flag==0){
 if($Disable_allocate_flag==$for_Staus_dis){
 ?>
-<form method="post" onsubmit=" return validate_but();">
+<form method="post" action='?r=<?= $_GET['r']; ?>' onsubmit=" return validate_but();">
 <div class="table-responsive"><table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
 <?php
 // if($fabric_status!="5" && $fabric_status!="1")

@@ -14,11 +14,11 @@
 
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
-    // $style = $_GET['style'];
-    // $schedule = $_GET['schedule'];
+    $style = $_GET['style'];
+    $schedule = $_GET['schedule'];
 
-    $style = 'A0023SS9       ';
-    $schedule = '547289';
+    // $style = 'A0023SS9       ';
+    // $schedule = '547289';
     $start = 0;
     $limit = 15;
     $total = 0;
@@ -56,13 +56,13 @@
             $query =  "select SUM($sum) as revised_qty from bai_pro3.bai_orders_db_confirm";    
             $query_last = 'group by order_col_des';
             $sql_select_query = $query." WHERE order_style_no = '$style' AND order_del_no='$schedule' 
-                                         AND order_col_des ='".$row['order_qty']."'".$query_last;    
+                                         AND order_col_des ='".$order_col_des."'".$query_last;    
             $query_result1=mysqli_query($link_ui, $sql_select_query) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             $revised_qty = 0;
             $status = "<label class='label label-danger label-sm'>NO</label>";
             if(mysqli_num_rows($query_result1)>0){
-                $row = msqli_fetch_array($query_result1);
+                $row = mysqli_fetch_array($query_result1);
                 $revised_qty = $row['revised_qty'];
                 $status = "<label class='label label-success label-sm'>YES</label>";
             }
@@ -77,7 +77,7 @@
                 </tr>";
         }
     } else {
-        echo "<div class='alert alert-info' align='center'>No Data Found</div>";
+        echo "<tr><td colspan=7><div class='alert alert-danger' align='center'>No Data Found</div></td></tr>";
     }    
     $link_ui->close();
 
