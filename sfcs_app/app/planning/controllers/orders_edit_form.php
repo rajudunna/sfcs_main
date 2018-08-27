@@ -34,6 +34,34 @@ else
 	header("Location:restrict.php");	
 }
 */
+session_start();
+	if($_GET['style'])
+	{
+		$style=$_GET['style'];
+	}
+	else
+	{
+		$style=	$_POST['style'];
+	}
+	if($_GET['color'])
+	{
+		$color=$_GET['color'];
+	}
+	else
+	{
+		$color=	$_POST['color'];
+	}
+	if($_GET['schedule'])
+	{
+		$schedule=$_GET['schedule'];
+	}else
+	{
+		$schedule=	$_POST['schedule'];
+	}
+	
+	$_SESSION['style']=$style;
+	$_SESSION['schedule']=$schedule;
+	$_SESSION['color']=$color;
 
 ?>
 <script>
@@ -130,9 +158,6 @@ function thirdbox()
 <div class="panel-heading">Order Qty Update (Color Wise)</div>
 <div class"panel-body">
 <?php
-$style=$_GET['style'];
-$schedule=$_GET['schedule']; 
-$color=$_GET['color'];
 
 ?>
 
