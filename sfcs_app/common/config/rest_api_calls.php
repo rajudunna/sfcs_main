@@ -1,6 +1,5 @@
 <?php 
 class rest_api_calls {
-	
 	//For rest api calls basic 
 	public function getCurlRequest($url){			
 		$ch = curl_init($url);
@@ -12,10 +11,11 @@ class rest_api_calls {
 	
 	//For rest api calls m3 authentication based 
 	public function getCurlAuthRequest($url){
-        $basic_auth=base64_encode('BEL_SFCS:brandix@321');
+		include('config.php');
+        $basic_auth=base64_encode($api_username.':'.$api_password);
         $curl = curl_init();
         curl_setopt_array($curl, array(
-			CURLOPT_PORT => "22105",
+			CURLOPT_PORT => $api_port_no,
 			CURLOPT_URL => $url,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => "",

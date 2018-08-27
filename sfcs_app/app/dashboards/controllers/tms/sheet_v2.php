@@ -4,17 +4,19 @@
 </head>
 <style>
 body{
-    padding-right: 10px;
-    padding-left: 10px;
-    font-size:18;
+    font-size:22px;
 }
 table, th, td {
     border: 1px solid black;
 }
 @media print{
-    @page { margin: 0; }
+    @page { margin: 0; font-size:25px;}
+    body{
+        font-size:22px;
+    }
     .visible-print  { display: inherit !important; }
     .hidden-print   { display: none !important; }
+
 }
 </style>
 <div class="panel panel-primary">
@@ -27,18 +29,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 
-$plant_code = 'EKG';
-$company_num = '200';
+$plant_code = $global_facility_code;
+$company_num = $company_no;
+$host= $api_hostname;
+$port= $api_port_no;
 
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $input_job_no=$_GET['input_job'];
-
-
-// $sql="select operation_code from $brandix_bts.tbl_orders_ops_ref where category='Sewing'";	 
-// $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-// $row=mysqli_fetch_array($sql_result);
-
 
 $colors=[];
 $sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	 
@@ -47,7 +45,6 @@ while($row=mysqli_fetch_array($sql_result))
 {
 	$colors[]=$row['order_col_des'];
 }
-
 if(count($colors)>0){
     foreach($colors as $key=>$color){ 
         $size_code=array();
@@ -62,6 +59,12 @@ if(count($colors)>0){
             $size_code[]=strtoupper($row['size_code']);
             $size_code_qty[]=$row['carton_act_qty'];
         }
+        $val1=15;
+        
+        if(count($size_code)<$val1){
+            $val1=count($size_code);
+        }
+        $val=round(count($size_code)/$val1);
         $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color[$ii],$input_job_no,$link);
         if($colorrows >0){
             ?>
@@ -76,23 +79,30 @@ if(count($colors)>0){
                         </tbody>
                     </table>
                 </div>
-                <div style="border:1px solid black; float:right;margin-right: 20px;"><b><center>Company :- Brandix Group of Companies<center></b></div>
+                <div style="border:1px solid black; float:right;margin-right: 20px;"><strong><center>Company :- Brandix Group of Companies<center></strong></div>
             </div>
             <br>
             <div class="row">
                 <div style="float:left; padding-left: 20px;">
                     <table width=100%>
                         <tbody>
+                        <?php
+                        $j=0;
+                        for($k=0;$k<$val;$k++)
+                        {  ?>                          
                             <tr><td><b>Size:</b></td>
-                                <?php for($i=0;$i<sizeof($size_code);$i++){?>
+                                <?php for($i=$j;$i<$val1;$i++){?>
                                 <td><?=$size_code[$i];?></td>
                                 <?php } ?>
                             </tr>
                             <tr><td><b>Quantity:</b></td>
-                                <?php for($i=0;$i<sizeof($size_code_qty);$i++){?>
+                                <?php for($i=$j;$i<$val1;$i++){?>
                                 <td><?=$size_code_qty[$i];?></td>
                                 <?php } ?>
-                            </tr>                        
+                            </tr>
+                        <?php   $j=$j+2;
+                                $val1=$val1+$j;
+                        }  ?>                        
                         </tbody>
                     </table>
                 </div>
@@ -111,38 +121,36 @@ if(count($colors)>0){
                         $size_name = $row['size_code'];
                         $size_qty = $row['carton_act_qty'];
                 
-                        $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'  ";
+                        $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
                         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                         $mo_numrows=mysqli_num_rows($mo_sql_result);
                         if($mo_numrows>0){
                             while($mo_row=mysqli_fetch_array($mo_sql_result))
                             {
                                 $mo_no = $mo_row['mo_no'];
-                                $api_url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelMaterials?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no ;
+                                $api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,PEUN,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
                                 $api_data = $obj->getCurlAuthRequest($api_url);
-                                $api_data = json_decode($api_data, true);    
+                                $api_data = json_decode($api_data, true);  
                                 $name_values = array_column($api_data['MIRecord'], 'NameValue');
-            
                                 foreach ($name_values as $key => $value2) {
                                     $value2[] = ['Name' => 'color', 'Value' => $color];
                                     $value2[] = ['Name' => 'size', 'Value' => $size_name];
                                     $value2[] = ['Name' => 'size_qty', 'Value' => $size_qty];
                                     $final_data[] = array_column($value2, 'Value', 'Name');
                                 }
-                            }       
-                        
+                            }      
                         }
                     }?>
-                    <table width=100%>
+                    <table width="100%">
                         <thead style="background-color: lightgrey;">
                             <tr>
                                 <th>Item Code(SKU)</th>
                                 <th>Item Description</th>
                                 <th>Colour</th>
                                 <th>Size</th>
-                                <th>Per Piece Consumption</th>
-                                <th>Wastage %</th>
-                                <th>Req.-With Wastage</th>
+                                <th>Per Piece Consumption</th>  
+                                <th>Wastage %</th>  
+                                <th>Req.-With Wastage</th> 
                                 <th>Req.-Without Wastage</th>
                                 <th>UOM</th>                
                             </tr>
@@ -151,29 +159,44 @@ if(count($colors)>0){
                     <?php
                     if(count($final_data) >0){
                         foreach ($final_data as $key1 => $value1) {
-                            $op_query = "select * from $brandix_bts.tbl_style_ops_master where style= '".$style."' and color = '".$value1['color']."' and operation_order = '".$value1['OPNO']."' and m3_smv > 0";
+                            $op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and SMV > 0";
                             $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_sql_result) > 0){
                                 $value1['trim_type'] = 'STRIM';
                                 $api_selected_valuess = $value1;
                             }
                             
-                            $op_ptrim_query = "select * from $brandix_bts.tbl_style_ops_master where style= '".$style."' and color = '".$value1['color']."' and operation_order = '".$value1['OPNO']."' and operation_order = 200";
+                            $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and OperationNumber = 200";
                             $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_ptrim_sql_result) > 0){
                                 $value1['trim_type'] = 'PTRIM';
                                 $api_selected_valuess = $value1;
                             }
-                            if($api_selected_valuess){ $slno++;?>
+                            if($api_selected_valuess){
+                                $mfno = $api_selected_valuess['MFNO'];
+                                $prno = urlencode($api_selected_valuess['PRNO']);
+                                $mseq = $api_selected_valuess['MSEQ'];
+                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
+                                $api_data_result = json_decode($api_data_wastage, true);   
+                                $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
+
+                                //req with wastge
+                                $reqwithwastage = ($api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'])+$result_values[0]['Value'];
+
+                                //req without wastge
+                                $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
+
+                            ?>
                             <tr>
                                 <td><?= $api_selected_valuess['MTNO'] ?></td>
                                 <td><?= $api_selected_valuess['ITDS'] ?></td>
                                 <td><?= $api_selected_valuess['color'] ?></td>
-                                <td><?= $api_selected_valuess['size'] ?></td>
-                                <td><?= $api_selected_valuess['MTNO'] ?></td>
-                                <td><?= $api_selected_valuess['MTNO'] ?></td>
-                                <td><?= $api_selected_valuess['REQT'] ?></td>
-                                <td><?= $api_selected_valuess['MTNO'] ?></td>
+                                <td><center><?= $api_selected_valuess['size'] ?><center></td>
+                                <td><?= $api_selected_valuess['CNQT'] ?></td>
+                                <td><?= $result_values[0]['Value'] ?></td>
+                                <td><?= $reqwithwastage ?></td>
+                                <td><?= $reqwithoutwastage ?></td>
                                 <td><?= $api_selected_valuess['PEUN'] ?></td>
 
                             </tr>
