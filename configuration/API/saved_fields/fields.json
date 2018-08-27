@@ -101,6 +101,22 @@
                 "name": "msg-sent-via",
                 "subtype": "text",
                 "value": "SYSTEM"
+            },
+            {
+                "type": "text",
+                "label": "Plant Start Time",
+                "className": "form-control",
+                "name": "plant-start-time",
+                "subtype": "text",
+                "value": "6:30:00"
+            },
+            {
+                "type": "text",
+                "label": "Plant End Time",
+                "className": "form-control",
+                "name": "plant-end-time",
+                "subtype": "text",
+                "value": "22:30:00"
             }
         ],
         [
