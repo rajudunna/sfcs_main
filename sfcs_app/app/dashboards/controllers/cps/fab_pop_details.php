@@ -462,7 +462,7 @@ if($clubbing>0)
 	// $sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.acutno=$cut_no_ref and order_cat_doc_mk_mix.doc_no=$doc_no";
 }
 
-
+$path = getFullURL($_GET['r'],$path,'R');
 //echo "getting req qty : ".$sql1."</br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
@@ -550,7 +550,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$allc_doc++;
 		//echo $sql_row1['category']."</br>";
 		//echo var_dump($comp_printed)."</br>";
-		$path = getFullURL($_GET['r'],$path,'R');
+		
 		if(!in_array($sql_row1['category'],$comp_printed))
 		{
 			echo "<td><a href='#' onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-primary btn-sm'>Print</a></td>";
@@ -675,7 +675,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	//echo "Print Staus".$sql_row1['print_status']."</br>";	
 if($sql_row1['print_status']>0)
 {
-	echo "<td><img src=\"correct.png\"></td>";
+	echo "<td><img src=".getFullURL($_GET['r'],'Correct.png','R')."></td>";
 	$print_validation=$print_validation+1;
 	
 }
