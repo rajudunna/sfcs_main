@@ -6,6 +6,26 @@ Ticket# 575423: 2014-02-08/Kirang: Added Color Filter Clause for multi color ord
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $order_quantity_mail=$conf1->get('order_quantity_mail');
+session_start();
+	if($_GET['style'])
+	{
+		$style=$_GET['style'];
+	}
+	else
+	{
+		$style=	$_POST['style'];
+	}
+	
+	if($_GET['schedule'])
+	{
+		$schedule=$_GET['schedule'];
+	}else
+	{
+		$schedule=	$_POST['schedule'];
+	}
+	
+	$_SESSION['style']=$style;
+	$_SESSION['schedule']=$schedule;
 
 ?>
 <script>
@@ -59,8 +79,7 @@ function check_style_sch()
 <div class="panel-heading">Order Qty Update (Schedule Wise) </div>
 <div class"panel-body">
 <?php
-$style=$_GET['style'];
-$schedule=$_GET['schedule']; 
+
 ?>
 <form name="test" action="index.php?r=<?php echo $_GET['r']; ?>" method="post">
 <div class="form-group">
