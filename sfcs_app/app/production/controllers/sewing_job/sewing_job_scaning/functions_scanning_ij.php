@@ -279,6 +279,7 @@ function getjobdetails($job_number)
 			// echo $schedule_query.'<br>';
 		}
 
+		// echo $schedule_query.'<br>';
 		if($flags == 2)
 		{
 			$result_array['status'] = 'Previous operation not yet done for this job.';
@@ -293,23 +294,38 @@ function getjobdetails($job_number)
 				$schedule =  $job_number[2];
 				$color = $row['order_col_des'];
 				$size = $row['old_size'];
-				$final_doc = $row['final_doc'];
+				$final_doc = $row['doc_no'];
 				// echo $doc_no."<br>";
+
+				$qry_cut_qty_check_qry = "SELECT doc_no,act_cut_status, sum(a_".$size."*a_plies) as rep_qty FROM $bai_pro3.plandoc_stat_log WHERE doc_no in ($final_doc);";
+				// echo $qry_cut_qty_check_qry.'<br>';
+				$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+				while($row_dock_details = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+				{
+					$doc_array[$row_dock_details['doc_no']] = $row_dock_details['act_cut_status'];
+
+					if ($row_dock_details['act_cut_status'] == 'DONE')
+					{
+						if ($flag == 'bundle_creation_data')
+						{
+							$cut_done_qty[$row_dock_details['doc_no']] = $row['balance_to_report'];
+						}
+						else
+						{
+							$cut_done_qty[$row_dock_details['doc_no']] = $row_dock_details['rep_qty'];
+						}
+					}
+					else
+					{
+						$cut_done_qty[$row_dock_details['doc_no']] = 0;
+					}						
+				}
+
+				$result_array['docket_status'][] = $doc_array[$row['doc_no']];
+				$result_array['cut_reported_qty'][] = $cut_done_qty[$row['doc_no']];
 
 				if($flag == 'packing_summary_input')
 				{
-					$qry_cut_qty_check_qry = "SELECT doc_no,act_cut_status, sum(a_".$size."*a_plies) as rep_qty FROM $bai_pro3.plandoc_stat_log WHERE doc_no in ($final_doc);";
-					// echo $qry_cut_qty_check_qry.'<br>';
-					$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
-					while($row_dock_details = $result_qry_cut_qty_check_qry->fetch_assoc()) 
-					{
-						$doc_array[$row_dock_details['doc_no']] = $row_dock_details['act_cut_status'];
-						$cut_done_qty[$row_dock_details['doc_no']] = $row_dock_details['rep_qty'];
-					}
-
-					$result_array['docket_status'][] = $doc_array[$row['doc_no']];
-					$result_array['cut_reported_qty'][] = $cut_done_qty[$row['doc_no']];
-
 					$job_number_reference = $row['type_of_sewing'];
 					if($job_number_reference == 3)
 					{
@@ -1116,8 +1132,8 @@ function validating_remarks_with_qty($validating_remarks)
 		}
 		if(in_array($validating_remarks[2],$ops_dependency) && $check_flag == 0)
 		{
-			$result_qry_for_fetching_bal_to_report_qty = "select sum(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data_temp where remarks = '".$validating_remarks[3]."'  and operation_id in (".implode(',',$dependency_operation).") and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' group by operation_id";
-			//echo $result_qry_for_fetching_bal_to_report_qty;
+			$result_qry_for_fetching_bal_to_report_qty = "select sum(recevied_qty)as rec_qty,docket_number,size_id from $brandix_bts.bundle_creation_data_temp where remarks = '".$validating_remarks[3]."'  and operation_id in (".implode(',',$dependency_operation).") and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' group by operation_id";
+			// echo $result_qry_for_fetching_bal_to_report_qty;
 			$result_qry_for_fetching_bal_to_report_qty = $link->query($result_qry_for_fetching_bal_to_report_qty);
 			if($result_qry_for_fetching_bal_to_report_qty->num_rows>0)
 			{
@@ -1219,39 +1235,65 @@ function validating_remarks_with_qty($validating_remarks)
 			$result_qry_for_fetching_bal_to_report_qty_pre = $link->query($qry_for_fetching_bal_to_report_qty_pre);
 			if($result_qry_for_fetching_bal_to_report_qty_pre->num_rows > 0)
 			{
-				$qry_for_fetching_bal_to_report_qty_post = "select $send_qty-(SUM(recevied_qty)+SUM(rejected_qty)) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id = $validating_remarks[2] and remarks = '$validating_remarks[3]' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' order by bundle_number";
-				//echo $qry_for_fetching_bal_to_report_qty_post;
+				$qry_for_fetching_bal_to_report_qty_post = "select $send_qty-(SUM(recevied_qty)+SUM(rejected_qty)) as rec_qty,remarks,docket_number,size_id from $brandix_bts.bundle_creation_data_temp where  operation_id = $validating_remarks[2] and remarks = '$validating_remarks[3]' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' order by bundle_number";
+				// echo $qry_for_fetching_bal_to_report_qty_post.'<br>';
 				$result_qry_for_fetching_bal_to_report_qty_post = $link->query($qry_for_fetching_bal_to_report_qty_post);
 				while($row = $result_qry_for_fetching_bal_to_report_qty_post->fetch_assoc()) 
 				{
+					$docket_number = $row['docket_number'];
+					$size_id = $row['size_id'];
 					$remarks_post = $row['remarks'];
 					$rec_qty = $row['rec_qty'];
+
+					$qry_cut_qty_check_qry = "SELECT doc_no,act_cut_status, sum(a_".$size_id."*a_plies) as rep_qty FROM $bai_pro3.plandoc_stat_log WHERE doc_no in ($docket_number);";
+					// echo $qry_cut_qty_check_qry.'<br>';
+					$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+					while($row_dock_details = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+					{
+						$doc_status = $row_dock_details['act_cut_status'];						
+					}
+
 					if($post_ops_code == 0)
 					{
-						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty)+sum(rejected_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id =  $validating_remarks[2] and remarks <> '$remarks_post' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' order by bundle_number";
+						$qry_for_fetching_bal_to_report_qty_post_post = "select docket_number,sum(recevied_qty)+sum(rejected_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id =  $validating_remarks[2] and remarks <> '$remarks_post' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' order by bundle_number";
 					}
 					else
 					{
-						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty)+sum(rejected_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id =  $post_ops_code and remarks <> '$remarks_post' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' order by bundle_number";
+						$qry_for_fetching_bal_to_report_qty_post_post = "select docket_number,sum(recevied_qty)+sum(rejected_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id =  $post_ops_code and remarks <> '$remarks_post' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' order by bundle_number";
 					}
 					
-					//echo $qry_for_fetching_bal_to_report_qty_post_post;
+					// echo $qry_for_fetching_bal_to_report_qty_post_post.'<br>';
 					$result_qry_for_fetching_bal_to_report_qty_post_post = $link->query($qry_for_fetching_bal_to_report_qty_post_post);
 					while($row = $result_qry_for_fetching_bal_to_report_qty_post_post->fetch_assoc()) 
 					{
 						// echo "rec_qty".$rec_qty;
 						// echo "row rec_qty".$row['rec_qty'];
+						// echo "row docket_number".$row['docket_number'];
 						if($check_flag != 1)
 						{
-							$act_rec_qty = $rec_qty - $row['rec_qty'];
-							if($act_rec_qty < 0)
+							if ($doc_status == 'DONE')
+							{
+								$act_rec_qty = $rec_qty - $row['rec_qty'];
+								if($act_rec_qty < 0)
+								{
+									$act_rec_qty = 0;
+								}
+							}
+							else
 							{
 								$act_rec_qty = 0;
-							}
+							}							
 						}
 						else
 						{
-							$act_rec_qty = $rec_qty;
+							if ($doc_status == 'DONE')
+							{
+								$act_rec_qty = $rec_qty;
+							}
+							else
+							{
+								$act_rec_qty = 0;
+							}
 						}
 						if($act_rec_qty == '')
 						{
@@ -1265,24 +1307,40 @@ function validating_remarks_with_qty($validating_remarks)
 			{
 				if($post_ops_code != 0)
 				{
-					$qry_for_fetching_bal_to_report_qty = "select (sum(recevied_qty))as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where operation_id = $post_ops_code and remarks = '$validating_remarks[3]' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' order by bundle_number";
+					$qry_for_fetching_bal_to_report_qty = "select (sum(recevied_qty))as rec_qty,remarks,docket_number,size_id from $brandix_bts.bundle_creation_data_temp where operation_id = $post_ops_code and remarks = '$validating_remarks[3]' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' order by bundle_number";
 				}
 				else
 				{
-					$qry_for_fetching_bal_to_report_qty = "select (SUM(send_qty)-(SUM(recevied_qty)+SUM(rejected_qty)))AS rec_qty,remarks from $brandix_bts.bundle_creation_data where  operation_id = $validating_remarks[2] and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]'";
+					$qry_for_fetching_bal_to_report_qty = "select (SUM(send_qty)-(SUM(recevied_qty)+SUM(rejected_qty)))AS rec_qty,remarks,docket_number,size_id from $brandix_bts.bundle_creation_data where  operation_id = $validating_remarks[2] and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]'";
 				}
-				//echo $qry_for_fetching_bal_to_report_qty;
+				// echo $qry_for_fetching_bal_to_report_qty;
 				$result_qry_for_fetching_bal_to_report_qty = $link->query($qry_for_fetching_bal_to_report_qty);
 				while($row = $result_qry_for_fetching_bal_to_report_qty->fetch_assoc()) 
 				{
-					//$id_variable = $count.$row['remarks'];
-					$qty = $row['rec_qty'];
-					if($qty == '')
+					$docket_number = $row['docket_number'];
+					$size_id = $row['size_id'];
+					$qry_cut_qty_check_qry = "SELECT doc_no,act_cut_status, sum(a_".$size_id."*a_plies) as rep_qty FROM $bai_pro3.plandoc_stat_log WHERE doc_no in ($docket_number);";
+					// echo $qry_cut_qty_check_qry.'<br>';
+					$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+					while($row_dock_details = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 					{
-						$qty = 0;
+						$doc_status = $row_dock_details['act_cut_status'];						
 					}
-					$html_response .= "$qty".","."1";
+					//$id_variable = $count.$row['remarks'];
+					if ($doc_status == 'DONE')
+					{
+						$qty = $row['rec_qty'];
+						if($qty == '')
+						{
+							$qty = 0;
+						}
+					}
+					else
+					{
+						$qty=0;
+					}				
 					
+					$html_response .= "$qty".","."1";
 				}
 			}
 			

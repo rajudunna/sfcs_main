@@ -370,6 +370,7 @@ $(document).ready(function()
 						console.log(data[i].tid);
 						console.log(job_number);
 						console.log(cut_reported_qty[i]);
+						// console.log(temp_var_bal);
 
 						if(barcode_generation == 0)
 						{
