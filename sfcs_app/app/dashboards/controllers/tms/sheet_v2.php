@@ -52,6 +52,7 @@ if(count($colors)>0){
         unset($size_code);
         unset($size_code_qty);
         $sql="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and order_col_des='".$color."' and input_job_no='".$input_job_no."'";
+
         $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
         $colorrows = mysqli_num_rows($sql_result);
         while($row=mysqli_fetch_array($sql_result))
@@ -59,12 +60,10 @@ if(count($colors)>0){
             $size_code[]=strtoupper($row['size_code']);
             $size_code_qty[]=$row['carton_act_qty'];
         }
-        $val1=15;
         
-        if(count($size_code)<$val1){
-            $val1=count($size_code);
-        }
-        $val=round(count($size_code)/$val1);
+        $limit=40; 
+        $limit1=40; 
+        $size_count = count($size_code);
         $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color[$ii],$input_job_no,$link);
         if($colorrows >0){
             ?>
@@ -87,22 +86,27 @@ if(count($colors)>0){
                     <table width=100%>
                         <tbody>
                         <?php
-                        $j=0;
-                        for($k=0;$k<$val;$k++)
-                        {  ?>                          
+                         $j=0;
+                        for($k=0;$k<=$size_count;$k++) 
+                        { ?>                          
                             <tr><td><b>Size:</b></td>
-                                <?php for($i=$j;$i<$val1;$i++){?>
-                                <td><?=$size_code[$i];?></td>
-                                <?php } ?>
+                                <?php for($i=$j;$i<$limit;$i++){if($size_code[$i]){
+                                echo '<td>'.$size_code[$i].'</td>';}
+                                 } ?>
                             </tr>
                             <tr><td><b>Quantity:</b></td>
-                                <?php for($i=$j;$i<$val1;$i++){?>
-                                <td><?=$size_code_qty[$i];?></td>
-                                <?php } ?>
+                                <?php for($i=$j;$i<$limit;$i++){if($size_code_qty[$i]){
+                                     echo '<td>'.$size_code_qty[$i].'</td>';
+                                }
+                            $j++; } ?>
                             </tr>
-                        <?php   $j=$j+2;
-                                $val1=$val1+$j;
-                        }  ?>                        
+                        <?php 
+                            $limit = $limit+$limit1;
+                            if($limit>= ($size_count+$limit1)){
+                                break;
+                            }
+                            
+                        }  ?>           
                         </tbody>
                     </table>
                 </div>
@@ -180,12 +184,12 @@ if(count($colors)>0){
                                 $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
                                 $api_data_result = json_decode($api_data_wastage, true);   
                                 $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
-
-                                //req with wastge
-                                $reqwithwastage = ($api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'])+$result_values[0]['Value'];
-
+                                
                                 //req without wastge
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
+
+                                //req with wastge                               
+                                $reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
 
                             ?>
                             <tr>
@@ -202,19 +206,22 @@ if(count($colors)>0){
                             </tr>
                             <?php 
                             }
-                        }?>     
-                    </tbody>   
-                    </table>
-                    <hr style="border:1px solid black;">
+                        }?>    
                     <br> 
                     <?php
                 }else{?>
                     <tr>   
                         <td colspan=14><center><strong>No Records Found</strong></center></td>
                     </tr>
-                <?php }    
+                <?php }?>                 
+                    </tbody>   
+                </table>                
+                <hr style="border:1px solid black;">
+                <br>
+            <?php
             }
         }
+        die();
     }
 }
 
