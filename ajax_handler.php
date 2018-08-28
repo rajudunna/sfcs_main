@@ -292,21 +292,21 @@ function anchortag(event,href_url=0){
             batch = decodeURIComponent(batch);
             
     
-            if(localStorage.lot == "undefined"){
-               localStorage.lot = lot;
-            }
+            // if(localStorage.lot == "undefined"){
+            //    localStorage.lot = lot;
+            // }
 
-            if(localStorage.batch == "undefined"){
-               localStorage.batch = batch;
-            }
+            // if(localStorage.batch == "undefined"){
+            //    localStorage.batch = batch;
+            // }
 
-            if(localStorage.getItem("lot")===null) {
-                localStorage.lot = lot;
-            }
+            // if(localStorage.getItem("lot")===null) {
+            //     localStorage.lot = lot;
+            // }
 
-            if(localStorage.getItem("batch")===null) {
-                localStorage.batch = batch
-            }
+            // if(localStorage.getItem("batch")===null) {
+            //     localStorage.batch = batch
+            // }
 
 
             var style = WindowGetURLParameter("style");
