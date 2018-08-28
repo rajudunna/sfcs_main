@@ -272,13 +272,14 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 								$total_qty = $total_qty + $row;
 								for ($k=0; $k < sizeof($plant_name); $k++) 
 								{
+								// echo $total_qty.'-'.$i.'- '.$k.'- '.$row.'<br/>';
 									if (in_array($team, $plant_modules[$k]))
 									{
-										// echo $plant_modules[$k][];
-										$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+										$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
 									}
-								}											
+								}		
 								echo "<td><center>".$row."</center></td>";
+
 							} 
 							else if ($row < round($pcsphr))
 							{
@@ -298,7 +299,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 										{
 											if (in_array($team, $plant_modules[$k]))
 											{
-												$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+												$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
 											}
 										}												
 										echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
