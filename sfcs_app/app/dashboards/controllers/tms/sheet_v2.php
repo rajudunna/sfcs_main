@@ -51,8 +51,8 @@ if(count($colors)>0){
         $size_code_qty=array();
         unset($size_code);
         unset($size_code_qty);
-        $sql="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and order_col_des='".$color."' and input_job_no='".$input_job_no."'";
-
+        $sql="select size_code,sum(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and order_col_des='".$color."' and input_job_no='".$input_job_no."' group by size_code";
+ 
         $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
         $colorrows = mysqli_num_rows($sql_result);
         while($row=mysqli_fetch_array($sql_result))
@@ -148,6 +148,7 @@ if(count($colors)>0){
                     <table width="100%">
                         <thead style="background-color: lightgrey;">
                             <tr>
+                                <th>Trim Type</th>
                                 <th>Item Code(SKU)</th>
                                 <th>Item Description</th>
                                 <th>Colour</th>
@@ -193,6 +194,7 @@ if(count($colors)>0){
 
                             ?>
                             <tr>
+                                <td><?= $api_selected_valuess['trim_type'] ?></td>
                                 <td><?= $api_selected_valuess['MTNO'] ?></td>
                                 <td><?= $api_selected_valuess['ITDS'] ?></td>
                                 <td><?= $api_selected_valuess['color'] ?></td>
