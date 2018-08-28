@@ -140,7 +140,8 @@ else
 	echo "<div class='alert alert-success' role='alert'>$username  Session Cleared Successfully</div>";
 	// echo "<script type=\"text/javascript\"> function Redirect() {  ('packing_check_point_handover_select.php'); }</script>";
 	// <a href="javascript:window.open('','_self').close();">close</a>?>
-	<button onclick="location.href = '<?php echo $url;?>'; return false;" class="btn btn-warning">Click here to go Back</button>
+	
+	<button onclick="Ajaxify('<?= $url; ?>');" class="btn btn-warning">Click here to go Back</button>
 <?php	
 	//echo '</center>';
 }
@@ -238,6 +239,9 @@ if(isset($_POST['clearsession']) or strlen($current_session_user)==0)
 	echo '<div class="alert alert-success" role="alert">Successfully Updated.</div>';
 	
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",30); function Redirect() {  location.href = \"packing_check_point_v1.php\"; }</script>";
+
+	$url = getFullURL($_GET['r'],'packing_check_point_v1.php','R');
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",30); function Redirect() {  onclick=\"Popup1=window.open('".$url."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" }</script>";
 	
 	//to prevent missing updates in pac_stat_log where its updated in m3 log -kirang 2015-08-19
 	$sql="SELECT sfcs_qty,sfcs_tid_ref FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log LEFT JOIN  $bai_pro3.pac_stat_log ON sfcs_tid_ref=tid WHERE sfcs_date>\"2015-08-01\" AND m3_op_des='CPK' AND sfcs_reason='' AND (bai_pro3.pac_stat_log.status<>'DONE' OR bai_pro3.pac_stat_log.status IS NULL)";
@@ -263,7 +267,7 @@ if(isset($_POST['clearsession']) or strlen($current_session_user)==0)
 	echo "<script type=\"text/javascript\"> 
 			setTimeout(\"Redirect()\",30); 
 			function Redirect() { 
-				popup('$url'); 
+				Ajaxify('".$url."');
 			}
 		  </script>";
 

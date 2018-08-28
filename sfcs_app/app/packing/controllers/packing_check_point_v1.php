@@ -179,10 +179,15 @@ return false;
   //if(isset($_GET['trigger'])==1)
 	echo '<bgsound src="done.mp3" loop="false">';
 }
+$url = getFullURL($_GET['r'],'packing_check_point_gateway.php','N');
 
 ?>
+
+	
+	
+	
 <div class="panel panel-primary">
-<div class="panel-heading">Carton Check Point</div>
+<div class="panel-heading">Carton Check Point<button class="btn btn-warning btn-xs pull-right" onclick="Ajaxify('<?= $url; ?>')">Go Back</button></div>
 <div class="panel-body">
 <?php
 
@@ -512,7 +517,7 @@ if($count>0){
 			
 			if($flag==0 and $flag2==0)
 			{
-				echo '<form name="input" method="post" action="'; echo $_SERVER['php_self']; echo '?>">
+				echo '<form name="input" method="post" action='.getFullURL($_GET['r'],'packing_check_point_v1.php','N').'>
 				<input type="hidden" value="'.$cartonid.'" name="cartonid">
 				<input type="hidden" value="'.$doc_no.'" name="doc_no">
 				<input type="hidden" value="'.$doc_no_ref.'" name="doc_no_ref">
@@ -655,7 +660,18 @@ if($count>0){
 				}
 				echo "<tr><td>Status</td><td><span class='label label-success'>Successfully Updated.</span></td></tr>";
 				//echo "<h2>Successfully Updated.</h2>";
+
 				echo '<bgsound src="done.mp3" loop="false">';
+
+				
+				$url = getFullURL($_GET['r'],'packing_check_point_gateway.php','N');
+				//echo $url;
+				echo "<script type=\"text/javascript\"> 
+						setTimeout(\"Redirect()\",30); 
+						function Redirect() { 
+							Ajaxify('".$url."');
+						}
+					</script>";
 
 			}
 			else
