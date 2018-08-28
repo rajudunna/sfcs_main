@@ -8,8 +8,10 @@ Changes Log:
 
 <?php
 set_time_limit(2000);
-include("../../../../common/config/config.php");
-include("../../../../common/config/functions.php");
+// include("../../../../common/config/config.php");
+// include("../../../../common/config/functions.php");
+include(getFullURLLevel($_GET['r'],'/common/config/config.php','4','R'));
+include(getFullURLLevel($_GET['r'],'/common/config/functions.php','4','R'));
 error_reporting(0);
 $section_no=$_GET['section_no'];
 ?>

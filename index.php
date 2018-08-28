@@ -96,6 +96,34 @@
         .box{
             border-radius: 6px;
         }
+        .modal-body {
+            max-height: 465px;
+            overflow-y:scroll;
+        }
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+         
+        .modal-body::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        }
+         
+        .modal-body::-webkit-scrollbar-thumb {
+          background: linear-gradient(120deg, #5983e8, #00e4d0);
+          /* outline: 1px solid slategrey; */
+        }
+        .modal-open .modal::-webkit-scrollbar {
+            width: 6px;
+        }
+         
+        .modal-open .modal::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        }
+         
+        .modal-open .modal::-webkit-scrollbar-thumb {
+          background: linear-gradient(120deg, #5983e8, #00e4d0);
+          /* outline: 1px solid slategrey; */
+        }
     </style>
 </head>
 

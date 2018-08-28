@@ -796,8 +796,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;">';
   echo "<p>";
   echo "<table>";
-  $url=getFullURLLevel($_GET['r'],'board_update.php',0,'N');
-  echo "<tr><th colspan=2'><h2><a href='$url&section_no=$section' onclick='if (window.focus) {Popup.focus()} return false;'><font style='font-size:24px;color:#000000;'><b>SECTION - $section</b></font></a></h2></th></th></tr>";
+  $url=getFullURL($_GET['r'],'board_update.php','N');
+  echo "<tr><th colspan=2'><h2><a href='$url&section_no=$section'><font style='font-size:24px;color:#000000;'><b>SECTION - $section</b></font></a></h2></th></th></tr>";
 
   // echo "<tr><th colspan=2'><h2><a href='$url?section_no=$section' onclick='Popup=window.open('$url?section_no=$section', target='_blank' Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><font style='font-size:24px;color:#000000;'><b>SECTION - $section</b></font></a></h2></th></th></tr>";
  
