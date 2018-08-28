@@ -221,7 +221,6 @@ if(count($colors)>0){
             <?php
             }
         }
-        die();
     }
 }
 
