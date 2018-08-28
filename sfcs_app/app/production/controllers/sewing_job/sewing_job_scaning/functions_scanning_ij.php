@@ -14,7 +14,7 @@ function getscheduledata($variable)
 	// include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',5,'R'));
 	include("../../../../../common/config/config_ajax.php");
 
-	$query_get_schedule_data= "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15,200) group by operation_code order by operation_code";
+	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_style_ops_master tr LEFT JOIN brandix_bts.tbl_orders_ops_ref tm ON tm.id=tr.operation_name WHERE tr.operation_code NOT IN (10,15,200) GROUP BY tr.operation_code ORDER BY tm.operation_code";
 	//echo $query_get_schedule_data;
 	$result = $link->query($query_get_schedule_data);
 	//$json = [];
@@ -145,8 +145,8 @@ function getjobdetails($job_number)
 		$result_array['color_dis'] = $job_number[3];
 		$ops_dep_flag = 0;
 		//echo $maped_color;
-		$qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
-		$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+		// $qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
+		// $result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 		// while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 		// {
 		// 	if($row['act_cut_status'] == '')
@@ -395,8 +395,8 @@ function getjobdetails($job_number)
 		$result_array['schedule'] = $job_number[2];
 		$result_array['color_dis'] = $maped_color;
 		$ops_dep_flag = 0;
-		$qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
-		$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+		// $qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
+		// $result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 		// while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 		// {
 		// 	if($row['act_cut_status'] == '')
