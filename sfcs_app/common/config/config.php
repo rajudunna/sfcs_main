@@ -48,12 +48,7 @@ $message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
-//M3 Rest API Calls Details
-$company_no = $conf1->get('companey-number');
-$api_username = $conf1->get('api-user-name');
-$api_password = $conf1->get('api-password');
-$api_hostname = $conf1->get('api-host-name');
-$api_port_no = $conf1->get('api-port');
+
 
 //Scanning Methods
 
