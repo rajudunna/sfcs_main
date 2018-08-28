@@ -9,8 +9,8 @@ set_time_limit(6000000);
 	if($conn)
 	{
 		// include('mysql_db_config.php');
-		$from = date("Ymd", strtotime('-2 months'));
-		$to = date("Ymd", strtotime('+3 months'));
+		$from = date("Ymd", strtotime('-1 months'));
+		$to = date("Ymd", strtotime('+5 months'));
 		// $query_text = "CALL BAISFCS.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD('200','%','EKG','EKG','".$from."','".$to."')";
 		$query_text = "CALL M3BRNPRD.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD('200','%','EKG','EKG','".$from."','".$to."')";
 		$result = odbc_exec($conn, $query_text);

@@ -57,6 +57,16 @@ $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','
 
 $plant_name = $conf->get('plantname');
 $fab_uom = $conf->get('uom');
+
+
+//M3 Rest API Calls Details
+$company_no = $conf->get('companey-number');
+$api_username = $conf->get('api-user-name');
+$api_password = $conf->get('api-password');
+$api_hostname = $conf->get('api-host-name');
+$api_port_no = $conf->get('api-port');
+
+
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;

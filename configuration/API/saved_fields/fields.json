@@ -101,6 +101,22 @@
                 "name": "msg-sent-via",
                 "subtype": "text",
                 "value": "SYSTEM"
+            },
+            {
+                "type": "text",
+                "label": "Plant Start Time",
+                "className": "form-control",
+                "name": "plant-start-time",
+                "subtype": "text",
+                "value": "7:30:00"
+            },
+            {
+                "type": "text",
+                "label": "Plant End Time",
+                "className": "form-control",
+                "name": "plant-end-time",
+                "subtype": "text",
+                "value": "22:30:00"
             }
         ],
         [
@@ -363,6 +379,59 @@
                     "body"
                 ]
             }
+        ],
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "API Configurations"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Host Name",
+                "className": "form-control",
+                "name": "api-host-name",
+                "value": "http://eka-mvxsod-01.brandixlk.org",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "User Name",
+                "className": "form-control",
+                "name": "api-user-name",
+                "value": "BEL_SFCS",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "subtype": "password",
+                "required": true,
+                "label": "Password",
+                "className": "form-control",
+                "name": "api-password",
+                "value": "brandix@321"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Port",
+                "className": "form-control",
+                "name": "api-port",
+                "value": "22105",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Companey Number",
+                "className": "form-control",
+                "name": "companey-number",
+                "value": "200",
+                "subtype": "text"
+            }
+            
         ],
         [
             {

@@ -14,7 +14,7 @@ function getscheduledata($variable)
 	// include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',5,'R'));
 	include("../../../../../common/config/config_ajax.php");
 
-	$query_get_schedule_data= "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15,200) group by operation_code order by operation_code";
+	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_style_ops_master tr LEFT JOIN brandix_bts.tbl_orders_ops_ref tm ON tm.id=tr.operation_name WHERE tr.operation_code NOT IN (10,15,200) GROUP BY tr.operation_code ORDER BY tm.operation_code";
 	//echo $query_get_schedule_data;
 	$result = $link->query($query_get_schedule_data);
 	//$json = [];
@@ -83,6 +83,7 @@ if(isset($_GET['job_number']))
 function getjobdetails($job_number)
 {
 	$job_number = explode(",",$job_number);
+	// var_dump($job_number);
 	if($job_number[2] == 1)
 	{
 		$job_number[4]=$job_number[1];
@@ -104,7 +105,7 @@ function getjobdetails($job_number)
 				$job_number[0] = $row['input_job_no_random'];
 			}
 			$map_col_query = "select order_style_no,order_del_no,order_col_des from $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]' order by tid";
-			//echo $map_col_query;
+			//	echo $map_col_query;
 			$result_map_col_query = $link->query($map_col_query);
 			if($result_map_col_query->num_rows > 0)
 			{
@@ -144,18 +145,18 @@ function getjobdetails($job_number)
 		$result_array['color_dis'] = $job_number[3];
 		$ops_dep_flag = 0;
 		//echo $maped_color;
-		$qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
-		$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
-		while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
-		{
-			if($row['act_cut_status'] == '')
-			{
-				$result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
-				echo json_encode($result_array);
-				die();
-			}
+		// $qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
+		// $result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+		// while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+		// {
+		// 	if($row['act_cut_status'] == '')
+		// 	{
+		// 		$result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
+		// 		echo json_encode($result_array);
+		// 		die();
+		// 	}
 			
-		}
+		// }
 		
 		$ops_dep_qry = "SELECT ops_dependency,operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$job_number[1]' AND color =  '$maped_color' AND ops_dependency != 200 AND ops_dependency != 0";
 		//echo $ops_dep_qry;
@@ -265,71 +266,78 @@ function getjobdetails($job_number)
 			}
 			else
 			{
-				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
+				// $schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
 				$flag = 'packing_summary_input';
+				$result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
+				$flags = 100;
 			}
 			//echo $schedule_query;
 				
 		}
-		if($flags == 2)
+		if($flags != 100)
 		{
-			$result_array['status'] = 'Previous operation not yet done for this job.';
-		}
-		else
-		{
-			$result_style_data = $link->query($schedule_query);
-			while($row = $result_style_data->fetch_assoc()) 
+			if($flags == 2)
 			{
-				
-				$style = $job_number[1];
-				$schedule =  $job_number[2];
-				$color = $row['order_col_des'];
-				$size = $row['old_size'];
-				if($flag == 'packing_summary_input')
+				$result_array['status'] = 'Previous operation not yet done for this job.';
+			}
+			else
+			{
+				$result_style_data = $link->query($schedule_query);
+				while($row = $result_style_data->fetch_assoc()) 
 				{
-					$job_number_reference = $row['type_of_sewing'];
-					if($job_number_reference == 3)
+					
+					$style = $job_number[1];
+					$schedule =  $job_number[2];
+					$color = $row['order_col_des'];
+					$size = $row['old_size'];
+					if($flag == 'packing_summary_input')
 					{
-					//	var_dump($row);
-						$selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
-						$result_selecting_sample_qtys = $link->query($selecting_sample_qtys);
-						if($result_selecting_sample_qtys->num_rows > 0)
+						$job_number_reference = $row['type_of_sewing'];
+						if($job_number_reference == 3)
 						{
-							while($row_res = $result_selecting_sample_qtys->fetch_assoc()) 
+						//	var_dump($row);
+							$selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
+							$result_selecting_sample_qtys = $link->query($selecting_sample_qtys);
+							if($result_selecting_sample_qtys->num_rows > 0)
 							{
-								//$result_array['sample_qtys'][] = $row_res['input_qty'];
-								$row['carton_act_qty'] = $row_res['input_qty'];
+								while($row_res = $result_selecting_sample_qtys->fetch_assoc()) 
+								{
+									//$result_array['sample_qtys'][] = $row_res['input_qty'];
+									$row['carton_act_qty'] = $row_res['input_qty'];
+								}
+							}
+							else
+							{
+								$result_array['status'] = 'Sample Quantities not updated!!!';
 							}
 						}
-						else
-						{
-							$result_array['status'] = 'Sample Quantities not updated!!!';
-						}
 					}
+					
+					$result_array['table_data'][] = $row;
 				}
-				
-				$result_array['table_data'][] = $row;
+				$result_array['flag'] = $flag;
 			}
-			$result_array['flag'] = $flag;
+			$select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_number[0]'";
+			$result_select_modudle_qry = $link->query($select_modudle_qry);
+			
+			if(mysqli_num_rows($result_select_modudle_qry)==0)
+			{
+				$select_modudle_qry1 = "select ims_mod_no as input_module from $bai_pro3.ims_log where input_job_rand_no_ref = $job_number[0] limit 1";
+				$result_select_modudle_qry = $link->query($select_modudle_qry1);
+			}
+			if(mysqli_num_rows($result_select_modudle_qry)==0)
+			{
+				$select_modudle_qry2 = "select ims_mod_no as input_module from $bai_pro3.ims_log_backup where input_job_rand_no_ref = $job_number[0] limit 1";
+				$result_select_modudle_qry = $link->query($select_modudle_qry2);
+			}
+			
+			while($row = $result_select_modudle_qry->fetch_assoc()) 
+			{
+				$result_array['module'] = $row['input_module'];
+			}
+
 		}
-		$select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_number[0]'";
-		$result_select_modudle_qry = $link->query($select_modudle_qry);
 		
-		if(mysqli_num_rows($result_select_modudle_qry)==0)
-		{
-			$select_modudle_qry1 = "select ims_mod_no as input_module from $bai_pro3.ims_log where input_job_rand_no_ref = $job_number[0] limit 1";
-			$result_select_modudle_qry = $link->query($select_modudle_qry1);
-		}
-		if(mysqli_num_rows($result_select_modudle_qry)==0)
-		{
-			$select_modudle_qry2 = "select ims_mod_no as input_module from $bai_pro3.ims_log_backup where input_job_rand_no_ref = $job_number[0] limit 1";
-			$result_select_modudle_qry = $link->query($select_modudle_qry2);
-		}
-		
-		while($row = $result_select_modudle_qry->fetch_assoc()) 
-		{
-			$result_array['module'] = $row['input_module'];
-		}
 	//	echo $schedule_query;
 		echo json_encode($result_array);
 	}
@@ -385,19 +393,19 @@ function getjobdetails($job_number)
 		}
 		$result_array['style'] = $job_number[1];
 		$result_array['schedule'] = $job_number[2];
-		$result_array['color_dis'] = $job_number[3];
+		$result_array['color_dis'] = $maped_color;
 		$ops_dep_flag = 0;
-		$qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
-		$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
-		while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
-		{
-			if($row['act_cut_status'] == '')
-			{
-				$result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
-				echo json_encode($result_array);
-				die();
-			}			
-		}
+		// $qry_cut_qty_check_qry = "SELECT act_cut_status FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]')";
+		// $result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+		// while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+		// {
+		// 	if($row['act_cut_status'] == '')
+		// 	{
+		// 		$result_array['status'] = 'Cut quantity reporting is not yet done for this docket related to this input job.';
+		// 		echo json_encode($result_array);
+		// 		die();
+		// 	}			
+		// }
 		
 		$ops_dep_qry = "SELECT ops_dependency,operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$job_number[1]' AND color =  '$job_number[3]' AND ops_dependency != 200 AND ops_dependency != 0";
 		//echo $ops_dep_qry;
@@ -447,7 +455,7 @@ function getjobdetails($job_number)
 			// echo json_encode($result_array);
 			// die();
 		// }
-		$ops_seq_check = "select id,ops_sequence from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$job_number[3]' and operation_code='$job_number[4]'";
+		$ops_seq_check = "select id,ops_sequence,operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and operation_code='$job_number[4]'";
 		//echo $ops_seq_check;
 		$result_ops_seq_check = $link->query($ops_seq_check);
 		if($result_ops_seq_check->num_rows > 0)
@@ -456,6 +464,7 @@ function getjobdetails($job_number)
 			{
 				$ops_seq = $row['ops_sequence'];
 				$seq_id = $row['id'];
+				$ops_order = $row['operation_code'];
 			}
 		}
 		else
@@ -465,7 +474,7 @@ function getjobdetails($job_number)
 			die();
 		}
 		
-		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$job_number[3]' and id < $seq_id and ops_sequence = $ops_seq";
+		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
 		{
@@ -504,71 +513,78 @@ function getjobdetails($job_number)
 			}
 			else
 			{
-				$schedule_query = "SELECT *,carton_act_qty as balance_to_report, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] order by tid";
+				// $schedule_query = "SELECT *,carton_act_qty as balance_to_report, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] order by tid";
 				$flag = 'packing_summary_input';
+				$result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
+				$flags = 100;
 			}
 			//echo $schedule_query;
 				
 		}
-	if($flags == 2)
-	{
-		$result_array['status'] = 'Previous operation not yet done for this job.';
-	}
-	else
-	{
-		$result_style_data = $link->query($schedule_query);
-		while($row = $result_style_data->fetch_assoc()) 
+		if($flags != 100)
 		{
-			
-			$style = $job_number[1];
-			$schedule =  $job_number[2];
-			$color = $row['order_col_des'];
-			$size = $row['old_size'];
-			if($flag == 'packing_summary_input')
+			if($flags == 2)
 			{
-				$job_number_reference = $row['type_of_sewing'];
-				if($job_number_reference == 3)
+				$result_array['status'] = 'Previous operation not yet done for this job.';
+			}
+			else
+			{
+				$result_style_data = $link->query($schedule_query);
+				while($row = $result_style_data->fetch_assoc()) 
 				{
-				//	var_dump($row);
-					$selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
-					$result_selecting_sample_qtys = $link->query($selecting_sample_qtys);
-					if($result_selecting_sample_qtys->num_rows > 0)
+					
+					$style = $job_number[1];
+					$schedule =  $job_number[2];
+					$color = $row['order_col_des'];
+					$size = $row['old_size'];
+					if($flag == 'packing_summary_input')
 					{
-						while($row_res = $result_selecting_sample_qtys->fetch_assoc()) 
+						$job_number_reference = $row['type_of_sewing'];
+						if($job_number_reference == 3)
 						{
-							//$result_array['sample_qtys'][] = $row_res['input_qty'];
-							$row['carton_act_qty'] = $row_res['input_qty'];
+						//	var_dump($row);
+							$selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
+							$result_selecting_sample_qtys = $link->query($selecting_sample_qtys);
+							if($result_selecting_sample_qtys->num_rows > 0)
+							{
+								while($row_res = $result_selecting_sample_qtys->fetch_assoc()) 
+								{
+									//$result_array['sample_qtys'][] = $row_res['input_qty'];
+									$row['carton_act_qty'] = $row_res['input_qty'];
+								}
+							}
+							else
+							{
+								$result_array['status'] = 'Sample Quantities not updated!!!';
+							}
 						}
 					}
-					else
-					{
-						$result_array['status'] = 'Sample Quantities not updated!!!';
-					}
+					
+					$result_array['table_data'][] = $row;
 				}
+				$result_array['flag'] = $flag;
+			}
+			$select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = $job_number[0]";
+			$result_select_modudle_qry = $link->query($select_modudle_qry);
+			
+			if(mysqli_num_rows($result_select_modudle_qry)==0)
+			{
+				$select_modudle_qry1 = "select ims_mod_no as input_module from $bai_pro3.ims_log where input_job_rand_no_ref = $job_number[0] limit 1";
+				$result_select_modudle_qry = $link->query($select_modudle_qry1);
+			}
+			if(mysqli_num_rows($result_select_modudle_qry)==0)
+			{
+				$select_modudle_qry2 = "select ims_mod_no as input_module from $bai_pro3.ims_log_backup where input_job_rand_no_ref = $job_number[0] limit 1";
+				$result_select_modudle_qry = $link->query($select_modudle_qry2);
 			}
 			
-			$result_array['table_data'][] = $row;
+			while($row = $result_select_modudle_qry->fetch_assoc()) 
+			{
+				$result_array['module'] = $row['input_module'];
+			}
+
 		}
-		$result_array['flag'] = $flag;
-	}
-	$select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = $job_number[0]";
-	$result_select_modudle_qry = $link->query($select_modudle_qry);
 	
-	if(mysqli_num_rows($result_select_modudle_qry)==0)
-	{
-		$select_modudle_qry1 = "select ims_mod_no as input_module from $bai_pro3.ims_log where input_job_rand_no_ref = $job_number[0] limit 1";
-		$result_select_modudle_qry = $link->query($select_modudle_qry1);
-	}
-	if(mysqli_num_rows($result_select_modudle_qry)==0)
-	{
-		$select_modudle_qry2 = "select ims_mod_no as input_module from $bai_pro3.ims_log_backup where input_job_rand_no_ref = $job_number[0] limit 1";
-		$result_select_modudle_qry = $link->query($select_modudle_qry2);
-	}
-	
-	while($row = $result_select_modudle_qry->fetch_assoc()) 
-	{
-		$result_array['module'] = $row['input_module'];
-	}
 //	echo $schedule_query;
 	echo json_encode($result_array);
 	}
@@ -790,6 +806,7 @@ if(isset($_GET['validating_remarks']))
 }
 function validating_remarks_with_qty($validating_remarks)
 {
+	$validating_remarks = explode(",",$validating_remarks);
 	if($validating_remarks[5] == 0)
 	{
 		$flag = 0;
@@ -801,7 +818,7 @@ function validating_remarks_with_qty($validating_remarks)
 		// include("dbconf1.php");
 		//include("remarks_array.php");
 		include("../../../../../common/config/config_ajax.php");
-		$validating_remarks = explode(",",$validating_remarks);
+		// $validating_remarks = explode(",",$validating_remarks);
 		//echo $validating_remarks[5];
 		//var_dump($validating_remarks);
 		if($validating_remarks[5] == 0)
@@ -824,13 +841,13 @@ function validating_remarks_with_qty($validating_remarks)
 		}
 		$ops_dep_array_qry = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_dependency != 0 and ops_dependency != 'NULL' group by ops_dependency";
 		$result_ops_dep_array_qry = $link->query($ops_dep_array_qry);
-		//echo $ops_dep_array_qry;
+		// echo $ops_dep_array_qry;
 		while($row = $result_ops_dep_array_qry->fetch_assoc()) 
 		{
 			$ops_dependency[] = $row['ops_dependency'];
 		}
 		$qry_for_fetching_bal_to_report_qty_pre = "select * from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2] and remarks='$validating_remarks[3]' order by bundle_number";
-		//echo $qry_for_fetching_bal_to_report_qty_pre;
+		// echo $qry_for_fetching_bal_to_report_qty_pre;
 		$result_qry_for_fetching_bal_to_report_qty_pre = $link->query($qry_for_fetching_bal_to_report_qty_pre);
 		if($result_qry_for_fetching_bal_to_report_qty_pre->num_rows > 0 && in_array($validating_remarks[2],$ops_dependency))
 		{
@@ -840,7 +857,7 @@ function validating_remarks_with_qty($validating_remarks)
 		{
 			$check_flag = 0;
 		}
-		//echo $check_flag;
+		// echo $check_flag;
 		$fetching_dependency_ops_qry = "select operation_code from  $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_dependency = $validating_remarks[2]";
 		$result_fetching_dependency_ops_qry = $link->query($fetching_dependency_ops_qry);
 		while($row = $result_fetching_dependency_ops_qry->fetch_assoc()) 
@@ -895,7 +912,7 @@ function validating_remarks_with_qty($validating_remarks)
 					$result_array['ops_dep'] = 0;
 				}
 			}
-			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id < $seq_id order by operation_order limit 1";
+			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id < $seq_id order by operation_order DESC limit 1";
 			//echo $post_ops_check;
 			$result_post_ops_check = $link->query($post_ops_check);
 			if($result_post_ops_check->num_rows > 0)
@@ -994,6 +1011,7 @@ function validating_remarks_with_qty($validating_remarks)
 			}
 			else
 			{
+				// echo $post_ops_code;
 				if($post_ops_code != 0)
 				{
 					$qry_for_fetching_bal_to_report_qty = "select (sum(recevied_qty))as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id = $post_ops_code and remarks = '$validating_remarks[3]' order by bundle_number";
@@ -1032,7 +1050,6 @@ function validating_remarks_with_qty($validating_remarks)
 		// include("dbconf1.php");
 		//include("remarks_array.php");
 		include("../../../../../common/config/config_ajax.php");
-		$validating_remarks = explode(",",$validating_remarks);
 		//echo $validating_remarks[5];
 		//var_dump($validating_remarks);
 		$query_to_fetch_individual_bundles = "select tid,order_col_des,old_size,size_code,carton_act_qty,acutno,input_job_no  FROM $bai_pro3.packing_summary_input where tid=$validating_remarks[1]";
@@ -1122,6 +1139,7 @@ function validating_remarks_with_qty($validating_remarks)
 		else
 		{
 			$ops_seq_check = "select id,ops_sequence,ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code='$validating_remarks[2]'";
+			//echo $ops_seq_check;
 			$result_ops_seq_check = $link->query($ops_seq_check);
 			while($row = $result_ops_seq_check->fetch_assoc()) 
 			{
@@ -1138,8 +1156,8 @@ function validating_remarks_with_qty($validating_remarks)
 					$result_array['ops_dep'] = 0;
 				}
 			}
-			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id < $seq_id order by operation_order limit 1";
-			//echo $post_ops_check;
+			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id < $seq_id order by operation_order DESC limit 1";
+			// echo $post_ops_check;
 			$result_post_ops_check = $link->query($post_ops_check);
 			if($result_post_ops_check->num_rows > 0)
 			{

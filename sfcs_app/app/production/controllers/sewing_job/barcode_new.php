@@ -46,7 +46,7 @@
 				</head>
 				<body>';
 
-		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by input_job_no*1 ";			
+		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by old_size,tid";			
 		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		while($barcode_rslt = mysqli_fetch_array($sql_barcode))
@@ -58,23 +58,23 @@
 			$quantity=$barcode_rslt['carton_act_qty'];
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
 			$display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
-			$html.= '<div>
-						<table>
-							<tr rowspan=2>
-								<td colspan=10><b>Stab Here:</b></td>
-								<td colspan=2>
-									<svg height="25" width="25">
-										<circle cx="10" cy="10" r="8"  />
-									</svg>
-								</td>
-							</tr>
-							<br><br>
-							<tr><td colspan=4><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b>'.$schedule.'</td></tr>
-							<tr><td colspan=4><b>Job Number:</b>'.$display.'</td><td><b>Size:</b>'.$barcode_rslt['size_code'].'</td></tr>
-							<tr><td colspan=4><b>Barcode ID:</b>'.$barcode.'</td><td><b>Cut No:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
-							<tr><td colspan=4><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,30).'</td></tr>
-						 </table>
-					 </div><br><br><br>';
+			// $html.= '<div>
+						// <table>
+							// <tr rowspan=2>
+								// <td colspan=10><b>Stab Here:</b></td>
+								// <td colspan=2>
+									// <svg height="25" width="25">
+										// <circle cx="10" cy="10" r="8"  />
+									// </svg>
+								// </td>
+							// </tr>
+							// <br><br>
+							// <tr><td colspan=4><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b>'.$schedule.'</td></tr>
+							// <tr><td colspan=4><b>Job Number:</b>'.$display.'</td><td><b>Size:</b>'.$barcode_rslt['size_code'].'</td></tr>
+							// <tr><td colspan=4><b>Barcode ID:</b>'.$barcode.'</td><td><b>Cut No:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
+							// <tr><td colspan=4><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,30).'</td></tr>
+						 // </table>
+					 // </div><br><br><br>';
 			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and tor.operation_code not in (10,15,200)";
 			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($ops = mysqli_fetch_array($sql_result1))

@@ -664,42 +664,56 @@ function dependency_ops_validation($dependency_ops_ary)
 	//var_dump($dependency_ops_ary);
 	include("../../../../../common/config/config_ajax.php");
 
-	$smv_query = "select count(id)as cnt from $brandix_bts.bundle_creation_data where style='$dependency_ops_ary[1]' and color = '$dependency_ops_ary[2]' and operation_id = '$dependency_ops_ary[0]'";
-	//echo $smv_query;
-	$result_validation_smv_query = $link->query($smv_query);
-	//$flag = 0;
-	if(mysqli_num_rows($result_validation_smv_query) > 0)
-	{
-		while($row = $result_validation_smv_query->fetch_assoc())
-		{
-			$count_pre = $row['cnt'];
+	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no='$dependency_ops_ary[1]' and order_col_des='$dependency_ops_ary[2]'";
+	//echo $check_for_order_id_query;
+	$check_for_order_id = $link->query($check_for_order_id_query);
+    foreach($check_for_order_id as $key=> $value){
+        $order_tid_new = str_replace(' ', '', $value["order_tid"]);
+		$layplan_style_query = "select * from $bai_pro3.plandoc_stat_log where REPLACE(order_tid,' ','') ='".$order_tid_new."'";
+		$style_exists_in_layplan = $link->query($layplan_style_query);
+        if(mysqli_num_rows($style_exists_in_layplan) >0){
+			$flag = 4;
 		}
-	}
-	if($count_pre == 0)
-	{
-		$smv_query = "select count(ops_dependency)as cnt from $brandix_bts.tbl_style_ops_master where style='$dependency_ops_ary[1]' and color = '$dependency_ops_ary[2]' and ops_dependency = '$dependency_ops_ary[0]'";
-		$result_validation_smv_query = $link->query($smv_query);
-		//$flag = 0;
-		if(mysqli_num_rows($result_validation_smv_query) > 0)
-		{
-			while($row = $result_validation_smv_query->fetch_assoc())
+		else {
+			$smv_query = "select count(id)as cnt from $brandix_bts.bundle_creation_data where style='$dependency_ops_ary[1]' and color = '$dependency_ops_ary[2]' and operation_id = '$dependency_ops_ary[0]'";
+			//echo $smv_query;
+			$result_validation_smv_query = $link->query($smv_query);
+			//$flag = 0;
+			if(mysqli_num_rows($result_validation_smv_query) > 0)
 			{
-				$count = $row['cnt'];
+				while($row = $result_validation_smv_query->fetch_assoc())
+				{
+					$count_pre = $row['cnt'];
+				}
+			}
+			if($count_pre == 0)
+			{
+				$smv_query = "select count(ops_dependency)as cnt from $brandix_bts.tbl_style_ops_master where style='$dependency_ops_ary[1]' and color = '$dependency_ops_ary[2]' and ops_dependency = '$dependency_ops_ary[0]'";
+				$result_validation_smv_query = $link->query($smv_query);
+				//$flag = 0;
+				if(mysqli_num_rows($result_validation_smv_query) > 0)
+				{
+					while($row = $result_validation_smv_query->fetch_assoc())
+					{
+						$count = $row['cnt'];
+					}
+				}
+				if($count == 0)
+				{
+					$flag = 1;
+				}
+				else
+				{
+					$flag = 3;
+				}
+			}
+			else
+			{
+				$flag = 2;
 			}
 		}
-		if($count == 0)
-		{
-			$flag = 1;
-		}
-		else
-		{
-			$flag = 3;
-		}
-	}
-	else
-	{
-		$flag = 2;
-	}
+    }
+	
 	echo $flag;
 }
 
@@ -716,25 +730,39 @@ function adding_validation_fun($adding_validation)
 	$adding_validation = explode(",",$adding_validation);
 	include("../../../../../common/config/config_ajax.php");
 
-	$smv_query = "select count(id)as cnt from $brandix_bts.bundle_creation_data where style='$adding_validation[0]' and color = '$adding_validation[1]'";
-	//echo $smv_query;
-	$result_validation_smv_query = $link->query($smv_query);
-	$flag = 0;
-	if(mysqli_num_rows($result_validation_smv_query) > 0)
-	{
-		while($row = $result_validation_smv_query->fetch_assoc())
-		{
-			$count_pre = $row['cnt'];
+	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no='$adding_validation[0]' and order_col_des='$adding_validation[1]'";
+	//echo $check_for_order_id_query;
+	$check_for_order_id = $link->query($check_for_order_id_query);
+    foreach($check_for_order_id as $key=> $value){
+        $order_tid_new = str_replace(' ', '', $value["order_tid"]);
+		$layplan_style_query = "select * from $bai_pro3.plandoc_stat_log where REPLACE(order_tid,' ','') ='".$order_tid_new."'";
+		$style_exists_in_layplan = $link->query($layplan_style_query);
+        if(mysqli_num_rows($style_exists_in_layplan) >0){
+			$flag = 4;
+		}
+		else {
+			$smv_query = "select count(id)as cnt from $brandix_bts.bundle_creation_data where style='$adding_validation[0]' and color = '$adding_validation[1]'";
+			//echo $smv_query;
+			$result_validation_smv_query = $link->query($smv_query);
+			$flag = 0;
+			if(mysqli_num_rows($result_validation_smv_query) > 0)
+			{
+				while($row = $result_validation_smv_query->fetch_assoc())
+				{
+					$count_pre = $row['cnt'];
+				}
+			}
+			if($count_pre > 0)
+			{
+				$flag = 1;
+			}
+			else
+			{
+				$flag = 0;
+			}
 		}
 	}
-	if($count_pre > 0)
-	{
-		$flag = 1;
-	}
-	else
-	{
-		$flag = 0;
-	}
+	
 	echo $flag;
 }
 function numberOfDecimals($value)
@@ -761,18 +789,32 @@ if(isset($_GET['ops_code_next']))
 }
 function ops_code_next_fun($ops_code_next)
 {
-	// echo "hi";
 	$flag = 0;
 	$ops_code_next = explode(",",$ops_code_next);
 	include("../../../../../common/config/config_ajax.php");
-	$ops_exists_validation = "select operation_code from  $brandix_bts.tbl_style_ops_master where style='$ops_code_next[1]' and color = '$ops_code_next[2]' and operation_code = '$ops_code_next[0]'";
-	$result_ops_exists_validation = $link->query($ops_exists_validation);
-	if(mysqli_num_rows($result_ops_exists_validation) > 0)
+	//qurey
+	if($ops_code_next[3] == 'Yes')
 	{
-		$flag =1;
+		$schedule_operation_existance = "select OperationNumber from $bai_pro3.schedule_oprations_master where Style='$ops_code_next[1]' and Description = '$ops_code_next[2]' and OperationNumber = '$ops_code_next[0]'";
+		$schedule_operation_existance_validation = $link->query($schedule_operation_existance);
+		if(mysqli_num_rows($schedule_operation_existance_validation) > 0)
+		{
+		}
+		else 
+		{
+			$flag = 2;
+		}
+	}
+	if($flag !=2)
+	{
+		$ops_exists_validation = "select operation_code from  $brandix_bts.tbl_style_ops_master where style='$ops_code_next[1]' and color = '$ops_code_next[2]' and operation_code = '$ops_code_next[0]'";
+		$result_ops_exists_validation = $link->query($ops_exists_validation);
+		if(mysqli_num_rows($result_ops_exists_validation) > 0)
+		{
+			$flag =1;
+		}
 	}
 	echo $flag;
-	
 }
 
 

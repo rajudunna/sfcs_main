@@ -29,7 +29,8 @@ function validateQty(event)
 	// include("dbconf.php");
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));	
-	
+	$qry_short_codes = "SELECT * from $brandix_bts.ops_short_cuts";
+	$result_oper = $link->query($qry_short_codes);
 	if(isset($_GET['id'])){
 		
 		$operation_name = "";
@@ -50,7 +51,8 @@ function validateQty(event)
 		}else{
 			// echo "Connected successfully";
 		} */
-		$qry_insert = "select * from $brandix_bts.tbl_orders_ops_ref where id=".$id;	
+		$qry_insert = "select * from $brandix_bts.tbl_orders_ops_ref where id=".$id;
+		//echo $qry_insert;
 		$res_do_num = mysqli_query($link,$qry_insert);
 		//$row=[];
 		while($res_result = mysqli_fetch_array($res_do_num)){
@@ -85,7 +87,7 @@ function validateQty(event)
 										<input type="text" class="form-control" id="opn" name="opn" value= "<?php echo $row[0]['operation_name']?>" required>
 									</div> 
 									<div class="col-sm-2">
-										<b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b><input type="number" onkeypress="return validateQty(event);" min="400" class="form-control" id="opc" name="opc" value= "<?php echo $row[0]['operation_code']?>" required>
+										<b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b><input type="number" onkeypress="return validateQty(event);" class="form-control" id="opc" name="opc" value= "<?php echo $row[0]['operation_code']?>" required>
 									</div>
 									<div class="col-sm-2">
 										 <div class="dropdown">
@@ -102,17 +104,43 @@ function validateQty(event)
 										<b>Report To ERP<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
 										<select class="form-control" id="sel1" name="sel1" required>
 										<option value="">Please Select</option>
-										<option value='yes' <?php echo $row[0]['default_operation']== 'Yes'? 'selected' : ''?>>Yes</option>
+										<option value='yes' <?php echo $row[0]['default_operation']== 'yes'? 'selected' : ''?>>Yes</option>
 										<option value='No' <?php echo $row[0]['default_operation']== 'No'? 'selected' : ''?>>No</option></select>	
 									</div>
 								</div>
 									<div class="col-sm-2" hidden="true">
 										<b>Sewing Order Code</b><input type="text" class="form-control" id="sw_cod" name="sw_cod" value= "<?php echo $row[0]['operation_description']?>">
 									</div> 
+									<div class = "col-sm-2">
+								<label for="style">Short Key Code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>			
+									<select id="short_key_code" name = "short_cut_code" style="width:100%;" class="form-control" required>
+									<option value='0'>Select Short Code</option>
+									<?php				    	
+										if ($result_oper->num_rows > 0) {
+											while($row_short = $result_oper->fetch_assoc()) {
+											$row_value = $row_short['short_key_code'];
+												if($row_short['short_key_code'] == $row[0]['short_cut_code'])
+												{
+													$selected = 'selected';
+												}
+												else
+												{
+													$selected = '';
+												}
+												echo "<option value='".$row_short['short_key_code']."' $selected>".$row_value."</option>";
+											}
+										} else {
+											echo "<option value=''>No Data Found..</option>";
+										}
+									?>
+								</select>
+
+								</div>
 									<div class="col-sm-2">
 										<button type="submit" class="btn btn-info" style="margin-top:18px;">Update</button>
 									</div>
 								</div>
+								
 							</form>
 						</div>
 					</div>
@@ -141,7 +169,10 @@ function validateQty(event)
 		if(isset($_GET["sw_cod"])){
 			$sw_cod= $_GET["sw_cod"];
 		}
-		if($operation_name!="" && $operation_code!=""){
+		if(isset($_GET["short_cut_code"])){
+			$short_cut_code= $_GET["short_cut_code"];
+		}
+		if($operation_name!="" && $operation_code!="" && $short_cut_code != ""){
 			
 			$checking_qry = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where operation_code = $operation_code and id <> $id";
 			//echo $checking_qry;
@@ -152,9 +183,15 @@ function validateQty(event)
 				$cnt = $res_res_checking_qry['cnt'];
 			}
 			// echo $cnt;
-			if($cnt == 0)
+			$short_key_code_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where short_cut_code = '$short_cut_code' and id <> $id";
+			$res_short_key_code_check_qry = mysqli_query($link,$short_key_code_check_qry);
+			while($res_res_res_short_key_code_check_qry = mysqli_fetch_array($res_short_key_code_check_qry))
 			{
-				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code' where id='$id'";
+				$cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
+			}
+			if($cnt == 0 && $cnt_short == 0)
+			{
+				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation' where id='$id'";
 				//echo $qry_insert1;
 				$res_do_num1 = mysqli_query($link,$qry_insert1);
 				echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";
@@ -171,9 +208,21 @@ function validateQty(event)
 					}
 				</script>";
 			}
-			else
+			else if($cnt != 0)
 			{
 				$sql_message = 'Operation Code Already in use. Please give other.';
+				echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+				die();
+			}
+			else if($cnt_short != 0)
+			{
+				$sql_message = 'Short Key Code Already in use. Please give other.';
+				echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+				die();
+			}
+			else if($cnt_short != 0 && $cnt != 0)
+			{
+				$sql_message = 'Short Key Code and Operation Code Already in use. Please give other.';
 				echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
 				die();
 			}

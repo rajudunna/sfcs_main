@@ -3,10 +3,11 @@
     Purpose : Page to update down time in sewing time based on planning vs actual 
     Created By : Chandu
     Create : 04-07-2018
-    Update : 04-08-2018 
+    Update : 21-08-2018 
     inputs : date,time,module
     output : show table with style,schedule,color details and update button for update down time.
     updates v0.1 : change the inputing to date and module. remove style schedule color in table. show actual quantity and planned quantity in single row.
+    updates v0.2 : output is changes ==> present output is plan-actual ==> updated output is forcast-actual if forcast is not there plan-actual
 */
 
 
@@ -15,6 +16,7 @@ if(isset($_POST) && isset($_POST['date_y'])){
     $datt = $_POST['date_y']."-".$_POST['date_m']."-".$_POST['date_d'];
     //echo $datt;die();
     $date = date('Y-m-d',strtotime($datt));
+    $dhour_value = $_POST['time'];
     $time = $_POST['time'].":30";
     $team = $_POST['team'];
     foreach($_POST['main_data'] as $iv){
@@ -37,7 +39,7 @@ if(isset($_POST) && isset($_POST['date_y'])){
             '".$team."', 
             '".$reason."', 
             '".$qty."', 
-            ''
+            '".$dhour_value."'
             );
         ";
        // echo $ins_qry;
@@ -146,106 +148,80 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 $forcast_qry = "SELECT qty FROM $bai_pro3.line_forecast WHERE DATE='".date('Y-m-d',strtotime($_GET['mdate']))."' AND module='".$_GET['module']."'";
                 //echo $forcast_qry;
                 $forcast_res = mysqli_query($link, $forcast_qry) or exit("Sql Error fr".mysqli_error($GLOBALS["___mysqli_ston"]));
-                // $tab="<table class='table table-bordered'><thead><tr><th class='text-center'>Type</th><th>Style</th><th>Schedule</th><th>Color</th><th>Quantity</th></tr></thead><tbody>";
-                // $act_data = [];
-                // $target = true;
-                // $act_count = mysqli_num_rows($result_log_data);
-                // $fr_count = mysqli_num_rows($result_fr_data);
-                // $tab1='';
-                // $tab2='';
-                // while($row=mysqli_fetch_array($result_log_data)){
-                //     $tab2.="<tr>";
-                //     if(count($act_data)==0)
-                //         $tab2.="<td style='vertical-align: middle;' class='text-center' rowspan=".$act_count."><h5>Actual</h5></td>";
-                //     $tab2.="<td>".$row['bac_style']."</td><td>".$row['delivery']."</td><td>".$row['color']."</td><td>".$row['bac_Qty']."</td></tr>";
-                //     $act_data[trim($row['bac_style']).trim($row['delivery']).trim($row['color'])] = $row['bac_Qty'];
-                // }
-                // $i=0;
-                // $hours = 0;
-                // while($row=mysqli_fetch_array($result_fr_data)){
-                //     $tab1.="<tr>";
-                //     if($i==0)
-                //         $tab1.="<td style='vertical-align: middle;' class='text-center' rowspan=".$fr_count."><h5>Plan</h5></td>";
+               
 
-                //     $tab1.="<td>".$row['style']."</td><td>".$row['schedule']."</td><td>".$row['color']."</td><td>".$row['qty']."</td></tr>";
+                $tab = "<table class='table table-bordered'><thead><tr><th>Time</th><th>Plan</th><th>Forcast</th><th>Actual</th><th>Actions</th></tr></thead>
+                <tbody>";
+                $plan_qty_fetch = mysqli_fetch_array($result_fr_data);
+                $plan_qty = $plan_qty_fetch['qty']>0 ? $plan_qty_fetch['qty'] : 0 ;
+                $day_hrs = $plan_qty_fetch['day_hrs']>0 ? $plan_qty_fetch['day_hrs'] : 1 ;
 
-                //     $key = trim($row['style']).trim($row['schedule']).trim($row['color']);
-                //     if(isset($act_data[$key])){
-                //         if($act_data[$key]<$row['qty']){
-                //             $target = false;
-                //             $hours+=($row['qty']-$act_data[$key]);
-                //         }
-                //     }else{
-                //         $target = false;
-                //         $hours+=$row['qty'];
-                //     }
-                //     $i++;
-                // }
-                // $tab2.="</tbody></table>";
+                $forcast_qty_fetch = mysqli_fetch_array($forcast_res);
+                //var_dump($forcast_qty_fetch);
+                $forcast_qty = $forcast_qty_fetch['qty']>0 ? ($forcast_qty_fetch['qty']/$day_hrs) : 0;
+                $actuals=[];
+                
+                while($row=mysqli_fetch_array($result_log_data)){
+                    $actuals[$row['time_value']] = $row['bac_Qty'];
+                }
+                while($r=mysqli_fetch_array($result_timings)){
+                    $actual_qty = isset($actuals[$r['time_value']]) ? $actuals[$r['time_value']] : 0;
 
-                    $tab = "<table class='table table-bordered'><thead><tr><th>Time</th><th>Plan</th><th>Forcast</th><th>Actual</th><th>Actions</th></tr></thead>
-                    <tbody>";
-                    $plan_qty_fetch = mysqli_fetch_array($result_fr_data);
-                    $plan_qty = $plan_qty_fetch['qty']>0 ? $plan_qty_fetch['qty'] : 0 ;
-                    $day_hrs = $plan_qty_fetch['day_hrs']>0 ? $plan_qty_fetch['day_hrs'] : 1 ;
-
-                    $forcast_qty_fetch = mysqli_fetch_array($forcast_res);
-                    //var_dump($forcast_qty_fetch);
-                    $forcast_qty = $forcast_qty_fetch['qty']>0 ? ($forcast_qty_fetch['qty']/$day_hrs) : 0;
-                    $actuals=[];
-                    
-                    while($row=mysqli_fetch_array($result_log_data)){
-                        $actuals[$row['time_value']] = $row['bac_Qty'];
-                    }
-                    while($r=mysqli_fetch_array($result_timings)){
-                        $actual_qty = isset($actuals[$r['time_value']]) ? $actuals[$r['time_value']] : 0;
-
-                        if($actual_qty<$plan_qty){
-                            $hours = $plan_qty - $actual_qty;
-                            $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND TIME= '".$r['time_value'].":30' AND team = '".$_GET['module']."'";
-                            $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            if(mysqli_num_rows($hourly_down_time_res)==0){
-                                $btn="<button class='btn btn-danger pull right' onclick='assignhour(".$r['time_value'].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
-                            }else{
-                                $btn="<div class='label label-info'>Down time updated.</div>";
-                            }
-                        }else{
-                            $btn= "<div class='label label-primary'>No Downtime.</div>";
-                        }
-
-
-
-                        $tab.="<tr><td>".$r['HOUR']."</td><td>$plan_qty</td><td>".round($forcast_qty,2)."</td><td>$actual_qty</td><td>$btn</td></tr>";
-                        
-                    }
-                    $tab.="</tbody>
-                    </table>";
-
-                    $resons_data_sql = "SELECT code,reason FROM $bai_pro2.downtime_reason";
-                    $resons_data_result = mysqli_query($link, $resons_data_sql) or exit("Sql Error resons".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
-                    echo '<div id="myModal" class="modal fade" role="dialog">
-                        <div class="modal-dialog modal-lg">
-
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Update Down Time</h4>
-                            </div>
-                            <div class="modal-body" id="brand" ng-app="chandu" ng-controller="downtimecontroller">';
+                    if($actual_qty<$forcast_qty){
+                        $hours = $forcast_qty - $actual_qty;
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND TIME= '".$r['time_value'].":30' AND team = '".$_GET['module']."'";
+                        $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($hourly_down_time_res)==0){
-                            echo "Downtime Quantity : <b>{{dtimehrs}}</b>";
-                        echo "<div class='col-sm-12'><div class='col-sm-4'><select ng-model='reasons' id='reson' name='reson' class='form-control'>";
-                            echo "<option value=''>Select Reason</option>";
-                            while($row1 = mysqli_fetch_array($resons_data_result)){
-                                echo "<option value='".$row1['code']."(".$row1['reason'].")'>".$row1['code']."(".$row1['reason'].")</option>";
-                            }
-                        echo "</select></div>";
-                        echo "<div class='col-sm-4'><div class='col-sm-3'>Quantity</div><div class='col-sm-9'><input type='number' place-holder='Quantity' name='hours' ng-model='hours' id='hours' class='form-control'></div></div>";
-                        echo "<button class='btn btn-info col-sm-1' ng-click='addData()'>Add</button> <button class='btn btn-primary col-sm-2' ng-click='sendData()' ng-show='saveinit'>Save</button></div>
-                        <br/>";
+                            $btn="<button class='btn btn-danger pull right' onclick='assignhour(".$r['time_value'].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
+                        }else{
+                            $btn="<div class='label label-info'>Down time updated.</div>";
+                        }
+                    }elseif($actual_qty<$plan_qty && $forcast_qty==0){
+                        $hours = $plan_qty - $actual_qty;
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND TIME= '".$r['time_value'].":30' AND team = '".$_GET['module']."'";
+                        $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($hourly_down_time_res)==0){
+                            $btn="<button class='btn btn-danger pull right' onclick='assignhour(".$r['time_value'].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
+                        }else{
+                            $btn="<div class='label label-info'>Down time updated.</div>";
+                        }
+                    }else{
+                        $btn= "<div class='label label-primary'>No Downtime.</div>";
+                    }
+
+
+
+                    $tab.="<tr><td>".$r['HOUR']."</td><td>$plan_qty</td><td>".round($forcast_qty,2)."</td><td>$actual_qty</td><td>$btn</td></tr>";
+                    
+                }
+                $tab.="</tbody>
+                </table>";
+
+                $resons_data_sql = "SELECT code,reason FROM $bai_pro2.downtime_reason";
+                $resons_data_result = mysqli_query($link, $resons_data_sql) or exit("Sql Error resons".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+                echo '<div id="myModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog modal-lg">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Update Down Time</h4>
+                        </div>
+                        <div class="modal-body" id="brand" ng-app="chandu" ng-controller="downtimecontroller">';
+                    if(mysqli_num_rows($hourly_down_time_res)==0){
+                        echo "Downtime Quantity : <b>{{dtimehrs}}</b>";
+                    echo "<div class='col-sm-12'><div class='col-sm-4'><select ng-model='reasons' id='reson' name='reson' class='form-control'>";
+                        echo "<option value=''>Select Reason</option>";
+                        while($row1 = mysqli_fetch_array($resons_data_result)){
+                            echo "<option value='".$row1['code']."(".$row1['reason'].")'>".$row1['code']."(".$row1['reason'].")</option>";
+                        }
+                    echo "</select></div>";
+                    echo "<div class='col-sm-4'><div class='col-sm-3'>Quantity</div><div class='col-sm-9'><input type='number' place-holder='Quantity' name='hours' ng-model='hours' id='hours' class='form-control'></div></div>";
+                    echo "<button class='btn btn-info col-sm-1' ng-click='addData()'>Add</button> <button class='btn btn-primary col-sm-2' ng-click='sendData()' ng-show='saveinit'>Save</button></div>
+                    <br/>";
                        
                         
 ?>
