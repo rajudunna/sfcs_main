@@ -411,8 +411,9 @@
         if($table_name == 'packing_summary_input')
         {
             // (`qms_style`, `qms_schedule`,`qms_color`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`, `remarks`, `doc_no`, `input_job_no`)
-            sweetAlert('Cut Quantity Reporting Not Yet Done.','','warning');
-			return false;            
+            $result_array['status'] = 'Cut Quantity Reporting Not Yet Done';
+            echo json_encode($result_array);
+            die();        
 
             // $bulk_insert = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`mapped_color`) VALUES";
             // // temp table data insertion query.........
