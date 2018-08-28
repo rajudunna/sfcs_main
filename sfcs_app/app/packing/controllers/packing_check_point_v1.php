@@ -213,7 +213,7 @@ $sql="select emp_id,emp_call_name from $bai_pro3.tbl_fg_crt_handover_team_list w
 ?>
 <div class="row">
 <div class="col-md-6">
-<form name="input" id="scanningcartin" method="post" action=" <?php getFullURL($_GET['r'],'packing_check_point_v1.php','N'); ?>" enctype="multipart/form data">
+<form name="input" id="scanningcartin" method="post" action=" <?php echo getFullURL($_GET['r'],'packing_check_point_v1.php','N'); ?>" enctype="multipart/form data">
 <div class="row form-group"><div class="col-md-8"><label>Enter Sticker Number: </label><!-- <input type="text" value="" name="cartonid"> -->
 <!--  Blocked by KiranG to avoid manual entry.
 <textarea name="cartonid" rows="3" cols="15" onkeydown="scan_this(this.value)" onkeypress="return validate(event)"></textarea> -->
