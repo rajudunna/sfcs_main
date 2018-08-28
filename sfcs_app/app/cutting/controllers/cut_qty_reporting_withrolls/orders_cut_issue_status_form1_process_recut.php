@@ -236,9 +236,11 @@ if($plies>0)
 
 }
 //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"orders_cut_issue_status_list.php?tran_order_tid=$tran_order_tid\"; }</script>";
-$url = getFullURL($_GET['r'],'doc_track_panel_recut.php','N');
-echo "<script>sweetAlert('Updated Successfully','','success')</script>";
-echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
+// $url = getFullURL($_GET['r'],'doc_track_panel_recut.php','N');
+// echo "<script>sweetAlert('Updated Successfully','','success')</script>";
+// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
+$go_back = 'doc_track_panel_withrolls_recut';
+echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",10); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'cut_qty_reporting_withoutrolls/trail.php',1,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
 
 ?>
 

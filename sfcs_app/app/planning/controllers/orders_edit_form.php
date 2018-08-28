@@ -156,7 +156,6 @@ function thirdbox()
 <div class"panel-body">
 <?php
 
-
 ?>
 
 <form name="test" action="index.php?r=<?php echo $_GET['r']; ?>" method="post">
