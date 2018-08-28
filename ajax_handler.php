@@ -352,8 +352,8 @@ function anchortag(event,href_url=0){
                 $('select[name^="style"]').trigger('change');
                 
                 $('select[name="schedule"] option[value="547293"]').attr("selected","selected");
-                $('input[name="schlist"]').val(schedule);
-                $('input[name="schedule"]').val(schedule);
+                // $('input[name="schlist"]').val(schedule);
+                // $('input[name="schedule"]').val(schedule);
              
                 $('#myModal').modal('show');
             }

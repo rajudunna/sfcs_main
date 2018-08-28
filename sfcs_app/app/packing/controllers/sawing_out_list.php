@@ -39,7 +39,7 @@
 			<tr><td>
 				<?php 
 					$url = getFullURLLevel($_GET['r'],"reports/pdfs/sawing_out_labels_v1.php",1,'R');
-					echo "<a href=\"$url?tid=$tid&job_no=$input_job_no&schedule=$schedule\" target=\"_blank\" class=\"btn btn-warning btn-sm\" onclick=\"return popitup("."'"."$url?tid=$tid&job_no=$input_job_no&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>&nbsp;&nbsp;J0".$input_job_no."</a><br/>";	
+					echo "<a href=\"#\" target=\"_blank\" class=\"btn btn-warning btn-sm\" onclick=\"return popitup("."'"."$url?tid=$tid&job_no=$input_job_no&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>&nbsp;&nbsp;J0".$input_job_no."</a><br/>";	
 					
 					$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
 					// echo $sql;
@@ -59,7 +59,7 @@
 				<?php 
 					$url = getFullURLLevel($_GET['r'],"reports/pdfs/sawing_out_labels.php",1,'R');
 					$url = $url."?tid=$tid&job_no=$input_job_no&schedule=$schedule&color=$color&size=$size";
-					echo "<a href=\"$url\" class=\"btn btn-warning btn-sm\" target=\"_blank\" onclick=\"return popitup('$url')\">
+					echo "<a href=\"#\" class=\"btn btn-warning btn-sm\" target=\"_blank\" onclick=\"return popitup('$url')\">
 						  <i class='fa fa-print'></i>&nbsp;&nbsp;Print Labels </a><br/>";	
 				    $url = getFullURL($_GET['r'],'packing_list_print_assort.php','R');
 					
@@ -94,7 +94,7 @@
 				$carton_id_new_create=$sql_row['id'];
 			}	
 			$url = getFullURL($_GET['r'],'packing_list/packing_check_list_assort_input.php','R');
-			echo "</div><div class='col-md-2'><a class=\"btn btn-warning btn-xs\" href=\"$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule\" onclick=\"return popitup("."'"."$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>  Carton Track</a></div></div>";
+			echo "</div><div class='col-md-2'><a class=\"btn btn-warning btn-xs\" href=\"#\" onclick=\"return popitup("."'"."$url?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton_id=$carton_id_new_create&style=$style&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>  Carton Track</a></div></div>";
 			
 		?>
 		</table>
