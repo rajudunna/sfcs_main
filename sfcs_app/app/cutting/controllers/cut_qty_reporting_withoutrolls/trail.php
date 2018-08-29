@@ -15,7 +15,7 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 	$docket_details_result = $link->query($get_docket_details);
 	while($row1 = $docket_details_result->fetch_assoc()) 
 	{
-		$input_job_no_random[] = $row1['input_job_no_random'];
+		$input_job_no_random = $row1['input_job_no_random'];
 		$b_inp_job_ref[] = $row1['input_job_no_random'];
 		$b_style = $row1['order_style_no'];
 		$b_tid[] = $row1['tid'];
@@ -135,7 +135,7 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 		$ops_order = $row['operation_order'];
 	}
 	$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
-	// echo $post_ops_check;
+	//echo $post_ops_check;
 	$result_post_ops_check = $link->query($post_ops_check);
 	if($result_post_ops_check->num_rows > 0)
 	{
@@ -190,7 +190,7 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 			}
 
 			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`=NOW() where bundle_number ='".$b_tid[$key]."' and operation_id = ".$ops_dep;
-			echo $query_post_dep.'</br>';
+			//echo $query_post_dep.'</br>';
 			$result_query = $link->query($query_post_dep) or exit('query error in updating');
 
 		}
@@ -455,6 +455,7 @@ else
 		//echo $bulk_insert_rej;
 	
 }
+// die();
 echo "<div class=\"alert alert-success\">
 <strong>Successfully Cutting Reported.</strong>
 </div>";

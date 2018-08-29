@@ -5,19 +5,20 @@
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
-	if ($_GET['operation_id'])
+	if(isset($_POST['operation_id1']) && $_POST['operation_id1'] != '')
 	{
-		$input_job_no_random_ref=$_GET['input_job_no_random_ref'];
-		$operation_code=$_GET['operation_id'];
-		$style=$_GET['style'];
-		$schedule=$_GET['schedule'];
-		$module=$_GET['module'];
-		$operation_name = echo_title("$brandix_bts.tbl_orders_ops_ref","operation_name","operation_code",$operation_code,$link).- $operation_code;
-		$color = echo_title("$bai_pro3.packing_summary_input","order_col_des","input_job_no_random",$input_job_no_random_ref,$link);
-		$shift=$_GET['shift'];
-		// $operation_name='Sewing In - 129'; 
-		$barcode_generation=1;
-		$read_only_job_no = 'readonly';
+			$input_job_no_random_ref=$_POST['input_job_no_random_ref1'];
+			$operation_code=$_POST['operation_id1'];
+			$style=$_POST['style1'];
+			$schedule=$_POST['schedule1'];
+			$module=$_POST['module1'];
+			$operation_name = echo_title("$brandix_bts.tbl_orders_ops_ref","operation_name","operation_code",$operation_code,$link).- $operation_code;
+			$color = echo_title("$bai_pro3.packing_summary_input","order_col_des","input_job_no_random",$input_job_no_random_ref,$link);
+			$shift=$_POST['shift'];
+			// $operation_name='Sewing In - 129'; 
+			$barcode_generation=1;
+			$read_only_job_no = 'readonly';
+		
 	} else {
 		$schedule=$_POST['schedule'];
 		$color=$_POST['color'];
@@ -27,6 +28,7 @@
 		$operation_name=$_POST['operation_name'];
 		$operation_code=$_POST['operation_id'];
 		$barcode_generation=$_POST['barcode_generation'];
+		//$input_job_no_random_ref=$_GET['input_job_no_random_ref1'];
 		$read_only_job_no = '';
 	}
 
