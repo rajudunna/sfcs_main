@@ -1209,6 +1209,21 @@ if($barcode_generation == 1)
 	//echo "<script>$('#storingfomr').submit()</script>";
 		if($concurrent_flag == 0)
 		{
+
+			
+			$hout_plant_timings_qry = "SELECT *,TIME(NOW()) FROM $bai_pro3.tbl_plant_timings WHERE  start_time<=TIME(NOW()) AND end_time>=TIME(NOW())";
+			
+			$hout_plant_timings_result = $link->query($hout_plant_timings_qry);
+
+			if($hout_plant_timings_result->num_rows > 0){
+				while($hout_plant_timings_result_data = $hout_plant_timings_result->fetch_assoc()) 
+				{
+					$plant_start_timing = $hout_plant_timings_result_data['start_time'];
+					$plant_end_timing = $hout_plant_timings_result_data['end_time'];
+					$plant_time_id = $hout_plant_timings_result_data['time_id'];
+				}
+			}
+
 			$hout_ops_qry = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='Down_Time'";
 			// echo $hout_ops_qry;
 			$hout_ops_result = $link->query($hout_ops_qry);
@@ -1222,7 +1237,7 @@ if($barcode_generation == 1)
 
 				
 				if($b_op_id == $hout_ops_code){
-					$hout_data_qry = "select * from $bai_pro2.hout where out_date = '$tod_date' and left(out_time,2) = '$cur_h' and team = '$b_module'";
+					$hout_data_qry = "select * from $bai_pro2.hout where out_date = '$tod_date' and left(out_time,2) = '$cur_h' and team = '$b_module' and time_parent_id = '$plant_time_id'";
 					// echo $hout_data_qry;
 					$hout_data_result = $link->query($hout_data_qry);
 
@@ -1241,7 +1256,7 @@ if($barcode_generation == 1)
 						$hout_update_result = $link->query($hout_update_qry);
 						// update
 					}else{
-						$hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks) values('$tod_date','$cur_hour','$b_module','$rep_sum_qty', '1', 'NA')";
+						$hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id) values('$tod_date','$cur_hour','$b_module','$rep_sum_qty', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id')";
 						$hout_insert_result = $link->query($hout_insert_qry);
 						// insert
 					}
