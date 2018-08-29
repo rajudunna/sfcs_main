@@ -3764,6 +3764,9 @@ echo "</tbody></table>";
  </tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
+  </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 class=xl8217319 style='height:15.75pt'></td>
   <td colspan=16 rowspan=2 class=xl9117319 style='border-right:.5pt solid black;
   border-bottom:.5pt solid black'>Inspection Comments:
   <?php
