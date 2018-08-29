@@ -530,6 +530,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $ijrs[] = $inputjobnorand;
            
 <<<<<<< HEAD
+<<<<<<< HEAD
       
       $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
       //echo $sql22;
@@ -555,6 +556,34 @@ while($sql_row=mysqli_fetch_array($sql_result))
       
       $sizes_implode="'".implode("','",$size_value)."'";
 =======
+>>>>>>> 841-ims-not-loading-sometime-and-ims-is-very-slow
+=======
+
+      
+      // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
+      // //echo $sql22;
+      // $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row22=mysqli_fetch_array($sql_result22))
+      // {
+      //   $order_tid=$sql_row22['order_tid'];
+      // } 
+      
+      // $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+      // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row33=mysqli_fetch_array($sql_result33))
+      // {
+      //   $ims_color=$sql_row33['order_tid'];
+      // }
+      // $size_value=array();
+      // $sizes_explode=explode(",",$ims_size);
+      // for($i=0;$i<sizeof($sizes_explode);$i++)
+      // {
+      //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
+      //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
+      // }
+      
+      // $sizes_implode="'".implode("','",$size_value)."'";
+
 >>>>>>> 841-ims-not-loading-sometime-and-ims-is-very-slow
       
       // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
