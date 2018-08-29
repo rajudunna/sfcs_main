@@ -44,10 +44,10 @@ $configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Sewing Job Level'
 		<div class="panel-body">
 			<div class="row">
 				<input type='hidden' id='input_job_no_random_ref' name='input_job_no_random_ref1' value='<?php echo $input_job_no_random_ref  ?>'>
-				<input type='hidden' id='operation_id' name='operation_id1' value='<?php echo $operation_code ?>'>
-				<input type='hidden' id='style' name='style1' value='<?php echo $style ?>'>
-				<input type='hidden' id='schedule' name='schedule1' value='<?php echo $schedule ?>'>
-				<input type='hidden' id='module' name='module1' value='<?php echo $module ?>'>
+				<input type='hidden' id='operation_id1' name='operation_id1' value='<?php echo $operation_code ?>'>
+				<input type='hidden' id='style1' name='style1' value='<?php echo $style ?>'>
+				<input type='hidden' id='schedule1' name='schedule1' value='<?php echo $schedule ?>'>
+				<input type='hidden' id='module1' name='module1' value='<?php echo $module ?>'>
 
 
 				<div class="form-group col-md-2">
