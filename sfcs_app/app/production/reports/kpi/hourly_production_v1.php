@@ -118,9 +118,12 @@ if(isset($_GET['submit']))
 				// $grand_tot_scanned_sah=0; $grand_tot_forecast_sah=0; $grand_tot_act_sah=0; $grand_tot_sah_diff=0;
 				// $grand_tot_plan_eff=0; $grand_tot_act_eff=0; $grand_tot_hitrate=0; $grand_tot_required=0; 
 				$section_count=0;
-
+				$section_wise_total = 0;
 				while($Sec=mysqli_fetch_array($section_result))
 				{
+					$section_wise_total++;
+					$dummy[$section_wise_total] = array();
+
 					$section_count++; $sec_tot_plan_sah=0;
 					$sec_tot_fr_qty = 0; $sec_tot_forecast_qty=0; $sec_tot_total_qty=0; $sec_tot_scanned_qty=0; 
 					$sec_tot_scanned_sah=0; $sec_tot_forecast_sah=0; $sec_tot_act_sah=0; $sec_tot_sah_diff=0;
@@ -135,6 +138,7 @@ if(isset($_GET['submit']))
 						while($row=mysqli_fetch_array($res))
 						{ 
 							$total_qty = 0;
+						
 							$module_count++;
 							// echo $frdate;
 						    $date=$row['frdate'];
@@ -270,11 +274,16 @@ if(isset($_GET['submit']))
 												{
 													if (in_array($team, $plant_modules[$k]))
 													{
-														// echo $plant_modules[$k][];
-														$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+														$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
+														$grand_tot_qty_time_dummy[$section_wise_total][$i] = $grand_tot_qty_time_dummy[$section_wise_total][$i] + $row;	
+
+														$grand_tot_qty_time_array_section[$section_wise_total][$i] = 	$grand_tot_qty_time_dummy[$section_wise_total][$i];
 													}
+													
 												}											
 												echo "<td><center>".$row."</center></td>";
+												$dummy[$section_wise_total][$i] = $dummy[$section_wise_total][$i] + $row;
+												//$grand_tot_qty_time_array_section[$section_wise_total][$i] = $total_qty;
 											} 
 											else if ($row < round($pcsphr))
 											{
@@ -294,9 +303,10 @@ if(isset($_GET['submit']))
 														{
 															if (in_array($team, $plant_modules[$k]))
 															{
-																$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+																$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
 															}
-														}												
+														}
+														$dummy[$section_wise_total][$i] = $dummy[$section_wise_total][$i] + $row;												
 														echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
 													}
 													else
@@ -482,6 +492,7 @@ if(isset($_GET['submit']))
 								</tr>
 									<?php
 						}
+					
 							?>
 							<tr style="background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
 								<td>Section - <?php  echo $section; ?></center></td>
@@ -495,10 +506,10 @@ if(isset($_GET['submit']))
 								<?php
 									for ($i=0; $i < sizeof($hours_array); $i++)
 									{
-										if ($grand_tot_qty_time_array1[$plant_name[$j]][$i] > 0)
+										if ($dummy[$section_wise_total][$i] > 0)
 										{
 											echo "<td><center>".
-											$grand_tot_qty_time_array1[$plant_name[$j]][$i]
+											$dummy[$section_wise_total][$i]
 											."</center></td>";			
 										} 
 										else
@@ -507,6 +518,7 @@ if(isset($_GET['submit']))
 										}
 										
 									}
+									//unset($dummy[$section_wise_total]);
 								?>
 								<td><center>
 									<?php 
