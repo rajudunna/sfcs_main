@@ -934,7 +934,7 @@
                                         // echo "yash<br>";
                                         $url1=getFullURL($_GET['r'],'fabric_requisition.php','N');
                                         if($qty_view_status==1){
-                                            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$total_qty</a></div>";
+                                            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px;width:20px; text-align:center;min-width:20px;width:auto;color:$final_cols\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$total_qty</a></div>";
             
                                         }else{
                                             echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"></a>";
@@ -947,7 +947,7 @@
                                     {
                                         // echo "yellow or green<br>";
                                         if($qty_view_status==1){
-                                            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"#\">$total_qty</a></div></div>";
+                                            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px;width:20px; text-align:center;min-width:20px;width:auto;color:$final_cols\" title=\"$title\" ><a href=\"#\">$total_qty</a></div></div>";
                                            }else{
                                                echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"#\"></a></div></div>";
       
