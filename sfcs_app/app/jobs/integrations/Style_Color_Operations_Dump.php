@@ -4,7 +4,8 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(1000000);
 
-$sql="SELECT order_style_no,order_col_des,order_tid FROM $bai_pro3.bai_orders_db GROUP BY order_style_no,order_col_des ORDER BY order_style_no,order_col_des";
+$sql="SELECT order_style_no,order_col_des,REPLACE(order_tid,' ','')AS order_tid FROM $bai_pro3.bai_orders_db GROUP BY order_style_no,order_col_des ORDER BY order_style_no,order_col_des";
+// echo $sql;
 $result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($result))
 {
@@ -14,6 +15,7 @@ while($sql_row=mysqli_fetch_array($result))
 	//$bundle_creation_data_check="select * from $brandix_bts.tbl_style_ops_master where style='".$style."' and color='".$color."' ";
 	$bundle_creation_data_check = "select * from $bai_pro3.plandoc_stat_log where REPLACE(order_tid,' ','') ='".$order_tid_new."'";
 	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//echo $bundle_creation_data_check.'</br>';
 	if(mysqli_num_rows($bundle_creation_data_check_result)==0)
 	{
 		$tbl_style_ops_master_delete="delete from $brandix_bts.tbl_style_ops_master where style='".$style."' and color='".$color."' ";
@@ -29,7 +31,6 @@ while($sql_row=mysqli_fetch_array($result))
 		}
 	}
 }
-
 
 //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"ssc_porcess4.php\"; }</script>";
 print( "Operations Successfully Integrated")."\n";

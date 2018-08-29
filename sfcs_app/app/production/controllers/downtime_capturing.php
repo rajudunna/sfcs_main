@@ -3,11 +3,12 @@
     Purpose : Page to update down time in sewing time based on planning vs actual 
     Created By : Chandu
     Create : 04-07-2018
-    Update : 21-08-2018 
+    Update : 28-08-2018 
     inputs : date,time,module
     output : show table with style,schedule,color details and update button for update down time.
     updates v0.1 : change the inputing to date and module. remove style schedule color in table. show actual quantity and planned quantity in single row.
     updates v0.2 : output is changes ==> present output is plan-actual ==> updated output is forcast-actual if forcast is not there plan-actual
+    update v0.3 : outpt view is changed to 7-8 to 7:30-8:30
 */
 
 
@@ -169,7 +170,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
 
                     if($actual_qty<$forcast_qty){
                         $hours = $forcast_qty - $actual_qty;
-                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND TIME= '".$r['time_value'].":30' AND team = '".$_GET['module']."'";
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND SUBSTRING_INDEX(TIME, ':', 1) = '".$r['time_value']."' AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($hourly_down_time_res)==0){
                             $btn="<button class='btn btn-danger pull right' onclick='assignhour(".$r['time_value'].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
@@ -178,7 +179,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                         }
                     }elseif($actual_qty<$plan_qty && $forcast_qty==0){
                         $hours = $plan_qty - $actual_qty;
-                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND TIME= '".$r['time_value'].":30' AND team = '".$_GET['module']."'";
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND SUBSTRING_INDEX(TIME, ':', 1) = '".$r['time_value']."' AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($hourly_down_time_res)==0){
                             $btn="<button class='btn btn-danger pull right' onclick='assignhour(".$r['time_value'].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
@@ -190,8 +191,9 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                     }
 
 
-
-                    $tab.="<tr><td>".$r['HOUR']."</td><td>$plan_qty</td><td>".round($forcast_qty,2)."</td><td>$actual_qty</td><td>$btn</td></tr>";
+                    $hor = explode("-",$r['HOUR']);
+                    $hor = $hor[0].":30-".explode(" ",$hor[1])[0].":30 ".explode(" ",$hor[1])[1];
+                    $tab.="<tr><td>".$hor."</td><td>$plan_qty</td><td>".round($forcast_qty,2)."</td><td>$actual_qty</td><td>$btn</td></tr>";
                     
                 }
                 $tab.="</tbody>
