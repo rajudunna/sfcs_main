@@ -3,14 +3,12 @@
 	<title></title>
 </head>
 <style>
-body{
-    font-size:22px;
-}
 table, th, td {
     border: 1px solid black;
+    font-size: small;
 }
 @media print{
-    @page { margin: 0; font-size:25px;}
+    @page { margin: 0;}
     body{
         font-size:22px;
     }
@@ -51,8 +49,8 @@ if(count($colors)>0){
         $size_code_qty=array();
         unset($size_code);
         unset($size_code_qty);
-        $sql="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and order_col_des='".$color."' and input_job_no='".$input_job_no."'";
-
+        $sql="select size_code,sum(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and order_col_des='".$color."' and input_job_no='".$input_job_no."' group by size_code";
+ 
         $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
         $colorrows = mysqli_num_rows($sql_result);
         while($row=mysqli_fetch_array($sql_result))
@@ -113,7 +111,7 @@ if(count($colors)>0){
             </div>
             <br>
             <?php
-                $sql="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job_no."'  group by order_col_des,size_code";
+                $sql="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job_no."' and order_col_des='".$color."' group by size_code";
                 //echo $sql."<br/>";
                 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo mysqli_num_rows($sql_result)."<br>";
@@ -146,7 +144,7 @@ if(count($colors)>0){
                         }
                     }?>
                     <table width="100%">
-                        <thead style="background-color: lightgrey;">
+                        <thead style="background-color: whitesmoke;">
                             <tr>
                                 <th>Item Code(SKU)</th>
                                 <th>Item Description</th>
@@ -167,16 +165,20 @@ if(count($colors)>0){
                             $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_sql_result) > 0){
                                 $value1['trim_type'] = 'STRIM';
-                                $api_selected_valuess = $value1;
+                                $api_selected_valuess_strim[] = $value1;
                             }
                             
                             $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and OperationNumber = 200";
                             $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_ptrim_sql_result) > 0){
                                 $value1['trim_type'] = 'PTRIM';
-                                $api_selected_valuess = $value1;
-                            }
-                            if($api_selected_valuess){
+                                $api_selected_valuess_ptrim[] = $value1;
+                            }                                                 
+                        }
+                        if(count($api_selected_valuess_strim)>0){?>
+                            <tr style="background-color: whitesmoke;"><td colspan=9><center><strong>Sewing Trims</strong></center></td></tr>
+                        <?php
+                            foreach($api_selected_valuess_strim as $api_selected_valuess){
                                 $mfno = $api_selected_valuess['MFNO'];
                                 $prno = urlencode($api_selected_valuess['PRNO']);
                                 $mseq = $api_selected_valuess['MSEQ'];
@@ -191,22 +193,53 @@ if(count($colors)>0){
                                 //req with wastge                               
                                 $reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
 
-                            ?>
-                            <tr>
-                                <td><?= $api_selected_valuess['MTNO'] ?></td>
-                                <td><?= $api_selected_valuess['ITDS'] ?></td>
-                                <td><?= $api_selected_valuess['color'] ?></td>
-                                <td><center><?= $api_selected_valuess['size'] ?><center></td>
-                                <td><?= $api_selected_valuess['CNQT'] ?></td>
-                                <td><?= $result_values[0]['Value'] ?></td>
-                                <td><?= $reqwithwastage ?></td>
-                                <td><?= $reqwithoutwastage ?></td>
-                                <td><?= $api_selected_valuess['PEUN'] ?></td>
+                        ?>
+                        <tr>
+                            <td><?= $api_selected_valuess['MTNO'] ?></td>
+                            <td><?= $api_selected_valuess['ITDS'] ?></td>
+                            <td><?= $api_selected_valuess['color'] ?></td>
+                            <td><center><?= $api_selected_valuess['size'] ?><center></td>
+                            <td><?php echo "<span style='float:right;'>".$api_selected_valuess['CNQT']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$reqwithwastage."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$reqwithoutwastage."</span>";?></td>
+                            <td><?= $api_selected_valuess['PEUN'] ?></td>
+                        </tr>
+                        <?php }
+                        }    
+                        if(count($api_selected_valuess_ptrim)>0){?>
+                            <tr style="background-color: whitesmoke;"><td colspan=9><center><strong>Packing Trims</strong></center></td></tr>
+                        <?php
+                            foreach($api_selected_valuess_ptrim as $api_selected_valuess){
+                                $mfno = $api_selected_valuess['MFNO'];
+                                $prno = urlencode($api_selected_valuess['PRNO']);
+                                $mseq = $api_selected_valuess['MSEQ'];
+                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
+                                $api_data_result = json_decode($api_data_wastage, true);   
+                                $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
+                                
+                                //req without wastge
+                                $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
-                            </tr>
-                            <?php 
-                            }
-                        }?>    
+                                //req with wastge                               
+                                $reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
+
+                        ?>
+                        <tr>
+                            <td><?= $api_selected_valuess['MTNO'] ?></td>
+                            <td><?= $api_selected_valuess['ITDS'] ?></td>
+                            <td><?= $api_selected_valuess['color'] ?></td>
+                            <td><center><?= $api_selected_valuess['size'] ?><center></td>
+                            <td><?php echo "<span style='float:right;'>".$api_selected_valuess['CNQT']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$reqwithwastage."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$reqwithoutwastage."</span>";?></td>
+                            <td><?= $api_selected_valuess['PEUN'] ?></td>
+                        </tr>
+                        <?php }
+                        }                        
+                        ?>    
                     <br> 
                     <?php
                 }else{?>
