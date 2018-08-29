@@ -360,7 +360,16 @@ function GetSelectedItem()
 					}
 
 					echo "<option value=\"22:00\" name=\"r22\">10:00 P.M</option>";
-					echo "</SELECT> <strong>Lead time for RM supply is ".$rms_request_time." Hour</strong>";
+
+					if($rms_request_time==1){
+						$hour = 'Hour';
+					}
+					else {
+						$hour = 'Hours';
+					}
+
+
+					echo "</SELECT> <strong>Lead time for RM supply is ".$rms_request_time." ".$hour." </strong>";
 
 				?>
 			</td>
