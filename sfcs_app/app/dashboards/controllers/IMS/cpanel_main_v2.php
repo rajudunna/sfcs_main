@@ -572,15 +572,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
                 $operation_code=$sql_row['operation_code'];
               } 
                
-               //$shift='G';
-               $barcode_generation='1';
+               $shift='G';
+               //$barcode_generation='1';
                $sidemenu=true;
-              //$ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
-              $ui_url1= getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/pre_input_job_scanning.php',3,'N');
+              $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
+              //$ui_url1= getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/pre_input_job_scanning.php',3,'N');
 
           ?>
                   
-                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&barcode_generation=<?php echo $barcode_generation; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
+                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&shift=<?php echo $shift; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
