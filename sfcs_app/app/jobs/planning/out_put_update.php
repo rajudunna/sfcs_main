@@ -146,7 +146,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$fgqty=$sql_row9['fgqty'];
 				}
 
-				$sql10="select bac_sec,COALESCE(SUM(bac_qty),0) AS output FROM $bai_pro.bai_log WHERE delivery=$schedule and color='".$color."' AND size_".$size_data_ref." >0  GROUP BY bac_sec";
+				$sql10="select bac_sec,COALESCE(SUM(bac_qty),0) AS output FROM $bai_pro.bai_log WHERE delivery=$schedule and color='".$color."' AND size_".$size_data_ref." >0  GROUP BY bac_no";
 				$sql_result10=mysqli_query($link, $sql10) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				// echo $sql10."<br>";
 				while($sql_row10=mysqli_fetch_array($sql_result10))

@@ -225,7 +225,7 @@ function getjobdetails($job_number)
 			die();
 		}
 		
-		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
+		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code != 10 ORDER BY operation_order DESC LIMIT 1";
 		//echo $pre_ops_check;
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
@@ -474,7 +474,7 @@ function getjobdetails($job_number)
 			die();
 		}
 		
-		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
+		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code != 10 ORDER BY operation_order DESC LIMIT 1";
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
 		{
@@ -678,10 +678,10 @@ function getreversalscanningdetails($job_number)
 			// die();
 		}
 	}
-	$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1
+	$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code not in (10,15) ORDER BY operation_order ASC LIMIT 1
 	";
 	$result_post_ops_check = $link->query($post_ops_check);
-	//echo $post_ops_check; 
+	// echo $post_ops_check; 
 	if($result_post_ops_check->num_rows > 0)
 	{
 		while($row = $result_post_ops_check->fetch_assoc()) 
@@ -769,7 +769,7 @@ function getreversalscanningdetails($job_number)
 	}
 
 	$job_details_qry = "SELECT id,style,`color` AS order_col_des,`size_title` AS size_code,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(rejected_qty) AS rejected_qty,(SUM(send_qty)-SUM(recevied_qty)) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref = '$job_number[1]' AND operation_id = '$job_number[0]' AND remarks = '$job_number[2]' GROUP BY size_title,color order by bundle_number";
-	//	echo $job_details_qry;
+	//echo $job_details_qry;
 	$job_details_qry = $link->query($job_details_qry);
 	//echo $job_details_qry->num_rows;
 	if($job_details_qry->num_rows > 0)

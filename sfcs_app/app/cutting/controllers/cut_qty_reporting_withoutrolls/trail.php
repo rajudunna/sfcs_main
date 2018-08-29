@@ -6,6 +6,7 @@ $bundle_no = array();
 $cut_done_qty = array();
 $qry_to_find_in_out = "select * from $brandix_bts.bundle_creation_data where docket_number='$doc_no_ref'";
 $qry_to_find_in_out_result = $link->query($qry_to_find_in_out);
+error_reporting(0);
 if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 {
 	$plies = $_GET['plies'];
@@ -133,8 +134,8 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 		$seq_id = $row['id'];
 		$ops_order = $row['operation_order'];
 	}
-	$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND operation_order > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
-	// echo $post_ops_check;
+	$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
+	//echo $post_ops_check;
 	$result_post_ops_check = $link->query($post_ops_check);
 	if($result_post_ops_check->num_rows > 0)
 	{
@@ -149,10 +150,11 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 	{
 		if($b_rep_qty[$key] > 0 || $b_rej_qty[$key] >0)
 		{
-			$bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
 			$sfcs_smv = 0.00;
-			$bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$b_remarks[$key].'")';
-			// echo $bulk_insert_post_temp;	
+			$bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
+			
+			$bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_job_no.'","'.$b_inp_job_ref[$key].'","'.$b_shift.'","'.$b_module.'","'.$b_remarks[$key].'")';
+			//echo $bulk_insert_post_temp;	
 			$result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
 		}
 		if($post_ops_code != null)
@@ -171,9 +173,10 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 			}
 			$final_rep_qty = $b_old_rep_qty_new + $b_rep_qty[$key];
 			$final_rej_qty = $b_old_rej_qty_new + $b_rej_qty[$key];
-			$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$b_op_id;
+			$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`=NOW() where bundle_number ='".$b_tid[$key]."' and operation_id = ".$b_op_id;
 			$result_query = $link->query($query) or exit('query error in updating');
-			$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$post_ops_code;
+			$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`=NOW() where bundle_number ='".$b_tid[$key]."' and operation_id = ".$post_ops_code;
+			//echo $query_post;
 			$result_query = $link->query($query_post) or exit('query error in updating');
 		}
 		if($ops_dep)
@@ -186,8 +189,8 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 				$pre_recieved_qty = $row['recieved_qty'];
 			}
 
-			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$ops_dep;
-			// $query_post_dep.'</br>';
+			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`=NOW() where bundle_number ='".$b_tid[$key]."' and operation_id = ".$ops_dep;
+			//echo $query_post_dep.'</br>';
 			$result_query = $link->query($query_post_dep) or exit('query error in updating');
 
 		}
@@ -213,7 +216,7 @@ else
 		$b_doc_num[]=$doc_no_ref;
 		$b_in_job_qty[]=$row1['carton_act_qty'];
 		$b_a_cut_no[] = $row1['acutno'];
-		$b_job_no = $row1['input_job_no_random'];
+		$b_job_no[] = $row1['input_job_no_random'];
 		$b_shift= 'G';
 		$b_remarks[] = 'Normal';
 		$b_module  = 0;
@@ -272,6 +275,7 @@ else
 	$b_rep_qty = $actual_rec_quantities;
 	// var_dump($rec_qtys_array);
 	// die();
+	
 	$bulk_insert = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`mapped_color`) VALUES";
 			// temp table data insertion query.........
 				$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
@@ -343,16 +347,18 @@ else
 	{
 		$ops_seq_dep[] = $ops_seq;
 	}
-	$pre_ops_check = "select operation_code,ops_sequence from $brandix_bts.tbl_style_ops_master where style='".$b_style."' and color = '".$mapped_color."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep)."))";
+	$pre_ops_check = "SELECT operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='".$b_style."' AND color = '".$mapped_color."' AND (ops_sequence = '".$ops_seq."' OR ops_sequence IN ('".implode(',',$ops_seq_dep)."') ) AND operation_code NOT IN ('10','200')";
+	
+	// $pre_ops_check = "select operation_code,ops_sequence from $brandix_bts.tbl_style_ops_master where style='".$b_style."' and color = '".$mapped_color."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep).")') and operation_code not in (10,200)";
 	$result_pre_ops_check = $link->query($pre_ops_check);
 	if($result_pre_ops_check->num_rows > 0)
 	{
 		while($row = $result_pre_ops_check->fetch_assoc()) 
 		{
-			if($row['ops_sequence'] != 0)
-			{
+			// if($row['ops_sequence'] != 0)
+			// {
 				$pre_ops_code[] = $row['operation_code'];
-			}
+			//}
 		}
 	}
 	// var_dump($pre_ops_code);
@@ -367,6 +373,15 @@ else
 	// var_dump($b_query);
 	foreach ($b_tid as $key => $value) 
 	{
+		// $fetching_inputjob_no  ="select input_job_no_random from $bai_pro3.`packing_summary_input` where tid = $b_tid[$key]";
+		// $result_fetching_inputjob_no = $link->query($fetching_inputjob_no);
+		// if($result_fetching_inputjob_no->num_rows > 0)
+		// {
+		// 	while($row = $result_fetching_inputjob_no->fetch_assoc()) 
+		// 	{
+		// 		$input_job_no - 
+		// 	}
+		// }
 		foreach($pre_ops_code as $index => $op_code)
 		{
 			$dep_check_query = "SELECT * from $brandix_bts.bundle_creation_data where bundle_number = $b_tid[$key] and operation_id = $op_code";
@@ -381,9 +396,9 @@ else
 					$rec_qty =0 ;
 					$rej_qty = 0;
 					$left_over_qty = 0;
-					$b_query[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$b_remarks[$key].'","'.$mapped_color.'"),';
+					$b_query[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no[$key].'","'.$b_shift.'","'.$b_module.'","'.$b_remarks[$key].'","'.$mapped_color.'"),';
 
-					$b_query_temp[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'"),';
+					$b_query_temp[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no[$key].'","'.$b_shift.'","'.$b_module.'"),';
 				}
 			}
 		}
@@ -396,18 +411,18 @@ else
 			{
 				$pre_recieved_qty = $row['recieved_qty'];
 			}
-			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$ops_dep;
+			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`=NOW() where bundle_number ='".$b_tid[$key]."' and operation_id = ".$ops_dep;
 			//echo $query_post_dep.'</br>';
 			$result_query = $link->query($query_post_dep) or exit('query error in updating');
 		}
 		// $b_rep_qty[$key] =10;
 		$b_rej_qty[$key] = 0;
 		$left_over_qty = 0;
-		$bulk_insert .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$b_remarks[$key].'","'.$mapped_color.'"),';
+		$bulk_insert .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no[$key].'","'.$b_shift.'","'.$b_module.'","'.$b_remarks[$key].'","'.$mapped_color.'"),';
 			// temp table data insertion query.........
 			if($b_rep_qty[$key] > 0 || $b_rej_qty[$key] > 0)
 			{
-				$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$b_remarks[$key].'"),';
+				$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no[$key].'","'.$b_shift.'","'.$b_module.'","'.$b_remarks[$key].'"),';
 			}
 	}
 
@@ -440,6 +455,7 @@ else
 		//echo $bulk_insert_rej;
 	
 }
+// die();
 echo "<div class=\"alert alert-success\">
 <strong>Successfully Cutting Reported.</strong>
 </div>";
