@@ -3759,7 +3759,8 @@ echo "</tbody></table>";
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
-  <td class=xl6417319 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
+  <td class=xl6417319 colspan="3"><u><strong>Quality Authorisation</strong></u><br/>
+ <br/><strong><u> Cutting Supervisor Authorization</u></strong></td>
  </tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
