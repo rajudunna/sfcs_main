@@ -181,6 +181,10 @@ if(isset($_POST["submit"]))
     $order_det_suc=array(); 
     //echo $schedule."---".$color."<br>"; 
     //Ticket# 365867/Date:2014-01-22/Task: LayPlan Deletion Validation Enhancement/Action:Taken the Order Tid instead of Schedule No for validate the query. 
+	
+			
+	
+	
     if($color!='0' || $color!='0') 
     {   
         $sql73="select *,order_tid as otid from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\" and order_joins='0'"; 
@@ -441,6 +445,19 @@ if(isset($_POST["submit"]))
                 } 
                  
             } 
+			
+			$getmonos="select mo_no from $bai_pro3.mo_details where schedule='$schedule' and color='$color'";
+			$moresult=mysqli_query($link, $getmonos) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($rowmo=mysqli_fetch_array($moresult)) 
+			{
+				$mos[]=$rowmo['mo_no'];
+			}
+			$mos=implode(',',$mos);
+			$deletefrommoquantitys="delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_desc='Cutting'";
+			echo $deletefrommoquantitys;
+			mysqli_query($link, $deletefrommoquantitys) or die("Error while deleting mo nos from mo operation quantities".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	
+			
         } 
         else 
         { 

@@ -13,8 +13,9 @@
 	if(isset($_GET['order_tid_arr']))
 	{
 		$order_tids=$_GET['order_tid_arr'];
-		$order_tid[]=explode(',',$order_tids);
+		$order_tid=explode(',',$order_tids);
 	}
+	
 	$filename=$_GET['filename'];
 	
 	set_time_limit(30000000); 
@@ -214,6 +215,22 @@
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 				function Redirect() {
 					location.href = \"".getFullURLLevel($_GET['r'], 'cutting/controllers/lay_plan_preparation/main_interface.php',3,'N')."&color=$col&style=$style&schedule=$schedule\";
+					}
+				</script>";	
+			}
+			if($filename=='mixjobs')
+			{
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+				function Redirect() {
+					location.href = \"".getFullURLLevel($_GET['r'], 'cutting/controllers/schedule_club_style/mix_jobs.php',3,'N')."&color=$col&style=$style&schedule=$schedule\";
+					}
+				</script>";	
+			}
+			if($filename=='schsplit')
+			{
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+				function Redirect() {
+					location.href = \"".getFullURLLevel($_GET['r'], 'cutting/controllers/schedule_clubbing/schedule_split_bek.php',3,'N')."&color=$col&style=$style&schedule=$schedule\";
 					}
 				</script>";	
 			}
