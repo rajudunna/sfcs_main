@@ -702,9 +702,9 @@ $(document).ready(function(){
 <?php
   $end_timestamp = microtime(true);
   $duration = $end_timestamp - $start_timestamp;
-  // if(isset($_GET['d']))
-  // {
+  if(isset($_GET['d']))
+  {
   print("Execution took ".$duration." seconds.");
-  // }
+  }
 
 ?>
