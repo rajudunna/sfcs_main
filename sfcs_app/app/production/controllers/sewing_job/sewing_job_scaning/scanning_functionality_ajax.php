@@ -1314,20 +1314,20 @@ if($barcode_generation == 1)
 				else if($b_op_id == $output_ops_code)
 				{
 					//getting input ops code from output ops with operation sequence
-					$selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
-					//echo $selecting_output_from_seq_query;
-					$result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
-					if($result_selecting_output_from_seq_query->num_rows > 0)
-					{
-						while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
-						{
-							$input_ops_code = $row['operation_code'];
-						}
-					}
-					else
-					{
+					// $selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
+					// //echo $selecting_output_from_seq_query;
+					// $result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
+					// if($result_selecting_output_from_seq_query->num_rows > 0)
+					// {
+					// 	while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
+					// 	{
+					// 		$input_ops_code = $row['operation_code'];
+					// 	}
+					// }
+					// else
+					// {
 						$input_ops_code = 129;
-					}
+					//}
 					//echo 'input_ops_code'.$input_ops_code;
 					if($input_ops_code == 100 || $input_ops_code == 129)
 					{
