@@ -2,6 +2,8 @@
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 // $username="sfcsproject1";
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 $has_perm=haspermission($_GET['r']);
 
 // $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gayanl","baisysadmin","chathurangad","buddhikam","saroasa","chathurikap","sfcsproject2","thanushaj","kemijaht","sfcsproject1","ber_databasesvc","saranilaga","thusiyas","thineshas","sudathra");
@@ -175,6 +177,10 @@ $has_perm=haspermission($_GET['r']);
 		margin:0px;
 		padding:0px;
 	}
+	#dhtmlgoodies_mainContainer div ul {
+		height: <?= ($module_limit*30).'px'; ?>
+		/* overflow-y: scroll; */
+	}
 	</style>
 	<style type="text/css" media="print">
 	div#dhtmlgoodies_listOfItems{
@@ -191,6 +197,8 @@ $has_perm=haspermission($_GET['r']);
 		width:100%;
 	}
 	</style>	
+
+
 	<script type="text/javascript">
 	/************************************************************************************************************
 	(C) www.dhtmlgoodies.com, November 2005
@@ -213,9 +221,13 @@ $has_perm=haspermission($_GET['r']);
 	Alf Magne Kalleland
 	
 	************************************************************************************************************/
-		
+	var boxSizeArray = [];
+	for(var i=0; i<120; i++){
+		boxSizeArray.push('<?= $module_limit; ?>');
+	}
+	
 	/* VARIABLES YOU COULD MODIFY */
-	var boxSizeArray = [14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14];	// Array indicating how many items there is rooom for in the right column ULs
+	// var boxSizeArray = [32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32];	// Array indicating how many items there is rooom for in the right column ULs
 	var arrow_offsetX = -5;	// Offset X - position of small arrow
 	var arrow_offsetY = 0;	// Offset Y - position of small arrow
 	
@@ -278,6 +290,7 @@ $has_perm=haspermission($_GET['r']);
 	}
 	function initDrag(e)	// Mouse button is pressed down on a LI
 	{
+		
 		var col = $(this).attr('data-color');
 		if(document.all)e = event;
 		var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
@@ -303,6 +316,7 @@ $has_perm=haspermission($_GET['r']);
 	
 	function timerDrag()
 	{
+		
 		if(dragTimer>=0 && dragTimer<10){
 			dragTimer++;
 			setTimeout('timerDrag()',10);
@@ -322,7 +336,7 @@ $has_perm=haspermission($_GET['r']);
 	
 	function moveDragContent(e)
 	{
-
+		
 		if(dragTimer<10){
 			if(contentToBeDragged){
 				if(contentToBeDragged_next){
@@ -429,49 +443,54 @@ $has_perm=haspermission($_GET['r']);
 	*/	
 	function dragDropEnd(e)
 	{
-		if(dragTimer==-1)return;
-		if(dragTimer<10){
-			dragTimer = -1;
-			return;
-		}
-		dragTimer = -1;
-		if(document.all)e = event;	
+		// var module_limit = '<?= $module_limit; ?>';
+		// console.log(parseInt(module_limit));
 		
-		
-		if(cloneSourceItems && (!destinationObj || (destinationObj && (destinationObj.id=='allItems' || destinationObj.parentNode.id=='allItems')))){
-			contentToBeDragged.parentNode.removeChild(contentToBeDragged);
-		}else{	
-			
-			if(destinationObj){
-				if(destinationObj.tagName=='UL'){
-					destinationObj.appendChild(contentToBeDragged);
-				}else{
-					destinationObj.parentNode.insertBefore(contentToBeDragged,destinationObj);
-				}
-				mouseoverObj.className='';
-				destinationObj = false;
-				dragDropIndicator.style.display='none';
-				if(indicateDestinationBox){
-					indicateDestinationBox.style.display='none';
-					document.body.appendChild(indicateDestinationBox);
-				}
-				contentToBeDragged = false;
+			if(dragTimer==-1)return;
+			if(dragTimer<10){
+				dragTimer = -1;
 				return;
-			}		
-			if(contentToBeDragged_next){
-				contentToBeDragged_src.insertBefore(contentToBeDragged,contentToBeDragged_next);
-			}else{
-				contentToBeDragged_src.appendChild(contentToBeDragged);
 			}
-		}
-		contentToBeDragged = false;
-		dragDropIndicator.style.display='none';
-		if(indicateDestinationBox){
-			indicateDestinationBox.style.display='none';
-			document.body.appendChild(indicateDestinationBox);
 			
-		}
-		mouseoverObj = false;
+			dragTimer = -1;
+			if(document.all)e = event;	
+			
+			
+			if(cloneSourceItems && (!destinationObj || (destinationObj && (destinationObj.id=='allItems' || destinationObj.parentNode.id=='allItems')))){
+				contentToBeDragged.parentNode.removeChild(contentToBeDragged);
+			}else{	
+				
+				if(destinationObj){
+					if(destinationObj.tagName=='UL'){
+						destinationObj.appendChild(contentToBeDragged);
+					}else{
+						destinationObj.parentNode.insertBefore(contentToBeDragged,destinationObj);
+					}
+					mouseoverObj.className='';
+					destinationObj = false;
+					dragDropIndicator.style.display='none';
+					if(indicateDestinationBox){
+						indicateDestinationBox.style.display='none';
+						document.body.appendChild(indicateDestinationBox);
+					}
+					contentToBeDragged = false;
+					return;
+				}		
+				if(contentToBeDragged_next){
+					contentToBeDragged_src.insertBefore(contentToBeDragged,contentToBeDragged_next);
+				}else{
+					contentToBeDragged_src.appendChild(contentToBeDragged);
+				}
+			}
+			contentToBeDragged = false;
+			dragDropIndicator.style.display='none';
+			if(indicateDestinationBox){
+				indicateDestinationBox.style.display='none';
+				document.body.appendChild(indicateDestinationBox);
+				
+			}
+			
+			mouseoverObj = false;
 		
 	}
 	
@@ -480,6 +499,7 @@ $has_perm=haspermission($_GET['r']);
 	*/
 	function saveDragDropNodes()
 	{
+		
 		var saveString = "";
 		var uls = dragDropTopContainer.getElementsByTagName('UL');
 		for(var no=0;no<uls.length;no++){	// LOoping through all <ul>
@@ -499,6 +519,7 @@ document.forms["myForm"].submit();
 	
 	function initDragDropScript()
 	{
+		
 		dragContentObj = document.getElementById('dragContent');
 		dragDropIndicator = document.getElementById('dragDropIndicator');
 		dragDropTopContainer = document.getElementById('dhtmlgoodies_dragDropContainer');
@@ -526,6 +547,7 @@ document.forms["myForm"].submit();
 		
 		document.documentElement.onmousemove = moveDragContent;	// Mouse move event - moving draggable div
 		document.documentElement.onmouseup = dragDropEnd;	// Mouse move event - moving draggable div
+	
 		
 		var ulArray = dragDropTopContainer.getElementsByTagName('UL');
 		for(var no=0;no<ulArray.length;no++){
@@ -548,6 +570,7 @@ document.forms["myForm"].submit();
 	}
 	
 	window.onload = initDragDropScript;
+
 	</script>
 
 
@@ -560,8 +583,7 @@ document.forms["myForm"].submit();
 //include("../".getFullURL($_GET['r'],'dbconf.php','R')); 
 //include("../".getFullURL($_GET['r'],"functions.php",'R')); 
 // include('dbconf.php');
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R'));
 $style=$_GET['style'];
 $schedule=$_GET['schedule'];
@@ -777,7 +799,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
 			
-			// echo "<div style=\"width:140px;height:500px;\" align=\"center\" class=\"table table-responsive\"><h4>SEC - $section</h4>";
+			// echo "<div style=\"width:320px;height:500px;\" align=\"center\" class=\"table table-responsive\"><h4>SEC - $section</h4>";
 			echo "<div style=\"width:170px;\" align=\"center\"><h4>SEC - $section</h4>";
 		
 			$mods=array();
@@ -802,7 +824,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				//New Implementation to Restrict Power User level Planning 20111211
 			}
 			
-						
+						echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
 			for($x=0;$x<sizeof($mods);$x++)
 			{
 		
@@ -955,4 +977,5 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 
 </html>
 <script src="../../common/js/jquery-1.3.2.js"></script>
+
 
