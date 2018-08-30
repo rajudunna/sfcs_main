@@ -656,8 +656,6 @@ if ($sql_result) {
 					<th class=\"column-title\"><center>Fabric Code</th>
 					<th class=\"column-title\" style='word-wrap: break-word;'><center>Fabric Description</th>
 					<th class=\"column-title\"><center>Pur Width</th>
-				
-					
 					<th class=\"column-title\"><center>Pattern Version</th>
 					<th class=\"column-title\"><center>MO status</th>
 					<th class=\"column-title\"><center>Controls</th>
@@ -677,6 +675,7 @@ if ($sql_result) {
 			echo "<td class=\"  \"><center>".$sql_row['compo_no']."</center></td>";
 			echo "<td class=\"  \" style='word-wrap: break-word;'><center>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
+
 			//echo $sql_row['tid']."</br>";
 	//		if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
