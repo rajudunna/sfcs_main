@@ -807,7 +807,7 @@
 
 				
 				if($b_op_id == $hout_ops_code){
-					$hout_data_qry = "select * from $bai_pro2.hout where out_date = '$tod_date' and left(out_time,2) = '$cur_h' and team = '$b_module' and time_parent_id = '$plant_time_id'";
+					$hout_data_qry = "select * from $bai_pro2.hout where out_date = '$tod_date' and team = '$b_module' and time_parent_id = '$plant_time_id'";
 					// echo $hout_data_qry;
 					$hout_data_result = $link->query($hout_data_qry);
 
