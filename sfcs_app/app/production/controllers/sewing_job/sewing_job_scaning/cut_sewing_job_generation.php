@@ -1,3 +1,12 @@
+<?php
+/* ===============================================================
+               Created By : Sudheer and Chandu
+Created : 30-08-2018
+Updated : 30-08-2018
+input : Schedule,color & cutjob count.
+output v0.1: Generate jobs.
+=================================================================== */
+?>
 <script>
 
 $(document).ready(function(){
@@ -64,15 +73,87 @@ if($schedule != "" && $color != "")
 //$ratio_query = "SELECT * FROM bai_orders_db_confirm  LEFT JOIN cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE  cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no= $schedule  AND bai_orders_db_confirm.order_col_des ='".$color."' ";
 //echo $ratio_query;
 
-$ratio_query = "SELECT * FROM bai_orders_db_confirm  LEFT JOIN cat_stat_log ON 
-bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN plandoc_stat_log ON 
-cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE  cat_stat_log.category IN ('Body','Front') 
-AND bai_orders_db_confirm.order_del_no='529508' AND 
-bai_orders_db_confirm.order_col_des ='DRBLU : DRESS BLUES' ";
-echo $ratio_query;
+$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='529508' AND bai_orders_db_confirm.order_col_des ='DRBLU : DRESS BLUES'";
+$ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $i=0;
+    $max=0;
+    if(mysqli_num_rows($ratio_result)>0){
+        echo "<table class='table'>";
+        while($row=mysqli_fetch_array($ratio_result))
+        {
+            if($i==0){
+                echo "<thead>
+                    <tr>
+                        <th>Ratio</th><th>Cut No</th><th>P Plies</th>";
+                        for($j=1;$j<=50;$j++){
+                            $sno = str_pad($j,2,"0",STR_PAD_LEFT);
+                            if($row['title_size_s'.$sno]!=''){
+                                echo "<th>".$row['title_size_s'.$sno]."</th>";
+                                $max=$j;
+                            }else{
+                                break;
+                            } 
+                        }
+                        echo "<th>Action</th>";
 
+                echo "</tr>
+                </thead><tbody>";
+                $i++;
+            }
 
-}   
+            echo "<tr>
+                <td>".$row['ratio']."</td>
+                <td>".$row['pcutno']."</td>
+                <td>".$row['p_plies']."</td>";
+            for($k=1;$k<=$max;$k++){
+                $sno = str_pad($k,2,"0",STR_PAD_LEFT);
+                echo "<td>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+            }
+            echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm'>Generate Jobs</button></td>";
+            echo "</tr>";
+        }
+        echo "</tbody></table>"; 
+    }
+    //=====================
+    echo '<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     ng-app="cutjob" ng-controller="cutjobcontroller" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Sewing Job Generation</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mx-3">
+                <div class="md-form mb-5">
+                    <i class="fa fa-envelope prefix grey-text"></i>
+                    <input type="text" id="defaultForm-job" class="form-control validate" ng-model= "jobcount" id="jobcount" name="jobcount">
+                    <label data-error="wrong" data-success="right" for="defaultForm-email">Input Job Count</label>
+                </div> </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button class="btn btn-default" ng-click="getjobs()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>';
+    //=====================
+} 
 ?>
 
 </div>
+
+<script>
+var app = angular.module('cutjob', []);
+app.controller('cutjobcontroller', function($scope, $http) {
+    $scope.jobcount = "";
+    
+    $scope.getjobs = function(){
+     alert($scope.jobcount);
+    };
+
+
+
+});
+angular.bootstrap($('#modalLoginForm'), ['cutjob']);
+</script>
