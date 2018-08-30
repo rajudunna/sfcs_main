@@ -266,8 +266,8 @@ function getjobdetails($job_number)
 			}
 			else
 			{
-				// $schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
-				// $flag = 'packing_summary_input';
+				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
+				$flag = 'packing_summary_input';
 				// $result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
 				// $flags = 100;
 			}
@@ -513,8 +513,8 @@ function getjobdetails($job_number)
 			}
 			else
 			{
-				// $schedule_query = "SELECT *,carton_act_qty as balance_to_report, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] order by tid";
-				// $flag = 'packing_summary_input';
+				$schedule_query = "SELECT *,carton_act_qty as balance_to_report, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] order by tid";
+				$flag = 'packing_summary_input';
 				// $result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
 				// $flags = 100;
 			}
