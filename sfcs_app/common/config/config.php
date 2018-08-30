@@ -44,11 +44,16 @@ $global_facility_code=$conf1->get('plantcode');
 
 $plant_alert_code=$conf1->get('plant-alert-code');     //plant-alert-code
 $message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
-
+$rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
-
+//M3 Rest API Calls Details
+$company_no = $conf1->get('companey-number');
+$api_username = $conf1->get('api-user-name');
+$api_password = $conf1->get('api-password');
+$api_hostname = $conf1->get('api-host-name');
+$api_port_no = $conf1->get('api-port');
 
 //Scanning Methods
 
@@ -100,8 +105,8 @@ $plant_name = $conf1->get('plantname');
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
-$plant_start_time = "6:30:00";
-$plant_end_time = "22:30:00";
+$plant_start_time = $conf1->get('plant-start-time');;
+$plant_end_time = $conf1->get('plant-end-time');;
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;
