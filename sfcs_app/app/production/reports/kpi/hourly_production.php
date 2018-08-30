@@ -282,9 +282,16 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 							} 
 							else if ($row < round($pcsphr))
 							{
-								if (($hour_iniate > date('H') and $frdate == date('Y-m-d')) && $row == 0)
+								if ($row == 0)
 								{
-									echo "<td><center> - </center></td>";
+									if (($hour_iniate > date('H') and $frdate == date('Y-m-d')) && $row == 0)
+									{
+										echo "<td><center> - </center></td>";
+									}
+									else
+									{
+										echo "<td><center>  </center></td>";
+									}
 								}
 								else
 								{
