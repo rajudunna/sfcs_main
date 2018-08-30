@@ -443,7 +443,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
       {
       
       $module=$mods[$x];
-      include("mod_rep_recon.php");
+      $data[] = $mods[$x];
+      //include("mod_rep_recon.php");
   
       ?>
 
@@ -494,9 +495,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
                     LEFT JOIN bai_pro3.plandoc_stat_log 
                     ON ims_log.ims_doc_no=plandoc_stat_log .doc_no AND ims_status !=\"DONE\" WHERE ims_mod_no='$module' GROUP BY inputjobnorand";
 
-                // echo $sqlred;
+                
+                 //echo $sqlred;
         //$sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_color,ims_schedule,rand_track  FROM ims_log WHERE ims_mod_no='$module' GROUP BY ims_doc_no"
-        $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error11111".mysqli_error($GLOBALS["___mysqli_ston"]));
         
         $total_qty="0";
         $total_out="0";
@@ -530,68 +532,48 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $ijrs[] = $inputjobnorand;
            
 
-      
-      // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
-      // //echo $sql22;
-      // $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
-      // while($sql_row22=mysqli_fetch_array($sql_result22))
-      // {
-      //   $order_tid=$sql_row22['order_tid'];
-      // } 
-      
-      // $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
-      // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
-      // while($sql_row33=mysqli_fetch_array($sql_result33))
-      // {
-      //   $ims_color=$sql_row33['order_tid'];
-      // }
-      // $size_value=array();
-      // $sizes_explode=explode(",",$ims_size);
-      // for($i=0;$i<sizeof($sizes_explode);$i++)
-      // {
-      //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
-      //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
-      // }
-      
-      // $sizes_implode="'".implode("','",$size_value)."'";
 
+      $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
+      //echo $sql22;
+      $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      while($sql_row22=mysqli_fetch_array($sql_result22))
+      {
+        $order_tid=$sql_row22['order_tid'];
+      } 
       
-      // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
-      // //echo $sql22;
-      // $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
-      // while($sql_row22=mysqli_fetch_array($sql_result22))
-      // {
-      //   $order_tid=$sql_row22['order_tid'];
-      // } 
+      $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+      $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      while($sql_row33=mysqli_fetch_array($sql_result33))
+      {
+        $ims_color=$sql_row33['order_tid'];
+      }
+      $size_value=array();
+      $sizes_explode=explode(",",$ims_size);
+      for($i=0;$i<sizeof($sizes_explode);$i++)
+      {
+        $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
+        // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
+      }
       
-      // $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
-      // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
-      // while($sql_row33=mysqli_fetch_array($sql_result33))
-      // {
-      //   $ims_color=$sql_row33['order_tid'];
-      // }
-      // $size_value=array();
-      // $sizes_explode=explode(",",$ims_size);
-      // for($i=0;$i<sizeof($sizes_explode);$i++)
-      // {
-      //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
-      //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
-      // }
+       $sizes_implode="'".implode("','",$size_value)."'";
       
-      // $sizes_implode="'".implode("','",$size_value)."'";
-      
-             // $rejected=0;
-             // $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color in (".$color_ref.") and qms_size in (".$sizes_implode.") and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" and operation_id='130' and qms_remarks in (".$remarks_ref.")";
+             $rejected=0;
+             $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color in (".$color_ref.") and qms_size in (".$sizes_implode.") and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" and operation_id='130' and qms_remarks in (".$remarks_ref.") and bundle_no=\"".$sql_rowred['pac_tid']."\"";
                
-             //   // echo $sql33;
+               // echo $sql33;
 
-             //  $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-             //  while($sql_row33=mysqli_fetch_array($sql_result33))
-             //  {
-             //    $rejected=$sql_row33['rejected']; 
-             //  }
+              $sql_result33=mysqli_query($link, $sql33) ;
+              while($sql_row33=mysqli_fetch_array($sql_result33))
+              {
+                $rejected=$sql_row33['rejected']; 
+              }
 
-
+              //  if(($sql_rowred['ims_qty']-($sql_rowred['ims_pro_qty']+$rejected))==0)
+              // {
+              //   $update_ims_recon="update $bai_pro3.ims_log set ims_status=\"DONE\" where tid='".$sql_rowred['pac_tid']."'";
+              //   //echo $update_ims_recon."<br>";
+              //    $update_ims_recon=mysqli_query($link, $update_ims_recon) or exit("Sql error update ims".mysqli_error($GLOBALS["___mysqli_ston"]));
+              // }     
 
               $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedul_no,$color_name,$inputno,$link);
               $application='IMS';
@@ -605,15 +587,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
                 $operation_code=$sql_row['operation_code'];
               } 
                
-               //$shift='G';
-               $barcode_generation='1';
+               $shift='G';
+               //$barcode_generation='1';
                $sidemenu=true;
-              //$ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
-              $ui_url1= getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/pre_input_job_scanning.php',3,'N');
+              $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
+              //$ui_url1= getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/pre_input_job_scanning.php',3,'N');
 
           ?>
                   
-                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&barcode_generation=<?php echo $barcode_generation; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
+                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&shift=<?php echo $shift; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
@@ -725,6 +707,26 @@ $(document).ready(function(){
 });
 </script>
 
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); 
+    var url = '<?= getFullURL($_GET['r'],'mod_rep_recon.php','R'); ?>';
+    var modules = '<?= json_encode($data); ?>';
+   
+    $.ajax
+    ({
+      type: "POST",
+      url: url,
+      data:{modules:modules},
+      success: function(data)
+      {
+
+      }
+    });  
+});
+
+</script>
 <?php
   $end_timestamp = microtime(true);
   $duration = $end_timestamp - $start_timestamp;
