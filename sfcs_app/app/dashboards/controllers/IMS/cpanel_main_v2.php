@@ -533,7 +533,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
            
 
 
-<<<<<<< HEAD
+
 
       
       // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
@@ -582,7 +582,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
       //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
       //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
       // }
-=======
+
       $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
       //echo $sql22;
       $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
@@ -604,7 +604,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
         $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
         // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
       }
->>>>>>> 841-ims-not-loading-sometime-and-ims-is-very-slow
+
       
        $sizes_implode="'".implode("','",$size_value)."'";
       
