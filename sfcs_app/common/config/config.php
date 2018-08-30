@@ -24,7 +24,11 @@ $ms_sql_odbc_pass = $conf1->get('mssql-password');
 
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
-
+//ms-sql sticker_report
+$host_ms = "10.227.221.25";
+$user_ms = "BAISFCS";
+$password_ms = "fcs@m3pr";
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
 //M3 MSSQL DB Configurations
 $m3_mssql_odbc_name="bcimovsms01_bai";
 $m3_mssql_username="brandix_india_user1";
@@ -87,7 +91,8 @@ $sizes_code=array('01','02','03','04','05','06','07','08','09','10','11','12','1
 
 $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','S31','S32','S33','S34','S35','S36','S37','S38','S39','S40','S41','S42','S43','S44','S45','S46','S47','S48','S49','S50');
 
-$shifts_array = $conf1->get('shifts');
+//$shifts_array = $conf1->get('shifts');
+$shifts_array = array("A","B","C","G");
 
 $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40");
 
@@ -123,6 +128,7 @@ $brandix_bts_uat="brandix_bts_uat";
 $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $temp_pool_db="temp_pool_db";
+$module_limit = 32;
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -1,6 +1,9 @@
 <!-- 2013-11-25/DharaniD/Ticket #988194
 Revised CSS files for interface standardization,Add the Validation on trims status.-->
-
+<head>
+	<link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
+	<title></title>
+</head>
 <?php
 error_reporting(0);
 //include("header.php");
@@ -79,7 +82,8 @@ function doc_in_status($link,$result_type,$size,$doc_no,$input_ref)
 
 
 ?>
-<title>Trims Status Update Form</title>
+<div class='panel panel-primary'>
+	<div class='panel-heading'>Trims Status Update Form</div>
 <script>
 function popitup(url) {
 newwindow=window.open(url,'name','scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0');
@@ -152,7 +156,6 @@ else
 	$module_no=$_GET["module"];
 	//echo $doc."<br>";
 }
-
 //echo $doc;
 $sql131="select * FROM $bai_pro3.plan_dashboard_input where input_trims_status=4 and input_panel_status=2";
 $result131=mysqli_query($link, $sql131) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -264,8 +267,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 // echo "<h4>Ratio Sheet</h4>";
 // echo "<a class='btn btn-info btn-sm' href=\"print_input_sheet.php?schedule=$org_schs\" onclick=\"return popitup_new('print_input_sheet.php?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
 
-echo "<h4>Consumption Report </h4>";
-echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$org_schs&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$org_schs&style=$style&input_job=$jobno')\">Print Input Job Sheet - Sewing / Packing Requirement</a><br><br>";
+echo "<h4><u>Consumption Report</u> </h4>";
+echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$org_schs&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$org_schs&style=$style&input_job=$jobno')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
 
 $sql4="select input_trims_status as t_status from $table_name where input_job_no_random_ref='$doc'";
 //echo $sql4;
@@ -274,11 +277,35 @@ while($row4=mysqli_fetch_array($result4))
 {
 	$t_status=$row4["t_status"];
 }
-if($t_status==1)
-{
-echo "<a class='btn btn-info btn-sm' href=\"new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a>";
-}
+// if($t_status==1)
+// {
+echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
+// }
 echo "<br><br>";
+// if($schedule!=''){
+	// $sql1="SELECT tid,input_job_number,size_code,color,SUM(carton_act_qty) AS tqty,carton_act_qty,module FROM $bai_pro3.pac_stat_log where schedule='$schedule' and input_job_number=$jobno GROUP BY input_job_number,size_code,color  ORDER BY input_job_number*1 ASC";
+	// $sql_result=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($rows=mysqli_fetch_array($sql_result)){
+		// $input_job_no=$rows['input_job_number'];
+		// $tid=$rows['tid'];
+		// $color=$rows['color'];
+		// $size=$rows['size_code'];
+	// }
+	// if($tid == ''){
+		// echo "<h4><u>packing list not generated</u><h4>";
+		// }
+	// else {
+	// $url = getFullURLLevel($_GET['r'],"sfcs_app/app/packing/reports/pdfs/sawing_out_labels1.php",3,'R');
+	// echo $url;
+	// $url = $url."?tid=$tid&job_no=$input_job_no&schedule=$schedule&color=$color&size=$size";
+	// echo "<a href=\"$url\" class=\"btn btn-warning btn-sm\" target=\"_blank\" onclick=\"return popitup('$url')\">
+			// <i class='fa fa-print'></i>&nbsp;&nbsp;<button id='print_label' class='equal btn btn-success'>Packing Stickers</button> </a><br/>";	
+	// }
+// }
+
+$url5 = getFullURLLevel($_GET['r'],'sfcs_app/app/production/controllers/sewing_job/barcode_new.php',5,'R');
+        echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$jobno."&schedule=".$schedule."' onclick=\"return popitup2('$url5?input_job=".$jobno."&schedule=".$schedule."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Bundle Barcode</a></td>";
+
 	
 $balance_tot=0;
 echo "<table class='table'>";
@@ -299,6 +326,7 @@ echo "<th>Allocated Quantity</th>";
 //echo "<th>Doc# Ref</th>";
 echo "</tr>";
 $sql121="SELECT GROUP_CONCAT(DISTINCT(doc_no) ORDER BY doc_no) AS docket_ref FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'";
+// echo '<br/>'.$sql121;
 $sql_result121=mysqli_query($link, $sql121) or exit("Sql Error8832 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row121=mysqli_fetch_array($sql_result121))
 {
@@ -306,7 +334,7 @@ while($sql_row121=mysqli_fetch_array($sql_result121))
 }
 	
 $sql="SELECT destination,cat_ref,acutno,order_del_no,doc_no,input_job_no,GROUP_CONCAT(DISTINCT tid ORDER BY tid) AS tid,GROUP_CONCAT(DISTINCT doc_no_ref ORDER BY doc_no) AS doc_no_ref,GROUP_CONCAT(DISTINCT size_code) AS size_code,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT CONCAT(acutno,'-',order_col_des,'-',size_code,'-',carton_act_qty) ORDER BY doc_no SEPARATOR '<br/>' ) AS a_cutno,SUM(carton_act_qty) AS carton_act_qty FROM (SELECT cat_ref,order_del_no,input_job_no,input_job_no_random,tid,doc_no,doc_no_ref,size_code,order_col_des,acutno,destination,SUM(carton_act_qty) AS carton_act_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,input_job_no_random,acutno,size_code,destination) AS t GROUP BY doc_no,size_code ORDER BY order_del_no,acutno,input_job_no";
-//echo $sql."<br>";	
+// echo "<br/>".$sql."<br>";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$i=0;
@@ -348,14 +376,14 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 		<!--<td><a class='btn btn-info btn-sm' href="/sfcs/projects/Beta/production_planning/mpdf7/sawing_out_labels.php?job_no=1&schedule=<?php echo $org_schs; ?>&color=<?php echo $sql_row['order_col_des']; ?>&size=<?php echo $sql_row['size_code']; ?>" onclick="return popitup_new('/sfcs/projects/Beta/production_planning/mpdf7/sawing_out_labels.php?job_no=1&schedule=<?php echo $org_schs; ?>&color=<?php echo $sql_row['order_col_des']; ?>&size=<?php echo $sql_row['size_code']; ?>)">Print</a></td>-->
 		
 		<?php 
-		 if(in_array($update,$has_permission)  and $isinput==1)
-		 {
-		 	echo "<td><input type=\"text\" name=\"input_qty[]\" $textbox_disable value=\"$balance\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
-		 }
-		 else
-		 {
-		 	echo "<td><input type=\"text\" name=\"input_qty[]\" $textbox_disable value=\"0\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
-		 }
+		//  if(in_array($update,$has_permission)  and $isinput==1)
+		//  {
+		//  	echo "<td><input type=\"text\" name=\"input_qty[]\" $textbox_disable value=\"$balance\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
+		//  }
+		//  else
+		//  {
+		//  	echo "<td><input type=\"text\" name=\"input_qty[]\" $textbox_disable value=\"0\" onchange=\"if(this.value<0 || this.value>$allowedqty) { this.value=0; }\"></td>";
+		//  }
 		echo "</tr>";
 		
 		$i++;
@@ -425,7 +453,7 @@ echo "</td>";
 </div>
 </div>
 <?php
-echo '<td><input type="submit" class="btn btn-primary" name="submit" value="Submit" /></td>';
+echo '<td><input type="submit" id="submit" class="btn btn-primary" name="submit" value="Submit" /></td>';
 echo "</tr></table>";
 ?>
 </form>
@@ -464,4 +492,35 @@ if(isset($_POST["submit"]))
 
 ?>
 </body>
-</html>
+</div>
+<style>
+.equal{
+		width : auto;
+		text-align:center;
+		color:
+	}
+	a{
+		text-decoration:none;
+	}
+	#print_label{
+		margin-left:-4pt;
+		color: white;
+		background-color:#F0AD4E;
+	}
+	#submit{
+		color: white;
+		background-color:green;
+	}
+	#job_sheet{
+		color: white;
+		background-color:#57ea4f;
+	}
+	h3{
+		background-color:#99ccff;
+		color:white;
+		width:50%;
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+</style>
+

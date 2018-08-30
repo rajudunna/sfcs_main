@@ -3,9 +3,11 @@
 
 //SFCS_PRO_SI_WED_OUTPUT_Details
 $start_timestamp = microtime(true);
-include('C:\xampp\htdocs\sfcs_main\sfcs_app\common\config\config_jobs.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+
 include("mail_config.php");
-		
+	
 
 	$facility=$global_facility_code;
 
@@ -63,7 +65,7 @@ FROM  $m3_bulk_ops_rep_db.m3_sfcs_tran_log WHERE (sfcs_date between '$sdate' and
 		
 			$to=$SFCS_PRO_SI_WED;
 
-			email_attachment($to,'Please open the attachment for dispatch details of Brandix Essentials Limited - '.$facility.' Facility on '.$date.'.<br/><br/> Message Sent Via: '.$plant_name.'', $plant_name.'-'.$facility.' Dispatch Details ('.$date.') ',$header_from, $header_from, $file_name, $default_filetype='application/zip');
+			email_attachment($to,'Please open the attachment for dispatch details of Brandix Essentials Limited - '.$facility.' Facility on '.$date.'.<br/><br/> Message Sent Via: '.$plant_name.'', $plant_name.'-'.$facility.' Dispatch Details ('.$date.') ',$header_name, $header_mail, $file_name, $default_filetype='application/zip');
 		
 			unlink($file_name);
 			

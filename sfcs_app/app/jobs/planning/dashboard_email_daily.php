@@ -3,6 +3,7 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
+
 // Turn off all error reporting
 error_reporting(0);
 // Report simple running errors
@@ -236,18 +237,18 @@ else
 	 $to = $dashboard_email_dialy;
 }
 
-
+ 
 $subject = 'SAH Report';
+
 
 // To send HTML mail, the Content-type header must be set
 $headers  = 'MIME-Version: 1.0' . "\r\n";
 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 
-// Additional headers
-$headers .= 'To: '.$to. "\r\n";
-//$headers .= 'To: <brandixalerts@schemaxtech.com>'. "\r\n";
-$headers .= $header_from. "\r\n";
-//$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
+$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
+// echo $headers;
+// $headers .= $header_from. "\r\n";
+
 
 // Mail it
 
@@ -273,6 +274,10 @@ if($sql_result)
 		{
 			goto a;
 		}
+	}
+	else
+	{
+		print("mail Not Send Due to data not found")."\n";
 	}
 	
 	

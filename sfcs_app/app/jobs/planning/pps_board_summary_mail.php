@@ -107,11 +107,9 @@ $subject = 'BEK Planning Dashboard Summary';
 // To send HTML mail, the Content-type header must be set
 $headers  = 'MIME-Version: 1.0' . "\r\n";
 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
+// $headers .= $header_from. "\r\n";
 
-// Additional headers
-// $headers .= 'To: <'.'fazlulr@brandix.com>'. "\r\n";
-$headers .= $header_from. "\r\n";
-//$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
 
 // Mail it
 if(mail($to, $subject, $message, $headers))

@@ -211,7 +211,6 @@ echo "</select>";
 	$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\"";	
 //}
 echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" id='schedule'>";
-mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -289,7 +288,6 @@ $code="";
 
 $sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and doc_no not in (select doc_no from $bai_pro3.plan_dashboard) and (a_plies<>p_plies or act_cut_issue_status='') order by doc_no";
 //echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 //docketno-colorcode cutno-cut_status
@@ -300,7 +298,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" order by doc_no";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 //docketno-colorcode cutno-cut_status
@@ -441,15 +438,16 @@ if(isset($_POST['submit']))
 	
 	$sql="select * from $newfiltertable";
 	//echo $sql."<br>";
-	mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	//docketno-colorcode cutno-cut_status
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$code.=$sql_row['input_job_no_random']."-"."J".$sql_row['input_job_no']."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."*";
-		//echo "Doc=".$doc_no."<br>";
 		$style=$sql_row['order_style_no'];
+
+		$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+		$code.=$sql_row['input_job_no_random']."-".$display_prefix1."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."*";
+		//echo "Doc=".$doc_no."<br>";
 	}
 	
 	

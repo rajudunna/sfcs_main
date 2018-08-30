@@ -1,11 +1,11 @@
 
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
 // $view_access=user_acl("SFCS_0046",$username,1,$group_id_sfcs); 
 ?>
-<?php include(getFullURLLevel($_GET['r'],'functions2_production_status_report.php',0,'R')); ?>
 
 <html>
 <head>
@@ -28,7 +28,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 ?>
 <!--<div id="page_heading"><span style="float"><h3>Daily Production Status Report</h3></span><span style="float: right; margin-top: -20px"><b>?</b>&nbsp;</span></div>-->
 <div class="panel panel-primary">
-<div class="panel-heading">Production Status Report</div>
+<div class="panel-heading">Production Status Report (Sewing Out)</div>
 <div class="panel-body">
 <div class="form-group">
 <form name="text" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
@@ -331,7 +331,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	$input_job = $sql_row['jobno'];
 	//if($input_job>9){
-	$input_job_no = 'J'.str_pad($input_job, 3, '0', STR_PAD_LEFT);
+	// $input_job_no = 'J'.str_pad($input_job, 3, '0', STR_PAD_LEFT);
 	//}else{
 		//$input_job_no = 'J'.str_pad($input_job, 3, '0', STR_PAD_LEFT);	
 	//}
@@ -392,7 +392,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$bgcolor="WHITE";
 		} 
 		//var_dump($filtered_sizes);
-		foreach( $filtered_sizes as $key => $value){
+		foreach( $filtered_sizes as $key => $value)
+		{
 			$finalized_size_qty = $value;
 			$finalized_title_size = $title_sizes[$key];
 			$getting_title_size = "select $finalized_title_size from $bai_pro3.bai_orders_db where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\"";
@@ -403,6 +404,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$finalized_title_size_value = $sql_result_fetch[$finalized_title_size];
 			}
 			// 
+			$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedules,$color,$input_job,$link);
 			echo "<tbody><tr bgcolor=\"$bgcolor\">";
 			$time=explode(" ",$lastup);
 			//echo "<td>$tid</td>";
@@ -416,7 +418,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			echo "<td>".$schedules."</td>";
 			echo "<td>$color</td>";
 			echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td>";
-			echo "<td>$input_job_no</td>";
+			echo "<td>$display_prefix1</td>";
 			echo "<td>$finalized_title_size_value</td>";
 			echo "<td>$finalized_size_qty</td>";
 			echo "</tr></tbody>";

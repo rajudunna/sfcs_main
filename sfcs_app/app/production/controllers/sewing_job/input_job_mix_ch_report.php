@@ -1,4 +1,9 @@
-
+<style type="text/css">
+    div.ex3 {
+        width: 100%;    
+        overflow-y: auto;
+    }
+</style>
 <?php
 error_reporting(0);
 $schedule1=$schedule;
@@ -45,21 +50,21 @@ $url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'R');
 echo '<br>
 <div class="panel panel-primary panel-body">
 
-    <div class="row">';       
-        echo "<a class='btn btn-warning' href='$url1?schedule=$schedule' onclick=\"return popitup2('$url1?schedule=$schedule')\" target='_blank'>Print Ratio Sheet - Job Wise</a>      ";
-        echo "<a class='btn btn-warning' href='$url2?schedule=$schedule' onclick=\"return popitup2('$url2?schedule=$schedule')\" target='_blank'>Print Ratio Sheet - Split Wise</a>";
+    <div class="col-md-12 ">';       
+        echo "<a class='btn btn-warning' href='$url1?schedule=$schedule' onclick=\"return popitup2('$url1?schedule=$schedule')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Ratio Sheet - Job Wise</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+        echo "<a class='btn btn-warning' href='$url2?schedule=$schedule' onclick=\"return popitup2('$url2?schedule=$schedule')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Ratio Sheet - Split Wise</a>";
     echo '</div>';
 
-    echo '<div class="row">';       
+    echo '<div class="col-md-12 ex3">';       
         for($ii=0;$ii<sizeof($combo);$ii++)
         {
             echo "<h4><span class=\"label label-info\">Number of Cartons: <b>$no_of_cartons[$ii]</b> Per Sewing Job of combo no - $combo[$ii] & Combo Colors (".$combo_col[$ii].")</span></h4>";
         }
-        echo '<h4><span class="label label-info">Note: </span>Yellow Color indicates Excess/Sample Job</h4>';
     echo '</div>';
 
-    echo '<form name="new" method="post" action="?r='.$_GET['r'].'">';
+    echo '<div class="col-md-12"><h4><span class="label label-info">Note: </span>Yellow Color indicates Excess/Sample Job</h4></div>';
 
+    echo '<form name="new" method="post" action="?r='.$_GET['r'].'">';
             echo '<input type="hidden" name="mix_colors" value="'.$mix_colors.'">';
             echo '<input type="hidden" name="job_qty" value="'.$job_qty.'">';
 
@@ -75,7 +80,8 @@ echo '<br>
 
                     if($scanning_methods="Bundle Level")
                     {
-                        echo "<th>Bundle Barcode</th>";
+                        echo "<th>Bundle Barcode With Operation</th>";
+						echo "<th>Bundle Barcode</th>";
                     }
                     //echo "<th>TID</th>";
                     //echo "<th>Doc# Ref</th>";
@@ -102,12 +108,13 @@ echo '<br>
                             $temp+=$sql_row['carton_act_qty'];
                             $color=$sql_row['order_col_des'];
                         }
-                        if ($sql_row['type_of_sewing'] == 2)
-                        {
-                            $bg_color='yellow';
-                        } else {
-                            $bg_color='';
-                        }
+                        $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+                        // if ($sql_row['type_of_sewing'] == 2)
+                        // {
+                        //     $bg_color='yellow';
+                        // } else {
+                        //     $bg_color='';
+                        // }
                         
                         $sql4="select order_tid from $bai_pro3.bai_orders_db where order_del_no=\"".$sql_row["sch_mix"]."\"";
                         $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -129,7 +136,7 @@ echo '<br>
                                 $color_code=$sql_row4["color_code"];
                             }
                             $cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
-                             unset($arr);
+                            unset($arr);
                         }
                         $doc_tag=$sql_row["doc_no"];
 
@@ -151,13 +158,15 @@ echo '<br>
                         echo "<td>";
 
                         $url4 = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
-                        echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\">Job Sheet-<b>".$sql_row['input_job_no']."</b></a><br>";
+                        echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Job Sheet-<b>".$sql_row['input_job_no']."</b></a><br>";
 
                         echo"</td>";
                         if($scanning_methods=='Bundle Level')
                         {
                             $url5 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
-                            echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'>Print Bundle Barcodes</a></td>";
+                            echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+							$url6 = getFullURLLevel($_GET['r'],'barcode_without_operation.php',0,'R');
+							 echo "<td><a class='btn btn-info btn-sm' href='$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
                         }
                         echo"</tr>";
                     }

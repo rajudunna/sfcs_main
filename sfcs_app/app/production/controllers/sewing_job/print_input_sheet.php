@@ -232,12 +232,35 @@
 
 								$sql_cut="select GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT acutno) AS cut, SUM(carton_act_qty) AS totqty from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."'";
 								// echo $sql_cut.'<br>';
-								$result_cut=mysqli_query($link, $sql_cut) or die("Error9-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$result_cut=mysqli_query($link, $sql_cut) or die("Error9-".$sql_cut."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row_cut=mysqli_fetch_array($result_cut))
 								{
 									$cut_job_no=$sql_row_cut["cut"];
 									$totcount1=$sql_row_cut["totqty"];
 									$color=$sql_row_cut["color"];
+								}
+
+								$get_cut_no="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno from $bai_pro3.packing_summary_input WHERE order_del_no = '$schedule' and input_job_no='".$sql_row["job"]."' ";
+								// echo $get_cut_no.'<br>';
+								$result_cut_no=mysqli_query($link, $get_cut_no) or die("Error92-".$get_cut_no."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($sql_row_cut_no=mysqli_fetch_array($result_cut_no))
+								{
+									$total_cuts=explode(",",$sql_row_cut_no['acutno']);
+									$cut_jobs_new='';
+									for($ii=0;$ii<sizeof($total_cuts);$ii++)
+									{
+										$arr = explode("$", $total_cuts[$ii], 2);;
+										// $col = $arr[0];
+										$sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$arr[0]."'";
+										//echo $sql4."<br>";
+										$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($sql_row4=mysqli_fetch_array($sql_result4))
+										{
+											$color_code=$sql_row4["color_code"];
+										}
+										$cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
+										unset($arr);
+									}
 								}
 
 								$sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$color."'";
@@ -248,32 +271,25 @@
 			                        $color_code=$sql_row4["color_code"];
 			                    }
 
-								$cut_new=array();
-								$cut_new= explode(",", $cut_job_no);
-								$cut_jobs_new='';
-								 //var_dump($cut_new);
-								 //echo $color_code."<br>";die();
-								for ($i=0; $i < sizeof($cut_new); $i++)
-								{
-									// echo $cut_new[$i];
-									$cut_jobs_new .= chr($color_code).leading_zeros($cut_new[$i], 3).',';
-								}
-								// echo $cut_jobs_new;
+								// $cut_new=array();
+								// $cut_new= explode(",", $cut_job_no);
+								// $cut_jobs_new='';
+								//  //var_dump($cut_new);
+								//  //echo $color_code."<br>";die();
+								// for ($i=0; $i < sizeof($cut_new); $i++)
+								// {
+								// 	// echo $cut_new[$i];
+								// 	$cut_jobs_new .= chr($color_code).leading_zeros($cut_new[$i], 3).',';
+								// }
+								// // echo $cut_jobs_new;
 
 								//Display color
 								$display_colors=str_replace(',',$totcount,$color);
 								//$totcount=0;
-
-								if ($sql_row['type_of_sewing'] == 2)
-		                        {
-		                            $bg_color='yellow';
-		                            $display = 'E';
-		                        } else {
-		                            $bg_color='';
-		                            $display = 'J';
-		                        }
-
-								echo "<tr height=20 style='height:15.0pt; background-color:$bg_color;'>";
+								
+								$display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
+								$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
+								echo "<tr height=20 style='height:15.0pt; background-color:$bg_color1;'>";
 								echo "<td height=20 style='height:15.0pt'>".$style."</td>";
 								echo "<td height=20 style='height:15.0pt'>$po</td>";
 								echo "<td height=20 style='height:15.0pt'>$vpo</td>";
@@ -283,7 +299,7 @@
 								echo "<td height=20 style='height:15.0pt'>".$color."</td>";
 								echo "<td height=20 style='height:15.0pt'>".substr($cut_jobs_new, 0,-1)."</td>";
 								echo "<td height=20 style='height:15.0pt'>".$del_date."</td>";
-								echo "<td height=20 style='height:15.0pt'>".$display.leading_zeros($sql_row["job"], 3)."</td>";
+								echo "<td height=20 style='height:15.0pt'>".$display."</td>";
 								for($i=0;$i<sizeof($size_array);$i++)
 								{
 									$sql7="SELECT * FROM $bai_pro3.packing_summary_input where order_del_no in (".$sql_row1["del_no"].")  and size_code='".$orginal_size_array[$i]."' and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";

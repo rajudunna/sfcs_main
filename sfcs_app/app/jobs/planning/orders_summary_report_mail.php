@@ -120,7 +120,6 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 
 // echo $text;
 
-
 $to=$order_summary_report;
 
 
@@ -129,10 +128,8 @@ $subject = 'Order Summary Report';
 // To send HTML mail, the Content-type header must be set
 $headers  = 'MIME-Version: 1.0' . "\r\n";
 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-// Additional headers
-// $headers .= 'From: Shop Floor System Alert <bel_sfcs@brandix.com>'. "\r\n";
-$headers .=$header_from. "\r\n";
+$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
+// $headers .=$header_from. "\r\n";
 
 	if($email_validate >0)
 	{

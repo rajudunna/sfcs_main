@@ -105,6 +105,10 @@ if(isset($_POST['update']))
 		$in_mklength=$_POST['in_mklength'];//
 		
 		$in_mkeff=$_POST['in_mkeff'];
+		if($in_mkeff == '')
+		{
+		    $in_mkeff = 0;
+		}
 		$mk_ref=$_POST['mk_ref'];
 		$mk_ver=$_POST['in_mkver'];
 		$in_pwidth=$_POST['in_pwidth']; //
@@ -114,16 +118,16 @@ if(isset($_POST['update']))
 		{	
 
 			$sql="update maker_stat_log set mklength=".$in_mklength[0].", mkeff=$in_mkeff, remarks=\"$remarks\", mk_ver=\"$mk_ver\",date=\"$log_date\",lastup=\"$log_time\" where tid=\"$mk_ref\"";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				if($lock_status!='1')
 				{
 					$sql="update allocate_stat_log set mk_status=2 where tid=$allocate_ref";
-					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				
 				$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error145".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$color=$sql_row['order_col_des'];
@@ -135,7 +139,7 @@ if(isset($_POST['update']))
 				
 				$allo_c=array();
 				$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error789".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$allo_c[]="xs=".$sql_row['allocate_xs'];

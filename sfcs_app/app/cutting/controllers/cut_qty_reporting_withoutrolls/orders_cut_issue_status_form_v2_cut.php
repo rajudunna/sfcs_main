@@ -218,7 +218,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 
 <h2><center><u>Input Entry Form</u></center></h2> <br>
-<FORM method="post" name="input" action="<?= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form1_process_cut.php',0,'N');?>">
+<FORM method="post" name="input" onsubmit='activate_alert()'  action="<?= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form1_process_cut.php',0,'N');?>">
 	<input type="hidden" name="doc_no" value="<?php echo $doc_no; ?>">
 	<?php
 		// if($print_status==NULL)
@@ -291,9 +291,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 						<input type=\"number\" class='form-control'  min=0 name=\"fab_rec\" value=".round($material,2)." step=any>
 					</div></td>
 				</tr>";
-			echo "<tr><td>Fabric Returned</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_fab_ret\" value=\"$fab_returned\"><input type=\"number\" class='form-control'  min=0 pattern='^\d+(?:\.\d{1,2})?$'  name=\"fab_ret\" value=\"0\"></div>&nbsp;<div class='col-sm-1'> <b>To</b></div><div class='col-sm-4'> <select name=\"ret_to\" class='form-control'><option value=\"0\">Cutting</option><option value=\"1\">RM</option></select></div></td></tr>";
-			echo "<tr><td>Damages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_damages\" value=\"$fab_damages\"><input type=\"number\" class='form-control' name=\"damages\"  min=0 pattern='^\d+(?:\.\d{1,2})?$'  value=\"0\"></div></td></tr>";
-			echo "<tr><td>Shortages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_shortages\" value=\"$fab_shortages\"><input type=\"number\" class='form-control' pattern='^\d+(?:\.\d{1,2})?$' name=\"shortages\"  min=0 value=\"0\"></div></td></tr>";
+			echo "<tr><td>Fabric Returned</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_fab_ret\" value=\"$fab_returned\"><input type=\"text\" class='form-control float '  min=0  name=\"fab_ret\" value=\"0\"></div>&nbsp;<div class='col-sm-1'> <b>To</b></div><div class='col-sm-4'> <select name=\"ret_to\" class='form-control'><option value=\"0\">Cutting</option><option value=\"1\">RM</option></select></div></td></tr>";
+			echo "<tr><td>Damages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_damages\" value=\"$fab_damages\"><input type=\"text\" class='form-control float' name=\"damages\"  min=0 value=\"0\"></div></td></tr>";
+			echo "<tr><td>Shortages</td><td>:</td><td><div class='col-sm-4'><input type=\"hidden\" name=\"old_shortages\" value=\"$fab_shortages\"><input type=\"text\" class='form-control float'  name=\"shortages\"  min=0 value=\"0\"></div></td></tr>";
 
 			echo "<tr><td>Bundle Location</td><td>:</td><td><div class='col-sm-4'><select name=\"bun_loc\" class='form-control'>";
 			echo "<option value='' style='background-color:#FF5500;'>Select Location</option>";
@@ -328,7 +328,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable 
 	</div>
 	<div class='col-sm-2'>
-		<input type = "submit" name = "update" value = "Update" class="btn btn-primary" id="update" onclick="document.getElementById('update').style.display='none'; document.getElementById('msg').style.display='';">
+		<input type = "submit" name = "update" value = "Update" class="btn btn-primary" id="update" onclick="document.getElementById('update').style.display='inline'; ">
 	</div>
 	<?php
 	}
@@ -342,4 +342,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <span id="msg" style="display:none;"><h1><font color="red">Please wait while updating database...</font></h1></span>
 </div></div>
 </body>
+
+<script>
+	function activate_alert(){
+		document.getElementById('msg').style.display='inline';
+		document.getElementById('update').style.display='none';
+	}
+</script>
 

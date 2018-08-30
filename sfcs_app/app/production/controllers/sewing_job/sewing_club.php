@@ -3,7 +3,7 @@
 include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 ?>
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<!--<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>-->
 <script>
  $(document).ready(function(){
 	var url1 = '<?= getFullURL($_GET['r'],'sewing_club.php','N'); ?>';
@@ -47,6 +47,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 		//echo $value;  
 		//die();
 		$value1 = explode(",",$value);
+		//var_dump($value1);
 		$list1 = "'". implode("', '", $value1) ."'";
 		//print_r($value1);
 		//echo count($value1);
@@ -59,11 +60,13 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 		//echo min($value1);
 		//var_dump($value1[0]);
 		//echo $schedule;
-		$value2 = min($value1);
+		$value2 = min_vals($value1);
+		//echo $value2;
+		//die();
 		$list = "'". implode("', '", $value1) ."'";
 		//echo $list;
-		$count_sch_qry3="SELECT input_job_no_random FROM bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no =$value2";
-		$result13=mysqli_query($link, $count_sch_qry3) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$count_sch_qry3="SELECT input_job_no_random FROM bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no ='$value2'";
+		$result13=mysqli_query($link, $count_sch_qry3) or die("Error110-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row2=mysqli_fetch_array($result13);
 		$input_job_random_min = $row2['input_job_no_random'];
 		// echo $input_job_random_min;
@@ -91,11 +94,11 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 							$input_job=$row2["input_job_no"];
 							$input_job_random=$row2["input_job_no_random"];
 							$count_sch_qry2 = "UPDATE bai_pro3.pac_stat_log_input_job SET input_job_no = '$value2', input_job_no_random = '$input_job_random_min'
-							WHERE input_job_no = $input_job and input_job_no_random = '$input_job_random'";
+							WHERE input_job_no = '$input_job' and input_job_no_random = '$input_job_random'";
 							//echo $count_sch_qry2 ;
-							$result12=mysqli_query($link, $count_sch_qry2) or die("Error100-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$result12=mysqli_query($link, $count_sch_qry2) or die("Error108-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
-							// die();
+							 //die();
 							//echo 'Input Job NO '.$input_job.'clubbed to '.$value2.' and Random Number '.$input_job_random_min.' </br>';
 							//echo "Updated data successfully\n";
 							
@@ -190,6 +193,7 @@ if($rows_count_jobs == 0){
 						//echo "<th>Style</th>"; 
 						/* echo "<th>PO#</th>"; */
 						echo "<th>Schedule</th>";
+						echo "<th>Cutting Job</th>";
 						echo "<th>Input Job#</th>";
 						echo "<th>Quantity</th>";
 						
@@ -204,10 +208,39 @@ if($rows_count_jobs == 0){
 						$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result))
 						{
-
+							
 							    $del_no_new=$sql_row["order_del_no"];
 								// echo $del_no_new;
 								$job_new=$sql_row["input_job_no"];
+								
+								
+								//getting cut job numbers
+								$get_cut_no="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno from $bai_pro3.packing_summary_input WHERE order_del_no = '$del_no_new' and input_job_no='$job_new' ";
+								// echo $get_cut_no.'<br>';
+								$result_cut_no=mysqli_query($link, $get_cut_no) or die("Error92-".$get_cut_no."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($sql_row_cut_no=mysqli_fetch_array($result_cut_no))
+								{
+									$total_cuts=explode(",",$sql_row_cut_no['acutno']);
+									$cut_jobs_new='';
+									for($ii=0;$ii<sizeof($total_cuts);$ii++)
+									{
+										$arr = explode("$", $total_cuts[$ii], 2);;
+										// $col = $arr[0];
+										$sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$arr[0]."'";
+										//echo $sql4."<br>";
+										$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($sql_row4=mysqli_fetch_array($sql_result4))
+										{
+											$color_code=$sql_row4["color_code"];
+										}
+										$cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
+										unset($arr);
+									}
+								}
+								
+								
+								
+								
 								// echo $job_new;
 								$count_sch_qry="select * from brandix_bts.bundle_creation_data_temp where schedule='".$del_no_new."' and input_job_no='".$job_new."'";
 								// echo $count_sch_qry;
@@ -220,9 +253,12 @@ if($rows_count_jobs == 0){
 								echo "<tr height=20 style='height:15.0pt'>";
 								//echo "<td height=20 style='height:15.0pt'>".$style."</td>";
 								echo "<td height=20 style='height:15.0pt'>".$sql_row["order_del_no"]."</td>";
+								echo "<td height=20 style='height:15.0pt'>".$cut_jobs_new."</td>";
 								$url=getFullURL($_GET['r'],'small_popup.php','R');
 								// echo "<td height=20 style='height:15.0pt'>J".$sql_row["input_job_no"]." <a class='tooltippage' id='clickme' href='#' rel='$url&schedule='".$sql_row["order_del_no"]."'&jobno='".$sql_row["input_job_no"]." title='Full Details of Input Job'>Click Here</a></td>";
-								echo "<td height=20 style='height:15.0pt'> <a class='btn btn-success btn-sm' href='$url?schedule=$del_no_new&jobno=$job_new' onclick=\"return popitup2('$url?schedule=$del_no_new&jobno=$job_new')\" target='_blank'>J".$sql_row["input_job_no"]."</a></td>";
+								$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='".$sql_row["order_del_no"]."' and input_job_no",$sql_row["input_job_no"],$link);
+								$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row["order_del_no"],$get_color,$sql_row["input_job_no"],$link);
+								echo "<td height=20 style='height:15.0pt'> <a class='btn btn-success btn-sm' href='$url?schedule=$del_no_new&jobno=$job_new' onclick=\"return popitup2('$url?schedule=$del_no_new&jobno=$job_new')\" target='_blank'>".$display_prefix1."</a></td>";
 								 echo "<td height=20 style='height:15.0pt'>".$sql_row["carton_act_qty"]."</td>"; 
 								
                                
@@ -369,4 +405,19 @@ div#example_filter {
 </body>
 
 </html>
+<?php 
+function min_vals($ary){
+	$temp = '';
+	foreach($ary as $v){
+		if($temp!=''){
+			if($temp>$v){
+				$temp = $v;
+			}
+		}else{
+			$temp = $v;
+		}
+	}
+	return $temp;
+}
+?>
 

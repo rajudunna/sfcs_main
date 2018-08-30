@@ -306,6 +306,7 @@ $authorized1=array("sfcsproject1");
 set_time_limit(200000);
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],"header.php",'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 ?>
 
 <!DOCTYPE html>
@@ -678,7 +679,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$doc_no_ref=$row2['doc_no'];
 				$schedule_no=$row2['order_del_no'];
 			}
-			
+			$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$schedule' and input_job_no",$input_job_no,$link);
+			$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
 			if($clubbed_schedule_ref > 0)
 			{
 				$schedule=$clubbed_schedule_ref;
@@ -844,7 +846,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			$club_c_code=array_unique($club_c_code);
 			
-			$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".'J'.leading_zeros($input_job_no,3),50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50);
+			$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50);
 				$ui_url=getFullURL($_GET['r'],'input_status_update_input.php','R');		
 				if(in_array($username,$authorized1))
 				{

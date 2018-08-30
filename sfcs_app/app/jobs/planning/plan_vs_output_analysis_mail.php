@@ -146,20 +146,18 @@ $text.= "</table></body>
 </html>";
 
 
-echo $text."<br>";
+// echo $text."<br>";
 
 
-// $to  = $plan_vs_output_analysis_mail;
+$to  = $plan_vs_output_analysis_mail;
 
 $subject = 'Daily Plan Achievement Report';
 
 // To send HTML mail, the Content-type header must be set
 $headers  = 'MIME-Version: 1.0' . "\r\n";
 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-// Additional headers
-// $headers .= 'From: Shop Floor System Alert <bel_sfcs@brandix.com>'. "\r\n";
-$headers .= $header_from. "\r\n";
+$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
+// $headers .= $header_from. "\r\n";
 
 	if($j > 0)
 	{

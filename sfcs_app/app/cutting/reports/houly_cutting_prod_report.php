@@ -40,9 +40,9 @@ if(isset($_POST['submit']))
 					border-collapse: collapse;
 				}
 			</style>
-			<div class="panel-body">
+			
 		<?php
-		echo "<table class='table'><tr class='danger'><th rowspan=2>Cutting<br>Section</th><th colspan=$total_hours>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
+		echo "<div class=\"table-responsive\"><table class='table'><tr class='danger'><th rowspan=2>Cutting<br>Section</th><th colspan=$total_hours>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
 	   	echo "<tr class='warning'>";
 	   	$query='';
 	   	for ($i=0; $i < $total_hours; $i++)
@@ -59,7 +59,7 @@ if(isset($_POST['submit']))
 		// echo "<tr class='warning'><th>8.30 am</th><th>9.30 am</th><th>10.30 am</th><th>11.30 am</th><th>12.30 pm</th><th>1.30 pm</th><th>2.30 pm</th><th>3.30 pm</th><th>4.30 pm</th><th>5.30 pm</th><th>6.30 pm</th></tr>";
 		// Section A Start
 		$grand_tot_no_of_doc=$grand_tot_cut_qty=0;
-		$cutting_tbl_query= "SELECT tbl_id FROM $bai_pro3.tbl_cutting_table";
+		$cutting_tbl_query= "SELECT tbl_id FROM $bai_pro3.tbl_cutting_table order by tbl_id*1";
 		$cutting_tbl_result=mysqli_query($link, $cutting_tbl_query) or exit("Sql Error1.2022");
 		while($tbl_id=mysqli_fetch_array($cutting_tbl_result))
 		{
@@ -95,10 +95,11 @@ if(isset($_POST['submit']))
 
 		// Section A End
 		echo "<tr class='danger'><th>Total:</th><th colspan=$total_hours></th><th>$grand_tot_cut_qty</th><th>$tot_yards</th><th>$grand_tot_no_of_doc</th></tr>";
-		echo "</table>
+		echo "</table></div>
 	</div>";
 }
 		?>
+		<div class="panel-body">
 			</div>
 		</div>
 	</div>

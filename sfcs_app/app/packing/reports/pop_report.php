@@ -1,6 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
-
+<link rel="stylesheet" href="../../../common/css/bootstrap.min.css">
 <title>QMS - POP Report</title>
 <style>
 td,th{color : #000;}

@@ -2,6 +2,8 @@
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 // $username="sfcsproject1";
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 $has_perm=haspermission($_GET['r']);
 
 // $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gayanl","baisysadmin","chathurangad","buddhikam","saroasa","chathurikap","sfcsproject2","thanushaj","kemijaht","sfcsproject1","ber_databasesvc","saranilaga","thusiyas","thineshas","sudathra");
@@ -175,6 +177,10 @@ $has_perm=haspermission($_GET['r']);
 		margin:0px;
 		padding:0px;
 	}
+	#dhtmlgoodies_mainContainer div ul {
+		height: <?= ($module_limit*30).'px'; ?>
+		/* overflow-y: scroll; */
+	}
 	</style>
 	<style type="text/css" media="print">
 	div#dhtmlgoodies_listOfItems{
@@ -191,6 +197,8 @@ $has_perm=haspermission($_GET['r']);
 		width:100%;
 	}
 	</style>	
+
+
 	<script type="text/javascript">
 	/************************************************************************************************************
 	(C) www.dhtmlgoodies.com, November 2005
@@ -213,9 +221,13 @@ $has_perm=haspermission($_GET['r']);
 	Alf Magne Kalleland
 	
 	************************************************************************************************************/
-		
+	var boxSizeArray = [];
+	for(var i=0; i<120; i++){
+		boxSizeArray.push('<?= $module_limit; ?>');
+	}
+	
 	/* VARIABLES YOU COULD MODIFY */
-	var boxSizeArray = [14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14];	// Array indicating how many items there is rooom for in the right column ULs
+	// var boxSizeArray = [32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32];	// Array indicating how many items there is rooom for in the right column ULs
 	var arrow_offsetX = -5;	// Offset X - position of small arrow
 	var arrow_offsetY = 0;	// Offset Y - position of small arrow
 	
@@ -268,7 +280,7 @@ $has_perm=haspermission($_GET['r']);
 	}
 	function do_disable(){
 		console.log('welcome');
-		  document.getElementById("saveButton").disabled = true;
+		  document.getElementsByClassName("saveButton").disabled = true;
 		
 	}
 	
@@ -278,6 +290,8 @@ $has_perm=haspermission($_GET['r']);
 	}
 	function initDrag(e)	// Mouse button is pressed down on a LI
 	{
+		
+		var col = $(this).attr('data-color');
 		if(document.all)e = event;
 		var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
 		var sl = Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
@@ -292,12 +306,17 @@ $has_perm=haspermission($_GET['r']);
 			contentToBeDragged_next = this.nextSibling;
 			if(!this.tagName && contentToBeDragged_next.nextSibling)contentToBeDragged_next = contentToBeDragged_next.nextSibling;
 		}
-		timerDrag();
-		return false;
+		if(col == 'blue' || col == 'red'){
+			timerDrag();
+			return false;
+		}else{
+			return;
+		}
 	}
 	
 	function timerDrag()
 	{
+		
 		if(dragTimer>=0 && dragTimer<10){
 			dragTimer++;
 			setTimeout('timerDrag()',10);
@@ -317,6 +336,7 @@ $has_perm=haspermission($_GET['r']);
 	
 	function moveDragContent(e)
 	{
+		
 		if(dragTimer<10){
 			if(contentToBeDragged){
 				if(contentToBeDragged_next){
@@ -423,49 +443,54 @@ $has_perm=haspermission($_GET['r']);
 	*/	
 	function dragDropEnd(e)
 	{
-		if(dragTimer==-1)return;
-		if(dragTimer<10){
-			dragTimer = -1;
-			return;
-		}
-		dragTimer = -1;
-		if(document.all)e = event;	
+		// var module_limit = '<?= $module_limit; ?>';
+		// console.log(parseInt(module_limit));
 		
-		
-		if(cloneSourceItems && (!destinationObj || (destinationObj && (destinationObj.id=='allItems' || destinationObj.parentNode.id=='allItems')))){
-			contentToBeDragged.parentNode.removeChild(contentToBeDragged);
-		}else{	
-			
-			if(destinationObj){
-				if(destinationObj.tagName=='UL'){
-					destinationObj.appendChild(contentToBeDragged);
-				}else{
-					destinationObj.parentNode.insertBefore(contentToBeDragged,destinationObj);
-				}
-				mouseoverObj.className='';
-				destinationObj = false;
-				dragDropIndicator.style.display='none';
-				if(indicateDestinationBox){
-					indicateDestinationBox.style.display='none';
-					document.body.appendChild(indicateDestinationBox);
-				}
-				contentToBeDragged = false;
+			if(dragTimer==-1)return;
+			if(dragTimer<10){
+				dragTimer = -1;
 				return;
-			}		
-			if(contentToBeDragged_next){
-				contentToBeDragged_src.insertBefore(contentToBeDragged,contentToBeDragged_next);
-			}else{
-				contentToBeDragged_src.appendChild(contentToBeDragged);
 			}
-		}
-		contentToBeDragged = false;
-		dragDropIndicator.style.display='none';
-		if(indicateDestinationBox){
-			indicateDestinationBox.style.display='none';
-			document.body.appendChild(indicateDestinationBox);
 			
-		}
-		mouseoverObj = false;
+			dragTimer = -1;
+			if(document.all)e = event;	
+			
+			
+			if(cloneSourceItems && (!destinationObj || (destinationObj && (destinationObj.id=='allItems' || destinationObj.parentNode.id=='allItems')))){
+				contentToBeDragged.parentNode.removeChild(contentToBeDragged);
+			}else{	
+				
+				if(destinationObj){
+					if(destinationObj.tagName=='UL'){
+						destinationObj.appendChild(contentToBeDragged);
+					}else{
+						destinationObj.parentNode.insertBefore(contentToBeDragged,destinationObj);
+					}
+					mouseoverObj.className='';
+					destinationObj = false;
+					dragDropIndicator.style.display='none';
+					if(indicateDestinationBox){
+						indicateDestinationBox.style.display='none';
+						document.body.appendChild(indicateDestinationBox);
+					}
+					contentToBeDragged = false;
+					return;
+				}		
+				if(contentToBeDragged_next){
+					contentToBeDragged_src.insertBefore(contentToBeDragged,contentToBeDragged_next);
+				}else{
+					contentToBeDragged_src.appendChild(contentToBeDragged);
+				}
+			}
+			contentToBeDragged = false;
+			dragDropIndicator.style.display='none';
+			if(indicateDestinationBox){
+				indicateDestinationBox.style.display='none';
+				document.body.appendChild(indicateDestinationBox);
+				
+			}
+			
+			mouseoverObj = false;
 		
 	}
 	
@@ -474,6 +499,7 @@ $has_perm=haspermission($_GET['r']);
 	*/
 	function saveDragDropNodes()
 	{
+		
 		var saveString = "";
 		var uls = dragDropTopContainer.getElementsByTagName('UL');
 		for(var no=0;no<uls.length;no++){	// LOoping through all <ul>
@@ -493,6 +519,7 @@ document.forms["myForm"].submit();
 	
 	function initDragDropScript()
 	{
+		
 		dragContentObj = document.getElementById('dragContent');
 		dragDropIndicator = document.getElementById('dragDropIndicator');
 		dragDropTopContainer = document.getElementById('dhtmlgoodies_dragDropContainer');
@@ -520,6 +547,7 @@ document.forms["myForm"].submit();
 		
 		document.documentElement.onmousemove = moveDragContent;	// Mouse move event - moving draggable div
 		document.documentElement.onmouseup = dragDropEnd;	// Mouse move event - moving draggable div
+	
 		
 		var ulArray = dragDropTopContainer.getElementsByTagName('UL');
 		for(var no=0;no<ulArray.length;no++){
@@ -542,6 +570,7 @@ document.forms["myForm"].submit();
 	}
 	
 	window.onload = initDragDropScript;
+
 	</script>
 
 
@@ -554,23 +583,13 @@ document.forms["myForm"].submit();
 //include("../".getFullURL($_GET['r'],'dbconf.php','R')); 
 //include("../".getFullURL($_GET['r'],"functions.php",'R')); 
 // include('dbconf.php');
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R'));
+
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R'));
 $style=$_GET['style'];
 $schedule=$_GET['schedule'];
 $color=$_GET['color'];
 $cutno=$_GET['cutno'];
 $module_ref_no=$_GET["module"];
-
-
-
-
-
-
-
-
-
-
 
 	$newfiltertable="temp_pool_db.plan_doc_summ_input_v2_".$username;
 	$sql="DROP TABLE IF EXISTS $newfiltertable";
@@ -624,20 +643,12 @@ $module_ref_no=$_GET["module"];
 	//docketno-colorcode cutno-cut_status
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$input_job_no = 'J'.leading_zeros($sql_row['input_job_no'], 3);
-		$code.=$sql_row['input_job_no_random']."-".$input_job_no."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."-".$sql_row['type_of_sewing']."*";
+		$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+		// $input_job_no = 'J'.leading_zeros($sql_row['input_job_no'], 3);
+		$code.=$sql_row['input_job_no_random']."-".$display_prefix1."-".$sql_row['act_cut_issue_status']."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."-".$sql_row['type_of_sewing']."*";
 		//echo "Doc=".$doc_no."<br>";
 		$style=$sql_row['order_style_no'];
 	}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -656,24 +667,46 @@ $code_db=explode("*",$code);
 <div class="col-md-12">
 <div class="panel panel-primary">
 <div class="panel-heading">
-<?php echo "Style:$style | Schedule: $schedule | color: $color"; ?>
+
+<?php 
+$url2 = getFullURLLevel($_GET['r'],'jobs_movement_track.php',0,'N');
+echo "<b>Style:</b> $style | <b>Schedule:</b> $schedule | <b>Color:</b> $color"; 
+echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url2' onclick=\"return popitup2('$url2')\" target='_blank'>Sewing Jobs Movement Track</a>";
+?>
 </div>
 <div class="panel-body">
-<h4><span class="label label-info">Note: Yellow Color indicates Excess/Sample Job</span></h4>
-<form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()">
-	<input type="hidden" name="listOfItems" value="">
-	<input class='btn btn-success btn-sm pull-right' type="button" name="saveButton" id='saveButton' onclick='do_disable()' value="Save">
-</form>
+<div>
+<h4>Color Legends</h4>
+<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: white;color: red;">
+<div>Different Style and Schedule Jobs</div>
+</div>&nbsp;&nbsp;&nbsp;
+<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: yellow;color: red;margin-left: 30px;">
+<div> Different Style & Schedule, Excess / Sample Jobs</div>
+</div>
+<div style="margin-top: 5px; border: 1px solid #000;background-color: green;color: white;float: left;margin-left: 30px;">
+<div> Same Style and Schedule if Fabric requested Jobs</div>
+</div>
+<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: red;color: black;">
+<div>Same Style and Schedule if Fabric not requested Jobs</div>
+</div>
+<div style="margin-top: 4px;border: 2px solid yellow;background-color: green;color: white;float: left; margin-left: 30px;">
+<div>Same Style and Schedule if Fabric requested for Excess/Sample Jobs</div>
+</div>
+<div style="margin-top: 4px;border: 2px solid yellow;background-color: white;color: red;float: left;">
+<div>Same Style and Schedule if Fabric is not requested for Excess/Sample Jobs</div> 
+</div>
+<div style="clear: both;"> </div>
+</div>
+<!-- </form> -->
 <br>
 <div id="dhtmlgoodies_dragDropContainer">
 	<!-- <div id="topBar">
 		<img src='images/heading3.gif'>
 	</div> -->
 	<div id="dhtmlgoodies_listOfItems">
-		<div style="position: fixed;width: 150px;height:300px;overflow:  scroll;">
+		<div style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;">
 			<p>Jobs</p>		
-		<ul id="allItems">
-		
+		<ul id="allItems">		
 		<?php
 			//exmaple : <li id="node101101">Student A</li>
 			for($i=0;$i<sizeof($code_db)-1;$i++)
@@ -681,24 +714,26 @@ $code_db=explode("*",$code);
 				$code_db_new=array();
 				$code_db_new=explode("-",$code_db[$i]);
 				// var_dump($code_db_new);
-				if($code_db_new[2]=="DONE")
-				{
-					$check= "#0c10e1";
-					$font_color = 'white';
-				}
-				else
-				{
-					$check="#0c10e1"; // red
-					$font_color = 'white';
-				}
-
-				if ($code_db_new[7] == 2)
+				// if($code_db_new[2]=="DONE")
+				// {
+				// 	$check= "blue";
+				// 	$font_color = 'white';
+				// }
+				// else
+				// {
+				// 	$check="blue"; // red
+				// 	$font_color = 'white';
+				// }
+				if ($code_db_new[7] == 2 || $code_db_new[7] == 3)
 				{
 					$check = 'yellow'; // yellow for excess/sample cut
 					$font_color = 'black';
+				}else{
+					$check="blue"; // red
+					$font_color = 'white';
 				}
 
-				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check; border-color:#b8daff; color:#f6f6f6;\">
+				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" data-color='blue' style=\" background-color:$check; border-color:#b8daff; color:#f6f6f6;\">
 							<strong><font color='$font_color'>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</font></strong>
 						</li>";
 			}
@@ -706,6 +741,13 @@ $code_db=explode("*",$code);
 			
 		</ul>
 		</div>
+
+		
+<form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()" style="position: fixed;margin-left: 47px;">
+<input type="hidden" name="listOfItems" value="">
+<input class="btn btn-success btn-sm pull-right" type="button" name="saveButton" id="saveButton" onclick="do_disable()" value="Save">
+</form>
+
 	</div>	
 	
 
@@ -757,7 +799,7 @@ $code_db=explode("*",$code);
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
 			
-			// echo "<div style=\"width:140px;height:500px;\" align=\"center\" class=\"table table-responsive\"><h4>SEC - $section</h4>";
+			// echo "<div style=\"width:320px;height:500px;\" align=\"center\" class=\"table table-responsive\"><h4>SEC - $section</h4>";
 			echo "<div style=\"width:170px;\" align=\"center\"><h4>SEC - $section</h4>";
 		
 			$mods=array();
@@ -782,7 +824,7 @@ $code_db=explode("*",$code);
 				//New Implementation to Restrict Power User level Planning 20111211
 			}
 			
-						
+						echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
 			for($x=0;$x<sizeof($mods);$x++)
 			{
 		
@@ -822,36 +864,45 @@ $code_db=explode("*",$code);
 								$style_id_new=$sql_row_id["sid"];
 							}
 								
+							$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
+							$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$resulted_rows = mysqli_num_rows($get_fab_req_result);
+
+
 							// add by Chathuranga	
 							
 							
-							
-							$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$color_code1.$acutno1,80)."\n".str_pad("Qty:".$total_qty1,90);
+							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+							$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+
+							$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);
 							if($style1!=NULL)
 							{
 								if($style==$style1  and $schedule==$schedule1)
 								{
-									if ($type_of_sewing == 2)
-									{
-										$check = 'yellow'; // yellow for excess/sample cut
-										$font_color = 'black';
-									} else {
-										$check = '#f02009';
-										$font_color = '#f6f6f6';
+									if($resulted_rows>0){
+										if($bg_color1 == 'white'){
+											echo '<li id="'.$doc_no.'"  style="background-color:green;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}else if($bg_color1 == 'yellow'){
+											echo '<li id="'.$doc_no.'"  style="background-color:green;border: 4px solid yellow;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+										
+									}else{
+										if($bg_color1 == 'white'){
+										echo '<li id="'.$doc_no.'"  style="background-color:red;" data-color="red" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}else if($bg_color1 == 'yellow'){
+											echo '<li id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
 									}
-									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;background-color:$check;" title="'.$title.'"><strong><font color="$font_color">J'.$cut_no1."(".$style_id_new.')</font></strong></li>';
+									
 								}
 								else
 								{
-									if ($type_of_sewing == 2)
-									{
-										$check = 'yellow'; // yellow for excess/sample cut
-										$font_color = 'black';
-									} else {
-										$check = '#f02009';
-										$font_color = '#a94442';
-									}
-									echo '<li id="'.$doc_no.'"  style="border-color: #ebccd1;background-color:$check;" title="'.$title.'"><strong><font color="$font_color">J'.$cut_no1."(".$style_id_new.')</font></strong></li>';
+									// if($resulted_rows>0){
+									// 	echo '<li id="'.$doc_no.'"  style="background-color:green;border: 2px solid '.$bg_color1.';" data-color ="green" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+									// }else{
+										echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+									//}									
 								}
 							}	
 							
@@ -878,8 +929,8 @@ $code_db=explode("*",$code);
 						
 						//echo $sql1."<br>";
 						
-					echo '</ul>
-				';
+					echo '</ul>';
+				
 				
 			}
 			echo "</div>";
@@ -910,6 +961,8 @@ $code_db=explode("*",$code);
 	</div>
 
 	</div>
+
+<br>
 </div>
 	</div>
 	</div>
@@ -923,5 +976,6 @@ $code_db=explode("*",$code);
 </body>
 
 </html>
+<script src="../../common/js/jquery-1.3.2.js"></script>
 
 
