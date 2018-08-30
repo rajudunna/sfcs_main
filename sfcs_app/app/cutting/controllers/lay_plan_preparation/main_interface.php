@@ -116,6 +116,9 @@ hza.style.display = state;
 <!-- <link href="style.css" rel="stylesheet" type="text/css" />   -->
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>	
+
+
+
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <?php
@@ -406,18 +409,18 @@ echo "<div class='col-sm-12 row'><div class='panel panel-info'>
 		<strong>MPO : </strong>$mpo
 		</div>
 	</div>
-	<br/>";
-// 	echo "<div class='row'>
+	<br/>
+	<div class='row'>
 		
-// 			<div class='col-md-4'>
-// 			<strong>Binding Consumption : </strong>";
-// 				include("main_interface_remarks.php");
-// 				echo "</div><div class='col-md-4' style='display:none;'><b>Remarks: </b>$remarks_y</div>
-// 			    <div class='col-md-4'><b>Binding Consumption: </b>$bind_con</div>";
-// 			echo "
+			<div class='col-md-4'>
+			<strong>Binding Consumption : </strong>";
+				include("main_interface_remarks.php");
+				echo "</div><div class='col-md-4' style='display:none;'><b>Remarks: </b>$remarks_y</div>
+			    <div class='col-md-4'><b>Binding Consumption: </b>$bind_con</div>";
+			echo "
 		
-// 	</div><hr/>
-// ";
+	</div><hr/>
+";
 $order_qty_update_url = getFullUrlLevel($_GET['r'],'planning/controllers/orders_edit_form.php','3','N');
 echo "<div class=\"table-responsive\">";
 
@@ -653,7 +656,6 @@ if ($sql_result) {
 					<th class=\"column-title\"><center>Fabric Code</th>
 					<th class=\"column-title\" style='word-wrap: break-word;'><center>Fabric Description</th>
 					<th class=\"column-title\"><center>Pur Width</th>
-					<th class=\"column-title\"><center>Binding Consumption</th>
 					<th class=\"column-title\"><center>Pattern Version</th>
 					<th class=\"column-title\"><center>MO status</th>
 					<th class=\"column-title\"><center>Controls</th>
@@ -673,7 +675,6 @@ if ($sql_result) {
 			echo "<td class=\"  \"><center>".$sql_row['compo_no']."</center></td>";
 			echo "<td class=\"  \" style='word-wrap: break-word;'><center>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
-			echo "<td class=\"  \"><center>".$sql_row['binding_consumption']."</center></td>";
 
 			//echo $sql_row['tid']."</br>";
 	//		if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
