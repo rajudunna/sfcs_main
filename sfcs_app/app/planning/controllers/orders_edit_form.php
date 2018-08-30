@@ -62,21 +62,18 @@ session_start();
 	$_SESSION['style']=$style;
 	$_SESSION['schedule']=$schedule;
 	$_SESSION['color']=$color;
-
 ?>
 <script>
+
 
 function firstbox()
 {
 	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value;
-
 }
 
 function secondbox()
 {
 		window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
-
-	
 }
 
 function thirdbox()

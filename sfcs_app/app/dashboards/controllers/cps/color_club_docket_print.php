@@ -3759,8 +3759,12 @@ echo "</tbody></table>";
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
-  <td class=xl6417319 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
+  <td class=xl6417319 colspan="3"><u><strong>Quality Authorisation</strong></u><br/>
+ <br/><strong><u> Cutting Supervisor Authorization<br/></u></strong></td>
  </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 class=xl8217319 style='height:15.75pt'></td>
+  </tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   <td colspan=16 rowspan=2 class=xl9117319 style='border-right:.5pt solid black;
@@ -3795,20 +3799,6 @@ echo "</tbody></table>";
   <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl821731ff9 style='height:15.75pt'></td>
   </tr>
-
- 
- <tr height=30 style='height:15.75pt'>
-  <td></td>
-  <td  colspan=2 class=xl7217319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>Excess</td>
-  <td  colspan=3 class=xl8217319></td>
- </tr>
- 
 
  
  <tr height=30 style='height:15.75pt'>

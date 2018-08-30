@@ -17,10 +17,10 @@
         ]
     },
     "mysql_database_info": {
-        "db_host": "10.227.221.26",
-        "db_user": "beksfcs",
-        "db_pass": "Max@sfcs",
-        "db_port": "3306"
+        "db_host": "192.168.0.110",
+        "db_user": "baiall",
+        "db_pass": "baiall",
+        "db_port": "3326"
     },
     "mssql_database_info": {
         "db_host": "localhost",
@@ -51,6 +51,15 @@
                 "className": "form-control",
                 "name": "plantcode",
                 "value": "EKG",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "RMS Request Time",
+                "className": "form-control",
+                "name": "rms_request_time",
+                "value": "4",
                 "subtype": "text"
             },
             {
@@ -88,20 +97,35 @@
             },
             {
                 "type": "text",
-                "required": true,
-                "label": "Super User Name",
+                "label": "Plant Alert Code",
                 "className": "form-control",
-                "name": "superuser",
-                "value": "chandu",
-                "subtype": "text"
+                "name": "plant-alert-code",
+                "subtype": "text",
+                "value": "BEK"
             },
-     		{
+            {
                 "type": "text",
                 "label": "Message Sent Name",
                 "className": "form-control",
                 "name": "msg-sent-via",
                 "subtype": "text",
                 "value": "SYSTEM"
+            },
+            {
+                "type": "text",
+                "label": "Plant Start Time",
+                "className": "form-control",
+                "name": "plant-start-time",
+                "subtype": "text",
+                "value": "7:30:00"
+            },
+            {
+                "type": "text",
+                "label": "Plant End Time",
+                "className": "form-control",
+                "name": "plant-end-time",
+                "subtype": "text",
+                "value": "22:30:00"
             }
         ],
         [
@@ -343,25 +367,6 @@
                 "value": "yards"
             },
             {
-                "type": "select",
-                "required": true,
-                "label": "Scaning Methods",
-                "className": "form-control",
-                "name": "scaning-method",
-                "values": [
-                    {
-                        "label": "Bundle Level",
-                        "value": "Bundle Level",
-                        "selected": true
-                    },
-                    {
-                        "label": "Sewing Job Level",
-                        "value": "Sewing Job Level"
-                    }
-                ],
-                "value": "Bundle Level"
-            },
-            {
                 "type": "checkbox-group",
                 "required": true,
                 "label": "Category Display in Dashboard",
@@ -383,6 +388,59 @@
                     "body"
                 ]
             }
+        ],
+        [
+            {
+                "type": "header",
+                "subtype": "h1",
+                "label": "API Configurations"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Host Name",
+                "className": "form-control",
+                "name": "api-host-name",
+                "value": "http://eka-mvxsod-01.brandixlk.org",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "User Name",
+                "className": "form-control",
+                "name": "api-user-name",
+                "value": "BEL_SFCS",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "subtype": "password",
+                "required": true,
+                "label": "Password",
+                "className": "form-control",
+                "name": "api-password",
+                "value": "brandix@321"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Port",
+                "className": "form-control",
+                "name": "api-port",
+                "value": "22105",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Companey Number",
+                "className": "form-control",
+                "name": "companey-number",
+                "value": "200",
+                "subtype": "text"
+            }
+            
         ],
         [
             {

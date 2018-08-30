@@ -3143,7 +3143,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
+  <td class=xl654118 colspan="3"><u><strong>Quality Authorisation</strong></u><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
 <table>
 

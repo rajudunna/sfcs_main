@@ -1,5 +1,11 @@
 <?php
-       $module_ref_recon=$module;      
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+    $modules = $_POST['modules'];
+    
+    $count = 0;   
+    foreach(json_decode($modules) as $module_ref_recon){
+        $count +=1;   
         $toggle=0; 
         $sql_recon="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref from $bai_pro3.ims_log where ims_mod_no=$module_ref_recon and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid";         
         $sql_result_recon=mysqli_query($link, $sql_recon) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -23,12 +29,12 @@
             { 
                 $flag++;
                 $ims_doc_no_recon=$sql_row12_recon['ims_doc_no']; 
-				$ims_size_recon=$sql_row12_recon['ims_size'];
-				$ims_size2_recon=substr($ims_size_recon,2);
+        $ims_size_recon=$sql_row12_recon['ims_size'];
+        $ims_size2_recon=substr($ims_size_recon,2);
                 $inputjobno_recon=$sql_row12_recon['input_job_no_ref'];
                 $pac_tid_recon=$sql_row12_recon['pac_tid'];
 
-				
+        
                 $sql22_recon="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no_recon and a_plies>0"; 
                 //mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 $sql_result22_recon=mysqli_query($link, $sql22_recon) or exit("Sql Error2.4".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -51,11 +57,13 @@
                   }      
                      
                 if(($sql_row12_recon['ims_qty']-($sql_row12_recon['ims_pro_qty']+$rejected_recon))==0)
-				{
-					$update_ims_recon="update $bai_pro3.ims_log set ims_status=\"DONE\" where tid='".$sql_row12_recon['tid']."'";
-					//echo $update_ims_recon."<br>";
-					 $update_ims_recon=mysqli_query($link, $update_ims_recon) or exit("Sql error update ims".mysqli_error($GLOBALS["___mysqli_ston"]));
-				}     
+        {
+          $update_ims_recon="update $bai_pro3.ims_log set ims_status=\"DONE\" where tid='".$sql_row12_recon['tid']."'";
+          //echo $update_ims_recon."<br>";
+           $update_ims_recon=mysqli_query($link, $update_ims_recon) or exit("Sql error update ims".mysqli_error($GLOBALS["___mysqli_ston"]));
+        }     
              }
         } 
+    }
+    echo $count;
 ?>
