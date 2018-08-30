@@ -68,9 +68,19 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 <?php
 		if(isset($_GET['submit']))
 		{
-			$total_hours = $plant_end_time - $plant_start_time;
-			list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
-			$minutes_29 = $minutes-1;
+			$plant_timings_query="SELECT * FROM $bai_pro3.tbl_plant_timings";
+			// echo $plant_timings_query;
+			$plant_timings_result=mysqli_query($link,$plant_timings_query);
+			while ($row = mysqli_fetch_array($plant_timings_result))
+			{
+				$start_time[] = $row['start_time'];
+				$end_time[] = $row['end_time'];
+				$time_display[] = $row['time_display'].'<br>'.$row['day_part'];
+			}
+			
+			// $total_hours = $plant_end_time - $plant_start_time;
+			// list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
+			// $minutes_29 = $minutes-1;
 
 			$sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
 			// echo $sql.'<br>';
@@ -94,16 +104,9 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 					<th>Hours</th>
 					<th>Target <br>PCS/Hr</th>
 					<?php 
-						$hours_array = array();
-						$hour_end = array();
-					   	for ($i=0; $i < $total_hours; $i++)
+						for ($i=0; $i < sizeof($time_display); $i++)
 						{
-							$hours_array[] = $hour;
-							$from_hour = $hour.":".$minutes;
-							$hour1=$hour++ + 1;
-							$to_hour = $hour1.":".$minutes_29;
-							$hour_end[] = $hour1;
-							echo "<th><center>$from_hour<br>to<br>$to_hour</center></th>";
+							echo "<th><center>$time_display[$i]</center></th>";
 						}
 					?>
 					<th>Total Pcs</th>
@@ -254,20 +257,28 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 						?>
 					</center></td>
 					<?php
-						for ($i=0; $i < sizeof($hours_array); $i++)
+						for ($i=0; $i < sizeof($time_display); $i++)
 						{
-							// echo $hours_array[$i].'<br>';
-							$hour_iniate = $hours_array[$i];
-							$hour_ending = $hour_end[$i];
-							//$sql6_1="SELECT SUM(qty) as qty FROM $bai_pro2.hout WHERE out_date='$frdate' AND team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":".$minutes."') AND TIME('".$hour_ending.":".$minutes_29."'));";
-							$row=echo_title("$bai_pro2.hout","SUM(qty)","team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":".$minutes."') AND TIME('".$hour_ending.":".$minutes_29."')) and out_date",$frdate,$link);
+							// $row=echo_title("$bai_pro2.hout","SUM(qty)","team='$team' AND (TIME(out_time) BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."')) and out_date",$frdate,$link);
+							$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
 
 							if ($row == '' || $row == NULL )
 							{
 								$row=0;
 							}
 							
-							if ($row >= round($pcsphr))
+							if (round($pcsphr) == 0)
+							{
+								if ($row > 0)
+								{
+									echo "<td><center>".$row."</center></td>";
+								}
+								else
+								{
+									echo "<td><center>  </center></td>";
+								}
+							}
+							else if ($row >= round($pcsphr))
 							{
 								$total_qty = $total_qty + $row;
 								for ($k=0; $k < sizeof($plant_name); $k++) 
@@ -283,13 +294,30 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 							} 
 							else if ($row < round($pcsphr))
 							{
-								if (($hour_iniate > date('H') and $frdate == date('Y-m-d')) && $row == 0)
-								{
-									echo "<td><center> - </center></td>";
+								if ($row == 0)
+								{									
+									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									// echo $sql6_2.'<br><br>';
+									$res6_12=mysqli_query($link,$sql6_2);
+									if (mysqli_num_rows($res6_12) > 0)
+									{
+										echo "<td><center> 0 </center></td>";
+									}
+									else
+									{
+										if (($start_time[$i] > date('H') and $frdate == date('Y-m-d')))
+										{
+											echo "<td><center> - </center></td>";
+										}
+										else
+										{
+											echo "<td><center>  </center></td>";
+										}
+									}
 								}
 								else
 								{
-									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND HOUR(time) BETWEEN TIME('".$hour_iniate."') AND TIME('".$hour_ending."') AND team='$team';";
+									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									// echo $sql6_2.'<br><br>';
 									$res6_12=mysqli_query($link,$sql6_2);
 									if (mysqli_num_rows($res6_12) > 0)
@@ -493,7 +521,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 						<td></td>
 						<td></td>
 						<?php
-							for ($i=0; $i < sizeof($hours_array); $i++)
+							for ($i=0; $i < sizeof($time_display); $i++)
 							{
 								if ($grand_tot_qty_time_array1[$plant_name[$j]][$i] > 0)
 								{
