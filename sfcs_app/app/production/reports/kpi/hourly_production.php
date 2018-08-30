@@ -267,7 +267,18 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 								$row=0;
 							}
 							
-							if ($row >= round($pcsphr))
+							if (round($pcsphr) == 0)
+							{
+								if ($row > 0)
+								{
+									echo "<td><center>".$row."</center></td>";
+								}
+								else
+								{
+									echo "<td><center>  </center></td>";
+								}
+							}
+							else if ($row >= round($pcsphr))
 							{
 								$total_qty = $total_qty + $row;
 								for ($k=0; $k < sizeof($plant_name); $k++) 
@@ -283,14 +294,24 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 							else if ($row < round($pcsphr))
 							{
 								if ($row == 0)
-								{
-									if (($hour_iniate > date('H') and $frdate == date('Y-m-d')) && $row == 0)
+								{									
+									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									// echo $sql6_2.'<br><br>';
+									$res6_12=mysqli_query($link,$sql6_2);
+									if (mysqli_num_rows($res6_12) > 0)
 									{
-										echo "<td><center> - </center></td>";
+										echo "<td><center> 0 </center></td>";
 									}
 									else
 									{
-										echo "<td><center>  </center></td>";
+										if (($start_time[$i] > date('H') and $frdate == date('Y-m-d')))
+										{
+											echo "<td><center> - </center></td>";
+										}
+										else
+										{
+											echo "<td><center>  </center></td>";
+										}
 									}
 								}
 								else
