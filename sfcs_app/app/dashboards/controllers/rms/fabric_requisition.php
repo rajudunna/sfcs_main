@@ -20,13 +20,18 @@ $has_permission=haspermission($url_r);
 // echo "Authp : ".var_dump($has_permission);
 // die();
 
+
 ?>
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	// $username="sfcsproject1";
 	// $users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
 	//$mods=array();
-
+	$query = "select * from $bai_pro3.tbl_fabric_request_time";
+	$update_request_time=mysqli_query($link, $query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row=mysqli_fetch_array($update_request_time)){
+		$rms_request_time = $row['request_time'];
+	}
 	if((in_array($authorized,$has_permission)))
 	{
 		//echo "Names Exit";
