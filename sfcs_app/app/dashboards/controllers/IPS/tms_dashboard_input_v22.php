@@ -172,7 +172,7 @@ border: 1px solid black;
 .pink {
   width:20px;
   height:20px;
-  background-color: #ff00ff;
+  background-color: pink;
   display:block;
   float: left;
   margin: 2px;
@@ -189,7 +189,7 @@ border: 1px solid black;
 
 .pink a:hover {
   text-decoration:none;
-  background-color: #ff00ff;
+  background-color: pink;
 }
 
 .orange {
@@ -488,7 +488,7 @@ mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli
 //echo "<font size=4>LIVE TRIMS STATUS DASHBOARD";
 ?>
 <div class="panel panel-primary">
-<div class="panel-heading"><strong>IPS Dashboard</strong></div>
+<div class="panel-heading"><strong>IPS Dashboard1</strong></div>
 <div class="panel-body">
 	<div class="form-inline">
 		<div class="form-group">
@@ -702,9 +702,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$cut_status="5";
 					}
+					
+					
 					$sql1x11="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' and doc_no in ($doc_no_ref)";
 					//echo $sql1x11."<br>";
 					$sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
 					if(mysqli_num_rows($sql_result1x11)>0)
 					{
 						$fabric_status="0";
@@ -713,6 +716,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$fabric_status="5";
 					}
+					
+					$sql1x12="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no in ($doc_no_ref)";
+					echo $sql1x12."<br>";
+					$fabric_status1="";
+					$sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// echo mysqli_num_rows($sql_result1x12);
+					if(mysqli_num_rows($sql_result1x12)>0)
+					{
+						$fabric_status1="1";
+					}								
 					$sql1x115="select * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no_ref)";
 					$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result1x115)>0)
@@ -739,6 +752,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$id="yellow";					
 						$rem="Fabric Issued";	
+					}
+					elseif($fabric_status1=='1')
+					{
+						$id="pink";					
+						$rem="Ready To Issue";	
 					}
 					elseif($fabric_req=="5")
 					{
@@ -791,7 +809,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$id="yash";
 						$rem="Not Update";
-					}	
+					}
+					// echo $id;
 					$sqly="SELECT group_concat(doc_no) as doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
 					//echo $sqly."<br>";
 					$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
