@@ -718,7 +718,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					}
 					
 					$sql1x12="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no in ($doc_no_ref)";
-					echo $sql1x12."<br>";
+					//echo $sql1x12."<br>";
 					$fabric_status1="";
 					$sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo mysqli_num_rows($sql_result1x12);
