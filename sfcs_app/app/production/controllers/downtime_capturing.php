@@ -3,7 +3,7 @@
     Purpose : Page to update down time in sewing time based on planning vs actual 
     Created By : Chandu
     Create : 04-07-2018
-    Update : 29-08-2018 
+    Update : 30-08-2018 
     inputs : date,time,module
     output : show table with style,schedule,color details and update button for update down time.
     updates v0.1 : change the inputing to date and module. remove style schedule color in table. show actual quantity and planned quantity in single row.
@@ -148,7 +148,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
 
                     if($actual_qty<$forcast_qty){
                         $hours = $forcast_qty - $actual_qty;
-                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND TIME = '".$r['start_time']."' AND team = '".$_GET['module']."'";
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$r['start_time']."') AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($hourly_down_time_res)==0){
                             $btn="<button class='btn btn-danger pull right' onclick='assignhour(".explode(":",$r['start_time'])[0].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
@@ -158,7 +158,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                         }
                     }elseif($actual_qty<$plan_qty && $forcast_qty==0){
                         $hours = $plan_qty - $actual_qty;
-                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND TIME = '".$r['start_time']."' AND team = '".$_GET['module']."'";
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$r['start_time']."') AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         //echo $hourly_down_time_qry."<br/>" ;
                         if(mysqli_num_rows($hourly_down_time_res)==0){
@@ -192,7 +192,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                             <h4 class="modal-title">Update Down Time</h4>
                         </div>
                         <div class="modal-body" id="brand" ng-app="chandu" ng-controller="downtimecontroller">';
-                    if(mysqli_num_rows($hourly_down_time_res)==0){
+                    //if(mysqli_num_rows($hourly_down_time_res)==0){
                         echo "Downtime Quantity : <b>{{dtimehrs}}</b>";
                     echo "<div class='col-sm-12'><div class='col-sm-4'><select ng-model='reasons' id='reson' name='reson' class='form-control'>";
                         echo "<option value=''>Select Reason</option>";
@@ -221,9 +221,9 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                             </div>
 <?php
                         echo "<br/>";
-                        }else{
-                            echo "<div class='alert alert-warning'>Down time updated previously.</div>";
-                        }
+                        // }else{
+                        //     echo "<div class='alert alert-warning'>Down time updated previously.</div>";
+                        // }
                         echo '</div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
