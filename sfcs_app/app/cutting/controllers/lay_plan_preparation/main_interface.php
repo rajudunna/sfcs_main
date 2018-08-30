@@ -4,6 +4,7 @@ Change Log:
 kirang/ 2015-02-25/ Service Request #244611 :  Add Remarks Tab in Cut plan (for Sample pieces)
 kirang/2016-12-27/ CR: 536: Adding MPO Number in Cut Plan
 -->
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Cut Plan</div>
@@ -36,6 +37,52 @@ else
 	$color=$_GET['color'];
 }
 
+	 $sql_colors="select distinct(order_col_des) from bai_orders_db where order_del_no = '$schedule' 
+	 		 and order_style_no = '$style'";
+	 $result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+	while($row = mysqli_fetch_array($result3))
+	 {
+	 	$colors_array[] = $row['order_col_des'];
+	}
+	//var_dump($colors_array);
+	//die();
+	foreach($colors_array as $key=>$color_value )
+	{
+		$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes'";
+		// echo $ops_master_sql;
+		$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
+								  or exit("Error Occured : Unable to get the Operation Codes");
+		while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+		{
+			$array1[] = $row_result2_ops_master_sql['operation_code'];
+		}
+		//var_dump ($array1);
+		$sql1 = "select   OperationNumber FROM bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule'";
+		$result1 = mysqli_query($link,$sql1)  
+				   or exit("Error Occured : Unable to get the Operation Codes");;
+		// echo $sql1;
+		//echo mysqli_num_rows($result1).'---';
+		while($row = mysqli_fetch_array($result1))
+		{
+			$array2[] = $row['OperationNumber'];
+		}
+
+		$compare = array_diff($array1,$array2);
+		
+		if(sizeof($compare) > 0)
+		{
+			echo "<script>swal('Operation codes does not match','','warning');</script>";
+			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+			echo "<script>
+					setTimeout(function(){
+						location.href='$url'
+					},3000);
+					</script>";
+			//header("location : $url");
+			//echo $url;
+			exit();
+		}
+	}
 
 ?>
 
@@ -69,9 +116,6 @@ hza.style.display = state;
 <!-- <link href="style.css" rel="stylesheet" type="text/css" />   -->
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>	
-
-
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <?php
@@ -362,18 +406,18 @@ echo "<div class='col-sm-12 row'><div class='panel panel-info'>
 		<strong>MPO : </strong>$mpo
 		</div>
 	</div>
-	<br/>
-	<div class='row'>
+	<br/>";
+// 	echo "<div class='row'>
 		
-			<div class='col-md-4'>
-			<strong>Binding Consumption : </strong>";
-				include("main_interface_remarks.php");
-				echo "</div><div class='col-md-4' style='display:none;'><b>Remarks: </b>$remarks_y</div>
-			    <div class='col-md-4'><b>Binding Consumption: </b>$bind_con</div>";
-			echo "
+// 			<div class='col-md-4'>
+// 			<strong>Binding Consumption : </strong>";
+// 				include("main_interface_remarks.php");
+// 				echo "</div><div class='col-md-4' style='display:none;'><b>Remarks: </b>$remarks_y</div>
+// 			    <div class='col-md-4'><b>Binding Consumption: </b>$bind_con</div>";
+// 			echo "
 		
-	</div><hr/>
-";
+// 	</div><hr/>
+// ";
 $order_qty_update_url = getFullUrlLevel($_GET['r'],'planning/controllers/orders_edit_form.php','3','N');
 echo "<div class=\"table-responsive\">";
 
@@ -609,8 +653,7 @@ if ($sql_result) {
 					<th class=\"column-title\"><center>Fabric Code</th>
 					<th class=\"column-title\" style='word-wrap: break-word;'><center>Fabric Description</th>
 					<th class=\"column-title\"><center>Pur Width</th>
-				
-					
+					<th class=\"column-title\"><center>Binding Consumption</th>
 					<th class=\"column-title\"><center>Pattern Version</th>
 					<th class=\"column-title\"><center>MO status</th>
 					<th class=\"column-title\"><center>Controls</th>
@@ -630,6 +673,8 @@ if ($sql_result) {
 			echo "<td class=\"  \"><center>".$sql_row['compo_no']."</center></td>";
 			echo "<td class=\"  \" style='word-wrap: break-word;'><center>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
+			echo "<td class=\"  \"><center>".$sql_row['binding_consumption']."</center></td>";
+
 			//echo $sql_row['tid']."</br>";
 	//		if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
