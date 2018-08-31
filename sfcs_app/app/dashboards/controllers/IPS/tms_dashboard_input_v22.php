@@ -488,7 +488,7 @@ mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli
 //echo "<font size=4>LIVE TRIMS STATUS DASHBOARD";
 ?>
 <div class="panel panel-primary">
-<div class="panel-heading"><strong>IPS Dashboard1</strong></div>
+<div class="panel-heading"><strong>IPS Dashboard</strong></div>
 <div class="panel-body">
 	<div class="form-inline">
 		<div class="form-group">
@@ -717,7 +717,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$fabric_status="5";
 					}
 					
-					$sql1x12="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no in ($doc_no_ref)";
+					$sql1x12="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no in ($doc_no_ref)";
 					//echo $sql1x12."<br>";
 					$fabric_status1="";
 					$sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
