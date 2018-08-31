@@ -76,7 +76,7 @@ if(isset($_GET['submit']))
 		<div class="table-responsive">
 			<table class="table table-bordered">
 				<thead>
-					<tr style="background:#dd3636;color:white;">
+					<tr style="background:#337ab7;color:white;">
 					  <th>Team</th>
 					  <th>NOP</th>
 					  <th>Style</th>
@@ -335,7 +335,7 @@ if(isset($_GET['submit']))
 															}
 														}
 														$dummy[$section_wise_total][$i] = $dummy[$section_wise_total][$i] + $row;												
-														echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
+														echo "<td style='background-color:#dd3636; color:white;'><center>".$row."</center></td>";
 													}
 													else
 													{
