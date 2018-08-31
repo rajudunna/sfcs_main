@@ -88,7 +88,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                         for($j=1;$j<=50;$j++){
                             $sno = str_pad($j,2,"0",STR_PAD_LEFT);
                             if($row['title_size_s'.$sno]!=''){
-                                echo "<th id='datatitle".$j."' data-value='".$row['title_size_s'.$sno]."'>".$row['title_size_s'.$sno]."</th>";
+                                echo "<th id='datatitle".$j."' data-title='s".$sno."' data-value='".$row['title_size_s'.$sno]."'>".$row['title_size_s'.$sno]."</th>";
                                 $max=$j;
                             }else{
                                 break;
@@ -107,7 +107,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 <td>".$row['p_plies']."</td>";
             for($k=1;$k<=$max;$k++){
                 $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                echo "<td id='dataval".$i.$k."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                echo "<td id='dataval".$i.$k."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
             }
             echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($i,$max)'>Generate Jobs</button></td>";
             echo "</tr>";
@@ -147,29 +147,60 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
 <script>
 var app = angular.module('cutjob', []);
 app.controller('cutjobcontroller', function($scope, $http) {
-    $scope.jobcount = "";
+    $scope.jobcount = 0;
     $scope.titles = {};
+    $scope.values = {};
+    $scope.details = [];
+    $scope.jobs   = {};
+    $scope.getjobs = function(){
+       if($scope.jobcount>0)
+       {
+           console.log($scope.jobcount);
+           var j =1;
+        for(var i=0; i<$scope.details.length; i++)
+        {
+         //console.log($scope.details[i].value);
+         var value = $scope.details[i].value/$scope.jobcount;
+         var excess = $scope.details[i].value%$scope.jobcount;
+         console.log(value+" "+excess);
+         
+        }
+       }
+       else
+       {
 
-    
+       }
+    }
 
 });
 angular.bootstrap($('#modalLoginForm'), ['cutjob']);
 function assigndata(s,max){
-    //console.log(s+" "+max);
+    var titles = {};
+    var values = {};
+    var details = [];
     for(var i=1;Number(i)<=Number(max);i++){
         var sp_title = document.getElementById('datatitle'+i);
         var sp_values = document.getElementById('dataval'+s+i);
-        a = sp_title.getAttribute('data-value');
-        b = sp_values.getAttribute('data-value');
+        a = sp_title.getAttribute('data-title');
+        b = sp_values.getAttribute('data-title');
 
-        
+        c = sp_title.getAttribute('data-value');
+        d = sp_values.getAttribute('data-value');
+        var val = {title : c, key : a, value : d};
+        details.push(val);
+
+        titles[a] = c;
+        values[b] = d;
+
     }
    
-    // var controllerElement = document.querySelector('[ng-controller="cutjobcontroller"]');
-    // var scope = angular.element(controllerElement).scope();
-    // scope.$apply(function () {
-    //     scope.titles =  titles ;
-    //     scope.values = values;
-    // });
+    var controllerElement = document.querySelector('[ng-controller="cutjobcontroller"]');
+    var scope = angular.element(controllerElement).scope();
+    scope.$apply(function () {
+        //console.log(titles);
+        scope.titles =  titles ;
+        scope.values = values;
+        scope.details = details;
+    });
 }
 </script>
