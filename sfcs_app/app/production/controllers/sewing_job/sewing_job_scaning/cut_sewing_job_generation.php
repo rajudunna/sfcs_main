@@ -200,22 +200,35 @@ app.controller('cutjobcontroller', function($scope, $http) {
         for(var i=0; i<$scope.details.length; i++)
         {
             if($scope.balance>0){
-                $scope.jobs.push({job_id : $scope.j,job_qty : $scope.balance,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
-                var quantity = $scope.details[i].value-$scope.balance;
-                $scope.j++;
+                if($scope.balance>$scope.details[i].value){
+                    $scope.jobs.push({job_id : $scope.j,job_qty : $scope.details[i].value,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
+                    var quantity = $scope.details[i].value-$scope.balance;
+                    console.log("z"+$scope.details[i].value);
+                }else{
+                    $scope.jobs.push({job_id : $scope.j,job_qty : $scope.balance,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
+                    var quantity = $scope.details[i].value-$scope.balance;
+                    $scope.j++;
+                    console.log("a"+$scope.balance);
+                    if(quantity==0){
+                        $scope.balance = 0;
+                    }
+                    //console.log("a"+quantity);
+                }
             }else{
                 var quantity = $scope.details[i].value;
+                $scope.balance = 0;
             }
-            //console.log(quantity/$scope.jobcount+" "+ Math.floor(quantity/$scope.jobcount));
             var total_jobs_per_size = Math.floor(quantity/$scope.jobcount);
             $scope.excess = quantity%$scope.jobcount;
             for(var pora=0;pora<Number(total_jobs_per_size);pora++){
                 $scope.jobs.push({job_id : $scope.j,job_qty : $scope.jobcount,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
                 $scope.j++;
+                console.log("b"+$scope.jobcount);
             }
             if($scope.excess>0){
                 $scope.jobs.push({job_id : $scope.j,job_qty : $scope.excess,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
                 $scope.balance = $scope.jobcount-$scope.excess;
+                console.log("c"+$scope.excess);
             }
         }
        }
