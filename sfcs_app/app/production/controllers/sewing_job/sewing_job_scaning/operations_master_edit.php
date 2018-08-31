@@ -136,6 +136,18 @@ function validateQty(event)
 								</select>
 
 								</div>
+									<div class="col-sm-3">
+										<b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id" value= "<?php echo $row[0]['work_center_id']?>">
+									</div> 
+									<div class="col-sm-3">
+										<b>Category</b>
+										<select class="form-control" id="category" name="category" required>
+											<option value='' <?php echo $row[0]['category']== 'please select'? 'selected' : ''?>>Please Select</option>
+											<option value='cutting' <?php echo $row[0]['category']== 'cutting'? 'selected' : ''?>>Cutting</option>
+											<option value='sewing' <?php echo $row[0]['category']== 'sewing'? 'selected' : ''?>>Sewing</option>
+											<option value='packing' <?php echo $row[0]['category']== 'packing'? 'selected' : ''?>>Packing</option>
+										</select>
+									</div>
 									<div class="col-sm-2">
 										<button type="submit" class="btn btn-info" style="margin-top:18px;">Update</button>
 									</div>
@@ -172,6 +184,12 @@ function validateQty(event)
 		if(isset($_GET["short_cut_code"])){
 			$short_cut_code= $_GET["short_cut_code"];
 		}
+		if(isset($_GET["work_center_id"])){
+			$work_center_id= $_GET["work_center_id"];
+		}
+		if(isset($_GET["category"])){
+			$category= $_GET["category"];
+		}
 		if($operation_name!="" && $operation_code!="" && $short_cut_code != ""){
 			
 			$checking_qry = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where operation_code = $operation_code and id <> $id";
@@ -191,8 +209,7 @@ function validateQty(event)
 			}
 			if($cnt == 0 && $cnt_short == 0)
 			{
-				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation' where id='$id'";
-				//echo $qry_insert1;
+				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category' where id='$id'";
 				$res_do_num1 = mysqli_query($link,$qry_insert1);
 				echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";
 				//$sql_message = 'Operation Updated Successfully...';
