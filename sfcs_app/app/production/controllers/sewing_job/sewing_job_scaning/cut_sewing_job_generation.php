@@ -116,9 +116,10 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
         echo "</tbody></table>"; 
     }
     //=====================
-    echo '<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    ?>
+    <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      ng-app="cutjob" ng-controller="cutjobcontroller" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
                 <h4 class="modal-title w-100 font-weight-bold">Sewing Job Generation</h4>
@@ -126,18 +127,54 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body mx-3">
-                <div class="md-form mb-5">
-                    <i class="fa fa-envelope prefix grey-text"></i>
-                    <input type="text" id="defaultForm-job" class="form-control validate" ng-model= "jobcount" id="jobcount" name="jobcount">
-                    <label data-error="wrong" data-success="right" for="defaultForm-email">Input Job Count</label>
-                </div> </div>
+            <div class="modal-body">
+            
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <label data-error="wrong" data-success="right" for="defaultForm-email">Input Job Quantity</label>
+                        <input type="text" id="job-qty" class="form-control validate" ng-model= "jobcount" name="jobcount">
+                    </div>
+                    <div class='col-sm-4'>
+                        <label data-error="wrong" data-success="right" for="defaultForm-email">Bundle Quantity</label>
+                        <input type="text" id="bundle-qty" class="form-control validate" ng-model= "bundleqty" name="bundleqty">
+                    </div>
+                    <div class='col-sm-2'>
+                        <br/><br/>
+                        <button class="btn btn-success" ng-click="getjobs()">Generate Jobs</button>
+                    </div>
+                    <div class='col-sm-2'>
+                        <br/><br/>
+                        <button class="btn btn-primary" ng-click="createjobs()">Confirm..</button>
+                    </div>
+                </div>
+                <br/>
+                <div ng-show='jobs.length'>
+                    <table class='table'>
+                        <thead>
+                            <tr><th>#</th><th>Job ID</th><th>Size</th><th>Quantity</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in jobs">
+                                <td>{{$index+1}}</td>
+                                <td>{{item.job_id}}</td>
+                                <td>{{item.job_size}}</td>
+                                <td>{{item.job_qty}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-show='!jobs.length' class='alert alert-warning'>
+                    Please generate jobs..
+                </div>
+
+            </div> 
             <div class="modal-footer d-flex justify-content-center">
-                <button class="btn btn-default" ng-click="getjobs()">Submit</button>
+                <button class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-</div>';
+</div>
+<?php
     //=====================
 } 
 ?>
@@ -148,22 +185,38 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
 var app = angular.module('cutjob', []);
 app.controller('cutjobcontroller', function($scope, $http) {
     $scope.jobcount = 0;
+    $scope.bundleqty = 0;
     $scope.titles = {};
     $scope.values = {};
     $scope.details = [];
-    $scope.jobs   = {};
+    $scope.jobs   = [];
     $scope.getjobs = function(){
        if($scope.jobcount>0)
        {
-           console.log($scope.jobcount);
-           var j =1;
+           $scope.jobs   = [];
+           $scope.j = 1;
+           $scope.balance = 0;
+           $scope.excess = 0;
         for(var i=0; i<$scope.details.length; i++)
         {
-         //console.log($scope.details[i].value);
-         var value = $scope.details[i].value/$scope.jobcount;
-         var excess = $scope.details[i].value%$scope.jobcount;
-         console.log(value+" "+excess);
-         
+            if($scope.balance>0){
+                $scope.jobs.push({job_id : $scope.j,job_qty : $scope.balance,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
+                var quantity = $scope.details[i].value-$scope.balance;
+                $scope.j++;
+            }else{
+                var quantity = $scope.details[i].value;
+            }
+            //console.log(quantity/$scope.jobcount+" "+ Math.floor(quantity/$scope.jobcount));
+            var total_jobs_per_size = Math.floor(quantity/$scope.jobcount);
+            $scope.excess = quantity%$scope.jobcount;
+            for(var pora=0;pora<Number(total_jobs_per_size);pora++){
+                $scope.jobs.push({job_id : $scope.j,job_qty : $scope.jobcount,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
+                $scope.j++;
+            }
+            if($scope.excess>0){
+                $scope.jobs.push({job_id : $scope.j,job_qty : $scope.excess,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
+                $scope.balance = $scope.jobcount-$scope.excess;
+            }
         }
        }
        else
