@@ -3,12 +3,13 @@
     Purpose : Page to update down time in sewing time based on planning vs actual 
     Created By : Chandu
     Create : 04-07-2018
-    Update : 30-08-2018 
+    Update : 31-08-2018 
     inputs : date,time,module
     output : show table with style,schedule,color details and update button for update down time.
     updates v0.1 : change the inputing to date and module. remove style schedule color in table. show actual quantity and planned quantity in single row.
     updates v0.2 : output is changes ==> present output is plan-actual ==> updated output is forcast-actual if forcast is not there plan-actual
     update v0.3 : outpt view is changed to 7-8 to 7:30-8:30 , change the database stracture, as per the stracture modify queries.
+    update v0.4 : forecast value Round-up
 */
 
 
@@ -136,11 +137,11 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
 
                 $forcast_qty_fetch = mysqli_fetch_array($forcast_res);
                 //var_dump($forcast_qty_fetch);
-                $forcast_qty = $forcast_qty_fetch['qty']>0 ? ($forcast_qty_fetch['qty']/$day_hrs) : 0;
+                $forcast_qty = $forcast_qty_fetch['qty']>0 ? ceil($forcast_qty_fetch['qty']/$day_hrs) : 0;
                 $actuals=[];
                 
                 while($row=mysqli_fetch_array($result_log_data)){
-                    $actuals[$row['rep_start_time']] = $row['bac_Qty'];
+                    $actuals[$row['rep_start_time']] = ceil($row['bac_Qty']);
                 }
                 //var_dump($actuals);
                 while($r=mysqli_fetch_array($result_timings)){
