@@ -847,9 +847,9 @@
                                     $fab_status = 5;
                                 }
 								
-								$fab_issue2_query="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
+								$fab_issue2_query="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
 								// echo $fab_issue2_query."<br>";
-								
+								$fab_status="";
 								$fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($fab_isuue2_result)>0)
 								{

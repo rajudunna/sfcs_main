@@ -93,7 +93,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 			<table class="table table-bordered">
 
 			<thead>
-				<tr style="background:#dd3636;color:white;"> 
+				<tr style="background:#337ab7;color:white;"> 
 					<th>Team</th>
 					<th>NOP</th>
 					<th>Style</th>
@@ -331,7 +331,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 												$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
 											}
 										}												
-										echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
+										echo "<td style='background-color:#dd3636; color:white;'><center>".$row."</center></td>";
 									}
 									else
 									{
