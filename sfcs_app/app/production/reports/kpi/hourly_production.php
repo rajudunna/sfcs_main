@@ -93,7 +93,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 			<table class="table table-bordered">
 
 			<thead>
-				<tr style="background:#6995d6;color:white;"> 
+				<tr style="background:#dd3636;color:white;"> 
 					<th>Team</th>
 					<th>NOP</th>
 					<th>Style</th>
