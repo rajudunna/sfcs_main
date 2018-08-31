@@ -3277,7 +3277,7 @@ echo "</tr>";
   <td class=xl6613019></td> 
   <td class=xl6613019></td> 
   <td class=xl6613019></td> 
-  <td class=xl6613019><strong><u> <br/>
+  <td class=xl6613019><strong><u><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/>
  <br/>Cutting Supervisor Authorization</u></strong></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
