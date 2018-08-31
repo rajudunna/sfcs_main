@@ -114,7 +114,6 @@ $mins=array("00","05","10","15","20","25","30","35","40","45","50","55");
     <div class="col-md-2"><br/>
 		<select name="cat" id='selection' class="form-control"><option value="" >Please Select</option><option value="1" <?php echo $_POST['cat']== '1' ? 'selected' : '' ?>>Pending</option><option value="2" <?php echo $_POST['cat']== '2' ? 'selected' : '' ?>>Completed</option></select>
 		
-		
     </div>
     <div class="col-md-2"><br/>
         <input type="submit" id="submit" name="submit" class="btn btn-success" value="Submit"/ disabled>
@@ -148,7 +147,7 @@ if($cat!=''){
 	// echo $sql2;
 	echo "<hr/>";
 
-	echo "<table class='table table-bordered'>";
+	echo "<div style='max-height:600px;overflow-x:scroll;overflow-y:scroll'><table class='table table-bordered'>";
 	echo "<tr><th>Section</th><th>Module</th><th>Lay Req. Date</th><th>Lay Req. Time</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Qty</th><th>Fabric Status</th><th>Requested By</th><th>Requested at</th><th>Issued at</th></tr>";
 	$result2=mysqli_query($link,$sql2) or die("Error = ".mysqli_error());
 	if(mysqli_num_rows($result2) > 0) {
@@ -301,7 +300,7 @@ if($cat!=''){
 		echo "</tr>";
 		
 	}
-	echo "</table>";
+	echo "</table></div>";
 	}
 }
 else {
