@@ -132,100 +132,95 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                     <form method="POST" class="form-inline" action="<?php echo $_SERVER['PHP_SELF'];?>" onsubmit="showHideDiv()"> 
-                        <table id="filter">
-                            <tr>
-                            	<td valign="top">
-									<label for="demo1">Select Date: </label>
-                                	<input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>    <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
-								</td>
-			                	<td valign="top">
-                                 	<label for="section">Select Unit: </label>
-                                    <?php
-                                        echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
-                                        $sql2="select * from $bai_pro.unit_db order by sno"; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error65896".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                        while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                    <div class="row">
+                        <div class="col-md-2">
+							<label for="demo1">Select Date: </label>
+                            <input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>    <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
+                        </div>
+                        <div class="col-md-2">
+                            <label for="section">Select Unit: </label>
+                            <?php
+                                echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
+                                $sql2="select * from $bai_pro.unit_db order by sno"; 
+                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error65896".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                { 
+                                    if($sections_string==$sql_row2['unit_members']) 
+                                    { 
+                                        echo "<option value=\"".$sql_row2['unit_members']."\" selected>".$sql_row2['unit_id']; 
+                                    } 
+                                    else 
+                                    { 
+                                        echo "<option value=\"".$sql_row2['unit_members']."\">".$sql_row2['unit_id']; 
+                                    } 
+                                } 
+                                echo "</select>"; 
+                            ?> 
+                            </div>
+							<div class="col-md-2">
+                                <label for="team">Select Team: </label>
+                                <select name="team" id="team" class="form-control"> 
+                                    <?php 
+                                        for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+                                            <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+                                        <?php }
+                                    ?>
+                                </select> 
+                            </div>
+                            <div class="col-md-2">
+                                <label for="hour_filter" valign="top">Select Hour: </label>
+                                <select name="hour_filter[]" id="hour_filter" class="form-control" multiple> 
+                                    <?php 
+                                        if($hour_filter[0]!="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" and sizeof($hour_filter)!=0) 
                                         { 
-                                            if($sections_string==$sql_row2['unit_members']) 
+                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21">All</option>'; 
+                                            for($i=6;$i<=21;$i++) 
                                             { 
-                                                echo "<option value=\"".$sql_row2['unit_members']."\" selected>".$sql_row2['unit_id']; 
-                                            } 
-                                            else 
-                                            { 
-                                                echo "<option value=\"".$sql_row2['unit_members']."\">".$sql_row2['unit_id']; 
+                                                if($i==$hour_filter[$i-6]) 
+                                                { 
+                                                    echo '<option value="'.$i.'" selected>'.$i.'</option>'; 
+                                                } 
+                                                else 
+                                                { 
+                                                    echo '<option value="'.$i.'" >'.$i.'</option>'; 
+                                                } 
                                             } 
                                         } 
-                                        echo "</select>"; 
-                                    ?> 
-								</td>
-								<td valign="top">
-									<label for="team">Select Team: </label>
-                                    <select name="team" id="team" class="form-control"> 
-                                        <?php 
-                                            for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-                                                <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
-                                            <?php }
-                                        ?>
-                                    </select> 
-                                </td>
-                                <td valign="top"> 
-                                   <label for="hour_filter" valign="top">Select Hour: </label>
-								</td>
-                                <td valign="top">
-                                    <select name="hour_filter[]" id="hour_filter" class="form-control" multiple> 
-                                        <?php 
-	                                        if($hour_filter[0]!="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" and sizeof($hour_filter)!=0) 
-	                                        { 
-	                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21">All</option>'; 
-	                                            for($i=6;$i<=21;$i++) 
-	                                            { 
-	                                                if($i==$hour_filter[$i-6]) 
-	                                                { 
-	                                                    echo '<option value="'.$i.'" selected>'.$i.'</option>'; 
-	                                                } 
-	                                                else 
-	                                                { 
-	                                                    echo '<option value="'.$i.'" >'.$i.'</option>'; 
-	                                                } 
-	                                            } 
-	                                        } 
-	                                        else 
-	                                        { 
-	                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" selected>All</option>'; 
-	                                            for($i=6;$i<=21;$i++) 
-	                                            { 
-	                                                echo '<option value="'.$i.'">'.$i.'</option>'; 
-	                                            } 
-	                                        } 
-                                        ?> 
-                                    </select> 
-                                </td>
-                                <td valign="top"> 
-                                    <input type="checkbox" name="secstyles" value="1" <?php if($secstyles==1) echo "checked"; ?>><b>Style Break</b><br/> 
-                                    <input type="checkbox" name="option1"  value="1" <?php if($option1==1) echo "checked"; ?>><b>Hourly Break</b><br/> 
-                                    <input type="checkbox" name="colorind"  value="1" <?php if($colorind==1) echo "checked"; ?>><b>SAH Color Indication</b><br> 
-                                    <input type="checkbox" name="ftt_chk"  value="1" <?php if($ftt_chk==1) echo "checked"; ?>><b>FTT%</b>
-                                </td>
-                                <td valign="top"> 
-                                    <input type="checkbox" name="ftt_ut_chk" value="1" <?php if($ftt_ut_chk==1) echo "checked"; ?>><b>FTT Calculation without U/T<b><br> 
-                                    <input type="checkbox" name="rw_chk"  value="1" <?php if($rw_chk==1) echo "checked"; ?>><b>R/W</b><br> 
-                                    <input type="checkbox" name="ut_chk"  value="1" <?php if($ut_chk==1) echo "checked"; ?>><b>U/T</b><br> 
-                                    <br><input type="submit" name="submit" class="btn btn-primary" value="Filter" id="filter"/>  
-
-                                    <?php 
-                                        $team_ref=str_replace('"',"*",$team); 
-
-                                        //echo "<form action=\"Hourly_Eff_Print.php?section=$sections_string&secstyles=$secstyles&option1=$option1&dat=$date&team=$team\"><input type=\"submit\" value=\"Print\"></form>"; 
-                                        if(strlen($team_ref)>0) 
+                                        else 
                                         { 
-                                            //echo "<div style=\"float:right;\">"; 
-                                            //echo "<a href=\"Hourly_Eff_Print_New.php?section=$sections_string&secstyles=$secstyles&option1=$option1&dat=$date&team=$team_ref\" onclick=\"Popup=window.open('Hourly_Eff_Print_New.php?section=".$sections_string."&secstyles=".$secstyles."&option1=".$option1."&dat=".$date."&team=".$team_ref."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><img border=0 width=100px height=100px src=\"../images/Printer_icon2.png\"></a>"; 
-                                            //echo "</div>"; 
-                                        }     
+                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" selected>All</option>'; 
+                                            for($i=6;$i<=21;$i++) 
+                                            { 
+                                                echo '<option value="'.$i.'">'.$i.'</option>'; 
+                                            } 
+                                        } 
                                     ?> 
-                                </td>
-                            </tr>
-                        </table> 
+                                </select> 
+                            </div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="secstyles" value="1" <?php if($secstyles==1) echo "checked"; ?>><b>Style Break</b><br/> 
+                                <input type="checkbox" name="option1"  value="1" <?php if($option1==1) echo "checked"; ?>><b>Hourly Break</b><br/> 
+                                <input type="checkbox" name="colorind"  value="1" <?php if($colorind==1) echo "checked"; ?>><b>SAH Color Indication</b><br> 
+                                <input type="checkbox" name="ftt_chk"  value="1" <?php if($ftt_chk==1) echo "checked"; ?>><b>FTT%</b>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="ftt_ut_chk" value="1" <?php if($ftt_ut_chk==1) echo "checked"; ?>><b>FTT Calculation without U/T<b><br> 
+                                <input type="checkbox" name="rw_chk"  value="1" <?php if($rw_chk==1) echo "checked"; ?>><b>R/W</b><br> 
+                                <input type="checkbox" name="ut_chk"  value="1" <?php if($ut_chk==1) echo "checked"; ?>><b>U/T</b><br> 
+                                <br><input type="submit" name="submit" class="btn btn-primary" value="Filter" id="filter"/>  
+                                <?php 
+                                    $team_ref=str_replace('"',"*",$team); 
+
+                                    //echo "<form action=\"Hourly_Eff_Print.php?section=$sections_string&secstyles=$secstyles&option1=$option1&dat=$date&team=$team\"><input type=\"submit\" value=\"Print\"></form>"; 
+                                    if(strlen($team_ref)>0) 
+                                    { 
+                                        //echo "<div style=\"float:right;\">"; 
+                                        //echo "<a href=\"Hourly_Eff_Print_New.php?section=$sections_string&secstyles=$secstyles&option1=$option1&dat=$date&team=$team_ref\" onclick=\"Popup=window.open('Hourly_Eff_Print_New.php?section=".$sections_string."&secstyles=".$secstyles."&option1=".$option1."&dat=".$date."&team=".$team_ref."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><img border=0 width=100px height=100px src=\"../images/Printer_icon2.png\"></a>"; 
+                                        //echo "</div>"; 
+                                    }     
+                                ?> 
+                            </div>
+                        </div>
                     </form> 
                     <div id="loading" align="center" style="position:relative; top:10px; left:20px;"> 
                         <img src=" ../common/images/pleasewait.gif"> 
