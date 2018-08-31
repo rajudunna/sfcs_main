@@ -88,7 +88,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                         for($j=1;$j<=50;$j++){
                             $sno = str_pad($j,2,"0",STR_PAD_LEFT);
                             if($row['title_size_s'.$sno]!=''){
-                                echo "<th>".$row['title_size_s'.$sno]."</th>";
+                                echo "<th id='datatitle".$j."' data-value='".$row['title_size_s'.$sno]."'>".$row['title_size_s'.$sno]."</th>";
                                 $max=$j;
                             }else{
                                 break;
@@ -98,19 +98,20 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
 
                 echo "</tr>
                 </thead><tbody>";
-                $i++;
+               
             }
-
+            $i++;
             echo "<tr>
                 <td>".$row['ratio']."</td>
                 <td>".$row['pcutno']."</td>
                 <td>".$row['p_plies']."</td>";
             for($k=1;$k<=$max;$k++){
                 $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                echo "<td>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                echo "<td id='dataval".$i.$k."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
             }
-            echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm'>Generate Jobs</button></td>";
+            echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($i,$max)'>Generate Jobs</button></td>";
             echo "</tr>";
+            
         }
         echo "</tbody></table>"; 
     }
@@ -147,13 +148,28 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
 var app = angular.module('cutjob', []);
 app.controller('cutjobcontroller', function($scope, $http) {
     $scope.jobcount = "";
+    $scope.titles = {};
+
     
-    $scope.getjobs = function(){
-     alert($scope.jobcount);
-    };
-
-
 
 });
 angular.bootstrap($('#modalLoginForm'), ['cutjob']);
+function assigndata(s,max){
+    //console.log(s+" "+max);
+    for(var i=1;Number(i)<=Number(max);i++){
+        var sp_title = document.getElementById('datatitle'+i);
+        var sp_values = document.getElementById('dataval'+s+i);
+        a = sp_title.getAttribute('data-value');
+        b = sp_values.getAttribute('data-value');
+
+        
+    }
+   
+    // var controllerElement = document.querySelector('[ng-controller="cutjobcontroller"]');
+    // var scope = angular.element(controllerElement).scope();
+    // scope.$apply(function () {
+    //     scope.titles =  titles ;
+    //     scope.values = values;
+    // });
+}
 </script>
