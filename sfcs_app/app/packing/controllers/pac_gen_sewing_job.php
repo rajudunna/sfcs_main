@@ -412,7 +412,8 @@ if(isset($_POST['generate']))
 		// echo "</table>";
 		echo "<script>sweetAlert('Packing List Generated','','success');</script>";
 		$url5 = getFullURLLevel($_GET['r'],'pac_gen_sewing_job.php',0,'N');
-		echo "<script>location.href = '".$url5."';</script>";
+		// echo "<script>location.href = '".$url5."';</script>";
+		echo "<script>Ajaxify('".$url5."');</script>";
 	}
 	else
 	{
