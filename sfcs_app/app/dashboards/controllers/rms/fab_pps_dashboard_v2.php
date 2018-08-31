@@ -303,7 +303,7 @@
     .pink {
       width:20px;
       height:20px;
-      background-color: #ff00ff;
+      background-color: pink;
       display:block;
       float: left;
       margin: 2px;
@@ -320,7 +320,7 @@
 
     .pink a:hover {
       text-decoration:none;
-      background-color: #ff00ff;
+      background-color: pink;
     }
 
     .orange {
@@ -836,7 +836,7 @@
                                 $club_docs=array_unique($club_docs);
                                 
                                 $fab_issue_query="select * from $bai_pro3.plandoc_stat_log where fabric_status!=5 and doc_no IN (".implode(",",$club_docs).")";
-                                //echo "Fab Issue Query : ".$fab_issue_query."<br>";
+                                // echo "Fab Issue Query : ".$fab_issue_query."<br>";
                                 $fab_issue_result=mysqli_query($link, $fab_issue_query) or exit("error while getting fab issue details");
                                 if (mysqli_num_rows($fab_issue_result)>0)
                                 {
@@ -846,7 +846,16 @@
                                 {
                                     $fab_status = 5;
                                 }
-                                $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
+								
+								$fab_issue2_query="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
+								// echo $fab_issue2_query."<br>";
+								
+								$fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($fab_isuue2_result)>0)
+								{
+									$fab_status="1";
+								}
+							$fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
                                 $fab_request_result=mysqli_query($link, $fab_request_query) or exit("error while getting fab Requested details");
     
                                 if ($fab_status==5)
@@ -854,6 +863,10 @@
                                     $final_cols = 'yellow';
                                     $rem="Fabric issued";
                                 }
+								elseif($fab_status==1){
+									$final_cols = 'pink';
+                                    $rem="Ready To issue";
+								}
                                 elseif (mysqli_num_rows($fab_request_result)>0)
                                 {
                                     $final_cols = 'green';
