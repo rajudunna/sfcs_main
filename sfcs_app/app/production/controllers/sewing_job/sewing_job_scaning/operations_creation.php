@@ -166,22 +166,36 @@
         while($res_res_checking_qry = mysqli_fetch_array($res_checking_qry))
         {
             $cnt = $res_res_checking_qry['cnt'];
+		}
+		$work_center = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where work_center_id = $work_center_id";
+        $work_center_qry = mysqli_query($link,$work_center);
+        while($res_work_center_qry = mysqli_fetch_array($work_center_qry))
+        {
+            $cnt_work = $res_work_center_qry['cnt'];
         }
         $short_key_code_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where short_cut_code = '$short_key_code'";
         $res_short_key_code_check_qry = mysqli_query($link,$short_key_code_check_qry);
         while($res_res_res_short_key_code_check_qry = mysqli_fetch_array($res_short_key_code_check_qry))
         {
             $cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
-        }
-        if($cnt == 0 && $cnt_short == 0)
+		}
+		
+        if($cnt == 0 && $cnt_short == 0 && $cnt_work == 0)
         {
             $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category')";
             $res_do_num = mysqli_query($link,$qry_insert);
             echo "<script>sweetAlert('Saved Successfully','','success')</script>";
-        }
-        else if($cnt != 0)
+		}
+		else if($cnt != 0)
         {
             $sql_message = 'Operation Code Already in use. Please give other.';
+            echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+		}
+		
+        else if($cnt_work != 0)
+        {
+			
+            $sql_message = 'Work Center Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
         else if($cnt_short != 0)
@@ -193,7 +207,16 @@
         {
             $sql_message = 'Short Key Code and Operation Code Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
-            die();
+		}
+		else if($cnt_work != 0 && $cnt != 0)
+        {
+            $sql_message = 'Work Center and Operation Code Already in use. Please give other.';
+            echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+		}
+		else if($cnt_work != 0 && $cnt_short != 0)
+        {
+            $sql_message = 'Work Center and Short Key Code Already in use. Please give other.';
+            echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
     }
     $query_select = "select * from $brandix_bts.tbl_orders_ops_ref";
