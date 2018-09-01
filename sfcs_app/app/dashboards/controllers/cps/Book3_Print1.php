@@ -3265,7 +3265,7 @@ $item_name[] = $sql_row['item'];
   <td class=xl764118>Batch</td>
   <td class='xl764118'>Fabric Name</td>
   <td class=xl764118>Lot No</td>
-  <td class=xl764118>Label</td>
+ 
   <td class=xl764118>Shade</td>
   <td class=xl7742018>Roll</br>No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
@@ -3286,7 +3286,7 @@ $item_name[] = $sql_row['item'];
   <td class=xl724118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
-  <td class=xl744118>&nbsp;</td>
+
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
@@ -3319,7 +3319,7 @@ $tot_bind_len=0;
 	  <td class=xl804118><?php echo $batch_det[$i]; ?></td>
 	  <td class=xl804118><?php echo $item_name[$i]; ?></td>
 	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
-	  <td class=xl814118><?php echo $roll_id[$i]; ?></td>
+	 
 	  <td class=xl814118><?php echo $shade_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_det[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
@@ -3350,7 +3350,7 @@ $tot_bind_len=0;
 	 <td class=xl804118></td>
 	 <td class=xl804118></td>
 	 <td class=xl814118 style='font-size: 100%;'></td>
-	 <td class=xl814118></td>
+	 
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
@@ -3402,7 +3402,7 @@ $tot_bind_len=0;
 	 <td class=xl804118></td>
 	 <td class=xl804118></td>
 	 <td class=xl814118 style='font-size: 100%;'></td>
-	 <td class=xl814118></td>
+	 
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
