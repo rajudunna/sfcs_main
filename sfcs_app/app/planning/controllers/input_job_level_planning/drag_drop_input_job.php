@@ -501,19 +501,25 @@ $has_perm=haspermission($_GET['r']);
 	{
 		
 		var saveString = "";
+		var sch = document.getElementById('sche').value;
 		var uls = dragDropTopContainer.getElementsByTagName('UL');
-		for(var no=0;no<uls.length;no++){	// LOoping through all <ul>
+		// alert (uls);
+		for(var no=0;no<uls.length;no++)
+		{	
 			var lis = uls[no].getElementsByTagName('LI');
-			for(var no2=0;no2<lis.length;no2++){
-				if(saveString.length>0)saveString = saveString + ";";
-				saveString = saveString + uls[no].id + '|' + lis[no2].id;
-				//alert(saveString);
+			for(var no2=0;no2<lis.length;no2++)
+			{
+				var res=lis[no2].id;
+				if(sch==res.substring(0, 6))
+				{
+					if(saveString.length>0)saveString = saveString + ";";
+					saveString = saveString + uls[no].id + '|' + lis[no2].id;
+				}
 			}	
 		}		
 		
-		//document.getElementById('saveContent').innerHTML = '<h1>Ready to save these nodes:</h1> ' + saveString.replace(/;/g,';<br>') + '<p>Format: ID of ul |(pipe) ID of li;(semicolon)</p><p>You can put these values into a hidden form fields, post it to the server and explode the submitted value there</p>';
-document.forms['myForm'].listOfItems.value = saveString;
-document.forms["myForm"].submit();
+		document.forms['myForm'].listOfItems.value = saveString;
+		document.forms["myForm"].submit();
 		
 	}
 	
@@ -580,24 +586,15 @@ document.forms["myForm"].submit();
 
 
 <?php
-//include("../".getFullURL($_GET['r'],'dbconf.php','R')); 
-//include("../".getFullURL($_GET['r'],"functions.php",'R')); 
-// include('dbconf.php');
-
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R'));
-$style=$_GET['style'];
-$schedule=$_GET['schedule'];
-$color=$_GET['color'];
-$cutno=$_GET['cutno'];
-$module_ref_no=$_GET["module"];
+	$style=$_GET['style'];
+	$schedule=$_GET['schedule'];
+	$color=$_GET['color'];
+	$cutno=$_GET['cutno'];
+	$module_ref_no=$_GET["module"];
 
 	$newfiltertable="temp_pool_db.plan_doc_summ_input_v2_".$username;
 	$sql="DROP TABLE IF EXISTS $newfiltertable";
-	//echo $sql."<br/>";
-	//mysql_query($sql,$link) or exit("Sql Error17".mysql_error()
-	
-	//$schedule_list=$schedule;
-	
+
 	$sql2="select * from $bai_pro3.bai_orders_db where order_joins=\"J$schedule\"";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check2=mysqli_num_rows($sql_result2);
@@ -618,7 +615,6 @@ $module_ref_no=$_GET["module"];
 	}
 	
 	$schedule_list=implode(",",$schedule_no);
-	
 	//This is to handle schedule club deliveries
 	$sql="DROP TABLE IF EXISTS $newfiltertable";
 	//echo $sql."<br/>";
@@ -650,18 +646,9 @@ $module_ref_no=$_GET["module"];
 		$style=$sql_row['order_style_no'];
 	}
 
-
-
-// echo "Style :".$style."</br>";
-// echo "schedule :".$schedule."</br>";
-// echo "code :".$code."</br>";
-// echo "module_ref_no :".$module_ref_no."</br>";
-
 $code_db=array();
 $code_db=explode("*",$code);
-// var_dump($code_db);
-// echo "Code Size:".sizeof($code_db)."</br>";
-// exit;
+
 ?>		
 <br/>
 <div class="col-md-12">
@@ -700,35 +687,22 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 <!-- </form> -->
 <br>
 <div id="dhtmlgoodies_dragDropContainer">
-	<!-- <div id="topBar">
-		<img src='images/heading3.gif'>
-	</div> -->
 	<div id="dhtmlgoodies_listOfItems">
 		<div style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;">
 			<p>Jobs</p>		
 		<ul id="allItems">		
 		<?php
-			//exmaple : <li id="node101101">Student A</li>
 			for($i=0;$i<sizeof($code_db)-1;$i++)
 			{
 				$code_db_new=array();
 				$code_db_new=explode("-",$code_db[$i]);
-				// var_dump($code_db_new);
-				// if($code_db_new[2]=="DONE")
-				// {
-				// 	$check= "blue";
-				// 	$font_color = 'white';
-				// }
-				// else
-				// {
-				// 	$check="blue"; // red
-				// 	$font_color = 'white';
-				// }
 				if ($code_db_new[7] == 2 || $code_db_new[7] == 3)
 				{
 					$check = 'yellow'; // yellow for excess/sample cut
 					$font_color = 'black';
-				}else{
+				}
+				else
+				{
 					$check="blue"; // red
 					$font_color = 'white';
 				}
@@ -745,33 +719,20 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		
 <form action="<?= getFullURLLevel($_GET['r'],'drag_drop_process_input.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()" style="position: fixed;margin-left: 47px;">
 <input type="hidden" name="listOfItems" value="">
+<input type="hidden" name="sche" id="sche" value="<?php echo $schedule; ?>">
 <input class="btn btn-success btn-sm pull-right" type="button" name="saveButton" id="saveButton" onclick="do_disable()" value="Save">
 </form>
 
 	</div>	
-	
-
-	<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
-		<!-- ONE <UL> for each "room" -->
+		<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
 		<?php
 		
-		/*Example: <div>
-			<p>Team a</p>
-			<ul id="box1">
-				<li id="node16">Student P</li>
-			</ul>
-		</div> */
-		
-		//echo sizeof($mods);
 		$temp_table_name="temp_pool_db.plan_doc_summ_input_".$username;
-
 		$sql="DROP TABLE IF EXISTS $temp_table_name";
-		// echo $sql."<br/>";
 		mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-			$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
-			mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
+		$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
+		mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 		$sections_ref=array();
 		$sqlx1="select * from $bai_pro3.sections_db where sec_id>0";
@@ -783,176 +744,130 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 			$mods1=explode(",",$section_mods1);
 			for($x1=0;$x1<sizeof($mods1);$x1++)
 			{
-				//if($mods1[$x1]==$module_ref_no)
-				{
-					$sections_ref[]=$sql_rowx1['sec_id'];
-				}
+				$sections_ref[]=$sql_rowx1['sec_id'];
 			}
 		}		
 			
 		$sqlx="select * from $bai_pro3.sections_db where sec_id in (".implode(",",$sections_ref).")";
-		// echo "<br> SQLx :".$sqlx."</br>";
 		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
 			$section=$sql_rowx['sec_id'];
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
-			
-			// echo "<div style=\"width:320px;height:500px;\" align=\"center\" class=\"table table-responsive\"><h4>SEC - $section</h4>";
 			echo "<div style=\"width:170px;\" align=\"center\"><h4>SEC - $section</h4>";
-		
 			$mods=array();
 			$mods=explode(",",$section_mods);
-			//$mods[]=$module_ref_no;
 			if(!(in_array($authorized,$has_perm)))
 			{
-				//New Implementation to Restrict Power User level Planning 20111211
 				$mods=array();
 				$sqlxy="select group_concat(module_id) as module_id from $bai_pro3.plan_modules where section_id=$section and power_user=\"$username\"";
-				//echo $sqlxy;
 				$sql_resultxy=mysqli_query($link, $sqlxy) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowxy=mysqli_fetch_array($sql_resultxy))
 				{
 					$mods=explode(",",$sql_rowxy['module_id']);	
-				}
-				
+				}				
 				if($mods[0]==NULL)
 				{
 					$mods=NULL;
 				}
-				//New Implementation to Restrict Power User level Planning 20111211
 			}
 			
-						echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
+			echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
 			for($x=0;$x<sizeof($mods);$x++)
-			{
-		
-				echo '
-					<p>'.$mods[$x].'</p>
-					<ul id="'.$mods[$x].'" style="width:150px">';
-						//<li id="node16">Student P</li>
+			{		
+				echo '<p>'.$mods[$x].'</p>
+				<ul id="'.$mods[$x].'" style="width:150px">';
+				$module=$mods[$x];
+				$sql1="SELECT * from $temp_table_name where input_module='$module'";
+				$sql_result1=mysqli_query($link, $sql1) or exit("$sql1 Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_num_check=mysqli_num_rows($sql_result1);
+				while($sql_row1=mysqli_fetch_array($sql_result1))
+				{
+					$type_of_sewing=$sql_row1['type_of_sewing'];
+					$doc_no_ref=$sql_row1['doc_no'];
+					$doc_no=$sql_row1["input_job_no_random_ref"];						
+					$style1=$sql_row1['order_style_no'];
+					$schedule1=$sql_row1['order_del_no'];
+					$color1=$sql_row1['order_col_des'];
+					$total_qty1=$sql_row1['total'];
+					$cut_no1=$sql_row1['acutno'];
+					$color_code1=$sql_row1['color_code'];
+					
+					$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
+					$sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row_id=mysqli_fetch_array($sql_result_id))
+					{
+						$style_id_new=$sql_row_id["sid"];
+					}
 						
-						$module=$mods[$x];
-						
-						//$sql1="SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref from plan_dash_doc_summ_input where input_module='$module' AND (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
-						
-						
-						$sql1="SELECT * from $temp_table_name where input_module='$module'";
-						//echo "</br>SQl1 : ".$sql1."</br>"
-						/*$sql1="SELECT act_cut_status,act_cut_issue_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref from plan_dash_doc_summ_input where input_module=$module and act_cut_issue_status<>\"DONE\" GROUP BY input_job_no_random_ref order by input_priority";*/
-						//echo $sql1;
-						//echo "<input type=\"text\" value=\"".$module."\">";
-						$sql_result1=mysqli_query($link, $sql1) or exit("$sql1 Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_num_check=mysqli_num_rows($sql_result1);
-						while($sql_row1=mysqli_fetch_array($sql_result1))
+					$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
+					$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$resulted_rows = mysqli_num_rows($get_fab_req_result);
+
+					$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+					$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+
+					$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);
+					if($style1!=NULL)
+					{
+						if($style==$style1  and $schedule==$schedule1)
 						{
-							$type_of_sewing=$sql_row1['type_of_sewing'];
-							$doc_no_ref=$sql_row1['doc_no'];
-							$doc_no=$sql_row1["input_job_no_random_ref"];						
-							$style1=$sql_row1['order_style_no'];
-							$schedule1=$sql_row1['order_del_no'];
-							$color1=$sql_row1['order_col_des'];
-							$total_qty1=$sql_row1['total'];
-							$cut_no1=$sql_row1['acutno'];
-							$color_code1=$sql_row1['color_code'];	
-
-							$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
-							$sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row_id=mysqli_fetch_array($sql_result_id))
+							if($resulted_rows>0)
 							{
-								$style_id_new=$sql_row_id["sid"];
-							}
+								if($bg_color1 == 'white')
+								{
+									echo '<li id="'.$doc_no.'"  style="background-color:green;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+								}
+								else if($bg_color1 == 'yellow')
+								{
+									echo '<li id="'.$doc_no.'"  style="background-color:green;border: 4px solid yellow;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+								}
 								
-							$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
-							$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$resulted_rows = mysqli_num_rows($get_fab_req_result);
-
-
-							// add by Chathuranga	
-							
-							
-							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
-							$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
-
-							$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);
-							if($style1!=NULL)
+							}
+							else
 							{
-								if($style==$style1  and $schedule==$schedule1)
+								if($bg_color1 == 'white')
 								{
-									if($resulted_rows>0){
-										if($bg_color1 == 'white'){
-											echo '<li id="'.$doc_no.'"  style="background-color:green;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-										}else if($bg_color1 == 'yellow'){
-											echo '<li id="'.$doc_no.'"  style="background-color:green;border: 4px solid yellow;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-										}
-										
-									}else{
-										if($bg_color1 == 'white'){
-										echo '<li id="'.$doc_no.'"  style="background-color:red;" data-color="red" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-										}else if($bg_color1 == 'yellow'){
-											echo '<li id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-										}
-									}
-									
+									echo '<li id="'.$doc_no.'"  style="background-color:red;" data-color="red" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
 								}
-								else
+								else if($bg_color1 == 'yellow')
 								{
-									// if($resulted_rows>0){
-									// 	echo '<li id="'.$doc_no.'"  style="background-color:green;border: 2px solid '.$bg_color1.';" data-color ="green" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-									// }else{
-										echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-									//}									
+									echo '<li id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
 								}
-							}	
+							}
 							
 						}
-						if($code_db_new[6]==$module)
+						else
 						{
-							for($i=0;$i<sizeof($code_db)-1;$i++)
-							{
-								$code_db_new=array();
-								$code_db_new=explode("-",$code_db[$i]);
-								
-								if($code_db_new[2]=="DONE")
-								{
-									$check="#cce5ff";
-								}
-								else
-								{
-									$check="#cce5ff"; // red
-								}
-								
-								//echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check;  color:white;\"><strong>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</strong></li>";
-							}
+							echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+						}
+					}				
+				}
+				if($code_db_new[6]==$module)
+				{
+					for($i=0;$i<sizeof($code_db)-1;$i++)
+					{
+						$code_db_new=array();
+						$code_db_new=explode("-",$code_db[$i]);
+						
+						if($code_db_new[2]=="DONE")
+						{
+							$check="#cce5ff";
+						}
+						else
+						{
+							$check="#cce5ff"; // red
 						}
 						
-						//echo $sql1."<br>";
-						
-					echo '</ul>';
-				
-				
+						//echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check;  color:white;\"><strong>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</strong></li>";
+					}
+				}
+				echo '</ul>';			
 			}
 			echo "</div>";
 		}
-		/*Ravi commited */
-		// FOR COMPLETED CUTS
-		// echo "<div id=\"new\" style=\"float:left;	margin-right:10px;	margin-bottom:10px;	margin-top:0px;	border:1px solid #999;width: 120px;	width/* */:/**/120px;	
-		// width: /**/120px;\" align=\"center\">
-		// <p style=\"margin:0px; padding:0px;		font-weight:bold;	background-color:#3170A8;	color:#FFF;	margin-bottom:5px;\">Completed</p>
-		// <table class='table table-bordered'>";
-			
-		// /**/
-		// $sql1="SELECT input_job_no as acutno from $bai_pro3.plan_doc_summ_input where order_del_no='$schedule' and input_job_input_status(input_job_no_random)=\"DONE\" order by input_job_no * 1";
 		
-		// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// while($sql_row1=mysqli_fetch_array($sql_result1))
-		// {
-			// echo '<tr id=\"new1\" style="background-color:green;  color:white;"><strong>J'.leading_zeros($sql_row1['acutno'],3).'</strong></tr><br>';
-		// } 
-		// echo '</table>';
-		// echo "</div>";
-		/*Ravi commited end*/
 		$sql="DROP TABLE IF EXISTS $temp_table_name";
 		//echo $sql."<br/>";
 		mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
