@@ -708,8 +708,11 @@
 
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
 
-                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                            SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                            SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+
+                            // var_dump($sql1);
+                            
                             // echo "Module : ".$sql1."<br>";
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
                             if($_GET['view']==1)
@@ -730,14 +733,17 @@
                             $sql_num_check=mysqli_num_rows($sql_result1);
                             while($sql_row1=mysqli_fetch_array($sql_result1))
                             {
+                                
                                 $cut_new=$sql_row1['act_cut_status'];
                                 $cut_input_new=$sql_row1['act_cut_issue_status'];
                                 $rm_new=strtolower(chop($sql_row1['rm_date']));
                                 $rm_update_new=strtolower(chop($sql_row1['rm_date']));
                                 $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
                                 $doc_no=$sql_row1['doc_no'];
+                               
                                 $a_plies = $sql_row1['a_plies'];
                                 $p_plies = $sql_row1['p_plies'];
+                              
                                 //echo $doc_no;
                                 $order_tid=$sql_row1['order_tid'];
                                 $ord_style=$sql_row1['order_style_no'];
@@ -851,17 +857,19 @@
 								
 								$fab_issue2_query="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
 								// echo $fab_issue2_query."<br>";
-								$fab_status="";
+								$fab_status1="";
 								$fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($fab_isuue2_result)>0)
 								{
-									$fab_status="1";
-								}
+									$fab_status1="1";
+                                }
+                                // echo "Fab=".$fab_status."<br>";
 							$fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
                                 $fab_request_result=mysqli_query($link, $fab_request_query) or exit("error while getting fab Requested details");
-    
+
                                 if ($fab_status==5)
                                 {
+                                    // var_dump('5');
                                     if($a_plies != $p_plies){
                                         $final_cols = 'orange';
                                         $rem="Cutting Partially Done";
@@ -870,7 +878,7 @@
                                         $rem="Fabric issued";
                                     }
                                 }
-								elseif($fab_status==1){
+								elseif($fab_status1==1){
 									$final_cols = 'pink';
                                     $rem="Ready To issue";
 								}
