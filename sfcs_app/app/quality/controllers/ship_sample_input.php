@@ -13,8 +13,39 @@ $view_access=user_acl("SFCS_0240",$username,1,$group_id_sfcs);
 // uncomment this in ui
 // include("header_scripts.php"); 
 // uncomment this in ui
-?>
 
+
+
+
+session_start();
+	if($_GET['style'])
+	{
+		$style=$_GET['style'];
+	}
+	else
+	{
+		$style=	$_POST['style'];
+	}
+	if($_GET['color'])
+	{
+		$color=$_GET['color'];
+	}
+	else
+	{
+		$color=	$_POST['color'];
+	}
+	if($_GET['schedule'])
+	{
+		$schedule=$_GET['schedule'];
+	}else
+	{
+		$schedule=	$_POST['schedule'];
+	}
+	
+	$_SESSION['style']=$style;
+	$_SESSION['schedule']=$schedule;
+	$_SESSION['color']=$color;
+?>
 <script>
 
 function firstbox()
@@ -53,17 +84,7 @@ function active_update()
 
 <body>
 
-<?php 
-// include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'menu_content.php','R')); 
-?>
-<?php
 
-$style=$_GET['style'];
-$schedule=$_GET['schedule']; 
-$color=$_GET['color'];
-
-//echo $style.$schedule.$color;
-?>
 
 <form name="test" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post">
 <?php
@@ -353,6 +374,8 @@ if(isset($_POST['submit']))
 
 }
 
+
+
 if(isset($_POST['Update']))
 {
 	$input_remarks=$_POST['remarks'];
@@ -430,6 +453,10 @@ echo "</div>";
 echo "</div>";
 echo "</div>";
 ?> 
+
+
+
+
 
 <script>
 function check_pack()
