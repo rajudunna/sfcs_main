@@ -50,7 +50,4 @@ class get_api_call {
         }
 }
 }
-
-
-
-
+?>
