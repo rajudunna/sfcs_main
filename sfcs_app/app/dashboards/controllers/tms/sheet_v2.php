@@ -25,16 +25,17 @@ function printPreview(){
     printid.style.visibility = 'visible';
 }
 </script>
+<?php
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
+?>
 <div class="panel panel-primary">
     <div class="panel-heading"><center><button onclick="printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
     <div class="panel-body">
 <?php
 //error_reporting(0);
 //include("header.php");
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php'); 
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
-
 $plant_code = $global_facility_code;
 $company_num = $company_no;
 $host= $api_hostname;
