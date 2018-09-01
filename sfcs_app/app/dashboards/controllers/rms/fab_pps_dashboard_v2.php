@@ -326,7 +326,7 @@
     .orange {
       width:20px;
       height:20px;
-      background-color: #991144;
+      background-color: #FF8C00;
       display:block;
       float: left;
       margin: 2px;
@@ -343,7 +343,7 @@
 
     .orange a:hover {
       text-decoration:none;
-      background-color: #991144;
+      background-color: #FF8C00;
     }
 
     .blue {
@@ -708,21 +708,21 @@
 
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
 
-                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                            SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
-                            //echo "Module : ".$sql1."<br>";
+                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                            SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                            // echo "Module : ".$sql1."<br>";
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
                             if($_GET['view']==1)
                             {
-                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
+                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
                                 $view_count=0;
                             }       
                             //filter to show only cut completed
                             if($_GET['view']==3)
                             {
-                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status='DONE' AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status='DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
                                 $view_count=0;
                             }
                            
@@ -736,6 +736,8 @@
                                 $rm_update_new=strtolower(chop($sql_row1['rm_date']));
                                 $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
                                 $doc_no=$sql_row1['doc_no'];
+                                $a_plies = $sql_row1['a_plies'];
+                                $p_plies = $sql_row1['p_plies'];
                                 //echo $doc_no;
                                 $order_tid=$sql_row1['order_tid'];
                                 $ord_style=$sql_row1['order_style_no'];
@@ -860,8 +862,13 @@
     
                                 if ($fab_status==5)
                                 {
-                                    $final_cols = 'yellow';
-                                    $rem="Fabric issued";
+                                    if($a_plies != $p_plies){
+                                        $final_cols = 'orange';
+                                        $rem="Cutting Partially Done";
+                                    }else{
+                                        $final_cols = 'yellow';
+                                        $rem="Fabric issued";
+                                    }
                                 }
 								elseif($fab_status==1){
 									$final_cols = 'pink';
