@@ -17,9 +17,17 @@ table, th, td {
 
 }
 </style>
+<script>
+function printPreview(){
+    var printid = document.getElementById("printid");
+    printid.style.visibility = 'hidden';
+    window.print();
+    printid.style.visibility = 'visible';
+}
+</script>
 <div class="panel panel-primary">
-    <div class="panel-heading"><center><strong>Job Wise Sewing and Packing Trim Requirement Report - KOGGALA</strong></center></div>
-    <div class="panel-body">       
+    <div class="panel-heading"><center><button onclick="printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
+    <div class="panel-body">
 <?php
 //error_reporting(0);
 //include("header.php");
@@ -45,6 +53,8 @@ while($row=mysqli_fetch_array($sql_result))
 }
 if(count($colors)>0){
     foreach($colors as $key=>$color){ 
+        $api_selected_valuess_strim = [];
+        $api_selected_valuess_ptrim = [];
         $size_code=array();
         $size_code_qty=array();
         unset($size_code);
