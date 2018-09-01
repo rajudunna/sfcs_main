@@ -842,7 +842,7 @@
                                 $colors_db=array_unique($colors_db);
                                 $club_c_code=array_unique($club_c_code);
                                 $club_docs=array_unique($club_docs);
-                                
+                                $fab_status="";
                                 $fab_issue_query="select * from $bai_pro3.plandoc_stat_log where fabric_status!=5 and doc_no IN (".implode(",",$club_docs).")";
                                 // echo "Fab Issue Query : ".$fab_issue_query."<br>";
                                 $fab_issue_result=mysqli_query($link, $fab_issue_query) or exit("error while getting fab issue details");
@@ -857,11 +857,11 @@
 								
 								$fab_issue2_query="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
 								// echo $fab_issue2_query."<br>";
-								$fab_status1="";
+							
 								$fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($fab_isuue2_result)>0)
 								{
-									$fab_status1="1";
+									$fab_status="1";
                                 }
                                 // echo "Fab=".$fab_status."<br>";
 							$fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
@@ -878,7 +878,7 @@
                                         $rem="Fabric issued";
                                     }
                                 }
-								elseif($fab_status1==1){
+								elseif($fab_status==1){
 									$final_cols = 'pink';
                                     $rem="Ready To issue";
 								}
@@ -940,7 +940,7 @@
                                 // {
                                 //     $fab_wip+=$total_qty;
                                 // }
-                                        
+                                //    echo $final_cols;     
                                 $title=str_pad("Style:".trim($style),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),80)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Log Time:".$log_time,80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80)."\n".str_pad("Remarks:".$rem,80);
                                 
 
