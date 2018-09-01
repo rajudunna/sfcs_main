@@ -2,7 +2,7 @@
 /* ===============================================================
                Created By : Sudheer and Chandu
 Created : 30-08-2018
-Updated : 30-08-2018
+Updated : 01-09-2018
 input : Schedule,color & cutjob count.
 output v0.1: Generate jobs.
 =================================================================== */
@@ -73,7 +73,10 @@ if($schedule != "" && $color != "")
 //$ratio_query = "SELECT * FROM bai_orders_db_confirm  LEFT JOIN cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE  cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no= $schedule  AND bai_orders_db_confirm.order_col_des ='".$color."' ";
 //echo $ratio_query;
 
-$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='529508' AND bai_orders_db_confirm.order_col_des ='DRBLU : DRESS BLUES'";
+//$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='529508' AND bai_orders_db_confirm.order_col_des ='DRBLU : DRESS BLUES'";
+$ratio_query = "
+SELECT * FROM bai_pro3.bai_orders_db LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db.order_del_no='546442' AND TRIM(bai_orders_db.order_col_des) ='69 - NAVY BOTTOM'";
+
 $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     $i=0;
     $max=0;
@@ -89,6 +92,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                             $sno = str_pad($j,2,"0",STR_PAD_LEFT);
                             if($row['title_size_s'.$sno]!=''){
                                 echo "<th id='datatitle".$j."' data-title='s".$sno."' data-value='".$row['title_size_s'.$sno]."'>".$row['title_size_s'.$sno]."</th>";
+                                $old_qty[$sno] = 0;
                                 $max=$j;
                             }else{
                                 break;
@@ -98,21 +102,72 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
 
                 echo "</tr>
                 </thead><tbody>";
-               
+               $old_ratio = $row['ratio'];
+               $old_pcut = [];
+               $old_pplice = [];
+               $end = 1;
             }
             $i++;
-            echo "<tr>
+            if($old_ratio==$row['ratio']){
+                echo "<tr style='display:none'>
                 <td>".$row['ratio']."</td>
-                <td>".$row['pcutno']."</td>
+                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'>".$row['pcutno']."</td>
                 <td>".$row['p_plies']."</td>";
-            for($k=1;$k<=$max;$k++){
-                $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                echo "<td id='dataval".$i.$k."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                for($k=1;$k<=$max;$k++){
+                    $sno = str_pad($k,2,"0",STR_PAD_LEFT);
+                    echo "<td id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
+                }
+                echo "<td></td>";
+                echo "</tr>";
+                $end++;
+                $old_pcut[]=$row['pcutno'];
+                $old_pplice[]=$row['p_plies'];
+
+            }else{
+                echo "<tr>
+                <td>".$old_ratio."</td>
+                <td>".implode(',',$old_pcut)."</td>
+                <td>".implode(',',$old_pplice)."</td>";
+                for($k=1;$k<=$max;$k++){
+                    $sno = str_pad($k,2,"0",STR_PAD_LEFT);
+                    echo "<td>$old_qty[$sno]</td>";
+                    $old_qty[$sno]=0;
+                }
+                echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
+                echo "</tr>";
+                $end = 1;
+                $old_ratio = $row['ratio'];
+                $old_pcut = [];
+                $old_pplice = [];
+                echo "<tr style='display:none'>
+                <td>".$row['ratio']."</td>
+                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'>".$row['pcutno']."</td>
+                <td>".$row['p_plies']."</td>";
+                for($k=1;$k<=$max;$k++){
+                    $sno = str_pad($k,2,"0",STR_PAD_LEFT);
+                    echo "<td id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
+                }
+                echo "<td></td>";
+                echo "</tr>";
+                $end++;
+                $old_pcut[]=$row['pcutno'];
+                $old_pplice[]=$row['p_plies'];
             }
-            echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($i,$max)'>Generate Jobs</button></td>";
-            echo "</tr>";
+            
             
         }
+        echo "<tr>
+            <td>".$old_ratio."</td>
+            <td>".implode(",",$old_pcut)."</td>
+            <td>".implode(',',$old_pplice)."</td>";
+            for($k=1;$k<=$max;$k++){
+                $sno = str_pad($k,2,"0",STR_PAD_LEFT);
+                echo "<td>$old_qty[$sno]</td>";
+            }
+            echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
+        echo "</tr>";
         echo "</tbody></table>"; 
     }
     //=====================
@@ -151,12 +206,15 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 <div ng-show='jobs.length'>
                     <table class='table'>
                         <thead>
-                            <tr><th>#</th><th>Job ID</th><th>Size</th><th>Quantity</th></tr>
+                            <tr><th>#</th><th>Job ID</th><th>Bundle</th><th>Size</th><th>Quantity</th></tr>
                         </thead>
-                        <tbody>
-                            <tr ng-repeat="item in jobs">
+                        <tbody ng-repeat="items in fulljob">
+                            <tr class='danger'><th class='text-center'>Ratio</th><th class='text-center'>{{items.ratio}}</th>
+                                <td></td><th class='text-center'>Cut</th><th class='text-center'>{{items.cut}}</th></tr>
+                            <tr ng-repeat="item in items.sizedetails">
                                 <td>{{$index+1}}</td>
                                 <td>{{item.job_id}}</td>
+                                <td>{{item.bundle}}</td>
                                 <td>{{item.job_size}}</td>
                                 <td>{{item.job_qty}}</td>
                             </tr>
@@ -186,32 +244,32 @@ var app = angular.module('cutjob', []);
 app.controller('cutjobcontroller', function($scope, $http) {
     $scope.jobcount = 0;
     $scope.bundleqty = 0;
-    $scope.titles = {};
-    $scope.values = {};
     $scope.details = [];
+    $scope.details_all = [];
     $scope.jobs   = [];
-    $scope.getjobs = function(){
+    $scope.fulljob = [];
+    $scope.generatejobs = function(){
        if($scope.jobcount>0)
        {
            $scope.jobs   = [];
-           $scope.j = 1;
            $scope.balance = 0;
            $scope.excess = 0;
+           $scope.j = 1;
         for(var i=0; i<$scope.details.length; i++)
         {
             if($scope.balance>0){
                 if($scope.balance>$scope.details[i].value){
                     $scope.jobs.push({job_id : $scope.j,job_qty : $scope.details[i].value,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
-                    var quantity = $scope.details[i].value-$scope.balance;
-                    console.log("z"+$scope.details[i].value);
+                    var quantity = 0;
+                    $scope.balance = $scope.balance-$scope.details[i].value;
+                    //console.log("z"+$scope.details[i].value);
                 }else{
                     $scope.jobs.push({job_id : $scope.j,job_qty : $scope.balance,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
                     var quantity = $scope.details[i].value-$scope.balance;
                     $scope.j++;
-                    console.log("a"+$scope.balance);
-                    if(quantity==0){
-                        $scope.balance = 0;
-                    }
+                    //console.log("a"+$scope.balance);
+                    $scope.balance = 0;
+                    
                     //console.log("a"+quantity);
                 }
             }else{
@@ -223,12 +281,12 @@ app.controller('cutjobcontroller', function($scope, $http) {
             for(var pora=0;pora<Number(total_jobs_per_size);pora++){
                 $scope.jobs.push({job_id : $scope.j,job_qty : $scope.jobcount,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
                 $scope.j++;
-                console.log("b"+$scope.jobcount);
+                //console.log("b"+$scope.jobcount);
             }
             if($scope.excess>0){
                 $scope.jobs.push({job_id : $scope.j,job_qty : $scope.excess,job_size_key : $scope.details[i].key, job_size : $scope.details[i].title});
                 $scope.balance = $scope.jobcount-$scope.excess;
-                console.log("c"+$scope.excess);
+                //console.log("c"+$scope.excess);
             }
         }
        }
@@ -238,35 +296,81 @@ app.controller('cutjobcontroller', function($scope, $http) {
        }
     }
 
+    $scope.getjobs = function() {
+        if($scope.jobcount>0 && Number($scope.jobcount)>Number($scope.bundleqty)){
+            $scope.fulljob = [];
+            for(var ss=0;Number(ss)<$scope.details_all.length;ss++){
+                //$scope.j++;
+                var dummy = [];
+                dummy['cut'] = $scope.details_all[ss].cut;
+                dummy['ratio'] = $scope.details_all[ss].ratio;
+                $scope.details = $scope.details_all[ss].size_details;
+                $scope.generatejobs();
+                var bun_jobs = $scope.genbundle($scope.jobs)
+                dummy['sizedetails'] = bun_jobs;
+                $scope.fulljob.push(dummy);
+            }
+            console.log($scope.fulljob);
+       }else{
+           alert('else');
+       }
+    }
+    $scope.genbundle = function(jobs){
+        let newdummy = [];
+        if($scope.bundleqty==0){
+            for(let no=0;no<jobs.length;no++){
+                newdummy.push({job_id : jobs[no].job_id,job_qty : jobs[no].job_qty,job_size_key : jobs[no].job_size_key, job_size : jobs[no].job_size,bundle : Number(no)+1});
+            }
+        }else{
+            let jobno = 1;
+            for(let no=0;no<jobs.length;no++){
+                let total_bundles_per_job = Math.floor(jobs[no].job_qty/$scope.bundleqty);
+                let excess = jobs[no].job_qty%$scope.bundleqty;
+                for(let non=0;non<Number(total_bundles_per_job);non++){
+                    newdummy.push({job_id : jobs[no].job_id,job_qty : $scope.bundleqty,job_size_key : jobs[no].job_size_key, job_size : jobs[no].job_size,bundle : jobno});
+                    jobno++;
+                }
+                if(excess>0){
+                    newdummy.push({job_id : jobs[no].job_id,job_qty : excess,job_size_key : jobs[no].job_size_key, job_size : jobs[no].job_size,bundle : jobno});
+                    jobno++;
+                }
+            }
+        }
+        return newdummy;
+    }
+
 });
 angular.bootstrap($('#modalLoginForm'), ['cutjob']);
-function assigndata(s,max){
-    var titles = {};
-    var values = {};
+function assigndata(s,max,end){
     var details = [];
-    for(var i=1;Number(i)<=Number(max);i++){
-        var sp_title = document.getElementById('datatitle'+i);
-        var sp_values = document.getElementById('dataval'+s+i);
-        a = sp_title.getAttribute('data-title');
-        b = sp_values.getAttribute('data-title');
+    for(var jpg=1;Number(jpg)<Number(end);jpg++){
+        var dummy = [];
+        var pl_cut_id = document.getElementById('datarc'+s+jpg);
+        dummy['cut'] = pl_cut_id.getAttribute('data-cut');
+        dummy['ratio'] = pl_cut_id.getAttribute('data-ratio');
+        dummy['size_details'] = [];
+        for(var i=1;Number(i)<=Number(max);i++){
+            var sp_title = document.getElementById('datatitle'+i);
+            var sp_values = document.getElementById('dataval'+s+i+jpg);
+            a = sp_title.getAttribute('data-title');
+            b = sp_values.getAttribute('data-title');
 
-        c = sp_title.getAttribute('data-value');
-        d = sp_values.getAttribute('data-value');
-        var val = {title : c, key : a, value : d};
-        details.push(val);
-
-        titles[a] = c;
-        values[b] = d;
-
+            c = sp_title.getAttribute('data-value');
+            d = sp_values.getAttribute('data-value');
+            var val = {title : c, key : a, value : d};
+            dummy['size_details'].push(val);
+        }
+        details.push(dummy);
     }
-   
     var controllerElement = document.querySelector('[ng-controller="cutjobcontroller"]');
     var scope = angular.element(controllerElement).scope();
     scope.$apply(function () {
-        //console.log(titles);
-        scope.titles =  titles ;
-        scope.values = values;
-        scope.details = details;
+        scope.details_all = details;
+        scope.jobcount = 0;
+        scope.bundleqty = 0;
+        scope.details = [];
+        scope.jobs   = [];
+        scope.fulljob = [];
     });
 }
 </script>
