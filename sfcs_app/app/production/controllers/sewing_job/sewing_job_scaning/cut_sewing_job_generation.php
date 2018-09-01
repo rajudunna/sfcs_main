@@ -6,9 +6,25 @@ Updated : 01-09-2018
 input : Schedule,color & cutjob count.
 output v0.1: Generate jobs.
 =================================================================== */
+//var_dump($_POST);
+if(isset($_POST) && isset($_POST['main_data'])){
+    include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
+    //$datt = $_POST['date_y']."-".$_POST['date_m']."-".$_POST['date_d'];
+    //echo $datt;die();
+    $main_data = $_POST['main_data'];
+    print_r($main_data);
+    foreach($_POST['main_data'] as $iv){
+        //$reason = explode('(',$iv['reasons'])[0];
+        $cut = $iv['cut'];
+        $destination = $iv['destination'];
+        $dono = $iv['dono'];
+        $ration = $iv['ratio'];
+    }
+
+    echo json_encode(['message'=>'success']);  
+}else{
 ?>
 <script>
-
 $(document).ready(function(){
 	var url1 = '?r=<?= $_GET['r'] ?>';
     console.log(url1);
@@ -111,7 +127,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
             if($old_ratio==$row['ratio']){
                 echo "<tr style='display:none'>
                 <td>".$row['ratio']."</td>
-                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'>".$row['pcutno']."</td>
+                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."' data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
                 <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
@@ -142,7 +158,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 $old_pplice = [];
                 echo "<tr style='display:none'>
                 <td>".$row['ratio']."</td>
-                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'>".$row['pcutno']."</td>
+                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
                 <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
@@ -234,7 +250,13 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
 </div>
 <?php
     //=====================
+    //echo base64_decode($_GET['r']);
 } 
+
+
+$url = base64_decode($_GET['r']);
+$url = str_replace('\\', '/', $url);
+
 ?>
 
 </div>
@@ -296,25 +318,63 @@ app.controller('cutjobcontroller', function($scope, $http) {
        }
     }
 
+    
     $scope.getjobs = function() {
         if($scope.jobcount>0 && Number($scope.jobcount)>Number($scope.bundleqty)){
-            $scope.fulljob = [];
+            $scope.fulljob = {};
             for(var ss=0;Number(ss)<$scope.details_all.length;ss++){
                 //$scope.j++;
-                var dummy = [];
+                var dummy = {};
                 dummy['cut'] = $scope.details_all[ss].cut;
                 dummy['ratio'] = $scope.details_all[ss].ratio;
+                dummy['destination'] = $scope.details_all[ss].destination;
+                dummy['dono'] = $scope.details_all[ss].dono;
                 $scope.details = $scope.details_all[ss].size_details;
                 $scope.generatejobs();
                 var bun_jobs = $scope.genbundle($scope.jobs)
                 dummy['sizedetails'] = bun_jobs;
-                $scope.fulljob.push(dummy);
+                $scope.fulljob[ss] = dummy;
             }
-            console.log($scope.fulljob);
+            //console.log($scope.fulljob);
        }else{
            alert('else');
        }
     }
+    
+    $scope.createjobs = function()
+    {
+        console.log($scope.fulljob);
+        let url_serv = "<?= $url ?>";
+        //console.log(url_serv);
+        // var rv = {};
+        // for (var i = 0; i < $scope.fulljob.length; ++i){
+        //     rv1 = {}
+        //     if ($scope.fulljob[i] !== undefined) rv[i] = JSON.stringify($scope.fulljob[i]);
+            
+        // }
+        //console.log(rv);
+        var params = $.param({
+        'main_data' : $scope.fulljob
+        });
+        
+            //$scope.saveinit = false;
+            $http({ 
+                method: 'POST', 
+                url: url_serv,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                },
+                data: params
+            })
+            .then(function successCallback(response) {
+                console.log(response.data);
+                if(response.data.message=='success'){
+                    swal('downtime updated successfully.');
+                    location.reload();
+                }
+            });
+    }
+    
     $scope.genbundle = function(jobs){
         let newdummy = [];
         if($scope.bundleqty==0){
@@ -348,6 +408,8 @@ function assigndata(s,max,end){
         var pl_cut_id = document.getElementById('datarc'+s+jpg);
         dummy['cut'] = pl_cut_id.getAttribute('data-cut');
         dummy['ratio'] = pl_cut_id.getAttribute('data-ratio');
+        dummy['destination'] = pl_cut_id.getAttribute('data-destination');
+        dummy['dono'] = pl_cut_id.getAttribute('data-dono');
         dummy['size_details'] = [];
         for(var i=1;Number(i)<=Number(max);i++){
             var sp_title = document.getElementById('datatitle'+i);
@@ -374,3 +436,4 @@ function assigndata(s,max,end){
     });
 }
 </script>
+<?php } ?>
