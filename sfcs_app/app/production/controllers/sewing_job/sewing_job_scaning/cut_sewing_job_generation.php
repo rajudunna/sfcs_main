@@ -6,7 +6,6 @@ Updated : 02-09-2018
 input : Schedule,color & cutjob count.
 output v0.1: Generate jobs.
 =================================================================== */
-//var_dump($_POST);
 if(isset($_POST) && isset($_POST['main_data'])){
     include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
     //$datt = $_POST['date_y']."-".$_POST['date_m']."-".$_POST['date_d'];
@@ -34,7 +33,6 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
         // print_r($oldqty_jobcount)."<br/>";
         foreach ($details as $term ) {
-            //$term[]
             $job = $oldqty_jobcount['old_jobs']+$term['job_id'];
             $rand=$schedule.date("ymd").$job;
             $carton_act_qty = $term['job_qty'];
@@ -58,8 +56,8 @@ if(isset($_POST) && isset($_POST['main_data'])){
             '".$doc_type."',
             '".$type_of_sewing."'
             );
-        ";
-        $result_time = mysqli_query($link_ui, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+            ";
+            $result_time = mysqli_query($link_ui, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         }
         
@@ -135,7 +133,7 @@ if($schedule != "" && $color != "")
 
 //$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='529508' AND bai_orders_db_confirm.order_col_des ='DRBLU : DRESS BLUES'";
 $ratio_query = "
-SELECT * FROM bai_pro3.bai_orders_db LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db.order_del_no='546442' AND TRIM(bai_orders_db.order_col_des) ='69 - NAVY BOTTOM'";
+SELECT * FROM bai_pro3.bai_orders_db LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db.order_del_no='".$schedule."' AND TRIM(bai_orders_db.order_col_des) =trim('".$color."')";
 $doc_nos = [];
 $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     $i=0;
@@ -167,6 +165,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                $old_pcut = [];
                $old_pplice = [];
                $end = 1;
+               $old_doc_nos = [];
             }
             $i++;
             if($old_ratio==$row['ratio']){
@@ -184,6 +183,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 $end++;
                 $old_pcut[]=$row['pcutno'];
                 $old_pplice[]=$row['p_plies'];
+                $old_doc_nos[] = $row['doc_no'];
 
             }else{
                 echo "<tr>
@@ -195,12 +195,19 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                     echo "<td>$old_qty[$sno]</td>";
                     $old_qty[$sno]=0;
                 }
-                echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
+                $qry_get_doc_details = "SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".implode(',',$old_doc_nos).")";
+                $qry_get_doc_details_res = mysqli_query($link_ui, $qry_get_doc_details) or exit("Sql Error : qry_get_doc_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $old_cnt_jb = mysqli_fetch_array($qry_get_doc_details_res);
+                if($old_cnt_jb['old_jobs']==0)
+                    echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
+                else
+                    echo "<td><h3 class='label label-warning'>Jobs Already Created..</h3></td>";
                 echo "</tr>";
                 $end = 1;
                 $old_ratio = $row['ratio'];
                 $old_pcut = [];
                 $old_pplice = [];
+                $old_doc_nos = [];
                 echo "<tr style='display:none'>
                 <td>".$row['ratio']."</td>
                 <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
@@ -215,6 +222,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 $end++;
                 $old_pcut[]=$row['pcutno'];
                 $old_pplice[]=$row['p_plies'];
+                $old_doc_nos[] = $row['doc_no'];
             }
             
             
@@ -227,7 +235,13 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 $sno = str_pad($k,2,"0",STR_PAD_LEFT);
                 echo "<td>$old_qty[$sno]</td>";
             }
-            echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
+            $qry_get_doc_details = "SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".implode(',',$old_doc_nos).")";
+            $qry_get_doc_details_res = mysqli_query($link_ui, $qry_get_doc_details) or exit("Sql Error : qry_get_doc_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $old_cnt_jb = mysqli_fetch_array($qry_get_doc_details_res);
+            if($old_cnt_jb['old_jobs']==0)
+                echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
+            else
+                echo "<td><h3 class='label label-warning'>Jobs Already Created..</h3></td>";
         echo "</tr>";
         echo "</tbody></table>"; 
     }
@@ -365,7 +379,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
 
     
     $scope.getjobs = function() {
-        if($scope.jobcount>0 && Number($scope.jobcount)>Number($scope.bundleqty)){
+        if(Number($scope.jobcount)>0 && Number($scope.jobcount)>=Number($scope.bundleqty)){
             $scope.fulljob = {};
             for(var ss=0;Number(ss)<$scope.details_all.length;ss++){
                 //$scope.j++;
@@ -382,7 +396,10 @@ app.controller('cutjobcontroller', function($scope, $http) {
             }
             //console.log($scope.fulljob);
        }else{
-           alert('else');
+           if(Number($scope.jobcount)<=0)
+            swal('Input Job Quantity should be grater then zero.');
+           if(Number($scope.jobcount)<Number($scope.bundleqty))
+            swal('Bundle Quantity should be less then input job quantity.');
        }
     }
     
@@ -419,6 +436,8 @@ app.controller('cutjobcontroller', function($scope, $http) {
                 if(response.data.message=='success'){
                     swal('Cut Sewing jobs generated sucessfully');
                     location.reload();
+                }else{
+                    swal('Fail..');
                 }
             });
     }
