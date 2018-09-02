@@ -74,12 +74,14 @@ echo "<div class=\"table-responsive\">
 							$mk_version=$sql_row2['mk_ver'];
 						}
 
-						$sql2="select * from $bai_pro3.cat_stat_log where tid=$cat_ref1 order by catyy DESC";
+						$sql2="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where tid=$cat_ref1 order by catyy DESC";
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row2=mysqli_fetch_array($sql_result2))
 						{
 							$cat_yy1=$sql_row2['catyy'];
 							$category1=$sql_row2['category'];
+							$binding_consumption=$sql_row2['binding_con'];
+
 						}
 
 						$sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1";
@@ -148,15 +150,8 @@ echo "<div class=\"table-responsive\">
 								}
 							}
 							
-							$bind_con1 = 0;
-							$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$tran_order_tid1\"";
-							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row2=mysqli_fetch_array($sql_result2))
-							{
-								$bind_con1=$sql_row2['binding_con'];
-							}
 							$cad_consumption = $mklength1/$ratiotot;
-							$realYY = $cat_yy1-$bind_con1;
+							$realYY = $cat_yy1-$binding_consumption;
 							$usedFabric = $mklength1*$totalplies1;
 							if($cat_yy1>0 and $totalplies1>0)
 							{

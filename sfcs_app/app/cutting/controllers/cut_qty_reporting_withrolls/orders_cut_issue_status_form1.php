@@ -59,25 +59,24 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$maker_ref=$sql_row['mk_ref'];
 	$act_plies=$sql_row['p_plies'];
 	$tran_order_tid=$sql_row['order_tid'];
+	$cat_ref=$sql_row['cat_ref'];
 	$print_status=$sql_row['print_status'];
 	$plies=$sql_row['a_plies'];
 	
 	$sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
-mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row33=mysqli_fetch_array($sql_result33))
-{
-$color_code=$sql_row33['color_code']; //Color Code
-	
-}
-
+	$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row33=mysqli_fetch_array($sql_result33))
+	{
+	$color_code=$sql_row33['color_code']; //Color Code
+		
+	}
+	$bind_con=0;
 //Binding Consumption / YY Calculation //Binding Consumption / YY Calculation //20151016-KIRANG-Imported Binding inclusive concept.
-	
-	$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$tran_order_tid\"";
+	$sql2="select  COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\"";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
-		$bind_con=$sql_row2['binding_con']*(($sql_row['a_xs']+$sql_row['a_s']+$sql_row['a_m']+$sql_row['a_l']+$sql_row['a_xl']+$sql_row['a_xxl']+$sql_row['a_xxxl']+$sql_row['a_s01']+$sql_row['a_s02']+$sql_row['a_s03']+$sql_row['a_s04']+$sql_row['a_s05']+$sql_row['a_s06']+$sql_row['a_s07']+$sql_row['a_s08']+$sql_row['a_s09']+$sql_row['a_s10']+$sql_row['a_s11']+$sql_row['a_s12']+$sql_row['a_s13']+$sql_row['a_s14']+$sql_row['a_s15']+$sql_row['a_s16']+$sql_row['a_s17']+$sql_row['a_s18']+$sql_row['a_s19']+$sql_row['a_s20']+$sql_row['a_s21']+$sql_row['a_s22']+$sql_row['a_s23']+$sql_row['a_s24']+$sql_row['a_s25']+$sql_row['a_s26']+$sql_row['a_s27']+$sql_row['a_s28']+$sql_row['a_s29']+$sql_row['a_s30']+$sql_row['a_s31']+$sql_row['a_s32']+$sql_row['a_s33']+$sql_row['a_s34']+$sql_row['a_s35']+$sql_row['a_s36']+$sql_row['a_s37']+$sql_row['a_s38']+$sql_row['a_s39']+$sql_row['a_s40']+$sql_row['a_s41']+$sql_row['a_s42']+$sql_row['a_s43']+$sql_row['a_s44']+$sql_row['a_s45']+$sql_row['a_s46']+$sql_row['a_s47']+$sql_row['a_s48']+$sql_row['a_s49']+$sql_row['a_s50'])*$act_plies);
+		$bind_con=$sql_row2['binding_consumption']*(($sql_row['a_xs']+$sql_row['a_s']+$sql_row['a_m']+$sql_row['a_l']+$sql_row['a_xl']+$sql_row['a_xxl']+$sql_row['a_xxxl']+$sql_row['a_s01']+$sql_row['a_s02']+$sql_row['a_s03']+$sql_row['a_s04']+$sql_row['a_s05']+$sql_row['a_s06']+$sql_row['a_s07']+$sql_row['a_s08']+$sql_row['a_s09']+$sql_row['a_s10']+$sql_row['a_s11']+$sql_row['a_s12']+$sql_row['a_s13']+$sql_row['a_s14']+$sql_row['a_s15']+$sql_row['a_s16']+$sql_row['a_s17']+$sql_row['a_s18']+$sql_row['a_s19']+$sql_row['a_s20']+$sql_row['a_s21']+$sql_row['a_s22']+$sql_row['a_s23']+$sql_row['a_s24']+$sql_row['a_s25']+$sql_row['a_s26']+$sql_row['a_s27']+$sql_row['a_s28']+$sql_row['a_s29']+$sql_row['a_s30']+$sql_row['a_s31']+$sql_row['a_s32']+$sql_row['a_s33']+$sql_row['a_s34']+$sql_row['a_s35']+$sql_row['a_s36']+$sql_row['a_s37']+$sql_row['a_s38']+$sql_row['a_s39']+$sql_row['a_s40']+$sql_row['a_s41']+$sql_row['a_s42']+$sql_row['a_s43']+$sql_row['a_s44']+$sql_row['a_s45']+$sql_row['a_s46']+$sql_row['a_s47']+$sql_row['a_s48']+$sql_row['a_s49']+$sql_row['a_s50'])*$act_plies);
 	}
 	
 	//Binding Consumption / YY Calculation //Binding Consumption / YY Calculation //20151016-KIRANG-Imported Binding inclusive concept.
