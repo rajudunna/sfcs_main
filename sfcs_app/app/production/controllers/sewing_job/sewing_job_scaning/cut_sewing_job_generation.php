@@ -2,7 +2,7 @@
 /* ===============================================================
                Created By : Sudheer and Chandu
 Created : 30-08-2018
-Updated : 01-09-2018
+Updated : 02-09-2018
 input : Schedule,color & cutjob count.
 output v0.1: Generate jobs.
 =================================================================== */
@@ -12,13 +12,57 @@ if(isset($_POST) && isset($_POST['main_data'])){
     //$datt = $_POST['date_y']."-".$_POST['date_m']."-".$_POST['date_d'];
     //echo $datt;die();
     $main_data = $_POST['main_data'];
-    print_r($main_data);
+    $schedule  = $_POST['schedule'];
+    $docnos = $_POST['docnos'];
+   // echo $schedule;
     foreach($_POST['main_data'] as $iv){
         //$reason = explode('(',$iv['reasons'])[0];
         $cut = $iv['cut'];
         $destination = $iv['destination'];
         $dono = $iv['dono'];
         $ration = $iv['ratio'];
+        $details = $iv['sizedetails'];
+        $type_of_sewing  = 1;
+        $doc_type = 'N';
+        $packing_mode = 1;
+        $status = '';
+        $doc_no_ref = '';
+        $old_jobs_cnt_qry = "
+        SELECT COUNT(*) AS old_jobs FROM (SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$docnos.") GROUP BY input_job_no) AS tab";
+        //echo $old_jobs_cnt_qry;
+        $old_jobs_cnt_res = mysqli_query($link_ui, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
+        foreach ($details as $term ) {
+            //$term[]
+            $job = $oldqty_jobcount['old_jobs']+$term['job_id'];
+            $rand=$schedule.date("ymd").$job;
+            $carton_act_qty = $term['job_qty'];
+            $size_code = $term['job_size'];
+            $old_size = $term['job_size_key'];
+            //echo $job."<br/>";
+           $ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 
+            (
+             doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing
+            )
+            VALUES
+            ( 
+            '".$dono."', 
+            '".$size_code."', 
+            '".$carton_act_qty."', 
+            '".$job."', 
+            '".$rand."',
+            '".$destination."',
+            '".$packing_mode."',
+            '".$old_size."',
+            '".$doc_type."',
+            '".$type_of_sewing."'
+            );
+        ";
+        echo $ins_qry;
+        $result_time = mysqli_query($link_ui, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+        }
+        
     }
 
     echo json_encode(['message'=>'success']);  
@@ -92,7 +136,7 @@ if($schedule != "" && $color != "")
 //$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='529508' AND bai_orders_db_confirm.order_col_des ='DRBLU : DRESS BLUES'";
 $ratio_query = "
 SELECT * FROM bai_pro3.bai_orders_db LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db.order_del_no='546442' AND TRIM(bai_orders_db.order_col_des) ='69 - NAVY BOTTOM'";
-
+$doc_nos = [];
 $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     $i=0;
     $max=0;
@@ -100,6 +144,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
         echo "<table class='table'>";
         while($row=mysqli_fetch_array($ratio_result))
         {
+            $doc_nos[] = $row['doc_no'];
             if($i==0){
                 echo "<thead>
                     <tr>
@@ -256,7 +301,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
 
 $url = base64_decode($_GET['r']);
 $url = str_replace('\\', '/', $url);
-
+$docnos = implode(',',$doc_nos);
 ?>
 
 </div>
@@ -345,6 +390,9 @@ app.controller('cutjobcontroller', function($scope, $http) {
     {
         console.log($scope.fulljob);
         let url_serv = "<?= $url ?>";
+        let schedule = "<?= $schedule ?>";
+        let color = "<?= $color ?>";
+        let docnos = "<?= $docnos ?>";
         //console.log(url_serv);
         // var rv = {};
         // for (var i = 0; i < $scope.fulljob.length; ++i){
@@ -354,7 +402,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
         // }
         //console.log(rv);
         var params = $.param({
-        'main_data' : $scope.fulljob
+        'main_data' : $scope.fulljob, 'schedule' : schedule, 'color' : color,'docnos' : docnos
         });
         
             //$scope.saveinit = false;
@@ -369,7 +417,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
             .then(function successCallback(response) {
                 console.log(response.data);
                 if(response.data.message=='success'){
-                    swal('downtime updated successfully.');
+                    swal('Cut Sewing jobs generated sucessfully');
                     location.reload();
                 }
             });
