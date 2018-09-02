@@ -30,6 +30,7 @@
 		$read_only_job_no = '';
 	}
 
+	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
 
 
 
@@ -500,6 +501,7 @@ function validating_cumulative(e,t)
 
 function validating_remarks_qty(val,remarks)
 {
+	var display_reporting_qty = document.getElementById('display_reporting_qty').value;
 	var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 	var bundle_number_var = val+"tid";
 	var bundle_number = document.getElementById(bundle_number_var).value;
@@ -531,7 +533,10 @@ function validating_remarks_qty(val,remarks)
 			var html_id_reporting =val+"reporting";
 			console.log(html_id_reporting);
 			$('#'+html_id).html(array[0]);
-			$('#'+html_id_reporting).val(array[0]);
+			if (display_reporting_qty == 'yes')
+			{
+				$('#'+html_id_reporting).val(array[0]);
+			}
 			$('#response_flag').val(1);
 			maximum_validate(max,val)
 			$('#loading-image').hide();
