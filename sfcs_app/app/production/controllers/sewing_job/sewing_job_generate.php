@@ -3,7 +3,7 @@
 <div class="panel-heading">Sewing Job Generation</div>
 <div class="panel-body">
 <?php
-
+	$schedule = '';
 	set_time_limit(30000000); 
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
@@ -770,8 +770,16 @@
 		}
 	}
 	// echo "</table>";	
-	echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
-	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");		
+	$mo_fill_url = getFullURLLevel($_GET['r'],'sewing_job_mo_fill.php',0,'N');
+	$url = "$mo_fill_url&style=$style_id&schedule=$schedule&schedule_id=$schedule_id&process_name=sewing&filename=create_sewing";
+	echo "<script>console.log($url);
+				  sweetAlert('Data Saved Successfully','','success');
+		  </script>";
+
+	echo("<script>location.href = '$mo_fill_url&style=$style_id&schedule=$schedule&schedule_id=$schedule_id&process_name=sewing&filename=create_sewing';</script>");	
+
+	// echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
+	// echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");		
 ?> 
 </div></div>
 </body>

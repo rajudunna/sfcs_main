@@ -175,7 +175,28 @@
                 $sql2="delete from $brandix_bts.tbl_carton_ref where ref_order_num='".$sch_ref."'"; 
                 //echo $sql2."<br>"; 
                 mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+/*
+                $query = "select group_concat('\"',order_tid,'\"') as tid from $bai_pro3.bai_orders_db where  order_del_no = '$schedule'";
+                $result = mysqli_query($link,$query);
+                while($row = mysqli_fetch_array($result)){
+                    $order_tids = $row['tid'];
+                } 
+*/                
+                $mos = array();
+                $mo_query  = "Select mo_no from $bai_pro3.mo_details where schedule = '$schedule'";
+                $mo_result = mysqli_query($link,$mo_query);
+                while($row = mysqli_fetch_array($mo_result)){
+                    $mos = $row['mon_no'];
+                }
+
+                $delete_query = "Delete from $bai_pro3.mo_operation_quantities where mo_no in $mos and op_desc like 'sewing%' ";
+                $delete_result = mysqli_query($link,$delete_query);
+                if(mysqli_num_rows($delete_result) > 0){
+                    //deleted successfully from mo_operation_qunatities;
+                }
                 echo "<script>sweetAlert('Packing Ratio Successfully Deleted','','success')</script>";
+                // $mo_fill_url = getFullURLLevel($_GET['r'],'sewing_job_mo_fill.php',0,'N');
+	            // echo("<script>location.href = '$mo_fill_url&style=$style_id&schedule=$schedule&process_name=sewing';</script>");
             } 
             else 
             { 
