@@ -32,6 +32,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
         //echo $old_jobs_cnt_qry;
         $old_jobs_cnt_res = mysqli_query($link_ui, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
+        // print_r($oldqty_jobcount)."<br/>";
         foreach ($details as $term ) {
             //$term[]
             $job = $oldqty_jobcount['old_jobs']+$term['job_id'];
@@ -58,7 +59,6 @@ if(isset($_POST) && isset($_POST['main_data'])){
             '".$type_of_sewing."'
             );
         ";
-        echo $ins_qry;
         $result_time = mysqli_query($link_ui, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         }
