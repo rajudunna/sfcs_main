@@ -505,7 +505,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							$doc_no_ref = $input_doc_no;
 							$op_code = '15';
 							$b_op_id = '15';
-							$b_module = $input_section;
 							$b_shift = $input_shift;
 							//getting work_station_id
 							$qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$b_op_id'";
@@ -532,6 +531,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 							{
 								// $doc_array[$row['doc_no']] = $row['act_cut_status'];
+								$plan_module = $row['plan_module'];
 								for ($i=0; $i < sizeof($sizes_array); $i++)
 								{ 
 									if ($row['a_'.$sizes_array[$i]] > 0)
@@ -540,6 +540,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 									}
 								}
 							}
+							$b_module = $plan_module;
 							//var_dump($cut_done_qty);
 							// INSERTING INTO M3_TRANSACTOINS TABLE AND UPDATING INTO M3_OPS_DETAILS
 							foreach($cut_done_qty as $key => $value)
