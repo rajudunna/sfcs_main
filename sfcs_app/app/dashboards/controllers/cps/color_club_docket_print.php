@@ -124,7 +124,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 //binding consumption
 	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	if($sql_num_check > 0)
@@ -3260,7 +3259,7 @@ for($j=0;$j<sizeof($color_codes);$j++)
   
 echo "<tr>";
   
-  echo "<th $style_css colspan=11>Total</th>";
+  echo "<th $style_css colspan=13>Total</th>";
   //echo "<th>Color</th>";
   //echo "<th>Job</th>";
   //echo "<th>Doc.ID</th>";

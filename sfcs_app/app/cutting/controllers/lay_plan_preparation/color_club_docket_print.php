@@ -104,7 +104,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $idocs_2 = "'" . implode ( "', '", $docs ) . "'";
 //var_dump($met_req);
 $sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -123,21 +122,20 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$col_des=$sql_row['col_des'];
 }
 //binding consumption
-$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-//echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-if($sql_num_check > 0)
-{
-	while($sql_row2=mysqli_fetch_array($sql_result))
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	if($sql_num_check > 0)
 	{
-		$binding_con = $sql_row2['binding_consumption'];
+		while($sql_row2=mysqli_fetch_array($sql_result))
+		{
+			$binding_con = $sql_row2['binding_consumption'];
+		}
 	}
-}
-else
-{
-	$binding_con=0;
-}
+	else
+	{
+		$binding_con=0;
+	}
 	//echo 'binding '.$binding_con;
 
 //cuttable wastage

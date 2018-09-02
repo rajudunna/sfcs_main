@@ -400,18 +400,14 @@ if(isset($_POST['submit']) && $reptype == 1)
 			//Binding Consumption / YY Calculation
 			$order_tid=$sql_row1['order_tid'];
 		
-			$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error g".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$bind_con=$sql_row2['binding_con'];
-			}
-			
-			$doc_req+=$act_total*$bind_con;
-			
 			//Binding Consumption / YY Calculation
-			
-			
+			$sql1="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid='$cat_ref'";
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row1=mysqli_fetch_array($sql_result1))
+			{
+				$binding_consumption=$sql_row1['binding_consumption'];
+			}	
+			$doc_req+=$act_total*$binding_consumption;
 			
 		}
 		
@@ -717,19 +713,14 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		
 		//Binding Consumption / YY Calculation
 		$order_tid=$sql_row1['order_tid'];
-	
-		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 13".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row2=mysqli_fetch_array($sql_result2))
+
+		$sql1="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where tid='$cat_ref'";
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
-			$bind_con=$sql_row2['binding_con'];
-		}
-		
-		$doc_req+=$act_total*$bind_con;
-		
-		//Binding Consumption / YY Calculation
-		
-		
+			$binding_consumption=$sql_row1['binding_consumption'];
+		}	
+		$doc_req+=$act_total*$binding_consumption;
 	}
 	
 	$sql1="select * from $bai_pro3.cat_stat_log where tid='$cat_ref'";

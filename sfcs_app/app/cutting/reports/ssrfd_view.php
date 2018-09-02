@@ -431,26 +431,15 @@ if(isset($_POST['submit']))
 
 		$order_tid=$sql_row1['order_tid'];
 		//Binding Consumption / YY Calculation
-	
-		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row2=mysqli_fetch_array($sql_result2))
-		{
-			$bind_con=$sql_row2['binding_con'];
-		}
-		
-		$doc_req+=$act_total*$bind_con;
-		
-		//Binding Consumption / YY Calculation		
-		
-		$sql11="select * from $bai_pro3.cat_stat_log where tid=$cat_id";
-		mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql11="select  COALESCE(binding_consumption,0) as \"binding_consumption\" ,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_id";
 		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row11=mysqli_fetch_array($sql_result11))
 		{
 			$cat_yy=$sql_row11['catyy'];
+			$binding_consumption=$sql_row11['binding_consumption'];
 		}	
-	
+		$doc_req+=$act_total*$binding_consumption;
+		
 		$net_util=$fab_rec-$fab_ret-$damages-$shortages;
 		$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
 		$net_con=round($net_util/$act_total,4);
@@ -498,8 +487,16 @@ if(isset($_POST['submit']))
 	{
 		$new_order_qty=$sql_row2['sum'];
 	}
+
+		
+	$newyy+=($new_order_qty*$binding_consumption);
 	
-	$newyy2=$newyy/$new_order_qty;
+	//Binding Consumption / YY Calculation
+	$newyy2=0;
+	if($new_order_qty > 0)
+	{
+		$newyy2=$newyy/$new_order_qty;
+	}
 	if($cat_yy>0){
 		$savings_new=round((($cat_yy-$newyy2)/$cat_yy)*100,0);
 	}
@@ -823,21 +820,20 @@ if(isset($_POST['submit']))
 		{
 			$mk_length=$sql_row2['mklength'];
 		}
-		
+
 		$doc_req=$mk_length*$a_plies;
 		
 		$order_tid=$sql_row1['order_tid'];
 		//Binding Consumption / YY Calculation
 	
-		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row2=mysqli_fetch_array($sql_result2))
+		$sql11="select  COALESCE(binding_consumption,0) as \"binding_consumption\" ,catyy from $bai_pro3.cat_stat_log where tid=$cat_id";
+		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row11=mysqli_fetch_array($sql_result11))
 		{
-			$bind_con=$sql_row2['binding_con'];
-		}
-		
-		$doc_req+=$act_total*$bind_con;
-		
+			$cat_yy=$sql_row11['catyy'];
+			$binding_consumption=$sql_row11['binding_consumption'];
+		}	
+		$doc_req+=$act_total*$binding_consumption;
 		//Binding Consumption / YY Calculation
 		
 		
