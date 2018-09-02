@@ -533,10 +533,17 @@ function validating_remarks_qty(val,remarks)
 			var html_id_reporting =val+"reporting";
 			console.log(html_id_reporting);
 			$('#'+html_id).html(array[0]);
-			if (display_reporting_qty == 'yes')
+			if (operation_id == '129')
+			{
+				if (display_reporting_qty == 'yes')
+				{
+					$('#'+html_id_reporting).val(array[0]);
+				}
+			}
+			else
 			{
 				$('#'+html_id_reporting).val(array[0]);
-			}
+			}	
 			$('#response_flag').val(1);
 			maximum_validate(max,val)
 			$('#loading-image').hide();
