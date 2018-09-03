@@ -23,6 +23,11 @@ input[type=number]::-webkit-outer-spin-button {
 
 <script type="text/javascript">
 
+function check_form(e){
+	// e.preventDefault();
+	alert();
+}
+
 function verify_num(t,e){
 	var id = t.id;
 	var qty = document.getElementById(id);
@@ -56,12 +61,16 @@ function verify_con(e){
 	var ce =  document.getElementById('excess');
 	var cw =  document.getElementById('waste').value; 
 	if(ce.value =='' || cw==''){
+		$('#update_btn').attr('disabled', false);
 		e.preventDefault();
 		ce.value = 0;
 		sweetAlert('','Please fill out cutting-excess and cutting-less percentages','info');
 		return false;
+		percent_cal();
+
+	}else{
+		return true;
 	}
-	percent_cal();
 	
 }
 function percent_cal()
@@ -111,7 +120,7 @@ function ind_per_cal(x)
 <div class="panel panel-primary">
 <div class="panel-heading">Cuttable Input Form</div>
 <div class="panel-body">
-<FORM method="post" name="input" action='<?php echo getFullURL($_GET["r"], "order_cut_process.php", "N")?>'>
+<FORM method="post" name="input" action='<?php echo getFullURL($_GET["r"], "order_cut_process.php", "N")?>' onsubmit="$('#update_btn').attr('disabled', true); return verify_con(event)">
 <?php
 
 $check_id=$_GET['check_id'];
@@ -783,7 +792,7 @@ echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "
 echo "<br><br>";
 $url = getFullURL($_GET['r'],'order_cut_process.php','N');
 //echo $url;
-echo "<form method=\"post\" name=\"input\" action=\"$url\">";
+echo "<form method=\"post\" id=\"sub_form\" name=\"input\" action=\"$url\" onsubmit=\" return check_form(event)\">";
 echo "<div class=\"row\"><div class=\"col-md-4\"><label>Cutting Excess:(%)</label>
 	  <input class='form-control float' type='text'   
 	  onkeyup='return verify_num(this,event)' required 
@@ -835,7 +844,7 @@ if(count($s_tit) <= 0){
 else{
 	$display = "";
 }
-echo "<input class=\"btn btn-sm btn-primary\" type=\"submit\" name = \"Update\" value = \"Update\" onclick='return verify_con(event)' style=$display></div>";
+echo "<input class=\"btn btn-sm btn-primary\" id=\"update_btn\" type=\"submit\" name = \"Update\" value = \"Update\" style=$display></div>";
 echo "</form>";
 
 ?>
