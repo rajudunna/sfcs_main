@@ -342,7 +342,7 @@ $(document).ready(function()
 						}
 						if(data[i].send_qty == 0)
 						{
-							status = '<font color="red">Previous Operation not done</font>';
+							status = '<font color="red">Cut Quantity not done</font>';
 						}
 						if(data[i].send_qty != 0)
 						{
