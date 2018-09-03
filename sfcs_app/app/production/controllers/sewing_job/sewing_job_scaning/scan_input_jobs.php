@@ -268,18 +268,18 @@ $(document).ready(function()
 					document.getElementById('job_number').value = '';
 
 				}
-				else if(response['module'] == undefined)
-				{
-					sweetAlert('',"Please Assign Module to this Input Job",'error');
-					$('#dynamic_table1').html('Please Assign Module to this Input Job');
-				}
+				// else if(response['module'] == undefined)
+				// {
+				// 	sweetAlert('',"Please Assign Module to this Input Job",'error');
+				// 	$('#dynamic_table1').html('Please Assign Module to this Input Job');
+				// }
 				else if(data)
 				{
 					console.log(data);
 					$('#dynamic_table1').html('');
 					$('#module_div').show();
-					document.getElementById('module_show').innerHTML = response['module'];
-					document.getElementById('module').value = response['module'];
+					document.getElementById('module_show').innerHTML = 10;
+					document.getElementById('module').value = 10;
 					console.log(response['color_dis']);
 					document.getElementById('style_show').innerHTML = response['style'];
 					document.getElementById('style').value = response['style'];
@@ -341,7 +341,7 @@ $(document).ready(function()
 						}
 						if(data[i].send_qty == 0)
 						{
-							status = '<font color="red">Previous Operation not done</font>';
+							status = '<font color="red">Cut Quantity not done</font>';
 						}
 						if(data[i].send_qty != 0)
 						{
