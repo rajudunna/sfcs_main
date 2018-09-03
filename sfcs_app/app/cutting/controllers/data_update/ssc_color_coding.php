@@ -90,7 +90,7 @@ set_time_limit(6000000);
 		{
 			if(strpos($op_desc," PF"))
 			{
-				$sql3="update $bai_pro3.$bai_pro3.bai_orders_db set order_embl_a=1,order_embl_b=1,order_embl_c=0,order_embl_d=0,order_embl_g=0,order_embl_h=0,order_embl_e=0,order_embl_f=0 where order_del_no=\"$schedule\"";
+				$sql3="update $bai_pro3.bai_orders_db set order_embl_a=1,order_embl_b=1,order_embl_c=0,order_embl_d=0,order_embl_g=0,order_embl_h=0,order_embl_e=0,order_embl_f=0 where order_del_no=\"$schedule\"";
 				mysqli_query($link, $sql3) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$sql31="update $bai_pro3.bai_orders_db_confirm set order_embl_a=1,order_embl_b=1,order_embl_c=0,order_embl_d=0,order_embl_g=0,order_embl_h=0,order_embl_e=0,order_embl_f=0 where order_del_no=\"$schedule\"";
@@ -106,8 +106,8 @@ set_time_limit(6000000);
 			}
 		}	
 	}
-	
-	$myFile = "m3_process_ses_track.php";
+	$url=getFullURL($_GET['r'],'m3_process_ses_track.php','R');
+	$myFile = $url;
 	$fh = fopen($myFile, 'w') or die("can't open file");
 	$stringData = "<?php $"."log_time=".(int)date("YmdH")."; ?>";
 	fwrite($fh, $stringData);
