@@ -4,27 +4,6 @@
 	$include_path=getenv('config_job_path');
 	include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 	
-	// function leading_zeros($value, $places){
-	//     if(is_numeric($value)){
-	//         for($x = 1; $x <= $places; $x++){
-	//             $ceiling = pow(10, $x);
-	//             if($value < $ceiling){
-	//                 $zeros = $places - $x;
-	//                 for($y = 1; $y <= $zeros; $y++){
-	//                     $leading .= "0";
-	//                 }
-	//             $x = $places + 1;
-	//             }
-	//         }
-	//         $output = $leading . $value;
-	//     }
-	//     else{
-	//         $output = $value;
-	//     }
-	//     return $output;
-	// }
-	
-	
 	//NEW to reset all pending cartons
 	//$sql="update pac_stat_log set disp_carton_no=NULL";
 	$sql="update $bai_pro3.pac_stat_log set disp_carton_no=NULL where status='DONE' and disp_carton_no=1";
@@ -84,7 +63,6 @@
 		$sch_to_process[]=$sql_row6['ims_schedule'];
 	}
 	
-	//$sch_to_process=array("138915","138922","141082","141082","142873","141097","132275","128618","138943","126111","138952");
 	//Schedules to process
 if(sizeof($sch_to_process)>0)
 {
@@ -95,7 +73,7 @@ if(sizeof($sch_to_process)>0)
 	$sizes=array();
 	$disp_carton_no=array();
 	//$sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_carton_no FROM packing_summary_tmp_v1 WHERE disp_carton_no is NULL and (STATUS IS null or left(status,1)=\"E\") and order_del_no=42834";
-$sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_carton_no FROM $bai_pro3.packing_summary_tmp_v1 WHERE order_del_no in (".implode(",",$sch_to_process).") and disp_carton_no is NULL and (STATUS IS null or left(status,1)=\"E\")";
+$sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_carton_no FROM $bai_pro3.packing_summary_tmp_v1 WHERE order_del_no in (".implode(",",array_filter($sch_to_process)).") and disp_carton_no is NULL and (STATUS IS null or left(status,1)=\"E\")";
 
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -270,8 +248,8 @@ echo $sql;
 	}
 	//NEW ADD 2011-07-14
 	
-	
-	
+
+
 	//SPEED DEL UPDATES
 	$sql="select speed_schedule from $bai_pro3.speed_del_dashboard";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
