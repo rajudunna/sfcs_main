@@ -3258,8 +3258,8 @@ for($j=0;$j<sizeof($color_codes);$j++)
   }
   
 echo "<tr>";
-  
-  echo "<th $style_css colspan=13>Total</th>";
+  $m=sizeof($sizes_tit)+8;
+  echo "<th $style_css colspan=$m>Total</th>";
   //echo "<th>Color</th>";
   //echo "<th>Job</th>";
   //echo "<th>Doc.ID</th>";

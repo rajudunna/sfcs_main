@@ -3263,8 +3263,9 @@ tags will be replaced.-->
   }
   
 echo "<tr>";
-  
-  echo "<th $style_css colspan=13>Total</th>";
+
+  $m=sizeof($sizes_tit)+8;
+  echo "<th $style_css colspan=$m>Total</th>";
   //echo "<th>Color</th>";
   //echo "<th>Job</th>";
   //echo "<th>Doc.ID</th>";
@@ -3439,8 +3440,9 @@ echo "<tr>";
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
-  <td class=xl6417319 colspan="3"><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
+  <td class=xl6417319 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
+
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   </tr>
