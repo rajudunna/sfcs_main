@@ -73,14 +73,14 @@ function isNumber($c) {
 	
 	$size=array("s01","s02","s03","s04","s05","s06","s07","s08","s09","s10","s11","s12","s13","s14","s15","s16","s17","s18","s19","s20","s21","s22","s23","s24","s25","s26","s27","s28","s29","s30","s31","s32","s33","s34","s35","s36","s37","s38","s39","s40","s41","s42","s43","s44","s45","s46","s47","s48","s49","s50"); 
 	
-	$sql="select distinct $bai_pro3.order_del_no from $bai_pro3.bai_orders_db where order_tid like '%***%'";
+	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_tid like '%***%'";
 	$resultset=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	if(mysqli_num_rows($resultset)>0)
 	{
 	
 		//To handle T57 with Multiple combination of size ranges
-		$sql="UPDATE shipment_plan SET color=CONCAT(CONVERT(stripSpeciaChars(size_code,0,0,1,0) USING utf8),'===',color) WHERE  
+		$sql="UPDATE $bai_pro3.shipment_plan SET color=CONCAT(CONVERT(stripSpeciaChars(size_code,0,0,1,0) USING utf8),'===',color) WHERE  
 		schedule_no not in (select distinct order_del_no from $bai_pro3.bai_orders_db 
 		where order_tid like '%***%') AND 
 		CONCAT(size_code REGEXP '[[:alpha:]]+',size_code REGEXP '[[:digit:]]+')='11' AND (RIGHT(TRIM(BOTH FROM size_code),1) in ('0','1') OR CONCAT(size_code REGEXP '[[./.]]','NEW')='1NEW') AND CONCAT(color REGEXP '[***]','NEW')<>'1NEW' AND CONCAT(color REGEXP '[===]','NEW')<>'1NEW'";
@@ -1161,12 +1161,12 @@ mysql_query($sql33,$link) or exit("Sql Error20".mysql_error());
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_2\")";
 	mysqli_query($link, $sql3) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
-							echo "<h2>Successfully Updated. Please close this window.</h2>";
-							
+	echo "<h2>Successfully Updated. Please close this window.</h2>";
+	$url=getFullURL($_GET['r'],'ssc_color_coding.php','N');						
 	echo "<script type=\"text/javascript\"> 
 			setTimeout(\"Redirect()\",500); 
 				function Redirect() {  
-					location.href = \"ssc_color_coding.php\"; 
+					location.href = \"$url\"; 
 				}
 		  </script>";
 ?>

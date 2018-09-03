@@ -93,5 +93,6 @@ echo "<div class='alert alert-info alert-dismissible'><a href='#' class='close' 
 $rurl='ssc_color_coding.php';
 // echo $rurl;
 // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = ".$rurl."; }</script>";
-echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"ssc_color_coding.php\"; }</script>";
+$url=getFullURL($_GET['r'],'ssc_color_coding.php','N');
+echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
 ?>
