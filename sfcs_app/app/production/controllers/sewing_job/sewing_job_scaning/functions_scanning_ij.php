@@ -329,7 +329,7 @@ function getjobdetails($job_number)
 					$result_array['table_data'][] = $row;
 				}
 				$result_array['flag'] = $flag;
-			//}
+			}
 			// $select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_number[0]'";
 			// $result_select_modudle_qry = $link->query($select_modudle_qry);
 			
@@ -583,7 +583,7 @@ function getjobdetails($job_number)
 					$result_array['table_data'][] = $row;
 				}
 				$result_array['flag'] = $flag;
-		//	}
+			}
 			// $select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = $job_number[0]";
 			// $result_select_modudle_qry = $link->query($select_modudle_qry);
 			
