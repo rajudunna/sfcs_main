@@ -161,13 +161,13 @@ table
             { 
                 $flag++;
                 $ims_doc_no=$sql_row12['ims_doc_no']; 
-				$ims_size=$sql_row12['ims_size'];
-				$ims_size2=substr($ims_size,2);
-				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
+                $ims_size=$sql_row12['ims_size'];
+                $ims_size2=substr($ims_size,2);
+                $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
                 // $inputjobno=$sql_row12['input_job_no_ref'];
                 
 
-				
+                
                 $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0"; 
                 //mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2.4".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -222,19 +222,28 @@ table
                       } 
 
                        $bundle_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id=".$operation_code1."";
+                       // echo $bundle_qty;
                        $sql_result561=mysqli_query($link, $bundle_qty) or exit("Sql bundle_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
-                          while($sql_row1=mysqli_fetch_array($sql_result56))
+                          while($sql_row1=mysqli_fetch_array($sql_result561))
                           {
                             $original_qty1=$sql_row1['original_qty'];
                             $recevied_qty1=$sql_row1['recevied_qty'];
                           }
+                         // echo $recevied_qty1;
                  
                  
                 echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>"; 
                  
-                if($original_qty == $recevied_qty  and $recevied_qty1 == 0 and $sql_row12['ims_pro_qty']==0 ) 
+                if($original_qty == $recevied_qty and $sql_row12['ims_pro_qty']==0 )   
                 { 
-                    echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
+                    if($recevied_qty1 == 0)
+                    {    
+                      echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
+                    }
+                    else 
+                    { 
+                      echo "N/A"; 
+                    } 
                 } 
                 else 
                 { 
@@ -286,7 +295,7 @@ echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3
     
                   echo "<div class='col-sm-3'><label>Select Module:</label> 
                   <select class='form-control' name=\"module_ref\"  id='module_ref'>";
-                  $sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_mods ASC";
+                  $sqlx="select * from $bai_pro3.sections_db where sec_id>0 ";
                   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                   $break_counter = 0;
                   while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
