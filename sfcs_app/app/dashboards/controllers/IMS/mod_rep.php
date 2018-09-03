@@ -21,11 +21,7 @@ $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
 $has_permission=haspermission($url_r);
-//include($_SERVER['DOCUMENT_ROOT']."M3_Bulk_OR/ims_size.php"); 
-//include($_SERVER['DOCUMENT_ROOT']."server/user_acl_v1.php"); 
-//include($_SERVER['DOCUMENT_ROOT']."server/group_def.php"); 
-//access for authorised user to transfer the input  
-//$auth_users=user_acl("SFCS_0203",$username,7,$group_id_sfcs);  
+
 $auth_users=array("rameshk","chathurangad","dinushapre","$username"); 
 //access for power user to remove the input 
 //$auth_cut_users=user_acl("SFCS_0203",$username,22,$group_id_sfcs);  
@@ -36,60 +32,7 @@ $auth_users_for_sample_cut_input=array("rameshk","chathurangad","dinushapre","$u
 ?> 
 
 
-<?php 
-/* 
-$username_list=explode('\\',$_SERVER['REMOTE_USER']); 
-$username=strtolower($username_list[1]); 
 
-//Special Input Processing Block 
-{ 
-    if(isset($_POST['spreq'])) 
-    { 
-        $module=$_POST['module']; 
-        $reason=$_POST['reason']; 
-        $section=$_POST['section']; 
-        $key=$_POST['key']; 
-         
-         
-        $sql="select * from sections_db where sec_id=$section and password=\"$key\""; 
-        //echo $sql; 
-        //$sql="select * from members where login=\"$password\""; 
-        mysql_query($sql,$link) or exit("Sql Error".mysql_error()); 
-        $sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error()); 
-        $sql_num_check=mysql_num_rows($sql_result); 
-        while($sql_row=mysql_fetch_array($sql_result)) 
-        { 
-            $mods=array(); 
-            $mods=explode(",",$sql_row['sec_mods']); 
-        } 
-        if(in_array($module,$mods) and $sql_num_check>0)  
-        { 
-             
-        } 
-        else  
-        { 
-            $sql_num_check=0; 
-        } 
-         
-         
-        $username_list=explode('\\',$_SERVER['REMOTE_USER']); 
-        $username=strtolower($username_list[1]); 
-         
-        echo "Reason =".strlen($reason)."   Rows =".$sql_num_check; 
-         
-        if(strlen($reason)>0 and $sql_num_check>0) 
-        { 
-            $sql="insert into ims_sp_db(module,req_user,remarks,status) values ($module,\"$username\",\"$reason\",0)"; 
-            mysql_query($sql,$link) or exit("Sql Error".mysql_error()); 
-        } 
-        else 
-        { 
-            header("Location:../cheat_system.php"); 
-        } 
-        echo "<script type=\"text/javascript\"> window.close(); </script>"; 
-    } 
-}*/ 
-?> 
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
@@ -145,20 +88,32 @@ table
 
 <body> 
 
-<form name="test" action="pop_login.php" method="post"> 
+<form name="test" action="mod_rep.php" method="post"> 
 <?php 
-        $module_ref=$_GET['module']; 
-        $section_id=$_GET['section_id']; 
+        if($_GET['module']){
+          $module=$_GET['module']; 
+        }else{
+        $module=$_POST['module']; 
+        }
+        if($_GET['section_id']){
+                $section_id=$_GET['section_id']; 
+
+        }else{
+                $section_id=$_POST['section_id']; 
+
+        }
+       
         //echo "<h2>Module - $module_ref Summary</h2>"; 
-        echo '<div id="page_heading"><span style=""><h3>Module - '.$module_ref.' Summary</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>'; 
+        echo '<div id="page_heading"><span style=""><h3>Module - '.$module.' Summary</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>'; 
         echo '<table style="color:black; border: 1px solid red;">'; 
         echo "<tr class=\"new\"><th>Select</th><th>Input Date</th><th>Exp. to Comp.</th><th>Style</th><th>Schedule</th><th>Color</th>"; 
         //echo "<th>CID</th><th>DOC#</th>"; 
         //echo "<th>Input Remarks</th>"; 
-        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th></tr>"; 
+        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th><th>Barcode</th></tr>"; 
              
         $toggle=0; 
-        $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid"; 
+        $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid"; 
+        //echo $sql;
 
         
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -172,7 +127,9 @@ table
             $ims_style=$sql_row['ims_style'];
             $ims_schedule=$sql_row['ims_schedule'];
             $ims_color=$sql_row['ims_color'];
-            $ims_remarks=$sql_row['ims_remarks']; 
+            $ims_remarks=$sql_row['ims_remarks'];
+            $pac_tid=$sql_row['pac_tid']; 
+            $tid=$sql_row['tid'];
 
 
             if($toggle==0) 
@@ -195,22 +152,22 @@ table
                 $req_date=$sql_row12['req_date']; 
             } 
              
-            $sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";
+            $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module' and tid='$tid' and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";
             
-            //echo $sql12."<br/>";
+            // echo $sql12."<br/>";
            // mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
             { 
                 $flag++;
                 $ims_doc_no=$sql_row12['ims_doc_no']; 
-				$ims_size=$sql_row12['ims_size'];
-				$ims_size2=substr($ims_size,2);
-				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
+                $ims_size=$sql_row12['ims_size'];
+                $ims_size2=substr($ims_size,2);
+                $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
                 // $inputjobno=$sql_row12['input_job_no_ref'];
-                $pac_tid=$sql_row12['pac_tid'];
+                
 
-				
+                
                 $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0"; 
                 //mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2.4".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -218,13 +175,6 @@ table
                 while($sql_row22=mysqli_fetch_array($sql_result22)) 
                 { 
                     $order_tid=$sql_row22['order_tid']; 
-                     
-                    // $sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
-                    // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error2.5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                    // while($sql_row33=mysqli_fetch_array($sql_result33)) 
-                    // { 
-                    //     $color_code=$sql_row33['color_code']; //Color Code 
-                    // } 
                     $cutno=$sql_row22['acutno']; 
                 } 
      
@@ -239,24 +189,73 @@ table
                     $rejected=0;
                     $rejected=$sql_row33['rejected']; 
                   }
+
+                  //To get Operation from Operation Routing For IPS
+                  $application='IPS';
+                  $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+                  //echo $scanning_query;
+                  $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($sql_row=mysqli_fetch_array($scanning_result))
+                  {
+                    $operation_name=$sql_row['operation_name'];
+                    $operation_code=$sql_row['operation_code'];
+                  } 
+
+                   $bundle_check_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id=".$operation_code."";
+                   $sql_result56=mysqli_query($link, $bundle_check_qty) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      while($sql_row=mysqli_fetch_array($sql_result56))
+                      {
+                        $original_qty=$sql_row['original_qty'];
+                        $recevied_qty=$sql_row['recevied_qty'];
+                      }
+
+
+                      //To get Operation from Operation Routing For Line Out
+                      $application_out='IMS';
+                      $scanning_query_ims=" select * from $brandix_bts.tbl_ims_ops where appilication='$application_out'";
+                      //echo $scanning_query;
+                      $scanning_result=mysqli_query($link, $scanning_query_ims)or exit("scanning_error123".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      while($sql_row123=mysqli_fetch_array($scanning_result))
+                      {
+                        $operation_name1=$sql_row123['operation_name'];
+                        $operation_code1=$sql_row123['operation_code'];
+                      } 
+
+                       $bundle_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id=".$operation_code1."";
+                       // echo $bundle_qty;
+                       $sql_result561=mysqli_query($link, $bundle_qty) or exit("Sql bundle_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+                          while($sql_row1=mysqli_fetch_array($sql_result561))
+                          {
+                            $original_qty1=$sql_row1['original_qty'];
+                            $recevied_qty1=$sql_row1['recevied_qty'];
+                          }
+                         // echo $recevied_qty1;
+                 
                  
                 echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>"; 
                  
-                if($sql_row12['ims_remarks']!="SAMPLE" and $sql_row12['ims_pro_qty']==0 ) 
+                if($original_qty == $recevied_qty and $sql_row12['ims_pro_qty']==0 )   
                 { 
-                    echo "<input type=\"radio\" name=\"radio\" value=\"".$sql_row12['tid']."\">"; 
+                    if($recevied_qty1 == 0)
+                    {    
+                      echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
+                    }
+                    else 
+                    { 
+                      echo "N/A"; 
+                    } 
                 } 
                 else 
                 { 
                     echo "N/A"; 
                 } 
                      
-                
+                 echo '<input type="hidden" value="'.$pac_tid.'" name="pac_tid[]">'; 
                      
                 echo "</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>"; 
                 //echo "<td>".$sql_row12['ims_remarks']."</td>"; 
 //echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>"; 
-echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".$rejected."</td><td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td><td>".$sql_row12['ims_remarks']."</td></tr>"; 
+echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".$rejected."</td><td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td><td>".$sql_row12['ims_remarks']."</td><td>".$pac_tid.'-'.$operation_code1."</td></tr>"; 
              }
         } 
         echo "</table>"; 
@@ -274,11 +273,11 @@ echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3
     $auth_users=explode(",",$users); 
 */     
 
-        if(in_array($authorized,$has_permission))         
-        {   
-         echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
+        // if(in_array($authorized,$has_permission))//input remove radio button         
+        // {   
+        //  echo "&nbsp;<input  title='click to remove the Input' type='radio' name = 'option' Id='option' value='input_remove'  > Input Remove"; 
          
-        } 
+        // } 
 /*         
         $username_list=explode('\\',$_SERVER['REMOTE_USER']); 
     $username=strtolower($username_list[1]); 
@@ -291,74 +290,116 @@ echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3
     } 
 
     $auth_cut_users=explode(",",$users); 
-*/ 
-        if(in_array($authorized,$has_permission))
-        { 
-             
-            echo "&nbsp;<input  title='click to transfer the input' type='radio' name = 'option' Id='option' value='input_transfer'> Input Transfer"; 
-        } 
-             
-            echo '&nbsp;&nbsp;<input type="submit" name="submit" value=" Unlock"> 
-                <input type="hidden" value="'.$module_ref.'" name="module"> 
-                <input type="hidden" value="'.$section_id.'" name="section_ids">'; 
-         
+*/  echo "</br>";
+                 echo "</br>";
+    
+                  echo "<div class='col-sm-3'><label>Select Module:</label> 
+                  <select class='form-control' name=\"module_ref\"  id='module_ref'>";
+                  $sqlx="select * from $bai_pro3.sections_db where sec_id>0 ";
+                  $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  $break_counter = 0;
+                  while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
+                  {
+                    $break_counter++;
+                    
+                    $section=$sql_rowx['sec_id'];
+                    $section_head=$sql_rowx['sec_head'];
+                    $section_mods=$sql_rowx['sec_mods']; 
+                    
+                    $mods=array();
+                    $mods=explode(",",$section_mods);
+                 
+
+                  for($x=0;$x<sizeof($mods);$x++)
+                  {
+                    echo "<option value=\"".$mods[$x]."\"  selected>".$mods[$x]."</option>";
+                   //$module=$mods[$x];
+
+                  }
+                 }
+                 echo "  </select>
+                 </div>";
+                 echo "</br>";
+                 echo "</br>";
+                  
+                    if(in_array($authorized,$has_permission))
+                    { 
+                         
+                        // echo "&nbsp;<input  title='click to transfer the input' type='radio' name = 'option' Id='option' value='input_transfer'> Input Transfer"; 
+                     
+                         
+                        echo '&nbsp;&nbsp;<input type="submit" name="submit" value="Input Transfer"> 
+                            <input type="hidden" value="'.$module.'" name="module"> 
+                            <input type="hidden" value="'.$section_id.'" name="section_id">'; 
+                           
+                    }        
+
+
+
 ?> 
 
 
 </form> 
-
-<!-- <h3>Request for Special Input</h3> 
-<form name="test_input" method="post" action="special_input.php"> 
-<input type="hidden" name="module" value="<?php echo $module_ref;  ?>"> 
-<input type="hidden" name="section" value="<?php echo $section_id;  ?>"> 
-
-<input type="submit" name="spreq" value="Create Special Input Box">  -->
-
-
 </form> 
 
 <br/> 
 
-<?php 
-//First cut will be excempted and total input can be reported to module, based on the global value. 
-if($input_excess_cut_as_full_input==1) 
-{ 
-?> <!-- 
-    <h3 style="cursor: pointer; color:RED;" onclick="window.location='../ims_allsizes_zero.php?inremark=EXCESS&module=<?php echo $_GET['module']; ?>'">Click here to Report Excess Cut Panel Input</h3> 
 
-    <h3 style="cursor: pointer; color: BLUE;" onclick="window.location='../ims_allsizes_zero.php?inremark=SAMPLE&module=<?php echo $_GET['module']; ?>'">Click here to Report SAMPLE ROOM Cut Panel Input</h3>  -->
-<?php 
-} 
-else 
-{ 
-
-?> 
-<?php 
-/* 
-    $username_list=explode('\\',$_SERVER['REMOTE_USER']); 
-    $username=strtolower($username_list[1]); 
-
-    $sql="select * from menu_index where list_id=286"; 
-    $result=mysql_query($sql,$link) or mysql_error("Error=".mysql_error()); 
-    while($row=mysql_fetch_array($result)) 
-    { 
-        $users=$row["auth_members"]; 
-    } 
-
-    $auth_users=explode(",",$users); 
-*/ 
-        if(in_array($authorized,$haspermission))         
-        { 
-
-?> 
-<!-- <h3 style="cursor: pointer; color: BLUE;" onclick="window.location='../ims_allsizes.php?inremark=SAMPLE&module=<?php echo $_GET['module']; ?>'">Click here to Report SAMPLE ROOM Cut Panel Input</h3>  -->
-<?php 
-} 
-?> 
-
-<?php 
-} 
-?> 
 
 </body> 
 </html> 
+<?php
+
+if(isset($_POST['submit']))
+{
+    $module= $_POST['module'];
+
+    $module_ref= $_POST['module_ref'];
+    $tid=array();
+  // var_dump($_POST['log_tid']);
+   $tid=$_POST['log_tid'];
+   foreach($tid as $selected)
+   {
+
+    $sql33="update $bai_pro3.ims_log set ims_mod_no = '$module_ref' where tid= '$selected'";
+    //echo $sql33;
+    $sql_result=mysqli_query($link, $sql33) or exit("Sql Error5123".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+    $sql_ims="select pac_tid from bai_pro3.ims_log where tid='$selected'"; 
+    $sql_result123=mysqli_query($link, $sql_ims) or exit("Sql Error_ims".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_rowx=mysqli_fetch_array($sql_result123))  
+    { 
+      $pac_tid=$sql_rowx['pac_tid'];
+    }
+
+    $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$module_ref' where bundle_number='$pac_tid'";
+    $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
+     $bund_update="update $brandix_bts.bundle_creation_data_temp set assigned_module ='$module_ref' where bundle_number='$pac_tid'";
+     $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
+
+
+     $sql="select  ims_mod_no, ims_qty,input_job_no_ref,pac_tid from $bai_pro3.ims_log where tid='$selected'"; 
+             //echo $sql."<br>";
+            
+    $sql_result=mysqli_query($link, $sql) or exit("Sql Error455".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    while($sql_row=mysqli_fetch_array($sql_result)) 
+    { 
+        $sql331="insert into $brandix_bts.module_bundle_track (user,bundle_number,module,quantity,job_no) values (USER(),\"".$sql_row['pac_tid']."\",". $module_ref.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\")";
+        echo $sql331;
+
+        mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
+     //echo $sql33; 
+    } 
+   }
+echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
+
+}
+
+
+?>
+
+
+
