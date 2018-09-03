@@ -83,14 +83,16 @@ function isNumber($c) {
 		$sql="UPDATE $bai_pro3.shipment_plan SET color=CONCAT(CONVERT(stripSpeciaChars(size_code,0,0,1,0) USING utf8),'===',color) WHERE  
 		schedule_no not in (select distinct order_del_no from $bai_pro3.bai_orders_db 
 		where order_tid like '%***%') AND 
-		CONCAT(size_code REGEXP '[[:alpha:]]+',size_code REGEXP '[[:digit:]]+')='11' AND (RIGHT(TRIM(BOTH FROM size_code),1) in ('0','1') OR CONCAT(size_code REGEXP '[[./.]]','NEW')='1NEW') AND CONCAT(color REGEXP '[***]','NEW')<>'1NEW' AND CONCAT(color REGEXP '[===]','NEW')<>'1NEW'";
+		CONCAT(size_code REGEXP '[[:alpha:]]+',size_code REGEXP '[[:digit:]]+')='11' AND (RIGHT(TRIM(BOTH FROM size_code),1) in ('0','1') OR CONCAT(size_code REGEXP '[[^./.]]','NEW')='1NEW') AND CONCAT(color REGEXP '[***]','NEW')<>'1NEW' AND CONCAT(color REGEXP '[^===]','NEW')<>'1NEW'";
 	}
 	else
 	{
 		//To handle T57 with Multiple combination of size ranges
 		$sql="UPDATE $bai_pro3.shipment_plan SET color=CONCAT(CONVERT(stripSpeciaChars(size_code,0,0,1,0) USING utf8),'===',color) WHERE  
-		CONCAT(size_code REGEXP '[[:alpha:]]+',size_code REGEXP '[[:digit:]]+')='11' AND (RIGHT(TRIM(BOTH FROM size_code),1) in ('0','1') OR CONCAT(size_code REGEXP '[[./.]]','NEW')='1NEW') AND CONCAT(color REGEXP '[***]','NEW')<>'1NEW' AND CONCAT(color REGEXP '[===]','NEW')<>'1NEW'";
+		CONCAT(size_code REGEXP '[[:alpha:]]+',size_code REGEXP '[[:digit:]]+')='11' AND (RIGHT(TRIM(BOTH FROM size_code),1) in ('0','1') OR CONCAT(size_code REGEXP '[[^./.]]','NEW')='1NEW') AND CONCAT(color REGEXP '[***]','NEW')<>'1NEW' AND CONCAT(color REGEXP '[^===]','NEW')<>'1NEW'";
 	}
+	// echo $sql.'<br>';
+	// die();
 	mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$sql="select distinct style_no from $bai_pro3.shipment_plan ";
@@ -273,7 +275,7 @@ function isNumber($c) {
 					
 					$sql3="select coalesce(sum(order_qty),0) as \"order_qty\", exfact_date, cpo, buyer_div, packing_method, destination, zfeature, style_id, COALESCE(order_embl_a,0) as order_embl_a,COALESCE(order_embl_b,0) as order_embl_b,COALESCE(order_embl_c,0) as order_embl_c,COALESCE(order_embl_d,0) as order_embl_d,COALESCE(order_embl_e,0) as order_embl_e,COALESCE(order_embl_f,0) as order_embl_f,COALESCE(order_embl_g,0) as order_embl_g,COALESCE(order_embl_h,0) as order_embl_h
  from $bai_pro3.shipment_plan where style_no=\"$style\" and schedule_no=\"$sch_no\" and color=\"$color\" and size_code=\"$size_code\"";
-					echo $sql3."<br>";
+					// echo $sql3."<br>";
 					mysqli_query($link, $sql3) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -284,7 +286,7 @@ function isNumber($c) {
 						
 						$sql3abc="select coalesce(sum(MO_Qty),0) as \"order_qty\"
  from $bai_pro3.$username_val where Style=\"$style\" and SCHEDULE=\"$sch_no\" and GMT_Color=\"$color\" and GMT_Size=\"$size_code\"";
-					echo $sql3abc."<br>";
+					// echo $sql3abc."<br>";
 					$sql_result3abc=mysqli_query($link, $sql3abc) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3abc=mysqli_fetch_array($sql_result3abc))
 					{
@@ -336,7 +338,7 @@ function isNumber($c) {
 					//if((substr($style,0,1)!="P" && substr($style,0,1)!="K" && substr($style,0,1)!="L" && substr($style,0,1)!="O") && $flag==1)
 					{			
 						$sql31="update $bai_pro3.bai_orders_db set packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
-						echo $sql31."<br>";
+						// echo $sql31."<br>";
 						mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$size_ref=$size_ref+1;
 					}
@@ -1161,7 +1163,7 @@ mysql_query($sql33,$link) or exit("Sql Error20".mysql_error());
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_2\")";
 	mysqli_query($link, $sql3) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
-	echo "<h2>Successfully Updated. Please close this window.</h2>";
+	echo "<h2>Successfully Updated. Please Don't close this window.</h2>";
 	$url=getFullURL($_GET['r'],'ssc_color_coding.php','N');						
 	echo "<script type=\"text/javascript\"> 
 			setTimeout(\"Redirect()\",500); 
