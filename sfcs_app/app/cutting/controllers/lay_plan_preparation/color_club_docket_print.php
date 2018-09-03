@@ -104,7 +104,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $idocs_2 = "'" . implode ( "', '", $docs ) . "'";
 //var_dump($met_req);
 $sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -123,20 +122,20 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$col_des=$sql_row['col_des'];
 }
 //binding consumption
-$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-if($sql_num_check > 0)
-{
-	while($sql_row2=mysqli_fetch_array($sql_result))
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	if($sql_num_check > 0)
 	{
-		$binding_con = $sql_row2['binding_consumption'];
+		while($sql_row2=mysqli_fetch_array($sql_result))
+		{
+			$binding_con = $sql_row2['binding_consumption'];
+		}
 	}
-}
-else
-{
-	$binding_con=0;
-}
+	else
+	{
+		$binding_con=0;
+	}
 	//echo 'binding '.$binding_con;
 
 //cuttable wastage
@@ -3224,7 +3223,9 @@ tags will be replaced.-->
 	}
   }
   $fab_uom = 'Yds';//hardcoded
+   echo "<th $style_css>Ratio</th>";
   echo "<th $style_css>Plies</th>";
+  echo "<th $style_css>Quantity </br>(Total Garments)</th>";
   echo "<th $style_css>MK Length</th>";
   echo "<th $style_css>$category $fab_uom</th>";
   echo "<th $style_css>(Bind/Rib) $fab_uom</th>";
@@ -3240,7 +3241,7 @@ tags will be replaced.-->
 	  echo "<td $style_css>".$color_codes[$j]."</td>";
 	  echo "<td $style_css>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
 	  echo "<td $style_css>".$docs[$j]."</td>";
-	  $fab_bind = (float)$binding_con*(int)$plies*(float)$a_ratio_tot;
+	  $fab_bind = (float)$binding_con*(int)$plies*(float)$a_ratio_tot;//Caliculation for Bind/Rib
   $total_yds=$met_req[$j]+$fab_bind;
   $sum+=  $total_yds; 
 	  for($i=0;$i<sizeof($sizes_tit);$i++)
@@ -3250,8 +3251,10 @@ tags will be replaced.-->
 			echo "<td $style_css>".$qty[$i]."</td>";
 		}
 	  }
-	  echo "<td $style_css>".$plies[$j]."</td>";
-	  echo "<td $style_css>".$mk_length_ref[$j]."</td>";
+	  echo "<td $style_css>".$a_ratio_tot."</td>";
+	  echo "<td $style_css>".round( $plies[$j] , 2 )."</td>";
+	  echo "<th $style_css>".($a_ratio_tot)*($plies[$j])."</th>";
+	  echo "<td $style_css>".round( $mk_length_ref[$j] , 2 )."</td>";
 	  echo "<td $style_css>".$met_req[$j]."</td>";
 	  echo "<td $style_css>".$fab_bind."</td>";
 	  echo "<td $style_css>".$total_yds."</td>";
@@ -3260,8 +3263,9 @@ tags will be replaced.-->
   }
   
 echo "<tr>";
-  
-  echo "<th $style_css colspan=11>Total</th>";
+
+  $m=sizeof($sizes_tit)+8;
+  echo "<th $style_css colspan=$m>Total</th>";
   //echo "<th>Color</th>";
   //echo "<th>Job</th>";
   //echo "<th>Doc.ID</th>";
@@ -3436,8 +3440,9 @@ echo "<tr>";
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
-  <td class=xl6417319 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
+  <td class=xl6417319 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
+
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   <td colspan=16 rowspan=2 class=xl9117319 style='border-right:.5pt solid black;
@@ -3519,13 +3524,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$item_name[] = $sql_row['item'];
 } 
 
-echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:95%'>
+echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:100%'>
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td class=xl764118 style='width: 38px;'>Batch</td>
   <td class='xl764118' style='width: 112px;'>Fabric Name</td>
   <td class=xl764118>Lot No</td>
-  <td class=xl764118>Label</td>
+ 
   <td class=xl764118>Shade</td>
   <td class=xl774118>Roll </br> No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
@@ -3546,7 +3551,7 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td class=xl724118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
-  <td class=xl744118>&nbsp;</td>
+ 
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
@@ -3575,7 +3580,7 @@ if(sizeof($roll_det)>0)
 			<td class=xl804118 style='text-align:center;padding-bottom:5pt;'><?php echo $batch_det[$i]; ?></td>
 			<td class=xl804118 style='text-align:center;padding-bottom:5pt;'><?php echo $item_name[$i]; ?></td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $lot_det[$i]; ?></td>
-			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $roll_id[$i]; ?></td>
+			
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $shade_det[$i]; ?></td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $roll_det[$i]; ?></td>
 			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
@@ -3601,7 +3606,7 @@ if(sizeof($roll_det)>0)
 		<td class=xl804118></td>
 		<td class=xl804118></td>
 		<td class=xl814118 style='font-size: 100%;'></td>
-		<td class=xl814118></td>
+		
 		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
@@ -3651,7 +3656,7 @@ else {
 		<td class=xl804118></td>
 		<td class=xl804118></td>
 		<td class=xl814118 style='font-size: 100%;'></td>
-		<td class=xl814118></td>
+		
 		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>

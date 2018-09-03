@@ -418,29 +418,22 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	
 	//Binding Consumption / YY Calculation
 	
-	if($category=='Body' || $category=='Front')
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	if($sql_num_check > 0)
 	{
-		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-		// echo $sql2;
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows=mysqli_num_rows($sql_result2);
-		if($rows > 0)
+		while($sql_row2=mysqli_fetch_array($sql_result))
 		{
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$binding_con = $sql_row2['binding_con'];
-				$bind_con= $binding_con *($a_ratio_tot*$plies);
-			}
-		}
-		else
-		{
-			$bind_con=0;
+			$binding_consumption = $sql_row2['binding_consumption'];
+			$bind_con= $binding_consumption *($a_ratio_tot*$plies);
+
 		}
 	}
 	else
 	{
 		$bind_con=0;
-		
+		$binding_consumption=0;
 	}
 	
 	//Binding Consumption / YY Calculation
@@ -3080,9 +3073,9 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $purwidth; ?></td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $purlength; ?></td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $cuttable_wastage*100;?></td>
-  <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $binding_con; ?></td>
+  <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $binding_consumption; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_lay = $purlength*(1+$cuttable_wastage)*$plies; echo round($fab_lay,2).'<br/>('.$fab_uom.')';?></td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $binding_con*$plies*$a_ratio_tot; echo round($fab_bind,2).'<br/>('.$fab_uom.')'; ?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $binding_consumption*$plies*$a_ratio_tot; echo round($fab_bind,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $actwidth; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($fab_bind+$fab_lay,2).'<br/>('.$fab_uom.')'; ?></td>
 <!--<td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
@@ -3143,8 +3136,9 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
+  <td class=xl654118 colspan="3"><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
+
 <table>
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
@@ -3235,8 +3229,8 @@ $item_name[] = $sql_row['item'];
 		  <td height=20 class=xl654118 style='height:18.0pt'></td>
 		  <td class=xl804118 style='border-bottom:.5pt solid black;  width:48pt'><?php echo $shade[$i]; ?></td>
 		  <td class=xl814118 colspan=3 style='border-bottom:.5pt solid black;  width:48pt'><?php echo round($shade_lengt[$i],2); ?></td>
-		  <td class=xl814118 colspan=3 style='border-bottom:.5pt solid black;  width:48pt'><?php echo round(($shade_lengt[$i]/($purlength*(1+$cuttable_wastage)+($binding_con*$a_ratio_tot))),0); ?></td>
-		  <td class=xl804118 colspan=4><?php echo round((($shade_lengt[$i]/($purlength*(1+$cuttable_wastage)+($binding_con*$a_ratio_tot)))*$binding_con*$a_ratio_tot),2); ?></td>
+		  <td class=xl814118 colspan=3 style='border-bottom:.5pt solid black;  width:48pt'><?php echo round(($shade_lengt[$i]/($purlength*(1+$cuttable_wastage)+($binding_consumption*$a_ratio_tot))),0); ?></td>
+		  <td class=xl804118 colspan=4><?php echo round((($shade_lengt[$i]/($purlength*(1+$cuttable_wastage)+($binding_consumption*$a_ratio_tot)))*$binding_consumption*$a_ratio_tot),2); ?></td>
 		</tr>
 	  <?php
 	}
@@ -3265,7 +3259,7 @@ $item_name[] = $sql_row['item'];
   <td class=xl764118>Batch</td>
   <td class='xl764118'>Fabric Name</td>
   <td class=xl764118>Lot No</td>
-  <td class=xl764118>Label</td>
+ 
   <td class=xl764118>Shade</td>
   <td class=xl7742018>Roll</br>No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
@@ -3286,7 +3280,7 @@ $item_name[] = $sql_row['item'];
   <td class=xl724118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
-  <td class=xl744118>&nbsp;</td>
+
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
@@ -3319,7 +3313,7 @@ $tot_bind_len=0;
 	  <td class=xl804118><?php echo $batch_det[$i]; ?></td>
 	  <td class=xl804118><?php echo $item_name[$i]; ?></td>
 	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
-	  <td class=xl814118><?php echo $roll_id[$i]; ?></td>
+	 
 	  <td class=xl814118><?php echo $shade_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_det[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
@@ -3333,7 +3327,7 @@ $tot_bind_len=0;
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
-	  <td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]*$binding_con*$a_ratio_tot),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]*$binding_con*$a_ratio_tot);?></td>
+	  <td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]*$binding_consumption*$a_ratio_tot),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]*$binding_consumption*$a_ratio_tot);?></td>
 	  <td colspan=3 class=xl684118 style='border-left:none'></td>
 	  <td class=xl654118></td>
 	  </tr>
@@ -3350,7 +3344,7 @@ $tot_bind_len=0;
 	 <td class=xl804118></td>
 	 <td class=xl804118></td>
 	 <td class=xl814118 style='font-size: 100%;'></td>
-	 <td class=xl814118></td>
+	 
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
@@ -3402,7 +3396,7 @@ $tot_bind_len=0;
 	 <td class=xl804118></td>
 	 <td class=xl804118></td>
 	 <td class=xl814118 style='font-size: 100%;'></td>
-	 <td class=xl814118></td>
+	 
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
