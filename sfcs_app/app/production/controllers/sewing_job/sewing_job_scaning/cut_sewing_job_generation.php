@@ -133,8 +133,8 @@ if($schedule != "" && $color != "")
 //echo $ratio_query;
 
 //$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='529508' AND bai_orders_db_confirm.order_col_des ='DRBLU : DRESS BLUES'";
-$ratio_query = "
-SELECT * FROM bai_pro3.bai_orders_db LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db.order_del_no='".$schedule."' AND TRIM(bai_orders_db.order_col_des) =trim('".$color."')";
+$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db.order_del_no='".$schedule."' AND TRIM(bai_orders_db.order_col_des) =trim('".$color."')";
+//echo $ratio_query;
 $doc_nos = [];
 $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     $i=0;
