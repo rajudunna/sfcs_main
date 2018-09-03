@@ -56,8 +56,10 @@ $api_hostname = $conf1->get('api-host-name');
 $api_port_no = $conf1->get('api-port');
 
 //Scanning Methods
-
 $scanning_methods = $conf1->get('scaning-method');
+
+//Display Reporting Qty
+$display_reporting_qty = $conf1->get('reporting-quantity');
 
 //LDAP CODE STARTS***
 // if(substr($server_soft,0,13)=="Apache/2.4.28")

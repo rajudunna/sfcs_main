@@ -367,6 +367,45 @@
                 "value": "yards"
             },
             {
+                "type": "select",
+                "required": true,
+                "label": "Scaning Methods",
+                "className": "form-control",
+                "name": "scaning-method",
+                "values": [
+                    {
+                        "label": "Bundle Level",
+                        "value": "Bundle Level",
+                        "selected": true
+                    },
+                    {
+                        "label": "Sewing Job Level",
+                        "value": "Sewing Job Level"
+                    }
+                ],
+                "value": "Bundle Level"
+            },
+            {
+                "type": "select",
+                "required": true,
+                "label": "Reporting Quantity",
+                "className": "form-control",
+                "name": "reporting-quantity",
+                "values": [
+                    {
+                        "label": "yes",
+                        "value": "yes"
+                       
+                    },
+                    {
+                        "label": "no",
+                        "value": "no",
+                        "selected": true
+                    }
+                ],
+                "value": "no"
+            },
+            {
                 "type": "checkbox-group",
                 "required": true,
                 "label": "Category Display in Dashboard",
