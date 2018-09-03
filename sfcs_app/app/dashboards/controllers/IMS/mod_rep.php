@@ -112,7 +112,8 @@ table
         echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th></tr>"; 
              
         $toggle=0; 
-        $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid"; 
+        $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid"; 
+        //echo $sql;
 
         
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -126,7 +127,8 @@ table
             $ims_style=$sql_row['ims_style'];
             $ims_schedule=$sql_row['ims_schedule'];
             $ims_color=$sql_row['ims_color'];
-            $ims_remarks=$sql_row['ims_remarks']; 
+            $ims_remarks=$sql_row['ims_remarks'];
+            $pac_tid=$sql_row['pac_tid']; 
 
 
 
@@ -163,7 +165,7 @@ table
 				$ims_size2=substr($ims_size,2);
 				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
                 // $inputjobno=$sql_row12['input_job_no_ref'];
-                $pac_tid=$sql_row12['pac_tid'];
+                
 
 				
                 $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0"; 
@@ -189,17 +191,23 @@ table
                   }
 
                    $bundle_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id='129'";
+                   //echo $bundle_qty.'-';
+                   // die();
                    $sql_result56=mysqli_query($link, $bundle_qty) or exit("Sql bundle_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
                       while($sql_row=mysqli_fetch_array($sql_result56))
                       {
-                        $orginal_qty=$sql_row['orginal_qty'];
+                        $original_qty=$sql_row['original_qty'];
                         $recevied_qty=$sql_row['recevied_qty'];
                       }
                  // var_dump($send_qty);
+                      // echo $original_qty.'-';  
+                      // echo $recevied_qty.'-';
+                      // echo $sql_row12['ims_pro_qty'].'</br>';
+
                  
                 echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>"; 
                  
-                if($orginal_qty == $recevied_qty and $sql_row12['ims_pro_qty']==0 ) 
+                if($original_qty == $recevied_qty and $sql_row12['ims_pro_qty']==0 ) 
                 { 
                     echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
                 } 
