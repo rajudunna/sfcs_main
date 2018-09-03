@@ -1,6 +1,6 @@
 <?php
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/config.php", 4, 'R')); 
-include("../../../../common/config/config_ajax.php");
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/config.php", 4, 'R')); 
+//include("../../../../common/config/config_ajax.php");
 $doc_no_ref = $_GET['doc_no_ref'];
 // $doc_no_ref = 1336;
 $go_back_to = $_GET['go_back_to'];
