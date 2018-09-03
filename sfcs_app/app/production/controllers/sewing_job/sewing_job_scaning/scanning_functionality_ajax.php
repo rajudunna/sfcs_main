@@ -325,7 +325,7 @@ if($barcode_generation == 1)
 	$b_remarks = $b_remarks_1;
 	$b_doc_num = $b_doc_num_1;
 	$b_module = $b_module1;
-	// var_dump($b_module);
+	// var_dump($b_module);	
 	}
 	else
 	{
@@ -412,7 +412,7 @@ if($barcode_generation == 1)
 			// var_dump($r_reasons);
 			$r_qty = explode(",", $r_qtys[$value]);
 			$reason_remaining_qty = array();
-			$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = $b_job_no AND operation_id = '$b_op_id' order by bundle_number DESC";
+			$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = $b_job_no AND operation_id = '$b_op_id' AND assigned_module = '$b_module[$key]' order by bundle_number DESC";
 			//echo $query_to_fetch_individual_bundles;
 			$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error103".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$cumulative_rej_qty = $b_rej_qty[$key];

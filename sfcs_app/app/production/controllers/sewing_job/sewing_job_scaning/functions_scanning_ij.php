@@ -321,8 +321,8 @@ function getjobdetails($job_number)
 						$result_select_modudle_qry = $link->query($select_modudle_qry);
 						while($row1 = $result_select_modudle_qry->fetch_assoc()) 
 						{
-							//$row['assigned_module'] = $row['input_module'];
-							$row['assigned_module'] = 10;
+							$row['assigned_module'] = $row['input_module'];
+							// $row['assigned_module'] = 10;
 						}
 					}
 					
@@ -729,7 +729,7 @@ function getreversalscanningdetails($job_number)
 		//	$result_array['send_qty'][] = $send_qty;
 
 		//}
-		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
+		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
 		//echo $pre_ops_validation;
 		$result_pre_ops_validation = $link->query($pre_ops_validation);
 		while($row = $result_pre_ops_validation->fetch_assoc()) 
@@ -738,8 +738,9 @@ function getreversalscanningdetails($job_number)
 			$sizes[] =  $row['size_title'];
 			$size_code = $row['size_title'];
 			$color = $row['color'];
-			$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' GROUP BY size_title,color,assigned_module order by bundle_number";
-			//echo $post_ops_qry_to_find_rec_qty;
+			$module = $row['assigned_module'];
+			$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$module' GROUP BY size_title,color,assigned_module order by bundle_number";
+			// echo $post_ops_qry_to_find_rec_qty;
 			$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 			if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
 			{
@@ -759,7 +760,7 @@ function getreversalscanningdetails($job_number)
 	}
 	else
 	{
-		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
+		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
 		//echo $pre_ops_validation;
 		$result_pre_ops_validation = $link->query($pre_ops_validation);
 		while($row = $result_pre_ops_validation->fetch_assoc()) 
@@ -767,9 +768,10 @@ function getreversalscanningdetails($job_number)
 			$b_number =  $row['bundle_number'];
 			$size_code = $row['size_title'];
 			$color = $row['color'];
+			$assigned_module = $row['assigned_module'];
 			if($checking_flag == 1)
 			{
-				$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $ops_dependency and remarks='$job_number[2]' and size_title='$size_code' and color='$color' GROUP BY size_title,color,assigned_module order by bundle_number";
+				$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $ops_dependency and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
 				//echo $post_ops_qry_to_find_rec_qty;
 				$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 				if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
@@ -788,8 +790,8 @@ function getreversalscanningdetails($job_number)
 		
 	}
 
-	$job_details_qry = "SELECT id,style,`color` AS order_col_des,`size_title` AS size_code,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(rejected_qty) AS rejected_qty,(SUM(send_qty)-SUM(recevied_qty)) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref = '$job_number[1]' AND operation_id = '$job_number[0]' AND remarks = '$job_number[2]' GROUP BY size_title,color,assigned_module order by bundle_number";
-	//echo $job_details_qry;
+	$job_details_qry = "SELECT id,style,`color` AS order_col_des,`size_title` AS size_code,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(rejected_qty) AS rejected_qty,(SUM(send_qty)-SUM(recevied_qty)) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id,assigned_module FROM $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref = '$job_number[1]' AND operation_id = '$job_number[0]' AND remarks = '$job_number[2]' GROUP BY size_title,color,assigned_module order by bundle_number";
+	// echo $job_details_qry;
 	$job_details_qry = $link->query($job_details_qry);
 	//echo $job_details_qry->num_rows;
 	if($job_details_qry->num_rows > 0)
@@ -798,9 +800,9 @@ function getreversalscanningdetails($job_number)
 		{
 			$size_code = $row['size_code'];
 			$color = $row['order_col_des'];
-			$mdoule = $row['assigned_module'];
-			$job_qty_qry = "select sum(original_qty) AS carton_act_qty,mapped_color FROM $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_number[1]' AND operation_id = '$job_number[0]' AND size_title ='$size_code'  AND color='$color' assigned_module ='$mdoule' and order by bundle_number";
-			//echo $job_qty_qry;
+			$module = $row['assigned_module'];
+			$job_qty_qry = "select sum(original_qty) AS carton_act_qty,mapped_color FROM $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_number[1]' AND operation_id = '$job_number[0]' AND size_title ='$size_code'  AND color='$color' and assigned_module ='$module'  order by bundle_number";
+			// echo $job_qty_qry;
 			$result_job_qty_qry = $link->query($job_qty_qry);
 			while($row_result_job_qty_qry = $result_job_qty_qry->fetch_assoc()) 
 			{
