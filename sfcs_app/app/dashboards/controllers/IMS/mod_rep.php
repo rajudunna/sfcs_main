@@ -112,7 +112,7 @@ table
         echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th></tr>"; 
              
         $toggle=0; 
-        $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid"; 
+        $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid"; 
         //echo $sql;
 
         
@@ -129,7 +129,7 @@ table
             $ims_color=$sql_row['ims_color'];
             $ims_remarks=$sql_row['ims_remarks'];
             $pac_tid=$sql_row['pac_tid']; 
-
+            $tid=$sql_row['tid'];
 
 
             if($toggle==0) 
@@ -152,9 +152,9 @@ table
                 $req_date=$sql_row12['req_date']; 
             } 
              
-            $sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module and rand_track=$rand_track and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";
+            $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module' and tid='$tid' and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";
             
-            //echo $sql12."<br/>";
+            // echo $sql12."<br/>";
            // mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
