@@ -8,10 +8,10 @@
         }
     ],
     "database_info": {
-        "db_host": "192.168.0.110",
-        "db_user": "baiall",
-        "db_pass": "baiall",
-        "db_port": "3326"
+        "db_host": "10.227.221.26",
+        "db_user": "beksfcs",
+        "db_pass": "Max@sfcs",
+        "db_port": "3306"
     },
     "steps": [
         [
