@@ -1,3 +1,14 @@
+<script>
+	function printPage(printContent) { 
+		var display_setting="toolbar=yes,menubar=yes,scrollbars=yes,width=1050, height=600"; 
+		var printpage=window.open("","",display_setting); 
+		printpage.document.open(); 
+		printpage.document.write('<html><head><title>Print Page</title></head>'); 
+		printpage.document.write('<body onLoad="self.print()" align="center">'+ printContent +'</body></html>'); 
+		printpage.document.close(); 
+		printpage.focus(); 
+	}
+</script>
 <?php
 
 
@@ -26,13 +37,27 @@ th{
 	text-align:center;
 }
 </style>
+<br><center><a href="javascript:void(0);" onClick="printPage(printsection.innerHTML)" class="btn btn-warning">Print</a></center><br>
+		<div id="printsection">
+			<style>
+		        table, th, td
+		        {
+		            border: 1px solid black;
+		            border-collapse: collapse;
+		            
+		        }
+		        body
+		        {
+		            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		        }
+			</style>
 <div class="panel panel-primary">
 <div class="panel-heading">IMS Module Transfer Report</div>
 <div class="panel-body">
 
 <?php
 
-echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Color</th><th>Module</th><th>Bundle Number</th><th>Size</th><th>Quantity</th><th>Control</th></tr><thead>";
+echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>Barcode</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Color</th><th>Module</th><th>Bundle Number</th><th>Size</th><th>Quantity</th></tr><thead>";
 
 $sql="select * from $brandix_bts.module_bundle_track order by tran_id DESC";
 //echo $sql."<br>";
@@ -78,6 +103,7 @@ while($row=mysqli_fetch_array($result))
 
 	echo "<tr>";
 	echo "<td>".$x."</td>";
+	echo "<td>".$bundle_number."</td>";
 	echo "<td>".$ims_style."</td>";
 	echo "<td>".$ims_schedule."</td>";
 	echo "<td>".$job_no."</td>";
@@ -87,7 +113,8 @@ while($row=mysqli_fetch_array($result))
 	echo "<td>".$bundle_number."</td>";
 	echo "<td>".$size_value."</td>";
 	echo "<td>".$quantity."</td>";
-	echo "<td><input type='button' class='btn btn-primary' href=\"$print_sheet?input_job=$job_no&quantity=$quantity&module=$module&style=$ims_style&schedule=$ims_schedule&color=$ims_color&size=$size_value\" onclick=\"return popitup_new('$print_sheet?input_job=$job_no&quantity=$quantity&module=$module&style=$ims_style&schedule=$ims_schedule&color=$ims_color&size=$size_value')\" name='submit' id='submit' value='Print'></input></td>";
+	
+	// echo "<td><input type='button' class='btn btn-primary' href=\"$print_sheet?input_job=$job_no&quantity=$quantity&module=$module&style=$ims_style&schedule=$ims_schedule&color=$ims_color&size=$size_value\" onclick=\"return popitup_new('$print_sheet?input_job=$job_no&quantity=$quantity&module=$module&style=$ims_style&schedule=$ims_schedule&color=$ims_color&size=$size_value')\" name='submit' id='submit' value='Print'></input></td>";
 	echo "</tr>";
 	}	
 }
@@ -105,7 +132,7 @@ if (window.focus) {newwindow.focus();}
 return false; 
 } 
 </script> 
-<script language="javascript" type="text/javascript">
+<!-- <script language="javascript" type="text/javascript">
 //<![CDATA[
 	$('#reset_table2').addClass('btn btn-warning');
 	var table6_Props = 	{
@@ -118,7 +145,7 @@ return false;
 	setFilterGrid( "table2",table6_Props );
 	$('#reset_table2').addClass('btn btn-warning btn-xs');
 //]]>
-</script>
+</script> -->
 </div>
 
 
