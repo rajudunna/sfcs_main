@@ -620,8 +620,13 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			
 			//echo "<td>"."Style:".$style."<br/>"."Schedule:".$schedule."<br/>"."Job:".chr($color_code).leading_zeros($cut_no,3)."<br/>"."Total Qty:".$total_qty."</td><td></td>";
 			//echo "<td>".$style."<br/><strong>".$schedule."<br/>J".leading_zeros($jobno,3)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location<Br/>B.L.: $bundle_location</br>Col:".strtoupper($id)."</br></td>";
-			echo "<td >".$style."<br/><strong>".$schedule."<br/>".$display_prefix1."</strong><br/>".$total_qty."<br/>".implode(",",$club_c_code)."<br/>".$id."</td><td></td>";
 			
+			if($schedule!=''){
+			
+			echo "<td >".$style."<br/><strong>".$schedule."<br/>".$display_prefix1."</strong><br/>".$total_qty."<br/>".implode(",",$club_c_code)."<br/>".$id."</td><td></td>";
+			}else{
+				echo "<td ><br/><strong><br/></strong><br/><br/><br/></td><td></td>";	
+			}
 			
 
 		}
