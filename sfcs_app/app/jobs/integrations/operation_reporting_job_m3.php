@@ -3,7 +3,7 @@ $start_timestamp = microtime(true);
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-//include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
+include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
 set_time_limit(1000000);
 
 //details from config tool
