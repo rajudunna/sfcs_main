@@ -1,10 +1,4 @@
-<!-- 
-Ticket #645397: KiranG/2014-02-17 
-Excess Panel input reporting interface link has been added to this report to report excess panel input to the module. 
 
-Ticket#45927327 Nareshb/Date:24-12-2015/Applying user_acl to give access for input remove,input transfer and to report sample room for cut panels 
-
---> 
 <?php 
 
 error_reporting(0);
@@ -41,8 +35,9 @@ $auth_users_for_sample_cut_input=array("rameshk","chathurangad","dinushapre","$u
 <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 <link rel=\"stylesheet\" href=".getFullURL($_GET['r'],'common/css/ddcolortabs.css',4,'R')." type=\"text/css\" media=\"all\" />
 
-
-
+ <!-- <script src="/assets/js/sweetalert.min.js"></script> -->
+<link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
+<script src="../../../../common/js/sweetalert.min.js"></script>
 
 <style> 
 body{ 
@@ -105,11 +100,11 @@ table
        
         //echo "<h2>Module - $module_ref Summary</h2>"; 
         echo '<div id="page_heading"><span style=""><h3>Module - '.$module.' Summary</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>'; 
-        echo '<table style="color:black; border: 1px solid red;">'; 
-        echo "<tr class=\"new\"><th>Select</th><th>Input Date</th><th>Exp. to Comp.</th><th>Style</th><th>Schedule</th><th>Color</th>"; 
+        echo '<table class="table table-bordered" style="color:black; border: 1px solid red;">'; 
+        echo "<tr class=\"new\"><th>Select</th><th>Barcode</th><th>Input Date</th><th>Exp. to Comp.</th><th>Style</th><th>Schedule</th><th>Color</th>"; 
         //echo "<th>CID</th><th>DOC#</th>"; 
         //echo "<th>Input Remarks</th>"; 
-        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th><th>Barcode</th></tr>"; 
+        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th></tr>"; 
              
         $toggle=0; 
         $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid"; 
@@ -252,10 +247,10 @@ table
                      
                  echo '<input type="hidden" value="'.$pac_tid.'" name="pac_tid[]">'; 
                      
-                echo "</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>"; 
+                echo "</td><td>".$pac_tid."</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>"; 
                 //echo "<td>".$sql_row12['ims_remarks']."</td>"; 
 //echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>"; 
-echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".$rejected."</td><td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td><td>".$sql_row12['ims_remarks']."</td><td>".$pac_tid.'-'.$operation_code1."</td></tr>"; 
+echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".$rejected."</td><td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td><td>".$sql_row12['ims_remarks']."</td></tr>"; 
              }
         } 
         echo "</table>"; 
@@ -291,9 +286,8 @@ echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3
 
     $auth_cut_users=explode(",",$users); 
 */  echo "</br>";
-                 echo "</br>";
-    
-                  echo "<div class='col-sm-3'><label>Select Module:</label> 
+    echo "<div class='row'>";
+                  echo "<div class='col-sm-2'><label>Select Module:</label> 
                   <select class='form-control' name=\"module_ref\"  id='module_ref'>";
                   $sqlx="select * from $bai_pro3.sections_db where sec_id>0 ";
                   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -317,9 +311,8 @@ echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3
 
                   }
                  }
-                 echo "  </select>
-                 </div>";
-                 echo "</br>";
+                 echo "  </select></div>
+                 ";
                  echo "</br>";
                   
                     if(in_array($authorized,$has_permission))
@@ -327,19 +320,20 @@ echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3
                          
                         // echo "&nbsp;<input  title='click to transfer the input' type='radio' name = 'option' Id='option' value='input_transfer'> Input Transfer"; 
                      
-                         
-                        echo '&nbsp;&nbsp;<input type="submit" name="submit" value="Input Transfer"> 
+                         echo '<div class="col-md-2">';
+                        echo '<input type="submit" name="submit" class="btn btn-primary " value="Input Transfer"> 
                             <input type="hidden" value="'.$module.'" name="module"> 
                             <input type="hidden" value="'.$section_id.'" name="section_id">'; 
+                            echo '</div>';
                            
-                    }        
+                    }   
+                    echo "</div>";     
 
 
 
 ?> 
 
 
-</form> 
 </form> 
 
 <br/> 
@@ -388,18 +382,20 @@ if(isset($_POST['submit']))
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
         $sql331="insert into $brandix_bts.module_bundle_track (user,bundle_number,module,quantity,job_no) values (USER(),\"".$sql_row['pac_tid']."\",". $module_ref.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\")";
-        echo $sql331;
+        //echo $sql331;
 
         mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
      //echo $sql33; 
     } 
    }
-echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
+   echo "<script>sweetAlert('Input Transfered Successfully','','success');</script>";
+   echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
 
 }
 
 
 ?>
+
 
 
 
