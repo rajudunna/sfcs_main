@@ -731,6 +731,7 @@ if($Disable_allocate_flag==$for_Staus_dis){
 // if($fabric_status!="5" && $fabric_status!="1")
 // {
 	// echo '<option value="1" >Ready For Issuing</option>';
+	
 // }
 // if($fabric_status=="1")
 // {
