@@ -3318,35 +3318,7 @@ $item_name[] = $sql_row['item'];
  
 <?php
  }	
- else {
-	for($i =0; $i<16; $i++){
-   ?>
-	   <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
-	 <td height=20 class=xl654118 style='height:30pt'></td>
-	 <td class=xl804118></td>
-	 <td class=xl804118></td>
-	 <td class=xl814118 style='font-size: 100%;'></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td class=xl814118></td>
-	 <td colspan=3 class=xl684118></td>
-	 <td colspan=3 class=xl684118 style='border-left:none'></td>
-	 <td class=xl654118></td>
-	 </tr>
-   <?php
-	}	
-}
-?>
+?>	
 
 		
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
