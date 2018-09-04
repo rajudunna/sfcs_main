@@ -20,12 +20,30 @@ while($sql_row=mysqli_fetch_array($result))
 	{
 		$tbl_style_ops_master_delete="delete from $brandix_bts.tbl_style_ops_master where style='".$style."' and color='".$color."' ";
 		mysqli_query($link, $tbl_style_ops_master_delete) or exit("Sql Error tbl_style_ops_master_delete".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
 		$select_default_operations="select * from $brandix_bts.default_operation_workflow";
 		$select_default_operations_result=mysqli_query($link, $select_default_operations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($select_default_operations_row=mysqli_fetch_array($select_default_operations_result))
-		{		
-			$tbl_style_ops_master_insert="insert ignore $brandix_bts.tbl_style_ops_master(parent_id,operation_name,operation_order,style,color, operation_code,default_operration,ops_sequence,barcode,ops_dependency) values('".$select_default_operations_row['id']."','".$select_default_operations_row['operation_name']."','".$select_default_operations_row['operation_order']."','".$style."','".$color."','".$select_default_operations_row['operation_code']."','".$select_default_operations_row['default_operration']."','".$select_default_operations_row['ops_sequence']."','".$select_default_operations_row['barcode']."','".$select_default_operations_row['ops_dependency']."')";
+		{
+			//getting m3_smv from schedule_oprations_master
+			$ops_code = $select_default_operations_row['operation_code'];
+			$qty_to_fetch_m3_smv = "SELECT * FROM `$bai_pro3`.`schedule_oprations_master` WHERE style = '$style' AND Description='$color' AND OperationNumber = '$ops_code' LIMIT 0,1";
+			if($ops_code == 130)
+			{
+				echo $qty_to_fetch_m3_smv.'</br>';
+			}
+			$select_qty_to_fetch_m3_smv=mysqli_query($link, $qty_to_fetch_m3_smv) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($select_qty_to_fetch_m3_smv)==0)
+			{
+				$m3_smv = '0.00';
+			}
+			else
+			{
+				while($select_qty_to_fetch_m3_smv_row=mysqli_fetch_array($select_qty_to_fetch_m3_smv))
+				{
+					$m3_smv = $select_qty_to_fetch_m3_smv_row['SMV']; 
+				}
+			}
+			$tbl_style_ops_master_insert="insert ignore $brandix_bts.tbl_style_ops_master(parent_id,operation_name,operation_order,style,color, operation_code,default_operration,ops_sequence,barcode,ops_dependency,smv,m3_smv) values('".$select_default_operations_row['id']."','".$select_default_operations_row['operation_name']."','".$select_default_operations_row['operation_order']."','".$style."','".$color."','".$select_default_operations_row['operation_code']."','".$select_default_operations_row['default_operration']."','".$select_default_operations_row['ops_sequence']."','".$select_default_operations_row['barcode']."','".$select_default_operations_row['ops_dependency']."','".$m3_smv."','".$m3_smv."')";
 			echo "1=".$tbl_style_ops_master_insert."<br>";
 			mysqli_query($link, $tbl_style_ops_master_insert) or exit("Sql Error tbl_style_ops_master_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
