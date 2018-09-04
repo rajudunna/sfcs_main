@@ -319,11 +319,19 @@ function getjobdetails($job_number)
 						}
 						$select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_number[0]'";
 						$result_select_modudle_qry = $link->query($select_modudle_qry);
-						while($row1 = $result_select_modudle_qry->fetch_assoc()) 
+						if($result_select_modudle_qry->num_rows > 0)
 						{
-							$row['assigned_module'] = $row1['input_module'];
-							// $row['assigned_module'] = 10;
+							while($row1 = $result_select_modudle_qry->fetch_assoc()) 
+							{
+								$row['assigned_module'] = $row1['input_module'];
+								// $row['assigned_module'] = 10;
+							}
 						}
+						else
+						{
+							$result_array['status'] = 'Please assign module to this input job';
+						}
+						
 					}
 					
 					$result_array['table_data'][] = $row;
@@ -573,9 +581,17 @@ function getjobdetails($job_number)
 						}
 						$select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = $job_number[0]";
 						$result_select_modudle_qry = $link->query($select_modudle_qry);
-						while($row1 = $result_select_modudle_qry->fetch_assoc()) 
+						if($result_select_modudle_qry->num_rows > 0)
 						{
-							$row['assigned_module'] = $row1['input_module'];
+							while($row1 = $result_select_modudle_qry->fetch_assoc()) 
+							{
+								$row['assigned_module'] = $row1['input_module'];
+								// $row['assigned_module'] = 10;
+							}
+						}
+						else
+						{
+							$result_array['status'] = 'Please assign module to this input job';
 						}
 
 					}
