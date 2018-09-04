@@ -6,7 +6,7 @@ $plant_code = $global_facility_code;
 $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
-
+$current_date = date('Y-m-d h:i:s');
 $post_data = $_POST['bulk_data'];
 parse_str($post_data,$new_data);
 //var_dump($new_data['tid']);
@@ -1469,7 +1469,7 @@ if($barcode_generation == 1)
 										mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 										//insert transactions details into transactions_log
-										$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id',$message,USER(),'Normal',USER(),'',$b_module)"; 
+										$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id',$message,USER(),$current_date)"; 
 										mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 									}
 								}
@@ -1555,7 +1555,7 @@ if($barcode_generation == 1)
 											mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 											//insert transactions details into transactions_log
-											$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id',$message,USER(),'Normal',USER(),'',$b_module)"; 
+											$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id',$message,USER(),$current_date)"; 
 											mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 										}
 								   }
