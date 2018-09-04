@@ -303,6 +303,7 @@ width:350px;
   color:#fff;
   font-size:12px;
   width:250px;
+  pointer-events: none; 
   
 }
 
@@ -331,7 +332,7 @@ width:350px;
 $(document).ready(function() {
 
   //Select all anchor tag with rel set to tooltip
-  $('a[rel=tooltip]').mouseover(function(e) {
+  $('a[rel=tooltip]').hover(function(e) {
     
     //Grab the title attribute's value and assign it to a variable
     var tip = $(this).attr('title');  
@@ -343,7 +344,7 @@ $(document).ready(function() {
     $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
         
     //Show the tooltip with faceIn effect
-    $('#tooltip').fadeIn('100');
+    //$('#tooltip').fadeIn('100');
     //$('#tooltip').fadeTo('10',0.9);
     
   }).mousemove(function(e) {
@@ -351,11 +352,15 @@ $(document).ready(function() {
     //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
     console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset);
     console.log(e);
+
     //e.pageY + 0.5 * e.view.parent.pageYOffset
-    $('#tooltip').css('top',);
-    $('#tooltip').css('left', e.pageX - 265 );
-    $('#tooltip').css('display', 'inline' );
+    $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
+    $('#tooltip').css('left',$(this).offset.left - 255 );
+     $('#tooltip').css('margin-left','10px' );
+     $('#tooltip').css('margin-top','10px' );
+    //$('#tooltip').css('display', 'inline' );
      $('#tooltip').css('position', 'absolute' );
+     $('#tooltip').css('z-index', '999999' );
   }).mouseout(function() {
   
     //Put back the title attribute's value
