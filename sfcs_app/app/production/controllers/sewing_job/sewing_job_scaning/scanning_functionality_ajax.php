@@ -1,5 +1,12 @@
 <?php
 include("../../../../../common/config/config_ajax.php");
+
+//API related data
+$plant_code = $global_facility_code;
+$company_num = $company_no;
+$host= $api_hostname;
+$port= $api_port_no;
+
 $post_data = $_POST['bulk_data'];
 parse_str($post_data,$new_data);
 //var_dump($new_data['tid']);
@@ -1436,8 +1443,35 @@ if($barcode_generation == 1)
 								if($is_m3 == 'yes')
 								{
 									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number',$to_update_qty,'','Normal',user(),'',$b_module,'$b_shift',$b_op_id,'',$id,'$work_station_id','')";
-								//echo $inserting_into_m3_tran_log;
+									//echo $inserting_into_m3_tran_log;
 									mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+									//getting the last inserted record
+									$insert_id=mysqli_insert_id($link);
+
+									//M3 Rest API Call
+									$api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+									$api_data = $obj->getCurlAuthRequest($api_url);
+									$decoded = json_decode($api_data,true);
+									$type=$decoded['@type'];
+									$code=$decoded['@code'];
+									$message=$decoded['Message'];
+
+									//validating response pass/fail and inserting log
+									if($type!='ServerReturnedNOK'){
+										//updating response status in m3_transactions
+										$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
+										mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+									}else{
+										//updating response status in m3_transactions
+										$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
+										mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+										//insert transactions details into transactions_log
+										$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id',$message,USER(),'Normal',USER(),'',$b_module)"; 
+										mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+									}
 								}
 								
 							}
@@ -1495,8 +1529,35 @@ if($barcode_generation == 1)
 								   if($is_m3 == 'yes')
 								   {
 										$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number',$to_update_qty,'$r_reasons[$key]','Normal',user(),'',$b_module,'$b_shift',$b_op_id,'',$id,'$work_station_id','')";
-									//echo $inserting_into_m3_tran_log.'</br>';
+										//echo $inserting_into_m3_tran_log.'</br>';
 										mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+										//getting the last inserted record
+										$insert_id=mysqli_insert_id($link);
+
+										//M3 Rest API Call
+										$api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+										$api_data = $obj->getCurlAuthRequest($api_url);
+										$decoded = json_decode($api_data,true);
+										$type=$decoded['@type'];
+										$code=$decoded['@code'];
+										$message=$decoded['Message'];
+
+										//validating response pass/fail and inserting log
+										if($type!='ServerReturnedNOK'){
+											//updating response status in m3_transactions
+											$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
+											mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+										}else{
+											//updating response status in m3_transactions
+											$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
+											mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+											//insert transactions details into transactions_log
+											$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id',$message,USER(),'Normal',USER(),'',$b_module)"; 
+											mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+										}
 								   }
 
 								}
