@@ -109,7 +109,7 @@ table
         echo "<tr class=\"new\"><th>Select</th><th>Input Date</th><th>Exp. to Comp.</th><th>Style</th><th>Schedule</th><th>Color</th>"; 
         //echo "<th>CID</th><th>DOC#</th>"; 
         //echo "<th>Input Remarks</th>"; 
-        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th></tr>"; 
+        echo "<th>Input Job No No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th><th>Barcode</th></tr>"; 
              
         $toggle=0; 
         $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid"; 
@@ -161,13 +161,13 @@ table
             { 
                 $flag++;
                 $ims_doc_no=$sql_row12['ims_doc_no']; 
-				$ims_size=$sql_row12['ims_size'];
-				$ims_size2=substr($ims_size,2);
-				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
+                $ims_size=$sql_row12['ims_size'];
+                $ims_size2=substr($ims_size,2);
+                $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
                 // $inputjobno=$sql_row12['input_job_no_ref'];
                 
 
-				
+                
                 $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0"; 
                 //mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2.4".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -190,26 +190,60 @@ table
                     $rejected=$sql_row33['rejected']; 
                   }
 
-                   $bundle_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id='129'";
-                   //echo $bundle_qty.'-';
-                   // die();
-                   $sql_result56=mysqli_query($link, $bundle_qty) or exit("Sql bundle_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  //To get Operation from Operation Routing For IPS
+                  $application='IPS';
+                  $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+                  //echo $scanning_query;
+                  $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($sql_row=mysqli_fetch_array($scanning_result))
+                  {
+                    $operation_name=$sql_row['operation_name'];
+                    $operation_code=$sql_row['operation_code'];
+                  } 
+
+                   $bundle_check_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id=".$operation_code."";
+                   $sql_result56=mysqli_query($link, $bundle_check_qty) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
                       while($sql_row=mysqli_fetch_array($sql_result56))
                       {
                         $original_qty=$sql_row['original_qty'];
                         $recevied_qty=$sql_row['recevied_qty'];
                       }
-                 // var_dump($send_qty);
-                      // echo $original_qty.'-';  
-                      // echo $recevied_qty.'-';
-                      // echo $sql_row12['ims_pro_qty'].'</br>';
 
+
+                      //To get Operation from Operation Routing For Line Out
+                      $application_out='IMS';
+                      $scanning_query_ims=" select * from $brandix_bts.tbl_ims_ops where appilication='$application_out'";
+                      //echo $scanning_query;
+                      $scanning_result=mysqli_query($link, $scanning_query_ims)or exit("scanning_error123".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      while($sql_row123=mysqli_fetch_array($scanning_result))
+                      {
+                        $operation_name1=$sql_row123['operation_name'];
+                        $operation_code1=$sql_row123['operation_code'];
+                      } 
+
+                       $bundle_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id=".$operation_code1."";
+                       // echo $bundle_qty;
+                       $sql_result561=mysqli_query($link, $bundle_qty) or exit("Sql bundle_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+                          while($sql_row1=mysqli_fetch_array($sql_result561))
+                          {
+                            $original_qty1=$sql_row1['original_qty'];
+                            $recevied_qty1=$sql_row1['recevied_qty'];
+                          }
+                         // echo $recevied_qty1;
+                 
                  
                 echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>"; 
                  
-                if($original_qty == $recevied_qty and $sql_row12['ims_pro_qty']==0 ) 
+                if($original_qty == $recevied_qty and $sql_row12['ims_pro_qty']==0 )   
                 { 
-                    echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
+                    if($recevied_qty1 == 0)
+                    {    
+                      echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
+                    }
+                    else 
+                    { 
+                      echo "N/A"; 
+                    } 
                 } 
                 else 
                 { 
@@ -221,7 +255,7 @@ table
                 echo "</td><td>".$sql_row12['ims_date']."</td><td>$req_date</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td>"; 
                 //echo "<td>".$sql_row12['ims_remarks']."</td>"; 
 //echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>"; 
-echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".$rejected."</td><td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td><td>".$sql_row12['ims_remarks']."</td></tr>"; 
+echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".$rejected."</td><td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td><td>".$sql_row12['ims_remarks']."</td><td>".$pac_tid.'-'.$operation_code1."</td></tr>"; 
              }
         } 
         echo "</table>"; 
@@ -261,7 +295,7 @@ echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3
     
                   echo "<div class='col-sm-3'><label>Select Module:</label> 
                   <select class='form-control' name=\"module_ref\"  id='module_ref'>";
-                  $sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_head ASC";
+                  $sqlx="select * from $bai_pro3.sections_db where sec_id>0 ";
                   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                   $break_counter = 0;
                   while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
@@ -354,7 +388,7 @@ if(isset($_POST['submit']))
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
         $sql331="insert into $brandix_bts.module_bundle_track (user,bundle_number,module,quantity,job_no) values (USER(),\"".$sql_row['pac_tid']."\",". $module_ref.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\")";
-        //echo $sql331;
+        echo $sql331;
 
         mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
      //echo $sql33; 
