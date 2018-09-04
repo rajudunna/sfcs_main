@@ -132,7 +132,7 @@ $userName = getrbac_user()['uname'];
 			}
 			$msc = microtime(true);			
 			$dockets_ref=array();
-			$sqly="SELECT GROUP_CONCAT(DISTINCT doc_no) AS doc,input_job_no_random as job_ref FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$items[1]."' ORDER BY acutno";
+			$sqly="SELECT GROUP_CONCAT(DISTINCT doc_no) AS doc,GROUP_CONCAT(DISTINCT acutno) AS cut,input_job_no_random as job_ref FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$items[1]."' ORDER BY acutno";
 			//echo $sqly."<br>";
 			$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$msc = microtime(true) - $msc;
@@ -140,6 +140,23 @@ $userName = getrbac_user()['uname'];
 			{			
 				$input_job_no_random_ref1=$sql_rowy["job_ref"];
 				$dockets_ref=explode(",",$sql_rowy["doc"]);
+				$cut_ref=explode(",",$sql_rowy["cut"]);
+			}
+			$sql12="select order_del_no,clubbing from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$dockets_ref).") and clubbing>0 and category in ('Body','Front') group by clubbing";
+			$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($resultr112)>0)
+			{
+				while($sql_rowr112=mysqli_fetch_array($resultr112))
+				{
+					$schedule=$sql_rowr112['order_del_no'];
+					$club=$sql_rowr112['clubbing'];
+					$sql121="select * from $bai_pro3.order_cat_doc_mk_mix where doc_no not in (".implode(",",$dockets_ref).") and acutno in (".implode(",",$cut_ref).") and clubbing='".$club."' and order_del_no='".$schedule."' and category in ('Body','Front')";
+					$resultr1121=mysqli_query($link, $sql121) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_rowr1121=mysqli_fetch_array($resultr1121))
+					{
+						$dockets_ref[]=$sql_rowr1121['doc_no'];
+					}	
+				}
 			}			
 			for($d=0;$d<sizeof($dockets_ref);$d++)
 			{
@@ -203,11 +220,12 @@ $userName = getrbac_user()['uname'];
 		//echo $sqlx.";<br>";
 		mysqli_query($link, $sqlx) or exit("Sql Error11.2");
 	}
-	echo "<h2 style='color:blue'>Sucessfully Updated... <br/> Please wait while redirect to IPS Dashboard....</h2>";
+	echo '<div class="alert alert-success"><h2>Sucessfully Updated... <br/> Please wait while we redirect to IPS Dashboard....</h2></div>';
+	// echo "<h2>Sucessfully Updated... <br/> Please wait while redirect to IPS Dashboard....</h2>";
 	$url =getFullURLLevel($_GET['r'],'dashboards/controllers/IPS/tms_dashboard_input_v22.php',3,'N');
-	// echo"<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1); 
-	// function Redirect() {  
-	// 	location.href = '$url'; 
-	// }</script>";
+	echo"<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1); 
+	function Redirect() {  
+		location.href = '$url'; 
+	}</script>";
 
 ?>

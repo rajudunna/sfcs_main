@@ -272,16 +272,16 @@ function getjobdetails($job_number)
 			}
 			else
 			{
-				// $schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag,0 as assigned_module FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
-				// $flag = 'packing_summary_input';
-				$result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
-				$flags = 100;
+				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag,0 as assigned_module FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
+				$flag = 'packing_summary_input';
+				// $result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
+				// $flags = 100;
 			}
 			// echo $schedule_query;
 				
 		}
-		if($flags != 100)
-		{
+		// if($flags != 100)
+		// {
 			if($flags == 2)
 			{
 				$result_array['status'] = 'Previous operation not yet done for this job.';
@@ -321,7 +321,7 @@ function getjobdetails($job_number)
 						$result_select_modudle_qry = $link->query($select_modudle_qry);
 						while($row1 = $result_select_modudle_qry->fetch_assoc()) 
 						{
-							$row['assigned_module'] = $row['input_module'];
+							$row['assigned_module'] = $row1['input_module'];
 							// $row['assigned_module'] = 10;
 						}
 					}
@@ -329,7 +329,7 @@ function getjobdetails($job_number)
 					$result_array['table_data'][] = $row;
 				}
 				$result_array['flag'] = $flag;
-			}
+			//}
 			// $select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_number[0]'";
 			// $result_select_modudle_qry = $link->query($select_modudle_qry);
 			
@@ -526,16 +526,16 @@ function getjobdetails($job_number)
 			}
 			else
 			{
-				//$schedule_query = "SELECT *,carton_act_qty as balance_to_report, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] order by tid";
-				//$flag = 'packing_summary_input';
-				$result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
-				$flags = 100;
+				$schedule_query = "SELECT *,carton_act_qty as balance_to_report, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] order by tid";
+				$flag = 'packing_summary_input';
+				// $result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
+				// $flags = 100;
 			}
 			//echo $schedule_query;
 				
 		}
-		if($flags != 100)
-		{
+		// if($flags != 100)
+		// {
 			if($flags == 2)
 			{
 				$result_array['status'] = 'Previous operation not yet done for this job.';
@@ -573,9 +573,9 @@ function getjobdetails($job_number)
 						}
 						$select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = $job_number[0]";
 						$result_select_modudle_qry = $link->query($select_modudle_qry);
-						while($row = $result_select_modudle_qry->fetch_assoc()) 
+						while($row1 = $result_select_modudle_qry->fetch_assoc()) 
 						{
-							$row['assigned_module'] = $row['input_module'];
+							$row['assigned_module'] = $row1['input_module'];
 						}
 
 					}
@@ -583,7 +583,7 @@ function getjobdetails($job_number)
 					$result_array['table_data'][] = $row;
 				}
 				$result_array['flag'] = $flag;
-			}
+		//	}
 			// $select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = $job_number[0]";
 			// $result_select_modudle_qry = $link->query($select_modudle_qry);
 			
