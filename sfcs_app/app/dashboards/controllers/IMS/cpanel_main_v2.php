@@ -303,6 +303,7 @@ width:350px;
   color:#fff;
   font-size:12px;
   width:250px;
+  pointer-events: none; 
   
 }
 
@@ -331,7 +332,7 @@ width:350px;
 $(document).ready(function() {
 
   //Select all anchor tag with rel set to tooltip
-  $('a[rel=tooltip]').mouseover(function(e) {
+  $('a[rel=tooltip]').hover(function(e) {
     
     //Grab the title attribute's value and assign it to a variable
     var tip = $(this).attr('title');  
@@ -343,7 +344,7 @@ $(document).ready(function() {
     $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
         
     //Show the tooltip with faceIn effect
-    $('#tooltip').fadeIn('100');
+    //$('#tooltip').fadeIn('100');
     //$('#tooltip').fadeTo('10',0.9);
     
   }).mousemove(function(e) {
@@ -351,11 +352,15 @@ $(document).ready(function() {
     //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
     console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset);
     console.log(e);
+
     //e.pageY + 0.5 * e.view.parent.pageYOffset
-    $('#tooltip').css('top',);
-    $('#tooltip').css('left', e.pageX - 265 );
-    $('#tooltip').css('display', 'inline' );
+    $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
+    $('#tooltip').css('left',$(this).offset.left - 255 );
+     $('#tooltip').css('margin-left','10px' );
+     $('#tooltip').css('margin-top','10px' );
+    //$('#tooltip').css('display', 'inline' );
      $('#tooltip').css('position', 'absolute' );
+     $('#tooltip').css('z-index', '999999' );
   }).mouseout(function() {
   
     //Put back the title attribute's value
@@ -479,7 +484,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
         $wip='0';
         $wip=$sql_rowwip['WIP'];
         ?>" class="red-tooltip" 
-            onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);">
+            onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1');">
             <?php echo $module; ?></a>
         <?php } ?>
                
@@ -533,6 +538,56 @@ while($sql_row=mysqli_fetch_array($sql_result))
            
 
 
+
+
+      
+      // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
+      // //echo $sql22;
+      // $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row22=mysqli_fetch_array($sql_result22))
+      // {
+      //   $order_tid=$sql_row22['order_tid'];
+      // } 
+      
+      // $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+      // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row33=mysqli_fetch_array($sql_result33))
+      // {
+      //   $ims_color=$sql_row33['order_tid'];
+      // }
+      // $size_value=array();
+      // $sizes_explode=explode(",",$ims_size);
+      // for($i=0;$i<sizeof($sizes_explode);$i++)
+      // {
+      //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
+      //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
+      // }
+      
+      // $sizes_implode="'".implode("','",$size_value)."'";
+
+
+      // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
+      // //echo $sql22;
+      // $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row22=mysqli_fetch_array($sql_result22))
+      // {
+      //   $order_tid=$sql_row22['order_tid'];
+      // } 
+      
+      // $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+      // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row33=mysqli_fetch_array($sql_result33))
+      // {
+      //   $ims_color=$sql_row33['order_tid'];
+      // }
+      // $size_value=array();
+      // $sizes_explode=explode(",",$ims_size);
+      // for($i=0;$i<sizeof($sizes_explode);$i++)
+      // {
+      //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
+      //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
+      // }
+
       $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
       //echo $sql22;
       $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
@@ -554,6 +609,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
         $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
         // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
       }
+
       
        $sizes_implode="'".implode("','",$size_value)."'";
       
