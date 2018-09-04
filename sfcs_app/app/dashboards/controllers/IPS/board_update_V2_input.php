@@ -78,7 +78,7 @@ echo "<table>";
 echo "<tr><th colspan=10>Production Plan for Section - $section_no</th><th colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
 echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Remarks</th><th>Priority 2</th><th>Remarks</th><th>Priority 3</th><th>Remarks</th><th>Priority 4</th><th>Remarks</th><th>Priority 5</th><th>Remarks</th><th>Priority 6</th><th>Remarks</th><th>Priority 7</th><th>Remarks</th><th>Priority 8</th><th>Remarks</th><th>Priority 9</th><th>Remarks</th><th>Priority 10</th><th>Remarks</th><th>Priority 11</th><th>Remarks</th><th>Priority 12</th><th>Remarks</th><th>Priority 13</th><th>Remarks</th><th>Priority 14</th><th>Remarks</th></tr>";
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0 and sec_id=$section_no";
+$sqlx="select * from $bai_pro3.sections_db where sec_id>0 and sec_id='$section_no'";
 mysqli_query($link,$sqlx) or exit("Sql Error".mysqli_error());
 $sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error".mysqli_error());
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
