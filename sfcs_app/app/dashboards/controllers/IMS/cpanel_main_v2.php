@@ -6,7 +6,15 @@ $start_timestamp = microtime(true);
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/css/bootstrap-colorpicker.min.css',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/bootstrap-colorpicker.min.js',4,'R'));
+
 ?>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'/common/js/bootstrap-colorpicker.min.js',4,'R');?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'/common/js/bootstrap-colorpicker-plus.min.js',4,'R');?>"></script>
+
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'/common/css/bootstrap-colorpicker.min.css',4,'R');?>" type="text/css" media="all" />
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'/common/css/bootstrap-colorpicker-plus.min.css',4,'R');?>" type="text/css" media="all" />
 
 
 <title>IMS</title>
@@ -399,6 +407,7 @@ $(document).ready(function()
    <div class="panel-heading">
     
       Input Management System - Production WIP Dashboard -<span style="color:#fff;font-size:12px;margin-left:15px;">Refresh Rate: 120 Sec.</span>
+      <button type="button" class="btn btn-info btn-xs pull-right" data-toggle="modal" data-target="#myModal">Assign</button>
 <?php
 $sql="select max(ims_log_date) as \"lastup\" from $bai_pro3.ims_log";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -505,14 +514,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 
 
-        
+        // $colors_modal = array();
         while($sql_rowred=mysqli_fetch_array($sql_resultred))     //docket boxes Loop -start
         {
             $input_qty=$sql_rowred['Input'];      // input qty
             $output_qty=$sql_rowred['Output'];      // output qty
             $docket_no=$sql_rowred['ims_doc_no'];   // capturing docket number
             $style_no=$sql_rowred['ims_style'];     // style
-            $color_name=$sql_rowred['ims_color'];   // color
+            $color_name=$sql_rowred['ims_color'];  
+            $colors_modal[] = $sql_rowred['ims_color']; // color
       // echo "Color=".$color_name."<br>";
       $color_ref="'".str_replace(",","','",$sql_rowred['ims_color'])."'"; 
       $remarks_ref="'".str_replace(",","','",$sql_rowred['ims_remarks'])."'"; 
@@ -699,9 +709,49 @@ while($sql_row=mysqli_fetch_array($sql_result))
   </div>
 </div>
 </div>
-
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+        <!-- <div id="cp2" class="input-group colorpicker-component col-md-1"><input type="text" value="#00AABB" class="form-control input-sm" readonly="true"/><span class="input-group-addon"><i></i></span></div> -->
+          <ul class="list-group">
+            
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
 </body>
+
 <script>
+    var colors = '<?= json_encode($colors_modal); ?>';
+    colors = JSON.parse(colors);
+    // console.log(colors);
+    var list;
+    for(var i=0; i<colors.length; i++){
+      if(colors[i] !== undefined){
+        list += '<li class="list-group-item">'+colors[i]+'</li>';
+        // $('#cp2').colorpicker();
+      }
+    }
+    $('.list-group').html(list);
+
+    // $(function() {
+      
+    // });
+  </script>
+<script>
+ 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();   
 });
