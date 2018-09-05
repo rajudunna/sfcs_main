@@ -56,10 +56,11 @@ th{
 <div class="panel-body">
 
 <?php
+$id=$_GET['id'];
 
 echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>Barcode</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Color</th><th>Module</th><th>Bundle Number</th><th>Size</th><th>Quantity</th></tr><thead>";
 
-$sql="select * from $brandix_bts.module_bundle_track order by tran_id DESC";
+$sql="select * from $brandix_bts.module_bundle_track where ref_no = '$id'";
 //echo $sql."<br>";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $x=0;
@@ -113,6 +114,8 @@ while($row=mysqli_fetch_array($result))
 	echo "<td>".$bundle_number."</td>";
 	echo "<td>".$size_value."</td>";
 	echo "<td>".$quantity."</td>";
+	// echo "<td>" ."<a href='javascript:void(0);' onClick='printPage(printsection.innerHTML)' class='btn btn-warning'>Print</a>".
+	// "</td>";
 	
 	// echo "<td><input type='button' class='btn btn-primary' href=\"$print_sheet?input_job=$job_no&quantity=$quantity&module=$module&style=$ims_style&schedule=$ims_schedule&color=$ims_color&size=$size_value\" onclick=\"return popitup_new('$print_sheet?input_job=$job_no&quantity=$quantity&module=$module&style=$ims_style&schedule=$ims_schedule&color=$ims_color&size=$size_value')\" name='submit' id='submit' value='Print'></input></td>";
 	echo "</tr>";
@@ -132,6 +135,20 @@ if (window.focus) {newwindow.focus();}
 return false; 
 } 
 </script> 
+<?php
+if(isset($_GET['sidemenu'])){
+
+	echo "<style>
+          .left_col,.top_nav{
+          	display:none !important;
+          }
+          .right_col{
+          	width: 100% !important;
+    margin-left: 0 !important;
+          }
+	</style>";
+}
+?>
 <!-- <script language="javascript" type="text/javascript">
 //<![CDATA[
 	$('#reset_table2').addClass('btn btn-warning');
