@@ -170,7 +170,7 @@ $cutno=$_GET['cutno'];
 //echo $style.$schedule.$color;
 ?>
 <div class="panel panel-primary">
-<div class="panel-heading"><strong>Job Level Planning</strong></div>
+<div class="panel-heading"><strong>Job Level Planning</strong><a href="<?= getFullURL($_GET['r'],'input_job_seq_move.php','N');?>" class="btn btn-success btn-xs pull-right" target="_blank">Input Job Sequence Move</a></div>
 <div class="panel-body">
 <div class="form-inline">
 <div class="form-group">
