@@ -125,13 +125,18 @@
 									<th>Controlls</th></tr>";
 								while($pack_result1=mysqli_fetch_array($pack_meth_qty))
 								{
-									$pack_qnty_qry="SELECT p.id,(SUM(s.garments_per_carton)*(s.cartons_per_pack_job*s.pack_job_per_pack_method)) AS quantity FROM $bai_pro3.tbl_pack_ref AS p LEFT JOIN $bai_pro3.tbl_pack_size_ref AS s ON p.id=s.parent_id WHERE p.ref_order_num=$schedule AND s.pack_method='$pack_result1[pack_method]'  LIMIT 0,1 ";
+									$pack_qnty_qry="SELECT p.id,s.parent_id,(SUM(s.garments_per_carton)*(s.cartons_per_pack_job*s.pack_job_per_pack_method)) AS quantity FROM $bai_pro3.tbl_pack_ref AS p LEFT JOIN $bai_pro3.tbl_pack_size_ref AS s ON p.id=s.parent_id WHERE p.ref_order_num=$schedule AND s.pack_method='$pack_result1[pack_method]'  LIMIT 0,1 ";
 									// echo $pack_qnty_qry;
 									$pack_qnty_qry_res=mysqli_query($link, $pack_qnty_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+									
 									if($res=mysqli_fetch_array($pack_qnty_qry_res)){
 										$qnty=$res['quantity'];
+										$parent_id=$res['parent_id'];
+										// echo $parent_id;
 									}
 									$seq_no=$pack_result1['seq_no'];
+									$pack_method=$pack_result1['pack_method'];
+									
 									// $col_array[]=$sizes_result1['order_col_des'];
 									echo "<tr><td>".$pack_result1['seq_no']."</td>";
 									echo"<td>".$pack_result1['pack_method']."</td>";
@@ -141,7 +146,9 @@
 									echo "<td>".$pack_result1['size']."</td>";
 
 									$url=getFullURL($_GET['r'],'pack_generation.php','R');
-									echo "<td><a href='$url?schedule=$schedule&style=$style&seq_no=$seq_no' target='_blank'>Generate Sewing Job</td>";
+									$url1=getFullURL($_GET['r'],'pack_method_loading.php','N');
+									echo "<td><a class='btn btn-success btn-sm' href='$url?c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no' target='_blank'>Generate Sewing Job
+									<a class='btn btn-success btn-sm' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method>Delete</td>";
 									echo "<tr>";
 									
 								}	
@@ -166,7 +173,14 @@
 							
 				}
 				
+				
 			}
+			if($_GET['seq_no'] && $_GET['parent_id'] && $_GET['pack_method'])
+				{
+					
+					$delete_pack_meth="delete from tbl_pack_size_ref where seq_no='$seq_no' and parent_id='$parent_id' and pack_method='$pack_method'";
+				    // echo $delete_pack_meth;
+				}
 			?> 
 		</div>
 	</div>
