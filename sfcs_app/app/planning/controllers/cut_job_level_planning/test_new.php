@@ -276,12 +276,16 @@ if(isset($_POST['submit']))
 	
 	$data_sym="$";
 	
-	$File = getFullURLLevel($_GET['r'],'drag_drop_data.php',0,'N');
-	$fh = fopen($File, 'w') or die("can't open file");
+
+	$my_file = getFullURLLevel($_GET['r'],'drag_drop_data.php',0,'R');
+
+	$handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file);
+
 	$stringData = "<?php ".$data_sym."style_ref=\"".$style."\"; ".$data_sym."schedule_ref=\"".$schedule."\"; ".$data_sym."color_ref=\"".$color."\"; ".$data_sym."cat_ref_ref=\"".$cat_ref."\"; ".$data_sym."code_ref=\"".$code."\"; ?>";
-	fwrite($fh, $stringData);
-	fclose($fh);	
-	
+
+	fwrite($handle, $stringData);
+	fclose(handle);
+
 	
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop.php?color=$color&style=$style&schedule=$schedule&code=$code&cat_ref=$cat_ref\"; }</script>";
 	$url = getFullURLLevel($_GET['r'],'drag_drop.php',0,'N');
