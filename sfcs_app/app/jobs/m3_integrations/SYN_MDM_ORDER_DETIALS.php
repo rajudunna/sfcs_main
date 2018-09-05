@@ -11,7 +11,7 @@ set_time_limit(6000000);
 		$from = date("Ymd", strtotime('-1 months'));
 		$to = date("Ymd", strtotime('+5 months'));
 		//$query_text2 = "CALL BAISFCS.RPT_APL_ORDER_DETAILS('BEL','EKG',NULL,NULL,'".$from."','".$to."','2')";
-		$query_text2 = "CALL M3BRNPRD.RPT_APL_ORDER_DETAILS('BEL','EKG',NULL,NULL,'".$from."','".$to."','2')";
+		$query_text2 = "CALL M3BRNPRD.RPT_APL_ORDER_DETAILS('".$cluster_code."','".$plant_prod_code."',NULL,NULL,'".$from."','".$to."','2')";
 		$result2 = odbc_exec($conn, $query_text2);
 
 		$trunc_order = "TRUNCATE TABLE $m3_inputs.order_details";
