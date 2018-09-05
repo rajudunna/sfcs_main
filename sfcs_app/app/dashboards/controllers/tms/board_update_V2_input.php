@@ -573,7 +573,10 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 				$carton_qty=$sql_rowy["carton_qty"];
 			}
 			
-			$sql11x="select * from $bai_pro3.fabric_priorities where doc_ref in (".$doc_no_ref_input.")";
+			$doc_no_ref_input = implode("','",$doc_no_ref_input);
+			$carton_qty = implode("','",$carton_qty);
+
+			$sql11x="select * from $bai_pro3.fabric_priorities where doc_ref in ('$doc_no_ref_input')";
 			//echo $sql11x."<br>";
 			$sql_result11x=mysqli_query($link, $sql11x) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result11x)==$num_docs and $id!="yellow")
@@ -581,7 +584,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 				$id="lgreen";	
 			} 
 			
-			$sql1x1="select * from $bai_pro3.fabric_priorities where doc_ref in (".$doc_no_ref_input.") and hour(issued_time)+minute(issued_time)>0";
+			$sql1x1="select * from $bai_pro3.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0";
 			//echo $sql1x1."<br>";
 			$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//if(mysql_num_rows($sql_result1x1)==$num_docs)
@@ -591,7 +594,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 				$id="yellow";
 			}
 			
-			$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.") and act_cut_status=\"DONE\"";
+			$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in ('$doc_no_ref_input') and act_cut_status=\"DONE\"";
 			//echo $sql11x1."<br>";
 			$sql_result11x1=mysqli_query($link, $sql11x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result11x1)>0 and $id=="yellow")
