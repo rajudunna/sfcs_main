@@ -362,7 +362,7 @@ if(isset($_POST['submit']))
   // var_dump($_POST['log_tid']);
    $tid=$_POST['log_tid'];
 
-   $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles) values (USER(),".$module.",".$module_ref.",".sizeof($tid1).")";
+   $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles) values (USER(),".$module.",".$module_ref.",".sizeof($tid).")";
    $sql_result0=mysqli_query($link, $transfer_query) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
    $insert_id=mysqli_insert_id($link);
    foreach($tid as $selected)
