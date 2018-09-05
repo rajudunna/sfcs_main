@@ -34,7 +34,7 @@ th{
 	<?php
 
 
-echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>User</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>Control</th></tr><thead>";
+echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
 
 $sql="select * from $brandix_bts.input_transfer order by id";
 //echo $sql."<br>";
