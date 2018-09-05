@@ -776,7 +776,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							foreach($cut_done_qty as $key => $value)
 							{
 								//759 CR additions Started
-								$qry_to_check_mo_numbers = $get_docket_details = "SELECT * FROM bai_pro3.`mo_operation_quantites` WHERE doc_no = '$doc_no_ref' and op_code = '$op_code' and size_id = '$key'";
+								$qty_to_fetch_size_title = "SELECT title_size_$key  FROM $bai_pro3.bai_orders_db_confirm WHERE order_tid ='$order_tid'";
+								$res_qty_to_fetch_size_title=mysqli_query($link,$qty_to_fetch_size_title) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($nop_res_qty_to_fetch_size_title=mysqli_fetch_array($res_qty_to_fetch_size_title))
+								{
+									$size_title = $nop_res_qty_to_fetch_size_title['title_size_$key'];
+								}
+								$qry_to_check_mo_numbers = "SELECT * FROM $bai_pro3.`mo_operation_quantites`  mq LEFT JOIN bai_pro3.mo_details md ON md.mo_no=mq.`mo_no` WHERE doc_no = '$doc_no_ref' AND op_code = '$op_code' and size = '$size_title'";
 								$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$total_bundle_present_qty = $value;
 								$total_bundle_rec_present_qty = $value;
