@@ -479,7 +479,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
         $wip='0';
         $wip=$sql_rowwip['WIP'];
         ?>" class="red-tooltip" 
-            onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);">
+            onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1');">
             <?php echo $module; ?></a>
         <?php } ?>
                
