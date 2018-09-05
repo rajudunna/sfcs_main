@@ -11,7 +11,7 @@ set_time_limit(6000000);
 		// include('mysql_db_config.php');
 		$curr_date = date(Ymd);
 		// $query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54','".$curr_date."','".$curr_date."',0,'%','%','GRN')";
-		$query_text = "CALL  M3BRNPRD.RPT_APL_SFCS_M3_INTEGRATION('".$cluster_code."','".$company_no."','".$central_wh_code."','".$plant_prod_code."','".$curr_date."','".$curr_date."',0,'%','%','GRN')";
+		$query_text = "CALL  M3BRNPRD.RPT_APL_SFCS_M3_INTEGRATION('".$cluster_code."',$comp_no,'".$central_wh_code."','".$plant_wh_code."','".$curr_date."','".$curr_date."',0,'%','%','GRN')";
 		$result = odbc_exec($conn, $query_text);
 		$j=0;
 		while($row = odbc_fetch_array($result))
