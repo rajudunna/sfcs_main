@@ -596,5 +596,166 @@ else
 {
 	echo "<script>swal('Another User Generating Mini orders','Please try again','warning');</script>";
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",180); function Redirect() {  location.href = \"recut_mini_create.php\"; }</script>";
-}	
+}
+
+
+//--------------------------------------------- MO Filling Logic.. --------------------------------------------------------
+	$style  = $_GET['style'];
+	$schedule = $_GET['schedule'];
+	$color  = $_GET['col'];
+	$doc_no = $_GET['doc'];
+
+	//getting the op_codes with sewing
+	$op_code_query  ="SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+					 WHERE default_operation='Yes' and trim(category) = 'sewing' ";
+	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operation Found for Cutting");
+	while($row=mysqli_fetch_array($result1216)) 
+	{
+		$op_codes  = $row['codes'];
+		$op_name[] = $row['operation_name'];		
+	}
+
+	
+
+
+	//getting the sizes to format s,m,l 
+	$recut_sizes = "Select distinct(old_size) as size From $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no ";
+	$recut_size_result = mysqli_query($link,$recut_sizes)  or exit('Mo Operation Code Retrieval Error');
+	while($row = mysqli_fetch_array($recut_size_result)){
+		$old_sizes[] = $row['size'];
+	}
+
+	foreach($old_sizes as $size){
+		$size_query = "select title_size_$size From $bai_pro3.bai_orders_db_confirm where TRIM(order_del_no)='$schedule' 
+					and TRIM(order_style_no) = '$style' and TRIM(order_col_des) = '$color'";
+		$size_result = mysqli_query($link,$size_query) or exit('Mo Operation Saving  Error');;
+		while($row = mysqli_fetch_array($size_result)){
+			$new_sizes[$size] = $row["title_size_$size"];
+			$old_sizes1[ $row["title_size_$size"]] = $size;
+		}				  
+	}
+
+//getting mos related to style and schedule
+	foreach($old_sizes as $size){
+		$mo_no_query = "SELECT mo.mo_no as mo_no,mo.mo_quantity as mo_quantity,SUM(bundle_quantity) as bundle_quantity,
+						SUM(good_quantity) as good_quantity,SUM(rejected_quantity) as rejected_quantity
+						LEFT JOIN $bai_pro3.mo_operation_quantities mop ON mo.mo_no = mop.mo_no  
+						FROM $bai_pro3.mo_details mo 
+						WHERE TRIM(size)='".strtoupper($new_sizes[$size])."' and schedule='$schedule' and TRIM(color)='$color' 
+						and mop.op_code = 15
+						group by mop.mo_no order by mo.mo_no*1"; 
+		$mo_no_result  = mysqli_query($link,$mo_no_query);
+		$mo_no_result2 = $mo_no_result;   
+		while($row = mysqli_fetch_array($mo_no_result)){
+			// if($row['op_desc'] == 'recut' )
+			// 	continue;
+			//$mos[] = $row['mo_no'];	
+			if($row['bundle_quantity'] >= $row['good_quantity'] && $row['rejected_quantity']==0)	
+				continue;
+			if($row['rejected_quantity'] == 0)
+				$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'];
+			else	
+				$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'] + $row['rejected_quantity'];
+		}
+		foreach($mos as $mo_no){
+			//checking the mo operations exist or not
+			$op_codes_query = "SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master 
+						WHERE OperationNumber in ($op_codes) and MONumber='$mo_no' order by OperationNumber*1"; 
+			$op_code_result = mysqli_query($link, $op_codes_query) or exit('Mo Operation Code Retrieval Error');
+			while($row = mysqli_fetch_array($op_code_result)){
+				$op_code = $row['OperationNumber']; 
+				$op_desc[$op_code] = $row['OperationDescription'];
+			} 
+		}
+		if(sizeof($mos) > 0){
+			if(sizeof($mos) == 1){
+				foreach($mos as $mo_no){
+					//getting the recut sewing details for each size 
+					$recut_jobs_details = "Select carton_act_qty,old_size,doc_no,input_job_no_random  
+										From $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no order by size_code 
+										and size_code = '$size'";
+					$recut_jobs_result = mysqli_query($link,$recut_jobs_details);
+					while($row = mysqli_fetch_array($recut_jobs_result)){
+						//need to get bundle number
+						$bundle_no = '';
+						$cart_qty = $row['carton_act_qty'];
+						$input_job_no = $row['input_job_no'];
+						$input_job_random = $row['input_job_random'];
+						$insert_query = "Insert into bai_pro3.mo_operation_quantities(`date_time`, `mo_no`,`doc_no`,`bundle_no`,
+										`bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
+										('".date('Y-m-d H:i:s')."','".$mo_no."','$doc_no','$bundle_no','$cart_qty','$op_code','$op_desc','$input_job_no','$input_job_random')";
+					}		
+				}
+			}else{
+				$recut_jobs_details = "Select carton_act_qty,old_size,doc_no,input_job_no_random  
+					From $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no order by size_code 
+					and size_code = '$size'";
+				$recut_jobs_result = mysqli_query($link,$recut_jobs_details);
+				while($row = mysqli_fetch_array($recut_jobs_result)){
+					//need to get bundle number
+					$bundle_no = '';
+					$qty = $row['carton_act_qty'];
+					$input_job_no = $row['input_job_no'];
+					$input_job_random = $row['input_job_random'];
+				
+					foreach($mos as $mo_no => $rem_cpcty){
+						if($rem_cpcty == 0)
+							continue;
+						if($qty > $rem_cpcty){
+							$qty = $qty - $rem_cpcty;
+							if($qty>0){
+								foreach($ops as $op_code=>$op_desc){
+									$insert_query = "Insert into bai_pro3.mo_operation_quantities(`date_time`, `mo_no`,`doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
+									('".date('Y-m-d H:i:s')."','".$mo_no."','$doc_no','$bundle_no','$rem_cpcty','$op_code',
+									'$op_desc','$input_job_no','$input_job_random')";
+									mysqli_query($link,$insert_query);
+								}
+								$mos[$mono] = 0;
+								//break;
+							}
+						}else{
+							foreach($ops as $op_code=>$op_desc){
+								$insert_query = "Insert into bai_pro3.mo_operation_quantities(`date_time`, `mo_no`,`doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
+								('".date('Y-m-d H:i:s')."','".$mo_no."','$doc_no','$bundle_no','$qty','$op_code',
+								'$op_desc','$input_job_no','$input_job_random')";
+								mysqli_query($link,$insert_query);
+							}
+							$qty = $rem_cpcty - $qty;
+							$mos[$mono] = $qty;
+							break;
+						}	
+					}
+					//inserting the all the excess qty's to the last mo's within the size
+					foreach($ops as $op_code=>$op_desc){
+						$insert_query = "Insert into bai_pro3.mo_operation_quantities(`date_time`, `mo_no`,`doc_no`,`bundle_no`,
+									    `bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
+										('".date('Y-m-d H:i:s')."','".$mo_no."','$doc_no','$bundle_no','$qty','$op_code',
+										'$op_desc','$input_job_no','$input_job_random')";
+						mysqli_query($link,$insert_query);
+					}	
+				}
+			}
+		}else{
+			//Nothing to enter into MO
+		}	
+	}		   
+
+
+
+
+/*
+							cpcty    			qty				
+					1002	20/15/10/4/0		5/		j1	s
+					1003	20/19/9/			5/		j2	s
+					1004	15/9/				6/		j3	s
+												5/1/	j4	s
+												10/		j5	s
+												15		j6	s
+												15		j7	s
+
+					qty = 15 - 9 = 6
+				*/
+
+
+//----------------------------------------------- MO Filling Ends ---------------------------------------------------------
 ?>
