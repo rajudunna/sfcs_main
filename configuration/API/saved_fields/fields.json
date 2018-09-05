@@ -56,6 +56,51 @@
             {
                 "type": "text",
                 "required": true,
+                "label": "Cluster Code",
+                "className": "form-control",
+                "name": "cluster_code",
+                "value": "BEL",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Company No",
+                "className": "form-control",
+                "name": "company_no",
+                "value": "200",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Central WH Code",
+                "className": "form-control",
+                "name": "central_wh_code",
+                "value": "BAL",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Plant WH Code",
+                "className": "form-control",
+                "name": "plant_wh_code",
+                "value": "E54",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
+                "label": "Plant Prod Code",
+                "className": "form-control",
+                "name": "plant_prod_code",
+                "value": "EKG",
+                "subtype": "text"
+            },
+            {
+                "type": "text",
+                "required": true,
                 "label": "RMS Request Time",
                 "className": "form-control",
                 "name": "rms_request_time",
