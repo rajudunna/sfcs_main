@@ -331,12 +331,12 @@ if(isset($_POST['submit']))
 	$doc_no	  = $_POST['docno'];
 	$mos = array();
 	$qty = 0;
-	$op_code_query ="SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-			  		 WHERE default_operation='Yes' and trim(operation_name) = 'Cutting' ";
-	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operation FOund for Cutting");
+	$op_code_query ="SELECT operation_name,operation_code as code FROM $brandix_bts.tbl_orders_ops_ref 
+			  		 WHERE default_operation='Yes' and trim(category) = 'cutting' ";
+	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operation Found for Cutting");
 	while($row12106=mysqli_fetch_array($result1216)) 
 	{
-		$op_code = $row12106['category'];
+		$op_code = $row12106['code'];
 		$op_name = $row['operation_name'];		
 	}
 	
