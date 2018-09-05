@@ -349,7 +349,7 @@ if(isset($_POST['submit']))
 		$size_result = mysqli_query($link,$size_query);
 		while($row = mysqli_fetch_array($tit_result)){
 			$mo_size = $row['title'];
-			$size_code[$row['title']] = $row['title'];
+			$size_code[$sizet] = $row['title'];
 		}		   
 		//--------------------------------------- check whether that style exists -------------------------------------
 		$mo_no_query = "SELECT mo.mo_no as mo_no,mo.mo_quantity as mo_quantity,SUM(bundle_quantity) as bundle_quantity,
