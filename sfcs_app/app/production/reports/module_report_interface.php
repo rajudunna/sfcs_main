@@ -11,6 +11,7 @@
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 
+</script>
 		
 <style>
 table {	
@@ -30,16 +31,30 @@ th{
 <div class="panel panel-primary">
 <div class="panel-heading">IMS Module Transfer Report</div>
 <div class="panel-body">
+<div id="page_heading" class="form-group">
+	<form name="input" method="post" action="?r=<?php echo $_GET['r']; ?>">
+	<div class="col-md-3">
+	<label>Start Date</label> <input type="text" data-toggle='datepicker' id="dat1" name="sdate" size="10" value="" class="form-control"> 
+	</div>
+	<input type="submit" name="submit" value="submit" class="btn btn-success" style = "margin-top:18px">
+	</form>
 
-	<?php
 
+<?php
+if(isset($_POST['submit']))
+{
+	
+	$sdate=$_POST['sdate'];
 
 echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
 
-$sql="select * from $brandix_bts.input_transfer order by id";
+$sql="select * from $brandix_bts.input_transfer where date(date_time) = '$sdate' order by id";
 //echo $sql."<br>";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 $x=0;
+if(mysqli_num_rows($result) > 0)
+{
 while($row=mysqli_fetch_array($result))
 {
 	$id=$row['id'];
@@ -65,7 +80,11 @@ while($row=mysqli_fetch_array($result))
 		
 }
 echo "</table></div>";
-
+}
+else {
+		echo "<script>sweetAlert('Oops!','No Data Found','error')</script>";
+	}
+}
 ?>
 </div></div>
 <script> 
