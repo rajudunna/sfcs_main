@@ -23,6 +23,9 @@ $auth_cut_users=array("rameshk","chathurangad","dinushapre","$username");
 //access for super user to report the sample room for cut panel input 
 //$auth_users_for_sample_cut_input=user_acl("SFCS_0203",$username,33,$group_id_sfcs); 
 $auth_users_for_sample_cut_input=array("rameshk","chathurangad","dinushapre","$username"); 
+
+$ref_no=time();
+//echo $ref_no;
 ?> 
 
 
@@ -347,11 +350,21 @@ echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3
 if(isset($_POST['submit']))
 {
     $module= $_POST['module'];
+   // echo $module;
+    $tid1=array();
+    $tid1=$_POST['pac_tid'];
+    //   var_dump($_POST['pac_tid']);
+    // die();
 
     $module_ref= $_POST['module_ref'];
     $tid=array();
+
   // var_dump($_POST['log_tid']);
    $tid=$_POST['log_tid'];
+
+   $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles) values (USER(),".$module.",".$module_ref.",".sizeof($tid1).")";
+   $sql_result0=mysqli_query($link, $transfer_query) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
+   $insert_id=mysqli_insert_id($link);
    foreach($tid as $selected)
    {
 
@@ -381,11 +394,13 @@ if(isset($_POST['submit']))
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error455".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
-        $sql331="insert into $brandix_bts.module_bundle_track (user,bundle_number,module,quantity,job_no) values (USER(),\"".$sql_row['pac_tid']."\",". $module_ref.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\")";
+        $sql331="insert into $brandix_bts.module_bundle_track (ref_no,bundle_number,module,quantity,job_no) values (".$insert_id.",\"".$sql_row['pac_tid']."\",". $module_ref.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\" )";
         //echo $sql331;
 
         mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
      //echo $sql33; 
+
+
     } 
    }
    echo "<script>sweetAlert('Input Transfered Successfully','','success');</script>";
