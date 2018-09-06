@@ -609,7 +609,8 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			if($sql_row1['clubbing']>0)
 			{
 				//$total_qty=0;
-				$sql11="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ('".implode("','",$in_categories)."') and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
+				$sql11="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
+				//echo $sql11."<br/>";
 				if($username=='ber_databasesvc'){
 					//echo $sql11."<br/>";
 					}
@@ -629,7 +630,9 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			
 			//echo "<td>"."Style:".$style."<br/>"."Schedule:".$schedule."<br/>"."Job:".chr($color_code).leading_zeros($cut_no,3)."<br/>"."Total Qty:".$total_qty."</td><td></td>";
 			//echo "<td>".$style."<br/><strong>".$schedule."<br/>J".leading_zeros($jobno,3)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location<Br/>B.L.: $bundle_location</br>Col:".strtoupper($id)."</br></td>";
-			echo "<td >".$style."<br/><strong>".$schedule."<br/>".$display_prefix1."</strong><br/>".$total_qty."<br/>".implode(",",$club_c_code)."<br/>".$id."</td>";
+			if($style){				
+				echo "<td >".$style."<br/><strong>".$schedule."<br/>".$display_prefix1."</strong><br/>".$total_qty."<br/>".implode(",",$club_c_code)."<br/>".$id."</td>";
+			}
 			
 			
 
