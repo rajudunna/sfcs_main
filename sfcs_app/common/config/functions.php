@@ -18,6 +18,7 @@ function get_sewing_job_prefix($field,$prefix_table,$pack_summ_input,$schedule,$
 	$sql="SELECT $field as result FROM $prefix_table WHERE type_of_sewing IN (SELECT DISTINCT type_of_sewing FROM $pack_summ_input WHERE order_del_no='$schedule' AND input_job_no='$sewing_job_no')";
 	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$prefix = $sql_row['result'];
@@ -51,6 +52,7 @@ function echo_title_1($table_name,$field,$compare,$key,$link)
 function leading_zeros($value, $places)
 {
 	$leading='';
+	
 	if(is_numeric($value))
 	{
 	    for($x = 1; $x <= $places; $x++)
@@ -71,6 +73,7 @@ function leading_zeros($value, $places)
 	else{
 	    $output = $value;
 	}
+	
 	return $output;
 }
 
