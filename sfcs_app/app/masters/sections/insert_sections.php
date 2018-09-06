@@ -36,6 +36,7 @@ if (empty($sec_head) || empty($sec_mods)|| empty($ims_priority_boxes)) {
 		  }
 		}); }, 100);</script>";
 }else{
+	
 	if($sec_id>0){
 		
 		//update
@@ -61,10 +62,7 @@ if (empty($sec_head) || empty($sec_mods)|| empty($ims_priority_boxes)) {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 	}else{
-
-
-
-
+		
 		$query1="select sec_head from $bai_pro3.sections_db where sec_head='$sec_head'";
 		$sql_result1=mysqli_query($conn, $query1);
 		
@@ -88,13 +86,27 @@ if (empty($sec_head) || empty($sec_mods)|| empty($ims_priority_boxes)) {
 
 
 		}
-		
-		
-		
-		
-		
-		
+	
 		else{
+		
+		
+			if($sec_mods>0){
+				$sec=$_POST['sec_mods'];
+				$string_sec=explode(",",	$sec);
+				//var_dump($string_sec);
+			foreach($string_sec as $index => $val){
+				$sql = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,ims_priority_boxes)
+					VALUES ('$val','$sec_head','$ims_priority_boxes')";
+	
+				if (mysqli_query($conn, $sql)) {
+				} else {
+					echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+				}
+	
+			}
+			}
+
+
 		//insert 
 		$sql = "INSERT INTO $bai_pro3.sections_db (sec_head,sec_mods,ims_priority_boxes)
 VALUES ('$sec_head','$sec_mods','$ims_priority_boxes')";
@@ -116,6 +128,14 @@ VALUES ('$sec_head','$sec_mods','$ims_priority_boxes')";
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
+
+
+		
+
+
+
+
+
 
 	}
 	}
