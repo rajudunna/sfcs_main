@@ -172,7 +172,7 @@ if(isset($_POST["submit"]))
     $schedule=$_POST["schedule"];     
     $color=$_POST["color"];     
     $reason=$_POST["reason"];     
-    $date=date("Y-m-d h:i:sa"); 
+    $date="2018-09-06 15:33:33";
     $j=0;$check=0;$check_a=0;$check_c=0;$check_m=0;$check_oc=0; 
     $order_tid=array(); 
     $schedule_no=array(); 
@@ -450,7 +450,10 @@ if(isset($_POST["submit"]))
         { 
             echo "<div class=\"col-sm-12\" style=\"color: #ff0000\"><h2>Selected color not exists in the data. Please select another color.</h2></div>"; 
         } 
-    }     
+    }   
+    
+    include("CMS_order_Schedule_Level.php");
+    include("CMS_shipment_Schedule_Level.php");
 }     
 
 ?> 
