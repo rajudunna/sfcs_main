@@ -28,11 +28,11 @@
                     <select class='form-control' name="module">
                         <option value='NIL'>Select Module</option>
                         <?php  
-                            $sql = "SELECT * FROM $bai_pro3.module_master";
+                            $sql = "SELECT * FROM $bai_pro3.plan_modules";
                             $sql_result = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                             while($sql_row=mysqli_fetch_array($sql_result)){
-                                echo "<option value='".$sql_row['module_name']."'>".$sql_row['module_name']."</option>";
+                                echo "<option value='".$sql_row['module_id']."'>".$sql_row['module_id']."</option>";
 
                             }
                         ?>
