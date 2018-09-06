@@ -5,6 +5,7 @@
 $sec_id=$_REQUEST['sec_id'];
 $sec_head =$_REQUEST['sec_head'];
 $sec_mods =$_REQUEST['sec_mods'];
+$sec_mods1 =$_REQUEST['sec_mods1'];
 $ims_priority_boxes=$_REQUEST['ims_priority_boxes'];
 
 // $servername = "192.168.0.110:3326";
@@ -36,9 +37,26 @@ if (empty($sec_head) || empty($sec_mods)|| empty($ims_priority_boxes)) {
 		  }
 		}); }, 100);</script>";
 }else{
-	
 	if($sec_id>0){
-		
+		$sec=$_POST['sec_mods'];
+		$sec_mods1=$_POST['sec_mods1'];
+		//	$string_sec=explode(",",	$sec);
+			$string_sec1=explode(",",	$sec);
+			$sql1= "delete from $bai_pro3.plan_modules where module_id in($sec_mods1)";
+			if (mysqli_query($conn, $sql1)) {
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
+	foreach($string_sec1 as $key){
+//	$sql = "update $bai_pro3.plan_modules set module_id='$result1[$i]',section_id='$sec_head',ims_priority_boxes='$ims_priority_boxes' where module_id='$result2[$i]'";
+$sql = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,ims_priority_boxes,power_user,buyer_div)
+VALUES ('$key','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
+
+		if (mysqli_query($conn, $sql)) {
+		} else {
+			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+		}
+	}
 		//update
 		$sql = "update $bai_pro3.sections_db set sec_head='$sec_head',sec_mods='$sec_mods',ims_priority_boxes='$ims_priority_boxes' where sec_id=$sec_id";
 		//echo $sql;
@@ -90,26 +108,11 @@ if (empty($sec_head) || empty($sec_mods)|| empty($ims_priority_boxes)) {
 		else{
 		
 		
-			if($sec_mods>0){
-				$sec=$_POST['sec_mods'];
-				$string_sec=explode(",",	$sec);
-				//var_dump($string_sec);
-			foreach($string_sec as $index => $val){
-				$sql = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,ims_priority_boxes)
-					VALUES ('$val','$sec_head','$ims_priority_boxes')";
-	
-				if (mysqli_query($conn, $sql)) {
-				} else {
-					echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-				}
-	
-			}
-			}
-
+		
 
 		//insert 
-		$sql = "INSERT INTO $bai_pro3.sections_db (sec_head,sec_mods,ims_priority_boxes)
-VALUES ('$sec_head','$sec_mods','$ims_priority_boxes')";
+		$sql = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods,ims_priority_boxes)
+VALUES ('$sec_head','$sec_head','$sec_mods','$ims_priority_boxes')";
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'add_section.php','N');
 			//echo "New record created successfully";
@@ -129,6 +132,21 @@ VALUES ('$sec_head','$sec_mods','$ims_priority_boxes')";
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 
+		if($sec_mods>0){
+			$sec=$_POST['sec_mods'];
+			$string_sec=explode(",",	$sec);
+			//var_dump($string_sec);
+		foreach($string_sec as $index => $val){
+			$sql = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,ims_priority_boxes,power_user,buyer_div)
+				VALUES ('$val','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
+
+			if (mysqli_query($conn, $sql)) {
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
+
+		}
+		}
 
 		
 

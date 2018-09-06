@@ -303,6 +303,9 @@ echo "Legend: NIP=Not in Plan; DID=Docket ID; F.L=Fabric Location; B.L=Bundle Lo
 </div>
 </div>
 <style type="text/css">
+	body{
+		font-family: century gothic;
+	}
 	table{
     border-collapse: collapse;
 }
