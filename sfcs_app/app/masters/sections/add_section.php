@@ -61,19 +61,19 @@
 			    <label class="control-label control-label-left col-sm-3" for="sec_head">Section<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-                <input id="sec_head" type="text" class="form-control k-textbox" data-role="text" required="required" placeholder="Section" name="sec_head" value="<?php echo $sec_head; ?>" ><span id="errId1" class="error"></span></div>
+                <input id="sec_head" type="number" class="form-control k-textbox " data-role="text" required="required" placeholder="Section" name="sec_head" value="<?php echo $sec_head; ?>" ><span id="errId1" class="error"></span></div>
                 
 		</div></div><div class="col-md-6"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="sec_mods">Section Modules<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-                <textarea id="sec_mods" rows="3" class="form-control k-textbox" data-role="textarea" required="required" name="sec_mods"  ><?php echo $sec_mods; ?></textarea><span id="errId2" class="error"></span></div>
+                <input type="textarea" id="sec_mods" rows="3" class="form-control k-textbox numerical"  data-role="textarea" required="required" name="sec_mods"  value="<?php echo $sec_mods; ?>"/><span id="errId2" class="error"></span></div>
                 
 		</div></div></div><div class="row"><div class="col-md-6"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="ims_priority_boxes">IMS Priority Boxes<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-                <input id="ims_priority_boxes" type="text" class="form-control k-textbox" data-role="text" required="required" name="ims_priority_boxes" placeholder="IMS Priority Box" value="<?php echo $ims_priority_boxes; ?>" ><span id="errId3" class="error"></span></div>
+                <input id="ims_priority_boxes" type="number" class="form-control k-textbox " data-role="text" required="required" name="ims_priority_boxes" placeholder="IMS Priority Box" value="<?php echo $ims_priority_boxes; ?>" ><span id="errId3" class="error"></span></div>
                 
 		</div></div><div class="col-md-6"><div class="form-group">
 			    
@@ -89,7 +89,23 @@
             </form>
         </div>
     </div>
-  
 <?php include('view_sections.php'); ?>
 </body>
 </html>
+<script>
+
+ $( ".numerical" ).on('input', function() { 
+                var value=$(this).val().replace(/[^0-9.,]*/g, '');
+                value=value.replace(/\.{2,}/g, '.');
+                value=value.replace(/\.,/g, ',');
+                value=value.replace(/\,\./g, ',');
+                value=value.replace(/\,{2,}/g, ',');
+                value=value.replace(/\.[0-9]+\./g, '.');
+                $(this).val(value)
+
+        })
+
+
+
+
+</script>
