@@ -105,11 +105,13 @@
 								{
 									if($ops_m_id[$mo_no[0]][$ops[$k]]>0)
 									{
+										echo "--------------------<br/>";
 										$sql12="SELECT (p_".$sizes_array[$j]."*p_plies) as qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' group by doc_no";					
 										$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 										while($row12=mysqli_fetch_array($result12)) 
 										{
-											$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[0]."','".$row12['doc_no']."', '".$row12['qty']."', '".$ops_m_id[$mo_no[0]][$ops[$k]]."', '".$ops_m_name[$mo_no[0]][$ops[$k]]."')";
+											$sql="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`, 
+											`bundle_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[0]."','".$row12['doc_no']."','".$row12['acutno']."','".$row12['qty']."', '".$ops_m_id[$mo_no[0]][$ops[$k]]."', '".$ops_m_name[$mo_no[0]][$ops[$k]]."')";
 											$result1=mysqli_query($link, $sql) or die("Error 2 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 										}									
 									}
@@ -145,13 +147,16 @@
 												echo "bal>qty <br/>";
 												for($jj=0;$jj<sizeof($ops);$jj++)
 												{	
+													echo "OUT 1 <br/>";
 													if($ops_m_id[$mo_no[$kk]][$ops[$jj]]>0)
 													{
+														echo "------------YEss------mo has operations<br/>";
 														$qty_tmp=0;
 														$qty=$qty-$qty_tmp;
 														if($qty>0)
 														{
-															$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[$kk]."' , '".$row1234['doc_no']."', '".$qty."', '".$ops_m_id[$mo_no[$kk]][$ops[$jj]]."', '".$ops_m_name[$mo_no[$kk]][$ops[$jj]]."')";
+															$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`,`bundle_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[$kk]."' , '".$row1234['doc_no']."',
+															'".$row1234['acutno']."','".$qty."', '".$ops_m_id[$mo_no[$kk]][$ops[$jj]]."', '".$ops_m_name[$mo_no[$kk]][$ops[$jj]]."')";
 															$result1=mysqli_query($link, $sql) or die("Error 3 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 														}
 													}
@@ -163,13 +168,15 @@
 											{
 												for($jj=0;$jj<sizeof($ops);$jj++)
 												{	
+													echo "OUT 2<br/>";
 													if($ops_m_id[$mo_no[$kk]][$ops[$jj]]>0)
 													{
+														echo "------------YEss------mo has operations<br/>";
 														$qty_tmp=0;
 														$qty=$qty-$qty_tmp;
 														if($qty>0)
 														{
-															$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[$kk]."', '".$row1234['doc_no']."', '".$bal."', '".$ops_m_id[$mo_no[$kk]][$ops[$jj]]."', '".$ops_m_name[$mo_no[$kk]][$ops[$jj]]."')";
+															$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[$kk]."', '".$row1234['doc_no']."','".$row1234['acutno']."','".$bal."', '".$ops_m_id[$mo_no[$kk]][$ops[$jj]]."', '".$ops_m_name[$mo_no[$kk]][$ops[$jj]]."')";
 															$result1=mysqli_query($link, $sql) or die("Error 6 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 														}
 													}
@@ -205,7 +212,7 @@
 											{
 												if($ops_m_id[$lastmo][$ops[$jjj]]<>'')
 												{
-													$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$lastmo."', '".$row12341['doc_no']."', '".($qty-$qty_fill)."', '".$ops_m_id[$lastmo][$ops[$jjj]]."', '".$ops_m_name[$lastmo][$ops[$jjj]]."')";
+													$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$lastmo."', '".$row12341['doc_no']."','".$row12341['acutno']."','".($qty-$qty_fill)."', '".$ops_m_id[$lastmo][$ops[$jjj]]."', '".$ops_m_name[$lastmo][$ops[$jjj]]."')";
 													$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 												}							
 											}							
