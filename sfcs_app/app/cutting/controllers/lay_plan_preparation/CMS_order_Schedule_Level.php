@@ -1,35 +1,30 @@
 <?php 
 $start_timestamp = microtime(true);
-$include_path=getenv('config_job_path');
-include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
-?>
 
-
-<?php
-	$sql3="delete from $bai_pro3.order_plan";
+	$sql3="delete from $bai_pro3.order_plan_schedule_level";
 	$res1=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res1)
 	{
-		print("sucessfully deleted")."\n";
+		// print("sucessfully deleted")."\n";
 	}
 		
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_OS_1\")";
-echo $sql3;
+// echo $sql3;
 	$res=mysqli_query($link, $sql3) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res)
 	{
-		print("M3 to SFCS Data Sync Successfully Completed. Please wait for furthur process");
+		// print("M3 to SFCS Data Sync Successfully Completed. Please wait for furthur process");
 	}
 	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"ssc_porcess4.php\"; }</script>";
 ?>
 <?php
 
 
-$sql3="truncate table $bai_pro3.order_plan";
+$sql3="truncate table $bai_pro3.order_plan_schedule_level";
 mysqli_query($link, $sql3) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
-$sql="insert into $bai_pro3.order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des,material_sequence ) select SCHEDULE,MO_Released_Status_Y_N,Style,GMT_Color,GMT_Size,MO_Qty,Item_Code,Item_Description,Order_YY_WO_Wastage,RM_Color_Description,SEQ_NUMBER from $m3_inputs.order_details WHERE SCHEDULE not in (select distinct order_del_no from $bai_pro3.bai_orders_db_confirm) and MO_Released_Status_Y_N='Y'";
+$sql="insert into $bai_pro3.order_plan_schedule_level (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des,material_sequence ) select SCHEDULE,MO_Released_Status_Y_N,Style,GMT_Color,GMT_Size,MO_Qty,Item_Code,Item_Description,Order_YY_WO_Wastage,RM_Color_Description,SEQ_NUMBER from $m3_inputs.order_details WHERE SCHEDULE='".$schedule."' and MO_Released_Status_Y_N='Y'";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error1d".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
@@ -40,7 +35,7 @@ mysqli_query($link, $sql) or exit("Sql Error1d".mysqli_error($GLOBALS["___mysqli
 
 $item_des="";
 $col_des="";
-$sql="select distinct style_no from $bai_pro3.order_plan";
+$sql="select distinct style_no from $bai_pro3.order_plan_schedule_level";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -50,13 +45,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$style_total_length=0;
 	$new_style=str_pad($style,$style_total_length," ",STR_PAD_RIGHT);
 	$style_len_new=strlen($new_style);
-	$sql1="select distinct schedule_no from $bai_pro3.order_plan where style_no=\"$style\"";
+	$sql1="select distinct schedule_no from $bai_pro3.order_plan_schedule_level where style_no=\"$style\"";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		$sch_no=$sql_row1['schedule_no'];
 		
-		$sql2="select distinct color from $bai_pro3.order_plan where schedule_no=\"$sch_no\" and style_no=\"$style\"";
+		$sql2="select distinct color from $bai_pro3.order_plan_schedule_level where schedule_no=\"$sch_no\" and style_no=\"$style\"";
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
@@ -67,7 +62,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$color_len_new=strlen($new_color);
 
 			$ssc_code=$new_style.$sch_no.$new_color;
-			$sql22="select distinct compo_no,material_sequence from $bai_pro3.order_plan where schedule_no=\"$sch_no\" and color=\"$color\" and style_no=\"$style\"";
+			$sql22="select distinct compo_no,material_sequence from $bai_pro3.order_plan_schedule_level where schedule_no=\"$sch_no\" and color=\"$color\" and style_no=\"$style\"";
 			$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row22=mysqli_fetch_array($sql_result22))
 			{	
@@ -112,14 +107,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}		
 }
 
-$sql3="delete from $bai_pro3.order_plan";
+$sql3="delete from $bai_pro3.order_plan_schedule_level";
 mysqli_query($link, $sql3) or exit("Sql Error11".mysql_error());
 
 $sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_OS_2\")";
 mysqli_query($link, $sql3) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 // echo "<div class='alert alert-info alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Successfully Updated.</strong></div>";
-print("Successfully Updated")."\n";
+// print("Orders Successfully Updated")."\n";
 // $rurl='ssc_color_coding.php';
 // echo $rurl;
 // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = ".$rurl."; }</script>";
@@ -178,7 +173,7 @@ print("Successfully Updated")."\n";
 	{
 		// echo "<div class='alert alert-info alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
 		// 		<strong>Inserted Successfully</strong></div>";
-		print("Data Integrated Successfully")."\n";
+		// print("Data Integrated Successfully")."\n";
 	}
 			
 	// $sql33="select schedule,op_desc from bai_pro3.bai_emb_db where mo_type=\"MO\"";
@@ -225,7 +220,7 @@ print("Successfully Updated")."\n";
 	fclose($fh);
 	$end_timestamp = microtime(true);
 	$duration = $end_timestamp - $start_timestamp;
-	print("Execution took ".$duration." milliseconds.");
+	// print("Execution took ".$duration." milliseconds.");
 
 	// echo "<script language=\"javascript\"> setTimeout(\"CloseWindow()\",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script>";		
 ?>
