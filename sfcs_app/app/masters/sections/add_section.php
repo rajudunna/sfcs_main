@@ -25,7 +25,7 @@
 		//echo "Row id".$_REQUEST['rowid'];
 		$sec_id=$_REQUEST['rowid'];
 		$sec_head=$_REQUEST['sec_head'];
-		$sec_mods=$_REQUEST['sec_mods'];
+        $sec_mods=$_REQUEST['sec_mods'];
 		$ims_priority_boxes=$_REQUEST['ims_priority_boxes'];
 		
 		//echo 	$sec_head;
@@ -44,7 +44,8 @@
 
            
 			 <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
-			 <input type='hidden' id='sec_id' name='sec_id' value=<?php echo $sec_id; ?> >
+             		 <input type='hidden' id='sec_id' name='sec_id' value=<?php echo $sec_id; ?> >
+             <input type='hidden' id='sec_mods1' name='sec_mods1' value=<?php echo $sec_mods; ?> >
                 <div class="container-fluid shadow">
                     <div class="row">
                         <div id="valErr" class="row viewerror clearfix hidden">
