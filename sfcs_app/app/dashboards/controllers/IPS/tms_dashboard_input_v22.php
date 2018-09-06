@@ -703,7 +703,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$cut_status="5";
 					}
 					
-					
+					$fabric_status="";
 					$sql1x11="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' and doc_no in ($doc_no_ref)";
 					//echo $sql1x11."<br>";
 					$sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -719,12 +719,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					
 					$sql1x12="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no in ($doc_no_ref)";
 					//echo $sql1x12."<br>";
-					$fabric_status1="";
+					
 					$sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo mysqli_num_rows($sql_result1x12);
 					if(mysqli_num_rows($sql_result1x12)>0)
 					{
-						$fabric_status1="1";
+						$fabric_status="1";
 					}								
 					$sql1x115="select * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no_ref)";
 					$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -753,7 +753,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$id="yellow";					
 						$rem="Fabric Issued";	
 					}
-					elseif($fabric_status1=='1')
+					elseif($fabric_status=='1')
 					{
 						$id="pink";					
 						$rem="Ready To Issue";	
