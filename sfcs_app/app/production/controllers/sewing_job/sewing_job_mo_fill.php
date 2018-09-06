@@ -14,7 +14,12 @@
 	$file_name   = $_GET['filename'];
 	$schedule    = $_GET['schedule'];
 	$split_proces_name=$process_name;
-	
+	$style = $_GET['style'];
+	$col = $_GET[''];
+
+	$split_proces_name = 'cutting';
+	$style = 'JOA141S9';
+	$schedule = '588115';
 
 	if(isset($_GET['order_tid']))
 	{
@@ -26,6 +31,9 @@
 		$order_tid=explode(',',$order_tids);
 	}
 
+	$order_tid[] = 'JOA141S9       55881511 - PINK BOTTOM              ';
+	$order_tid[]='JJP327F8       52834608-DARKGREY-ROSECLAIRBOTTOM   ';
+
 	$sql1216="SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref WHERE default_operation='Yes' group by category order by category*1"; 
 	$result1216=mysqli_query($link, $sql1216) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($row12106=mysqli_fetch_array($result1216)) 
@@ -33,7 +41,7 @@
 		$category[]=$row12106['codes'];
 		$category_name[]=$row12106['category'];		
 	}
-	
+	echo "DOING<br/>";
 	for($l=0;$l<sizeof($category_name);$l++)
 	{
 		if($category_name[$l]==$split_proces_name && $split_proces_name == 'cutting')
@@ -102,7 +110,7 @@
 										while($row12=mysqli_fetch_array($result12)) 
 										{
 											$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[0]."','".$row12['doc_no']."', '".$row12['qty']."', '".$ops_m_id[$mo_no[0]][$ops[$k]]."', '".$ops_m_name[$mo_no[0]][$ops[$k]]."')";
-											$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$result1=mysqli_query($link, $sql) or die("Error 2 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 										}									
 									}
 								}
@@ -119,7 +127,7 @@
 									{						
 										$m_fil=0;
 										$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no='".$mo_no[$kk]."' and op_code in ($category[$l]) GROUP BY op_code ORDER BY op_code*1 LIMIT 1";
-										$result12345=mysqli_query($link, $sql12345) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+										$result12345=mysqli_query($link, $sql12345) or die("Error b".mysqli_error($GLOBALS["___mysqli_ston"])); 
 										while($row12345=mysqli_fetch_array($result12345)) 
 										{
 											$m_fil=$row12345['qty'];
@@ -131,8 +139,10 @@
 										$bal=$moq[$kk]-$m_fil;
 										if($bal>0)
 										{	
+											echo "bal > 0<br/>";
 											if($bal>$qty)
 											{	
+												echo "bal>qty <br/>";
 												for($jj=0;$jj<sizeof($ops);$jj++)
 												{	
 													if($ops_m_id[$mo_no[$kk]][$ops[$jj]]>0)
@@ -142,7 +152,7 @@
 														if($qty>0)
 														{
 															$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[$kk]."' , '".$row1234['doc_no']."', '".$qty."', '".$ops_m_id[$mo_no[$kk]][$ops[$jj]]."', '".$ops_m_name[$mo_no[$kk]][$ops[$jj]]."')";
-															$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+															$result1=mysqli_query($link, $sql) or die("Error 3 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 														}
 													}
 												}	
@@ -160,7 +170,7 @@
 														if($qty>0)
 														{
 															$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[$kk]."', '".$row1234['doc_no']."', '".$bal."', '".$ops_m_id[$mo_no[$kk]][$ops[$jj]]."', '".$ops_m_name[$mo_no[$kk]][$ops[$jj]]."')";
-															$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+															$result1=mysqli_query($link, $sql) or die("Error 6 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 														}
 													}
 												}		
@@ -170,6 +180,7 @@
 										}								
 									}	
 								}
+						
 								//Excess allocate to Last MO
 								$lastmo=echo_title("$bai_pro3.mo_details","MAX(mo_no)","TRIM(size)='".$size_tit[$j]."' and TRIM(color)='".$col."' and schedule",$schedule,$link);
 								$bal=0;$qty_tmp=0;$qty=0;
@@ -180,8 +191,10 @@
 									while($row12341=mysqli_fetch_array($result12341)) 
 									{
 										$qty=$row12341['qty'];
-										$sql1234100="SELECT sum(bundle_quantity) as qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' group by doc_no";
-										$result1234100=mysqli_query($link, $sql1234100) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+										// $sql1234100="SELECT sum(bundle_quantity) as qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' group by doc_no";
+										$sql1234100 = "SELECT SUM(mo_quantity) as qty FROM $bai_pro3.mo_details WHERE TRIM(size)='".$size_tit[$j]."' and schedule='".$schedule."' and TRIM(color)='".$col."' group by color"; 
+										//echo $sql1234100; 
+										$result1234100=mysqli_query($link, $sql1234100) or die("Error 7 ".mysqli_error($GLOBALS["___mysqli_ston"])); 
 										while($row1234100=mysqli_fetch_array($result1234100)) 
 										{
 											$qty_fill=$row1234100['qty'];
@@ -213,8 +226,31 @@
 					unset($size_qty);
 				}
 			}		
+			if($file_name=='layplan')
+			{
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+				function Redirect() {
+					location.href = \"".getFullURLLevel($_GET['r'], 'cutting/controllers/lay_plan_preparation/main_interface.php',3,'N')."&color=$col&style=$style&schedule=$schedule\";
+					}
+				</script>";	
+			}
+			if($file_name=='mixjobs')
+			{
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+				function Redirect() {
+					location.href = \"".getFullURLLevel($_GET['r'], 'cutting/controllers/schedule_club_style/mix_jobs.php',3,'N')."&color=$col&style=$style&schedule=$schedule\";
+					}
+				</script>";	
+			}
+			if($file_name=='schsplit')
+			{
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+				function Redirect() {
+					location.href = \"".getFullURLLevel($_GET['r'], 'cutting/controllers/schedule_clubbing/schedule_split_bek.php',3,'N')."&color=$col&style=$style&schedule=$schedule\";
+					}
+				</script>";	
+			}		
 			echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
-			
 		}
 		elseif($category_name[$l]==$split_proces_name && $split_proces_name == 'sewing'){
 			$mo_no=array();
@@ -416,31 +452,7 @@
 		// echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
 		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");	
 	}
-	if($file_name=='layplan')
-	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-		function Redirect() {
-			location.href = \"".getFullURLLevel($_GET['r'], 'cutting/controllers/lay_plan_preparation/main_interface.php',3,'N')."&color=$col&style=$style&schedule=$schedule\";
-			}
-		</script>";	
-	}
-	if($file_name=='mixjobs')
-	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-		function Redirect() {
-			location.href = \"".getFullURLLevel($_GET['r'], 'cutting/controllers/schedule_club_style/mix_jobs.php',3,'N')."&color=$col&style=$style&schedule=$schedule\";
-			}
-		</script>";	
-	}
-	if($file_name=='schsplit')
-	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-		function Redirect() {
-			location.href = \"".getFullURLLevel($_GET['r'], 'cutting/controllers/schedule_clubbing/schedule_split_bek.php',3,'N')."&color=$col&style=$style&schedule=$schedule\";
-			}
-		</script>";	
-	}
-		
+	
 ?> 
 </div></div>
 </body>
