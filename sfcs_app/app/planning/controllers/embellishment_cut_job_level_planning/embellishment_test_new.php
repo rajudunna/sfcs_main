@@ -115,7 +115,7 @@ $color=$_GET['color'];
 
 echo "<div class='row'>";
 echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' >";
-$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ";
+$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ where emb_stat1=1";
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<option value=\"NIL\" selected>NIL</option>";
@@ -275,18 +275,17 @@ if(isset($_POST['submit']))
 	$cat_ref=$_POST['cat_ref'];
 	
 	$data_sym="$";
-		
-	// $File = 'embellishment_drag_drop_data.php';
-	if (!file_exists('embellishment_drag_drop_data.php')) {
-		// mkdir('path/to/directory', 0777, true);
-		echo 'f';
-	}else{
-		echo 't';
-	}
-	$fh = fopen($File, 'w') or die("can't open file");
+	
+
+	$my_file = getFullURLLevel($_GET['r'],'embellishment_drag_drop_data.php',0,'R');
+
+	$handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file);
+
 	$stringData = "<?php ".$data_sym."style_ref=\"".$style."\"; ".$data_sym."schedule_ref=\"".$schedule."\"; ".$data_sym."color_ref=\"".$color."\"; ".$data_sym."cat_ref_ref=\"".$cat_ref."\"; ".$data_sym."code_ref=\"".$code."\"; ?>";
-	fwrite($fh, $stringData);
-	fclose($fh);	
+
+	fwrite($handle, $stringData);
+	fclose(handle);
+
 	
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop.php?color=$color&style=$style&schedule=$schedule&code=$code&cat_ref=$cat_ref\"; }</script>";
 	$url = getFullURLLevel($_GET['r'],'embellishment_drag_drop.php',0,'N');

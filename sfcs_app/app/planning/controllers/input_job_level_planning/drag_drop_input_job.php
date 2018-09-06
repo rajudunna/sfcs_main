@@ -292,10 +292,12 @@ $has_perm=haspermission($_GET['r']);
 	{
 		
 		var col = $(this).attr('data-color');
+		alert(col);
 		if(document.all)e = event;
 		var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
 		var sl = Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
-		
+		// alert(st);
+		// alert(sl);
 		dragTimer = 0;
 		dragContentObj.style.left = ((e.clientX + sl)) + 'px';
 		dragContentObj.style.top = ((e.clientY + st)) + 'px';
@@ -753,7 +755,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 
 	<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
 		<!-- ONE <UL> for each "room" -->
-		<?php
+	<?php
 		
 		/*Example: <div>
 			<p>Team a</p>
@@ -769,8 +771,8 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		// echo $sql."<br/>";
 		mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-			$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
-			mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
+		mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 			
 		$sections_ref=array();
@@ -824,13 +826,11 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				//New Implementation to Restrict Power User level Planning 20111211
 			}
 			
-						echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
+			echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
 			for($x=0;$x<sizeof($mods);$x++)
 			{
 		
-				echo '
-					<p>'.$mods[$x].'</p>
-					<ul id="'.$mods[$x].'" style="width:150px">';
+				echo '<p>'.$mods[$x].'</p><ul id="'.$mods[$x].'" style="width:150px">';
 						//<li id="node16">Student P</li>
 						
 						$module=$mods[$x];
@@ -957,7 +957,8 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		//echo $sql."<br/>";
 		mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		?>
+	?>
+	
 	</div>
 
 	</div>
