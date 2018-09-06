@@ -125,13 +125,18 @@
 									<th>Controlls</th></tr>";
 								while($pack_result1=mysqli_fetch_array($pack_meth_qty))
 								{
-									$pack_qnty_qry="SELECT p.id,(SUM(s.garments_per_carton)*(s.cartons_per_pack_job*s.pack_job_per_pack_method)) AS quantity FROM $bai_pro3.tbl_pack_ref AS p LEFT JOIN $bai_pro3.tbl_pack_size_ref AS s ON p.id=s.parent_id WHERE p.ref_order_num=$schedule AND s.pack_method='$pack_result1[pack_method]'  LIMIT 0,1 ";
+									$pack_qnty_qry="SELECT p.id,s.parent_id,(SUM(s.garments_per_carton)*(s.cartons_per_pack_job*s.pack_job_per_pack_method)) AS quantity FROM $bai_pro3.tbl_pack_ref AS p LEFT JOIN $bai_pro3.tbl_pack_size_ref AS s ON p.id=s.parent_id WHERE p.ref_order_num=$schedule AND s.pack_method='$pack_result1[pack_method]'  LIMIT 0,1 ";
 									// echo $pack_qnty_qry;
 									$pack_qnty_qry_res=mysqli_query($link, $pack_qnty_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+									
 									if($res=mysqli_fetch_array($pack_qnty_qry_res)){
 										$qnty=$res['quantity'];
+										$parent_id=$res['parent_id'];
+										// echo $parent_id;
 									}
 									$seq_no=$pack_result1['seq_no'];
+									$pack_method=$pack_result1['pack_method'];
+									
 									// $col_array[]=$sizes_result1['order_col_des'];
 									echo "<tr><td>".$pack_result1['seq_no']."</td>";
 									echo"<td>".$pack_result1['pack_method']."</td>";
@@ -141,32 +146,54 @@
 									echo "<td>".$pack_result1['size']."</td>";
 
 									$url=getFullURL($_GET['r'],'pack_generation.php','R');
-									echo "<td><a href='$url?schedule=$schedule&style=$style&seq_no=$seq_no' target='_blank'>Generate Sewing Job</td>";
+									$url1=getFullURL($_GET['r'],'pack_method_loading.php','N');
+									$url2=getFullURL($_GET['r'],'packing_list_fg_print.php','R');
+									$url3=getFullURL($_GET['r'],'.php','R');
+									$url4=getFullURL($_GET['r'],'.php','R');
+									echo "<td><a class='btn btn-success btn-sm' href='$url?c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no' target='_blank'>Generate Sewing Job</a>
+									<a class='btn btn-warning' href='$url2?seq_no=$seq_no&c_ref=$parent_id&pack_method=$pack_method' target='_blank' style='margin-right: 8px;margin-top: -1px'>Packing List</a>
+									<a class='btn btn-warning' href='$url3?seq_no=$seq_no&c_ref=$parent_id&pack_method=$pack_method' target='_blank' >Print Lables</a>
+									<a class='btn btn-warning' href='$url4?seq_no=$seq_no&c_ref=$parent_id&pack_method=$pack_method' target='_blank' >Carton Track</a>
+									<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method>Delete</a></td>";
 									echo "<tr>";
 									
 								}	
 							
 							echo "</table></div>";
-							$url=getFullURL($_GET['r'],'.php','R');
+							$url=getFullURL($_GET['r'],'packing_list_fg_print.php','R');
 							echo "<div class='col-md-3 col-sm-3 col-xs-12'>
-							<a class='btn btn-success btn-sm' href='$url?schedule=$schedule&style=$style' target='_blank' style='margin-right: 139px;float: right;margin-top: -1px'>Packing List</a>
+							<a class='btn btn-warning' href='$url?schedule=$schedule&style=$style&seq_no=$seq_no' target='_blank' style='margin-right: 139px;float: right;margin-top: -1px'>Packing List</a>
 							</div>";
 							$url=getFullURL($_GET['r'],'.php','R');
 							echo "<div class='col-md-3 col-sm-3 col-xs-12'>
-							<a class='btn btn-success btn-sm' href='$url?schedule=$schedule&style=$style' target='_blank' style='margin-right: 284px;float: right;margin-top: -1px'>Print Lables</a>
+							<a class='btn btn-warning' href='$url?schedule=$schedule&style=$style' target='_blank' style='margin-right: 284px;float: right;margin-top: -1px'>Print Lables</a>
 							</div>";
 							$url=getFullURL($_GET['r'],'.php','R');
 							echo "<div class='col-md-3 col-sm-3 col-xs-12'>
-							<a class='btn btn-success btn-sm' href='$url?schedule=$schedule&style=$style' target='_blank' style='margin-right: 415px;float: right;margin-top: -1px'>Carton Track</a>
+							<a class='btn btn-warning' href='$url?schedule=$schedule&style=$style' target='_blank' style='margin-right: 415px;float: right;margin-top: -1px'>Carton Track</a>
 							</div>";
-							$url=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
+							$url=getFullURL($_GET['r'],'decentralized_packing_ratio.php','R');
+							// var_dump($sizes_array);
+							for($i=0; $i<sizeof($sizes_array); $i++){
+								$validate_qnty_qry="select order_s_".$sizes_array[$i].",title_size_".$sizes_array[$i]." from $bai_pro3.bai_orders_db where order_del_no='$schedule' and order_style_no='$style'";
+								// echo $validate_qnty_qry;
+								// $pack_meth_validate="SELECT DISTINCT(s.size_title) FROM tbl_pack_size_ref s LEFT JOIN tbl_pack_ref p ON p.id=s.parent_id WHERE p.ref_order_num ='$schedule' AND style_code='$style'";
+							}
 							echo "<div class='col-md-12 col-sm-12 col-xs-12'>
-							<a class='btn btn-success btn-sm' href='$url&schedule=$schedule&style=$style' target='_blank' style='margin-right: 21px;float: right;margin-top: -29px'>Add Packing Method</a>
+							<a class='btn btn-success btn-sm' href='$url?schedule=$schedule&style=$style' target='_blank' style='margin-right: 21px;float: right;margin-top: -29px'>Add Packing Method</a>
 							</div>";
 							
 				}
 				
+				
 			}
+			if($_GET['seq_no'] && $_GET['parent_id'] && $_GET['pack_method'])
+				{
+					
+					$delete_pack_meth="delete from $bai_pro3.tbl_pack_size_ref where seq_no='$seq_no' and parent_id='$parent_id' and pack_method='$pack_method'";
+				    // echo $delete_pack_meth;
+					$dele_pack_qry_res=mysqli_query($link, $delete_pack_meth) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 			?> 
 		</div>
 	</div>
