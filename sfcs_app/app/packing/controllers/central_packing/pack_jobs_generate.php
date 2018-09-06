@@ -45,12 +45,11 @@
 		$sql123="SELECT pack_method,style_code,ref_order_num,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
 		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."'";
 	}
-	else
+	elseif($carton_method==4)
 	{
 		$sql123="SELECT pack_method,style_code,ref_order_num,color as cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
 		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."' group by color";
 	}
-	//echo $sql123."<br>";	
 	$result123=mysqli_query($link, $sql123) or die ("Error1.11=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row123=mysqli_fetch_array($result123))
 	{
@@ -58,16 +57,13 @@
 		$cols_size_tmp[]=$row123['size_tit'];
 		$style_id=$row123['style_code'];
 		$schedule_id=$row123['ref_order_num'];
-		//echo $row123['cols']."---".$row123['size_tit']."<br>";
 	}
-	echo $style_id."--".$schedule_id."<br>";
 	$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link); 
 	$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule_id,$link);
 	$sql123="SELECT * FROM $bai_pro3.tbl_pack_ref LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE $bai_pro3.tbl_pack_size_ref.pack_method='".$carton_method."' AND tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_size_ref.parent_id='".$carton_id."'";
 	$result123=mysqli_query($link, $sql123) or die ("Error1.2=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row123=mysqli_fetch_array($result123))
 	{
-		echo $row123['color']."-----".$row123['size_title']."<br>";
 		$gremnts_per_carton[$row123['color']][$row123['size_title']]=$row123['garments_per_carton'];
 		$sizes[$row123['color']][$row123['size_title']]=echo_title("$brandix_bts.tbl_orders_size_ref","size_name","id",$row123['ref_size_name'],$link);
 		
@@ -100,28 +96,7 @@
 		{
 			$require_qty[$row123['color']][$row123['size_title']]=$eligible_to_qty[$row123['color']][$row123['size_title']];
 		}
-		echo "order---".$order_qty[$row123['color']][$row123['size_title']]."<br>";	
-		echo "Plan---".$plan_qty[$row123['color']][$row123['size_title']]."<br>";	
-		echo "Pack---".$pack_qty[$row123['color']][$row123['size_title']]."<br>";	
-		echo "Eligi---".$eligible_to_qty[$row123['color']][$row123['size_title']]."<br>";	
-		echo "Require---".$require_qty[$row123['color']][$row123['size_title']]."<br>";	
-		echo "Garments---".$row123['garments_per_carton']."<br>";	
 	}
-	// echo "order---".$order_qty['Black']['MM']."<br>";	
-	// echo "Plan---".$plan_qty['Black']['MM']."<br>";	
-	// echo "Pack---".$pack_qty['Black']['MM']."<br>";	
-	// echo "Eligi---".$eligible_to_qty['Black']['MM']."<br>";	
-	// echo "Require---".$require_qty['Black']['MM']."<br>";
-	// if($order_qty['Black']['MM']>0)
-	// {
-		// echo "True";
-	// }
-	// else
-	// {
-		// echo "Fasle";
-	// }	
-	//echo "Garments---".$row123['garments_per_carton']."<br>";
-	die();
 	// Adding sequence no of each packing method with in the schedule
 	$seq_new=echo_title("$bai_pro3.pac_stat_log","MIN(seq_no)","schedule",$schedule,$link);
 	if($seq_new==0 || $seq_new=='')
@@ -132,8 +107,6 @@
 	{
 		$seq_new=echo_title("$bai_pro3.pac_stat_log","MAX(seq_no)+1","schedule",$schedule,$link);
 	}
-	echo $seq_new."<br>";
-	
 	echo '<h4>Pack Method: <span class="label label-info">'.$operation[$carton_method].'</span></h4>';
 	echo "<table class='table table-striped table-bordered'>";
 	echo "<thead><th>Schedule</th><th>Seq No</th><th>Color</th><th>Size</th><th>Size Title</th><th>Carton Number</th><th>Ref No </th><th>Quantity</th></thead>";	
@@ -165,32 +138,24 @@
 						}
 					}
 				}
+				$tmp_cart=0;
+				$sql1235="select MAX(carton_no)+1 as cart_no from $bai_pro3.pac_stat_log where pac_seq_no='".$seq_no."' and schedule='".$schedule."'";
+				$result1235=mysqli_query($link, $sql1235) or die ("Error1.2=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row1235=mysqli_fetch_array($result1235))
+				{
+					$tmp_cart=$row1235['cart_no'];
+					if($tmp_cart==NULL || $tmp_cart=='' || $tmp_cart==0)
+					{
+						$tmp_cart=1;
+					}	
+				}
 				$min_carto_fl=min($no_of_cartons_fl);
 				$min_carto_ce=min($no_of_cartons_ce);
-				echo $min_carto_fl."---".$min_carto_ce."<br>";
 				for($ii=0;$ii<sizeof($cols_tot);$ii++)
 				{							
-					echo $cols_tot[$ii]."----".$cols_size[$ik]."----Col--qty".$require_qty[$cols_tot[$ii]][$cols_size[$ik]]."<br>";
 					if($require_qty[$cols_tot[$ii]][$cols_size[$ik]]>0 && $gremnts_per_carton[$cols_tot[$ii]][$cols_size[$ik]]>0)
 					{	
-						$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MIN(carton_no)","pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
-						if($carton_job_no==0 || $carton_job_no=='')
-						{
-							$carton_job_no=1;
-						}						
-						elseif($kk=='0')
-						{
-							$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MIN(carton_no)","size_tit='".$cols_size[$ik]."' and pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
-						}
-						elseif($kk>0)
-						{
-							$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MIN(carton_no)","size_tit='".$cols_size[$ik]."' and pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
-							if($carton_job_no==0 || $carton_job_no=='')
-							{
-								$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MAX(carton_no)+1","pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
-							}	
-						}
-						//echo $kk."---".$carton_job_no."<br>";		
+						$carton_job_no=$tmp_cart;
 						$garments_per_carton=$gremnts_per_carton[$cols_tot[$ii]][$cols_size[$ik]];
 						$lay_plan_qty=$eligible_to_qty[$cols_tot[$ii]][$cols_size[$ik]];
 						$to_be_fill=$require_qty[$cols_tot[$ii]][$cols_size[$ik]];
@@ -207,16 +172,16 @@
 										$to_be_fill=$to_be_fill-$garments_per_carton;
 										if($to_be_fill>=0)
 										{
-											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_title`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'F', '".$garments_per_carton."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
-											//mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
+											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_tit`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'F', '".$garments_per_carton."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
+											mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 											echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$garments_per_carton."</td></tr>";
 											$carton_job_no++;
 											$bal=0;
 										}
 										else
 										{
-											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_title`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'P', '".$bal."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
-											//mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
+											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_tit`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'P', '".$bal."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
+											mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
 											echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$bal."</td></tr>";
 											$carton_job_no++;
 										}	
@@ -233,8 +198,8 @@
 								{												
 									for($ij=0;$ij<$min_carto_fl;$ij++)
 									{	
-										$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_title`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'F', '".$garments_per_carton."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
-										//mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
+										$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_tit`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'F', '".$garments_per_carton."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
+										mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
 										echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$garments_per_carton."</td></tr>";
 										$carton_job_no++;
 									}
@@ -255,7 +220,7 @@
 		for($kk=0;$kk<sizeof($cols_tot_tmp);$kk++)
 		{
 			$cols_tot=explode(",",$cols_tot_tmp[$kk]);
-			$cols_size=explode(",",$cols_tot_tmp[$kk]);
+			$cols_size=explode(",",$cols_size_tmp[$kk]);
 			$min_carto_fl=0;
 			$min_carto_ce=0;
 			$order_status=0;
@@ -278,32 +243,26 @@
 					}
 				}
 			}
+			$tmp_cart=0;
+			$sql1235="select MAX(carton_no)+1 as cart_no from $bai_pro3.pac_stat_log where pac_seq_no='".$seq_no."' and schedule='".$schedule."'";
+			$result1235=mysqli_query($link, $sql1235) or die ("Error1.2=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row1235=mysqli_fetch_array($result1235))
+			{
+				$tmp_cart=$row1235['cart_no'];
+				if($tmp_cart==NULL || $tmp_cart=='' || $tmp_cart==0)
+				{
+					$tmp_cart=1;
+				}	
+			}
 			$min_carto_fl=min($no_of_cartons_fl);
 			$min_carto_ce=min($no_of_cartons_ce);
-			echo $min_carto_fl."---".$min_carto_ce."<br>";
 			for($ii=0;$ii<sizeof($cols_tot);$ii++)
 			{			
 				for($ik=0;$ik<sizeof($cols_size);$ik++)	
 				{ 
 					if($gremnts_per_carton[$cols_tot[$ii]][$cols_size[$ik]]>0)
 					{	
-						$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MIN(carton_no)","pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
-						if($carton_job_no==0 || $carton_job_no=='')
-						{
-							$carton_job_no=1;
-						}						
-						elseif($kk=='0')
-						{
-							$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MIN(carton_no)","size_tit='".$cols_size[$ik]."' and color='".$cols_tot[$ii]."' and pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
-						}
-						elseif($kk>0)
-						{
-							$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MIN(carton_no)","size_tit='".$cols_size[$ik]."' and color='".$cols_tot[$ii]."' and pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
-							if($carton_job_no==0 || $carton_job_no=='')
-							{
-								$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MAX(carton_no)+1","pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
-							}	
-						}
+						$carton_job_no=$tmp_cart;
 						$garments_per_carton=$gremnts_per_carton[$cols_tot[$ii]][$cols_size[$ik]];
 						$lay_plan_qty=$eligible_to_qty[$cols_tot[$ii]][$cols_size[$ik]];
 						$to_be_fill=$require_qty[$cols_tot[$ii]][$cols_size[$ik]];
@@ -320,16 +279,16 @@
 										$to_be_fill=$to_be_fill-$garments_per_carton;
 										if($to_be_fill>=0)
 										{
-											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_title`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'F', '".$garments_per_carton."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
-											//mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
+											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_tit`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'F', '".$garments_per_carton."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
+											mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 											echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$garments_per_carton."</td></tr>";
 											$carton_job_no++;
 											$bal=0;
 										}
 										else
 										{
-											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_title`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'P', '".$bal."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
-											//mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
+											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_tit`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'P', '".$bal."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
+											mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 											echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$bal."</td></tr>";
 											$carton_job_no++;
 										}	
@@ -346,8 +305,8 @@
 								{												
 									for($ij=0;$ij<$min_carto_fl;$ij++)
 									{	
-										$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_title`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'F', '".$garments_per_carton."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
-										//mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
+										$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`,`size_tit`,`seq_no`,`pack_method`,`pac_seq_no`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_job_no."', 'F', '".$garments_per_carton."', NULL, NULL, NULL, '".$schedule."-".$seq_no."-".$carton_job_no."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".$style.$schedule.$cols_tot[$ii]."', '', '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$seq_new."','".$carton_method."','".$seq_no."')";
+										mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 										echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$garments_per_carton."</td></tr>";
 										$carton_job_no++;
 									}
