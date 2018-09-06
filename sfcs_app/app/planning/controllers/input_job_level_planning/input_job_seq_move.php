@@ -48,11 +48,12 @@
             if($_POST['submit']){
                 echo "<hr>";
                 $module= $_POST['module'];
-                $sql1 = "SELECT * FROM $bai_pro3.plan_dashboard_input LEFT JOIN $bai_pro3.packing_summary_input ON plan_dashboard_input.input_job_no_random_ref = packing_summary_input.input_job_no_random where input_module=\"$module\" GROUP BY input_job_no_random_ref";
+                $sql1 = "SELECT * FROM $bai_pro3.plan_dashboard_input LEFT JOIN $bai_pro3.packing_summary_input ON plan_dashboard_input.input_job_no_random_ref = packing_summary_input.input_job_no_random where input_module=\"$module\" GROUP BY input_job_no_random_ref ORDER BY order_del_no AND acutno";
                 $sql_result1 = mysqli_query($link, $sql1) or exit("Sql1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                echo '<div class="row"><div class="col-md-4">
-                <label>Selected Module : '. $module.'</label>
+                echo "<h3><span class='label label-success'>Selected Module : ". $module."</span></h3>";
+                echo '<div class="row"><div class="col-md-4" style="max-height:270px;overflow-y:auto">
+                
                 <ul id="sortable">';
                 $input_jobs = array();
                 $no_of_jobs = mysqli_num_rows($sql_result1);
@@ -60,26 +61,30 @@
                    
                     $schedule1 = $sql_row1['order_del_no'];
                     $color1 = $sql_row1['order_color_des'];
-                    $cut_no1 = $sql_row1['actno'];
+                    $cut_no1 = $sql_row1['acutno'];
                     $style_id_new = $sql_row1['order_style_no'];
                     $doc_no = $sql_row1['doc_no'];
                     $input_priority = $sql_row1['input_priority'];
-                    $input_jobs[] = $sql_row1['input_job_no_random_ref'];
-
-                    $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row1['order_del_no'],$sql_row1['order_color_des'],$sql_row1['actno'],$link);
+                    if($style_id_new !== NULL){
+                        $input_jobs[] = $sql_row1['input_job_no_random_ref'];
+                    }
+                    
+                    $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row1['order_del_no'],$sql_row1['order_color_des'], $cut_no1,$link);
                     // var_dump( $display_prefix1);
-                    $bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row1['order_del_no'],$sql_row1['order_color_des'],$sql_row1['actno'],$link);
+                    $bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row1['order_del_no'],$sql_row1['order_color_des'], $cut_no1,$link);
                     // var_dump( $bg_color1);
 
-                    $title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:100",90);
+                    $title=str_pad("Style:".$style_id_new,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80);
 
                     if($bg_color1 == 'white'){
                         echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:red;" data-color="red" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
                     }else if($bg_color1 == 'yellow'){
                         echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
                     }else{
+                        if($style_id_new !== NULL){
+                            echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'" ><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+                        }
                         
-                        echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'" ><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
                     }	
 
                 }
@@ -118,7 +123,7 @@ function saveOrder() {
         url: url,
         success: function(response){
             swal('Jobs Sequence Changed','','success');
-            window.location = redirection_url;
+            // window.location = redirection_url;
         }
     });  
     $('#button_disabled').prop('disabled', false);   
