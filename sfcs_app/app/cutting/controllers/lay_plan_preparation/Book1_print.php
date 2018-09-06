@@ -3253,7 +3253,7 @@ echo "</tr>";
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
- </tr> 
+ </tr>
  <tr height=21 style='height:15.75pt'> 
   <td height=21 class=xl6513019 style='height:15.75pt'></td> 
   <td class=xl6613019></td> 
@@ -3277,7 +3277,8 @@ echo "</tr>";
   <td class=xl6613019></td> 
   <td class=xl6613019></td> 
   <td class=xl6613019></td> 
-  <td class=xl6613019></td> 
+  <td class=xl6613019><strong><u><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/>
+ <br/>Cutting Supervisor Authorization</u></strong></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
