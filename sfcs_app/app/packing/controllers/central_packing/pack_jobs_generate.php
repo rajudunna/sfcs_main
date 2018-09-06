@@ -29,6 +29,7 @@
 	$lay_plan_qty=0;
 	$to_be_fill=0;
 	$bal=0;
+	$carton_job_no=0;
 	if($carton_method==1)
 	{
 		$sql123="SELECT pack_method,style_code,ref_order_num,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
@@ -57,7 +58,7 @@
 		$cols_size_tmp[]=$row123['size_tit'];
 		$style_id=$row123['style_code'];
 		$schedule_id=$row123['ref_order_num'];
-		echo $row123['cols']."---".$row123['size_tit']."<br>";
+		//echo $row123['cols']."---".$row123['size_tit']."<br>";
 	}
 	echo $style_id."--".$schedule_id."<br>";
 	$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link); 
@@ -66,6 +67,7 @@
 	$result123=mysqli_query($link, $sql123) or die ("Error1.2=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row123=mysqli_fetch_array($result123))
 	{
+		echo $row123['color']."-----".$row123['size_title']."<br>";
 		$gremnts_per_carton[$row123['color']][$row123['size_title']]=$row123['garments_per_carton'];
 		$sizes[$row123['color']][$row123['size_title']]=echo_title("$brandix_bts.tbl_orders_size_ref","size_name","id",$row123['ref_size_name'],$link);
 		
@@ -104,27 +106,22 @@
 		echo "Eligi---".$eligible_to_qty[$row123['color']][$row123['size_title']]."<br>";	
 		echo "Require---".$require_qty[$row123['color']][$row123['size_title']]."<br>";	
 		echo "Garments---".$row123['garments_per_carton']."<br>";	
-		// Check weather plan quantity is less than the order quantity or not	
-		if($plan_qty[$row123['color']][$row123['size_title']]<$order_qty[$row123['color']][$row123['size_title']])
-		{
-			$order_status=1;
-			$no_of_cartons_fl[]=floor($require_qty[$row123['color']][$row123['size_title']]/$row123['garments_per_carton']);
-			//echo "no Of cartfl---".$no_of_cartons_fl[]."<br>";	
-		}
-		else
-		{	
-			//$no_of_cartons_ce[$row123['color']][$row123['size_title']]=ceil($require_qty[$row123['color']][$row123['size_title']]/$row123['garments_per_carton']);	
-			$no_of_cartons_ce[]=ceil($require_qty[$row123['color']][$row123['size_title']]/$row123['garments_per_carton']);	
-			//echo "no Of cartcei---".$no_of_cartons_ce[]."<br>";	
-							
-		}		
 	}
-	$min_carto_fl=min($no_of_cartons_fl);
-	$min_carto_ce=min($no_of_cartons_ce);
-	$carton_job_no=0;
-	echo $min_carto_fl."---".$min_carto_ce."<br>";
-	//echo min($no_of_cartons_ce)."<br>";
-	//die();
+	// echo "order---".$order_qty['Black']['MM']."<br>";	
+	// echo "Plan---".$plan_qty['Black']['MM']."<br>";	
+	// echo "Pack---".$pack_qty['Black']['MM']."<br>";	
+	// echo "Eligi---".$eligible_to_qty['Black']['MM']."<br>";	
+	// echo "Require---".$require_qty['Black']['MM']."<br>";
+	// if($order_qty['Black']['MM']>0)
+	// {
+		// echo "True";
+	// }
+	// else
+	// {
+		// echo "Fasle";
+	// }	
+	//echo "Garments---".$row123['garments_per_carton']."<br>";
+	die();
 	// Adding sequence no of each packing method with in the schedule
 	$seq_new=echo_title("$bai_pro3.pac_stat_log","MIN(seq_no)","schedule",$schedule,$link);
 	if($seq_new==0 || $seq_new=='')
@@ -149,10 +146,32 @@
 			$cols_size=explode(",",$cols_size_tmp[$kk]);
 			for($ik=0;$ik<sizeof($cols_size);$ik++)	
 			{		
+				$min_carto_fl=0;
+				$min_carto_ce=0;
+				$order_status=0;
+				for($iii=0;$iii<sizeof($cols_tot);$iii++)
+				{
+					if($require_qty[$cols_tot[$iii]][$cols_size[$ik]]>0 && $gremnts_per_carton[$cols_tot[$iii]][$cols_size[$ik]]>0)
+					{
+						// Check weather plan quantity is less than the order quantity or not	
+						if($plan_qty[$cols_tot[$iii]][$cols_size[$ik]]<$order_qty[$cols_tot[$iii]][$cols_size[$ik]])
+						{
+							$order_status=1;
+							$no_of_cartons_fl[]=floor($require_qty[$cols_tot[$iii]][$cols_size[$ik]]/$gremnts_per_carton[$cols_tot[$iii]][$cols_size[$ik]]);
+						}
+						else
+						{										
+							$no_of_cartons_ce[]=ceil($require_qty[$cols_tot[$iii]][$cols_size[$ik]]/$gremnts_per_carton[$cols_tot[$iii]][$cols_size[$ik]]);	
+						}
+					}
+				}
+				$min_carto_fl=min($no_of_cartons_fl);
+				$min_carto_ce=min($no_of_cartons_ce);
+				echo $min_carto_fl."---".$min_carto_ce."<br>";
 				for($ii=0;$ii<sizeof($cols_tot);$ii++)
 				{							
 					echo $cols_tot[$ii]."----".$cols_size[$ik]."----Col--qty".$require_qty[$cols_tot[$ii]][$cols_size[$ik]]."<br>";
-					if($require_qty[$cols_tot[$ii]][$cols_size[$ik]]>0)
+					if($require_qty[$cols_tot[$ii]][$cols_size[$ik]]>0 && $gremnts_per_carton[$cols_tot[$ii]][$cols_size[$ik]]>0)
 					{	
 						$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MIN(carton_no)","pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
 						if($carton_job_no==0 || $carton_job_no=='')
@@ -170,7 +189,8 @@
 							{
 								$carton_job_no=echo_title("$bai_pro3.pac_stat_log","MAX(carton_no)+1","pac_seq_no='".$seq_no."' and schedule",$schedule,$link);
 							}	
-						}								
+						}
+						//echo $kk."---".$carton_job_no."<br>";		
 						$garments_per_carton=$gremnts_per_carton[$cols_tot[$ii]][$cols_size[$ik]];
 						$lay_plan_qty=$eligible_to_qty[$cols_tot[$ii]][$cols_size[$ik]];
 						$to_be_fill=$require_qty[$cols_tot[$ii]][$cols_size[$ik]];
@@ -224,6 +244,8 @@
 					}	
 				}
 				unset($cols_tot);
+				unset($no_of_cartons_fl);
+				unset($no_of_cartons_ce);
 			}
 			unset($cols_size);
 		}
@@ -234,6 +256,31 @@
 		{
 			$cols_tot=explode(",",$cols_tot_tmp[$kk]);
 			$cols_size=explode(",",$cols_tot_tmp[$kk]);
+			$min_carto_fl=0;
+			$min_carto_ce=0;
+			$order_status=0;
+			for($iii=0;$iii<sizeof($cols_tot);$iii++)
+			{
+				for($iiii=0;$iiii<sizeof($cols_size);$iiii++)
+				{
+					if($require_qty[$cols_tot[$iii]][$cols_size[$iiii]]>0 && $gremnts_per_carton[$cols_tot[$iii]][$cols_size[$iiii]]>0)
+					{
+						// Check weather plan quantity is less than the order quantity or not	
+						if($plan_qty[$cols_tot[$iii]][$cols_size[$iiii]]<$order_qty[$cols_tot[$iii]][$cols_size[$iiii]])
+						{
+							$order_status=1;
+							$no_of_cartons_fl[]=floor($require_qty[$cols_tot[$iii]][$cols_size[$iiii]]/$gremnts_per_carton[$cols_tot[$iii]][$cols_size[$iiii]]);
+						}
+						else
+						{										
+							$no_of_cartons_ce[]=ceil($require_qty[$cols_tot[$iii]][$cols_size[$iiii]]/$gremnts_per_carton[$cols_tot[$iii]][$cols_size[$iiii]]);	
+						}
+					}
+				}
+			}
+			$min_carto_fl=min($no_of_cartons_fl);
+			$min_carto_ce=min($no_of_cartons_ce);
+			echo $min_carto_fl."---".$min_carto_ce."<br>";
 			for($ii=0;$ii<sizeof($cols_tot);$ii++)
 			{			
 				for($ik=0;$ik<sizeof($cols_size);$ik++)	
@@ -310,6 +357,8 @@
 					}	
 				}
 			}
+			unset($no_of_cartons_fl);
+			unset($no_of_cartons_ce);
 			unset($cols_tot);
 			unset($cols_size);
 		}
