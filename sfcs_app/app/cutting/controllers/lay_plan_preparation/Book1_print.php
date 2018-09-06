@@ -1352,6 +1352,7 @@ body{
 <style>
 
 @media print {
+@page { margin: 0; }
 @page narrow {size: 9in 11in}
 @page rotated {size: landscape}
 DIV {page: narrow}

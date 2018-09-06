@@ -1988,17 +1988,18 @@ body{
 <style>
 
 @media print {
-	@page narrow {size: 15in 11in}
-	@page rotated {size: potrait}
-	DIV {page: narrow}
-	TABLE {page: rotated}
-	#non-printable { display: none; }
-	#printable { display: block; }
-	#logo { display: block; }
-	body { zoom:65%;}
-	#ad{ display:none;}
-	#leftbar{ display:none;}
-	#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
+    @page { margin: 0; }
+@page narrow {size: 9in 11in}
+@page rotated {size: landscape}
+DIV {page: narrow}
+TABLE {page: rotated}
+#non-printable { display: none; }
+#printable { display: block; }
+#logo { display: block; }
+body { zoom:72%;}
+#ad{ display:none;}
+#leftbar{ display:none;}
+#CUT_PLAN_NEW_13019{ width:57%; margin-left:20px;}
 }
 </style>
 
@@ -3262,7 +3263,7 @@ $item_name[] = $sql_row['item'];
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Width</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Allocated Qty</td>
   <td class=xl774118>Plies</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Net<br/>Length</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:150pt'>Net<br/>Length</td>
   <td class=xl7742018 style="width: 108px;">Damage</td>
   <td class=xl7742018 style="width: 85px;">Joints</td>
   <td class=xl7742018 style="width: 85px;">Ends</td>
