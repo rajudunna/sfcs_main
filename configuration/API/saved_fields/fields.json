@@ -1,20 +1,16 @@
 {
     "last_update": null,
     "database": {
-        "mysql": [
-            {
-                "sql_file": "sql_files\/dc4667e194c667ce876e21b8e2e751c6.sql",
-                "sql_title": "test",
-                "sql_description": "test"
-            }
-        ],
-        "mssql": [
-            {
-                "sql_file": "sql_files\/b01deb558660d2b272112bf847a801da.sql",
-                "sql_title": "test1",
-                "sql_description": "test"
-            }
-        ]
+        "mysql": [{
+            "sql_file": "sql_files\/dc4667e194c667ce876e21b8e2e751c6.sql",
+            "sql_title": "test",
+            "sql_description": "test"
+        }],
+        "mssql": [{
+            "sql_file": "sql_files\/b01deb558660d2b272112bf847a801da.sql",
+            "sql_title": "test1",
+            "sql_description": "test"
+        }]
     },
     "mysql_database_info": {
         "db_host": "10.227.220.238",
@@ -29,8 +25,7 @@
         "db_port": "3306"
     },
     "steps": [
-        [
-            {
+        [{
                 "type": "header",
                 "subtype": "h1",
                 "label": "Plant Details"
@@ -112,8 +107,7 @@
                 "required": true,
                 "label": "Shifts",
                 "name": "shifts",
-                "values": [
-                    {
+                "values": [{
                         "label": "A",
                         "value": "A",
                         "selected": true
@@ -173,8 +167,7 @@
                 "value": "22:30:00"
             }
         ],
-        [
-            {
+        [{
                 "type": "header",
                 "subtype": "h1",
                 "label": "Mails for Alerts"
@@ -385,8 +378,7 @@
                 "value": "b@brandix.com"
             }
         ],
-        [
-            {
+        [{
                 "type": "header",
                 "subtype": "h1",
                 "label": "Fabric Details"
@@ -397,11 +389,10 @@
                 "label": "UOM",
                 "className": "form-control",
                 "name": "uom",
-                "values": [
-                    {
+                "values": [{
                         "label": "Meters",
                         "value": "meters"
-                        
+
                     },
                     {
                         "label": "Yards",
@@ -417,8 +408,7 @@
                 "label": "Scaning Methods",
                 "className": "form-control",
                 "name": "scaning-method",
-                "values": [
-                    {
+                "values": [{
                         "label": "Bundle Level",
                         "value": "Bundle Level",
                         "selected": true
@@ -436,11 +426,10 @@
                 "label": "Reporting Quantity",
                 "className": "form-control",
                 "name": "reporting-quantity",
-                "values": [
-                    {
+                "values": [{
                         "label": "yes",
                         "value": "yes"
-                       
+
                     },
                     {
                         "label": "no",
@@ -455,8 +444,7 @@
                 "required": true,
                 "label": "Category Display in Dashboard",
                 "name": "category-display-dashboard",
-                "values": [
-                    {
+                "values": [{
                         "label": "Front",
                         "value": "front",
                         "selected": true
@@ -473,8 +461,7 @@
                 ]
             }
         ],
-        [
-            {
+        [{
                 "type": "header",
                 "subtype": "h1",
                 "label": "API Configurations"
@@ -524,10 +511,9 @@
                 "value": "200",
                 "subtype": "text"
             }
-            
+
         ],
-        [
-            {
+        [{
                 "type": "header",
                 "subtype": "h1",
                 "label": "DB MSSQL"
@@ -595,8 +581,7 @@
                 "subtype": "text"
             }
         ],
-        [
-            {
+        [{
                 "type": "header",
                 "subtype": "h1",
                 "label": "SFCS Mails"
