@@ -172,7 +172,7 @@ if(isset($_POST["submit"]))
     $schedule=$_POST["schedule"];     
     $color=$_POST["color"];     
     $reason=$_POST["reason"];     
-    $date="2018-09-06 15:33:33";
+    $date=date("Y-m-d h:i:sa"); 
     $j=0;$check=0;$check_a=0;$check_c=0;$check_m=0;$check_oc=0; 
     $order_tid=array(); 
     $schedule_no=array(); 
