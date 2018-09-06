@@ -48,7 +48,7 @@
                     $mod_no = $_POST['mod_no'];
                     $render_data = array();
                     echo "<div> <button  class='btn btn-success' id='replace_id'>Replace</button></div><form><table class='table table-bordered'><thead><tr><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Good</th><th>Reject</th><th>Replace Qty</th><th>Action</th></tr><thead>";
-                    $panel_qry = "SELECT qms_style,qms_schedule,qms_color,qms_size,sum(qms_qty) as qms_qty,doc_no,qms_tran_type,  SUBSTRING_INDEX(SUBSTRING_INDEX(remarks, '-', -2),'-',1) as shift, operation_id
+                    $panel_qry = "SELECT qms_style,qms_schedule,qms_color,qms_size,sum(qms_qty) as qms_qty,doc_no,qms_tran_type,  SUBSTRING_INDEX(SUBSTRING_INDEX(remarks, '-', -2),'-',1) as shift, operation_id,bundle_no
                      FROM $bai_pro3.bai_qms_db WHERE input_job_no='$job_no'  AND qms_tran_type IN(1,3) and remarks like '%$mod_no%' GROUP BY qms_size,qms_tran_type order by qms_size,qms_color,qms_tran_type ";
                     //  echo $panel_qry;
                     $previous_size = '';
@@ -66,6 +66,7 @@
                                 $insert_ary[$count][$ttype]= $result1['doc_no'];
                                 $insert_ary[$count]['shift'][$ttype] = $result1['shift'];
                                 $insert_ary[$count]['opid'][$ttype] = $result1['operation_id'];
+                                $insert_ary[$count]['bundle'][$ttype] = $result1['bundle_no'];
                                 $previous_size = $size;
                                 continue;
                             }
@@ -77,6 +78,7 @@
                             $insert_ary[$count][$ttype]= $result1['doc_no'];
                             $insert_ary[$count]['shift'][$ttype] = $result1['shift'];
                             $insert_ary[$count]['opid'][$ttype] = $result1['operation_id'];
+                            $insert_ary[$count]['bundle'][$ttype] = $result1['bundle_no'];
                             $previous_size = $size;
                             // if( $size == $previous_size){
                             //     if($ttype == 3){
@@ -98,7 +100,6 @@
                         }
                     echo "<tbody>";
                     $i=0;
-              
                     foreach($insert_ary as $data){
                         $i++;
                         $style = $data['style']; 
@@ -110,6 +111,8 @@
                         $doc_no = $data[3];
                         $shift = $data[shift][3];
                         $operation = $data[opid][3];
+                        $bundle_no = $data[bundle][3];
+                       
                         echo "<tr><td>$style</td><td>$schedule</td><td>$color</td>
                                     <td>$size</td>";
                                     if($good>0){
@@ -138,6 +141,7 @@
                                     <input type='hidden' id='doc_$i' name='doc_$i' value='$doc_no'>
                                     <input type='hidden' id='shift_$i' name='shift_$i' value='$shift'>
                                     <input type='hidden' id='opid$i' name='opid$i' value='$operation'>
+                                    <input type='hidden' id='bundle_$i' name='bun_$i' value='$bundle_no'>
                                     <input type='checkbox' id='$i' name='che_$i' value=''>
                                     </td>
                                   </tr>";
@@ -218,18 +222,20 @@ $('#mod_id').click(function(){
         var doc_nos = [];
         var shifts = [];
         var ops = [];
+        var bundle = [];
 	    var count =0;
         // alert('hai');
         $("input[type='checkbox']").each(function() { 
             if($(this).prop('checked') == true){
                 count++;
                 var check_id= $(this).attr('id');
-                if(parseInt($('#rep_'+check_id).val())>0){
+                if(parseInt($('#rep_'+check_id).val())>0 ){
                     sizes.push($('#siz_'+check_id).val());
                     doc_nos.push($('#doc_'+check_id).val());
                     shifts.push($('#shift_'+check_id).val());
                     ops.push($('#opid'+check_id).val());
                     replace_values.push($('#rep_'+check_id).val());
+                    bundle.push($('#bundle_'+check_id).val());
                 }
                 // else{
                     // alert('In Checked quantity, Rejection Quantity is less than zero');
@@ -237,7 +243,7 @@ $('#mod_id').click(function(){
                 // }
                
                 // console.log(sizes);
-                console.log(replace_values);
+                console.log(bundle);
             }
 	    });
 
@@ -262,6 +268,7 @@ $('#mod_id').click(function(){
                         'shifts':shifts,
                         'docs':doc_nos,
                         'operations':ops,
+                        'bundles':bundle,
                         'rep_qty': replace_values
                         },
                         method:'POST',
