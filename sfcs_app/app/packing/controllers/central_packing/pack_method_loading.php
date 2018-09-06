@@ -25,7 +25,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R')); 
-    // $has_permission=haspermission($_GET['r']);
+    $has_permission=haspermission($_GET['r']);
 	
 	error_reporting(0);
 ?>
@@ -105,146 +105,6 @@
 				if($_POST['style'] and $_POST['schedule'])
 				{
 					$style=$_POST['style'];
-					$schedule=$_POST['schedule'];
-					// echo "Style= ".$style_id."<br>Schedule= ".$sch_id.'<br>';
-					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
-					$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-					
-					$mini_order_ref = echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_crt_schedule",$schedule,$link);
-					$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$mini_order_ref,$link);
-					$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
-					$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
-
-
-					// Order Details Display Start
-					{
-						$col_array = array();
-						$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."'";
-						//echo $sizes_query;die();
-						$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
-						$row_count = mysqli_num_rows($sizes_result);
-						while($sizes_result1=mysqli_fetch_array($sizes_result))
-						{
-							$col_array[]=$sizes_result1['order_col_des'];
-							
-						}
-
-						foreach ($sizes_array as $key => $value)
-						{
-							$query = "SELECT bod.order_s_$sizes_array[$key] as order_qty, bod.title_size_$sizes_array[$key] as title, sum(psl.p_$sizes_array[$key]*psl.p_plies) AS planned_qty,order_col_des FROM $bai_pro3.bai_orders_db bod LEFT JOIN $bai_pro3.plandoc_stat_log psl ON psl.order_tid=bod.order_tid WHERE order_del_no=$schedule AND order_style_no='".$style."' AND order_s_$sizes_array[$key]>0 GROUP BY order_col_des";
-						//	echo $query.'<br>';
-							$qty=mysqli_query($link, $query) or exit("Sql Error2");
-							while($qty_result=mysqli_fetch_array($qty))
-							{
-								// echo $qty_result['title'];
-								$sizes_order_array[] = $qty_result['title'];
-								//echo $col_array[$key1]."-".$qty_result['order_col_des']."-".$qty_result['title']."-".$qty_result['order_qty']."</br>";
-								$order_array[$qty_result['order_col_des']][$qty_result['title']] = $qty_result['order_qty'];
-								$planned_array[$qty_result['order_col_des']][$qty_result['title']] = $qty_result['planned_qty'];
-								$balance_array[$qty_result['order_col_des']][$qty_result['title']] = $qty_result['planned_qty']-$qty_result['order_qty'];
-							}
-						}
-						//var_dump($order_array);
-						echo "<br><div class='col-md-12'>
-							<table class=\"table table-bordered\">
-								<tr>
-									<th>Colors</th>
-									<th>Details</th>";
-									foreach(array_unique($sizes_order_array) as $size)
-									{
-										echo "<th>$size</th>";
-									}	
-									
-									echo "<th>Total</th></tr>";
-									// echo "<th></th></tr>";
-
-								$counter = 0;
-								foreach ($order_array as $key => $value) 
-								{
-									//order qty
-									echo "<tr><td rowspan='3'>".$key."</td>";
-									$finkey=$key;
-									$order_total = 0;
-									
-										echo "<td>Order</td>";
-									
-									
-									foreach ($value as $key1 => $value1) 
-									{
-										foreach(array_unique($sizes_order_array) as $size)
-										{
-											if($key1 == $size){
-												echo "<td>".$value1."</td>";
-												$order_total += $value1;
-											}
-										}
-									}
-									echo "<td>$order_total</td>";
-									// echo "<td></td>";
-									$counter++;
-									//Cut qty
-									echo "<tr>";
-									$planned_total = 0;
-									
-										echo "<td>Cut</td>";
-									
-									
-									foreach ($value as $key1_1 => $order_value)
-									{
-										foreach(array_unique($sizes_order_array) as $size)
-										{
-											if($key1_1 == $size){
-												echo "<td>".$order_value."</td>";
-												$planned_total += $order_value;
-											}
-										}
-									}
-									echo "<td>$planned_total</td>";
-									// echo "<td></td>";
-									$counter1++;
-									//pack generated
-									echo "<tr>";
-									$balance_total = 0;
-									
-										echo "<td>Pack Generated</td>";
-									
-									
-									foreach ($value as $key1 => $balance_value) 
-									{
-										foreach(array_unique($sizes_order_array) as $size)
-										{
-											if($key1 == $size){
-												if ($balance_value > 0) {
-													$color = '#00b33c';
-												} else if ($balance_value < 0 ) {
-													$color = '#FF0000';
-												} else if ($balance_value == 0 ) {
-													$color = '#000000';
-												}
-												// echo "<td style='color:".$color."; font-weight:bold'>".$balance_value."</td>";
-												echo "<td></td>";
-												$balance_total += $balance_value;
-											}
-										}
-									}
-
-									if ($balance_total > 0) {
-										$color = '#00b33c';
-									} else if ($balance_total < 0 ) {
-										$color = '#FF0000';
-									} else if ($balance_total == 0 ) {
-										$color = '#000000';
-									}
-									// echo "<td style='color:".$color."; font-weight:bold'>$balance_total</td></tr>";
-									echo "<td></td></tr>";
-									$counter3++;
-								}
-
-						echo "</table></div>";
-					}
-					// Order Details Display End
-				}
-				$style=$_POST['style'];
 				$schedule=$_POST['schedule'];
 				// echo $_POST['style']."----". $_POST['schedule'];
 				$pack_meth_qry="SELECT p.ref_order_num,p.style_code,SUM(s.color) AS color,SUM(s.size_title) AS size ,s.seq_no,s.pack_method,s.pack_description FROM $bai_pro3.tbl_pack_ref AS p LEFT JOIN $bai_pro3.tbl_pack_size_ref AS s ON p.id=s.parent_id WHERE p.ref_order_num=$schedule AND p.style_code='".$style."' ORDER BY s.pack_method";
@@ -271,6 +131,7 @@
 									if($res=mysqli_fetch_array($pack_qnty_qry_res)){
 										$qnty=$res['quantity'];
 									}
+									$seq_no=$pack_result1['seq_no'];
 									// $col_array[]=$sizes_result1['order_col_des'];
 									echo "<tr><td>".$pack_result1['seq_no']."</td>";
 									echo"<td>".$pack_result1['pack_method']."</td>";
@@ -278,24 +139,33 @@
 									echo "<td>".$qnty."</td>";
 									echo "<td>".$pack_result1['color']."</td>";
 									echo "<td>".$pack_result1['size']."</td>";
-									echo "<td><a href=''>Generate Sewing Job</td>";
+
+									$url=getFullURL($_GET['r'],'pack_generation.php','R');
+									echo "<td><a href='$url?schedule=$schedule&style=$style&seq_no=$seq_no' target='_blank'>Generate Sewing Job</td>";
 									echo "<tr>";
 									
 								}	
 							
 							echo "</table></div>";
+							$url=getFullURL($_GET['r'],'.php','R');
 							echo "<div class='col-md-3 col-sm-3 col-xs-12'>
-							<input type='submit' name='Packing List' id='submit' class='btn btn-success ' value='Packing List' style='margin-top: 18px;'>
+							<a class='btn btn-success btn-sm' href='$url?schedule=$schedule&style=$style' target='_blank' style='margin-right: 139px;float: right;margin-top: -1px'>Packing List</a>
 							</div>";
+							$url=getFullURL($_GET['r'],'.php','R');
 							echo "<div class='col-md-3 col-sm-3 col-xs-12'>
-							<input type='submit' name='Print Lables' id='submit' class='btn btn-success ' value='Print Lables' style='margin-top: 18px;margin-left: -129px;'>
+							<a class='btn btn-success btn-sm' href='$url?schedule=$schedule&style=$style' target='_blank' style='margin-right: 284px;float: right;margin-top: -1px'>Print Lables</a>
 							</div>";
+							$url=getFullURL($_GET['r'],'.php','R');
 							echo "<div class='col-md-3 col-sm-3 col-xs-12'>
-							<input type='submit' name='Carton Track' id='submit' class='btn btn-success ' value='Carton Track' style='margin-top: 18px;margin-left: -256px;'>
+							<a class='btn btn-success btn-sm' href='$url?schedule=$schedule&style=$style' target='_blank' style='margin-right: 415px;float: right;margin-top: -1px'>Carton Track</a>
 							</div>";
+							$url=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
 							echo "<div class='col-md-12 col-sm-12 col-xs-12'>
-							<input type='submit' name='Add Packing Method' id='submit' class='btn btn-success ' value='Add Packing Method' style='margin-top: -35px;float: right;'>
+							<a class='btn btn-success btn-sm' href='$url&schedule=$schedule&style=$style' target='_blank' style='margin-right: 21px;float: right;margin-top: -29px'>Add Packing Method</a>
 							</div>";
+							
+				}
+				
 			}
 			?> 
 		</div>
