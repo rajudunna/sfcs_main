@@ -31,8 +31,8 @@
 		$order_tid=explode(',',$order_tids);
 	}
 
-	$order_tid[] = 'JOA141S9       55881511 - PINK BOTTOM              ';
-	$order_tid[]='JJP327F8       52834608-DARKGREY-ROSECLAIRBOTTOM   ';
+	// $order_tid[] = 'JOA141S9       55881511 - PINK BOTTOM              ';
+	// $order_tid[]='JJP327F8       52834608-DARKGREY-ROSECLAIRBOTTOM   ';
 
 	$sql1216="SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref WHERE default_operation='Yes' group by category order by category*1"; 
 	$result1216=mysqli_query($link, $sql1216) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"])); 

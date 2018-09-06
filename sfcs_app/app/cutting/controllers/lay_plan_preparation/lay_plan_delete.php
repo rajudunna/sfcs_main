@@ -445,7 +445,14 @@ if(isset($_POST["submit"]))
                 } 
                  
             } 
-			
+            
+            $op_codes = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+                         WHERE default_operation='Yes' and category='cutting' group by category order by category*1"; 
+            $op_codes_result = mysqli_query($link, $op_codes);
+            while($row = mysqli_fetch_array($op_codes_result)){
+                $op_codes = $row['codes'];
+            }
+
 			$getmonos="select mo_no from $bai_pro3.mo_details where schedule='$schedule' and color='$color'";
 			$moresult=mysqli_query($link, $getmonos) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($rowmo=mysqli_fetch_array($moresult)) 
@@ -453,8 +460,8 @@ if(isset($_POST["submit"]))
 				$mos[]=$rowmo['mo_no'];
 			}
 			$mos=implode(',',$mos);
-			$deletefrommoquantitys="delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_desc='Cutting'";
-			echo $deletefrommoquantitys;
+			$deletefrommoquantitys="delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code in ($op_codes)";
+            //echo $deletefrommoquantitys;
 			mysqli_query($link, $deletefrommoquantitys) or die("Error while deleting mo nos from mo operation quantities".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	
 			
