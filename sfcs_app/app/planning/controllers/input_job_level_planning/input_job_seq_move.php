@@ -77,12 +77,12 @@
                     $title=str_pad("Style:".$style_id_new,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80);
 
                     if($bg_color1 == 'white'){
-                        echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:red;" data-color="red" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+                        echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:red;" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
                     }else if($bg_color1 == 'yellow'){
-                        echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+                        echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:white;border: 4px solid yellow;" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
                     }else{
                         if($style_id_new !== NULL){
-                            echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'" ><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+                            echo '<li class="ui-state-default" id="'.$input_priority.'"  style="background-color:'.$bg_color1.';"  title="'.$title.'" ><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
                         }
                         
                     }	
@@ -123,7 +123,7 @@ function saveOrder() {
         url: url,
         success: function(response){
             swal('Jobs Sequence Changed','','success');
-            // window.location = redirection_url;
+            window.location = redirection_url;
         }
     });  
     $('#button_disabled').prop('disabled', false);   
