@@ -1278,7 +1278,7 @@
 
 				<div class="panel-body">
 
-					<div>
+					<!-- <div>
 						<h4>Color Legends</h4>
 						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: white;color: red;">
 						<div>Different Style and Schedule Jobs</div>
@@ -1299,7 +1299,7 @@
 						<div>Same Style and Schedule if Fabric is not requested for Excess/Sample Jobs</div> 
 						</div>
 						<div style="clear: both;"> </div>
-					</div>
+					</div> -->
 				
 					<br>
 
