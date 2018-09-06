@@ -195,7 +195,7 @@ border: 1px solid black;
 .orange {
   width:20px;
   height:20px;
-  background-color: #991144;
+  background-color: #FF8C00;
   display:block;
   float: left;
   margin: 2px;
@@ -212,7 +212,7 @@ border: 1px solid black;
 
 .orange a:hover {
   text-decoration:none;
-  background-color: #991144;
+  background-color: #FF8C00;
 }
 
 .blue {
@@ -644,6 +644,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					break;
 				}			
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
+				// var_dump($input_job_no_random_ref);
 				$input_trims_status=$row["input_trims_status"];
 				$add_css="behavior: url(border-radius-ie8.htc);  border-radius: 10px;";
 				if($input_trims_status>1)
@@ -745,6 +746,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					}
 					if($cut_status=="5")
 					{
+						
 						$id="blue";					
 						$rem="Cut Completed";
 					}
@@ -881,12 +883,36 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							{
 								if ($add_css == "")
 								{
-									echo "<div id=\"S$schedule\" style=\"float:left;\">
-										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+
+									$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref'";
+
+									$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+									while($sql_row=mysqli_fetch_array($cut_input_report_result))
+									{
+										$cut_origional_qty=$sql_row['cut_qty'];
+										$report_origional_qty=$sql_row['report_qty'];
+										
+									}
+
+									if($cut_origional_qty > $report_origional_qty){
+
+										echo "<div id=\"S$schedule\" style=\"float:left;\">
+											<div id=\"SJ$input_job_no\" style=\"float:left;\">
+												<div id=\"$input_job_no_random_ref\" class='orange' style=\"font-size:12px; text-align:center; color:orange;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
-										</div>
-									</div>";
+											</div>
+										</div>";
+
+									}else{
+
+										echo "<div id=\"S$schedule\" style=\"float:left;\">
+											<div id=\"SJ$input_job_no\" style=\"float:left;\">
+												<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+											</div>
+											</div>
+										</div>";
+									}
 								}
 								else
 								{
