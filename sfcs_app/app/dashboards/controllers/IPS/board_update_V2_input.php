@@ -53,7 +53,7 @@ body
 	font-size: 14px;
 }
 table{
-	font-size:14px;
+	font-size:10px;
 }
 
 .white {
