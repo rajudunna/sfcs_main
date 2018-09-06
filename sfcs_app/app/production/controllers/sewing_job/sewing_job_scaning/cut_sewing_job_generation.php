@@ -102,13 +102,13 @@ echo '<div class = "panel-body">
       <label for="usr">Schedule :</label>
       <input type="text" class="form-control" value="'.$schedule.'"  name=\"schedule\"  id="schedule">
     </div>';
+
+echo "<div class='col-sm-3'><label>Select Color:</label>
+<select class='form-control' name=\"color\"  id='color'>";
 $sql="select distinct order_col_des from bai_pro3.bai_orders_db where order_del_no= $schedule ";
     //echo $sql;
 $sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
-echo "<div class='col-sm-3'><label>Select Color:</label>
-<select class='form-control' name=\"color\"  id='color'>";
-
 echo "<option value='' disabled selected>Please Select</option>";
 	
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -147,7 +147,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
             if($i==0){
                 echo "<thead>
                     <tr>
-                        <th>Ratio</th><th>Cut No</th><th>P Plies</th>";
+                        <th>Ratio</th><th>Cut No</th><th>Plies</th>";
                         for($j=1;$j<=50;$j++){
                             $sno = str_pad($j,2,"0",STR_PAD_LEFT);
                             if($row['title_size_s'.$sno]!=''){
