@@ -106,16 +106,25 @@
 				{
 					$style=$_POST['style'];
 					$schedule=$_POST['schedule'];
+					
+					//getting parent id from tbl_pack_ref
+					$getparentid="select id from $bai_pro3.tbl_pack_ref where ref_order_num='$schedule' and style_code='$style'";
+					$parentidrslt=mysqli_query($link, $getparentid) or exit("Error while getting parent id");
+					if($row=mysqli_fetch_array($parentidrslt))
+					{
+						$parent=$row['id'];
+					}
+					
+					
 					// echo "Style= ".$style_id."<br>Schedule= ".$sch_id.'<br>';
 					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
 					$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-					
 					$mini_order_ref = echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_crt_schedule",$schedule,$link);
 					$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$mini_order_ref,$link);
 					$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
 					$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 
-
+					
 					// Order Details Display Start
 					{
 						$col_array = array();
@@ -162,7 +171,7 @@
 								foreach ($order_array as $key => $value) 
 								{
 									//order qty
-									echo "<tr><td rowspan='3'>".$key."</td>";
+									echo "<tr><td rowspan='4'>".$key."</td>";
 									$finkey=$key;
 									$order_total = 0;
 									
@@ -202,11 +211,48 @@
 									echo "<td>$planned_total</td>";
 									// echo "<td></td>";
 									$counter1++;
+									
+									
+									
+									
+									
+									echo "<tr>";
+									$pack_tot = 0;
+									
+										echo "<td>Pack Generated</td>";
+									
+									
+									foreach ($value as $key1_1 => $order_value)
+									{
+										foreach(array_unique($sizes_order_array) as $size)
+										{
+											if($key1_1 == $size){
+												// echo $key."---".$size."</br>";
+												$getpackqty="select sum(garments_per_carton) as qty from $bai_pro3.tbl_pack_size_ref where parent_id='$parent' and color='$key' and size_title='$size'";
+												$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
+												if($row=mysqli_fetch_array($packqtyrslt))
+												{
+													$qty=$row['qty'];
+												}
+												
+												echo "<td>".$qty."</td>";
+												$pack_tot += $qty;
+											}
+										}
+									}
+									echo "<td>$pack_tot</td>";
+									
+									
+									
+									
+									
+									
+									
 									//pack generated
 									echo "<tr>";
 									$balance_total = 0;
 									
-										echo "<td>Pack Generated</td>";
+										// echo "<td>Total</td>";
 									
 									
 									foreach ($value as $key1 => $balance_value) 
@@ -222,7 +268,7 @@
 													$color = '#000000';
 												}
 												// echo "<td style='color:".$color."; font-weight:bold'>".$balance_value."</td>";
-												echo "<td></td>";
+												// echo "<td></td>";
 												$balance_total += $balance_value;
 											}
 										}
@@ -236,7 +282,7 @@
 										$color = '#000000';
 									}
 									// echo "<td style='color:".$color."; font-weight:bold'>$balance_total</td></tr>";
-									echo "<td></td></tr>";
+									echo "</tr>";
 									$counter3++;
 								}
 
