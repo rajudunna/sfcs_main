@@ -10,6 +10,7 @@ $result_oper = $link->query($qry_get_operation_name);
 	Database: Removed NOT NULL option for the table 'tbl_style_ops_master'
 	by Theja on 06-02-2018
 -->
+<head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></head>
 <div class='container'>
 	<div class="panel panel-primary">
 		<div class="panel-heading"><strong>Default Operation Flow</strong></div>
@@ -36,11 +37,12 @@ $result_oper2 = $link->query($qry_get_suppliers);
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Manual Operation</h4>
+          <h4 class="modal-title">Operation</h4>
         </div>
         <div class="modal-body">
 				<input type="hidden" name="rowIndex" id="rowIndex">
 				<input type="hidden" name="rowId" id="rowId">
+				<input type = "hidden" name = "first_ops_id" id = "first_ops_id" value = "0">
 				<input type="hidden" name="chaged_id" id="chaged_id">
 				<input type="hidden" name="changed_value" id="changed_value">
 				<input type="hidden" name="actual_value" id="actual_value">
@@ -56,7 +58,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 				<div class = "col-sm-12">
                     <label for="style">Operation Name <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
                     </br>				
-                            <select id="oper_name" style="width:100%;">
+                            <select id="oper_name" style="width:100%;"  class="form-control">
                                 <option value='0'>Select Operation Name</option>
                                 <?php				    	
                                     if ($result_oper->num_rows > 0) {
@@ -76,15 +78,15 @@ $result_oper2 = $link->query($qry_get_suppliers);
                     </br>
 					<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 					<label class="radio-inline"><input type="radio" name="optradio2" value ="Yes" id='optradio2' onclick="autooperseq1()">Yes</label>
-					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()">No</label><br><br>
-					<label>Operation Group <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)'>
+					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()" checked>No</label><br><br>
+					<label>Operation Group</label>
+					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)' value = '0'>
 					<label>Next Operation</label>
 					<input class="form-control input-sm integer" id="oper_depe2" type="text">
-					<label>Component <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></label>
+					<label>Component</label>
 					<input class="form-control input-sm" id="component2" type="text">
 					<label></label><br/>
-					<button class="btn btn-primary btn-sm" hidden='true' id='add-row1'>Add Manual Operation </button>
+					<button class="btn btn-primary btn-sm" hidden='true' id='add-row1'>Add Operation </button>
 				</div>
 			</div>
 		</div>
@@ -101,19 +103,15 @@ $result_oper2 = $link->query($qry_get_suppliers);
         </div>
         <div class="modal-body">
 			<div class="row">
-				<!-- <div class="col-md-4" id="yes">
-					<center><button class="btn btn-danger btn-lg" id='yes'>Yes</button></center>
-				</div>  -->
-				<div class="col-md-4"  hidden='true' id='m3_opss'>
-					<select name="m3_ops" class="form-control" id='m3_ops' style="style">
-						<option value='0'>Select M3-SMV</option>
-					</select>
+				<div class="col-md-3">
 				</div>
-				<div class="col-md-4" id = "proceed" >
-					<center><button class="btn btn-primary btn-lg" id='proceed'>Proceed</button></center>
+				<div class="col-md-3" id = "proceed" >
+					<button class="btn btn-danger btn-lg" id='proceed'>Proceed</button>
 				</div>
-				<div class="col-md-4" id = "no">
-					<center><button class="btn btn-primary btn-lg" id='No' data-dismiss="modal">No</button></center>
+				<div class="col-md-3" >
+				<button class="btn btn-primary btn-lg" id='No' data-dismiss="modal">No</button>
+				</div>
+				<div class="col-md-3">
 				</div>
 			</div>
 			
@@ -131,17 +129,19 @@ $result_oper2 = $link->query($qry_get_suppliers);
 		   <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
-		<label>Operation Code <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+		<label style='display:none;'>Operation Code <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+		<div hidden='true'>
 		<input class="form-control input-sm integer" id="ops_code1" type="text">
 		</br>
+		</div>
 			<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 			<label class="radio-inline"><input type="radio" name="optradio" value ="Yes" id='Yes' onclick="autooperseq1()">Yes</label>
-			<label class="radio-inline"><input type="radio" name="optradio" value = "No" id= 'None' onclick="autooperseq()">No</label><br><br>
-			<label>Operation Group <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-			<input class="form-control input-sm integer" id="oper_seq1" type="text"  onchange='verify_num_seq2(this)'>
+			<label class="radio-inline"><input type="radio" name="optradio" value = "No" id= 'None' onclick="autooperseq()" checked>No</label><br><br>
+			<label>Operation Group </label>
+			<input class="form-control input-sm integer" id="oper_seq1" type="text"  onchange='verify_num_seq2(this)' value = '0'>
 			<label>Next Operation</label>
 			<input class="form-control input-sm integer" id="oper_depe1" type="text">
-			<label>Component <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></label>
+			<label>Component</label>
 			<input class="form-control input-sm" id="component1" type="text">
 			<br></br></br>
 			<button class="btn btn-primary btn-sm" id="edit">Update</button>
@@ -167,7 +167,7 @@ $("#clear").click(function(){
 });
 $(document).ready(function(){
 	$('#loading-image').hide();
-	$('#oper_name').select2();
+	//s$('#oper_name').select2();
 	params = 'GetData';
     $.ajax
     ({
@@ -245,8 +245,8 @@ $(document).ready(function(){
                 }
                 else
                 {
-                    var markup1 = "<b style='color:red;'>Sorry!!! No Operations found.</b>";
-                        $("#dynamic_table1").append(markup1);
+                   // var markup1 = "<b style='color:red;'>Sorry!!! No Operations found.</b>";
+                       // $("#dynamic_table1").append(markup1);
                 }
                 document.getElementById('component1').readOnly=false;
                 document.getElementById('component2').readOnly=false;
@@ -306,11 +306,11 @@ $(document).ready(function(){
 			sweetAlert("Please Enter Barcode Yes/No.","","warning");
 			flag = 0;
 		}
-		if($('#oper_seq2').val() == '')
-		{
-			sweetAlert("Please Enter Operation Group","","warning");
-			flag = 0;
-		}
+		// if($('#oper_seq2').val() == '')
+		// {
+		// 	sweetAlert("Please Enter Operation Group","","warning");
+		// 	flag = 0;
+		// }
 		if($('#component2').val() == '' && $("input:radio[name=optradio2]:checked").val() == 'Yes')
 		{
 			//sweetAlert("Please Enter Component Name.","","warning");
@@ -335,19 +335,27 @@ $(document).ready(function(){
 			var component = $('#component2').val();
 			if(component == '')
 			{
-				component = 'Body';
+				component = '';
+			}
+			if(oper_seq == '')
+			{
+				oper_seq = 0;
 			}
 			var component1 =  "'"+component+"'";
 			var s = $('#oper_code1').val();
 			//logic implimentation for operation_order
 		    var pre_ops_order = Number($('#rowId').val());
+			var first_ops_order = Number($('#first_ops_id').val());
 			//var pre_ops_order = 10.111;
-            if(pre_ops_order != 0)
+			console.log(first_ops_order);
+            if(first_ops_order == 0)
             {
                 var pre_ops_order_string = "'"+pre_ops_order+"'";
                 pre_ops_order_string = pre_ops_order_string.slice(1, -1);
+				console.log(pre_ops_order);
                 if(isInteger(pre_ops_order))
                 {
+					console.log("is integer working");
                     var actual_ops_order = Number(pre_ops_order) + Number(0.1)
                 }
                 else
@@ -364,7 +372,7 @@ $(document).ready(function(){
             }
             else
             {
-                var actual_ops_order = s;
+                var actual_ops_order = pre_ops_order;
 			}
 			//alert(vactual_ops_order);
 			var saving_data = [oper_name_id,s,actual_ops_order,oper_def1,oper_seq,oper_dep,component1,barcode1];
@@ -388,22 +396,34 @@ $(document).ready(function(){
 							}
 							else
 							{
-								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td>"+oper_def+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></td><td></button></td><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
+
+								var data = jQuery.parseJSON(response);
+								var response = data['last_id'];
+								var changing = data['changed_ids'];
+								$.each(changing, function( key, value )
+								{
+									var id = key+"ops_order";
+									console.log(id);
+									document.getElementById(id).innerHTML = value; 
+								});
+								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td>"+oper_def+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
 								//$('#dynamic_table').append(markup);	
 								var row = $("#rowIndex").val();
-                                if(row != 0)
+                                if(row != 0 && first_ops_order == 0)
                                 {
                                     $('#dynamic_table > tbody > tr').eq(row-1).after(markup);
                                 }
                                 else
                                 {
-                                    $('#dynamic_table').append(markup);
+									//$('#dynamic_table > tbody > tr').eq(0-1).after(markup);
+									$("#dynamic_table").prepend(markup);
                                 }
 								$('#myModal').modal('toggle');
-								$('#myModal').find('input:text').val('');
+								// $('#myModal').find('input:text').val('');
 								$("#oper_name").val(0);
 								document.getElementById('component1').readOnly=false;
 								document.getElementById('component2').readOnly=false;
+								//location.reload(true);
 								//alert("Operation Successfully Inserted");
 							}
 						}
@@ -411,7 +431,9 @@ $(document).ready(function(){
 				});	
 		}
 		//$("input:radio[name=optradio2]:checked").val('No') ;
-		//$('#oper_seq2').val(0);			
+		$('#oper_seq2').val('0');
+		$('#oper_depe2').val('');
+		$('#component2').val('');			
 	  });
 	  function isInteger(value) {
         if ((undefined === value) || (null === value)) {
@@ -444,12 +466,13 @@ $("#edit").click(function()
 	var oper_dep = $('#oper_depe1').val();
 	var component = $('#component1').val();
 	var ops_code1 = $('#ops_code1').val();
+	console.log(ops_code1);
 	var component1 = "'"+component+"'";
-	if(oper_seq == '')
-	{
-		sweetAlert("Please Enter Operation Group","","warning");
-		flag = 0;
-	}
+	// if(oper_seq == '')
+	// {
+	// 	sweetAlert("Please Enter Operation Group","","warning");
+	// 	flag = 0;
+	// }
 	if($("input:radio[name=optradio]:checked").val() == undefined)
 	{
 		sweetAlert("Please Enter Barcode Yes/No.","","warning");
@@ -459,6 +482,10 @@ $("#edit").click(function()
 	{
 		// sweetAlert("Please Enter Component Name","","warning");
 		// flag= 0;
+	}
+	if(oper_seq == '')
+	{
+		oper_seq = 0;
 	}
 	if(flag == 1)
 	{
@@ -567,7 +594,6 @@ function sequence_checking_per()
 	if(seq != 0 && seq != ''){
 		$.ajax
 			({
-				
 					type: "POST",
 					url:function_file+"?r=getdata&seq_params="+seq_params,
 					data: {},
@@ -616,12 +642,12 @@ $('#oper_depe2').change(function()
 {
 	var flag = 1;
 	var seq = $('#oper_seq2').val();
-	if(seq == '')
-	{
-		sweetAlert("Please Enter Operation Group First","","warning");
-		$('#oper_depe2').val('');
-		flag = 0;
-	}
+	// if(seq == '')
+	// {
+	// 	sweetAlert("Please Enter Operation Group First","","warning");
+	// 	$('#oper_depe2').val('');
+	// 	flag = 0;
+	// }
 	if(flag == 1)
 	{
 		var pro_style_name = $('#pro_style option:selected').text();
@@ -712,25 +738,15 @@ $('#proceed').click(function()
 {
 	var del_row_id = $('#row_index_del').val();
 	flag = 0;
-	var deletable_val = $('#m3_ops').val();
+	var deletable_val = $('#deletable_id').val();
 	//var editable_val = $('#deletable_id').val();
 	//smv = document.getElementById(editable_val+"smv").innerText;
 	// console.log(s)
-	var parameters = [deletable_val,editable_val];
-	if(smv != 0)
-	{
-		//$('#m3_opss').show();
-		if(deletable_val == 0)
-		{
-			sweetAlert("please select M3 Operation.","","warning");
-			flag = 1;
-		}
-	}
+	var parameters = [deletable_val];
 	if(flag == 0)
 	{
 		$.ajax
 		({
-			
 				type: "POST",
 				url:function_file+"?r=getdata&parameters="+parameters,
 				data: {parameters: $('#parameters').val()},
@@ -757,19 +773,37 @@ function value_edition(btn,id_of_main)
         var table = document.getElementById("dynamic_table1");
         var row = btn.parentNode.parentNode;
         var ind = row.rowIndex;
+		console.log(ind);
         var value_ind = id_of_main+"ops_order";
         console.log(value_ind);
         var ind_value_ops_order = document.getElementById(value_ind).innerText;
         console.log(ind_value_ops_order);
         document.getElementById('rowIndex').value = ind;
         document.getElementById('rowId').value = ind_value_ops_order;
+		document.getElementById('first_ops_id').value = 0;
         $('#myModal').modal('toggle');
     }
     else
     {
-        document.getElementById('rowIndex').value = 0;
-        document.getElementById('rowId').value = 0;
-        $('#myModal').modal('toggle');
+		var first_ops_check = 0;
+		var table = document.getElementById("dynamic_table1");
+        var row = btn.parentNode.parentNode;
+        var ind = row.rowIndex;
+		console.log(ind);
+		$.ajax
+		({
+				type: "POST",
+				url:function_file+"?r=getdata&first_ops_check="+first_ops_check,
+				data: {paramefirst_ops_checkters: $('#first_ops_check').val()},
+				success: function(response)
+				{
+					document.getElementById('rowIndex').value = 0;
+					document.getElementById('rowId').value = 1;
+					document.getElementById('first_ops_id').value = response;
+					$('#myModal').modal('toggle');
+
+				}
+		});
     }
 }
 function default_oper(value,btn)
@@ -778,40 +812,9 @@ function default_oper(value,btn)
 	console.log(myvalue);
 	var dep = value+"ops_code";
 	console.log(dep);
-	var dependency_ops = document.getElementById(dep).innerText;
-	var dependency_ops_ary = [dependency_ops];
-	$.ajax
-		({
-			
-				type: "POST",
-				url:function_file+"?r=getdata&dependency_ops_ary="+dependency_ops_ary,
-				data: {},
-				success: function(response)
-				{
-					if(response == 1)
-					{
-						$('#myModal1').modal('toggle');
-						document.getElementById("deletable_id").value = value;
-						document.getElementById("row_index_del").value = btn;
-						var editable_val = $('#deletable_id').val();
-						smv = document.getElementById(editable_val+"smv").innerText;
-						if(smv != 0)
-						{
-							$('#m3_opss').show();
-						}
-						
-					}
-					else if(response == 3)
-					{
-						sweetAlert("You can't delete this operation because this operation using as Next operation.","","warning");
-					}
-					else
-					{
-						sweetAlert("You can't delete this operation because this Group already sent for scanning.","","warning");
-					}
-				}
-		});
-	
+	$('#myModal1').modal('toggle');
+	document.getElementById("deletable_id").value = value;
+	document.getElementById("row_index_del").value = btn;	
 }	
 </script>
 <script type="text/javascript">
@@ -920,34 +923,34 @@ function autooperseq1()
 }
 function verify_num_seq2 ()
 {
-	var barcode = $("input:radio[name=optradio]:checked").val();
-	var val = document.getElementById('oper_seq1').value;
-	console.log(barcode);
-	if(barcode == 'No' && val != 0 || barcode == 'undefined')
-	{
-		sweetAlert("Please Set Barcode As Yes","","warning");
-		document.getElementById('oper_seq1').value = 0;
-	}
-	else
-	{
-			sequence_checking_per_edit();
-	}
+	// var barcode = $("input:radio[name=optradio]:checked").val();
+	// var val = document.getElementById('oper_seq1').value;
+	// console.log(barcode);
+	// if(barcode == 'No' && val != 0 || barcode == 'undefined')
+	// {
+	// 	sweetAlert("Please Set Barcode As Yes","","warning");
+	// 	document.getElementById('oper_seq1').value = 0;
+	// }
+	// else
+	// {
+	// 		sequence_checking_per_edit();
+	// }
 }
 function verify_num_seq1()
 {
-	var barcode = $("input:radio[name=optradio2]:checked").val();
-	console.log(barcode);
-	var val = document.getElementById('oper_seq2').value;
-	console.log(barcode);
-	if(barcode == 'No' && val != 0 || barcode == undefined)
-	{
-		sweetAlert("Please Set Barcode As Yes","","warning");
-		document.getElementById('oper_seq2').value = 0;
-	}
-	else
-	{
-			sequence_checking_per();
-	}
+	// var barcode = $("input:radio[name=optradio2]:checked").val();
+	// console.log(barcode);
+	// var val = document.getElementById('oper_seq2').value;
+	// console.log(barcode);
+	// if(barcode == 'No' && val != 0 || barcode == undefined)
+	// {
+	// 	sweetAlert("Please Set Barcode As Yes","","warning");
+	// 	document.getElementById('oper_seq2').value = 0;
+	// }
+	// else
+	// {
+	// 		sequence_checking_per();
+	// }
 }
 
 </script>

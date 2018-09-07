@@ -20,13 +20,18 @@ $has_permission=haspermission($url_r);
 // echo "Authp : ".var_dump($has_permission);
 // die();
 
+
 ?>
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	// $username="sfcsproject1";
 	// $users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
 	//$mods=array();
-
+	$query = "select * from $bai_pro3.tbl_fabric_request_time";
+	$update_request_time=mysqli_query($link, $query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row=mysqli_fetch_array($update_request_time)){
+		$rms_request_time = $row['request_time'];
+	}
 	if((in_array($authorized,$has_permission)))
 	{
 		//echo "Names Exit";
@@ -108,6 +113,7 @@ function pad(number, length) {
 
 function GetSelectedItem()
 {
+	var rms_request_time_test = "<?php echo $rms_request_time; ?>";
 	var dat=document.getElementById("sdat").value;
 	var mins=document.getElementById("mins").value;
 	var currentTime = new Date();
@@ -116,7 +122,7 @@ function GetSelectedItem()
 	var yer=currentTime.getFullYear();
 	//var hours=currentTime.getHours();
 	//var hours=currentTime.getHours()+3; //3 hours lead time
-	var hours=currentTime.getHours()+1; //1 hours lead time
+	var hours=currentTime.getHours()+parseInt(rms_request_time_test); //1 hours lead time
 	var mints=currentTime.getMinutes();
 	var datsplit=dat.split("-");
 	var timsplit=mins.split(":");
@@ -294,7 +300,7 @@ function GetSelectedItem()
 
 					$mins=array("00","05","10","15","20","25","30","35","40","45","50","55");
 
-					echo "<SELECT name=\"mins\" id=\"mins\" onchange=\"GetSelectedItem();\">
+					echo "<SELECT name=\"mins\" id=\"mins\" onchange=\"GetSelectedItem($rms_request_time);\">
 
 					<option value=\"0:00\" name=\"0.00\">Select Time</option>";
 					$selected="";
@@ -359,7 +365,16 @@ function GetSelectedItem()
 					}
 
 					echo "<option value=\"22:00\" name=\"r22\">10:00 P.M</option>";
-					echo "</SELECT> <strong>Lead time for RM supply is 1 Hour</strong>";
+
+					if($rms_request_time==1){
+						$hour = 'Hour';
+					}
+					else {
+						$hour = 'Hours';
+					}
+
+
+					echo "</SELECT> <strong>Lead time for RM supply is ".$rms_request_time." ".$hour." </strong>";
 
 				?>
 			</td>

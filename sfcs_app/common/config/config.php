@@ -44,7 +44,7 @@ $global_facility_code=$conf1->get('plantcode');
 
 $plant_alert_code=$conf1->get('plant-alert-code');     //plant-alert-code
 $message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
-
+$rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
