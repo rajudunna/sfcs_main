@@ -119,6 +119,7 @@
 									<th>S.No</th>
 									<th>Packing Method</th>
 									<th>Color</th>
+									<th>Sizes</th>
 									<th>Carton Quantity</th>
 									<th>Schedule</th>
 									<th>Controlls</th></tr>";
@@ -128,10 +129,19 @@
 									$seq_no1[]=$pack_result1['seq_no'];
 									$packmetod=$new_result1['pack_method'];
 									$staus=$new_result1['status'];
+									$doc_ref=$new_result1['doc_no_ref'];
+									//echo $doc_ref;
+									$color = "select GROUP_CONCAT(DISTINCT(TRIM(color)) SEPARATOR ',') FROM $bai_pro3.pac_stat_log where doc_no_ref = '$doc_ref'";
+									$color_result=mysqli_query($link, $color) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$row_color = mysqli_fetch_row($color_result);
+									$size = "select GROUP_CONCAT(DISTINCT(TRIM(size_tit)) SEPARATOR ',') FROM $bai_pro3.pac_stat_log where doc_no_ref = '$doc_ref'";
+									$size_result=mysqli_query($link, $size) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $row_size = mysqli_fetch_row($size_result);
 									// $col_array[]=$sizes_result1['order_col_des'];
 									echo "<tr><td>".$new_result1['seq_no']."</td>";
 									echo"<td>".$operation[$packmetod]."</td>";
-									echo"<td>".$new_result1['color']."</td>";
+									echo"<td>".$row_color[0]."</td>";
+									echo"<td>".$row_size[0]."</td>";
 									echo"<td>".$new_result1['carton_act_qty']."</td>";
 									echo"<td>".$new_result1['schedule']."</td>";
 									$url=getFullURL($_GET['r'],'pack_method_deletion.php','N');
