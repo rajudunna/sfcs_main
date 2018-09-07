@@ -85,6 +85,14 @@ window.onload = startBlink;
 <!-- POP up window -  start  -->
 <script>         
 function PopupCenter(pageURL, title,w,h) {
+    
+    var shift= $('#shift').val();
+    console.log(shift);
+    if(shift==''){
+swal('Please Select Shift First','','error');
+return false;
+    }
+ 
 var left = (screen.width/2)-(w/2);
 var top = (screen.height/2)-(h/2);
 var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
@@ -793,11 +801,14 @@ $shift_ary = ['A','B','C','G'];
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();   
 });
+
+
 </script>
 
 
 <script>
 $(document).ready(function(){
+
     $('[data-toggle="tooltip"]').tooltip(); 
     var url = '<?= getFullURL($_GET['r'],'mod_rep_recon.php','R'); ?>';
     var modules = '<?= json_encode($data); ?>';
