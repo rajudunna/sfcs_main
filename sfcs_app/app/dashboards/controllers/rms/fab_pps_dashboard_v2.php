@@ -326,7 +326,11 @@
     .orange {
       width:20px;
       height:20px;
+<<<<<<< HEAD
       background-color: #eda11e;
+=======
+      background-color: #FF8C00;
+>>>>>>> 830-shift-selection-while-reporting-sewing-in-and-sewing-out-operations-while-reporting-operations-through-ips-and-ims
       display:block;
       float: left;
       margin: 2px;
@@ -343,7 +347,11 @@
 
     .orange a:hover {
       text-decoration:none;
+<<<<<<< HEAD
       background-color:#eda11e;
+=======
+      background-color: #FF8C00;
+>>>>>>> 830-shift-selection-while-reporting-sewing-in-and-sewing-out-operations-while-reporting-operations-through-ips-and-ims
     }
 
     .blue {
@@ -873,8 +881,7 @@
 
                                 if ($fab_status==5)
                                 {
-                                    // $final_cols = 'yellow';
-                                    // $rem="Fabric issued";
+                                    // var_dump('5');
                                     if($a_plies != $p_plies){
                                         $final_cols = 'orange';
                                         $rem="Cutting Partially Done";
