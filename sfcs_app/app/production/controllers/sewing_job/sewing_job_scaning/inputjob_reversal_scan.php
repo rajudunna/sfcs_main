@@ -659,7 +659,7 @@ else if($concurrent_flag == 0)
 		for($i=0;$i<sizeof($b_tid);$i++)
 		{
 			$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where bundle_no = $b_tid[$i] and op_code = $b_op_id order by mo_no";
-			echo $qry_to_check_mo_numbers.'-';
+		//	echo $qry_to_check_mo_numbers.'-';
 			$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$total_bundle_rec_present_qty = $b_rep_qty[$i];
 			while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
