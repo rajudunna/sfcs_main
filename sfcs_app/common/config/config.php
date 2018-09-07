@@ -100,8 +100,8 @@ $plant_name = $conf1->get('plantname');
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
-$plant_start_time = "6:30:00";
-$plant_end_time = "22:30:00";
+$plant_start_time = $conf1->get('plant-start-time');;
+$plant_end_time = $conf1->get('plant-end-time');;
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;

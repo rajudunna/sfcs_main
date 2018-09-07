@@ -297,7 +297,7 @@
     .pink {
       width:20px;
       height:20px;
-      background-color: #ff00ff;
+      background-color: pink;
       display:block;
       float: left;
       margin: 2px;
@@ -314,13 +314,13 @@
 
     .pink a:hover {
       text-decoration:none;
-      background-color: #ff00ff;
+      background-color: pink;
     }
 
     .orange {
       width:20px;
       height:20px;
-      background-color: #991144;
+      background-color: #eda11e;
       display:block;
       float: left;
       margin: 2px;
@@ -337,7 +337,7 @@
 
     .orange a:hover {
       text-decoration:none;
-      background-color: #991144;
+      background-color:#eda11e;
     }
 
     .blue {
@@ -686,21 +686,24 @@
 
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
 
-                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                            SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
-                            //echo "Module : ".$sql1."<br>";
+                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                            SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+
+                            // var_dump($sql1);
+                            
+                            // echo "Module : ".$sql1."<br>";
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
                             if($_GET['view']==1)
                             {
-                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
+                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
                                 $view_count=0;
                             }       
                             //filter to show only cut completed
                             if($_GET['view']==3)
                             {
-                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status='DONE' AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status='DONE' AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
                                 $view_count=0;
                             }
                            
@@ -739,6 +742,10 @@
                                 $log_time=$sql_row1['log_time'];
                                 $emb_stat=$sql_row1['emb_stat'];
                                 $ft_status=$sql_row1['ft_status'];
+
+                                $a_plies = $sql_row1['a_plies'];
+                                $p_plies = $sql_row1['p_plies'];
+                              
                                          
                                 //For Color Clubbing
                                 unset($club_c_code);
@@ -812,9 +819,9 @@
                                 $colors_db=array_unique($colors_db);
                                 $club_c_code=array_unique($club_c_code);
                                 $club_docs=array_unique($club_docs);
-                                
+                                $fab_status="";
                                 $fab_issue_query="select * from $bai_pro3.plandoc_stat_log where fabric_status!=5 and doc_no IN (".implode(",",$club_docs).")";
-                                //echo "Fab Issue Query : ".$fab_issue_query."<br>";
+                                // echo "Fab Issue Query : ".$fab_issue_query."<br>";
                                 $fab_issue_result=mysqli_query($link, $fab_issue_query) or exit("error while getting fab issue details");
                                 if (mysqli_num_rows($fab_issue_result)>0)
                                 {
@@ -824,14 +831,34 @@
                                 {
                                     $fab_status = 5;
                                 }
-                                $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
+								
+								$fab_issue2_query="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
+								// echo $fab_issue2_query."<br>";
+								
+								$fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($fab_isuue2_result)>0)
+								{
+									$fab_status="1";
+								}
+							$fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
                                 $fab_request_result=mysqli_query($link, $fab_request_query) or exit("error while getting fab Requested details");
     
                                 if ($fab_status==5)
                                 {
-                                    $final_cols = 'yellow';
-                                    $rem="Fabric issued";
+                                    // $final_cols = 'yellow';
+                                    // $rem="Fabric issued";
+                                    if($a_plies != $p_plies){
+                                        $final_cols = 'orange';
+                                        $rem="Cutting Partially Done";
+                                    }else{
+                                        $final_cols = 'yellow';
+                                        $rem="Fabric issued";
+                                    }
                                 }
+								elseif($fab_status==1){
+									$final_cols = 'pink';
+                                    $rem="Ready To issue";
+								}
                                 elseif (mysqli_num_rows($fab_request_result)>0)
                                 {
                                     $final_cols = 'green';

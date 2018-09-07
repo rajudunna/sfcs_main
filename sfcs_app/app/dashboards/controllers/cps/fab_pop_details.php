@@ -730,13 +730,15 @@ if($Disable_allocate_flag==$for_Staus_dis){
 <?php
 // if($fabric_status!="5" && $fabric_status!="1")
 // {
-	echo '<option value="1">Ready For Issuing</option>';
+	// echo '<option value="1" >Ready For Issuing</option>';
+	
 // }
 // if($fabric_status=="1")
 // {
 // 	echo '<option value="1" disabled>Ready For Issuing</option>';
 // }
 ?>
+<option value="1" <?php if($fabric_status=="1") { echo " selected"; }?>>Ready For Issuing</option>
 <option value="5" <?php if($fabric_status=="5") { echo " selected"; }?>>Issue to Cutting</option>
 </select></td><td>
 <input type="checkbox" name="validate" id="validate" onclick="check_validate()"/><td>
