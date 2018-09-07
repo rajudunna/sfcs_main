@@ -5,10 +5,6 @@
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-//$username=strtolower($username_list[1]);
-//echo $username;
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R'));
 
@@ -16,8 +12,6 @@ $view_access=user_acl("SFCS_0131",$username,1,$group_id_sfcs);
 $authorized=user_acl("SFCS_0131",$username,7,$group_id_sfcs);
 $super_user=user_acl("SFCS_0131",$username,49,$group_id_sfcs);
 
-//$authorized=array("baiict","muralim","duminduw","rajanaa","kirang","nalakasb","ambhigapathyc","kiranm","kirang","baiuser","bainet","srikanthb","kirang","rajithago");// for RMS Dashboard allocation
-//$super_user=array("muralim","duminduw","kirang","bainet","kirang","rajanaa","baiict","nalakasb","kirang");
 if(!(in_array(strtolower($username),$authorized)))
 {
 	header("Location:restrict.php");
@@ -42,24 +36,6 @@ else
 	}
 	
 }
-
-// $criteria="where left(order_style_no,1) in (".$global_style_codes.")";
-// if(!(in_array(strtolower($username),$super_user)) or !(in_array(strtolower($username),$super_user)))
-// {
-	//exploding the users list into buyer level
-	// include("style_allocation.php");
-	
-	// for($i=0;$i<sizeof($styles_names);$i++)
-	// {
-	// 	$style_users=$style_auth[$i];
-	// 	$style_users_ex=explode(",",$style_users);
-	// 	if(in_array($username,$style_users_ex))
-	// 	{
-	// 		$criteria_styles[]=$styles_list[$i];
-	// 	}
-	// }
-	// $criteria=" where left(order_style_no,1) in (".$global_style_codes.") and  left(order_style_no,1) in (".implode(",",$criteria_styles).")";
-// }
 
 ?>
 
@@ -97,14 +73,11 @@ function thirdbox()
 <body>
 
 <?php 
-// include(getFullURLLevel($_GET['r'],'functions.php',3,'R'));
+
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
 $color=$_GET['color'];
-// $sql="select distinct order_style_no from $bai_pro3.plan_doc_summ $criteria";	
-// echo $sql;
 
-//echo $style.$schedule.$color;
 ?>
 
 <div class="panel panel-primary">
@@ -272,6 +245,8 @@ if(isset($_POST['submit']))
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
 	$code=$_POST['code'];
+
+	echo $code;	
 	$cat_ref=$_POST['cat_ref'];
 	
 	$data_sym="$";
@@ -288,7 +263,7 @@ if(isset($_POST['submit']))
 
 	
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop.php?color=$color&style=$style&schedule=$schedule&code=$code&cat_ref=$cat_ref\"; }</script>";
-	$url = getFullURLLevel($_GET['r'],'embellishment_drag_drop.php',0,'N');
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
+	// $url = getFullURLLevel($_GET['r'],'embellishment_drag_drop.php',0,'N');
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
 }
 ?>  

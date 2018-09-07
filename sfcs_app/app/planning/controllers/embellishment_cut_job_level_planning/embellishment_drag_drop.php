@@ -1451,13 +1451,14 @@
 													//<li id="node16">Student P</li>
 													
 													$module=$mods[$x];
-													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_issue_status<>\"DONE\" order by priority";
+													// $sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_issue_status<>\"DONE\" order by priority";
 													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_status<>\"DONE\" order by priority"; //KK223422
 
-													//echo $sql1;
+													// echo $sql1;
+													// die();
 													// mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 													$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error7".mysql_error());
-													$sql_num_check=mysql_num_rows($sql_result1);
+													$sql_num_check=mysqli_num_rows($sql_result1);
 													while($sql_row1=mysqli_fetch_array($sql_result1))
 													{
 														$cut_new=$sql_row1['act_cut_status'];
@@ -1588,22 +1589,19 @@
 										$sql="select color_code from plan_doc_summ where cat_ref=$cat_ref";
 										
 										$sql_result=mysqli_query($link,$sql) or exit("Sql Error1".mysql_error());
-										while($sql_row=mysql_fetch_array($sql_result))
+										while($sql_row=mysqli_fetch_array($sql_result))
 										{
 											$color_code=$sql_row['color_code'];}
 									
-											//$sql1="SELECT acutno from plandoc_stat_log where order_tid like \"%$style$schedule$color%\" and cat_ref=$cat_ref and act_cut_issue_status=\"DONE\"  order by doc_no";
-									
-											// $sql1="SELECT acutno from plandoc_stat_log where order_tid like \"%$style$schedule$color%\" and cat_ref=$cat_ref and act_cut_issue_status=\"DONE\" and a_plies=p_plies order by doc_no";
 											$sql1="SELECT acutno from $bai_pro3.plandoc_stat_log where order_tid like \"%$style$schedule$color%\" and cat_ref=$cat_ref and act_cut_status=\"DONE\" and a_plies=p_plies order by doc_no"; //KK223422
 											//echo $sql1;
-										// mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
-										$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error2".mysql_error());
-										while($sql_row1=mysqli_fetch_array($sql_result1))
-										{
-											echo '<tr id=\"new1\"><li data-color="green" style="background-color:green; color:white;"><strong>'.chr($color_code).leading_zeros($sql_row1['acutno'],3).'</strong></li></tr>';
-											// echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
-										}
+											// mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
+											$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error2".mysql_error());
+											while($sql_row1=mysqli_fetch_array($sql_result1))
+											{
+												echo '<tr id=\"new1\"><li data-color="green" style="background-color:green; color:white;"><strong>'.chr($color_code).leading_zeros($sql_row1['acutno'],3).'</strong></li></tr>';
+												// echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
+											}
 									echo '</table>';
 								echo "</div>";
 								
