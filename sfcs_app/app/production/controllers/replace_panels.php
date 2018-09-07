@@ -50,7 +50,7 @@
                     echo "<div> <button  class='btn btn-success' id='replace_id'>Replace</button></div><form><table class='table table-bordered'><thead><tr><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Good</th><th>Reject</th><th>Replace Qty</th><th>Action</th></tr><thead>";
                     $panel_qry = "SELECT qms_style,qms_schedule,qms_color,qms_size,sum(qms_qty) as qms_qty,doc_no,qms_tran_type,  SUBSTRING_INDEX(SUBSTRING_INDEX(remarks, '-', -2),'-',1) as shift, operation_id,bundle_no
                      FROM $bai_pro3.bai_qms_db WHERE input_job_no='$job_no'  AND qms_tran_type IN(1,3) and remarks like '%$mod_no%' GROUP BY qms_size,qms_tran_type order by qms_size,qms_color,qms_tran_type ";
-                    //  echo $panel_qry;
+                     echo $panel_qry;
                     $previous_size = '';
                     $count =0;
                     $res_qry =mysqli_query($link,$panel_qry);
@@ -279,7 +279,7 @@ $('#mod_id').click(function(){
                                 swal("Replaced Successfully", {
                                     icon: "success",
                                 });
-                                // $('.ajax-loader').css("visibility", "visible");
+                                $('.ajax-loader').css("visibility", "visible");
                             }
                             
                         }
