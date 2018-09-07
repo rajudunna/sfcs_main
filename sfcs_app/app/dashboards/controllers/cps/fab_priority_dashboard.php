@@ -749,7 +749,7 @@ echo '<br><br>';
 $bindex=0;
 $blink_docs=array();
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+$sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id";
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
