@@ -15,12 +15,9 @@
 	$schedule    = $_GET['schedule'];
 	$split_proces_name=$process_name;
 	$style = $_GET['style'];
-	$col = $_GET[''];
-
-	$split_proces_name = 'cutting';
-	$style = 'JOA141S9';
-	$schedule = '588115';
-
+	//$col = $_GET[''];
+	$doc_no_get = $_GET['doc_no'];
+	
 	if(isset($_GET['order_tid']))
 	{
 		$order_tid[]=$_GET['order_tid'];
@@ -31,8 +28,8 @@
 		$order_tid=explode(',',$order_tids);
 	}
 
-	// $order_tid[] = 'JOA141S9       55881511 - PINK BOTTOM              ';
-	// $order_tid[]='JJP327F8       52834608-DARKGREY-ROSECLAIRBOTTOM   ';
+	//$order_tid[] = 'JOA141S9       55881511 - PINK BOTTOM              ';
+	//$order_tid[]='JJP327F8       52834608-DARKGREY-ROSECLAIRBOTTOM   ';
 
 	$sql1216="SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref WHERE default_operation='Yes' group by category order by category*1"; 
 	$result1216=mysqli_query($link, $sql1216) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -41,7 +38,7 @@
 		$category[]=$row12106['codes'];
 		$category_name[]=$row12106['category'];		
 	}
-	echo "DOING<br/>";
+
 	for($l=0;$l<sizeof($category_name);$l++)
 	{
 		if($category_name[$l]==$split_proces_name && $split_proces_name == 'cutting')
@@ -104,9 +101,9 @@
 								for($k=0;$k<sizeof($ops);$k++)
 								{
 									if($ops_m_id[$mo_no[0]][$ops[$k]]>0)
-									{
-										echo "--------------------<br/>";
-										$sql12="SELECT (p_".$sizes_array[$j]."*p_plies) as qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' group by doc_no";					
+									{	
+										$sql12="SELECT (p_".$sizes_array[$j]."*p_plies) as qty,doc_no,acutno FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' and doc_no = '$doc_no_get' 
+										group by doc_no";					
 										$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 										while($row12=mysqli_fetch_array($result12)) 
 										{
@@ -120,7 +117,7 @@
 							else
 							{
 								$bal=0;$qty_tmp=0;
-								$sql1234="SELECT (p_".$sizes_array[$j]."*p_plies) as qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' group by doc_no";
+								$sql1234="SELECT (p_".$sizes_array[$j]."*p_plies) as qty,doc_no,acutno FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."'  and doc_no = '$doc_no_get' group by doc_no";
 								$result1234=mysqli_query($link, $sql1234) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								while($row1234=mysqli_fetch_array($result1234)) 
 								{
@@ -141,16 +138,12 @@
 										$bal=$moq[$kk]-$m_fil;
 										if($bal>0)
 										{	
-											echo "bal > 0<br/>";
 											if($bal>$qty)
 											{	
-												echo "bal>qty <br/>";
 												for($jj=0;$jj<sizeof($ops);$jj++)
 												{	
-													echo "OUT 1 <br/>";
 													if($ops_m_id[$mo_no[$kk]][$ops[$jj]]>0)
 													{
-														echo "------------YEss------mo has operations<br/>";
 														$qty_tmp=0;
 														$qty=$qty-$qty_tmp;
 														if($qty>0)
@@ -168,10 +161,8 @@
 											{
 												for($jj=0;$jj<sizeof($ops);$jj++)
 												{	
-													echo "OUT 2<br/>";
 													if($ops_m_id[$mo_no[$kk]][$ops[$jj]]>0)
 													{
-														echo "------------YEss------mo has operations<br/>";
 														$qty_tmp=0;
 														$qty=$qty-$qty_tmp;
 														if($qty>0)
@@ -187,11 +178,10 @@
 										}								
 									}	
 								}
-						
 								//Excess allocate to Last MO
 								$lastmo=echo_title("$bai_pro3.mo_details","MAX(mo_no)","TRIM(size)='".$size_tit[$j]."' and TRIM(color)='".$col."' and schedule",$schedule,$link);
 								$bal=0;$qty_tmp=0;$qty=0;
-								$sql12341="SELECT (p_".$sizes_array[$j]."*p_plies) as qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' group by doc_no";
+								$sql12341="SELECT SUM(p_".$sizes_array[$j]."*p_plies) as qty,doc_no,acutno FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' group by order_tid";
 								$result12341=mysqli_query($link, $sql12341) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								if(mysqli_num_rows($result12341)>0)
 								{
@@ -199,20 +189,33 @@
 									{
 										$qty=$row12341['qty'];
 										// $sql1234100="SELECT sum(bundle_quantity) as qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' group by doc_no";
-										$sql1234100 = "SELECT SUM(mo_quantity) as qty FROM $bai_pro3.mo_details WHERE TRIM(size)='".$size_tit[$j]."' and schedule='".$schedule."' and TRIM(color)='".$col."' group by color"; 
-										//echo $sql1234100; 
+										// LEFT JOIN $bai_pro3.mo_operation_quantites moq ON moq.mo_no = mo.mo_no
+										$sql1234100 = "SELECT SUM(mo_quantity) as qty 
+													   FROM $bai_pro3.mo_details mo
+													   WHERE TRIM(size)='".$size_tit[$j]."' and schedule='".$schedule."' 
+													   and TRIM(color)='".$col."' group by color"; 
+										//echo $sql1234100;
+										//echo $sql1234100;
+										
 										$result1234100=mysqli_query($link, $sql1234100) or die("Error 7 ".mysqli_error($GLOBALS["___mysqli_ston"])); 
 										while($row1234100=mysqli_fetch_array($result1234100)) 
 										{
 											$qty_fill=$row1234100['qty'];
-										}	
+										}
+										
 										if(($qty-$qty_fill)>0)
 										{
+											$qty = $qty - $qty_fill;
 											for($jjj=0;$jjj<sizeof($ops);$jjj++)
 											{
 												if($ops_m_id[$lastmo][$ops[$jjj]]<>'')
 												{
+													$sql = "Update $bai_pro3.mo_operation_quantites 
+															set bundle_quantity = bundle_quantity + $qty
+															where mo_no = '$lastmo' and doc_no = '$doc_no_get' and op_code = $ops[$jjj]";
+													/*
 													$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$lastmo."', '".$row12341['doc_no']."','".$row12341['acutno']."','".($qty-$qty_fill)."', '".$ops_m_id[$lastmo][$ops[$jjj]]."', '".$ops_m_name[$lastmo][$ops[$jjj]]."')";
+													*/
 													$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 												}							
 											}							
@@ -259,7 +262,7 @@
 			}		
 			echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
 		}
-		elseif($category_name[$l]==$split_proces_name && $split_proces_name == 'sewing'){
+		elseif($category_name[$l] == $split_proces_name && $split_proces_name == 'sewing'){
 			$mo_no=array();
 			$moq=array();
 			$ops_m_id=array();
@@ -289,6 +292,7 @@
 
 				for($j=0;$j<sizeof($size_tit);$j++)
 				{
+					$qty = 0;
 					$sql121="SELECT * FROM $bai_pro3.mo_details WHERE TRIM(size)='".$size_tit[$j]."' and schedule='".$schedule."' and TRIM(color)='".$col."' order by mo_no*1"; 
 					$result121=mysqli_query($link, $sql121) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo $sql121;
@@ -333,7 +337,7 @@
 									{
 										*/
 										$sql1231="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='".$size_tit[$j]."' and order_del_no='".$schedule."' and order_col_des='".$col."'"; 
-				
+										
 										$result1231=mysqli_query($link, $sql1231) or 
 													die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 										//echo $sql1231.'<br/>';
@@ -341,7 +345,9 @@
 										while($row1231=mysqli_fetch_array($result1231)) 
 										{
 											$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`,`bundle_no`, `doc_no`, `bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[0]."', '".$row1231['tid']."','".$row1231['doc_no']."','".$row1231['carton_act_qty']."', '".$ops_m_id[$mo_no[0]][$ops[$k]]."', '".$ops_m_name[$mo_no[0]][$ops[$k]]."','".$row1231['input_job_no']."','".$row1231['input_job_no_random']."')";
+											//echo $sql.'<br/>';
 											$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+										
 										}
 									//}
 								}
@@ -351,16 +357,17 @@
 						{
 							$bal=0;$qty_tmp=0;
 							$sql1234="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='".$size_tit[$j]."' and order_del_no='".$schedule."' and order_col_des='".$col."' and type_of_sewing='1'";
-							//$result1234=mysqli_query($link, $sql1234) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						
+							$result1234=mysqli_query($link, $sql1234) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							//echo $sql1234.'<br/>';
 							while($row1234=mysqli_fetch_array($result1234)) 
 							{
 								$qty=$row1234['carton_act_qty'];
+								$bundle_no = $row1234['tid'];
 								for($kk=0;$kk<sizeof($mo_no);$kk++)
-								{						
+								{				
+									$last_mo = $mo_no[$kk];	
 									$m_fil=0;
-									
-									$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no='".$mo_no[$kk]."' GROUP BY op_code ORDER BY op_code*1 LIMIT 1";
+									$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no='".$mo_no[$kk]."' and op_code IN ($ops[0]) GROUP BY op_code ORDER BY op_code*1 LIMIT 1";
 									$result12345=mysqli_query($link, $sql12345) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 									while($row12345=mysqli_fetch_array($result12345)) 
 									{
@@ -384,6 +391,7 @@
 													if($qty>0)
 													{
 														$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[$kk]."','".$row1234['doc_no']."','".$row1234['tid']."', '".$qty."', '".$ops_m_id[$mo_no[$kk]][$ops[$jj]]."', '".$ops_m_name[$mo_no[$kk]][$ops[$jj]]."','".$row1234['input_job_no']."','".$row1234['input_job_no_random']."')";
+														//echo 'inner -- '.$sql.'<br/>';
 														$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 													}
 												}
@@ -402,17 +410,33 @@
 													if($qty>0)
 													{
 														$sql="INSERT INTO `bai_pro3`.`mo_operation_quantites` (`date_time`, `mo_no`, `bundle_no`,`doc_no`,`bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no[$kk]."','".$row1234['tid']."','".$row1234['doc_no']."','".$bal."', '".$ops_m_id[$mo_no[$kk]][$ops[$jj]]."', '".$ops_m_name[$mo_no[$kk]][$ops[$jj]]."','".$row1234['input_job_no']."','".$row1234['input_job_no_random']."')";
+														//echo ' downer -- '.$sql.'<br/>';
 														$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 													}
 												}
 											}		
 											$qty=$qty-$bal;
 											$bal=0;
-										}							
+										}			
 									}								
+								}	
+								if($qty > 0){
+									for($l=0;$l<sizeof($ops);$l++){	
+										if($ops_m_id[$last_mo][$ops[$l]]>0){	
+											// $sql="INSERT INTO $bai_pro3.mo_operation_quantites (`date_time`, `mo_no`, `bundle_no`,`doc_no`,`bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) VALUES ('".date("Y-m-d H:i:s")."', '".$last_mo."','".$row1234['tid']."','".$row1234['doc_no']."','".$qty."', 
+											// '".$ops_m_id[$last_mo][$ops[$l]]."', '".$ops_m_name[$last_mo][$ops[$l]]."',
+											// '".$row1234['input_job_no']."','".$row1234['input_job_no_random']."')";
+											// //echo ' downer -- '.$sql.'<br/>';
+											$sql = "Update $bai_pro3.mo_operation_quantites set 
+													bundle_quantity = bundle_quantity + $qty where mo_no = '$last_mo' and 
+													bundle_no = '$bundle_no' and op_code = '".$ops_m_id[$last_mo][$ops[$l]]."'";
+											$result1=mysqli_query($link, $sql) or exit('Error Encountered');
+										}
+									}
 								}	
 							}
 							//Excess allocate to Last MO
+							$qty1 = $qty;
 							$lastmo=echo_title("$bai_pro3.mo_details","MAX(mo_no)","TRIM(size)='".$size_tit[$j]."' and TRIM(color)='".$col."' and schedule",$schedule,$link);
 							$bal=0;$qty_tmp=0;$qty=0;
 							$sql12341="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='".$size_tit[$j]."' and order_del_no='".$schedule."' and order_col_des='".$col."' and type_of_sewing<>'1'";
@@ -444,6 +468,7 @@
 						unset($ops_m_name);			
 						unset($ops);
 					}
+					//echo "<br>-----------------------------------------------------------------------<br/>";
 				}
 				unset($size_tit);
 				unset($size_qty);

@@ -9,6 +9,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			<div class="panel-body">
 <?php
 	  $order_tid=$_GET['order_tid'];
+	  $get_order_tid = $_GET['order_tid'];
 	  $color=$_GET['color'];
 	  $style=$_GET['style'];
 	  $schedule=$_GET['schedule'];
@@ -141,9 +142,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$result10=mysqli_query($link, $update_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 
+	$doc_no_query = "Select doc_no from  $bai_pro3.plandoc_stat_log where order_tid = '$get_order_tid'";
+	$doc_no_result = mysqli_query($link,$doc_no_query);
+	while($row = mysqli_fetch_array($doc_no_result)){
+		$docket_no = $row['doc_no'];
+	}
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 			function Redirect() {
-				location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',3,'N')."&order_tid=$order_tid&process_name=cutting&filename=layplan\";
+				location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',3,'N')."&order_tid=$order_tid&doc_no=$docket_no&process_name=cutting&filename=layplan\";
 				}
 			</script>";	
 			
