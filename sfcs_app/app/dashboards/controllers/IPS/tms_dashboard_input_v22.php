@@ -295,14 +295,6 @@ border: 1px solid black;
 }
 </style>
 
-<script>
-function firstbox()
-{
-  var shift_id = document.getElementById('shift').value;
-  window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&shift="+shift_id;
-}
-</script>
-
 <?php
 $double_modules=array();
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -540,28 +532,6 @@ mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli
 			echo "</font></br>";
 			?>
 		</div>
-		<?php
-           $shifts = $_GET['shift'];
-
-           $shift_ary = ['A','B','C','G'];
-        ?>
-
-		<div class="form-group">
-			 Shift :<select class="form-control" id="shift" name="shift" onchange="firstbox();" required>
-            <option value="">Select</option>
-           <?php
-            foreach($shift_ary as $shift){
-            if($shift == $shifts){
-              echo "<option value='$shift' selected>$shift</option>";
-            }else{
-               echo "<option value='$shift'>$shift</option>";
-            }
-           
-          }
-
-     ?>
-  </select>   
-		</div>	
 	</div>
 <?php
 
@@ -583,7 +553,7 @@ $sqlx="select distinct input_job_no_random_ref as doc_no from $bai_pro3.plan_das
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
-	echo $sql_rowx['doc_no']."<br>";
+	// echo $sql_rowx['doc_no']."<br>";
 	$remove_docs[]="'".$sql_rowx['doc_no']."'";
 }
 if(sizeof($remove_docs)>0)
@@ -871,10 +841,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
 					$ui_url=getFullURL($_GET['r'],'input_status_update_input.php','R');	
 					 
-					$ui_url1 =getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
+					$ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
 					$application='IPS';
-					//$shift='G';
-					//$barcode_generation='1';
+					$shift='G';
 					$sidemenu=true;
 					$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
 					//echo $scanning_query;
@@ -888,38 +857,47 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						if($id=="blue" || $id=="yellow")
 						{
-							if($id=="yellow")
+						
+							$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id='".$operation_code."'";
+							$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+							while($sql_row=mysqli_fetch_array($cut_input_report_result))
 							{
-								echo "<div id=\"S$schedule\" style=\"float:left;\">
+								$cut_origional_qty=$sql_row['cut_qty'];
+								$report_origional_qty=$sql_row['report_qty'];								
+							}
+							
+							if($cut_origional_qty > $report_origional_qty){
+								$id='orange';
+							}
+							
+							if($id=="yellow")
+							{									
+								if($add_css == ""){				
+									echo "<div id=\"S$schedule\" style=\"float:left;\">
+										<div id=\"SJ$input_job_no\" style=\"float:left;\">
+											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+											</div>
+										</div>
+									</div>";
+								}
+								else
+								{
+									echo "<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
 											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
 										</div>
 									</div>";
+								}
 							}
 							else
 							{
-								if ($add_css == "")
-								{
-									
-									$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref'";
-
-                                    $cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-                                    while($sql_row=mysqli_fetch_array($cut_input_report_result))
-                                    {
-                                        $cut_origional_qty=$sql_row['cut_qty'];
-                                        $report_origional_qty=$sql_row['report_qty'];
-                                        
-									}
-									
-									if($cut_origional_qty > $report_origional_qty){
-										$id='orange';
-									}
-									
+								if($add_css == "")
+								{									
 									echo "<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
 										</div>
 									</div>";
