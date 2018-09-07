@@ -195,7 +195,7 @@ border: 1px solid black;
 .orange {
   width:20px;
   height:20px;
-  background-color: #FF8C00;
+  background-color: #eda11e;
   display:block;
   float: left;
   margin: 2px;
@@ -212,7 +212,7 @@ border: 1px solid black;
 
 .orange a:hover {
   text-decoration:none;
-  background-color: #FF8C00;
+  background-color: #eda11e;
 }
 
 .blue {
@@ -294,6 +294,14 @@ border: 1px solid black;
   background-color: black;
 }
 </style>
+
+<script>
+function firstbox()
+{
+  var shift_id = document.getElementById('shift').value;
+  window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&shift="+shift_id;
+}
+</script>
 
 <?php
 $double_modules=array();
@@ -532,6 +540,28 @@ mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli
 			echo "</font></br>";
 			?>
 		</div>
+		<?php
+           $shifts = $_GET['shift'];
+
+           $shift_ary = ['A','B','C','G'];
+        ?>
+
+		<div class="form-group">
+			 Shift :<select class="form-control" id="shift" name="shift" onchange="firstbox();" required>
+            <option value="">Select</option>
+           <?php
+            foreach($shift_ary as $shift){
+            if($shift == $shifts){
+              echo "<option value='$shift' selected>$shift</option>";
+            }else{
+               echo "<option value='$shift'>$shift</option>";
+            }
+           
+          }
+
+     ?>
+  </select>   
+		</div>	
 	</div>
 <?php
 
@@ -548,11 +578,12 @@ mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli
 
 // Remove Docs
 $remove_docs=array();
-$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where input_job_input_status(input_job_no_random_ref)=\"DONE\"";
-//echo $sqlx.";<br>";
+$sqlx="select distinct input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where input_job_input_status(input_job_no_random_ref)=\"DONE\"";
+// echo $sqlx.";<br>";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
+	echo $sql_rowx['doc_no']."<br>";
 	$remove_docs[]="'".$sql_rowx['doc_no']."'";
 }
 if(sizeof($remove_docs)>0)
@@ -562,9 +593,17 @@ if(sizeof($remove_docs)>0)
 	mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
 
 	$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
-	//echo $sqlx.";<br>";
-	mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));			
+	// echo $sqlx.";<br>";
+	mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
+
+	$sql="DROP TABLE IF EXISTS $table_name";
+	mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	$sql="CREATE  TABLE $table_name ENGINE = myisam SELECT * FROM $bai_pro3.plan_dash_doc_summ_input where input_job_no_random_ref not in (".implode(",",$remove_docs).")";
+	// echo $sql."<br>";
+	mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
+
 // Remove Docs
 
 $sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id";
@@ -836,7 +875,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					 
 					$ui_url1 =getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
 					$application='IPS';
-					$shift='G';
+					//$shift='G';
 					//$barcode_generation='1';
 					$sidemenu=true;
 					$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
@@ -883,23 +922,25 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							{
 								if ($add_css == "")
 								{
-
+									
 									$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref'";
 
-									$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-									while($sql_row=mysqli_fetch_array($cut_input_report_result))
-									{
-										$cut_origional_qty=$sql_row['cut_qty'];
-										$report_origional_qty=$sql_row['report_qty'];
-										
+                                    while($sql_row=mysqli_fetch_array($cut_input_report_result))
+                                    {
+                                        $cut_origional_qty=$sql_row['cut_qty'];
+                                        $report_origional_qty=$sql_row['report_qty'];
+                                        
 									}
-
+									
 									if($cut_origional_qty > $report_origional_qty){
-
-										echo "<div id=\"S$schedule\" style=\"float:left;\">
-											<div id=\"SJ$input_job_no\" style=\"float:left;\">
-												<div id=\"$input_job_no_random_ref\" class='orange' style=\"font-size:12px; text-align:center; color:orange;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+										$id='orange';
+									}
+									
+									echo "<div id=\"S$schedule\" style=\"float:left;\">
+										<div id=\"SJ$input_job_no\" style=\"float:left;\">
+											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
 											</div>
 										</div>";

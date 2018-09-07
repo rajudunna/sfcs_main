@@ -326,7 +326,7 @@
     .orange {
       width:20px;
       height:20px;
-      background-color: #FF8C00;
+      background-color: #eda11e;
       display:block;
       float: left;
       margin: 2px;
@@ -343,7 +343,7 @@
 
     .orange a:hover {
       text-decoration:none;
-      background-color: #FF8C00;
+      background-color:#eda11e;
     }
 
     .blue {
@@ -769,6 +769,10 @@
                                 $log_time=$sql_row1['log_time'];
                                 $emb_stat=$sql_row1['emb_stat'];
                                 $ft_status=$sql_row1['ft_status'];
+
+                                $a_plies = $sql_row1['a_plies'];
+                                $p_plies = $sql_row1['p_plies'];
+                              
                                          
                                 //For Color Clubbing
                                 unset($club_c_code);
@@ -857,7 +861,7 @@
 								
 								$fab_issue2_query="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
 								// echo $fab_issue2_query."<br>";
-							
+								
 								$fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($fab_isuue2_result)>0)
 								{
@@ -869,7 +873,8 @@
 
                                 if ($fab_status==5)
                                 {
-                                    // var_dump('5');
+                                    // $final_cols = 'yellow';
+                                    // $rem="Fabric issued";
                                     if($a_plies != $p_plies){
                                         $final_cols = 'orange';
                                         $rem="Cutting Partially Done";
