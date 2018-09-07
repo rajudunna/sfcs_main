@@ -732,11 +732,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							$sql="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\", leader_name='$leader_name',bundle_loc=\"$bun_loc\" where doc_no=$input_doc_no";
 							mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-							// LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
 							$doc_no_ref = $input_doc_no;
 							$op_code = '15';
 							$b_op_id = '15';
-							$b_module = $input_section;
 							$b_shift = $input_shift;
 							//getting work_station_id
 							$qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$b_op_id'";
@@ -763,26 +761,34 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 							{
 								// $doc_array[$row['doc_no']] = $row['act_cut_status'];
+								$plan_module = $row['plan_module'];
+								$order_tid = $row['order_tid'];
 								for ($i=0; $i < sizeof($sizes_array); $i++)
 								{ 
 									if ($row['a_'.$sizes_array[$i]] > 0)
 									{
-										$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
+										$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $plies;
 									}
 								}
 							}
+							$b_module = $plan_module;
 							//var_dump($cut_done_qty);
 							// INSERTING INTO M3_TRANSACTOINS TABLE AND UPDATING INTO M3_OPS_DETAILS
 							foreach($cut_done_qty as $key => $value)
 							{
 								//759 CR additions Started
+								//fetching size_title
 								$qty_to_fetch_size_title = "SELECT title_size_$key  FROM $bai_pro3.bai_orders_db_confirm WHERE order_tid ='$order_tid'";
+								// echo $qty_to_fetch_size_title;
 								$res_qty_to_fetch_size_title=mysqli_query($link,$qty_to_fetch_size_title) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($nop_res_qty_to_fetch_size_title=mysqli_fetch_array($res_qty_to_fetch_size_title))
 								{
-									$size_title = $nop_res_qty_to_fetch_size_title['title_size_$key'];
+									// echo "hi";
+									$size_title = $nop_res_qty_to_fetch_size_title["title_size_$key"];
+									//echo 'ore'.$size_title;
 								}
-								$qry_to_check_mo_numbers = "SELECT * FROM $bai_pro3.`mo_operation_quantites`  mq LEFT JOIN bai_pro3.mo_details md ON md.mo_no=mq.`mo_no` WHERE doc_no = '$doc_no_ref' AND op_code = '$op_code' and size = '$size_title'";
+								$qry_to_check_mo_numbers = "SELECT *,mq.id as mq_id FROM $bai_pro3.`mo_operation_quantites`  mq LEFT JOIN bai_pro3.mo_details md ON md.mo_no=mq.`mo_no` WHERE doc_no = '$doc_no_ref' AND op_code = '$op_code' and size = '$size_title' order by mq.mo_no";
+								// echo $qry_to_check_mo_numbers;
 								$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$total_bundle_present_qty = $value;
 								$total_bundle_rec_present_qty = $value;
@@ -796,7 +802,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 										$mo_quantity = $nop_qry_row['bundle_quantity'];
 										$good_quantity_past = $nop_qry_row['good_quantity'];
 										$rejected_quantity_past = $nop_qry_row['rejected_quantity'];
-										$id = $nop_qry_row['id'];
+										$id = $nop_qry_row['mq_id'];
 										$ops_des = $nop_qry_row ['op_desc'];
 										$balance_max_updatable_qty = $mo_quantity - ($good_quantity_past + $rejected_quantity_past);
 										// echo $balance_max_updatable_qty .'-'. $total_bundle_rec_present_qty;
@@ -816,7 +822,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 												$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $actual_rep_qty where id= $id";
 												$total_bundle_rec_present_qty = $total_bundle_rec_present_qty - $balance_max_updatable_qty;
 											}
-											// echo $update_qry.'</br>';
+											//echo $update_qry.'</br>';
 										$ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
 											// if($is_m3 == 'yes')
 											// {
@@ -830,7 +836,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 									
 								}
 							}
-
+							// die();
 							//Logic Ends Here
 							$sql1="update $bai_pro3.plandoc_stat_log set act_cut_status=\"DONE\", a_plies=".($plies+$old_plies).",p_plies=".($plies+$old_plies).",pcutdocid=concat(pcutdocid,'$','$bun_loc') where doc_no=$input_doc_no";
 							mysqli_query($link, $sql1) or exit("Sql Error3$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
