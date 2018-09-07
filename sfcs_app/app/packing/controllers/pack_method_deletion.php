@@ -105,77 +105,85 @@
 				{
 					$style=$_POST['style'];
 				   $schedule=$_POST['schedule'];
-				// echo $_POST['style']."----". $_POST['schedule'];
-				$pack_meth_qry="SELECT s.seq_no,s.pack_method,s.pack_description FROM $bai_pro3.tbl_pack_ref p LEFT JOIN $bai_pro3.tbl_pack_size_ref s ON s.`parent_id`=p.`id` 
-				WHERE p.ref_order_num=$schedule GROUP BY s.pack_method";
-				//echo $pack_meth_qry;
-				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($pack_result1=mysqli_fetch_array($pack_meth_qty))
-								{
-									 $seqno[] =  $pack_result1['seq_no'];
-									 $packmethod[] =  $pack_result1['pack_method'];
-									 $packdescription[] = $pack_result1['pack_description'];
-								 
-								}
-								$len = sizeof($seqno);
-								$sqno = implode(",",$seqno);
-								$packmethod =  implode(",",$packmethod);
-								//$desc =  implode(",",$packdescription);
-								//echo $desc;
-								$c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
-							    $schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-								//echo $schedule_original;	
-				if($len>0)
-				{	
-				$query = "SELECT seq_no, pack_method,schedule FROM $bai_pro3.pac_stat_log WHERE seq_no in ($sqno) AND pack_method in ($packmethod)";
-				//echo $query;
-				$new_result = mysqli_query($link, $query) or exit("Sql Error366".mysqli_error($GLOBALS["___mysqli_ston"]));
+				   $c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
+				   $schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);	
+				   $style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
+				   $query = "SELECT * FROM $bai_pro3.pac_stat_log WHERE style = '$style' AND SCHEDULE = '$schedule_original'";
+				   //echo $query;
+				   $new_result = mysqli_query($link, $query) or exit("Sql Error366".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				echo "<br><div class='col-md-12'>
 				
 							<table class=\"table table-bordered\">
 								<tr>
-									<th>Seq.No</th>
+									<th>S.No</th>
 									<th>Packing Method</th>
+									<th>Color</th>
+									<th>Sizes</th>
+									<th>Carton Quantity</th>
 									<th>Schedule</th>
 									<th>Controlls</th></tr>";
 								while($new_result1=mysqli_fetch_array($new_result))
 								{
 								
 									$seq_no1[]=$pack_result1['seq_no'];
-									$pack_method1[]=$pack_result1['pack_method'];
+									$packmetod=$new_result1['pack_method'];
+									$staus=$new_result1['status'];
+									$doc_ref=$new_result1['doc_no_ref'];
+									//echo $doc_ref;
+									$color = "select GROUP_CONCAT(DISTINCT(TRIM(color)) SEPARATOR ',') FROM $bai_pro3.pac_stat_log where doc_no_ref = '$doc_ref'";
+									$color_result=mysqli_query($link, $color) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$row_color = mysqli_fetch_row($color_result);
+									$size = "select GROUP_CONCAT(DISTINCT(TRIM(size_tit)) SEPARATOR ',') FROM $bai_pro3.pac_stat_log where doc_no_ref = '$doc_ref'";
+									$size_result=mysqli_query($link, $size) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $row_size = mysqli_fetch_row($size_result);
 									// $col_array[]=$sizes_result1['order_col_des'];
 									echo "<tr><td>".$new_result1['seq_no']."</td>";
-									echo"<td>".$new_result1['pack_method']."</td>";
+									echo"<td>".$operation[$packmetod]."</td>";
+									echo"<td>".$row_color[0]."</td>";
+									echo"<td>".$row_size[0]."</td>";
+									echo"<td>".$new_result1['carton_act_qty']."</td>";
 									echo"<td>".$new_result1['schedule']."</td>";
-                                    $url=getFullURL($_GET['r'],'pack_method_deletion.php','N');
-									echo "<td><a href=$url&pack_method='".$new_result1['pack_method']."'&seq_no='".$new_result1['seq_no']."'>Delete</td>";
+									$url=getFullURL($_GET['r'],'pack_method_deletion.php','N');
+									if($staus != "done"){
+									echo "<td><a href=$url&pack_method='".$new_result1['pack_method']."'&seq_no='".$new_result1['seq_no']."'&tid='".$new_result1['tid']."'>Delete</td>";
+									}
+									else{
+										echo "<td>Already Scanned</td>";
+	
+									}
 									echo "<tr>";
 									
 								}	
 							
 							echo "</table></div>";
-							}
-							else{
-								echo '<script>swal("No Packing jobs Generated","","warning")</script>';
-							}			
+									
 							
 				}
 				
 				
 				
 			}
-            if($_GET['pack_method'] && $_GET['seq_no'])
+            if($_GET['pack_method'] && $_GET['seq_no'] && $_GET['tid'])
 				{
 				 $packmethod = $_GET['pack_method'];
+				 //echo $packmethod;
 				 $seqno = $_GET['seq_no'];
-				 //echo $seqno;
+				 $tid = $_GET['tid'];
+				 $op_code = "SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_name = 'Carton Packing'";
+				 $op_code_result=mysqli_query($link, $op_code) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                 $row = mysqli_fetch_row($op_code_result);
 				 $deletepackmethod = "DELETE FROM $bai_pro3.pac_stat_log WHERE seq_no = $seqno and pack_method =  $packmethod";
-			   // echo $deletepackmethod;
-			     $sql_result=mysqli_query($link, $deletepackmethod) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                 if(! $sql_result ) {
-				     die('Could not delete data: ' . mysql_error());
-			                     }
+				 echo $deletepackmethod;
+				 $sql_result=mysqli_query($link, $deletepackmethod) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                if(! $sql_result ) {
+				    die('Could not delete data: ' . mysql_error());
+							  }
+				 $deletemo = "DELETE FROM $bai_pro3.mo_operation_quantites WHERE mo_no = $tid AND op_code = $row[0];";
+				 $sql_result=mysqli_query($link, $deletemo) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				 if(! $sql_result ) {
+					 die('Could not delete data: ' . mysql_error());
+								}
 					   echo '<script>swal("Packing List Deleted Sucessfully","","warning")</script>';
 			    }
 			  
@@ -189,29 +197,44 @@
 				   $style=$_POST['style'];
 				   $schedule=$_POST['schedule'];
 				// echo $_POST['style']."----". $_POST['schedule'];
-				$pack_meth_qry="SELECT s.seq_no,s.pack_method,s.pack_description FROM $bai_pro3.tbl_pack_ref p LEFT JOIN $bai_pro3.tbl_pack_size_ref s ON s.`parent_id`=p.`id` 
-				WHERE p.ref_order_num=$schedule GROUP BY s.pack_method";
-				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($pack_result1=mysqli_fetch_array($pack_meth_qty))
+				$c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
+				$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
+				$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
+				$query = "SELECT * FROM $bai_pro3.pac_stat_log WHERE style = '$style' AND SCHEDULE = '$schedule_original'";
+				$new_result = mysqli_query($link, $query) or exit("Sql Error366".mysqli_error($GLOBALS["___mysqli_ston"]));
+				//$pack_meth_qry="SELECT s.seq_no,s.pack_method,s.pack_description FROM $bai_pro3.tbl_pack_ref p LEFT JOIN $bai_pro3.tbl_pack_size_ref s ON s.`parent_id`=p.`id` 
+				//WHERE p.ref_order_num=$schedule GROUP BY s.pack_method";
+				//$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($pack_result1=mysqli_fetch_array($new_result))
 								{
 									 $seqno[] =  $pack_result1['seq_no'];
 									 $packmethod[] =  $pack_result1['pack_method'];
-									 $packdescription = $pack_result1['pack_description'];
+									 $tid[] =  $pack_result1['tid'];
+									 //$schedule[] =  $pack_result1['schedule'];
 								 
 								}	
-								$sqno = implode(",",$seqno);
-								$packmethod =  implode(",",$packmethod);
-								$c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
-							    $schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-								$deletepackmethod1 = "DELETE FROM $bai_pro3.pac_stat_log WHERE seq_no in ($sqno) and pack_method in ($packmethod)";
-								 echo $deletepackmethod1;
-								 die();
-								  $sql_result=mysqli_query($link, $deletepackmethod) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								  if(! $sql_result ) {
-									  die('Could not delete data: ' . mysql_error());
-												  }
-									  echo '<script>swal("Packing List Deleted Sucessfully","","warning")</script>';
-				  }	
+				$sqno = implode(",",$seqno);
+				$packmethod =  implode(",",$packmethod);
+				$otid =  implode(",",$tid);
+				echo $otid;
+				$op_code = "SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_name = 'Carton Packing'";
+				 $op_code_result=mysqli_query($link, $op_code) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                 $row = mysqli_fetch_row($op_code_result);
+				$deletepackmethod1 = "DELETE FROM $bai_pro3.pac_stat_log WHERE seq_no in ($sqno) and pack_method in ($packmethod)";
+				//echo $deletepackmethod1;
+				die();
+			    $sql_result=mysqli_query($link, $deletepackmethod1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(! $sql_result ) {
+				 die('Could not delete data: ' . mysql_error());
+				 }
+				$deletemo = "DELETE FROM $bai_pro3.mo_operation_quantites WHERE mo_no in ($otid) AND op_code = $row[0];";
+				$sql_result=mysqli_query($link, $deletemo) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(! $sql_result ) {
+					die('Could not delete data: ' . mysql_error());
+							   }
+				echo '<script>swal("Packing List Deleted Sucessfully","","warning")</script>';			   
+			
+			 }	
 				 		
 
 			}

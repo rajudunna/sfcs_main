@@ -51,6 +51,37 @@
 			return true;
 		}
 	}
+	
+
+	$(document).ready(function(){
+		$('#SS_MS_save').on('click',function(event, redirect=true)
+		{
+			if(redirect != false){
+				event.preventDefault();
+				submit_form($(this));
+			}
+		});
+		
+		function submit_form(submit_btn)
+		{
+			var noofcart=document.getElementById('noofcartons').value;
+			var noofpack=document.getElementById('noofpackjobs').value;
+			
+			if(noofcart==0 || noofcart=='')
+			{
+				sweetAlert('Please enter no of cartons','greater than zero','warning');
+				return;
+			}
+			if(noofpack==0 || noofpack=='')
+			{
+				sweetAlert('Please enter no of pack jobs','greater than zero','warning');
+				return;
+			}
+		}
+	
+	});
+	
+	
 </script>
 
 <?php
@@ -419,15 +450,15 @@
 									
 									echo "<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>Description :</label>
-									<input type='text' name='description' id='description' class='form-control'>
+									<input type='text' name='description' id='description'  class='form-control' required>
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of cartons per Pack Job :</label>
-									<input type='text' name='noofcartons' id='noofcartons' class='form-control'>
+									<input type='text' name='noofcartons' id='noofcartons'  class='form-control' required>
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of Pack Jobs per Pack  :</label>
-									<input type='text' name='noofpackjobs' id='noofpackjobs' class='form-control'>
+									<input type='text' name='noofpackjobs' id='noofpackjobs'  class='form-control' required>
 									</div>";
 									echo "</br></br></br></br>";
 								
@@ -579,18 +610,18 @@
 									echo "<div class='panel-heading'>$title</div>";
 									echo "<div class='panel-body'>";
 									echo "<div class='col-md-3 col-sm-3 col-xs-12'>
-								<label>Description :</label>
-								<input type='text' name='description' id='description' class='form-control'>
-								</div>";
-								echo"<div class='col-md-3 col-sm-3 col-xs-12'>
-								<label>No of cartons per Pack Job :</label>
-								<input type='text' name='noofcartons' id='noofcartons' class='form-control'>
-								</div>";
-								echo"<div class='col-md-3 col-sm-3 col-xs-12'>
-								<label>No of Pack Jobs per Pack  :</label>
-								<input type='text' name='noofpackjobs' id='noofpackjobs' class='form-control'>
-								</div>";
-								echo "</br></br></br></br>";
+									<label>Description :</label>
+									<input type='text' name='description' id='description' class='form-control' required>
+									</div>";
+									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
+									<label>No of cartons per Pack Job :</label>
+									<input type='text' name='noofcartons' id='noofcartons'  class='form-control' required>
+									</div>";
+									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
+									<label>No of Pack Jobs per Pack  :</label>
+									<input type='text' name='noofpackjobs' id='noofpackjobs'  class='form-control' required>
+									</div>";
+									echo "</br></br></br></br>";
 										//first table
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>Number of Garments Per Poly Bag</div>
