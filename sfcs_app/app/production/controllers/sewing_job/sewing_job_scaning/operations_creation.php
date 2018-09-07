@@ -84,7 +84,7 @@
                                         if ($result_oper->num_rows > 0) {
                                             while($row = $result_oper->fetch_assoc()) {
                                             $row_value = $row['short_key_code'];
-                                                echo "<option value='".$row['short_key_code']."'>".$row_value."</option>";
+                                                echo "<option value='".$row['short_key_code']."'>".strtoupper($row_value)."</option>";
                                             }
                                         } else {
                                             echo "<option value=''>No Data Found..</option>";
@@ -101,8 +101,10 @@
 									<select class="form-control"id='category' name='category' title="It's Mandatory field" required>
 									<option value="">Please Select</option>
 									<option value='cutting'>Cutting</option>
+                                    <option value='embellishment'>Embellishment</option>
 									<option value='sewing'>Sewing</option>
 									<option value='packing'>Packing</option>
+                                    
 									</select>
 								</div>
                                 <div class="col-sm-2">
