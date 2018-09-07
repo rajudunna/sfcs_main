@@ -45,6 +45,10 @@ $section_no=$_GET['section_no'];
 </head>
 
 <body>
+	<form action="board_update_V2_input_excel.php" method="post">
+		<input type="hidden" name="section" value="<?= $_GET['section_no']; ?>">
+		<input type="submit" name="export_excel" value="Export to Excel">
+	</form>
 <div class="panel panel-primary">
 	<div class="panel-heading">Input Job Plan Details</div><br/>
 	<div class="panel-body">

@@ -38,6 +38,26 @@ if (empty($sec_head) || empty($sec_mods)|| empty($ims_priority_boxes)) {
 		}); }, 100);</script>";
 }else{
 	if($sec_id>0){
+		$sec_mods1=$_POST['sec_mods'];
+	$sec_mods5=explode(",",	$sec_mods1);
+	$array = $sec_mods5;
+	$array1 = array_unique($array);
+
+if(sizeof($array)!= sizeof($array1)){
+	$url=getFullURL($_GET['r'],'add_section.php','N');
+	echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Duplicate Data Entered',
+			text: 'Message!',
+			type: 'warning',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
+}else{
 		$sec=$_POST['sec_mods'];
 		$sec_mods1=$_POST['sec_mods1'];
 		//	$string_sec=explode(",",	$sec);
@@ -79,6 +99,7 @@ VALUES ('$key','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
+	}
 	}else{
 		
 		$query1="select sec_head from $bai_pro3.sections_db where sec_head='$sec_head'";
@@ -101,12 +122,66 @@ VALUES ('$key','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
 				}); }, 100);</script>";
 		}
 	
+else{
+	$sec_mods1=$_POST['sec_mods'];
+			$query2="select module_id from $bai_pro3.plan_modules where module_id in($sec_mods1)";
+			$sql_result2=mysqli_query($conn, $query2);
+	if(mysqli_num_rows($sql_result2)>0){
+				$url=getFullURL($_GET['r'],'add_section.php','N');
+				echo"<script>setTimeout(function () { 
+					swal({
+						title: 'Module Already Existed!',
+						text: 'Message!',
+						type: 'warning',
+						confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+						if (isConfirm) {
+						window.location.href = \"$url\";
+						}
+					}); }, 100);</script>";
+			}
+		
+else{
 
-		else{
-		
-		
-		
 
+
+	$sec=$_POST['sec_mods'];
+	$string_sec=explode(",",	$sec);
+
+$array = $string_sec;
+$array1 = array_unique($array);
+
+// $duplicate=(array_count_values($array));
+// $unique=(array_count_values($array1));
+// var_dump($array);var_dump($array1);
+// die();
+if(sizeof($array)!= sizeof($array1)){
+	$url=getFullURL($_GET['r'],'add_section.php','N');
+	echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Duplicate Data Entered',
+			text: 'Message!',
+			type: 'warning',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
+}else{
+	//var_dump($string_sec);
+foreach($string_sec as $index => $val){
+	$sql = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,ims_priority_boxes,power_user,buyer_div)
+		VALUES ('$val','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
+
+	if (mysqli_query($conn, $sql)) {
+	} else {
+		echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+	}
+
+}
 		//insert 
 		$sql = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods,ims_priority_boxes)
 VALUES ('$sec_head','$sec_head','$sec_mods','$ims_priority_boxes')";
@@ -129,40 +204,9 @@ VALUES ('$sec_head','$sec_head','$sec_mods','$ims_priority_boxes')";
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 
-		$query2="select sec_mods from $bai_pro3.sections_db where sec_mods='$sec_mods'";
-		$sql_result1=mysqli_query($conn, $query2);
 		
-if(mysqli_num_rows($sql_result1)>0){
-			$url=getFullURL($_GET['r'],'add_section.php','N');
-			echo"<script>setTimeout(function () { 
-				swal({
-				  title: 'Module Already Existed!',
-				  text: 'Message!',
-				  type: 'warning',
-				  confirmButtonText: 'OK'
-				},
-				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
-				}); }, 100);</script>";
-		}else{
-		if($sec_mods>0){
-			$sec=$_POST['sec_mods'];
-			$string_sec=explode(",",	$sec);
-			//var_dump($string_sec);
-		foreach($string_sec as $index => $val){
-			$sql = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,ims_priority_boxes,power_user,buyer_div)
-				VALUES ('$val','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
-
-			if (mysqli_query($conn, $sql)) {
-			} else {
-				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-			}
-
-		}
-		}
-	}
+	
+	
 
 		
 
@@ -174,7 +218,8 @@ if(mysqli_num_rows($sql_result1)>0){
 	}
 	}
 }
-
+	}
+}
 mysqli_close($conn);
 //header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL3NlY3Rpb25zL2FkZF9zZWN0aW9uLnBocA==');
 exit;
