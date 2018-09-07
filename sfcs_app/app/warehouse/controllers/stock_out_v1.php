@@ -55,17 +55,18 @@ $().ready(function() {
 <body onload="dodisable();">
 <div class="panel panel-primary">
 <div class="panel-heading" style="height:35px;">
-<span style="float: left"><h3 style="margin-top: -6px;">Updating RM Issuing</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div></div>
+<span style="float: left"><h3 style="margin-top: -6px;">Updating RM Issuing</h3></span><span style="float: right"><b></b>&nbsp;</span></div></div>
+
 <?php include("menu_content.php"); ?>
 
 <div style="float:right;">
 <FORM method="post" name="input2" action="?r=<?= $_GET['r'] ?>">
-Search Lot No/Location: <!--<input type="text" id="course" name="lot_no">-->
-<textarea id="course" name="lot_no" cols=12 rows=10></textarea>
-<input type="submit" name="submit" value="Search" class="btn btn-success">
+<div id="seract_lot">Search Lot No/Location: <!--<input type="text" id="course" name="lot_no">-->
+<textarea id="course" name="lot_no" cols=12 rows=10 style="height: 107px;"></textarea>
+<input type="submit" name="submit" value="Search" class="btn btn-success"></div>
 </form>
-</div>
 
+</div>
 <?php
 if(isset($_POST['submit']))
 {
@@ -92,7 +93,14 @@ else
 if(strlen($lot_no)>2)
 {
 
+	if($lot_no!=''){
+		echo "<a id='back1' class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "stock_out_v1.php", "N")."\"><<<< Click here to Go Back</a>";
 
+		echo"<style>#seract_lot{display:none;}</style>";
+	   }
+	   else{
+		echo"<style>#back1{display:none;}</style>";
+	   }
 
 //$sql="select * from sticker_report where lot_no=\"".trim($lot_no)."\"";
 $sql5="select * from $bai_rm_pj1.sticker_report where lot_no in (".trim($lot_no).")";
@@ -129,8 +137,10 @@ $diff=$rec_qty-$qty;
 
 if($sql_num_check1>0)
 {
+	// echo"<input type='button' name='back' value='Back' class='btn btn-success' style='margin-left:2px;'></div>";
+
 	echo "<div class='table-responsive'>";
-	echo "<table class='table table-bordered'>";
+	echo "<table class='table table-bordered' style='width:70%'>";
 	echo "<tr  style='background-color:white;'><td>Lot No</td><td>:</td><td>$lot_no</td></tr>";
 	echo "<tr  style='background-color:white;'><td>Batch</td><td>:</td><td>$batch_no</td></tr>";
 	echo "<tr  style='background-color:white;'><td>Item Description</td><td>:</td><td>$item_desc</td></tr>";
@@ -143,8 +153,8 @@ if($sql_num_check1>0)
 }
 
 echo "<form id='myForm' name='input' action='?r=".$_GET['r']."' method='post'>";
-echo "<div class='table-responsive'>";
-echo "<table class='table table-bordered'>";
+echo "<div>";
+echo "<table class='table table-bordered col-sm-2' style='margin-top: 23px;'>";
 echo "<tr  style='background-color:white;'><th>Location</th><th>Lot #</th><th>Label ID</th><th>Box/Roll No</th><th>Available Qty</th><th>Date</th>";
 
 switch (trim($product_group))
@@ -211,12 +221,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		if($available > 0)
 		{
 			echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$tid</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
-			echo '<td style="background-color:white;"><input type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
-			echo '<td style="background-color:white;"><input type="text" name="qty_issued[]" value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
-			echo '<td style="background-color:white;"><input type="text" name="style[]" value=""></td>';
-			echo '<td style="background-color:white;"><input type="text" name="schedule[]" value=""></td>';
-			echo '<td style="background-color:white;"><input type="text" name="cut[]" value=""></td>';
-			echo '<td style="background-color:white;"><input type="text" name="remarks[]" value="">';
+			echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
+			echo '<td style="background-color:white;"><input style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
+			echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
+			echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="schedule[]"  value=""></td>';
+			echo '<td style="background-color:white;"><input style="width: 62px; type="text" name="cut[]" value=""></td>';
+			echo '<td style="background-color:white;"><input style="width: 125px; type="text" name="remarks[]" value="">';
 			echo '<input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="available2[]" value="'.$available2.'"></td>';
 		}
 		
@@ -327,6 +337,7 @@ echo "</div>";
 <?php
 
 
+
 if(isset($_POST['put']))
 {
 	$date=$_POST['date'];
@@ -340,7 +351,6 @@ if(isset($_POST['put']))
 	$available2=$_POST['available2']; //CTEX Length
 	$lot_no_new=$_POST['lot_no'];
 	$user_name=$_SESSION['SESS_MEMBER_ID'];
-	
 	for($i=0; $i<sizeof($qty_issued); $i++)
 	{
 		if($qty_issued[$i]>0)
