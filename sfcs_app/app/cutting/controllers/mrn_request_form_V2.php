@@ -709,7 +709,20 @@ function button_disable()
 				//echo "<td>$item_description</td>";
 				
 				//When M3 offline uncomment this
-				echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
+				$opno = (int)$finalrecords[$x]['OPNO'];
+				// echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
+				if($opno === 15){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"FAB\">FAB</td>";
+				}
+				if($opno === 200){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"PTRIM\">PTRIM</td>";
+				}
+
+				if($opno >= 100 && $opno < 200){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"STRIM\">STRIM</td>";
+				}
+				
+
 				$item_code = $finalrecords[$x]['MTNO'];
 				echo "<td><input type=\"hidden\" name=\"item_code[]\" id='item_code$x' value=\"$item_code\" style=\"background-color:#66FFCC;\" readonly='true'>$item_code</td>";
 				$item_des = $finalrecords[$x]['ITDS'];
@@ -734,19 +747,22 @@ function button_disable()
 				
 				//When M3 offline comment this (Key word: When M3)
 				$uom = $finalrecords[$x]['PEUN'];
-				echo "<td><select name=\"uom[]\"  disabled='true'>
-						<option value='PCS' ";
-						if($uom == 'PCS'){
-							echo 'selected';
-						}
-						echo ">PCS</option>
-						<option value='$fab_uom' ";
-						if($uom == 'YRD'){
-							echo 'selected';
-						}
-						echo ">$fab_uom</option>
-						</select>
-					</td>";
+				echo "<td><input type=\"hidden\" name=\"uom[]\" value=\"$uom\">".$uom."</td>";
+				// echo "<td><select name=\"uom[]\"  disabled='true'>
+				// 		<option value='PCS' ";
+				// 		if($uom == 'PCS'){
+				// 			echo 'selected';
+				// 		}
+				// 		echo ">PCS</option>
+				// 		<option value='$fab_uom' ";
+				// 		if($uom == 'YRD'){
+				// 			echo 'selected';
+				// 		}
+				// 		echo ">$fab_uom</option>
+				// 		</select>
+				// 	</td>";
+
+					
 				//echo "<td>$uom</td>";
 				// $reason_id_db = array();
 				// $reason_code_db = array();
