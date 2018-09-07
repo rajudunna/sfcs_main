@@ -563,9 +563,9 @@ function button_disable()
 			$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 			$MIRecords = array();
 			while($sql_result_32=mysqli_fetch_array($sql_result)){
-				
+				 
 				$get_api_call = new get_api_call();
-				$url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelMaterials?CONO=200&FACI=EKG&MFNO=".$sql_result_32['mo_no'];
+				$url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelMaterials?CONO=200&FACI=".$global_facility_code."&MFNO=".$sql_result_32['mo_no'];
 				
 				$response_result = $get_api_call->getCurlRequest($url);
 				$response_result = json_decode($response_result);
@@ -681,8 +681,21 @@ function button_disable()
 
 			if($count_ref==0)
 			{
+			$reason_id_db = array();
+			$reason_code_db = array();
+			$sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
+			$sql_result=mysqli_query($link, $sql_reason) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$count = mysqli_num_rows($sql_result);
+			
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
 				
+				$reason_id_db[]=$sql_row['reason_tid'];
+				$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
+			}
+
 			if(count($finalrecords) > 0){
+				
 			for($x=0;$x<count($finalrecords);$x++)
 			{
 			
@@ -696,11 +709,24 @@ function button_disable()
 				//echo "<td>$item_description</td>";
 				
 				//When M3 offline uncomment this
-				echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
+				$opno = (int)$finalrecords[$x]['OPNO'];
+				// echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
+				if($opno === 15){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"FAB\">FAB</td>";
+				}
+				if($opno === 200){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"PTRIM\">PTRIM</td>";
+				}
+
+				if($opno >= 100 && $opno < 200){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"STRIM\">STRIM</td>";
+				}
+				
+
 				$item_code = $finalrecords[$x]['MTNO'];
-				echo "<td><input type=\"text\" name=\"item_code[]\" id='item_code$x' value=\"$item_code\" style=\"background-color:#66FFCC;\" readonly='true'></td>";
+				echo "<td><input type=\"hidden\" name=\"item_code[]\" id='item_code$x' value=\"$item_code\" style=\"background-color:#66FFCC;\" readonly='true'>$item_code</td>";
 				$item_des = $finalrecords[$x]['ITDS'];
-				echo "<td><input type=\"text\" name=\"item_desc[]\" id='item_desc$x' value=\"$item_des\" style=\"background-color:#66FFCC;\" readonly='true'></td>";
+				echo "<td><input type=\"hidden\" name=\"item_desc[]\" id='item_desc$x' value=\"$item_des\" style=\"background-color:#66FFCC;\" readonly='true'>$item_des</td>";
 				echo "<td><input type=\"text\" name=\"co[]\" id='item_color$x' value=\"\" style=\"background-color:#66FFCC;\"></td>"; 
 				
 				echo "<td></td>";
@@ -721,32 +747,35 @@ function button_disable()
 				
 				//When M3 offline comment this (Key word: When M3)
 				$uom = $finalrecords[$x]['PEUN'];
-				echo "<td><select name=\"uom[]\"  disabled='true'>
-						<option value='PCS' ";
-						if($uom == 'PCS'){
-							echo 'selected';
-						}
-						echo ">PCS</option>
-						<option value='$fab_uom' ";
-						if($uom == 'YRD'){
-							echo 'selected';
-						}
-						echo ">$fab_uom</option>
-						</select>
-					</td>";
+				echo "<td><input type=\"hidden\" name=\"uom[]\" value=\"$uom\">".$uom."</td>";
+				// echo "<td><select name=\"uom[]\"  disabled='true'>
+				// 		<option value='PCS' ";
+				// 		if($uom == 'PCS'){
+				// 			echo 'selected';
+				// 		}
+				// 		echo ">PCS</option>
+				// 		<option value='$fab_uom' ";
+				// 		if($uom == 'YRD'){
+				// 			echo 'selected';
+				// 		}
+				// 		echo ">$fab_uom</option>
+				// 		</select>
+				// 	</td>";
+
+					
 				//echo "<td>$uom</td>";
-				$reason_id_db = array();
-				$reason_code_db = array();
-				$sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$reason_id_db[]=$sql_row['reason_tid'];
-					$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
-				}
+				// $reason_id_db = array();
+				// $reason_code_db = array();
+				// $sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
+				// $sql_result=mysqli_query($link, $sql_reason) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row=mysqli_fetch_array($sql_result))
+				// {
+				// 	$reason_id_db[]=$sql_row['reason_tid'];
+				// 	$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
+				// }
 
 				echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" ".$validation_ref_select." >";
-				for($i=1;$i<sizeof($reason_code_db);$i++)
+				for($i=0;$i<sizeof($reason_code_db);$i++)
 				{
 					echo "<option value=\"".$reason_id_db[$i]."\">".$reason_code_db[$i]."</option>";
 				}
@@ -756,6 +785,7 @@ function button_disable()
 			}
 		}
 		if(count($finalrecords) == 0){
+			
 			for($x=0;$x<10;$x++)
 			{
 			
@@ -796,18 +826,9 @@ function button_disable()
 						</select>
 					</td>";
 				//echo "<td>$uom</td>";
-				$reason_id_db = array();
-				$reason_code_db = array();
-				$sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$reason_id_db[]=$sql_row['reason_tid'];
-					$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
-				}
-
+				
 				echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" ".$validation_ref_select." >";
-				for($i=1;$i<sizeof($reason_code_db);$i++)
+				for($i=0;$i<sizeof($reason_code_db);$i++)
 				{
 					echo "<option value=\"".$reason_id_db[$i]."\">".$reason_code_db[$i]."</option>";
 				}
