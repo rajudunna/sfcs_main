@@ -99,12 +99,9 @@ VALUES ('$key','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
 					window.location.href = \"$url\";
 				  }
 				}); }, 100);</script>";
-
-
-
-
 		}
 	
+
 		else{
 		
 		
@@ -132,6 +129,24 @@ VALUES ('$sec_head','$sec_head','$sec_mods','$ims_priority_boxes')";
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 
+		$query2="select sec_mods from $bai_pro3.sections_db where sec_mods='$sec_mods'";
+		$sql_result1=mysqli_query($conn, $query2);
+		
+if(mysqli_num_rows($sql_result1)>0){
+			$url=getFullURL($_GET['r'],'add_section.php','N');
+			echo"<script>setTimeout(function () { 
+				swal({
+				  title: 'Module Already Existed!',
+				  text: 'Message!',
+				  type: 'warning',
+				  confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+				  if (isConfirm) {
+					window.location.href = \"$url\";
+				  }
+				}); }, 100);</script>";
+		}else{
 		if($sec_mods>0){
 			$sec=$_POST['sec_mods'];
 			$string_sec=explode(",",	$sec);
@@ -147,6 +162,7 @@ VALUES ('$sec_head','$sec_head','$sec_mods','$ims_priority_boxes')";
 
 		}
 		}
+	}
 
 		
 
