@@ -295,6 +295,14 @@ border: 1px solid black;
 }
 </style>
 
+<script>
+function firstbox()
+{
+  var shift_id = document.getElementById('shift').value;
+  window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&shift="+shift_id;
+}
+</script>
+
 <?php
 $double_modules=array();
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -532,6 +540,28 @@ mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli
 			echo "</font></br>";
 			?>
 		</div>
+		<?php
+           $shifts = $_GET['shift'];
+
+           $shift_ary = ['A','B','C','G'];
+        ?>
+
+		<div class="form-group">
+			 Shift :<select class="form-control" id="shift" name="shift" onchange="firstbox();" required>
+            <option value="">Select</option>
+           <?php
+            foreach($shift_ary as $shift){
+            if($shift == $shifts){
+              echo "<option value='$shift' selected>$shift</option>";
+            }else{
+               echo "<option value='$shift'>$shift</option>";
+            }
+           
+          }
+
+     ?>
+  </select>   
+		</div>	
 	</div>
 <?php
 
@@ -815,7 +845,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					 
 					$ui_url1 =getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
 					$application='IPS';
-					$shift='G';
+					//$shift='G';
 					//$barcode_generation='1';
 					$sidemenu=true;
 					$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
@@ -845,7 +875,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 								{
 									echo "<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shift&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu\" onclick=\"Popup=window.open('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
 										</div>
 									</div>";
