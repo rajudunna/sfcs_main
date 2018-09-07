@@ -421,9 +421,9 @@ $shift_ary = ['A','B','C','G'];
   </div>
   <div class="panel-body">
   <div class="row">
-     <div class="col-md-3">
-    
-    Shift :<select class="form-control" id="shift" name="shift" onchange="firstbox();" required>
+  <div class="col-md-1">
+      
+    <label>Shift </label><select class="form-control" id="shift" name="shift" onchange="firstbox();">
     <option value="">Select</option>
      <?php
           foreach($shift_ary as $shift){
