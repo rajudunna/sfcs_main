@@ -18,8 +18,7 @@
 
 	if(isset($_GET['club'])){
 		$club = $_GET['club'];
-	}	
-
+	}
 	if(isset($_GET['order_tid']))
 	{
 		$order_tid[]=$_GET['order_tid'];
@@ -29,9 +28,7 @@
 		$order_tids=$_GET['order_tid_arr'];
 		$order_tid=explode(',',$order_tids);
 	}
-	$order_tid = ['JJA012S9       55002069 - NAVY BOTTOM              ','JJA012S9       55002069 - NAVY TOP                 '];
-	$split_proces_name = 'cutting';
-	$club = 'clubbing';
+	
 	//$order_tid[] = 'JOA141S9       55881511 - PINK BOTTOM              ';
 	//$order_tid[]='JJP327F8       52834608-DARKGREY-ROSECLAIRBOTTOM   ';
 
@@ -45,7 +42,7 @@
 
 	for($l=0;$l<sizeof($category_name);$l++)
 	{
-		if($category_name[$l]==$split_proces_name && $split_proces_name == 'cutting' && 0)
+		if($category_name[$l]==$split_proces_name && $split_proces_name == 'cutting' && $club!='clubbing')
 		{
 			//$style_id=$_GET["style"]; 
 			//$schedule_id=$_GET["schedule"];
@@ -66,8 +63,7 @@
 				$sql12="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_tid like '%".$order_tid."%'";
 				$result129=mysqli_query($link, $sql12) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row121=mysqli_fetch_array($result129))
-				{
-					echo "CAME IN";	
+				{					
 					$style = $row121['order_style_no'];
 					$schedule = $row121['order_del_no'];
 					$style_id=$row121['style_code'];
@@ -99,7 +95,7 @@
 								$opst[]=$row1212['OperationNumber'];
 							}
 						}
-						echo $doc_no_get;
+					
 						if(sizeof($mo_no)>0)
 						{
 							$ops=array_unique($opst);
@@ -109,7 +105,6 @@
 								{
 									if($ops_m_id[$mo_no[0]][$ops[$k]]>0)
 									{	
-										echo "OKKK";
 										$sql12="SELECT (p_".$sizes_array[$j]."*p_plies) as qty,doc_no,acutno FROM $bai_pro3.plandoc_stat_log WHERE p_".$sizes_array[$j].">0 and order_tid='".$order_tid."' and doc_no = '$doc_no_get' 
 										group by doc_no";					
 										$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
