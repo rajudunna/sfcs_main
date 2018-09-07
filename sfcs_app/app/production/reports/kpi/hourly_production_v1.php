@@ -32,6 +32,8 @@
 		$plant_name[] = $row['plant_name'];
 		$plant_modules[] = explode(',', $row['plant_modules']);
 	}
+
+
 ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Hourly Production Report- Section Wise <?php  echo $frdate;  ?></div>
@@ -52,9 +54,19 @@
    <?php
 if(isset($_GET['submit']))
 {
-	$total_hours = $plant_end_time - $plant_start_time;
-	list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
-	$minutes_29 = $minutes-1;
+	$plant_timings_query="SELECT * FROM $bai_pro3.tbl_plant_timings";
+	// echo $plant_timings_query;
+	$plant_timings_result=mysqli_query($link,$plant_timings_query);
+	while ($row = mysqli_fetch_array($plant_timings_result))
+	{
+		$start_time[] = $row['start_time'];
+		$end_time[] = $row['end_time'];
+		$time_display[] = $row['time_display'].'<br>'.$row['day_part'];
+	}
+
+	// $total_hours = $plant_end_time - $plant_start_time;
+	// list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
+	// $minutes_29 = $minutes-1;
    	// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
 	// // echo $sql;
 	// $res=mysqli_query($link,$sql);	
@@ -74,17 +86,10 @@ if(isset($_GET['submit']))
 					  <th>SMV</th>
 					  <th>Hours</th>
 					  <th>Target <br>PCS/Hr</th>
-					  <?php 
-							$hours_array = array();
-							$hour_end = array();
-						   	for ($i=0; $i < $total_hours; $i++)
+					  <?php
+						   	for ($i=0; $i < sizeof($time_display); $i++)
 							{
-								$hours_array[] = $hour;
-								$from_hour = $hour.":".$minutes;
-								$hour1=$hour++ + 1;
-								$to_hour = $hour1.":".$minutes_29;
-								$hour_end[] = $hour1;
-								echo "<th><center>$from_hour<br>to<br>$to_hour</center></th>";
+								echo "<th><center>$time_display[$i]</center></th>";
 							}
 						?>
 					  <th>Total Pcs</th>
@@ -118,9 +123,12 @@ if(isset($_GET['submit']))
 				// $grand_tot_scanned_sah=0; $grand_tot_forecast_sah=0; $grand_tot_act_sah=0; $grand_tot_sah_diff=0;
 				// $grand_tot_plan_eff=0; $grand_tot_act_eff=0; $grand_tot_hitrate=0; $grand_tot_required=0; 
 				$section_count=0;
-
+				$section_wise_total = 0;
 				while($Sec=mysqli_fetch_array($section_result))
 				{
+					$section_wise_total++;
+					$dummy[$section_wise_total] = array();
+
 					$section_count++; $sec_tot_plan_sah=0;
 					$sec_tot_fr_qty = 0; $sec_tot_forecast_qty=0; $sec_tot_total_qty=0; $sec_tot_scanned_qty=0; 
 					$sec_tot_scanned_sah=0; $sec_tot_forecast_sah=0; $sec_tot_act_sah=0; $sec_tot_sah_diff=0;
@@ -135,6 +143,7 @@ if(isset($_GET['submit']))
 						while($row=mysqli_fetch_array($res))
 						{ 
 							$total_qty = 0;
+						
 							$module_count++;
 							// echo $frdate;
 						    $date=$row['frdate'];
@@ -250,41 +259,76 @@ if(isset($_GET['submit']))
 										?>
 									</center></td>
 									<?php
-										for ($i=0; $i < sizeof($hours_array); $i++)
+										for ($i=0; $i < sizeof($time_display); $i++)
 										{
-											// echo $hours_array[$i].'<br>';
-											$hour_iniate = $hours_array[$i];
-											$hour_ending = $hour_end[$i];
-											//$sql6_1="SELECT SUM(qty) as qty FROM $bai_pro2.hout WHERE out_date='$frdate' AND team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":".$minutes."') AND TIME('".$hour_ending.":".$minutes_29."'));";
-											$row=echo_title("$bai_pro2.hout","SUM(qty)","team='$team' AND (TIME(out_time) BETWEEN TIME('".$hour_iniate.":".$minutes."') AND TIME('".$hour_ending.":".$minutes_29."')) and out_date",$frdate,$link);
+											$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
+											// $row=echo_title("$bai_pro2.hout","SUM(qty)","team='$team' AND (TIME(out_time) BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."')) and out_date",$frdate,$link);
 											
 											if ($row == '' || $row == NULL )
 											{
 												$row=0;
 											}
-											
-											if ($row >= round($pcsphr))
+
+											if (round($pcsphr) == 0)
+											{
+												if ($row > 0)
+												{
+													echo "<td><center>".$row."</center></td>";
+												}
+												else
+												{
+													echo "<td><center>  </center></td>";
+												}
+											}
+											else if ($row >= round($pcsphr))
 											{
 												$total_qty = $total_qty + $row;
 												for ($k=0; $k < sizeof($plant_name); $k++) 
 												{
 													if (in_array($team, $plant_modules[$k]))
 													{
+<<<<<<< HEAD
+														$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
+														$grand_tot_qty_time_dummy[$section_wise_total][$i] = $grand_tot_qty_time_dummy[$section_wise_total][$i] + $row;	
+
+														$grand_tot_qty_time_array_section[$section_wise_total][$i] = 	$grand_tot_qty_time_dummy[$section_wise_total][$i];
+=======
 														// echo $plant_modules[$k][];
-														$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+														$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
+>>>>>>> 845-production-hourly-report-is-not-showing-based-rules-mentioned-in-774
 													}
+													
 												}											
 												echo "<td><center>".$row."</center></td>";
+												$dummy[$section_wise_total][$i] = $dummy[$section_wise_total][$i] + $row;
+												//$grand_tot_qty_time_array_section[$section_wise_total][$i] = $total_qty;
 											} 
 											else if ($row < round($pcsphr))
 											{
-												if (($hour_iniate > date('H') and $frdate == date('Y-m-d')) && $row == 0)
-												{
-													echo "<td><center> - </center></td>";
+												if ($row == 0)
+												{									
+													$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+													// echo $sql6_2.'<br><br>';
+													$res6_12=mysqli_query($link,$sql6_2);
+													if (mysqli_num_rows($res6_12) > 0)
+													{
+														echo "<td><center> 0 </center></td>";
+													}
+													else
+													{
+														if (($start_time[$i] > date('H') and $frdate == date('Y-m-d')))
+														{
+															echo "<td><center> - </center></td>";
+														}
+														else
+														{
+															echo "<td><center>  </center></td>";
+														}
+													}
 												}
 												else
 												{
-													$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND HOUR(time) BETWEEN TIME('".$hour_iniate."') AND TIME('".$hour_ending."') AND team='$team';";
+													$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 													// echo $sql6_2.'<br><br>';
 													$res6_12=mysqli_query($link,$sql6_2);
 													if (mysqli_num_rows($res6_12) > 0)
@@ -294,9 +338,10 @@ if(isset($_GET['submit']))
 														{
 															if (in_array($team, $plant_modules[$k]))
 															{
-																$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row6_1['qty'];
+																$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
 															}
-														}												
+														}
+														$dummy[$section_wise_total][$i] = $dummy[$section_wise_total][$i] + $row;												
 														echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
 													}
 													else
@@ -482,6 +527,7 @@ if(isset($_GET['submit']))
 								</tr>
 									<?php
 						}
+					
 							?>
 							<tr style="background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
 								<td>Section - <?php  echo $section; ?></center></td>
@@ -493,12 +539,12 @@ if(isset($_GET['submit']))
 								<td></td>
 								<td></td>
 								<?php
-									for ($i=0; $i < sizeof($hours_array); $i++)
+									for ($i=0; $i < sizeof($time_display); $i++)
 									{
-										if ($grand_tot_qty_time_array1[$plant_name[$j]][$i] > 0)
+										if ($dummy[$section_wise_total][$i] > 0)
 										{
 											echo "<td><center>".
-											$grand_tot_qty_time_array1[$plant_name[$j]][$i]
+											$dummy[$section_wise_total][$i]
 											."</center></td>";			
 										} 
 										else
@@ -507,6 +553,7 @@ if(isset($_GET['submit']))
 										}
 										
 									}
+									//unset($dummy[$section_wise_total]);
 								?>
 								<td><center>
 									<?php 
@@ -615,7 +662,7 @@ if(isset($_GET['submit']))
 						<td></td>
 						<td></td>
 						<?php
-							for ($i=0; $i < sizeof($hours_array); $i++)
+							for ($i=0; $i < sizeof($time_display); $i++)
 							{
 								if ($grand_tot_qty_time_array1[$plant_name[$j]][$i] > 0)
 								{

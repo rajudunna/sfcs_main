@@ -60,8 +60,10 @@
     {
         //x=document.getElementById('view_cat').value;
         y=document.getElementById('view_div').value;
+        r=document.getElementById('view_qty').value;
         //window.location = "fab_pps_dashboard_v2.php?view=2&view_cat="+x+"&view_div="+y;
-        window.location = "index.php?r=<?= $_GET['r'] ?>&view=2&view_div="+encodeURIComponent(y);
+        window.location = "index.php?r=<?= $_GET['r'] ?>&view=2&view_div="+encodeURIComponent(y)+"&view_qty="+r;
+       
     }
 
     function redirect_dash()
@@ -70,8 +72,10 @@
         y=document.getElementById('view_div').value;
         z=document.getElementById('view_dash').value;
         a=document.getElementById('view_priority').value;
+        r=document.getElementById('view_qty').value;
         //window.location = "fab_pps_dashboard_v2.php?view="+z+"&view_cat="+x+"&view_div="+y;
-        window.location = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+        window.location = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a+"&view_qty="+r;
+       
     }
 
     function redirect_priority()
@@ -80,8 +84,10 @@
         y=document.getElementById('view_div').value;
         z=document.getElementById('view_dash').value;
         a=document.getElementById('view_priority').value;
+        r=document.getElementById('view_qty').value;
         //window.location = "pps_dashboard_v2.php?view="+z+"&view_cat="+x+"&view_div="+y;
-        window.location = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+        window.location = "index.php?r=<?= $_GET['r'] ?>&view="+z+"&view_div="+encodeURIComponent(y)+"&view_priority="+a+"&view_qty="+r;
+       
     }
 </script>
 
@@ -320,7 +326,7 @@
     .orange {
       width:20px;
       height:20px;
-      background-color: #eda11e;
+      background-color: #FF8C00;
       display:block;
       float: left;
       margin: 2px;
@@ -337,7 +343,7 @@
 
     .orange a:hover {
       text-decoration:none;
-      background-color:#eda11e;
+      background-color: #FF8C00;
     }
 
     .blue {
@@ -418,6 +424,10 @@
       text-decoration:none;
       background-color: black;
     }
+    .form-inline .form-control {
+    width: 74px;
+    
+}
 </style>
 
 <SCRIPT>
@@ -568,7 +578,18 @@
                         if($_GET['view_priority']=="12") { echo '<option value="12" selected>12</option>'; } else { echo '<option value="12">12</option>'; }
                         if($_GET['view_priority']=="16") { echo '<option value="16" selected>16</option>'; } else { echo '<option value="16">16</option>'; }
                         echo '</select>';
-
+                        echo '&nbsp;&nbsp;&nbsp;Show Quantity :<select name="view_qty" id="view_qty" class="form-control" onchange="redirect_view()">';
+                        if($_GET['view_qty']==1) 
+                        {
+                            echo "<option value=\"1\" selected >Yes</option>";
+                             echo "<option value=\"0\">No</option>";
+                         }
+                         else
+                         {
+                             echo "<option value=\"1\">Yes</option>";
+                             echo "<option value=\"0\" selected>No</option>";
+                         }
+                         echo '</select>';
                         if(isset($_GET['view_priority']))
                         {
                             $priority_limit=$_GET['view_priority'];
@@ -611,6 +632,7 @@
                     // Ticket #976613 change the buyer division display based on the pink,logo,IU as per plan_modules
                     $sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
                     //echo $sql1d."<br>";
+                    $qty_view_status=$_GET["view_qty"];
                     $sql_num_checkd=0;
                     $sql_result1d=mysqli_query($link, $sql1d) or exit("Sql Error 9".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $sql_num_checkd=mysqli_num_rows($sql_result1d);
@@ -711,12 +733,17 @@
                             $sql_num_check=mysqli_num_rows($sql_result1);
                             while($sql_row1=mysqli_fetch_array($sql_result1))
                             {
+                                
                                 $cut_new=$sql_row1['act_cut_status'];
                                 $cut_input_new=$sql_row1['act_cut_issue_status'];
                                 $rm_new=strtolower(chop($sql_row1['rm_date']));
                                 $rm_update_new=strtolower(chop($sql_row1['rm_date']));
                                 $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
                                 $doc_no=$sql_row1['doc_no'];
+                               
+                                $a_plies = $sql_row1['a_plies'];
+                                $p_plies = $sql_row1['p_plies'];
+                              
                                 //echo $doc_no;
                                 $order_tid=$sql_row1['order_tid'];
                                 $ord_style=$sql_row1['order_style_no'];
@@ -839,14 +866,14 @@
 								if(mysqli_num_rows($fab_isuue2_result)>0)
 								{
 									$fab_status="1";
-								}
+                                }
+                                // echo "Fab=".$fab_status."<br>";
 							$fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
                                 $fab_request_result=mysqli_query($link, $fab_request_query) or exit("error while getting fab Requested details");
-    
+
                                 if ($fab_status==5)
                                 {
-                                    // $final_cols = 'yellow';
-                                    // $rem="Fabric issued";
+                                    // var_dump('5');
                                     if($a_plies != $p_plies){
                                         $final_cols = 'orange';
                                         $rem="Cutting Partially Done";
@@ -917,7 +944,7 @@
                                 // {
                                 //     $fab_wip+=$total_qty;
                                 // }
-                                        
+                                //    echo $final_cols;     
                                 $title=str_pad("Style:".trim($style),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),80)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Log Time:".$log_time,80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80)."\n".str_pad("Remarks:".$rem,80);
                                 
 
@@ -938,14 +965,26 @@
                                     {
                                         // echo "yash<br>";
                                         $url1=getFullURL($_GET['r'],'fabric_requisition.php','N');
-                                        echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"></a>";
+                                        if($qty_view_status==1){
+                                            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px;width:20px; text-align:center;min-width:20px;width:auto;color:$final_cols\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$total_qty</a></div>";
+            
+                                        }else{
+                                            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"></a>";
+                                        }
+                                        //echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."\" onclick=\"Popup=window.open('$url1&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"></a>";
                                         //echo $schedule;
                                         echo "</div></div>";
                                     }
                                     else
                                     {
                                         // echo "yellow or green<br>";
-                                        echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"#\"></a></div></div>";
+                                        if($qty_view_status==1){
+                                            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px;width:20px; text-align:center;min-width:20px;width:auto;color:$final_cols\" title=\"$title\" ><a href=\"#\">$total_qty</a></div></div>";
+                                           }else{
+                                               echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"#\"></a></div></div>";
+      
+                                           }
+                                       // echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ><a href=\"#\"></a></div></div>";
                                     }        
                                 // }
                                 // else

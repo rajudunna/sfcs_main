@@ -516,8 +516,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							updateRoleData($roledata,$link);
 							//Anil Logic
 							//UpdateActMovementStatus($input_doc_no,$link);
-							echo "<script>sweetAlert('Cut Quantity Reported Successfully','','success');</script>";
-							echo "<a class='btn btn-warning' href='".getFullURL($_GET['r'],'doc_track_panel.php','N')."'><< Go back to Cut quantity reporting screen</a>";
+							// echo "<script>sweetAlert('Cut Quantity Reported Successfully','','success');</script>";
+							// echo "<a class='btn btn-warning' href='".getFullURL($_GET['r'],'doc_track_panel.php','N')."'><< Go back to Cut quantity reporting screen</a>";
+							$go_back = 'doc_track_panel_withrolls';
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",10); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'cut_qty_reporting_withoutrolls/trail.php',1,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
 					    	//Locations display for docket after saving = Satish 21/12/2017
 					    	$getLocations = "SELECT locations.loc_name,locations.capacity,locations.filled_qty FROM $bai_pro3.locations LEFT JOIN $bai_pro3.doc_loc_mapping ON doc_loc_mapping.loc_id = locations.loc_id WHERE doc_loc_mapping.doc_no = $input_doc_no group By locations.loc_name";
 					    	$locations = mysqli_query($link, $getLocations) or exit("Sql Error at getting into locations for the docket".mysqli_error($GLOBALS["___mysqli_ston"]));					   		
@@ -620,9 +622,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 								updateRoleData($roledata,$link);
 								//Anil Logic
 								//UpdateActMovementStatus($input_doc_no,$link);
-								echo "<script>sweetAlert('Cut Quantity Reported Successfully','','success');</script>";
+								// echo "<script>sweetAlert('Cut Quantity Reported Successfully','','success');</script>";
 								//echo "<h3><span style='color:green;'>Successfully Cut Quantity reported</span></h3>";
-								echo "<a class='btn btn-warning' href='".getFullURL($_GET['r'],'doc_track_panel.php','N')."'><< Go back to Cut quantity reporting screen</a>";
+								$go_back = 'doc_track_panel_withrolls';
+								echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",10); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'cut_qty_reporting_withoutrolls/trail.php',1,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
+								// echo "<a class='btn btn-warning' href='".getFullURL($_GET['r'],'doc_track_panel.php','N')."'><< Go back to Cut quantity reporting screen</a>";
 								//Locations display for docket after saving = Satish 21/12/2017
 						    	$getLocations = "SELECT locations.loc_name,locations.capacity,locations.filled_qty FROM $bai_pro3.locations LEFT JOIN $bai_pro3.doc_loc_mapping ON doc_loc_mapping.loc_id = locations.loc_id WHERE doc_loc_mapping.doc_no = $input_doc_no group By locations.loc_name";
 						    	$locations = mysqli_query($link, $getLocations) or exit("Sql Error at getting into locations for the docket".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -741,8 +745,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							updateRoleData($roledata,$link);
 							//Anil Logic
 							//UpdateActMovementStatus($input_doc_no,$link);
-							echo "<script>sweetAlert('Cut Quantity Reported Successfully','','success');</script>";
+							// echo "<script>sweetAlert('Cut Quantity Reported Successfully','','success');</script>";
 							//echo "<h3><span style='color:green;'>Successfully Cut Quantity reported</span></h3>";
+							$go_back = 'doc_track_panel_withrolls';
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",10); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'cut_qty_reporting_withoutrolls/trail.php',1,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
 							echo "<a class='btn btn-warning'href='".getFullURL($_GET['r'],'doc_track_panel.php','N')."'><< Go back to Cut quantity reporting screen</a>";
 					    	//Locations display for docket after saving = Satish 21/12/2017
 					    	$getLocations = "SELECT locations.loc_name,locations.capacity,locations.filled_qty FROM $bai_pro3.locations LEFT JOIN $bai_pro3.doc_loc_mapping ON doc_loc_mapping.loc_id = locations.loc_id WHERE doc_loc_mapping.doc_no = $input_doc_no group By locations.loc_name";
