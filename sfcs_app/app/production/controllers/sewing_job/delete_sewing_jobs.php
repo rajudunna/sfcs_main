@@ -171,7 +171,7 @@
                 $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
                                  WHERE default_operation='Yes' and trim(category) = 'sewing' ";
                 $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
-                while($row=mysqli_fetch_array($result1216)) 
+                while($row=mysqli_fetch_array($op_code_result)) 
                 {
                     $op_codes  = $row['codes'];	
                 }
@@ -212,7 +212,7 @@
                 $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
                                  WHERE default_operation='Yes' and trim(category) = 'sewing' ";
                 $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
-                while($row=mysqli_fetch_array($result1216)) 
+                while($row=mysqli_fetch_array($op_code_result)) 
                 {
                     $op_codes  = $row['codes'];	
                 }
