@@ -344,7 +344,6 @@ if(isset($_POST['submit']))
 	$sizes_result = mysqli_query($link,$sizes_query) or exit('An Error Encountered');
 	
 	while($row = mysqli_fetch_array($sizes_result)){
-		echo "Hai";
 		foreach($sizes_array as $key => $value){
 			if($row['a_'.$value] > 0)
 				$sizes[] = $value;
@@ -408,7 +407,7 @@ if(isset($_POST['submit']))
 				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 							(`date_time`, `mo_no`, `doc_no`,`bundle_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
 							(".date('Y-m-d H:i:s').",$mo_no,$doc_no,$acut_no,$qty,$op_code,'recut')";
-				mysqli_query($link,$insert_query) or exit('error 2');;
+				mysqli_query($link,$insert_query) or exit('error 2');
 				break;
 			}	
 		}
@@ -417,7 +416,7 @@ if(isset($_POST['submit']))
 			$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 						(`date_time`, `mo_no`, `doc_no`,`bundle_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
 						(".date('Y-m-d H:i:s').",$last_mo,$doc_no,$acut_no,$qty,$op_code,'recut')";
-			mysqli_query($link,$insert_query) or exit('error 3');;		
+			mysqli_query($link,$insert_query) or exit('error 3');	
 			unset($mos);
 		}
 	}
