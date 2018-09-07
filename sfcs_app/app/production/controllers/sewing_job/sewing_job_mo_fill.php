@@ -5,8 +5,6 @@
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-//$order_tid='JJP327F8       52834608-DARKGREY-ROSECLAIRBOTTOM   ';
-//$schedule = '528859';// for sewing
 	set_time_limit(30000000);
 	$process_name= $_GET['process_name'];
 	$style_id    = $_GET["style"]; 
@@ -15,7 +13,11 @@
 	$schedule    = $_GET['schedule'];
 	$split_proces_name=$process_name;
 	$style = $_GET['style'];
-	//$col = $_GET[''];
+
+	if(isset($_GET['club'])){
+		$club = $_GET['club'];
+	}	
+
 	$doc_no_get = $_GET['doc_no'];
 	
 	if(isset($_GET['order_tid']))
@@ -63,11 +65,14 @@
 				$result129=mysqli_query($link, $sql12) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row121=mysqli_fetch_array($result129))
 				{
+					if($club == 'clubbing')
+						$doc_no_get = $row121['doc_no'];
 					$style = $row121['order_style_no'];
 					$schedule = $row121['order_del_no'];
 					$style_id=$row121['style_code'];
 					$schedule_id=$row121['ref_order_num'];
 					$col=trim($row121['order_col_des']);
+					//$i_docket_no = $row121['doc_no'];
 					for($i=0;$i<sizeof($sizes_array);$i++)
 					{
 						if($row121["title_size_".$sizes_array[$i].""]<>'')

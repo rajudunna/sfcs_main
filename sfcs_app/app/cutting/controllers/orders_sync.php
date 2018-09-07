@@ -173,7 +173,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 			function Redirect() {
-				location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',2,'N')."&order_tid_arr=$impdata&process_name=cutting&filename=$filename\";
+				location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',2,'N')."&order_tid_arr=$impdata&club=clubbing&process_name=cutting&filename=$filename\";
 				}
 			</script>";
 	
