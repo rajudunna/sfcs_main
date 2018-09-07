@@ -85,6 +85,14 @@ window.onload = startBlink;
 <!-- POP up window -  start  -->
 <script>         
 function PopupCenter(pageURL, title,w,h) {
+    
+    var shift= $('#shift').val();
+    console.log(shift);
+    if(shift==''){
+swal('Please Select Shift First','','error');
+return false;
+    }
+ 
 var left = (screen.width/2)-(w/2);
 var top = (screen.height/2)-(h/2);
 var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
@@ -309,6 +317,7 @@ width:350px;
   color:#fff;
   font-size:12px;
   width:250px;
+  pointer-events: none; 
   
 }
 
@@ -337,7 +346,7 @@ width:350px;
 $(document).ready(function() {
 
   //Select all anchor tag with rel set to tooltip
-  $('a[rel=tooltip]').mouseover(function(e) {
+  $('a[rel=tooltip]').hover(function(e) {
     
     //Grab the title attribute's value and assign it to a variable
     var tip = $(this).attr('title');  
@@ -349,7 +358,7 @@ $(document).ready(function() {
     $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
         
     //Show the tooltip with faceIn effect
-    $('#tooltip').fadeIn('100');
+    //$('#tooltip').fadeIn('100');
     //$('#tooltip').fadeTo('10',0.9);
     
   }).mousemove(function(e) {
@@ -357,11 +366,15 @@ $(document).ready(function() {
     //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
     console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset);
     console.log(e);
+
     //e.pageY + 0.5 * e.view.parent.pageYOffset
-    $('#tooltip').css('top',);
-    $('#tooltip').css('left', e.pageX - 265 );
-    $('#tooltip').css('display', 'inline' );
+    $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
+    $('#tooltip').css('left',$(this).offset.left - 255 );
+     $('#tooltip').css('margin-left','10px' );
+     $('#tooltip').css('margin-top','10px' );
+    //$('#tooltip').css('display', 'inline' );
      $('#tooltip').css('position', 'absolute' );
+     $('#tooltip').css('z-index', '999999' );
   }).mouseout(function() {
   
     //Put back the title attribute's value
@@ -414,7 +427,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 { ?>
   <span style="font-size:12px;color:#CCC;">Last Update at: <?PHP echo $sql_row['lastup']; ?></span>
 <?php
-<<<<<<< HEAD
 } 
 $shifts = $_GET['shift'];
 
@@ -442,15 +454,10 @@ $shift_ary = ['A','B','C','G'];
   </div>  
   </div>  
 
-=======
-} ?>
-  </div>
-  <div class="panel-body">
->>>>>>> 825-color-differentiation-for-ready-to-issue-and-issued-to-cutting-operations-in-rms-and-ips
     <div style="padding-top:15px;">
     <div class="table-responsiv">
       <div class='col-sm-12'>
-   <?php $sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+   <?php $sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id";
   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
   $break_counter = 0;
   while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
@@ -517,7 +524,7 @@ $shift_ary = ['A','B','C','G'];
         $wip='0';
         $wip=$sql_rowwip['WIP'];
         ?>" class="red-tooltip" 
-            onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);">
+            onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1');">
             <?php echo $module; ?></a>
         <?php } ?>
                
@@ -569,12 +576,58 @@ $shift_ary = ['A','B','C','G'];
             $input_date=$sql_rowred['ims_date'];
             $ijrs[] = $inputjobnorand;
            
-<<<<<<< HEAD
+
+
+
+
       
-=======
+      // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
+      // //echo $sql22;
+      // $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row22=mysqli_fetch_array($sql_result22))
+      // {
+      //   $order_tid=$sql_row22['order_tid'];
+      // } 
+      
+      // $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+      // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row33=mysqli_fetch_array($sql_result33))
+      // {
+      //   $ims_color=$sql_row33['order_tid'];
+      // }
+      // $size_value=array();
+      // $sizes_explode=explode(",",$ims_size);
+      // for($i=0;$i<sizeof($sizes_explode);$i++)
+      // {
+      //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
+      //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
+      // }
+      
+      // $sizes_implode="'".implode("','",$size_value)."'";
 
 
->>>>>>> 825-color-differentiation-for-ready-to-issue-and-issued-to-cutting-operations-in-rms-and-ips
+      // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
+      // //echo $sql22;
+      // $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row22=mysqli_fetch_array($sql_result22))
+      // {
+      //   $order_tid=$sql_row22['order_tid'];
+      // } 
+      
+      // $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+      // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row33=mysqli_fetch_array($sql_result33))
+      // {
+      //   $ims_color=$sql_row33['order_tid'];
+      // }
+      // $size_value=array();
+      // $sizes_explode=explode(",",$ims_size);
+      // for($i=0;$i<sizeof($sizes_explode);$i++)
+      // {
+      //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
+      //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
+      // }
+
       $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
       //echo $sql22;
       $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
@@ -596,12 +649,9 @@ $shift_ary = ['A','B','C','G'];
         $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
         // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
       }
+
       
-<<<<<<< HEAD
-      $sizes_implode="'".implode("','",$size_value)."'";
-=======
        $sizes_implode="'".implode("','",$size_value)."'";
->>>>>>> 825-color-differentiation-for-ready-to-issue-and-issued-to-cutting-operations-in-rms-and-ips
       
              $rejected=0;
              $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule=".$sql_rowred['ims_schedule']." and qms_color in (".$color_ref.") and qms_size in (".$sizes_implode.") and input_job_no=\"".$sql_rowred['inputjobnorand']."\"and qms_style=\"".$sql_rowred['ims_style']."\" and operation_id='130' and qms_remarks in (".$remarks_ref.") and bundle_no=\"".$sql_rowred['pac_tid']."\"";
@@ -633,11 +683,7 @@ $shift_ary = ['A','B','C','G'];
                 $operation_code=$sql_row['operation_code'];
               } 
                
-<<<<<<< HEAD
                //$shift='G';
-=======
-               $shift='G';
->>>>>>> 825-color-differentiation-for-ready-to-issue-and-issued-to-cutting-operations-in-rms-and-ips
                //$barcode_generation='1';
                $sidemenu=true;
               $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
@@ -755,11 +801,14 @@ $shift_ary = ['A','B','C','G'];
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();   
 });
+
+
 </script>
 
 
 <script>
 $(document).ready(function(){
+
     $('[data-toggle="tooltip"]').tooltip(); 
     var url = '<?= getFullURL($_GET['r'],'mod_rep_recon.php','R'); ?>';
     var modules = '<?= json_encode($data); ?>';
