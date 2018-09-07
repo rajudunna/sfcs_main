@@ -658,7 +658,8 @@ else if($concurrent_flag == 0)
 		// var_dump($b_tid)
 		for($i=0;$i<sizeof($b_tid);$i++)
 		{
-			$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where bundle_no = $b_tid[$i] and op_code = $b_op_id";
+			$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where bundle_no = $b_tid[$i] and op_code = $b_op_id order by mo_no";
+		//	echo $qry_to_check_mo_numbers.'-';
 			$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$total_bundle_rec_present_qty = $b_rep_qty[$i];
 			while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
@@ -690,7 +691,7 @@ else if($concurrent_flag == 0)
 							$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $actual_rep_qty where id= $id";
 							$total_bundle_rec_present_qty = $total_bundle_rec_present_qty - $balance_max_updatable_qty;
 						}
-						//echo $update_qry.'</br>';
+						// echo $update_qry.'</br>';
 					$ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$b_colors' and operation_code='$b_op_id'";
 					$result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
@@ -698,12 +699,12 @@ else if($concurrent_flag == 0)
 					{
 						$is_m3 = $row['default_operration'];
 					}
-						if($is_m3 == 'yes')
+						if($is_m3 == 'Yes')
 						{
 							$to_update_qty = '-'.$b_rep_qty[$key];
 							$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number','$to_update_qty','','Normal',user(),'',$b_module,'$b_shift',$b_op_id,'',$id,'$work_station_id','')";
-						//echo $inserting_into_m3_tran_log;
-						mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
+							// echo $inserting_into_m3_tran_log;
+							mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}
 						
 					}
@@ -715,6 +716,7 @@ else if($concurrent_flag == 0)
 		
 		
 	}
+	// die();
 	$url = '?r='.$_GET['r'];
 	echo "<script>window.location = '".$url."'</script>";
  }
