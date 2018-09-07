@@ -523,8 +523,8 @@ foreach($cut_done_qty as $key => $value)
 		$size_title = $nop_res_qty_to_fetch_size_title["title_size_$key"];
 		//echo 'ore'.$size_title;
 	}
-	$qry_to_check_mo_numbers = "SELECT *,mq.id as mq_id FROM $bai_pro3.`mo_operation_quantites`  mq LEFT JOIN bai_pro3.mo_details md ON md.mo_no=mq.`mo_no` WHERE doc_no = '$doc_no_ref' AND op_code = '$op_code' and size = '$size_title'";
-	echo $qry_to_check_mo_numbers;
+	$qry_to_check_mo_numbers = "SELECT *,mq.id as mq_id FROM $bai_pro3.`mo_operation_quantites`  mq LEFT JOIN bai_pro3.mo_details md ON md.mo_no=mq.`mo_no` WHERE doc_no = '$doc_no_ref' AND op_code = '$op_code' and size = '$size_title' order by mo_no";
+	// echo $qry_to_check_mo_numbers;
 	$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$total_bundle_present_qty = $value;
 	$total_bundle_rec_present_qty = $value;
