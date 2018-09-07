@@ -290,7 +290,70 @@
 					}
 					// Order Details Display End
 				}
+				//packing method details
+				$style=$_POST['style'];
+				$schedule=$_POST['schedule'];
+				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where ref_order_num=$schedule AND style_code='".$style."'"; 
+				// echo $get_pack_id;
+				$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$row = mysqli_fetch_row($get_pack_id_res);
+				$pack_id=$row[0];
+				// echo $pack_id;
+				// die();
+				$pack_meth_qry="SELECT *,SUM(garments_per_carton) as qnty,GROUP_CONCAT(size_title) as size ,GROUP_CONCAT(color) as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY pack_method";
+				// echo $pack_meth_qry;
+				// $sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+				echo "<br><div class='col-md-12'>
 				
+							<table class=\"table table-bordered\">
+								<tr>
+									<th>S.No</th>
+									<th>Packing Method</th>
+									<th>Description</th>
+									<th>Quantity</th>
+									<th>No Of Colors</th>
+									<th>No Of Sizes</th>
+									<th>Controlls</th></tr>";
+								while($pack_result1=mysqli_fetch_array($pack_meth_qty))
+								{
+									
+									// var_dump($operation);
+									// $seq_no=$pack_result1['seq_no'];
+									$pack_method=$pack_result1['pack_method'];
+									// echo $pack_method;
+									// $col_array[]=$sizes_result1['order_col_des'];
+									echo "<tr><td>".$pack_result1['seq_no']."</td>";
+									echo"<td>".$operation[$pack_method]."</td>";
+									echo "<td>".$pack_result1['pack_description']."</td>";
+									echo "<td>".$pack_result1['qnty']."</td>";
+									echo "<td>".$pack_result1['color']."</td>";
+									echo "<td>".$pack_result1['size']."</td>";
+									$url=getFullURL($_GET['r'],'pack_jobs_generate.php','N');
+									$url1=getFullURL($_GET['r'],'pack_method_loading.php','N');
+									$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
+									// $url3=getFullURL($_GET['r'],'.php','R');
+									// $url4=getFullURL($_GET['r'],'.php','R');
+									echo "<td><a class='btn btn-success btn-sm' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no' target='_blank'>Generate pack Job</a>
+									<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method>Delete</a></td>";
+									echo "<tr>";
+									
+								}	
+							
+						echo "</table></div>";
+						$pack_qnty = $_GET['order_total'];
+						$ordr_qnty = $_GET['ordr_qnty'];
+						if($order_total>=$pack_tot){
+							
+							echo "PACK METHOD GENERATED FOR THIS STYLE AND SCHEDULE";
+						}
+						else{
+							echo "<div class='col-md-12 col-sm-12 col-xs-12'>
+								<a class='btn btn-success btn-sm' href='$url2&schedule=$schedule&style=$style' target='_blank' >Add Packing Method</a>
+								</div>";
+							
+						}
 						
 			}
 			?> 
