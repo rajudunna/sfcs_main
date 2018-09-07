@@ -62,7 +62,7 @@ $().ready(function() {
 <FORM method="post" name="input2" action="?r=<?= $_GET['r'] ?>">
 Search Lot No/Location: <!--<input type="text" id="course" name="lot_no">-->
 <textarea id="course" name="lot_no" cols=12 rows=10></textarea>
-<input type="submit" name="submit" value="Search" >
+<input type="submit" name="submit" value="Search" class="btn btn-success">
 </form>
 </div>
 
@@ -182,11 +182,13 @@ if($sql_num_check1>0)
 {
 	//$sql="select * from store_in where lot_no=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";	
 	$sql="select * from $bai_rm_pj1.store_in where lot_no in (".trim($lot_no).") and status in (0,1) and roll_status in (0,2) order by lot_no";	
+	//
 }
 else
 {
 	//$sql="select * from store_in where ref1=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";
 	$sql="select * from $bai_rm_pj1.store_in where ref1 in (".trim($lot_no).") and status in (0,1) and roll_status in (0,2) order by lot_no";
+//echo $sql;
 }
 
 //mysqli_query($sql,$link) or exit("Sql Error1".mysql_error());
@@ -251,7 +253,12 @@ echo "<h2>Transaction Log:</h2>";
 echo "<div class='table-responsive'>";
 echo "<table class='table table-bordered'>";
 echo "<tr style='background-color:white;'><th>date</th><th>Qty</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr>";
+if($sql_num_check1>0){
 $sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where lot_no in (".trim($lot_no).")) order by date";
+}
+else{
+	$sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where ref1 in (".trim($lot_no).")) order by date";
+}
 //mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
 while($sql_row=mysqli_fetch_array($sql_result))
