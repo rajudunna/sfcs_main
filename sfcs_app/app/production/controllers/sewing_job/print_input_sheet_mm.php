@@ -42,7 +42,7 @@
             <div class="panel panel-primary"> 
                 <div class="panel-heading"><b>Ratio Sheet (Split wise)</b></div>
                 <div class="panel-body">
-                    <div style="float:right"><img src="../../common/images/Book1_29570_image003_v2.png" width="250px"/></div> 
+                    <div style="float:right"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></div> 
                     <?php 
                         $sql="select distinct order_del_no as sch,order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") "; 
                         $result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
