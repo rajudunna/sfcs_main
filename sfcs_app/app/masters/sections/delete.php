@@ -4,7 +4,6 @@
 
 <?php
 $rid=$_GET['rowid'];
-$sec_head=$_GET['sec_head'];
 // echo $rid;
 // $servername = "192.168.0.110:3326";
 // $username = "baiall";
@@ -37,23 +36,8 @@ if (!$conn) {
 $delete="delete from $bai_pro3.sections_db where sec_id='$rid'";
 if (mysqli_query($conn, $delete)) {
 			// header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL3NlY3Rpb25zL2FkZF9zZWN0aW9uLnBocA==');
-	//	} else {
-		//	echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		//}
-		//$sec_mods2=explode(",",	$sec_mods1);
-	//	foreach($sec_mods2 as $index => $val){
-			$sql = "delete from $bai_pro3.plan_modules where section_id='$sec_head'";
-
-			if (mysqli_query($conn, $sql)) {
-			} else {
-				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-			}
-
+		} else {
+			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
-		// $delete="delete from $bai_pro3.plan_modules where sec_id='$rid'";
-		// if (mysqli_query($conn, $delete)) {
-		// 			// header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL3NlY3Rpb25zL2FkZF9zZWN0aW9uLnBocA==');
-		// 		} else {
-		// 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		// 		}
+
 ?>
