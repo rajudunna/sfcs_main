@@ -423,7 +423,7 @@ echo "<div class='panel panel-primary'><div class='panel-heading'>Cartons Work i
                         $hour_2=0; 
                         $carton_status=0; 
                         
-                        $sql42="SELECT * FROM aql_track_log WHERE carton_id=$carton_id_ref AND log_time=(SELECT MAX(log_time) AS log_time FROM $bai_pro3.aql_track_log WHERE carton_id=$carton_id_ref)"; 
+                        $sql42="SELECT * FROM $bai_pro3.aql_track_log WHERE carton_id=$carton_id_ref AND log_time=(SELECT MAX(log_time) AS log_time FROM $bai_pro3.aql_track_log WHERE carton_id=$carton_id_ref)"; 
                         $result42=mysqli_query($link, $sql42) or exit("Sql Error42".$sql42."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         if(mysqli_num_rows($result42)>0) 
                         { 
