@@ -136,8 +136,10 @@
 		}
 	}	
 	//include("board_update_email.php");
-	$rurl = getFullURLLevel($_GET['r'],'embellishment_fab_pps_dashboard_v2.php',0,'N');
+	// $rurl = getFullURLLevel($_GET['r'],'embellishment_fab_pps_dashboard_v2.php',0,'N');
+	$url1 = getFullURLLevel($_GET['r'],'dashboards/controllers/EMS_Dashboard/embellishment_dashboard_send_operation.php',3,'N');
+		
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"pps_dashboard.php\"; }</script>";
-	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$rurl\"; }</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
 
 ?>

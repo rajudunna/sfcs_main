@@ -197,7 +197,7 @@
 			/* Start main container CSS */
 			
 			div#dhtmlgoodies_mainContainer{	/* Right column DIV */
-				width:990px; 
+				width:1200px; 
 				float:left;	
 			}
 			#dhtmlgoodies_mainContainer div{	/* Parent <div> of small boxes */
@@ -668,28 +668,15 @@
 
 				<div class="panel-body">
 
-					<!-- <div>
-						<h4>Color Legends</h4>
-						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: white;color: red;">
-						<div>Different Style and Schedule Jobs</div>
+					<div>
+						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #008080;color: white;margin-left: 30px;">
+						<div>Different Style,Schedule And Color Jobs</div>
 						</div>&nbsp;&nbsp;&nbsp;
-						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: yellow;color: red;margin-left: 30px;">
-						<div> Different Style & Schedule, Excess / Sample Jobs</div>
-						</div>
-						<div style="margin-top: 5px; border: 1px solid #000;background-color: green;color: white;float: left;margin-left: 30px;">
-						<div> Same Style and Schedule if Fabric requested Jobs</div>
-						</div>
-						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: red;color: black;">
-						<div>Same Style and Schedule if Fabric not requested Jobs</div>
-						</div>
-						<div style="margin-top: 4px;border: 2px solid yellow;background-color: green;color: white;float: left; margin-left: 30px;">
-						<div>Same Style and Schedule if Fabric requested for Excess/Sample Jobs</div>
-						</div>
-						<div style="margin-top: 4px;border: 2px solid yellow;background-color: white;color: red;float: left;">
-						<div>Same Style and Schedule if Fabric is not requested for Excess/Sample Jobs</div> 
+						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #FF3333;color: white;margin-left: 30px;">
+						<div>Selected Style,Schedule And Color Jobs</div>
 						</div>
 						<div style="clear: both;"> </div>
-					</div> -->
+					</div>
 				
 					<br>
 
@@ -769,44 +756,25 @@
 								
 								//remove docs
 								
-								$sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+								$sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_id>0";
 								// mysqli_query($link,$sqlx) or exit("Sql Error".mysql_error());
 								$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error5".mysql_error());
 								while($sql_rowx=mysqli_fetch_array($sql_resultx))
 								{
-									$section=$sql_rowx['sec_id'];
-									$section_head=$sql_rowx['sec_head'];
-									$section_mods=$sql_rowx['sec_mods'];
+									// $section=$sql_rowx['sec_id'];
+									// $section_head=$sql_rowx['sec_head'];
+									$emb_table_id=$sql_rowx['emb_table_id'];
 								
-									echo "<div style=\"width:170px;\" align=\"center\"><h4>E00$section</h4>";
+									echo "<div style=\"width:170px;\" align=\"center\"><h4>EMB Table $emb_table_id</h4>";
 								
 										$mods=array();
-										$mods=explode(",",$section_mods);
-										
-										if(!(in_array(strtolower($username),$super_user)) or !(in_array(strtolower($username),$super_user)))
-										{
-											//New Implementation to Restrict Power User level Planning 20111211
-											$mods=array();
-											$sqlxy="select group_concat(emb_table_id) as emb_table_id from $bai_pro3.tbl_emb_table where section_id=$section and power_user=\"$username\"";
-											//echo $sqlxy;
-											$sql_resultxy=mysqli_query($link,$sqlxy) or exit("Sql Error6".mysql_error());
-											while($sql_rowxy=mysqli_fetch_array($sql_resultxy))
-											{
-												$mods=explode(",",$sql_rowxy['emb_table_id']);	
-											}
-											
-											if($mods[0]==NULL)
-											{
-												$mods=NULL;
-											}
-											//New Implementation to Restrict Power User level Planning 20111211
-										}
+										$mods=explode(",",$emb_table_id);
 										
 										// echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
 										for($x=0;$x<sizeof($mods);$x++)
 										{
 									
-											echo '<p>'.$mods[$x].'</p><ul id="'.$mods[$x].'" style="width:150px">';
+											echo '<ul id="'.$mods[$x].'" style="width:150px">';
 													//<li id="node16">Student P</li>
 													
 													$module=$mods[$x];
@@ -833,59 +801,6 @@
 														$cut_no1=$sql_row1['acutno'];
 														$color_code1=$sql_row1['color_code'];
 														
-														if($cut_new=="DONE"){ $cut_new="T";	} else { $cut_new="F"; }
-														if($rm_update_new==""){ $rm_update_new="F"; } else { $rm_update_new="T"; }
-														if($rm_new=="0000-00-00 00:00:00" or $rm_new=="") { $rm_new="F"; } else { $rm_new="T";	}
-														if($input_temp==1) { $input_temp="T";	} else { $input_temp="F"; }
-														if($cut_input_new=="DONE") { $cut_input_new="T";	} else { $cut_input_new="F"; }
-														
-														$check_string=$cut_new.$rm_update_new.$rm_new.$input_temp.$cut_input_new;
-														
-														switch ($check_string)
-														{
-															case "TTTTF":
-															{
-																$id="yellow";
-																break;
-															}
-															case "TTTFF":
-															{
-																$id="green";
-																break;
-															}
-															case "TTFFF":
-															{
-																//$id="orange";
-																$id="red";
-																break;
-															}
-															case "TFFFF":
-															{
-																$id="blue";
-																break;
-															}
-															case "FTTFF":
-															{
-																$id="pink";
-																break;
-															}
-															case "FTFFF":
-															{
-																$id="red";
-																break;
-															}
-															case "FFFFF":
-															{
-																$id="red";
-																break;
-															}
-															default:
-															{
-																$id="white";
-																break;
-															}
-														}
-														
 														$sql="select color_code,acutno,order_style_no,order_del_no,order_col_des from $bai_pro3.plan_doc_summ where doc_no=$doc_no";
 														// echo $sql."<br>";
 														// mysql_query($sql,$link) or exit("Sql Error".mysql_error());
@@ -907,26 +822,15 @@
 																										
 														if($style==$style_new and $color==$color_new and $schedule==$schedule_new)
 														{
-															$id="red";
-														}
-														
-																				
-														//If its current selected schedule and Cut also completed.
-														if($id=="red" and $cut_new=="T")
-														{
-															$id="#FF2288";
+															$id="#FF3333";
 														}
 														else
 														{
-															//If cut only completed.
-															if($cut_new=="T")
-															{
-																$id="black";
-															}
+															$id="#008080";
 														}
+																										
 														
-														
-														$title=str_pad("Style:".$style1,80).str_pad("Schedule:".$schedule1,80).str_pad("Color:".$color1,80).str_pad("Job No:".chr($color_code1).leading_zeros($acutno1,3),80).str_pad("Qty:".$total_qty1,90);
+														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($acutno1,3),50)."\n".str_pad("Qty:".$total_qty1,50);
 														
 														echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
 														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
@@ -938,31 +842,6 @@
 										}
 									echo "</div>";
 								}
-								
-								// FOR COMPLETED CUTS
-								// echo "<div id=\"new\" style=\"float:left;	margin-right:10px;	margin-bottom:10px;	margin-top:0px;	border:1px solid #999;width: 120px;	width/* */:/**/120px;	
-								// 	width: /**/120px;\" align=\"center\">
-								// 	<p style=\"margin:0px; padding:0px;	padding-left:12px;	font-weight:bold;	background-color:#317082;	color:#FFF;	margin-bottom:5px;\">Complted</p>
-								// 	<table>";
-
-								// 		$sql="select color_code from plan_doc_summ where cat_ref=$cat_ref";
-										
-								// 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error1".mysql_error());
-								// 		while($sql_row=mysqli_fetch_array($sql_result))
-								// 		{
-								// 			$color_code=$sql_row['color_code'];}
-									
-								// 			$sql1="SELECT acutno from $bai_pro3.plandoc_stat_log where order_tid like \"%$style$schedule$color%\" and cat_ref=$cat_ref and act_cut_status=\"DONE\" and a_plies=p_plies order by doc_no"; //KK223422
-								// 			//echo $sql1;
-								// 			// mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
-								// 			$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error2".mysql_error());
-								// 			while($sql_row1=mysqli_fetch_array($sql_result1))
-								// 			{
-								// 				echo '<tr id=\"new1\"><li data-color="green" style="background-color:green; color:white;"><strong>'.chr($color_code).leading_zeros($sql_row1['acutno'],3).'</strong></li></tr>';
-								// 				// echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
-								// 			}
-								// 	echo '</table>';
-								// echo "</div>";
 								
 							?>
 						
