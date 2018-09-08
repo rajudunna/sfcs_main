@@ -558,14 +558,14 @@ mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli
 		<?php
            $shifts = $_GET['shift'];
 
-           $shift_ary = ['A','B','C','G'];
+           
         ?>
 
 		<div class="form-group">
 			 Shift :<select class="form-control" id="shift" name="shift" onchange="firstbox();" required>
             <option value="">Select</option>
            <?php
-            foreach($shift_ary as $shift){
+            foreach($shifts_array as $shift){
             if($shift == $shifts){
               echo "<option value='$shift' selected>$shift</option>";
             }else{

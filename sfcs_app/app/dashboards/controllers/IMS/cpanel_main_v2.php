@@ -430,7 +430,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 } 
 $shifts = $_GET['shift'];
 
-$shift_ary = ['A','B','C','G'];
+//$shifts_array = ['A','B','C','G'];
 ?>
   </div>
   <div class="panel-body">
@@ -440,7 +440,7 @@ $shift_ary = ['A','B','C','G'];
     <label>Shift </label><select class="form-control" id="shift" name="shift" onchange="firstbox();">
     <option value="">Select</option>
      <?php
-          foreach($shift_ary as $shift){
+          foreach($shifts_array as $shift){
             if($shift == $shifts){
               echo "<option value='$shift' selected>$shift</option>";
             }else{
