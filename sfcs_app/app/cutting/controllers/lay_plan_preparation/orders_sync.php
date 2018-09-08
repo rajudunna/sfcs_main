@@ -142,7 +142,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$result10=mysqli_query($link, $update_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 
-	$doc_no_query = "Select doc_no from  $bai_pro3.plandoc_stat_log where order_tid = '$get_order_tid'";
+	$doc_no_query = "Select doc_no from  $bai_pro3.plandoc_stat_log where order_tid = '$get_order_tid' order by doc_no";
 	$doc_no_result = mysqli_query($link,$doc_no_query);
 	while($row = mysqli_fetch_array($doc_no_result)){
 		$docket_no = $row['doc_no'];
