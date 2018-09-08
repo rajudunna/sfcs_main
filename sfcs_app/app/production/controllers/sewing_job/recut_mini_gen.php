@@ -637,7 +637,7 @@ if($status == '')
 		foreach($old_sizes as $size){
 			$mo_no_query = "SELECT mo.mo_no as mo_no,mo.mo_quantity as mo_quantity,SUM(bundle_quantity) as bundle_quantity,
 							SUM(good_quantity) as good_quantity,SUM(rejected_quantity) as rejected_quantity
-							LEFT JOIN $bai_pro3.mo_operation_quantities mop ON mo.mo_no = mop.mo_no  
+							LEFT JOIN $bai_pro3.mo_operation_quantites mop ON mo.mo_no = mop.mo_no  
 							FROM $bai_pro3.mo_details mo 
 							WHERE TRIM(size)='".strtoupper($new_sizes[$size])."' and schedule='$schedule' and TRIM(color)='$color' 
 							and mop.op_code = 15
@@ -675,12 +675,12 @@ if($status == '')
 						$recut_jobs_result = mysqli_query($link,$recut_jobs_details) or exit('Error Occured');
 						while($row = mysqli_fetch_array($recut_jobs_result)){
 							//need to get bundle number
-							$bundle_no = '';
+							$bundle_no = $row['tid'];
 							$cart_qty = $row['carton_act_qty'];
 							$input_job_no = $row['input_job_no'];
 							$input_job_random = $row['input_job_random'];
 							foreach($ops[$mo_no] as $op_code=>$op_desc){
-								$insert_query = "Insert into bai_pro3.mo_operation_quantities(`date_time`, `mo_no`,`doc_no`,`bundle_no`,
+								$insert_query = "Insert into $bai_pro3.mo_operation_quantites(`date_time`, `mo_no`,`doc_no`,`bundle_no`,
 											`bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
 											('".date('Y-m-d H:i:s')."','".$mo_no."','$doc_no','$bundle_no','$cart_qty','$op_code','$op_desc','$input_job_no','$input_job_random')";
 							}
@@ -705,7 +705,7 @@ if($status == '')
 								$qty = $qty - $rem_cpcty;
 								if($qty>0){
 									foreach($ops[$mo_no] as $op_code=>$op_desc){
-										$insert_query = "Insert into bai_pro3.mo_operation_quantities(`date_time`, `mo_no`,`doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
+										$insert_query = "Insert into $bai_pro3.mo_operation_quantites(`date_time`, `mo_no`,`doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
 										('".date('Y-m-d H:i:s')."','".$mo_no."','$doc_no','$bundle_no','$rem_cpcty','$op_code',
 										'$op_desc','$input_job_no','$input_job_random')";
 										mysqli_query($link,$insert_query) or exit('Error Occured');
@@ -715,7 +715,7 @@ if($status == '')
 								}
 							}else{
 								foreach($ops[$mo_no] as $op_code=>$op_desc){
-									$insert_query = "Insert into bai_pro3.mo_operation_quantities(`date_time`, `mo_no`,`doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
+									$insert_query = "Insert into $bai_pro3.mo_operation_quantites(`date_time`, `mo_no`,`doc_no`,`bundle_no`, `bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
 									('".date('Y-m-d H:i:s')."','".$mo_no."','$doc_no','$bundle_no','$qty','$op_code',
 									'$op_desc','$input_job_no','$input_job_random')";
 									mysqli_query($link,$insert_query) or exit('Error Occured');
@@ -727,7 +727,7 @@ if($status == '')
 						}
 						//inserting the all the excess qty's to the last mo's within the size
 						foreach($ops as $op_code=>$op_desc){
-							$insert_query = "Insert into bai_pro3.mo_operation_quantities(`date_time`, `mo_no`,`doc_no`,`bundle_no`,
+							$insert_query = "Insert into $bai_pro3.mo_operation_quantites(`date_time`, `mo_no`,`doc_no`,`bundle_no`,
 											`bundle_quantity`, `op_code`, `op_desc`,`input_job_no`,`input_job_random`) values
 											('".date('Y-m-d H:i:s')."','".$mo_no."','$doc_no','$bundle_no','$qty','$op_code',
 											'$op_desc','$input_job_no','$input_job_random')";
