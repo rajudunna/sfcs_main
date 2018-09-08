@@ -56,16 +56,19 @@
 		else
 		{
 			$sql="insert ignore into $bai_pro3.embellishment_plan_dashboard (doc_no) values (".$items[1].")";
+			// echo $sql."<br>";
 			mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
 			
 			if(mysqli_insert_id($link)>0)
 			{
 				$sql="update $bai_pro3.embellishment_plan_dashboard set priority=$x, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where doc_no=".$items[1];
+				// echo $sql."<br>";
 				mysqli_query($link,$sql) or exit("Sql Error9".mysqli_error());
 			}
 			else
 			{
 				$sql="update $bai_pro3.embellishment_plan_dashboard set priority=$x, module=".$items[0]." where doc_no=".$items[1];
+				// echo $sql."<br>";
 				mysqli_query($link,$sql) or exit("Sql Error10".mysqli_error());
 			}
 	

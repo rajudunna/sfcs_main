@@ -1,1 +1,1 @@
-<?php $style_ref="ABZ04SF8       "; $schedule_ref="529508"; $color_ref="DRBLU : DRESS BLUES           "; $cat_ref_ref="10"; $code_ref="580-A01-DONE*581-A02-DONE*582-A03-DONE*583-A04-DONE*585-A05-DONE*587-A06-DONE*590-A07-DONE*591-A08-DONE*"; ?>
+<?php $style_ref="ABZ04SF8       "; $schedule_ref="529508"; $color_ref="DRBLU : DRESS BLUES           "; $cat_ref_ref="10"; $code_ref=""; ?>

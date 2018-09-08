@@ -163,7 +163,7 @@ else
 echo "</select></div>";
 
 $code="";
-$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and doc_no not in (select doc_no from  $bai_pro3.plan_dashboard) and (a_plies<>p_plies or act_cut_issue_status='') order by doc_no";
+$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and doc_no not in (select doc_no from  $bai_pro3.embellishment_plan_dashboard) and (a_plies<>p_plies or act_cut_issue_status='') order by doc_no";
 
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -246,7 +246,6 @@ if(isset($_POST['submit']))
 	$schedule=$_POST['schedule'];
 	$code=$_POST['code'];
 
-	echo $code;	
 	$cat_ref=$_POST['cat_ref'];
 	
 	$data_sym="$";
@@ -263,7 +262,7 @@ if(isset($_POST['submit']))
 
 	
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop.php?color=$color&style=$style&schedule=$schedule&code=$code&cat_ref=$cat_ref\"; }</script>";
-	// $url = getFullURLLevel($_GET['r'],'embellishment_drag_drop.php',0,'N');
-	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
+	$url = getFullURLLevel($_GET['r'],'embellishment_drag_drop.php',0,'N');
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
 }
 ?>  
