@@ -158,7 +158,7 @@ if(isset($_POST['Update']))
 	$test=$_POST['test'];
 	$job=$_POST['job'];
 	$form=$_POST['form'];
-
+    // var_dump($ref);
 	$sum = 0;
 	foreach ($ref as $key => $value) {
 		$sum += array_sum($value);
@@ -201,20 +201,20 @@ if(isset($_POST['Update']))
 								$m3_reason_code='';
 								$m3_operation_code='';
 								
-								$sql_sup="select m3_reason_code,m3_operation_code from $m3_bulk_ops_rep_db.rejection_report_matrix where interface='REJREP' and ref1='".$form[$x]."' and ref2='".(is_numeric($module[$x])?'0':$module[$x])."' and ref3=$j";
+								$sql_sup="SELECT m3_reason_code FROM $bai_pro3.bai_qms_rejection_reason WHERE form_type = 'P' AND reason_code = '$ref[$x]'";
 								$sql_result_sup=mysqli_query($link, $sql_sup) or exit("Sql Error1 $sql_sup".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row_sup=mysqli_fetch_array($sql_result_sup))
 								{
 									$m3_reason_code=$sql_row_sup['m3_reason_code'];
-									$m3_operation_code=$sql_row_sup['m3_operation_code'];
+									//$m3_operation_code=$sql_row_sup['m3_operation_code'];
 								}
 								
-								$m3_op_qty_chk_ary[$m3_operation_code]=$m3_op_qty_chk_ary[$m3_operation_code]+$ref[$x][$j];
+								//$m3_op_qty_chk_ary[$m3_operation_code]=$m3_op_qty_chk_ary[$m3_operation_code]+$ref[$x][$j];
 								
-								if($check_proceed==0 and rejection_validation_m3($m3_operation_code,$schedule[$x],$color[$x],$size[$x],$ref[$x][$j],0,$username)=="FALSE")
-								{
-									$check_proceed=1;
-								}
+								// if($check_proceed==0 and rejection_validation_m3($m3_operation_code,$schedule[$x],$color[$x],$size[$x],$ref[$x][$j],0,$username)=="FALSE")
+								// {
+								// 	$check_proceed=1;
+								// }
 							//M3 Bulk Operation Reporting
 							
 							if($j==33)
@@ -270,13 +270,13 @@ if(isset($_POST['Update']))
 									$m3_reason_code='';
 									$m3_operation_code='';
 									
-									$sql_sup="select m3_reason_code,m3_operation_code from $m3_bulk_ops_rep_db.rejection_report_matrix where interface='REJREP' and ref1='".$form[$x]."' and ref2='".(is_numeric($module[$x])?'0':$module[$x])."' and ref3=$j";
+									$sql_sup="SELECT m3_reason_code FROM bai_pro3.bai_qms_rejection_reason WHERE form_type = 'P' AND reason_code = '$ref[$x]'";
 									$sql_result_sup=mysqli_query($link, $sql_sup) or exit("Sql Error2 $sql_sup".mysqli_error($GLOBALS["___mysqli_ston"]));
 									// echo $sql_sup;
 									while($sql_row_sup=mysqli_fetch_array($sql_result_sup))
 									{
 										$m3_reason_code=$sql_row_sup['m3_reason_code'];
-										$m3_operation_code=$sql_row_sup['m3_operation_code'];
+										//$m3_operation_code=$sql_row_sup['m3_operation_code'];
 									}
 									//commenting for #759 CR 
 									// $sql_sup="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_reason) values(NOW(),'".$style[$x]."','".$schedule[$x]."','".$color[$x]."','".$size[$x]."','".substr($job[$x],1)."',".$ref[$x][$j].",USER(),'$m3_operation_code',$iLastid,'".(is_numeric($module[$x])?$module[$x]:'0')."','".$team[$x]."','".$m3_reason_code."')"; 
@@ -471,7 +471,7 @@ if(isset($_POST['Update']))
 									// echo $r_reasons[$key];
 								
 									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number',$to_update_qty,'$r_reasons[$key]','Normal',user(),'',$b_module,'$b_shift',$b_op_id,'',$id,'$work_station_id','')";
-									echo $inserting_into_m3_tran_log.'</br>';
+									// echo $inserting_into_m3_tran_log.'</br>';
 									mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 									//getting the last inserted record
@@ -599,7 +599,7 @@ if(isset($_POST['Update']))
 		echo "<script>sweetAlert('Form Validation failed.').then((value) => { window.location.href = '$url'});</script>";
 	}
 }
-
+die();
 ?>
 
 </body>
