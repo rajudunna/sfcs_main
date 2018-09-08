@@ -888,8 +888,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					 
 					$ui_url1 =getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
 					$application='IPS';
-					//$shift='G';
-					//$barcode_generation='1';
+					
 					$sidemenu=true;
 					$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
 					//echo $scanning_query;
