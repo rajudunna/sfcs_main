@@ -327,7 +327,7 @@
 	//$url5 = getFullURLLevel($_GET['r'],'pac_gen_sewing_job.php',0,'N');
 	//echo "<script>location.href = '".$url5."';</script>";
 	//echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
-	//echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");		
+	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_mo_fill.php',0,'N')."&schedule=$schedule&pack_ref=$seq_new&process_name=packing';</script>");		
 ?> 
 </div></div>
 </body>
