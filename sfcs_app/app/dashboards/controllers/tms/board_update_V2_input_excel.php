@@ -18,15 +18,30 @@
     $section=$_POST["section"];
 
     $report_data_ary = array();
-    $sql2x="select * from $bai_pro3.trims_dashboard where section=$section";
-    //and DATE(plan_time)>=\"2013-01-09\"
-    // echo $sql2x;
+    $sql2x="select module_id from $bai_pro3.plan_modules where section_id=$section";
     $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
     $i=0;
+    $mod_ary = array();$dmod_ary = array();
+    while($row2x=mysqli_fetch_array($result2x)){
 
-    while($row2x=mysqli_fetch_array($result2x))
+        array_push($mod_ary,$row2x['module_id']);
+    }
+    $mod = implode(", ",$mod_ary);
+    $mod_qry = "SELECT DISTINCT(input_module)AS input_module,input_trims_request_time FROM plan_dashboard_input WHERE 
+    input_module IN ($mod) AND input_trims_status= 4";
+    
+    $result_mod=mysqli_query($link, $mod_qry) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row2 = mysqli_fetch_array($result_mod)){
+        $request_time = $row2['input_trims_request_time'];
+        array_push($dmod_ary,$row2['input_module']);
+    }
+    $imp_mod = implode(", ",$dmod_ary);
+    $doc_qry = "SELECT doc_no FROM plandoc_stat_log WHERE plan_module IN($imp_mod)";
+    $doc_result =mysqli_query($link, $doc_qry) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row2x=mysqli_fetch_array($doc_result))
     {
-        $doc_no=$row2x["doc_ref"];
+        $i++;
+        $doc_no=$row2x["doc_no"];
         $sql11x="select order_tid,acutno from $bai_pro3.plandoc_stat_log where doc_no=\"".$doc_no."\"";
         // echo $sql11x;
         $sql_result11x=mysqli_query($link, $sql11x) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -59,8 +74,8 @@
         $report_data_ary[$i]['color']=$colorx;
         $report_data_ary[$i]['docket'] = $doc_no;
         $report_data_ary[$i]['job_no'] = chr($color_codex).$zeros.$cut_nosx;
-        $report_data_ary[$i]['req_time']=$row2x["trims_req_time"];
-        $report_data_ary[$i]['issue_time']=$row2x["trims_issued_time"];
+        // $report_data_ary[$i]['req_time']=$row2x["trims_req_time"];
+        // $report_data_ary[$i]['issue_time']=$row2x["trims_issued_time"];
         $trims_status="";	
         
         if($status == 0)
@@ -82,9 +97,9 @@
         {
             $trims_status="Need To Apply For Trims";
         }
-        $report_data_ary[$i]['tstatus'] = $trims_status;
+        // $report_data_ary[$i]['tstatus'] = $trims_status;
     }
-    // var_dump($report_data_ary);
+    
     $output = '';
     if(sizeof($report_data_ary)>0){
         
