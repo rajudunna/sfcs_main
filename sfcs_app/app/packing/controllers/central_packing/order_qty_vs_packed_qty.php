@@ -300,7 +300,7 @@
 				$pack_id=$row[0];
 				// echo $pack_id;
 				// die();
-				$pack_meth_qry="SELECT *,SUM(garments_per_carton) as qnty,GROUP_CONCAT(size_title) as size ,GROUP_CONCAT(color) as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY pack_method";
+				$pack_meth_qry="SELECT *,parent_id,SUM(garments_per_carton) as qnty,GROUP_CONCAT(size_title) as size ,GROUP_CONCAT(color) as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY pack_method";
 				// echo $pack_meth_qry;
 				// $sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -320,7 +320,8 @@
 								{
 									
 									// var_dump($operation);
-									// $seq_no=$pack_result1['seq_no'];
+									$seq_no=$pack_result1['seq_no'];
+									$parent_id=$pack_result1['parent_id'];
 									$pack_method=$pack_result1['pack_method'];
 									// echo $pack_method;
 									// $col_array[]=$sizes_result1['order_col_des'];
@@ -331,7 +332,7 @@
 									echo "<td>".$pack_result1['color']."</td>";
 									echo "<td>".$pack_result1['size']."</td>";
 									$url=getFullURL($_GET['r'],'pack_jobs_generate.php','N');
-									$url1=getFullURL($_GET['r'],'pack_method_loading.php','N');
+									$url1=getFullURL($_GET['r'],'order_qty_vs_packed_qty.php','N');
 									$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
 									// $url3=getFullURL($_GET['r'],'.php','R');
 									// $url4=getFullURL($_GET['r'],'.php','R');
@@ -356,6 +357,15 @@
 						}
 						
 			}
+				if($_GET['seq_no'] && $_GET['parent_id'] && $_GET['pack_method'])
+				{
+					$seq_no=$_GET['seq_no'];
+					$parent_id=$_GET['parent_id'];
+					$pack_method=$_GET['pack_method'];
+					$delete_pack_meth="delete from $bai_pro3.tbl_pack_size_ref where seq_no='$seq_no' and parent_id='$parent_id' and pack_method='$pack_method'";
+				    // echo $delete_pack_meth;die();
+					$dele_pack_qry_res=mysqli_query($link, $delete_pack_meth) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 			?> 
 		</div>
 	</div>
