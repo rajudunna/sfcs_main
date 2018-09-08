@@ -896,8 +896,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
            
           $ui_url1 =getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
           $application='IPS';
-          //$shift='G';
-          //$barcode_generation='1';
+          
           $sidemenu=true;
           $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
           //echo $scanning_query;
@@ -911,35 +910,44 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           {
             if($id=="blue" || $id=="yellow")
             {
-              if($id=="yellow")
+            
+              $cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id='".$operation_code."'";
+              $cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+              while($sql_row=mysqli_fetch_array($cut_input_report_result))
               {
-                echo "<div id=\"S$schedule\" style=\"float:left;\">
+                $cut_origional_qty=$sql_row['cut_qty'];
+                $report_origional_qty=$sql_row['report_qty'];               
+              }
+              
+              if($cut_origional_qty > $report_origional_qty){
+                $id='orange';
+              }
+              
+              if($id=="yellow")
+              {                 
+                if($add_css == ""){       
+                  echo "<div id=\"S$schedule\" style=\"float:left;\">
+                    <div id=\"SJ$input_job_no\" style=\"float:left;\">
+                      <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
+                      </div>
+                    </div>
+                  </div>";
+                }
+                else
+                {
+                  echo "<div id=\"S$schedule\" style=\"float:left;\">
                     <div id=\"SJ$input_job_no\" style=\"float:left;\">
                       <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
                       </div>
                     </div>
                   </div>";
+                }
               }
               else
               {
-                if ($add_css == "")
-                {
-                  
-                  $cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref'";
-
-                                    $cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-                                    while($sql_row=mysqli_fetch_array($cut_input_report_result))
-                                    {
-                                        $cut_origional_qty=$sql_row['cut_qty'];
-                                        $report_origional_qty=$sql_row['report_qty'];
-                                        
-                  }
-                  
-                  if($cut_origional_qty > $report_origional_qty){
-                    $id='orange';
-                  }
-                  
+                if($add_css == "")
+                {                 
                   echo "<div id=\"S$schedule\" style=\"float:left;\">
                     <div id=\"SJ$input_job_no\" style=\"float:left;\">
                       <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
