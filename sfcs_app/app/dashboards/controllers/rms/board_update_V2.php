@@ -95,7 +95,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<td align=\"right\">Style:<br/>Schedule:<br/>Job:<br/>Total Qty:</td>";
 		$module=$mods[$x];
 		
-		$sql1="SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' GROUP BY doc_no order by priority LIMIT 14";
+		$sql1="SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND (act_cut_status<>'DONE' OR ( act_cut_status = 'DONE' AND a_plies <> p_plies)) GROUP BY doc_no order by priority LIMIT 14";
 		// echo $sql1."<br/>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
@@ -122,6 +122,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			if(sizeof(explode("$",$sql_row1['bundle_location']))>1);
 			{
 				$bundle_location=end(explode("$",$sql_row1['bundle_location']));
+
+				$sel_bundle_location = implode('-', array_slice(explode("-",$bundle_location), 1));
 			}
 			$fabric_location="";
 			if(sizeof(explode("$",$sql_row1['plan_lot_ref']))>1)
@@ -277,7 +279,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			
 			//echo "<td>"."Style:".$style."<br/>"."Schedule:".$schedule."<br/>"."Job:".chr($color_code).leading_zeros($cut_no,3)."<br/>"."Total Qty:".$total_qty."</td><td></td>";
-echo "<td>".$style."<br/><strong>".$schedule."<br/>".implode(", ",$club_c_code)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location / B.L.: $bundle_location</br>Col:".strtoupper($id)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: $doc_no</b></td>";
+echo "<td>".$style."<br/><strong>".$schedule."<br/>".implode(", ",$club_c_code)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location / B.L.: </br>Col:".strtoupper($id)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: $doc_no</b></td>";
 
 		}
 		
@@ -301,6 +303,9 @@ echo "Legend: NIP=Not in Plan; DID=Docket ID; F.L=Fabric Location; B.L=Bundle Lo
 </div>
 </div>
 <style type="text/css">
+	body{
+		font-family: century gothic;
+	}
 	table{
     border-collapse: collapse;
 }
