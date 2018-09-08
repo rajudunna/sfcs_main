@@ -49,8 +49,8 @@ $section_no=$_GET['section_no'];
 <style>
 body
 {
-	/* font-family: Century Gothic;
-	font-size: 10px; */
+	font-family: Century Gothic;
+	font-size: 10px;
 }
 table{
 	font-size:10px;
@@ -275,8 +275,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 								
 			}
 			
-			//echo "<td>"."Style:".$style."<br/>"."Schedule:".$schedule."<br/>"."Job:".chr($color_code).leading_zeros($cut_no,3)."<br/>"."Total Qty:".$total_qty."</td><td></td>";
-echo "<td>".$style."<br/><strong>".$schedule."<br/>".implode(", ",$club_c_code)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location / B.L.: $bundle_location</br>Col:".strtoupper($id)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: $doc_no</b></td>";
+			
+// echo "<td>".$style."<br/><strong>".$schedule."<br/>".implode(", ",$club_c_code)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location / B.L.: $bundle_location</br>Col:".strtoupper($id)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: $doc_no</b></td>";
+echo "<td>".$style."<br/><strong>".$schedule."<br/>".implode(", ",$club_c_code)."</strong><br/>".$total_qty."</td><td>F.L.:/ B.L.:</br>Col:".strtoupper($id)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: $doc_no</b></td>";
 
 		}
 		

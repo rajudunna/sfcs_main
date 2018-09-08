@@ -140,8 +140,8 @@
                     $sizeid= $res_data['sizeid'];$mid = $res_data['mid'];
                     if($bal_qty>0){
                         if($bal_qty >= $rej_qty){
-                            $insert_data = "insert into bai_pro3.mo_operation_quantites(date_time,doc_no,mo_no,bundle_no,bundle_quantity,good_quantity,rejected_quantity,status,op_code,op_desc,input_job_no,input_job_random,size_id,)
-                            VALUES(NOW(),'$doc_ary[$i]','$mo_no','$bundle_no','$rej_qty','0','0','$status','$opcode','$op_desc','$input_job','$job_no',)";
+                            $insert_data = "insert into bai_pro3.mo_operation_quantites(date_time,mo_no,bundle_no,bundle_quantity,good_quantity,rejected_quantity,status,op_code,op_desc,input_job_no,input_job_random,size_id,)
+                            VALUES(NOW(),'$mo_no','$bundle_no','$rej_qty','0','0','$status','$opcode','$op_desc','$input_job','$job_no',)";
                             echo $insert_data."11<br>";
                             $res_insmo =mysqli_query($link,$insert_data);
                             $bal_qty = $qty_ary[$i]-$rej_qty;
@@ -150,8 +150,8 @@
                             $res_update =mysqli_query($link,$update_data);
                             continue;
                         }else{
-                            $insert_data = "insert into bai_pro3.mo_operation_quantites(date_time,doc_no,mo_no,bundle_no,bundle_quantity,good_quantity,rejected_quantity,status,op_code,op_desc,input_job_no,input_job_random,size_id,)
-                            VALUES(NOW(),'$doc_ary[$i]','$mo_no','$bundle_no','$bal_qty','0','0','$status','$opcode','$op_desc','$input_job','$job_no',)";
+                            $insert_data = "insert into bai_pro3.mo_operation_quantites(date_time,mo_no,bundle_no,bundle_quantity,good_quantity,rejected_quantity,status,op_code,op_desc,input_job_no,input_job_random,size_id,)
+                            VALUES(NOW(),'$mo_no','$bundle_no','$bal_qty','0','0','$status','$opcode','$op_desc','$input_job','$job_no',)";
                             echo $insert_data."13<br>";
                             $res_insmo =mysqli_query($link,$insert_data);
                             $update_qty = $rej_qty-$bal_qty;

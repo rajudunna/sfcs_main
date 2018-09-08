@@ -81,7 +81,7 @@ if(isset($_POST['submit']))
 				//echo $cat_ref."---".$fabric_status."<br>";
 			}
 			//echo $cat_ref."---".$fabric_status."<br>";
-			if($cat_ref>0 and $fabric_status==5)	
+			if($cat_ref>0 and ($fabric_status==5 or $fabric_status==1))	
 			{
 					
 				$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
@@ -157,7 +157,18 @@ if(isset($_POST['submit']))
 						echo "<td>".$a_s[$sizes_code[$s]]."</td>";
 							
 					}
-					echo "<td>$act_cut_status</td><td>$act_cut_issue_status</td>";
+
+					echo "<td>$act_cut_status</td>";
+					if($fabric_status==5){
+						echo "<td>Issued to Cutting</td>";
+						$type="true";
+						$disabled="";
+					}
+					else{
+					echo "<td>Not Issued to Cutting</td>";
+						$type="false";
+						$disabled="disabled";
+					} 
 				//echo "<td>$remarks</td>";
 
 					if($category=='Body' or $category=="Front")
@@ -171,7 +182,7 @@ if(isset($_POST['submit']))
 							else
 							{
 								$create_url= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
-								echo "<td><a class='btn btn-sm btn-warning' href=".$create_url."&doc_no=$doc_no>Update</a></td>";
+								echo "<td><a oncontextmenu='return false' class='btn btn-sm btn-warning' onclick='return $type' $disabled href=".$create_url."&doc_no=$doc_no>Update</a></td>";
 							}
 						}
 						// else
@@ -261,10 +272,6 @@ if(isset($_POST['submit']))
 
 				}
 				echo "</table>";
-			}
-			elseif($fabric_status==1)
-			{
-				echo "Requested Docket exists.Fabric Not Issued to Cutting.Please contact your planner/RM Team.";
 			}
 			else
 			{				
