@@ -262,6 +262,10 @@ if(isset($_POST['submit']))
 				}
 				echo "</table>";
 			}
+			elseif($fabric_status==1)
+			{
+				echo "Requested Docket exists.Fabric Not Issued to Cutting.Please contact your planner/RM Team.";
+			}
 			else
 			{				
 			 	echo "Requested Docket doesn't exist or Docket Not printed or Fabric Not issued to this docket. Please contact your planner/RM Team.";

@@ -1,26 +1,24 @@
 <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
-
 <?php
-$rid=$_GET['rowid'];
+$rid=$_GET['rowid1'];
 // echo $rid;
 // $servername = "192.168.0.110:3326";
 // $username = "baiall";
-
 // $password = "baiall";
 // $dbname = "bai_pro3";
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-$conn=$link;
 
 // Create connection
 // $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+$conn=$link;
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-
-	$url=getFullURL($_GET['r'],'add_section.php','N');
+if($rid!=''){
+	$url=getFullURL($_GET['r'],'add_module.php','N');
 	echo"<script>setTimeout(function () { 
 		swal({
 		  title: 'Are you sure?',
@@ -33,11 +31,11 @@ if (!$conn) {
 			window.location.href = \"$url\";
 		  }
 		}); }, 100);</script>";
-$delete="delete from $bai_pro3.sections_db where sec_id='$rid'";
+$delete="delete from bai_pro3.module_master where id='$rid'";
 if (mysqli_query($conn, $delete)) {
-			// header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL3NlY3Rpb25zL2FkZF9zZWN0aW9uLnBocA==');
+			//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
-
+	}
 ?>
