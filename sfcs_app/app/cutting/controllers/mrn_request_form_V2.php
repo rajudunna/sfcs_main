@@ -558,15 +558,15 @@ function button_disable()
 			//CR# 376 // kirang // 2015-05-05 // Referred the Batch number details to restrict the request of quantity requirement.
 			$inp_5=$_POST["batchno"];
 			$post_color = $_POST['color'];
-			$sql = "SELECT mo_no FROM mo_details WHERE style=\"$inp_1\" AND SCHEDULE=\"$inp_2\" AND color=\"$post_color\"";
+			$sql = "SELECT mo_no FROM $bai_pro3.mo_details WHERE style=\"$inp_1\" AND SCHEDULE=\"$inp_2\" AND color=\"$post_color\"";
 			
 			$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 			$MIRecords = array();
+			$MIRecords_color = array();
+			$get_api_call = new get_api_call();
 			while($sql_result_32=mysqli_fetch_array($sql_result)){
 				 
-				$get_api_call = new get_api_call();
 				$url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelMaterials?CONO=200&FACI=".$global_facility_code."&MFNO=".$sql_result_32['mo_no'];
-				
 				$response_result = $get_api_call->getCurlRequest($url);
 				$response_result = json_decode($response_result);
 				
@@ -588,7 +588,35 @@ function button_disable()
 					$finalrecords[] = $value1;
 				}
 			}
-			// var_dump($finalrecords);
+
+			foreach($finalrecords as $key=>$value){
+
+				$mtno = urlencode($value['MTNO']);
+				$url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=200&ITNO=".$mtno;
+				
+				$response_result1 = $get_api_call->getCurlRequest($url);
+				$response_result1 = json_decode($response_result1);
+				
+				$MIRecords_color[] = $response_result1->MIRecord;
+			}
+			
+			$FromMO_color = array();
+			foreach($MIRecords_color as $key=>$value){
+				foreach($value as $key1=>$value1){
+					foreach($value1->NameValue as $res){
+						$FromMO_color[$key][$key1][$res->Name] = $res->Value;
+					}
+				}
+			}
+
+			$finalrecords_color = array();
+			foreach($FromMO_color as $key=>$value){
+				foreach($value as $key1=>$value1){
+					$finalrecords_color[] = $value1;
+				}
+			}
+		
+			// var_dump($finalrecords_color);
 			// die();
 			//echo "Cut=".$inp_4."<br>";
 
@@ -714,6 +742,9 @@ function button_disable()
 				if($opno === 15){
 					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"FAB\">FAB</td>";
 				}
+				if($opno > 15 && $opno < 100){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"ETRIM\">ETRIM</td>";
+				}
 				if($opno === 200){
 					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"PTRIM\">PTRIM</td>";
 				}
@@ -727,8 +758,17 @@ function button_disable()
 				echo "<td><input type=\"hidden\" name=\"item_code[]\" id='item_code$x' value=\"$item_code\" style=\"background-color:#66FFCC;\" readonly='true'>$item_code</td>";
 				$item_des = $finalrecords[$x]['ITDS'];
 				echo "<td><input type=\"hidden\" name=\"item_desc[]\" id='item_desc$x' value=\"$item_des\" style=\"background-color:#66FFCC;\" readonly='true'>$item_des</td>";
-				echo "<td><input type=\"text\" name=\"co[]\" id='item_color$x' value=\"\" style=\"background-color:#66FFCC;\"></td>"; 
-				
+
+				foreach($finalrecords_color as $key=>$value){
+					if($finalrecords[$x]['MTNO'] === $value['ITNO']){
+						$color = $value['OPTY'];
+						break;
+					}else{
+						$color = '';
+					}
+				}
+				echo "<td><input type=\"hidden\" name=\"co[]\" id='item_color$x' value=\"$color\" style=\"background-color:#66FFCC;\">$color</td>"; 
+
 				echo "<td></td>";
 				$bom_qty = $finalrecords[$x]['REQT'];
 				echo "<td>".$bom_qty."</td>";
