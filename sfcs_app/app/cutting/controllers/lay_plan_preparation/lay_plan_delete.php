@@ -289,8 +289,9 @@ if(isset($_POST["submit"]))
                         //M3 Reversal 
                         //M3 Bulk operation reversal 
                         //To update M3 Bulk Upload Tool (To pass negative entry) 
-                        $sql2m3="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,(sfcs_qty*-1),sfcs_reason,USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=".$sql_row33['doc_no']." AND m3_op_des='LAY' and sfcs_reason='' and left(sfcs_job_no,1)<>'R' and sfcs_qty>0"; 
-                        mysqli_query($link, $sql2m3) or die("Sql error".$sql2m3.mysqli_errno($GLOBALS["___mysqli_ston"]));     
+                        //COMMENTED FOR #759
+                        // $sql2m3="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,(sfcs_qty*-1),sfcs_reason,USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=".$sql_row33['doc_no']." AND m3_op_des='LAY' and sfcs_reason='' and left(sfcs_job_no,1)<>'R' and sfcs_qty>0"; 
+                        // mysqli_query($link, $sql2m3) or die("Sql error".$sql2m3.mysqli_errno($GLOBALS["___mysqli_ston"]));     
                     } 
                     $sql1="update bai_orders_db set order_no=0 where order_tid=\"".$order_tid[$i]."\""; 
                     mysqli_query($link, $sql1) or die("Error=11".mysqli_error($GLOBALS["___mysqli_ston"])); 

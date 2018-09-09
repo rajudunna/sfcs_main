@@ -7,6 +7,12 @@ Kirang/20150418 added validation to avoid additional rejections.
 <?php
 //CR# 375 / RameshK - 2014-12-22 / To add supplier names against to the schedule
 // Service Request #440767 / DharaniD / Clear the issue of replace quantity , display module no and shift for replace quantity in remarks column.
+//API related data
+$plant_code = $global_facility_code;
+$company_num = $company_no;
+$host= $api_hostname;
+$port= $api_port_no;
+$current_date = date('Y-m-d h:i:s');
 ?>
 <script>
  function button_disable()
@@ -478,28 +484,31 @@ if(isset($_POST['Update']))
 									$insert_id=mysqli_insert_id($link);
 
 									//M3 Rest API Call
-									// $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-									// $api_data = $obj->getCurlAuthRequest($api_url);
-									// $decoded = json_decode($api_data,true);
-									// $type=$decoded['@type'];
-									// $code=$decoded['@code'];
-									// $message=$decoded['Message'];
+									$api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+									$api_data = $obj->getCurlAuthRequest($api_url);
+									$decoded = json_decode($api_data,true);
+									$type=$decoded['@type'];
+									$code=$decoded['@code'];
+									$message=$decoded['Message'];
 
-									// //validating response pass/fail and inserting log
-									// if($type!='ServerReturnedNOK'){
-									// 	//updating response status in m3_transactions
-									// 	$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
-									// 	mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+									//validating response pass/fail and inserting log
+									if($type!='ServerReturnedNOK')
+									{
+										//updating response status in m3_transactions
+										$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
+										mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-									// }else{
-									// 	//updating response status in m3_transactions
-									// 	$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
-									// 	mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+									}
+									else
+									{
+										//updating response status in m3_transactions
+										$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
+										mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-									// 	//insert transactions details into transactions_log
-									// 	$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id',$message,USER(),$current_date)"; 
-									// 	mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-									// }
+										//insert transactions details into transactions_log
+										$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id',$message,USER(),$current_date)"; 
+										mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+									}
 								}
 							}
 						}
