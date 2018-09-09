@@ -171,10 +171,10 @@ if(isset($_POST['submit']))
 					} 
 				//echo "<td>$remarks</td>";
 
-					if($category=='Body' or $category=="Front")
-					{
+					// if($category=='Body' or $category=="Front")
+					// {
 						//if($val_check>0)
-						{
+						// {
 							if($act_cut_status=="DONE" and $plies==$a_plies)
 							{
 								echo "<td>Done</td>";
@@ -184,26 +184,26 @@ if(isset($_POST['submit']))
 								$create_url= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
 								echo "<td><a oncontextmenu='return false' class='btn btn-sm btn-warning' onclick='return $type' $disabled href=".$create_url."&doc_no=$doc_no>Update</a></td>";
 							}
-						}
+						// }
 						// else
 						// {
 						// 	echo "<td>Lay Reporting Pending.</td>";
 						// 	//$create_url_1= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
 						// 	//echo "<td><a href=".$create_url_1."&doc_no=$doc_no>Update</a></td>";
 						// }
-					}
-					else
-					{
-						if($act_cut_status=="DONE" and $plies==$a_plies)
-						{
-							echo "<td>Done</td>";
-						}
-						else
-						{
-							$create_url_11= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
-							echo "<td><a class='btn btn-sm btn-warning' href=".$create_url_11."&doc_no=$doc_no>Update</a></td>";
-						}
-					}
+					// }
+					// else
+					// {
+					// 	if($act_cut_status=="DONE" and $plies==$a_plies)
+					// 	{
+					// 		echo "<td>Done</td>";
+					// 	}
+					// 	else
+					// 	{
+					// 		$create_url_11= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
+					// 		echo "<td><a class='btn btn-sm btn-warning' href=".$create_url_11."&doc_no=$doc_no>Update</a></td>";
+					// 	}
+					// }
 
 						$acs_date="";
 						$acs_section="";
