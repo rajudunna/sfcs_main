@@ -104,16 +104,8 @@
 					</div>
 				</form>
 		<div class="col-md-12">
-			<?php
-		$page = mysql_escape_string($_GET['page']);
-		if($page)
-		{
-			$start = ($page - 1) * $limit; 
-		}
-		else
-		{
-			$start = 0;	
-		}
+	<?php
+		
 			if(isset($_POST['submit']))
 			{	
 				
@@ -181,7 +173,7 @@
 									$pack_method=$pack_result1['pack_method'];
 									// echo $pack_method;
 									// $col_array[]=$sizes_result1['order_col_des'];
-									echo "<tr><tr><td>".++$start."</td>";
+									echo "<tr><tr><td>-</td>";
 									echo"<td>".$operation[$pack_method]."</td>";
 									echo "<td>".$pack_result1['pack_description']."</td>";
 									echo "<td>".$pack_result1['color']."</td>";
