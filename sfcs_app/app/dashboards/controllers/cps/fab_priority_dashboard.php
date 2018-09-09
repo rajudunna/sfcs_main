@@ -1015,7 +1015,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       {
         case "1":
         {
-          $id="green";
+          $id="yellow";
           /* if($fab_wip>$cut_wip_control)
           {
             $id="lgreen";
