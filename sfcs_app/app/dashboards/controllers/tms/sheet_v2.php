@@ -7,6 +7,11 @@ table, th, td {
     border: 1px solid black;
     font-size: small;
 }
+body
+{
+    font-family: Calibri;
+    font-size: 11px;
+}
 @media print{
     @page { margin: 0;}
     body{
@@ -210,10 +215,10 @@ if(count($colors)>0){
                             <td><?= $api_selected_valuess['ITDS'] ?></td>
                             <td><?= $api_selected_valuess['color'] ?></td>
                             <td><center><?= $api_selected_valuess['size'] ?><center></td>
-                            <td><?php echo "<span style='float:right;'>".$api_selected_valuess['CNQT']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$reqwithwastage."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$reqwithoutwastage."</span>";?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
                             <td><?= $api_selected_valuess['PEUN'] ?></td>
                         </tr>
                         <?php }
@@ -242,10 +247,10 @@ if(count($colors)>0){
                             <td><?= $api_selected_valuess['ITDS'] ?></td>
                             <td><?= $api_selected_valuess['color'] ?></td>
                             <td><center><?= $api_selected_valuess['size'] ?><center></td>
-                            <td><?php echo "<span style='float:right;'>".$api_selected_valuess['CNQT']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$reqwithwastage."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$reqwithoutwastage."</span>";?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
                             <td><?= $api_selected_valuess['PEUN'] ?></td>
                         </tr>
                         <?php }
