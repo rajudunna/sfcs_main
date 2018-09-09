@@ -4,6 +4,7 @@
 <div class="panel-body">
 <?php
 	$schedule = '';
+	$job_counter = 0;
 	set_time_limit(30000000); 
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
@@ -36,7 +37,7 @@
 
 		//Inserting data  into the sewing 'job log table
 		$in_query = "Insert into $bai_pro3.sewing_jobs_ref ('style','schedule','log_time','bundles_count') values 
-					('$style','$schedule','".date('Y-m-d H:i:s')."','0')";
+					('$style','$schedule','".date('Y-m-d H:i:s')."',0)";
 		$in_result = mysqli_query($link,$in_query) or exit('Unable to insert into the sewing job ref');		
 		if($in_result)
 			$inserted_id = mysqli_insert_id($link);
@@ -370,13 +371,7 @@
 		$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule_id,$link);
 		echo "<h3><font face='verdana' color='green'>Generating Sewing Jobs for <br>Schedule: <span class='label label-info'>".$schedule."</span> with Pack Method: <span class='label label-info'>".$operation[$carton_method]."</span></font></h3>";
 
-		//Inserting data  into the sewing 'job log table
-		$in_query = "Insert into $bai_pro3.sewing_jobs_ref ('style','schedule','log_time','bundles_count') values 
-					('$style','$schedule','".date('Y-m-d H:i:s')."','0')";
-		$in_result = mysqli_query($link,$in_query) or exit('Unable to insert into the sewing job ref');		
-		if($in_result)
-			$inserted_id = mysqli_insert_id($link);
-		//.... Logic Ends...
+
 
 		// echo '<h4>Pack Method: <span class="label label-info">'.$operation[$carton_method].'</span></h4>';
 		// echo "<table class='table table-striped table-bordered'>";
@@ -826,13 +821,13 @@
 	//Deleting the entry from sewing jobs ref if no input job was created  --  Updating the bundle quantity after the jobs are inserted
 	if($job_counter == 0){
 		$delete_query = "Delete from $bai_pro3.sewing_jobs_ref where id = '$inserted_id'";
-		$delete_result = mysqli_query($link,$delete_query);
+		$delete_result = mysqli_query($link,$delete_query) or exit("Probelem while inserting to sewing jos ref");
 		if($delete_result){
 			//Deleted Successfully
 		}
 	}else{
 		$update_query = "Update $bai_pro3.sewing_jobs_ref set bundles_count = $job_counter where id = '$inserted_id' ";
-		$update_result = mysqli_query($link,$update_query);
+		$update_result = mysqli_query($link,$update_query) or exit("Probelem while inserting to sewing jos ref");
 		if($update_result){
 			//Updated Successfully
 		}
