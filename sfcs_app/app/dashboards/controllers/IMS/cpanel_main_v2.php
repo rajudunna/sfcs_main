@@ -85,6 +85,14 @@ window.onload = startBlink;
 <!-- POP up window -  start  -->
 <script>         
 function PopupCenter(pageURL, title,w,h) {
+    
+    var shift= $('#shift').val();
+    console.log(shift);
+    if(shift==''){
+swal('Please Select Shift First','','error');
+return false;
+    }
+ 
 var left = (screen.width/2)-(w/2);
 var top = (screen.height/2)-(h/2);
 var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
@@ -422,7 +430,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 } 
 $shifts = $_GET['shift'];
 
-$shift_ary = ['A','B','C','G'];
+//$shifts_array = ['A','B','C','G'];
 ?>
   </div>
   <div class="panel-body">
@@ -432,7 +440,7 @@ $shift_ary = ['A','B','C','G'];
     <label>Shift </label><select class="form-control" id="shift" name="shift" onchange="firstbox();">
     <option value="">Select</option>
      <?php
-          foreach($shift_ary as $shift){
+          foreach($shifts_array as $shift){
             if($shift == $shifts){
               echo "<option value='$shift' selected>$shift</option>";
             }else{
@@ -793,11 +801,14 @@ $shift_ary = ['A','B','C','G'];
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();   
 });
+
+
 </script>
 
 
 <script>
 $(document).ready(function(){
+
     $('[data-toggle="tooltip"]').tooltip(); 
     var url = '<?= getFullURL($_GET['r'],'mod_rep_recon.php','R'); ?>';
     var modules = '<?= json_encode($data); ?>';

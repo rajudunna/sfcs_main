@@ -418,25 +418,34 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	}
 	
 	//Binding Consumption / YY Calculation
-	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-	if($sql_num_check > 0)
+	
+	if($category=='Body' || $category=='Front')
 	{
-		while($sql_row2=mysqli_fetch_array($sql_result))
+		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		// echo $sql2;
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$rows=mysqli_num_rows($sql_result2);
+		if($rows > 0)
 		{
-			$binding_con = $sql_row2['binding_consumption'];
-			$bind_con= $binding_con *($a_ratio_tot*$plies);
-
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+				$binding_con = $sql_row2['binding_con'];
+				$bind_con= $binding_con *($a_ratio_tot*$plies);
+			}
+		}
+		else
+		{
+			$bind_con=0;
 		}
 	}
 	else
 	{
-		$binding_con=0;
+		$bind_con=0;
+		
 	}
+	
 	//Binding Consumption / YY Calculation
-
-// chr($color_code).leading_zeros($cutno, 3)	
+//chr($color_code).leading_zeros($cutno, 3)	
 
 
 //To allocate Lot Number for RM Issuing
@@ -1967,19 +1976,17 @@ body{
 <style>
 
 @media print {
-	
-@page { margin: 0; }
-@page narrow {size: 9in 11in}
-@page rotated {size: landscape}
-DIV {page: narrow}
-TABLE {page: rotated}
-#non-printable { display: none; }
-#printable { display: block; }
-#logo { display: block; }
-body { zoom:72%;}
-#ad{ display:none;}
-#leftbar{ display:none;}
-#CUT_PLAN_NEW_13019{ width:57%; margin-left:20px;}
+	@page narrow {size: 15in 11in}
+	@page rotated {size: potrait}
+	DIV {page: narrow}
+	TABLE {page: rotated}
+	#non-printable { display: none; }
+	#printable { display: block; }
+	#logo { display: block; }
+	body { zoom:65%;}
+	#ad{ display:none;}
+	#leftbar{ display:none;}
+	#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
 }
 </style>
 
@@ -2095,7 +2102,7 @@ tags will be replaced.-->
  </tr>
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td colspan=3 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
+<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>

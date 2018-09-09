@@ -5,7 +5,6 @@
 $sec_id=$_REQUEST['sec_id'];
 $sec_head =$_REQUEST['sec_head'];
 $sec_mods =$_REQUEST['sec_mods'];
-$sec_mods1 =$_REQUEST['sec_mods1'];
 $ims_priority_boxes=$_REQUEST['ims_priority_boxes'];
 
 // $servername = "192.168.0.110:3326";
@@ -38,45 +37,7 @@ if (empty($sec_head) || empty($sec_mods)|| empty($ims_priority_boxes)) {
 		}); }, 100);</script>";
 }else{
 	if($sec_id>0){
-		$sec_mods1=$_POST['sec_mods'];
-	$sec_mods5=explode(",",	$sec_mods1);
-	$array = $sec_mods5;
-	$array1 = array_unique($array);
-
-if(sizeof($array)!= sizeof($array1)){
-	$url=getFullURL($_GET['r'],'add_section.php','N');
-	echo"<script>setTimeout(function () { 
-		swal({
-			title: 'Duplicate Data Entered',
-			text: 'Message!',
-			type: 'warning',
-			confirmButtonText: 'OK'
-		},
-		function(isConfirm){
-			if (isConfirm) {
-			window.location.href = \"$url\";
-			}
-		}); }, 100);</script>";
-}else{
-		$sec=$_POST['sec_mods'];
-		$sec_mods1=$_POST['sec_mods1'];
-		//	$string_sec=explode(",",	$sec);
-			$string_sec1=explode(",",	$sec);
-			$sql1= "delete from $bai_pro3.plan_modules where module_id in($sec_mods1)";
-			if (mysqli_query($conn, $sql1)) {
-			} else {
-				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-			}
-	foreach($string_sec1 as $key){
-//	$sql = "update $bai_pro3.plan_modules set module_id='$result1[$i]',section_id='$sec_head',ims_priority_boxes='$ims_priority_boxes' where module_id='$result2[$i]'";
-$sql = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,ims_priority_boxes,power_user,buyer_div)
-VALUES ('$key','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
-
-		if (mysqli_query($conn, $sql)) {
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		}
-	}
+		
 		//update
 		$sql = "update $bai_pro3.sections_db set sec_head='$sec_head',sec_mods='$sec_mods',ims_priority_boxes='$ims_priority_boxes' where sec_id=$sec_id";
 		//echo $sql;
@@ -99,9 +60,11 @@ VALUES ('$key','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
-	}
 	}else{
-		
+
+
+
+
 		$query1="select sec_head from $bai_pro3.sections_db where sec_head='$sec_head'";
 		$sql_result1=mysqli_query($conn, $query1);
 		
@@ -120,71 +83,21 @@ VALUES ('$key','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
 					window.location.href = \"$url\";
 				  }
 				}); }, 100);</script>";
+
+
+
+
 		}
-	
-else{
-	$sec_mods1=$_POST['sec_mods'];
-			$query2="select module_id from $bai_pro3.plan_modules where module_id in($sec_mods1)";
-			$sql_result2=mysqli_query($conn, $query2);
-	if(mysqli_num_rows($sql_result2)>0){
-				$url=getFullURL($_GET['r'],'add_section.php','N');
-				echo"<script>setTimeout(function () { 
-					swal({
-						title: 'Module Already Existed!',
-						text: 'Message!',
-						type: 'warning',
-						confirmButtonText: 'OK'
-					},
-					function(isConfirm){
-						if (isConfirm) {
-						window.location.href = \"$url\";
-						}
-					}); }, 100);</script>";
-			}
 		
-else{
-
-
-
-	$sec=$_POST['sec_mods'];
-	$string_sec=explode(",",	$sec);
-
-$array = $string_sec;
-$array1 = array_unique($array);
-
-// $duplicate=(array_count_values($array));
-// $unique=(array_count_values($array1));
-// var_dump($array);var_dump($array1);
-// die();
-if(sizeof($array)!= sizeof($array1)){
-	$url=getFullURL($_GET['r'],'add_section.php','N');
-	echo"<script>setTimeout(function () { 
-		swal({
-			title: 'Duplicate Data Entered',
-			text: 'Message!',
-			type: 'warning',
-			confirmButtonText: 'OK'
-		},
-		function(isConfirm){
-			if (isConfirm) {
-			window.location.href = \"$url\";
-			}
-		}); }, 100);</script>";
-}else{
-	//var_dump($string_sec);
-foreach($string_sec as $index => $val){
-	$sql = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,ims_priority_boxes,power_user,buyer_div)
-		VALUES ('$val','$sec_head','$ims_priority_boxes','sfcsproject1','CK')";
-
-	if (mysqli_query($conn, $sql)) {
-	} else {
-		echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-	}
-
-}
+		
+		
+		
+		
+		
+		else{
 		//insert 
-		$sql = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods,ims_priority_boxes)
-VALUES ('$sec_head','$sec_head','$sec_mods','$ims_priority_boxes')";
+		$sql = "INSERT INTO $bai_pro3.sections_db (sec_head,sec_mods,ims_priority_boxes)
+VALUES ('$sec_head','$sec_mods','$ims_priority_boxes')";
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'add_section.php','N');
 			//echo "New record created successfully";
@@ -204,22 +117,10 @@ VALUES ('$sec_head','$sec_head','$sec_mods','$ims_priority_boxes')";
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 
-		
-	
-	
-
-		
-
-
-
-
-
-
 	}
 	}
 }
-	}
-}
+
 mysqli_close($conn);
 //header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL3NlY3Rpb25zL2FkZF9zZWN0aW9uLnBocA==');
 exit;
