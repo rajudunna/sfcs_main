@@ -1,6 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include('doc_size_wise_qts.php');
 ?>
 
 <body>
@@ -140,7 +141,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$update_query="update $bai_pro3.bai_orders_db_confirm set bts_status=2 where order_tid='$order_tid'";
 		$result10=mysqli_query($link, $update_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
-		
+  
+$doc_no_query = "Select doc_no from $bai_pro3.plandoc_stat_log where order_tid = '$order_tid' order by doc_no";
+$doc_no_result = mysqli_query($link,$doc_no_query);
+while($row = mysqli_fetch_array($doc_no_result)){
+	$docket_no = $row['doc_no'];
+}
+doc_size_wise_bundle_insertion($docket_no);
   echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
   		function Redirect() {
   			sweetAlert('Successfully Generated','','success');
