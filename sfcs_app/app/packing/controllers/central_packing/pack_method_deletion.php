@@ -94,7 +94,7 @@
 					?>
 					<div class='col-md-3 col-sm-3 col-xs-12'>
 					<input type="submit" name="submit" id="submit" class="btn btn-success " value="Submit" style="margin-top: 18px;">
-					<input type="submit" name="clear" value="Delete All" class="btn btn-success" style="margin-top: 18px;">
+					<input type="submit" name="clear" value="Delete All" class="btn btn-danger" style="margin-top: 18px;">
                  </div>
 				</form>
 		<div class="col-md-12">
@@ -108,21 +108,24 @@
 				   $c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
 				   $schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);	
 				   $style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
-				   $query = "SELECT * FROM $bai_pro3.pac_stat_log WHERE style = '$style' AND SCHEDULE = '$schedule_original'";
+				   $query = "SELECT * FROM $bai_pro3.pac_stat_log WHERE style = '$style' AND SCHEDULE = '$schedule_original' GROUP BY seq_no";
 				   //echo $query;
+				   //die();
 				   $new_result = mysqli_query($link, $query) or exit("Sql Error366".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				echo "<br><div class='col-md-12'>
 				
 							<table class=\"table table-bordered\">
 								<tr>
-									<th>S.No</th>
+								   <th>S.No</th>
+									<th>Seq.No</th>
 									<th>Packing Method</th>
 									<th>Color</th>
 									<th>Sizes</th>
 									<th>Carton Quantity</th>
 									<th>Schedule</th>
 									<th>Controlls</th></tr>";
+									$i = 1;
 								while($new_result1=mysqli_fetch_array($new_result))
 								{
 								
@@ -138,18 +141,20 @@
 									$size_result=mysqli_query($link, $size) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $row_size = mysqli_fetch_row($size_result);
 									// $col_array[]=$sizes_result1['order_col_des'];
-									echo "<tr><td>".$new_result1['seq_no']."</td>";
+									echo "<tr><td>$i</td>";
+									echo "<td>".$new_result1['seq_no']."</td>";
 									echo"<td>".$operation[$packmetod]."</td>";
 									echo"<td>".$row_color[0]."</td>";
 									echo"<td>".$row_size[0]."</td>";
 									echo"<td>".$new_result1['carton_act_qty']."</td>";
 									echo"<td>".$new_result1['schedule']."</td>";
+									$i++;
 									$url=getFullURL($_GET['r'],'pack_method_deletion.php','N');
 									if($staus != "done"){
-									echo "<td><a href=$url&pack_method='".$new_result1['pack_method']."'&seq_no='".$new_result1['seq_no']."'&tid='".$new_result1['tid']."'>Delete</td>";
+									echo "<td><a   class='btn btn-danger' href=$url&pack_method='".$new_result1['pack_method']."'&seq_no='".$new_result1['seq_no']."'&tid='".$new_result1['tid']."'>Delete</td>";
 									}
 									else{
-										echo "<td>Already Scanned</td>";
+										echo "<td  class='btn btn-success'>Already Scanned</td>";
 	
 									}
 									echo "<tr>";
@@ -174,7 +179,7 @@
 				 $op_code_result=mysqli_query($link, $op_code) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                  $row = mysqli_fetch_row($op_code_result);
 				 $deletepackmethod = "DELETE FROM $bai_pro3.pac_stat_log WHERE seq_no = $seqno and pack_method =  $packmethod";
-				 echo $deletepackmethod;
+				 //echo $deletepackmethod;
 				 $sql_result=mysqli_query($link, $deletepackmethod) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 if(! $sql_result ) {
 				    die('Could not delete data: ' . mysql_error());
@@ -216,13 +221,13 @@
 				$sqno = implode(",",$seqno);
 				$packmethod =  implode(",",$packmethod);
 				$otid =  implode(",",$tid);
-				echo $otid;
+				//echo $otid;
 				$op_code = "SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_name = 'Carton Packing'";
 				 $op_code_result=mysqli_query($link, $op_code) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                  $row = mysqli_fetch_row($op_code_result);
 				$deletepackmethod1 = "DELETE FROM $bai_pro3.pac_stat_log WHERE seq_no in ($sqno) and pack_method in ($packmethod)";
 				//echo $deletepackmethod1;
-				die();
+				//die();
 			    $sql_result=mysqli_query($link, $deletepackmethod1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(! $sql_result ) {
 				 die('Could not delete data: ' . mysql_error());
