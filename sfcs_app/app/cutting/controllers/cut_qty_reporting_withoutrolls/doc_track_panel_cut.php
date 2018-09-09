@@ -161,7 +161,7 @@ if(isset($_POST['submit']))
 
 							echo "<td>$act_cut_status</td>";
 							
-								echo "<td>Issued to Cutting</td>";
+								echo "<td>$act_cut_issue_status</td>";
 								$type="true";
 								$disabled="";
 							
@@ -179,7 +179,7 @@ if(isset($_POST['submit']))
 									else
 									{
 										$create_url= getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2_cut.php',0,'N');
-										echo "<td><a oncontextmenu='return false' class='btn btn-sm btn-warning' onclick='return $type' $disabled href=".$create_url."&doc_no=$doc_no>Update</a></td>";
+										echo "<td><a  class='btn btn-sm btn-warning' href=".$create_url."&doc_no=$doc_no>Update</a></td>";
 									}
 								// }
 								// else
@@ -382,12 +382,12 @@ if(isset($_POST['submit']))
 
 							echo "<td>$act_cut_status</td>";
 							if($fabric_status==5){
-								echo "<td>Issued to Cutting</td>";
+								echo "<td>$act_cut_issue_status</td>";
 								$type="true";
 								$disabled="";
 							}
 							else{
-							echo "<td>Not Issued to Cutting</td>";
+							echo "<td>$act_cut_issue_status</td>";
 								$type="false";
 								$disabled="disabled";
 							} 
