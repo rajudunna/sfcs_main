@@ -618,6 +618,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 // $section=$sql_rowx['sec_id'];
 // $section_head=$sql_rowx['sec_head'];
 $section_mods=$sql_rowx['emb_table_id'];
+$emb_tbl_name=$sql_rowx['emb_table_name'];
 
 if($_GET["view_div"]!='ALL' && $_GET["view_div"]!='')
 {
@@ -659,7 +660,7 @@ echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #0000
 echo "<p>";
 echo "<table>";
 $url=getFullURLLevel($_GET['r'],'board_update.php',0,'R');
-echo "<tr><th colspan=2'><center><h2><b>EMB Table $section_mods</b></h2></center></th></tr>";
+echo "<tr><th colspan=2'><center><h2><b>$emb_tbl_name</b></h2></center></th></tr>";
 
 //For Section level blinking
 $blink_minimum=0;
@@ -687,8 +688,8 @@ $doc_ref[]=0;
 $req_time[]=0;
 $req_date_time[]=0;
 
-$sql2="select doc_no,log_time as req_time,module,log_time from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) order by log_time,module";
-//echo $sql2;
+$sql2="select doc_no,log_time as req_time,module,log_time from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and orginal_qty<>send_qty  order by log_time,module";
+// echo $sql2;
 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
 {
@@ -821,6 +822,9 @@ $id="yash";
 if($cut_new=="DONE")
 {
   $id="blue";
+  $embscanurl = "www.google.com";
+}else{
+  $embscanurl = "#";
 }
 
 
@@ -878,14 +882,14 @@ $club_c_code=array_unique($club_c_code);
 $club_docs=array_unique($club_docs);
 
 //$title=str_pad("Style:".trim($style),80).str_pad("Schedule:".$schedule,80).str_pad("Color:".trim(implode(",",$colors_db)),80).str_pad("Job_No:".implode(", ",$club_c_code),80).str_pad("Total_Qty:".$total_qty,80).str_pad("Log_Time:".$log_time,80).str_pad("Remarks:".$rem." / Bundle_Location:".$bundle_location,80);
-$title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Job_No:".implode(", ",$club_c_code),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n";
+$title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Cut_No:".implode(", ",$club_c_code),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n";
 
 
 $clr=trim(implode(',',$colors_db),50);
 
 // if($id=="blue")
 {
-  echo "<div id='$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title' >$schedule(".implode(", ",$club_c_code).")</div><br>"; 
+  echo "<div id='$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><a href=".$embscanurl.">$schedule(".implode(", ",$club_c_code).")</a></div><br>"; 
 }
 
 

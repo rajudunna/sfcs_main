@@ -618,6 +618,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 // $section=$sql_rowx['sec_id'];
 // $section_head=$sql_rowx['sec_head'];
 $section_mods=$sql_rowx['emb_table_id'];
+$emb_tbl_name=$sql_rowx['emb_table_name'];
 
 if($_GET["view_div"]!='ALL' && $_GET["view_div"]!='')
 {
@@ -659,7 +660,7 @@ echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #0000
 echo "<p>";
 echo "<table>";
 $url=getFullURLLevel($_GET['r'],'board_update.php',0,'R');
-echo "<tr><th colspan=2'><center><h2><b>EMB Table $section_mods</b></h2></center></th></tr>";
+echo "<tr><th colspan=2'><center><h2><b>$emb_tbl_name</b></h2></center></th></tr>";
 
 //For Section level blinking
 $blink_minimum=0;
@@ -687,7 +688,7 @@ $doc_ref[]=0;
 $req_time[]=0;
 $req_date_time[]=0;
 
-$sql2="select doc_no,log_time as req_time,module,log_time from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) order by log_time,module";
+$sql2="select doc_no,log_time as req_time,module,log_time from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and send_qty > 0 order by log_time,module";
 //echo $sql2;
 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
@@ -761,12 +762,12 @@ $print_status=$sql_row1['print_status'];
 $bundle_location="";
 if(sizeof(explode("$",$sql_row1['bundle_location']))>1)
 {
-$bundle_location=end(explode("$",$sql_row1['bundle_location']));
+  $bundle_location=end(explode("$",$sql_row1['bundle_location']));
 }
 $fabric_location="";
 if(sizeof(explode("$",$sql_row1['plan_lot_ref']))>1)
 {
-$fabric_location=end(explode("$",$sql_row1['plan_lot_ref']));
+  $fabric_location=end(explode("$",$sql_row1['plan_lot_ref']));
 }
 
 

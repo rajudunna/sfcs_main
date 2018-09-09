@@ -764,8 +764,9 @@
 									// $section=$sql_rowx['sec_id'];
 									// $section_head=$sql_rowx['sec_head'];
 									$emb_table_id=$sql_rowx['emb_table_id'];
+									$emb_tbl_name=$sql_rowx['emb_table_name'];
 								
-									echo "<div style=\"width:170px;\" align=\"center\"><h4>EMB Table $emb_table_id</h4>";
+									echo "<div style=\"width:170px;\" align=\"center\"><h4>$emb_tbl_name</h4>";
 								
 										$mods=array();
 										$mods=explode(",",$emb_table_id);
