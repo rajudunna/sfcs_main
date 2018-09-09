@@ -365,7 +365,12 @@
 					$delete_pack_meth="delete from $bai_pro3.tbl_pack_size_ref where seq_no='$seq_no' and parent_id='$parent_id' and pack_method='$pack_method'";
 				    // echo $delete_pack_meth;die();
 					$dele_pack_qry_res=mysqli_query($link, $delete_pack_meth) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(! $dele_pack_qry_res ) {
+						die('Could not delete data: ' . mysql_error());
+								   }
+					echo '<script>swal("Packing Deleted Sucessfully","","warning")</script>';	
 				}
+
 			?> 
 		</div>
 	</div>
