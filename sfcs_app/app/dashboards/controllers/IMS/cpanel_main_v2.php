@@ -10,7 +10,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 
 <title>IMS</title>
-
+<script>
+function firstbox()
+{
+  var shift_id = document.getElementById('shift').value;
+  window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&shift="+shift_id;
+}
+</script>
 
 <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 <link rel=\"stylesheet\" href=".getFullURL($_GET['r'],'common/css/ddcolortabs.css',4,'R')." type=\"text/css\" media=\"all\" />
@@ -79,6 +85,14 @@ window.onload = startBlink;
 <!-- POP up window -  start  -->
 <script>         
 function PopupCenter(pageURL, title,w,h) {
+    
+    var shift= $('#shift').val();
+    console.log(shift);
+    if(shift==''){
+swal('Please Select Shift First','','error');
+return false;
+    }
+ 
 var left = (screen.width/2)-(w/2);
 var top = (screen.height/2)-(h/2);
 var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
@@ -404,6 +418,8 @@ $(document).ready(function()
    <div class="panel-heading">
     
       Input Management System - Production WIP Dashboard -<span style="color:#fff;font-size:12px;margin-left:15px;">Refresh Rate: 120 Sec.</span>
+
+
 <?php
 $sql="select max(ims_log_date) as \"lastup\" from $bai_pro3.ims_log";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -411,13 +427,37 @@ while($sql_row=mysqli_fetch_array($sql_result))
 { ?>
   <span style="font-size:12px;color:#CCC;">Last Update at: <?PHP echo $sql_row['lastup']; ?></span>
 <?php
-} ?>
+} 
+$shifts = $_GET['shift'];
+
+//$shifts_array = ['A','B','C','G'];
+?>
   </div>
   <div class="panel-body">
+  <div class="row">
+  <div class="col-md-2">
+      
+    <label>Shift </label><select class="form-control" id="shift" name="shift" onchange="firstbox();">
+    <option value="">Select</option>
+     <?php
+          foreach($shifts_array as $shift){
+            if($shift == $shifts){
+              echo "<option value='$shift' selected>$shift</option>";
+            }else{
+               echo "<option value='$shift'>$shift</option>";
+            }
+           
+          }
+
+     ?>
+  </select>   
+  </div>  
+  </div>  
+
     <div style="padding-top:15px;">
     <div class="table-responsiv">
       <div class='col-sm-12'>
-   <?php $sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+   <?php $sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id";
   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
   $break_counter = 0;
   while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
@@ -643,7 +683,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
                 $operation_code=$sql_row['operation_code'];
               } 
                
-               $shift='G';
+               //$shift='G';
                //$barcode_generation='1';
                $sidemenu=true;
               $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
@@ -651,7 +691,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
           ?>
                   
-                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&shift=<?php echo $shift; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
+                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&shift=<?php echo $shifts; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
@@ -761,11 +801,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();   
 });
+
+
 </script>
 
 
 <script>
 $(document).ready(function(){
+
     $('[data-toggle="tooltip"]').tooltip(); 
     var url = '<?= getFullURL($_GET['r'],'mod_rep_recon.php','R'); ?>';
     var modules = '<?= json_encode($data); ?>';
