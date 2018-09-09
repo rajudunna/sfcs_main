@@ -400,25 +400,25 @@ if(isset($_POST['submit']))
 			$qty = $qty - $rej_qty;
 			if( $qty >= 0){
 				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-							(`date_time`, `mo_no`, `doc_no`,`bundle_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-							(".date('Y-m-d H:i:s').",$mo_no,$doc_no,$acut_no,$rej_qty,$op_code,'recut')";
-				mysqli_query($link,$insert_query) or exit('error 1');
+							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
+							(".date('Y-m-d H:i:s').",$mo_no,$doc_no,$rej_qty,$op_code,'recut')";
+				mysqli_query($link,$insert_query) or exit('Mo Updation error 1');
 			}else{
 				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-							(`date_time`, `mo_no`, `doc_no`,`bundle_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-							(".date('Y-m-d H:i:s').",$mo_no,$doc_no,$acut_no,$qty,$op_code,'recut')";
-				mysqli_query($link,$insert_query) or exit('error 2');
+							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
+							(".date('Y-m-d H:i:s').",$mo_no,$doc_no,$qty,$op_code,'recut')";
+				mysqli_query($link,$insert_query) or exit('Mo Updation error 2');
 				break;
 			}	
 		}
 		// 	inserting excess quantity to the last mo 
 		if($qty >= 0){
 			$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-						(`date_time`, `mo_no`, `doc_no`,`bundle_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-						(".date('Y-m-d H:i:s').",$last_mo,$doc_no,$acut_no,$qty,$op_code,'recut')";
-			mysqli_query($link,$insert_query) or exit('error 3');	
-			unset($mos);
+						(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
+						(".date('Y-m-d H:i:s').",$last_mo,$doc_no,$qty,$op_code,'recut')";
+			mysqli_query($link,$insert_query) or exit('Mo Updation error 3');	
 		}
+		unset($mos);
 	}
 
 	echo "<h2>Successfully Updated</h2>";

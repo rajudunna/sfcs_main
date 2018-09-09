@@ -646,7 +646,8 @@ if($status == '')
 		}
 
 		//getting the sizes to format s,m,l 
-		$recut_sizes = "Select distinct(size_code) as size From $bai_pro3.pac_stat_log_input_job where doc_no = '$doc_no' ";
+		$recut_sizes = "Select distinct(size_code) as size From $bai_pro3.pac_stat_log_input_job where doc_no = '$doc_no' 
+						and sref_id = $inserted_id";
 		$recut_size_result = mysqli_query($link,$recut_sizes)  or exit('Mo Operation Code Retrieval Error');
 		while($row = mysqli_fetch_array($recut_size_result)){
 			$old_sizes[] = $row['size'];
@@ -700,7 +701,7 @@ if($status == '')
 				if(sizeof($mos) == 1){
 					foreach($mos as $mo_no => $rem_cpcty){
 						//getting the recut sewing details for each size 
-						$recut_jobs_details = "Select carton_act_qty,old_size,doc_no,input_job_no_random  
+						$recut_jobs_details = "Select SUM(carton_act_qty)  
 											From $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no and size_code = '$size'
 											and sref_id = '$inserted_id' order by size_code ";
 						$recut_jobs_result = mysqli_query($link,$recut_jobs_details) or exit('Error Occured');
@@ -708,8 +709,6 @@ if($status == '')
 							//need to get bundle number
 							$bundle_no = $row['tid'];
 							$cart_qty = $row['carton_act_qty'];
-							$input_job_no = $row['input_job_no'];
-							$input_job_random = $row['input_job_random'];
 							foreach($ops[$mo_no] as $op_code=>$op_desc){
 								$insert_query = "Insert into $bai_pro3.mo_operation_quantites(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`) values
 								('".date('Y-m-d H:i:s')."','".$mo_no."','$bundle_no','$cart_qty','$op_code','$op_desc')";
@@ -717,7 +716,7 @@ if($status == '')
 						}		
 					}
 				}else{
-					$recut_jobs_details = "Select carton_act_qty,old_size,doc_no,input_job_no_random  
+					$recut_jobs_details = "Select SUM(carton_act_qty)  
 						From $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no and size_code = '$size' 
 						and sref_id = '$inserted_id' order by size_code ";
 					$recut_jobs_result = mysqli_query($link,$recut_jobs_details) or exit('Error Occured');
@@ -725,9 +724,6 @@ if($status == '')
 						//need to get bundle number
 						$bundle_no = $row['tid'];
 						$qty = $row['carton_act_qty'];
-						$input_job_no = $row['input_job_no'];
-						$input_job_random = $row['input_job_random'];
-					
 						foreach($mos as $mo_no => $rem_cpcty){
 							if($rem_cpcty == 0)
 								continue;
