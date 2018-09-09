@@ -58,8 +58,8 @@ if(isset($_POST['submit']))
 				$cat_ref=$sql_row['cat_ref'];
 				$order_tid=$sql_row['order_tid'];
 				$category=$sql_row['category'];
-				if($sql_row['category']=="Body" or $sql_row['category']=="Front")
-				{
+				// if($sql_row['category']=="Body" or $sql_row['category']=="Front")
+				// {
 					$fabric_status=$sql_row['fabric_status'];
 					if($valnew=='1')
 					{	
@@ -73,11 +73,11 @@ if(isset($_POST['submit']))
 						$result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$val_check=mysqli_num_rows($result);
 					}
-				}
-				else
-				{
-					$fabric_status=5;
-				}
+				// }
+				// else
+				// {
+				// 	$fabric_status=5;
+				// }
 				//echo $cat_ref."---".$fabric_status."<br>";
 			}
 			//echo $cat_ref."---".$fabric_status."<br>";
