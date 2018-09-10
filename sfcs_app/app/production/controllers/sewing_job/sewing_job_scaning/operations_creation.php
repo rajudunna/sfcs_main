@@ -252,7 +252,7 @@
             <td>".$res_result['default_operation']."</td>
             <td>".$res_result['operation_code']."</td>
             <td>".$res_result['type']."</td>
-			<td>".$res_result['short_cut_code']."</td>
+			<td>".strtoupper($res_result['short_cut_code'])."</td>
 			<td>".$res_result['work_center_id']."</td>
 			<td>".$res_result['category']."</td>";
             if($flag == 1)

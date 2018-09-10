@@ -105,7 +105,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				}
 				echo "<td>".array_sum($a_s)."</td>";
 				// echo "<td>$act_cut_status</td><td>$act_cut_issue_status</td><td>$remarks</td>";
-				echo "<td>$act_cut_status</td><td>Issued To Cutting</td><td>$remarks</td>";
+				echo "<td>$act_cut_status</td><td>$act_cut_issue_status</td><td>$remarks</td>";
 
 
 				echo "</tr>";
