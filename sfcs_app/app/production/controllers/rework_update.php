@@ -337,7 +337,7 @@ function second_box(){
 		echo "</select></div>";	
 
 		echo "<div class='col-sm-2'>Module: <select name='module' class='form-control' id='module' onclick='check_section()'>";
-				echo "<option value='0'>Select Module</option>";
+		echo "<option value='0' selected>Select Module</option>";
 		$sql="select group_concat(sec_mods) as \"sec_mods\" from $bai_pro3.sections_db where sec_id in (\"$section\")";
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
