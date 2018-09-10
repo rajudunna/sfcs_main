@@ -54,16 +54,41 @@ function isNumber($c)
 
 
 <?php
-	$sql3="truncate $bai_pro3.shipment_plan";
-	mysqli_query($link, $sql3) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql3="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) 
-	select TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination from $m3_inputs.shipment_plan";
-	// echo $sql3."<br>";
-	$res=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($res)
+$sql39="truncate $bai_pro3.shipment_plan";
+	mysqli_query($link, $sql39) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	$sql3="select style,schedule,GMT_Color from  $m3_inputs.order_details where MO_Released_Status_Y_N='Y'";
+	$result=mysqli_query($link, $sql3) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+// echo $sql3."<br>";
+	while($sql_row44=mysqli_fetch_array($result))
 	{
-		print("M3 to SFCS Sync Successfully Completed")."\n";
+		$style=$sql_row44['style'];
+		$style_total_length=0;
+		$new_style=str_pad($style,$style_total_length," ",STR_PAD_RIGHT);
+		$sch_no=$sql_row44['schedule'];
+		$color=$sql_row44['GMT_Color'];
+		$color_len=strlen($color);
+		$color_total_length=0;
+		$new_color=str_pad($color,$color_total_length," ",STR_PAD_RIGHT);
+		$color_len_new=strlen($new_color);
+		$ssc_code=$new_style.$sch_no.$new_color;
+	
+		$sql23="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) select TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination from $m3_inputs.shipment_plan where style_no=\"".$sql_row44['style']."\" and Schedule_No=\"".$sql_row44['schedule']."\" and colour=\"".$sql_row44['GMT_Color']."\"  and TRIM(BOTH FROM Schedule_No) not in (select distinct order_del_no from $bai_pro3.bai_orders_db_confirm)";
+		$result23=mysqli_query($link, $sql23) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
 	}
+	
+				
+	// $sql3="truncate $bai_pro3.shipment_plan";
+	// mysqli_query($link, $sql3) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql3="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) 
+	// select TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination from $m3_inputs.shipment_plan where TRIM(BOTH FROM Schedule_No) not in (select distinct order_del_no from $bai_pro3.bai_orders_db_confirm)";
+	// // echo $sql3."<br>";
+	// $res=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// if($res)
+	// {
+	// 	print("M3 to SFCS Sync Successfully Completed")."\n";
+	// }
 
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_1\")";
 	$res1=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -75,7 +100,7 @@ function isNumber($c)
 	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"ssc_plan_process.php\"; }</script>";
 ?>
 <?php
-$username="ber_databasesvc";
+	$username="ber_databasesvc";
 	$username_val="orderdetail_plan_".$username.date("YmdHis");
 	$sql="CREATE TEMPORARY TABLE temp_pool_db.$username_val ENGINE=MyISAM select DISTINCT MO_NUMBER,TRIM(BOTH FROM Style) as Style,TRIM(BOTH FROM SCHEDULE) as SCHEDULE,TRIM(BOTH FROM GMT_Color) as GMT_Color,GMT_Size,MO_Qty FROM $m3_inputs.order_details WHERE MO_Released_Status_Y_N='Y'";
 	// echo $sql."<br>";
@@ -87,8 +112,8 @@ $username="ber_databasesvc";
 			
 	$size=array("s01","s02","s03","s04","s05","s06","s07","s08","s09","s10","s11","s12","s13","s14","s15","s16","s17","s18","s19","s20","s21","s22","s23","s24","s25","s26","s27","s28","s29","s30","s31","s32","s33","s34","s35","s36","s37","s38","s39","s40","s41","s42","s43","s44","s45","s46","s47","s48","s49","s50"); 
 	
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_tid like '%***%'";
-	$resultset=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_tid like '%***%'";
+	// $resultset=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$sql="select distinct style_no from $bai_pro3.shipment_plan";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -108,6 +133,7 @@ $username="ber_databasesvc";
 			{
 				$color=str_pad($sql_row2['color'],"30"," ");
 				$ssc_code=$style.$sch_no.$color;
+				// echo $ssc_code."<br>";
 				$style_id=check_style($style);
 				// echo "<br><br>".$style." Len=".strlen($style_id)."<br><br>";
 				if(strlen($style_id)==0)
@@ -297,6 +323,7 @@ $username="ber_databasesvc";
 					// if($order_qty>=0)
 					{
 						$sql3="insert ignore into $bai_pro3.bai_orders_db (order_tid) values (\"$ssc_code\")";
+
 						mysqli_query($link, $sql3) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 						$sql3="update $bai_pro3.bai_orders_db set order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h where order_tid=\"$ssc_code\" and (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h)=0";
@@ -322,8 +349,8 @@ $username="ber_databasesvc";
 			}
 		}
 	}
-	$sql3="delete from $bai_pro3.shipment_plan";
-	mysqli_query($link,$sql3) or exit("Sql Error".mysql_error());
+	// $sql3="delete from $bai_pro3.shipment_plan";
+	// mysqli_query($link,$sql3) or exit("Sql Error".mysql_error());
 
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_2\")";
 	mysqli_query($link, $sql3) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
