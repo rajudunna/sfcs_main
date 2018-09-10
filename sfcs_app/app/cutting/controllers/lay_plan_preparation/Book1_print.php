@@ -19,15 +19,11 @@ $clubbing = $_GET['clubbing'];
 
 
 <?php 
-   $remarks_x = '';
-   $sql="select * from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\""; 
-  // echo $sql;
+    $sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
-    $remarks_x=$sql_row['remarks']; 
-    $binding_con = $sql_row['binding_con'];
-     
+        $binding_consumption = $sql_row['binding_consumption'];
     } 
      
     // embellishment start 
@@ -1705,7 +1701,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <td colspan=2 class=xl6913019><?php echo $gmtway; ?></td> 
     <td colspan=2></td>
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Binding Consumption</td> 
-    <td class=xl6913019><?php echo $binding_con; ?></td> 
+    <td class=xl6913019><?php echo $binding_consumption; ?></td> 
     <td class=xl7113019></td> 
     <td class=xl6613019></td> 
     </tr> 
