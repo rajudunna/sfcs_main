@@ -3,7 +3,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
 // echo $_POST['table_name'];
-$short_key_code=$_REQUEST['short_key_code'];
+$short_key_code1=$_REQUEST['short_key_code'];
+$short_key_code=strtoupper($short_key_code1);
 //echo 'Hlo'.$short_key_code;
 $row_id=$_REQUEST['c_id'];
 // echo $row_id;die();
