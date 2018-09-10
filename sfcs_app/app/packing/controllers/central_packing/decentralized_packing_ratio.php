@@ -78,8 +78,28 @@
 				return;
 			}
 		}
+		
+				
+		function submit_form1(submit_btn)
+		{
+			var noofcart=document.getElementById('noofcartons').value;
+			var noofpack=document.getElementById('noofpackjobs').value;
+			
+			if(noofcart==0 || noofcart=='')
+			{
+				sweetAlert('Please enter no of cartons','greater than zero','warning');
+				return;
+			}
+			if(noofpack==0 || noofpack=='')
+			{
+				sweetAlert('Please enter no of pack jobs','greater than zero','warning');
+				return;
+			}
+		}
 	
 	});
+	
+
 	
 	
 </script>
@@ -499,7 +519,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors); value=''></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors); value='0'></td>";
 																				}
 																			}
 																			else
@@ -532,7 +552,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors);></td>";
+																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' value='0' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors);></td>";
 																}
 															echo "</tr>
 														</table>
@@ -659,7 +679,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors); value=''></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors); value='0'></td>";
 																				}
 																			}
 																			else
@@ -679,7 +699,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
+												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' value='0' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
 													
 												echo "</div>
 											 </div>";
@@ -830,7 +850,13 @@
 						}
 					}
 				}
-				echo "<script>sweetAlert('Packing Ratio Saved Successfully','','success')</script>";
+				// echo "<script>sweetAlert('Packing Ratio Saved Successfully','','success')</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+					function Redirect() {
+						sweetAlert('Packing Ratio Saved Successfully','','success');
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						}
+					</script>";
 			}
 
 			if (isset($_POST["MM_SM_save"]))
@@ -918,7 +944,13 @@
 						}
 					}
 				}
-				echo "<script>sweetAlert('Packing Ratio Saved Successfully','','success')</script>";
+				// echo "<script>sweetAlert('Packing Ratio Saved Successfully','','success')</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+					function Redirect() {
+						sweetAlert('Packing Ratio Saved Successfully','','success');
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						}
+					</script>";
 			}
 		?>
 	</div>
