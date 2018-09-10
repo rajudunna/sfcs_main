@@ -18,6 +18,21 @@
 		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
 	}
 
+	function check_val()
+	{
+		//alert('dfsds');
+		var style=document.getElementById("style").value;
+		var schedule=document.getElementById("schedule").value;
+		
+		if(style == 'NIL' || schedule == 'NIL')
+		{
+			sweetAlert('Please select style and schedule','','warning');
+			// document.getElementById('submit').style.display=''
+			// document.getElementById('msg').style.display='none';
+			return false;
+		}
+		return true;	
+	}
 </script>
 </head>
 <?php
@@ -95,18 +110,27 @@
 					?>
 					&nbsp;&nbsp;
 					<div class='col-md-3 col-sm-3 col-xs-12'>
-					<input type="submit" name="submit" id="submit" class="btn btn-success " value="Submit" style="margin-top: 18px;">
+					<input type="submit" name="submit" id="submit" class="btn btn-success " onclick="return check_val();" value="Submit" style="margin-top: 18px;">
 					</div>
 				</form>
 		<div class="col-md-12">
 			<?php
-			if(isset($_POST['submit']))
+			if(isset($_POST['submit']) or $_GET['style'] and $_GET['schedule'])
 			{	
-				if($_POST['style'] and $_POST['schedule'])
+				// if($_POST['style'] and $_POST['schedule'])
 				{
-					$style=$_POST['style'];
-					$schedule=$_POST['schedule'];
 					
+					if ($_GET['style'] and $_GET['schedule'])
+					{
+						$style=$_GET['style'];
+						$schedule=$_GET['schedule'];
+					} 
+					else if ($_POST['style'] and $_POST['schedule'])
+					{
+						$style=$_POST['style'];
+						$schedule=$_POST['schedule'];	
+					}
+					// echo $style."---".$schedule;
 					//getting parent id from tbl_pack_ref
 					$getparentid="select id from $bai_pro3.tbl_pack_ref where ref_order_num='$schedule' and style_code='$style'";
 					$parentidrslt=mysqli_query($link, $getparentid) or exit("Error while getting parent id");
@@ -156,7 +180,7 @@
 						//var_dump($order_array);
 						echo "<br><div class='col-md-12'>
 							<table class=\"table table-bordered\">
-								<tr>
+								<tr class='info'>
 									<th>Colors</th>
 									<th>Details</th>";
 									foreach(array_unique($sizes_order_array) as $size)
@@ -228,7 +252,8 @@
 										{
 											if($key1_1 == $size){
 												// echo $key."---".$size."</br>";
-												$getpackqty="select sum(garments_per_carton) as qty from $bai_pro3.tbl_pack_size_ref where parent_id='$parent' and color='$key' and size_title='$size'";
+												$getpackqty="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where schedule='$schedule' and color='$key' and size_tit='$size'";
+												// echo $getpackqty;
 												$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
 												if($row=mysqli_fetch_array($packqtyrslt))
 												{
@@ -291,8 +316,18 @@
 					// Order Details Display End
 				}
 				//packing method details
-				$style=$_POST['style'];
-				$schedule=$_POST['schedule'];
+				// $style=$_POST['style'];
+				// $schedule=$_POST['schedule'];
+				if ($_GET['style'] and $_GET['schedule'])
+					{
+						$style=$_GET['style'];
+						$schedule=$_GET['schedule'];
+					} 
+					else if ($_POST['style'] and $_POST['schedule'])
+					{
+						$style=$_POST['style'];
+						$schedule=$_POST['schedule'];	
+					}
 				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where ref_order_num=$schedule AND style_code='".$style."'"; 
 				// echo $get_pack_id;
 				$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -300,7 +335,7 @@
 				$pack_id=$row[0];
 				// echo $pack_id;
 				// die();
-				$pack_meth_qry="SELECT *,parent_id,SUM(garments_per_carton) as qnty,GROUP_CONCAT(size_title) as size ,GROUP_CONCAT(color) as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY pack_method";
+				$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton)*cartons_per_pack_job*pack_job_per_pack_method as qnty,GROUP_CONCAT(size_title) as size ,GROUP_CONCAT(color) as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
 				// echo $pack_meth_qry;
 				// $sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -308,7 +343,7 @@
 				echo "<br><div class='col-md-12'>
 				
 							<table class=\"table table-bordered\">
-								<tr>
+								<tr class=\"info\">
 									<th>S.No</th>
 									<th>Packing Method</th>
 									<th>Description</th>
@@ -336,8 +371,23 @@
 									$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
 									// $url3=getFullURL($_GET['r'],'.php','R');
 									// $url4=getFullURL($_GET['r'],'.php','R');
-									echo "<td><a class='btn btn-success btn-sm' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no' target='_blank'>Generate pack Job</a>
-									<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method>Delete</a></td>";
+									$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
+									$statusqry="select status from $bai_pro3.pac_stat_log where schedule='$schedule' and pac_seq_no='$seq_no' and pack_method='$pack_method'";
+									// echo $statusqry;
+									$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
+									if($statrow=mysqli_fetch_array($statusrslt))
+									{
+										$cartstatus=$statrow['status'];
+									}
+									if($cartstatus != 'DONE')
+									{
+										echo "<td><a class='btn btn-success btn-sm' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no' target='_blank'>Generate pack Job</a>
+										<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method>Delete</a></td>";
+									}
+									else
+									{
+										echo"<td>Packing List Generated</td>";
+									}
 									echo "<tr>";
 									
 								}	
@@ -345,11 +395,13 @@
 						echo "</table></div>";
 						$pack_qnty = $_GET['order_total'];
 						$ordr_qnty = $_GET['ordr_qnty'];
-						if($order_total>=$pack_tot){
+						// if($order_total>=$pack_tot){
 							
-							echo "PACK METHOD GENERATED FOR THIS STYLE AND SCHEDULE";
-						}
-						else{
+							// echo "PACK METHOD GENERATED FOR THIS STYLE AND SCHEDULE";
+						// }
+						// else
+						{
+							$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
 							echo "<div class='col-md-12 col-sm-12 col-xs-12'>
 								<a class='btn btn-success btn-sm' href='$url2&schedule=$schedule&style=$style' target='_blank' >Add Packing Method</a>
 								</div>";
@@ -368,7 +420,7 @@
 					if(! $dele_pack_qry_res ) {
 						die('Could not delete data: ' . mysql_error());
 								   }
-					echo '<script>swal("Packing Deleted Sucessfully","","warning")</script>';	
+					echo '<script>swal("Packing Method Deleted Sucessfully","","warning")</script>';	
 				}
 
 			?> 
