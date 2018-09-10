@@ -31,6 +31,7 @@
         $id=$_REQUEST['rowid'];
         $module=$_REQUEST['module_name'];
         $description=$_REQUEST['module_description'];
+		$section=$_REQUEST['section'];
         $status=$_REQUEST['status'];
     }else
     {
@@ -66,11 +67,38 @@
 			    <label class="control-label control-label-left col-sm-3" for="module">Module<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-                <input id="module" type="text" class="form-control k-textbox" data-role="text" placeholder="Module" name="module" value="<?php echo $module; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="module" type="text" class="form-control k-textbox float" data-role="text" placeholder="Module" name="module" value="<?php echo $module; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
 				</div>
 				</div>
-							
+						
+				<div class="col-md-4">
+				<div class="form-group">
+			    <label class="control-label control-label-left col-sm-3" for="module" id="required">Section</label>
+			    <div class="controls col-sm-9">
+                 
+   <?php 
+   include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+   $conn=$link;
+		echo "<select id='sections' class='form-control' data-role='select'  name='sections' data-parsley-errors-container='#errId2'>";
+		if($id!=''){
+			echo "<option value='".$section."' ".$selected.">$section</option>";
+		}else{
+		echo "<option value='Please Select'>Please Select</option><br/>\r\n";
+		}
+		$query = "SELECT sec_id,sec_name FROM $bai_pro3.sections_master";
+		$result = $conn->query($query);
+		while($row = $result->fetch_assoc()) 
+		{
+			$operation_id=$row['id'];
+			$sec_name=$row['sec_name'];
+			echo "<option value='".$sec_name."' ".$selected.">$sec_name</option>";
+			
+		}
+		echo "</select>";
+	?>      </div>
+				</div>
+				</div>			
 				
 		<div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="description">Module Description</label>
@@ -140,7 +168,7 @@
 			    
 			    
                 
-		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save" style="margin-top: 57px;margin-left: -640px;">Save</button></div></div></div></div>
                                     </div>
                                 
 
