@@ -229,7 +229,7 @@
 											if($key1_1 == $size){
 												// echo $key."---".$size."</br>";
 												$getpackqty="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where schedule='$schedule' and color='$key' and size_tit='$size'";
-												echo $getpackqty;
+												// echo $getpackqty;
 												$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
 												if($row=mysqli_fetch_array($packqtyrslt))
 												{
