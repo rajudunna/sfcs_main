@@ -73,9 +73,13 @@ while($row=mysqli_fetch_array($result))
 	
 
 
-	$sql1="select ims_style,ims_schedule,ims_color,ims_doc_no,ims_size from $bai_pro3.ims_log where pac_tid='$bundle_number'";
-
-	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql1="SELECT i.ims_style,i.ims_schedule,i.ims_color,i.ims_doc_no,i.ims_size FROM bai_pro3.ims_log i 
+			LEFT JOIN bai_pro3.ims_log_backup ib ON i.ims_doc_no = ib.ims_doc_no 
+			LEFT JOIN brandix_bts.module_bundle_track bt ON bt.bundle_number = i.pac_tid
+			WHERE ib.pac_tid='$bundle_number' OR i.pac_tid='$bundle_number' AND  bt.bundle_number='$bundle_number'
+			GROUP BY bt.bundle_number LIMIT 1";
+	//echo $sql1;
+    $result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
 		$ims_style=$row1['ims_style'];
@@ -100,7 +104,7 @@ while($row=mysqli_fetch_array($result))
 	$x++;
 	
 
-	$print_sheet=getFullURLLevel($_GET["r"],"ims_barcode.php",0,"R");
+	//$print_sheet=getFullURLLevel($_GET["r"],"ims_barcode.php",0,"R");
 
 	echo "<tr>";
 	echo "<td>".$x."</td>";
