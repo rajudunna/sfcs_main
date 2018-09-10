@@ -1976,19 +1976,17 @@ body{
 <style>
 
 @media print {
-	
-@page { margin: 0; }
-@page narrow {size: 9in 11in}
-@page rotated {size: landscape}
-DIV {page: narrow}
-TABLE {page: rotated}
-#non-printable { display: none; }
-#printable { display: block; }
-#logo { display: block; }
-body { zoom:72%;}
-#ad{ display:none;}
-#leftbar{ display:none;}
-#CUT_PLAN_NEW_13019{ width:57%; margin-left:20px;}
+	@page narrow {size: 15in 11in}
+	@page rotated {size: potrait}
+	DIV {page: narrow}
+	TABLE {page: rotated}
+	#non-printable { display: none; }
+	#printable { display: block; }
+	#logo { display: block; }
+	body { zoom:65%;}
+	#ad{ display:none;}
+	#leftbar{ display:none;}
+	#DOCKET_NEW_4118{ width:82%; margin-left:2px; margin-right:2px;}
 }
 </style>
 
