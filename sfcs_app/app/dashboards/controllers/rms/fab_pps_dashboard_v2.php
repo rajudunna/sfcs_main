@@ -606,7 +606,7 @@
                 $bindex=0;
                 $blink_docs=array();
                 //Ticket #663887  display buyers like pink,logo and IU as per plan_modules table
-                $sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+                $sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id";
                 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $rows5=mysqli_num_rows($sql_resultx);   
                 while($sql_rowx=mysqli_fetch_array($sql_resultx))
