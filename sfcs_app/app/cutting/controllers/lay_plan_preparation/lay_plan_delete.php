@@ -181,6 +181,10 @@ if(isset($_POST["submit"]))
     $order_det_suc=array(); 
     //echo $schedule."---".$color."<br>"; 
     //Ticket# 365867/Date:2014-01-22/Task: LayPlan Deletion Validation Enhancement/Action:Taken the Order Tid instead of Schedule No for validate the query. 
+	
+			
+	
+	
     if($color!='0' || $color!='0') 
     {   
         $sql73="select *,order_tid as otid from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\" and order_joins='0'"; 
@@ -285,8 +289,9 @@ if(isset($_POST["submit"]))
                         //M3 Reversal 
                         //M3 Bulk operation reversal 
                         //To update M3 Bulk Upload Tool (To pass negative entry) 
-                        $sql2m3="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,(sfcs_qty*-1),sfcs_reason,USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=".$sql_row33['doc_no']." AND m3_op_des='LAY' and sfcs_reason='' and left(sfcs_job_no,1)<>'R' and sfcs_qty>0"; 
-                        mysqli_query($link, $sql2m3) or die("Sql error".$sql2m3.mysqli_errno($GLOBALS["___mysqli_ston"]));     
+                        //COMMENTED FOR #759
+                        // $sql2m3="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,(sfcs_qty*-1),sfcs_reason,USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=".$sql_row33['doc_no']." AND m3_op_des='LAY' and sfcs_reason='' and left(sfcs_job_no,1)<>'R' and sfcs_qty>0"; 
+                        // mysqli_query($link, $sql2m3) or die("Sql error".$sql2m3.mysqli_errno($GLOBALS["___mysqli_ston"]));     
                     } 
                     $sql1="update bai_orders_db set order_no=0 where order_tid=\"".$order_tid[$i]."\""; 
                     mysqli_query($link, $sql1) or die("Error=11".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -441,6 +446,26 @@ if(isset($_POST["submit"]))
                 } 
                  
             } 
+            
+            $op_codes = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+                         WHERE default_operation='Yes' and category='cutting' group by category order by category*1"; 
+            $op_codes_result = mysqli_query($link, $op_codes);
+            while($row = mysqli_fetch_array($op_codes_result)){
+                $op_codes = $row['codes'];
+            }
+
+			$getmonos="select mo_no from $bai_pro3.mo_details where schedule='$schedule' and color='$color'";
+			$moresult=mysqli_query($link, $getmonos) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($rowmo=mysqli_fetch_array($moresult)) 
+			{
+				$mos[]=$rowmo['mo_no'];
+			}
+			$mos=implode(',',$mos);
+			$deletefrommoquantitys="delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code in ($op_codes)";
+            //echo $deletefrommoquantitys;
+			mysqli_query($link, $deletefrommoquantitys) or die("Error while deleting mo nos from mo operation quantities".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	
+			
         } 
         else 
         { 

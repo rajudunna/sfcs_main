@@ -15,22 +15,24 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
     // Schedule Clubbing with in the schedule
     if($club_status=='1')
     {
+		$filename='schsplit';	
     	$order_join=substr($color,-1);
-    	$order_tid_new[]=array();
+    	// $order_tid_new[]=array();
 		$order_tid_cols[]=array();
 		$order_tid_schs[]=array();
 		$url_back = getFullURLLevel($_GET['r'], "schedule_clubbing/schedule_split_bek.php", "0", "N");
-		$sql1="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_joins='$order_join' and order_del_no='$schedule'";
+		$sql1="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_joins='J$order_join' and order_del_no='$schedule'";
     }	
     // Schedule Clubbing with in the Style
     else if($club_status=='2')
 	{
+		$filename='mixjobs';
 		$order_join=$schedule;
-		$order_tid_new[]=array();
+		// $order_tid_new[]=array();
 		$order_tid_cols[]=array();
 		$order_tid_schs[]=array();
 		$url_back = getFullURLLevel($_GET['r'], "schedule_club_style/mix_jobs.php", "0", "N");
-		$sql1="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_joins='$order_join'";
+		$sql1="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_joins='J$order_join'";
 	}		
 	$result1=mysqli_query($link, $sql1) or ("Sql error777".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($ss=mysqli_fetch_array($result1))
@@ -39,6 +41,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$order_tid_cols[]=$ss["order_col_des"];
 		$order_tid_schs[]=$ss["order_del_no"];	
 	}
+	$impdata = implode(',',$order_tid_new);
+
 	for($kk=0;$kk<sizeof($order_tid_new);$kk++)
 	{
 		$sql="SELECT * FROM $bai_pro3.bai_orders_db_confirm as bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.order_joins not in ('1','2') AND bai_orders_db_confirm.order_tid='".$order_tid_new[$kk]."' and bai_orders_db_confirm.order_del_no='".$order_tid_schs[$kk]."' and bai_orders_db_confirm.order_col_des='".$order_tid_cols[$kk]."' GROUP BY bai_orders_db_confirm.order_col_des";
@@ -166,12 +170,19 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$update_query="update $bai_pro3.bai_orders_db_confirm set bts_status=2 where order_tid='".$order_tid_new[$kk]."'";
 		$result10=mysqli_query($link, $update_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
-    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-		function Redirect() {
-			sweetAlert('Splitting Completed','','success');
-			location.href = \"".$url_back."&color=$color&style=$style&schedule=$schedule\";
-			}
-		</script>";	
+	
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+			function Redirect() {
+				location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',2,'N')."&order_tid_arr=$impdata&club=clubbing&process_name=cutting&filename=$filename\";
+				}
+			</script>";
+	
+    // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		// function Redirect() {
+			// sweetAlert('Splitting Completed','','success');
+			// location.href = \"".$url_back."&color=$color&style=$style&schedule=$schedule\";
+			// }
+		// </script>";	
 ?>
 </div>
 </div>

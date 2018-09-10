@@ -1,9 +1,10 @@
 <?php
+
 //KiranG - 2015-09-02 : passing link as parameter in update_m3_or function to avoid missing user name. SR#
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
+// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+// $username=$username_list[1];
 
 //$authorized=array("kirang","herambaj","kishorek","sarojiniv","kirang","demiank","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","rambabub","chaitanyag","kirang","kirang","herambaj","kishorek","sarojiniv","kirang","demiank","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","rambabub","chaitanyag","kirang","sreenivasg");
 //$authorized=array("kirang");
@@ -12,15 +13,15 @@ $username=$username_list[1];
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
-$authorized=user_acl("SFCS_0197",$username,51,$group_id_sfcs);
 
-if(!(in_array(strtolower($username),$authorized)))
-{
-	header("Location:restrict.php");
-}
+// if(!(in_array(strtolower($username),$authorized)))
+// {
+// 	header("Location:restrict.php");
+// }
 
 ?>
+
+
 
 <?php
 set_time_limit(2000);
@@ -228,6 +229,7 @@ if(isset($_POST['issue']))
 	echo "<h2>Successfully Updated</h2>";
 }
 
+
 ?>
 
 
@@ -273,6 +275,8 @@ if(isset($_POST['submit']))
 	$cat_name=$_POST['cat_name'];
 	$doc_nos=$_POST['doc_no_ref'];
 	$codes=$_POST['code_no_ref'];
+	$docket_no = '';
+	
 	$hostname=explode(".",gethostbyaddr($_SERVER['REMOTE_ADDR']));
 	
 	for($i=0;$i<sizeof($cat);$i++)
@@ -282,7 +286,9 @@ if(isset($_POST['submit']))
 		$temp="qty_".$cat[$i];
 		$qty=$_POST[$temp];
 		$cat_name_temp=$cat_name[$i];
-		
+		if(strtoupper($cat_name_temp) == 'BODY' || strtoupper($cat_name_temp) == 'BODY' )
+			$docket_no =  $docno[$i];
+
 		$temp=array();
 		for($j=0;$j<sizeof($size);$j++)
 		{
@@ -290,12 +296,12 @@ if(isset($_POST['submit']))
 		}
 		
 		$sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength) values (\"".date("Y-m-d")."\",".$cat[$i].",\"$order_tid\",".$mklen[$i].")";
-//echo $sql1;
+		//echo $sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		
 		$sql1="update $bai_pro3.recut_v2 set p_plies=".$plies[$i].",a_plies=".$plies[$i].",mk_ref=$ilastid,".implode(",",$temp)." where doc_no=".$docno[$i];
-//echo $sql1;
+		//echo $sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//if($i==0)
@@ -314,9 +320,112 @@ if(isset($_POST['submit']))
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 	}
+
+	//-------------------------------------------MO Filling Logic ----------------------------------------------------------------
+
+	// $sizes    = $_POST['size_'];
+	$style    = $_POST['style'];
+	$schedule = $_POST['schedule'];
+	$color    = $_POST['color'];
+	$doc_no   = $docket_no;
+	$mos = array();
+	$qty = 0;
+	
+	$op_code_query ="SELECT operation_name,operation_code as code FROM $brandix_bts.tbl_orders_ops_ref 
+			  		 WHERE default_operation='Yes' and trim(category) = 'cutting' ";
+	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operation Found for Cutting");
+	while($row12106=mysqli_fetch_array($op_code_result)) 
+	{
+		$op_code = $row12106['code'];
+		$op_name = $row['operation_name'];		
+	}
+
+	$sizes_query = "Select * from $bai_pro3.recut_v2 where doc_no = $doc_no";
+	$sizes_result = mysqli_query($link,$sizes_query) or exit('An Error Encountered');
+	
+	while($row = mysqli_fetch_array($sizes_result)){
+		foreach($sizes_array as $key => $value){
+			if($row['a_'.$value] > 0)
+				$sizes[] = $value;
+		}
+	}
+
+
+	foreach($sizes as $key => $sizet){
+		//echo $size;
+		$qty = 0;
+		//getting size title
+		//$sizet = ltrim($size,'a'); 
+		$size_query = "Select title_size_$sizet as title from $bai_pro3.bai_orders_db_confirm where order_del_no = '$schedule' and 
+					order_style_no = '$style' and order_col_des = '$color' ";
+		$size_result = mysqli_query($link,$size_query);
+		while($row = mysqli_fetch_array($size_result)){
+			$mo_size = $row['title'];
+			$size_code[$sizet] = $row['title'];
+		}		  
+
+		//--------------------------------------- check whether that style exists -------------------------------------
+		$mo_no_query = "SELECT mo.mo_no as mo_no,mo.mo_quantity as mo_quantity,SUM(bundle_quantity) as bundle_quantity,
+						SUM(good_quantity) as good_quantity,SUM(rejected_quantity) as rejected_quantity
+						FROM $bai_pro3.mo_details mo 
+						LEFT JOIN $bai_pro3.mo_operation_quantites mop ON mo.mo_no = mop.mo_no  
+						WHERE TRIM(size)='$mo_size' and schedule='$schedule' and TRIM(color)='$color' 
+						and mop.op_code = 15
+						group by mop.mo_no
+						order by mo.mo_no*1"; 			
+		$mo_no_result  = mysqli_query($link,$mo_no_query);
+		$mo_no_result2 = $mo_no_result;   
+		while($row = mysqli_fetch_array($mo_no_result)){
+			// if($row['op_desc'] == 'recut' )
+			// 	continue;l
+			//$mos[] = $row['mo_no'];	
+			if($row['bundle_quantity'] >= $row['good_quantity'] && $row['rejected_quantity']==0)	
+				continue;
+			if($row['rejected_quantity'] == 0)
+				$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'];
+			else	
+				$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'] + $row['rejected_quantity'];
+		}
+	
+		//getting the recut quantity for the particular size 
+		$qty_query = "Select (a_plies * a_$sizet) as qty,acutno from $bai_pro3.recut_v2 where doc_no = '$doc_no' ";
+		$qty_result = mysqli_query($link,$qty_query);
+		while($row  = mysqli_fetch_array($qty_result)){
+			$qty = $row['qty'];
+			$acut_no = $row['acutno'];
+		}
+
+		foreach($mos as $mo_no => $rej_qty){
+			$last_mo = $mo_no;
+			$qty = $qty - $rej_qty;
+			if( $qty >= 0){
+				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
+							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
+							(".date('Y-m-d H:i:s').",$mo_no,$doc_no,$rej_qty,$op_code,'recut')";
+				mysqli_query($link,$insert_query) or exit('Mo Updation error 1');
+			}else{
+				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
+							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
+							(".date('Y-m-d H:i:s').",$mo_no,$doc_no,$qty,$op_code,'recut')";
+				mysqli_query($link,$insert_query) or exit('Mo Updation error 2');
+				break;
+			}	
+		}
+		// 	inserting excess quantity to the last mo 
+		if($qty >= 0){
+			$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
+						(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
+						(".date('Y-m-d H:i:s').",$last_mo,$doc_no,$qty,$op_code,'recut')";
+			mysqli_query($link,$insert_query) or exit('Mo Updation error 3');	
+		}
+		unset($mos);
+	}
+
 	echo "<h2>Successfully Updated</h2>";
-	
-	
+
+
+
+	//---------------------------------------MO Filling Ends------------------------------------------------------------------	
 }
 
 ?>
