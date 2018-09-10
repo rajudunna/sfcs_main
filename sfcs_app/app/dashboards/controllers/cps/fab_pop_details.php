@@ -808,7 +808,7 @@ if(isset($_POST['submit']))
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
-		$sql2="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status,act_cut_issue_status='Ready for Issue' where doc_no='".$doc_num[$i]."'";
+		$sql2="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no='".$doc_num[$i]."'";
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$doc_no_loc="D".$doc_num[$i];
 		$sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_num[$i]."' and status=1";
@@ -923,7 +923,7 @@ if(isset($_POST['submit']))
 				//Uncheck this
 				mysqli_query($link, $sql1) or exit("Sql Error---5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-				$sql1="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status,act_cut_issue_status='Issued to Cutting' where doc_no in ($group_docs)";
+				$sql1="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no in ($group_docs)";
 				//Uncheck this
 				mysqli_query($link, $sql1) or exit("Sql Error---6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
