@@ -130,16 +130,16 @@
 									$i = 1;
 								while($new_result1=mysqli_fetch_array($new_result))
 								{
-								
+								    $seq_no=$new_result1['seq_no'];
 									$seq_no1[]=$pack_result1['seq_no'];
 									$packmetod=$new_result1['pack_method'];
 									$staus=$new_result1['status'];
 									$doc_ref=$new_result1['doc_no_ref'];
 									//echo $doc_ref;
-									$color = "select GROUP_CONCAT(DISTINCT(TRIM(color)) SEPARATOR ',') FROM $bai_pro3.pac_stat_log where doc_no_ref = '$doc_ref'";
+									$color = "select GROUP_CONCAT(DISTINCT(TRIM(color)) SEPARATOR ',') FROM $bai_pro3.pac_stat_log where seq_no = '$seq_no' and schedule = '$schedule_original'";
 									$color_result=mysqli_query($link, $color) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 									$row_color = mysqli_fetch_row($color_result);
-									$size = "select GROUP_CONCAT(DISTINCT(TRIM(size_tit)) SEPARATOR ',') FROM $bai_pro3.pac_stat_log where doc_no_ref = '$doc_ref'";
+									$size = "select GROUP_CONCAT(DISTINCT(TRIM(size_tit)) SEPARATOR ',') FROM $bai_pro3.pac_stat_log where seq_no = '$seq_no' and schedule = '$schedule_original'";
 									$size_result=mysqli_query($link, $size) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $row_size = mysqli_fetch_row($size_result);
 									// $col_array[]=$sizes_result1['order_col_des'];
