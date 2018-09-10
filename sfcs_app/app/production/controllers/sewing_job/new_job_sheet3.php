@@ -11,7 +11,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
         table-layout:fixed;
       }
     </style> 
-
 <script src="../../common/js/jquery-1.3.2.js"></script> 
 <script src="../../common/js/jquery-barcode-2.0.1.js"></script> 
 
