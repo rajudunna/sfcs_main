@@ -932,11 +932,9 @@ cy9tZWRpYS9pbWFnZTEuanBlZ1BLBQYAAAAABgAGAIUBAAAsHgAAAAA=
     <x:CF>Bitmap</x:CF>
     <x:AutoPict/>
    </x:ClientData>
-  </v:shape><![endif]--><![if !vml]><span style='mso-ignore:vglayout;
-  position:absolute;z-index:1;margin-left:68px;margin-top:10px;width:50px;
-  height:70px'><img width=50 height=70
-  src="/sfcs_app/common/images/bai_logo.jpg"
-  alt="Brandix " v:shapes="Picture_x0020_1"></span><![endif]><span
+  </v:shape><![endif]-->
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+  <span
   style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>
    <tr>

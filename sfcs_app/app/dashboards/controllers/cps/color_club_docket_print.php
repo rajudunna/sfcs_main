@@ -124,7 +124,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 //binding consumption
 	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	if($sql_num_check > 0)
@@ -3014,7 +3013,7 @@ tags will be replaced.-->
  </tr>
  <tr height=25 style='height:18.75pt'>
   <td height=25 class=xl6417319 style='height:18.75pt'></td>
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <!-- <td colspan=3 class=xl6617319>Cutting Docket</td> -->
@@ -3258,8 +3257,8 @@ for($j=0;$j<sizeof($color_codes);$j++)
   }
   
 echo "<tr>";
-  
-  echo "<th $style_css colspan=11>Total</th>";
+  $m=sizeof($sizes_tit)+8;
+  echo "<th $style_css colspan=$m>Total</th>";
   //echo "<th>Color</th>";
   //echo "<th>Job</th>";
   //echo "<th>Doc.ID</th>";
@@ -3812,20 +3811,6 @@ echo "</tbody></table>";
   <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl821731ff9 style='height:15.75pt'></td>
   </tr>
-
- 
- <tr height=30 style='height:15.75pt'>
-  <td></td>
-  <td  colspan=2 class=xl7217319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>&nbsp;</td>
-  <td  colspan=2 class=xl7317319>Excess</td>
-  <td  colspan=3 class=xl8217319></td>
- </tr>
- 
 
  
  <tr height=30 style='height:15.75pt'>

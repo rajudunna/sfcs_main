@@ -104,7 +104,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $idocs_2 = "'" . implode ( "', '", $docs ) . "'";
 //var_dump($met_req);
 $sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -123,21 +122,20 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$col_des=$sql_row['col_des'];
 }
 //binding consumption
-$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-//echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-if($sql_num_check > 0)
-{
-	while($sql_row2=mysqli_fetch_array($sql_result))
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	if($sql_num_check > 0)
 	{
-		$binding_con = $sql_row2['binding_consumption'];
+		while($sql_row2=mysqli_fetch_array($sql_result))
+		{
+			$binding_con = $sql_row2['binding_consumption'];
+		}
 	}
-}
-else
-{
-	$binding_con=0;
-}
+	else
+	{
+		$binding_con=0;
+	}
 	//echo 'binding '.$binding_con;
 
 //cuttable wastage
@@ -3013,7 +3011,9 @@ tags will be replaced.-->
  </tr>
  <tr height=25 style='height:18.75pt'>
   <td height=25 class=xl6417319 style='height:18.75pt'></td>
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
+
+  
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <!-- <td colspan=3 class=xl6617319>Cutting Docket</td> -->
@@ -3266,8 +3266,9 @@ tags will be replaced.-->
   }
   
 echo "<tr>";
-  
-  echo "<th $style_css colspan=13>Total</th>";
+
+  $m=sizeof($sizes_tit)+8;
+  echo "<th $style_css colspan=$m>Total</th>";
   //echo "<th>Color</th>";
   //echo "<th>Job</th>";
   //echo "<th>Doc.ID</th>";
@@ -3444,6 +3445,7 @@ echo "<tr>";
   <td class=xl6417319></td>
   <td class=xl6417319 colspan="3"><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
+
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   </tr>

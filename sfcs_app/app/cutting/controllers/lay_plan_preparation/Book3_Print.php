@@ -42,9 +42,6 @@ $cut_table=array("0","T1","T1","T2","T2","T3","T3","T4","T4","T5","T5","T6","T6"
 <?php
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-
-// mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($link));
-
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -190,8 +187,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 	
 $sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-//echo $sql;
-// mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -419,32 +414,26 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	
 	//Binding Consumption / YY Calculation
 	
-	if($category=='Body' || $category=='Front')
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	if($sql_num_check > 0)
 	{
-		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-		// echo $sql2;
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows=mysqli_num_rows($sql_result2);
-		if($rows > 0)
+		while($sql_row2=mysqli_fetch_array($sql_result))
 		{
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$binding_con = $sql_row2['binding_con'];
-				$bind_con= $binding_con *($a_ratio_tot*$plies);
-			}
-		}
-		else
-		{
-			$bind_con=0;
+			$binding_con = $sql_row2['binding_consumption'];
+			$bind_con= $binding_con *($a_ratio_tot*$plies);
+
+
 		}
 	}
 	else
 	{
+		$binding_con=0;
 		$bind_con=0;
-		
+
 	}
 	
-	//Binding Consumption / YY Calculation
 //chr($color_code).leading_zeros($cutno, 3)	
 
 
@@ -2125,7 +2114,7 @@ tags will be replaced.-->
  </tr>
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td colspan=3 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
+ <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
