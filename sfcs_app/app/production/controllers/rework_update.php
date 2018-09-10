@@ -792,6 +792,7 @@ if (isset($_POST['submit11']))
 		}else{
 			if(in_array($authorized,$has_permission))
 			{
+				
 				echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();" style="display:none">';
 				echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="" style="display:none">';
 				echo "<p>If You Want to Update Please Select Section,Module and Time</p>";
