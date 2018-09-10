@@ -195,7 +195,7 @@ function second_box(){
 
 	function validateThisFrom(thisForm) 
 	{
-		if (thisForm.module.value == "0")
+		if (thisForm.module.value == "0" || thisForm.module.value == "")
 		{
 			sweetAlert("Please select MODULE",'','warning');
 			return false;
