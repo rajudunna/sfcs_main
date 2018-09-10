@@ -30,6 +30,7 @@
 	$to_be_fill=0;
 	$bal=0;
 	$carton_job_no=0;
+	
 	if($carton_method==1)
 	{
 		$sql123="SELECT pack_method,style_code,ref_order_num,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
@@ -324,10 +325,10 @@
 	}
 	echo "</table>";
 	echo "<script>sweetAlert('Packing List Generated','','success');</script>";
-	//$url5 = getFullURLLevel($_GET['r'],'pac_gen_sewing_job.php',0,'N');
+	//$url5 = getFullURLLevel($_GET['r'],'sewing_job_mo_fill_latest.php',0,'N');
 	//echo "<script>location.href = '".$url5."';</script>";
 	//echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
-	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_mo_fill.php',0,'N')."&schedule=$schedule&pack_ref=$seq_new&process_name=packing';</script>");		
+	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_mo_fill_latest.php',0,'N')."sch_id=$schedule_id&style_id=$style_id&schedule=$schedule&pack_ref=$seq_new&process_name=packing';</script>");		
 ?> 
 </div></div>
 </body>
