@@ -127,7 +127,7 @@ function validateQty(event)
 												{
 													$selected = '';
 												}
-												echo "<option value='".$row_short['short_key_code']."' $selected>".$row_value."</option>";
+												echo "<option value='".$row_short['short_key_code']."' $selected>".strtoupper($row_value)."</option>";
 											}
 										} else {
 											echo "<option value=''>No Data Found..</option>";
