@@ -228,7 +228,8 @@
 										{
 											if($key1_1 == $size){
 												// echo $key."---".$size."</br>";
-												$getpackqty="select sum(garments_per_carton) as qty from $bai_pro3.tbl_pack_size_ref where parent_id='$parent' and color='$key' and size_title='$size'";
+												$getpackqty="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where schedule='$schedule' and color='$key' and size_tit='$size'";
+												echo $getpackqty;
 												$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
 												if($row=mysqli_fetch_array($packqtyrslt))
 												{

@@ -103,7 +103,7 @@
                 $status = $result['status'];
             }
 			
-            if ($status!='Done' || $status!='') 
+            if ($status!='DONE' || $status!='') 
             {
                 if ($qty == 0) 
                 {
