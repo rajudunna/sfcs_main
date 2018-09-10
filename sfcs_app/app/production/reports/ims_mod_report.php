@@ -73,33 +73,16 @@ while($row=mysqli_fetch_array($result))
 	
 
 
-	$sql1="SELECT i.ims_style,i.ims_schedule,i.ims_color,i.ims_doc_no,i.ims_size FROM bai_pro3.ims_log i 
-			LEFT JOIN bai_pro3.ims_log_backup ib ON i.ims_doc_no = ib.ims_doc_no 
-			LEFT JOIN brandix_bts.module_bundle_track bt ON bt.bundle_number = i.pac_tid
-			WHERE ib.pac_tid='$bundle_number' OR i.pac_tid='$bundle_number' AND  bt.bundle_number='$bundle_number'
-			GROUP BY bt.bundle_number LIMIT 1";
-	//echo $sql1;
+	$sql1="SELECT order_style_no,order_del_no,order_col_des,size_code FROM bai_pro3.`packing_summary_input` WHERE tid='$bundle_number' AND input_job_no='$job_no'";		
     $result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
-		$ims_style=$row1['ims_style'];
-		$ims_schedule=$row1['ims_schedule'];
-		$ims_color=$row1['ims_color'];
-		$docket_no=$row1['ims_doc_no'];
-        $ims_size=$row1['ims_size'];
-        $ims_size2=substr($ims_size,2);
+		$style=$row1['order_style_no'];
+		$schedule=$row1['order_del_no'];
+		$color=$row1['order_col_des'];
+        $size=$row1['size_code'];
+     
 	
-
-	 $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no='$docket_no' and a_plies>0";
-      //echo $sql22;
-      $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1222".mysqli_error($GLOBALS["___mysqli_ston"]));      
-      while($sql_row22=mysqli_fetch_array($sql_result22))
-      {
-        $order_tid=$sql_row22['order_tid'];
-      } 
-      
-      
-      $size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
 
 	$x++;
 	
@@ -109,14 +92,14 @@ while($row=mysqli_fetch_array($result))
 	echo "<tr>";
 	echo "<td>".$x."</td>";
 	echo "<td>".$bundle_number."</td>";
-	echo "<td>".$ims_style."</td>";
-	echo "<td>".$ims_schedule."</td>";
+	echo "<td>".$style."</td>";
+	echo "<td>".$schedule."</td>";
 	echo "<td>".$job_no."</td>";
 
-	echo "<td>".$ims_color."</td>";
+	echo "<td>".$color."</td>";
 	echo "<td>".$module."</td>";
 	echo "<td>".$bundle_number."</td>";
-	echo "<td>".$size_value."</td>";
+	echo "<td>".$size."</td>";
 	echo "<td>".$quantity."</td>";
 	// echo "<td>" ."<a href='javascript:void(0);' onClick='printPage(printsection.innerHTML)' class='btn btn-warning'>Print</a>".
 	// "</td>";
