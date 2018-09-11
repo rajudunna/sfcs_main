@@ -157,23 +157,7 @@
 				});
 			}
 		}
-
-		$('#carton_id').bind('paste', function() {
-			var el = this;
-			setTimeout(function() {
-				el.value = el.value.replace(/\D/g, '');
-			}, '');
-			$('#carton_id').focus();
-		});
-
-		$('#manual_carton_id').bind('paste', function() {
-			var el = this;
-			setTimeout(function() {
-				el.value = el.value.replace(/\D/g, '');
-			}, '');
-			$('#carton_id').focus();
-		});
-
+		
 	});
 </script>
 </html>

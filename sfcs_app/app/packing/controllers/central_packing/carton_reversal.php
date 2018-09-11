@@ -30,9 +30,8 @@
 						while($row=mysqli_fetch_array($carton_details)) 
 						{
 							$status = $row['status'];
-							$doc_no_ref=$sql_row['doc_no_ref'];
+							$doc_no_ref=$row['doc_no_ref'];
 						}
-
 						$b_tid = array();
 						$get_all_tid = "SELECT tid FROM $bai_pro3.`pac_stat_log` WHERE doc_no_ref = '".$doc_no_ref."';";
 						$tid_result = mysqli_query($link,$get_all_tid);
@@ -41,9 +40,9 @@
 							$b_tid[]=$row12['tid'];				
 						}
 
-						$b_op_id_query = "SELECT operation_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='packing';";
+						$b_op_id_query = "SELECT operation_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='PACKING';";
 						$sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
-						while($sql_row=mysqli_fetch_array($count_result))
+						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							$b_op_id=$sql_row['operation_code'];
 						}
@@ -67,7 +66,7 @@
 							for($i=0;$i<sizeof($b_tid);$i++)
 							{
 								//759 CR additions Started
-								$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where bundle_no = $b_tid[$i] and op_code = $b_op_id order by mo_no";
+								$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where ref_no = $b_tid[$i] and op_code = $b_op_id order by mo_no";
 								$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14");
 								while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 								{
@@ -119,6 +118,7 @@
 									// //M3 Rest API Call END
 								}						
 							}
+							echo "<script>sweetAlert('Carton ".$carton_id." is Reversed','','success')</script>";
 						}
 					}
 					else

@@ -10,7 +10,7 @@
 
 	$b_op_id_query = "SELECT operation_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='packing';";
 	$sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
-	while($sql_row=mysqli_fetch_array($count_result))
+	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$b_op_id=$sql_row['operation_code'];
 	}
@@ -76,13 +76,19 @@
 						$short_key_code = $row['short_cut_code'];
 					}
 
-					// echo $pac_stat_log_result;
-					// die();
 					for($i=0;$i<sizeof($b_tid);$i++)
 					{
-						//759 CR additions Started
-						$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where bundle_no = $b_tid[$i] and op_code = $b_op_id order by mo_no";
-						$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14");
+						$get_carton_qty = "select * from $bai_pro3.pac_stat_log where tid = $b_tid[$i]";
+						// echo $get_carton_qty;
+						$carton_details=mysqli_query($link,$get_carton_qty) or exit("individual Carton details error => ".$get_carton_qty);
+						while($row=mysqli_fetch_array($carton_details))
+						{
+							$carton_original_qty = $row['carton_act_qty'];
+						}
+
+						$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where ref_no = $b_tid[$i] and op_code = $b_op_id order by mo_no";
+						// echo $qry_to_check_mo_numbers;
+						$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14 => ".$qry_to_check_mo_numbers);
 						while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 						{
 							$mo_number = $nop_qry_row['mo_no'];
@@ -90,12 +96,30 @@
 							$good_quantity_past = $nop_qry_row['good_quantity'];
 							$id = $nop_qry_row['id'];
 
-							$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $carton_qty where id= $id";
-							$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
+							do {
+								if ($carton_original_qty > $mo_quantity)
+								{
+									$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $mo_quantity where id= $id";
+									// echo $update_qry;
+									$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
 
-							$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number','$carton_qty','','Normal',concat(user(),'-','$emp_id'),'','$b_shift','$b_op_id','','$id','$work_station_id','')";
-							// echo $inserting_into_m3_tran_log;
-							mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
+									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number','$mo_quantity','','Normal',concat(user(),'-','$emp_id'),'','$b_shift','$b_op_id','','$id','$work_station_id','')";
+									// echo $inserting_into_m3_tran_log;
+									mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
+									
+									$carton_original_qty = $carton_original_qty - $mo_quantity;
+								}
+								else
+								{
+									$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $carton_original_qty where id= $id";
+									// echo $update_qry;
+									$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
+
+									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number','$carton_original_qty','','Normal',concat(user(),'-','$emp_id'),'','$b_shift','$b_op_id','','$id','$work_station_id','')";
+									// echo $inserting_into_m3_tran_log;
+									mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
+								}
+							} while ($carton_original_qty == 0);
 
 							//getting the last inserted record
 							$insert_id=mysqli_insert_id($link);
