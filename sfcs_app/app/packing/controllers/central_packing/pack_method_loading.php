@@ -100,7 +100,17 @@
 				//packing method details
 				$style1=$_POST['style'];
 				$schedule=$_POST['schedule'];
-				// echo $style1.' == '.$schedule;
+				
+				$sql_schedule="select product_schedule from $brandix_bts.tbl_orders_master where id='$schedule'";
+				$sql_schedule_res=mysqli_query($link, $sql_schedule) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$row2 = mysqli_fetch_row($sql_schedule_res);
+				$schedule_id=$row2[0];
+				
+				$check="select * from $bai_pro3.pac_stat_log where schedule='".$schedule_id."'";
+				$check_resu=mysqli_query($link, $check) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$row1 = mysqli_fetch_row($check_resu);
+				if($row1>0)
+				{
 				$sql_style="select product_style from $brandix_bts.tbl_orders_style_ref where id='".$style."'";
 				$sql_style_res=mysqli_query($link, $sql_style) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$row1 = mysqli_fetch_row($sql_style_res);
@@ -288,6 +298,11 @@
 								echo "
 							</table>
 						</div>";
+				}
+				else
+				{
+					echo "<script>sweetAlert('Packing List Not Yet Generated.','','warning');</script>";
+				}		
 			}
 			?> 
 		</div>
