@@ -459,13 +459,6 @@ function calculateExcess(){
 		for(var j=1;j<=50;j++){
 			if(i<10){
 				var ex = document.getElementsByName('s0'+k+i)[0].value;
-				var cur_ord = document.getElementsByName('s0'+k+i)[0].value;
-				var new_ord = document.getElementsByName('s010')[0].value;
-				
-				
-				
-				console.log('cur'+cur_ord);
-				console.log('new'+new_ord);
 				
 				if(ex!=0){
 					var nameid = 's0'+j+i;
