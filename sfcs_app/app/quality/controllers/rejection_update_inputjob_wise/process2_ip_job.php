@@ -386,147 +386,27 @@ if(isset($_POST['Update']))
 				}
 				//Logic for M3_TRANSACTIONS AND MO FILLING #759 CR CODE STARTING
 				$doc_no_ref = substr($job[$x],1);
-				// echo $doc_no_ref.'-';
-				// var_dump($r_qty).'-';
-				// var_dump($r_reasons).'-';
 				$op_code = '15';
 				$b_op_id = '15';
 				$b_tid = array();
 				$b_module = (is_numeric($module[$x])?$module[$x]:'0');
 				$b_shift = $team[$x];
 				$key_size = $size[$x];
-
-				//getting work_station_id
-				$qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$b_op_id'";
-				//echo $qry_to_get_work_station_id.'-';
-				$result_qry_to_get_work_station_id=mysqli_query($link,$qry_to_get_work_station_id) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row=mysqli_fetch_array($result_qry_to_get_work_station_id))
+				$array_rej = array_sum($r_qty);
+				$selecting_qry = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no_ref' AND size_id = '$key_size' AND operation_id = '$op_code'";
+				$result_selecting_qry = $link->query($selecting_qry);
+				while($row_result_selecting_qry = $result_selecting_qry->fetch_assoc()) 
 				{
-					$work_station_id = $row['work_center_id'];
-					$short_key_code = $row['short_cut_code'];
+					$id_to_update = $row_result_selecting_qry['id'];
+					$ref_no = $row_result_selecting_qry['bundle_number'];
 				}
-				if(!$work_station_id)
-				{
-					$qry_to_get_work_station_id = "SELECT work_station_id FROM bai_pro3.`work_stations_mapping` WHERE operation_code = '$short_key_code' AND module = '$b_module'";
-					//echo $qry_to_get_work_station_id;
-					$result_qry_to_get_work_station_id=mysqli_query($link,$qry_to_get_work_station_id) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($row=mysqli_fetch_array($result_qry_to_get_work_station_id))
-					{
-						$work_station_id = $row['work_station_id'];
-					} 
+				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej where id = $id_to_update";
+				$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$value where id = $ref_no";
+				$updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$updated = updateM3TransactionsRejections($ref_no,$b_op_id,$r_qty,$r_reasons);
+				if($updated == true){
 				}
-				//getting bundles from mo_operation_details
-				//getting mos and filling up
-				// INSERTING INTO M3_TRANSACTOINS TABLE AND UPDATING INTO M3_OPS_DETAILS
-				$qty_to_fetch_size_title = "SELECT title_size_$key_size  FROM $bai_pro3.bai_orders_db_confirm WHERE order_tid ='$order_tid'";
-				// echo $qty_to_fetch_size_title;
-				$res_qty_to_fetch_size_title=mysqli_query($link,$qty_to_fetch_size_title) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($nop_res_qty_to_fetch_size_title=mysqli_fetch_array($res_qty_to_fetch_size_title))
-				{
-					$size_title = $nop_res_qty_to_fetch_size_title["title_size_$key_size"];
-				}
-				//echo '</br>sizing'.$size_title.'</br>';
-				// $qry_to_check_mo_numbers = "SELECT mq.id AS bundle_no FROM $bai_pro3.`mo_operation_quantites`  mq LEFT JOIN bai_pro3.mo_details md ON md.mo_no=mq.`mo_no` WHERE doc_no = '$doc_no_ref' AND op_code = '$op_code' and size = '$size_title'";
-				// echo $qry_to_check_mo_numbers.'-';
-				// $qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// $total_bundle_present_qty = $value;
-				// $total_bundle_rec_present_qty = $value;
-				// while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
-				// {
-				// 	$b_tid[] = $nop_qry_row['bundle_no'];
-				// }
-				// var_dump($b_tid).'-';
-				//for($i=0;$i<sizeof($b_tid);$i++)
-				//{
-					$value_b = $b_tid[$i];
-					// $r_qty = explode(",", $r_qty[$value_b]);
-					// $r_reasons = explode(",", $r_reasons[$value_b]);
-					//var_dump($r_qty);
-					$updated = updateM3TransactionsRejections($doc_no_ref,$size_title,$b_module,$op_code,$b_op_id,$b_shift,$work_station_id,$r_qty,$r_reasons);
-					if($updated == true){
-						//transactions Updated successfully
-					}
-					/*
-					foreach($r_qty as $key=>$value)
-					{
-						$qry_to_check_mo_numbers = "SELECT *,mq.id AS id FROM $bai_pro3.`mo_operation_quantites`  mq LEFT JOIN bai_pro3.mo_details md ON md.mo_no=mq.`mo_no` WHERE doc_no = '$doc_no_ref' AND op_code = '$op_code' and size = '$size_title'";
-						//echo $qry_to_check_mo_numbers;
-						$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$total_bundle_rej_present_qty = $r_qty[$key];
-						while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
-						{
-							$total_bundle_present_qty = $total_bundle_rej_present_qty;
-							$mo_number = $nop_qry_row['mo_no'];
-							$mo_quantity = $nop_qry_row['bundle_quantity'];
-							$good_quantity_past = $nop_qry_row['good_quantity'];
-							$rejected_quantity_past = $nop_qry_row['rejected_quantity'];
-							$id = $nop_qry_row['id'];
-							//$mo_no = $nop_qry_row['id'];
-							$balance_max_updatable_qty = $mo_quantity - ($good_quantity_past + $rejected_quantity_past);
-							// echo $total_bundle_present_qty;
-							if($total_bundle_present_qty > 0)
-							{
-								if($balance_max_updatable_qty > 0)
-								{
-									if($balance_max_updatable_qty >= $total_bundle_rej_present_qty)
-									{
-										$to_update_qty = $total_bundle_rej_present_qty;
-										$actual_rej_qty = $rejected_quantity_past+$total_bundle_rej_present_qty;
-										$update_qry = "update $bai_pro3.mo_operation_quantites set rejected_quantity = $actual_rej_qty where id= $id";
-										$total_bundle_rej_present_qty = 0;
-									}
-									else
-									{
-										$to_update_qty = $balance_max_updatable_qty;
-										$actual_rej_qty = $rejected_quantity_past+$balance_max_updatable_qty;
-										$update_qry = "update $bai_pro3.mo_operation_quantites set rejected_quantity = $actual_rej_qty where id= $id";
-										$total_bundle_rej_present_qty = $total_bundle_rej_present_qty - $balance_max_updatable_qty;
-									}
-									//echo $update_qry.'</br>';
-									$ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
-									//echo $update_qry.'</br>';
-									// echo $r_reasons[$key];
-								
-									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number',$to_update_qty,'$r_reasons[$key]','Normal',user(),'',$b_module,'$b_shift',$b_op_id,'',$id,'$work_station_id','')";
-									// echo $inserting_into_m3_tran_log.'</br>';
-									mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-									//getting the last inserted record
-									$insert_id=mysqli_insert_id($link);
-
-									//M3 Rest API Call
-									$api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-									$api_data = $obj->getCurlAuthRequest($api_url);
-									$decoded = json_decode($api_data,true);
-									$type=$decoded['@type'];
-									$code=$decoded['@code'];
-									$message=$decoded['Message'];
-
-									//validating response pass/fail and inserting log
-									if($type!='ServerReturnedNOK')
-									{
-										//updating response status in m3_transactions
-										$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
-										mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-									}
-									else
-									{
-										//updating response status in m3_transactions
-										$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
-										mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-										//insert transactions details into transactions_log
-										$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id',$message,USER(),$current_date)"; 
-										mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-									}
-								}
-							}
-						}
-					}
-					*/
-				//}
-				//Logic Ends Here
 			}
 		}
 		$usr_msg.="</table>";
