@@ -4,6 +4,7 @@
 function doc_size_wise_bundle_insertion($doc_no_ref)
 {
     include("../../../../common/config/config_ajax.php");
+    include("../../../../common/config/mo_filling.php");
     $category=['cutting','Send PF','Receive PF'];
     $operation_codes = array();
     error_reporting(0);
@@ -38,8 +39,6 @@ function doc_size_wise_bundle_insertion($doc_no_ref)
                 }
             }
         }
-        // var_dump($cut_done_qty);
-        // die();  
         foreach($cut_done_qty as $key => $value)
         {
             $qty_to_fetch_size_title = "SELECT *,title_size_$key  FROM $bai_pro3.bai_orders_db_confirm WHERE order_tid ='$order_tid'";
@@ -78,6 +77,7 @@ function doc_size_wise_bundle_insertion($doc_no_ref)
                 $b_query[$op_code] = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES";
                 $b_query[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$b_size_code.'","'. $b_sizes.'","'. $sfcs_smv.'","'.$last_id.'","'.$b_in_job_qty.'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$b_remarks.'","'.$mapped_color.'")';
                 $bundle_creation_result_001 = $link->query($b_query[$op_code]);
+                $inserting_mo = insertMOQuantities($last_id,$op_code,$b_in_job_qty);
                 //insertion_into_cps_log 
             }
         }
