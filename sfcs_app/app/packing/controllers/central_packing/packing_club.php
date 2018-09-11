@@ -265,7 +265,7 @@ $packm = substr($packmethod,-1);
 									{
 										$status=$statrow['status'];
 									}
-									if($status=='Done')
+									if($status=='DONE')
 									{
 										echo "<td>Already Scanned</td>";
 									}
