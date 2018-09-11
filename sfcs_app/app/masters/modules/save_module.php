@@ -6,6 +6,7 @@ $id=$_REQUEST['id'];
 $module=$_REQUEST['module'];
 $description =$_REQUEST['description'];
 $status =$_REQUEST['table_status'];
+$sections =$_REQUEST['sections'];
 $datetime =$_REQUEST['datetimepicker11'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
@@ -15,11 +16,11 @@ $conn=$link;
 
 
 
-if (empty($module)) {
+if (empty($module)||empty($sections)) {
 	$url=getFullURL($_GET['r'],'add_module.php','N');
 	echo"<script>setTimeout(function () { 
 		swal({
-		  title: 'Please Fill Module',
+		  title: 'Please Fill Module and Section',
 		  text: 'Message!',
 		  type: 'warning',
 		  confirmButtonText: 'OK'
@@ -44,7 +45,7 @@ if (empty($module)) {
 		
 		//update
 		
-		$sql = "update $bai_pro3.module_master set module_name='$module',date_time='$datetime',module_description='$description', status='$modulestatus' where id=$id";
+		$sql = "update $bai_pro3.module_master set module_name='$module',date_time='$datetime',module_description='$description', section='$sections',status='$modulestatus' where id=$id";
 		// echo $sql;die();
 		if (mysqli_query($conn, $sql)) {
 
@@ -97,9 +98,9 @@ if (empty($module)) {
 		}else{
 
 		//insert 
-		$sql = "INSERT INTO $bai_pro3.module_master (module_name,date_time,module_description,status)
-			VALUES ('$module','$datetime','$description','$modulestatus')";
-
+		$sql = "INSERT INTO $bai_pro3.module_master (module_name,date_time,module_description,status,section)
+			VALUES ('$module','$datetime','$description','$modulestatus','$sections')";
+        
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'add_module.php','N');
 								//echo "New record created successfully";
@@ -117,10 +118,54 @@ if (empty($module)) {
 									}); }, 100);</script>";
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		}
+		} 
+		
+		 $sql = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id)
+			VALUES ('$module','$sections')";
+
+		if (mysqli_query($conn, $sql)) {
+			
+		} else {
+			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+		} 
+
 
      }
 	}
+
+	$query3="SELECT sec_head FROM bai_pro3.`sections_db` WHERE sec_head='$sections'";
+	$result4= mysqli_query($conn, $query3);
+    $row = mysqli_fetch_assoc($result4);
+	if($row>0){
+	
+
+       $sections_query1="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sections'";
+	   $result5= mysqli_query($conn, $sections_query1);
+      $row = mysqli_fetch_assoc($result5);
+      $total_modules1=$row['module_concat'];
+       $sql6 = "update $bai_pro3.sections_db set sec_id='$sections',sec_head='$sections',sec_mods='$total_modules1' where sec_head='$sections'";
+			
+		if (mysqli_query($conn, $sql6)) {
+		} else {
+			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+		}
+	}else{
+	
+	       $sections_query="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sections'";
+	   $result3 = mysqli_query($conn, $sections_query);
+      $row = mysqli_fetch_assoc($result3);
+      $total_modules=$row['module_concat'];
+	  echo $total_modules;
+       $sql1 = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods)
+			VALUES ('$sections','$sections','$total_modules,$module')";
+		if (mysqli_query($conn, $sql1)) {
+			
+		} else {
+			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+		}
+	}
+		
+	
 }
 
 mysqli_close($conn);

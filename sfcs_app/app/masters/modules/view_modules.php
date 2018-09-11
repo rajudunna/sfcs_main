@@ -28,6 +28,7 @@
 		<thead>
 		<tr>
 		<th>S.No</th>
+		<th>Section Name</th>
 		<th>Module Name</th>
 		<th>Module Description</th>
 		<th>Status</th>
@@ -40,14 +41,16 @@
 			$rowid=$row["id"];
 			$module_name=$row["module_name"];
 			$status=$row["status"];
+			$section=$row["section"];
 			$module_description=$row["module_description"];
 			
 			echo "<tr>
 			<td>".$sno++."</td>
+			<td>".$row["section"]."</td>
 			<td>".$row["module_name"]."</td>
 			<td>".$row["module_description"]."</td>
 			<td>".$row["status"]." </td>
-			<td><a href='$url&rowid=$rowid&module_name=$module_name&status=$status&module_description=$module_description' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid' class='btn btn-danger btn-xs editor_remove'>Delete</a></td>
+			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove'>Delete</a></td>
 			</tr>";
 		}
 
