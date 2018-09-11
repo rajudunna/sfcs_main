@@ -849,7 +849,6 @@ $id="yash";
 if($cut_new=="DONE")
 {
   $id="blue";
-  $send_op_code = '60';
   $page_flag = 'send';
   $emb_url = getFullURLLevel($_GET["r"],'cutting/controllers/emb_cut_scanning/emb_cut_scanning.php',3,'N')."&style=$style&schedule=$schedule&color=$color&tablename=$section_mods&doc_no=$doc_no&operation_id=$send_op_code&shift=$shifts&page_flag=$page_flag";
 }else{
