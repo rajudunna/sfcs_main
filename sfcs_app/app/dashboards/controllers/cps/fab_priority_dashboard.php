@@ -908,8 +908,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
       if($fabric_status==null or $fabric_status==0){
         
-        $fabric_status=$sql_row1['ft_status'];
-        if($fabric_status==5)
+        // $fabric_status=$sql_row1['ft_status'];
+        $ft_status=$sql_row1['ft_status'];
+
+        if($ft_status==5)
         {
           $fabric_status=4;
         }
@@ -1005,7 +1007,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             }
           }
           
-          $fabric_status=$join_ft_status;
+          // $fabric_status=$join_ft_status;
+          $ft_status=$join_ft_status;
+
         }
         //To get the status of join orders
       }
@@ -1015,7 +1019,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       {
         case "1":
         {
-          $id="yellow";
+            $id="yellow";
           /* if($fab_wip>$cut_wip_control)
           {
             $id="lgreen";
@@ -1060,6 +1064,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $rem="Not Update";
           break;
         }
+      }
+      if($fabric_status==1 and $ft_status==1)
+      {
+            $id="yellow";
+      }
+
+      if($fabric_status!=1 and $ft_status==1)
+      {
+        $id="green";
+
       }
          if($id!='yellow')
       {
