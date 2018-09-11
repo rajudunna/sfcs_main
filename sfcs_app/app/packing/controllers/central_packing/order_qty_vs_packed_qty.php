@@ -138,9 +138,8 @@
 					{
 						$parent=$row['id'];
 					}
-					
-					
-					// echo "Style= ".$style_id."<br>Schedule= ".$sch_id.'<br>';
+							
+					//echo "Style= ".$style."<br>Schedule= ".$schedule.'<br>';
 					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
 					$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
 					$mini_order_ref = echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_crt_schedule",$schedule,$link);
@@ -148,7 +147,7 @@
 					$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
 					$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 
-					
+					//echo "Style= ".$style."<br>Schedule= ".$schedule.'<br>';
 					// Order Details Display Start
 					{
 						$col_array = array();
@@ -159,7 +158,6 @@
 						while($sizes_result1=mysqli_fetch_array($sizes_result))
 						{
 							$col_array[]=$sizes_result1['order_col_des'];
-							
 						}
 
 						foreach ($sizes_array as $key => $value)
@@ -316,19 +314,20 @@
 					// Order Details Display End
 				}
 				//packing method details
-				// $style=$_POST['style'];
-				// $schedule=$_POST['schedule'];
+				//echo "Test";
+				//$style=$_POST['style'];
+				//$schedule=$_POST['schedule'];
 				if ($_GET['style'] and $_GET['schedule'])
 					{
 						$style=$_GET['style'];
-						$schedule=$_GET['schedule'];
+						$scheduleid=$_GET['schedule'];
 					} 
 					else if ($_POST['style'] and $_POST['schedule'])
 					{
 						$style=$_POST['style'];
-						$schedule=$_POST['schedule'];	
+						$scheduleid=$_POST['schedule'];	
 					}
-				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where ref_order_num=$schedule AND style_code='".$style."'"; 
+				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where ref_order_num=$scheduleid AND style_code='".$style."'"; 
 				// echo $get_pack_id;
 				$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$row = mysqli_fetch_row($get_pack_id_res);
@@ -371,15 +370,15 @@
 									$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
 									// $url3=getFullURL($_GET['r'],'.php','R');
 									// $url4=getFullURL($_GET['r'],'.php','R');
-									$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
+									$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$scheduleid,$link);
 									$statusqry="select * from $bai_pro3.pac_stat_log where schedule='$schedule' and pac_seq_no='$seq_no' and status='DONE'";
-									// echo $statusqry;
+									//echo $statusqry;
 									$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
 									if(mysqli_num_rows($statusrslt)==0)
 									{
 										echo "<td><a class='btn btn-success btn-sm' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no' target='_blank'>Generate pack Job</a>
-										<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method&schedule=$schedule&style=$style>Delete</a></td>";
+										<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method&schedule=$scheduleid&style=$style>Delete</a></td>";
 									}
 									else
 									{
@@ -394,7 +393,7 @@
 						$ordr_qnty = $_GET['ordr_qnty'];
 						$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
 						echo "<div class='col-md-12 col-sm-12 col-xs-12'>
-							<a class='btn btn-success btn-sm' href='$url2&schedule=$schedule&style=$style' >Add Packing Method</a>
+							<a class='btn btn-success btn-sm' href='$url2&schedule=$scheduleid&style=$style' >Add Packing Method</a>
 							</div>";
 											
 			}
