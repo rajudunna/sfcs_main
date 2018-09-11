@@ -1143,9 +1143,9 @@ if(isset($_POST['submit']))
 					$row_count++;				
 					echo "<tr>
 							  <td><center>".${"size".$i}."</center></td>
-							  <td><center>".${"s".$i}."</center></td>
+							 
 							  <td><center>".${"s".$i._old}."</center></td>
-							  <td><input type='hidden' id='temps$i' value='".${"s".$i}."'><center>".${"s".$i}."</center></td>
+							  <td><center><input type='hidden' id='temps$i'  value='".${"s".$i}."'><center>".${"s".$i}."</center></td>
 							  <td><center><input type=\"text\" style='border=\"0px\"' name=\"s".$i."ext\" value=\"0\" size=\"4\" class=\"form-control input-sm float\" 
 									  onKeyUp=\"
 												  if(event.keyCode == 9) 
