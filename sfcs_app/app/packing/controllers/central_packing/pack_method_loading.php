@@ -136,7 +136,7 @@
 					$cust_ord=$sql_row['Cust_order'];
 				} 
 					
-				$pack_meth_qry="SELECT *,parent_id,sum(poly_bags_per_carton) as carton,GROUP_CONCAT(distinct size_title) as size ,GROUP_CONCAT(distinct color) as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY pack_method";
+				$pack_meth_qry="SELECT *,parent_id,sum(poly_bags_per_carton) as carton,GROUP_CONCAT(distinct size_title) as size ,GROUP_CONCAT(distinct color) as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no";
 				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); ?>
 
 				<div class="col-md-12">
@@ -175,7 +175,7 @@
 					$tot_planned = 0;
 					foreach ($sizes_array as $key => $value)
 					{
-						$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule_id))";
+						$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule_id))";
 						// echo $plannedQty_query.'<br>';
 						$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 						while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
@@ -183,7 +183,7 @@
 							$planned_qty[] = $planneQTYDetails['plannedQty'];
 						}
 
-						$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule_id";
+						$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule_id";
 						// echo $orderQty_query.'<br>';
 						$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
 						while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
@@ -227,19 +227,19 @@
 					</div>";
 				}
 				// Order Details Display End
-
-				echo "
-					<div class='col-md-12'>
-						<div class='pull-right'>
-							<a class='btn btn-warning' href='$url?style=$style_id&schedule=$schedule_id&seq_no=$seq_no&c_ref=$parent_id&pack_method=$pack_method' target='_blank' >Print All packing list
-							<a class='btn btn-warning' href='$url1?style=$style_id&schedule=$schedule_id&seq_no=$seq_no&c_ref=$parent_id&pack_method=$pack_method' target='_blank' >Print All Carton track
-							<a class='btn btn-warning' href='$url2?style=$style_id&schedule=$schedule_id&seq_no=$seq_no&c_ref=$parent_id&pack_method=$pack_method' target='_blank' >Print All Labels</a>
-						</div>
-					</div>";
-
 				$url=getFullURL($_GET['r'],'print.php','R');
 				$url1=getFullURL($_GET['r'],'#','N');
 				$url2=getFullURL($_GET['r'],'#','N');
+				echo "
+					<div class='col-md-12'>
+						<div class='pull-right'>
+							<a class='btn btn-warning' href='$url?schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print All packing list
+							<a class='btn btn-warning' href='$url1?schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print All Carton track
+							<a class='btn btn-warning' href='$url2?schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print All Labels</a>
+						</div>
+					</div>";
+
+				
 
 				echo "<br>
 						<div class='col-md-12'>
@@ -259,11 +259,12 @@
 									$seq_no=$pack_result1['seq_no'];
 									$parent_id=$pack_result1['parent_id'];
 									$pack_method=$pack_result1['pack_method'];
-									$get_qty = "SELECT COUNT(DISTINCT(carton_no)) as carton_count,SUM(carton_act_qty) as qty FROM $bai_pro3.`pac_stat_log` WHERE SCHEDULE=$schedule_id AND pack_method=$pack_method";
+									$get_qty = "SELECT seq_no,COUNT(DISTINCT(carton_no)) as carton_count,SUM(carton_act_qty) as qty FROM $bai_pro3.`pac_stat_log` WHERE SCHEDULE='$schedule_id' AND pac_seq_no='$seq_no'";
 									// echo $get_qty.'<br>';
 									$get_qty_result=mysqli_query($link, $get_qty) or exit("Error while getting carton qty");
 									while($row=mysqli_fetch_array($get_qty_result)) 
 									{
+										$pac_seq_no = $row['seq_no'];
 										$qty = $row['qty'];
 										$carton_count = $row['carton_count'];
 									}
@@ -277,9 +278,9 @@
 											<td>".$carton_count."</td>
 											<td>".$qty."</td>
 											<td>
-												<a class='btn btn-warning' href='$url?style=$style_id&schedule=$schedule_id&seq_no=$seq_no&c_ref=$parent_id&pack_method=$pack_method' target='_blank' >FG Check List
-												<a class='btn btn-warning' href='$url1&seq_no=$seq_no&c_ref=$parent_id&pack_method=$pack_method' target='_blank' >Carton Track
-												<a class='btn btn-warning' href='$url2&seq_no=$seq_no&c_ref=$parent_id&pack_method=$pack_method' target='_blank' >Print Lables</a>
+												<a class='btn btn-warning' href='$url?schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >FG Check List
+												<a class='btn btn-warning' href='$url1&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Carton Track
+												<a class='btn btn-warning' href='$url2&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Print Lables</a>
 											</td>
 										<tr>";
 									$i++;
