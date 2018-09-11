@@ -27,9 +27,7 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
-$plant_m3_wh_code='E54';
 //ms-sql jobs 
-$host_ms = "10.227.221.25";
 $user_ms = "BAISFCS";
 $password_ms = "fcs@m3pr";
 $conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
@@ -45,6 +43,16 @@ $sqsrv_server = "berwebsrv01";
 $sqsrv_id = "sa";
 $sqsrv_pwd = "BAWR123";
 $sqsrv_db="AutoMo";
+//m3 integration plant codes
+$cluster_code=$conf->get('cluster_code');
+$comp_no=$conf->get('company_no');
+$central_wh_code=$conf->get('central_wh_code');
+$plant_wh_code=$conf->get('plant_wh_code');
+$plant_prod_code=$conf->get('plant_prod_code');
+// schedules Operation Capturing MDM
+$odbc_host="BAIDBSRV01";
+$odbc_user="sa";
+$odbc_pass="Brandix@7";
 //To Facilitate SFCS Filters
 $global_facility_code=$conf->get('plantcode');
 $facility_code=$global_facility_code;
@@ -57,6 +65,16 @@ $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','
 
 $plant_name = $conf->get('plantname');
 $fab_uom = $conf->get('uom');
+
+
+//M3 Rest API Calls Details
+$company_no = $conf->get('companey-number');
+$api_username = $conf->get('api-user-name');
+$api_password = $conf->get('api-password');
+$api_hostname = $conf->get('api-host-name');
+$api_port_no = $conf->get('api-port');
+
+
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;
