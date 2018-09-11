@@ -258,6 +258,16 @@ foreach($b_tid as $key => $value)
             $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."',`shift`= '".$b_shift."',`assigned_module`= '".$b_module."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$b_op_id;
             
             $result_query = $link->query($query) or exit('query error in updating');
+
+            //M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
+            updateM3Transactions($b_tid[$key],$b_op_id,$b_rep_qty[$key]);
+
+            //To send rejections qunatities and reasons array to M3 API Function
+            if($r_qtys[$value] != null && $r_reason[$value] != null){
+                $r_qty_array = explode(',',$r_qtys[$value]);
+                $r_reasons_array = explode(',',$r_reason[$value]);
+                updateM3Transactions($b_tid[$key],$b_op_id,$r_qty_array,$r_reasons_array);
+            }           
         }
                
         if($result_query)
@@ -290,15 +300,14 @@ foreach($b_tid as $key => $value)
             $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$b_sizes[$key].'","'.$b_rej_qty[$key].'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_no.'","'.$b_doc_no.'","'. $b_op_id.'","Normal","'.$b_tid[$key].'"),';
             $reason_flag = true;
         }   
-    }
-    //M3 API Call and operation quantites updatation and M3 Transactions and log tables
+    }    
 }
 if($concurrent_flag == 1)
 {
     echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
 }
 if($concurrent_flag == 0)
-{
+{   
     $table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
     if($reason_flag)
     {
@@ -311,6 +320,8 @@ if($concurrent_flag == 0)
             $final_query = $bulk_insert_rej;
         }  
         $rej_insert_result = $link->query($final_query) or exit('data error');
+
+   
     }
     for($i=0;$i<sizeof($b_tid);$i++)
     {
