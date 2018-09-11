@@ -11,6 +11,7 @@ Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status)
 
 <?php    
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
 $layplanmail = $conf1->get('layplanmail'); 
 //var_dump($layplanmail);
 // include("header.php"); 
@@ -102,13 +103,11 @@ function myfunction ()
     { 
         $schedule=$_POST['schedule'];  
         $color=$_POST['color']; 
-        
     } 
     else 
     { 
-    $schedule='';  
-    $color=''; 
-
+        $schedule='';  
+        $color=''; 
     } 
     
 
@@ -447,6 +446,7 @@ if(isset($_POST["submit"]))
                  
             } 
             
+            /*  OLD LOGIC TO DELETE mo operation quantites  
             $op_codes = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
                          WHERE default_operation='Yes' and category='cutting' group by category order by category*1"; 
             $op_codes_result = mysqli_query($link, $op_codes);
@@ -463,9 +463,12 @@ if(isset($_POST["submit"]))
 			$mos=implode(',',$mos);
 			$deletefrommoquantitys="delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code in ($op_codes)";
             //echo $deletefrommoquantitys;
-			mysqli_query($link, $deletefrommoquantitys) or die("Error while deleting mo nos from mo operation quantities".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	
-			
+            mysqli_query($link, $deletefrommoquantitys) or die("Error while deleting mo nos from mo operation quantities".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            */
+            $deleted = deleteMOQuantitiesCut($schedule,$color);
+            if($deleted){
+                //Successfully Deleted From Mo Operation Quantites
+            }
         } 
         else 
         { 

@@ -1374,6 +1374,21 @@ if($barcode_generation == 1)
 						}
 					}
 				}			
+				
+				if($b_rep_qty[$i] > 0 || $b_rej_qty[$i] > 0)
+				{
+					//echo $b_rej_qty[$i];
+					//echo "working";
+					$size = strtoupper($b_sizes[$i]);
+					$table_data .= "<tr><td data-title='Job No'>$b_inp_job_ref[$i]</td><td data-title='Bundle No'>$b_tid[$i]</td><td data-title='Color'>$b_colors[$i]</td><td data-title='Size'>$size</td><td data-title='Remarks'>$b_remarks[$i]</td><td data-title='Reported Qty'>$b_rep_qty[$i]</td><td data-title='Rejected Qty'>
+					</td></tr>";
+				}
+			}
+			//Mo quantity updation and m3_transaction insertion
+			// for positives
+			for($i=0;$i<sizeof($b_tid);$i++)
+			{
+				//759 CR additions Started
 				//getting workstation id
 				$qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$b_op_id'";
 				$result_qry_to_get_work_station_id=mysqli_query($link,$qry_to_get_work_station_id) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1391,20 +1406,6 @@ if($barcode_generation == 1)
 						$work_station_id = $row['work_station_id'];
 					} 
 				}
-				if($b_rep_qty[$i] > 0 || $b_rej_qty[$i] > 0)
-				{
-					//echo $b_rej_qty[$i];
-					//echo "working";
-					$size = strtoupper($b_sizes[$i]);
-					$table_data .= "<tr><td data-title='Job No'>$b_inp_job_ref[$i]</td><td data-title='Bundle No'>$b_tid[$i]</td><td data-title='Color'>$b_colors[$i]</td><td data-title='Size'>$size</td><td data-title='Remarks'>$b_remarks[$i]</td><td data-title='Reported Qty'>$b_rep_qty[$i]</td><td data-title='Rejected Qty'>
-					</td></tr>";
-				}
-			}
-			//Mo quantity updation and m3_transaction insertion
-			// for positives
-			for($i=0;$i<sizeof($b_tid);$i++)
-			{
-				//759 CR additions Started
 				$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where bundle_no = $b_tid[$i] and op_code = $b_op_id order by mo_no";
 				$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$total_bundle_present_qty = $b_rep_qty[$i] + $b_rej_qty[$i];

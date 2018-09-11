@@ -1,5 +1,7 @@
 <?php
 include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updatings.php',5,'R')); 
+
 $has_permission=haspermission($_GET['r']);
 //API related data
 $plant_code = $global_facility_code;
@@ -657,12 +659,33 @@ else if($concurrent_flag == 0)
 				}
 			}			
 		}
+		
+
 		//changes while doing #759 CR
+		/*
 		$b_tid = $bundle_no;
 		$b_rep_qty = $reversalval;
 		// var_dump($b_tid)
 		for($i=0;$i<sizeof($b_tid);$i++)
 		{
+			$qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$b_op_id'";
+			// echo $qry_to_get_work_station_id;
+			$result_qry_to_get_work_station_id=mysqli_query($link,$qry_to_get_work_station_id) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row=mysqli_fetch_array($result_qry_to_get_work_station_id))
+			{
+				$work_station_id = $row['work_center_id'];
+				$short_key_code = $row['short_cut_code'];
+			}
+			if(!$work_station_id)
+			{
+				$qry_to_get_work_station_id = "SELECT work_station_id FROM bai_pro3.`work_stations_mapping` WHERE operation_code = '$short_key_code' AND module = '$b_module'";
+				//echo $qry_to_get_work_station_id;
+				$result_qry_to_get_work_station_id=mysqli_query($link,$qry_to_get_work_station_id) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row=mysqli_fetch_array($result_qry_to_get_work_station_id))
+				{
+					$work_station_id = $row['work_station_id'];
+				} 
+			}
 			$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where bundle_no = $b_tid[$i] and op_code = $b_op_id order by mo_no";
 		//	echo $qry_to_check_mo_numbers.'-';
 			$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -741,7 +764,12 @@ else if($concurrent_flag == 0)
 				}
 			}
 		}
+		*/
 		
+		$updating = updateM3TransactionsReversal($bundle_no,$reversalval,$b_op_id,$b_module,$b_shift,$b_style,$b_colors,$key);
+		if($updating == true){
+			//Updated Successfully
+		}
 		
 		
 		

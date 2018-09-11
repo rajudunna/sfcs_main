@@ -1,6 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',3,'R')); 
 ?>
 
 <body>
@@ -171,18 +172,39 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$result10=mysqli_query($link, $update_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-			function Redirect() {
-				location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',2,'N')."&order_tid_arr=$impdata&club=clubbing&process_name=cutting&filename=$filename\";
-				}
-			</script>";
+	//----------------Logic to insert into  bundle creation data and mo operation quantities
+	//Getting all the dockets for order tid
+	foreach($order_tid_new as $order_tid){
+		$docs_query = "Select distinct(doc_no) as doc_no from $bai_pro3.plandoc_stat_log where order_tid = '$order_tid' ";
+		$docs_result = mysqli_query($link,$docs_query);
+		while($row = mysqli_fetch_array($docs_result)){
+			$dockets[] = $row['doc_no']; 
+		}
+	}
+	foreach($dockets as $docket){
+		$insert = doc_size_wise_bundle_insertion($docket);
+	}
+	/*
+	$inserted = insertMoQuantitiesClub($impdata);
+	if($inserted){
+		//Inserted into mo details successfully
+	}
+	*/
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+	// 		function Redirect() {
+	// 			location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',2,'N')."&order_tid_arr=$impdata&club=clubbing&process_name=cutting&filename=$filename\";
+	// 			}
+	// 		</script>";
 	
-    // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-		// function Redirect() {
-			// sweetAlert('Splitting Completed','','success');
-			// location.href = \"".$url_back."&color=$color&style=$style&schedule=$schedule\";
-			// }
-		// </script>";	
+    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+			sweetAlert('Splitting Completed','','success');
+			location.href = \"".$url_back."&color=$color&style=$style&schedule=$schedule\";
+			}
+		</script>";	
 ?>
 </div>
 </div>

@@ -8,6 +8,7 @@
 	set_time_limit(30000000); 
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
 	$carton_id=$_GET["id"]; 
 	$sql12="SELECT merge_status,carton_method,style_code,ref_order_num,GROUP_CONCAT(DISTINCT COLOR) AS cols FROM brandix_bts.tbl_carton_ref 
 	LEFT JOIN brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id WHERE COMBO_NO>0 and tbl_carton_ref.id='".$carton_id."' GROUP BY COMBO_NO";
@@ -821,18 +822,24 @@
 	//Deleting the entry from sewing jobs ref if no input job was created  --  Updating the bundle quantity after the jobs are inserted
 	if($job_counter == 0){
 		$delete_query = "Delete from $bai_pro3.sewing_jobs_ref where id = '$inserted_id'";
-		$delete_result = mysqli_query($link,$delete_query) or exit("Probelem while inserting to sewing jos ref");
+		$delete_result = mysqli_query($link,$delete_query) or exit("Problem while deleting from sewing jos ref");
 		if($delete_result){
 			//Deleted Successfully
 		}
 	}else{
 		$update_query = "Update $bai_pro3.sewing_jobs_ref set bundles_count = $job_counter where id = '$inserted_id' ";
-		$update_result = mysqli_query($link,$update_query) or exit("Probelem while inserting to sewing jos ref");
+		$update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
 		if($update_result){
 			//Updated Successfully
 		}
 	}
 
+	//----------MO FILL Function Calling  -----
+	$inserted = insertMOQuantitiesSewing($schedule,$inserted_id);
+	if($inserted){
+		//Inserted Successfully
+	}
+	/*
 	$mo_fill_url = getFullURLLevel($_GET['r'],'sewing_job_mo_fill.php',0,'N');
 	$url = "$mo_fill_url&style=$style_id&schedule=$schedule&schedule_id=$schedule_id&process_name=sewing&filename=create_sewing";
 	echo "<script>console.log($url);
@@ -840,9 +847,10 @@
 		  </script>";
 
 	echo("<script>location.href = '$mo_fill_url&sref_id=$inserted_id&style=$style_id&schedule=$schedule&schedule_id=$schedule_id&process_name=sewing&filename=create_sewing';</script>");	
+	*/
 
-	// echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
-	// echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");		
+	echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
+	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");		
 ?> 
 </div></div>
 </body>

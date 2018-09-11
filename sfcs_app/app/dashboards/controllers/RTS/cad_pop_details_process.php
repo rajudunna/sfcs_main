@@ -321,9 +321,11 @@ if(isset($_POST['submit']))
 			
 	}
 
-	//-------------------------------------------MO Filling Logic ----------------------------------------------------------------
+	//-------------------------------------------MO Filling Logic -----------------------------------------------------
 
-	// $sizes    = $_POST['size_'];
+	//calling the BCD insertion function
+	$inserted = doc_size_wise_bundle_insertion_recut($docket_no);
+	//$sizes  = $_POST['size_'];
 	$style    = $_POST['style'];
 	$schedule = $_POST['schedule'];
 	$color    = $_POST['color'];
@@ -350,7 +352,6 @@ if(isset($_POST['submit']))
 		}
 	}
 
-
 	foreach($sizes as $key => $sizet){
 		//echo $size;
 		$qty = 0;
@@ -363,7 +364,7 @@ if(isset($_POST['submit']))
 			$mo_size = $row['title'];
 			$size_code[$sizet] = $row['title'];
 		}		  
-
+	
 		//--------------------------------------- check whether that style exists -------------------------------------
 		$mo_no_query = "SELECT mo.mo_no as mo_no,mo.mo_quantity as mo_quantity,SUM(bundle_quantity) as bundle_quantity,
 						SUM(good_quantity) as good_quantity,SUM(rejected_quantity) as rejected_quantity

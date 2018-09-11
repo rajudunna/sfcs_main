@@ -123,23 +123,28 @@
                     if($carton_act_qty == $qty) 
                     {        
                         //Updating the same record with new input job no
+                        /*
                         $update_mo = "Update  $bai_pro3.mo_operation_quantites set input_job_no='$ninput_job_no',
                                       input_job_random='$ninput_job_no_random' where bundle_no = '$tid' ";
                         $update_result = mysqli_query($link,$update_mo);//or exit('An error While Updating MO Quantities');
                         if(mysqli_num_rows($update_result) > 0)
                             continue;
+                        */
                     }else{
                         //Updating existing bundle 
+                        /*
                         $update_mo = "Update  $bai_pro3.mo_operation_quantites set input_job_no='$temp_input_job_no',
                                       input_job_random='$temp_input_job_no_random',bundle_quantity='$nqty'
                                       where bundle_no = '$tid' and input_job_random = '$temp_input_job_no_random' 
                                       and input_job_no = '$temp_input_job_no'";
-                        $update_result = mysqli_query($link,$update_mo);//or exit('An error While Updating MO Quantities');        
+                                      */
+                        $update_mo = "Update  $bai_pro3.mo_operation_quantites set bundle_quantity='$nqty',
+                                      ref_no='$inserted_tid' where ref_no = '$tid' ";              
+                        $update_result = mysqli_query($link,$update_mo) or exit('An error While Updating MO Quantities');        
                 
                         //getting mo_no,op_desc from mo_operation_quantities
                         $mos = "Select mo_no,op_desc 
-                                from $bai_pro3.mo_operation_quantites where bundle_no = '$tid' 
-                                and input_job_random = '$temp_input_job_no_random' and input_job_no = '$temp_input_job_no' 
+                                from $bai_pro3.mo_operation_quantites where ref_no = '$tid'  
                                 group by op_desc";
                         $mos_result = mysqli_query($link,$mos); 
                         while($row = mysqli_fetch_array($mos_result)){
@@ -149,11 +154,9 @@
                         //Inserting the new bundle quantity
                         foreach(array_unique($ops) as $op_code=>$op_desc){
                             $insert_mo = "Insert into $bai_pro3.mo_operation_quantites
-                                        ('mo_no','doc_no','bundle_no','bundle_quantity','op_code','op_desc','input_job_no',
-                                        'input_job_random','size_id') values 
-                                        ($mo_no,$doc_no,$inserted_tid,$qty,$op_code,$op_desc,$ninput_job_no,$ninput_job_no_random,
-                                         $old_size)";
-                            mysqli_query($link,$insert_mo);            
+                                        ('date','mo_no','ref_no','bundle_quantity','op_code','op_desc') values 
+                                        (".date('Y-m-d H:i:s').",$mo_no,$inserted_tid,$qty,$op_code,$op_desc)";
+                            mysqli_query($link,$insert_mo) or exit("Problem while inserting to mo quantities");            
                         }
                         unset($ops);
                     }

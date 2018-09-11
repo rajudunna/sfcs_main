@@ -1,6 +1,8 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',4,'R')); 
+
 //API related data
 $plant_code = $global_facility_code;
 $company_num = $company_no;
@@ -8,6 +10,9 @@ $host= $api_hostname;
 $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
 //KiranG - 2015-09-02 : passing link as parameter in update_m3_or function to avoid missing user name.
+
+$op_code = 15;
+$b_op_id = 15;
 ?>
 <style>
 .cell {
@@ -737,6 +742,7 @@ $current_date = date('Y-m-d h:i:s');
 							$sql="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\", leader_name='$leader_name',bundle_loc=\"$bun_loc\" where doc_no=$input_doc_no";
 							mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+							/*
 							$doc_no_ref = $input_doc_no;
 							$op_code = '15';
 							$b_op_id = '15';
@@ -866,7 +872,13 @@ $current_date = date('Y-m-d h:i:s');
 								}
 							}
 							// die();
+							*/
 							//Logic Ends Here
+							$updating = updateM3Transactions($input_doc_no,$op_code,$b_op_id,$input_shift,$plan_module);
+							if($updating == true){
+								//Updated Successfully
+							}
+
 							$sql1="update $bai_pro3.plandoc_stat_log set act_cut_status=\"DONE\", a_plies=".($plies+$old_plies).",p_plies=".($plies+$old_plies).",pcutdocid=concat(pcutdocid,'$','$bun_loc') where doc_no=$input_doc_no";
 							mysqli_query($link, $sql1) or exit("Sql Error3$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 

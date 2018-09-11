@@ -13,6 +13,10 @@ $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
+
+
+$op_code = '15';
+$b_op_id = '15';
 ?>
 <script>
  function button_disable()
@@ -24,7 +28,7 @@ $current_date = date('Y-m-d h:i:s');
 function dodisable()
 {
 //enableButton();
-document.getElementById('process_message').style.visibility="hidden"; 
+	document.getElementById('process_message').style.visibility="hidden"; 
 }
 
 function check1(x,y) 
@@ -105,6 +109,7 @@ th
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',4,'R'));
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/quality/common/php/m3_bulk_or_proc.php"); 
@@ -390,6 +395,7 @@ if(isset($_POST['Update']))
 				$b_module = (is_numeric($module[$x])?$module[$x]:'0');
 				$b_shift = $team[$x];
 				$key_size = $size[$x];
+
 				//getting work_station_id
 				$qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$b_op_id'";
 				//echo $qry_to_get_work_station_id.'-';
@@ -436,6 +442,11 @@ if(isset($_POST['Update']))
 					// $r_qty = explode(",", $r_qty[$value_b]);
 					// $r_reasons = explode(",", $r_reasons[$value_b]);
 					//var_dump($r_qty);
+					$updated = updateM3TransactionsRejections($doc_no_ref,$size_title,$b_module,$op_code,$b_op_id,$b_shift,$work_station_id,$r_qty,$r_reasons);
+					if($updated == true){
+						//transactions Updated successfully
+					}
+					/*
 					foreach($r_qty as $key=>$value)
 					{
 						$qry_to_check_mo_numbers = "SELECT *,mq.id AS id FROM $bai_pro3.`mo_operation_quantites`  mq LEFT JOIN bai_pro3.mo_details md ON md.mo_no=mq.`mo_no` WHERE doc_no = '$doc_no_ref' AND op_code = '$op_code' and size = '$size_title'";
@@ -513,8 +524,7 @@ if(isset($_POST['Update']))
 							}
 						}
 					}
-					
-							
+					*/
 				//}
 				//Logic Ends Here
 			}
