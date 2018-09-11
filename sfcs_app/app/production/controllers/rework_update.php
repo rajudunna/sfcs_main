@@ -403,7 +403,6 @@ function second_box(){
 
 if (isset($_POST['submit11']))
 {
-	echo $_POST['shift']."selected Shift";
 ?>		
 	<FORM method="post" name="test" action="<?= getFullURLLevel($_GET['r'],'rework_update_process.php',0,'N');?>" enctype="multipart/form-data" id="test">
 		<!--<input type='hidden' name='r' value="<?= base64_encode(getFullURLLevel($_GET['r'],'rework_update_process.php',0,'R')) ?>">-->
