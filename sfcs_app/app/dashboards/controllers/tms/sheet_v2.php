@@ -38,13 +38,22 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 <div class="panel panel-primary">
     <div class="panel-heading"><center><button onclick="printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
     <div class="panel-body">
+	
 <?php
+// ini_set('display_startup_errors', 1);
+// ini_set('display_errors', 1);
+// error_reporting(-1);
 //error_reporting(0);
 //include("header.php");
 $plant_code = $global_facility_code;
 $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
+
+// $plant_code = 'EKG';
+// $company_num = '200';
+// $host= "http://eka-mvxsod-01.brandixlk.org";
+// $port= 22105;
 
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
@@ -78,7 +87,7 @@ if(count($colors)>0){
         $limit=40; 
         $limit1=40; 
         $size_count = count($size_code);
-        $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color[$ii],$input_job_no,$link);
+        $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job_no,$link);
         if($colorrows >0){
             ?>
             <div class="row">
@@ -132,23 +141,29 @@ if(count($colors)>0){
                 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo mysqli_num_rows($sql_result)."<br>";
                 if(mysqli_num_rows($sql_result) > 0){
-                    $final_data = [];
+					$final_data = [];
+					$res_values = [];
                     while($row=mysqli_fetch_array($sql_result))
                     {
                         $color = $row['order_col_des'];
                         $size_name = $row['size_code'];
                         $size_qty = $row['carton_act_qty'];
                 
-                        $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
+						$mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
+						
                         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-                        $mo_numrows=mysqli_num_rows($mo_sql_result);
+						$mo_numrows=mysqli_num_rows($mo_sql_result);
+						
                         if($mo_numrows>0){
                             while($mo_row=mysqli_fetch_array($mo_sql_result))
                             {
                                 $mo_no = $mo_row['mo_no'];
-                                $api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,PEUN,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
-                                $api_data = $obj->getCurlAuthRequest($api_url);
-                                $api_data = json_decode($api_data, true);  
+								$api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,PEUN,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
+								
+								$api_data = $obj->getCurlAuthRequest($api_url);
+								
+								$api_data = json_decode($api_data, true);  
+								
                                 $name_values = array_column($api_data['MIRecord'], 'NameValue');
                                 foreach ($name_values as $key => $value2) {
                                     $value2[] = ['Name' => 'color', 'Value' => $color];
@@ -166,6 +181,8 @@ if(count($colors)>0){
                                 <th>Item Description</th>
                                 <th>Colour</th>
                                 <th>Size</th>
+								<th>Z Code</th>
+								<th>Option Description</th>
                                 <th>Per Piece Consumption</th>  
                                 <th>Wastage %</th>  
                                 <th>Req.-With Wastage</th> 
@@ -177,13 +194,14 @@ if(count($colors)>0){
                     <?php
                     if(count($final_data) >0){
                         foreach ($final_data as $key1 => $value1) {
-                            $op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and SMV > 0";
+							$op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and SMV > 0";
+							
                             $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_sql_result) > 0){
                                 $value1['trim_type'] = 'STRIM';
                                 $api_selected_valuess_strim[] = $value1;
                             }
-                            
+                           
                             $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and OperationNumber = 200";
                             $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_ptrim_sql_result) > 0){
@@ -192,7 +210,7 @@ if(count($colors)>0){
                             }                                                 
                         }
                         if(count($api_selected_valuess_strim)>0){?>
-                            <tr style="background-color: whitesmoke;"><td colspan=9><center><strong>Sewing Trims</strong></center></td></tr>
+                            <tr style="background-color: whitesmoke;"><td colspan=11><center><strong>Sewing Trims</strong></center></td></tr>
                         <?php
                             foreach($api_selected_valuess_strim as $api_selected_valuess){
                                 $mfno = $api_selected_valuess['MFNO'];
@@ -207,14 +225,67 @@ if(count($colors)>0){
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
                                 //req with wastge                               
-                                $reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
+								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
+								
+								/* To Get color,size,z code  */
+								$ITNO = urlencode($api_selected_valuess['MTNO']);
+								$color_size_url = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=$company_num&ITNO=$ITNO";
+								
+                                $color_size_data = $obj->getCurlAuthRequest($color_size_url);                               
+                                $color_size_result = json_decode($color_size_data, true);   
+								$color_size_values = array_column($color_size_result['MIRecord'], 'NameValue');
+								foreach($color_size_values as $values){
+									
+									$res_values[]  = array_column($values, 'Value','Name');
+								}
+								
+								
 
                         ?>
+
                         <tr>
                             <td><?= $api_selected_valuess['MTNO'] ?></td>
                             <td><?= $api_selected_valuess['ITDS'] ?></td>
-                            <td><?= $api_selected_valuess['color'] ?></td>
-                            <td><center><?= $api_selected_valuess['size'] ?><center></td>
+                               <!-- <td><?= $api_selected_valuess['color'] ?></td> -->
+							<?php foreach($res_values as $key=>$value){
+									if($api_selected_valuess['MTNO'] === $value['ITNO']){
+										$color_res = $value['OPTY'];
+										$size_res = $value['OPTX'];
+										$z_res = $value['OPTZ'];
+
+										/* To Get Option Description */
+										$option_des_url = $host.":".$port."/m3api-rest/execute/PDS050MI/Get?CONO=$company_num&OPTN=$color_res";
+										
+										$option_des_data = $obj->getCurlAuthRequest($option_des_url);                               
+										$option_des_result = json_decode($option_des_data, true);   
+										$option_des_values = array_column($option_des_result['MIRecord'], 'NameValue');
+										foreach($option_des_values as $values){
+											
+											$option_res_values[]  = array_column($values, 'Value','Name');
+										}
+
+										break;
+									}else{
+										$color_res = "";
+									}
+								}
+								// var_dump($option_res_values);
+								foreach($option_res_values as $value){
+								
+									if(trim($color_res) === trim($value['OPTN'])){
+										$option_des = $value['TX30'];
+										break;
+									}else{
+										$option_des = "";
+									}
+								}
+								
+							?>
+							<td><?= $color_res ?></td>
+                            <!-- <td><center><?= $api_selected_valuess['size'] ?><center></td> -->
+							<td><center><?= $size_res; ?><center></td>
+							<td><?= $z_res ?></td>
+							<td><?= $option_des ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
@@ -224,7 +295,7 @@ if(count($colors)>0){
                         <?php }
                         }    
                         if(count($api_selected_valuess_ptrim)>0){?>
-                            <tr style="background-color: whitesmoke;"><td colspan=9><center><strong>Packing Trims</strong></center></td></tr>
+                            <tr style="background-color: whitesmoke;"><td colspan=11><center><strong>Packing Trims</strong></center></td></tr>
                         <?php
                             foreach($api_selected_valuess_ptrim as $api_selected_valuess){
                                 $mfno = $api_selected_valuess['MFNO'];
@@ -232,21 +303,73 @@ if(count($colors)>0){
                                 $mseq = $api_selected_valuess['MSEQ'];
                                 $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                                 $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
-                                $api_data_result = json_decode($api_data_wastage, true);   
+								$api_data_result = json_decode($api_data_wastage, true);
+								  
                                 $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
                                 
                                 //req without wastge
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
                                 //req with wastge                               
-                                $reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
-
+								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
+								
+								/* To Get color,size,z code  */
+								$ITNO = urlencode($api_selected_valuess['MTNO']);
+								$color_size_url = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=$company_num&ITNO=$ITNO";
+								
+                                $color_size_data = $obj->getCurlAuthRequest($color_size_url);                               
+                                $color_size_result = json_decode($color_size_data, true);   
+								$color_size_values = array_column($color_size_result['MIRecord'], 'NameValue');
+								foreach($color_size_values as $values){
+									
+									$res_values[]  = array_column($values, 'Value','Name');
+								}
+								
+								
                         ?>
                         <tr>
                             <td><?= $api_selected_valuess['MTNO'] ?></td>
                             <td><?= $api_selected_valuess['ITDS'] ?></td>
-                            <td><?= $api_selected_valuess['color'] ?></td>
-                            <td><center><?= $api_selected_valuess['size'] ?><center></td>
+                            <!-- <td><?= $api_selected_valuess['color'] ?></td> -->
+							<?php foreach($res_values as $key=>$value){
+									if($api_selected_valuess['MTNO'] === $value['ITNO']){
+										$color_res = $value['OPTY'];
+										$size_res = $value['OPTX'];
+										$z_res = $value['OPTZ'];
+
+										/* To Get Option Description */
+										$option_des_url = $host.":".$port."/m3api-rest/execute/PDS050MI/Get?CONO=$company_num&OPTN=$color_res";
+										
+										$option_des_data = $obj->getCurlAuthRequest($option_des_url);                               
+										$option_des_result = json_decode($option_des_data, true);   
+										$option_des_values = array_column($option_des_result['MIRecord'], 'NameValue');
+										foreach($option_des_values as $values){
+											
+											$option_res_values[]  = array_column($values, 'Value','Name');
+										}
+
+										break;
+									}else{
+										$color_res = "";
+									}
+								}
+								// var_dump($option_res_values);
+								foreach($option_res_values as $value){
+								
+									if(trim($color_res) === trim($value['OPTN'])){
+										$option_des = $value['TX30'];
+										break;
+									}else{
+										$option_des = "";
+									}
+								}
+								
+							?>
+							<td><?= $color_res ?></td>
+                            <!-- <td><center><?= $api_selected_valuess['size'] ?><center></td> -->
+							<td><center><?= $size_res; ?><center></td>
+							<td><?= $z_res ?></td>
+							<td><?= $option_des ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
