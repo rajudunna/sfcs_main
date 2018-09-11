@@ -163,6 +163,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<input type="hidden" name="operation_id" id='operation_id' value="<?php echo $operation_code;?>">
 						<input type="hidden" name="barcode_generation" id='barcode_generation' value="<?php echo $barcode_generation;?>">
 						<input type="hidden" name="response_flag" id='response_flag'>
+						<input type="hidden" name="emb_cut_check_flag" id='emb_cut_check_flag' value='0'>
 						
 						<div id ="dynamic_table1">
 						</div>
@@ -256,11 +257,12 @@ $(document).ready(function()
 			dataType: "json",
 			success: function (response) 
 			{	
+				console.log(response);
 				s_no = 0;
 				var data = response['table_data'];
 				var flag = response['flag'];
 				//var sample_qtys = response[]]
-				console.log(response['status']);
+				var emb_ops = response['emb_cut_check_flag'];
 				if(response['status'])
 				{
 					sweetAlert('',response['status'],'error');
@@ -275,6 +277,10 @@ $(document).ready(function()
 				}
 				else if(data)
 				{
+					if(response['emb_cut_check_flag'])
+					{
+						$('#emb_cut_check_flag').val(emb_ops);
+					}
 					console.log(data);
 					$('#dynamic_table1').html('');
 					$('#module_div').show();
@@ -301,7 +307,7 @@ $(document).ready(function()
 					{
 						var hidden_class='';
 						var hidden_class_sewing_in='';
-						if (operation_id == 129 || operation_id == 130)
+						if (operation_id == 900 || operation_id == 130)
 						{
 							var hidden_class_sewing_in='hidden';
 						}
@@ -341,7 +347,7 @@ $(document).ready(function()
 						}
 						if(data[i].send_qty == 0)
 						{
-							status = '<font color="red">Previous Operation not done</font>';
+							status = '<font color="red">Cut Quantity not done</font>';
 						}
 						if(data[i].send_qty != 0)
 						{
@@ -351,7 +357,7 @@ $(document).ready(function()
 							}
 						}
 						
-						if(data[i].flag == 'packing_summary_input')
+						if(data[i].flag == 'packing_summary_input' || emb_ops != undefined)
 						{
 							temp_var_bal = data[i].balance_to_report;
 							$('#flag_validation').val(1);
@@ -372,7 +378,7 @@ $(document).ready(function()
 						// var markup1 = "<tr><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>0</td><td><input class='form-control input-md' id='"+i+"reporting' name='reporting_qty[]' onchange = 'validate_reporting("+i+") '></td><td><input class='form-control input-md' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")'></td><td id='"+i+"balance'>"+data[i].balance_to_report+"</td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td></tr>";
 						s_no++;
 						var test = '1';
-						var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='Status'>"+status+"</td><td class='none' data-title='Doc.No'>"+data[i].doc_no+"</td><td data-title='Color'>"+data[i].order_col_des+"</td><td data-title='Size'>"+data[i].size_code.toUpperCase()+"</td><td data-title='Input Job Quantity'>"+data[i].carton_act_qty+"</td><input type='hidden' name='old_size[]' value = '"+data[i].old_size+"'><td  data-title='Cumulative Reported Quantity'>"+data[i].reported_qty+"</td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+temp_var_bal+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty[]' onchange = 'validate_reporting_report("+i+") '"+readonly+"></td><td class="+hidden_class_for_remarks+">"+sampling+"</td><td class='"+hidden_class_sewing_in+"'>"+data[i].rejected_qty+"</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")' "+readonly+"></td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><td class='hide'><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><td class='hide'><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td><td class='hide'><input type='hidden' name='old_rep_qty[]' id='"+i+"old_rep_qty' value='"+data[i].reported_qty+"'></td><td class='hide'><input type='hidden' name='old_rej_qty[]' id='"+i+"old_rej_qty' value='"+data[i].rejected_qty+"'></td></tr>";
+						var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='Status'>"+status+"</td><td class='none' data-title='Doc.No'>"+data[i].doc_no+"</td><td data-title='Color'>"+data[i].order_col_des+"</td><td data-title='Size'>"+data[i].size_code.toUpperCase()+"</td><td data-title='Input Job Quantity'>"+data[i].carton_act_qty+"</td><input type='hidden' name='old_size[]' value = '"+data[i].old_size+"'><td  data-title='Cumulative Reported Quantity'>"+data[i].reported_qty+"</td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+temp_var_bal+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='"+temp_var_bal+"' required name='reporting_qty[]' onchange = 'validate_reporting_report("+i+") '"+readonly+"></td><td class="+hidden_class_for_remarks+">"+sampling+"</td><td class='"+hidden_class_sewing_in+"'>"+data[i].rejected_qty+"</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")' "+readonly+"></td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><td class='hide'><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><td class='hide'><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td><td class='hide'><input type='hidden' name='old_rep_qty[]' id='"+i+"old_rep_qty' value='"+data[i].reported_qty+"'></td><td class='hide'><input type='hidden' name='old_rej_qty[]' id='"+i+"old_rej_qty' value='"+data[i].rejected_qty+"'></td></tr>";
 						$("#dynamic_table").append(markup1);
 						$("#dynamic_table").hide();
 						console.log(data[i].flag);
@@ -388,8 +394,12 @@ $(document).ready(function()
 							}
 							val=i;
 							$('#loading-image').show();
-                            $('#flag_validation').val(0);
-							validating_remarks_qty(val,remarks);
+							if(emb_ops == undefined)
+							{
+								$('#flag_validation').val(0);
+								validating_remarks_qty(val,remarks);
+							}
+                           
 						}
 					}
 					var markup99 = "</tbody></table></div></div></div>";

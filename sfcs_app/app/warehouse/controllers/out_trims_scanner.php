@@ -64,21 +64,11 @@ body
 </style>
 <body onload="focus_box()">
 <div class='panel panel-primary'>
-<div class='panel-heading'>Online Barcode Scanning</div>
+<!--<div class='panel-heading'>Online Barcode Scanning</div>-->
 <div class='panel-body'>
-<div class=' text-left '><h4><span class="label label-success">T-OUT</span></h4></div>
+<!--<div class=' text-left '><h4><span class="label label-success">T-OUT</span></h4></div>-->
 
 <?php
-
-	echo "<br><div class='pull-right'>
-				<div><h3>
-					<a href='$url'>
-						<button class='equal btn btn-success'>In</button></a><Br/>
-					<a href='$out_trims_scanner'>
-						<button class='equal btn btn-danger'>T-Out</button></a> </h3>
-				</div>
-			 </div>";
-
 if(isset($_GET['location']))
 {
 	$location=$_GET['location'];
@@ -299,7 +289,7 @@ if(isset($_POST['check2']))
 </div>
 <div class="row" id='manual'>
 <div class='form-group col-md-3'>
-<label>Manual Entry:</label>
+</br>Manual Entry:</br>
 <input type="text" id='carton2' class='form-control alpha' size="19" value="<?php if($_GET["code"] > 0){echo $_GET["code"];} ?>"  name="cartonid2"><br/>
 </div>
 <?php 
@@ -322,100 +312,18 @@ if($_GET["bal"] > 0)
 
 
 //echo "<div class='pull-right'><h2><font color=\"red\">T-Out</font></h2><br/><h2><a href='".getFullURL($_GET['r'],'index.php','N')."'><button class='btn btn-primary'>In</button></a> <Br/><a href='".getFullURL($_GET['r'],'out.php','N')."'><button class='btn btn-primary'>F-Out</button></a><Br/><a href='$out_trims_scanner'><button class='btn btn-primary'>T-Out</button></a> </h2></div>";
-
+echo "<br><div class='pull-right'>
+				<div><h3>
+					<a href='$url'>
+						<button class='equal btn btn-success'>In</button></a><Br/>
+					<a href='$out_trims_scanner'>
+						<button class='equal btn btn-danger'>T-Out</button></a> </h3>
+				</div>
+			 </div>";
 ?>
 </div></div>
 </body>
 </html>
-
-
-<style>
-	.equal{
-		width : 80px;
-		text-align:center;
-	}
-	button{
-        text-align:right
-    }
-    .panel-primary{
-        margin : 2px 250px 2px 250px;
-        padding : 20px 5px 20px 5px;
-        border:1px solid blue;
-        text-align:center;
-    }
-    .panel-heading {
-        font-weight:bold;
-        text-align:left;
-    }
-    .label-success{
-        background-color:#5cb85c;
-        color:white;
-        text-align:left;
-        border-radius:5px;
-        margin-left:-760px;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-success {
-        background-color:green;
-        color:white;
-        margin-top:-20pt;
-        border-radius:5px;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-        margin-top:-10pt;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .label-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-    }
-    #location {
-        margin-left:20px;
-    }
-	#manual{
-		margin-top:10pt;	
-		margin-left:-400pt;	
-	}
-    #docket{
-        margin-top:10pt;
-        margin-left:-318pt;
-        padding:5px;
-    }
-    #carton2{
-        margin-top:-15px;
-        /* margin-left:-420pt; */
-        padding:5px;
-    }
-    #label2{
-        margin-top:-10px;
-        margin-left:-400pt;
-    }
-    #check_in{
-        margin-top:-50px;
-        margin-left:460px;
-        background-color:#337ab7;
-        padding:8px;
-        color:white;
-        border-radius:8px;
-    }
-    h2{
-        margin-left:-510px;
-        margin-top:-100px;
-    }
-    #status {
-        font-size:14pt;
-        margin-left:-10pt;
-    }
-</style>
 
 
 

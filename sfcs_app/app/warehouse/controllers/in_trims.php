@@ -33,11 +33,8 @@ body
 
 <body onload="focus_box()">
 <div class='panel panel-primary'>
-	<div class='panel-heading'>
-		Online Barcode Scanning
-	</div>
 	<div class='panel-body'>
-		<div class=' text-left'><h4><span class="label label-success">In</span></h4></div>
+		<!--<div class=' text-left'><h4><span class="label label-success">In</span></h4></div>-->
 		<?php
 
 		if(isset($_GET['location']))
@@ -45,6 +42,7 @@ body
 			$location=$_GET['location'];
 			
 			$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0 and status=1";
+			//echo "$sql";
 			$sql_result=mysqli_query($link, $sql);
 			if(mysqli_num_rows($sql_result)>0)
 			{
@@ -63,28 +61,18 @@ body
 			echo "<h2><label>Location  : </label>&nbsp;&nbsp;<span class='label label-danger'>Scan Location !</span></h2>";
 			$location="";
 		}
-
-           
-			echo "<br><div class='pull-right '>
-            <div><h4>
-                <a href=$url>
-                    <button class='equal btn btn-success'>In</button></a><Br/>
-                <a href=$out_trims_scanner>
-                    <button class='equal btn btn-danger'>T-Out</button></a> </h4>
-            </div>
-         </div>";
     
 		?>
 
-		<form name="input" method="post" action="?r=<?= $url ?>" enctype="multipart/form data" id="form">
+		<form name="input" method="post" action="<?= $_SERVER['PHP_SELF'] ?>" enctype="multipart/form data" id="form">
 		<div class="row">
 		<div class="form-group col-md-3">
-		<input type="text" name="cartonid" id="cartonid" class="form-control" onkeyup="document.input.submit();"  value="">
+		<input type="text" name="cartonid" id="cartonid" class="form-control" onkeydown="document.input.submit();"  value="">
 		</div>
 		</div>
 		<div class="row">
 		<div class="form-group col-md-3">
-		<label id="label2">Manual Entry: </label>
+		<br/>Enter Lable ID:<br/>
 		<input type="text" class="form-control" size="19" value="" id='cartonid2' name="cartonid2">
 		</div>
 		<input type="submit" id="check_in" name="check2" value="Check In" onclick='return check_docket(event)' class="btn btn-primary">
@@ -94,7 +82,14 @@ body
 		</form>
 		
 		<?php
-
+echo "<br><div>
+<div><h4>
+	<a href=$url>
+		<button class='equal btn btn-success'>In</button></a><Br/>
+	<a href=$out_trims_scanner>
+		<button class='equal btn btn-danger'>T-Out</button></a> </h4>
+</div>
+</div>";
 		//Normal Process
 		if(isset($_POST['cartonid']) or isset($_POST['check']))
 		{
@@ -227,89 +222,17 @@ body
 </body>
 
 </div>
-
-<style>
-	.equal{
-		width : 80px;
-		text-align:center;
-	}
-   
-    button{
-        text-align:right
+<script>
+$('#cartonid').on({
+    keypress: function() { typed_into = true; },
+    change: function() {
+		alert('hi');
+        if (typed_into) {
+            alert('type');
+            typed_into = false; //reset type listener
+        } else {
+            alert('not type');
+        }
     }
-    .panel-primary{
-        margin : 2px 250px 2px 250px;
-        padding : 20px 5px 20px 5px;
-        border:1px solid blue;
-        text-align:center;
-    }
-    .panel-heading {
-        font-weight:bold;
-        text-align:left;
-    }
-    .label-success{
-        background-color:#5cb85c;
-        color:white;
-        text-align:left;
-        border-radius:5px;
-        margin-left:-760px;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-success {
-        background-color:green;
-        color:white;
-        margin-top:-20pt;
-        border-radius:5px;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .btn-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-        margin-top:-10pt;
-        margin-right:-410px;
-        margin-bottom:20px;
-        padding : 4px 10px 4px 10px;
-    }
-    .label-danger {
-        background-color:#d9534f;
-        color:white;
-        border-radius:5px;
-    }
-    #location {
-        margin-left:20px;
-    }
-    #cartonid{
-        margin-top:-40pt;
-        margin-left:-318pt;
-        padding:5px;
-    }
-    #cartonid2{
-        margin-top:-15px;
-        /* margin-left:-420pt; */
-        padding:5px;
-    }
-    #label2{
-        margin-top:-10px;
-        margin-left:-400pt;
-    }
-    #check_in{
-        margin-top:-30px;
-        background-color:#337ab7;
-        padding:8px;
-        color:white;
-        border-radius:8px;
-    }
-    h2{
-        margin-left:-450px;
-    }
-    #status {
-        font-size:14pt;
-        margin-left:-10pt;
-    }
-    /* h3{
-        margin-top:-20px;
-    } */
-</style>
+});
+</script>

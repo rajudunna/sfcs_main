@@ -29,7 +29,8 @@ function validateQty(event)
 	// include("dbconf.php");
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));	
-	
+	$qry_short_codes = "SELECT * from $brandix_bts.ops_short_cuts";
+	$result_oper = $link->query($qry_short_codes);
 	if(isset($_GET['id'])){
 		
 		$operation_name = "";
@@ -118,6 +119,7 @@ function validateQty(event)
 										<button type="submit" class="btn btn-info" style="margin-top:18px;">Update</button>
 									</div>
 								</div>
+								
 							</form>
 						</div>
 					</div>
@@ -163,7 +165,13 @@ function validateQty(event)
 				$cnt = $res_res_checking_qry['cnt'];
 			}
 			// echo $cnt;
-			if($cnt == 0)
+			$short_key_code_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where short_cut_code = '$short_cut_code' and id <> $id";
+			$res_short_key_code_check_qry = mysqli_query($link,$short_key_code_check_qry);
+			while($res_res_res_short_key_code_check_qry = mysqli_fetch_array($res_short_key_code_check_qry))
+			{
+				$cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
+			}
+			if($cnt == 0 && $cnt_short == 0)
 			{
 				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code', work_center_id='".$work_center_id."', category='".$category."' where id='$id'";
 				//echo $qry_insert1;
@@ -182,9 +190,21 @@ function validateQty(event)
 					}
 				</script>";
 			}
-			else
+			else if($cnt != 0)
 			{
 				$sql_message = 'Operation Code Already in use. Please give other.';
+				echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+				die();
+			}
+			else if($cnt_short != 0)
+			{
+				$sql_message = 'Short Key Code Already in use. Please give other.';
+				echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+				die();
+			}
+			else if($cnt_short != 0 && $cnt != 0)
+			{
+				$sql_message = 'Short Key Code and Operation Code Already in use. Please give other.';
 				echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
 				die();
 			}

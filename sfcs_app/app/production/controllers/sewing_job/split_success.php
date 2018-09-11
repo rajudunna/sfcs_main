@@ -96,7 +96,6 @@
                 }
                 else 
                 {
-                    
                     if ($carton_act_qty == $qty) 
                     {
                         // echo "<script>alert('into if condition');</script>";

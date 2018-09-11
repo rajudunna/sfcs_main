@@ -32,6 +32,8 @@
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
+	$qry_short_codes = "SELECT * from $brandix_bts.ops_short_cuts";
+	$result_oper = $link->query($qry_short_codes);
 ?>
 <div class="container">
 	<?php 
@@ -86,13 +88,8 @@
 									<button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
 								</div>
 								<div class="col-sm-2">
-									 <div class="dropdown" hidden='true'>
-										<b>Default Operation</b>
-										<select class="form-control" id="sel1" name="sel1" required>
-										<option value="">Please Select</option><option value='yes'>Yes</option><option value='No' selected>No</option></select>	
-									</div>
+									<button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
 								</div>
-								 
 							</div>
 						</form>
 					</div>	
@@ -141,26 +138,41 @@
 	if (!$conn) {
 		die("Connection failed: " . mysql_error());
 	} */
-	if($operation_name!="" && $operation_code!="" )
+	if($operation_name!="" && $operation_code!="" && $short_key_code != "")
 	{
 		$checking_qry = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where operation_code = $operation_code";
-		//echo $checking_qry;
 		$res_checking_qry = mysqli_query($link,$checking_qry);
-	//$row=[];
 		while($res_res_checking_qry = mysqli_fetch_array($res_checking_qry))
 		{
 			$cnt = $res_res_checking_qry['cnt'];
 		}
-		if($cnt == 0)
+		$short_key_code_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where short_cut_code = '$short_key_code'";
+		$res_short_key_code_check_qry = mysqli_query($link,$short_key_code_check_qry);
+		while($res_res_res_short_key_code_check_qry = mysqli_fetch_array($res_short_key_code_check_qry))
 		{
-			$qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,work_center_id,category)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$work_center_id','$category')";
+			$cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
+		}
+		if($cnt == 0 && $cnt_short == 0)
+		{
+			$qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code')";
 			$res_do_num = mysqli_query($link,$qry_insert);
 			echo "<script>sweetAlert('Saved Successfully','','success')</script>";
 		}
-		else
+		else if($cnt != 0)
 		{
 			$sql_message = 'Operation Code Already in use. Please give other.';
 			echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+		}
+		else if($cnt_short != 0)
+		{
+			$sql_message = 'Short Cut Key Code Already in use. Please give other.';
+			echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+		}
+		else if($cnt_short != 0 && $cnt != 0)
+		{
+			$sql_message = 'Short Key Code and Operation Code Already in use. Please give other.';
+			echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+			die();
 		}
 	}
 	$query_select = "select * from $brandix_bts.tbl_orders_ops_ref";
@@ -169,11 +181,12 @@
 	echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
 	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>M3 Operation</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
 	$i=1;
-	while($res_result = mysqli_fetch_array($res_do_num)){
+	while($res_result = mysqli_fetch_array($res_do_num))
+	{
 		//var_dump($res_result);
 		//checking the operation scanned or not
 		$ops_code = $res_result['operation_code'];
-		$query_check = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where operation_code = $ops_code";
+		$query_check = "select count(*)as cnt from $brandix_bts.default_operation_workflow where operation_code = $ops_code";
 		$res_query_check=mysqli_query($link,$query_check);
 		while($result = mysqli_fetch_array($res_query_check))
 		{

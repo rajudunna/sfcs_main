@@ -290,6 +290,7 @@ if(isset($_POST['update']))
 			else
 			{
 				echo "<h2>Failed to update.. please retry..</h2>";
+				$failed=1;
 			}
 
 		}
@@ -476,6 +477,17 @@ if(isset($_POST['update']))
 		}
 		
 	}
+	if ($failed == 1) 
+	{
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
+	}
+	else
+	{
+		$go_back = 'doc_track_panel_cut';
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",10); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'trail.php',0,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
+	}
+	
+	
 }
 
 //--------- LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE

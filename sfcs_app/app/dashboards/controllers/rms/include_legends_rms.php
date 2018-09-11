@@ -8,10 +8,10 @@
 <div class="yellow" ></div> Fabric Issued to Cutting Module
 </div>
 <div style="width:220px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
-<div class="lgreen" ></div> Material Requested
+<div class="green" ></div> Material Requested
 </div>
 <div style="width:220px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
-<div class="green" ></div> Material Available and Not Requested
+<div class="lgreen" ></div> Material Available and Not Requested
 </div>
 <div style="width:240px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
 <div class="red" ></div> Material Not Available and Not Requested

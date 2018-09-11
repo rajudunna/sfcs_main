@@ -15,7 +15,7 @@
 	$res_do_num=mysqli_query($link,$query_select);
 	echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
 	echo "<table class='table table-bordered'>";
-	echo "<thead><tr><th>S.No</th><th>Operation Name</th><th>Default Operation</th><th> Operation Code</th><th>Action</th></tr></thead><tbody>";
+	echo "<thead><tr><th>S.No</th><th>Operation Name</th><th>Report To ERP</th><th> Operation Code</th><th>Action</th></tr></thead><tbody>";
 	$i=1;
 	$url = getFullURLLevel($_GET['r'],'operations_master_edit.php',0,'N');
 	while($res_result = mysqli_fetch_array($res_do_num)){
