@@ -693,7 +693,7 @@ tags will be replaced.-->
  <thead>
  <tr class=xl6419400 height=22 style='mso-height-source:userset;height:16.5pt'>
   <td colspan=21 height=22 class=xl6819400 width=1018 style='height:16.5pt;
-  width:759pt'>FG CHECK List</td>
+  width:759pt'><?php if($_GET['p_status']==2){ echo "FG CHECK List"; } else { echo "Carton Track"; }?></td>
   <td class=xl6319400 width=64 style='width:48pt'></td>
   <td class=xl6319400 width=64 style='width:48pt'></td>
   <td class=xl6319400 width=64 style='width:48pt'></td>
@@ -921,29 +921,22 @@ tags will be replaced.-->
 	  <td class=xl8219400>&nbsp;</td>
 	  <td class=xl8219400>&nbsp;</td>
 	  <td class=xl8319400 style='border-top:none' colspan=2><b>Description <b>: </td>
-	  <td class=xl8219400><?php echo $sql_row['pack_description'];?></td>
+	  <td class=xl8219400  colspan=11 ><?php echo $sql_row['pack_description'];?></td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8219400>&nbsp;</td>
-	  <td class=xl8219400>&nbsp;</td>
-	  <td class=xl8219400>&nbsp;</td>
-	  <td class=xl8219400>&nbsp;</td>
 	  </tr>
 	  <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td class=xl8319400 style='border-top:none' colspan=2><b>Colors <b>: </td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8219400><?php echo $sql_row['color'];?></td>
+	  <td class=xl8219400  colspan=17 ><?php echo $sql_row['color'];?></td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8219400 colspan=16>&nbsp;</td>	  
+	    
 	  </tr>
 	  <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td class=xl8319400 style='border-top:none' colspan=2><b>Sizes <b>: </td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8219400><?php echo $sql_row['size'];?></td>
+	  <td class=xl8219400  colspan=17 ><?php echo $sql_row['size'];?></td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8219400 colspan=16>&nbsp;</td>	  
+	    
 	  </tr>
 	<?php
 	}	
@@ -1026,7 +1019,8 @@ tags will be replaced.-->
 	 </tr>
 	 </thead>
  <?php
-	$cycle=0;$sno=1;
+	$cycle=0;$sno=1;$node_detail=array();$val=0;
+	$val=sizeof($carton_nodes);
 	for($j=0;$j<sizeof($carton_nodes);$j+=4)
 	{
 		echo "<tr class=xl6553519400 height=20 style='height:15.0pt'>";
@@ -1041,93 +1035,120 @@ tags will be replaced.-->
 			$sno++;
 		}
 		for($m=$j;$m<$j+4;$m++)
-		{
-			$node_detail=array();
-			$node_detail=explode("-",$carton_nodes[$m]);
-			if($node_detail[2]>0)
+		{		
+			
+			if($m<$val)
 			{
-				echo "<td class=xl8419400>".$node_detail[0]."</td>
-				<td class=xl8419400 style='border-left:none'>".$node_detail[1]."</td>
-				<td class=xl8419400 style='border-left:none'>".$node_detail[2]."</td>
-				<td class=xl8419400 style='border-left:none' colspan=2>".$node_detail[4]."</td>";
-			}
-			else
-			{
-				echo "<td class=xl8419400_new></td>
-				<td class=xl8419400_new style='border-left:none'></td>
-				<td class=xl8419400_new style='border-left:none'></td>
-				<td class=xl8419400_new style='border-left:none'>&nbsp;</td>
-				<td class=xl7919400_new></td>";
+				$node_detail=explode("-",$carton_nodes[$m]);
+				$val1=$node_detail[2];
+				if($val1>0)
+				{
+					echo "<td class=xl8419400>".$node_detail[0]."</td>
+					<td class=xl8419400 style='border-left:none;background-color:$node_detail[3];'>".$node_detail[1]."</td>
+					<td class=xl8419400 style='border-left:none;background-color:$node_detail[3];'>".$node_detail[2]."</td>
+					<td class=xl8419400 style='border-left:none;background-color:$node_detail[3];' colspan=2>".$node_detail[4]."</td>";
+				}
+				else
+				{
+					echo "<td class=xl8419400_new></td>
+					<td class=xl8419400_new style='border-left:none'></td>
+					<td class=xl8419400_new style='border-left:none'></td>
+					<td class=xl8419400_new style='border-left:none'>&nbsp;</td>
+					<td class=xl7919400_new></td>";
+				}			
 			}
 		}
+		unset($node_detail);
 		echo "<td class=xl6553519400></td>
 			<td class=xl6553519400></td>
 			<td class=xl6553519400></td>
 			</tr>";
 			$cycle++;
 	}
-	
+	?>
+	<tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
+	  <td height=20 class=xl7919400 style='height:15.0pt'></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl6553519400></td>
+	  <td class=xl6553519400></td>
+	  <td class=xl6553519400></td>
+	 </tr>
+	 <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
+	  <td height=20 class=xl7919400 style='height:15.0pt'></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl6553519400></td>
+	  <td class=xl6553519400></td>
+	  <td class=xl6553519400></td>
+	 </tr>
+	 <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
+	  <td height=20 class=xl7919400 style='height:15.0pt'></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl7919400></td>
+	  <td class=xl6553519400></td>
+	  <td class=xl6553519400></td>
+	  <td class=xl6553519400></td>
+	 </tr>
+	<?php
 }
- /*    
+    
  ?>
  
- <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl8219400 style='height:15.0pt'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
- </tr>
- <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl7919400 style='height:15.0pt'></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
- </tr>
- </thead>
-
   <tr class=xl6553519400 height=20 style='height:15.0pt'>
   <td height=20 class=xl7919400 style='height:15.0pt'></td>
   <td class=xl7919400></td>
@@ -1193,11 +1214,12 @@ tags will be replaced.-->
   <td class=xl6553519400></td>
   <td class=xl6553519400></td>
  </tr>
- 
+ <?php
+	/*
   <tr class=xl6553519400 style='height:auto'>
   <td class=xl7919400 style='height: auto; width:400px;' colspan=21>
 
-	<?php
+	
 //FOR Carton (Mixed and Full Allocaiton)
 $temp_doc_ref=array();
 $max_size_qty=0;
