@@ -208,7 +208,7 @@
 					$schedule=$_POST['schedule'];	
 					$pack_method=$_POST['pack_method'];	
 				}
-				// echo $style_code.'<br>'.$schedule.'<br>'.$pack_method.'<br>';
+				//echo $style_code.'<br>'.$schedule.'<br>'.$pack_method.'<br>';
 				$c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
 				$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
 				$valid_result = echo_title("$bai_pro3.tbl_pack_ref","COUNT(*)","ref_order_num",$schedule,$link);

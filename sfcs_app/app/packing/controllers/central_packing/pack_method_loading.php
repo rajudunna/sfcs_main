@@ -237,24 +237,20 @@
 					</div>";
 				}
 				// Order Details Display End
-				$url=getFullURL($_GET['r'],'print.php','R');
-				$url1=getFullURL($_GET['r'],'#','N');
+				$url=getFullURL($_GET['r'],'check_list.php','R');
 				$url2=getFullURL($_GET['r'],'#','N');
 				echo "
 					<div class='col-md-12'>
 						<div class='pull-right'>
-							<a class='btn btn-warning' href='$url?schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print All packing list
-							<a class='btn btn-warning' href='$url1?schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print All Carton track
+							<a class='btn btn-warning' href='$url?p_status=2&seq_no=0&schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print Packing list
+							<a class='btn btn-warning' href='$url?p_status=1&seq_no=0&schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print Carton track
 							<a class='btn btn-warning' href='$url2?schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print All Labels</a>
 						</div>
 					</div>";
-
-				
-
 				echo "<br>
 						<div class='col-md-12'>
 							<table class=\"table table-bordered\">
-								<tr>
+								<tr class=\"info\">
 									<th>S.No</th>
 									<th>Packing Method</th>
 									<th>Description</th>
@@ -288,8 +284,8 @@
 											<td>".$carton_count."</td>
 											<td>".$qty."</td>
 											<td>
-												<a class='btn btn-warning' href='$url?schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >FG Check List
-												<a class='btn btn-warning' href='$url1&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Carton Track
+												<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >FG Check List
+												<a class='btn btn-warning' href='$url?p_status=1&&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Carton Track
 												<a class='btn btn-warning' href='$url2&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Print Lables</a>
 											</td>
 										<tr>";

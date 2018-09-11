@@ -123,12 +123,12 @@
 					if ($_GET['style'] and $_GET['schedule'])
 					{
 						$style=$_GET['style'];
-						$schedule=$_GET['schedule'];
+						$scheduleid=$_GET['schedule'];
 					} 
 					else if ($_POST['style'] and $_POST['schedule'])
 					{
 						$style=$_POST['style'];
-						$schedule=$_POST['schedule'];	
+						$scheduleid=$_POST['schedule'];	
 					}
 					// echo $style."---".$schedule;
 					//getting parent id from tbl_pack_ref
@@ -142,7 +142,7 @@
 					
 					// echo "Style= ".$style_id."<br>Schedule= ".$sch_id.'<br>';
 					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
-					$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
+					$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$scheduleid,$link);
 					$mini_order_ref = echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_crt_schedule",$schedule,$link);
 					$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$mini_order_ref,$link);
 					$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
@@ -394,7 +394,7 @@
 						$ordr_qnty = $_GET['ordr_qnty'];
 						$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
 						echo "<div class='col-md-12 col-sm-12 col-xs-12'>
-							<a class='btn btn-success btn-sm' href='$url2&schedule=$schedule&style=$style' >Add Packing Method</a>
+							<a class='btn btn-success btn-sm' href='$url2&schedule=$scheduleid&style=$style' >Add Packing Method</a>
 							</div>";
 											
 			}
