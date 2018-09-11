@@ -906,7 +906,7 @@ tags will be replaced.-->
  <?php 
  for($i=0;$i<sizeof($seq_no);$i++)
  {
-	$query = "SELECT r.pack_method as pack,r.pack_description,GROUP_CONCAT(DISTINCT(trim(color))) as color,GROUP_CONCAT(DISTINCT(size_title)) as size FROM tbl_pack_size_ref AS r LEFT JOIN tbl_pack_ref p ON p.id = r.parent_id WHERE p.ref_order_num = '$schedule_id' AND r.seq_no = '$pac_seq_no[$i]' group by $pac_seq_no[$i]";
+	$query = "SELECT r.pack_method as pack,r.pack_description,GROUP_CONCAT(DISTINCT(trim(color))) as color,GROUP_CONCAT(DISTINCT(size_title)) as size FROM tbl_pack_size_ref AS r LEFT JOIN tbl_pack_ref p ON p.id = r.parent_id WHERE p.ref_order_num = '$schedule_id' AND r.seq_no = '$pac_seq_no[$i]' group by seq_no";
 	$sql_result=mysqli_query($link, $query) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count = mysqli_num_rows($sql_result);
 	//echo $count;

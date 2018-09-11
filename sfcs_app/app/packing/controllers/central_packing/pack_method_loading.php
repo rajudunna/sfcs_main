@@ -193,55 +193,8 @@
 								$ordered_qty[] = $orderQty_details['orderedQty'];
 							}
 						}
-					}
-					echo "<br>
-					<div class='col-md-12 table-responsive'>
-						<table class=\"table table-bordered\">
-							<tr class=\"info\">
-								<th>Size</th>";
-								for ($i=0; $i < sizeof($size_main); $i++)
-								{
-									echo "<th>$size_main[$i]</th>";
-								}	
-								
-								echo "<th>Total</th>
-							</tr>";
-
-							echo "<tr>
-									<td>Order Qty</td>";
-									for ($i=0; $i < $sizeofsizes; $i++)
-									{ 
-										echo "<td>$ordered_qty[$i]</td>";
-										$tot_ordered = $tot_ordered + $ordered_qty[$i];
-									}
-									echo "<td>$tot_ordered</td>
-								</tr>";
-
-							echo "<tr>
-									<td>Plan Qty</td>";
-									for ($i=0; $i < $sizeofsizes; $i++)
-									{ 
-										echo "<td>$planned_qty[$i]</td>";
-										$tot_planned = $tot_planned + $planned_qty[$i];
-									}
-									echo "<td>$tot_planned</td>
-								</tr>";
-						echo "</table>
-					</div>";
-				}
-				// Order Details Display End
-				$url=getFullURL($_GET['r'],'check_list.php','R');
-				$url2=getFullURL($_GET['r'],'barcode_carton.php','R');
-				echo "
-					<div class='col-md-12'>
-						<div class='pull-right'>
-							<a class='btn btn-warning' href='$url?p_status=2&seq_no=0&schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print Packing list
-							<a class='btn btn-warning' href='$url?p_status=1&seq_no=0&schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print Carton track
-							<a class='btn btn-warning' href='$url2?schedule=$schedule_id' target='_blank' >Print All Labels</a>
-						</div>
-					</div>";
-				echo "<br>
-						<div class='col-md-12'>
+						echo "<br>
+						<div class='col-md-12 table-responsive'>
 							<table class=\"table table-bordered\">
 								<tr class=\"info\">
 									<th>Size</th>";
@@ -253,35 +206,36 @@
 									echo "<th>Total</th>
 								</tr>";
 
-									echo "<tr>
-											<td>$i</td>
-											<td>".$operation[$pack_method]."</td>
-											<td>".$pack_result1['pack_description']."</td>
-											<td>".$pack_result1['color']."</td>
-											<td>".$pack_result1['size']."</td>
-											<td>".$carton_count."</td>
-											<td>".$qty."</td>
-											<td>
-												<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >FG Check List
-												<a class='btn btn-warning' href='$url?p_status=1&&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Carton Track
-												<a class='btn btn-warning' href='$url2?schedule=$schedule_id&seq_no=$pac_seq_no&packmethod=$pack_method' target='_blank' >Print Lables</a>
-											</td>
-										<tr>";
-									$i++;
-								}
-								echo "
-							</table>
+								echo "<tr>
+										<td>Order Qty</td>";
+										for ($i=0; $i < $sizeofsizes; $i++)
+										{ 
+											echo "<td>$ordered_qty[$i]</td>";
+											$tot_ordered = $tot_ordered + $ordered_qty[$i];
+										}
+										echo "<td>$tot_ordered</td>
+									</tr>";
+
+								echo "<tr>
+										<td>Plan Qty</td>";
+										for ($i=0; $i < $sizeofsizes; $i++)
+										{ 
+											echo "<td>$planned_qty[$i]</td>";
+											$tot_planned = $tot_planned + $planned_qty[$i];
+										}
+										echo "<td>$tot_planned</td>
+									</tr>";
+							echo "</table>
 						</div>";
 					}
-					// Order Details Display End
 					$url=getFullURL($_GET['r'],'check_list.php','R');
-					$url2=getFullURL($_GET['r'],'#','N');
+					$url2=getFullURL($_GET['r'],'barcode_carton.php','R');
 					echo "
 						<div class='col-md-12'>
 							<div class='pull-right'>
 								<a class='btn btn-warning' href='$url?p_status=2&seq_no=0&schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print Packing list
 								<a class='btn btn-warning' href='$url?p_status=1&seq_no=0&schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print Carton track
-								<a class='btn btn-warning' href='$url2?schedule=$schedule_id&style_id=$style1&sch_id=$schedule' target='_blank' >Print All Labels</a>
+								<a class='btn btn-warning' href='$url2?schedule=$schedule_id' target='_blank' >Print All Labels</a>
 							</div>
 						</div>";
 					echo "<br>
@@ -323,7 +277,7 @@
 												<td>
 													<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >FG Check List
 													<a class='btn btn-warning' href='$url?p_status=1&&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Carton Track
-													<a class='btn btn-warning' href='$url2&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Print Lables</a>
+													<a class='btn btn-warning' href='$url2?schedule=$schedule_id&seq_no=$pac_seq_no&packmethod=$pack_method' target='_blank' >Print Lables</a>
 												</td>
 											<tr>";
 										$i++;
