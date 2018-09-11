@@ -446,7 +446,7 @@ function validate_qty(ele)
 	var exist_qty = $('#temp'+ele.id).val();
 	console.log('entered = '+exist_qty);
 	if(Number(ele.value) < Number(exist_qty) ){
-		swal("You are entering less quantity","","warning");
+		swal("You are entering new order quantity less than the current order quantity","","warning");
 		ele.value = exist_qty;
 	}
 	
