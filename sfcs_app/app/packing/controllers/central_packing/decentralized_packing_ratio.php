@@ -474,11 +474,11 @@
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of cartons per Pack Job :</label>
-									<input type='text' name='noofcartons' id='noofcartons'  class='form-control' required>
+									<input type='text' name='noofcartons' id='noofcartons'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of Pack Jobs per Pack  :</label>
-									<input type='text' name='noofpackjobs' id='noofpackjobs'  class='form-control' required>
+									<input type='text' name='noofpackjobs' id='noofpackjobs'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
 									</div>";
 									echo "</br></br></br></br>";
 								
@@ -519,12 +519,12 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors); value='0'></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
 																				}
 																			}
 																			else
 																			{
-																				echo "<td><input type='hidden' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
+																				echo "<td><input type='hidden' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'/></td>";
 																			}																
 																		}
 																		echo "</tr>";
@@ -552,7 +552,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' value='0' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors);></td>";
+																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors);></td>";
 																}
 															echo "</tr>
 														</table>
@@ -635,11 +635,11 @@
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of cartons per Pack Job :</label>
-									<input type='text' name='noofcartons' id='noofcartons'  class='form-control' required>
+									<input type='text' name='noofcartons' id='noofcartons'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'>
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of Pack Jobs per Pack  :</label>
-									<input type='text' name='noofpackjobs' id='noofpackjobs'  class='form-control' required>
+									<input type='text' name='noofpackjobs' id='noofpackjobs'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'>
 									</div>";
 									echo "</br></br></br></br>";
 										//first table
@@ -679,12 +679,12 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors); value='0'></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
 																				}
 																			}
 																			else
 																			{
-																				echo "<td><input type='hidden' size='6' maxlength='5' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' value='0' /></td>";
+																				echo "<td><input type='hidden' size='6' maxlength='5' name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'/></td>";
 																			}
 																		}
 																	echo "</tr>";
@@ -699,7 +699,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' value='0' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
+												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
 													
 												echo "</div>
 											 </div>";
@@ -759,7 +759,7 @@
 					}
 				}
 			}
-
+			$statuscode=0;	
 			if (isset($_POST["SS_MS_save"]))
 			{
 				$original_size = $_POST['size'];
@@ -847,16 +847,29 @@
 							$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons."','".$noofpackjobs."','".$pack_method."','".$descr."')";
 							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
 							// echo $insert_tbl_carton_size_ref.'<br>';
+							$statuscode=1;
 						}
 					}
 				}
 				// echo "<script>sweetAlert('Packing Ratio Saved Successfully','','success')</script>";
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+				if($statuscode==1)
+				{	
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio Saved Successfully','','success');
 						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
 						}
 					</script>";
+				}
+				else
+				{
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+					function Redirect() {
+						sweetAlert('Packing Ratio not updated.',' Please Re-add Pack Method','warning');
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						}
+					</script>";
+				}
 			}
 
 			if (isset($_POST["MM_SM_save"]))
@@ -937,20 +950,33 @@
 							{
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}
-
 							$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons."','".$noofpackjobs."','".$pack_method."','".$descr."')";
 							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
 							// echo $insert_tbl_carton_size_ref.'<br>';
+							$statuscode=1;
 						}
 					}
 				}
 				// echo "<script>sweetAlert('Packing Ratio Saved Successfully','','success')</script>";
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+				if($statuscode==1)
+				{	
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio Saved Successfully','','success');
 						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
 						}
 					</script>";
+				}
+				else
+				{
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+					function Redirect() {
+						sweetAlert('Packing Ratio not updated.',' Please Re-add Pack Method','warning');
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						}
+					</script>";
+				}
+					
 			}
 		?>
 	</div>

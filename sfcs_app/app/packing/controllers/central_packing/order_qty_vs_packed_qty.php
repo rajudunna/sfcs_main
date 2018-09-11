@@ -372,17 +372,14 @@
 									// $url3=getFullURL($_GET['r'],'.php','R');
 									// $url4=getFullURL($_GET['r'],'.php','R');
 									$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-									$statusqry="select status from $bai_pro3.pac_stat_log where schedule='$schedule' and pac_seq_no='$seq_no' and pack_method='$pack_method'";
+									$statusqry="select * from $bai_pro3.pac_stat_log where schedule='$schedule' and pac_seq_no='$seq_no' and status='DONE'";
 									// echo $statusqry;
 									$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
-									if($statrow=mysqli_fetch_array($statusrslt))
-									{
-										$cartstatus=$statrow['status'];
-									}
-									if($cartstatus != 'DONE')
+									
+									if(mysqli_num_rows($statusrslt)==0)
 									{
 										echo "<td><a class='btn btn-success btn-sm' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no' target='_blank'>Generate pack Job</a>
-										<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method>Delete</a></td>";
+										<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method&schedule=$schedule&style=$style>Delete</a></td>";
 									}
 									else
 									{
@@ -395,32 +392,32 @@
 						echo "</table></div>";
 						$pack_qnty = $_GET['order_total'];
 						$ordr_qnty = $_GET['ordr_qnty'];
-						// if($order_total>=$pack_tot){
-							
-							// echo "PACK METHOD GENERATED FOR THIS STYLE AND SCHEDULE";
-						// }
-						// else
-						{
-							$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
-							echo "<div class='col-md-12 col-sm-12 col-xs-12'>
-								<a class='btn btn-success btn-sm' href='$url2&schedule=$schedule&style=$style' target='_blank' >Add Packing Method</a>
-								</div>";
-							
-						}
-						
+						$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
+						echo "<div class='col-md-12 col-sm-12 col-xs-12'>
+							<a class='btn btn-success btn-sm' href='$url2&schedule=$schedule&style=$style' >Add Packing Method</a>
+							</div>";
+											
 			}
 				if($_GET['seq_no'] && $_GET['parent_id'] && $_GET['pack_method'])
 				{
 					$seq_no=$_GET['seq_no'];
 					$parent_id=$_GET['parent_id'];
 					$pack_method=$_GET['pack_method'];
+					$schedule=$_GET['schedule'];
+					$style=$_GET['style'];
 					$delete_pack_meth="delete from $bai_pro3.tbl_pack_size_ref where seq_no='$seq_no' and parent_id='$parent_id' and pack_method='$pack_method'";
 				    // echo $delete_pack_meth;die();
 					$dele_pack_qry_res=mysqli_query($link, $delete_pack_meth) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(! $dele_pack_qry_res ) {
 						die('Could not delete data: ' . mysql_error());
 								   }
-					echo '<script>swal("Packing Method Deleted Sucessfully","","warning")</script>';	
+					//echo '<script>swal("Packing Method Deleted Sucessfully","","warning")</script>';
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+					function Redirect() {
+						swal('Packing Method Deleted Sucessfully','','warning');
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						}
+					</script>";					
 				}
 
 			?> 
