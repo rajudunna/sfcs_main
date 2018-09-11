@@ -76,15 +76,18 @@ if(isset($_POST['formSubmit']))
             if($docket_number_post == $sql_row['doc_no']){
                 if($sql_row['a_plies'] >= $plies_post) {
                     $get_style_color_qry = "SELECT * FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT order_tid FROM bai_pro3.plandoc_stat_log WHERE doc_no=$docket_number_post)";
+                    // echo $get_style_color_qry;
                     $get_style_color_qry_result = mysqli_query($link,$get_style_color_qry) or exit(" Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row1 = mysqli_fetch_array($get_style_color_qry_result)){
                         $order_style_no_result = $sql_row1['order_style_no'];
 
                         $get_operation_code_qry = "SELECT * FROM $brandix_bts.tbl_style_ops_master WHERE style='$order_style_no_result' AND color=(SELECT order_col_des FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT order_tid FROM bai_pro3.plandoc_stat_log WHERE doc_no=$docket_number_post)) AND operation_code > 15 LIMIT 1";
                         $get_operation_code_qry_result = mysqli_query($link,$get_operation_code_qry) or exit(" Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        // echo $get_operation_code_qry;
                         while($sql_row2 = mysqli_fetch_array($get_operation_code_qry_result)){
                             if($sql_row2['operation_code'] > 15){
                                 $bundle_creation_data_qry = "SELECT *,SUM(send_qty) AS size_wise_send_qty FROM brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id > 15 AND operation_id IN (SELECT MIN(operation_id) FROM brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id>15) GROUP BY size_title  ORDER BY size_id";
+                                // echo $bundle_creation_data_qry;
                                 $bundle_creation_data_qry_result = mysqli_query($link,$bundle_creation_data_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
                                 while($sql_row3 = mysqli_fetch_array($bundle_creation_data_qry_result)){
                                     if($sql_row3['send_qty']!=$sql_row3['size_wise_send_qty']){
@@ -118,61 +121,76 @@ if(isset($_POST['formSubmit']))
                                                             $send_qty_final=$sizes_rat[$sizes[$i]]*$plies_post;
                                                            
                                                                 if($repeat_size == ''){
-                                                                    $send_qty_new = $sql_row23['send_qty']-$send_qty_final;
-                                                                    $update_bundle_creation_data_qry = "UPDATE $brandix_bts.bundle_creation_data SET send_qty=$send_qty_new WHERE size_title='".$sizes_tit[$sizes[$i]]."' AND docket_number=$docket_number_post AND operation_id=".$sql_row23['operation_id'];
-                                                                    $update_bundle_creation_data_qry_result = mysqli_query($link,$update_bundle_creation_data_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                                                                    if($sql_row23['send_qty'] > $sql_row23['recevied_qty'] && $send_qty_final>0){
+                                                                        $send_qty_new = $sql_row23['send_qty']-$send_qty_final;
+                                                                        $check = $sql_row23['send_qty']-$sql_row23['recevied_qty'];
+                                                                        if($send_qty_new>0 && $check>=$send_qty_final){
+                                                                            $update_bundle_creation_data_qry = "UPDATE $brandix_bts.bundle_creation_data SET send_qty=$send_qty_new WHERE size_title='".$sizes_tit[$sizes[$i]]."' AND docket_number=$docket_number_post AND operation_id=".$sql_row23['operation_id'];
+                                                                            $update_bundle_creation_data_qry_result = mysqli_query($link,$update_bundle_creation_data_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                                                                            $send_qty_final2 = $sql_row23['send_qty'] - $send_qty_update; 
+                                                                            $reversal_docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,parent_bundle_creation_id,bundle_number,size_title,cutting_reversal,act_cut_status)values(".$docket_number_post.",".$sql_row23['id'].",".$sql_row23['bundle_number'].",'".$sizes_tit[$sizes[$i]]."',".$send_qty_final2.",'Reversal')";
+                                                                            // echo $reversal_docket_log;
+                                                                            $reversal_docket_log_qry = mysqli_query($link,$reversal_docket_log) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                                                                        }
+                                                                        else {
+                                                                            $check_validation = 1;
+                                                                        }
+                                                                    }
                                                                 }
                                                                 else {
-                                                                   
+                                                                    // echo 'else';
                                                                     $query="SELECT sum(send_qty) as send_qty1,sum(recevied_qty) as recevied_qty1,operation_id from $brandix_bts.bundle_creation_data where docket_number=$docket_number_post and size_title='".$sql_row23['size_title']."' AND operation_id IN (SELECT MIN(operation_id) FROM brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id>15)";
+                                                                    // echo '<br/>'.$query;
                                                                     $query_result = mysqli_query($link,$query) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
                                                                    
 
                                                                     while($sql_row_new = mysqli_fetch_array($query_result)){
                                                                         $balance = ($sql_row_new['send_qty1']-$sql_row_new['recevied_qty1']);
-                                                                    
+                                                                        // echo '<br/><u>'.$balance.' - '.$send_qty_final.'</u><br/>';
                                                                         if($balance>0 && $balance >= $send_qty_final){
                                                                             $query1 = "SELECT * from $brandix_bts.bundle_creation_data where docket_number=$docket_number_post and size_title='".$sql_row23['size_title']."' AND operation_id IN (SELECT MIN(operation_id) FROM $brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id>15) ORDER BY bundle_number";
+                                                                            // echo $query1;
                                                                             $query_result1 = mysqli_query($link,$query1) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
-
                                                                            
                                                                             while($sql_row_new1 = mysqli_fetch_array($query_result1)){
-                                                                               
-                                                                                if($sql_row_new1['send_qty'] > $sql_row_new1['recevied_qty']){
-                                                                                    if($balance < $sql_row_new1['recevied_qty']){
-                                                                                        $send_qty_update = $sql_row_new1['send_qty'] - $balance;
-                                                                                    } else {
-                                                                                        $send_qty_update = $sql_row_new1['send_qty'] - $sql_row_new1['recevied_qty'];
-                                                                                        $balance = $balance - $sql_row_new1['recevied_qty'];
+                                                                                if($sql_row_new1['send_qty'] > $sql_row_new1['recevied_qty'] && $send_qty_final>0){
+                                                                                    if($sql_row_new1['send_qty'] < $send_qty_final){
+                                                                                        $send_qty_update = $sql_row_new1['send_qty'] - $sql_row_new1['send_qty'];
                                                                                     }
-                                                                                    
+                                                                                    else {
+                                                                                        $send_qty_update = $sql_row_new1['send_qty'] - $send_qty_final;
+                                                                                    }
+                                                                                    $temp = $sql_row_new1['send_qty'] - $send_qty_update;
+                                                                                    $send_qty_final = $send_qty_final-$temp;
+                                                                                    $update_bundle_creation_data_qry = "UPDATE $brandix_bts.bundle_creation_data SET send_qty=$send_qty_update WHERE size_title='".$sizes_tit[$sizes[$i]]."' AND docket_number=$docket_number_post AND operation_id=".$sql_row23['operation_id']." AND bundle_number=".$sql_row_new1['bundle_number'];
+                                                                                    // echo '<br>~~~~'.$update_bundle_creation_data_qry;
+                                                                                    $update_bundle_creation_data_qry_result = mysqli_query($link,$update_bundle_creation_data_qry) or exit(" Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                                                                    $send_qty_final2 = $sql_row_new1['send_qty'] - $send_qty_update; 
+                                                                                    $reversal_docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,parent_bundle_creation_id,bundle_number,size_title,cutting_reversal,act_cut_status)values(".$docket_number_post.",".$sql_row_new1['id'].",".$sql_row_new1['bundle_number'].",'".$sizes_tit[$sizes[$i]]."',".$send_qty_final2.",'Reversal')";
+                                                                                    // echo $reversal_docket_log;
+                                                                                    $reversal_docket_log_qry = mysqli_query($link,$reversal_docket_log) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
                                                                                 }
-                                                                                else {
-                                                                                    $send_qty_update = $sql_row_new1['send_qty'];
-                                                                                }
-                                                                                $update_bundle_creation_data_qry = "UPDATE $brandix_bts.bundle_creation_data SET send_qty=$send_qty_update WHERE size_title='".$sizes_tit[$sizes[$i]]."' AND docket_number=$docket_number_post AND operation_id=".$sql_row23['operation_id']." AND bundle_number=".$sql_row_new1['bundle_number'];
-                                                                                $update_bundle_creation_data_qry_result = mysqli_query($link,$update_bundle_creation_data_qry) or exit(" Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
                                                                             }
                                                                         }
                                                                         
                                                                     }
 
                                                                 }
-                                                                if($update_query >0){
+                                                                if($update_bundle_creation_data_qry_result >0){
                                                                     $plies_new= $sql_row['a_plies']-$plies_post;
                                                                     if($plies_new>=0){
                                                                         if($plies_new != 0) {
-                                                                            $status = 'Reversal';
                                                                             $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=$plies_new WHERE doc_no=$docket_number_post";
                                                                         } else {
                                                                             $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=$plies_new,act_cut_status='Reversal' WHERE doc_no=$docket_number_post";
 
                                                                         }
                                                                         $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
-                                                                        $reversal_docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,parent_bundle_creation_id,bundle_number,size_title,send_qty,act_cut_status)values(".$docket_number_post.",".$sql_row3['id'].",".$sql_row3['bundle_number'].",'".$sizes_tit[$sizes[$i]]."',".$send_qty_final.",'".$status."')";
-                                                                        $reversal_docket_log_qry = mysqli_query($link,$reversal_docket_log) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
                                                                         $var = 1;
                                                                     }
+                                                                }
+                                                                elseif($check_validation == 1){
+                                                                    ?><script>sweetAlert('Plies','Enter valid plies','warning');</script><?php
                                                                 }
                                                                 else{
                                                                     $operation_code_value = $sql_row2["operation_code"];
@@ -207,6 +225,7 @@ if(isset($_POST['formSubmit']))
         }
         if($var==1){
             echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
+            
         } 
         if($var!=1) {
             $operation_code_value = $sql_row2["operation_code"];
