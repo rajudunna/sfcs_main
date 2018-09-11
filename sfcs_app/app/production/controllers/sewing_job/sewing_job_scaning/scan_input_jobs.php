@@ -163,6 +163,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<input type="hidden" name="operation_id" id='operation_id' value="<?php echo $operation_code;?>">
 						<input type="hidden" name="barcode_generation" id='barcode_generation' value="<?php echo $barcode_generation;?>">
 						<input type="hidden" name="response_flag" id='response_flag'>
+						<input type="hidden" name="emb_cut_check_flag" id='emb_cut_check_flag' value='0'>
 						
 						<div id ="dynamic_table1">
 						</div>
@@ -256,11 +257,12 @@ $(document).ready(function()
 			dataType: "json",
 			success: function (response) 
 			{	
+				console.log(response);
 				s_no = 0;
 				var data = response['table_data'];
 				var flag = response['flag'];
 				//var sample_qtys = response[]]
-				console.log(response['status']);
+				var emb_ops = response['emb_cut_check_flag'];
 				if(response['status'])
 				{
 					sweetAlert('',response['status'],'error');
@@ -275,6 +277,10 @@ $(document).ready(function()
 				}
 				else if(data)
 				{
+					if(response['emb_cut_check_flag'])
+					{
+						$('#emb_cut_check_flag').val(emb_ops);
+					}
 					console.log(data);
 					$('#dynamic_table1').html('');
 					$('#module_div').show();
@@ -301,7 +307,7 @@ $(document).ready(function()
 					{
 						var hidden_class='';
 						var hidden_class_sewing_in='';
-						if (operation_id == 129 || operation_id == 130)
+						if (operation_id == 900 || operation_id == 130)
 						{
 							var hidden_class_sewing_in='hidden';
 						}
@@ -351,7 +357,7 @@ $(document).ready(function()
 							}
 						}
 						
-						if(data[i].flag == 'packing_summary_input')
+						if(data[i].flag == 'packing_summary_input' || emb_ops != undefined)
 						{
 							temp_var_bal = data[i].balance_to_report;
 							$('#flag_validation').val(1);
@@ -388,8 +394,12 @@ $(document).ready(function()
 							}
 							val=i;
 							$('#loading-image').show();
-                            $('#flag_validation').val(0);
-							validating_remarks_qty(val,remarks);
+							if(emb_ops == undefined)
+							{
+								$('#flag_validation').val(0);
+								validating_remarks_qty(val,remarks);
+							}
+                           
 						}
 					}
 					var markup99 = "</tbody></table></div></div></div>";
