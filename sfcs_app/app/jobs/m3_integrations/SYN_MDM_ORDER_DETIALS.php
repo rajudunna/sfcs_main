@@ -14,6 +14,9 @@ set_time_limit(6000000);
 		$query_text2 = "CALL M3BRNPRD.RPT_APL_ORDER_DETAILS('".$cluster_code."','".$plant_prod_code."',NULL,NULL,'".$from."','".$to."','2')";
 		$result2 = odbc_exec($conn, $query_text2);
 
+		$sql13="insert into $m3_inputs.order_details_temp select * from $m3_inputs.order_details";
+		mysqli_query($link, $sql13) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 		$trunc_order = "TRUNCATE TABLE $m3_inputs.order_details";
 		$sql_trunc_order = mysqli_query($link, $trunc_order);
 		$j=0;
