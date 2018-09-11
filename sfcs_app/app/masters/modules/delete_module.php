@@ -33,6 +33,40 @@ if($rid!=''){
 			window.location.href = \"$url\";
 		  }
 		}); }, 100);</script>";
+
+		$plan_dashboard11="select * from bai_pro3.plan_dashboard where module='$module_name'";
+		$result11= mysqli_query($conn, $plan_dashboard11);
+		$rowcount11=mysqli_num_rows($result11);
+
+
+		$plan_dashboard_input12="select * from bai_pro3.plan_dashboard_input where input_module='$module_name'";
+		$result12= mysqli_query($conn, $plan_dashboard_input12);
+		$rowcount12=mysqli_num_rows($result12);
+
+
+		$fabric_priorities="select * from bai_pro3.fabric_priorities where module='$module_name'";
+		$fabric_priorities1= mysqli_query($conn, $fabric_priorities);
+		$rowcount13=mysqli_num_rows($fabric_priorities1);
+		
+if($rowcount11>0 or 	$rowcount12>0 or 	$rowcount13>0){
+
+	$url=getFullURL($_GET['r'],'add_module.php','N');
+			//echo $url;
+			//echo "Record updated successfully";
+			echo"<script>setTimeout(function () { 
+				swal({
+				  title: 'Module Already in Production',
+				  text: 'Message!',
+				  type: 'success',
+				  confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+				  if (isConfirm) {
+					window.location.href = \"$url\";
+				  }
+				}); }, 100);</script>";
+}
+else{
 $delete="delete from bai_pro3.module_master where id='$rid'";
 if (mysqli_query($conn, $delete)) {
 			//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
@@ -64,9 +98,7 @@ if($rowcount==0 or $rowcount==''){
 	
 }
 	
-		
-		
-		
-
 	}
+
+}
 ?>
