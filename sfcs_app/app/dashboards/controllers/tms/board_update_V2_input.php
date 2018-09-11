@@ -86,11 +86,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<td align=\"right\">Style:<br/>Schedule:<br/>Job:<br/>Total Qty:<br/>Fab. Status:<br/>Trim Status:</td>";
 		$module=$mods[$x];
 		
+		// 		$sql1="SELECT input_job_no_random_ref,input_module,input_priority,input_trims_status,input_panel_status,track_id,input_job_no,tid,input_job_no_random,
+		// order_tid,doc_no,acutno,act_cut_status,'' as act_cut_issue_status,a_plies,p_plies,color_code,order_style_no,order_del_no,order_col_des,ft_status,st_status,pt_status,
+		// trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) as carton_act_qty FROM $bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 OR input_trims_status IS NULL OR input_panel_status!=2 OR 
+		// input_panel_status IS NULL) AND input_module=$module and order_tid is not null GROUP BY input_job_no_random_ref ORDER BY input_priority LIMIT 14";
 		$sql1="SELECT input_job_no_random_ref,input_module,input_priority,input_trims_status,input_panel_status,track_id,input_job_no,tid,input_job_no_random,
-order_tid,doc_no,acutno,act_cut_status,'' as act_cut_issue_status,a_plies,p_plies,color_code,order_style_no,order_del_no,order_col_des,ft_status,st_status,pt_status,
-trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) as carton_act_qty FROM $bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 OR input_trims_status IS NULL OR input_panel_status!=2 OR 
-input_panel_status IS NULL) AND input_module=$module and order_tid is not null GROUP BY input_job_no_random_ref ORDER BY input_priority LIMIT 14";
-		//echo $sql1."<br/>";
+		order_tid,doc_no,acutno,act_cut_status,'' as act_cut_issue_status,a_plies,p_plies,color_code,order_style_no,order_del_no,order_col_des,ft_status,st_status,pt_status,
+		trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) as carton_act_qty FROM $bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 OR input_trims_status IS NULL OR input_panel_status!=2) AND input_module=$module and order_tid is not null GROUP BY input_job_no_random_ref ORDER BY input_priority LIMIT 14";
+		// echo $sql1."<br/>";
 		$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error2".mysqli_error());
 		$sql_num_check=mysqli_num_rows($sql_result1);
 		while($sql_row1=mysqli_fetch_array($sql_result1))
