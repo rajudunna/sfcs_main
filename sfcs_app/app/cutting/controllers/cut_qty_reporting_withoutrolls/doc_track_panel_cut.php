@@ -103,13 +103,14 @@ if(isset($_POST['submit']))
 						if($cat_ref>0 and $fabric_status==5){
 							$var_1 = true;
 						}else{
-							$var_1 = false;
+							$validated_content="Requested Docket doesn't exist or Docket Not printed or Fabric Not issued to this docket or Docket not issued to Cutting. Please contact your planner/RM Team.";
 						}
 					}else{
 						if($cat_ref>0 and ($fabric_status==5 or $fabric_status==1)){
 							$var_1 = true;
 						}else{
 							$var_1 = false;
+							$validated_content="Requested Docket doesn't exist or Docket Not printed or Fabric Not issued to this docket. Please contact your planner/RM Team.";
 						}
 					}
 					if($var_1)	
@@ -313,7 +314,7 @@ if(isset($_POST['submit']))
 					}
 					else
 					{				
-						echo "Requested Docket doesn't exist or Docket Not printed or Fabric Not issued to this docket. Please contact your planner/RM Team.";
+						echo $validated_content;
 					}
 		}
 		else

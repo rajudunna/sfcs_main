@@ -395,7 +395,7 @@ if(isset($_POST['submit']))
 							$$e = $i;
 						}
 					}			
-					echo '<input type="hidden" name="s0'.$j.$cnt.'" value='.$$b.'>';
+					echo '<input type="hidden" id="s0'.$j.$cnt.'"  name="s0'.$j.$cnt.'" value='.$$b.'>';
 					$x=$i;
 					$i = sprintf("%02d",$x);
 					$y =$j;
@@ -403,11 +403,14 @@ if(isset($_POST['submit']))
 					if($$c != null && $$b != null && $$a != null)
 					{
 						$flag1 = ($$b == 0)?'readonly':'';	
-						$row_count++;				
+						$row_count++;
+						?>
+									
+						<?php
 						echo "<tr>
 								<td><center>".$row2['order_col_des']."</center></td>
 								<td><center>".$$c."</center></td>
-								<td><center>".$$b."</center></td>
+								<td><input type='hidden' id='temps$i$cnt' value='".$$b."'><center>".$$b."</center></td>
 								<td><center>".$$a."</center></td>
 								<td><center><input type=\"text\" style='border=\"0px\"' name=\"s".$i."ext".$cnt."\" value=\"0\" size=\"4\" class=\"form-control input-sm float\" onKeyUp=\"
 								if(event.keyCode == 9) 
@@ -416,7 +419,7 @@ if(isset($_POST['submit']))
 									document.f3.s".$i.$cnt.".value = parseInt(document.f3.s".$j.$cnt.".value)+parseInt(document.f3.s".$j.$cnt.".value*document.f3.ext.value/100);
 								else
 									document.f3.s".$i.$cnt.".value = parseInt(document.f3.s".$j.$cnt.".value)+parseInt(document.f3.s".$j.$cnt.".value*document.f3.s".$i."ext".$cnt.".value/100);\"></center></td>
-								<td><center><input class=\"form-control input-sm\" type=\"text\" readonly style='border=\"0px\"' $flag1 onkeypress=\"return isNum(event)\" id=\"s".$i.$cnt."\" name=\"s".$i.$cnt."\" value=".$$b."></center></td></tr>";
+								<td><center><input class=\"form-control input-sm\" type=\"text\"  style='border=\"0px\"' $flag1 onchange=\"validate_qty(this);\" id=\"s".$i.$cnt."\" name=\"s".$i.$cnt."\" value=".$$b."></center></td></tr>";
 					}
 					$j = $j+10;		
 				}
@@ -483,6 +486,19 @@ if(isset($_POST["update"])){
 }
 ?>
 <script>
+
+function validate_qty(ele)
+{
+	var k= 10;
+	var exist_qty = $('#temp'+ele.id).val();
+	console.log('entered = '+exist_qty);
+	if(Number(ele.value) < Number(exist_qty) ){
+		swal("You are entering new order quantity less than the current order quantity","","warning");
+		ele.value = exist_qty;
+	}
+	
+}
+
 function calculateExcess(){
 	var rowscount = document.getElementById('rowscount').value;
 	for(var i=0;i<rowscount;i++){
@@ -490,6 +506,7 @@ function calculateExcess(){
 		for(var j=1;j<=50;j++){
 			if(i<10){
 				var ex = document.getElementsByName('s0'+k+i)[0].value;
+				
 				if(ex!=0){
 					var nameid = 's0'+j+i;
 					document.getElementById(nameid).value=Math.round(parseInt(ex)+parseFloat(ex*document.f3.ext.value/100));

@@ -78,10 +78,13 @@ table
 
 </style>
 <script>
-
+function shiftselect()
+{
+	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&shift="+document.select_module.shift.value
+}
 function firstbox()
 {
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&section="+document.select_module.select_section.value
+	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&shift="+document.select_module.shift.value+"&section="+document.select_module.select_section.value
 }
 function second_box(){
 	var sdate = document.getElementById('sdate').value;
@@ -195,7 +198,7 @@ function second_box(){
 
 	function validateThisFrom(thisForm) 
 	{
-		if (thisForm.module.value == "0")
+		if (thisForm.module.value == "0" || thisForm.module.value == "")
 		{
 			sweetAlert("Please select MODULE",'','warning');
 			return false;
@@ -278,7 +281,7 @@ function second_box(){
 		}
 
 		$module_ref=$_POST['module']; 
-		$shift=$_POST['shift'];
+		$shift=$_GET['shift'];
 		$zone_base=$_POST['zone_base'];
 	?>
 
@@ -296,7 +299,7 @@ function second_box(){
 		mysqli_query($link, $sql12) or exit("Sql Error74125".mysqli_error($GLOBALS["___mysqli_ston"]));
 	?>
 <!--<div id="page_heading"><span style="float"><h3>Rework Update Panel</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
-	<form action="#" method="POST" onSubmit="return validateThisFrom (this);" name="select_module" id="select_module">
+	<form action="#" method="POST" onsubmit="return validateThisFrom (this);" name="select_module" id="select_module">
 		<input type="hidden" name="today" id="today" value="<?php echo date("Y-m-d"); ?>">
 		<div class="col-sm-2"><?php 
 			
@@ -307,10 +310,11 @@ function second_box(){
 		echo "</div>";
 		?>		
 	<div class="col-sm-2">
-		Shift:	<select name="shift" class="form-control">
+		Shift:	<select name="shift" class="form-control" id="shift" onchange="shiftselect();">
 					<?php 
-						for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-							<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+						for ($i=0; $i < sizeof($shifts_array); $i++) {
+							?>
+							<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift === $shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
 						<?php }
 					?>
 				</select>
@@ -337,7 +341,7 @@ function second_box(){
 		echo "</select></div>";	
 
 		echo "<div class='col-sm-2'>Module: <select name='module' class='form-control' id='module' onclick='check_section()'>";
-				echo "<option value='0'>Select Module</option>";
+		echo "<option value='0' selected>Select Module</option>";
 		$sql="select group_concat(sec_mods) as \"sec_mods\" from $bai_pro3.sections_db where sec_id in (\"$section\")";
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -399,8 +403,8 @@ function second_box(){
 
 if (isset($_POST['submit11']))
 {
+	echo $_POST['shift']."selected Shift";
 ?>		
-
 	<FORM method="post" name="test" action="<?= getFullURLLevel($_GET['r'],'rework_update_process.php',0,'N');?>" enctype="multipart/form-data" id="test">
 		<!--<input type='hidden' name='r' value="<?= base64_encode(getFullURLLevel($_GET['r'],'rework_update_process.php',0,'R')) ?>">-->
 		<input type="hidden" name="form_secret" value="<?php echo $_SESSION['form_secret']; ?>" id="form_secret">
@@ -610,7 +614,6 @@ if (isset($_POST['submit11']))
 		}
 		else{
 			?>		
-
 	<FORM method="post" name="test" action="<?= getFullURLLevel($_GET['r'],'rework_update_process.php',0,'N');?>" enctype="multipart/form-data" id="test">
 		<!--<input type='hidden' name='r' value="<?= base64_encode(getFullURLLevel($_GET['r'],'rework_update_process.php',0,'R')) ?>">-->
 		<input type="hidden" name="form_secret" value="<?php echo $_SESSION['form_secret']; ?>" id="form_secret">
@@ -792,6 +795,7 @@ if (isset($_POST['submit11']))
 		}else{
 			if(in_array($authorized,$has_permission))
 			{
+				
 				echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();" style="display:none">';
 				echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="" style="display:none">';
 				echo "<p>If You Want to Update Please Select Section,Module and Time</p>";
