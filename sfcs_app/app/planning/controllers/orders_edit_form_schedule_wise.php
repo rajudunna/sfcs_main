@@ -447,7 +447,7 @@ function validate_qty(ele)
 	console.log('entered = '+exist_qty);
 	if(Number(ele.value) < Number(exist_qty) ){
 		swal("You are entering less quantity","","warning");
-		ele.value = 0;
+		ele.value = exist_qty;
 	}
 	
 }
