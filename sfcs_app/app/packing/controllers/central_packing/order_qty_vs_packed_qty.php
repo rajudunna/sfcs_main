@@ -371,7 +371,7 @@
 									// $url3=getFullURL($_GET['r'],'.php','R');
 									// $url4=getFullURL($_GET['r'],'.php','R');
 									$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$scheduleid,$link);
-									$statusqry="select * from $bai_pro3.pac_stat_log where schedule='$schedule' and pac_seq_no='$seq_no' and status='DONE'";
+									$statusqry="select * from $bai_pro3.pac_stat_log where schedule='$schedule' and pac_seq_no='$seq_no'";
 									//echo $statusqry;
 									$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
