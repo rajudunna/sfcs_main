@@ -78,10 +78,13 @@ table
 
 </style>
 <script>
-
+function shiftselect()
+{
+	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&shift="+document.select_module.shift.value
+}
 function firstbox()
 {
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&section="+document.select_module.select_section.value
+	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&shift="+document.select_module.shift.value+"&section="+document.select_module.select_section.value
 }
 function second_box(){
 	var sdate = document.getElementById('sdate').value;
@@ -278,7 +281,7 @@ function second_box(){
 		}
 
 		$module_ref=$_POST['module']; 
-		$shift=$_POST['shift'];
+		$shift=$_GET['shift'];
 		$zone_base=$_POST['zone_base'];
 	?>
 
@@ -307,10 +310,11 @@ function second_box(){
 		echo "</div>";
 		?>		
 	<div class="col-sm-2">
-		Shift:	<select name="shift" class="form-control">
+		Shift:	<select name="shift" class="form-control" id="shift" onchange="shiftselect();">
 					<?php 
-						for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-							<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+						for ($i=0; $i < sizeof($shifts_array); $i++) {
+							?>
+							<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift === $shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
 						<?php }
 					?>
 				</select>
@@ -399,8 +403,8 @@ function second_box(){
 
 if (isset($_POST['submit11']))
 {
+	echo $_POST['shift']."selected Shift";
 ?>		
-
 	<FORM method="post" name="test" action="<?= getFullURLLevel($_GET['r'],'rework_update_process.php',0,'N');?>" enctype="multipart/form-data" id="test">
 		<!--<input type='hidden' name='r' value="<?= base64_encode(getFullURLLevel($_GET['r'],'rework_update_process.php',0,'R')) ?>">-->
 		<input type="hidden" name="form_secret" value="<?php echo $_SESSION['form_secret']; ?>" id="form_secret">
@@ -610,7 +614,6 @@ if (isset($_POST['submit11']))
 		}
 		else{
 			?>		
-
 	<FORM method="post" name="test" action="<?= getFullURLLevel($_GET['r'],'rework_update_process.php',0,'N');?>" enctype="multipart/form-data" id="test">
 		<!--<input type='hidden' name='r' value="<?= base64_encode(getFullURLLevel($_GET['r'],'rework_update_process.php',0,'R')) ?>">-->
 		<input type="hidden" name="form_secret" value="<?php echo $_SESSION['form_secret']; ?>" id="form_secret">
