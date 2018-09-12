@@ -203,7 +203,7 @@
 
 		$mo_details = "SELECT * FROM $bai_pro3.mo_details WHERE TRIM(size)='$size' 
 					   and TRIM(schedule)='$schedule' and TRIM(color)='$color' order by mo_no";
-					   echo $mo_details;
+					//    echo $mo_details;
 		$mos_result = mysqli_query($link,$mo_details);		
 		while($row = mysqli_fetch_array($mos_result)){
 			$mos[$row['mo_no']] = $row['mo_quantity'];
