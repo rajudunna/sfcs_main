@@ -2,11 +2,10 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 
-   
 ?>
-<link rel="stylesheet" href="../../common/css/jquery-ui.css">
-<script src="../../common/js/jquery-1.3.2.js"></script>
-<script src="../../common/js/jquery-ui.js"></script>
+<link rel="stylesheet" href="<?=getFullURLLevel($_GET['r'],'common/css/jquery-ui.css',2,'R')?>">
+<script src="<?=getFullURLLevel($_GET['r'],'common/js/jquery-1.12.4.js',2,'R')?>"></script>
+<script src="<?=getFullURLLevel($_GET['r'],'common/js/jquery-ui.js',2,'R')?>"></script>
 <style>
   #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
   #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.0em; border-radius: 15px;}
@@ -85,7 +84,7 @@
                 echo "<h3><span class='label label-success'>Selected Module : ". $module."</span></h3>";
                 echo '<form action="'.getFullURLLevel($_GET['r'],'input_job_seq_update.php',0,'N').'" method="post" name="myForm">';
                 echo '<div class="row"><div class="col-md-4">';
-                echo '<ul id="sortable" module="'.$module.'">';
+                echo '<ul id="sortable" module="'.$module.'" class="ui-sortable">';
                 $input_jobs = array();
                 $no_of_jobs = mysqli_num_rows($sql_result1);
                 while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -123,12 +122,12 @@
                     $title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);   
                     if($style1){
                         if($bg_color1 == 'white'){
-                            echo '<li class="ui-state-default" id="'.$doc_no.'"  style="background-color:red;" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="black">'.$display_prefix1."(".$style_id_new."-".$schedule1.')</font></strong></li>';
+                            echo '<li class="ui-state-default" id="'.$doc_no.'"  style="background-color:red;" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="black">'.$display_prefix1."(".$style_id_new." - ".$schedule1.')</font></strong></li>';
                         }else if($bg_color1 == 'yellow'){
-                            echo '<li class="ui-state-default" id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new."-".$schedule1.')</font></strong></li>';
+                            echo '<li class="ui-state-default" id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new." - ".$schedule1.')</font></strong></li>';
                         }else{
                             if($style_id_new !== NULL){
-                                echo '<li class="ui-state-default" id="'.$doc_no.'"  style="background-color:'.$bg_color1.';"  title="'.$title.'" ><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new."-".$schedule1.')</font></strong></li>';
+                                echo '<li class="ui-state-default" id="'.$doc_no.'"  style="background-color:'.$bg_color1.';"  title="'.$title.'" ><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new." - ".$schedule1.')</font></strong></li>';
                             }
                         }
                     }
