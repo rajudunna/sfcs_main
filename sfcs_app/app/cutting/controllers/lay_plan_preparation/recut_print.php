@@ -2143,7 +2143,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <!-- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2155,7 +2155,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr>
+ </tr> -->
  <tr class=xl654118 height=26 style='mso-height-source:userset;height:19.5pt'>
   <td height=26 class=xl654118 style='height:19.5pt'></td>
   <td class=xl654118></td>
@@ -2189,7 +2189,7 @@ tags will be replaced.-->
   <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "COPY"; } else {echo "COPY";}?></strong></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:5.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2208,7 +2208,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:5.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl914118>Cut No :</td>
   <td colspan=2 class=xl1214118><?php if($remarks=="Normal") { echo chr($color_code).leading_zeros($cutno, 3); } else {if($remarks=="Pilot") { echo "Pilot";}}?></td>
@@ -2282,7 +2282,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=11 style='mso-height-source:userset;height:8.25pt'>
+ <!-- <tr class=xl654118 height=11 style='mso-height-source:userset;height:8.25pt'>
   <td height=11 class=xl654118 style='height:8.25pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2300,7 +2300,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr>
+ </tr> -->
  </table>
  <table border=0 cellpadding=0 cellspacing=0 align=left style='border-collapse: collapse;'>
  <?php
@@ -2972,8 +2972,8 @@ if (mysqli_num_rows($cld_dockets_result)>0)
 }
 ?>
 
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
+ <!-- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td height=20 class=xl654118 style='height:6.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2990,11 +2990,11 @@ if (mysqli_num_rows($cld_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr> 
+ </tr>  -->
  </table>
 
  <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:parent'>
- <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl674118 height=20 style='mso-height-source:userset;height:5.0pt'>
   <td rowspan=2 class=xl764118 style='border-bottom:1px solid black'>Rpt No</td>
   <td rowspan=2 class=xl774118  width=64 style='border-bottom:.5pt solid black;  width:48pt'>Pattern Version</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:70pt'>No of Plies</td>
@@ -3087,11 +3087,8 @@ if (mysqli_num_rows($cld_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan="3"><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
+  <td class=xl654118 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
- <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-</tr>
 <table>
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
@@ -3204,9 +3201,7 @@ $item_name[] = $sql_row['item'];
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
 </tr>
-<tr >
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-</tr>
+
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -3375,8 +3370,8 @@ $tot_bind_len=0;
 ?>	
 
 		
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
+ <tr class=xl654118 height=10 style='mso-height-source:userset;height:5pt'>
+  <td height=20 class=xl654118 style='height:5.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -3395,7 +3390,7 @@ $tot_bind_len=0;
   <td class=xl654118></td>
  </tr>
 
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:5.0pt'>
   <td height=20 class=xl654118 style='height:30pt'></td>
   <th class=xl654118></th>
   <th class=xl684118>Docket</th>
