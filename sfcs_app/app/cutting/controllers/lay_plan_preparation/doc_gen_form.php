@@ -320,6 +320,12 @@ if ($order_joins>'0' or $order_joins>0) {
 			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
 			}
 		</script>";
+		
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+			// function Redirect() {
+				// location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',3,'N')."&order_tid=$tran_order_tid&process_name=cutting&filename=layplan\";
+				// }
+			// </script>";		
 } else {
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 			function Redirect() {

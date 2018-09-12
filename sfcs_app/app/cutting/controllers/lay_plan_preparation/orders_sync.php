@@ -1,6 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
 ?>
 
 <body>
@@ -9,6 +10,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			<div class="panel-body">
 <?php
 	  $order_tid=$_GET['order_tid'];
+	  $get_order_tid = $_GET['order_tid'];
 	  $color=$_GET['color'];
 	  $style=$_GET['style'];
 	  $schedule=$_GET['schedule'];
@@ -140,8 +142,31 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$update_query="update $bai_pro3.bai_orders_db_confirm set bts_status=2 where order_tid='$order_tid'";
 		$result10=mysqli_query($link, $update_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
-		
-  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+
+
+	//getting the last doc_no for the order_tid
+	$doc_no_query = "Select doc_no from  $bai_pro3.plandoc_stat_log where order_tid = '$get_order_tid' order by doc_no";
+	$doc_no_result = mysqli_query($link,$doc_no_query);
+	while($row = mysqli_fetch_array($doc_no_result)){
+		$docket_no = $row['doc_no'];
+	}
+
+	//ADDED FOR LOCAL TESTING PLEASE REMOVE AFTER THAT
+	$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
+	if($insert_bundle_creation_data){
+		//Data inserted successfully
+	}
+	/////////////////////////////////////////////////
+
+	/*
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+			function Redirect() {
+				location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',3,'N')."&order_tid=$order_tid&doc_no=$docket_no&process_name=cutting&filename=layplan\";
+				}
+			</script>";	
+	*/
+
+    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
   		function Redirect() {
   			sweetAlert('Successfully Generated','','success');
   			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
