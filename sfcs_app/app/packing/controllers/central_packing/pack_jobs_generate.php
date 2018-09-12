@@ -33,7 +33,7 @@
 	$to_be_fill=0;
 	$bal=0;
 	$carton_job_no=0;
-	
+	$status_generation=0;
 	if($carton_method==1)
 	{
 		$sql123="SELECT pack_method,style_code,ref_order_num,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
@@ -96,7 +96,7 @@
 		
 		//Required Quantity
 		$require_qty[$row123['color']][$row123['size_title']]=$row123['garments_per_carton']*$row123['cartons_per_pack_job']*$row123['pack_job_per_pack_method'];
-		if($require_qty[$row123['color']][$row123['size_title']]<$eligible_to_qty[$row123['color']][$row123['size_title']])
+		if($eligible_to_qty[$row123['color']][$row123['size_title']]<$require_qty[$row123['color']][$row123['size_title']])
 		{
 			$require_qty[$row123['color']][$row123['size_title']]=$eligible_to_qty[$row123['color']][$row123['size_title']];
 		}
@@ -182,6 +182,7 @@
 											// echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$garments_per_carton."</td></tr>";
 											$carton_job_no++;
 											$bal=0;
+											$status_generation=1;
 										}
 										else
 										{
@@ -189,6 +190,7 @@
 											mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
 											// echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$bal."</td></tr>";
 											$carton_job_no++;
+											$status_generation=1;
 										}	
 									}
 								}
@@ -207,6 +209,7 @@
 										mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
 										// echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$garments_per_carton."</td></tr>";
 										$carton_job_no++;
+										$status_generation=1;
 									}
 								}
 							}
@@ -289,6 +292,7 @@
 											// echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$garments_per_carton."</td></tr>";
 											$carton_job_no++;
 											$bal=0;
+											$status_generation=1;
 										}
 										else
 										{
@@ -296,6 +300,7 @@
 											mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 											// echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$bal."</td></tr>";
 											$carton_job_no++;
+											$status_generation=1;
 										}	
 									}
 								}
@@ -314,6 +319,7 @@
 										mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 										// echo "<tr><td>".$schedule."</td><td>".$seq_no."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$carton_job_no."</td><td>".$schedule."-".$seq_no."-".$carton_job_no."</td><td>".$garments_per_carton."</td></tr>";
 										$carton_job_no++;
+										$status_generation=1;
 									}
 								}
 							}
@@ -328,8 +334,39 @@
 		}
 	}
 	// echo "</table>";
-	insertMOQuantitiesPacking($schedule,$seq_new);
-	echo "<script>sweetAlert('Packing List Generated','','success');</script>";
+	if($status_generation==0)
+	{
+		echo "<script>sweetAlert('Packing List Not Generated.','Eligible Quantity Not available.','warning');</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",75);
+					function Redirect() {
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style_id&schedule=$schedule_id\";
+						}
+					</script>";
+	}
+	else
+	{		
+		$result=insertMOQuantitiesPacking($schedule,$seq_new);
+		//echo $result."<br>";
+		if($result==1)
+		{
+			//echo "<script>sweetAlert('Packing List Generated.','','success');</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+					function Redirect() {
+						sweetAlert('Packing List Generated.','','success');
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style_id&schedule=$schedule_id\";
+						}
+					</script>";
+		}
+		else
+		{
+			echo "<script>sweetAlert('Mo Sharing not completed.','Please delete and Re-Generate','warning');</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",75);
+					function Redirect() {
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style_id&schedule=$schedule_id\";
+						}
+					</script>";
+		}
+	}				
 ?> 
 </div></div>
 </body>
