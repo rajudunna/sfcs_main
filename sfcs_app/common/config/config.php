@@ -103,18 +103,18 @@ $plant_name = $conf1->get('plantname');
 
 
 //M3 Rest API Calls Details
-$company_no = $conf->get('companey-number');
-$api_username = $conf->get('api-user-name');
-$api_password = $conf->get('api-password');
-$api_hostname = $conf->get('api-host-name');
-$api_port_no = $conf->get('api-port');
+$company_no = $conf1->get('companey-number');
+$api_username = $conf1->get('api-user-name');
+$api_password = $conf1->get('api-password');
+$api_hostname = $conf1->get('api-host-name');
+$api_port_no = $conf1->get('api-port');
 
 //m3 integration plant codes
-$cluster_code=$conf->get('cluster_code');
-$comp_no=$conf->get('company_no');
-$central_wh_code=$conf->get('central_wh_code');
-$plant_wh_code=$conf->get('plant_wh_code');
-$plant_prod_code=$conf->get('plant_prod_code');
+$cluster_code=$conf1->get('cluster_code');
+$comp_no=$conf1->get('company_no');
+$central_wh_code=$conf1->get('central_wh_code');
+$plant_wh_code=$conf1->get('plant_wh_code');
+$plant_prod_code=$conf1->get('plant_prod_code');
 
 
 
