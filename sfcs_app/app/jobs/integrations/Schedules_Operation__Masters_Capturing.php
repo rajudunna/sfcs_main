@@ -11,6 +11,7 @@ set_time_limit(1000000);
 $qry_modetails="SELECT mo_no AS mo_num,item_code,style,SCHEDULE,color,size,zfeature,product_sku  FROM $bai_pro3.mo_details WHERE ops_master_status='0' group by mo_num,product_sku";
 
 $result_qry_modetails=mysqli_query($link, $qry_modetails) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+print("job started\n");
 while($sql_row=mysqli_fetch_array($result_qry_modetails))
 {
 	//echo "MO Number :".$sql_row['mo_num']."- Item Code : ".$sql_row['item_code']."- Style : ".$sql_row['style']."- Schedule : ".$sql_row['SCHEDULE']."- Color : ".$sql_row['color']."- Size : ".$sql_row['size']."- Zfeature : ".$sql_row['zfeature']."</br>";
@@ -59,20 +60,14 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 
 		// echo $sql1."<br>";
 		$insert_result=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if($insert_result){
-			print("inserted into Schedules Operations master table successfully")."\n";
-		}
 
 		//Update status for updated mo's and FG_codes
 		$update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num' AND product_sku='$FG_code'";
 		echo $update_mo_details."<br>";
 		$result = mysqli_query($link, $update_mo_details)or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if($result){
-			print("Updated mo_details table successfully")."\n";
-		}
-	}
+	}	
 }
-
+print("job successfully completed\n");
 //construct key values and 
 function conctruct_array($req){
 	$return_ar = [];
