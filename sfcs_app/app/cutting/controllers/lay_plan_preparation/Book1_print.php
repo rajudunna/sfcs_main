@@ -16,8 +16,6 @@ $cat_new = $_GET['category_new'];
 $clubbing = $_GET['clubbing']; 
 
 ?> 
-
-
 <?php 
    $remarks_x = '';
    $sql="select * from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\""; 

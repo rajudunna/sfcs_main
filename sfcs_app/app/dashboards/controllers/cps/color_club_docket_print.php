@@ -3772,12 +3772,9 @@ echo "</tbody></table>";
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
-  <td class=xl6417319 colspan="3"><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/>
- <br/><br/><br/><strong><u> Cutting Supervisor Authorization<br/></u></strong></td>
+  <td class=xl6417319 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/>
+ <br/><strong><u> Cutting Supervisor Authorization<br/></u></strong></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl8217319 style='height:15.75pt'></td>
-  </tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   <td colspan=16 rowspan=2 class=xl9117319 style='border-right:.5pt solid black;
@@ -3827,11 +3824,11 @@ echo "</tbody></table>";
  </tr>
  
 
- 
+<!--  
  <tr height=30 style='height:15.75pt'>
- </tr>
+ </tr> -->
 
- <tr height=30 style='height:30pt'>
+ <tr height=30 style='height:5.0pt'>
   <td height=30 class=xl6417319 style='height:30pt'></td>
   <td colspan=2 ></td>
   <td colspan=2 class=xl7017319>Docket</td>
