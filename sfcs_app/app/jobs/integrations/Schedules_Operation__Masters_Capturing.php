@@ -6,10 +6,6 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
 set_time_limit(1000000);
 
-//details from config tool
-$comapny_no=200;
-$facility_id='EKG';
-
 
 //getting mo numbers from mo_details table
 $qry_modetails="SELECT mo_no AS mo_num,item_code,style,SCHEDULE,color,size,zfeature,product_sku  FROM $bai_pro3.mo_details WHERE ops_master_status='0' group by mo_num,product_sku";
@@ -26,7 +22,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 	// $mo_num='1991686';
 	// $FG_code= 'ASL18SF8   0026';
 
-	$url="http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelOperations?CONO=200&FACI=".$facility_id."&MFNO=".$mo_num."&PRNO=".$FG_code;
+	$url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations?CONO=".$company_no."&FACI=".$facility_code."&MFNO=".$mo_num."&PRNO=".$FG_code;
 	$url = str_replace(' ', '%20', $url);
 // echo "Api :".$url."<br>";
 	$result = $obj->getCurlAuthRequest($url);
