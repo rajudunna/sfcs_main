@@ -11,7 +11,7 @@ class rest_api_calls {
 	
 	//For rest api calls m3 authentication based 
 	public function getCurlAuthRequest($url){
-		include_path=getenv('config_job_path');
+		$include_path=getenv('config_job_path');
 		include($include_path.'\sfcs_app\common\config\m3_api_const.php');
         $basic_auth=base64_encode($api_username.':'.$api_password);
         $curl = curl_init();
