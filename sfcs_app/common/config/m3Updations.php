@@ -5,7 +5,7 @@
 //function updateM3Transactions($input_doc_no,$op_code,$op_code,$input_shift,$plan_module){
 function  updateM3Transactions($ref_id,$op_code,$qty)
 {
-    include("config.php");
+    include("config_ajax.php");
 
     $details_query = "Select shift,assigned_module from $brandx_bts.bundle_creation_data where bundle_no = '$ref_id' and op_code = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
@@ -116,7 +116,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
 
 
 function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
-    include('config.php');
+    include('config_ajax.php');
     $current_date = date("Y-m-d H:i:s");
 
     $details_query = "Select shift,assigned_module from $brandx_bts.bundle_creation_data where bundle_no = '$bundle_no' and op_code = '$op_code'";
