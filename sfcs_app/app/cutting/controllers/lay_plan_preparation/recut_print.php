@@ -3097,8 +3097,11 @@ if (mysqli_num_rows($cld_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
+  <td class=xl654118 colspan="3"><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
+ <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td height=20 class=xl674118 style='height:15.0pt'></td>
+</tr>
 <table>
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
@@ -3152,6 +3155,7 @@ $item_name[] = $sql_row['item'];
 
 ?>
   </td>
+
 
  </tr>
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'></tr>
