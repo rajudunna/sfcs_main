@@ -3,7 +3,7 @@
 // LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
 
 function updateM3Transactions($input_doc_no,$op_code,$b_op_id,$input_shift,$plan_module){
-    include('config.php');
+    include('config_ajax.php');
     $current_date = date("Y-m-d H:i:s");
 	$doc_no_ref = $input_doc_no;
 	// $op_code  = '15';
@@ -110,12 +110,14 @@ function updateM3Transactions($input_doc_no,$op_code,$b_op_id,$input_shift,$plan
 					$insert_id=mysqli_insert_id($link);
 
 					// //M3 Rest API Call
-					$api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-					$api_data = $obj->getCurlAuthRequest($api_url);
-					$decoded = json_decode($api_data,true);
-					$type=$decoded['@type'];
-					$code=$decoded['@code'];
-					$message=$decoded['Message'];
+					if($enable_api_call == 'YES'){
+						$api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+						$api_data = $obj->getCurlAuthRequest($api_url);
+						$decoded = json_decode($api_data,true);
+						$type=$decoded['@type'];
+						$code=$decoded['@code'];
+						$message=$decoded['Message'];
+					}
 
 					//validating response pass/fail and inserting log
 					if($type!='ServerReturnedNOK'){
@@ -142,7 +144,7 @@ function updateM3Transactions($input_doc_no,$op_code,$b_op_id,$input_shift,$plan
 
 
 function updateM3TransactionsReversal($bundle_no,$reversalval,$b_op_id,$b_module,$b_shift,$b_style,$b_colors,$key){
-    include('config.php');
+    include('config_ajax.php');
     $current_date = date("Y-m-d H:i:s");
 	$b_tid = $bundle_no;
 	$b_rep_qty = $reversalval;
@@ -217,12 +219,14 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$b_op_id,$b_module
 						$insert_id=mysqli_insert_id($link);
 
 						// //M3 Rest API Call
+						if($enable_api_call == 'YES'){
 							$api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
 							$api_data = $obj->getCurlAuthRequest($api_url);
 							$decoded = json_decode($api_data,true);
 							$type=$decoded['@type'];
 							$code=$decoded['@code'];
 							$message=$decoded['Message'];
+						}
 
 							//validating response pass/fail and inserting log
 							if($type!='ServerReturnedNOK'){
@@ -250,7 +254,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$b_op_id,$b_module
 
 function updateM3TransactionsRejections($doc_no_ref,$size_title,$b_module,$op_code,$b_op_id,$b_shift,$work_station_id,$r_qty,$r_reasons)
 {
-    include('config.php');
+    include('config_ajax.php');
     $current_date = date("Y-m-d H:i:s");
 	foreach($r_qty as $key=>$value)
 	{
@@ -300,12 +304,14 @@ function updateM3TransactionsRejections($doc_no_ref,$size_title,$b_module,$op_co
 					$insert_id=mysqli_insert_id($link);
 
 					//M3 Rest API Call
-					$api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-					$api_data = $obj->getCurlAuthRequest($api_url);
-					$decoded = json_decode($api_data,true);
-					$type=$decoded['@type'];
-					$code=$decoded['@code'];
-					$message=$decoded['Message'];
+					if($enable_api_call == 'YES'){
+						$api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+						$api_data = $obj->getCurlAuthRequest($api_url);
+						$decoded = json_decode($api_data,true);
+						$type=$decoded['@type'];
+						$code=$decoded['@code'];
+						$message=$decoded['Message'];
+					}
 
 					//validating response pass/fail and inserting log
 					if($type!='ServerReturnedNOK')
