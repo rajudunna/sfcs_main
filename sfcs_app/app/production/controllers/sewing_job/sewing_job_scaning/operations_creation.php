@@ -28,11 +28,11 @@
     by Theja on 07-02-2018
 -->     
 <?php 
-	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
-	$has_permission=haspermission($_GET['r']);
-	$qry_short_codes = "SELECT * from $brandix_bts.ops_short_cuts";
-	$result_oper = $link->query($qry_short_codes);
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+    $has_permission=haspermission($_GET['r']);
+    $qry_short_codes = "SELECT * from $brandix_bts.ops_short_cuts";
+    $result_oper = $link->query($qry_short_codes);
 ?>
 <div class="container">
     <?php 
@@ -93,32 +93,19 @@
                                 </select>
 
 								</div>
-								<div class = "col-sm-2">
-								<label for="style">Short Key Code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>			
-									<select id="short_key_code" style="width:100%;" name="short_key_code" class="form-control">
-									<option value='0'>Select Short Code</option>
-									<?php				    	
-										if ($result_oper->num_rows > 0) {
-											while($row = $result_oper->fetch_assoc()) {
-											$row_value = $row['short_key_code'];
-												echo "<option value='".$row['short_key_code']."'>".$row_value."</option>";
-											}
-										} else {
-											echo "<option value=''>No Data Found..</option>";
-										}
-									?>
-								</select>
-
+								<div class="col-sm-3">
+									<b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id">
 								</div>
-								<div class="col-sm-2">
-									<button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
-								</div>
-								<div class="col-sm-2">
-									 <div class="dropdown" hidden='true'>
-										<b>Report To ERP</b>
-										<select class="form-control" id="sel1" name="sel1" required>
-										<option value="">Please Select</option><option value='yes'>Yes</option><option value='No' selected>No</option></select>	
-									</div>
+								<div class="col-sm-3">
+									<b>Category</b>
+									<select class="form-control"id='category' name='category' title="It's Mandatory field" required>
+									<option value="">Please Select</option>
+									<option value='cutting'>Cutting</option>
+                                    <option value='embellishment'>Embellishment</option>
+									<option value='sewing'>Sewing</option>
+									<option value='packing'>Packing</option>
+                                    
+									</select>
 								</div>
                                 <div class="col-sm-2">
                                     <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
