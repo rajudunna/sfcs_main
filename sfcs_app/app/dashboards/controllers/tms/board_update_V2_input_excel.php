@@ -97,7 +97,6 @@
         foreach($report_data_ary as $report){
             
             $output.='<tr><td>'.$report['style'].'</td><td>'.$report['schedule'].'</td><td>'.$report['color'].'</td><td>'.$report['module'].'</td><td>'.$report['docket'].'</td><td>'.$report['job_no'].'</td><td>'.$report['req_time'].'</td><td>'.$report['issue_time'].'</td><td>'.$report['tstatus'].'</td></tr>';
-            // var_dump( $report_data_ary[$key] ["order_style_no"] );
 
         }
         $output.='</table></body>';
