@@ -4,9 +4,9 @@
 
    
 ?>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="../../common/css/jquery-ui.css">
+<script src="../../common/js/jquery-1.3.2.js"></script>
+<script src="../../common/js/jquery-ui.js"></script>
 <style>
   #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
   #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.0em; border-radius: 15px;}
