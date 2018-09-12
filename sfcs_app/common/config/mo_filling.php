@@ -5,7 +5,7 @@
     insertMoQuantitiesClub($orders)
     insertMOQuantitiesCut($ref_id,$op_code,$qty)
 */
-	incude("config.php");
+	//incude("config.php");
 	function deleteMOQuantitiesCut($schedule,$color){
 		include("config.php");
 		$cutting_ref = 'CUTTING';
