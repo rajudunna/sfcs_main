@@ -101,7 +101,8 @@
 									<select class="form-control"id='category' name='category' title="It's Mandatory field" required>
 									<option value="">Please Select</option>
 									<option value='cutting'>Cutting</option>
-                                    <option value='embellishment'>Embellishment</option>
+                                    <option value='Send PF'>Embellishment Send</option>
+                                    <option value='Receive PF'>Embellishment Received</option>
 									<option value='sewing'>Sewing</option>
 									<option value='packing'>Packing</option>
                                     
