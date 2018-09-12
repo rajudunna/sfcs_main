@@ -3342,7 +3342,7 @@ $tot_bind_len=0;
 			  <td class=xl814118></td>
 			  <td class=xl814118></td>
 			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
-			  <td class=xl814118></td>";
+			  ";
 	// }
 	?>
 	</tr>
