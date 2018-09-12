@@ -2127,10 +2127,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td colspan=3 >Cutting Department</td>
+  <td colspan=2>Cutting Department</td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -3137,22 +3134,9 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-<<<<<<< HEAD
-<<<<<<< HEAD
-  <td class=xl654118 colspan="3"><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
- </tr>
- <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-</tr>
-=======
-  <td class=xl654118 colspan="3"><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
- </tr>
-
->>>>>>> 832-need-to-display-body-and-binding-requirement-separately-for-each-color-in-clubbing-docket
-=======
   <td class=xl654118 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
->>>>>>> 851-modifications-for-cut-docket
+
 <table>
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
