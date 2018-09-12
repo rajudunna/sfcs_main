@@ -186,9 +186,9 @@
 
 	function insertMOQuantitiesCut($ref_id,$op_code,$qty){
 		include("config.php");
-		global $link;
+		
 		//getting style,color,schedule,size
-		$order_details = "Select style,color,schedule,size_title from bundle_creation_data where bundle_no = '$ref_id' LIMTI 1";
+		$order_details = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data where bundle_no = '$ref_id' LIMTI 1";
 		$order_result = mysqli_query($link,$order_details) or exit('Unable to get info from BCD');
 		while($row = mysqli_fetch_array($order_result)){
 			$style = $row['style'];
@@ -219,10 +219,11 @@
 				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 								(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
 								values (".date('Y-m-d H:i:s').",'$mo','$ref_id','$qty','$op_code[$mo]','$op_desc[$mo]')"; 
-				mysqli_query($link,$insert_query) or exit("Error In Inserting to MO Qtys for mo : ".$mo);	
+				mysqli_query($link,$insert_query) or exit("Error 0 In Inserting to MO Qtys for mo : ".$mo);	
 				$qty = 0;			
 			}
-		}else{			foreach($mos as $mo=>$mo_qty){
+		}else{			
+			foreach($mos as $mo=>$mo_qty){
 				$last_mo = $mo;
 				$filled_qty = 0;
 	
@@ -241,13 +242,13 @@
 									(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
 									values 
 									(".date('Y-m-d H:i:s').",'$mo','$ref_id','$available','$op_code[$mo]','$op_desc[$mo]')"; 
-					mysqli_query($link,$insert_query) or exit("Error In Inserting to MO Qtys for mo : ".$mo);	
+					mysqli_query($link,$insert_query) or exit("Error 1 In Inserting to MO Qtys for mo : ".$mo);	
 				}else{
 					$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 									(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
 									values 
 									(".date('Y-m-d H:i:s').",'$mo','$ref_id','$qty','$op_code[$mo]','$op_desc[$mo]')"; 
-					mysqli_query($link,$insert_query) or exit("Error In Inserting to MO Qtys for mo : ".$mo);
+					mysqli_query($link,$insert_query) or exit("Error 2 In Inserting to MO Qtys for mo : ".$mo);
 					$qty = 0;
 				}
 			}
@@ -257,7 +258,7 @@
 								(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
 								values 
 								(".date('Y-m-d H:i:s').",'$last_mo','$ref_id','$qty','$op_code[$mo]','$op_desc[$mo]')"; 
-				mysqli_query($link,$insert_query) or exit("Error In Inserting excess qty to MO Qtys for mo : ".$mo);
+				mysqli_query($link,$insert_query) or exit("Error 3 In Inserting excess qty to MO Qtys for mo : ".$mo);
 			}
 		}
 	}
