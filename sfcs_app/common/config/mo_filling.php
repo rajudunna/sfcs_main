@@ -67,7 +67,7 @@
             $op_code = $row['code'];
             $op_name = $row['operation_name'];		
         }
-
+        
         $sizes_query = "Select distinct(size_title) as size from $brandix_bts.bundle_creation_data where docket_no = $doc_no";
         $sizes_result = mysqli_query($link,$sizes_query) or exit('An Error Encountered');
         while($row = mysqli_fetch_array($sizes_result)){
@@ -645,7 +645,8 @@
                 }
             }
         }
-	}
+
+    }
 	
 	function doc_size_wise_bundle_insertion($doc_no_ref)
 	{
