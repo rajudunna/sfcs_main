@@ -16,7 +16,7 @@ set_time_limit(6000000);
 	//var_dump($link);
 	$headerbody = array("user"=>$api_username,"password"=>$api_password,"company"=>$company_no);
 	$header = new SOAPHeader("http://lawson.com/ws/credentials", "lws", $headerbody);
-	$soap_client = new SoapClient( $api_hostname.":22105/lws-ws/lwsdev/SFCS?wsdl",array("login" => $api_username,"password" => $api_password));
+	$soap_client = new SoapClient( $api_hostname.":".$api_port_no."/lws-ws/lwsdev/SFCS?wsdl",array("login" => $api_username,"password" => $api_password));
 	$soap_client->__setSoapHeaders($header);
 	try{
 		$to = date('Ymd',  strtotime('+3 month'));
