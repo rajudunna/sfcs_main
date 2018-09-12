@@ -49,14 +49,16 @@
 			echo "</tr>";
 			$ins_qry = "
 			INSERT IGNORE INTO `m3_inputs`.`mo_details` 
-            (`MONUMBER`, `MOQTY`, `STARTDATE`, `VPO`, `COLORNAME`, `COLOURDESC`, `SIZENAME`, `SIZEDESC`, `ZNAME`, `ZDESC`, `SCHEDULE`, `STYLE`, `PRODUCT`, `PRDNAME`, `PRDDESC`, `REFERENCEORDER`, `REFORDLINE`, `MOSTS`, `MAXOPERATIONSTS`, `COPLANDELDATE`, `COREQUESTEDDELDATE`) VALUES ('".$value->MONUMBER."','".$value->MOQTY."','".date('Y-m-d',strtotime($value->STARTDATE))."','".$value->VPO."','".$value->COLORNAME."','".$value->COLOURDESC."','".$value->SIZENAME."','".$value->SIZEDESC."','".$value->ZNAME."','".$value->ZDESC."','".$value->SCHEDULE."','".$value->STYLE."','".$value->PRODUCT."','".$value->PRDNAME."','".$value->PRDDESC."','".$value->REFERENCEORDER."','".$value->REFORDLINE."','".$value->MOSTS."','".$value->MAXOPERATIONSTS."','".date('Y-m-d',strtotime($value->COPLANDELDATE))."','".date('Y-m-d',strtotime($value->COREQUESTEDDELDATE))."')";
-			$result = mysqli_query($link_ui, $ins_qry) or exit("Sql Error Insert mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+			(`MONUMBER`, `MOQTY`, `STARTDATE`, `VPO`, `COLORNAME`, `COLOURDESC`, `SIZENAME`, `SIZEDESC`, `ZNAME`, `ZDESC`, `SCHEDULE`, `STYLE`, `PRODUCT`, `PRDNAME`, `PRDDESC`, `REFERENCEORDER`, `REFORDLINE`, `MOSTS`, `MAXOPERATIONSTS`, `COPLANDELDATE`, `COREQUESTEDDELDATE`) VALUES ('".$value->MONUMBER."','".$value->MOQTY."','".date('Y-m-d',strtotime($value->STARTDATE))."','".$value->VPO."','".$value->COLORNAME."','".$value->COLOURDESC."','".$value->SIZENAME."','".$value->SIZEDESC."','".$value->ZNAME."','".$value->ZDESC."','".$value->SCHEDULE."','".$value->STYLE."','".$value->PRODUCT."','".$value->PRDNAME."','".$value->PRDDESC."','".$value->REFERENCEORDER."','".$value->REFORDLINE."','".$value->MOSTS."','".$value->MAXOPERATIONSTS."','".date('Y-m-d',strtotime($value->COPLANDELDATE))."','".date('Y-m-d',strtotime($value->COREQUESTEDDELDATE))."')";
+			$ins_qry1 = "INSERT INTO bai_pro3.`mo_details`(`date_time`, `mo_no`, `mo_quantity`, `style`, `schedule`, `color`, `size`, `destination`, `zfeature`, `item_code`, `ops_master_status`, `product_sku`) VALUES ('".date('Y-m-d H:i:s')."','".$value->MONUMBER."','".$value->MOQTY."','".$value->STYLE."','".$value->SCHEDULE."','".$value->COLORNAME."','".$value->SIZENAME."','','".$value->ZNAME."','','','')";
+			$result = mysqli_query($link_ui, $ins_qry) or exit("Sql Error Insert m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$result1 = mysqli_query($link_ui, $ins_qry1) or exit("Sql Error Insert bai_pro3.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if($result){
 				$new_ids[] = mysqli_insert_id($link_ui);
 			}
 		}
 		echo "</table>";
-		if(count($new_ids)>0){
+		/*if(count($new_ids)>0){
 			foreach($new_ids as $idps){
 				$qry_mo_details = "select * from `m3_inputs`.`mo_details` where id = ".$idps;
 				$result_mo_details = mysqli_query($link_ui, $qry_mo_details) or exit("Sql Error Get mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -68,7 +70,7 @@
 				$ins_shipment_details = "INSERT INTO `m3_inputs`.`shipment_plan`(`Customer_Order_No`, `CO_Line_Status`, `Ex_Factory`, `Order_Qty`, `Mode`, `Destination`, `Packing_Method`, `FOB_Price_per_piece`, `MPO`, `CPO`, `DBFDST`, `Size`, `HMTY15`, `ZFeature`, `MMBUAR`, `Style_No`, `Product`, `Buyer_Division`, `Buyer`, `CM_Value`, `Schedule_No`, `Colour`, `Alloc_Qty`, `Dsptched_Qty`, `BTS_vs_Ord_Qty`, `BTS_vs_FG_Qty`, `time_stamp`) VALUES ('".$mo_details_row['REFERENCEORDER']."','','".$mo_details_row['COPLANDELDATE']."','".$mo_details_row['MOQTY']."','','','','','','','','".$mo_details_row['SIZENAME']."','','".$mo_details_row['ZNAME']."','','".$mo_details_row['STYLE']."','".$mo_details_row['PRODUCT']."','','','','".$mo_details_row['SCHEDULE']."','".$mo_details_row['COLORNAME']."','','','','','')";
 				$res_shipment_details = mysqli_query($link_ui, $ins_shipment_details) or exit("Sql Error Insert Shipment Details".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
-		}
+		}*/
 	}
 	catch(Exception $e){
 		var_dump($e->getMessage());
