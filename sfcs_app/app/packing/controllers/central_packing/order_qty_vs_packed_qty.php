@@ -124,14 +124,15 @@
 					{
 						$style=$_GET['style'];
 						$schedule=$_GET['schedule'];
+						$del_id = $_GET['schedule'];
 					} 
 					else if ($_POST['style'] and $_POST['schedule'])
 					{
 						$style=$_POST['style'];
-						$schedule=$_POST['schedule'];	
+						$schedule=$_POST['schedule'];
+						$del_id = $_POST['schedule'];	
 					}
 					// echo $style."---".$schedule;
-					$del_id = $_POST['schedule'];
 					//getting parent id from tbl_pack_ref
 					$getparentid="select id from $bai_pro3.tbl_pack_ref where ref_order_num='$schedule' and style_code='$style'";
 					$parentidrslt=mysqli_query($link, $getparentid) or exit("Error while getting parent id");
