@@ -417,20 +417,30 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	}
 	
 	//Binding Consumption / YY Calculation
-	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-	if($sql_num_check > 0)
+	
+	if($category=='Body' || $category=='Front')
 	{
-		while($sql_row2=mysqli_fetch_array($sql_result))
+		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		// echo $sql2;
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$rows=mysqli_num_rows($sql_result2);
+		if($rows > 0)
 		{
-			$binding_con = $sql_row2['binding_consumption'];
-			$bind_con= $binding_con *($a_ratio_tot*$plies);
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+				$binding_con = $sql_row2['binding_con'];
+				$bind_con= $binding_con *($a_ratio_tot*$plies);
+			}
+		}
+		else
+		{
+			$bind_con=0;
 		}
 	}
 	else
 	{
 		$bind_con=0;
+		
 	}
 	
 	//Binding Consumption / YY Calculation
@@ -2115,7 +2125,7 @@ tags will be replaced.-->
  </tr>
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+  <td colspan=3 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="500" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2143,7 +2153,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <!-- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2155,18 +2165,18 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr>
+ </tr> -->
  <tr class=xl654118 height=26 style='mso-height-source:userset;height:19.5pt'>
   <td height=26 class=xl654118 style='height:19.5pt'></td>
   <td class=xl654118></td>
+  <!-- <td class=xl1014118></td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
-  <td class=xl1014118></td>
-  <td class=xl1014118></td>
+  <td class=xl1014118></td> -->
   <td colspan=3 style='font-size:24px;font-weight:bold'>Recut Docket</td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
-  <td colspan=2 style='border-right:1px solid black;font-size:20px;font-weight:bold;text-align:right' style='border-right:.5pt solid black'>Docket
+  <td colspan=3 style='border-right:1px solid black;font-size:20px;font-weight:bold;text-align:right' style='border-right:.5pt solid black'>Docket
   Number</td>
   <td colspan=3 class=xl1024118 style='border-right:.5pt solid black;
   border-left:none'><?php echo leading_zeros($docketno,9); ?></td>
@@ -2189,7 +2199,7 @@ tags will be replaced.-->
   <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "COPY"; } else {echo "COPY";}?></strong></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:5.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2208,7 +2218,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:5.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl914118>Cut No :</td>
   <td colspan=2 class=xl1214118><?php if($remarks=="Normal") { echo chr($color_code).leading_zeros($cutno, 3); } else {if($remarks=="Pilot") { echo "Pilot";}}?></td>
@@ -2282,7 +2292,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=11 style='mso-height-source:userset;height:8.25pt'>
+ <!-- <tr class=xl654118 height=11 style='mso-height-source:userset;height:8.25pt'>
   <td height=11 class=xl654118 style='height:8.25pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2300,7 +2310,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr>
+ </tr> -->
  </table>
  <table border=0 cellpadding=0 cellspacing=0 align=left style='border-collapse: collapse;'>
  <?php
@@ -2972,8 +2982,8 @@ if (mysqli_num_rows($cld_dockets_result)>0)
 }
 ?>
 
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
+ <!-- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td height=20 class=xl654118 style='height:6.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2990,11 +3000,11 @@ if (mysqli_num_rows($cld_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr> 
+ </tr>  -->
  </table>
 
  <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:parent'>
- <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl674118 height=20 style='mso-height-source:userset;height:5.0pt'>
   <td rowspan=2 class=xl764118 style='border-bottom:1px solid black'>Rpt No</td>
   <td rowspan=2 class=xl774118  width=64 style='border-bottom:.5pt solid black;  width:48pt'>Pattern Version</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:70pt'>No of Plies</td>
@@ -3087,11 +3097,8 @@ if (mysqli_num_rows($cld_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan="3"><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
+  <td class=xl654118 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
- <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-</tr>
 <table>
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
@@ -3204,9 +3211,7 @@ $item_name[] = $sql_row['item'];
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
 </tr>
-<tr >
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-</tr>
+
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -3276,7 +3281,7 @@ $tot_bind_len=0;
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_width[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $leng_det[$i]; $tot_alloc_qty=$tot_alloc_qty+$leng_det[$i];?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php // echo $plies1[$i]; ?></td>
+	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php// echo $plies1[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
@@ -3337,7 +3342,7 @@ $tot_bind_len=0;
 			  <td class=xl814118></td>
 			  <td class=xl814118></td>
 			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
-			  <td class=xl814118></td>";
+			  ";
 	// }
 	?>
 	</tr>
@@ -3375,8 +3380,8 @@ $tot_bind_len=0;
 ?>	
 
 		
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
+ <tr class=xl654118 height=10 style='mso-height-source:userset;height:5pt'>
+  <td height=20 class=xl654118 style='height:5.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -3395,7 +3400,7 @@ $tot_bind_len=0;
   <td class=xl654118></td>
  </tr>
 
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:5.0pt'>
   <td height=20 class=xl654118 style='height:30pt'></td>
   <th class=xl654118></th>
   <th class=xl684118>Docket</th>

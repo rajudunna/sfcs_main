@@ -16,8 +16,6 @@ $cat_new = $_GET['category_new'];
 $clubbing = $_GET['clubbing']; 
 
 ?> 
-
-
 <?php 
     $sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 

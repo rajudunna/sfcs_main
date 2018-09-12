@@ -71,19 +71,30 @@ if(isset($_POST) && isset($_POST['main_data'])){
 $(document).ready(function(){
 	var url1 = '?r=<?= $_GET['r'] ?>';
     console.log(url1);
+    $("#style").change(function(){
+        //alert("The text has been changed.");
+		var optionSelected = $("option:selected", this);
+       var valueSelected = this.value;
+	  window.location.href =url1+"&style="+valueSelected
+    });
     $("#schedule").change(function(){
-        var input = $(this);
-       var val = input.val();
+       // var input = $(this);
+       //var val = input.val();
         // alert(val);
-     window.location.href =url1+"&schedule="+val;
+     //window.location.href =url1+"&schedule="+val;
+     var optionSelected = $("option:selected", this);
+       var valueSelected2 = this.value;
+	   var style1 = $("#style").val();
+	   window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
     });
 
     $("#color").change(function(){
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
-       var valueSelected2 = this.value;
+       var valueSelected3 = this.value;
+       var style1 = $("#style").val();
        var schedule = $("#schedule").val();
-       window.location.href =url1+"&schedule="+schedule+"&color="+valueSelected2
+       window.location.href =url1+"&style="+style1+"&schedule="+schedule+"&color="+valueSelected3
        //alert(valueSelected2); 
 	 //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
     });
@@ -95,13 +106,59 @@ $(document).ready(function(){
 <b>Cut Sewing Job Generation</b>
 </div>
 <?php
+$style=$_GET['style'];
 $schedule=$_GET['schedule']; 
 $color  = $_GET['color'];
-echo '<div class = "panel-body">
-<div class="col-sm-3">
-      <label for="usr">Schedule :</label>
-      <input type="text" class="form-control" value="'.$schedule.'"  name=\"schedule\"  id="schedule">
-    </div>';
+
+echo '<div class = "panel-body">';
+$sql="select distinct order_style_no from bai_pro3.bai_orders_db";
+$sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label>
+<select class='form-control' name=\"style\"  id='style'>";
+
+echo "<option value='".$style."'>Please Select</option>";
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+
+	if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
+	{
+		echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+	}
+	else
+	{
+		echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+	}
+
+}
+echo "  </select>
+	</div>";
+//echo '<div class="col-sm-3">
+  //    <label for="usr">Schedule :</label>
+   //   <input type="text" class="form-control" value="'.$schedule.'"  name=\"schedule\"  id="schedule">
+   // </div>';
+   
+
+   echo "<div class='col-sm-3'><label>Select Schedule:</label> 
+   <select class='form-control' name=\"schedule\"  id='schedule'>";
+$sql="select distinct order_del_no from bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
+mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+
+echo "<option value='".$schedule."' disabled selected>Please Select</option>";
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+ if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule)){
+         echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
+     }
+ else{
+     echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
+ }
+}
+
+echo "	</select>
+  </div>";
 
 echo "<div class='col-sm-3'><label>Select Color:</label>
 <select class='form-control' name=\"color\"  id='color'>";
@@ -109,9 +166,8 @@ $sql="select distinct order_col_des from bai_pro3.bai_orders_db where order_del_
     //echo $sql;
 $sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
-echo "<option value='' disabled selected>Please Select</option>";
-	
-while($sql_row=mysqli_fetch_array($sql_result))
+echo "<option value='".$color."' disabled selected>Please Select</option>";
+   while($sql_row=mysqli_fetch_array($sql_result))
 {
 	if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color)){
 		echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
@@ -122,8 +178,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 echo "</select>
     </div>
-    <br/>
-    <input type='submit' class='btn btn-info' value='Search'>";
+    <br/>";
     ?>
 </div>
 <?php
@@ -245,7 +300,10 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 echo "<td><h3 class='label label-warning'>Jobs Already Created..</h3></td>";
         echo "</tr>";
         echo "</tbody></table>"; 
+    }else{
+        echo "<script> swal('No Data Found'); </script>";
     }
+    
     //=====================
     ?>
     <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
