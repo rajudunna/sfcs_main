@@ -103,7 +103,7 @@
 					if($check_status=='' || $check_status==NULL || $check_status==0)
 					{
 						?>
-						<input type="submit" name="clear" value="Delete All" class="btn btn-danger" style="margin-top: 18px;">
+						<input type="submit" name="clear" value="Delete All" class="btn btn-danger confirm-submit" style="margin-top: 18px;">
 						<?php					
 					}
 					
@@ -167,7 +167,7 @@
 									$i++;
 									$url=getFullURL($_GET['r'],'pack_method_deletion.php','N');
 									if($staus != "done"){
-									echo "<td><a   class='btn btn-danger' href=$url&pack_method='".$new_result1['pack_method']."'&seq_no='".$new_result1['seq_no']."'&tid='".$new_result1['tid']."'>Delete</td>";
+									echo "<td><a   class='btn btn-danger confirm-submit' href=$url&pack_method='".$new_result1['pack_method']."'&seq_no='".$new_result1['seq_no']."'&tid='".$new_result1['tid']."'>Delete</td>";
 									}
 									else{
 										echo "<td  class='btn btn-success'>Already Scanned</td>";
