@@ -133,7 +133,7 @@
             }
             unset($mos);
         }
-        echo "<h2>Successfully Updated</h2>";
+       // echo "<h2>Successfully Updated</h2>";
     }
 
     function deleteMOQuantitiesSewing($schedule){
