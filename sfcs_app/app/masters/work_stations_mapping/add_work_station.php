@@ -120,7 +120,7 @@
 				
 				
 		<div class="col-md-4"><div class="form-group">
-                <label class="control-label control-label-left col-sm-3" for="work_station_id">Work Station Id<span class="req"> *</span></label>
+                <label class="control-label control-label-left col-sm-3" for="work_station_id">Work Station Id</label>
                 <div class="controls col-sm-9">
                     
                 <input id="work_station_id" type="text" class="form-control k-textbox" data-role="text" placeholder="Work Station Id" name="work_station_id"  value="<?php echo $work_station_id; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>

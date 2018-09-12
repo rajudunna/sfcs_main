@@ -64,7 +64,7 @@
 						
 				<div class="col-md-4">
 				<div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="module">Module<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="module">Module</label>
 			    <div class="controls col-sm-9">
                     
                 <input id="module" type="text" class="form-control k-textbox float" data-role="text" placeholder="Module" name="module" value="<?php echo $module; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
