@@ -61,11 +61,11 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 		// echo $sql1."<br>";
 		$insert_result=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		//Update status for updated mo's and FG_codes
-		$update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num' AND product_sku='$FG_code'";
-		echo $update_mo_details."<br>";
-		$result = mysqli_query($link, $update_mo_details)or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
 	}	
+	//Update status for updated mo's and FG_codes
+	$update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num'";
+	$result = mysqli_query($link, $update_mo_details)or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 print("job successfully completed\n");
 //construct key values and 
