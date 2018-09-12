@@ -8,22 +8,24 @@
 	//incude("config.php");
 	function deleteMOQuantitiesCut($schedule,$color){
 		include("config.php");
-		$cutting_ref = 'CUTTING';
-		$op_codes_query = "Select GROUP_CONCAT(op_code) from $brandix_bts.tbl_orders_ops_ref where default_operation='Yes' and category in ($cutting_ref)";
+		$cutting_ref = "'cutting','Send PF','Receive PF'";
+		$op_codes_query = "Select GROUP_CONCAT(operation_code) as op_code from $brandix_bts.tbl_orders_ops_ref where default_operation='Yes' and category in ($cutting_ref)";
+		//echo $op_codes_query;
 		$op_codes_resut = mysqli_query($link,$op_codes_query) or exit('Problem while getting op codes');
 		while($row = mysqli_fetch_array($op_codes_resut)){
 			$op_codes = $row['op_code'];
 		}
-		$ref_nos_query = "Select distinct(bundle_no) as bundle_nos from $brandix_bts.bundle_creation_data 
-						  where op_code in ($op_codes) and trim(schedule)='".trim($schedule)."' 
+		$ref_nos_query = "Select distinct(bundle_number) as bundle_nos from $brandix_bts.bundle_creation_data 
+						  where operation_id in ($op_codes) and trim(schedule)='".trim($schedule)."' 
 						  and trim(color)='".trim($color)."'";
+						  //echo $ref_nos_query;
 		$ref_nos_result = mysqli_query($link,$ref_nos_query) or exit('Problem in getting bundles from BCD');	
 		while($row = mysqli_fetch_array($ref_nos_result)){
 			$bundle_nos = $row['bundle_nos'];
 		}	
 		// ----Transaction begin---
 		mysqli_begin_transaction($link);
-		$delete_bcd_query = "Delete from $brandix_bts.bundle_creation_data where bundle_no in ($bundle_nos)";
+		$delete_bcd_query = "Delete from $brandix_bts.bundle_creation_data where bundle_number in ($bundle_nos)";
 		$delete_bcd_data = mysqli_query($link,$delete_bcd_query) or exit('Problem While deleting Bundle Creation Data');
 		if($delete_bcd_data){
 			$delete_mos_query = "Delete from $bai_pro3.mo_operation_quantites where ref_no in ($bundle_nos)";
@@ -43,6 +45,7 @@
 		mysqli_close($link);
 		// -----Transaction End ---------
 		return false;
+		//die();
 	}
 
     function insertMOQuantitiesRecut($docket_no){
@@ -188,7 +191,8 @@
 		include("config.php");
 		
 		//getting style,color,schedule,size
-		$order_details = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data where bundle_no = '$ref_id' LIMTI 1";
+		$order_details = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id'";
+		//echo $order_details;
 		$order_result = mysqli_query($link,$order_details) or exit('Unable to get info from BCD');
 		while($row = mysqli_fetch_array($order_result)){
 			$style = $row['style'];
@@ -198,7 +202,8 @@
 		}
 
 		$mo_details = "SELECT * FROM $bai_pro3.mo_details WHERE TRIM(size)='$size' 
-					   and TRIM(schedule)='$schedule' and TRIM(color)='$col' order by mo_no";
+					   and TRIM(schedule)='$schedule' and TRIM(color)='$color' order by mo_no";
+					//    echo $mo_details;
 		$mos_result = mysqli_query($link,$mo_details);		
 		while($row = mysqli_fetch_array($mos_result)){
 			$mos[$row['mo_no']] = $row['mo_quantity'];
@@ -207,10 +212,11 @@
 		foreach($mos as $mo=>$mo_qty){
 			$mo_op_query ="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master 
 						   WHERE OperationNumber='$op_code' and MONumber='$mo' limit 1";
-			$mo_ops_result = mysqli_query($link,$mo_op_query) or exit('No Operations Exists for MO '.$mo);	
+			$mo_ops_result = mysqli_query($link,$mo_op_query) or exit('No Operations Exists for MO '.$mo);
+			// echo $mo_op_query;
 			while($row = mysqli_fetch_array()){
 				$op_desc[$mo] = $row['OperationDescription'];
-				$op_code[$mo] = $row['OperationNumber'];
+				//$op_code[$mo] = $row['OperationNumber'];
 			}	
 		}
 
@@ -218,12 +224,14 @@
 			foreach($mos as $mo=>$mo_qty){			   
 				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 								(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
-								values (".date('Y-m-d H:i:s').",'$mo','$ref_id','$qty','$op_code[$mo]','$op_desc[$mo]')"; 
+								values ('".date('Y-m-d H:i:s')."','$mo','$ref_id','$qty','$op_code','$op_desc[$mo]')"; 
 				mysqli_query($link,$insert_query) or exit("Error 0 In Inserting to MO Qtys for mo : ".$mo);	
 				$qty = 0;			
 			}
 		}else{			
 			foreach($mos as $mo=>$mo_qty){
+				if($qty == 0)
+					continue;
 				$last_mo = $mo;
 				$filled_qty = 0;
 	
@@ -235,19 +243,20 @@
 					$filled_qty = $row['filled'];
 				}				 
 				$available = $mo_qty - $filled_qty;
+				
 				if($qty > $available){
 					$qty = $qty-$available;
 					//qty = 60 qty = 10
 					$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 									(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
 									values 
-									(".date('Y-m-d H:i:s').",'$mo','$ref_id','$available','$op_code[$mo]','$op_desc[$mo]')"; 
+									('".date('Y-m-d H:i:s')."','$mo','$ref_id','$available','$op_code','$op_desc[$mo]')"; 
 					mysqli_query($link,$insert_query) or exit("Error 1 In Inserting to MO Qtys for mo : ".$mo);	
 				}else{
 					$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 									(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
 									values 
-									(".date('Y-m-d H:i:s').",'$mo','$ref_id','$qty','$op_code[$mo]','$op_desc[$mo]')"; 
+									('".date('Y-m-d H:i:s')."','$mo','$ref_id','$qty','$op_code','$op_desc[$mo]')"; 
 					mysqli_query($link,$insert_query) or exit("Error 2 In Inserting to MO Qtys for mo : ".$mo);
 					$qty = 0;
 				}
@@ -257,10 +266,12 @@
 				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 								(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
 								values 
-								(".date('Y-m-d H:i:s').",'$last_mo','$ref_id','$qty','$op_code[$mo]','$op_desc[$mo]')"; 
+								('".date('Y-m-d H:i:s')."','$last_mo','$ref_id','$qty','$op_code','$op_desc[$mo]')"; 
+								// echo $insert_query;
 				mysqli_query($link,$insert_query) or exit("Error 3 In Inserting excess qty to MO Qtys for mo : ".$mo);
 			}
 		}
+		//die();
 	}
 
 	function insertMOQuantitiesSewing($schedule,$sref_id){
@@ -652,7 +663,7 @@
 	function doc_size_wise_bundle_insertion($doc_no_ref)
 	{
 		include("config.php");
-		$category=['CUTTING','SEND PF','RECEIVE PF'];
+		$category=['cutting','Send PF','Receive PF'];
 		$operation_codes = array();
 		error_reporting(0);
 		// $doc_no_ref = 2190;
