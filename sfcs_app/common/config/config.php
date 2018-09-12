@@ -41,6 +41,7 @@ $local_mssql_password="Brandix@7";
 
 //To Facilitate SFCS Filters
 $global_facility_code=$conf1->get('plantcode');
+$facility_code=$global_facility_code;
 
 $plant_alert_code=$conf1->get('plant-alert-code');     //plant-alert-code
 $message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
@@ -99,6 +100,23 @@ $shifts_array = array("A","B","C","G");
 $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40");
 
 $plant_name = $conf1->get('plantname');
+
+
+//M3 Rest API Calls Details
+$company_no = $conf->get('companey-number');
+$api_username = $conf->get('api-user-name');
+$api_password = $conf->get('api-password');
+$api_hostname = $conf->get('api-host-name');
+$api_port_no = $conf->get('api-port');
+
+//m3 integration plant codes
+$cluster_code=$conf->get('cluster_code');
+$comp_no=$conf->get('company_no');
+$central_wh_code=$conf->get('central_wh_code');
+$plant_wh_code=$conf->get('plant_wh_code');
+$plant_prod_code=$conf->get('plant_prod_code');
+
+
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
