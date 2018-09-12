@@ -124,11 +124,13 @@
 					{
 						$style=$_GET['style'];
 						$schedule=$_GET['schedule'];
+						$del_id = $_GET['schedule'];
 					} 
 					else if ($_POST['style'] and $_POST['schedule'])
 					{
 						$style=$_POST['style'];
-						$schedule=$_POST['schedule'];	
+						$schedule=$_POST['schedule'];
+						$del_id = $_POST['schedule'];	
 					}
 					// echo $style."---".$schedule;
 					//getting parent id from tbl_pack_ref
@@ -147,7 +149,6 @@
 					$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
 					$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 
-					//echo "Style= ".$style."<br>Schedule= ".$schedule.'<br>';
 					// Order Details Display Start
 					{
 						$col_array = array();
@@ -160,156 +161,113 @@
 							$col_array[]=$sizes_result1['order_col_des'];
 						}
 
-						foreach ($sizes_array as $key => $value)
+						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN ($del_id)";
+						// echo $sewing_jobratio_sizes_query.'<br>';
+						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
 						{
-							$query = "SELECT bod.order_s_$sizes_array[$key] as order_qty, bod.title_size_$sizes_array[$key] as title, sum(psl.p_$sizes_array[$key]*psl.p_plies) AS planned_qty,order_col_des FROM $bai_pro3.bai_orders_db bod LEFT JOIN $bai_pro3.plandoc_stat_log psl ON psl.order_tid=bod.order_tid WHERE order_del_no=$schedule AND order_style_no='".$style."' AND order_s_$sizes_array[$key]>0 GROUP BY order_col_des";
-						//	echo $query.'<br>';
-							$qty=mysqli_query($link, $query) or exit("Sql Error2");
-							while($qty_result=mysqli_fetch_array($qty))
-							{
-								// echo $qty_result['title'];
-								$sizes_order_array[] = $qty_result['title'];
-								//echo $col_array[$key1]."-".$qty_result['order_col_des']."-".$qty_result['title']."-".$qty_result['order_qty']."</br>";
-								$order_array[$qty_result['order_col_des']][$qty_result['title']] = $qty_result['order_qty'];
-								$planned_array[$qty_result['order_col_des']][$qty_result['title']] = $qty_result['planned_qty'];
-								$balance_array[$qty_result['order_col_des']][$qty_result['title']] = $qty_result['planned_qty']-$qty_result['order_qty'];
-							}
+							$ref_size = $sewing_jobratio_color_details['size'];
+							$size_main = explode(",",$ref_size);
+							// var_dump($size);
 						}
-						//var_dump($order_array);
-						echo "<br><div class='col-md-12'>
-							<table class=\"table table-bordered\">
-								<tr class='info'>
-									<th>Colors</th>
-									<th>Details</th>";
-									foreach(array_unique($sizes_order_array) as $size)
-									{
-										echo "<th>$size</th>";
-									}	
-									
-									echo "<th>Total</th></tr>";
-									// echo "<th></th></tr>";
+						$sizeofsizes=sizeof($size_main);
 
-								$counter = 0;
-								foreach ($order_array as $key => $value) 
+						$planned_qty = array();
+						$ordered_qty = array();
+						$pack_qty = array();
+
+						echo "<br>
+							<div class='col-md-12 table-responsive'>
+								<table class=\"table table-bordered\">
+									<tr class=\"info\">
+										<th>Colors</th>
+										<th>Details</th>";
+										for ($i=0; $i < sizeof($size_main); $i++)
+										{
+											echo "<th>$size_main[$i]</th>";
+										}	
+										
+										echo "<th>Total</th>
+									</tr>";
+						// echo sizeof($col_array);ssss
+						for ($j=0; $j < sizeof($col_array); $j++)
+						{
+							$tot_ordered = 0;
+							$tot_planned = 0;
+							$pack_tot = 0;
+							foreach ($sizes_array as $key => $value)
+							{
+								$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule and order_col_des = '$col_array[$j]'))";
+								// echo $plannedQty_query.'<br>';
+								$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
+								while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
 								{
-									//order qty
-									echo "<tr><td rowspan='4'>".$key."</td>";
-									$finkey=$key;
-									$order_total = 0;
-									
-										echo "<td>Order</td>";
-									
-									
-									foreach ($value as $key1 => $value1) 
-									{
-										foreach(array_unique($sizes_order_array) as $size)
-										{
-											if($key1 == $size){
-												echo "<td>".$value1."</td>";
-												$order_total += $value1;
-											}
-										}
-									}
-									echo "<td>$order_total</td>";
-									// echo "<td></td>";
-									$counter++;
-									//Cut qty
-									echo "<tr>";
-									$planned_total = 0;
-									
-										echo "<td>Cut</td>";
-									
-									
-									foreach ($value as $key1_1 => $order_value)
-									{
-										foreach(array_unique($sizes_order_array) as $size)
-										{
-											if($key1_1 == $size){
-												echo "<td>".$order_value."</td>";
-												$planned_total += $order_value;
-											}
-										}
-									}
-									echo "<td>$planned_total</td>";
-									// echo "<td></td>";
-									$counter1++;
-									
-									
-									
-									
-									
-									echo "<tr>";
-									$pack_tot = 0;
-									
-										echo "<td>Pack Generated</td>";
-									
-									
-									foreach ($value as $key1_1 => $order_value)
-									{
-										foreach(array_unique($sizes_order_array) as $size)
-										{
-											if($key1_1 == $size){
-												// echo $key."---".$size."</br>";
-												$getpackqty="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where schedule='$schedule' and color='$key' and size_tit='$size'";
-												// echo $getpackqty;
-												$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
-												if($row=mysqli_fetch_array($packqtyrslt))
-												{
-													$qty=$row['qty'];
-												}
-												
-												echo "<td>".$qty."</td>";
-												$pack_tot += $qty;
-											}
-										}
-									}
-									echo "<td>$pack_tot</td>";
-									
-									
-									
-									
-									
-									
-									
-									//pack generated
-									echo "<tr>";
-									$balance_total = 0;
-									
-										// echo "<td>Total</td>";
-									
-									
-									foreach ($value as $key1 => $balance_value) 
-									{
-										foreach(array_unique($sizes_order_array) as $size)
-										{
-											if($key1 == $size){
-												if ($balance_value > 0) {
-													$color = '#00b33c';
-												} else if ($balance_value < 0 ) {
-													$color = '#FF0000';
-												} else if ($balance_value == 0 ) {
-													$color = '#000000';
-												}
-												// echo "<td style='color:".$color."; font-weight:bold'>".$balance_value."</td>";
-												// echo "<td></td>";
-												$balance_total += $balance_value;
-											}
-										}
-									}
-
-									if ($balance_total > 0) {
-										$color = '#00b33c';
-									} else if ($balance_total < 0 ) {
-										$color = '#FF0000';
-									} else if ($balance_total == 0 ) {
-										$color = '#000000';
-									}
-									// echo "<td style='color:".$color."; font-weight:bold'>$balance_total</td></tr>";
-									echo "</tr>";
-									$counter3++;
+									$planned_qty[] = $planneQTYDetails['plannedQty'];
 								}
 
-						echo "</table></div>";
+								$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule and order_col_des = '$col_array[$j]' ";
+								// echo $orderQty_query.'<br>';
+								$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
+								while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
+								{
+									$ordered_qty[] = $orderQty_details['orderedQty'];
+								}
+
+								$getpackqty="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where schedule='$schedule' and color='$col_array[$j]' and size_code='$sizes_array[$key]'";
+								// echo $getpackqty;
+								$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
+								if($row=mysqli_fetch_array($packqtyrslt))
+								{
+									$pack_qty[]=$row['qty'];
+								}
+							}
+							// echo $col_array[$i];
+							
+
+							echo "<tr>
+									<td rowspan=3>$col_array[$j]</td>
+									<td>Order Qty</td>";
+									for ($i=0; $i < $sizeofsizes; $i++)
+									{ 
+										echo "<td>$ordered_qty[$i]</td>";
+										$tot_ordered = $tot_ordered + $ordered_qty[$i];
+									}
+									echo "<td>$tot_ordered</td>
+								</tr>";
+
+							echo "<tr>
+									<td>Plan Qty</td>";
+									for ($i=0; $i < $sizeofsizes; $i++)
+									{ 
+										echo "<td>$planned_qty[$i]</td>";
+										$tot_planned = $tot_planned + $planned_qty[$i];
+									}
+									echo "<td>$tot_planned</td>
+								</tr>";
+
+							echo "<tr>
+									<td>Pack Generated</td>";
+									for ($i=0; $i < $sizeofsizes; $i++)
+									{
+										// $getpackqty="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where schedule='$schedule' and color='$col_array[$j]' and size_tit='$size'";
+										// // echo $getpackqty;
+										// $packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
+										// if($row=mysqli_fetch_array($packqtyrslt))
+										// {
+										// 	$qty=$row['qty'];
+										// }
+										
+										echo "<td>".$pack_qty[$i]."</td>";
+										$pack_tot += $pack_qty[$i];
+
+										// echo "<td>$planned_qty[$i]</td>";
+										// $tot_planned = $tot_planned + $planned_qty[$i];
+									}
+									echo "<td>$pack_tot</td>
+								</tr>";
+						}
+						echo "</table>
+							</div>";
 					}
 					// Order Details Display End
 				}
