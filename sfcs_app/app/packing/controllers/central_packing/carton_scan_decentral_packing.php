@@ -65,6 +65,9 @@
 				<div class="alert alert-danger col-sm-4" id="error_msg" name='error_msg'>
 					<strong>Error!</strong> <br><span id="error"></span>
 				</div>
+				<div id="loading_img" name='loading_img' class="col-sm-7 pull right">
+					<img src="../../common/images/pleasewait.gif" alt="Please Wait...">
+				</div>
 			</div>
 		</div>
 	</div>
@@ -75,6 +78,7 @@
 	{
 		$("#display_result").hide();
 		$("#error_msg").hide();
+		$("#loading_img").hide();
 
 		$("#carton_id").change(function()
 		{
@@ -95,6 +99,7 @@
 			var emp_id = $("#emp_id").val();
 			if (carton_id != '')
 			{
+				$("#loading_img").show();
 				var function_text = "carton_scan_ajax.php";
 				$.ajax({
 					url: function_text,
@@ -108,6 +113,7 @@
 						console.log(response);
 						if(response['status']==1)
 						{ 
+							$("#loading_img").hide();
 							$("#display_result").show();
 							$("#error_msg").hide();
 							document.getElementById('carton_no').innerHTML = response['carton_no'];
@@ -123,6 +129,7 @@
 						}
 						else if(response['status']==0 || response['status']==3)
 						{
+							$("#loading_img").hide();
 							if (response['status']==0)
 							{
 								var msg = "Enter a Valid Carton Number";
@@ -140,6 +147,7 @@
 						}
 						else if(response['status']==2)
 						{
+							$("#loading_img").hide();
 							$("#error_msg").hide();
 							$("#display_result").show();
 							document.getElementById('carton_no').innerHTML = response['carton_no'];
@@ -149,7 +157,7 @@
 							document.getElementById('carton_act_qty').innerHTML = response['carton_act_qty'];
 							document.getElementById('original_size').innerHTML = response['original_size'];
 							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Scanned Succesfully</center>";
-							$('#status').css("background-color", "limegreen");
+							$('#status').css("background-color", "limegreen");						
 							$('#'+id).val('');
 							$('#carton_id').focus();
 						}
