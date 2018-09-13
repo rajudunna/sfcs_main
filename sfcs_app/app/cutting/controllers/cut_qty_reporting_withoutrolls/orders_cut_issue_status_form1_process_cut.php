@@ -492,7 +492,7 @@ if(isset($_POST['update']))
 	}
 	
 }
-echo "Block 4";	
+
 //Logic Ends Here
 echo "<div class=\"alert alert-success\">
 <strong>Successfully Cutting Reported.</strong>
