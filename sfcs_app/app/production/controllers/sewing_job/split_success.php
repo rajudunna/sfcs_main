@@ -137,24 +137,26 @@
                                       where bundle_no = '$tid' and input_job_random = '$temp_input_job_no_random' 
                                       and input_job_no = '$temp_input_job_no'";
                                       */
-                        $update_mo = "Update  $bai_pro3.mo_operation_quantites set bundle_quantity='$nqty',
-                                      ref_no='$inserted_tid' where ref_no = '$tid' ";              
+                        $update_mo = "Update  $bai_pro3.mo_operation_quantites set bundle_quantity='$nqty'
+                                      where ref_no = '$tid' "; 
+                                    // ref_no='$inserted_tid'             
                         $update_result = mysqli_query($link,$update_mo) or exit('An error While Updating MO Quantities');        
                 
                         //getting mo_no,op_desc from mo_operation_quantities
-                        $mos = "Select mo_no,op_desc 
+                        $mos = "Select mo_no,op_desc,op_code 
                                 from $bai_pro3.mo_operation_quantites where ref_no = '$tid'  
                                 group by op_desc";
+        
                         $mos_result = mysqli_query($link,$mos); 
                         while($row = mysqli_fetch_array($mos_result)){
-                            $mo_no = $row['mon_no'];
+                            $mo_no = $row['mo_no'];
                             $ops[$row['op_code']] = $row['op_desc'];
                         }
                         //Inserting the new bundle quantity
                         foreach(array_unique($ops) as $op_code=>$op_desc){
                             $insert_mo = "Insert into $bai_pro3.mo_operation_quantites
-                                        ('date','mo_no','ref_no','bundle_quantity','op_code','op_desc') values 
-                                        (".date('Y-m-d H:i:s').",$mo_no,$inserted_tid,$qty,$op_code,$op_desc)";
+                                        (date_time,mo_no,ref_no,bundle_quantity,op_code,op_desc) values 
+                                        ('".date('Y-m-d H:i:s')."','$mo_no','$inserted_tid','$qty','$op_code','$op_desc')";          
                             mysqli_query($link,$insert_mo) or exit("Problem while inserting to mo quantities");            
                         }
                         unset($ops);
@@ -169,11 +171,12 @@
                    
         }
     }
+    $url = getFullURLLevel($_GET['r'],'split_jobs.php','0','N');
     echo "<script>sweetAlert('Success','Successfully Splitted your job.','success');</script>";
     echo "<script> 
                     setTimeout('Redirect()',3000); 
                     function Redirect() {  
-                        location.href = '$url_s&sch=$schedule&job=$input_job_no'; 
+                        location.href = '$url&sch=$schedule&job=$input_job_no'; 
                     }
                 </script>"; 
 ?> 

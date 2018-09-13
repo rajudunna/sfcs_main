@@ -308,7 +308,7 @@ $(document).ready(function()
 					{
 						var hidden_class='';
 						var hidden_class_sewing_in='';
-						if (operation_id == 900 || operation_id == 130)
+						if (operation_id == 129 || operation_id == 130 || operation_id == 900)
 						{
 							var hidden_class_sewing_in='hidden';
 						}

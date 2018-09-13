@@ -1,6 +1,6 @@
 <?php
 include("../../../../../common/config/config_ajax.php");
-include("../../../../../common/config/m3Updatings.php");
+include("../../../../../common/config/m3Updations.php");
 $post_data = $_POST['bulk_data'];
 parse_str($post_data,$new_data);
 //var_dump($new_data['tid']);
@@ -363,11 +363,13 @@ if($barcode_generation == 1)
 
 										//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 									}
+									/*
 									else 
 									{
 									//	echo '2'.$r_reasons[$key].'-'.$reson_max_qty.'</br>';
 										$reason_remaining_qty[$r_reasons[$reason_key]] = $reson_max_qty;
 									}
+									*/
 									
 								}
 								$remarks_code = $reason_code.'-'.$insertable_qty_rej;
@@ -376,11 +378,13 @@ if($barcode_generation == 1)
 
 								$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 							}
+							/*
 							else 
 							{
-							//	echo '2'.$r_reasons[$key].'-'.$reson_max_qty.'</br>';
+								//	echo '2'.$r_reasons[$key].'-'.$reson_max_qty.'</br>';
 								$reason_remaining_qty[$r_reasons[$reason_key]] = $reson_max_qty;
 							}
+							*/
 						
 						
 						}
@@ -908,6 +912,7 @@ if($barcode_generation == 1)
 		
 
 		$pre_ops_check = "SELECT tm.operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE style='".$b_style."' AND color = '".$mapped_color."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep).")) AND  tr.category NOT IN ('cutting','Send PF','Receive PF')";
+
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
 		{
@@ -919,7 +924,7 @@ if($barcode_generation == 1)
 				}
 			}
 		}
-		$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order'AND operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1";
+		$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' AND operation_code not in (10,200,15) ORDER BY operation_order ASC LIMIT 1";
 		$result_post_ops_check = $link->query($post_ops_check);
 		if($result_post_ops_check->num_rows > 0)
 		{

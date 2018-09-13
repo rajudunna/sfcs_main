@@ -7,7 +7,6 @@ $bundle_no = array();
 $op_code = '15';
 $cut_done_qty = array();
 $qry_to_find_in_out = "select * from $brandix_bts.bundle_creation_data where docket_number='$doc_no_ref'";
-// echo $qry_to_find_in_out;
 $qry_to_find_in_out_result = $link->query($qry_to_find_in_out);
 error_reporting(0);
 if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
@@ -28,14 +27,15 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 	}
 	$rec_qty =0 ;
 	$left_over_qty = 0;
+
 	foreach ($cut_done_qty as $key => $value)
 	{
 		//updating cut qty into bundle_creation_data and cps log
 		$selecting_qry = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no_ref' AND size_id = '$key' AND operation_id = '$op_code'";
 		$result_selecting_qry = $link->query($selecting_qry);
-		while($row_result_selecting_qry = $result_selecting_qry->fetch_assoc()) 
+		while($row = $result_selecting_qry->fetch_assoc()) 
 		{
-			$id_to_update = $row_result_selecting_qry['id'];
+			$id_to_update = $row['id'];
 			$mapped_color = $row['mapped_color'];
 			$ref_no = $row['bundle_number'];
 			$b_style = $row['style'];

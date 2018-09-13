@@ -221,6 +221,7 @@ function update_m3_or($doc_no,$plies,$operation,$old_plies,$link)
 
 if(isset($_POST['update']))
 {
+
 	// echo "<script>alert('into update condition')</script>";
 	$club_status=$_POST['club_status'];
 	$a_plies=$_POST["a_plies_qty"];
@@ -249,6 +250,7 @@ if(isset($_POST['update']))
 	// echo "<script>alert('till club status=1')</script>";
 	if($club_status=='0')
 	{
+	
 		// echo "<script>alert('into club status = 1')</script>";
 		if(strlen($_POST['remarks'])>0)
 		{
@@ -479,21 +481,23 @@ if(isset($_POST['update']))
 	}
 	if ($failed == 1) 
 	{
+	
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
 	}
 	else
 	{
+	
 		$go_back = 'doc_track_panel_cut';
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",10); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'trail.php',0,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
 	}
 	
 }
-	
+echo "Block 4";	
 //Logic Ends Here
 echo "<div class=\"alert alert-success\">
 <strong>Successfully Cutting Reported.</strong>
 </div>";
-echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
 
+echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
 ?>
 
