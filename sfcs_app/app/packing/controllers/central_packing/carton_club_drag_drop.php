@@ -1,6 +1,6 @@
-<!doctype html>
-<html lang="en">
-<head>
+	<!doctype html>
+	<html lang="en">
+	<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Carton Club</title>
@@ -8,7 +8,6 @@
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
         echo '<script src="'.getFullURLLevel($_GET['r'],'common/js/jquery-ui.js',2,'R').'"></script>';
-
         if (isset($_GET['style']))
         {
             $style=$_GET['style'];
@@ -21,31 +20,28 @@
             $style = $_POST['style'];
             $schedule = $_POST['schedule'];
             $packmethod = $_POST['packmethod'];
-            echo $packmethod;
-        }
+		}
 
     ?>
     <script type="text/javascript">
         var url1 = '<?= getFullURL($_GET['r'],'carton_club_drag_drop.php','N'); ?>';
         function firstbox()
         {
-            //alert("report");
             window.location.href =url1+"&style="+document.mini_order_report.style.value
         }
 
         function secondbox()
         {
-            //alert("report");
             window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
         }
     </script>
     <style>
         #sortable1{
-            height: 150px;
+            height: 250px;
             overflow-y: auto;
         }
         #sortable2 {
-            height: 250px;
+            height: 150px;
         }
         #sortable1, #sortable2 {
             border: 1px solid black;
@@ -61,7 +57,7 @@
             margin: 0 5px 5px 5px;
             padding: 5px;
             font-size: 1.2em;
-            width: 120px;
+            width: 100px;
         }
     </style>
     <script>
@@ -120,8 +116,7 @@
                                     }
                                 }
                                 echo "</select>&nbsp;&nbsp;";
-
-                            echo "<label>Pack Method:</label> 
+								echo "<label>Pack Method:</label> 
                                     <select class='form-control' name=\"packmethod\"  id='packmethod' required>";
                                         $sql="select distinct pack_method from $bai_pro3.pac_stat_log where style=\"$style_ori\" AND schedule=\"$schedule_ori\"";  
                                         $sql_result=mysqli_query($link, $sql) or exit("Sql Error");
@@ -132,7 +127,7 @@
                                         $seqrslt=mysqli_query($link, $seqno) or exit("error while getting seq no");
                                         while($row=mysqli_fetch_array($seqrslt))
                                         {
-                                            if(str_replace(" ","",$sql_row['pack_method'])==str_replace(" ","",$packmethod))
+                                            if(str_replace(" ","",$row['seq_no']."-".$sql_row['pack_method'])==str_replace(" ","",$packmethod))
                                             {
                                                 echo "<option value=\"".$row['seq_no']."-".$sql_row['pack_method']."\" selected>".$row['seq_no']."-".$operation[$sql_row['pack_method']]."</option>";
                                             }
@@ -155,11 +150,10 @@
                         $style = $_POST['style'];
                         $schedule = $_POST['schedule'];
                         $packmethod = $_POST['packmethod'];
-                        // echo $style.' == '.$schedule.' == '.$packmethod;
-
+						$seq = substr($packmethod,0,1);
+						$packm = substr($packmethod,-1);
                         $style_ori = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link); 
                         $schedule_ori = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-                        
                         echo '
                             <input type="hidden" name="style_id" id="style_id" value="'.$style.'">
                             <input type="hidden" name="schedule_id" id="schedule_id" value="'.$schedule.'">
@@ -168,15 +162,15 @@
                             <input type="hidden" name="packmethod1" id="packmethod1" value="'.$packmethod.'">';
 
                         $carton_no = array();   $status = array();  $carton_mode=array();
-                        $get_cartons = "SELECT DISTINCT carton_no, status, carton_mode FROM bai_pro3.pac_stat_log WHERE SCHEDULE=$schedule_ori;";
-                        $carton_result=mysqli_query($link, $get_cartons) or die("Error"); 
+                        $get_cartons = "SELECT DISTINCT carton_no, status, carton_mode FROM bai_pro3.pac_stat_log WHERE SCHEDULE=$schedule_ori and seq_no=$seq";
+						$carton_result=mysqli_query($link, $get_cartons) or die("Error"); 
                         while($row=mysqli_fetch_array($carton_result)) 
                         {
                             $carton_no[]=$row['carton_no'];
                             $status[] = $row['status'];
                             $carton_mode[] = $row['carton_mode'];
                         }
-                            ?>
+                         ?>
                         <br><br>
                         <br><br>
                         
@@ -212,7 +206,11 @@
                         <br><br>
                         <br><br>
                         <br><br>
+						<br><br>
+						<br><br>
                         <br><br>
+						<br><br>
+                        <h3><span class="label label-info">Drop Carton Box in Below Container which you want to Club</span></h3>
                         <!-- To Container -->
                         <ul id="sortable2" class="connectedSortable">
 
@@ -289,33 +287,35 @@
                         $docnoref=$cartrow['doc_no_ref'];
                     }
                     $updatedetails="update $bai_pro3.pac_stat_log set doc_no_ref='$docnoref',carton_no='$cartno' where style='$style' AND schedule='$schedule' AND carton_no in ($carton) AND seq_no='$seq' AND pack_method='$packm'";
-                    // echo $updatedetails.'<br>';
                     $result12=mysqli_query($link, $updatedetails) or die("Error while updating carton details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     echo "<script>sweetAlert('Packing Jobs Clubbed','Sucessfully','success');</script>";
                     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
-                            function Redirect() {
-                                location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style_id&schedule=$schedule_id&packmethod=$packmethod\";
-                                }
-                            </script>";
+						function Redirect() 
+						{
+							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style_id&schedule=$schedule_id&packmethod=$packmethod\";
+						}
+						</script>";
                 }
                 else
                 {
                     echo "<script>sweetAlert('Cannot Club Single Carton','','warning');</script>";
                     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
-                            function Redirect() {
-                                location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style_id&schedule=$schedule_id&packmethod=$packmethod\";
-                                }
-                            </script>";
+						function Redirect() 
+						{
+							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style_id&schedule=$schedule_id&packmethod=$packmethod\";
+						}
+						</script>";
                 }
             }
             else
             {
                 echo "<script>sweetAlert('No Cartons Added to Club','','warning');</script>";
                 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
-                        function Redirect() {
-                            location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style_id&schedule=$schedule_id&packmethod=$packmethod\";
-                            }
-                        </script>";
+					function Redirect() 
+					{
+						location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style_id&schedule=$schedule_id&packmethod=$packmethod\";
+					}
+					</script>";
             }
             
                 
