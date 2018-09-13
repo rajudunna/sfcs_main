@@ -100,10 +100,7 @@
 							$date_rev=date("Y-m-d H:i:s");
 							for($i=0;$i<sizeof($ops_id);$i++)
 							{
-								var_dump($ops_id)."<br>";
-								echo $ops_id[$i]."<br>";
 								$sql23="SELECT * FROM $bai_pro3.mo_operation_quantites where ref_no = '$tid' and op_code='$ops_id[$i]'";
-								echo $sql23."<br>";
 								$result23=mysqli_query($link, $sql23) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								if(mysqli_num_rows($result23)==1)
 								{

@@ -9,13 +9,13 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+document.mini_order_report.style.value
+		window.location.href =url1+"&style="+document.pack_load.style.value
 	}
 
 	function secondbox()
 	{
 		//alert('test');
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
+		window.location.href =url1+"&style="+document.pack_load.style.value+"&schedule="+document.pack_load.schedule.value
 	}
 
 </script>
@@ -37,18 +37,14 @@
 	if(isset($_POST['style']))
 	{
 	    $style=$_POST['style'];
-	    $schedule=$_POST['schedule'];
-		$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);	
-		$check_status = echo_title("$bai_pr3.packing_summary","count(*)","status='DONE' and order_del_no",$schedule_original,$link);
+	    $schedule=$_POST['schedule'];	
 	}
 	else
 	{
 		$style=$_GET['style'];
 		$schedule=$_GET['schedule'];
-		$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);	
-		$check_status = echo_title("$bai_pr3.packing_summary","count(*)","status='DONE' and order_del_no",$schedule_original,$link);
 	}
-				echo "<form name=\"mini_order_report\" action=\"#\" method=\"post\" >";
+				echo "<form name=\"pack_load\" action=\"#\" method=\"post\" >";
 				echo "<div class='col-md-3 col-sm-3 col-xs-12'>";
 				?>
 					Style:
@@ -78,7 +74,7 @@
 					&nbsp;Schedule:
 					<?php
 						// Schedule
-						echo "<select class='form-control' name=\"schedule\" id=\"schedule\" onchange=\"secondbox();\" required>";
+						echo "<select class='form-control' name=\"schedule\" id=\"schedule\" required>";
 						$sql="select * from $brandix_bts.tbl_orders_master where ref_product_style='".$style."'";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_num_check=mysqli_num_rows($sql_result);
@@ -98,37 +94,44 @@
 						echo "</div>";
 					?>
 					<div class='col-md-3 col-sm-3 col-xs-12'>
-					<input type="submit" name="submit" id="submit" class="btn btn-success " value="Submit" style="margin-top: 18px;">
-					<?php
-					if($check_status=='' || $check_status==NULL || $check_status==0)
-					{
-						?>
-						<input type="submit" name="clear" value="Delete All" class="btn btn-danger confirm-submit" style="margin-top: 18px;">
-						<?php					
-					}
-					
-					?>
-					
+					<input type="submit" name="submit" id="submit" class="btn btn-success " value="Submit" style="margin-top: 18px;">	
                  </div>
 				</form>
 		<div class="col-md-12">
 			<?php
+			
 			if(isset($_POST['submit']))
 			{	
 				if($_POST['style'] && $_POST['schedule'])
 				{
-					$style=$_POST['style'];
+					$style_id=$_POST['style'];
 					$schedule=$_POST['schedule'];
 					$c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
+					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
 					
-					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
-					$query = "SELECT *,sum(carton_act_qty) as carton_act_qty FROM $bai_pro3.pac_stat_log WHERE style = '$style' AND SCHEDULE = '$schedule_original' GROUP BY seq_no";
-					//echo $query;
-					//die();
+					$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
+					$check_status = echo_title("$bai_pr3.packing_summary","count(*)","status='DONE' and order_del_no",$schedule_original,$link);					
+					
+					
+					$query = "SELECT *,sum(carton_act_qty) as carton_act_qty FROM $bai_pro3.pac_stat_log WHERE style = '$style' AND SCHEDULE = '$schedule_original' GROUP BY seq_no";					
 					$new_result = mysqli_query($link, $query) or exit("Sql Error366".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$rowscnt=mysqli_num_rows($new_result);
 					if($rowscnt > 0)
 					{
+						
+					echo "<form name=\"delete_pack\" action=\"#\" method=\"post\">";
+					echo '<input type="hidden" name="style" id="style" value="'.$style_id.'">
+                          <input type="hidden" name="schedule" id="schedule" value="'.$schedule.'">';
+				
+					if($check_status=='' || $check_status==NULL || $check_status==0)
+					{
+						?>
+						<span class="label label-info">To Clear all Packing Method at a time please click Delete All </span> &nbsp;&nbsp;
+						<input type="submit" name="clear" id="clear" value="Delete All" class="btn btn-danger  confirm-submit" style="margin-top: 18px;">
+						<?php					
+					}					
+					echo "</form>";	
+						
 						echo "<br><div class='col-md-12'>
 				
 							<table class=\"table table-bordered\">
@@ -166,12 +169,11 @@
 									echo"<td>".$new_result1['schedule']."</td>";
 									$i++;
 									$url=getFullURL($_GET['r'],'pack_method_deletion.php','N');
-									if($staus != "done"){
-									echo "<td><a   class='btn btn-danger confirm-submit' href=$url&pack_method='".$new_result1['pack_method']."'&seq_no='".$new_result1['seq_no']."'&tid='".$new_result1['tid']."'>Delete</td>";
+									if($staus != "DONE"){
+									echo "<td><a  id='delete' class='btn btn-danger confirm-submit' href=$url&pack_method='".$new_result1['pack_method']."'&seq_no='".$new_result1['seq_no']."'>Delete</td>";
 									}
 									else{
 										echo "<td  class='btn btn-success'>Already Scanned</td>";
-	
 									}
 									echo "<tr>";
 									
@@ -184,7 +186,7 @@
 					}		
 				}
 			}
-            if($_GET['pack_method'] && $_GET['seq_no'] && $_GET['tid'])
+            if($_GET['pack_method'] && $_GET['seq_no'])
 			{
 				$packmethod = $_GET['pack_method'];
 				//echo $packmethod;
@@ -215,16 +217,15 @@
 			}
 			if(isset($_POST['clear']))
 			{	
-				if(isset($_POST['style'])  && isset($_POST['schedule']) && $_POST['style'] != '' && $_POST['schedule'] != '')
-				{
-				   $style=$_POST['style'];
+				//if(isset($_POST['style'])  && isset($_POST['schedule']) && $_POST['style'] != '' && $_POST['schedule'] != '')
+				//{
+				   $style_id=$_POST['style'];
 				   $schedule=$_POST['schedule'];
 					// echo $_POST['style']."----". $_POST['schedule'];
 					$c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
 					$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
+					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
 					$query = "SELECT * FROM $bai_pro3.pac_stat_log WHERE style = '$style' AND SCHEDULE = '$schedule_original'";
-					//echo $query;
 					$new_result = mysqli_query($link, $query) or exit("Sql Error366".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$rowscnt=mysqli_num_rows($new_result);
 					if($rowscnt > 0)
@@ -258,13 +259,13 @@
 						if(! $sql_result ) {
 							die('Could not delete data: ' . mysql_error());
 									   }
-						echo '<script>swal("Packing List Deleted Sucessfully","","warning")</script>';			   
+						echo '<script>swal("Packing List Deleted Successfully","","success")</script>';			   
 					}
 					else
 					{
 						echo '<script>swal("Packing List Not Generated","","warning")</script>';	
 					}
-				}
+				//}
 			}
 			?> 
 		</div>
