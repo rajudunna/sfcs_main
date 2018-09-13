@@ -15,7 +15,7 @@
             $style_ori = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link); 
             $schedule_ori = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
         }
-        else if(isset($_POST['submit']))
+        if(isset($_POST['submit']))
         {
             $style = $_POST['style'];
             $schedule = $_POST['schedule'];
@@ -127,7 +127,7 @@
                                         $seqrslt=mysqli_query($link, $seqno) or exit("error while getting seq no");
                                         while($row=mysqli_fetch_array($seqrslt))
                                         {
-                                            if(str_replace(" ","",$row['seq_no']."-".$sql_row['pack_method'])==str_replace(" ","",$packmethod))
+                                            if($row['seq_no']."-".$sql_row['pack_method']==$packmethod)
                                             {
                                                 echo "<option value=\"".$row['seq_no']."-".$sql_row['pack_method']."\" selected>".$row['seq_no']."-".$operation[$sql_row['pack_method']]."</option>";
                                             }
@@ -161,11 +161,12 @@
                             <input type="hidden" name="schedule1" id="schedule1" value="'.$schedule_ori.'">
                             <input type="hidden" name="packmethod1" id="packmethod1" value="'.$packmethod.'">';
 
-                        $carton_no = array();   $status = array();  $carton_mode=array();
-                        $get_cartons = "SELECT DISTINCT carton_no, status, carton_mode FROM bai_pro3.pac_stat_log WHERE SCHEDULE=$schedule_ori and seq_no=$seq";
+                        $carton_no = array();   $status = array();  $carton_mode=array();   $doc_no_ref = array();
+                        $get_cartons = "SELECT DISTINCT carton_no, status, carton_mode, doc_no_ref FROM bai_pro3.pac_stat_log WHERE SCHEDULE=$schedule_ori and seq_no=$seq";
 						$carton_result=mysqli_query($link, $get_cartons) or die("Error"); 
                         while($row=mysqli_fetch_array($carton_result)) 
                         {
+                            $doc_no_ref[]=$row['doc_no_ref'];
                             $carton_no[]=$row['carton_no'];
                             $status[] = $row['status'];
                             $carton_mode[] = $row['carton_mode'];
@@ -184,20 +185,29 @@
                             <?php
                                 for ($i=0; $i < sizeof($carton_no); $i++)
                                 {
+                                    $final_details = "SELECT GROUP_CONCAT(DISTINCT TRIM(color) SEPARATOR '\n') AS colors, GROUP_CONCAT(DISTINCT size_tit) AS sizes, SUM(carton_act_qty) AS carton_qty FROM bai_pro3.`pac_stat_log` WHERE doc_no_ref = '".$doc_no_ref[$i]."';";
+                                    $final_result = mysqli_query($link,$final_details);
+                                    while($row=mysqli_fetch_array($final_result))
+                                    {
+                                        $colors=$row['colors'];
+                                        $sizes=$row['sizes'];
+                                        $carton_qty=$row['carton_qty'];
+                                    }
                                     if ($status[$i] != 'DONE')
                                     {
                                         if ($carton_mode[$i] == 'F')
                                         {
-                                            echo "<li class='btn btn-success' value='".$carton_no[$i]."'>Carton - $carton_no[$i]</li>";
+                                            
+                                            echo "<li class='btn btn-success' value='".$carton_no[$i]."' title='Color: ".$colors."\nSize: ".$sizes."\nQty: ".$carton_qty."'>Carton - $carton_no[$i]</li>";
                                         }
                                         else
                                         {
-                                            echo "<li class='btn btn-warning' value='".$carton_no[$i]."'>Carton - $carton_no[$i]</li>";
+                                            echo "<li class='btn btn-warning' value='".$carton_no[$i]."' title='Color: ".$colors."\nSize: ".$sizes."\nQty: ".$carton_qty."'>Carton - $carton_no[$i]</li>";
                                         }
                                     }
                                     else
                                     {
-                                        echo "<li class='btn btn-danger unsortable' value='".$carton_no[$i]."' >Carton - $carton_no[$i]</li>";
+                                        echo "<li class='btn btn-danger unsortable' value='".$carton_no[$i]."' title='Color: ".$colors."\nSize: ".$sizes."\nQty: ".$carton_qty."'>Carton - $carton_no[$i]</li>";
                                     }
                                 }
                             ?>

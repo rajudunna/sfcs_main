@@ -12,7 +12,7 @@
 		<div class="panel-heading">Carton Reversal</div>
 		<div class="panel-body">
 			<form class="form-inline" action="<?php $_GET['r'] ?>" method="POST">
-				<label>Carton ID: </label>
+				<label>Carton Barcode ID: </label>
 				<input type="text" name="carton_id" class="form-control" id="carton_id" value="" required>
 				&nbsp;&nbsp;
 				<input type="submit" name="submit" id="submit" class="btn btn-success confirm-submit">
@@ -81,7 +81,7 @@
 
 									// $inserting_into_m3_tran_log = "INSERT INTO bai_pro3.`m3_transactions` (date_time,mo_no,quantity,reason,remarks,log_user,tran_status_code,module_no,shift,op_code,op_des,ref_no) SELECT NOW(),mo_no,quantity*-1,'cpk_reversal',remarks,USER(),'0',module_no,shift,'200','CPK',$carton_id FROM bai_pro3.`m3_transactions` WHERE ref_no=$carton_id AND op_code=200 AND op_des='CPK';";
 
-									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number','$negative_qty','','cpk_reversal',user(),'','$b_op_id','CPK','$id','$work_station_id','')";
+									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$negative_qty','','cpk_reversal',user(),'','$b_op_id','CPK','$id','$work_station_id','')";
 									// echo $inserting_into_m3_tran_log;
 									mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
 
