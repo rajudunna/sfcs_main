@@ -1,5 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/mo_filling.php',4,'R'));?>
 <?php
 function get_val($table_name,$field,$compare,$key,$link)
 {
@@ -128,9 +129,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//echo "</br>temp>=pliescut :".$sql2."</br>";
 		$temp=$temp-$pliespercut;
-		 //echo "1=".$temp."<br>";
+
+		
+		$docket_no = mysqli_insert_id($link);
+		if($docket_no > 0){
+			$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
+			if($insert_bundle_creation_data){
+				//Data inserted successfully
+			}
+			$docket_no = '';
+		}
+
+	
 	}
-	 //echo "2=".$temp."<br>";
 
 	if($temp>0)
 	{
@@ -142,6 +153,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// NEW 20100528
 		$temp=0;
+
+		//getting docket number
+		$docket_no = mysqli_insert_id($link);
+		if($docket_no > 0){
+			$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
+			if($insert_bundle_creation_data){
+				//Data inserted successfully
+			}
+			$docket_no = '';
+		}
 	}
 
 }
