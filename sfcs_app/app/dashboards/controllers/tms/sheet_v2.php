@@ -185,7 +185,7 @@ if(count($colors)>0){
                     <?php
                     if(count($final_data) >0){
                         foreach ($final_data as $key1 => $value1) {
-							$op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and SMV > 0";
+							$op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and SMV > 0";
 							
                             $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_sql_result) > 0){
@@ -193,7 +193,7 @@ if(count($colors)>0){
                                 $api_selected_valuess_strim[] = $value1;
                             }
                            
-                            $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and OperationNumber = 200";
+                            $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and OperationNumber = 200";
                             $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_ptrim_sql_result) > 0){
                                 $value1['trim_type'] = 'PTRIM';
