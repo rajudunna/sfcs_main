@@ -149,7 +149,7 @@ if(count($colors)>0){
                             while($mo_row=mysqli_fetch_array($mo_sql_result))
                             {
                                 $mo_no = $mo_row['mo_no'];
-								$api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,PEUN,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
+								$api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
 								
 								$api_data = $obj->getCurlAuthRequest($api_url);
 								
@@ -185,7 +185,7 @@ if(count($colors)>0){
                     <?php
                     if(count($final_data) >0){
                         foreach ($final_data as $key1 => $value1) {
-							$op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and SMV > 0";
+							$op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and SMV > 0";
 							
                             $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_sql_result) > 0){
@@ -193,7 +193,7 @@ if(count($colors)>0){
                                 $api_selected_valuess_strim[] = $value1;
                             }
                            
-                            $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and ColorId = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and OperationNumber = 200";
+                            $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and OperationNumber = '".$value1['OPNO']."' and OperationNumber = 200";
                             $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_ptrim_sql_result) > 0){
                                 $value1['trim_type'] = 'PTRIM';
@@ -207,16 +207,19 @@ if(count($colors)>0){
                                 $mfno = $api_selected_valuess['MFNO'];
                                 $prno = urlencode($api_selected_valuess['PRNO']);
                                 $mseq = $api_selected_valuess['MSEQ'];
-                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                                 $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
                                 $api_data_result = json_decode($api_data_wastage, true);   
                                 $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
                                 
+                                //For UOM
+                                $api_selected_valuess['UOM'] = $result_values[0]['Value'];
+
                                 //req without wastge
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
                                 //req with wastge                               
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
+								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[1]['Value']/100);
 								
 								/* To Get color,size,z code  */
 								$ITNO = urlencode($api_selected_valuess['MTNO']);
@@ -278,10 +281,10 @@ if(count($colors)>0){
 							<td><?= $z_res ?></td>
 							<td><?= $option_des ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$result_values[1]['Value']."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
-                            <td><?= $api_selected_valuess['PEUN'] ?></td>
+                            <td><?= $api_selected_valuess['UOM'] ?></td>
                         </tr>
                         <?php }
                         }    
@@ -292,17 +295,20 @@ if(count($colors)>0){
                                 $mfno = $api_selected_valuess['MFNO'];
                                 $prno = urlencode($api_selected_valuess['PRNO']);
                                 $mseq = $api_selected_valuess['MSEQ'];
-                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                                 $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
 								$api_data_result = json_decode($api_data_wastage, true);
 								  
                                 $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
+
+                                //For UOM
+                                $api_selected_valuess['UOM'] = $result_values[0]['Value'];
                                 
                                 //req without wastge
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
                                 //req with wastge                               
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
+								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[1]['Value']/100);
 								
 								/* To Get color,size,z code  */
 								$ITNO = urlencode($api_selected_valuess['MTNO']);
@@ -362,10 +368,10 @@ if(count($colors)>0){
 							<td><?= $z_res ?></td>
 							<td><?= $option_des ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$result_values[1]['Value']."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
-                            <td><?= $api_selected_valuess['PEUN'] ?></td>
+                            <td><?= $api_selected_valuess['UOM'] ?></td>
                         </tr>
                         <?php }
                         }                        
