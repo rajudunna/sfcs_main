@@ -468,16 +468,16 @@
 									echo "<div class='panel-heading'>$title</div>";
 									echo "<div class='panel-body'>";
 									
-									echo "<div class='col-md-3 col-sm-3 col-xs-12'>
+									echo "<div class='col-md-6 col-sm-6 col-xs-12'>
 									<label>Description :</label>
-									<input type='text' name='description' id='description'  class='form-control' required>
+									<input type='text' name='description' id='description' size='60' maxlength='60' class='form-control' required>
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of cartons per Pack Job :</label>
 									<input type='text' name='noofcartons' id='noofcartons'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
-									<label>No of Pack Jobs per Pack  :</label>
+									<label>No of Cartons  :</label>
 									<input type='text' name='noofpackjobs' id='noofpackjobs'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
 									</div>";
 									echo "</br></br></br></br>";

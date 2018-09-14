@@ -162,7 +162,7 @@
                             <input type="hidden" name="packmethod1" id="packmethod1" value="'.$packmethod.'">';
 
                         $carton_no = array();   $status = array();  $carton_mode=array();   $doc_no_ref = array();
-                        $get_cartons = "SELECT DISTINCT carton_no, status, carton_mode, doc_no_ref FROM bai_pro3.pac_stat_log WHERE SCHEDULE=$schedule_ori and seq_no=$seq";
+                        $get_cartons = "SELECT carton_no, status, carton_mode, doc_no_ref FROM bai_pro3.pac_stat_log WHERE SCHEDULE=$schedule_ori and seq_no=$seq group by carton_no";
 						$carton_result=mysqli_query($link, $get_cartons) or die("Error"); 
                         while($row=mysqli_fetch_array($carton_result)) 
                         {

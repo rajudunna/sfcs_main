@@ -29,7 +29,7 @@
 ?>
 
 <div class="panel panel-primary">
-	<div class="panel-heading"><b>Pack Method Loading</b></div>
+	<div class="panel-heading"><b>Packing List Loading</b></div>
 	<div class="panel-body">
 	<?php
 		$order_tid=$_GET['order_tid'];
@@ -173,24 +173,40 @@
 					{
 						$planned_qty = array();
 						$ordered_qty = array();
+						$pac_qty = array();
 						$tot_ordered = 0;
 						$tot_planned = 0;
-						foreach ($sizes_array as $key => $value)
-						{
-							$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule_id))";
-							// echo $plannedQty_query.'<br>';
+						$tot_pac = 0;
+						for($kk=0;$kk<sizeof($size_main);$kk++)
+						//foreach ($sizes_array as $key => $value)
+						{					
+							$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plan_qty FROM $brandix_bts.tbl_cut_size_master 
+							LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
+							LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
+							WHERE tbl_cut_master.ref_order_num='$schedule' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name";
+							//echo $plannedQty_query.'<br>';
 							$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 							while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
 							{
-								$planned_qty[] = $planneQTYDetails['plannedQty'];
+								$planned_qty[$size_main[$kk]] = $planneQTYDetails['plan_qty'];
+								//echo $planned_qty[$size_main[$kk]]."---Testing<br>";
 							}
-
-							$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule_id";
-							// echo $orderQty_query.'<br>';
+							$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
+							WHERE parent_id='$schedule' AND tbl_orders_sizes_master.size_title='$size_main[$kk]'";
+							//echo $orderQty_query.'<br>';
 							$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
 							while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
 							{
-								$ordered_qty[] = $orderQty_details['orderedQty'];
+								$ordered_qty[$size_main[$kk]] = $orderQty_details['orderedQty'];
+							}
+							
+							$pacQty_query = "SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.pac_stat_log 
+							WHERE schedule='$schedule_id' AND size_tit='$size_main[$kk]'";
+							//echo $pacQty_query.'<br>';
+							$pac_qty_resut=mysqli_query($link, $pacQty_query) or exit("Sql Error2");
+							while($pacQty_details=mysqli_fetch_array($pac_qty_resut))
+							{
+								$pac_qty[$size_main[$kk]] = $pacQty_details['pack_qty'];
 							}
 						}
 						echo "<br>
@@ -208,23 +224,32 @@
 
 								echo "<tr>
 										<td>Order Qty</td>";
-										for ($i=0; $i < $sizeofsizes; $i++)
+										for ($i=0; $i < sizeof($size_main); $i++)
 										{ 
-											echo "<td>$ordered_qty[$i]</td>";
-											$tot_ordered = $tot_ordered + $ordered_qty[$i];
+											echo "<td>".$ordered_qty[$size_main[$i]]."</td>";
+											$tot_ordered = $tot_ordered + $ordered_qty[$size_main[$i]];
 										}
 										echo "<td>$tot_ordered</td>
 									</tr>";
 
 								echo "<tr>
-										<td>Plan Qty</td>";
-										for ($i=0; $i < $sizeofsizes; $i++)
+										<td>Cut Plan Qty</td>";
+										for ($i=0; $i < sizeof($size_main); $i++)
 										{ 
-											echo "<td>$planned_qty[$i]</td>";
-											$tot_planned = $tot_planned + $planned_qty[$i];
+											echo "<td>".$planned_qty[$size_main[$i]]."</td>";
+											$tot_planned = $tot_planned + $planned_qty[$size_main[$i]];
 										}
 										echo "<td>$tot_planned</td>
 									</tr>";
+								echo "<tr>
+										<td>Pack Qty</td>";
+										for ($i=0; $i < sizeof($size_main); $i++)
+										{ 
+											echo "<td>".$pac_qty[$size_main[$i]]."</td>";
+											$tot_pac = $tot_pac + $pac_qty[$size_main[$i]];
+										}
+										echo "<td>$tot_pac</td>
+									</tr>";	
 							echo "</table>
 						</div>";
 					}
@@ -245,8 +270,8 @@
 										<th>S.No</th>
 										<th>Packing Method</th>
 										<th>Description</th>
-										<th>No Of Colors</th>
-										<th>No Of Sizes</th>
+										<th>Colors</th>
+										<th>Sizes</th>
 										<th>No Of Cartons</th>
 										<th>Quantity</th>
 										<th>Controls</th></tr>";
@@ -257,7 +282,6 @@
 										$parent_id=$pack_result1['parent_id'];
 										$pack_method=$pack_result1['pack_method'];
 										$get_qty = "SELECT seq_no,COUNT(DISTINCT(carton_no)) as carton_count,SUM(carton_act_qty) as qty FROM $bai_pro3.`pac_stat_log` WHERE SCHEDULE='$schedule_id' AND pac_seq_no='$seq_no'";
-										// echo $get_qty.'<br>';
 										$get_qty_result=mysqli_query($link, $get_qty) or exit("Error while getting carton qty");
 										while($row=mysqli_fetch_array($get_qty_result)) 
 										{
@@ -265,22 +289,24 @@
 											$qty = $row['qty'];
 											$carton_count = $row['carton_count'];
 										}
-
-										echo "<tr>
-												<td>$i</td>
-												<td>".$operation[$pack_method]."</td>
-												<td>".$pack_result1['pack_description']."</td>
-												<td>".$pack_result1['color']."</td>
-												<td>".$pack_result1['size']."</td>
-												<td>".$carton_count."</td>
-												<td>".$qty."</td>
-												<td>
-													<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >FG Check List
-													<a class='btn btn-warning' href='$url?p_status=1&&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Carton Track
-													<a class='btn btn-warning' href='$url2?schedule=$schedule_id&seq_no=$pac_seq_no&packmethod=$pack_method' target='_blank' >Print Lables</a>
-												</td>
-											<tr>";
-										$i++;
+										if($qty>0)
+										{
+											echo "<tr>
+													<td>$i</td>
+													<td>".$operation[$pack_method]."</td>
+													<td>".$pack_result1['pack_description']."</td>
+													<td>".$pack_result1['color']."</td>
+													<td>".$pack_result1['size']."</td>
+													<td>".$carton_count."</td>
+													<td>".$qty."</td>
+													<td>
+														<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >FG Check List
+														<a class='btn btn-warning' href='$url?p_status=1&&schedule=$schedule_id&seq_no=$pac_seq_no&style_id=$style1&sch_id=$schedule' target='_blank' >Carton Track
+														<a class='btn btn-warning' href='$url2?schedule=$schedule_id&seq_no=$pac_seq_no&packmethod=$pack_method' target='_blank' >Print Lables</a>
+													</td>
+												<tr>";
+											$i++;
+										}	
 									}
 									echo "
 								</table>

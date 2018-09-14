@@ -52,7 +52,7 @@ if(isset($_POST['submit']))
 			echo "<div class='panel panel-primary'>";
 			echo "<div class='panel-heading'>".$operation[$packmethod[$i]]."</div>";
 			echo "<div class='panel-body'>";
-			$getcartonnos="select carton_no,carton_mode,style,pac_seq_no,pack_method,status from pac_stat_log where schedule='$schedule' and pack_method='$packmethod[$i]'";
+			$getcartonnos="select carton_no,carton_mode,style,pac_seq_no,pack_method,status from pac_stat_log where schedule='$schedule' and pack_method='$packmethod[$i]' group by carton_no";
 			$sql_result=mysqli_query($link, $getcartonnos) or exit("Error while getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{

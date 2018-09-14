@@ -195,30 +195,36 @@
 							$tot_ordered = 0;
 							$tot_planned = 0;
 							$pack_tot = 0;
-							foreach ($sizes_array as $key => $value)
+							for($kk=0;$kk<sizeof($size_main);$kk++)
+							//foreach ($sizes_array as $key => $value)
 							{
-								$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule and order_col_des = '$col_array[$j]'))";
+								$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plannedQty FROM $brandix_bts.tbl_cut_size_master 
+								LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
+								LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
+								WHERE tbl_cut_master.ref_order_num='$schedule' AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]'";
 								// echo $plannedQty_query.'<br>';
 								$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 								while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
 								{
-									$planned_qty[] = $planneQTYDetails['plannedQty'];
+									$planned_qty[$col_array[$j]][$size_main[$kk]] = $planneQTYDetails['plannedQty'];
 								}
 
-								$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule and order_col_des = '$col_array[$j]' ";
+								$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
+								WHERE parent_id='$schedule' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
 								// echo $orderQty_query.'<br>';
 								$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
 								while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
 								{
-									$ordered_qty[] = $orderQty_details['orderedQty'];
+									$ordered_qty[$col_array[$j]][$size_main[$kk]] = $orderQty_details['orderedQty'];
 								}
 
-								$getpackqty="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where schedule='$schedule' and color='$col_array[$j]' and size_code='$sizes_array[$key]'";
+								$getpackqty="SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.pac_stat_log 
+								WHERE schedule='$schedule_id' AND size_tit='$size_main[$kk]' AND color='$col_array[$j]'";
 								// echo $getpackqty;
 								$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
 								if($row=mysqli_fetch_array($packqtyrslt))
 								{
-									$pack_qty[]=$row['qty'];
+									$pack_qty[$col_array[$j]][$size_main[$kk]]=$row['pack_qty'];
 								}
 							}
 							// echo $col_array[$i];
@@ -227,41 +233,30 @@
 							echo "<tr>
 									<td rowspan=3>$col_array[$j]</td>
 									<td>Order Qty</td>";
-									for ($i=0; $i < $sizeofsizes; $i++)
+									for ($i=0; $i < sizeof($size_main); $i++)
 									{ 
-										echo "<td>$ordered_qty[$i]</td>";
-										$tot_ordered = $tot_ordered + $ordered_qty[$i];
+										echo "<td>".$ordered_qty[$size_main[$i]]."</td>";
+										$tot_ordered = $tot_ordered + $ordered_qty[$size_main[$i]];
 									}
 									echo "<td>$tot_ordered</td>
 								</tr>";
 
 							echo "<tr>
-									<td>Plan Qty</td>";
-									for ($i=0; $i < $sizeofsizes; $i++)
+									<td>Cut Plan Qty</td>";
+									for ($i=0; $i < sizeof($size_main); $i++)
 									{ 
-										echo "<td>$planned_qty[$i]</td>";
-										$tot_planned = $tot_planned + $planned_qty[$i];
+										echo "<td>".$planned_qty[$size_main[$i]]."</td>";
+										$tot_planned = $tot_planned + $planned_qty[$size_main[$i]];
 									}
 									echo "<td>$tot_planned</td>
 								</tr>";
 
 							echo "<tr>
 									<td>Pack Generated</td>";
-									for ($i=0; $i < $sizeofsizes; $i++)
-									{
-										// $getpackqty="select sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log where schedule='$schedule' and color='$col_array[$j]' and size_tit='$size'";
-										// // echo $getpackqty;
-										// $packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
-										// if($row=mysqli_fetch_array($packqtyrslt))
-										// {
-										// 	$qty=$row['qty'];
-										// }
-										
-										echo "<td>".$pack_qty[$i]."</td>";
-										$pack_tot += $pack_qty[$i];
-
-										// echo "<td>$planned_qty[$i]</td>";
-										// $tot_planned = $tot_planned + $planned_qty[$i];
+									for ($i=0; $i < sizeof($size_main); $i++)
+									{									
+										echo "<td>".$pack_qty[$size_main[$i]]."</td>";
+										$pack_tot = $pack_tot + $pack_qty[$size_main[$i]];
 									}
 									echo "<td>$pack_tot</td>
 								</tr>";
@@ -305,12 +300,11 @@
 									<th>Packing Method</th>
 									<th>Description</th>
 									<th>Quantity</th>
-									<th>No Of Colors</th>
-									<th>No Of Sizes</th>
-									<th>Controlls</th></tr>";
+									<th>Colors</th>
+									<th>Sizes</th>
+									<th>Controls</th></tr>";
 								while($pack_result1=mysqli_fetch_array($pack_meth_qty))
-								{
-									
+								{							
 									// var_dump($operation);
 									$seq_no=$pack_result1['seq_no'];
 									$parent_id=$pack_result1['parent_id'];
