@@ -2113,9 +2113,9 @@ tags will be replaced.-->
   <td class=xl154118 width=64 style='width:48pt'></td>
   <td class=xl154118 width=21 style='width:16pt'></td>
  </tr>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <!-- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
 
- </tr>
+ </tr> -->
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
@@ -2285,7 +2285,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=11 style='mso-height-source:userset;height:8.25pt'>
+ <!-- <tr class=xl654118 height=11 style='mso-height-source:userset;height:8.25pt'>
   <td height=11 class=xl654118 style='height:8.25pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2303,7 +2303,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr>
+ </tr> -->
  </table>
  <table border=0 cellpadding=0 cellspacing=0 align=left style='border-collapse: collapse;'>
  <?php
@@ -3020,7 +3020,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
 }
 ?>
 
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <!-- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -3038,11 +3038,11 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr> 
+ </tr>  -->
  </table>
 
  <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:parent'>
- <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <tr class=xl674118 height=20 style='mso-height-source:userset;height:10.0pt'>
   <td rowspan=2 class=xl764118 style='border-bottom:1px solid black'>Rpt No</td>
   <td rowspan=2 class=xl774118  width=64 style='border-bottom:.5pt solid black;  width:48pt'>Pattern Version</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:70pt'>No of Plies</td>
@@ -3137,11 +3137,8 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan="3"><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
+  <td class=xl654118 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
- <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-</tr>
 <table>
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
@@ -3252,9 +3249,7 @@ $item_name[] = $sql_row['item'];
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
 </tr>
-<tr >
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-</tr>
+
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -3424,7 +3419,7 @@ $tot_bind_len=0;
 
 		
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
+  <td height=20 class=xl654118 style='height:6.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -3443,7 +3438,7 @@ $tot_bind_len=0;
   <td class=xl654118></td>
  </tr>
 
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:30pt'></td>
   <th class=xl654118></th>
   <th class=xl684118>Docket</th>
