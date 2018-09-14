@@ -1,7 +1,4 @@
 <?php
-/*Unit testing code
- calling_manully the function
-*/
 
 	//tested
 	function deleteMOQuantitiesCut($schedule,$color){
@@ -48,96 +45,74 @@
 		return false;
 		//die();
 	}
-
-    function insertMOQuantitiesRecut($docket_no){
+	
+	function insertMOQuantitiesRecut($ref_no,$op_code,$qty){
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-        $cutting_categories = 'cutting';
-        $doc_no   = $docket_no;
-        $details_query = "Select style,color,schedule from $brandix_bts.bundle_creation_data 
-                          where docket_number = '$doc_no' limit 1 ";
+
+        $details_query  = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data 
+                           where operation_id = '$op_code' and bundle_number = '$ref_no' limit 1 ";
         $details_result = mysqli_query($link,$details_query) or exit("Error while getting details from BCD ");
         while($row = mysqli_fetch_array($details_result)){
             $style    = $row['style'];
             $schedule = $row['schedule'];
-            $color    = $row['color'];
+			$color    = $row['color'];
+			$mo_size  = $row['size_title'];
         }
         $mos = array();
-        $qty = 0;
-        $op_code_query ="SELECT operation_name,operation_code as code FROM $brandix_bts.tbl_orders_ops_ref 
-                         WHERE default_operation='Yes' and trim(category) in ($cutting_categories) ";
-        $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operation Found for Cutting");
-        while($row=mysqli_fetch_array($op_code_result)) 
-        {
-            $op_code = $row['code'];
-            $op_name = $row['operation_name'];		
-        }
-        
-        $sizes_query = "Select distinct(size_title) as size from $brandix_bts.bundle_creation_data where docket_no = $doc_no";
-        $sizes_result = mysqli_query($link,$sizes_query) or exit('An Error Encountered');
-        while($row = mysqli_fetch_array($sizes_result)){
-            $sizes = $row['size'];
-        }
+		$qty = 0;
+	
+		//check whether that style,schedule,color exists -------------------------------------
+		$mo_no_query = "SELECT mo.mo_no as mo_no,mo.mo_quantity as mo_quantity,SUM(bundle_quantity) as bundle_quantity,
+						SUM(good_quantity) as good_quantity,SUM(rejected_quantity) as rejected_quantity
+						FROM $bai_pro3.mo_details mo 
+						LEFT JOIN $bai_pro3.mo_operation_quantites mop ON mo.mo_no = mop.mo_no  
+						WHERE TRIM(size)='$mo_size' and schedule='$schedule' and TRIM(color)='$color' 
+						and mop.op_code = $op_code
+						group by mop.mo_no
+						order by mo.mo_no*1"; 			
+		$mo_no_result  = mysqli_query($link,$mo_no_query); 
+		while($row = mysqli_fetch_array($mo_no_result)){
+			// if($row['op_desc'] == 'recut' )
+			// 	continue;
+			//$mos[] = $row['mo_no'];	
+			if($row['bundle_quantity'] >= $row['good_quantity'] && $row['rejected_quantity']==0){
+				$mos[$row['mo_no']] = 0;
+				continue;
+			}
+			if($row['rejected_quantity'] == 0)
+				$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'];
+			else	
+				$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'] + $row['rejected_quantity'];
+		}
 
-        foreach($sizes as $key => $mo_size){
-            $qty = 0;
-            //check whether that style,schedule,color exists -------------------------------------
-            $mo_no_query = "SELECT mo.mo_no as mo_no,mo.mo_quantity as mo_quantity,SUM(bundle_quantity) as bundle_quantity,
-                            SUM(good_quantity) as good_quantity,SUM(rejected_quantity) as rejected_quantity
-                            FROM $bai_pro3.mo_details mo 
-                            LEFT JOIN $bai_pro3.mo_operation_quantites mop ON mo.mo_no = mop.mo_no  
-                            WHERE TRIM(size)='$mo_size' and schedule='$schedule' and TRIM(color)='$color' 
-                            and mop.op_code = 15
-                            group by mop.mo_no
-                            order by mo.mo_no*1"; 			
-            $mo_no_result  = mysqli_query($link,$mo_no_query);
-            $mo_no_result2 = $mo_no_result;   
-            while($row = mysqli_fetch_array($mo_no_result)){
-                // if($row['op_desc'] == 'recut' )
-                // 	continue;l
-                //$mos[] = $row['mo_no'];	
-                if($row['bundle_quantity'] >= $row['good_quantity'] && $row['rejected_quantity']==0)	
-                    continue;
-                if($row['rejected_quantity'] == 0)
-                    $mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'];
-                else	
-                    $mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'] + $row['rejected_quantity'];
-            }
-        
-            //getting the recut quantity for the particular size 
-            //$qty_query = "Select (a_plies * a_$sizet) as qty,acutno from $bai_pro3.recut_v2 where doc_no = '$doc_no' ";
-            $qty_query = "Select send_qty as qty from $brandix_bts.bundle_creation_data 
-                          where docket_number='$doc_no' and size='$mo_size'";
-            $qty_result = mysqli_query($link,$qty_query);
-            while($row  = mysqli_fetch_array($qty_result)){
-                $qty = $row['qty'];
-            }
-
-            foreach($mos as $mo_no => $rej_qty){
-                $last_mo = $mo_no;
-                $qty = $qty - $rej_qty;
-                if( $qty >= 0){
-                    $insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-                                (`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-                                (".date('Y-m-d H:i:s').",$mo_no,$ref_no,$rej_qty,$op_code,'recut')";
-                    mysqli_query($link,$insert_query) or exit('Mo Updation error 1');
-                }else{
-                    $insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-                                (`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-                                (".date('Y-m-d H:i:s').",$mo_no,$ref_no,$qty,$op_code,'recut')";
-                    mysqli_query($link,$insert_query) or exit('Mo Updation error 2');
-                    break;
-                }	
-            }
-            // 	inserting excess quantity to the last mo 
-            if($qty >= 0){
-                $insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-                            (`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-                            (".date('Y-m-d H:i:s').",$last_mo,$ref_no,$qty,$op_code,'recut')";
-                mysqli_query($link,$insert_query) or exit('Mo Updation error 3');	
-            }
-            unset($mos);
-        }
-       // echo "<h2>Successfully Updated</h2>";
+		foreach($mos as $mo_no => $rej_qty){
+			$last_mo = $mo_no;
+			if($rej_qty == 0)
+				continue;
+		
+			$qty = $qty - $rej_qty;
+			if( $qty >= 0){
+				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
+							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
+							('".date('Y-m-d H:i:s')."',$mo_no,$ref_no,$rej_qty,$op_code,'recut')";
+				mysqli_query($link,$insert_query) or exit('Mo Updation error 1');
+			}else{
+				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
+							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
+							('".date('Y-m-d H:i:s')."',$mo_no,$ref_no,$qty,$op_code,'recut')";
+				mysqli_query($link,$insert_query) or exit('Mo Updation error 2');
+				break;
+			}	
+		}
+			
+		// 	inserting excess quantity to the last mo 
+		if($qty > 0){
+			$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
+						(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`,`op_code`,`op_desc`) VALUES 
+						('".date('Y-m-d H:i:s')."',$last_mo,$ref_no,$qty,$op_code,'recut')";
+			mysqli_query($link,$insert_query) or exit('Mo Updation error 3');	
+		}
+		unset($mos);
     }
 
 	//tested
@@ -270,13 +245,11 @@
 					$qty = 0;
 				}
 			}
-			//Inserting all excess to last mo 
+			//Updating all excess to last mo 
 			if($qty > 0){
-				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-								(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
-								values 
-								('".date('Y-m-d H:i:s')."','$last_mo','$ref_id','$qty','$op_code','$op_desc[$mo]')";
-				mysqli_query($link,$insert_query) or exit("Error 3 In Inserting excess qty to MO Qtys for mo : ".$mo);
+				$update_query = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty 
+								 where mo_no = '$last_mo' and ref_no = '$ref_id' and op_code = '$op_code'";
+				mysqli_query($link,$update_query) or exit("Error 3 In Updating excess qty to MO Qtys for mo : ".$mo);
 			}
 		}
 	}
@@ -829,7 +802,7 @@
 					$b_cps_qty[$op_code] .= '("'.$op_code.'","'. $short_key_code[$index].'","'.$b_in_job_qty.'","0","'. $b_job_no.'","'.$b_size_code.'","'. $b_sizes.'")';
 					$bundle_creation_result_002 = $link->query($b_cps_qty[$op_code]);
 					$last_id = mysqli_insert_id($link);
-					$b_query[$op_code] = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES";
+					$b_query[$op_code] = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES";
 					$b_query[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$b_size_code.'","'. $b_sizes.'","'. $sfcs_smv.'","'.$last_id.'","'.$b_in_job_qty.'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$b_remarks.'","'.$mapped_color.'")';
 					$bundle_creation_result_001 = $link->query($b_query[$op_code]);
 					$inserting_mo = insertMOQuantitiesRecut($last_id,$op_code,$b_in_job_qty);
@@ -838,6 +811,9 @@
 			}
 		return true;
 	}
+
+
+
    
 
 ?>
