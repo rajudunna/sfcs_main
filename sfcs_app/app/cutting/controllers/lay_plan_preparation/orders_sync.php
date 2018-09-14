@@ -145,17 +145,17 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 
 	//getting the last doc_no for the order_tid
-	$doc_no_query = "Select doc_no from  $bai_pro3.plandoc_stat_log where order_tid = '$get_order_tid' order by doc_no";
-	$doc_no_result = mysqli_query($link,$doc_no_query);
-	while($row = mysqli_fetch_array($doc_no_result)){
-		$docket_no = $row['doc_no'];
-	}
+	// $doc_no_query = "Select doc_no from  $bai_pro3.plandoc_stat_log where order_tid = '$get_order_tid' order by doc_no";
+	// $doc_no_result = mysqli_query($link,$doc_no_query);
+	// while($row = mysqli_fetch_array($doc_no_result)){
+	// 	$docket_no = $row['doc_no'];
+	// }
 
 	//ADDED FOR LOCAL TESTING PLEASE REMOVE AFTER THAT
-	$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
-	if($insert_bundle_creation_data){
-		//Data inserted successfully
-	}
+	// $insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
+	// if($insert_bundle_creation_data){
+	// 	//Data inserted successfully
+	// }
 	/////////////////////////////////////////////////
 
 	/*
