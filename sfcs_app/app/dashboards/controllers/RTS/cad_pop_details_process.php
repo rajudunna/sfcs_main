@@ -319,114 +319,13 @@ if(isset($_POST['submit']))
 		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-	}
-
-	//-------------------------------------------MO Filling Logic -----------------------------------------------------
-
-	//calling the BCD insertion function
-	$inserted = doc_size_wise_bundle_insertion_recut($docket_no);
-	//$sizes  = $_POST['size_'];
-	$style    = $_POST['style'];
-	$schedule = $_POST['schedule'];
-	$color    = $_POST['color'];
-	$doc_no   = $docket_no;
-	$mos = array();
-	$qty = 0;
-	
-	$op_code_query ="SELECT operation_name,operation_code as code FROM $brandix_bts.tbl_orders_ops_ref 
-			  		 WHERE default_operation='Yes' and trim(category) = 'cutting' ";
-	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operation Found for Cutting");
-	while($row12106=mysqli_fetch_array($op_code_result)) 
-	{
-		$op_code = $row12106['code'];
-		$op_name = $row['operation_name'];		
-	}
-
-	$sizes_query = "Select * from $bai_pro3.recut_v2 where doc_no = $doc_no";
-	$sizes_result = mysqli_query($link,$sizes_query) or exit('An Error Encountered');
-	
-	while($row = mysqli_fetch_array($sizes_result)){
-		foreach($sizes_array as $key => $value){
-			if($row['a_'.$value] > 0)
-				$sizes[] = $value;
+		//calling the function to insert to bundle craetion data and cps log
+		$inserted = doc_size_wise_bundle_insertion_recut($docno[$i]);
+		if($inserted){
+			//Inserted Successfully
 		}
 	}
-
-	foreach($sizes as $key => $sizet){
-		//echo $size;
-		$qty = 0;
-		//getting size title
-		//$sizet = ltrim($size,'a'); 
-		$size_query = "Select title_size_$sizet as title from $bai_pro3.bai_orders_db_confirm where order_del_no = '$schedule' and 
-					order_style_no = '$style' and order_col_des = '$color' ";
-		$size_result = mysqli_query($link,$size_query);
-		while($row = mysqli_fetch_array($size_result)){
-			$mo_size = $row['title'];
-			$size_code[$sizet] = $row['title'];
-		}		  
 	
-		//--------------------------------------- check whether that style exists -------------------------------------
-		$mo_no_query = "SELECT mo.mo_no as mo_no,mo.mo_quantity as mo_quantity,SUM(bundle_quantity) as bundle_quantity,
-						SUM(good_quantity) as good_quantity,SUM(rejected_quantity) as rejected_quantity
-						FROM $bai_pro3.mo_details mo 
-						LEFT JOIN $bai_pro3.mo_operation_quantites mop ON mo.mo_no = mop.mo_no  
-						WHERE TRIM(size)='$mo_size' and schedule='$schedule' and TRIM(color)='$color' 
-						and mop.op_code = 15
-						group by mop.mo_no
-						order by mo.mo_no*1"; 			
-		$mo_no_result  = mysqli_query($link,$mo_no_query);
-		$mo_no_result2 = $mo_no_result;   
-		while($row = mysqli_fetch_array($mo_no_result)){
-			// if($row['op_desc'] == 'recut' )
-			// 	continue;l
-			//$mos[] = $row['mo_no'];	
-			if($row['bundle_quantity'] >= $row['good_quantity'] && $row['rejected_quantity']==0)	
-				continue;
-			if($row['rejected_quantity'] == 0)
-				$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'];
-			else	
-				$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'] + $row['rejected_quantity'];
-		}
-	
-		//getting the recut quantity for the particular size 
-		$qty_query = "Select (a_plies * a_$sizet) as qty,acutno from $bai_pro3.recut_v2 where doc_no = '$doc_no' ";
-		$qty_result = mysqli_query($link,$qty_query);
-		while($row  = mysqli_fetch_array($qty_result)){
-			$qty = $row['qty'];
-			$acut_no = $row['acutno'];
-		}
-
-		foreach($mos as $mo_no => $rej_qty){
-			$last_mo = $mo_no;
-			$qty = $qty - $rej_qty;
-			if( $qty >= 0){
-				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-							(".date('Y-m-d H:i:s').",$mo_no,$doc_no,$rej_qty,$op_code,'recut')";
-				mysqli_query($link,$insert_query) or exit('Mo Updation error 1');
-			}else{
-				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-							(".date('Y-m-d H:i:s').",$mo_no,$doc_no,$qty,$op_code,'recut')";
-				mysqli_query($link,$insert_query) or exit('Mo Updation error 2');
-				break;
-			}	
-		}
-		// 	inserting excess quantity to the last mo 
-		if($qty >= 0){
-			$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
-						(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-						(".date('Y-m-d H:i:s').",$last_mo,$doc_no,$qty,$op_code,'recut')";
-			mysqli_query($link,$insert_query) or exit('Mo Updation error 3');	
-		}
-		unset($mos);
-	}
-
-	echo "<h2>Successfully Updated</h2>";
-
-
-
-	//---------------------------------------MO Filling Ends------------------------------------------------------------------	
 }
 
 ?>

@@ -911,19 +911,21 @@ if($barcode_generation == 1)
 		}
 		
 
-		$pre_ops_check = "SELECT tm.operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE style='".$b_style."' AND color = '".$mapped_color."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep).")) AND  tr.category NOT IN ('cutting','Send PF','Receive PF')";
+		$pre_ops_check = "SELECT tm.operation_code as operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE style='".$b_style."' AND color = '".$mapped_color."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep).")) AND  tr.category NOT IN ('cutting','Send PF','Receive PF') AND tm.operation_code != '200'";
+		// echo $pre_ops_check;
 
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
 		{
 			while($row = $result_pre_ops_check->fetch_assoc()) 
 			{
-				if($row['ops_sequence'] != 0)
-				{
+				// if($row['ops_sequence'] != 0)
+				// {
 					$pre_ops_code[] = $row['operation_code'];
-				}
+				//}
 			}
 		}
+		// var_dump($pre_ops_code);
 		$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' AND operation_code not in (10,200,15) ORDER BY operation_order ASC LIMIT 1";
 		$result_post_ops_check = $link->query($post_ops_check);
 		if($result_post_ops_check->num_rows > 0)
@@ -1107,7 +1109,7 @@ if($barcode_generation == 1)
 				}else{
 					$final_query_001 = $query;
 				}
-				//echo $final_query_001;
+				//echo $final_query_001.'</br>';
 				$bundle_creation_result_001 = $link->query($final_query_001);
 			}
 			if(substr($bulk_insert, -1) == ','){
