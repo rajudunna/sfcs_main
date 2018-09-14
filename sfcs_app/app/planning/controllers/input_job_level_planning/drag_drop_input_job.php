@@ -510,11 +510,11 @@ $module_limit=14;
 			for(var no2=0;no2<lis.length;no2++)
 			{
 				var res=lis[no2].id;
-				if(sch==res.substring(0, 6))
-				{
+				// if(sch==res.substring(0, 6))
+				// {
 					if(saveString.length>0)saveString = saveString + ";";
 					saveString = saveString + uls[no].id + '|' + lis[no2].id;
-				}
+				//}
 			}	
 		}		
 		
