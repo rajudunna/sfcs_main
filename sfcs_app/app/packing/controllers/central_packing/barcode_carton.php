@@ -97,23 +97,22 @@
 									<td colspan=2><center>'.$tids[$i].'</center></td>
 								</tr>
 								<tr>
-									<td><b>Style:</b>'.$style.' </td>
+									<td style="width:200px;"><b>Style:</b>'.$style.' </td>
 									<td> <b>Schedule:</b>'.$schedule.'</td>
 								</tr>
 								<tr>
 									<td colspan=2><b>Color:</b>'.substr($color,0,30).' </td>
 								</tr>
 								<tr>
+									<td colspan=2><b>Size:</b>'.$size.' </td>
+								</tr>
+								<tr>
 									<td><b>Carton No:</b>'.$cartonno.'/'.sizeof($tids).' </td>
-									<td><b>Size:</b>'.$size.' </td>
+									<td><b>Qty:</b>'.$cartqty.' </td>
 								</tr>
 								<tr>
 									<td><b>Co No:</b>'.$cono.' </td>
 									<td><b>VPO:</b>'.$vpo.' </td>
-								</tr>
-								<tr>
-									<td><b>Pack Method:</b>'.$operation[$pack_method].' </td>
-									<td><b>Qty:</b>'.$cartqty.' </td>
 								</tr>
 								
 							</table>
