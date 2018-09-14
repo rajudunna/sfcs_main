@@ -149,7 +149,7 @@ if(count($colors)>0){
                             while($mo_row=mysqli_fetch_array($mo_sql_result))
                             {
                                 $mo_no = $mo_row['mo_no'];
-								$api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,PEUN,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
+								$api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
 								
 								$api_data = $obj->getCurlAuthRequest($api_url);
 								
@@ -207,16 +207,19 @@ if(count($colors)>0){
                                 $mfno = $api_selected_valuess['MFNO'];
                                 $prno = urlencode($api_selected_valuess['PRNO']);
                                 $mseq = $api_selected_valuess['MSEQ'];
-                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                                 $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
                                 $api_data_result = json_decode($api_data_wastage, true);   
                                 $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
                                 
+                                //For UOM
+                                $api_selected_valuess['UOM'] = $result_values[0]['Value'];
+
                                 //req without wastge
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
                                 //req with wastge                               
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
+								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[1]['Value']/100);
 								
 								/* To Get color,size,z code  */
 								$ITNO = urlencode($api_selected_valuess['MTNO']);
@@ -278,10 +281,10 @@ if(count($colors)>0){
 							<td><?= $z_res ?></td>
 							<td><?= $option_des ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$result_values[1]['Value']."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
-                            <td><?= $api_selected_valuess['PEUN'] ?></td>
+                            <td><?= $api_selected_valuess['UOM'] ?></td>
                         </tr>
                         <?php }
                         }    
@@ -292,17 +295,20 @@ if(count($colors)>0){
                                 $mfno = $api_selected_valuess['MFNO'];
                                 $prno = urlencode($api_selected_valuess['PRNO']);
                                 $mseq = $api_selected_valuess['MSEQ'];
-                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                                 $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
 								$api_data_result = json_decode($api_data_wastage, true);
 								  
                                 $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
+
+                                //For UOM
+                                $api_selected_valuess['UOM'] = $result_values[0]['Value'];
                                 
                                 //req without wastge
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
                                 //req with wastge                               
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
+								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[1]['Value']/100);
 								
 								/* To Get color,size,z code  */
 								$ITNO = urlencode($api_selected_valuess['MTNO']);
@@ -362,10 +368,10 @@ if(count($colors)>0){
 							<td><?= $z_res ?></td>
 							<td><?= $option_des ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$result_values[0]['Value']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$result_values[1]['Value']."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
-                            <td><?= $api_selected_valuess['PEUN'] ?></td>
+                            <td><?= $api_selected_valuess['UOM'] ?></td>
                         </tr>
                         <?php }
                         }                        
