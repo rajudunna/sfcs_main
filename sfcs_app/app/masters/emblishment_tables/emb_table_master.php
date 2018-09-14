@@ -16,6 +16,7 @@
 				$emb_tbl_name_edit=$row["emb_table_name"];
 				$cut_tbl_name_edit=$row["cut_table_name"];
 				$status_edit=$row["emb_table_status"];
+				$work_station_id=$row["work_station_id"];
 			}
 		}
 
@@ -110,6 +111,11 @@
 					</select>
 				</div>
 				&nbsp;&nbsp;
+				<div class="form-group">
+					<label>Work Station Id: </label>
+					<input type="text" name="work_station_id" class="form-control" value="<?php echo $work_station_id; ?>" required>
+				</div>
+				&nbsp;&nbsp;
 				<input class="btn btn-success" type="submit" name="save_emb_table">
 			</form>
 			<br><br>
@@ -128,6 +134,7 @@
 									<th>S.No</th>
 									<th>Emblishment Table Name</th>
 									<th>Cutting Table Name</th>
+									<th>Work Station ID</th>
 									<th>Status</th>
 									<th>Control</th>
 								</tr>
@@ -139,11 +146,13 @@
 						$emb_table_id=$row["emb_table_id"];
 						$emb_tbl_name=$row["emb_table_name"];
 						$cut_tbl_name=$row["cut_table_name"];
+						$work_station_id=$row["work_station_id"];
 						$status=$row["emb_table_status"];
 						echo "<tr>
 								<td>".$sno++."</td>
 								<td>".$emb_tbl_name."</td>
 								<td>".$cut_tbl_name."</td>
+								<td>".$work_station_id."</td>
 								<td>".ucwords($status)."</td>
 								<td>"; ?>
 									<a class="btn btn-info btn-sm" href="<?= $self_url ?>&edit_id=<?php echo $emb_table_id ?>" ><i class='fa fa-edit'></i> Edit</a>	
@@ -166,10 +175,11 @@
 					$emb_table_name = $_POST['emb_table_name'];
 					$cut_table = $_POST['cut_table'];
 					$emb_status = $_POST['emb_status'];
+					$work_station_id = $_POST['work_station_id'];
 					if ($emb_table_id > 0)
 					{
 						// echo "not null";
-						$update_emb_details = "UPDATE `bai_pro3`.`tbl_emb_table` SET `emb_table_name` = '".$emb_table_name."' , `cut_table_name` = '".$cut_table."' , `emb_table_status` = '".$emb_status."' WHERE `emb_table_id` = '".$emb_table_id."';";
+						$update_emb_details = "UPDATE `bai_pro3`.`tbl_emb_table` SET `emb_table_name` = '".$emb_table_name."' , `cut_table_name` = '".$cut_table."' , `emb_table_status` = '".$emb_status."' , `work_station_id` = '".$work_station_id."' WHERE `emb_table_id` = '".$emb_table_id."';";
 						$update_emb_result = mysqli_query( $link, $update_emb_details);
 						if ($update_emb_result == 1 or $update_emb_result == '1')
 						{
@@ -182,7 +192,7 @@
 					else
 					{
 						// echo "null";
-						$save_emb_details = "INSERT INTO `bai_pro3`.`tbl_emb_table` (`emb_table_name`, `cut_table_name`, `emb_table_status`) VALUES ('".$emb_table_name."', '".$cut_table."', '".$emb_status."');";
+						$save_emb_details = "INSERT INTO `bai_pro3`.`tbl_emb_table` (`emb_table_name`, `cut_table_name`, `emb_table_status`, work_station_id) VALUES ('".$emb_table_name."', '".$cut_table."', '".$emb_status."', '".$work_station_id."');";
 						$save_emb_result = mysqli_query( $link, $save_emb_details);
 						if ($save_emb_result == 1 or $save_emb_result == '1')
 						{
