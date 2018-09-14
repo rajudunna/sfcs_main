@@ -14,7 +14,7 @@ function getscheduledata($variable)
 	// include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',5,'R'));
 	include("../../../../../common/config/config_ajax.php");
 
-	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_style_ops_master tr LEFT JOIN brandix_bts.tbl_orders_ops_ref tm ON tm.id=tr.operation_name WHERE tr.operation_code NOT IN (10,200) GROUP BY tr.operation_code ORDER BY tm.operation_code";
+	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_style_ops_master tr LEFT JOIN brandix_bts.tbl_orders_ops_ref tm ON tm.id=tr.operation_name WHERE tr.operation_code NOT IN (10,200,15) GROUP BY tr.operation_code ORDER BY tm.operation_code";
 	//echo $query_get_schedule_data;
 	$result = $link->query($query_get_schedule_data);
 	//$json = [];
@@ -227,8 +227,8 @@ function getjobdetails($job_number)
 			die();
 		}
 		
-		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < $ops_order and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
-		// echo $pre_ops_check;
+		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200,15) ORDER BY operation_order DESC LIMIT 1";
+		//echo $pre_ops_check.'<br/>';
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
 		{
@@ -238,7 +238,7 @@ function getjobdetails($job_number)
 			}
 			$category=['cutting','Send PF','Receive PF'];
 			$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $pre_ops_code";
-			// echo $checking_qry;
+			//echo $checking_qry;
 			$result_checking_qry = $link->query($checking_qry);
 			while($row_cat = $result_checking_qry->fetch_assoc()) 
 			{
@@ -248,7 +248,7 @@ function getjobdetails($job_number)
 			{
 				$emb_cut_check_flag = 1;
 			}
-			// echo $emb_cut_check_flag.'HI';
+			//echo "<br/>".$emb_cut_check_flag.'HI';
 			if($emb_cut_check_flag != 1)
 			{
 				$pre_ops_validation = "SELECT sum(recevied_qty)as recevied_qty FROM  $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = $pre_ops_code";
@@ -270,6 +270,7 @@ function getjobdetails($job_number)
 			{
 				if($module_no==0){
 					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' GROUP BY size_code,order_col_des,assigned_module order by tid";
+					
 				}else{
 					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' and assigned_module = '$module_no' GROUP BY size_code,order_col_des,assigned_module order by tid";
 				}
@@ -316,6 +317,7 @@ function getjobdetails($job_number)
 			}
 			else
 			{
+				//echo $schedule_query;
 				$result_style_data = $link->query($schedule_query);
 				while($row = $result_style_data->fetch_assoc()) 
 				{
@@ -582,7 +584,7 @@ function getjobdetails($job_number)
 			die();
 		}
 		
-		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN (10,200) ORDER BY operation_order DESC LIMIT 1";
+		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN (10,200,15) ORDER BY operation_order DESC LIMIT 1";
 		$result_pre_ops_check = $link->query($pre_ops_check);
 		if($result_pre_ops_check->num_rows > 0)
 		{
@@ -885,7 +887,7 @@ function getreversalscanningdetails($job_number)
 			// die();
 		}
 	}
-	$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1
+	$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code not in (10,200,15) ORDER BY operation_order ASC LIMIT 1
 	";
 	$result_post_ops_check = $link->query($post_ops_check);
 	// echo $post_ops_check; 
@@ -1122,8 +1124,8 @@ function validating_remarks_with_qty($validating_remarks)
 					$result_array['ops_dep'] = 0;
 				}
 			}
-			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id < $seq_id order by operation_order DESC limit 1";
-			//echo $post_ops_check;
+			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id < $seq_id order by operation_order DESC";
+			//echo $post_ops_check.'<br/>';
 			$result_post_ops_check = $link->query($post_ops_check);
 			if($result_post_ops_check->num_rows > 0)
 			{
@@ -1136,6 +1138,7 @@ function validating_remarks_with_qty($validating_remarks)
 			{
 				$post_ops_code = 0;
 			}
+			
 			//echo $check_flag;
 			if($check_flag == 1)
 			{
@@ -1367,8 +1370,8 @@ function validating_remarks_with_qty($validating_remarks)
 					$result_array['ops_dep'] = 0;
 				}
 			}
-			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id < $seq_id order by operation_order DESC limit 1";
-			// echo $post_ops_check;
+			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq and id < $seq_id order by operation_order DESC ";
+			//echo $post_ops_check;
 			$result_post_ops_check = $link->query($post_ops_check);
 			if($result_post_ops_check->num_rows > 0)
 			{
