@@ -210,16 +210,13 @@ if(count($colors)>0){
                                 $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                                 $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
                                 $api_data_result = json_decode($api_data_wastage, true);   
-                                $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
-                                
-                                //For UOM
-                                $api_selected_valuess['UOM'] = $result_values[0]['Value'];
-
+                                $result_values = array_column($api_data_result['MIRecord'], 'NameValue');  
+                            
                                 //req without wastge
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
                                 //req with wastge                               
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[1]['Value']/100);
+								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0][1]['Value']/100);
 								
 								/* To Get color,size,z code  */
 								$ITNO = urlencode($api_selected_valuess['MTNO']);
@@ -281,10 +278,10 @@ if(count($colors)>0){
 							<td><?= $z_res ?></td>
 							<td><?= $option_des ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$result_values[1]['Value']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$result_values[0][1]['Value']."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
-                            <td><?= $api_selected_valuess['UOM'] ?></td>
+                            <td><?= $result_values[0][0]['Value'] ?></td>
                         </tr>
                         <?php }
                         }    
@@ -300,15 +297,12 @@ if(count($colors)>0){
 								$api_data_result = json_decode($api_data_wastage, true);
 								  
                                 $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
-
-                                //For UOM
-                                $api_selected_valuess['UOM'] = $result_values[0]['Value'];
                                 
                                 //req without wastge
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
                                 //req with wastge                               
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[1]['Value']/100);
+								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0][1]['Value']/100);
 								
 								/* To Get color,size,z code  */
 								$ITNO = urlencode($api_selected_valuess['MTNO']);
@@ -368,10 +362,10 @@ if(count($colors)>0){
 							<td><?= $z_res ?></td>
 							<td><?= $option_des ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$result_values[1]['Value']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".$result_values[0][1]['Value']."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
-                            <td><?= $api_selected_valuess['UOM'] ?></td>
+                            <td><?=  $result_values[0][0]['Value'] ?></td>
                         </tr>
                         <?php }
                         }                        
