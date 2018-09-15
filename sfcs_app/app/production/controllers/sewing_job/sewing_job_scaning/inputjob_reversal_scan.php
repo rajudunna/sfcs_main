@@ -576,7 +576,7 @@ else if($concurrent_flag == 0)
 				else
 				{
 					//if it was not there in ims log am checking that in ims log backup and updating the qty and reverting that into the ims log because ims_qty and ims_pro_qty not equal
-					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_shift = '$b_shift' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
+					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module'  AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
 					$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
 					if($result_searching_query_in_imslog->num_rows > 0)
 					{
