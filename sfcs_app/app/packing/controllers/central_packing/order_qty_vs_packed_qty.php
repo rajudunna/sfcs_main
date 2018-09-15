@@ -72,37 +72,35 @@
 						echo "<option value=\"NIL\" selected>Select Style</option>";
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
-							if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$style))
+							if(str_replace(" ","",$sql_row['product_style'])==str_replace(" ","",$style))
 							{
-								echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_style']."</option>";
+								echo "<option value=\"".$sql_row['product_style']."\" selected>".$sql_row['product_style']."</option>";
 							}
 							else
 							{
-								echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_style']."</option>";
+								echo "<option value=\"".$sql_row['product_style']."\">".$sql_row['product_style']."</option>";
 							}
 						}
 						echo "</select>";
 						echo "</div>";
 						echo "<div class='col-md-3 col-sm-3 col-xs-12'>";
 					?>
-
 					&nbsp;Schedule:
 					<?php
 						// Schedule
 						echo "<select class='form-control' name=\"schedule\" id=\"schedule\"  >";
-						$sql="select * from $brandix_bts.tbl_orders_master where ref_product_style='".$style."'";
+						$sql="select product_schedule from $brandix_bts.tbl_orders_master left join $brandix_bts.tbl_orders_style_ref on tbl_orders_style_ref.id=tbl_orders_master.ref_product_style where tbl_orders_style_ref.product_style='".$style."' group by product_schedule";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_num_check=mysqli_num_rows($sql_result);
 						echo "<option value=\"NIL\" selected>Select Schedule</option>";
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
-							if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$schedule))
+							if(str_replace(" ","",$sql_row['product_schedule'])==str_replace(" ","",$schedule))
 							{
-								echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_schedule']."</option>";
+								echo "<option value=\"".$sql_row['product_schedule']."\" selected>".$sql_row['product_schedule']."</option>";
 							}
 							else
 							{
-								echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_schedule']."</option>";
+								echo "<option value=\"".$sql_row['product_schedule']."\">".$sql_row['product_schedule']."</option>";
 							}
 						}
 						echo "</select>";
@@ -123,18 +121,21 @@
 					if ($_GET['style'] and $_GET['schedule'])
 					{
 						$style=$_GET['style'];
-						$schedule=$_GET['schedule'];
-						$schedule_id = $_GET['schedule'];
+						//$schedule=$_GET['schedule'];
+						$schedule = $_GET['schedule'];
 					} 
 					else if ($_POST['style'] and $_POST['schedule'])
 					{
 						$style=$_POST['style'];
-						$schedule=$_POST['schedule'];
-						$schedule_id = $_POST['schedule'];	
+						//$schedule=$_POST['schedule'];
+						$schedule = $_POST['schedule'];	
 					}
+					
+					$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
+					$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
 					// echo $style."---".$schedule;
 					//getting parent id from tbl_pack_ref
-					$getparentid="select id from $bai_pro3.tbl_pack_ref where ref_order_num='$schedule_id' and style_code='$style'";
+					$getparentid="select id from $bai_pro3.tbl_pack_ref where schedule='$schedule' and style='$style'";
 					$parentidrslt=mysqli_query($link, $getparentid) or exit("Error while getting parent id");
 					if($row=mysqli_fetch_array($parentidrslt))
 					{
@@ -142,17 +143,11 @@
 					}
 							
 					//echo "Style= ".$style."<br>Schedule= ".$schedule.'<br>';
-					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
-					$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule_id,$link);
-					$mini_order_ref = echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_crt_schedule",$schedule_id,$link);
-					$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$mini_order_ref,$link);
-					$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$schedule_id,$link);
-					$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
-
+					
 					// Order Details Display Start
 					{
 						$col_array = array();
-						$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."'";
+						$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
 						//echo $sizes_query;die();
 						$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 						$row_count = mysqli_num_rows($sizes_result);
@@ -160,7 +155,7 @@
 						{
 							$col_array[]=$sizes_result1['order_col_des'];
 						}
-
+						
 						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id=$schedule_id";
 						// echo $sewing_jobratio_sizes_query.'<br>';
 						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
@@ -232,8 +227,8 @@
 									
 								}
 
-								$getpackqty="SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.pac_stat_log 
-								WHERE schedule='$schedule' AND size_tit='$size_main[$kk]' AND color='$col_array[$j]'";
+								$getpackqty="SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
+								WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]' AND order_col_des='$col_array[$j]'";
 								//echo $getpackqty;
 								$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
 								if($pack_row=mysqli_fetch_array($packqtyrslt))
@@ -288,27 +283,27 @@
 					// Order Details Display End
 				}
 				//packing method details
-				//echo "Test";
-				//$style=$_POST['style'];
-				//$schedule=$_POST['schedule'];
 				if ($_GET['style'] and $_GET['schedule'])
-					{
-						$style=$_GET['style'];
-						$scheduleid=$_GET['schedule'];
-					} 
-					else if ($_POST['style'] and $_POST['schedule'])
-					{
-						$style=$_POST['style'];
-						$scheduleid=$_POST['schedule'];	
-					}
-				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where ref_order_num=$scheduleid AND style_code='".$style."'"; 
+				{
+					$style=$_GET['style'];
+					$schedule = $_GET['schedule'];
+				} 
+				else if ($_POST['style'] and $_POST['schedule'])
+				{
+					$style=$_POST['style'];
+					$schedule = $_POST['schedule'];	
+				}
+				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
+				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
+					
+				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule=$schedule AND style='".$style."'"; 
 				// echo $get_pack_id;
 				$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$row = mysqli_fetch_row($get_pack_id_res);
 				$pack_id=$row[0];
 				// echo $pack_id;
 				// die();
-				$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton)*cartons_per_pack_job*pack_job_per_pack_method as qnty,GROUP_CONCAT(size_title) as size ,GROUP_CONCAT(color) as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
+				$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*cartons_per_pack_job*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title) as size ,GROUP_CONCAT(color) as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
 				// echo $pack_meth_qry;
 				// $sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -341,17 +336,14 @@
 									$url=getFullURL($_GET['r'],'pack_jobs_generate.php','N');
 									$url1=getFullURL($_GET['r'],'order_qty_vs_packed_qty.php','N');
 									$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
-									// $url3=getFullURL($_GET['r'],'.php','R');
-									// $url4=getFullURL($_GET['r'],'.php','R');
-									$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$scheduleid,$link);
-									$statusqry="select * from $bai_pro3.pac_stat_log where schedule='$schedule' and pac_seq_no='$seq_no'";
+									$statusqry="select * from $bai_pro3.pac_stat where schedule='$schedule' and pac_seq_no='$seq_no'";
 									//echo $statusqry;
 									$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
 									if(mysqli_num_rows($statusrslt)==0)
 									{
 										echo "<td><a class='btn btn-success btn-sm' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate pack Job</a>
-										<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method&schedule=$scheduleid&style=$style>Delete</a></td>";
+										<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method&schedule=$schedule&style=$style>Delete</a></td>";
 									}
 									else
 									{
@@ -366,8 +358,8 @@
 						$ordr_qnty = $_GET['ordr_qnty'];
 						$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
 						echo "<div class='col-md-12 col-sm-12 col-xs-12'>
-							<a class='btn btn-success btn-sm' href='$url2&schedule=$scheduleid&style=$style' >Add Packing Method</a>
-							</div>";
+						<a class='btn btn-success btn-sm' href='$url2&schedule=$schedule&style=$style' >Add Packing Method</a>
+						</div>";
 											
 			}
 			if($_GET['seq_no'] && $_GET['parent_id'] && $_GET['pack_method'])

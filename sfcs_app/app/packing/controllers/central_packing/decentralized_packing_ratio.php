@@ -141,13 +141,13 @@
 					echo "<option value=\"NIL\" selected>Select Style</option>";
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
-						if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$style))
+						if(str_replace(" ","",$sql_row['product_style'])==str_replace(" ","",$style))
 						{
-							echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_style']."</option>";
+							echo "<option value=\"".$sql_row['product_style']."\" selected>".$sql_row['product_style']."</option>";
 						}
 						else
 						{
-							echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_style']."</option>";
+							echo "<option value=\"".$sql_row['product_style']."\">".$sql_row['product_style']."</option>";
 						}
 					}
 					echo "</select>";
@@ -156,19 +156,19 @@
 				<label>Schedule:</label>
 				<?php
 					echo "<select class='form-control' name='schedule' id='schedule' disabled>";
-					$sql="select id,product_schedule as schedule from $brandix_bts.tbl_orders_master where ref_product_style=\"$style\" group by schedule";
+					$sql="select tbl_orders_master.id ,tbl_orders_master.product_schedule as schedule from $brandix_bts.tbl_orders_master left join $brandix_bts.tbl_orders_style_ref on tbl_orders_style_ref.id=tbl_orders_master.ref_product_style where product_style=\"$style\" group by schedule";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					echo "<option value=\"NIL\" selected>Select Schedule</option>";
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
-						if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$schedule))
+						if(str_replace(" ","",$sql_row['schedule'])==str_replace(" ","",$schedule))
 						{
-							echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['schedule']."</option>";
+							echo "<option value=\"".$sql_row['schedule']."\" selected>".$sql_row['schedule']."</option>";
 						}
 						else
 						{
-							echo "<option value=\"".$sql_row['id']."\">".$sql_row['schedule']."</option>";
+							echo "<option value=\"".$sql_row['schedule']."\">".$sql_row['schedule']."</option>";
 						}
 					}
 					echo "</select>";
@@ -200,215 +200,24 @@
 			if (isset($_POST["submit"]) or ($_GET['style'] and $_GET['schedule'] and $_POST['pack_method']))
 			{
 				if ($_GET['style'] and $_GET['schedule']) {
-					$style_code=$_GET['style'];
+					$style=$_GET['style'];
 					$schedule=$_GET['schedule'];
 					$pack_method=$_POST['pack_method'];
 				} else if ($_POST['style'] and $_POST['schedule']){
-					$style_code=$_POST['style'];
+					$style=$_POST['style'];
 					$schedule=$_POST['schedule'];	
 					$pack_method=$_POST['pack_method'];	
 				}
-				//echo $style_code.'<br>'.$schedule.'<br>'.$pack_method.'<br>';
-				$c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
-				$schedule_original = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-				$valid_result = echo_title("$bai_pro3.tbl_pack_ref","COUNT(*)","ref_order_num",$schedule,$link);
-				$parent_id=echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule,$link);
+				//echo $style.'<br>'.$schedule.'<br>'.$pack_method.'<br>';
+				$c_ref = echo_title("$bai_pro3.tbl_pack_ref","id","schedule",$schedule,$link);
+				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
+				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
+				$valid_result = echo_title("$bai_pro3.tbl_pack_ref","COUNT(*)","schedule",$schedule,$link);
+				$parent_id=echo_title("$bai_pro3.tbl_pack_ref","id","schedule",$schedule,$link);
 				$updated_carton_method = echo_title("$bai_pro3.tbl_pack_size_ref","pack_method","parent_id",$parent_id,$link);
-			
-				// for($i=0;$i<sizeof($sizes_array);$i++)
-				// {
-				// 	$orderqty="select sum(order_s_".$sizes_array[$i].") from $bai_pro3.bai_orders_db where order_del_no=$schedule_original";
-				// 	$orderqtyrslt=mysqli_query($link, $orderqty) or exit("Error while getting order qty Details");
-				// 	while($orqty=mysqli_fetch_array($orderqtyrslt)) 
-				// 	{
-						
-				// 	}
-				// }
-				// if ($valid_result > 0)
-				// {
-				// 	echo "<script>sweetAlert('Packing Ratio Already Updated for this Schedule - $schedule_original','Go to Sewing Job Creation','warning')</script>";
-				// 	echo '<br><br><br><div class="col-md-12"><h4>Pack Method: <span class="label label-info">'.$operation[$updated_carton_method].'</span></h4></div>';
-				// 	$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id IN (SELECT id FROM $bai_pro3.tbl_pack_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
-				// 	$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-				// 	echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
-				// 		<table class=\"table table-bordered\">
-				// 			<tr>
-				// 				<th>Color</th>";
-				// 	while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
-				// 	{
-				// 		$parent_id = $sewing_jobratio_color_details['parent_id'];
-				// 		$color = $sewing_jobratio_color_details['color'];
-				// 		$size = $sewing_jobratio_color_details['size'];
-				// 		$color1 = explode(",",$color);
-				// 		$size1 = explode(",",$size);
-				// 		// var_dump($size);
-				// 	}
-				// 	// GArments per Poly Bag Details Start
-				// 	{
-						
-				// 		for ($i=0; $i < sizeof($size1); $i++)
-				// 		{
-				// 			$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $schedule AND ref_size_name=$size1[$i]";
-				// 			// echo $Original_size_query;
-				// 			$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
-				// 			while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
-				// 			{
-				// 				$Ori_size = $Original_size_details['size_title'];
-				// 			}
-				// 			echo "<th>".$Ori_size."</th>";
-				// 		}
-				// 		echo "</tr>";
-				// 		for ($j=0; $j < sizeof($color1); $j++)
-				// 		{
-				// 			echo "<tr>
-				// 					<td>$color1[$j]</td>";
-				// 					for ($i=0; $i < sizeof($size1); $i++)
-				// 					{
-				// 						$qty_query = "SELECT quantity FROM $bai_pro3.`tbl_pack_size_ref` WHERE ref_size_name=$size1[$i] AND parent_id=$parent_id AND color='".$color1[$j]."'";
-				// 						// echo $qty_query;
-				// 						$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
-				// 						while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
-				// 						{
-				// 							$qty = $qty_query_details['quantity'];
-				// 							if ($qty == '') {
-				// 								$qty=0;
-				// 							}
-				// 							echo "<td>".$qty.'</td>';
-				// 						}
-				// 					}
-				// 			echo "</tr>";
-				// 		}
-				// 		echo "</table></div>";
-				// 	}
-				// 	// GArments per Poly Bag Details End
-
-				// 	// Poly Bags per Carton Start
-				// 	{
-				// 		if ($pack_method == 3 || $pack_method == 4)
-				// 		{
-				// 			$poly_bags_per_carton_query = "SELECT distinct(poly_bags_per_carton) as poly_bags_per_carton FROM $bai_pro3.`tbl_pack_size_ref` WHERE parent_id=$c_ref";
-				// 			// echo $poly_bags_per_carton_query;
-				// 			$poly_bags_per_carton_result=mysqli_query($link, $poly_bags_per_carton_query) or exit("Error while getting poly_bags_per_carton Details");
-				// 			while($poly_bags_per_carton_details=mysqli_fetch_array($poly_bags_per_carton_result)) 
-				// 			{
-				// 				echo "<br><div class='col-md-4'>
-				// 							<table class=\"table table-bordered\">
-				// 								<tr><th>Number of Poly Bags Per Carton:</th><th>".$poly_bags_per_carton_details['poly_bags_per_carton']."</th>
-				// 								</tr>
-				// 							</table>
-				// 						</div>";
-				// 			}
-				// 			echo "<br><br>";
-				// 		}
-				// 		else if ($pack_method == 1 || $pack_method == 2)
-				// 		{
-				// 			$poly_bags_per_carton=array();
-				// 			$size_title=array();
-				// 			$poly_bags_per_carton_query = "SELECT poly_bags_per_carton,size_title FROM $bai_pro3.`tbl_pack_size_ref` WHERE parent_id=$c_ref GROUP BY size_title DESC";
-				// 			// echo $poly_bags_per_carton_query;
-				// 			$poly_bags_per_carton_result=mysqli_query($link, $poly_bags_per_carton_query) or exit("Error while getting poly_bags_per_carton Details");
-				// 			while($poly_bags_per_carton_details=mysqli_fetch_array($poly_bags_per_carton_result)) 
-				// 			{
-				// 				$poly_bags_per_carton[]=$poly_bags_per_carton_details['poly_bags_per_carton'];
-				// 				$size_title[]=$poly_bags_per_carton_details['size_title'];
-				// 			}
-
-				// 			echo "<br><div class='col-md-12'><b>Number of Poly Bags Per Carton: </b>
-				// 			<table class=\"table table-bordered\">
-				// 				<tr>";
-				// 				for ($i=0; $i < sizeof($size_title); $i++)
-				// 				{ 
-				// 					echo "<th>$size_title[$i]</th>";
-				// 				}
-				// 				echo "</tr><tr>";
-				// 				for ($i=0; $i < sizeof($poly_bags_per_carton); $i++)
-				// 				{ 
-				// 					echo "<td>$poly_bags_per_carton[$i]</td>";
-				// 				}
-				// 				echo "</tr>
-				// 			</table></div>";
-				// 		}				
-				// 	}
-				// 	// Poly Bags per Carton end
-
-				// 	// Garments Per Carton Start
-				// 	{
-				// 		$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN ($schedule)";
-				// 		// echo $sewing_jobratio_sizes_query.'<br>';
-				// 		$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-				// 		while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
-				// 		{
-				// 			$parent_id = $sewing_jobratio_color_details['parent_id'];
-				// 			$color = $sewing_jobratio_color_details['color'];
-				// 			$ref_size = $sewing_jobratio_color_details['size'];
-				// 			$color1 = explode(",",$color);
-				// 			$size1 = explode(",",$ref_size);
-				// 			// var_dump($size);
-				// 		}
-				// 		echo "
-				// 			<div class='col-md-12'><b>Garments Per Carton: </b>
-				// 				<div class='table-responsive'>
-				// 					<table class=\"table table-bordered\">
-				// 						<tr>
-				// 							<th>Color</th>";
-				// 							// Display Sizes
-				// 							for ($i=0; $i < sizeof($size1); $i++)
-				// 							{
-				// 								echo "<th>".$size1[$i]."</th>";
-				// 							}
-				// 						echo "</tr>";
-				// 						// Display Textboxes
-				// 						$row_count=0;
-				// 						for ($j=0; $j < sizeof($color1); $j++)
-				// 						{
-				// 							echo "<tr>
-				// 									<td>$color1[$j]</td>";
-				// 									for ($size_count=0; $size_count < sizeof($size1); $size_count++)
-				// 									{
-				// 										$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."'  AND size_title='".$size1[$size_count]."'";
-				// 										// echo $individual_sizes_query.'<br>';
-				// 										$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
-				// 										while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
-				// 										{
-				// 											$individual_color = $individual_sizes_details['size_title'];
-				// 										}
-
-				// 										$qty_query = "SELECT garments_per_carton FROM $bai_pro3.`tbl_pack_size_ref` WHERE size_title='$size1[$size_count]' AND parent_id=$c_ref AND color='".$color1[$j]."'";
-				// 										// echo '<br>'.$qty_query.'<br>';
-				// 										$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
-				// 										while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
-				// 										{
-				// 											$qty = $qty_query_details['garments_per_carton'];
-				// 											if ($qty == '') {
-				// 												$qty=0;
-				// 											}
-				// 											if (mysqli_num_rows($individual_sizes_result) >0)
-				// 											{
-				// 												if ($size1[$size_count] == $individual_color) {
-				// 													echo "<td>".$qty."</td>";
-				// 												}
-				// 											}
-				// 											else
-				// 											{
-				// 												echo "<td>".$qty."</td>";
-				// 											}
-				// 										}
-														
-				// 									}
-				// 							echo "</tr>";
-				// 							$row_count++;
-				// 						}
-				// 					echo "</table>
-				// 				</div>
-				// 			<div>
-				// 		";
-				// 	}
-				// 	// Garments Per Carton End
-				// }
-				// else
 				{
-					$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule_original,$link);	
-					$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$schedule,$link);
+					$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
+					$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$schedule_id,$link);
 					if($o_colors<>'')
 					{
 						$order_colors=explode(",",$o_colors);
@@ -432,11 +241,11 @@
 
 					if ($size_of_ordered_colors!=$size_of_planned_colors)
 					{
-						echo "<script>sweetAlert('Please prepare Lay Plan for all Colors in this Schedule - $schedule_original','','warning')</script>";
+						echo "<script>sweetAlert('Please prepare Lay Plan for all Colors in this Schedule - $schedule','','warning')</script>";
 					}
 					else
 					{
-						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT size_title) AS size FROM $brandix_bts.tbl_orders_sizes_master WHERE parent_id IN ($schedule)";
+						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT size_title) AS size FROM $brandix_bts.tbl_orders_sizes_master WHERE parent_id IN ($schedule_id)";
 						// echo $sewing_jobratio_sizes_query;
 						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
@@ -458,9 +267,9 @@
 								$title = "Multi Color Single Size";
 							}
 							echo '<form method="POST" class="form-inline" name="SS_MS" action="#">';
-								echo "<input type='hidden' name='style' id='style' value='".$style_code."' />";
+								echo "<input type='hidden' name='style' id='style' value='".$style."' />";
 								echo "<input type='hidden' name='schedule' id='schedule' value='".$schedule."' />";
-								echo "<input type='hidden' name='schedule_original' id='schedule' value='".$schedule_original."' />";
+								//echo "<input type='hidden' name='schedule' id='schedule' value='".$schedule."' />";
 								echo "<input type='hidden' name='pack_method' id='pack_method' value='".$pack_method."' />";
 								echo "<input type='hidden' name='size1' id='size1' value='".$size1."' />";
 								
@@ -509,7 +318,7 @@
 																		<input type='hidden' name=color[] value='".$color1[$j]."'>";
 																		for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																		{
-																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
+																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
 																			// echo $individual_sizes_query.'<br>';
 																			$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 																			while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -580,7 +389,7 @@
 																		echo "<td>$color1[$j]</td>";
 																		for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																		{
-																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
+																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
 																			// echo $individual_sizes_query.'<br>';
 																			$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 																			while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -620,9 +429,8 @@
 								$title = "Single Color Multi Size";
 							}
 							echo '<form method="POST" class="form-inline" name="MM_SM" action="#">';
-								echo "<input type='hidden' name='style' id='style' value='".$style_code."' />";
+								echo "<input type='hidden' name='style' id='style' value='".$style."' />";
 								echo "<input type='hidden' name='schedule' id='schedule' value='".$schedule."' />";
-								echo "<input type='hidden' name='schedule_original' id='schedule' value='".$schedule_original."' />";
 								echo "<input type='hidden' name='pack_method' id='pack_method' value='".$pack_method."' />";
 								echo "<input type='hidden' name='size1' id='size1' value='".$size1."' />";
 								
@@ -669,7 +477,7 @@
 																		<input type='hidden' name=color[] value='".$color1[$j]."'>";
 																		for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																		{
-																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."'  AND size_title='".$size1[$size_count]."'";
+																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color1[$j]."'  AND size_title='".$size1[$size_count]."'";
 																				// echo $individual_sizes_query.'<br>';
 																			$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 																			while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -725,7 +533,7 @@
 																		echo "<td>$color1[$j]</td>";
 																		for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																		{
-																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_code AND product_schedule=$schedule_original) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
+																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
 																			// echo $individual_sizes_query.'<br>';
 																			$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 																			while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -768,11 +576,12 @@
 				$style = $_POST['style'];
 				$schedule = $_POST['schedule'];
 				$pack_method = $_POST['pack_method'];
-				$schedule_original = $_POST['schedule_original'];
+				$schedule = $_POST['schedule'];
 				$GarPerBag = $_POST['GarPerBag'];
 				$BagPerCart = $_POST['BagPerCart'];
 				$GarPerCart = $_POST['GarPerCart'];
-				
+				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
+				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule_id,$link);
 				$descr=$_POST['description'];
 				$noofcartons=$_POST['noofcartons'];
 				$noofpackjobs=$_POST['noofpackjobs'];
@@ -790,7 +599,7 @@
 				}
 
 
-				$get_inserted_id = "select id from $bai_pro3.tbl_pack_ref where ref_order_num='".$schedule."' and style_code='".$style."' ";
+				$get_inserted_id = "select id from $bai_pro3.tbl_pack_ref where schedule='".$schedule."' and style='".$style."' ";
 				$get_insert_id_result=mysqli_query($link, $get_inserted_id) or exit("Errror while selecting ID ");
 				// echo $get_inserted_id.'<br>';
 				while ($get_insert_id_details=mysqli_fetch_array($get_insert_id_result))
@@ -801,11 +610,11 @@
 
 				if($id=='')
 				{	
-					$insert_carton_ref="insert ignore into $bai_pro3.tbl_pack_ref (ref_order_num,style_code) values('".$schedule."','".$style."')";
+					$insert_carton_ref="insert ignore into $bai_pro3.tbl_pack_ref (schedule,style) values('".$schedule."','".$style."')";
 					$insert_carton_ref_result=mysqli_query($link, $insert_carton_ref) or exit("Errror while saving parent details");
 					// echo $insert_carton_ref.'<br>';
 				}	
-				$get_inserted_id = "select id from $bai_pro3.tbl_pack_ref where ref_order_num='".$schedule."' and style_code='".$style."' ";
+				$get_inserted_id = "select id from $bai_pro3.tbl_pack_ref where schedule='".$schedule."' and style='".$style."' ";
 				$get_insert_id_result=mysqli_query($link, $get_inserted_id) or exit("Errror while selecting ID ");
 				// echo $get_inserted_id.'<br>';
 				while ($get_insert_id_details=mysqli_fetch_array($get_insert_id_result))
@@ -814,7 +623,7 @@
 				}
 				
 				//last sequence no from tbl_pack_size_ref
-				$lastseqno="select ps.seq_no from $bai_pro3.tbl_pack_size_ref ps left join $bai_pro3.tbl_pack_ref p on p.id=ps.parent_id where ref_order_num='".$schedule."' and style_code='".$style."' group by ps.seq_no DESC LIMIT 0,1";
+				$lastseqno="select ps.seq_no from $bai_pro3.tbl_pack_size_ref ps left join $bai_pro3.tbl_pack_ref p on p.id=ps.parent_id where schedule='".$schedule."' and style='".$style."' group by ps.seq_no DESC LIMIT 0,1";
 				$seqnorslt=mysqli_query($link, $lastseqno) or exit("Error while getting last seqno details");
 				if($seq=mysqli_fetch_array($seqnorslt))
 				{
@@ -834,7 +643,7 @@
 					{
 						if ($GarPerCart[$i][$j]>0 && $GarPerBag[$i][$j]>0)
 						{
-							$get_ref_size_query = "SELECT ref_size_name FROM $brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM $brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style AND product_schedule=$schedule_original) AND order_col_des='".$color[$i]."' AND size_title='".$original_size[$j]."'";
+							$get_ref_size_query = "SELECT ref_size_name FROM $brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM $brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color[$i]."' AND size_title='".$original_size[$j]."'";
 							$get_ref_size_result=mysqli_query($link, $get_ref_size_query) or exit("Error while ref_size_name details");
 							// echo $get_ref_size_query.'<br>';
 							while ($get_ref_size_deatils=mysqli_fetch_array($get_ref_size_result))
@@ -880,14 +689,15 @@
 				$style = $_POST['style'];
 				$schedule = $_POST['schedule'];
 				$pack_method = $_POST['pack_method'];
-				$schedule_original = $_POST['schedule_original'];
+				$schedule = $_POST['schedule'];
 				$GarPerBag = $_POST['GarPerBag'];
 				$BagPerCart = $_POST['BagPerCart'];
 				$GarPerCart = $_POST['GarPerCart'];
 				$descr=$_POST['description'];
 				$noofcartons=$_POST['noofcartons'];
 				$noofpackjobs=$_POST['noofpackjobs'];
-			
+				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
+				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule_id,$link);
 				
 				$tot = 0;
 				for($i=0;$i<sizeof($color);$i++)
@@ -901,7 +711,7 @@
 					}
 				}
 				// echo $tot;
-				$get_inserted_id = "select id from $bai_pro3.tbl_pack_ref where ref_order_num='".$schedule."' and style_code='".$style."' ";
+				$get_inserted_id = "select id from $bai_pro3.tbl_pack_ref where schedule='".$schedule."' and style='".$style."' ";
 				$get_insert_id_result=mysqli_query($link, $get_inserted_id) or exit("Errror while selecting ID ");
 				// echo $get_inserted_id.'<br>';
 				while ($get_insert_id_details=mysqli_fetch_array($get_insert_id_result))
@@ -910,11 +720,11 @@
 				}
 				if($id=='')
 				{
-					$insert_carton_ref="insert ignore into $bai_pro3.tbl_pack_ref (ref_order_num,style_code) values('".$schedule."','".$style."')";
+					$insert_carton_ref="insert ignore into $bai_pro3.tbl_pack_ref (schedule,style) values('".$schedule."','".$style."')";
 					$insert_carton_ref_result=mysqli_query($link, $insert_carton_ref) or exit("Errror while saving parent details");
 					// echo $insert_carton_ref.'<br>';
 				}
-				$get_inserted_id = "select id from $bai_pro3.tbl_pack_ref where ref_order_num='".$schedule."' and style_code='".$style."' ";
+				$get_inserted_id = "select id from $bai_pro3.tbl_pack_ref where schedule='".$schedule."' and style='".$style."' ";
 				$get_insert_id_result=mysqli_query($link, $get_inserted_id) or exit("Errror while selecting ID ");
 				// echo $get_inserted_id.'<br>';
 				while ($get_insert_id_details=mysqli_fetch_array($get_insert_id_result))
@@ -922,7 +732,7 @@
 					$id = $get_insert_id_details['id'];
 				}
 				
-				$lastseqno="select ps.seq_no from $bai_pro3.tbl_pack_size_ref ps left join $bai_pro3.tbl_pack_ref p on p.id=ps.parent_id where ref_order_num='".$schedule."' and style_code='".$style."' group by ps.seq_no DESC LIMIT 0,1";
+				$lastseqno="select ps.seq_no from $bai_pro3.tbl_pack_size_ref ps left join $bai_pro3.tbl_pack_ref p on p.id=ps.parent_id where schedule='".$schedule."' and style='".$style."' group by ps.seq_no DESC LIMIT 0,1";
 				$seqnorslt=mysqli_query($link, $lastseqno) or exit("Error while getting last seqno details");
 				if($seq=mysqli_fetch_array($seqnorslt))
 				{
@@ -943,7 +753,7 @@
 					{
 						if ($GarPerCart[$i][$j]>0 && $GarPerBag[$i][$j]>0)
 						{
-							$get_ref_size_query = "SELECT ref_size_name FROM $brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM $brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style AND product_schedule=$schedule_original) AND order_col_des='".$color[$i]."' AND size_title='".$original_size[$j]."'";
+							$get_ref_size_query = "SELECT ref_size_name FROM $brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM $brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color[$i]."' AND size_title='".$original_size[$j]."'";
 							$get_ref_size_result=mysqli_query($link, $get_ref_size_query) or exit("Error while saving child details");
 							// echo $get_ref_size_query.'<br>';
 							while ($get_ref_size_deatils=mysqli_fetch_array($get_ref_size_result))
@@ -963,7 +773,7 @@
 					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio Saved Successfully','','success');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style_id&schedule=$schedule_id\";
 						}
 					</script>";
 				}
@@ -972,7 +782,7 @@
 					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio not updated.',' Please Re-add Pack Method','warning');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style_id&schedule=$schedule_id\";
 						}
 					</script>";
 				}
