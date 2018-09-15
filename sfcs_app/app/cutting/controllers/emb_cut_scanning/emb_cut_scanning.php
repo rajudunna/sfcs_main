@@ -52,8 +52,7 @@
 		$style=$_GET['style'];
 		$schedule=$_GET['schedule'];
 		$module=$_GET['tablename'];
-        //$operation_name = echo_title("$brandix_bts.tbl_orders_ops_ref","operation_name","operation_code",$operation_code,$link).- $operation_code;
-        $operation_name = "Na-Istam".-$operation_code;
+        $operation_name = echo_title("$brandix_bts.tbl_orders_ops_ref","operation_name","operation_code",$operation_code,$link).- $operation_code;
         $color = $_GET['color'];
 
 	} else {

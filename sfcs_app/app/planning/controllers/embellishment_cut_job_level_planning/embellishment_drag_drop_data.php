@@ -1,1 +1,1 @@
-<?php $style_ref="ACZ06SF8       "; $schedule_ref="493321"; $color_ref="BLK : BLACK                   "; $cat_ref_ref="9644066"; $code_ref="2752-A01-*2753-A02-DONE*2754-A03-*2755-A04-*2756-A05-*"; ?>
+<?php $style_ref="A0812SS9       "; $schedule_ref="542125"; $color_ref="FOREST NIGHT CAMO             "; $cat_ref_ref="9130630"; $code_ref=""; ?>
