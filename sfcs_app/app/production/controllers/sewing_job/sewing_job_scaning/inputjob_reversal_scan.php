@@ -531,20 +531,20 @@ else if($concurrent_flag == 0)
 				$ops_seq = $row['ops_sequence'];
 				$seq_id = $row['id'];
 			}
-			$selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
-			//echo $selecting_output_from_seq_query;
-			$result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
-			if($result_selecting_output_from_seq_query->num_rows > 0)
-			{
-				while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
-				{
-					$input_ops_code = $row['operation_code'];
-				}
-			}
-			else
-			{
+			// $selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
+			// //echo $selecting_output_from_seq_query;
+			// $result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
+			// if($result_selecting_output_from_seq_query->num_rows > 0)
+			// {
+			// 	while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
+			// 	{
+			// 		$input_ops_code = $row['operation_code'];
+			// 	}
+			// }
+			// else
+			// {
 				$input_ops_code = 129;
-			}
+			// }
 			if($input_ops_code == 100 || $input_ops_code == 129)
 			{
 				$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
