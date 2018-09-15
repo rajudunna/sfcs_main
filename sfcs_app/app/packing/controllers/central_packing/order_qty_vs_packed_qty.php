@@ -370,27 +370,27 @@
 							</div>";
 											
 			}
-				if($_GET['seq_no'] && $_GET['parent_id'] && $_GET['pack_method'])
-				{
-					$seq_no=$_GET['seq_no'];
-					$parent_id=$_GET['parent_id'];
-					$pack_method=$_GET['pack_method'];
-					$schedule=$_GET['schedule'];
-					$style=$_GET['style'];
-					$delete_pack_meth="delete from $bai_pro3.tbl_pack_size_ref where seq_no='$seq_no' and parent_id='$parent_id' and pack_method='$pack_method'";
-				    // echo $delete_pack_meth;die();
-					$dele_pack_qry_res=mysqli_query($link, $delete_pack_meth) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(! $dele_pack_qry_res ) {
-						die('Could not delete data: ' . mysql_error());
-								   }
-					//echo '<script>swal("Packing Method Deleted Sucessfully","","warning")</script>';
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-					function Redirect() {
-						swal('Packing Method Deleted Sucessfully','','warning');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
-						}
-					</script>";					
-				}
+			if($_GET['seq_no'] && $_GET['parent_id'] && $_GET['pack_method'])
+			{
+				$seq_no=$_GET['seq_no'];
+				$parent_id=$_GET['parent_id'];
+				$pack_method=$_GET['pack_method'];
+				$schedule=$_GET['schedule'];
+				$style=$_GET['style'];
+				$delete_pack_meth="delete from $bai_pro3.tbl_pack_size_ref where seq_no='$seq_no' and parent_id='$parent_id' and pack_method='$pack_method'";
+				// echo $delete_pack_meth;die();
+				$dele_pack_qry_res=mysqli_query($link, $delete_pack_meth) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(! $dele_pack_qry_res ) {
+					die('Could not delete data: ' . mysql_error());
+							   }
+				//echo '<script>swal("Packing Method Deleted Sucessfully","","warning")</script>';
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+				function Redirect() {
+					swal('Packing Method Deleted Sucessfully','','warning');
+					location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+					}
+				</script>";					
+			}
 
 			?> 
 		</div>
