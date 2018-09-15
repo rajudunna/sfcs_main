@@ -26,6 +26,8 @@
             //var_dump($job_number);
             $job_number[4]=$job_number[1];
             include("../../../../../common/config/config_ajax.php");
+            include("../../../../../common/config/m3Updations.php");
+
             $column_to_search = $job_number[0];
             $column_in_where_condition = 'input_job_no_random_ref';
             $column_in_pack_summary = 'input_job_no_random';
@@ -445,7 +447,7 @@
             $ops_seq_dep[] = $ops_seq;
         }
        // echo '1'.$table_name;
-        $pre_ops_check = "select operation_code,ops_sequence from $brandix_bts.tbl_style_ops_master where style='".$b_style."' and color = '".$mapped_color."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep)."))";
+        $pre_ops_check = "SELECT tm.operation_code as operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE style='".$b_style."' AND color = '".$mapped_color."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep).")) AND  tr.category NOT IN ('cutting','Send PF','Receive PF') AND tm.operation_code != '200'";
         // echo $pre_ops_check;
         $result_pre_ops_check = $link->query($pre_ops_check);
         if($result_pre_ops_check->num_rows > 0)
@@ -932,7 +934,7 @@
             }
             for($i=0;$i<sizeof($b_tid);$i++)
             {
-                if($emb_cut_check_flag != 1)
+                if($emb_cut_check_flag == 1)
                 {
                     $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-($b_rep_qty[$i] + $b_rej_qty[$i]) where doc_no = $doc_value and size_title='$size_ims' AND operation_code = '$pre_ops_code'";
                     $update_qry_cps_log_res = $link->query($update_qry_cps_log);
@@ -1112,6 +1114,11 @@
                     }
                 }
             }
+            //updating into  m3 transactions for positives
+			for($i=0;$i<sizeof($b_tid);$i++)
+			{
+				$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
+			}
             // $table_data .= "</table>";
             $result_array['bundle_no'] = $bundle_no;
             $result_array['op_no'] = $op_no;
