@@ -697,7 +697,7 @@
 				$noofcartons=$_POST['noofcartons'];
 				$noofpackjobs=$_POST['noofpackjobs'];
 				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
-				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule_id,$link);
+				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
 				
 				$tot = 0;
 				for($i=0;$i<sizeof($color);$i++)
@@ -773,7 +773,7 @@
 					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio Saved Successfully','','success');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style_id&schedule=$schedule_id\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
 						}
 					</script>";
 				}
@@ -782,7 +782,7 @@
 					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio not updated.',' Please Re-add Pack Method','warning');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style_id&schedule=$schedule_id\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
 						}
 					</script>";
 				}
