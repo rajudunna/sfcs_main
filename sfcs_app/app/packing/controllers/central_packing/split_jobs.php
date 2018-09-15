@@ -7,7 +7,7 @@
 ?> 
 
 <div class="panel panel-primary">
-    <div class="panel-heading">Sewing Jobs Split</div>
+    <div class="panel-heading">Carton Split</div>
     <div class="panel-body">
 
         <?php 
@@ -21,26 +21,32 @@
 			
             $url_s = getFullURLLevel($_GET['r'],'carton_split.php',0,'N');
             //echo $schedule.' '.$job_no; 
-            echo '<h4><b>Schedule : <a href="#" class="btn btn-success">'.$schedule.'</a></b></h4>'; 
-            echo '<a href="'.$url_s.'" class="btn btn-primary pull-right">Click here to go Back</a>'; 
+            echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a></b></h4>'; 
+            echo '<a href="'.$url_s.'&schedule='.$schedule.'&style='.$style.'" class="btn btn-primary pull-right"><i class="fa fa-arrow-left" aria-hidden="true"></i> &nbsp;&nbsp;Click here to go Back</a>'; 
 			
-			$sql2="SELECT carton_act_qty FROM $bai_pro3.pac_stat_log where schedule='$schedule' AND carton_no='$carton_no' AND style='$style' AND pack_method='$packmethod'"; 
-            $result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $sql2="SELECT carton_qty FROM $bai_pro3.pac_stat WHERE schedule='$schedule' AND carton_no = '$carton_no' AND pac_seq_no = '$seq_no'";
+            // echo $sql2.'<br>';
+			// $sql2="SELECT carton_act_qty FROM $bai_pro3.pac_stat_log where schedule='$schedule' AND carton_no='$carton_no' AND style='$style' AND pack_method='$packmethod'"; 
+            $result2=mysqli_query($link, $sql2) or exit("Sql Error1 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if($cartqty=mysqli_fetch_array($result2))
 			{
-				$cartq=$cartqty['carton_act_qty'];
+				$cartq=$cartqty['carton_qty'];
 			}
 
 			if($cartq>0)
 			{				
-				echo '<h4><b>Carton No : <a href="#" class="btn btn-warning">'.$carton_no.'</a></b></h4>';
-				echo '<h4><b>Pack Method : <a href="#" class="btn btn-warning">'.$operation[$packmethod].'</a></b></h4><hr>';
-				$sql="SELECT tid,style,schedule,color,size_tit,carton_no,carton_act_qty,pac_seq_no FROM bai_pro3.`pac_stat_log` WHERE schedule='$schedule' AND carton_no='$carton_no' AND style='$style' AND pack_method='$packmethod'";
-				$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				echo '<h4><b>Carton No : <a class="btn btn-warning">'.$carton_no.'</a></b></h4>';
+				echo '<h4><b>Pack Method : <a class="btn btn-warning">'.$operation[$packmethod].'</a></b></h4><hr>';
+                // $sql="SELECT tid,style,schedule,color,size_tit,carton_no,carton_act_qty,pac_seq_no FROM bai_pro3.`pac_stat_log` WHERE schedule='$schedule' AND carton_no='$carton_no' AND style='$style' AND pack_method='$packmethod'";
+				$sql="SELECT psl.tid,ps.style,ps.schedule,psl.color,psl.size_tit,ps.carton_no,psl.carton_act_qty 
+                        FROM $bai_pro3.`pac_stat_log` psl LEFT JOIN $bai_pro3.`pac_stat` ps ON ps.`id`=psl.`pac_stat_id`
+                        WHERE ps.schedule='$schedule' AND ps.pac_seq_no='$seq_no' AND ps.carton_no='$carton_no'";
+                // echo $sql;
+				$result=mysqli_query($link, $sql) or exit("Sql Error2 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				echo '<form action='.getFullURLLevel($_GET['r'],'split_success.php',0,'N').' method="post" onsubmit="return verify_qty()">'; 
 				echo "<table class='table table-bordered table-striped'> 
-                <tr><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Carton No</th><th>Quantity</th><th>Enter Qty to be Split</th><th><input type='submit' width='20' name='submit' id='split_btn' class='btn btn-primary' value='Split'></th></tr> ";
+                <tr class='info'><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Carton No</th><th>Quantity</th><th>Enter Qty to be Split</th><th><input type='submit' width='20' name='submit' id='split_btn' class='btn btn-primary' value='Split'></th></tr> ";
                 while($row=mysqli_fetch_array($result))
                 { 
                     $i++;
@@ -69,7 +75,7 @@
 			}
 			else
 			{
-				 echo "<script>sweetAlert('Error','Input job is planned or input Updated.','warning');</script>";
+				 echo "<script>sweetAlert('Carton Qty is Zero','','warning');</script>";
 				 $url_s=getFullURL($_GET['r'],'carton_split.php','N');
 					echo "<script> 
                     setTimeout('Redirect()',1000); 
