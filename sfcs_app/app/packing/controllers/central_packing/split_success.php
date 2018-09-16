@@ -80,12 +80,12 @@
 				$seq_no=$row['seq_no']; 
 				$pacseqno=$row['pac_seq_no']; 
 				$newdoc_no_ref=$schedule."-".$seq_no."-".$newcartno;			
-				$url_s = getFullURLLevel($_GET['r'],'split_jobs.php',0,'N');
+				$url_s = getFullURLLevel($_GET['r'],'carton_split.php',0,'N');
 				if($qty > 0)  
 				{
 					if ($carton_act_qty == $qty) 
 					{
-						$sql2="UPDATE $bai_pro3.pac_stat_log SET doc_no_ref='$newdoc_no_ref',carton_no=='$newcartno' WHERE tid='$tid'"; 
+						$sql2="UPDATE $bai_pro3.pac_stat_log SET doc_no_ref='$newdoc_no_ref',carton_no=='$'newcartno WHERE tid='$tid'"; 
 						// echo $sql2.'<br>';
 						mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
@@ -158,7 +158,7 @@
     echo "<script> 
                     setTimeout('Redirect()',500); 
                     function Redirect() {  
-                        location.href = '$url_s&schedule=$schedule&cartonno=$cartonno&style=$style&packmethod=$packmethod'; 
+                        location.href = '$url_s&schedule=$schedule&style=$style'; 
                     }
                 </script>"; 
 ?> 
