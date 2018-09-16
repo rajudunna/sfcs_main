@@ -28,7 +28,7 @@
         <form action='?r=".$_GET['r']."' method=\"post\" class='form-inline' name='mini_order_report' id='mini_order_report'>
             <label>Style: </label>";
                 echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" required>";
-                $sql="select distinct style from $bai_pro3.pac_stat order by style";
+                $sql="select style from $bai_pro3.pac_stat group by style order by style";
                 $sql_result=mysqli_query($link, $sql) or exit("error while getting style");
                 echo "<option value=''>Please Select</option>";
                 while($sql_row=mysqli_fetch_array($sql_result))
@@ -47,7 +47,7 @@
                 &nbsp;
             <label>Schedule:</label>";
                 echo "<select class='form-control' name=\"schedule\" id=\"schedule\"  required>";
-                $sql="select distinct schedule from $bai_pro3.pac_stat where style='".$style."'";
+                $sql="select schedule from $bai_pro3.pac_stat where style='".$style."' group by schedule order by schedule*1";
                 $sql_result=mysqli_query($link, $sql) or exit("Error while getting schedule");
                 echo "<option value=''>Please Select</option>";
                 while($sql_row=mysqli_fetch_array($sql_result))
@@ -92,9 +92,7 @@ if(isset($_POST['submit']) || ($_GET['style'] && $_GET['schedule']))
 			echo "<div class='panel panel-primary'>
 					<div class='panel-heading'>".$operation[$pack_method[$i]]."---".$pack_description[$i]."</div>
 					<div class='panel-body'>";
-						$getcartonnos="SELECT * from $bai_pro3.packing_summary  where order_del_no='$schedule' and seq_no='".$seq_no[$i]."' group by carton_no order by carton_no*1";
-						// $getcartonnos="select carton_no,carton_mode,style,pac_seq_no,pack_method,status from pac_stat_log where schedule='$schedule' and pack_method='$packmethod[$i]' group by carton_no";
-						// echo $getcartonnos;
+						$getcartonnos="SELECT * from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no='".$seq_no[$i]."' group by carton_no order by carton_no*1";
 						$sql_result=mysqli_query($link, $getcartonnos) or exit("Error while getting carton details");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{

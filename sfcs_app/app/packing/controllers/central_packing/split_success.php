@@ -24,11 +24,12 @@
 	$cartonno=$_POST['cartonno'];
 	$packmethod=$_POST['pack_method'];
     $seq_no=$_POST['seqno'];
-	$query_check = "SELECT MAX(status) as status FROM $bai_pro3.`pac_stat_log` WHERE carton_no='$cartonno' and order_del_no='$schedule' and seq_no='$seq_no'";
+	$query_check = "SELECT MAX(status) as status,pac_stat_id FROM $bai_pro3.`pac_stat_log` WHERE id in (".implode(",",$tids).")";
 	$res_query_check=mysqli_query($link,$query_check);
 	while($result = mysqli_fetch_array($res_query_check))
 	{
 		$status = $result['status'];
+		$pac_stat_id = $result['pac_stat_id'];
 	}
 	if($status=='DONE')
 	{
@@ -37,13 +38,17 @@
 	}
 	else
 	{	
-		$maxcartno="SELECT MAX(carton_no) AS cartno FROM $bai_pro3.`pac_stat_log` WHERE schedule='$schedule' AND pack_method='$packmethod'";
+		$maxcartno="SELECT MAX(carton_no)+1 AS cartno FROM $bai_pro3.`pac_stat` WHERE schedule='$schedule' AND pack_method='$packmethod'";
 		$maxcartrslt=mysqli_query($link,$maxcartno);
 		if($row=mysqli_fetch_array($maxcartrslt))
 		{
 			$maxcartonno=$row['cartno'];
 		}
-		$newcartno=$maxcartonno+1;
+		$sql1q="INSERT INTO `$bai_pro3`.`pac_stat` (`style`, `schedule`, `pac_seq_no`, `carton_no`, `carton_mode`, `carton_qty`) VALUES ('$style', '$schedule', '$seq_no', '$maxcartonno', 'P', '".array_sum($qtys)."')";
+		mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$parent_id=mysqli_insert_id($link);
+		$sql1q1="update `$bai_pro3`.`pac_stat` set `carton_mode`= 'P' where id='$pac_stat_id'";
+		mysqli_query($link, $sql1q1) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$ops_id=array();
 		$ops_name=array();
 		$ops_idsql = "SELECT operation_code,operation_description FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='PACKING'";
@@ -59,15 +64,15 @@
 			$tid=$tids[$ii]; 
 			$qty=$qtys[$ii]; 
 		
-			$sql="SELECT * FROM $bai_pro3.pac_stat_log where tid = '$tid' and carton_no='$cartonno'"; 
+			$sql="SELECT * FROM $bai_pro3.pac_stat_log where tid = '$tid'"; 
 			// echo $sql.'<br>';
 			$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($row=mysqli_fetch_array($result))
 			{ 
-				$doc_no=$row['doc_no']; 
+				//$doc_no=$row['doc_no']; 
 				$size_code=$row['size_code'];
-				$cartonno=$row['carton_no'];
-				$cartonmode=$row['carton_mode'];	
+				//$cartonno=$row['carton_no'];
+				//$cartonmode=$row['carton_mode'];	
 				$carton_act_qty=$row['carton_act_qty']; 
 				$status=$row['status']; 
 				$doc_no_ref=$row['doc_no_ref'];
@@ -85,8 +90,7 @@
 				{
 					if ($carton_act_qty == $qty) 
 					{
-						$sql2="UPDATE $bai_pro3.pac_stat_log SET doc_no_ref='$newdoc_no_ref',carton_no=='$'newcartno WHERE tid='$tid'"; 
-						// echo $sql2.'<br>';
+						$sql2="UPDATE $bai_pro3.pac_stat_log SET pac_stat_id='$parent_id' WHERE tid='$tid'"; 
 						mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 					else
@@ -94,8 +98,7 @@
 						$nqty=$carton_act_qty-$qty;
 						if($nqty>0)
 						{
-							$sql1="INSERT into $bai_pro3.pac_stat_log(doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,doc_no_ref,container,disp_carton_no,disp_id,audit_status,scan_date,scan_user,input_job_random,input_job_number,order_tid,module,style,schedule,color,size_tit,seq_no,pack_method,pac_seq_no) VALUES ('$doc_no','$size_code','$newcartno','$cartonmode','$qty','$status','".$newdoc_no_ref."','1','','','','','','$input_job_random','$input_job_no','$ordertid','','$style','$schedule','$color','$size_tit','$seq_no','$packmethod','$pacseqno')";
-							mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
+							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$size_code."', '".$qty."', NULL, '".$style."', '".$schedule."', '".$color."','".$size_tit."','".$parent_id."')";							
 							$new_ref_id=mysqli_insert_id($link);
 							$date_rev=date("Y-m-d H:i:s");
 							for($i=0;$i<sizeof($ops_id);$i++)
@@ -154,7 +157,8 @@
 			}
 		}
 	}
-    echo "<script>sweetAlert('Success','Successfully Splitted your job.','success');</script>";
+    echo "<script>sweetAlert('New Carton Created','Carton No - "<?php echo $maxcartonno; ?>".','success');</script>";
+    //echo "<script>sweetAlert('Success','Successfully Splitted your job.','success');</script>";
     echo "<script> 
                     setTimeout('Redirect()',500); 
                     function Redirect() {  

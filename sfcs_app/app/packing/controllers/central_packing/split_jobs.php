@@ -54,7 +54,6 @@
                     $schedule=$row['schedule']; 
                     $color=$row['color']; 
                     $size=$row['size_tit']; 
-                    $cartonno=$row['carton_no']; 
                     $qty=$row['carton_act_qty']; 
 					$seqno=$row['pac_seq_no']; 
 					$tid=$row['tid'];
