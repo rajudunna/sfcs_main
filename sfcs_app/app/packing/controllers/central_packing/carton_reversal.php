@@ -21,23 +21,24 @@
 				if (isset($_POST['submit']))
 				{
 					$carton_id = $_POST['carton_id'];
-					$carton_query = "SELECT * FROM $bai_pro3.pac_stat_log WHERE tid = $carton_id";
+					$carton_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id = $carton_id";
 					// echo $carton_query;
 					$carton_details=mysqli_query($link, $carton_query) or exit("Error while getting Carton Details");
 					
 					if (mysqli_num_rows($carton_details) > 0)
 					{
-						while($row=mysqli_fetch_array($carton_details)) 
-						{
-							$status = $row['status'];
-							$doc_no_ref=$row['doc_no_ref'];
-						}
+						// while($row=mysqli_fetch_array($carton_details)) 
+						// {
+							// $status = $row['status'];
+							// $doc_no_ref=$row['doc_no_ref'];
+						// }
 						$b_tid = array();
-						$get_all_tid = "SELECT tid FROM $bai_pro3.`pac_stat_log` WHERE doc_no_ref = '".$doc_no_ref."';";
+						$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status FROM $bai_pro3.`pac_stat_log` WHERE pac_stat_id = '".$carton_id."';";
 						$tid_result = mysqli_query($link,$get_all_tid);
 						while($row12=mysqli_fetch_array($tid_result))
 						{
-							$b_tid[]=$row12['tid'];				
+							$b_tid[]=$row12['tid'];	
+							$status = $row['status'];		
 						}
 
 						$b_op_id_query = "SELECT operation_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='PACKING';";
@@ -53,7 +54,7 @@
 						}
 						else
 						{
-							$update_pac_stat_log = "UPDATE $bai_pro3.pac_stat_log SET status=NULL WHERE doc_no_ref = '".$doc_no_ref."'";
+							$update_pac_stat_log = "UPDATE $bai_pro3.pac_stat_log SET status=NULL WHERE pac_stat_id = '".$carton_id."'";
 							mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log");
 
 							// $update_mo_oprns_qty = "UPDATE $bai_pro3.mo_operation_quantites SET good_quantity = 0 WHERE bundle_no = $carton_id";
