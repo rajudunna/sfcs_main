@@ -2,9 +2,10 @@
 <?php include('../../../../common/config/functions.php'); ?>
 <?php ini_set('error_reporting', E_ALL); ?>
 <?php
-$style_id=$_GET['style_id'];
-$schedule_id=$_GET['sch_id'];
 $schedule=$_GET['schedule'];
+$style=$_GET['style'];
+$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
+$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
 
 $mpo ='';$cpo='';$cust_ord='';$module = '';
 $leading = '';
@@ -28,21 +29,28 @@ if($_GET['seq_no']==0)
 }
 else
 {
-	$filter="and seq_no='".$_GET['seq_no']."'";
+	$filter="and pac_seq_no='".$_GET['seq_no']."'";
 }
 $seq_no=array();
 $pack_method=array();
-$pac_seq_no=array();
-$pack_ref=echo_title("$bai_pro3.tbl_pack_ref","id","ref_order_num",$schedule_id,$link);	
-$sql1="select seq_no,pack_method,pac_seq_no from $bai_pro3.pac_stat_log where schedule='$schedule' $filter group by seq_no*1";
-$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error p".mysqli_error($GLOBALS["___mysqli_ston"]));
+$pack_desc=array();
+$cols=array();
+$sizes=array();
+$pack_ref=echo_title("$bai_pro3.tbl_pack_ref","id","schedule",$schedule_id,$link);	
+$sql1="SELECT pac_seq_no,pack_description,pack_method,GROUP_CONCAT(DISTINCT TRIM(size_title)) AS size ,GROUP_CONCAT(DISTINCT TRIM(color)) AS color FROM bai_pro3.pac_stat 
+LEFT JOIN tbl_pack_ref ON tbl_pack_ref.schedule=pac_stat.schedule 
+LEFT JOIN tbl_pack_size_ref ON tbl_pack_ref.id=tbl_pack_size_ref.parent_id AND pac_stat.pac_seq_no=tbl_pack_size_ref.seq_no
+where pac_stat.schedule='$schedule' $filter GROUP BY pac_seq_no ORDER BY pac_seq_no*1";
+$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error p0----".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
-	$seq_no[]=$sql_row1['seq_no'];
+	$seq_no[]=$sql_row1['pac_seq_no'];
 	$pack_method[]=$sql_row1['pack_method'];
-	$pac_seq_no[]=$sql_row1['pac_seq_no'];
+	$pack_description[]=$sql_row1['pack_description'];
+	$cols[]=$sql_row1['color'];
+	$sizes[]=$sql_row1['size'];
+	//$pac_seq_no[]=$sql_row1['pac_seq_no'];
 }
- 
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -693,7 +701,7 @@ tags will be replaced.-->
  <thead>
  <tr class=xl6419400 height=22 style='mso-height-source:userset;height:16.5pt'>
   <td colspan=21 height=22 class=xl6819400 width=1018 style='height:16.5pt;
-  width:759pt'><?php if($_GET['p_status']==2){ echo "FG CHECK List"; } else { echo "Carton Track"; }?></td>
+  width:759pt'><?php if($_GET['p_status']==2){ echo "FG Check List"; } else { echo "Carton Track"; }?></td>
   <td class=xl6319400 width=64 style='width:48pt'></td>
   <td class=xl6319400 width=64 style='width:48pt'></td>
   <td class=xl6319400 width=64 style='width:48pt'></td>
@@ -741,7 +749,7 @@ tags will be replaced.-->
  </tr>
  <tr class=xl7219400 height=22 style='mso-height-source:userset;height:16.5pt'>
   <td height=22 class=xl6919400 style='height:16.5pt;border-top:none'>Sch No :</td>
-  <td colspan=4 class=xl7019400_new style='border-left:none'><?php echo trim($delivery); ?></td>
+  <td colspan=4 class=xl7019400_new style='border-left:none'><?php echo trim($schedule); ?></td>
   <td class=xl7119400></td>
   <td colspan=3 class=xl6919400>MPO :</td>
   <td colspan=4 class=xl7019400_new style='border-left:none'><?php echo trim($mpo); ?></td>
@@ -906,12 +914,6 @@ tags will be replaced.-->
  <?php 
  for($i=0;$i<sizeof($seq_no);$i++)
  {
-	$query = "SELECT r.pack_method as pack,r.pack_description,GROUP_CONCAT(DISTINCT(trim(color))) as color,GROUP_CONCAT(DISTINCT(size_title)) as size FROM tbl_pack_size_ref AS r LEFT JOIN tbl_pack_ref p ON p.id = r.parent_id WHERE p.ref_order_num = '$schedule_id' AND r.seq_no = '$pac_seq_no[$i]' group by seq_no";
-	$sql_result=mysqli_query($link, $query) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$count = mysqli_num_rows($sql_result);
-	//echo $count;
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
 	?>
 	  <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td class=xl8319400 style='border-top:none' colspan=2><b>Packing Method <b>: </td>
@@ -921,29 +923,28 @@ tags will be replaced.-->
 	  <td class=xl8219400>&nbsp;</td>
 	  <td class=xl8219400>&nbsp;</td>
 	  <td class=xl8319400 style='border-top:none' colspan=2><b>Description <b>: </td>
-	  <td class=xl8219400  colspan=11 ><?php echo $sql_row['pack_description'];?></td>
+	  <td class=xl8219400  colspan=11 ><?php echo $pack_description[$i];?></td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
 	  </tr>
 	  <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td class=xl8319400 style='border-top:none' colspan=2><b>Colors <b>: </td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8219400  colspan=17 ><?php echo $sql_row['color'];?></td>
+	  <td class=xl8219400  colspan=17 ><?php echo $cols[$i];?></td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
 	    
 	  </tr>
 	  <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td class=xl8319400 style='border-top:none' colspan=2><b>Sizes <b>: </td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8219400  colspan=17 ><?php echo $sql_row['size'];?></td>
+	  <td class=xl8219400  colspan=17 ><?php echo $sizes[$i];?></td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
 	    
 	  </tr>
 	<?php
-	}	
 		$carton_nodes=array();
 		$x=1;
-		$sql="select carton_no,seq_no,MIN(STATUS) as status,min(tid) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = '".$seq_no[$i]."' group by carton_no order by carton_no";
-		$sql_result4=mysqli_query($link, $sql) or exit("Sql Error b".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="select carton_no,MIN(STATUS) as status,min(pac_stat_id) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = '".$seq_no[$i]."' group by carton_no order by carton_no*1";
+		$sql_result4=mysqli_query($link, $sql) or exit("Sql Error b44--".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row4=mysqli_fetch_array($sql_result4))
 		{
 			$carton_act_qty=$sql_row4['carton_act_qty'];
