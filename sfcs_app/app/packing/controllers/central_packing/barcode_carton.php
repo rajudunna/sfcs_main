@@ -82,7 +82,7 @@
 									
 							<table>
 								<tr>
-									<td ><barcode code="'.$tids[$i].'" type="C39"/ height="0.80" width="5.0" size="0.8" text="1"></td>
+									<td ><barcode code="'.$tids[$i].'" type="C39"/ height="0.80" size="0.8" text="1"></td>
 									<td >'.$tids[$i].'</td>
 								</tr>
 								

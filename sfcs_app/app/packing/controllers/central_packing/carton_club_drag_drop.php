@@ -12,8 +12,8 @@
         {
             $style=$_GET['style'];
             $schedule=$_GET['schedule'];
-            $style_ori = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link); 
-            $schedule_ori = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
+           // $style_ori = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link); 
+            //$schedule_ori = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
         }
         if(isset($_POST['submit']))
         {
@@ -80,19 +80,19 @@
                             <label>Style: </label>";
                                 // Style
                                 echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" required>";
-                                $sql="select * from $brandix_bts.tbl_orders_style_ref order by product_style";
+                                $sql="select * from $bai_pro3.pac_stat group by style order by style*1";
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2");
                                 $sql_num_check=mysqli_num_rows($sql_result);
                                 echo "<option value=''>Please Select</option>";
                                 while($sql_row=mysqli_fetch_array($sql_result))
                                 {
-                                    if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$style))
+                                    if(str_replace(" ","",$sql_row['style'])==str_replace(" ","",$style))
                                     {
-                                        echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_style']."</option>";
+                                        echo "<option value=\"".$sql_row['style']."\" selected>".$sql_row['style']."</option>";
                                     }
                                     else
                                     {
-                                        echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_style']."</option>";
+                                        echo "<option value=\"".$sql_row['style']."\">".$sql_row['style']."</option>";
                                     }
                                 }
                                 echo "</select>
@@ -100,43 +100,42 @@
                             <label>Schedule:</label>";
                                 // Schedule
                                 echo "<select class='form-control' name=\"schedule\" onchange=\"secondbox();\" id=\"schedule\"  required>";
-                                $sql="select * from $brandix_bts.tbl_orders_master where ref_product_style='".$style."'";
+                                $sql="select schedule from $bai_pro3.pac_stat where style='".$style."' group by schedule order by schedule*1";
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 $sql_num_check=mysqli_num_rows($sql_result);
                                 echo "<option value=''>Please Select</option>";
                                 while($sql_row=mysqli_fetch_array($sql_result))
                                 {
-                                    if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$schedule))
+                                    if(str_replace(" ","",$sql_row['schedule'])==str_replace(" ","",$schedule))
                                     {
-                                        echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_schedule']."</option>";
+                                        echo "<option value=\"".$sql_row['schedule']."\" selected>".$sql_row['schedule']."</option>";
                                     }
                                     else
                                     {
-                                        echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_schedule']."</option>";
+                                        echo "<option value=\"".$sql_row['schedule']."\">".$sql_row['schedule']."</option>";
                                     }
                                 }
                                 echo "</select>&nbsp;&nbsp;";
 								echo "<label>Pack Method:</label> 
                                     <select class='form-control' name=\"packmethod\"  id='packmethod' required>";
-                                        $sql="select distinct pack_method from $bai_pro3.pac_stat_log where style=\"$style_ori\" AND schedule=\"$schedule_ori\"";  
+                                        $sql="SELECT seq_no,pack_method,pack_description FROM $bai_pro3.pac_stat 
+										LEFT JOIN tbl_pack_ref ON tbl_pack_ref.schedule=pac_stat.schedule 
+										LEFT JOIN tbl_pack_size_ref ON tbl_pack_ref.id=tbl_pack_size_ref.parent_id AND pac_stat.pac_seq_no=tbl_pack_size_ref.seq_no
+										WHERE pac_stat.schedule='$schedule' GROUP BY pac_seq_no ORDER BY pac_seq_no*1";  
                                         $sql_result=mysqli_query($link, $sql) or exit("Sql Error");
                                         echo "<option value=''>Please Select</option>";
-                                    while($sql_row=mysqli_fetch_array($sql_result))
-                                    {
-                                        $seqno="select distinct seq_no from $bai_pro3.pac_stat_log where style=\"$style_ori\" AND schedule=\"$schedule_ori\" and pack_method='".$sql_row['pack_method']."'";
-                                        $seqrslt=mysqli_query($link, $seqno) or exit("error while getting seq no");
-                                        while($row=mysqli_fetch_array($seqrslt))
-                                        {
-                                            if($row['seq_no']."-".$sql_row['pack_method']==$packmethod)
+                                        while($row=mysqli_fetch_array($sql_result))
+                                        {                                            
+											if($row['seq_no']."-".$row['pack_method']==$packmethod)
                                             {
-                                                echo "<option value=\"".$row['seq_no']."-".$sql_row['pack_method']."\" selected>".$row['seq_no']."-".$operation[$sql_row['pack_method']]."</option>";
+                                                echo "<option value=\"".$row['seq_no']."-".$row['pack_method']."\" selected>".$row['pack_description']."-".$operation[$row['pack_method']]."</option>";
                                             }
                                             else
                                             {
-                                                echo "<option value=\"".$row['seq_no']."-".$sql_row['pack_method']."\">".$row['seq_no']."-".$operation[$sql_row['pack_method']]."</option>";
+                                                echo "<option value=\"".$row['seq_no']."-".$row['pack_method']."\">".$row['pack_description']."-".$operation[$row['pack_method']]."</option>";
                                             }
                                         }
-                                    }
+                                    
                                     echo "</select>";
                             ?>
                             &nbsp;&nbsp;
@@ -145,28 +144,29 @@
                     </div>
 
                 <?php
-                    if (isset($_POST['submit']))
+                    if(isset($_POST['submit']))
                     { 
                         $style = $_POST['style'];
                         $schedule = $_POST['schedule'];
                         $packmethod = $_POST['packmethod'];
 						$seq = substr($packmethod,0,1);
 						$packm = substr($packmethod,-1);
-                        $style_ori = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link); 
-                        $schedule_ori = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-                        echo '
-                            <input type="hidden" name="style_id" id="style_id" value="'.$style.'">
-                            <input type="hidden" name="schedule_id" id="schedule_id" value="'.$schedule.'">
-                            <input type="hidden" name="style1" id="style1" value="'.$style_ori.'">
-                            <input type="hidden" name="schedule1" id="schedule1" value="'.$schedule_ori.'">
-                            <input type="hidden" name="packmethod1" id="packmethod1" value="'.$packmethod.'">';
+						$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
+						$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
+				        echo '
+                            <input type="hidden" name="style_id" id="style" value="'.$style.'">
+                            <input type="hidden" name="schedule_id" id="schedule" value="'.$schedule.'">
+                           <input type="hidden" name="packmethod" id="packmethod" value="'.$packmethod.'">';
 
-                        $carton_no = array();   $status = array();  $carton_mode=array();   $doc_no_ref = array();
-                        $get_cartons = "SELECT carton_no, status, carton_mode, doc_no_ref FROM bai_pro3.pac_stat_log WHERE SCHEDULE=$schedule_ori and seq_no=$seq group by carton_no";
+                        $carton_no = array();   $status = array();  $carton_mode=array();   $doc_no_ref = array();  $colors = array();  $sizes = array();  $carton_qty = array();
+                        $get_cartons = "SELECT carton_no, status, carton_mode, pac_stat_id, GROUP_CONCAT(DISTINCT TRIM(size_tit)) AS size ,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS color,sum(carton_act_qty) as qty FROM bai_pro3.packing_summary WHERE order_del_no=$schedule and seq_no=$seq group by carton_no*1";
 						$carton_result=mysqli_query($link, $get_cartons) or die("Error"); 
                         while($row=mysqli_fetch_array($carton_result)) 
                         {
-                            $doc_no_ref[]=$row['doc_no_ref'];
+                            $colors[]=$row['color'];
+                            $sizes[]=$row['size'];
+                            $carton_qty[]=$row['qty'];
+                            $pac_stat_id[]=$row['pac_stat_id'];
                             $carton_no[]=$row['carton_no'];
                             $status[] = $row['status'];
                             $carton_mode[] = $row['carton_mode'];
@@ -183,31 +183,24 @@
                         <!-- From Container -->
                         <ul id="sortable1" class="connectedSortable">
                             <?php
-                                for ($i=0; $i < sizeof($carton_no); $i++)
+                                for ($i=0; $i < sizeof($pac_stat_id); $i++)
                                 {
-                                    $final_details = "SELECT GROUP_CONCAT(DISTINCT TRIM(color) SEPARATOR '\n') AS colors, GROUP_CONCAT(DISTINCT size_tit) AS sizes, SUM(carton_act_qty) AS carton_qty FROM bai_pro3.`pac_stat_log` WHERE doc_no_ref = '".$doc_no_ref[$i]."';";
-                                    $final_result = mysqli_query($link,$final_details);
-                                    while($row=mysqli_fetch_array($final_result))
-                                    {
-                                        $colors=$row['colors'];
-                                        $sizes=$row['sizes'];
-                                        $carton_qty=$row['carton_qty'];
-                                    }
+                                    
                                     if ($status[$i] != 'DONE')
                                     {
                                         if ($carton_mode[$i] == 'F')
                                         {
                                             
-                                            echo "<li class='btn btn-success' value='".$carton_no[$i]."' title='Color: ".$colors."\nSize: ".$sizes."\nQty: ".$carton_qty."'>Carton - $carton_no[$i]</li>";
+                                            echo "<li class='btn btn-success' value='".$pac_stat_id[$i]."' title='Color: ".$colors[$i]."\nSize: ".$sizes[$i]."\nQty: ".$carton_qty[$i]."'>Carton - $carton_no[$i]</li>";
                                         }
                                         else
                                         {
-                                            echo "<li class='btn btn-warning' value='".$carton_no[$i]."' title='Color: ".$colors."\nSize: ".$sizes."\nQty: ".$carton_qty."'>Carton - $carton_no[$i]</li>";
+                                            echo "<li class='btn btn-warning' value='".$pac_stat_id[$i]."' title='Color: ".$colors[$i]."\nSize: ".$sizes[$i]."\nQty: ".$carton_qty[$i]."'>Carton - $carton_no[$i]</li>";
                                         }
                                     }
                                     else
                                     {
-                                        echo "<li class='btn btn-danger unsortable' value='".$carton_no[$i]."' title='Color: ".$colors."\nSize: ".$sizes."\nQty: ".$carton_qty."'>Carton - $carton_no[$i]</li>";
+                                        echo "<li class='btn btn-danger unsortable' value='".$pac_stat_id[$i]."' title='Color: ".$colors[$i]."\nSize: ".$sizes[$i]."\nQty: ".$carton_qty[$i]."'>Carton - $carton_no[$i]</li>";
                                     }
                                 }
                             ?>
@@ -237,11 +230,9 @@
      <script type="text/javascript">
         function test()
         {
-            var style = document.getElementById('style1').value;
-            var schedule = document.getElementById('schedule1').value;
-            var packmethod = document.getElementById('packmethod1').value;
-            var style_id = document.getElementById('style_id').value;
-            var schedule_id = document.getElementById('schedule_id').value;
+            var style = document.getElementById('style').value;
+            var schedule = document.getElementById('schedule').value;
+            var packmethod = document.getElementById('packmethod').value;
             var url12 = '<?= getFullURL($_GET['r'],'carton_club_drag_drop.php','N'); ?>';
             var cart = "";
             var listItems = document.querySelectorAll('#sortable2 li');
@@ -252,7 +243,7 @@
             }
             document.getElementById('new_cartons').value = cart;
             var new_car = document.getElementById('new_cartons').value;
-            window.location.href =url12+"&carton="+new_car+"&style1="+style+"&schedule1="+schedule+"&packmethod1="+packmethod+"&style_id="+style_id+"&schedule_id="+schedule_id;
+            window.location.href =url12+"&carton="+new_car+"&style="+style+"&schedule="+schedule+"&packmethod="+packmethod;
         }
       
     </script>
@@ -260,12 +251,10 @@
     <?php
         if (isset($_GET['carton']))
         {
-            $style_id = $_GET['style_id'];
-            $schedule_id = $_GET['schedule_id'];
+            $style = $_GET['style'];
+            $schedule = $_GET['schedule'];
             $cartons = $_GET['carton'];
-            $style = $_GET['style1'];
-            $schedule = $_GET['schedule1'];
-            $packmethod = $_GET['packmethod1'];
+            $packmethod = $_GET['packmethod'];
             if ($cartons != '' || $cartons != null)
             {
                 $test = substr($cartons,0,-1);
@@ -288,21 +277,15 @@
                         }
                     }
                     $carton=implode(",",$wout_min);
-                    $getmincartdetails="select carton_no,doc_no_ref from $bai_pro3.pac_stat_log where style='$style' AND schedule='$schedule' AND carton_no='$mincart' AND seq_no='$seq' AND pack_method='$packm'";
-                    // echo $getmincartdetails.'<br>';
-                    $cartdetrslt=mysqli_query($link, $getmincartdetails) or die("Error while getting min cart details".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if($cartrow=mysqli_fetch_array($cartdetrslt))
-                    {
-                        $cartno=$cartrow['carton_no'];
-                        $docnoref=$cartrow['doc_no_ref'];
-                    }
-                    $updatedetails="update $bai_pro3.pac_stat_log set doc_no_ref='$docnoref',carton_no='$cartno' where style='$style' AND schedule='$schedule' AND carton_no in ($carton) AND seq_no='$seq' AND pack_method='$packm'";
+                    $updatedetails="update $bai_pro3.pac_stat_log set pac_stat_id='$mincart' where pac_stat_id in ($carton)";
+                    $result12=mysqli_query($link, $updatedetails) or die("Error while updating carton details".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$delete="delete from $bai_pro3.pac_stat where id in ($carton)";
                     $result12=mysqli_query($link, $updatedetails) or die("Error while updating carton details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     echo "<script>sweetAlert('Packing Jobs Clubbed','Sucessfully','success');</script>";
                     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
 						function Redirect() 
 						{
-							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style_id&schedule=$schedule_id&packmethod=$packmethod\";
+							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style&schedule=$schedule&packmethod=$packmethod\";
 						}
 						</script>";
                 }
@@ -312,7 +295,7 @@
                     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
 						function Redirect() 
 						{
-							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style_id&schedule=$schedule_id&packmethod=$packmethod\";
+							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style&schedule=$schedule&packmethod=$packmethod\";
 						}
 						</script>";
                 }
@@ -323,7 +306,7 @@
                 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
 					function Redirect() 
 					{
-						location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style_id&schedule=$schedule_id&packmethod=$packmethod\";
+						location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style&schedule=$schedule&packmethod=$packmethod\";
 					}
 					</script>";
             }
