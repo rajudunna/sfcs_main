@@ -154,4 +154,18 @@ while($methods=mysqli_fetch_array($pack_result))
     $pack_methods[]=$methods['pack_method_name'];
 }
 // var_dump($pack_methods);
+//***************************************************
+//======== for central warehouse connections ========
+//***************************************************
+    $is_chw = $conf1->get('central_warehouse');
+    $cwh_link = Null;
+    if($is_chw == 'yes'){
+        $cwh_host = $conf1->get('cw_host');
+        $cwh_user_name = $conf1->get('cw_username');
+        $cwh_password = $conf1->get('cw_password');
+        $cwh_port = $conf1->get('cw_port');
+        $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+    }
+//===================================================
 ?>
