@@ -12,8 +12,8 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
 
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
-        $plan_module = $row['shift'];
-        $input_shift  = $row['assigned_module'];
+        $input_shift = $row['shift'];
+        $plan_module  = $row['assigned_module'];
     }
     $current_date = date("Y-m-d H:i:s");
     $b_shift  = $input_shift;
@@ -115,7 +115,6 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
             }
         }
     }
-
 }
 
 
