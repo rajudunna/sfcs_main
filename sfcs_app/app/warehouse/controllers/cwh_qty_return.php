@@ -105,13 +105,15 @@ if(isset($_POST['barcode']) && $_POST['barcode']!=''){
 						$rec_qty = $row2;
 						break;
 					}
+
 					
 					
 					$qry_insert_sticker_report1_data = "update $bai_rm_pj1.`sticker_report` set rec_qty=\"".$rec_qty['qty_rec']."\",rec_no=\"".$sticker_data['rec_no']."\",inv_no=\"".$sticker_data['inv_no']."\",batch_no=\"".$sticker_data['batch_no']."\" where lot_no=\"".$sticker_data['lot_no']."\"";
 					//echo $qry_insert_sticker_report1_data."<br/>";
 					$qry_insert_sticker_report1_data1 = $cwh_link->query($qry_insert_sticker_report1_data);	
-						
-					}									
+					$qry_get_data_fm_cwh1 = "select * from $bai_rm_pj1.store_in where lot_no=".$barcode_data['lot_no']."";
+					$res_get_data_fm_cwh1 = $link->query($qry_get_data_fm_cwh1);
+												
 					$qry_ins_stockout = "delete from $bai_rm_pj1.`store_out` where tran_tid=".$_POST['barcode'];
 					//echo $qry_ins_stockout."<br/>";
 					$res_ins_stockout = $cwh_link->query($qry_ins_stockout);
@@ -120,23 +122,38 @@ if(isset($_POST['barcode']) && $_POST['barcode']!=''){
 					//echo $update_qty_store_in."<br/>";
 					$res_update_qty_store_in = $cwh_link->query($update_qty_store_in);
 					$store_in = "delete from $bai_rm_pj1.store_in where tid=".$_POST['barcode'];
-					//echo $update_qty_store_in."<br/>";
 					$res_store_in = $link->query($store_in);
+					//echo $update_qty_store_in."<br/>";
+					
+	
+							
+
+					
 					echo "<h3>Status: <font color=Green>Quantity ".$actual_quentity_present." Transferred successfully for Item ID : ".$_POST['barcode']." and Lot Number : ".$barcode_data['lot_no']."</font></h3>";
-					$qry_get_data_fm_cwh1 = "select * from $bai_rm_pj1.store_in where lot_no=".$barcode_data['lot_no']."";
-					$res_get_data_fm_cwh1 = $link->query($qry_get_data_fm_cwh1);
-					//echo $qry_get_data_fm_cwh1 ;
-					if($res_get_data_fm_cwh1->num_rows ==1)
-					{
-						$sticker_report = "delete from $bai_rm_pj1.sticker_report where lot_no=".$barcode_data['lot_no']."";
-						//echo $update_qty_store_in."<br/>";
-						$res_store_in1 = $link->query($sticker_report);
+					
 					}
-					else{
-						$sticker_report = "update from $bai_rm_pj1.`sticker_report` set rec_qty=\"".$rec_qty['qty_rec']."\",rec_no=\"".$sticker_data['rec_no']."\",inv_no=\"".$sticker_data['inv_no']."\",batch_no=\"".$sticker_data['batch_no']."\" where lot_no=\"".$sticker_data['lot_no']."\"";
-						//echo $update_qty_store_in."<br/>";
-						$res_store_in1 = $link->query($sticker_report);
-					}	
+					$qty_rec_store_report8 = "select sum(qty_rec)as qty_rec from $bai_rm_pj1.`store_in` where lot_no=".$barcode_data['lot_no']."";
+					
+						$qty_rec_store_report18 = $link->query($qty_rec_store_report8);
+						while($row8 = $qty_rec_store_report18->fetch_assoc()) 
+						{
+							$rec_qty1 = $row8;
+							break;
+						}
+	
+					if($qty_rec_store_report18->num_rows ==0)
+						{
+						
+							$sticker_report = "delete from $bai_rm_pj1.sticker_report where lot_no=".$barcode_data['lot_no']."";
+							//echo $update_qty_store_in."<br/>";
+							$res_store_in1 = $link->query($sticker_report);
+						}
+						else{
+							
+							$sticker_report = "update $bai_rm_pj1.`sticker_report` set rec_qty=\"".$rec_qty1['qty_rec']."\" where lot_no=\"".$sticker_data['lot_no']."\"";
+							
+							$res_store_in1 = $link->query($sticker_report);	
+						}		
 					
 			}
 			else
