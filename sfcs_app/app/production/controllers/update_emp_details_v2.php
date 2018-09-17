@@ -86,8 +86,6 @@ $atten_id=$sql_row1['atten_id'];
 $date=$sql_row1['date'];
 $avail_av=$sql_row1['avail'];
 $absent_ab=$sql_row1['absent'];
-echo $avail_av;
-echo $absent_ab;
 $module=$sql_row1['module'];
 echo "<tr>";
 
