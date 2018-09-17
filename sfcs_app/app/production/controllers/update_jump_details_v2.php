@@ -58,7 +58,7 @@ Select Team : <select name="team" class="select2_single form-control" required>
 </select>
 </div>
 <div class='col-md-3 col-sm-3 col-xs-12' style="margin-top: 18px;">
-<input type="submit" class="btn btn-primary" name="submit" value="Filter" id="filter"/> 
+<input type="submit" class="btn btn-primary" name="submit" value="Submit" id="filter"/> 
 </div>
 </form>
 </br></br></br></br>
