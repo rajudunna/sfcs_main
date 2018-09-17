@@ -82,8 +82,8 @@
 									
 							<table>
 								<tr>
-									<td ><barcode code="'.$tids[$i].'" type="C39"/ height="0.80" size="0.8" text="1"></td>
-									<td >'.$tids[$i].'</td>
+									<td ><barcode code="'.leading_zeros($tids[$i],10).'" type="C39"/ height="0.80" size="0.8" text="1"></td>
+									<td >'.leading_zeros($tids[$i],10).'</td>
 								</tr>
 								
 								<tr>
@@ -91,7 +91,7 @@
 									<td> <b>Schedule:</b>'.$schedule.'</td>
 								</tr>
 								<tr rowspan=3>
-									<td colspan=2><b>Color:</b>'.substr($color,0,30).' </td>
+									<td colspan=2><b>Color:</b>'.substr($color,0,80).' </td>
 								</tr>
 								<tr>
 									<td colspan=2><b>Size:</b>'.$size.' </td>
