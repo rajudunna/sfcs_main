@@ -75,87 +75,56 @@
 					{
 						$work_station_id = $row['work_center_id'];
 						$short_key_code = $row['short_cut_code'];
-					}
-					
-					
-					//for($i=0;$i<sizeof($b_tid);$i++)
-					//{
-						//$get_carton_qty = "select * from $bai_pro3.pac_stat_log where tid = $b_tid[$i]";
-						// echo $get_carton_qty;
-						//$carton_details=mysqli_query($link,$get_carton_qty) or exit("individual Carton details error => ".$get_carton_qty);
-						//while($row=mysqli_fetch_array($carton_details))
-						//{
-						//	$carton_original_qty = $row['carton_act_qty'];
-						//}
-						$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where ref_no in (".implode(",",$b_tid).") and op_code = $b_op_id";
-						// echo $qry_to_check_mo_numbers;
-						$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14 => ".$qry_to_check_mo_numbers);
-						while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
-						{
-							$mo_number = $nop_qry_row['mo_no'];
-							$mo_quantity = $nop_qry_row['bundle_quantity'];
-							$good_quantity_past = $nop_qry_row['good_quantity'];
-							$id = $nop_qry_row['id'];
+					}					
+					$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where ref_no in (".implode(",",$b_tid).") and op_code = $b_op_id";
+					// echo $qry_to_check_mo_numbers;
+					$qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14 => ".$qry_to_check_mo_numbers);
+					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+					{
+						$mo_number = $nop_qry_row['mo_no'];
+						$mo_quantity = $nop_qry_row['bundle_quantity'];
+						$good_quantity_past = $nop_qry_row['good_quantity'];
+						$id = $nop_qry_row['id'];
+						$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $mo_quantity where id = $id";
+						// echo $update_qry;
+						$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
 
-							// do {
-								// if ($carton_original_qty > $mo_quantity)
-								// {
-									$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $mo_quantity where id = $id";
-									// echo $update_qry;
-									$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
+						$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$mo_quantity','','Normal',concat(user(),'-','$emp_id'),'','$b_shift','$b_op_id','CPK','$id','$work_station_id','')";
+						// echo $inserting_into_m3_tran_log;
+						mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
+						
+						//getting the last inserted record
+						$insert_id=mysqli_insert_id($link);
 
-									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$mo_quantity','','Normal',concat(user(),'-','$emp_id'),'','$b_shift','$b_op_id','CPK','$id','$work_station_id','')";
-									// echo $inserting_into_m3_tran_log;
-									mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
-									
-									// $carton_original_qty = $carton_original_qty - $mo_quantity;
-								// }
-								// else
-								// {
-									// $update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $carton_original_qty where id= $id";
-									//echo $update_qry;
-									// $updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
+						// //M3 Rest API Call START
+						// $api_url = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$carton_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
+						// $api_data = $obj->getCurlAuthRequest($api_url);
+						// $decoded = json_decode($api_data,true);
+						// $type=$decoded['@type'];
+						// $code=$decoded['@code'];
+						// $message=$decoded['Message'];
 
-									// $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$carton_original_qty','','Normal',concat(user(),'-','$emp_id'),'','$b_shift','$b_op_id','CPK','$id','$work_station_id','')";
-									//echo $inserting_into_m3_tran_log;
-									// mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
-								// }
-							// } while ($carton_original_qty == 0);
+						// //validating response pass/fail and inserting log
+						// if($type!='ServerReturnedNOK')
+						// {
+						// 	//updating response status in m3_transactions
+						// 	$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
+						// 	mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-							//getting the last inserted record
-							$insert_id=mysqli_insert_id($link);
+						// }
+						// else
+						// {
+						// 	//updating response status in m3_transactions
+						// 	$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
+						// 	mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+						// 	//insert transactions details into transactions_log
+						// 	$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id',$message,USER(),$current_date)"; 
+						// 	mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+						// }
 
-							// //M3 Rest API Call START
-							// $api_url = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$carton_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
-							// $api_data = $obj->getCurlAuthRequest($api_url);
-							// $decoded = json_decode($api_data,true);
-							// $type=$decoded['@type'];
-							// $code=$decoded['@code'];
-							// $message=$decoded['Message'];
-
-							// //validating response pass/fail and inserting log
-							// if($type!='ServerReturnedNOK')
-							// {
-							// 	//updating response status in m3_transactions
-							// 	$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
-							// 	mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-							// }
-							// else
-							// {
-							// 	//updating response status in m3_transactions
-							// 	$qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
-							// 	mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-							// 	//insert transactions details into transactions_log
-							// 	$qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id',$message,USER(),$current_date)"; 
-							// 	mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-							// }
-
-							// //M3 Rest API Call END
-						}						
-					//}
+						// //M3 Rest API Call END
+					}						
 				}			
 			}
 
