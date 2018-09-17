@@ -573,7 +573,7 @@ echo "</div></div></div></div>";
 		</div>
 		<div id="Category" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
-			<div class="table-responsive">
+			<div>
 <?php
 
 /*
@@ -603,17 +603,17 @@ if ($sql_result) {
 		//			<th class=\"column-title\"><center>Gusset Seperation</th>
 		//			<th class=\"column-title\"><center>One GMT One Way</th>
 				echo "<table class=\"table table-bordered\"><thead><tr class=\"\">
-					<th class=\"column-title\"><center>Date</th>
-					<th class=\"column-title\"><center>Category</th>
-					<th class=\"column-title\"><center>CAT YY</th>
-					<th class=\"column-title\"><center>Color Code</th>
-					<th class=\"column-title\"><center>Fabric Code</th>
-					<th class=\"column-title\" style='word-wrap: break-word;'><center>Fabric Description</th>
-					<th class=\"column-title\"><center>Pur Width</th>
-					<th class=\"column-title\"><center>Binding Consumption</th>
-					<th class=\"column-title\"><center>Pattern Version</th>
-					<th class=\"column-title\"><center>MO status</th>
-					<th class=\"column-title\"><center>Controls</th>
+					<th class=\" \"><center>Date</th>
+					<th class=\" \"><center>Category</th>
+					<th class=\" \"><center>CAT YY</th>
+					<th class=\"word-wrap \"><center>Color Code</th>
+					<th class=\" \"><center>Fabric Code</th>
+					<th class=\"word-wrap\"><center>Fabric Description</th>
+					<th class=\"word-wrap\"><center>Pur Width</th>
+					<th class=\"word-wrap\"><center>Binding Consumption</th>
+					<th class=\"word-wrap\"><center>Pattern Version</th>
+					<th class=\"word-wrap\"><center>MO status</th>
+					<th class=\" \"><center>Controls</th>
 				</tr></thead>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -626,9 +626,9 @@ if ($sql_result) {
 			echo "<td class=\"  \"><center>".$date_cat."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['category']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['catyy']."</center></td>";
-			echo "<td class=\"  \"><center>".$sql_row['col_des']."</center></td>";
+			echo "<td class=\"word-wrap\"><center>".$sql_row['col_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['compo_no']."</center></td>";
-			echo "<td class=\"  \" style='word-wrap: break-word;'><center>".$sql_row['fab_des']."</center></td>";
+			echo "<td class=\"word-wrap\"><center>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['binding_con']."</center></td>";
 
@@ -1462,7 +1462,7 @@ else{
 }
 
 
-echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
+echo "<div><table class=\"table table-bordered\">";
 //<th class=\"column-title \"><center>Ratio</center></th>
 echo "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Ratio wise Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
 
@@ -1830,3 +1830,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 </div>
 </div>
+<style>
+.word-wrap {
+		word-wrap: break-word; 
+		white-space: normal !important; 
+    }
+    .no-wrap {
+        white-space: nowrap;
+    }
+    .fixed {
+        table-layout: fixed;
+    }
+</style>

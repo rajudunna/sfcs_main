@@ -23,25 +23,25 @@ $tran_order_tid1=$tran_order_tid;
 $get_cat_ref_query="SELECT DISTINCT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" ORDER BY cat_ref";
 $cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-echo "<div class=\"table-responsive\">
+echo "<div>
 		<table class=\"table table-bordered\">
 	  		<thead>
 	  			<tr>
-	  				<th class=\"column-title\"><center>Ratio Ref</center></th>
+	  				<th class=\"word-wrap\"><center>Ratio Ref</center></th>
 		 			<th class=\"column-title\"><center>Category</center></th>";
 					// <th class=\"column-title\"><center>TID</center></th>
 					// <th class=\"column-title\"><center>Cat_ID</center></th>
 					// <th class=\"column-title\"><center>Allocate_REF</center></th>
 					// <th class=\"column-title\"><center>Marker Ref</center></th>
 					echo "		  
-					<th class=\"column-title\"><center>Marker Length</center></th><th class=\"column-title\"><center>Marker EFF%</center></th>
+					<th class=\"word-wrap\"><center>Marker Length</center></th><th class=\"word-wrap\"><center>Marker EFF%</center></th>
 					<th class=\"column-title\"><center>Version</center></th><th class=\"column-title\"><center>Controls</center></th>
-					<th class=\"column-title\"><center>Delete Control</center></th>
-					<th class=\"column-title\"><center>Ratio wise Savings%</center></th>
-					<th class=\"column-title\"><center>Ratio wise CAD Consumption</center></th>
-					<th class=\"column-title\"><center>Used $fab_uom</center></th>
-					<th class=\"column-title\"><center>Used $fab_uom For Binding</center></th>
-					<th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th>
+					<th class=\"word-wrap\"><center>Delete Control</center></th>
+					<th class=\"word-wrap\"><center>Ratio wise Savings%</center></th>
+					<th class=\"word-wrap\"><center>Ratio wise CAD Consumption</center></th>
+					<th class=\"word-wrap\"><center>Used $fab_uom</center></th>
+					<th class=\"word-wrap\"><center>Used $fab_uom For Binding</center></th>
+					<th class=\"word-wrap\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th>
 				</tr>
 			</thead>";
 				while($cat_row=mysqli_fetch_array($cat_ref_result))
@@ -128,7 +128,7 @@ echo "<div class=\"table-responsive\">
 							}
 							else
 							{
-								echo "<td class=\"  \"><center>Lay plan Prepared";		
+								echo "<td class=\"word-wrap\"><center>Lay plan Prepared";		
 							}	
 							
 							$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 ";
@@ -200,7 +200,7 @@ echo "<div class=\"table-responsive\">
 								}
 							}
 
-							echo "<td class=\"  \"><center>".$mk_remarks1."</center></td>";
+							echo "<td class=\"word-wrap\"><center>".$mk_remarks1."</center></td>";
 							echo "
 						</tr>";
 					}
@@ -210,3 +210,16 @@ echo "<div class=\"table-responsive\">
 		</table>
 	</div>";
 ?>
+
+<style>
+.word-wrap {
+		word-wrap: break-word; 
+		white-space: normal !important; 
+    }
+    .no-wrap {
+        white-space: nowrap;
+    }
+    .fixed {
+        table-layout: fixed;
+    }
+</style>

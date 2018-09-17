@@ -3027,7 +3027,7 @@ tags will be replaced.-->
   <td colspan=3 style='font-size:16px' class=xl7617319>Cutting Department</td>
   <td class=xl6417319></td>
  </tr>
-
+ <tr height=21 style='height:15.75pt'></tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6417319></td>
@@ -3203,7 +3203,7 @@ tags will be replaced.-->
   <?php
   $style_css="style='font-size:16px; border:.5pt solid black; padding-left: 10px; padding-right:10px; border-collapse: collapse;'";
   echo "<table style='font-size:16px; border:.5pt solid black; border-collapse: collapse;' align=left>";
-  
+  echo " <tr height=21 style='height:15.75pt'></tr>";
   echo "<tr>";
   
   echo "<th $style_css>Barcode</th>";
@@ -3306,7 +3306,7 @@ echo "<tr>";
   <td class=xl6417319></td>
  </tr>
 
-
+ <tr height=21 style='height:15.75pt'></tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   <td rowspan=2 class=xl8917319 colspan=1 style='border-bottom:.5pt solid black; width:48pt'>Pattern<br/>Version</td>
@@ -3442,6 +3442,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 } 
 
 echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:100%'>
+<tr height=21 style='height:15.75pt'>
+<td height=21 class=xl8217319 style='height:15.75pt'></td>
+</tr>
+<tr height=21 style='height:15.75pt'></tr>
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td class=xl764118>Batch</td>
@@ -3465,7 +3469,7 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td colspan=3 rowspan=2 class=xl1064118>Comments</td>
  </tr> <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
-  <td class=xl724118>&nbsp;</td>
+  <td class=xl724118>&nbsp;</td>	
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
@@ -3474,9 +3478,9 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>Excess</td>
   <td class=xl744118>&nbsp;</td>
-  <td class=xl744118>&nbsp;</td>
   <td class=xl744118>+</td>
   <td class=xl744118>-</td>
+
   <!--<td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
@@ -3771,12 +3775,16 @@ echo "</tbody></table>";
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
-  <td class=xl6417319 colspan="3"><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/>
- <br/><br/><br/><strong><u> Cutting Supervisor Authorization<br/></u></strong></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319 colspan="3"><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/>
+ <br/><strong><u> Cutting Supervisor Authorization<br/></u></strong></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl8217319 style='height:15.75pt'></td>
-  </tr>
+ <tr height=21 style='height:15.75pt'></tr>
+ <tr height=21 style='height:15.75pt'></tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   <td colspan=16 rowspan=2 class=xl9117319 style='border-right:.5pt solid black;
@@ -3815,8 +3823,8 @@ echo "</tbody></table>";
  
  <tr height=30 style='height:15.75pt'>
  </tr>
-
- <tr height=30 style='height:30pt'>
+ <tr height=21 style='height:15.75pt'></tr>
+ <tr height=30 style='height:5.0pt'>
   <td height=30 class=xl6417319 style='height:30pt'></td>
   <td colspan=2 ></td>
   <td colspan=2 class=xl7017319>Docket</td>
