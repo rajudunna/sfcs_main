@@ -289,6 +289,7 @@
 		}
 
 		foreach($colors as $col){
+			$trimmed_color = trim($col);
 			$jobs_sizes_query = "Select distinct(size_code) as size from $bai_pro3.packing_summary_input 
 								where order_col_des = '$col' ";
 			$jobs_size_result = mysqli_query($link,$jobs_sizes_query) or exit('Error Encounterd while getting sizes in MO');
@@ -327,8 +328,9 @@
 						{
 							if($ops_m_id[$mo_no[0]][$ops[$k]]>0)
 							{
-								$sql1231="SELECT * FROM $bai_pro3.pac_stat_log_input_job WHERE size_code='$size_code' 
-										  and  sref_id = '$sref_id' and type_of_sewing='1' ";
+								$sql1231="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
+										  and  sref_id = '$sref_id' and trim(order_col_des) = '$trimmed_color'
+										  and type_of_sewing='1' ";
 								$result1231=mysqli_query($link, $sql1231) or 
 											die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
@@ -345,8 +347,9 @@
 					else
 					{
 						$bal=0;$qty_tmp=0;
-						$sql1234="SELECT * FROM $bai_pro3.pac_stat_log_input_job WHERE size_code='$size_code'
-								  and sref_id = '$sref_id' and type_of_sewing='1'";
+						$sql1234 = "SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' and sref_id = '$sref_id' 
+						and trim(order_col_des) = '$trimmed_color'
+						and type_of_sewing='1'";
 						$result1234=mysqli_query($link, $sql1234) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 						while($row1234=mysqli_fetch_array($result1234)) 
@@ -423,8 +426,8 @@
 						$qty1 = $qty;
 						//$lastmo=echo_title("$bai_pro3.mo_details","MAX(mo_no)","TRIM(size)='$size_code' and TRIM(color)='".trim($col)."' and schedule",$schedule,$link);
 						$bal=0;$qty_tmp=0;$qty=0;
-						$sql12341="SELECT * FROM $bai_pro3.pac_stat_log_input_job WHERE size_code='$size_code' 
-								   and sref_id = '$sref_id' and type_of_sewing<>'1'";	   
+						$sql12341="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
+								   and sref_id = '$sref_id' and trim(order_col_des) = '$trimmed_color' and type_of_sewing<>'1'";	   
 						$result12341=mysqli_query($link, $sql12341) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($result12341)>0)
 						{
@@ -459,7 +462,7 @@
 			unset($sizes);
 		}
 	}
-	
+	/*
     function insertMOQuantitiesPacking($schedule,$pack_ref){
         include("config.php");
         $packing_cat = 'PACKING';
@@ -499,6 +502,8 @@
             {
                 foreach($colors as $col)
                 {
+					$trimmed_color = trim($col);
+
                     $jobs_sizes_query = "Select distinct(size_tit) as size from $bai_pro3.packing_summary 
                                         where order_col_des = '$col' and seq_no = '$pack_ref'";
                     $jobs_size_result = mysqli_query($link,$jobs_sizes_query) or exit('Error Encounterd while getting sizes in MO');
@@ -510,7 +515,7 @@
                     foreach($sizes as $size_code)
                     {
                         $qty = 0;
-                        $sql121="SELECT * FROM $bai_pro3.mo_details WHERE TRIM(size)='$size_code' and schedule='".$schedule."' and TRIM(color)='".trim($col)."' order by mo_no*1"; 
+                        $sql121="SELECT * FROM $bai_pro3.mo_details WHERE TRIM(size)='$size_code' and schedule='".$schedule."' and TRIM(color)='$trimmed_color' order by mo_no*1"; 
                         $result121=mysqli_query($link, $sql121) or die("Mo Details not available.");
                         // echo $sql121;
                         while($row1210=mysqli_fetch_array($result121)) 
@@ -538,7 +543,7 @@
                                 {
                                     if($ops_m_id[$mo_no[0]][$ops[$k]]>0)
                                     {
-                                        $sql1231="SELECT * FROM $bai_pro3.packing_summary WHERE size_code='$size_code' and order_del_no='".$schedule."' and order_col_des='".$col."' and seq_no = '$pack_ref'";
+                                        $sql1231="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' and order_del_no='".$schedule."' and order_col_des='".$col."' and seq_no = '$pack_ref'";
                                         $result1231=mysqli_query($link, $sql1231) or 
                                                     die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         //echo $sql1231.'<br/>';
@@ -642,7 +647,8 @@
             }
         }
 
-    }
+	}
+	*/
 	
 	//tested
 	function doc_size_wise_bundle_insertion($doc_no_ref)
