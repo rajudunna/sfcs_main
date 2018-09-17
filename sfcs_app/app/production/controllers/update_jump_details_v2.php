@@ -87,9 +87,29 @@ if(isset($_POST['submit']))
 			$absent_A=$sql_row1['absent'];
 			$jumper_A=$sql_row1['jumper'];
 			$module=$sql_row1['module'];
-			echo "<tr>";
-		
-			echo "<td>".$module."</td><td>".$avail_A."</td><td>".$absent_A."</td><td>".$jumper_A."</td><td>".(($avail_A+$jumper_A)-$absent_A)."</td>";
+			echo "<tr>
+					<td>".$module."</td>
+					<td>".$avail_A."</td>
+					<td>".$absent_A."</td>";
+					 
+							if(in_array($authorized,$has_permission))
+							{
+								$readonly = ''; ?>
+								<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_jump_data_v2.php",0,"N") ?>" >
+								<?php
+									echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
+									echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";		
+							}
+							else
+							{
+								$readonly = 'readonly';
+							}
+							// <td>".$jumper_A."</td>
+						?>
+							
+							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $jumper_A; ?>" name="jpa<?php echo $i; ?>"></td>
+							<?php
+							echo "<td>".(($avail_A+$jumper_A)-$absent_A)."</td>";
 			
 			}
 			echo "</tr> </table>";
