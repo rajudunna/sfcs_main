@@ -188,6 +188,7 @@ if(isset($_POST['formSubmit']))
 {
 	$ids = $_POST['id'];
 	$reversalval = $_POST['reversalval'];
+	//var_dump($reversalval);
 	$rep_qty = $_POST['rep_qty'];
 	$ops_dep = $_POST['ops_dep'];
 	$style = $_POST['style'];
@@ -265,6 +266,8 @@ if(isset($_POST['formSubmit']))
 			
 		}
 	}
+	// echo "<br/>Actual Reversal Value Array<br/>";
+	// var_dump($actual_reversal_val_array);
 	$color =array();
 	$bundle_no = array();
 	$size = array();
@@ -305,7 +308,7 @@ foreach ($bundle_no as $key=>$value)
 {
 	$act_reciving_qty = $reversalval[$key];
 	//echo "rep_qty_rep".$rep_qty[$key]."</br>";
-//	echo "rep_qty".$act_reciving_qty."</br>";
+	//	echo "rep_qty".$act_reciving_qty."</br>";
 	$select_send_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $operation_id and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
 	$result_select_send_qty = $link->query($select_send_qty);
 	while($row = $result_select_send_qty->fetch_assoc()) 
@@ -413,6 +416,7 @@ else if($concurrent_flag == 0)
 		}
 	}
 	//echo "workings";
+	$b_tid = '';
 	foreach($bundle_no as $key=>$value)
 	{
 		//echo "working";
@@ -448,10 +452,11 @@ else if($concurrent_flag == 0)
 		$b_colors = $color;
 		$b_sizes = $size_id[$key];
 		$b_doc_num = $doc_no[$key];
+		$b_tid = $value;
 		if($reversalval[$key] > 0)
 		{
 			$r_qty_array = '-'.$reversalval[$key];
-			$b_tid = $bundle_no[$key];
+			//$b_tid = $bundle_no[$key];
 			$m3_bulk_bundle_insert = "INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_remarks,sfcs_log_user,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,m3_error_code) VALUES";
 			$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'. $size_id.'","'. $size_title.'","'.$b_doc_num.'","'.$r_qty_array.'","","'.$remarks.'","'.$username.'","'. $b_op_id.'","'.$b_inp_job_ref.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid.'",""),';
 			//echo $m3_bulk_bundle_insert;
@@ -540,20 +545,22 @@ else if($concurrent_flag == 0)
 				$ops_seq = $row['ops_sequence'];
 				$seq_id = $row['id'];
 			}
-			$selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
-			//echo $selecting_output_from_seq_query;
-			$result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
-			if($result_selecting_output_from_seq_query->num_rows > 0)
-			{
-				while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
-				{
-					$input_ops_code = $row['operation_code'];
-				}
-			}
-			else
-			{
+			// $selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
+			// //echo $selecting_output_from_seq_query;
+			// $result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
+			// if($result_selecting_output_from_seq_query->num_rows > 0)
+			// {
+			// 	while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
+			// 	{
+			// 		$input_ops_code = $row['operation_code'];
+			// 	}
+			// }
+			// else
+			// {
 				$input_ops_code = 129;
-			}
+			// }
+		
+			//echo "PAC TID = $b_tid + $value";
 			if($input_ops_code == 100 || $input_ops_code == 129)
 			{
 				$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
@@ -578,6 +585,7 @@ else if($concurrent_flag == 0)
 					//if it was not there in ims log am checking that in ims log backup and updating the qty and reverting that into the ims log because ims_qty and ims_pro_qty not equal
 					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module'  AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
 					$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
+					//echo '<br/>'.$searching_query_in_imslog;
 					if($result_searching_query_in_imslog->num_rows > 0)
 					{
 						while($row = $result_searching_query_in_imslog->fetch_assoc()) 
@@ -604,7 +612,9 @@ else if($concurrent_flag == 0)
 				}
 				
 			}
+			//exit('force quitting 1  ');
 		}
+		//exit('force quitting');
 		//inserting into bai_log and bai_log buff
 			$sizevalue="size_".$size_id;
 			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
@@ -657,7 +667,7 @@ else if($concurrent_flag == 0)
 			{
 				$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 				bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-				) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
+				) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
 				//echo "Bai log : ".$insert_bailog."</br>";
 				if($reversalval[$key] > 0)
 				{
@@ -669,7 +679,7 @@ else if($concurrent_flag == 0)
 					/*Insert same data into bai_pro.bai_log_buf table*/
 					$insert_bailog_buf="insert into $bai_pro.bai_log_buf (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-					) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
+					) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
 					//echo "Bai log Buff: ".$insert_bailog."</br>";
 					if($reversalval[$key] > 0)
 					{
