@@ -453,6 +453,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
       
       $module=$mods[$x];
       $data[] = $mods[$x];
+
+      $module_sql = "SELECT * FROM $bai_pro3.module_master WHERE module_name=\"$module\"";
+      $module_sql_result = mysqli_query($link,$module_sql);
+      $module_col_lab = mysqli_fetch_array($module_sql_result);
+      // print_r($module_col_lab['color']);
       //include("mod_rep_recon.php");
   
       ?>
@@ -470,7 +475,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
        }
           */
       ?>
-            <div class="line_main">
+            <div class="line_main"  style="background:<?= $module_col_lab['color']; ?>">
+            <h5 align="center" style="margin-bottom: 0px;margin-top: 0px;" ><b><?= $module_col_lab['label']; ?></b></h5>
+            
               <div class="line_no">  <!-- module number DIV start -->
                 
                 <?php 
@@ -709,47 +716,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
   </div>
 </div>
 </div>
-<div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
-        </div>
-        <div class="modal-body">
-        <!-- <div id="cp2" class="input-group colorpicker-component col-md-1"><input type="text" value="#00AABB" class="form-control input-sm" readonly="true"/><span class="input-group-addon"><i></i></span></div> -->
-          <ul class="list-group">
-            
-          </ul>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
+
 </body>
 
-<script>
-    var colors = '<?= json_encode($colors_modal); ?>';
-    colors = JSON.parse(colors);
-    // console.log(colors);
-    var list;
-    for(var i=0; i<colors.length; i++){
-      if(colors[i] !== undefined){
-        list += '<li class="list-group-item">'+colors[i]+'</li>';
-        // $('#cp2').colorpicker();
-      }
-    }
-    $('.list-group').html(list);
 
-    // $(function() {
-      
-    // });
-  </script>
 <script>
  
 $(document).ready(function(){
