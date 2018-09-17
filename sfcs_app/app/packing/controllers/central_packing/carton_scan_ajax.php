@@ -39,13 +39,13 @@
 			}
 
 
-			$final_details = "SELECT carton_no,order_style_no, order_schedule_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR '<br>') AS colors, GROUP_CONCAT(DISTINCT size_tit) AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE pac_stat_id = '".$carton_id."'";
+			$final_details = "SELECT carton_no,order_style_no, order_del_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR '<br>') AS colors, GROUP_CONCAT(DISTINCT size_tit) AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE pac_stat_id = '".$carton_id."'";
 			$final_result = mysqli_query($link,$final_details);
 			while($row=mysqli_fetch_array($final_result))
 			{
 				$carton_no=$row['carton_no'];
 				$style=$row['order_style_no'];
-				$schedule=$row['order_schedule_no'];
+				$schedule=$row['order_del_no'];
 				$colors=$row['colors'];
 				$sizes=$row['sizes'];
 				$carton_qty=$row['carton_qty'];

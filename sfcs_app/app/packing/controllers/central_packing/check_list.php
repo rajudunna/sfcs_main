@@ -57,7 +57,7 @@ xmlns:x="urn:schemas-microsoft-com:office:excel"
 xmlns="http://www.w3.org/TR/REC-html40">
 
 <head>
-<title>Packing List</title>
+<title><?php if($_GET['p_status']==2){ echo "FG Check List"; } else { echo "Carton Track"; }?></title>
 <meta http-equiv=Content-Type content="text/html; charset=windows-1252">
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 12">
@@ -242,7 +242,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
-	text-align:center;
 	vertical-align:middle;
 	border-bottom:.5pt solid windowtext;
 	mso-background-source:auto;
@@ -494,7 +493,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
-	text-align:center;
 	vertical-align:middle;
 	border-top:none;
 	border-right:none;
@@ -502,7 +500,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	border-left:none;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	word-wrap: break-word;}
 .xl8319400
 	{padding-top:1px;
 	padding-right:1px;
@@ -929,14 +927,14 @@ tags will be replaced.-->
 	  <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td class=xl8319400 style='border-top:none' colspan=2><b>Colors <b>: </td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8219400  colspan=17 ><?php echo $cols[$i];?></td>
+	  <td class=xl8219400  colspan=17 ><?php echo wordwrap($cols[$i],112,"<br>",TRUE); ?></td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
 	    
 	  </tr>
 	  <tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td class=xl8319400 style='border-top:none' colspan=2><b>Sizes <b>: </td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
-	  <td class=xl8219400  colspan=17 ><?php echo $sizes[$i];?></td>
+	  <td class=xl8219400  colspan=17 ><?php echo wordwrap($sizes[$i],112,"<br>",TRUE);	?></td>
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
 	    
 	  </tr>
@@ -978,15 +976,15 @@ tags will be replaced.-->
 	  <td class=xl7819400>Sno</td>
 	  <td class=xl7819400 style='border-left:none'>C# No</td>
 	  <td class=xl7819400 style='border-left:none'>Qty</td>
-	 <td class=xl7819400 style='border-left:none' colspan=2>Carton ID</td>
+ 	  <td class=xl7819400 style='border-left:none' colspan=2>Carton ID</td>
 	  <td class=xl7819400>Sno</td>
 	  <td class=xl7819400 style='border-left:none'>C# No</td>
 	  <td class=xl8119400 style='border-left:none'>Qty</td>
-	 <td class=xl7819400 style='border-left:none' colspan=2>Carton ID</td>
+	  <td class=xl7819400 style='border-left:none' colspan=2>Carton ID</td>
 	  <td class=xl7819400>Sno</td>
 	  <td class=xl7819400 style='border-left:none'>C# No</td>
 	  <td class=xl7819400 style='border-left:none'>Qty</td>
-	 <td class=xl7819400 style='border-left:none' colspan=2>Carton ID</td>
+	  <td class=xl7819400 style='border-left:none' colspan=2>Carton ID</td>
 	  <td class=xl6553519400></td>
 	  <td class=xl6553519400></td>
 	  <td class=xl6553519400></td>

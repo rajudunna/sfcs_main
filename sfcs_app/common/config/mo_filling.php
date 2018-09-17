@@ -354,7 +354,7 @@
 		global $link;
 		$packing_cat = 'PACKING';
 
-		$op_codes_query = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref WHERE default_operation='Yes' and category = '$packing_cat' group by category";
+		$op_codes_query = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref WHERE default_operation='Yes' and category = '$packing_cat'";
 		// echo $op_codes_query;
 		$op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for packing');             
 		while($row = mysqli_fetch_array($op_codes_result))
@@ -387,7 +387,7 @@
 				$colors[] = $row['color'];
 			} 
 
-			if(sizeof($colors>0))
+			if(sizeof($colors)>0)
 			{
 				foreach($colors as $col)
 				{

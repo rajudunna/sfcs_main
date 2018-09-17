@@ -39,12 +39,12 @@
 	if($carton_method==1)
 	{
 		$sql123="SELECT pack_method,style,schedule,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
-		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."' group by COLOR,size_title order by ref_size_name*1";
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."' group by COLOR,size_title order by ref_size_name";
 	}
 	elseif($carton_method==2)
 	{
 		$sql123="SELECT pack_method,style,schedule,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
-		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."' group by size_title order by ref_size_name*1";
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."' group by size_title order by ref_size_name";
 	}
 	elseif($carton_method==3)
 	{
