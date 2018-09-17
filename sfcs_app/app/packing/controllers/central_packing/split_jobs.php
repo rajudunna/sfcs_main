@@ -63,8 +63,8 @@
                     echo "<input type='hidden' name='tid[]' value='$tid'>";
 					echo "<input type='hidden' name='style' value='$style'>";
 					echo "<input type='hidden' name='schedule' value='$schedule'>";
-                    echo "<input type='hidden' name='cartonno' value='$cartonno'>"; 
-                    echo "<input type='hidden' name='pack_method' value='$packmethod'>"; 
+                    echo "<input type='hidden' name='cartonno' value='$carton_no'>"; 
+                    echo "<input type='hidden' name='seq_no' value='$seq_no'>"; 
                     echo "<input type='hidden' id='qty$i' value='$qty'>";
                     echo '<tr><td>'.$style.'</td><td>'.$schedule.'</td><td>'.$color.'</td><td>'.$size.'</td><td>'.$cartonno.'</td><td>'.$qty."</td><td><input type='text' width='20' name='qty[]' id='$i' onkeyup='verify_split(this)' class='integer form-control'></td></tr>"; 
                     //echo '</form>'; 

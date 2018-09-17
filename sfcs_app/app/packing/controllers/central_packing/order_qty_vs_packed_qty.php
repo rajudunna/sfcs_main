@@ -343,7 +343,7 @@
 									if(mysqli_num_rows($statusrslt)==0)
 									{
 										echo "<td><a class='btn btn-success btn-sm' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate pack Job</a>
-										<a class='btn btn-danger' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method&schedule=$schedule&style=$style>Delete</a></td>";
+										<a class='btn btn-danger  confirm-submit' href=$url1&seq_no=$seq_no&parent_id=$parent_id&pack_method=$pack_method&schedule=$schedule&style=$style>Delete</a></td>";
 									}
 									else
 									{

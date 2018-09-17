@@ -21,10 +21,11 @@
     $qtys=$_POST['qty']; 
 	$schedule=$_POST['schedule'];
 	$style=$_POST['style'];
-	$cartonno=$_POST['cartonno'];
-	$packmethod=$_POST['pack_method'];
-    $seq_no=$_POST['seqno'];
-	$query_check = "SELECT MAX(status) as status,pac_stat_id FROM $bai_pro3.`pac_stat_log` WHERE id in (".implode(",",$tids).")";
+	//$cartonno=$_POST['cartonno'];
+	//$packmethod=$_POST['pack_method'];
+    $seq_no=$_POST['seq_no'];
+	$query_check = "SELECT MAX(status) as status,pac_stat_id FROM $bai_pro3.`pac_stat_log` WHERE tid in (".implode(",",$tids).")";
+	//echo $query_check."<br>";
 	$res_query_check=mysqli_query($link,$query_check);
 	while($result = mysqli_fetch_array($res_query_check))
 	{
@@ -38,17 +39,19 @@
 	}
 	else
 	{	
-		$maxcartno="SELECT MAX(carton_no)+1 AS cartno FROM $bai_pro3.`pac_stat` WHERE schedule='$schedule' AND pack_method='$packmethod'";
+		$maxcartno="SELECT MAX(carton_no)+1 AS cartno FROM $bai_pro3.`pac_stat` WHERE schedule='$schedule' AND pac_seq_no='$seq_no'";
 		$maxcartrslt=mysqli_query($link,$maxcartno);
 		if($row=mysqli_fetch_array($maxcartrslt))
 		{
 			$maxcartonno=$row['cartno'];
 		}
 		$sql1q="INSERT INTO `$bai_pro3`.`pac_stat` (`style`, `schedule`, `pac_seq_no`, `carton_no`, `carton_mode`, `carton_qty`) VALUES ('$style', '$schedule', '$seq_no', '$maxcartonno', 'P', '".array_sum($qtys)."')";
+		//echo $sql1q."<br>";
 		mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$parent_id=mysqli_insert_id($link);
-		$sql1q1="update `$bai_pro3`.`pac_stat` set `carton_mode`= 'P' where id='$pac_stat_id'";
+		$sql1q1="update `$bai_pro3`.`pac_stat` set `carton_mode`= 'P',carton_qty=(carton_qty-".array_sum($qtys).") where id='$pac_stat_id'";
 		mysqli_query($link, $sql1q1) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//echo $sql1q1."<br>";
 		$ops_id=array();
 		$ops_name=array();
 		$ops_idsql = "SELECT operation_code,operation_description FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='PACKING'";
@@ -92,14 +95,18 @@
 					{
 						$sql2="UPDATE $bai_pro3.pac_stat_log SET pac_stat_id='$parent_id' WHERE tid='$tid'"; 
 						mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+						//echo $sql2."<br>";
 					}
 					else
 					{
 						$nqty=$carton_act_qty-$qty;
 						if($nqty>0)
 						{
-							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$size_code."', '".$qty."', NULL, '".$style."', '".$schedule."', '".$color."','".$size_tit."','".$parent_id."')";							
+							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$size_code."', '".$qty."', NULL, '".$style."', '".$schedule."', '".$color."','".$size_tit."','".$parent_id."')";
+							$result231=mysqli_query($link, $sql1q) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));		
 							$new_ref_id=mysqli_insert_id($link);
+							//echo $sql1q."<br>";
+							//echo $new_ref_id."---<br>";
 							$date_rev=date("Y-m-d H:i:s");
 							for($i=0;$i<sizeof($ops_id);$i++)
 							{
@@ -149,7 +156,7 @@
 								}	
 							}	
 							$sql2="UPDATE $bai_pro3.pac_stat_log SET carton_act_qty='$nqty' WHERE tid='$tid'";
-							// echo $sql2.'<br>'; 
+							//echo $sql2.'<br>'; 
 							mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}
 					}                        
@@ -157,10 +164,10 @@
 			}
 		}
 	}
-    echo "<script>sweetAlert('New Carton Created','Carton No - "<?php echo $maxcartonno; ?>".','success');</script>";
-    //echo "<script>sweetAlert('Success','Successfully Splitted your job.','success');</script>";
+	echo '<h4><b>New Carton No : <a class="btn btn-warning">'.$maxcartonno.'</a></b></h4>';	
+    echo "<script>sweetAlert('Success','Successfully Splitted your Carton.','success');</script>";
     echo "<script> 
-                    setTimeout('Redirect()',500); 
+                    setTimeout('Redirect()',1000); 
                     function Redirect() {  
                         location.href = '$url_s&schedule=$schedule&style=$style'; 
                     }

@@ -280,7 +280,7 @@
                     $updatedetails="update $bai_pro3.pac_stat_log set pac_stat_id='$mincart' where pac_stat_id in ($carton)";
                     $result12=mysqli_query($link, $updatedetails) or die("Error while updating carton details".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$delete="delete from $bai_pro3.pac_stat where id in ($carton)";
-                    $result12=mysqli_query($link, $updatedetails) or die("Error while updating carton details".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $result12=mysqli_query($link, $delete) or die("Error while updating carton details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     echo "<script>sweetAlert('Packing Jobs Clubbed','Sucessfully','success');</script>";
                     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
 						function Redirect() 
