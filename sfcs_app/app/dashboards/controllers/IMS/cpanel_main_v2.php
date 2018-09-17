@@ -6,7 +6,15 @@ $start_timestamp = microtime(true);
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/css/bootstrap-colorpicker.min.css',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/bootstrap-colorpicker.min.js',4,'R'));
+
 ?>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'/common/js/bootstrap-colorpicker.min.js',4,'R');?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'/common/js/bootstrap-colorpicker-plus.min.js',4,'R');?>"></script>
+
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'/common/css/bootstrap-colorpicker.min.css',4,'R');?>" type="text/css" media="all" />
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'/common/css/bootstrap-colorpicker-plus.min.css',4,'R');?>" type="text/css" media="all" />
 
 
 <title>IMS</title>
@@ -489,6 +497,11 @@ $shifts = $_GET['shift'];
       
       $module=$mods[$x];
       $data[] = $mods[$x];
+
+      $module_sql = "SELECT * FROM $bai_pro3.module_master WHERE module_name=\"$module\"";
+      $module_sql_result = mysqli_query($link,$module_sql);
+      $module_col_lab = mysqli_fetch_array($module_sql_result);
+      // print_r($module_col_lab['color']);
       //include("mod_rep_recon.php");
   
       ?>
@@ -506,7 +519,9 @@ $shifts = $_GET['shift'];
        }
           */
       ?>
-            <div class="line_main">
+            <div class="line_main"  style="background:<?= $module_col_lab['color']; ?>">
+            <h5 align="center" style="margin-bottom: 0px;margin-top: 0px;" ><b><?= $module_col_lab['label']; ?></b></h5>
+            
               <div class="line_no">  <!-- module number DIV start -->
                 
                 <?php 
@@ -550,14 +565,15 @@ $shifts = $_GET['shift'];
 
 
 
-        
+        // $colors_modal = array();
         while($sql_rowred=mysqli_fetch_array($sql_resultred))     //docket boxes Loop -start
         {
             $input_qty=$sql_rowred['Input'];      // input qty
             $output_qty=$sql_rowred['Output'];      // output qty
             $docket_no=$sql_rowred['ims_doc_no'];   // capturing docket number
             $style_no=$sql_rowred['ims_style'];     // style
-            $color_name=$sql_rowred['ims_color'];   // color
+            $color_name=$sql_rowred['ims_color'];  
+            $colors_modal[] = $sql_rowred['ims_color']; // color
       // echo "Color=".$color_name."<br>";
       $color_ref="'".str_replace(",","','",$sql_rowred['ims_color'])."'"; 
       $remarks_ref="'".str_replace(",","','",$sql_rowred['ims_remarks'])."'"; 
@@ -797,7 +813,10 @@ $shifts = $_GET['shift'];
 </div>
 
 </body>
+
+
 <script>
+ 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();   
 });

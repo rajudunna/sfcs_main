@@ -15,7 +15,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
    
-	<?php include('/template/header.php'); ?>
+    <?php 
+    // ini_set("display_errors", "1");
+    // error_reporting(E_ALL);
+    include($_SERVER['DOCUMENT_ROOT'].'/template/header.php'); ?>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -26,14 +29,19 @@
 
 <body>
      <?php
-     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     if(isset($_REQUEST['rowid']))
     {
         $id=$_REQUEST['rowid'];
-        $mapped_cut_table =$_REQUEST['mapped_cut_table'];
         $module=$_REQUEST['module_name'];
         $description=$_REQUEST['module_description'];
+       
+		$section=$_REQUEST['section'];
         $status=$_REQUEST['status'];
+        $module_color=$_REQUEST['module_color'];
+        
+        $module_label=$_REQUEST['module_label'];
+        $mapped_cut_table = $_REQUEST['mapped_cut_table'];
+       
     }else
     {
         $id=0;
@@ -65,14 +73,41 @@
 						
 				<div class="col-md-4">
 				<div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="module">Module<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="module">Module</label>
 			    <div class="controls col-sm-9">
                     
-                <input id="module" type="text" class="form-control k-textbox" data-role="text" placeholder="Module" name="module" value="<?php echo $module; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="module" type="text" class="form-control k-textbox float" data-role="text" placeholder="Module" name="module" value="<?php echo $module; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
 				</div>
 				</div>
-							
+						
+				<div class="col-md-4">
+				<div class="form-group">
+			    <label class="control-label control-label-left col-sm-3" for="module" id="required">Section</label>
+			    <div class="controls col-sm-9">
+                 
+   <?php 
+   include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+   $conn=$link;
+		echo "<select id='sections' class='form-control' data-role='select'  name='sections' data-parsley-errors-container='#errId2'>";
+		if($id!=''){
+			echo "<option value='".$section."' ".$selected.">$section</option>";
+		}else{
+		echo "<option value='Please Select'>Please Select</option><br/>\r\n";
+		}
+		$query = "SELECT sec_id,sec_name FROM $bai_pro3.sections_master";
+		$result = $conn->query($query);
+		while($row = $result->fetch_assoc()) 
+		{
+			$operation_id=$row['id'];
+			$sec_name=$row['sec_name'];
+			echo "<option value='".$sec_name."' ".$selected.">$sec_name</option>";
+			
+		}
+		echo "</select>";
+	?>      </div>
+				</div>
+				</div>			
 				
 		<div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="description">Module Description</label>
@@ -106,6 +141,23 @@
 		</select><span id="errId2" class="error"></span></div>
                 
 		</div></div>
+        <div class="col-md-4"><div class="form-group">
+			    <label class="control-label control-label-left col-sm-3" for="description">Module Color</label>
+			    <div class="controls col-sm-9">
+				<div id="cp2" class="input-group colorpicker-component"> 
+                    <input type="text" value="<?= $module_color ?? "#00AABB"; ?>" class="form-control" readonly="true" name="module_color"/> 
+                    <span class="input-group-addon"><i></i></span>
+                    </div>
+				</div>
+                
+		</div></div>
+        <div class="col-md-4"><div class="form-group">
+			    <label class="control-label control-label-left col-sm-3" for="description">Module Label</label>
+			    <div class="controls col-sm-9">
+				<input type="text" class="form-control" name="module_label" value="<?= $module_label; ?>"><span id="errId1" class="error"></span>
+				</div>
+                
+		</div></div>
 		
 		
 		
@@ -136,7 +188,9 @@
             </div>
         </div>
     </div>
-
+    <script type="text/javascript">
+$('#cp2').colorpicker();
+</script>
     <script>
         $(function () {
             $('#datetimepicker11').datetimepicker({
@@ -145,11 +199,6 @@
             });
         });
     </script>
-
-		
-		
-		
-		
 		
 		
 		
@@ -158,7 +207,7 @@
 			    
 			    
                 
-		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary" name="btn_save" style="margin-top: 0px;">Save</button></div></div></div></div>
                                     </div>
                                 
 
@@ -172,6 +221,9 @@
 <?php include('view_modules.php'); ?>
 </body>
 </html>
+
+
+		
 
 
 
