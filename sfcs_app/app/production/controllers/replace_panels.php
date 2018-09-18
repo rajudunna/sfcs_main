@@ -48,72 +48,54 @@
                     $mod_no = $_POST['mod_no'];
                     $render_data = array();
                     echo "<div> <button  class='btn btn-success' id='replace_id'>Replace</button></div><form><table class='table table-bordered'><thead><tr><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Good</th><th>Reject</th><th>Replace Qty</th><th>Action</th></tr><thead>";
-                    $panel_qry = "SELECT qms_style,qms_schedule,qms_color,qms_size,sum(qms_qty) as qms_qty,doc_no,qms_tran_type,  SUBSTRING_INDEX(SUBSTRING_INDEX(remarks, '-', -2),'-',1) as shift, operation_id,bundle_no
-                     FROM $bai_pro3.bai_qms_db WHERE input_job_no='$job_no'  AND qms_tran_type IN(1,3) and remarks like '%$mod_no%' GROUP BY qms_size,qms_tran_type order by qms_size,qms_color,qms_tran_type ";
-                     echo $panel_qry;
+
+                    $get_details_qry = "select DISTINCT qms_style,qms_schedule,qms_color,qms_size from $bai_pro3.bai_qms_db where input_job_no='$job_no' and remarks like '%$mod_no%'";
+                    
+                    $res_details_qry =mysqli_query($link,$get_details_qry);
+                    $ai = 0;
+                    while($result1 = mysqli_fetch_array($res_details_qry))
+                    {
+                        $render_data[$ai]['style'] = $result1['qms_style'];
+                        $render_data[$ai]['schedule'] = $result1['qms_schedule'];
+                        $render_data[$ai]['color'] = $result1['qms_color'];
+                        $render_data[$ai]['size'] = $result1['qms_size'];
+                        $ai++;
+                    }
+                    // var_dump($render_data);
+                    foreach($render_data as $data_ary){
+                        $panel_qry = "
+                        SELECT qms_style,qms_schedule,qms_color,qms_size,SUM(g_qms_qty) AS g_qms_qty,SUM(r_qms_qty) AS r_qms_qty,GROUP_CONCAT(doc_no) AS doc_no,qms_tran_type, GROUP_CONCAT(shift) AS shift, 
+                        GROUP_CONCAT(operation_id) AS operation_id,GROUP_CONCAT(bundle_no) AS bundle_no  FROM ((SELECT qms_style,qms_schedule,qms_color,qms_size,SUM(qms_qty) AS g_qms_qty,0 AS r_qms_qty,NULL AS doc_no,qms_tran_type, NULL AS shift, 
+                        NULL AS operation_id,NULL AS bundle_no 
+                        FROM bai_pro3.bai_qms_db WHERE qms_style='".$data_ary['style']."' 
+                        AND qms_schedule='".$data_ary['schedule']."' AND qms_color = '".$data_ary['color']."' AND qms_size = '".$data_ary['size']."' AND qms_tran_type=1 
+                        GROUP BY qms_size,qms_tran_type ORDER BY qms_size,qms_color,qms_tran_type ) UNION ALL (
+                        SELECT qms_style,qms_schedule,qms_color,qms_size,0 AS g_qms_qty,SUM(qms_qty) AS r_qms_qty,doc_no,qms_tran_type, SUBSTRING_INDEX(SUBSTRING_INDEX(remarks, '-', -2),'-',1) AS shift, 
+                        operation_id,bundle_no 
+                        FROM bai_pro3.bai_qms_db WHERE qms_style='".$data_ary['style']."' 
+                        AND qms_schedule='".$data_ary['schedule']."' AND qms_color = '".$data_ary['color']."' AND qms_size = '".$data_ary['size']."' AND qms_tran_type=3
+                        GROUP BY qms_size,qms_tran_type ORDER BY qms_size,qms_color,qms_tran_type
+                        )) AS tab GROUP BY qms_style,qms_schedule,qms_color,qms_size
+                        ";
+                   
                     $previous_size = '';
                     $count =0;
                     $res_qry =mysqli_query($link,$panel_qry);
+                    echo "<tbody>";
                         while($result1 = mysqli_fetch_array($res_qry))
                         {
-                            $count++;
+                            $style = $result1['qms_style']; 
+                            $schedule = $result1['qms_schedule'];$color = $result1['qms_color'];
                             $size = $result1['qms_size'];
-                            $ttype = $result1['qms_tran_type'];
+                            $good = $result1['g_qms_qty'];
+                            // $good=0;
+                            $rej = $result1['r_qms_qty'];
+                            $doc_no = $result1['doc_no'];
+                            $shift = $result1['shift'];
+                            $operation = $result1['opeartion_id'];
+                            $bundle_no = $result1['bundle_no'];
 
-                            if($size == $previous_size){
-                                $count--;
-                                $insert_ary[$count][$size][$ttype] = $result1['qms_qty'];
-                                $insert_ary[$count][$ttype]= $result1['doc_no'];
-                                $insert_ary[$count]['shift'][$ttype] = $result1['shift'];
-                                $insert_ary[$count]['opid'][$ttype] = $result1['operation_id'];
-                                $insert_ary[$count]['bundle'][$ttype] = $result1['bundle_no'];
-                                $previous_size = $size;
-                                continue;
-                            }
-                            $insert_ary[$count]['style']= $result1['qms_style'];
-                            $insert_ary[$count]['schedule']= $result1['qms_schedule'];
-                            $insert_ary[$count]['color'] = $result1['qms_color'];
-                            $insert_ary[$count]['size'] = $result1['qms_size'];
-                            $insert_ary[$count][$size][$ttype] = $result1['qms_qty'];
-                            $insert_ary[$count][$ttype]= $result1['doc_no'];
-                            $insert_ary[$count]['shift'][$ttype] = $result1['shift'];
-                            $insert_ary[$count]['opid'][$ttype] = $result1['operation_id'];
-                            $insert_ary[$count]['bundle'][$ttype] = $result1['bundle_no'];
-                            $previous_size = $size;
-                            // if( $size == $previous_size){
-                            //     if($ttype == 3){
-                            //         $insert_ary[$count-1]['good'] = $result1['qms_qty'];
-                            //     }else if($ttype == 1){
-                            //         $insert_ary[$count-1]['rej'] = $result1['qms_qty'];
-                            //     }else if($ttype == 20){
-                            //         $insert_ary[$count-1]['good'] = $insert_ary[$count-1]['good'] - $result1['qms_qty'];
-                            //         $insert_ary[$count-1]['rej'] = $insert_ary[$count-1]['rej'] - $result1['qms_qty'];
-                            //     }
-                            // }else{
-                            //     if($ttype == 3){
-                            //         $insert_ary[$count]['good'] = $result1['qms_qty'];
-                            //     }else if($ttype == 1){
-                            //         $insert_ary[$count]['rej'] = $result1['qms_qty'];
-                            //     }
-                            // }
-                            // $previous_size = $size;
-                        }
-                    echo "<tbody>";
-                    $i=0;
-                    foreach($insert_ary as $data){
-                        $i++;
-                        $style = $data['style']; 
-                        $schedule = $data['schedule'];$color = $data['color'];
-                        $size = $data['size'];
-                        $good = $data[$size][1];
-                        // $good=0;
-                        $rej = $data[$size][3];
-                        $doc_no = $data[3];
-                        $shift = $data[shift][3];
-                        $operation = $data[opid][3];
-                        $bundle_no = $data[bundle][3];
-                       
-                        echo "<tr><td>$style</td><td>$schedule</td><td>$color</td>
+                            echo "<tr><td>$style</td><td>$schedule</td><td>$color</td>
                                     <td>$size</td>";
                                     if($good>0){
                                         echo " <td>$good</td>";
@@ -148,6 +130,7 @@
                                 }else{
                                     echo "   <td><input type='text' id='rep_$i' name='replace_$i' class='form-control' value = '0' readonly></td><td></td>";
                                 }
+                        }
                     }
                     echo "</tbody>";  
                 }
