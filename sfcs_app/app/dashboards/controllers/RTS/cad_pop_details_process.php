@@ -1,9 +1,10 @@
 <?php
+
 //KiranG - 2015-09-02 : passing link as parameter in update_m3_or function to avoid missing user name. SR#
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
+// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+// $username=$username_list[1];
 
 //$authorized=array("kirang","herambaj","kishorek","sarojiniv","kirang","demiank","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","rambabub","chaitanyag","kirang","kirang","herambaj","kishorek","sarojiniv","kirang","demiank","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","rambabub","chaitanyag","kirang","sreenivasg");
 //$authorized=array("kirang");
@@ -12,15 +13,15 @@ $username=$username_list[1];
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
-$authorized=user_acl("SFCS_0197",$username,51,$group_id_sfcs);
 
-if(!(in_array(strtolower($username),$authorized)))
-{
-	header("Location:restrict.php");
-}
+// if(!(in_array(strtolower($username),$authorized)))
+// {
+// 	header("Location:restrict.php");
+// }
 
 ?>
+
+
 
 <?php
 set_time_limit(2000);
@@ -228,6 +229,7 @@ if(isset($_POST['issue']))
 	echo "<h2>Successfully Updated</h2>";
 }
 
+
 ?>
 
 
@@ -273,6 +275,8 @@ if(isset($_POST['submit']))
 	$cat_name=$_POST['cat_name'];
 	$doc_nos=$_POST['doc_no_ref'];
 	$codes=$_POST['code_no_ref'];
+	$docket_no = '';
+	
 	$hostname=explode(".",gethostbyaddr($_SERVER['REMOTE_ADDR']));
 	
 	for($i=0;$i<sizeof($cat);$i++)
@@ -282,7 +286,9 @@ if(isset($_POST['submit']))
 		$temp="qty_".$cat[$i];
 		$qty=$_POST[$temp];
 		$cat_name_temp=$cat_name[$i];
-		
+		if(strtoupper($cat_name_temp) == 'BODY' || strtoupper($cat_name_temp) == 'BODY' )
+			$docket_no =  $docno[$i];
+
 		$temp=array();
 		for($j=0;$j<sizeof($size);$j++)
 		{
@@ -290,12 +296,12 @@ if(isset($_POST['submit']))
 		}
 		
 		$sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength) values (\"".date("Y-m-d")."\",".$cat[$i].",\"$order_tid\",".$mklen[$i].")";
-//echo $sql1;
+		//echo $sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		
 		$sql1="update $bai_pro3.recut_v2 set p_plies=".$plies[$i].",a_plies=".$plies[$i].",mk_ref=$ilastid,".implode(",",$temp)." where doc_no=".$docno[$i];
-//echo $sql1;
+		//echo $sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//if($i==0)
@@ -313,9 +319,12 @@ if(isset($_POST['submit']))
 		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
+		//calling the function to insert to bundle craetion data and cps log
+		$inserted = doc_size_wise_bundle_insertion_recut($docno[$i]);
+		if($inserted){
+			//Inserted Successfully
+		}
 	}
-	echo "<h2>Successfully Updated</h2>";
-	
 	
 }
 

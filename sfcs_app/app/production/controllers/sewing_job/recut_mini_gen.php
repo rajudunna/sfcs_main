@@ -31,8 +31,22 @@ $style_id=$_GET['style'];
 $order_id=$_GET['schedule'];
 $color=$_GET['col'];
 $doc_num=$_GET['doc'];
+$job_counter = 0;
+$inserted_id = '';
 $style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
 $schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$order_id,$link);	
+$style_i = $style;
+$schedule_i = $schedule;
+
+//Inserting data  into the sewing 'job log table
+$in_query = "Insert into $bai_pro3.sewing_jobs_ref ('style','schedule','log_time','bundles_count') values 
+			('$style','$schedule','".date('Y-m-d H:i:s')."','0')";
+$in_result = mysqli_query($link,$in_query) or exit('Unable to insert into the sewing job ref');		
+if($in_result)
+	$inserted_id = mysqli_insert_id($link);
+// Logic Ends...
+
+
 if($status == '')
 {
 	$min_ord_ref_id=echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_product_style='".$style_id."' and ref_crt_schedule",$order_id,$link);
@@ -573,9 +587,9 @@ if($status == '')
 					$result5=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$bundle_number++;
 
-					$sql1="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type) values(\"".$doc_numb."\",\"".$size_tit."\",\"".$bundle_quantity."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$packing_mode."\",\"".$size_code_ref."\",'R')";	
-
+					$sql1="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,sref_id) values(\"".$doc_numb."\",\"".$size_tit."\",\"".$bundle_quantity."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$packing_mode."\",\"".$size_code_ref."\",'R','$inserted_id')";	
 					$result5=mysqli_query($link, $sql1) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$job_counter++;
 				}
 			}
 		}
@@ -590,11 +604,179 @@ if($status == '')
 	echo "</table>";
 	$recut_mini_create=getFullURLLevel($_GET['r'],'recut_mini_create.php',0,'N');
 	echo "<script>swal('Sewing Jobs Successfully Generated for Re-Cut Docket - $docket_number','','success');</script></br>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = \"$recut_mini_create\"; }</script>";
+
+
+	//Deleting the entry from sewing jobs ref if no input job was created  --  Updating the bundle quantity after the jobs are inserted
+	if($job_counter == 0){
+		$delete_query = "Delete from $bai_pro3.sewing_jobs_ref where id = '$inserted_id'";
+		$delete_result = mysqli_query($link,$delete_query);
+		if($delete_result){
+			//Deleted Successfully
+		}
+	}else{
+		$update_query = "Update $bai_pro3.sewing_jobs_ref set bundles_count = $job_counter where id = '$inserted_id' ";
+		$update_result = mysqli_query($link,$update_query);
+		if($update_result){
+			//Updated Successfully
+		}
+	}
+
+	//--------------------------------------------- MO Filling Logic.. --------------------------------------------------------
+		$style    = $style_i;
+		$schedule = $schedule_i;
+		$color  = $_GET['col'];
+		$doc_no = $_GET['doc'];
+
+		//getting the op_codes with sewing
+		$op_code_query  ="SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+						WHERE default_operation='Yes' and trim(category) = 'sewing' ";
+		$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operation Found for Cutting");
+		while($row=mysqli_fetch_array($op_code_result)) 
+		{
+			$op_codes  = $row['codes'];	
+		}
+
+		//gettting cut op_code for bad quantity mos
+		$c_op_code_query  ="SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+						WHERE default_operation='Yes' and trim(category) = 'cutting' ";
+		$c_op_code_result = mysqli_query($link, $c_op_code_query) or exit("No Operation Found for Cutting");
+		while($row=mysqli_fetch_array($c_op_code_result)) 
+		{
+			$c_op_codes  = $row['codes'];	
+		}
+
+		//getting the sizes to format s,m,l 
+		$recut_sizes = "Select distinct(size_code) as size From $bai_pro3.pac_stat_log_input_job where doc_no = '$doc_no' 
+						and sref_id = '$inserted_id'";
+		$recut_size_result = mysqli_query($link,$recut_sizes)  or exit('Mo Operation Code Retrieval Error');
+		while($row = mysqli_fetch_array($recut_size_result)){
+			$old_sizes[] = $row['size'];
+		}
+		//mapping old size with new size codes
+		/*
+		foreach($old_sizes as $size){
+			$size_query = "select title_size_$size From $bai_pro3.bai_orders_db_confirm where TRIM(order_del_no)='$schedule' 
+						and TRIM(order_style_no) = '$style' and TRIM(order_col_des) = '$color'";
+			$size_result = mysqli_query($link,$size_query) or exit('Mo Operation Saving  Error');;
+			while($row = mysqli_fetch_array($size_result)){
+				$new_sizes[$size] = $row["title_size_$size"];
+				$old_sizes1[ $row["title_size_$size"]] = $size;
+			}				  
+		}
+		*/
+
+		//getting mos related to style,schedule and color
+		foreach($old_sizes as $size){
+			$mo_no_query = "SELECT mo.mo_no as mo_no,mo.mo_quantity as mo_quantity,SUM(bundle_quantity) as bundle_quantity,
+							SUM(good_quantity) as good_quantity,SUM(rejected_quantity) as rejected_quantity
+							FROM $bai_pro3.mo_details mo 
+							LEFT JOIN $bai_pro3.mo_operation_quantites mop ON mo.mo_no = mop.mo_no  
+							WHERE TRIM(size)='".$size."' and schedule='$schedule' and TRIM(color)='$color' 
+							and mop.op_code = 15
+							group by mop.mo_no order by mo.mo_no*1 "; 
+			$mo_no_result  = mysqli_query($link,$mo_no_query) 	or exit('Error Occured');
+			$mo_no_result2 = $mo_no_result;   
+			while($row = mysqli_fetch_array($mo_no_result)){
+				// if($row['op_desc'] == 'recut' )
+				// 	continue;
+				//$mos[] = $row['mo_no'];	
+				if($row['bundle_quantity'] >= $row['good_quantity'] && $row['rejected_quantity']==0)	
+					continue;
+				if($row['rejected_quantity'] == 0)
+					$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'];
+				else	
+					$mos[$row['mo_no']] = $row['mo_quantity'] - $row['bundle_quantity'] + $row['rejected_quantity'];
+			}
+			foreach($mos as $mo_no=>$rem_cpcty){
+				//checking the mo operations exist or not
+				$op_codes_query = "SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master 
+								WHERE OperationNumber in ($op_codes) and MONumber='$mo_no' order by OperationNumber*1"; 
+				$op_code_result = mysqli_query($link, $op_codes_query) or exit('Mo Operation Code Retrieval Error');
+				while($row = mysqli_fetch_array($op_code_result)){
+					$op_code = $row['OperationNumber']; 
+					$ops[$mo_no][$op_code] = $row['OperationDescription'];
+				} 
+			}
+			if(sizeof($mos) > 0){
+				if(sizeof($mos) == 1){
+					foreach($mos as $mo_no => $rem_cpcty){
+						//getting the recut sewing details for each size 
+						$recut_jobs_details = "Select tid,carton_act_qty  as qty
+											From $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no 
+											and size_code = '$size'
+											and sref_id = '$inserted_id' and type_of_sewing = '1' order by size_code ";
+						$recut_jobs_result = mysqli_query($link,$recut_jobs_details) or exit('Error Occured');
+						while($row = mysqli_fetch_array($recut_jobs_result)){
+							//need to get bundle number
+							$bundle_no = $row['tid'];
+							$cart_qty = $row['qty'];
+							foreach($ops[$mo_no] as $op_code=>$op_desc){
+								$insert_query = "Insert into $bai_pro3.mo_operation_quantites(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`) values
+								('".date('Y-m-d H:i:s')."','".$mo_no."','$bundle_no','$cart_qty','$op_code','$op_desc')";
+							}
+						}		
+					}
+				}else{
+					$recut_jobs_details = "Select tid,carton_act_qty  as qty
+						From $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no and size_code = '$size' 
+						and sref_id = '$inserted_id' and type_of_sewing = '1' order by size_code ";
+					$recut_jobs_result = mysqli_query($link,$recut_jobs_details) or exit('Error Occured');
+					while($row = mysqli_fetch_array($recut_jobs_result)){
+						//need to get bundle number
+						$bundle_no = $row['tid'];
+						$qty = $row['qty'];
+						foreach($mos as $mo_no => $rem_cpcty){
+							$last_mo = $mo_no;
+							if($rem_cpcty == 0)
+								continue;
+							if($qty > $rem_cpcty){
+								$qty = $qty - $rem_cpcty;
+								if($qty>0){
+									foreach($ops[$mo_no] as $op_code=>$op_desc){
+										$insert_query = "Insert into $bai_pro3.mo_operation_quantites(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`) values
+										('".date('Y-m-d H:i:s')."','".$mo_no."','$bundle_no','$rem_cpcty','$op_code',
+										'$op_desc')";
+										mysqli_query($link,$insert_query) or exit('Error Occured');
+									}
+									$mos[$mono] = 0;
+									//break;
+								}
+							}else{
+								foreach($ops[$mo_no] as $op_code=>$op_desc){
+									$insert_query = "Insert into $bai_pro3.mo_operation_quantites(`date_time`, `mo_no`,`ref_no`, `bundle_quantity`, `op_code`, `op_desc`) values
+									('".date('Y-m-d H:i:s')."','".$mo_no."','$bundle_no','$qty','$op_code',
+									'$op_desc')";
+									mysqli_query($link,$insert_query) or exit('Error Occured');
+								}
+								$qty = $rem_cpcty - $qty;
+								$mos[$mono] = $qty;
+								break;
+							}	
+						}
+						//inserting the all the excess qty's to the last mo's within the size
+						if($qty > 0){
+							foreach($ops as $op_code=>$op_desc){
+								$insert_query = "Insert into $bai_pro3.mo_operation_quantites(`date_time`, `mo_no`,`ref_no`,
+												`bundle_quantity`, `op_code`, `op_desc`) values
+												('".date('Y-m-d H:i:s')."','".$last_mo."','$bundle_no','$qty','$op_code',
+												'$op_desc')";
+								mysqli_query($link,$insert_query) or exit('Error Occured');
+							}
+						}	
+					}
+				}
+			}else{
+				//Nothing to enter into MO
+			}	
+		}	
+	///----------------------------------------------- MO FIlling Ends ------------------------------------	
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"$recut_mini_create\"; }</script>";
 }
 else
 {
 	echo "<script>swal('Another User Generating Mini orders','Please try again','warning');</script>";
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",180); function Redirect() {  location.href = \"recut_mini_create.php\"; }</script>";
-}	
+}
+
+
 ?>

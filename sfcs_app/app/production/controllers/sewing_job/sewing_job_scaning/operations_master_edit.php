@@ -146,6 +146,8 @@ function validateQty(event)
 											<option value='cutting' <?php echo $row[0]['category']== 'cutting'? 'selected' : ''?>>Cutting</option>
 											<option value='sewing' <?php echo $row[0]['category']== 'sewing'? 'selected' : ''?>>Sewing</option>
 											<option value='packing' <?php echo $row[0]['category']== 'packing'? 'selected' : ''?>>Packing</option>
+											<option value='Send PF' <?php echo $row[0]['category']== 'Send PF'? 'selected' : ''?>>Embellishment Send</option>
+                                   			 <option value='Receive PF' <?php echo $row[0]['category']== 'Receive PF'? 'selected' : ''?>>Embellishment Received</option>
 										</select>
 									</div>
 									<div class="col-sm-2">
