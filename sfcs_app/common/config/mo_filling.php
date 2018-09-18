@@ -116,7 +116,7 @@
     }
 
 	//tested
-    function deleteMOQuantitiesSewing($schedule){
+    function deleteMoQuantitiesSewing($schedule){
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
         $sewing_cat = 'sewing';
         $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 

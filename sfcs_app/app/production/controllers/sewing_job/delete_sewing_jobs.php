@@ -168,26 +168,26 @@
 
 
                 //------------------MO Deleteing Logic -------------------------------
-                //$mos = array();
-                $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-                                 WHERE default_operation='Yes' and trim(category) = 'sewing' ";
-                $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
-                while($row=mysqli_fetch_array($op_code_result)) 
-                {
-                    $op_codes  = $row['codes'];	
-                }
+            //     //$mos = array();
+            //     $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+            //                      WHERE default_operation='Yes' and trim(category) = 'sewing' ";
+            //     $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
+            //     while($row=mysqli_fetch_array($op_code_result)) 
+            //     {
+            //         $op_codes  = $row['codes'];	
+            //     }
 
-                $mo_query  = "Select GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$schedule'";
-                $mo_result = mysqli_query($link,$mo_query);
-                while($row = mysqli_fetch_array($mo_result)){
-                    $mos = $row['mos'];
-                }
+            //     $mo_query  = "Select GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$schedule'";
+            //     $mo_result = mysqli_query($link,$mo_query);
+            //     while($row = mysqli_fetch_array($mo_result)){
+            //         $mos = $row['mos'];
+            //     }
 
-                $delete_query = "Delete from $bai_pro3.mo_operation_quantites where mo_no in ('$mos') and op_code in ('$op_codes') ";
-                $delete_result = mysqli_query($link,$delete_query);
-                if(mysqli_num_rows($delete_result) > 0){
-                    //deleted successfully from mo_operation_qunatities;
-                }
+            //     $delete_query = "Delete from $bai_pro3.mo_operation_quantites where mo_no in ('$mos') and op_code in ('$op_codes') ";
+            //    // $delete_result = mysqli_query($link,$delete_query);
+            //     if(mysqli_num_rows($delete_result) > 0){
+            //         //deleted successfully from mo_operation_qunatities;
+            //     }
                 //----------------------------------------------------------------------------------------------
 
 
