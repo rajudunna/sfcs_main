@@ -158,9 +158,9 @@ if (empty($module)||empty($sections)) {
 	   $result3 = mysqli_query($conn, $sections_query);
       $row = mysqli_fetch_assoc($result3);
       $total_modules=$row['module_concat'];
-	  echo $total_modules;
+	  // echo $total_modules;
        $sql1 = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods)
-			VALUES ('$sections','$sections','$total_modules,$module')";
+			VALUES ('$sections','$sections','$total_modules')";
 		if (mysqli_query($conn, $sql1)) {
 			
 		} else {
