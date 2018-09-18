@@ -78,7 +78,7 @@ if(isset($_POST['submit']))
 			<th>Team - $shift Absent Emp</th>";
 			
 
-			$sql_result1=mysqli_query($link, $sql1) or exist ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result1);
 			if($sql_num_check>0)
 			{
