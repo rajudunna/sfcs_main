@@ -13,7 +13,8 @@
     if(!isset($_GET['excel'])){
         echo "<script>
             function redirectf(){
-                var date = $('#tdate').val(); var ts = $('#ts').val();
+                var date = $('#tdate').val(); 
+                var ts = $('#ts').val();
                 if(date!=''){
                     window.open('".base64_decode($_GET['r']) ."?tdate='+date+'&ts='+ts+'&excel=true', '_blank');
                 }else{
@@ -54,8 +55,7 @@
     if(isset($_GET['tdate'])){
         if($_GET['tdate']){
             $resp_stat = $_GET['ts'] ? 'AND response_status="'.$_GET["ts"].'"' : '';
-            $qry_m3_trans = "
-            SELECT bundle_creation_data.style,bundle_creation_data.schedule,bundle_creation_data.color,bundle_creation_data.size_title,m3_transactions.mo_no,m3_transactions.op_code,m3_transactions.workstation_id,m3_transactions.quantity,m3_transactions.response_status FROM bai_pro3.`m3_transactions` LEFT JOIN bai_pro3.mo_operation_quantites ON m3_transactions.ref_no=mo_operation_quantites.id LEFT JOIN brandix_bts.bundle_creation_data ON mo_operation_quantites.ref_no=bundle_creation_data.bundle_number WHERE DATE(m3_transactions.date_time)='".$_GET['tdate']."' AND bundle_creation_data.style IS NOT NULL $resp_stat GROUP BY bundle_creation_data.style,bundle_creation_data.schedule,bundle_creation_data.color,bundle_creation_data.size_title";
+            $qry_m3_trans = "SELECT bundle_creation_data.style,bundle_creation_data.schedule,bundle_creation_data.color,bundle_creation_data.size_title,m3_transactions.mo_no,m3_transactions.op_code,m3_transactions.workstation_id,m3_transactions.quantity,m3_transactions.response_status FROM bai_pro3.`m3_transactions` LEFT JOIN bai_pro3.mo_operation_quantites ON m3_transactions.ref_no=mo_operation_quantites.id LEFT JOIN brandix_bts.bundle_creation_data ON mo_operation_quantites.ref_no=bundle_creation_data.bundle_number WHERE DATE(m3_transactions.date_time)='".$_GET['tdate']."' AND bundle_creation_data.style IS NOT NULL $resp_stat GROUP BY bundle_creation_data.style,bundle_creation_data.schedule,bundle_creation_data.color,bundle_creation_data.size_title";
             $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
             $ary_res = mysqli_fetch_all($result_m3_trans,MYSQLI_ASSOC);
             if(count($ary_res)>0){
