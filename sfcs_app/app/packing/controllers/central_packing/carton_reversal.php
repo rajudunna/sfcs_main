@@ -38,16 +38,16 @@
 						while($row12=mysqli_fetch_array($tid_result))
 						{
 							$b_tid[]=$row12['tid'];	
-							$status = $row['status'];		
+							$status = $row12['status'];		
 						}
 
-						$b_op_id_query = "SELECT operation_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='PACKING';";
-						$sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
-						while($sql_row=mysqli_fetch_array($sql_result))
-						{
-							$b_op_id=$sql_row['operation_code'];
-						}
-
+						// $b_op_id_query = "SELECT operation_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='PACKING';";
+						// $sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
+						// while($sql_row=mysqli_fetch_array($sql_result))
+						// {
+							// $b_op_id=$sql_row['operation_code'];
+						// }
+						$b_op_id=200;
 						if ($status == NULL || $status == '(NULL)')
 						{
 							echo "<script>sweetAlert('Carton Not Scanned','Reversal Not Possible','warning')</script>";
@@ -74,7 +74,7 @@
 									$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
 
 									// $inserting_into_m3_tran_log = "INSERT INTO bai_pro3.`m3_transactions` (date_time,mo_no,quantity,reason,remarks,log_user,tran_status_code,module_no,shift,op_code,op_des,ref_no) SELECT NOW(),mo_no,quantity*-1,'cpk_reversal',remarks,USER(),'0',module_no,shift,'200','CPK',$carton_id FROM bai_pro3.`m3_transactions` WHERE ref_no=$carton_id AND op_code=200 AND op_des='CPK';";
-
+									
 									$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$negative_qty','','cpk_reversal',user(),'','$b_op_id','CPK','$id','$work_station_id','')";
 									// echo $inserting_into_m3_tran_log;
 									mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
