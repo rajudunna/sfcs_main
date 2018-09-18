@@ -111,7 +111,7 @@
 					$check_status = echo_title("$bai_pr3.packing_summary","count(*)","status='DONE' and order_del_no",$schedule_original,$link);			
 					$query = "SELECT SUM(carton_qty) AS qty,seq_no,pack_description,pack_method,GROUP_CONCAT(DISTINCT TRIM(size_title)) AS size ,GROUP_CONCAT(DISTINCT TRIM(color)) AS color FROM bai_pro3.pac_stat 
 					LEFT JOIN tbl_pack_ref ON tbl_pack_ref.schedule=pac_stat.schedule 
-					LEFT JOIN tbl_pack_size_ref ON tbl_pack_ref.id=tbl_pack_size_ref.parent_id AND pac_stat.pac_seq_no=tbl_pack_size_ref.seq_no WHERE pac_stat.schedule='$schedule'	GROUP BY seq_no ORDER BY seq_no*1";	
+					LEFT JOIN tbl_pack_size_ref ON tbl_pack_ref.id=tbl_pack_size_ref.parent_id AND pac_stat.pac_seq_no=tbl_pack_size_ref.seq_no WHERE pac_stat.schedule='$schedule'	GROUP BY seq_no ORDER BY seq_no*1";
 					$new_result = mysqli_query($link, $query) or exit("Sql Error366".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$rowscnt=mysqli_num_rows($new_result);
 					if($rowscnt > 0)
@@ -143,12 +143,13 @@
 								$i = 1;
 								while($new_result1=mysqli_fetch_array($new_result))
 								{
+									$carton_qty_pac_stat=echo_title("$bai_pro3.pac_stat","sum(carton_qty)","schedule='".$schedule."' and pac_seq_no",$new_result1['seq_no'],$link);
 								    echo "<tr><td>$i</td>";
 									echo "<td>".$new_result1['pack_description']."</td>";
-									echo"<td>".$operation[$new_result1['pack_description']]."</td>";
+									echo"<td>".$operation[$new_result1['pack_method']]."</td>";
 									echo"<td>".$new_result1['color']."</td>";
 									echo"<td>".$new_result1['size']."</td>";
-									echo"<td>".$new_result1['qty']."</td>";
+									echo"<td>".$carton_qty_pac_stat."</td>";
 									echo"<td>".$schedule."</td>";
 									$i++;
 									$url=getFullURL($_GET['r'],'pack_method_deletion.php','N');

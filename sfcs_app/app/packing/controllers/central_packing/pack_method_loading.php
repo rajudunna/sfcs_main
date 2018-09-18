@@ -269,6 +269,7 @@
 									while($pack_result1=mysqli_fetch_array($pack_meth_qty))
 									{
 										$seq_no=$pack_result1['seq_no'];
+										$carton_qty_pac_stat=echo_title("$bai_pro3.pac_stat","sum(carton_qty)","schedule='".$schedule."' and pac_seq_no",$seq_no,$link);
 										$pack_method=$pack_result1['pack_method'];
 										echo "<tr>
 											<td>$i</td>
@@ -277,7 +278,7 @@
 											<td>".$pack_result1['color']."</td>
 											<td>".$pack_result1['size']."</td>
 											<td>".$pack_result1['cartons']."</td>
-											<td>".$pack_result1['qty']."</td>
+											<td>".$carton_qty_pac_stat."</td>
 											<td>
 												<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule&seq_no=$seq_no&style=$style' target='_blank' >FG Check List
 												<a class='btn btn-warning' href='$url?p_status=1&schedule=$schedule&seq_no=$seq_no&style=$style' target='_blank' >Carton Track

@@ -4,9 +4,9 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R')); 
 ?>
 <body> 
-<div class="panel panel-primary">
+<!-- <div class="panel panel-primary">
 <div class="panel-heading">Packing List Generation</div>
-<div class="panel-body">
+<div class="panel-body"> -->
 <?php
 	$carton_id=$_GET['c_ref'];
 	$seq_no=$_GET['seq_no'];
@@ -164,6 +164,7 @@
 					}		
 				}
 				$act_carton=0;
+				$bal=0;
 				for($iii=0;$iii<sizeof($cols_tot);$iii++)
 				{
 					if($require_qty[$cols_tot[$iii]][$cols_size[$ik]]>0 && $gremnts_per_carton[$cols_tot[$iii]][$cols_size[$ik]]>0)
@@ -284,6 +285,7 @@
 				}		
 			}
 			$act_carton=0;
+			$bal=0;
 			for($iii=0;$iii<sizeof($cols_tot);$iii++)
 			{
 				for($iiii=0;$iiii<sizeof($cols_size);$iiii++)
@@ -387,5 +389,6 @@
 		}
 	}
 ?> 
-</div></div>
+<!-- </div> -->
+</div>
 </body>
