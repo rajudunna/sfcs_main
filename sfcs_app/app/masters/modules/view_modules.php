@@ -28,10 +28,10 @@
 		<thead>
 		<tr>
 		<th>S.No</th>
-        <th>Mapped Cut Table</th>
 		<th>Section Name</th>
 		<th>Module Name</th>
-        <th>Module Description</th>
+		<th>Module Description</th>
+		<th>Mapped Cut Table</th>
         <th>Module Color</th>
         <th>Module Label</th>
 		<th>Status</th>
