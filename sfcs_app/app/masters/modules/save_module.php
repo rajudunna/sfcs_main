@@ -136,13 +136,13 @@ if (empty($module)||empty($sections)) {
      }
 	}
 
-	$query3="SELECT sec_head FROM bai_pro3.`sections_db` WHERE sec_head='$sections'";
+	$query3="SELECT sec_head FROM $bai_pro3.`sections_db` WHERE sec_head='$sections'";
 	$result4= mysqli_query($conn, $query3);
     $row = mysqli_fetch_assoc($result4);
 	if($row>0){
 	
 
-       $sections_query1="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sections'";
+       $sections_query1="SELECT GROUP_CONCAT(DISTINCT (module_id))as module_concat FROM $bai_pro3.`plan_modules` WHERE section_id='$sections'";
 	   $result5= mysqli_query($conn, $sections_query1);
       $row = mysqli_fetch_assoc($result5);
       $total_modules1=$row['module_concat'];
@@ -154,7 +154,7 @@ if (empty($module)||empty($sections)) {
 		}
 	}else{
 	
-	       $sections_query="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sections'";
+	       $sections_query="SELECT GROUP_CONCAT(DISTINCT (module_id))as module_concat FROM $bai_pro3.`plan_modules` WHERE section_id='$sections'";
 	   $result3 = mysqli_query($conn, $sections_query);
       $row = mysqli_fetch_assoc($result3);
       $total_modules=$row['module_concat'];
