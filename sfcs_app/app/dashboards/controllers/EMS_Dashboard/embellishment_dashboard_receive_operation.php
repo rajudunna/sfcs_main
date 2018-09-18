@@ -38,6 +38,13 @@
   echo '<META HTTP-EQUIV="refresh" content="120">';
 ?>
 <script type="text/javascript" src="../../../../common/js/jquery.js"></script>
+<script>
+function firstbox()
+{
+  var shift_id = document.getElementById('shift').value;
+  window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&shift="+shift_id;
+}
+</script>
 <script type="text/javascript">
 <!--
 spe=700;
@@ -269,7 +276,22 @@ echo "<div class='panel-heading'><span style='float'><strong>EMB Receive Dashboa
 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
 if (window.focus) {Popup.focus()} return false;'></a></b></span></div>";
 echo '<div class="panel-body">
-<div class="form-inline">
+<div class="form-inline">';
+echo '<div class="form-group">';
+echo '&nbsp;&nbsp;&nbsp;Shift: 
+  <select class="form-control" id="shift" name="shift" onchange="firstbox();">
+  <option value="">Select</option>';
+        $shifts = $_GET['shift'];
+        foreach($shifts_array as $shift){
+          if($shift == $shifts){
+            echo "<option value='$shift' selected>$shift</option>";
+          }else{
+             echo "<option value='$shift'>$shift</option>";
+          }
+         
+        }
+echo '</select>   
+</div>
 <div class="form-group">';
 echo 'Docket Track: <input type="text" name="docket" id="docket" class="form-control" onkeyup="blink_new(this.value)" size="10">&nbsp;&nbsp;&nbsp;';
 echo "</div>";
@@ -486,6 +508,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           if($receive_qty==0)
           {
             $id="yash";
+            $page_flag = 'receive';
+            $emb_url = getFullURLLevel($_GET["r"],'cutting/controllers/emb_cut_scanning/emb_cut_scanning.php',3,'N')."&style=$style&schedule=$schedule&color=$color&tablename=$section_mods&doc_no=$doc_no&operation_id=$send_op_code&shift=$shifts&page_flag=$page_flag";
+          }else{
+            $emb_url = "";
           }
           
           if($orginal_qty!=$receive_qty && $receive_qty > 0)
@@ -534,7 +560,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
           $clr=trim(implode(',',$colors_db),50);
         
-          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><a href=".$embscanurl.">$schedule(".implode(", ",$club_c_code).")</a></div></div><br>";           
+          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><a href=".$emb_url."  onclick=\"Popup=window.open('$emb_url','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\">$schedule(".implode(", ",$club_c_code).")</a></div></div><br>";           
         }
       }   
       echo "</td>";

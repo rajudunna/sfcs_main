@@ -724,15 +724,26 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 </form>
 
 	</div>	
-		<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
+	
+
+	<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
+		<!-- ONE <UL> for each "room" -->
 		<?php
+		
+		/*Example: <div>
+			<p>Team a</p>
+			<ul id="box1">
+				<li id="node16">Student P</li>
+			</ul>
+		</div> */
 		
 		$temp_table_name="temp_pool_db.plan_doc_summ_input_".$username;
 		$sql="DROP TABLE IF EXISTS $temp_table_name";
 		mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
-		mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
+			mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
 			
 		$sections_ref=array();
 		$sqlx1="select * from $bai_pro3.sections_db where sec_id>0";
@@ -773,7 +784,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				}
 			}
 			
-			echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
+						echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
 			for($x=0;$x<sizeof($mods);$x++)
 			{		
 				echo '<p>'.$mods[$x].'</p>
