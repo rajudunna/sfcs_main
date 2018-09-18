@@ -189,8 +189,10 @@
             //         //deleted successfully from mo_operation_qunatities;
             //     }
                 //----------------------------------------------------------------------------------------------
-
-
+                $deleted = deleteMoQuantitiesSewing($schedule);
+                if($deleted){
+                    //Deleted Successfully
+                }
     			echo "<script>sweetAlert('Sewing Jobs Successfully Deleted','','success')</script>";
             }
             else if($mini_order_ref>0)
@@ -209,10 +211,7 @@
                 } 
             */                
                 //------------------MO Deleteing Function -------------------------------
-                $deleted = deleteMoQuantitiesSewing($schedule);
-                if($deleted){
-                    //Deleted Successfully
-                }
+               
                 
                 echo "<script>sweetAlert('Packing Ratio Successfully Deleted','','success')</script>";
                 // $mo_fill_url = getFullURLLevel($_GET['r'],'sewing_job_mo_fill.php',0,'N');
