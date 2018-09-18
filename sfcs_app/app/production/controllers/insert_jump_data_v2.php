@@ -18,7 +18,7 @@ for($i=0;$i<sizeof($mod_names);$i++)
 	mysqli_query($link, $sql2) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$sql222="Select avail_$shift as avail from $bai_pro.pro_atten_jumper where atten_id='$attenid' and module='$mod_names[$i]'";
-	$sql_result222=mysqli_query($link, $sql222) or exist ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result222=mysqli_query($link, $sql222) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row222=mysqli_fetch_array($sql_result222))
 	{
 	$avail_A=$sql_row222['avail'];

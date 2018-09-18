@@ -69,12 +69,12 @@ if(isset($_POST['submit']))
 	$date=$_POST['dat'];
 
 	$sql112="Select * from $bai_pro.pro_atten_jumper where date=\"$date\" and (avail_$shift>0 or absent_$shift>0)";
-	$sql_result112=mysqli_query($link, $sql112) or exist ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result112=mysqli_query($link, $sql112) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check112=mysqli_num_rows($sql_result112);
 	if($sql_num_check112>0)
 	{
 		$sql1="Select atten_id,date,avail_$shift as avail,absent_$shift as absent,jumper_$shift as jumper,module from $bai_pro.pro_atten_jumper where date=\"$date\" and (jumper_$shift>0) order by module*1";
-		$sql_result1=mysqli_query($link, $sql1) or exist ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
 		if($sql_num_check>0)
 		{
