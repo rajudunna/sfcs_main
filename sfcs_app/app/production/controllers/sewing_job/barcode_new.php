@@ -100,7 +100,7 @@
 								<tr>
 									<td colspan=9></td>
 									<td colspan=3 style="border: 4px solid black;
-									border-top-right-radius: 30px 12px; font-size:12px; width:35px; text-align:center;"> <b>'.$seq_num.'</b></td>
+									border-top-right-radius: 30px 12px; font-size:12px; width:60px; height:40px; text-align:center;"> <p style= "font-size: 15px;">'.$seq_num.'</p></td>
 								</tr>
 								<tr>
 									<td colspan=4><b>Barcode ID:</b>'.$barcode.' </td>

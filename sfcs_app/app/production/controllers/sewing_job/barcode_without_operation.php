@@ -76,7 +76,7 @@
 										<circle cx="10" cy="10" r="8"  />
 									</svg>
 								</td>
-								<td colspan=3 style="border: 2px solid black;width:35px;text-align:center;"><b>'.$seq_num.'</b></td>
+								<td colspan=3 style="border: 2px solid black;width:60px; height:40px; text-align:center;"><p style= "font-size: 15px;">'.$seq_num.'</p></td>
 							</tr>	
 							<tr><td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b></td><td>'.$schedule.'</td></tr>
 							<tr><td><b>Job Number:</b></td><td>'.$display1.'</td><td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
