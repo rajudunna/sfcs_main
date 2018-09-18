@@ -195,6 +195,7 @@ if(isset($_POST['formSubmit']))
 {
 	$ids = $_POST['id'];
 	$reversalval = $_POST['reversalval'];
+	//var_dump($reversalval);
 	$rep_qty = $_POST['rep_qty'];
 	$ops_dep = $_POST['ops_dep'];
 	$style = $_POST['style'];
@@ -237,16 +238,18 @@ if(isset($_POST['formSubmit']))
 			$b_module1[] = $module_cum;
 			//$bundle_individual_number = $nop_qry_row['bundle_number'];
 			$bundle_individual_number = $nop_qry_row['bundle_number'];
-			$actual_bundles[] = $nop_qry_row['bundle_number'];
-			// $query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id' and assigned_module = '$module_cum'";
-			// //echo $query_to_fetch_individual_bundle_details;
-			// $result_query_to_fetch_individual_bundle_details=mysqli_query($link,$query_to_fetch_individual_bundle_details) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-			// if($remaining_val_to_reverse > 0)
-			// {
-			//
-			// }
-			// while($row_result_query_to_fetch_individual_bundle_details=mysqli_fetch_array($result_query_to_fetch_individual_bundle_details))
-			// {
+			$bundle_individual_number = $nop_qry_row['tid'];
+			$actual_bundles[] = $nop_qry_row['tid'];
+			$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
+			// echo $query_to_fetch_individual_bundle_details;
+			// echo "<br/><br/>";
+			$result_query_to_fetch_individual_bundle_details=mysqli_query($link,$query_to_fetch_individual_bundle_details) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if($remaining_val_to_reverse > 0)
+			{
+				$cumulative_reversal_qty = $remaining_val_to_reverse;
+			}
+			while($row_result_query_to_fetch_individual_bundle_details=mysqli_fetch_array($result_query_to_fetch_individual_bundle_details))
+			{
 					
 				$rec_qty = $nop_qry_row['recevied_qty'];
 				//echo $bundle_individual_number.'-'.$rec_qty.'-'.$cumulative_reversal_qty.'</br>';
@@ -272,6 +275,8 @@ if(isset($_POST['formSubmit']))
 			
 		}
 	}
+	// echo "<br/>Actual Reversal Value Array<br/>";
+	// var_dump($actual_reversal_val_array);
 	$color =array();
 	$bundle_no = array();
 	$size = array();
@@ -312,7 +317,7 @@ foreach ($bundle_no as $key=>$value)
 {
 	$act_reciving_qty = $reversalval[$key];
 	//echo "rep_qty_rep".$rep_qty[$key]."</br>";
-//	echo "rep_qty".$act_reciving_qty."</br>";
+	//	echo "rep_qty".$act_reciving_qty."</br>";
 	$select_send_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $operation_id and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
 	$result_select_send_qty = $link->query($select_send_qty);
 	while($row = $result_select_send_qty->fetch_assoc()) 
@@ -420,6 +425,7 @@ else if($concurrent_flag == 0)
 		}
 	}
 	//echo "workings";
+	$b_tid = '';
 	foreach($bundle_no as $key=>$value)
 	{
 		//echo "working";
@@ -455,6 +461,7 @@ else if($concurrent_flag == 0)
 		$b_colors = $color;
 		$b_sizes = $size_id[$key];
 		$b_doc_num = $doc_no[$key];
+		$b_tid = $value;
 		if($reversalval[$key] > 0)
 		{
 			$r_qty_array = '-'.$reversalval[$key];
@@ -547,20 +554,22 @@ else if($concurrent_flag == 0)
 				$ops_seq = $row['ops_sequence'];
 				$seq_id = $row['id'];
 			}
-			$selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
-			//echo $selecting_output_from_seq_query;
-			$result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
-			if($result_selecting_output_from_seq_query->num_rows > 0)
-			{
-				while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
-				{
-					$input_ops_code = $row['operation_code'];
-				}
-			}
-			else
-			{
-				$input_ops_code = 129;
-			}
+			// $selecting_output_from_seq_query = "select operation_code from $brandix_bts.tbl_style_ops_master where ops_sequence = $ops_seq and operation_code != $b_op_id and style='$b_style' and color = '$mapped_color'";
+			// //echo $selecting_output_from_seq_query;
+			// $result_selecting_output_from_seq_query = $link->query($selecting_output_from_seq_query);
+			// if($result_selecting_output_from_seq_query->num_rows > 0)
+			// {
+			// 	while($row = $result_selecting_output_from_seq_query->fetch_assoc()) 
+			// 	{
+			// 		$input_ops_code = $row['operation_code'];
+			// 	}
+			// }
+			// else
+			// {
+				$input_ops_code = 100;
+			// }
+		
+			//echo "PAC TID = $b_tid + $value";
 			if($input_ops_code == 100 || $input_ops_code == 129)
 			{
 				$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
@@ -583,8 +592,9 @@ else if($concurrent_flag == 0)
 				else
 				{
 					//if it was not there in ims log am checking that in ims log backup and updating the qty and reverting that into the ims log because ims_qty and ims_pro_qty not equal
-					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_shift = '$b_shift' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
+					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module'  AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
 					$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
+					//echo '<br/>'.$searching_query_in_imslog;
 					if($result_searching_query_in_imslog->num_rows > 0)
 					{
 						while($row = $result_searching_query_in_imslog->fetch_assoc()) 
@@ -611,7 +621,9 @@ else if($concurrent_flag == 0)
 				}
 				
 			}
+			//exit('force quitting 1  ');
 		}
+		//exit('force quitting');
 		//inserting into bai_log and bai_log buff
 			$sizevalue="size_".$size_id;
 			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
