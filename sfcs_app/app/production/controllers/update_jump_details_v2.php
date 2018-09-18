@@ -52,7 +52,7 @@ Select Team : <select name="team" class="select2_single form-control" required>
 <option value=''>Please Select</option>
 <?php 
 	for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-		<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($_GET['shift']==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+		<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
 	<?php }
 ?>
 </select>
@@ -73,7 +73,7 @@ if(isset($_POST['submit']))
 	$sql_num_check112=mysqli_num_rows($sql_result112);
 	if($sql_num_check112>0)
 	{
-		$sql1="Select atten_id,date,avail_$shift as avail,absent_$shift as absent,jumper_$shift as jumper,module from bai_pro.pro_atten_jumper where date=\"$date\" and (jumper_$shift>0) order by module*1";
+		$sql1="Select atten_id,date,avail_$shift as avail,absent_$shift as absent,jumper_$shift as jumper,module from $bai_pro.pro_atten_jumper where date=\"$date\" and (jumper_$shift>0) order by module*1";
 		$sql_result1=mysqli_query($link, $sql1) or exist ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
 		if($sql_num_check>0)
@@ -87,12 +87,39 @@ if(isset($_POST['submit']))
 			$absent_A=$sql_row1['absent'];
 			$jumper_A=$sql_row1['jumper'];
 			$module=$sql_row1['module'];
-			echo "<tr>";
-		
-			echo "<td>".$module."</td><td>".$avail_A."</td><td>".$absent_A."</td><td>".$jumper_A."</td><td>".(($avail_A+$jumper_A)-$absent_A)."</td>";
-			
+			echo "<tr>
+					<td>".$module."</td>
+					<td>".$avail_A."</td>
+					<td>".$absent_A."</td>";
+					 
+							if(in_array($authorized,$has_permission))
+							{
+								$readonly = ''; ?>
+								<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_jump_data_v2.php",0,"N") ?>" >
+								<?php
+									echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
+									echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
+									echo '<input type="hidden" value="'.$module.'" name="module'.$i.'">';		
+							}
+							else
+							{
+								$readonly = 'readonly';
+							}
+							// <td>".$jumper_A."</td>
+						?>
+							
+							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $jumper_A; ?>" name="jpa<?php echo $i; ?>"></td>
+							<?php
+							echo "<td>".(($avail_A+$jumper_A)-$absent_A)."</td>";
+				
 			}
 			echo "</tr> </table>";
+			if(in_array($authorized,$has_permission))
+			{ ?>
+				<tr>
+					<th colspan=5><input type="submit" class="btn btn-primary" value="Submit"> </th>
+				</tr> <?php
+			}	
 		}
 
 		else
