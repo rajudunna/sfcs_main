@@ -98,8 +98,6 @@
 		
 		//Required Quantity
 		$require_qty[$row123['color']][$row123['size_title']]=$row123['garments_per_carton']*$row123['cartons_per_pack_job']*$row123['pack_job_per_pack_method'];
-		// echo $row123['color']."--".$row123['size_title']."--".$row123['garments_per_carton']."--".$row123['cartons_per_pack_job']."--".$row123['pack_job_per_pack_method']."<br>";
-		// echo $pack_qty[$row123['color']][$row123['size_title']]."--".$plan_qty[$row123['color']][$row123['size_title']]."--".$require_qty[$row123['color']][$row123['size_title']]."---".$order_qty[$row123['color']][$row123['size_title']]."---".$eligible_to_qty[$row123['color']][$row123['size_title']]."<br>";
 		if($eligible_to_qty[$row123['color']][$row123['size_title']]<$require_qty[$row123['color']][$row123['size_title']])
 		{
 			$require_qty[$row123['color']][$row123['size_title']]=$eligible_to_qty[$row123['color']][$row123['size_title']];
@@ -110,7 +108,7 @@
 	// echo '<h4>Pack Method: <span class="label label-info">'.$operation[$carton_method].'</span></h4>';
 	// echo "<table class='table table-striped table-bordered'>";
 	// echo "<thead><th>Schedule</th><th>Parent No</th><th>Color</th><th>Size</th><th>Size Title</th><th>Carton Number</th><th>Quantity</th></thead>";	
-	//packing List Generation
+	// packing List Generation
 	if($carton_method==1 or $carton_method==2)
 	{
 		for($kk=0;$kk<sizeof($cols_tot_tmp);$kk++)
@@ -162,7 +160,7 @@
 					}
 					else
 					{
-						$cartons_to_create=$tmp_cart+$cartons_to_create;
+						$cartons_to_create=($tmp_cart-1)+$cartons_to_create;
 					}		
 				}
 				$act_carton=0;
@@ -196,7 +194,7 @@
 				}
 				$carton_mode='';
 				// Parent Table Filling
-				for($iii=$tmp_cart;$iii<$cartons_to_create;$iii++)
+				for($iii=$tmp_cart;$iii<=$cartons_to_create;$iii++)
 				{
 					if($carton_qty_tot[$iii]==$act_carton)
 					{
@@ -282,7 +280,7 @@
 				}
 				else
 				{
-					$cartons_to_create=$tmp_cart+$cartons_to_create;
+					$cartons_to_create=($tmp_cart-1)+$cartons_to_create;
 				}		
 			}
 			$act_carton=0;
@@ -319,7 +317,7 @@
 			}
 			$carton_mode='';
 			// Parent Table Filling
-			for($iiiii=$tmp_cart;$iiiii<$cartons_to_create;$iiiii++)
+			for($iiiii=$tmp_cart;$iiiii<=$cartons_to_create;$iiiii++)
 			{
 				if($carton_qty_tot[$iiiii]==$act_carton)
 				{
@@ -340,7 +338,7 @@
 				{
 					if($carton_qty[$cols_tot[$ii]][$cols_size[$iiii]]>0)
 					{
-						for($iiiii=$tmp_cart;$iiiii<$cartons_to_create;$iiiii++)
+						for($iiiii=$tmp_cart;$iiiii<=$cartons_to_create;$iiiii++)
 						{
 							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$iiii]]."', '".$carton_qty[$cols_tot[$ii]][$cols_size[$iiii]]."', NULL, '".$style."', '".$schedule."','".$cols_tot[$ii]."','".$cols_size[$iiii]."','".$parent_id[$iiiii]."')";
 							//echo $sql1q."<br>";
@@ -356,7 +354,7 @@
 			unset($carton_qty_tot);				
 		}
 	}
-	echo "</table>";
+	//echo "</table>";
 	if($status_generation==0)
 	{
 		echo "<script>sweetAlert('Packing List Not Generated.','Eligible Quantity Not available.','warning');</script>";
@@ -387,7 +385,7 @@
 						}
 					</script>";
 		}
-	}	
+	}
 ?> 
 </div></div>
 </body>
