@@ -55,17 +55,21 @@
                     
                     if($status == 0)
                     {
-                        $trims_status="Trims Applied";
+                        $trims_status="Not Yet Requested";
                     }
                     
                     if($status == 1)
                     {
-                        $trims_status="Stock In Pool";
+                        $trims_status="Preparing Material";
                     }
                     
                     if($status == 2)
                     {
-                        $trims_status="Trims Issued";
+                        $trims_status="Material ready for Production";
+                    }
+                    if($status == 3)
+                    {
+                        $trims_status="Partially Issued";
                     }
                     
                     if($jobsresult["input_trims_request_time"] == "0000-00-00 00:00:00")
