@@ -12,7 +12,9 @@ $url1 = getFullURL($_GET['r'],'excess_cut.php','N');
 <div class="panel-body">
 <?php
 
-
+if($_GET['excess_cut'] !=''){
+	$excess_cut = $_GET['excess_cut'];
+}
 if(isset($_POST['style']))
 {
 	$style=$_POST['style'];
@@ -1782,7 +1784,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>"; if($check_new3==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	echo "<td class=\"  \"><center>"; if($check_new4==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	
-	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&excess_cut=$excess_cut";
 	//$path="http://localhost/sfcs/projects/Beta/cut_plan_new_ms/new_doc_gen/Book1_print.php";
 
 	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
@@ -1792,7 +1794,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		// $path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 		// $path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 
-		$path= getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		$path= getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&excess_cut=$excess_cut";
 		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	}
 	
