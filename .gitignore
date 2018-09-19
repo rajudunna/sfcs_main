@@ -16,6 +16,8 @@ configuration/API/saved_fields/*.*
 sfcs_main_test
 /sfcs_app/app/dashboards/controllers/PLD_Dashboard/*.*
 /sfcs_app/app/dashboards/controllers/PLD_Dashboard/IU_Weeks/*.*
+/configuration/API/saved_fields
+configuration/API/saved_fields
 /configuration/API/saved_fields/
 configuration/API/saved_fields/
 /configuration/API/saved_fields/fields.json
