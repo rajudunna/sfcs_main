@@ -218,7 +218,7 @@ if(isset($_POST['barcode']) && $_POST['barcode']!=''){
 			else
 			{
 			
-				echo "<h3>Status: <font color=Red>Sorry!! This Label ID Already Scanning Completed..".$actual_quentity_present."--".$flag."</font></h3>";
+				echo "<h3>Status: <font color=Red>Sorry!! This Label ID Scanning is Already Completed..</font></h3>";
 			}
 		}
 		else
