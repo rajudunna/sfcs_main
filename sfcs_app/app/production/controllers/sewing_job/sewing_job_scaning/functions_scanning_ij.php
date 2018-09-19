@@ -225,7 +225,14 @@ function getjobdetails($job_number)
 			echo json_encode($result_array);
 			die();
 		}
-		
+		$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where category='sewing'";
+		$ops_query_result=mysqli_query($link,$get_ops_query);
+		while ($row = mysqli_fetch_array($ops_query_result))
+		{
+		  
+		  $ops_get_code[] = $row['operation_code'];
+
+		}
 		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code != 10 ORDER BY operation_order DESC LIMIT 1";
 		//echo $pre_ops_check;
 		$result_pre_ops_check = $link->query($pre_ops_check);
@@ -296,6 +303,7 @@ function getjobdetails($job_number)
 					$schedule =  $job_number[2];
 					$color = $row['order_col_des'];
 					$size = $row['old_size'];
+
 					if($flag == 'packing_summary_input')
 					{
 						$job_number_reference = $row['type_of_sewing'];
@@ -331,8 +339,31 @@ function getjobdetails($job_number)
 						{
 							$result_array['status'] = 'Please assign module to this input job';
 						}
-						
+
+						foreach ($ops_get_code as $key => $value)
+						{
+                                $result_array['recevied_pre_qty'][] = 0;
+                                 $result_array['ops_get_code'][] = $value;
+
+						}
 					}
+					else
+					{
+						foreach ($ops_get_code as $key => $value)
+						{
+						  $get_quantities = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition ='$column_to_search' AND operation_id ='$value'";
+							 $result_ops_quantities = $link->query($get_quantities);
+							 while($row = $result_ops_quantities->fetch_assoc()) 
+							 {
+								$recevied_pre_qty[] = $row['recevied_qty'];
+							 } 
+
+                             $result_array['recevied_pre_qty'][] = $recevied_pre_qty;
+                             $result_array['ops_get_code'][] = $value;
+                             //echo json_encode($result_array);
+						}
+
+					}	
 					
 					$result_array['table_data'][] = $row;
 				}
