@@ -7,6 +7,7 @@
 <!-- <div class="panel panel-primary">
 <div class="panel-heading">Packing List Generation</div>
 <div class="panel-body"> -->
+<h3><font face="verdana" color="green">Please wait...</font></h3>
 <?php
 	$carton_id=$_GET['c_ref'];
 	$seq_no=$_GET['seq_no'];

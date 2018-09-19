@@ -190,19 +190,19 @@
 					$pac_id[]=$new_result112['id'];
 				}
 				$deletepackmethod2 = "select * FROM $bai_pro3.pac_stat_log WHERE  pac_stat_id in (".implode(",",$pac_id).")";
-				$sql_result12=mysqli_query($link, $deletepackmethod2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result12=mysqli_query($link, $deletepackmethod2) or exit("Sql Error741".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($new_result112=mysqli_fetch_array($sql_result12))
 				{
 					$pa_tids[]=$new_result112['tid'];
 				}					
 				$deletepackmethod = "DELETE FROM $bai_pro3.pac_stat_log WHERE pac_stat_id in (".implode(",",$pac_id).")";
-				$sql_result=mysqli_query($link, $deletepackmethod) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $deletepackmethod) or exit("Sql Error742".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$deletepackmethod3 = "DELETE FROM $bai_pro3.pac_stat WHERE id in (".implode(",",$pac_id).")";
-				$sql_result=mysqli_query($link, $deletepackmethod3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $deletepackmethod3) or exit("Sql Error743".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$deletemo = "DELETE FROM $bai_pro3.mo_operation_quantites WHERE ref_no in (".implode(",",$pa_tids).") AND op_code in (".implode(",",$ops_id).")";
-				$sql_result=mysqli_query($link, $deletemo) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $deletemo) or exit("Sql Error744".mysqli_error($GLOBALS["___mysqli_ston"]));
 				echo '<script>swal("Packing List Deleted Successfully","","success")</script>';			   
 			
 			}
@@ -219,25 +219,25 @@
 					$ops_id[] = $result_ops['operation_code'];
 				}
 				$deletepackmethod1 = "select * FROM $bai_pro3.pac_stat WHERE schedule = $schedule";
-				$sql_result12=mysqli_query($link, $deletepackmethod1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result12=mysqli_query($link, $deletepackmethod1) or exit("Sql Error745".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($new_result112=mysqli_fetch_array($sql_result12))
 				{
 					$pac_id[]=$new_result112['id'];
 				}
 				$deletepackmethod2 = "select * FROM $bai_pro3.pac_stat_log WHERE  pac_stat_id in (".implode(",",$pac_id).")";
-				$sql_result12=mysqli_query($link, $deletepackmethod2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result12=mysqli_query($link, $deletepackmethod2) or exit("Sql Error746".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($new_result112=mysqli_fetch_array($sql_result12))
 				{
 					$pa_tids[]=$new_result112['tid'];
 				}	
 				$deletepackmethod = "DELETE FROM $bai_pro3.pac_stat_log WHERE pac_stat_id in (".implode(",",$pac_id).")";
-				$sql_result=mysqli_query($link, $deletepackmethod) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $deletepackmethod) or exit("Sql Error747".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$deletepackmethod3 = "DELETE FROM $bai_pro3.pac_stat WHERE id in (".implode(",",$pac_id).")";
-				$sql_result=mysqli_query($link, $deletepackmethod3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $deletepackmethod3) or exit("Sql Error748".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$deletemo = "DELETE FROM $bai_pro3.mo_operation_quantites WHERE ref_no in (".implode(",",$pa_tids).") AND op_code in (".implode(",",$ops_id).")";
-				$sql_result=mysqli_query($link, $deletemo) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $deletemo) or exit("Sql Error749".mysqli_error($GLOBALS["___mysqli_ston"]));
 				echo '<script>swal("Packing List Deleted Successfully","","success")</script>';			   
 			
 			}

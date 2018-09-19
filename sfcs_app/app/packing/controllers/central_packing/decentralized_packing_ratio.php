@@ -131,48 +131,9 @@
 	<div class="panel-body">
 		<div class="col-md-12">
 			<form method="POST" class="form-inline" name="decentralized_packing_ratio">
-				<label>Style:</label>
-				<?php
-					// Style
-					echo "<select name=\"style\" id=\"style\"  class='form-control' onchange=\"firstbox();\" disabled>";
-					$sql="select * from $brandix_bts.tbl_orders_style_ref order by product_style";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_num_check=mysqli_num_rows($sql_result);
-					echo "<option value=\"NIL\" selected>Select Style</option>";
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						if(str_replace(" ","",$sql_row['product_style'])==str_replace(" ","",$style))
-						{
-							echo "<option value=\"".$sql_row['product_style']."\" selected>".$sql_row['product_style']."</option>";
-						}
-						else
-						{
-							echo "<option value=\"".$sql_row['product_style']."\">".$sql_row['product_style']."</option>";
-						}
-					}
-					echo "</select>";
-				?>
+				<label>Style:</label><input type="text" readonly name="style" id="style" value="<?php echo $style; ?>"  class='form-control'>
 				&nbsp;&nbsp;
-				<label>Schedule:</label>
-				<?php
-					echo "<select class='form-control' name='schedule' id='schedule' disabled>";
-					$sql="select tbl_orders_master.id ,tbl_orders_master.product_schedule as schedule from $brandix_bts.tbl_orders_master left join $brandix_bts.tbl_orders_style_ref on tbl_orders_style_ref.id=tbl_orders_master.ref_product_style where product_style=\"$style\" group by schedule";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_num_check=mysqli_num_rows($sql_result);
-					echo "<option value=\"NIL\" selected>Select Schedule</option>";
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						if(str_replace(" ","",$sql_row['schedule'])==str_replace(" ","",$schedule))
-						{
-							echo "<option value=\"".$sql_row['schedule']."\" selected>".$sql_row['schedule']."</option>";
-						}
-						else
-						{
-							echo "<option value=\"".$sql_row['schedule']."\">".$sql_row['schedule']."</option>";
-						}
-					}
-					echo "</select>";
-				?>
+				<label>Schedule:</label><input type="text" readonly name="schedule" id="schedule" value="<?php echo $schedule; ?>"  class='form-control'>
 				<label>Pack Method:</label>
 				<?php 
 				echo "<select id=\"pack_method\" class='form-control' name=\"pack_method\" >";
@@ -193,9 +154,8 @@
 				</form>
 		</div>
 		
-		</br></br></br>
-
-				
+		</br>
+						
 		<?php
 			if (isset($_POST["submit"]) or ($_GET['style'] and $_GET['schedule'] and $_POST['pack_method']))
 			{
@@ -437,17 +397,17 @@
 								echo "<div class='panel panel-primary'>";
 									echo "<div class='panel-heading'>$title</div>";
 									echo "<div class='panel-body'>";
-									echo "<div class='col-md-3 col-sm-3 col-xs-12'>
+									echo "<div class='col-md-6 col-sm-6 col-xs-12'>
 									<label>Description :</label>
-									<input type='text' name='description' id='description' class='form-control' required>
+									<input type='text' name='description' id='description' size='60' maxlength='60' class='form-control' required>
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of cartons per Pack Job :</label>
-									<input type='text' name='noofcartons' id='noofcartons'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'>
+									<input type='text' name='noofcartons' id='noofcartons'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
 									</div>";
 									echo"<div class='col-md-3 col-sm-3 col-xs-12'>
-									<label>No of Pack Jobs per Pack  :</label>
-									<input type='text' name='noofpackjobs' id='noofpackjobs'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'>
+									<label>No of Cartons  :</label>
+									<input type='text' name='noofpackjobs' id='noofpackjobs'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
 									</div>";
 									echo "</br></br></br></br>";
 										//first table
