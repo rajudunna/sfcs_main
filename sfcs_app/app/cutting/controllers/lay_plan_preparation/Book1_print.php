@@ -14,7 +14,7 @@
     $cat_ref=$_GET['cat_ref']; 
     $cat_new = $_GET['category_new']; 
     $clubbing = $_GET['clubbing']; 
-    $excess_cut_qty = 2;
+    $excess_cut_qty = $_GET['excess_cut'];
 
 ?> 
 
