@@ -62,6 +62,7 @@
                         $ai++;
                     }
                     // var_dump($render_data);
+                    $i=0;
                     foreach($render_data as $data_ary){
                         $panel_qry = "
                         SELECT qms_style,qms_schedule,qms_color,qms_size,SUM(g_qms_qty) AS g_qms_qty,SUM(r_qms_qty) AS r_qms_qty,GROUP_CONCAT(doc_no) AS doc_no,qms_tran_type, GROUP_CONCAT(shift) AS shift, 
@@ -77,13 +78,14 @@
                         GROUP BY qms_size,qms_tran_type ORDER BY qms_size,qms_color,qms_tran_type
                         )) AS tab GROUP BY qms_style,qms_schedule,qms_color,qms_size
                         ";
-                   
+                //    echo $panel_qry."<br>";
                     $previous_size = '';
                     $count =0;
                     $res_qry =mysqli_query($link,$panel_qry);
                     echo "<tbody>";
                         while($result1 = mysqli_fetch_array($res_qry))
                         {
+
                             $style = $result1['qms_style']; 
                             $schedule = $result1['qms_schedule'];$color = $result1['qms_color'];
                             $size = $result1['qms_size'];
@@ -127,9 +129,11 @@
                                     <input type='checkbox' id='$i' name='che_$i' value=''>
                                     </td>
                                   </tr>";
+                                 
                                 }else{
                                     echo "   <td><input type='text' id='rep_$i' name='replace_$i' class='form-control' value = '0' readonly></td><td></td>";
                                 }
+                                $i = $i+1;
                         }
                     }
                     echo "</tbody>";  
@@ -206,8 +210,7 @@ $('#mod_id').click(function(){
         var shifts = [];
         var ops = [];
         var bundle = [];
-	    var count =0;
-        // alert('hai');
+	    var count =0;   
         $("input[type='checkbox']").each(function() { 
             if($(this).prop('checked') == true){
                 count++;
@@ -225,8 +228,9 @@ $('#mod_id').click(function(){
                     // return false;
                 // }
                
-                // console.log(sizes);
-                console.log(bundle);
+                console.log('size'+sizes);console.log('docno'+doc_nos);
+                console.log('shift'+shifts);console.log('opid'+ops);
+                console.log('bundle'+bundle);
             }
 	    });
 
