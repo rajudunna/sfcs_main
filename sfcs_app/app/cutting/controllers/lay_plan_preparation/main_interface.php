@@ -1464,7 +1464,8 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 			<?php
 			} 
 			else {
-				if($_GET['excess_cut']==1){
+				$excess_cut = $_GET['excess_cut'];
+				if($excess_cut==1){
 					$val = "First Cut";
 				}
 				else {
