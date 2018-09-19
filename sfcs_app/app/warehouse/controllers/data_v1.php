@@ -170,7 +170,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							if($res_check_rm_db->num_rows == 0)
 							{
 								//=============== Insert Data in rmwh ==========================
-								$qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`tid`,`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`) VALUES ('".$last_id."','".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from CWH','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."-".$plant_name."^".date('Y-m-d H:i:s')."')";	
+								$qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`tid`,`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`) VALUES ('".$last_id."','".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."-".$plant_name."^".date('Y-m-d H:i:s')."')";	
 								//echo $qry_insert_update_rmwh_data."<br/>";
 								$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
 								
