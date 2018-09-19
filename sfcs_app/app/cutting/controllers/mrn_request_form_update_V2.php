@@ -36,7 +36,7 @@ if(isset($_POST['update']))
 		{
 			//CR# 376 // kirang // 2015-05-05 // Referred the Batch number details to restrict the request of quantity requirement.
 			$sql="insert into $bai_rm_pj2.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks,batch_ref) values (\"".$style."\",\"".$schedule."\",\"".$color."^".$cutno."\",\"".$product[$i]."\",\"".$item_code[$i]."\",\"".$item_desc[$i]."\",\"".$co[$i]."\",\"".$price[$i]."\",\"".$uom[$i]."\",\"".$qty[$i]."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$reason[$i]."\",\"".$remarks[$i]."\",\"".$batch_ref."\")";
-			echo $sql."<br><br>".$host;
+			// echo $sql."<br><br>".$host;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//echo $sql_result;
 			//die();

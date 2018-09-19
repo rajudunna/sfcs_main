@@ -62,21 +62,30 @@ session_start();
 	$_SESSION['style']=$style;
 	$_SESSION['schedule']=$schedule;
 	$_SESSION['color']=$color;
-
 ?>
 <script>
+function validate_qty(ele)
+{
+	var k= 10;
+	var exist_qty = $('#temp'+ele.id).val();
+	console.log('entered = '+exist_qty);
+	if(Number(ele.value) < Number(exist_qty) ){
+		swal("You are entering new order quantity less than the current order quantity","","warning");
+		ele.value = exist_qty;
+	}
+	
+}
+
+
 
 function firstbox()
 {
 	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value;
-
 }
 
 function secondbox()
 {
 		window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
-
-	
 }
 
 function thirdbox()
@@ -1131,8 +1140,9 @@ if(isset($_POST['submit']))
 					$row_count++;				
 					echo "<tr>
 							  <td><center>".${"size".$i}."</center></td>
-							  <td><center>".${"s".$i}."</center></td>
+							 
 							  <td><center>".${"s".$i._old}."</center></td>
+							  <td><center><input type='hidden' id='temps$i'  value='".${"s".$i}."'><center>".${"s".$i}."</center></td>
 							  <td><center><input type=\"text\" style='border=\"0px\"' name=\"s".$i."ext\" value=\"0\" size=\"4\" class=\"form-control input-sm float\" 
 									  onKeyUp=\"
 												  if(event.keyCode == 9) 
@@ -1142,8 +1152,7 @@ if(isset($_POST['submit']))
 												  else
 													  document.f3.s".$i.".value = parseInt(document.f3.s".$j.".value)+parseInt(document.f3.s".$j.".value*document.f3.s".$i."ext.value/100);\"
 									  	  ></center></td>
-							  <td><center><input class=\"form-control input-sm\" type=\"text\" readonly style='border=\"0px\"' $flag onkeypress=\"return isNum(event)\" name=\"s".$i."\" value=".${"s".$i}."></center></td></tr>";
-					//    <tr><td>$size01</td><td>$s01</td><td>$s01_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s01ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s01.value=parseInt(document.f3.s011.value)+parseInt(document.f3.s011.value*document.f3.s01ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s01\" value=\"$s01\"></td>
+											<td><center><input class=\"form-control input-sm\" type=\"text\"  style='border=\"0px\"' $flag onchange=\"validate_qty(this);\" name=\"s".$i."\" id=\"s".$i."\" value=".${"s".$i}."></center></td></tr>";					//    <tr><td>$size01</td><td>$s01</td><td>$s01_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s01ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s01.value=parseInt(document.f3.s011.value)+parseInt(document.f3.s011.value*document.f3.s01ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s01\" value=\"$s01\"></td>
 				}
 				$j = $j+10;
 			}				

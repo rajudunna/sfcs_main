@@ -7,9 +7,13 @@ $has_perm=haspermission($_GET['r']);
   <title>Lost Time Capturing Report</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+
+  
  <!--<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'css/bootstrap.min.css',0,'R'); ?>">
   <script src="<?= getFullURLLevel($_GET['r'],'js/bootstrap.min.js',0,'R'); ?>"></script>
   <script src="<?= getFullURLLevel($_GET['r'],'js/jquery.js',0,'R'); ?>"></script>-->
+
  <style type="text/css">
  td {
 	 color:black;
@@ -145,10 +149,22 @@ table tr:hover td {
   <hr>
    
    <?php
+   $sql="SELECT count(*) as count1 FROM $bai_pro2.fr_data";
+   $result=mysqli_query($link,$sql);
+   while($row6=mysqli_fetch_array($result)){
+	   if($row6[0]>0) {
+	   }
+	   else {
+		echo "<script>swal('No Masters Data is available','','warning')</script>";
+		die();
+	   }
+   }
+   
    if(isset($_GET['submit'])){
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
     // echo $sql;
 	$res=mysqli_query($link,$sql); 
+	if(mysqli_num_rows($res)>0) {	
 	$i=0; 
 
 	//variables get for factory summary----------------------------------------
@@ -469,12 +485,11 @@ table tr:hover td {
 	$balance=0;
 	$plan_eff=0;
 	$act_eff=0;
-	
-	
 	} 
-	// else{
-		// echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
-	// }
+}
+else{
+	echo "<hr><div class='alert alert-danger'>No Data Found..</div>";
+}
 }
 	
 	?>

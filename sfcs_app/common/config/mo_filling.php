@@ -14,7 +14,7 @@
 		$ref_nos_query = "Select group_concat(distinct(bundle_number)) as bundle_nos from $brandix_bts.bundle_creation_data 
 						  where operation_id in ($op_codes) and trim(schedule)='".trim($schedule)."' 
 						  and trim(color)='".trim($color)."'";
-		echo $ref_nos_query.'<br/>';
+		//echo $ref_nos_query.'<br/>';
 		$ref_nos_result = mysqli_query($link,$ref_nos_query) or exit('Problem in getting bundles from BCD');	
 		while($row = mysqli_fetch_array($ref_nos_result)){
 			$bundle_nos = $row['bundle_nos'];

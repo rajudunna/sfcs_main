@@ -2826,7 +2826,7 @@ if(isset($_POST['submit']))
 	<col width=63 style='mso-width-source:userset;mso-width-alt:2304;width:47pt'>
 	<col width=64 span=13 style='mso-width-source:userset;mso-width-alt:2340; width:48pt'>
 	<col width=63 span=2 style='mso-width-source:userset;mso-width-alt:2304; width:47pt'>
-
+	<br/>
 	<tr height=22 style='mso-height-source:userset;height:16.5pt'>
 	<td colspan=25 height=22 class=xl10226424 width=1865 style='border-right:1.0pt solid black;height:16.5pt;width:1399pt'>DAILY EFFICIENCY REPORT ($report_heading)</td>
 	<td colspan=13 class=xl10626424 width=958 style='border-right:1.0pt solid black;
@@ -3256,12 +3256,14 @@ if(isset($_POST['submit']))
 			$total_nop=$total_nop+$nop;
 			$grand_total_nop=$grand_total_nop+$nop;
 			$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
-			<td height=21 class=xl8326424 style='height:15.75pt'><a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a></td>
-			<td class=xl8426424 >$buyerdb</td>
-			<td class=xl8426424 >$styledb</td>
-			<td class=xl8426424 >$smv</td>
-			<td class=xl8526424 >$age_days</td>
-			<td class=xl8626424 >".$nop."</td>";
+			<td height=21 class=xl8326424 style='height:15.75pt'>
+			<a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a>
+			</td>
+			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$buyerdb</td>
+			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$styledb</td>
+			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$smv</td>
+			<td class=xl8526424 style='width:100px;word-wrap:break-word;'>$age_days</td>
+			<td class=xl8626424 style='width:100px;word-wrap:break-word;'>".$nop."</td>";
 			//$total_nop=$total_nop+$nop;
 			$age_days=0;
 			echo $table_temp;
@@ -4018,14 +4020,14 @@ if(isset($_POST['submit']))
 
 			if($x_sec==sizeof($section_array))
 			{
-				include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
+				include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report3_excel_new.php',0,'R'));
 				
 				if(sizeof($section_array) > 1)
 				{	
 					
 					include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'Eff_report33_excel_new_buyer.php',0,'R'));
 					
-				}
+				}	
 				
 			}
 		}

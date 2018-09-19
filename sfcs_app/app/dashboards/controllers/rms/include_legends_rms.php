@@ -23,7 +23,7 @@
 <div class="white" ></div> No Priority Available
 </div>
 <div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
-<div class="pink" ></div> Ready To Issue
+<div class="pink" ></div> Ready In Warehouse
 </div>
 <div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
 <div class="orange" ></div> Cutting Partially Done

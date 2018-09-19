@@ -287,8 +287,10 @@ if(isset($_GET['submit']))
 												{
 													if (in_array($team, $plant_modules[$k]))
 													{
-														// echo $plant_modules[$k][];
 														$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
+														$grand_tot_qty_time_dummy[$section_wise_total][$i] = $grand_tot_qty_time_dummy[$section_wise_total][$i] + $row;	
+
+														$grand_tot_qty_time_array_section[$section_wise_total][$i] = 	$grand_tot_qty_time_dummy[$section_wise_total][$i];
 													}
 													
 												}											

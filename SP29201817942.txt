@@ -1,0 +1,14 @@
+insert into db_update_log(date, file_name, operation) values ('2018-09-02', 'SP29201817942', 'Plan');
+
+insert into shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method) values('JJE130S9       ', '554746', '01 - OFF WHITE                ', 24, '2019-02-08', 'P0519-415664-001                                                                                    ', 'BEL_UNIQLO_WOMENS_KN_CTN_BTM                                                                        ', 'L','1SL');
+
+insert into shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method) values('JJE130S9       ', '554746', '01 - OFF WHITE                ', 96, '2019-02-08', 'P0519-415664-001                                                                                    ', 'BEL_UNIQLO_WOMENS_KN_CTN_BTM                                                                        ', 'M','1SL');
+
+insert into shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method) values('JJE130S9       ', '554746', '01 - OFF WHITE                ', 24, '2019-02-08', 'P0519-415664-001                                                                                    ', 'BEL_UNIQLO_WOMENS_KN_CTN_BTM                                                                        ', 'XL','1SL');
+
+insert into shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method) values('JJE130S9       ', '554749', '69 - Navy                     ', 368, '2019-02-08', 'P0519-415664-001                                                                                    ', 'BEL_UNIQLO_WOMENS_KN_CTN_BTM                                                                        ', 'L','F12');
+
+insert into shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method) values('JJE130S9       ', '554749', '69 - Navy                     ', 552, '2019-02-08', 'P0519-415664-001                                                                                    ', 'BEL_UNIQLO_WOMENS_KN_CTN_BTM                                                                        ', 'M','F12');
+
+insert into shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method) values('JJE130S9       ', '554749', '69 - Navy                     ', 184, '2019-02-08', 'P0519-415664-001                                                                                    ', 'BEL_UNIQLO_WOMENS_KN_CTN_BTM                                                                        ', 'XL','F12');
+
