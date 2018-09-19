@@ -544,7 +544,7 @@
 								{
 									if($ops_m_id[$mo_no[0]][$ops[$k]]>0)
 									{
-										$sql1231="SELECT * FROM $bai_pro3.packing_summary WHERE size_code='$size_code' and order_del_no='".$schedule."' and order_col_des='".$col."' and seq_no = '$pack_ref'";
+										$sql1231="SELECT * FROM $bai_pro3.packing_summary WHERE size_tit='$size_code' and order_del_no='".$schedule."' and order_col_des='".$col."' and seq_no = '$pack_ref'";
 										$result1231=mysqli_query($link, $sql1231) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 										//echo $sql1231.'<br/>';
 										while($row1231=mysqli_fetch_array($result1231))
