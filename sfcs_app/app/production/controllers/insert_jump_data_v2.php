@@ -7,24 +7,24 @@ $shift=$_POST['shift'];
 
 for($i=0;$i<sizeof($mod_names);$i++)
 {
-	$attenid=$date."-".$mod_names[$i];
-	$sql1="INSERT Ignore INTO $bai_pro.pro_atten (atten_id, date,module) VALUES ('$attenid','".$date."','$mod_names[$i]')";
-	mysqli_query($link, $sql1) or exit("Sql Error88 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $attenid=$date."-".$mod_names[$i];
+	// $sql1="INSERT Ignore INTO $bai_pro.pro_atten (atten_id, date,module) VALUES ('$attenid','".$date."','$mod_names[$i]')";
+	// mysqli_query($link, $sql1) or exit("Sql Error88 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql11="INSERT Ignore INTO $bai_pro.pro_atten_jumper (atten_id, date,module) VALUES ('$attenid','".$date."','$mod_names[$i]')";
-	mysqli_query($link, $sql11) or exit("Sql Error88 $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql11="INSERT Ignore INTO $bai_pro.pro_atten_jumper (atten_id, date,module) VALUES ('$attenid','".$date."','$mod_names[$i]')";
+	// mysqli_query($link, $sql11) or exit("Sql Error88 $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-	$sql2="update $bai_pro.pro_atten_jumper set jumper_$shift='".$_POST['jpa'.$i]."' where atten_id='$attenid' and module='$mod_names[$i]'";
+	$sql2="update $bai_pro.pro_atten_jumper set jumper_$shift='".$_POST['jpa'.$i]."' where atten_id='".$date."".$mod_names[$i]."' and module='$mod_names[$i]'";
 	mysqli_query($link, $sql2) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql222="Select avail_$shift as avail from $bai_pro.pro_atten_jumper where atten_id='$attenid' and module='$mod_names[$i]'";
+	$sql222="Select avail_$shift as avail from $bai_pro.pro_atten_jumper where atten_id='".$date."".$mod_names[$i]."' and module='$mod_names[$i]'";
 	$sql_result222=mysqli_query($link, $sql222) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row222=mysqli_fetch_array($sql_result222))
 	{
 	$avail_A=$sql_row222['avail'];
 	}
 	
-	$sql22="update $bai_pro.pro_atten set avail_$shift='".($_POST['jpa'.$i]+$avail_A)."' where atten_id='$attenid' and module='$mod_names[$i]'";
+	$sql22="update $bai_pro.pro_atten set avail_$shift='".($_POST['jpa'.$i]+$avail_A)."' where atten_id='".$date."".$mod_names[$i]."' and module='$mod_names[$i]'";
 	mysqli_query($link, $sql22) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	//update bai_pro.grand_rep
