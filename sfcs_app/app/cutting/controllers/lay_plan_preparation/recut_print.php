@@ -417,20 +417,30 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	}
 	
 	//Binding Consumption / YY Calculation
-	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-	if($sql_num_check > 0)
+	
+	if($category=='Body' || $category=='Front')
 	{
-		while($sql_row2=mysqli_fetch_array($sql_result))
+		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+		// echo $sql2;
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$rows=mysqli_num_rows($sql_result2);
+		if($rows > 0)
 		{
-			$binding_con = $sql_row2['binding_consumption'];
-			$bind_con= $binding_con *($a_ratio_tot*$plies);
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+				$binding_con = $sql_row2['binding_con'];
+				$bind_con= $binding_con *($a_ratio_tot*$plies);
+			}
+		}
+		else
+		{
+			$bind_con=0;
 		}
 	}
 	else
 	{
 		$bind_con=0;
+		
 	}
 	
 	//Binding Consumption / YY Calculation
@@ -2115,7 +2125,7 @@ tags will be replaced.-->
  </tr>
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+  <td colspan=3 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="500" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2159,14 +2169,14 @@ tags will be replaced.-->
  <tr class=xl654118 height=26 style='mso-height-source:userset;height:19.5pt'>
   <td height=26 class=xl654118 style='height:19.5pt'></td>
   <td class=xl654118></td>
+  <!-- <td class=xl1014118></td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
-  <td class=xl1014118></td>
-  <td class=xl1014118></td>
+  <td class=xl1014118></td> -->
   <td colspan=3 style='font-size:24px;font-weight:bold'>Recut Docket</td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
-  <td colspan=2 style='border-right:1px solid black;font-size:20px;font-weight:bold;text-align:right' style='border-right:.5pt solid black'>Docket
+  <td colspan=3 style='border-right:1px solid black;font-size:20px;font-weight:bold;text-align:right' style='border-right:.5pt solid black'>Docket
   Number</td>
   <td colspan=3 class=xl1024118 style='border-right:.5pt solid black;
   border-left:none'><?php echo leading_zeros($docketno,9); ?></td>
@@ -3271,7 +3281,7 @@ $tot_bind_len=0;
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_width[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $leng_det[$i]; $tot_alloc_qty=$tot_alloc_qty+$leng_det[$i];?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php // echo $plies1[$i]; ?></td>
+	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php// echo $plies1[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
@@ -3332,7 +3342,7 @@ $tot_bind_len=0;
 			  <td class=xl814118></td>
 			  <td class=xl814118></td>
 			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
-			  <td class=xl814118></td>";
+			  ";
 	// }
 	?>
 	</tr>

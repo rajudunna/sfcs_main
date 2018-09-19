@@ -21,6 +21,16 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
         <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
 
         <style> 
+            table {
+                width:100%
+            }
+            td,th {
+                border-collapse: separate;
+                border: 1px solid black;
+            }
+            th{
+                text-align:center;
+            }
             @media print { 
                 @page narrow {size: 11in 9in} 
                 @page rotated {size: landscape} 
@@ -418,8 +428,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $headers[$i]=$time; 
                                     $i=$i+1; 
                                 } 
-
-                                echo "<table id=\"info\">"; 
+                                echo "<hr/>";
+                                echo "<table id=\"info\" style='border:1px solid black;'>"; 
                                 echo "<tr><th style='background-color:#29759C; color: white;' rowspan=2>Section</th> 
                                 <th style='background-color:#29759C; color: white;' rowspan=2>Head</th>"; 
 
@@ -951,7 +961,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                             } 
                                         } 
                                         { 
-                                            $sql_rw="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$date\" and bac_no=$mod  $time_query and  Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                            $sql_rw="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_no=$mod  $time_query and  Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
 
                                             $sql_result_rw=mysqli_query($link, $sql_rw) or exit("Sql Error_rw1x=".$sql_rw.mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row_rw=mysqli_fetch_array($sql_result_rw)) 
@@ -1325,7 +1335,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     } 
 
                                     // $sum_rw1_tot = 0; 
-                                    $sql2_rw1="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql2_rw1="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                     $sql_result2_rw1=mysqli_query($link, $sql2_rw1) or exit("Sql Error_rw1".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2_rw1=mysqli_fetch_array($sql_result2_rw1)) 
                                     { 
@@ -1344,7 +1354,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $rw_test = $sum_rw1_tot; 
 
                                     // $sum_ut1_tot = 0; 
-                                    $sql2_ut1="select sum(bac_qty) as \"sum\" from bai_trim_log where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql2_ut1="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                     $sql_result2_ut1=mysqli_query($link, $sql2_ut1) or exit("Sql Error_ut1".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2_ut1=mysqli_fetch_array($sql_result2_ut1)) 
                                     { 
@@ -1873,7 +1883,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                             } 
 
                                             { 
-                                                $sql2_rw="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                                $sql2_rw="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
                                                 $sql_result2_rw=mysqli_query($link, $sql2_rw) or exit("Sql Error37".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                                 while($sql_row2_rw=mysqli_fetch_array($sql_result2_rw)) 
                                                 { 
@@ -1893,7 +1903,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                             { 
-                                                $sql2_ut="select sum(bac_qty) as \"sum\" from bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                                $sql2_ut="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
                                                 $sql_result2_ut=mysqli_query($link, $sql2_ut) or exit("Sql Error_ut".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                                 while($sql_row2_ut=mysqli_fetch_array($sql_result2_ut)) 
                                                 { 
@@ -2059,7 +2069,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         } 
 
                                         { 
-                                            $sql2_rw5="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                            $sql2_rw5="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
                                             $sql_result2_rw5=mysqli_query($link, $sql2_rw5) or exit("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2_rw5=mysqli_fetch_array($sql_result2_rw5)) 
                                             { 
@@ -2079,7 +2089,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                         { 
-                                            $sql2_ut5="select sum(bac_qty) as \"sum\" from bai_trim_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                            $sql2_ut5="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
                                             $sql_result2_ut5=mysqli_query($link, $sql2_ut5) or exit("Sql Error_ut".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2_ut5=mysqli_fetch_array($sql_result2_ut5)) 
                                             { 
@@ -2271,7 +2281,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                                 $gtotal=$gtotal+$sum; 
                                             } 
                                         } 
-                                        $sql2_rw1="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$date\" and bac_no=$mod $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                        $sql2_rw1="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_no=$mod $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                         $sql_result2_rw1=mysqli_query($link, $sql2_rw1) or exit("Sql Error49".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2_rw1=mysqli_fetch_array($sql_result2_rw1)) 
                                         { 

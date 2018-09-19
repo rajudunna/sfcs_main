@@ -1,0 +1,26 @@
+insert into db_update_log(date, file_name, operation) values ('2018-08-31', 'SS318201810831', 'Style');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-blue shadow            ', 'L', 828, 'CN1290D8FB1 001', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.2687,'BLUE SHADOW');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-blue shadow            ', 'M', 1408, 'CN1290D8FB1 001', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.2687,'BLUE SHADOW');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-blue shadow            ', 'S', 344, 'CN1290D8FB1 001', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.2687,'BLUE SHADOW');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-blue shadow            ', 'XL', 308, 'CN1290D8FB1 001', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.2687,'BLUE SHADOW');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-IMPACT                 ', 'L', 828, 'CN1290D8FB1 003', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.2687,'IMAPCT');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-IMPACT                 ', 'M', 1408, 'CN1290D8FB1 003', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.2687,'IMAPCT');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-IMPACT                 ', 'S', 344, 'CN1290D8FB1 003', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.2687,'IMAPCT');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-IMPACT                 ', 'XL', 308, 'CN1290D8FB1 003', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.2687,'IMAPCT');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-MEDIUM GREY            ', 'L', 828, 'CN1290D8FB1 002', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.269,'Medium grey');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-MEDIUM GREY            ', 'M', 1408, 'CN1290D8FB1 002', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.269,'Medium grey');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-MEDIUM GREY            ', 'S', 344, 'CN1290D8FB1 002', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.269,'Medium grey');
+
+insert into order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des ) values ('531962', 'Y', 'CN1290D8       ', '988RYE-MEDIUM GREY            ', 'XL', 308, 'CN1290D8FB1 002', 'P.EST92%EL8% SJ 155G MC180cm SD*Q57246', 0.269,'Medium grey');
+

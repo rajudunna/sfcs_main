@@ -49,13 +49,20 @@ $rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
-
+//M3 Rest API Calls Details
+$company_no = $conf1->get('companey-number');
+$api_username = $conf1->get('api-user-name');
+$api_password = $conf1->get('api-password');
+$api_hostname = $conf1->get('api-host-name');
+$api_port_no = $conf1->get('api-port');
 
 //Scanning Methods
 $scanning_methods = $conf1->get('scaning-method');
 
 //Display Reporting Qty
 $display_reporting_qty = $conf1->get('reporting-quantity');
+// Cut Quantity Reporting Validation
+$cut_qty_reporting_validation=$conf1->get('cut-qty-reporting-validation');
 
 //LDAP CODE STARTS***
 // if(substr($server_soft,0,13)=="Apache/2.4.28")
@@ -172,4 +179,18 @@ while($methods=mysqli_fetch_array($pack_result))
     $pack_methods[]=$methods['pack_method_name'];
 }
 // var_dump($pack_methods);
+//***************************************************
+//======== for central warehouse connections ========
+//***************************************************
+    $is_chw = $conf1->get('central_warehouse');
+    $cwh_link = Null;
+    if($is_chw == 'yes'){
+        $cwh_host = $conf1->get('cw_host');
+        $cwh_user_name = $conf1->get('cw_username');
+        $cwh_password = $conf1->get('cw_password');
+        $cwh_port = $conf1->get('cw_port');
+        $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+    }
+//===================================================
 ?>

@@ -46,17 +46,23 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					}else{
 						
 						//validating inactive action 
-						$qry_validateaction="SELECT SUM(qty_rec) as qty_rec,SUM(qty_issued) as qty_issue,SUM(qty_ret) as qty_ret FROM store_in where ref1='$location_name'";
+						$qry_validateaction="SELECT SUM(qty_rec) as qty_rec,SUM(qty_issued) as qty_issue,SUM(qty_ret) as qty_ret FROM $bai_rm_pj1.store_in where ref1='$location_name'";
+						//echo $qry_validateaction;
 						$qry_valid_result=mysqli_query($link, $qry_validateaction);
-						while($qry_valid_row=mysqli_fetch_array($qry_valid_result))
+						$row = mysqli_fetch_row($qry_valid_result);
+
+						/*while($qry_valid_row=mysqli_fetch_array($qry_valid_result))
 						{
 							$qty_rec=$qry_valid_row['qty_rec'];
 							$qty_iss=$qry_valid_row['qty_issue'];
 							$qty_ret=$qry_valid_row['qty_ret'];
-						}
+						}*/
 						//qty validatiion for record editing
-						$tot_qty=($qty_rec+$qty_ret-$qty_iss);
-						if($tot_qty!='0'){
+						//$qty_rec+$qty_ret-$qty_iss
+						$tot_qty=($row[0]+$row[2]-$row[1]);
+						//echo $tot_qty;
+						//die();
+						if($tot_qty>0){
 						
 							echo "<script>sweetAlert('Warning','You cant edit this Location...','error')</script>";	
 

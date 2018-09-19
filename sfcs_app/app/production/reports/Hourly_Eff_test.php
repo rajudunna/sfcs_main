@@ -13,7 +13,14 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
         <script language="javascript" type="text/javascript" src="../common/js/datetimepicker_css.js"></script> 
         <link rel="stylesheet" href="style.css" type="text/css" media="all" /> 
         <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
-        <style> 
+        <style>
+        table{
+            width:100%;
+        } 
+            td,th {
+                border-collapse: separate;
+                border: 1px solid black;
+            }
             @media print { 
                 @page narrow {size: 11in 9in} 
                 @page rotated {size: landscape} 
@@ -360,8 +367,9 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     $headers[$i]=$time; 
                                     $i=$i+1;
                                 }
+                                echo "<hr/>";
                                 echo "<table id=\"info\">"; 
-                                echo "<tr><th style='background-color:#29759C; color: white;'>Section</th><th style='background-color:#29759C;'>Head</th>"; 
+                                echo "<tr><th style='background-color:#29759C;'>Section</th><th style='background-color:#29759C;'>Head</th>"; 
 
                                 for($i=0;$i<sizeof($headers);$i++) 
                                 { 

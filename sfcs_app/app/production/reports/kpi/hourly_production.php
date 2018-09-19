@@ -296,6 +296,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 								// echo $total_qty.'-'.$i.'- '.$k.'- '.$row.'<br/>';
 									if (in_array($team, $plant_modules[$k]))
 									{
+										// echo $plant_modules[$k][];
 										$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
 									}
 								}		

@@ -836,7 +836,7 @@ tags will be replaced.-->
 	// 	$headers .= 'To: '.$to. "\r\n";
 	// }
 	
-	$to = $disptach_mail;
+	$to = $dispatch_mail;
 	$headers .= 'From: Shop Floor System Alert'. "\r\n";
 	//$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
 	

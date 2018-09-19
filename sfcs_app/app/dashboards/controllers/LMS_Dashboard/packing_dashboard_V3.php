@@ -350,7 +350,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 echo "<div class='panel panel-primary'><div class='panel-heading'>Cartons Work in Progress Dashboard (LMS)<span class='pull-right' style='color:white;'><a href='$pop_pending_list_v3' onclick=\"return popitup("."'$pop_pending_list_v3'".")\">Carton Issues</a></b>&nbsp;&nbsp;<b><a href='$image1' onclick=\"return popitup("."'$image1'".")\">?</a></span></div>
     <div class='panel-body'>";
 
-            $sqlx="select * from $bai_pro3.sections_db where sec_id>0"; 
+            $sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id"; 
             $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
             { 

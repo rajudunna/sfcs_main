@@ -395,7 +395,7 @@ if(isset($_POST['submit']))
 							$$e = $i;
 						}
 					}			
-					echo '<input type="hidden" name="s0'.$j.$cnt.'" value='.$$b.'>';
+					echo '<input type="hidden" id="s0'.$j.$cnt.'"  name="s0'.$j.$cnt.'" value='.$$b.'>';
 					$x=$i;
 					$i = sprintf("%02d",$x);
 					$y =$j;
@@ -403,11 +403,14 @@ if(isset($_POST['submit']))
 					if($$c != null && $$b != null && $$a != null)
 					{
 						$flag1 = ($$b == 0)?'readonly':'';	
-						$row_count++;				
+						$row_count++;
+						?>
+									
+						<?php
 						echo "<tr>
 								<td><center>".$row2['order_col_des']."</center></td>
 								<td><center>".$$c."</center></td>
-								<td><center>".$$b."</center></td>
+								<td><input type='hidden' id='temps$i$cnt' value='".$$b."'><center>".$$b."</center></td>
 								<td><center>".$$a."</center></td>
 								<td><center><input type=\"text\" style='border=\"0px\"' name=\"s".$i."ext".$cnt."\" value=\"0\" size=\"4\" class=\"form-control input-sm float\" onKeyUp=\"
 								if(event.keyCode == 9) 
@@ -416,7 +419,7 @@ if(isset($_POST['submit']))
 									document.f3.s".$i.$cnt.".value = parseInt(document.f3.s".$j.$cnt.".value)+parseInt(document.f3.s".$j.$cnt.".value*document.f3.ext.value/100);
 								else
 									document.f3.s".$i.$cnt.".value = parseInt(document.f3.s".$j.$cnt.".value)+parseInt(document.f3.s".$j.$cnt.".value*document.f3.s".$i."ext".$cnt.".value/100);\"></center></td>
-								<td><center><input class=\"form-control input-sm\" type=\"text\" readonly style='border=\"0px\"' $flag1 onkeypress=\"return isNum(event)\" id=\"s".$i.$cnt."\" name=\"s".$i.$cnt."\" value=".$$b."></center></td></tr>";
+								<td><center><input class=\"form-control input-sm\" type=\"text\"  style='border=\"0px\"' $flag1 onchange=\"validate_qty(this);\" id=\"s".$i.$cnt."\" name=\"s".$i.$cnt."\" value=".$$b."></center></td></tr>";
 					}
 					$j = $j+10;		
 				}
@@ -435,7 +438,67 @@ if(isset($_POST['submit']))
 </div>
 </div>
 </div>
+<?php
+if(isset($_POST["update"])){
+	$sty=$_POST["sty"];
+	$sch=$_POST["sch"];
+	$ext=$_POST["ext"];
+	$rowcnt = $_POST['rowscount'];
+	if($rowcnt > 0){
+		for($i=0;$i<$rowcnt;$i++){
+			$color = $_POST['color'.$i];
+			$k=11;
+			$old = [];
+			$new = [];
+			for($j=1;$j<=50;$j++){
+				if($j<10){
+					$old[]=($_POST["s0".$k.$i])?$_POST["s0".$k.$i]:0;
+					$new[]=($_POST["s0".$j.$i])?$_POST["s0".$j.$i]:0;
+				}else if($j>=10){
+					$old[]=($_POST["s".$k.$i])?$_POST["s".$k.$i]:0;
+					$new[]=($_POST["s".$j.$i])?$_POST["s".$j.$i]:0;
+				}
+				$k+=10;
+			}
+
+			$update="update $bai_pro3.bai_orders_db set order_no=\"1\",old_order_s_s01=\"$old[0]\",old_order_s_s02=\"$old[1]\",old_order_s_s03=\"$old[2]\",old_order_s_s04=\"$old[3]\",old_order_s_s05=\"$old[4]\",old_order_s_s06=\"$old[5]\",old_order_s_s07=\"$old[6]\",old_order_s_s08=\"$old[7]\",old_order_s_s09=\"$old[8]\",old_order_s_s10=\"$old[9]\",old_order_s_s11=\"$old[10]\",old_order_s_s12=\"$old[11]\",old_order_s_s13=\"$old[12]\",old_order_s_s14=\"$old[13]\",old_order_s_s15=\"$old[14]\",old_order_s_s16=\"$old[15]\",old_order_s_s17=\"$old[16]\",old_order_s_s18=\"$old[17]\",old_order_s_s19=\"$old[18]\",old_order_s_s20=\"$old[19]\",old_order_s_s21=\"$old[20]\",old_order_s_s22=\"$old[21]\",old_order_s_s23=\"$old[22]\",old_order_s_s24=\"$old[23]\",old_order_s_s25=\"$old[24]\",old_order_s_s26=\"$old[25]\",old_order_s_s27=\"$old[26]\",old_order_s_s28=\"$old[27]\",old_order_s_s29=\"$old[28]\",old_order_s_s30=\"$old[29]\",old_order_s_s31=\"$old[30]\",old_order_s_s32=\"$old[31]\",old_order_s_s33=\"$old[32]\",old_order_s_s34=\"$old[33]\",old_order_s_s35=\"$old[34]\",old_order_s_s36=\"$old[35]\",old_order_s_s37=\"$old[36]\",old_order_s_s38=\"$old[37]\",old_order_s_s39=\"$old[38]\",old_order_s_s40=\"$old[39]\",old_order_s_s41=\"$old[40]\",old_order_s_s42=\"$old[41]\",old_order_s_s43=\"$old[42]\",old_order_s_s44=\"$old[43]\",old_order_s_s45=\"$old[44]\",old_order_s_s46=\"$old[45]\",old_order_s_s47=\"$old[46]\",old_order_s_s48=\"$old[47]\",old_order_s_s49=\"$old[48]\",old_order_s_s50=\"$old[49]\",order_s_s01=\"$new[0]\",order_s_s02=\"$new[1]\",order_s_s03=\"$new[2]\",order_s_s04=\"$new[3]\",order_s_s05=\"$new[4]\",order_s_s06=\"$new[5]\",order_s_s07=\"$new[6]\",order_s_s08=\"$new[7]\",order_s_s09=\"$new[8]\",order_s_s10=\"$new[9]\",order_s_s11=\"$new[10]\",order_s_s12=\"$new[11]\",order_s_s13=\"$new[12]\",order_s_s14=\"$new[13]\",order_s_s15=\"$new[14]\",order_s_s16=\"$new[15]\",order_s_s17=\"$new[16]\",order_s_s18=\"$new[17]\",order_s_s19=\"$new[18]\",order_s_s20=\"$new[19]\",order_s_s21=\"$new[20]\",order_s_s22=\"$new[21]\",order_s_s23=\"$new[22]\",order_s_s24=\"$new[23]\",order_s_s25=\"$new[24]\",order_s_s26=\"$new[25]\",order_s_s27=\"$new[26]\",order_s_s28=\"$new[27]\",order_s_s29=\"$new[28]\",order_s_s30=\"$new[29]\",order_s_s31=\"$new[30]\",order_s_s32=\"$new[31]\",order_s_s33=\"$new[32]\",order_s_s34=\"$new[33]\",order_s_s35=\"$new[34]\",order_s_s36=\"$new[35]\",order_s_s37=\"$new[36]\",order_s_s38=\"$new[37]\",order_s_s39=\"$new[38]\",order_s_s40=\"$new[39]\",order_s_s41=\"$new[40]\",order_s_s42=\"$new[41]\",order_s_s43=\"$new[42]\",order_s_s44=\"$new[43]\",order_s_s45=\"$new[44]\",order_s_s46=\"$new[45]\",order_s_s47=\"$new[46]\",order_s_s48=\"$new[47]\",order_s_s49=\"$new[48]\",order_s_s50=\"$new[49]\" where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no <> 1";
+
+			if(!mysqli_query($link, $update))
+			{
+				echo "<div class=\"col-sm-12 alert-danger\"><h2><span class=\"label label-default\">Order quantities already updated!</span></h2></div>";
+			}
+			else
+			{
+				$insert="insert ignore into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
+				if(!mysqli_query($link, $insert))
+				{			
+					echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
+				}
+				else
+				{			
+					echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
+				}		
+			}
+		}
+	}else{
+		echo "<div class='row'><span class='alert alert-error'>There are no colors for the style and schedule</span></div><br/>";
+	}
+}
+?>
 <script>
+
+function validate_qty(ele)
+{
+	var k= 10;
+	var exist_qty = $('#temp'+ele.id).val();
+	console.log('entered = '+exist_qty);
+	if(Number(ele.value) < Number(exist_qty) ){
+		swal("You are entering new order quantity less than the current order quantity","","warning");
+		ele.value = exist_qty;
+	}
+	
+}
+
 function calculateExcess(){
 	var rowscount = document.getElementById('rowscount').value;
 	for(var i=0;i<rowscount;i++){
@@ -443,6 +506,7 @@ function calculateExcess(){
 		for(var j=1;j<=50;j++){
 			if(i<10){
 				var ex = document.getElementsByName('s0'+k+i)[0].value;
+				
 				if(ex!=0){
 					var nameid = 's0'+j+i;
 					document.getElementById(nameid).value=Math.round(parseInt(ex)+parseFloat(ex*document.f3.ext.value/100));
