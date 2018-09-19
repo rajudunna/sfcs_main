@@ -2972,6 +2972,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
                         // // Deduction From Maximum (Last Cut)
                         if($excess_cut_qty == 2){
 
+                            error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
+
                             if($cutno == 1){
 
                                 for($s=0;$s<sizeof($size);$s++) 
