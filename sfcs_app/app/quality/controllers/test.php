@@ -91,7 +91,7 @@ function button_disable()
 function validateQty(event, bal, pre_val) 
 {
 	if($('#new_qty_'+pre_val).val() > bal){
-		sweetAlert('Warning', 'update quantity must less than balance to receive.', 'error');
+		sweetAlert('Warning', 'update quantity must less than balance to  receive.', 'error');
 		// $(this).default.val();
 		// console.log($('#new_qty_'+pre_val).defaultValue);
 		$('#new_qty_'+pre_val).val(bal);
