@@ -94,6 +94,7 @@
             echo "<div class='alert alert-danger'><i class='fas fa-calendar-alt'></i> Please select correct date.</div>";
         }
     }   
-?>         
+    if(!isset($_GET['excel'])){ ?>         
         </div>
     </div>
+    <?php } ?>
