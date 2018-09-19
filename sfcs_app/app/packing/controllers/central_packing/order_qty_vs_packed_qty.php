@@ -44,7 +44,25 @@
 	
 	error_reporting(0);
 ?>
-
+<style>
+#loading-image{
+  position:fixed;
+  top:0px;
+  right:0px;
+  width:100%;
+  height:100%;
+  background-color:#666;
+  /* background-image:url('ajax-loader.gif'); */
+  background-repeat:no-repeat;
+  background-position:center;
+  z-index:10000000;
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* For IE8 and earlier */
+}
+</style>
+<div class="ajax-loader" id="loading-image" style="display: none">
+    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>Order Details Vs Packed Details</b></div>
 	<div class="panel-body">
@@ -343,11 +361,8 @@
 									if(mysqli_num_rows($statusrslt)==0)
 									{
 										echo "<td>
-										<a class='btn btn-success' id='generate_pack_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Pack Job</a>
+										<a class='btn btn-success generate_pack_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Pack Job</a>
 										<a class='btn btn-danger confirm-submit' id='delete_single' href=$url1&option=delete&schedule1=$schedule&parent_id=$parent_id&seq_no=$seq_no&style1=$style>Delete</a>
-										<div id='message'>
-										  <strong>Please wait while we Generate Packing List</strong>
-										</div>
 										</td>";
 									}
 									else
@@ -387,13 +402,9 @@
 			<script type="text/javascript">
 				$(document).ready(function() 
 				{
-					$("#message").hide();
-					$("#generate_pack_job").click(function()
+					$(".generate_pack_job").click(function()
 					{
-						$("#generate_pack_job").hide();
-						$("#delete_single").hide();
-						$("#message").show();
-						$("#add_pack_method").hide();
+						$("#loading-image").show();
 					});
 				});
 			</script>
