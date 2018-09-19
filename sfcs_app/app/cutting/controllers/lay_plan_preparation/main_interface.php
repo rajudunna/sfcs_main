@@ -4,11 +4,15 @@ Change Log:
 kirang/ 2015-02-25/ Service Request #244611 :  Add Remarks Tab in Cut plan (for Sample pieces)
 kirang/2016-12-27/ CR: 536: Adding MPO Number in Cut Plan
 -->
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+$url1 = getFullURL($_GET['r'],'excess_cut.php','N');
+?>
 <div class="panel panel-primary">
 <div class="panel-heading">Cut Plan</div>
 <div class="panel-body">
 <?php
+
+
 if(isset($_POST['style']))
 {
 	$style=$_POST['style'];
@@ -36,7 +40,6 @@ else
 	$color=$_GET['color'];
 }
 
-	 
 
 ?>
 
@@ -1429,11 +1432,51 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 </div>
 
 
-<?php
-
-
-?>
-
+<div class="col-sm-12 row">
+	<div class = "panel panel-info">
+		<div class="panel-heading" style="text-align:center;">
+			<a data-toggle="collapse" href="#excess_cut"><strong><b>Excess Cut</b></strong></a>
+		</div>
+		<div id="excess_cut" class="panel-collapse collapse-in collapse in" aria-expanded="true">
+			<div class="panel-body">
+			<?php if($_GET['excess_cut'] == ''){ ?>
+				<form name="myForm" action="<?= $url1;?>" method="POST">
+				<div class="row">
+					<div class="col-md-3">
+					<label>Excess Cut</label>
+						<select class="form-control" name="excess_cut" id="excess_cut">
+							<option value="0" disabled selected>Please Select</option>
+							<option value="1">First Cut</option>
+							<option value="2">Last Cut</option>
+						</select>
+					</div>
+					<div class="col-md-1">
+						<input type="hidden" id="style" name="style" value="<?=$style;?>"/>
+						<input type="hidden" id="schedule" name="schedule" value="<?=$schedule;?>"/>
+						<input type="hidden" id="color" name="color" value="<?=$color;?>"/>
+						<input type="hidden" id="user" name="user" value="<?=$user;?>"/>
+					</div>
+					<div class="col-md-1"><br/>
+						<input type="submit" name="submit" class="btn btn-info" id="submit" value="submit" disabled/>
+					</div>
+				</div>
+			</form>
+			<?php
+			} 
+			else {
+				if($_GET['excess_cut']==1){
+					$val = "First Cut";
+				}
+				else {
+					$val = "Last Cut";
+				}
+				echo "<div class='col-md-2'><b>".$val."</b></div>";
+			}
+			?>			
+			</div>
+		</div>
+	</div>
+</div>
 <!-- <p><a href="#" >Docket Creation / Edit</a></p> -->
 <!--<div id="div6" style="display: none;">
 <?php //include("main_interface_6.php"); ?>
@@ -1830,3 +1873,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 </div>
 </div>
+<script>
+$(document).ready(function(){
+	$('#excess_cut').on('change',function(){
+		var cut_val = $("#excess_cut option:selected").val();;
+		if(cut_val!=0){
+			document.getElementById("submit").disabled = false;
+		}
+		else{
+			document.getElementById('submit').disabled = true;
+		}
+	})
+})
+</script>
