@@ -289,15 +289,16 @@ if(isset($_POST['formSubmit']))
 // echo "post code".$post_code;
 // var_dump($reversalval);
 // die();
-$ops_seq_check = "select id,ops_sequence,ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code='$operation_id'";
+$ops_seq_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code='$operation_id'";
 $result_ops_seq_check = $link->query($ops_seq_check);
 while($row = $result_ops_seq_check->fetch_assoc()) 
 {
 	$ops_seq = $row['ops_sequence'];
 	$seq_id = $row['id'];
 	$ops_dependency = $row['ops_dependency'];
+	$ops_order = $row['operation_order'];
 }
-$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
+$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200,15) ORDER BY operation_order DESC LIMIT 1";
 $result_post_ops_check = $link->query($post_ops_check);
 if($result_post_ops_check->num_rows > 0)
 {
@@ -698,6 +699,7 @@ else if($concurrent_flag == 0)
 	$url = '?r='.$_GET['r'];
 	echo "<script>window.location = '".$url."'</script>";
  }
+}
 
 ?>
 	
