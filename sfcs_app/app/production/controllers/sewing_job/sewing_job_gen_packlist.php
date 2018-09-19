@@ -132,175 +132,7 @@
 		<div class="col-md-12">
 			<?php
 			if(isset($_POST['submit']) or $_GET['style'] and $_GET['schedule'])
-			{	
-				// if($_POST['style'] and $_POST['schedule'])
-				{
-					
-					if ($_GET['style'] and $_GET['schedule'])
-					{
-						$style=$_GET['style'];
-						//$schedule=$_GET['schedule'];
-						$schedule = $_GET['schedule'];
-					} 
-					else if ($_POST['style'] and $_POST['schedule'])
-					{
-						$style=$_POST['style'];
-						//$schedule=$_POST['schedule'];
-						$schedule = $_POST['schedule'];	
-					}
-					
-					$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
-					$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
-					// echo $style."---".$schedule;
-					//getting parent id from tbl_pack_ref
-					$getparentid="select id from $bai_pro3.tbl_pack_ref where schedule='$schedule' and style='$style'";
-					$parentidrslt=mysqli_query($link, $getparentid) or exit("Error while getting parent id");
-					if($row=mysqli_fetch_array($parentidrslt))
-					{
-						$parent=$row['id'];
-					}
-							
-					//echo "Style= ".$style."<br>Schedule= ".$schedule.'<br>';
-					
-					// Order Details Display Start
-					{
-						$col_array = array();
-						$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
-						//echo $sizes_query;die();
-						$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
-						$row_count = mysqli_num_rows($sizes_result);
-						while($sizes_result1=mysqli_fetch_array($sizes_result))
-						{
-							$col_array[]=$sizes_result1['order_col_des'];
-						}
-						
-						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id=$schedule_id";
-						// echo $sewing_jobratio_sizes_query.'<br>';
-						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
-						{
-							$ref_size = $sewing_jobratio_color_details['size'];
-							$size_main = explode(",",$ref_size);
-							// var_dump($size);
-						}
-						$sizeofsizes=sizeof($size_main);
-
-						$planned_qty = array();
-						$ordered_qty = array();
-						$pack_qty = array();
-
-						echo "<br>
-							<div class='col-md-12 table-responsive'>
-								<table class=\"table table-bordered\">
-									<tr class=\"info\">
-										<th>Colors</th>
-										<th>Details</th>";
-										for ($i=0; $i < sizeof($size_main); $i++)
-										{
-											echo "<th>$size_main[$i]</th>";
-										}	
-										
-										echo "<th>Total</th>
-									</tr>";
-						// echo sizeof($col_array);ssss
-						for ($j=0; $j < sizeof($col_array); $j++)
-						{
-							$tot_ordered = 0;
-							$tot_planned = 0;
-							$pack_tot = 0;
-							for($kk=0;$kk<sizeof($size_main);$kk++)
-							//foreach ($sizes_array as $key => $value)
-							{
-								$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plannedQty FROM $brandix_bts.tbl_cut_size_master 
-								LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
-								LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
-								WHERE tbl_cut_master.ref_order_num='$schedule_id' AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
-								//echo $plannedQty_query.'<br>';
-								$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
-								while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
-								{
-									if($planneQTYDetails['plannedQty']=='')
-									{
-										$planned_qty[$col_array[$j]][$size_main[$kk]]=0;
-									}
-									else
-									{
-										$planned_qty[$col_array[$j]][$size_main[$kk]] = $planneQTYDetails['plannedQty'];
-									}
-								}
-								$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
-								WHERE parent_id='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
-								//echo $orderQty_query.'<br>';
-								$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
-								while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
-								{
-									if($orderQty_details['orderedQty']=='')
-									{
-										$ordered_qty[$col_array[$j]][$size_main[$kk]]=0;
-									}
-									else
-									{
-										$ordered_qty[$col_array[$j]][$size_main[$kk]] = $orderQty_details['orderedQty'];
-									}
-									
-								}
-
-								$getpackqty="SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
-								WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]' AND order_col_des='$col_array[$j]'";
-								//echo $getpackqty;
-								$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
-								if($pack_row=mysqli_fetch_array($packqtyrslt))
-								{
-									if($pack_row['pack_qty']=='')
-									{
-										$pack_qty[$col_array[$j]][$size_main[$kk]]=0;
-									}
-									else
-									{
-										$pack_qty[$col_array[$j]][$size_main[$kk]]=$pack_row['pack_qty'];
-									}
-								}
-							}
-							// echo $col_array[$i];
-							
-
-							echo "<tr>
-									<td rowspan=3>$col_array[$j]</td>
-									<td>Order Qty</td>";
-									for ($i=0; $i < sizeof($size_main); $i++)
-									{ 
-										echo "<td>".$ordered_qty[$col_array[$j]][$size_main[$i]]."</td>";
-										$tot_ordered = $tot_ordered + $ordered_qty[$col_array[$j]][$size_main[$i]];
-									}
-									echo "<td>$tot_ordered</td>
-								</tr>";
-
-							echo "<tr>
-									<td>Cut Plan Qty</td>";
-									for ($i=0; $i < sizeof($size_main); $i++)
-									{ 
-										echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
-										$tot_planned = $tot_planned + $planned_qty[$col_array[$j]][$size_main[$i]];
-									}
-									echo "<td>$tot_planned</td>
-								</tr>";
-
-							echo "<tr>
-									<td>Sewing Job Generated</td>";
-									for ($i=0; $i < sizeof($size_main); $i++)
-									{									
-										echo "<td>".$pack_qty[$col_array[$j]][$size_main[$i]]."</td>";
-										$pack_tot = $pack_tot + $pack_qty[$col_array[$j]][$size_main[$i]];
-									}
-									echo "<td>$pack_tot</td>
-								</tr>";
-						}
-						echo "</table>
-							</div>";
-					}
-					// Order Details Display End
-				}
-				//packing method details
+			{					
 				if ($_GET['style'] and $_GET['schedule'])
 				{
 					$style=$_GET['style'];
@@ -311,19 +143,151 @@
 					$style=$_POST['style'];
 					$schedule = $_POST['schedule'];	
 				}
+				
 				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
 				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
+				// echo $style."---".$schedule;
+				
+				// Order Details Display Start
+				{
+					$col_array = array();
+					$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
+					//echo $sizes_query;die();
+					$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+					$row_count = mysqli_num_rows($sizes_result);
+					while($sizes_result1=mysqli_fetch_array($sizes_result))
+					{
+						$col_array[]=$sizes_result1['order_col_des'];
+					}
 					
+					$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id=$schedule_id";
+					// echo $sewing_jobratio_sizes_query.'<br>';
+					$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+					while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+					{
+						$ref_size = $sewing_jobratio_color_details['size'];
+						$size_main = explode(",",$ref_size);
+						// var_dump($size);
+					}
+					$sizeofsizes=sizeof($size_main);
+
+					$planned_qty = array();
+					$ordered_qty = array();
+					$sewing_gen_qty = array();
+
+					echo "<br>
+						<div class='col-md-12 table-responsive'>
+							<table class=\"table table-bordered\">
+								<tr class=\"info\">
+									<th>Colors</th>
+									<th>Details</th>";
+									for ($i=0; $i < sizeof($size_main); $i++)
+									{
+										echo "<th>$size_main[$i]</th>";
+									}	
+									
+									echo "<th>Total</th>
+								</tr>";
+					// echo sizeof($col_array);
+					for ($j=0; $j < sizeof($col_array); $j++)
+					{
+						$tot_ordered = 0;
+						$tot_planned = 0;
+						$sewing_gen_tot = 0;
+						for($kk=0;$kk<sizeof($size_main);$kk++)
+						//foreach ($sizes_array as $key => $value)
+						{
+							$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plannedQty FROM $brandix_bts.tbl_cut_size_master LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num	WHERE tbl_cut_master.ref_order_num='$schedule_id' AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
+							//echo $plannedQty_query.'<br>';
+							$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
+							while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
+							{
+								if($planneQTYDetails['plannedQty']=='')
+								{
+									$planned_qty[$col_array[$j]][$size_main[$kk]]=0;
+								}
+								else
+								{
+									$planned_qty[$col_array[$j]][$size_main[$kk]] = $planneQTYDetails['plannedQty'];
+								}
+							}
+							$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master WHERE parent_id='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
+							//echo $orderQty_query.'<br>';
+							$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
+							while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
+							{
+								if($orderQty_details['orderedQty']=='')
+								{
+									$ordered_qty[$col_array[$j]][$size_main[$kk]]=0;
+								}
+								else
+								{
+									$ordered_qty[$col_array[$j]][$size_main[$kk]] = $orderQty_details['orderedQty'];
+								}
+								
+							}
+
+							$getpackqty="SELECT SUM(carton_act_qty) AS sewing_gen_qty FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' AND size_code='$size_main[$kk]' AND order_col_des='$col_array[$j]'";
+							$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
+							if($pack_row=mysqli_fetch_array($packqtyrslt))
+							{
+								if($pack_row['sewing_gen_qty']=='')
+								{
+									$sewing_gen_qty[$col_array[$j]][$size_main[$kk]]=0;
+								}
+								else
+								{
+									$sewing_gen_qty[$col_array[$j]][$size_main[$kk]]=$pack_row['sewing_gen_qty'];
+								}
+							}
+						}
+						// echo $col_array[$i];
+						
+
+						echo "<tr>
+								<td rowspan=3>$col_array[$j]</td>
+								<td>Order Qty</td>";
+								for ($i=0; $i < sizeof($size_main); $i++)
+								{ 
+									echo "<td>".$ordered_qty[$col_array[$j]][$size_main[$i]]."</td>";
+									$tot_ordered = $tot_ordered + $ordered_qty[$col_array[$j]][$size_main[$i]];
+								}
+								echo "<td>$tot_ordered</td>
+							</tr>";
+
+						echo "<tr>
+								<td>Cut Plan Qty</td>";
+								for ($i=0; $i < sizeof($size_main); $i++)
+								{ 
+									echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
+									$tot_planned = $tot_planned + $planned_qty[$col_array[$j]][$size_main[$i]];
+								}
+								echo "<td>$tot_planned</td>
+							</tr>";
+
+						echo "<tr>
+								<td>Sewing Job Generated</td>";
+								for ($i=0; $i < sizeof($size_main); $i++)
+								{									
+									echo "<td>".$sewing_gen_qty[$col_array[$j]][$size_main[$i]]."</td>";
+									$sewing_gen_tot = $sewing_gen_tot + $sewing_gen_qty[$col_array[$j]][$size_main[$i]];
+								}
+								echo "<td>$sewing_gen_tot</td>
+							</tr>";
+					}
+					echo "</table>
+						</div>";
+				}
+				// Order Details Display End
+
+				//packing method details					
 				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule=$schedule AND style='".$style."'"; 
 				// echo $get_pack_id;
 				$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$row = mysqli_fetch_row($get_pack_id_res);
 				$pack_id=$row[0];
-				// echo $pack_id;
-				// die();
 				$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*cartons_per_pack_job*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
 				// echo $pack_meth_qry;
-				// $sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if (mysqli_num_rows($pack_meth_qty) > 0)
 				{
@@ -341,51 +305,49 @@
 									<th>Controls</th></tr>";
 								while($pack_result1=mysqli_fetch_array($pack_meth_qty))
 								{
-									// var_dump($operation);
-									$seq_no=$pack_result1['seq_no'];
-									$parent_id=$pack_result1['parent_id'];
-									$pack_method=$pack_result1['pack_method'];
-									// echo $pack_method;
-									// $col_array[]=$sizes_result1['order_col_des'];
-									echo "<tr><td>".$pack_result1['seq_no']."</td>";
-									//packmethod drop down
-									echo "<td><select id=\"pack_method\" class='form-control' name=\"pack_method\" >";
-										for($j=0;$j<sizeof($operation);$j++)
-										{
-											$selected='';
-											if ($pack_method == $j)
+									echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_jobs_generate_packlist.php','N').'">';
+										// var_dump($operation);
+										$seq_no=$pack_result1['seq_no'];
+										$parent_id=$pack_result1['parent_id'];
+										$pack_method=$pack_result1['pack_method'];
+										// echo $pack_method;
+										// $col_array[]=$sizes_result1['order_col_des'];
+										echo "<tr><td>".$pack_result1['seq_no']."</td>";
+										//packmethod drop down
+										echo "<td><select id=\"pack_method\" class='form-control' name=\"pack_method\" >";
+											for($j=0;$j<sizeof($operation);$j++)
 											{
-												$selected='selected';
+												echo "<option value=\"".$j."\">".$operation[$j]."</option>";
 											}
-											echo "<option value=\"".$j."\" $selected>".$operation[$j]."</option>";
+										echo "</select></td>";
+
+
+										echo "<td>".$pack_result1['pack_description']."</td>";
+										echo "<td><input type='text' class='form-control' name='bund_size' id='bund_size' value='0'></td>";
+										echo "<td><input type='text' class='form-control' name='no_of_cartons' id='no_of_cartons' value='0'></td>";
+										echo "<td>".$pack_result1['qnty']."</td>";
+										echo "<td>".$pack_result1['color']."</td>";
+										echo "<td>".$pack_result1['size']."</td>";
+										$statusqry="SELECT * FROM $bai_pro3.`packing_summary_input` WHERE order_del_no='$schedule' and pac_seq_no='$seq_no'";
+										//echo $statusqry;
+										$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
+										
+										if(mysqli_num_rows($statusrslt)==0)
+										{
+											// echo "<td>
+											// <a class='btn btn-success generate_sewing_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Sewing Job</a>
+											// </td>";
+											echo "<td>
+											<input type=\"submit\" class=\"btn btn-success\" value=\"Generate Sewing Jobs\" name=\"generate\" id=\"generate\" />;
+											</td>";
 										}
-									echo "</select></td>";
+										else
+										{
+											echo"<td>Sewing Job Generated</td>";
+										}
+										echo "<tr>
+									</form>";
 
-
-									echo "<td>".$pack_result1['pack_description']."</td>";
-									echo "<td><input type='text' class='form-control' name='bund_size' id='bund_size' value='0'></td>";
-									echo "<td><input type='text' class='form-control' name='no_of_cartons' id='no_of_cartons' value='0'></td>";
-									echo "<td>".$pack_result1['qnty']."</td>";
-									echo "<td>".$pack_result1['color']."</td>";
-									echo "<td>".$pack_result1['size']."</td>";
-									$url=getFullURL($_GET['r'],'pack_jobs_generate.php','N');
-									$url1=getFullURL($_GET['r'],'sewing_job_gen_packlist.php','N');
-									$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
-									$statusqry="select * from $bai_pro3.pac_stat where schedule='$schedule' and pac_seq_no='$seq_no'";
-									//echo $statusqry;
-									$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
-									
-									if(mysqli_num_rows($statusrslt)==0)
-									{
-										echo "<td>
-										<a class='btn btn-success generate_pack_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Sewing Job</a>
-										</td>";
-									}
-									else
-									{
-										echo"<td>Sewing Job Generated</td>";
-									}
-									echo "<tr>";
 								}	
 							
 						echo "</table></div>";
@@ -396,12 +358,69 @@
 			}
 			?>
 			<script type="text/javascript">
-				$(document).ready(function() 
-				{
-					$(".generate_pack_job").click(function()
+				// $(document).ready(function() 
+				// {
+				// 	$(".generate_sewing_job").click(function()
+				// 	{
+						// var pack_method = $("#pack_method").val();
+						// // alert(pack_method);
+						// if (pack_method == 0)
+						// {
+						// 	sweetAlert('Please Select Sewing Job Method','','warning');
+						// }
+						// else
+						// {
+						// 	$("#loading-image").show();
+						// }
+				// 	});
+				// });
+
+				$(document).ready(function(){
+					$('.generate_sewing_job').on('click',function(event, redirect=true)
 					{
-						$("#loading-image").show();
+						if(redirect != false){
+							event.preventDefault();
+							submit_form($(this));
+						}
 					});
+
+					function submit_form(submit_btn)
+					{
+						var pack_method = $("#pack_method").val();
+						if (pack_method == 0)
+						{
+							sweetAlert('Please Select Sewing Job Method','','warning');
+						}
+						else
+						{
+							var bundle_size = $("#bund_size").val();
+							if (bundle_size > 0)
+							{
+								title_to_show = "";
+							}
+							else
+							{
+								title_to_show = "Bundle Size not defined, Deafult bundle size will be applied";
+							}
+							sweetAlert({
+								title: "Are you sure to generate Sewing Jobs?",
+								text: title_to_show,
+								icon: "warning",
+								buttons: true,
+								dangerMode: true,
+								buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+							}).then(function(isConfirm){
+								if (isConfirm) {
+										$('#'+submit_btn.attr('id')).trigger('click',false);
+								} else {
+									sweetAlert("Request Cancelled",'','error');
+									return;
+								}
+							});
+							return;
+							$("#loading-image").show();
+						}
+					}
 				});
 			</script>
 		</div>
