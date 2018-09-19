@@ -374,7 +374,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$id="yash";
 			$y=0;
 			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc";	
-			// echo $sql."<br>";
+			echo $sql."<br>";
 			$result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{
@@ -419,12 +419,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$schedule=$row2['order_del_no'];
 					$order_col=$row2['order_col_des'];
 					$input_job_no=$row2['input_job_no'];
-					$doc_no_ref=echo_title("$bai_pro3.packing_summary_input","group_concat(distinct doc_no)","input_job_no_random",$input_job_no_random_ref,$link);
+					$doc_no_ref=$row2["doc_no"];
 					$schedule_no=$row2['order_del_no'];
 					$ft_status=$row2['ft_status'];
 				}
 				$get_color = $order_col;
-				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
+				// $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
+				$display_prefix1='J';
 				$ft_status_min="";
 				if($schedule!="")
 				{
@@ -666,14 +667,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							</div>
 						</div>";
 			}
-			$sqly="select buyer_div from $bai_pro3.plan_modules where module_id=$module";
-			$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_rowy=mysqli_fetch_array($sql_resulty))
-			{
-				$buyer_div=$sql_rowy['buyer_div'];
-				$cut_wip_control=7000;
-			}
-			echo substr($buyer_div,0,1);
+			// $sqly="select buyer_div from $bai_pro3.plan_modules where module_id=$module";
+			// $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_rowy=mysqli_fetch_array($sql_resulty))
+			// {
+			// 	$buyer_div=$sql_rowy['buyer_div'];
+			// 	$cut_wip_control=7000;
+			// }
+			// echo substr($buyer_div,0,1);
 			echo "</td>";
 			echo "</tr>";
 		}
