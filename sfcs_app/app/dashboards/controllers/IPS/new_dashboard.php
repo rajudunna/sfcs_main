@@ -17,10 +17,10 @@
             <div class='panel-heading'><h3 class='panel-title'>IPS Dashboard</h3></div>
             <div class='panel-body'>
             <div class='col-sm-12'>";
+            $inc=0;
     foreach($sections as $sec){
         echo "<div class='col-sm-3'>
             <div class='panel panel-success'>
-                <div class='panel-heading'><h4 class='text-center panel-title'>SECTION - ".$sec['sec_id']."</h4></div>
                 <div class='panel-body sec-box'>
                     <div class='loading-block' id='sec-load-".$sec['sec_id']."' style='display:block'></div>
                     <div id='sec-".$sec['sec_id']."'>
@@ -29,6 +29,10 @@
                 </div>
             </div>
         </div>";
+        $inc++;
+        if($inc%4==0){
+          echo "</div><div class='col-sm-12'>";
+        }
     }
     echo "</div></div></div>";
 ?>
@@ -42,6 +46,7 @@ function call_server(){
     var sec_id_ar = sec_ids.split(',');
     for(var i=0;i<sec_id_ar.length;i++){
       $('#sec-load-'+sec_id_ar[i]).css('display','block');
+      $('#sec-'+sec_id_ar[i]).html('');
         $.ajax({
             url: "<?= $url ?>?sec="+sec_id_ar[i]
         }).done(function(data) {
@@ -51,8 +56,10 @@ function call_server(){
         });
     }
 }
-
-//setTimeout(call_server, 120000);
+var refresh = function(){
+  call_server();
+}
+setTimeout(refresh, 120000);
 </script>
 <style>
 .sec-box{
