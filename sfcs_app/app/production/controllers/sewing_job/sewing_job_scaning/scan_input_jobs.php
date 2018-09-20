@@ -31,6 +31,7 @@
 	}
 
 	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
+	echo '<input type="hidden" name="line-in" id="line-in" value="'.$line_in.'">';
 
 
 
@@ -514,6 +515,7 @@ function validating_cumulative(e,t)
 function validating_remarks_qty(val,remarks)
 {
 	var display_reporting_qty = document.getElementById('display_reporting_qty').value;
+	var line_in = document.getElementById('line-in').value;
 	var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 	var bundle_number_var = val+"tid";
 	var module_var =val+"module";
@@ -550,6 +552,10 @@ function validating_remarks_qty(val,remarks)
 			$('#'+html_id).html(array[0]);
 			if (operation_id == '129' || operation_id == '900')
 			{
+				if (line_in == 'yes')
+				{
+					$('#'+html_id_reporting).val(array[0]);
+				}
 				if (display_reporting_qty == 'yes')
 				{
 					$('#'+html_id_reporting).val(array[0]);
