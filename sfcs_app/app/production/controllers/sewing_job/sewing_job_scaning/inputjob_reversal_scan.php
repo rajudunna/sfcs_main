@@ -339,7 +339,7 @@ foreach ($bundle_no as $key=>$value)
 					//echo $pre_recieved_qty."-".$post_rec_qty."-".$act_reciving_qty."</br>";
 					if(($pre_recieved_qty - $post_rec_qty) < $act_reciving_qty)
 					{
-						$concurrent_flag = 1;
+						//$concurrent_flag = 1;
 					}
 	
 				}
@@ -357,7 +357,7 @@ foreach ($bundle_no as $key=>$value)
 					$post_rec_qty = $row['recevied_qty'];
 					if(($pre_recieved_qty - $post_rec_qty) < $act_reciving_qty)
 					{
-						$concurrent_flag = 1;
+						//$concurrent_flag = 1;
 					}
 	
 				}
