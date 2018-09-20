@@ -106,7 +106,7 @@ else
 
 }
 echo "</select></div>";
-$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" AND act_cut_status='DONE'";	
+$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\"";	
 echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' >";
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -129,7 +129,7 @@ else
 
 echo "</select></div>";
 //Color Clubbing
-$sql="select distinct order_del_no,clubbing from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" AND act_cut_status='DONE'";	
+$sql="select distinct order_del_no,clubbing from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\"";	
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -138,7 +138,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 echo "<div class='col-sm-3'><label>Select Color: </label><select name=\"color\" onchange=\"thirdbox();\" class='form-control' >";
 
-$sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 AND act_cut_status='DONE' group by clubbing,order_col_des";
+$sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 group by clubbing,order_col_des";
 echo $sql;
 
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
