@@ -41,6 +41,7 @@ $local_mssql_password="Brandix@7";
 
 //To Facilitate SFCS Filters
 $global_facility_code=$conf1->get('plantcode');
+$facility_code=$global_facility_code;
 
 $plant_alert_code=$conf1->get('plant-alert-code');     //plant-alert-code
 $message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
@@ -48,13 +49,20 @@ $rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
-
+//M3 Rest API Calls Details
+$company_no = $conf1->get('companey-number');
+$api_username = $conf1->get('api-user-name');
+$api_password = $conf1->get('api-password');
+$api_hostname = $conf1->get('api-host-name');
+$api_port_no = $conf1->get('api-port');
 
 //Scanning Methods
 $scanning_methods = $conf1->get('scaning-method');
 
 //Display Reporting Qty
 $display_reporting_qty = $conf1->get('reporting-quantity');
+// Cut Quantity Reporting Validation
+$cut_qty_reporting_validation=$conf1->get('cut-qty-reporting-validation');
 $line_in = $conf1->get('line-in');
 
 //LDAP CODE STARTS***
@@ -100,6 +108,23 @@ $shifts_array = array("A","B","C","G");
 $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40");
 
 $plant_name = $conf1->get('plantname');
+
+
+//M3 Rest API Calls Details
+$company_no = $conf1->get('companey-number');
+$api_username = $conf1->get('api-user-name');
+$api_password = $conf1->get('api-password');
+$api_hostname = $conf1->get('api-host-name');
+$api_port_no = $conf1->get('api-port');
+
+//m3 integration plant codes
+$cluster_code=$conf1->get('cluster_code');
+$comp_no=$conf1->get('company_no');
+$central_wh_code=$conf1->get('central_wh_code');
+$plant_wh_code=$conf1->get('plant_wh_code');
+$plant_prod_code=$conf1->get('plant_prod_code');
+
+
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
@@ -155,4 +180,18 @@ while($methods=mysqli_fetch_array($pack_result))
     $pack_methods[]=$methods['pack_method_name'];
 }
 // var_dump($pack_methods);
+//***************************************************
+//======== for central warehouse connections ========
+//***************************************************
+    $is_chw = $conf1->get('central_warehouse');
+    $cwh_link = Null;
+    if($is_chw == 'yes'){
+        $cwh_host = $conf1->get('cw_host');
+        $cwh_user_name = $conf1->get('cw_username');
+        $cwh_password = $conf1->get('cw_password');
+        $cwh_port = $conf1->get('cw_port');
+        $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+    }
+//===================================================
 ?>

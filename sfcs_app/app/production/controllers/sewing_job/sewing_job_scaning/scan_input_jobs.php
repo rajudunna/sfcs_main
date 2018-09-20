@@ -285,6 +285,7 @@ $(document).ready(function()
 					{
 						$('#emb_cut_check_flag').val(emb_ops);
 					}
+					console.log(response['emb_cut_check_flag']);
 					console.log(data);
 					$('#dynamic_table1').html('');
 					$('#module_div').hide();
@@ -317,7 +318,7 @@ $(document).ready(function()
 						}
 
 						var remarks_check_flag = 0;
-						console.log(data[i].input_job_no);
+						// console.log(data[i].input_job_no);
 						if(data[i].input_job_no != 0)
 						{
 							var sampling_drop = "<select class='form-control sampling' name='sampling[]' id='"+i+"sampling' style='width:100%;' required onchange='validate_reporting("+i+")'><option value='Normal' selected>Normal</option></select>";
@@ -341,7 +342,7 @@ $(document).ready(function()
 						}
 						var readonly ='';
 						var temp_var_bal = 0;
-							if(Number(data[i].reported_qty) > 0)
+						if(Number(data[i].reported_qty) > 0)
 						{
 							status = '<font color="green">Partially Scanned</font>';
 						}
@@ -349,7 +350,7 @@ $(document).ready(function()
 						{
 							status = '<font color="green">Scanning Pending</font>';
 						}
-						if(data[i].send_qty == 0)
+						if(response['emb_cut_check_flag'] && data[i].balance_to_report == 0)
 						{
 							status = '<font color="red">Cut Quantity not done</font>';
 						}
