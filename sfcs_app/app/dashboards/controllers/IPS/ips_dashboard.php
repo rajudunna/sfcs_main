@@ -59,8 +59,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
 			$mods[]=$sql_row1d["modx"];
 		}
-		$popup_url ='board_update_V2_input.php';
-		$ips_data='<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;">';
+		$v_r = explode('/',$_SERVER['REQUEST_URI']);
+		array_pop($v_r);
+		$popup_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/board_update_V2_input.php";
+		//$popup_url ='board_update_V2_input.php';
+		$ips_data='<div style="margin-left:15%">';
 		$ips_data.="<p>";
 		$ips_data.="<table>";
 		$ips_data.="<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
@@ -287,9 +290,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$club_c_code=array_unique($club_c_code);
 				
 					$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
-					$ui_url='input_status_update_input.php';	
-					 
-					$ui_url1 ='production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php';
+					//$ui_url='input_status_update_input.php';	
+					$ui_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/input_status_update_input.php";
+					$ui_url1 ='?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php');
 					$application='IPS';
 					
 					$sidemenu=true;
@@ -323,7 +326,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							if($add_css == ""){				
 								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 									<div id=\"SJ$input_job_no\" style=\"float:left;\">
-										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no_random_ref','$operation_code','$sidemenu');\"><font style=\"color:black;\"></font></a>
 										</div>
 									</div>
 								</div>";
@@ -344,7 +347,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							{									
 								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 									<div id=\"SJ$input_job_no\" style=\"float:left;\">
-										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no_random_ref','$operation_code','$sidemenu');\"><font style=\"color:black;\"></font></a>
 										</div>
 									</div>
 								</div>";
