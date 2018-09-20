@@ -8,7 +8,8 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
-    $details_query = "Select shift,assigned_module from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id' and operation_id = '$op_code'";
+    $details_query = "Select shift,assigned_module from $brandix_bts.bundle_creation_data where 
+                      bundle_number = '$ref_id' and operation_id = '$op_code'";
 
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
@@ -89,6 +90,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
 
                 $insert_id=mysqli_insert_id($link);
 
+               
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
                     $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
@@ -117,6 +119,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
             }
         }
     }
+    return true;
 }
 
 
@@ -234,6 +237,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
             }
         }
     }
+    return true;
     
 }//Function ends
 
