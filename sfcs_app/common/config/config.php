@@ -63,6 +63,7 @@ $scanning_methods = $conf1->get('scaning-method');
 $display_reporting_qty = $conf1->get('reporting-quantity');
 // Cut Quantity Reporting Validation
 $cut_qty_reporting_validation=$conf1->get('cut-qty-reporting-validation');
+$line_in = $conf1->get('line-in');
 
 //LDAP CODE STARTS***
 // if(substr($server_soft,0,13)=="Apache/2.4.28")
