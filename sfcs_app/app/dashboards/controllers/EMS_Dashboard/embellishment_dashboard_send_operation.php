@@ -515,8 +515,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $id="blue"; 
             $page_flag = 'send';
             $emb_url = getFullURLLevel($_GET["r"],'cutting/controllers/emb_cut_scanning/emb_cut_scanning.php',3,'N')."&style=$style&schedule=$schedule&color=$color&tablename=$section_mods&doc_no=$doc_no&operation_id=$send_op_code&shift=$shifts&page_flag=$page_flag";
-          }else{
-            $emb_url = "";
           }
           
           if($orginal_qty!=$send_qty && $send_qty > 0)
@@ -566,7 +564,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
           $clr=trim(implode(',',$colors_db),50);
         
-          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><a href=".$emb_url." onclick=\"Popup=window.open('$emb_url','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\">$schedule(".implode(", ",$club_c_code).")</a></div></div><br>";           
+          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'>";
+          if($cut_new=="DONE"){
+            echo   "<a href=".$emb_url." onclick=\"Popup=window.open('$emb_url','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\">$schedule(".implode(", ",$club_c_code).")</a>";
+          }else{
+            echo "$schedule(".implode(", ",$club_c_code).")";
+          }
+          echo "</div></div><br>";           
         }
       }   
       echo "</td>";

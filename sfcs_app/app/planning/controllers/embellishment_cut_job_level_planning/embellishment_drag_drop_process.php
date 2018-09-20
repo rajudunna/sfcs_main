@@ -31,23 +31,32 @@
 		else
 		{
 			
-			$sql1="select order_style_no as style,order_col_des as color,total as qty from $bai_pro3.plan_dash_doc_summ_embl where doc_no='".$items[1]."'";
+			$sql1="select order_style_no as style,order_col_des as color from $bai_pro3.plan_doc_summ where doc_no='".$items[1]."'";
+			// echo $sql1;
 			$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error11".mysql_error());
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				$style=$sql_row1['style'];
 				$color=$sql_row1['color'];
-				$doc_qty=$sql_row1['qty'];
+				
+			}
+			$doc_qty=0;
+			$sql3="select (p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty from $bai_pro3.plandoc_stat_log where doc_no='".$items[1]."'";
+			$sql_result3=mysqli_query($link,$sql3) or exit("Sql Error33".mysql_error());
+			while($sql_row3=mysqli_fetch_array($sql_result3))
+			{
+				$doc_qty=$sql_row3['qty'];
 			}
 
 			$sql2="select operation_code,operation_order FROM brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND color='".$color."' AND operation_code IN (SELECT operation_code FROM brandix_bts.tbl_orders_ops_ref WHERE category IN ('Send PF'))";
+			// echo $sql2;
 			$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error2".mysql_error());
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$send_operation=$sql_row2["operation_code"];
 				$operation_order=$sql_row2["operation_order"];
 				// echo $send_operation."-".$operation_order."<br>";
-				$sql3="select operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND color='".$color."' AND operation_order> '".$operation_order."' LIMIT 1";
+				$sql3="select operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND color='".$color."' AND operation_order> '".$operation_order."' ORDER BY operation_order*1 LIMIT 1";
 				// echo "<br>4=".$sql3."<br>";
 				$sql_result3=mysqli_query($link,$sql3) or exit("Sql Error3".mysql_error());
 				while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -94,6 +103,7 @@
 									$tbl_id=$sql_row12["tbl_id"];
 								}
 								$insert_log_query="INSERT INTO $bai_pro3.cutting_table_plan (doc_no,priority,dashboard_ref,cutting_tbl_id,doc_no_ref,username, log_time) VALUES('".$items[1]."', '".$x."','EMB','".$tbl_id."',  '".$items[1]."','".$userName."', NOW())";
+								// echo $insert_log_query."<br>";
 								mysqli_query($link, $insert_log_query) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 					}
