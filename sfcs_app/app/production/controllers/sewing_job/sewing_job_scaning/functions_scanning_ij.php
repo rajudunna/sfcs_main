@@ -344,7 +344,7 @@ function getjobdetails($job_number)
 
 						foreach ($ops_get_code as $key => $value)
 						{
-                                $result_array['recevied_pre_qty'][$value][] = 0;
+                                $row['recevied_pre_qty'][$value][] = 0;
                                // $result_array['ops_get_code'][] = $value;
                                 //array_unique( $result_array['ops_get_code']);
                                  // $result_array['ops_get_code'][] = $value;
