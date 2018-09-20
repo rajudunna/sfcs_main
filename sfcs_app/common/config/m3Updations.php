@@ -6,7 +6,7 @@
 //function updateM3Transactions($input_doc_no,$op_code,$op_code,$input_shift,$plan_module){
 function  updateM3Transactions($ref_id,$op_code,$qty)
 {
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
     $details_query = "Select shift,assigned_module from $brandix_bts.bundle_creation_data where 
                       bundle_number = '$ref_id' and operation_id = '$op_code'";
