@@ -1,6 +1,6 @@
 <?php
 include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updatings.php',5,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
 
 $has_permission=haspermission($_GET['r']);
 //API related data
@@ -214,6 +214,7 @@ if(isset($_POST['formSubmit']))
 	{
 		$post_code = $_POST['post_ops'];
 	}
+	// var_dump($post_code);
 	foreach($bundle_no as $key => $value)
 	{
 		// $remarks = $remarks[$key];
@@ -238,8 +239,8 @@ if(isset($_POST['formSubmit']))
 			$b_module1[] = $module_cum;
 			//$bundle_individual_number = $nop_qry_row['bundle_number'];
 			$bundle_individual_number = $nop_qry_row['bundle_number'];
-			$bundle_individual_number = $nop_qry_row['tid'];
-			$actual_bundles[] = $nop_qry_row['tid'];
+			// $bundle_individual_number = $nop_qry_row['tid'];
+			$actual_bundles[] = $nop_qry_row['bundle_number'];
 			$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
 			// echo $query_to_fetch_individual_bundle_details;
 			// echo "<br/><br/>";
@@ -252,7 +253,7 @@ if(isset($_POST['formSubmit']))
 			{
 					
 				$rec_qty = $nop_qry_row['recevied_qty'];
-				//echo $bundle_individual_number.'-'.$rec_qty.'-'.$cumulative_reversal_qty.'</br>';
+				// echo $bundle_individual_number.'-'.$rec_qty.'-'.$cumulative_reversal_qty.'</br>';
 				if($rec_qty > 0)
 				{
 					if($cumulative_reversal_qty <= $rec_qty)
@@ -271,7 +272,7 @@ if(isset($_POST['formSubmit']))
 				{
 					$actual_reversal_val_array [] = $rec_qty;
 				}
-		//	}
+			}
 			
 		}
 	}
@@ -294,8 +295,6 @@ if(isset($_POST['formSubmit']))
 	$reversalval = $actual_reversal_val_array;
 	$b_module = $b_module1;
 // echo "post code".$post_code;
-// var_dump($reversalval);
-// die();
 $ops_seq_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code='$operation_id'";
 $result_ops_seq_check = $link->query($ops_seq_check);
 while($row = $result_ops_seq_check->fetch_assoc()) 
@@ -340,7 +339,7 @@ foreach ($bundle_no as $key=>$value)
 					//echo $pre_recieved_qty."-".$post_rec_qty."-".$act_reciving_qty."</br>";
 					if(($pre_recieved_qty - $post_rec_qty) < $act_reciving_qty)
 					{
-						$concurrent_flag = 1;
+						//$concurrent_flag = 1;
 					}
 	
 				}
@@ -358,7 +357,7 @@ foreach ($bundle_no as $key=>$value)
 					$post_rec_qty = $row['recevied_qty'];
 					if(($pre_recieved_qty - $post_rec_qty) < $act_reciving_qty)
 					{
-						$concurrent_flag = 1;
+						//$concurrent_flag = 1;
 					}
 	
 				}
@@ -392,7 +391,7 @@ else if($concurrent_flag == 0)
 		if($post_code)
 		{
 			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$act_rec_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$bundle_no[$key]."' and operation_id = ".$post_code[0];
-			//echo $query_post_dep;
+			// echo $query_post_dep;
 			$result_query = $link->query($query_post_dep) or exit('query error in updating6');
 		}
 	}
@@ -706,7 +705,6 @@ else if($concurrent_flag == 0)
 	$url = '?r='.$_GET['r'];
 	echo "<script>window.location = '".$url."'</script>";
  }
-}
 
 ?>
 	
