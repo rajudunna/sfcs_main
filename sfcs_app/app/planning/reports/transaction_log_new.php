@@ -227,18 +227,6 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 /*echo "<right><a href='".getFullURL($_GET['r'],'transaction_log_new_excel.php','R')."&sdate=$sdate&edate=$edate&
 shift=".str_replace('"','*',$shift)."&module=$module&hour_from=$hour_from&hour_to=$hour_to'>
 	<input type='submit' name='submit1' class='btn btn-info' value='Export to Excel'></a></right>";*/
-<<<<<<< HEAD
-$sql="select * from $bai_pro3.sections_db where sec_id=$module";
-
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-//echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error211".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$module=$sql_row['sec_mods'];
-}	
-=======
 if($module>0){
 	$sql="select * from $bai_pro3.sections_db where sec_id=$module";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -255,7 +243,6 @@ else{
 		$module=$sql_row['sec_mods'];
 	}	
 }
->>>>>>> 943-fully-details-not-showing-in-scanning-interface
 
 
 if($hour_from=='Day' and $hour_to=='Day'){
