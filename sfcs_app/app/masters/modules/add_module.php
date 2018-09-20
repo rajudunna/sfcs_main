@@ -16,8 +16,6 @@
     <meta name="author" content="">
    
     <?php 
-    // ini_set("display_errors", "1");
-    // error_reporting(E_ALL);
     include($_SERVER['DOCUMENT_ROOT'].'/template/header.php'); ?>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>

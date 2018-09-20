@@ -337,7 +337,7 @@ echo '<br><br>';
     <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #FFA500;color: white;margin-left: 10px;">
     <div>Partially Received from Embellishment</div>
     </div>&nbsp;&nbsp;&nbsp;
-    <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #999999  ;color: white;margin-left: 30px;">
+    <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #999999;color: white;margin-left: 30px;">
     <div>Not Yet Received From Embellishment</div>
     </div>
     <div style="clear: both;"> </div>
