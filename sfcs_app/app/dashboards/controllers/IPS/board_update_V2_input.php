@@ -376,8 +376,8 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			$input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
 			$doc_no=$sql_row1['doc_no'];
 			$order_tid=$sql_row1['order_tid'];
-			//$fabric_status=$sql_row1['fabric_status_new'];
-			$fabric_status="333";
+			$fabric_status=$sql_row1['fabric_status_new'];
+			//$fabric_status="333";
 			$input_job_no_random_ref=$sql_row1["input_job_no_random_ref"];
 			$style=$sql_row1['order_style_no'];
 			$schedule=$sql_row1['order_del_no'];
@@ -447,7 +447,6 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 					$doc_no_ref=$row_doc["doc_ref"];
 				}
 			}
-			
 			if($fabric_status!=5)
 			{
 				$fabric_status=$sql_row1['ft_status'];
@@ -477,31 +476,16 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			$doc_no_ref_explode=explode(",",$doc_no_ref);
 			
 			$num_docs=sizeof($doc_no_ref_explode);
-			
+				
 			switch ($fabric_status)
 			{
 				case "1":
 				{
-					$id="Green";
+					$id="yellow";
 					if($fab_wip>$cut_wip_control)
 					{
-						$id="Lgreen";
+						$id="lgreen";
 						$pop_restriction=1;
-					}
-					if(sizeof($num_docs) > 0)
-					{
-						$sql1x1="select * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no_ref) and hour(issued_time)+minute(issued_time)>0";
-						//echo $sql1x1."<br>";
-						$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($sql_result1x1)==$num_docs)
-						{
-							$id="yellow";
-						}
-						else
-						{
-							$id="green";
-							//$id=$id;
-						}
 					}
 					
 					$rem="Available";
@@ -527,26 +511,21 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 				}
 				case "4":
 				{
-					$id="Red";
+					$id="red";
 					$rem="Put Away Issue";
 					break;
 				}		
 				case "5":
 				{
-					if(sizeof($num_docs) > 0)
+					$sql1x1="select doc_ref from $bai_pro3.fabric_priorities where doc_ref=$doc_no and hour(issued_time)+minute(issued_time)>0";
+					$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error".mysql_error());
+					if(mysqli_num_rows($sql_result1x1)>0)
 					{
-						$sql1x1="select * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no_ref) and hour(issued_time)+minute(issued_time)>0";
-						//echo $sql1x1."<br>";
-						$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($sql_result1x1)==$num_docs)
-						{
-							$id="yellow";
-						}
-						else
-						{
-							$id="green";
-							//$id=$id;
-						}
+						$id="yellow";
+					}
+					else
+					{
+						$id="green";
 					}
 					break;
 				}				
@@ -558,6 +537,10 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 				}
 			}
 			
+			if($cut_new=="T")
+			{
+				$id="blue";
+			}
 			$sqly="SELECT group_concat(doc_no) as doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
 			//echo $sqly."<br>";
 			$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -570,9 +553,9 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			$sql11x="select * from $bai_pro3.fabric_priorities where doc_ref in ('".$doc_no_ref_input."')";
 			//echo $sql11x."<br>";
 			$sql_result11x=mysqli_query($link, $sql11x) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result11x)==$num_docs and $id!="yellow")
+			if(mysqli_num_rows($sql_result11x)==$num_docs)
 			{
-				$id="lgreen";	
+				$id="green";	
 			} 
 			
 			$sql1x1="select * from $bai_pro3.fabric_priorities where doc_ref in ('".$doc_no_ref_input."') and hour(issued_time)+minute(issued_time)>0";
@@ -585,10 +568,11 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 				$id="yellow";
 			}
 			
+			
 			$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in ('".$doc_no_ref_input."') and act_cut_status=\"DONE\"";
 			//echo $sql11x1."<br>";
 			$sql_result11x1=mysqli_query($link, $sql11x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result11x1)>0 and $id=="yellow")
+			if(mysqli_num_rows($sql_result11x1)>0)
 			{
 				$id="blue";
 			} 
@@ -596,14 +580,14 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			
 			//For Color Clubbing
 			$club_c_code=array();
-			$sql33x1="SELECT * FROM $bai_pro3.plan_dash_doc_summ where doc_no in ('".$doc_no_ref_input."') order by doc_no*1";
-			$sql_result33x1=mysqli_query($link, $sql33x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row33x1=mysqli_fetch_array($sql_result33x1))
-			{
-				$club_c_code[]=chr($sql_row33x1['color_code']).leading_zeros($sql_row33x1['acutno'],3);
-			}			
-			$club_c_code=array_unique($club_c_code);
-			$club_c_code=array_unique($club_c_code);
+					$sql33x1="SELECT * FROM $bai_pro3.plan_dash_doc_summ where doc_no in (".$doc_no_ref_input.") order by doc_no*1";
+					$sql_result33x1=mysqli_query($link, $sql33x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row33x1=mysqli_fetch_array($sql_result33x1))
+					{
+						$club_c_code[]=chr($sql_row33x1['color_code']).leading_zeros($sql_row33x1['acutno'],3);
+					}			
+					$club_c_code=array_unique($club_c_code);
+			
 			
 			$ex_factory="NIP";
 			$sql11="select order_date as ex_factory_date_new from $bai_pro3.bai_orders_db where order_del_no='$schedule'";
@@ -633,9 +617,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			echo "<td>".$style."<br/><strong>".$schedule."<br/>".$display_prefix1."</strong><br/>".implode(", ",$club_c_code)."<br/>".$total_qty."</td><td>F.L.: $fabric_location / B.L.: $bundle_location</br>Col:".strtoupper($id)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: $doc_no</b></td>";
 
 		
-		}else{
-			echo "<td><br/><strong><br/></strong><br/></td><td></br></br><b></b><br/><b></b></td>";
-			}
+		}
 			
 
 			
