@@ -302,9 +302,9 @@ $authorized=array("sfcsproject1");//Job Loading
 $authorized1=array("sfcsproject1");
 
 set_time_limit(200000);
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-$has_permission = haspermission($_GET['r']);
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+// $has_permission = haspermission($_GET['r']);
 
 $newtempname="$bai_pro3.plan_dash_doc_summ_input";
 
@@ -347,11 +347,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
 			$mods[]=$sql_row1d["modx"];
 		}
-		$popup_url = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'R');
-		echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;">';
-		echo "<p>";
-		echo "<table>";
-		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+		$popup_url ='board_update_V2_input.php';
+		$ips_data='<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;">';
+		$ips_data.="<p>";
+		$ips_data.="<table>";
+		$ips_data.="<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
 		//For Section level blinking
 		$blink_minimum=0;		
 		for($x=0;$x<sizeof($mods);$x++)
@@ -361,7 +361,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			$sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no=$module";
 			 
-			//echo "query=".$sql11;
+			//$ips_data.="query=".$sql11;
 			// mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -369,8 +369,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$wip=$sql_row11['wip'];
 			} 
 			
-			echo "<tr class=\"bottom\">";
-			echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
+			$ips_data.="<tr class=\"bottom\">";
+			$ips_data.="<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
 			$id="yash";
 			$y=0;
 			$sql="SELECT input_job_no_random_ref,input_trims_status,type_of_sewing,MIN(st_status) AS st_status,MIN(ft_status) AS ft_status,order_style_no,GROUP_CONCAT(DISTINCT order_del_no) AS order_del_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc";	
@@ -575,14 +575,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$club_c_code=array_unique($club_c_code);
 				
 					$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
-					$ui_url=getFullURL($_GET['r'],'input_status_update_input.php','R');	
+					$ui_url='input_status_update_input.php';	
 					 
-					$ui_url1 =getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
+					$ui_url1 ='production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php';
 					$application='IPS';
 					
 					$sidemenu=true;
 					$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
-					//echo $scanning_query;
+					// echo $scanning_query;
 					$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($scanning_result))
 					{
@@ -610,7 +610,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							if($id=="yellow")
 							{									
 								if($add_css == ""){				
-									echo "<div id=\"S$schedule\" style=\"float:left;\">
+									$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
 											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
 											</div>
@@ -619,7 +619,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 								}
 								else
 								{
-									echo "<div id=\"S$schedule\" style=\"float:left;\">
+									$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
 											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
@@ -631,7 +631,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							{
 								if($add_css == "")
 								{									
-									echo "<div id=\"S$schedule\" style=\"float:left;\">
+									$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
 											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
 											</div>
@@ -640,7 +640,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 								}
 								else
 								{
-									echo "<div id=\"S$schedule\" style=\"float:left;\">
+									$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 										<div id=\"SJ$input_job_no\" style=\"float:left;\">
 											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 											</div>
@@ -652,12 +652,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						else
 						{
 							
-							echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
+							$ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
 						}
 					}
 					else
 					{
-						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"#\" ><font style=\"color:black;\"></font></a></div></div></div>";
+						$ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"#\" ><font style=\"color:black;\"></font></a></div></div></div>";
 
 					}				
 					$y++;
@@ -665,7 +665,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			for($j=$y+1;$j<=4;$j++)
 			{	
-				echo "<div id=\"\" style=\"float:left;\">
+				$ips_data.="<div id=\"\" style=\"float:left;\">
 							<div id=\"$input_job_no_random_ref\" style=\"float:left;\">
 								<div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\">
 								</div>
@@ -680,21 +680,27 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$cut_wip_control=7000;
 			}
 			echo substr($buyer_div,0,1);
-			echo "</td>";
-			echo "</tr>";
+			$ips_data.="</td>";
+			$ips_data.="</tr>";
 		}
 		
 		$bindex++;
 
-		echo "</table>";
-		echo "</p>";
-		echo '</div>';
+		$ips_data.="</table>";
+		$ips_data.="</p>";
+		$ips_data.="</div>";
 	}
+	// echo $ips_data;
 }
+// echo $ips_data;
+$data=array();
+$data[data]=$ips_data;
+$data[sec]=$_GET["sec"];
+echo json_encode($data);
 if((in_array(strtolower($authorized),$has_permission)))
 	{
-		echo "<script>";
-		echo "blink_new_priority('".implode(",",$blink_docs)."');";
-		echo "</script>";
+		$ips_data.="<script>";
+		$ips_data.="blink_new_priority('".implode(",",$blink_docs)."');";
+		$ips_data.="</script>";
 	}
 ?>
