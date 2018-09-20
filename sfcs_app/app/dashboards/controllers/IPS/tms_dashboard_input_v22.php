@@ -6,6 +6,7 @@
     Created at: 19-09-2018
     Updated at: 20-09-2018 
     ============================================================ */
+    
     $ui_url1 ='?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php');
     $v_r = explode('/',base64_decode($_GET['r']));
     array_pop($v_r);
