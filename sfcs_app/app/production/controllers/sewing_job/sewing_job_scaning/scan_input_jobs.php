@@ -31,6 +31,7 @@
 	}
 
 	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
+	echo '<input type="hidden" name="line-in" id="line-in" value="'.$line_in.'">';
 
 
 
@@ -284,6 +285,7 @@ $(document).ready(function()
 					{
 						$('#emb_cut_check_flag').val(emb_ops);
 					}
+					console.log(response['emb_cut_check_flag']);
 					console.log(data);
 					$('#dynamic_table1').html('');
 					$('#module_div').hide();
@@ -316,7 +318,7 @@ $(document).ready(function()
 						}
 
 						var remarks_check_flag = 0;
-						console.log(data[i].input_job_no);
+						// console.log(data[i].input_job_no);
 						if(data[i].input_job_no != 0)
 						{
 							var sampling_drop = "<select class='form-control sampling' name='sampling[]' id='"+i+"sampling' style='width:100%;' required onchange='validate_reporting("+i+")'><option value='Normal' selected>Normal</option></select>";
@@ -340,7 +342,7 @@ $(document).ready(function()
 						}
 						var readonly ='';
 						var temp_var_bal = 0;
-							if(Number(data[i].reported_qty) > 0)
+						if(Number(data[i].reported_qty) > 0)
 						{
 							status = '<font color="green">Partially Scanned</font>';
 						}
@@ -348,7 +350,7 @@ $(document).ready(function()
 						{
 							status = '<font color="green">Scanning Pending</font>';
 						}
-						if(data[i].send_qty == 0)
+						if(response['emb_cut_check_flag'] && data[i].balance_to_report == 0)
 						{
 							status = '<font color="red">Cut Quantity not done</font>';
 						}
@@ -514,6 +516,7 @@ function validating_cumulative(e,t)
 function validating_remarks_qty(val,remarks)
 {
 	var display_reporting_qty = document.getElementById('display_reporting_qty').value;
+	var line_in = document.getElementById('line-in').value;
 	var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 	var bundle_number_var = val+"tid";
 	var module_var =val+"module";
@@ -550,6 +553,10 @@ function validating_remarks_qty(val,remarks)
 			$('#'+html_id).html(array[0]);
 			if (operation_id == '129' || operation_id == '900')
 			{
+				if (line_in == 'yes')
+				{
+					$('#'+html_id_reporting).val(array[0]);
+				}
 				if (display_reporting_qty == 'yes')
 				{
 					$('#'+html_id_reporting).val(array[0]);
