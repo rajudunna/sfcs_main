@@ -33,6 +33,7 @@
         $description=$_REQUEST['module_description'];
 		$section=$_REQUEST['section'];
         $status=$_REQUEST['status'];
+        
     }else
     {
         $id=0;
@@ -47,6 +48,7 @@
 
             <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
                 <input type='hidden' id='id' name='id' value="<?php echo $id; ?>" >
+                <input type='hidden' id='sec1' name='sec1' value="<?php echo $section; ?>" >
                 <div class="container-fluid shadow">
                     <div class="row">
                         <div id="valErr" class="row viewerror clearfix hidden">
@@ -66,9 +68,14 @@
 				<div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="module">Module</label>
 			    <div class="controls col-sm-9">
-                    
-                <input id="module" type="text" class="form-control k-textbox float" data-role="text" placeholder="Module" name="module" value="<?php echo $module; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
-                
+                <?php if($module!=''){   
+               echo" <input id='module' type='text' class='form-control k-textbox float' data-role='text' placeholder='Module' name='module' readonly value='$module' required='required' data-parsley-errors-container='#errId1'><span id='errId1' class='error'></span></div>";
+                }
+                else{
+                    echo" <input id='module' type='text' class='form-control k-textbox float' data-role='text' placeholder='Module' name='module' value='$module' required='required' data-parsley-errors-container='#errId1'><span id='errId1' class='error'></span></div>";
+
+                }
+                ?>
 				</div>
 				</div>
 						
@@ -80,19 +87,24 @@
    <?php 
    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
    $conn=$link;
-		echo "<select id='sections' class='form-control' data-role='select'  name='sections' data-parsley-errors-container='#errId2'>";
-		if($id!=''){
-			echo "<option value='".$section."' ".$selected.">$section</option>";
-		}else{
-		echo "<option value='Please Select'>Please Select</option><br/>\r\n";
-		}
+		echo "<select id='sections' class='form-control' data-role='select'  name='sections'  data-parsley-errors-container='#errId2' required>";
+		
+        echo "<option value='Please Select'  disabled selected>Please Select</option><br/>\r\n";
 		$query = "SELECT sec_id,sec_name FROM $bai_pro3.sections_master";
 		$result = $conn->query($query);
 		while($row = $result->fetch_assoc()) 
 		{
 			$operation_id=$row['id'];
 			$sec_name=$row['sec_name'];
-			echo "<option value='".$sec_name."' ".$selected.">$sec_name</option>";
+            if($section == $sec_name){
+                echo "<option value='".$sec_name."' selected>$sec_name</option>";
+
+            }else{
+                echo "<option value='".$sec_name."'>$sec_name</option>";
+
+            }
+            
+
 			
 		}
 		echo "</select>";
