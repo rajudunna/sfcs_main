@@ -1,320 +1,40 @@
-<style>
-body
-{
-	background-color:#eeeeee;
-	color: #000000;
-	font-family: Trebuchet MS;
-}
-a {text-decoration: none;}
-
-table
-{
-	border-collapse:collapse;
-}
-.new td
-{
-	border: 1px solid red;
-	white-space:nowrap;
-	border-collapse:collapse;
-}
-
-.new th
-{
-	border: 1px solid red;
-	white-space:nowrap;
-	border-collapse:collapse;
-}
-
-.bottom th,td
-{
-	 border-bottom: 1px solid #000000; 
-	padding-bottom: 5px;
-	padding-top: 5px;
-}
-
-
-.fontn a { display: block; height: 20px; padding: 5px; background-color:blue; text-decoration:none; color: #000000; font-family: Arial; font-size:12px; } 
-
-.fontn a:hover { display: block; height: 20px; padding: 5px; background-color:green; font-family: Arial; font-size:12px;}
-
-.fontnn a { color: #000000; font-family: Arial; font-size:12px; } 
-
-</style>
-
-
-<style>
-
-a{
-	text-decoration:none;
-	color: #000000;
-}
-
-.white {
-  width:20px;
-  height:20px;
-  background-color: #ffffff;
-  display:block;
-  float: left;
-  margin: 2px;
-  border: 1px solid black;
-}
-
-.white a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
-}
-
-.white a:hover {
-  text-decoration:none;
-  background-color: #ffffff;
-}
-
-
-.red {
-  width:20px;
-  height:20px;
-  background-color: #ff0000;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
-}
-
-.red a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
-}
-
-.red a:hover {
-  text-decoration:none;
-  background-color: #ff0000;
-}
-
-.green {
-  width:20px;
-  height:20px;
-  background-color: #339900;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
-}
-
-.green a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
-}
-
-.green a:hover {
-  text-decoration:none;
-  background-color: #339900;
-}
-
-.lgreen {
-  width:20px;
-  height:20px;
-  background-color: #59ff05;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
- 
- }
-
-.lgreen a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
- 
-}
-
-.lgreen a:hover {
-  text-decoration:none;
-  background-color: #59ff05;
-  
-}
-
-.yellow {
-  width:20px;
-  height:20px;
-  background-color: #ffff00;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
-}
-
-.yellow a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
-}
-
-.yellow a:hover {
-  text-decoration:none;
-  background-color: #ffff00;
-}
-
-
-.pink {
-  width:20px;
-  height:20px;
-  background-color: pink;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
-}
-
-.pink a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
-}
-
-.pink a:hover {
-  text-decoration:none;
-  background-color: pink;
-}
-
-.orange {
-  width:20px;
-  height:20px;
-  background-color: #eda11e;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
-}
-
-.orange a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
-}
-
-.orange a:hover {
-  text-decoration:none;
-  background-color: #eda11e;
-}
-
-.blue {
-  width:20px;
-  height:20px;
-  background-color: #15a5f2;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
-}
-
-.blue a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
-}
-
-.blue a:hover {
-  text-decoration:none;
-  background-color: #15a5f2;
-}
-
-
-.yash {
-  width:20px;
-  height:20px;
-  background-color: #999999;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
-}
-
-.yash a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
-}
-
-.yash a:hover {
-  text-decoration:none;
-  background-color: #999999;
-}
-
-.black {
-  width:20px;
-  height:20px;
-  background-color: black;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
-}
-
-.brown {
-  width:20px;
-  height:20px;
-  background-color: #333333;
-  display:block;
-  float: left;
-  margin: 2px;
-border: 1px solid black;
-}
-
-.black a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
-}
-.black a:hover {
-  text-decoration:none;
-  background-color: black;
-}
-</style>
-
 <?php
-$double_modules=array();
-$username="sfcsproject1";
-$authorized=array("sfcsproject1");//Job Loading
-$authorized1=array("sfcsproject1");
-
-set_time_limit(200000);
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
-// $has_permission = haspermission($_GET['r']);
-
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+function leading_zeros($value, $places)
+{
+	$leading='';
+	
+	if(is_numeric($value))
+	{
+	    for($x = 1; $x <= $places; $x++)
+	    {
+	        $ceiling = pow(10, $x);
+	        if($value < $ceiling)
+	        {
+	            $zeros = $places - $x;
+	            for($y = 1; $y <= $zeros; $y++)
+	            {
+	                $leading .= "0";
+	            }
+	        $x = $places + 1;
+	        }
+	    }
+	    $output = $leading . $value;
+	}
+	else{
+	    $output = $value;
+	}
+	
+	return $output;
+}
 $newtempname="$bai_pro3.plan_dash_doc_summ_input";
 
-//For blinking priorties as per the section module wips
 $bindex=0;
 $blink_docs=array();
 $table_name="$bai_pro3.plan_dash_doc_summ_input";
 
 // Remove Docs
-$remove_docs=array();
 $sec_id=$_GET["sec"];
 
 $sqlx="select * from $bai_pro3.sections_db where sec_id=$sec_id";
@@ -324,17 +44,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	$section=$sql_rowx['sec_id'];
 	$section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
-
-	if($_GET["view_div"]!='ALL' && $_GET["view_div"]!='')
-	{
-		$buyer_division=urldecode($_GET["view_div"]);
-		$buyer_division_ref='"'.str_replace(",",'","',$buyer_division).'"';
-		$order_div_ref="and order_div in (".$buyer_division_ref.")";
-	}
-	else 
-	{
-		 $order_div_ref='';
-	}	
+	$order_div_ref='';
+	$shifts='G';
 	// Ticket #424781 change the buyer division display based on the pink,logo,IU as per plan_modules
 	$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
 	$sql_num_checkd=0;
@@ -385,7 +96,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
 				$input_trims_status=$row["input_trims_status"];
 				$add_css="behavior: url(border-radius-ie8.htc);  border-radius: 10px;";
-				$trims_status=$row2['st_status'];
+				$trims_status=$row['st_status'];
 				$style=$row['order_style_no'];
 				$schedule=$row['order_del_no'];
 				$order_col=$row['order_col_des'];
@@ -589,79 +300,72 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$operation_name=$sql_row['operation_name'];
 						$operation_code=$sql_row['operation_code'];
 					}
-					if(in_array($authorizeLevel_1,$has_permission))
+					
+					if($id=="blue" || $id=="yellow")
 					{
-						if($id=="blue" || $id=="yellow")
-						{
-						
-							$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id='".$operation_code."'";
-							$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+						$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id='".$operation_code."'";
+						$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-							while($sql_row=mysqli_fetch_array($cut_input_report_result))
-							{
-								$cut_origional_qty=$sql_row['cut_qty'];
-								$report_origional_qty=$sql_row['report_qty'];								
-							}
-							
-							if($cut_origional_qty > $report_origional_qty){
-								$id='orange';
-							}
-							
-							if($id=="yellow")
-							{									
-								if($add_css == ""){				
-									$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
-										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
-											</div>
+						while($sql_row=mysqli_fetch_array($cut_input_report_result))
+						{
+							$cut_origional_qty=$sql_row['cut_qty'];
+							$report_origional_qty=$sql_row['report_qty'];								
+						}
+						
+						if($cut_origional_qty > $report_origional_qty){
+							$id='orange';
+						}
+						
+						if($id=="yellow")
+						{									
+							if($add_css == ""){				
+								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
+									<div id=\"SJ$input_job_no\" style=\"float:left;\">
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
 										</div>
-									</div>";
-								}
-								else
-								{
-									$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
-										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
-											</div>
-										</div>
-									</div>";
-								}
+									</div>
+								</div>";
 							}
 							else
 							{
-								if($add_css == "")
-								{									
-									$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
-										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
-											</div>
+								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
+									<div id=\"SJ$input_job_no\" style=\"float:left;\">
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 										</div>
-									</div>";
-								}
-								else
-								{
-									$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
-										<div id=\"SJ$input_job_no\" style=\"float:left;\">
-											<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
-											</div>
-										</div>
-									</div>";
-								}
+									</div>
+								</div>";
 							}
 						}
 						else
 						{
-							
-							$ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
+							if($add_css == "")
+							{									
+								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
+									<div id=\"SJ$input_job_no\" style=\"float:left;\">
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"PopupCenter('$ui_url1&style=$style&schedule=$schedule&module=$module&input_job_no_random_ref=$input_job_no_random_ref&operation_id=$operation_code&shift=$shifts&sidemenu=$sidemenu', 'myPop1',800,600);\"><font style=\"color:black;\"></font></a>
+										</div>
+									</div>
+								</div>";
+							}
+							else
+							{
+								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
+									<div id=\"SJ$input_job_no\" style=\"float:left;\">
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+										</div>
+									</div>
+								</div>";
+							}
 						}
 					}
 					else
 					{
-						$ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"#\" ><font style=\"color:black;\"></font></a></div></div></div>";
-
-					}				
-					$y++;
+						
+						$ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
+					}
 				}
+				$y++;
 			}
 			for($j=$y+1;$j<=4;$j++)
 			{	
@@ -694,13 +398,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 }
 // echo $ips_data;
 $data=array();
-$data[data]=$ips_data;
-$data[sec]=$_GET["sec"];
+$data['data']=$ips_data;
+$data['sec']=$_GET["sec"];
 echo json_encode($data);
-if((in_array(strtolower($authorized),$has_permission)))
-	{
-		$ips_data.="<script>";
-		$ips_data.="blink_new_priority('".implode(",",$blink_docs)."');";
-		$ips_data.="</script>";
-	}
 ?>
