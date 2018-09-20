@@ -41,6 +41,7 @@ jQuery( document ).ready(function() {
 function call_server(){
     var sec_id_ar = sec_ids.split(',');
     for(var i=0;i<sec_id_ar.length;i++){
+      $('#sec-load-'+sec_id_ar[i]).css('display','block');
         $.ajax({
             url: "<?= $url ?>?sec="+sec_id_ar[i]
         }).done(function(data) {
@@ -50,6 +51,8 @@ function call_server(){
         });
     }
 }
+
+//setTimeout(call_server, 120000);
 </script>
 <style>
 .sec-box{
@@ -73,5 +76,294 @@ function call_server(){
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+// body
+// {
+// 	background-color:#eeeeee;
+// 	color: #000000;
+// 	font-family: Trebuchet MS;
+// }
+a {text-decoration: none;}
+
+table
+{
+	border-collapse:collapse;
+}
+.new td
+{
+	border: 1px solid red;
+	white-space:nowrap;
+	border-collapse:collapse;
+}
+
+.new th
+{
+	border: 1px solid red;
+	white-space:nowrap;
+	border-collapse:collapse;
+}
+
+.bottom th,td
+{
+	 border-bottom: 1px solid #000000; 
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+
+
+.fontn a { display: block; height: 20px; padding: 5px; background-color:blue; text-decoration:none; color: #000000; font-family: Arial; font-size:12px; } 
+
+.fontn a:hover { display: block; height: 20px; padding: 5px; background-color:green; font-family: Arial; font-size:12px;}
+
+.fontnn a { color: #000000; font-family: Arial; font-size:12px; } 
+
+a{
+	text-decoration:none;
+	color: #000000;
+}
+
+.white {
+  width:20px;
+  height:20px;
+  background-color: #ffffff;
+  display:block;
+  float: left;
+  margin: 2px;
+  border: 1px solid black;
+}
+
+.white a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.white a:hover {
+  text-decoration:none;
+  background-color: #ffffff;
+}
+
+
+.red {
+  width:20px;
+  height:20px;
+  background-color: #ff0000;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.red a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.red a:hover {
+  text-decoration:none;
+  background-color: #ff0000;
+}
+
+.green {
+  width:20px;
+  height:20px;
+  background-color: #339900;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.green a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.green a:hover {
+  text-decoration:none;
+  background-color: #339900;
+}
+
+.lgreen {
+  width:20px;
+  height:20px;
+  background-color: #59ff05;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+ 
+ }
+
+.lgreen a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+ 
+}
+
+.lgreen a:hover {
+  text-decoration:none;
+  background-color: #59ff05;
+  
+}
+
+.yellow {
+  width:20px;
+  height:20px;
+  background-color: #ffff00;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.yellow a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.yellow a:hover {
+  text-decoration:none;
+  background-color: #ffff00;
+}
+
+
+.pink {
+  width:20px;
+  height:20px;
+  background-color: pink;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.pink a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.pink a:hover {
+  text-decoration:none;
+  background-color: pink;
+}
+
+.orange {
+  width:20px;
+  height:20px;
+  background-color: #eda11e;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.orange a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.orange a:hover {
+  text-decoration:none;
+  background-color: #eda11e;
+}
+
+.blue {
+  width:20px;
+  height:20px;
+  background-color: #15a5f2;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.blue a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.blue a:hover {
+  text-decoration:none;
+  background-color: #15a5f2;
+}
+
+
+.yash {
+  width:20px;
+  height:20px;
+  background-color: #999999;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.yash a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.yash a:hover {
+  text-decoration:none;
+  background-color: #999999;
+}
+
+.black {
+  width:20px;
+  height:20px;
+  background-color: black;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.brown {
+  width:20px;
+  height:20px;
+  background-color: #333333;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.black a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+.black a:hover {
+  text-decoration:none;
+  background-color: black;
 }
 </style>

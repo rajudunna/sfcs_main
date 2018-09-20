@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 function leading_zeros($value, $places)
@@ -383,7 +384,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$buyer_div=$sql_rowy['buyer_div'];
 				$cut_wip_control=7000;
 			}
-			echo substr($buyer_div,0,1);
+			//echo substr($buyer_div,0,1);
 			$ips_data.="</td>";
 			$ips_data.="</tr>";
 		}
