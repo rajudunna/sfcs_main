@@ -35,6 +35,28 @@ function get_sewing_job_prefix($field,$prefix_table,$pack_summ_input,$schedule,$
 	((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
 }
 
+function get_sewing_job_prefix_inp($field,$prefix_table,$sewing_job_no,$sewing_job_random_id,$link)
+{
+    $sql="SELECT $field as result FROM $prefix_table WHERE type_of_sewing IN (SELECT DISTINCT type_of_sewing FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$sewing_job_random_id')";
+    //echo $sql."";
+    $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$prefix = $sql_row['result'];
+	}
+	if ($prefix == '')
+	{
+		$prefix='J';
+	}
+	if ($field == 'prefix') {
+		return $prefix.leading_zeros($sewing_job_no,3);
+	} else {
+		return $prefix;
+	}
+	((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
+}
+
 function echo_title_1($table_name,$field,$compare,$key,$link)
 {
 	//GLOBAL $menu_table_name;

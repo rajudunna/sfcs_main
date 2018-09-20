@@ -1,6 +1,6 @@
 <?php
 include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updatings.php',5,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
 
 $has_permission=haspermission($_GET['r']);
 //API related data
@@ -213,6 +213,7 @@ if(isset($_POST['formSubmit']))
 	{
 		$post_code = $_POST['post_ops'];
 	}
+	// var_dump($post_code);
 	foreach($bundle_no as $key => $value)
 	{
 		//$remarks = $remarks[$key];
@@ -232,8 +233,8 @@ if(isset($_POST['formSubmit']))
 			$b_inp_job_ref[] = $nop_qry_row['input_job_no'];
 			$b_remarks_1 = $remarks;
 			$bundle_individual_number = $nop_qry_row['bundle_number'];
-			$bundle_individual_number = $nop_qry_row['tid'];
-			$actual_bundles[] = $nop_qry_row['tid'];
+			// $bundle_individual_number = $nop_qry_row['tid'];
+			$actual_bundles[] = $nop_qry_row['bundle_number'];
 			$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
 			// echo $query_to_fetch_individual_bundle_details;
 			// echo "<br/><br/>";
@@ -287,17 +288,16 @@ if(isset($_POST['formSubmit']))
 	$reversalval = $actual_reversal_val_array;
 	$b_module = $b_module1;
 // echo "post code".$post_code;
-// var_dump($reversalval);
-// die();
-$ops_seq_check = "select id,ops_sequence,ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code='$operation_id'";
+$ops_seq_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code='$operation_id'";
 $result_ops_seq_check = $link->query($ops_seq_check);
 while($row = $result_ops_seq_check->fetch_assoc()) 
 {
 	$ops_seq = $row['ops_sequence'];
 	$seq_id = $row['id'];
 	$ops_dependency = $row['ops_dependency'];
+	$ops_order = $row['operation_order'];
 }
-$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
+$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200,15) ORDER BY operation_order DESC LIMIT 1";
 $result_post_ops_check = $link->query($post_ops_check);
 if($result_post_ops_check->num_rows > 0)
 {
@@ -384,7 +384,7 @@ else if($concurrent_flag == 0)
 		if($post_code)
 		{
 			$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$act_rec_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$bundle_no[$key]."' and operation_id = ".$post_code[0];
-			//echo $query_post_dep;
+			// echo $query_post_dep;
 			$result_query = $link->query($query_post_dep) or exit('query error in updating6');
 		}
 	}
