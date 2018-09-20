@@ -179,14 +179,14 @@
 							$to_be_fill=$to_be_fill-$garments_per_carton;
 							if($to_be_fill>=0)
 							{
-								$carton_qty[$cols_tot[$iii]][$cols_size[$ik]]=$garments_per_carton;
+								$carton_qty[$cols_tot[$iii]][$cols_size[$ik]][$iiii]=$garments_per_carton;
 								$carton_qty_tot[$iiii]+=$garments_per_carton;
 								$bal=0;
 								$status_generation=1;
 							}
 							else if($bal>0)
 							{
-								$carton_qty[$cols_tot[$iii]][$cols_size[$ik]]=$bal;
+								$carton_qty[$cols_tot[$iii]][$cols_size[$ik]][$iiii]=$bal;
 								$carton_qty_tot[$iiii]+=$bal;
 								$bal=0;
 								$status_generation=1;
@@ -217,9 +217,9 @@
 					{
 						for($iii=$tmp_cart;$iii<=$cartons_to_create;$iii++)
 						{
-							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_qty[$cols_tot[$ii]][$cols_size[$ik]]."', NULL, '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$parent_id[$iii]."')";
+							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_qty[$cols_tot[$ii]][$cols_size[$ik]][$iii]."', NULL, '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$parent_id[$iii]."')";
 							mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
-							//echo "<tr><td>".$schedule."</td><td>".$parent_id[$iii]."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."</td><td>".$cols_size[$ik]."</td><td>".$iii."</td><td>".$carton_qty[$cols_tot[$ii]][$cols_size[$ik]]."</td></tr>";
+							//echo "<tr><td>".$schedule."</td><td>".$parent_id[$iii]."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$ik]][$iii]."</td><td>".$cols_size[$ik]."</td><td>".$iii."</td><td>".$carton_qty[$cols_tot[$ii]][$cols_size[$ik]]."</td></tr>";
 						}
 					}
 				}							
@@ -302,14 +302,14 @@
 							$to_be_fill=$to_be_fill-$garments_per_carton;
 							if($to_be_fill>=0)
 							{
-								$carton_qty[$cols_tot[$iii]][$cols_size[$iiii]]=$garments_per_carton;
+								$carton_qty[$cols_tot[$iii]][$cols_size[$iiii]][$iiiii]=$garments_per_carton;
 								$carton_qty_tot[$iiiii]+=$garments_per_carton;
 								$bal=0;
 								$status_generation=1;
 							}
 							else if($bal>0)
 							{
-								$carton_qty[$cols_tot[$iii]][$cols_size[$iiii]]=$bal;
+								$carton_qty[$cols_tot[$iii]][$cols_size[$iiii]][$iiiii]=$bal;
 								$carton_qty_tot[$iiiii]+=$bal;
 								$bal=0;
 								$status_generation=1;
@@ -343,10 +343,10 @@
 					{
 						for($iiiii=$tmp_cart;$iiiii<=$cartons_to_create;$iiiii++)
 						{
-							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$iiii]]."', '".$carton_qty[$cols_tot[$ii]][$cols_size[$iiii]]."', NULL, '".$style."', '".$schedule."','".$cols_tot[$ii]."','".$cols_size[$iiii]."','".$parent_id[$iiiii]."')";
+							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$iiii]]."', '".$carton_qty[$cols_tot[$ii]][$cols_size[$iiii]][$iiiii]."', NULL, '".$style."', '".$schedule."','".$cols_tot[$ii]."','".$cols_size[$iiii]."','".$parent_id[$iiiii]."')";
 							//echo $sql1q."<br>";
 							mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
-							//echo "<tr><td>".$schedule."</td><td>".$parent_no[$iiiii]."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$iiii]]."</td><td>".$cols_size[$iiii]."</td><td>".$iiiii."</td><td>".$carton_qty[$cols_tot[$ii]][$cols_size[$iiii]]."</td></tr>";
+							//echo "<tr><td>".$schedule."</td><td>".$parent_no[$iiiii]."</td><td>".$cols_tot[$ii]."</td><td>".$sizes[$cols_tot[$ii]][$cols_size[$iiii]][$iiiii]."</td><td>".$cols_size[$iiii]."</td><td>".$iiiii."</td><td>".$carton_qty[$cols_tot[$ii]][$cols_size[$iiii]]."</td></tr>";
 						}
 					}
 				}
