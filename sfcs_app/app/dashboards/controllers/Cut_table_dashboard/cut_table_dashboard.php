@@ -27,10 +27,8 @@ jQuery(document).ready(function($){
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
-$url = '/'.getFullURLLevel($_GET['r'],'fabric_requisition_report_v2.php',0,'R'); 
-
-
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
+$url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'R'); 
 ?>
 
 <?php
@@ -91,7 +89,7 @@ function redirect_view()
 //  x=document.getElementById('view_cat').value;
   y=document.getElementById('view_div').value;
   //window.location = "fab_priority_dashboard.php?view=2&view_cat="+x+"&view_div="+y;
-  window.location = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view=2&view_div="+y;
+  window.location = "<?= getFullURL($_GET['r'],'cut_table_dashboard.php','N') ?>"+"&view=2&view_div="+y;
 }
 
 function redirect_dash()
@@ -99,7 +97,7 @@ function redirect_dash()
   x=document.getElementById('view_cat').value;
   y=document.getElementById('view_div').value;
   z=document.getElementById('view_dash').value;
-  window.location = "<?= getFullURL($_GET['r'],'fab_priority_dashboard.php','N') ?>"+"&view="+z+"&view_cat="+x+"&view_div="+y;
+  window.location = "<?= getFullURL($_GET['r'],'cut_table_dashboard.php','N') ?>"+"&view="+z+"&view_cat="+x+"&view_div="+y;
 }
 
 
@@ -629,7 +627,7 @@ echo "</font>";
 
 echo '<div class="panel panel-primary">';
 
-echo "<div class='panel-heading'><span style='float'><strong>Cut Table Dashboard</strong>
+echo "<div class='panel-heading'><span style='float'><strong><a href=".$url."  target='_blank'>Cut Table Dashboard</a></strong></a>
 </span><span style='float: right; margin-top: 0px'><b>
 <a href='javascript:void(0)' onclick='Popup=window.open('cps.htm"."','Popup',
 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
@@ -754,7 +752,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $req_time[]=0;
     $req_date_time[]=0;
    
-    //Changed on 2013-10-03 to facilitate module change requirements. - KiranG
     $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") order by log_time,cutting_tbl_id";
     // echo $sql2."<br>";
     $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1180,8 +1177,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     }
 
 
-    $fab_pop_details = getFullURLLevel($_GET['r'],'fab_pop_details.php',0,'R');
-	$fab_pop_details1 = getFullURLLevel($_GET['r'],'fab_pop_alert.php',0,'R');
+    $fab_pop_details = getFullURLLevel($_GET['r'],'cps/fab_pop_details.php',1,'R');
+	  $fab_pop_details1 = getFullURLLevel($_GET['r'],'cps/fab_pop_alert.php',1,'R');
   if($check_num_rows>0 && $ord_style==$sel_sty)
   {
 
