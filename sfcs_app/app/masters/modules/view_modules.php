@@ -28,8 +28,8 @@
 		<thead>
 		<tr>
 		<th>S.No</th>
-		<th>Section Name</th>
 		<th>Module Name</th>
+		<th>Section Name</th>
 		<th>Module Description</th>
 		<th>Mapped Cut Table</th>
         <th>Module Color</th>
@@ -56,8 +56,8 @@
 			
 			echo "<tr>
 			<td>".$sno++."</td>
-			<td>".$row["section"]."</td>
 			<td>".$row["module_name"]."</td>
+			<td>".$row["section"]."</td>
             <td>".$row["module_description"]."</td>
             <td>".$mapped_cut_table."</td>
             <td>".$row["color"]."</td>
