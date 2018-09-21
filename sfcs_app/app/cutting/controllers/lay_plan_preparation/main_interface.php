@@ -4,11 +4,17 @@ Change Log:
 kirang/ 2015-02-25/ Service Request #244611 :  Add Remarks Tab in Cut plan (for Sample pieces)
 kirang/2016-12-27/ CR: 536: Adding MPO Number in Cut Plan
 -->
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+$url1 = getFullURL($_GET['r'],'excess_cut.php','N');
+?>
 <div class="panel panel-primary">
 <div class="panel-heading">Cut Plan</div>
 <div class="panel-body">
 <?php
+
+if($_GET['excess_cut'] !=''){
+	$excess_cut = $_GET['excess_cut'];
+}
 if(isset($_POST['style']))
 {
 	$style=$_POST['style'];
@@ -36,6 +42,7 @@ else
 	$color=$_GET['color'];
 }
 
+<<<<<<< HEAD
 
 
 //Validation for the schedule operation matchings
@@ -86,6 +93,8 @@ foreach($colors_array as $key=>$color_value )
 }
 
 //Validation ends..
+=======
+>>>>>>> 834-cr-excess-cut-qty-redeem-selection
 
 ?>
 
@@ -1482,11 +1491,52 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 </div>
 
 
-<?php
-
-
-?>
-
+<div class="col-sm-12 row">
+	<div class = "panel panel-info">
+		<div class="panel-heading" style="text-align:center;">
+			<a data-toggle="collapse" href="#excess_cut"><strong><b>Excess Cut</b></strong></a>
+		</div>
+		<div id="excess_cut" class="panel-collapse collapse-in collapse in" aria-expanded="true">
+			<div class="panel-body">
+			<?php if($_GET['excess_cut'] == ''){ ?>
+				<form name="myForm" action="<?= $url1;?>" method="POST">
+				<div class="row">
+					<div class="col-md-3">
+					<label>Excess Cut</label>
+						<select class="form-control" name="excess_cut" id="excess_cut">
+							<option value="0" disabled selected>Please Select</option>
+							<option value="1">First Cut</option>
+							<option value="2">Last Cut</option>
+						</select>
+					</div>
+					<div class="col-md-1">
+						<input type="hidden" id="style" name="style" value="<?=$style;?>"/>
+						<input type="hidden" id="schedule" name="schedule" value="<?=$schedule;?>"/>
+						<input type="hidden" id="color" name="color" value="<?=$color;?>"/>
+						<input type="hidden" id="user" name="user" value="<?=$user;?>"/>
+					</div>
+					<div class="col-md-1"><br/>
+						<input type="submit" name="submit" class="btn btn-info" id="submit" value="submit" disabled/>
+					</div>
+				</div>
+			</form>
+			<?php
+			} 
+			else {
+				$excess_cut = $_GET['excess_cut'];
+				if($excess_cut==1){
+					$val = "First Cut";
+				}
+				else {
+					$val = "Last Cut";
+				}
+				echo "<div class='col-md-2'><b>".$val."</b></div>";
+			}
+			?>			
+			</div>
+		</div>
+	</div>
+</div>
 <!-- <p><a href="#" >Docket Creation / Edit</a></p> -->
 <!--<div id="div6" style="display: none;">
 <?php //include("main_interface_6.php"); ?>
@@ -1791,7 +1841,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>"; if($check_new3==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	echo "<td class=\"  \"><center>"; if($check_new4==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	
-	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&excess_cut=$excess_cut";
 	//$path="http://localhost/sfcs/projects/Beta/cut_plan_new_ms/new_doc_gen/Book1_print.php";
 
 	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
@@ -1800,9 +1850,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		// $path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 		// $path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		
+		//from firstcut
+		if($excess_cut==1){
+			$path= getFullURLLevel($_GET['r'], "color_club_layplan_print_first.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 
-		$path= getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
-		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		}else {
+			//last_cut
+			$path= getFullURLLevel($_GET['r'], "color_club_layplan_print_last.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		}
+		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print_last.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	}
 	
 		//echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-warning\" href=\"$path\" onclick=\"return popitup("."'".$path."'".")\">Print Cut Plan</a>";} else {echo $wrong_icon;} "</center></td>";
@@ -1883,6 +1940,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 </div>
 </div>
+<<<<<<< HEAD
 <style>
 .word-wrap {
 		word-wrap: break-word; 
@@ -1895,3 +1953,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
         table-layout: fixed;
     }
 </style>
+=======
+<script>
+$(document).ready(function(){
+	$('#excess_cut').on('change',function(){
+		var cut_val = $("#excess_cut option:selected").val();;
+		if(cut_val!=0){
+			document.getElementById("submit").disabled = false;
+		}
+		else{
+			document.getElementById('submit').disabled = true;
+		}
+	})
+})
+</script>
+>>>>>>> 834-cr-excess-cut-qty-redeem-selection
