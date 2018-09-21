@@ -507,22 +507,22 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $id="yash";
           if($receive_qty==0)
           {
-            $id="yash";
-            $page_flag = 'receive';
-            $emb_url = getFullURLLevel($_GET["r"],'cutting/controllers/emb_cut_scanning/emb_cut_scanning.php',3,'N')."&style=$style&schedule=$schedule&color=$color&tablename=$section_mods&doc_no=$doc_no&operation_id=$send_op_code&shift=$shifts&page_flag=$page_flag";
-          }else{
-            $emb_url = "";
+            $id="yash";   
           }
           
           if($orginal_qty!=$receive_qty && $receive_qty > 0)
           {
             $id="orange";
+            
           }
 
           if($receive_qty>$send_qty)
           {
             $id="red";
           }
+
+          $page_flag = 'receive';
+          $emb_url = getFullURLLevel($_GET["r"],'cutting/controllers/emb_cut_scanning/emb_cut_scanning.php',3,'N')."&style=$style&schedule=$schedule&color=$color&tablename=$section_mods&doc_no=$doc_no&operation_id=$receive_op_code&shift=$shifts&page_flag=$page_flag";
 
           //For Color Clubbing
           unset($club_c_code);
