@@ -18,6 +18,14 @@
     //looping MONO's array
     foreach($mo_details as $key=>$details)
     {
+
+        $sql_mo_m3_inputs="SELECT MOQTY FROM $m3_inputs.mo_details  where mo_no=".$details['mo_no'];
+        $result_mo_m3_inputs=mysqli_query($link, $sql_mo_m3_inputs) or exit("Sql Error mo".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row_mo_m3_inputs=mysqli_fetch_array($result_mo_m3_inputs))
+        {
+            $mo_qty = $row_mo_m3_inputs['MOQTY'];
+        }
+
         //calling the API
         $url=$api_hostname .":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations;returncols=MFNO,OPNO,OPDS,MAQT,SCQT?CONO=".$company_no ."&FACI=".$facility_code."&MFNO=".$details['mo_no']."&PRNO=".$details['product_sku'];     
         $url1 = str_replace(' ', '%20', $url);
@@ -44,7 +52,7 @@
                 }
 
                 if($flag == false){
-                    $overall_details[] = ['MFNO'=>$data['MFNO'],'OPNO'=>$data['OPNO'],'OPDS'=>$data['OPDS'],'M3_MAQT'=>$data['MAQT'],'M3_SCQT'=>$data['SCQT'],'SFCS_MAQT'=>$row['MAQT'],'SFCS_SCQT'=>$row['SCQT'],'style'=>$details['style'],'schedule'=>$details['schedule'],'color'=>$details['color'],'size'=>$details['size']];
+                    $overall_details[] = ['MFNO'=>$data['MFNO'],'OPNO'=>$data['OPNO'],'OPDS'=>$data['OPDS'],'M3_MAQT'=>$data['MAQT'],'M3_SCQT'=>$data['SCQT'],'SFCS_MAQT'=>$row['MAQT'],'SFCS_SCQT'=>$row['SCQT'],'style'=>$details['style'],'schedule'=>$details['schedule'],'color'=>$details['color'],'size'=>$details['size'],'M3_MOQTY'=>$mo_qty];
                 }
             }
         }
@@ -101,6 +109,7 @@
     <th>M3 Rejected Quantity</th>
     <th>SFCS Good Quantity</th>
     <th>SFCS Rejected Quantity</th>
+    <th>MO Quantity</th>
     </tr>";
     if(count($overall_details)>0){
         foreach($overall_details as $key=>$data){
@@ -116,6 +125,7 @@
             <td>".$data['M3_SCQT']."</td>
             <td>".$data['SFCS_MAQT']."</td>
             <td>".$data['SFCS_SCQT']."</td>
+            <td>".$data['M3_MOQTY']."</td>
             </tr>";
         }
     }else{
