@@ -42,7 +42,6 @@ else
 	$color=$_GET['color'];
 }
 
-<<<<<<< HEAD
 
 
 //Validation for the schedule operation matchings
@@ -93,8 +92,6 @@ foreach($colors_array as $key=>$color_value )
 }
 
 //Validation ends..
-=======
->>>>>>> 834-cr-excess-cut-qty-redeem-selection
 
 ?>
 
@@ -1940,7 +1937,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 </div>
 </div>
-<<<<<<< HEAD
 <style>
 .word-wrap {
 		word-wrap: break-word; 
@@ -1953,7 +1949,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
         table-layout: fixed;
     }
 </style>
-=======
 <script>
 $(document).ready(function(){
 	$('#excess_cut').on('change',function(){
@@ -1967,4 +1962,3 @@ $(document).ready(function(){
 	})
 })
 </script>
->>>>>>> 834-cr-excess-cut-qty-redeem-selection
