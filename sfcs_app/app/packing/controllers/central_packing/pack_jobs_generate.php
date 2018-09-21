@@ -213,9 +213,9 @@
 				// Child Table Filling
 				for($ii=0;$ii<sizeof($cols_tot);$ii++)
 				{							
-					if($carton_qty[$cols_tot[$ii]][$cols_size[$ik]]>0)
+					for($iii=$tmp_cart;$iii<=$cartons_to_create;$iii++)
 					{
-						for($iii=$tmp_cart;$iii<=$cartons_to_create;$iii++)
+						if($carton_qty[$cols_tot[$ii]][$cols_size[$ik]][$iii]>0)
 						{
 							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$ik]]."', '".$carton_qty[$cols_tot[$ii]][$cols_size[$ik]][$iii]."', NULL, '".$style."', '".$schedule."', '".$cols_tot[$ii]."','".$cols_size[$ik]."','".$parent_id[$iii]."')";
 							mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -339,9 +339,9 @@
 			{							
 				for($iiii=0;$iiii<sizeof($cols_size);$iiii++)
 				{
-					if($carton_qty[$cols_tot[$ii]][$cols_size[$iiii]]>0)
+					for($iiiii=$tmp_cart;$iiiii<=$cartons_to_create;$iiiii++)
 					{
-						for($iiiii=$tmp_cart;$iiiii<=$cartons_to_create;$iiiii++)
+						if($carton_qty[$cols_tot[$ii]][$cols_size[$iiii]][$iiiii]>0)
 						{
 							$sql1q="INSERT INTO `$bai_pro3`.`pac_stat_log` (`size_code`, `carton_act_qty`, `status`, `style`, `schedule`, `color`,`size_tit`, `pac_stat_id`) VALUES ('".$sizes[$cols_tot[$ii]][$cols_size[$iiii]]."', '".$carton_qty[$cols_tot[$ii]][$cols_size[$iiii]][$iiiii]."', NULL, '".$style."', '".$schedule."','".$cols_tot[$ii]."','".$cols_size[$iiii]."','".$parent_id[$iiiii]."')";
 							//echo $sql1q."<br>";
