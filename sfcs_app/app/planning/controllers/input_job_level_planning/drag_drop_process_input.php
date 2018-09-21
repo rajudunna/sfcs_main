@@ -146,33 +146,6 @@ $userName = getrbac_user()['uname'];
 				$dockets_ref=explode(",",$sql_rowy["doc"]);
 				$cut_ref=explode(",",$sql_rowy["cut"]);
 			}
-			$sql12="select * from $bai_pro3.cutting_table_plan where doc_no_ref in (".implode(",",$dockets_ref).")";
-			$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($resultr112)==0)
-			{
-				$sql_map_table="select * from $bai_pro3.module_master where module_name=".$items[0]." and status='Active'";
-				$sql_map_table_res=mysqli_query($link, $sql_map_table) or exit("Sql error sql_map_table".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql_map_table_res)>0)
-				{
-						while($sql_map_table_res_row=mysqli_fetch_array($sql_map_table_res))
-						{
-							$mapped_cut_table=$sql_map_table_res_row["mapped_cut_table"];
-						}
-					
-						if($mapped_cut_table != NULL)
-						{
-							$sql12="select * from $bai_pro3.tbl_cutting_table where tbl_name='$mapped_cut_table'";
-
-							$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row12=mysqli_fetch_array($resultr112))
-							{
-								$tbl_id=$sql_row12["tbl_id"];
-							}
-							$insert_log_query="INSERT INTO $bai_pro3.cutting_table_plan (doc_no,priority,dashboard_ref,cutting_tbl_id,doc_no_ref,username, log_time) VALUES('".$dockets_ref[0]."', '".$x."','IPS','".$tbl_id."',  '".implode(",",$dockets_ref)."','".$userName."', NOW())";
-							mysqli_query($link, $insert_log_query) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-						}
-				}
-			}
 			$sql12="select order_del_no,clubbing from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$dockets_ref).") and clubbing>0 and category in ('Body','Front') group by clubbing";
 			$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($resultr112)>0)
@@ -207,6 +180,33 @@ $userName = getrbac_user()['uname'];
 						//echo "M--doc_no".$org_doc_no."<br>";
 					}
 					$org=$sql_rowr1["org_doc_no"];				
+				}
+				$sql12="select * from $bai_pro3.cutting_table_plan where doc_no='".$dockets_ref[$d]."'";
+				$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($resultr112)==0)
+				{
+					$sql_map_table="select * from $bai_pro3.module_master where module_name=".$items[0]." and status='Active'";
+					$sql_map_table_res=mysqli_query($link, $sql_map_table) or exit("Sql error sql_map_table".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($sql_map_table_res)>0)
+					{
+						while($sql_map_table_res_row=mysqli_fetch_array($sql_map_table_res))
+						{
+							$mapped_cut_table=$sql_map_table_res_row["mapped_cut_table"];
+						}
+					
+						if($mapped_cut_table != NULL)
+						{
+							$sql12="select * from $bai_pro3.tbl_cutting_table where tbl_name='$mapped_cut_table'";
+
+							$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row12=mysqli_fetch_array($resultr112))
+							{
+								$tbl_id=$sql_row12["tbl_id"];
+							}
+							$insert_log_query="INSERT INTO $bai_pro3.cutting_table_plan (doc_no,priority,dashboard_ref,cutting_tbl_id,doc_no_ref,username, log_time) VALUES('".$dockets_ref[$d]."', '".$x."','IPS','".$tbl_id."','".implode(",",$dockets_ref)."','".$userName."', NOW())";
+							mysqli_query($link, $insert_log_query) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}
+					}
 				}				
 				$sqlx="insert ignore into $bai_pro3.plan_dashboard(doc_no) values ('".$org_doc_no."')";
 				mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
