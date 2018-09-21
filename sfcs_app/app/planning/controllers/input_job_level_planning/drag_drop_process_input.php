@@ -10,7 +10,7 @@ $userName = getrbac_user()['uname'];
 	$list=$_POST['listOfItems'];
 	$list_db=array();
 	$list_db=explode(";",$list);
-	var_dump($list_db);
+	//var_dump($list_db);
 	$x=1;
 	$x1=1;
 	for($i=0;$i<sizeof($list_db);$i++)
