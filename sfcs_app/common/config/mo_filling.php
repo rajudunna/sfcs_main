@@ -826,13 +826,4 @@
 			}
 		return true;
 	}
-<<<<<<< HEAD
-
-
-
-   
-
 ?>
-=======
-?>
->>>>>>> 763-decentralized-packing-generation
