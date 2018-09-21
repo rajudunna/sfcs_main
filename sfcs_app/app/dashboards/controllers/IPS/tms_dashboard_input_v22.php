@@ -4,7 +4,7 @@
                       Created By: Chandu
     Input & output: get section details and send ajax call to server and display it in sections div
     Created at: 19-09-2018
-    Updated at: 20-09-2018 
+    Updated at: 21-09-2018 
     ============================================================ */
     
     $ui_url1 ='?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php');
@@ -59,28 +59,50 @@
 ?>
 
 <script>
+var sec_id_ar = sec_ids.split(',');
 jQuery( document ).ready(function() {
-    call_server(true);
+    call_server();
 });
 
-function call_server(async_type){
-    var sec_id_ar = sec_ids.split(',');
+function call_server(){
     for(var i=0;i<sec_id_ar.length;i++){
-      $('#sec-load-'+sec_id_ar[i]).css('display','block');
-      $('#sec-'+sec_id_ar[i]).html('');
-        $.ajax({
-            url: "<?= $url ?>?sec="+sec_id_ar[i],
-            async:async_type
-        }).done(function(data) {
-            var r_data = JSON.parse(data) ;
-            $('#sec-'+r_data.sec).html(r_data.data);
-            $('#sec-load-'+r_data.sec).css('display','none');
-        });
+      ajax_calls(sec_id_ar[i],false);
     }
 }
 setInterval(function() {
-  call_server(true);
+  call_server_sync(sec_id_ar[0]);
 }, 120000); 
+
+function call_server_sync(iuh){
+  // var def = $.Deferred();
+  var iuf = ajax_calls(iuh,true);
+  // if(iuf>0){
+  //   var ind = sec_id_ar.indexOf(iuf);
+  //   call_server_sync(sec_id_ar[ind+1]);
+  //   def.reslove();
+  // // }
+  // return def.promise();
+}
+
+function ajax_calls(value,sync_type){
+  $('#sec-load-'+value).css('display','block');
+  $('#sec-'+value).html('');
+  $.ajax({
+      url: "<?= $url ?>?sec="+value
+  }).done(function(data) {
+      var r_data = JSON.parse(data) ;
+      $('#sec-'+r_data.sec).html(r_data.data);
+      $('#sec-load-'+r_data.sec).css('display','none');
+      if(sync_type){
+        var ind = sec_id_ar.indexOf(r_data.sec);
+        if(sec_id_ar[ind+1]){
+          call_server_sync(sec_id_ar[ind+1]);
+        }
+      }
+  });
+}
+
+
 function viewPopupCenter(style,schedule,module,input_job_no_random_ref,operation_code,sidemenu){
   url = '<?= $ui_url1 ?>'+'&style='+style+'&schedule='+schedule+'&module='+module+'&input_job_no_random_ref='+input_job_no_random_ref+'&operation_id='+operation_code+'&sidemenu='+sidemenu+'&shift=';
   PopupCenter(url, 'myPop1',800,600);
