@@ -42,6 +42,66 @@ else
 	$color=$_GET['color'];
 }
 
+$excess_cut = $_GET['excess_cut'];
+
+
+//Validation for the schedule operation matchings
+$sql_colors="select distinct(order_col_des) from bai_orders_db where order_del_no = '$schedule' 
+and order_style_no = '$style'";
+$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+while($row = mysqli_fetch_array($result3))
+{
+	$colors_array[] = $row['order_col_des'];
+}
+
+$sql_colors="select excess_cut_qty from $bai_pro3.excess_cuts_log where schedule_no = '$schedule' 
+and color = '$color'";
+$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+while($row = mysqli_fetch_array($result3))
+{
+	$excess_cut = $row['excess_cut_qty'];
+}
+
+//var_dump($colors_array);
+//die();
+foreach($colors_array as $key=>$color_value )
+{
+	$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes'";
+	// echo $ops_master_sql;
+	$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
+						or exit("Error Occured : Unable to get the Operation Codes");
+	while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+	{
+		$array1[] = $row_result2_ops_master_sql['operation_code'];
+	}
+	//var_dump ($array1);
+	$sql1 = "select   OperationNumber FROM bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule'";
+	$result1 = mysqli_query($link,$sql1)  
+		or exit("Error Occured : Unable to get the Operation Codes");;
+	// echo $sql1;
+	//echo mysqli_num_rows($result1).'---';
+	while($row = mysqli_fetch_array($result1))
+	{
+		$array2[] = $row['OperationNumber'];
+	}
+
+	$compare = array_diff($array1,$array2);
+
+	if(sizeof($compare) > 0)
+	{
+		echo "<script>swal('Opration codes does not match','','warning');</script>";
+		$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+		echo "<script>setTimeout(function(){
+					location.href='$url' 
+				},3000);
+			  </script>";
+		//header("location : $url");
+		//echo $url;
+		exit();
+	}
+}
+
+//Validation ends..
 
 
 //Validation for the schedule operation matchings
@@ -1495,7 +1555,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 		</div>
 		<div id="excess_cut" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
-			<?php if($_GET['excess_cut'] == ''){ ?>
+			<?php if($excess_cut == ''){ ?>
 				<form name="myForm" action="<?= $url1;?>" method="POST">
 				<div class="row">
 					<div class="col-md-3">
@@ -1520,7 +1580,6 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 			<?php
 			} 
 			else {
-				$excess_cut = $_GET['excess_cut'];
 				if($excess_cut==1){
 					$val = "First Cut";
 				}
