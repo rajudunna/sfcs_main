@@ -108,7 +108,7 @@ if(isset($_POST['submit']) || ($_GET['style'] && $_GET['schedule']))
 								$cartmode='Partial';
 							}
 
-							$status1=$sql_row['status'];
+							$status=$sql_row['status'];
 
 							if($status!='DONE')
 							{
