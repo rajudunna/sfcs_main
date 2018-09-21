@@ -579,9 +579,10 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			
 			
 			//For Color Clubbing
-			$club_c_code=array();
-					$sql33x1="SELECT * FROM $bai_pro3.plan_dash_doc_summ where doc_no in (".$doc_no_ref_input.") order by doc_no*1";
+			        $club_c_code=array();
+					$sql33x1="SELECT * FROM $bai_pro3.plan_dash_doc_summ where doc_no in ($doc_no_ref_input) order by doc_no*1";
 					$sql_result33x1=mysqli_query($link, $sql33x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+					//echo $sql33x1;
 					while($sql_row33x1=mysqli_fetch_array($sql_result33x1))
 					{
 						$club_c_code[]=chr($sql_row33x1['color_code']).leading_zeros($sql_row33x1['acutno'],3);
