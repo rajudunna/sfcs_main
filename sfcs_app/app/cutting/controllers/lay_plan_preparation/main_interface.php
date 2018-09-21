@@ -1793,9 +1793,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		// $path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 		// $path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		
+		//from firstcut
+		if($excess_cut==1){
+			$path= getFullURLLevel($_GET['r'], "color_club_layplan_print_first.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 
-		$path= getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&excess_cut=$excess_cut";
-		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		}else {
+			//last_cut
+			$path= getFullURLLevel($_GET['r'], "color_club_layplan_print_last.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		}
+		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print_last.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	}
 	
 		//echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-warning\" href=\"$path\" onclick=\"return popitup("."'".$path."'".")\">Print Cut Plan</a>";} else {echo $wrong_icon;} "</center></td>";
