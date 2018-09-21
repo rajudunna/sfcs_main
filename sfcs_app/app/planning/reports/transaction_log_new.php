@@ -227,18 +227,22 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 /*echo "<right><a href='".getFullURL($_GET['r'],'transaction_log_new_excel.php','R')."&sdate=$sdate&edate=$edate&
 shift=".str_replace('"','*',$shift)."&module=$module&hour_from=$hour_from&hour_to=$hour_to'>
 	<input type='submit' name='submit1' class='btn btn-info' value='Export to Excel'></a></right>";*/
-$sql="select * from $bai_pro3.sections_db where sec_id=$module";
-
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-//echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error211".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$module=$sql_row['sec_mods'];
-}	
-
-
+if($module>0){
+	$sql="select * from $bai_pro3.sections_db where sec_id=$module";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$module=$sql_row['sec_mods'];
+	}	
+}
+else{
+	$sql="select GROUP_CONCAT(sec_mods) as sec_mods from $bai_pro3.sections_db where sec_id >= 0";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$module=$sql_row['sec_mods'];
+	}	
+}
 
 
 if($hour_from=='Day' and $hour_to=='Day'){
@@ -251,6 +255,8 @@ if($hour_from=='Day' and $hour_to=='Day'){
 	$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,size_s01,size_s02,size_s03,size_s04,size_s05,size_s06,size_s07,size_s08,size_s09,size_s10,size_s11,size_s12,size_s13,size_s14,size_s15,size_s16,size_s17,size_s18,size_s19,size_s20,size_s21,size_s22,size_s23,size_s24,size_s25,size_s26,size_s27,size_s28,size_s29,size_s30,size_s31,size_s32,size_s33,size_s34,size_s35,size_s36,size_s37,size_s38,size_s39,size_s40,size_s41,size_s42,size_s43,size_s44,size_s45,size_s46,size_s47,size_s48,size_s49,size_s50 from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) and hour(bac_lastup) between \"$hour_from\" and \"$hour_to\" and bac_qty>0 order by bac_date,hour(bac_lastup) desc";
 }
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
 if(mysqli_num_rows($sql_result)>0)
 {
 	echo "<div>";
