@@ -42,11 +42,75 @@ else
 	$color=$_GET['color'];
 }
 
+$excess_cut = $_GET['excess_cut'];
+
+
+//Validation for the schedule operation matchings
+$sql_colors="select distinct(order_col_des) from bai_orders_db where order_del_no = '$schedule' 
+and order_style_no = '$style'";
+$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+while($row = mysqli_fetch_array($result3))
+{
+	$colors_array[] = $row['order_col_des'];
+}
+
+$sql_colors="select excess_cut_qty from $bai_pro3.excess_cuts_log where schedule_no = '$schedule' 
+and color = '$color'";
+$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+while($row = mysqli_fetch_array($result3))
+{
+	$excess_cut = $row['excess_cut_qty'];
+}
+
+//var_dump($colors_array);
+//die();
+foreach($colors_array as $key=>$color_value )
+{
+	$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes'";
+	// echo $ops_master_sql;
+	$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
+						or exit("Error Occured : Unable to get the Operation Codes");
+	while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+	{
+		$array1[] = $row_result2_ops_master_sql['operation_code'];
+	}
+	//var_dump ($array1);
+	$sql1 = "select   OperationNumber FROM bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule'";
+	$result1 = mysqli_query($link,$sql1)  
+		or exit("Error Occured : Unable to get the Operation Codes");;
+	// echo $sql1;
+	//echo mysqli_num_rows($result1).'---';
+	while($row = mysqli_fetch_array($result1))
+	{
+		$array2[] = $row['OperationNumber'];
+	}
+
+	$compare = array_diff($array1,$array2);
+
+	if(sizeof($compare) > 0)
+	{
+		echo "<script>swal('Opration codes does not match','','warning');</script>";
+		$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+		echo "<script>setTimeout(function(){
+					location.href='$url' 
+				},3000);
+			  </script>";
+		//header("location : $url");
+		//echo $url;
+		exit();
+	}
+}
+
+//Validation ends..
 
 ?>
 
 
- <script language="javascript">
+
+
+
+
+<script language="javascript">
 
 
 var state = 'none';
@@ -578,7 +642,7 @@ echo "</div></div></div></div>";
 		</div>
 		<div id="Category" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
-			<div class="table-responsive">
+			<div>
 <?php
 
 /*
@@ -608,17 +672,17 @@ if ($sql_result) {
 		//			<th class=\"column-title\"><center>Gusset Seperation</th>
 		//			<th class=\"column-title\"><center>One GMT One Way</th>
 				echo "<table class=\"table table-bordered\"><thead><tr class=\"\">
-					<th class=\"column-title\"><center>Date</th>
-					<th class=\"column-title\"><center>Category</th>
-					<th class=\"column-title\"><center>CAT YY</th>
-					<th class=\"column-title\"><center>Color Code</th>
-					<th class=\"column-title\"><center>Fabric Code</th>
-					<th class=\"column-title\" style='word-wrap: break-word;'><center>Fabric Description</th>
-					<th class=\"column-title\"><center>Pur Width</th>
-					<th class=\"column-title\"><center>Binding Consumption</th>
-					<th class=\"column-title\"><center>Pattern Version</th>
-					<th class=\"column-title\"><center>MO status</th>
-					<th class=\"column-title\"><center>Controls</th>
+					<th class=\" \"><center>Date</th>
+					<th class=\" \"><center>Category</th>
+					<th class=\" \"><center>CAT YY</th>
+					<th class=\"word-wrap \"><center>Color Code</th>
+					<th class=\" \"><center>Fabric Code</th>
+					<th class=\"word-wrap\"><center>Fabric Description</th>
+					<th class=\"word-wrap\"><center>Pur Width</th>
+					<th class=\"word-wrap\"><center>Binding Consumption</th>
+					<th class=\"word-wrap\"><center>Pattern Version</th>
+					<th class=\"word-wrap\"><center>MO status</th>
+					<th class=\" \"><center>Controls</th>
 				</tr></thead>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -631,9 +695,9 @@ if ($sql_result) {
 			echo "<td class=\"  \"><center>".$date_cat."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['category']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['catyy']."</center></td>";
-			echo "<td class=\"  \"><center>".$sql_row['col_des']."</center></td>";
+			echo "<td class=\"word-wrap\"><center>".$sql_row['col_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['compo_no']."</center></td>";
-			echo "<td class=\"  \" style='word-wrap: break-word;'><center>".$sql_row['fab_des']."</center></td>";
+			echo "<td class=\"word-wrap\"><center>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['binding_con']."</center></td>";
 
@@ -1441,7 +1505,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 		</div>
 		<div id="excess_cut" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
-			<?php if($_GET['excess_cut'] == ''){ ?>
+			<?php if($excess_cut == ''){ ?>
 				<form name="myForm" action="<?= $url1;?>" method="POST">
 				<div class="row">
 					<div class="col-md-3">
@@ -1466,7 +1530,6 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 			<?php
 			} 
 			else {
-				$excess_cut = $_GET['excess_cut'];
 				if($excess_cut==1){
 					$val = "First Cut";
 				}
@@ -1508,7 +1571,7 @@ else{
 }
 
 
-echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
+echo "<div><table class=\"table table-bordered\">";
 //<th class=\"column-title \"><center>Ratio</center></th>
 echo "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Ratio wise Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
 
@@ -1883,6 +1946,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 </div>
 </div>
+<style>
+.word-wrap {
+		word-wrap: break-word; 
+		white-space: normal !important; 
+    }
+    .no-wrap {
+        white-space: nowrap;
+    }
+    .fixed {
+        table-layout: fixed;
+    }
+</style>
 <script>
 $(document).ready(function(){
 	$('#excess_cut').on('change',function(){
