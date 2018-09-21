@@ -10,7 +10,7 @@ $userName = getrbac_user()['uname'];
 	$list=$_POST['listOfItems'];
 	$list_db=array();
 	$list_db=explode(";",$list);
-	// var_dump($list_db);
+	var_dump($list_db);
 	$x=1;
 	$x1=1;
 	for($i=0;$i<sizeof($list_db);$i++)
@@ -35,8 +35,8 @@ $userName = getrbac_user()['uname'];
 				}
 
 				$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, username, log_time) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."',  '".$original_module."', 'No Module', '".$userName."', NOW())";
-				// echo $insert_log_query.";<br>";
-				// die();
+				 //echo $insert_log_query.";<br>";
+				 //die();
 				mysqli_query($link, $insert_log_query) or die("Error while saving the track details1");
 			}
 			
@@ -96,7 +96,7 @@ $userName = getrbac_user()['uname'];
 				if ($original_module != $items[0])
 				{
 					$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, username, log_time) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."', '".$original_module."', '".$items[0]."', '".$userName."', NOW())";
-					// echo $insert_log_query.";<br>";
+					//echo $insert_log_query.";<br>";
 					// die();
 					mysqli_query($link, $insert_log_query) or die("Error while saving the track details2");
 				}				
@@ -113,16 +113,18 @@ $userName = getrbac_user()['uname'];
 				}
 				$insert_log_query="INSERT INTO $bai_pro3.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no, from_module, to_module, username, log_time) VALUES('".$items[2]."', '".$order_del_no1."', '".$items[1]."', '".$input_job_no1."', 'No Module', '".$items[0]."', '".$userName."', NOW())";
 				mysqli_query($link, $insert_log_query) or die("Error while saving the track details3 == ".$insert_log_query);
+			   // echo $insert_log_query.";<br>";
+					
 			}			
 
 			$sql="insert ignore into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
-			///echo $sql.";<br>";
+			//echo $sql.";<br>";
 			mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			if(((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res)>0)
 			{
 				$sql="update $bai_pro3.plan_dashboard_input set input_priority=$x, input_module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where input_job_no_random_ref='".$items[1]."'";
-				// echo $sql;
+				//echo $sql;
 				mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			else
@@ -179,7 +181,7 @@ $userName = getrbac_user()['uname'];
 				}				
 				$sqlx="insert ignore into $bai_pro3.plan_dashboard(doc_no) values ('".$org_doc_no."')";
 				mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
+				//echo $sqlx;
 				$sqlx1="update $bai_pro3.plan_dashboard set priority=$x1, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where doc_no='".$org_doc_no."'";
 				//echo $sqlx1.";<br>";
 				mysqli_query($link, $sqlx1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -198,6 +200,7 @@ $userName = getrbac_user()['uname'];
 				{
 					$sqlx12="update $bai_pro3.plandoc_stat_log set plan_module=".$items[0]." where doc_no='".$org_doc_no."'";
 					mysqli_query($link, $sqlx12) or exit("Sql Error62.3".mysqli_error($GLOBALS["___mysqli_ston"]));
+					//echo $sqlx12;
 				}							
 				$x1++;
 				$x++;
