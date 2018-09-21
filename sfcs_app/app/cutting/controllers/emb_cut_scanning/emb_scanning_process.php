@@ -260,13 +260,13 @@ foreach($b_tid as $key => $value)
             $result_query = $link->query($query) or exit('query error in updating');
 
             //M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
-            updateM3Transactions($b_tid[$key],$b_op_id,$b_rep_qty[$key]);
+            //updateM3Transactions($b_tid[$key],$b_op_id,$b_rep_qty[$key]);
 
             //To send rejections qunatities and reasons array to M3 API Function
             if($r_qtys[$value] != null && $r_reason[$value] != null){
                 $r_qty_array = explode(',',$r_qtys[$value]);
                 $r_reasons_array = explode(',',$r_reason[$value]);
-                updateM3Transactions($b_tid[$key],$b_op_id,$r_qty_array,$r_reasons_array);
+                //updateM3Transactions($b_tid[$key],$b_op_id,$r_qty_array,$r_reasons_array);
             }           
         }
                

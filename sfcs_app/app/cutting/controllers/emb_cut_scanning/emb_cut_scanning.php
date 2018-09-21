@@ -1,5 +1,4 @@
 <head>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
 	function validateQty(e,t) 
 	{
@@ -32,18 +31,7 @@
 </head>
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-    if($_GET['shift'] ==''){
-        echo '<script>
-            swal({
-                title: "Warning!",
-                text: "Please select shift",
-                type: "warning"
-            }).then(function() {
-                window.close();
-            });</script>';
-            die();
-    }
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
 	$has_permission=haspermission($_GET['r']);
 	if ($_GET['operation_id'])
 	{

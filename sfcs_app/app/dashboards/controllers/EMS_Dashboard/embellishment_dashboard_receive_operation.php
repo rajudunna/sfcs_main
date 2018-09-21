@@ -35,16 +35,9 @@
 <link rel="stylesheet" href="../../../../common/css/bootstrap.min.css">
 <?php
   $hour=date("H.i");
-  echo '<META HTTP-EQUIV="refresh" content="120">';
+  //echo '<META HTTP-EQUIV="refresh" content="120">';
 ?>
 <script type="text/javascript" src="../../../../common/js/jquery.js"></script>
-<script>
-function firstbox()
-{
-  var shift_id = document.getElementById('shift').value;
-  window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&shift="+shift_id;
-}
-</script>
 <script type="text/javascript">
 <!--
 spe=700;
@@ -279,9 +272,9 @@ echo '<div class="panel-body">
 <div class="form-inline">';
 echo '<div class="form-group">';
 echo '&nbsp;&nbsp;&nbsp;Shift: 
-  <select class="form-control" id="shift" name="shift" onchange="firstbox();">
+  <select class="form-control" id="shift" name="shift">
   <option value="">Select</option>';
-        $shifts = $_GET['shift'];
+        $shifts = (isset($_GET['shift']))?$_GET['shift']:'';
         foreach($shifts_array as $shift){
           if($shift == $shifts){
             echo "<option value='$shift' selected>$shift</option>";
@@ -407,7 +400,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $req_time[]=0;
       $req_date_time[]=0;
 
-      $sql2="select doc_no,module from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and send_qty > 0 and orginal_qty>receive_qty order by log_time,module";
+      $sql2="select doc_no,module from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and send_qty > 0 and send_qty>receive_qty order by log_time,module";
       $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($row2=mysqli_fetch_array($result2))
       {
@@ -522,7 +515,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }
 
           $page_flag = 'receive';
-          $emb_url = getFullURLLevel($_GET["r"],'cutting/controllers/emb_cut_scanning/emb_cut_scanning.php',3,'N')."&style=$style&schedule=$schedule&color=$color&tablename=$section_mods&doc_no=$doc_no&operation_id=$receive_op_code&shift=$shifts&page_flag=$page_flag";
+          $emb_url = getFullURLLevel($_GET["r"],'cutting/controllers/emb_cut_scanning/emb_cut_scanning.php',3,'N')."&style=$style&schedule=$schedule&color=$color&tablename=$section_mods&doc_no=$doc_no&operation_id=$receive_op_code&page_flag=$page_flag";
 
           //For Color Clubbing
           unset($club_c_code);
@@ -560,7 +553,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
           $clr=trim(implode(',',$colors_db),50);
         
-          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><a href=".$emb_url."  onclick=\"Popup=window.open('$emb_url','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\">$schedule(".implode(", ",$club_c_code).")</a></div></div><br>";           
+          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")</span></div></div><br>";           
         }
       }   
       echo "</td>";
@@ -592,3 +585,28 @@ if((in_array($authorized,$has_permission)))
   ((is_null($___mysqli_res = mysqli_close($link))) ? false : $___mysqli_res);
   ((is_null($___mysqli_res = mysqli_close($link_new))) ? false : $___mysqli_res);
 ?>
+
+<script>
+function loadpopup(url){ 
+  var shift = document.getElementById('shift').value;
+  if(shift){
+    url = url+'&shift='+shift;
+    window.open(url,'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;
+  }else{
+        swal({
+                title: "Warning!",
+                text: "Please select shift",
+                type: "warning"
+            }).then(function() {
+                window.close();
+            });
+  }
+}
+setTimeout(function(){
+   var shift = document.getElementById('shift').value; 
+   var url = window.location.href+'&shift='+shift;
+    if(shift){
+      window.location.href = url;    
+    }
+   }, 120000);
+</script>
