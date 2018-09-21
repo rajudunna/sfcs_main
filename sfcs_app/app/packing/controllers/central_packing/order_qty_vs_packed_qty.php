@@ -26,12 +26,30 @@
 		
 		if(style == 'NIL' || schedule == 'NIL')
 		{
-			sweetAlert('Please select style and schedule','','warning');
-			// document.getElementById('submit').style.display=''
-			// document.getElementById('msg').style.display='none';
+			sweetAlert('Please select Style and Schedule','','warning');
 			return false;
 		}
 		return true;	
+	}
+
+	function confirm_delete(e,t)
+	{
+		e.preventDefault();
+		var v = sweetAlert({
+			title: "Are you sure to Delete the Packing Ratio?",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+			buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+		}).then(function(isConfirm){
+			if (isConfirm) {
+				window.location = $(t).attr('href');
+				return true;
+			} else {
+				sweetAlert("Request Cancelled",'','error');
+				return false;
+			}
+		});
 	}
 </script>
 </head>
@@ -45,6 +63,10 @@
 	error_reporting(0);
 ?>
 <style>
+	table, th, td {
+		text-align: center;
+	}
+
 #loading-image{
   position:fixed;
   top:0px;
@@ -362,7 +384,7 @@
 									{
 										echo "<td>
 										<a class='btn btn-success generate_pack_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Pack Job</a>
-										<a class='btn btn-danger confirm-submit' id='delete_single' href=$url1&option=delete&schedule1=$schedule&parent_id=$parent_id&seq_no=$seq_no&style1=$style>Delete</a>
+										<a class='btn btn-danger' onclick='return confirm_delete(event,this)' id='delete_single' href='$url1&option=delete&schedule1=$schedule&parent_id=$parent_id&seq_no=$seq_no&style1=$style'>Delete</a>
 										</td>";
 									}
 									else

@@ -808,7 +808,11 @@ if(isset($_POST['submit']))
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
+<<<<<<< HEAD
 		$sql2="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no='".$doc_num[$i]."'";
+=======
+		$sql2="update plandoc_stat_log set fabric_status=$issue_status where doc_no='".$doc_num[$i]."'";
+>>>>>>> abc54eb25ab63ec7b7a94e7e6f3c84e0e77f4564
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$doc_no_loc="D".$doc_num[$i];
 		$sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_num[$i]."' and status=1";

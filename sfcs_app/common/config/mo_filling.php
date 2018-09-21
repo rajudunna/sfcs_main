@@ -726,6 +726,11 @@
 			$mapped_color = $b_colors;
 			foreach($operation_codes as $index => $op_code)
 			{
+				if($op_code != 15)
+				{
+					$send_qty = 0; 
+				}
+
 				$b_cps_qty[$op_code] = "INSERT INTO $bai_pro3.cps_log(`operation_code`,`short_key_code`,`cut_quantity`,`remaining_qty`,`doc_no`,`size_code`,`size_title`) VALUES";
 				$b_cps_qty[$op_code] .= '("'.$op_code.'","'. $short_key_code[$index].'","'.$b_in_job_qty.'","0","'. $b_job_no.'","'.$b_size_code.'","'. $b_sizes.'")';
 				$bundle_creation_result_002 = $link->query($b_cps_qty[$op_code]);
