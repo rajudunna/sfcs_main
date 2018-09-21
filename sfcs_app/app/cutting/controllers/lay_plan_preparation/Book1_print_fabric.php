@@ -1767,6 +1767,36 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl6513019 width=64 style='width:48pt'></td>
   <td class=xl6513019 width=16 style='width:12pt'></td>
  </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 class=xl1532599 style='height:15.75pt'></td>
+  <td class=xl6432599></td>
+ <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl7832599></td>
+  <td class=xl6432599></td>
+  <td class=xl6432599></td>
+  <td class=xl1532599></td>
+ </tr>
  <tr class=xl6513019 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl6513019 style='height:15.0pt'></td>
   <td class=xl6513019></td>
@@ -1795,6 +1825,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl6513019></td>
   <td class=xl6513019></td>
  </tr>
+ 
  <tr class=xl6513019 height=9 style='mso-height-source:userset;height:6.75pt'>
   <td height=9 class=xl6513019 style='height:6.75pt'></td>
   <td class=xl6513019></td>
