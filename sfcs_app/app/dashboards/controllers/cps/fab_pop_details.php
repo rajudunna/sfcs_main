@@ -808,7 +808,7 @@ if(isset($_POST['submit']))
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
-		$sql2="update plandoc_stat_log set fabric_status='5' where doc_no='".$doc_num[$i]."'";
+		$sql2="update plandoc_stat_log set fabric_status=$issue_status where doc_no='".$doc_num[$i]."'";
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$doc_no_loc="D".$doc_num[$i];
 		$sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_num[$i]."' and status=1";
@@ -919,17 +919,17 @@ if(isset($_POST['submit']))
 			{
 				//echo "Test---21"."<br>";
 				//$sql1="update plan_dashboard set fabric_status=$issue_status where doc_no='";
-				$sql1="update plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
+				$sql1="update $bai_pro3.plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
 				//Uncheck this
 				mysqli_query($link, $sql1) or exit("Sql Error---5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-				$sql1="update plandoc_stat_log set fabric_status=$issue_status where doc_no in ($group_docs)";
+				$sql1="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no in ($group_docs)";
 				//Uncheck this
 				mysqli_query($link, $sql1) or exit("Sql Error---6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				//if($issue_status==5)
 				//{
-				$sql3="update fabric_priorities set issued_time='".date("Y-m-d H:i:s")."' where doc_ref in ($group_docs)";
+				$sql3="update $bai_pro3.fabric_priorities set issued_time='".date("Y-m-d H:i:s")."' where doc_ref in ($group_docs)";
 				//Uncheck this	
 				mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -940,7 +940,7 @@ if(isset($_POST['submit']))
 
 			if($issue_status==1)
 			{
-				$sql1="update plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
+				$sql1="update $bai_pro3.plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
 				//Uncheck this
 				mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
