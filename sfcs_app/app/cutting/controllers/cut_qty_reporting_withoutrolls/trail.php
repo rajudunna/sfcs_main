@@ -11,12 +11,19 @@ $qry_to_find_in_out_result = $link->query($qry_to_find_in_out);
 error_reporting(0);
 if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 {
+	$reported_status = 'P';
+	
 	$plies = $_GET['plies'];
 	$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no = '$doc_no_ref' ";
 	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 	{
 		// $doc_array[$row['doc_no']] = $row['act_cut_status'];
+		$p_plies = $row['p_plies'];
+		$a_plies = $row['a_plies'];	
+		if($p_plies == $a_plies){
+			$reported_status = 'F';			
+		}	
 		for ($i=0; $i < sizeof($sizes_array); $i++)
 		{ 
 			if ($row['a_'.$sizes_array[$i]] > 0)
@@ -39,6 +46,7 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 			$mapped_color = $row['mapped_color'];
 			$ref_no = $row['bundle_number'];
 			$b_style = $row['style'];
+			$recevied_qty = $row['recevied_qty']+$value;
 		}
 		$update_qry = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty+$value where id = $id_to_update";
 		$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -49,7 +57,9 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 		{
 			$id_to_update_cps = $row_result_selecting_cps_qry['id'];
 		}
-		$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$value where id = $id_to_update_cps";
+
+		
+		$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$value,reported_status='$reported_status',received_qty_cumulative=$recevied_qty where id = $id_to_update_cps";
 		$updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		//updating for next operation send_qty
@@ -72,6 +82,10 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 		}
 		$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$value WHERE docket_number = '$doc_no_ref' AND size_id = '$key' AND operation_id = '$post_ops_code'";
 		$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+		$update_qry_cps_post_code = "update $bai_pro3.cps_log set received_qty_cumulative=$recevied_qty WHERE `doc_no`='$doc_no_ref' AND `size_code`=  '$key' AND operation_code = '$post_ops_code'";
+		$updating_cps = mysqli_query($link,$update_qry_cps_post_code) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 		$updation_m3 = updateM3Transactions($ref_no,$op_code,$value);
 	}
 }
