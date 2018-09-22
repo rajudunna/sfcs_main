@@ -2865,20 +2865,34 @@ xmlns="http://www.w3.org/TR/REC-html40">
                     $ex_s14_tot=0; 
 
 
-                    if($excess_cut_qty == 2){
-                        //To identify the Last cut no.     
+                    // if($excess_cut_qty == 2){
+                    //     //To identify the Last cut no.     
 
-                        $sql="select max(acutno) as firstcut from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\""; 
+                    //     $sql="select max(acutno) as firstcut from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\""; 
+                    //     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                        
+                    //     while($sql_row=mysqli_fetch_array($sql_result)) 
+                    //     {     
+                    //         $first_cut=$sql_row['firstcut']; 
+                    //     } 
+                    // }
+                    
+                    if($excess_cut_qty == 1){
+                        //To identify the first cut no.     
+
+                        $sql="select min(acutno) as firstcut from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\""; 
                         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         
                         while($sql_row=mysqli_fetch_array($sql_result)) 
                         {     
                             $first_cut=$sql_row['firstcut']; 
                         } 
-                    }else{
-                        //To identify the first cut no.     
+                    }
+                    else{
 
-                        $sql="select min(acutno) as firstcut from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\""; 
+                        // To identify the Last cut no.     
+
+                        $sql="select max(acutno) as firstcut from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\""; 
                         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         
                         while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -2971,121 +2985,121 @@ xmlns="http://www.w3.org/TR/REC-html40">
 
                        
                         // // Deduction From Maximum (Last Cut)
-                        if($excess_cut_qty == 2){
+                        // if($excess_cut_qty == 2){
 
-                            error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
+                        //     error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
 
-                            if($cutno == 1){
+                        //     if($cutno == 1){
 
-                                for($s=0;$s<sizeof($size);$s++) 
-                                { 
-                                    $code="ex_s".$sizes_code[$s]; 
-                                    $$code=($c_s[$s]-$o_s[$s]); 
-                                }
+                        //         for($s=0;$s<sizeof($size);$s++) 
+                        //         { 
+                        //             $code="ex_s".$sizes_code[$s]; 
+                        //             $$code=($c_s[$s]-$o_s[$s]); 
+                        //         }
 
-                                echo "<tr class=xl6613019 height=20 ; style='mso-height-source:userset;height:15.0pt' > 
-                                        <td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
-                                  echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code)."000"."</td>"; 
-                                   echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
-                                    $total=0; 
-                                    for($s=0;$s<sizeof($size);$s++) 
-                                    {    
-                                        $array_val=${'ex_'.$sizes_array[$s]}; 
-                                        echo "<td class=xl8713019 style='text-align: center;'>0<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$array_val</div></td>"; 
-                                        $total+=$array_val; 
-                                    } 
-                                  echo "<td class=xl8713019></td>"; 
-                                  echo "<td class=xl8713019 style='text-align: center;'>0<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$total</div></td>"; 
+                        //         echo "<tr class=xl6613019 height=20 ; style='mso-height-source:userset;height:15.0pt' > 
+                        //                 <td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
+                        //           echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code)."000"."</td>"; 
+                        //            echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
+                        //             $total=0; 
+                        //             for($s=0;$s<sizeof($size);$s++) 
+                        //             {    
+                        //                 $array_val=${'ex_'.$sizes_array[$s]}; 
+                        //                 echo "<td class=xl8713019 style='text-align: center;'>0<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$array_val</div></td>"; 
+                        //                 $total+=$array_val; 
+                        //             } 
+                        //           echo "<td class=xl8713019></td>"; 
+                        //           echo "<td class=xl8713019 style='text-align: center;'>0<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$total</div></td>"; 
 
-                                  echo "<td class=xl8713019></td>"; 
-                                  echo "<td class=xl8713019></td>"; 
-                                  echo "<td class=xl8713019></td>"; 
-                                echo "</tr>"; 
-                            }
+                        //           echo "<td class=xl8713019></td>"; 
+                        //           echo "<td class=xl8713019></td>"; 
+                        //           echo "<td class=xl8713019></td>"; 
+                        //         echo "</tr>"; 
+                        //     }
 
-                            // Last Cut
-                            if($cutno == $first_cut) 
-                            { 
-                                for($s=0;$s<sizeof($size);$s++) 
-                                { 
-                                    $code="ex_s".$sizes_code[$s]; 
-                                    $$code=($c_s[$s]-$o_s[$s]); 
-                                }
+                        //     // Last Cut
+                        //     if($cutno == $first_cut) 
+                        //     { 
+                        //         for($s=0;$s<sizeof($size);$s++) 
+                        //         { 
+                        //             $code="ex_s".$sizes_code[$s]; 
+                        //             $$code=($c_s[$s]-$o_s[$s]); 
+                        //         }
                         
-                                echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'> 
+                        //         echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'> 
                                     
-                                    <td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
-                                    echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code).leading_zeros($cutno, 3)."</td>"; 
-                                    $total=0; 
-                                    echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
-                                    $temp_sum=0; 
+                        //             <td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
+                        //             echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code).leading_zeros($cutno, 3)."</td>"; 
+                        //             $total=0; 
+                        //             echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
+                        //             $temp_sum=0; 
 
-                                    for($s=0;$s<sizeof($size);$s++) 
-                                    {   
+                        //             for($s=0;$s<sizeof($size);$s++) 
+                        //             {   
                                         
-                                        $array_val=${'ex_'.$sizes_array[$s]}; 
-                                        $array_val_a=${'a_'.$sizes_array[$s]}; 
-                                        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";
-                                        if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val;  $code="ex_s".$sizes_code[$s]; $$code=0; } echo"</div></td>";     
-                                        $total_ratio+=$array_val_a; 
+                        //                 $array_val=${'ex_'.$sizes_array[$s]}; 
+                        //                 $array_val_a=${'a_'.$sizes_array[$s]}; 
+                        //                 echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";
+                        //                 if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val;  $code="ex_s".$sizes_code[$s]; $$code=0; } echo"</div></td>";     
+                        //                 $total_ratio+=$array_val_a; 
                                         
-                                    } 
+                        //             } 
                             
-                                    echo "<td class=xl8713019>".$plies."</td>"; 
-                                    echo "<td class=xl8713019 style='text-align: center;'>".($total_ratio)."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$temp_sum</div></td>"; 
-                                    echo "<td class=xl8713019></td>"; 
-                                    echo "<td class=xl8713019></td>"; 
-                                    echo "<td class=xl8713019></td>"; 
+                        //             echo "<td class=xl8713019>".$plies."</td>"; 
+                        //             echo "<td class=xl8713019 style='text-align: center;'>".($total_ratio)."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$temp_sum</div></td>"; 
+                        //             echo "<td class=xl8713019></td>"; 
+                        //             echo "<td class=xl8713019></td>"; 
+                        //             echo "<td class=xl8713019></td>"; 
     
-                                echo "</tr>"; 
-                            }
+                        //         echo "</tr>"; 
+                        //     }
                             
-                            // First Cut On Wards
-                            else 
-                            { 
-                                for($s=0;$s<sizeof($size);$s++) 
-                                { 
-                                    $code="ex_s".$sizes_code[$s]; 
-                                    $$code=c_s[$s]; 
-                                }
+                        //     // First Cut On Wards
+                        //     else 
+                        //     { 
+                        //         for($s=0;$s<sizeof($size);$s++) 
+                        //         { 
+                        //             $code="ex_s".$sizes_code[$s]; 
+                        //             $$code=c_s[$s]; 
+                        //         }
 
-                                echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'><td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
-                                    echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code).leading_zeros($cutno, 3)."</td>"; 
-                                    echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
-                                    $total_ratio1=0; 
-                                    $total_temp_values=0; 
-                                    $temp_sum=0; 
-                                    for($s=0;$s<sizeof($size);$s++) 
-                                    {    
-                                        $array_val=${'ex_'.$sizes_array[$s]}; 
-                                        $array_val_a=${'a_'.$sizes_array[$s]}; 
-                                        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $code="ex_s".$sizes_code[$s]; $$code=0;}     
-                                        // echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies); $temp_sum=$temp_sum+($array_val_a*$plies); $array_val=0; }  
-                                        /* 
-                                        echo "<td class=xl8713019 style='text-align: left;'>".$array_val_a."<div style='width: 77px;text-align: left; float: right; height:100%;border-top: 1px solid black;' class='xl8713019'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo (($array_val_a*$plies)-$array_val); $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $array_val=0; }   
-                                        */  
-                                        echo "</div></td>"; 
-                                        $total_ratio1=$total_ratio1+$array_val_a; 
+                        //         echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'><td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
+                        //             echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code).leading_zeros($cutno, 3)."</td>"; 
+                        //             echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
+                        //             $total_ratio1=0; 
+                        //             $total_temp_values=0; 
+                        //             $temp_sum=0; 
+                        //             for($s=0;$s<sizeof($size);$s++) 
+                        //             {    
+                        //                 $array_val=${'ex_'.$sizes_array[$s]}; 
+                        //                 $array_val_a=${'a_'.$sizes_array[$s]}; 
+                        //                 echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $code="ex_s".$sizes_code[$s]; $$code=0;}     
+                        //                 // echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies); $temp_sum=$temp_sum+($array_val_a*$plies); $array_val=0; }  
+                        //                 /* 
+                        //                 echo "<td class=xl8713019 style='text-align: left;'>".$array_val_a."<div style='width: 77px;text-align: left; float: right; height:100%;border-top: 1px solid black;' class='xl8713019'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo (($array_val_a*$plies)-$array_val); $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $array_val=0; }   
+                        //                 */  
+                        //                 echo "</div></td>"; 
+                        //                 $total_ratio1=$total_ratio1+$array_val_a; 
                                         
-                                        if(($array_val_a*$plies)>$array_val){ 
-                                        //  $total_temp_values=$total_temp_values+(($array_val_a*$plies)-$array_val);                 
-                                            $total_temp_values=$total_temp_values+(($array_val_a*$plies));                 
-                                        } 
-                                    } 
+                        //                 if(($array_val_a*$plies)>$array_val){ 
+                        //                 //  $total_temp_values=$total_temp_values+(($array_val_a*$plies)-$array_val);                 
+                        //                     $total_temp_values=$total_temp_values+(($array_val_a*$plies));                 
+                        //                 } 
+                        //             } 
                                     
-                                    echo "<td class=xl8713019>".$plies."</td>"; 
-                                    echo "<td class=xl8713019 style='text-align: center;'>".$total_ratio1."<div style='width: 77px; float: right;text-align: center; height:100%;border-top: 1px solid black;' >".$temp_sum."</div></td>"; 
-                                    echo "<td class=xl8713019></td>"; 
-                                    echo "<td class=xl8713019></td>"; 
-                                    echo "<td class=xl8713019></td>"; 
-                                echo "</tr>"; 
+                        //             echo "<td class=xl8713019>".$plies."</td>"; 
+                        //             echo "<td class=xl8713019 style='text-align: center;'>".$total_ratio1."<div style='width: 77px; float: right;text-align: center; height:100%;border-top: 1px solid black;' >".$temp_sum."</div></td>"; 
+                        //             echo "<td class=xl8713019></td>"; 
+                        //             echo "<td class=xl8713019></td>"; 
+                        //             echo "<td class=xl8713019></td>"; 
+                        //         echo "</tr>"; 
                               
-                            }  
+                        //     }  
 
-                        }
+                        // }
 
                         // Deduction From Minimum (First Cut)
-                        else
+                        if($excess_cut_qty == 1)
                         {
                             if($cutno==$first_cut) 
                             { 
@@ -3262,6 +3276,118 @@ xmlns="http://www.w3.org/TR/REC-html40">
                                 echo "</tr>"; 
 
                             } 
+                        }
+                        // // Deduction From Maximum (Last Cut)
+                        else{
+
+                            error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
+
+                            if($cutno == 1){
+
+                                for($s=0;$s<sizeof($size);$s++) 
+                                { 
+                                    $code="ex_s".$sizes_code[$s]; 
+                                    $$code=($c_s[$s]-$o_s[$s]); 
+                                }
+
+                                echo "<tr class=xl6613019 height=20 ; style='mso-height-source:userset;height:15.0pt' > 
+                                        <td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
+                                  echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code)."000"."</td>"; 
+                                   echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
+                                    $total=0; 
+                                    for($s=0;$s<sizeof($size);$s++) 
+                                    {    
+                                        $array_val=${'ex_'.$sizes_array[$s]}; 
+                                        echo "<td class=xl8713019 style='text-align: center;'>0<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$array_val</div></td>"; 
+                                        $total+=$array_val; 
+                                    } 
+                                  echo "<td class=xl8713019></td>"; 
+                                  echo "<td class=xl8713019 style='text-align: center;'>0<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$total</div></td>"; 
+
+                                  echo "<td class=xl8713019></td>"; 
+                                  echo "<td class=xl8713019></td>"; 
+                                  echo "<td class=xl8713019></td>"; 
+                                echo "</tr>"; 
+                            }
+
+                            // Last Cut
+                            if($cutno == $first_cut) 
+                            { 
+                                for($s=0;$s<sizeof($size);$s++) 
+                                { 
+                                    $code="ex_s".$sizes_code[$s]; 
+                                    $$code=($c_s[$s]-$o_s[$s]); 
+                                }
+                        
+                                echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'> 
+                                    
+                                    <td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
+                                    echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code).leading_zeros($cutno, 3)."</td>"; 
+                                    $total=0; 
+                                    echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
+                                    $temp_sum=0; 
+
+                                    for($s=0;$s<sizeof($size);$s++) 
+                                    {   
+                                        
+                                        $array_val=${'ex_'.$sizes_array[$s]}; 
+                                        $array_val_a=${'a_'.$sizes_array[$s]}; 
+                                        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";
+                                        if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val;  $code="ex_s".$sizes_code[$s]; $$code=0; } echo"</div></td>";     
+                                        $total_ratio+=$array_val_a; 
+                                        
+                                    } 
+                            
+                                    echo "<td class=xl8713019>".$plies."</td>"; 
+                                    echo "<td class=xl8713019 style='text-align: center;'>".($total_ratio)."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$temp_sum</div></td>"; 
+                                    echo "<td class=xl8713019></td>"; 
+                                    echo "<td class=xl8713019></td>"; 
+                                    echo "<td class=xl8713019></td>"; 
+    
+                                echo "</tr>"; 
+                            }
+                            
+                            // First Cut On Wards
+                            else 
+                            { 
+                                for($s=0;$s<sizeof($size);$s++) 
+                                { 
+                                    $code="ex_s".$sizes_code[$s]; 
+                                    $$code=c_s[$s]; 
+                                }
+
+                                echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'><td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
+                                    echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code).leading_zeros($cutno, 3)."</td>"; 
+                                    echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
+                                    $total_ratio1=0; 
+                                    $total_temp_values=0; 
+                                    $temp_sum=0; 
+                                    for($s=0;$s<sizeof($size);$s++) 
+                                    {    
+                                        $array_val=${'ex_'.$sizes_array[$s]}; 
+                                        $array_val_a=${'a_'.$sizes_array[$s]}; 
+                                        echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies)-$array_val; $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $code="ex_s".$sizes_code[$s]; $$code=0;}     
+                                        // echo "<td class=xl8713019 style='text-align: center;'>".$array_val_a."<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo ($array_val_a*$plies); $temp_sum=$temp_sum+($array_val_a*$plies); $array_val=0; }  
+                                        /* 
+                                        echo "<td class=xl8713019 style='text-align: left;'>".$array_val_a."<div style='width: 77px;text-align: left; float: right; height:100%;border-top: 1px solid black;' class='xl8713019'>";if(($array_val_a*$plies)<$array_val){ echo "0"; $array_val=$array_val-($array_val_a*$plies);} else {echo (($array_val_a*$plies)-$array_val); $temp_sum=$temp_sum+($array_val_a*$plies)-$array_val; $array_val=0; }   
+                                        */  
+                                        echo "</div></td>"; 
+                                        $total_ratio1=$total_ratio1+$array_val_a; 
+                                        
+                                        if(($array_val_a*$plies)>$array_val){ 
+                                        //  $total_temp_values=$total_temp_values+(($array_val_a*$plies)-$array_val);                 
+                                            $total_temp_values=$total_temp_values+(($array_val_a*$plies));                 
+                                        } 
+                                    } 
+                                    
+                                    echo "<td class=xl8713019>".$plies."</td>"; 
+                                    echo "<td class=xl8713019 style='text-align: center;'>".$total_ratio1."<div style='width: 77px; float: right;text-align: center; height:100%;border-top: 1px solid black;' >".$temp_sum."</div></td>"; 
+                                    echo "<td class=xl8713019></td>"; 
+                                    echo "<td class=xl8713019></td>"; 
+                                    echo "<td class=xl8713019></td>"; 
+                                echo "</tr>"; 
+                              
+                            }   
                         }
 
                         $total_temp_values=0; 
