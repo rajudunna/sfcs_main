@@ -45,7 +45,7 @@ if($page_flag == 'send'){
    $embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query send error');
 }else if($page_flag == 'receive'){
     $embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$tot_report_qty_doc where doc_no =$b_doc_no and receive_op_code=$b_op_id";
-   $embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
+    $embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 }
 
 
@@ -74,6 +74,7 @@ while($row1 = $result_dep_ops_array_qry->fetch_assoc())
 }
 
 $ops_dep_qry = "SELECT ops_dependency,operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_sequence='$sequnce' AND ops_dependency != 200 AND ops_dependency != 0 group by ops_dependency";
+
 $result_ops_dep_qry = $link->query($ops_dep_qry);
 while($row2 = $result_ops_dep_qry->fetch_assoc()) 
 {
@@ -120,19 +121,17 @@ else
 {
     $ops_seq_dep[] = $ops_seq;
 }
-$pre_ops_check = "select operation_code,ops_sequence from $brandix_bts.tbl_style_ops_master where style='".$b_style."' and color = '".$mapped_color."' and (ops_sequence = '".$ops_seq."' or ops_sequence in  (".implode(',',$ops_seq_dep)."))";
+$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) < '$ops_order' AND operation_code not in (10,200) ORDER BY operation_order DESC LIMIT 1";
 $result_pre_ops_check = $link->query($pre_ops_check);
 if($result_pre_ops_check->num_rows > 0)
 {
     while($row7 = $result_pre_ops_check->fetch_assoc()) 
     {
-        if($row7['ops_sequence'] != 0)
-        {
-            $pre_ops_code[] = $row7['operation_code'];
-        }
+        $pre_ops_code = $row7['operation_code'];
     }
 }
 $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = '".$ops_seq."'  AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
+
 $result_post_ops_check = $link->query($post_ops_check);
 if($result_post_ops_check->num_rows > 0)
 {
@@ -165,10 +164,38 @@ foreach($b_tid as $key => $value)
     $bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
     
     //Total reproted quantity for the size
-    $tot_report_qty = $b_rep_qty[$key]+$b_rej_qty[$key];
+    $tot_report_qty = $b_rep_qty[$key];
+    
+    //for prev 
+    $cps_log_qry_pre = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty-$tot_report_qty WHERE doc_no = '$b_doc_no' AND operation_code = '$pre_ops_code' AND size_title='". $b_sizes[$key]."'"; 
+    $cps_log_result_pre = $link->query($cps_log_qry_pre) or exit('CPS LOG query pre error');
+
+
+    //To check previous operation is remaining qty is 0 and reported status is 'F'
+    $chec_prev_op = "SELECT remaining_qty,reported_status FROM $bai_pro3.cps_log WHERE doc_no = '$b_doc_no' AND operation_code = '$pre_ops_code' AND size_title='". $b_sizes[$key]."'";
+
+    $chec_prev_op_res = $link->query($chec_prev_op);
+    if($chec_prev_op_res->num_rows > 0)
+    {
+        while($result = $chec_prev_op_res->fetch_assoc()) 
+        {
+            $remaining_qty = $result['remaining_qty'];
+            $reported_status = $result['reported_status'];
+        }
+    }
+
+    if($remaining_qty == 0 && $reported_status == 'F'){
+        $reported_status = 'F';
+    }else{
+        $reported_status = 'P';
+    }
+   
+    
     //update remaining quantity in cps_log table
-    $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty where id =$b_tid[$key] and operation_code='$b_op_id'"; 
+    $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty,`reported_status`='$reported_status' where id =$b_tid[$key] and operation_code='$b_op_id'"; 
     $cps_log_result = $link->query($cps_log_qry) or exit('CPS LOG query error');
+
+
         
     //update shift and module against to each bundle number in BCD insert rejection in qms_db
     $select_send_qty = "SELECT send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
