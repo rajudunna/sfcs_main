@@ -78,7 +78,7 @@
                 $result = mysqli_query($link,"SELECT MAX(tid) FROM $bai_pro3.pac_stat_log_input_job");
                 $row = mysqli_fetch_row($result);
                 $bundle_no = $row[0];
-                echo $bundle_no."bundle number<br>";
+                // echo $bundle_no."bundle number<br>";
                 $cut_qry = "SELECT cut_number FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color' AND docket_number='$doc_ary[$i]' ";
                 
                 $cut_result = mysqli_query($link,$cut_qry);
@@ -87,7 +87,6 @@
 
                 /** Get Opertaions of Style,Schedule & Color */
                 $get_operations = "SELECT distinct(operation_id) as operation_id,sfcs_smv,operation_sequence,ops_dependency,sewing_order_status,is_sewing_order,sewing_order,shade  FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color' ";
-
                 // echo $get_operations."6<br>";
                 $res_get_operations =mysqli_query($link,$get_operations);
                 while($resop = mysqli_fetch_array($res_get_operations))
@@ -125,19 +124,23 @@
                 {
                     $list_codes = $res_data['codes'];
                 }
+                // $list_codes = explode(',',$list_codes);
+
                 // echo $list_codes."op codes list";
                 $get_mo_details ="SELECT md.id as mid,md.mo_no as mo_no,md.rejected_quantity as rej_qty,md.status as rstatus,md.op_code as opcode,md.op_desc as opdes,m.size as sizeid FROM $bai_pro3.mo_operation_quantites md 
-                LEFT JOIN mo_details m ON m.mo_no = md.mo_no 
-                WHERE  style='$style' AND schedule='$schedule' AND color='$color' AND m.size='$size_ary[$i]' AND rejected_quantity  >0 and op_code in ('$list_codes')" ;
+                LEFT JOIN $bai_pro3.mo_details m ON m.mo_no = md.mo_no 
+                WHERE  style='$style' AND schedule='$schedule' AND color='$color' AND m.size='$size_ary[$i]' AND rejected_quantity  >0 and op_code in ($list_codes)" ;
                 // echo $get_mo_details."10<br>";
              
-                $res_mo =mysqli_query($link,$get_mo_details);
+                $res_mo =mysqli_query($link,$get_mo_details)or exit(mysqli_error($link));
+                // var_dump($res_mo);
                 $bal_qty = $qty_ary[$i];
                 while($res_data = mysqli_fetch_array($res_mo))
                 {
                     $rej_qty = $res_data['rej_qty']; $mo_no = $res_data['mo_no'];
-                    $rstatus = $res_data['rstatus'];$opcode = $res_data['op_code'];
-                    $op_desc = $res_data['op_des'];$input_job = $res_data['inputjob'];
+                    $rstatus = $res_data['rstatus'];$opcode = $res_data['opcode'];
+                    $op_desc = $res_data['opdes'];
+                    // $input_job = $res_data['inputjob'];
                     $sizeid= $res_data['sizeid'];$mid = $res_data['mid'];
                     if($bal_qty>0){
                         if($bal_qty >= $rej_qty){
@@ -152,7 +155,7 @@
                             continue;
                         }else{
                             $insert_data = "insert into bai_pro3.mo_operation_quantites(date_time,mo_no,ref_no,bundle_quantity,good_quantity,rejected_quantity,status,op_code,op_desc)
-                            VALUES(NOW(),'$mo_no','$bundle_no','$bal_qty','0','0','$status','$opcode','$op_desc','$input_job','$job_no',)";
+                            VALUES(NOW(),'$mo_no','$bundle_no','$bal_qty','0','0','$status','$opcode','$op_desc')";
                             // echo $insert_data."13<br>";
                             $res_insmo =mysqli_query($link,$insert_data);
                             $update_qty = $rej_qty-$bal_qty;
