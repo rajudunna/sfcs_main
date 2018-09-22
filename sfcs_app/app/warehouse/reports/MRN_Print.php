@@ -51,11 +51,11 @@ while($sql_row112=mysqli_fetch_array($sql_result112))
 {
 	$co_no=$sql_row112['co_no'];
 }
-$sql="select group_concat(lable_id) as lbl from $bai_rm_pj2.mrn_out_allocation where mrn_tid=$mrn_id";
+$sql="select group_concat(lable_id) as lbl from $bai_rm_pj2.mrn_out_allocation where   mrn_tid=$mrn_id"; 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$lable_ids=$sql_row["lable_id"];
+	$lable_ids=$sql_row["lbl"];
 	
 }
 ?>
@@ -1865,7 +1865,8 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Length</td>
   <?php
-  	$sql1="select iss_qty from $bai_rm_pj2.mrn_out_allocation where lable_id in ($lable_ids) and   mrn_tid=$mrn_id";
+	  $sql1="select iss_qty from $bai_rm_pj2.mrn_out_allocation where lable_id in ($lable_ids) and mrn_tid='$mrn_id'";
+	  echo $sql1;
 	$result1=mysqli_query($link, $sql1) or die("Error125=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
