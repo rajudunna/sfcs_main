@@ -1866,7 +1866,7 @@ tags will be replaced.-->
   <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6614212 style='height:15.75pt'>&nbsp;</td>
   <td class=xl1514212></td>
-  <td colspan=2 class=xl8514212>Allocated Quantity</td>
+  <td colspan=2 class=xl8514212>Length</td>
   <?php
   	$sql1="select * from $bai_rm_pj2.mrn_out_allocation where lable_id in ($lable_ids)";
 	$result1=mysqli_query($link, $sql1) or die("Error125=".mysqli_error($GLOBALS["___mysqli_ston"]));
