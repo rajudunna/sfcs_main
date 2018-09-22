@@ -26,6 +26,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 	$url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations?CONO=".$company_no."&FACI=".$facility_code."&MFNO=".$mo_num."&PRNO=".$FG_code;
 	$url = str_replace(' ', '%20', $url);
 // echo "Api :".$url."<br>";
+// die();
 	$result = $obj->getCurlAuthRequest($url);
 	$decoded = json_decode($result,true);
 	 // var_dump($decoded);
@@ -45,6 +46,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 		$operation_desc=$value['OPDS'];
 		$operation_code=$value['OPNO'];
 		$WorkCenterId=$value['PLG1'];
+		$WorkCenterId_parent=$value['PLGR'];
 		
 		//getting values from MO details
 		$Style=$sql_row['style'];
@@ -54,9 +56,16 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 		$SizeId=$sql_row['size'];
 		$ZFeature=$sql_row['zfeature'];
 		$ZFeatureId=$sql_row['zfeature'];
+		//GETTING SFCS OPERATION ID FROM OPERATION MASTER BASED ON WORK CENTER ID
+		$selecting_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where parent_work_center_id = '$WorkCenterId_parent'";
+		$res_selecting_qry = mysqli_query($link,$selecting_qry);
+        while($rew_res_selecting_qry = mysqli_fetch_array($res_selecting_qry))
+        {
+			$sfcs_operation_id = $rew_res_selecting_qry['operation_code'];
+		}
 
 		//insertion query for schedule_oprations_master table
-		$sql1="insert $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values('".$Style."','".$ScheduleNumber."','".$ColorId."','".$Description."','".$SizeId."','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$operation_code."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId."')";
+		$sql1="insert $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values('".$Style."','".$ScheduleNumber."','".$ColorId."','".$Description."','".$SizeId."','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."')";
 
 		// echo $sql1."<br>";
 		$insert_result=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
