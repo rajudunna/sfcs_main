@@ -99,12 +99,13 @@
 				//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 				$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 				$html.= '<div>
-							<div style="margin-left:50px;"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
+							<!--<div style="margin-left:50px;"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>-->
 							<table>
 								<tr>
-									<td colspan=9></td>
-									<td colspan=3 style="border: 4px solid black;
-									border-top-right-radius: 30px 12px; font-size:12px; width:60px; height:40px; text-align:center;"> <p style= "font-size: 15px;">'.$seq_num.'</p></td>
+									<td colspan=8><div><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
+									</td>
+									<td colspan=4 style="border: 4px solid black;
+									border-top-right-radius: 30px 12px; font-size:12px; width:60px; height:40px; text-align:center;"> <p style= "font-size: 15px;font-weight: bold;">'.$seq_num.'</p></td>
 								</tr>
 								<tr>
 									<td colspan=4><b>Barcode ID:</b>'.$barcode.' </td>
