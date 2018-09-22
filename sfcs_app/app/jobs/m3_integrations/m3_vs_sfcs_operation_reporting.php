@@ -9,15 +9,16 @@
     $from_date = date('Y-m-d');
     $to_date = date('Y-m-d');
     
-    $sql_mo="SELECT  mo_no,product_sku,style,schedule,color,size FROM $bai_pro3.mo_details  where mo_no in (select distinct mo_no from $bai_pro3.m3_transactions where DATE(date_time)>='$from_date' and DATE(date_time)<='$to_date') group by mo_no,product_sku";
+    $sql_mo="SELECT  mo_no,product_sku,style,schedule,color,size,mo_quantity FROM $bai_pro3.mo_details  where mo_no in (select distinct mo_no from $bai_pro3.m3_transactions where DATE(date_time)>='$from_date' and DATE(date_time)<='$to_date') group by mo_no,product_sku";
     $result_mo=mysqli_query($link, $sql_mo) or exit("Sql Error mo".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row_mo=mysqli_fetch_array($result_mo))
     {
-        $mo_details[]=['mo_no'=>$row_mo['mo_no'],'product_sku'=>$row_mo['product_sku'],'style'=>$row_mo['style'],'schedule'=>$row_mo['schedule'],'color'=>$row_mo['color'],'size'=>$row_mo['size']];
+        $mo_details[]=['mo_no'=>$row_mo['mo_no'],'product_sku'=>$row_mo['product_sku'],'style'=>$row_mo['style'],'schedule'=>$row_mo['schedule'],'color'=>$row_mo['color'],'size'=>$row_mo['size'],'mo_quantity'=>$row_mo['mo_quantity']];
     }
     //looping MONO's array
     foreach($mo_details as $key=>$details)
-    {
+    {    
+
         //calling the API
         $url=$api_hostname .":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations;returncols=MFNO,OPNO,OPDS,MAQT,SCQT?CONO=".$company_no ."&FACI=".$facility_code."&MFNO=".$details['mo_no']."&PRNO=".$details['product_sku'];     
         $url1 = str_replace(' ', '%20', $url);
@@ -44,7 +45,7 @@
                 }
 
                 if($flag == false){
-                    $overall_details[] = ['MFNO'=>$data['MFNO'],'OPNO'=>$data['OPNO'],'OPDS'=>$data['OPDS'],'M3_MAQT'=>$data['MAQT'],'M3_SCQT'=>$data['SCQT'],'SFCS_MAQT'=>$row['MAQT'],'SFCS_SCQT'=>$row['SCQT'],'style'=>$details['style'],'schedule'=>$details['schedule'],'color'=>$details['color'],'size'=>$details['size']];
+                    $overall_details[] = ['MFNO'=>$data['MFNO'],'OPNO'=>$data['OPNO'],'OPDS'=>$data['OPDS'],'M3_MAQT'=>$data['MAQT'],'M3_SCQT'=>$data['SCQT'],'SFCS_MAQT'=>$row['MAQT'],'SFCS_SCQT'=>$row['SCQT'],'style'=>$details['style'],'schedule'=>$details['schedule'],'color'=>$details['color'],'size'=>$details['size'],'M3_MOQTY'=>$details['mo_quantity']];
                 }
             }
         }
@@ -101,6 +102,7 @@
     <th>M3 Rejected Quantity</th>
     <th>SFCS Good Quantity</th>
     <th>SFCS Rejected Quantity</th>
+    <th>MO Quantity</th>
     </tr>";
     if(count($overall_details)>0){
         foreach($overall_details as $key=>$data){
@@ -116,6 +118,7 @@
             <td>".$data['M3_SCQT']."</td>
             <td>".$data['SFCS_MAQT']."</td>
             <td>".$data['SFCS_SCQT']."</td>
+            <td>".$data['M3_MOQTY']."</td>
             </tr>";
         }
     }else{

@@ -18,6 +18,27 @@
 		window.location.href =url1+"&style="+document.pack_load.style.value+"&schedule="+document.pack_load.schedule.value
 	}
 
+	
+	function confirm_delete(e,t)
+	{
+		e.preventDefault();
+		var v = sweetAlert({
+			title: "Are you sure to Delete the Packing Ratio?",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+			buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+		}).then(function(isConfirm){
+			if (isConfirm) {
+				window.location = $(t).attr('href');
+				return true;
+			} else {
+				sweetAlert("Request Cancelled",'','error');
+				return false;
+			}
+		});
+	}
+
 </script>
 </head>
 <?php
@@ -154,7 +175,7 @@
 									$i++;
 									$url=getFullURL($_GET['r'],'pack_method_deletion.php','N');
 									if($new_result1['status'] != "DONE"){
-									echo "<td><a  id='delete' class='btn btn-danger confirm-submit' href=$url&schedule=".$schedule."&seq_no=".$new_result1['seq_no']."&option=delete'>Delete</td>";
+									echo "<td><a  id='delete' class='btn btn-danger'  onclick='return confirm_delete(event,this)' href='$url&schedule=".$schedule."&seq_no=".$new_result1['seq_no']."&option=delete'>Delete</td>";
 									}
 									else{
 										echo "<td  class='btn btn-success'>Already Scanned</td>";
