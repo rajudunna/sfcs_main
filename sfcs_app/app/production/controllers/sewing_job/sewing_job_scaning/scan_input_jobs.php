@@ -30,6 +30,15 @@
 		$read_only_job_no = '';
 	}
 
+	$application='IPS';
+	$scanning_query=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	//echo $scanning_query;
+	$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($scanning_result))
+	{
+		$operation_code_routing=$sql_row['operation_code'];
+	}
+	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
 	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
 
 
@@ -502,6 +511,7 @@ function validating_cumulative(e,t)
 function validating_remarks_qty(val,remarks)
 {
 	var display_reporting_qty = document.getElementById('display_reporting_qty').value;
+	var operation_code_routing = document.getElementById('operation_code_routing').value;
 	var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 	var bundle_number_var = val+"tid";
 	var bundle_number = document.getElementById(bundle_number_var).value;
@@ -533,7 +543,7 @@ function validating_remarks_qty(val,remarks)
 			var html_id_reporting =val+"reporting";
 			console.log(html_id_reporting);
 			$('#'+html_id).html(array[0]);
-			if (operation_id == '129')
+			if (operation_id == operation_code_routing)
 			{
 				if (display_reporting_qty == 'yes')
 				{
