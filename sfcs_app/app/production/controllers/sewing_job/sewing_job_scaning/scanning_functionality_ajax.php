@@ -1487,7 +1487,7 @@ if($barcode_generation == 1)
 							$pre_ims_qty = $row['ims_qty'];
 							$act_ims_input_qty = $row['ims_qty'];
 						}
-						$act_ims_qty = $pre_ims_qty + $reversalval[$key];
+						$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i];
 						//updating the ims_qty when it was there in ims_log
 						$update_query = "update $bai_pro3.ims_log_backup set ims_qty = $act_ims_qty where tid = $updatable_id";
 						$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1503,6 +1503,7 @@ if($barcode_generation == 1)
 					}
 					else
 					{
+						//Searching whethere the operation was present in the ims log and ims buff
 						$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$b_remarks[$i]'";
 						//echo $searching_query_in_imslog;
 						$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
@@ -1541,8 +1542,8 @@ if($barcode_generation == 1)
 							}
 							
 						}
+
 					}
-					//Searching whethere the operation was present in the ims log and ims buff
 					
 				
 				}
@@ -1561,7 +1562,7 @@ if($barcode_generation == 1)
 					// }
 					// else
 					// {
-						$input_ops_code = 100;
+						$input_ops_code = 129;
 					//}
 					//echo 'input_ops_code'.$input_ops_code;
 					if($input_ops_code == 100 || $input_ops_code == 129)
