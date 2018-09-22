@@ -27,8 +27,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $packing_mode = 1;
         $status = '';
         $doc_no_ref = '';
-        $old_jobs_cnt_qry = "
-        SELECT COUNT(*) AS old_jobs FROM (SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$docnos.") GROUP BY input_job_no) AS tab";
+        $old_jobs_cnt_qry = "SELECT COUNT(*) AS old_jobs FROM (SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$docnos.") GROUP BY input_job_no) AS tab";
         //echo $old_jobs_cnt_qry;
         $old_jobs_cnt_res = mysqli_query($link_ui, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
@@ -58,6 +57,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
             '".$type_of_sewing."'
             );
             ";
+            //echo  $ins_qry;
             $result_time = mysqli_query($link_ui, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         }
@@ -320,25 +320,25 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
             
                 <div class='row'>
                     <div class='col-sm-4'>
-                        <label data-error="wrong" data-success="right" for="defaultForm-email">Input Job Quantity</label>
+                        <label data-error="wrong" data-success="right" for="defaultForm-email">Garment per Input Job</label>
                         <input type="text" id="job-qty" class="form-control validate" ng-model= "jobcount" name="jobcount">
                     </div>
                     <div class='col-sm-4'>
-                        <label data-error="wrong" data-success="right" for="defaultForm-email">Bundle Quantity</label>
+                        <label data-error="wrong" data-success="right" for="defaultForm-email">Garment per Bundle</label>
                         <input type="text" id="bundle-qty" class="form-control validate" ng-model= "bundleqty" name="bundleqty">
                     </div>
                     <div class='col-sm-2'>
                         <br/><br/>
-                        <button class="btn btn-success" ng-click="getjobs()">Generate Jobs</button>
+                        <button class="btn btn-success" ng-click="getjobs()">Confirm..</button>
                     </div>
                     <div class='col-sm-2'>
                         <br/><br/>
-                        <button class="btn btn-primary" ng-click="createjobs()">Confirm..</button>
+                       <!--<button class="btn btn-primary" ng-click="createjobs()">Confirm..</button>-->
                     </div>
                 </div>
                 <br/>
                 <div ng-show='jobs.length'>
-                    <table class='table'>
+                    <table class='table' style="display: none;">
                         <thead>
                             <tr><th>#</th><th>Job ID</th><th>Bundle</th><th>Size</th><th>Quantity</th></tr>
                         </thead>
@@ -453,7 +453,8 @@ app.controller('cutjobcontroller', function($scope, $http) {
                 dummy['sizedetails'] = bun_jobs;
                 $scope.fulljob[ss] = dummy;
             }
-            //console.log($scope.fulljob);
+            console.log($scope.fulljob);
+           $scope.createjobs();
        }else{
            if(Number($scope.jobcount)<=0)
             swal('Input Job Quantity should be grater then zero.');
@@ -464,7 +465,8 @@ app.controller('cutjobcontroller', function($scope, $http) {
     
     $scope.createjobs = function()
     {
-        console.log($scope.fulljob);
+        //console.log($scope.fulljob);
+       // alert('hi');
         let url_serv = "<?= $url ?>";
         let schedule = "<?= $schedule ?>";
         let color = "<?= $color ?>";
