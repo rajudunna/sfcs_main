@@ -55,6 +55,9 @@
           echo "</div><div class='col-sm-12'>";
         }
     }
+    echo "</div>";
+    echo "<div class='col-sm-12'>";
+    include "include_legends_ips.php";
     echo "</div></div></div>";
 ?>
 
@@ -70,19 +73,9 @@ function call_server(){
     }
 }
 setInterval(function() {
-  call_server_sync(sec_id_ar[0]);
+  ajax_calls(sec_id_ar[0],true);
 }, 120000); 
 
-function call_server_sync(iuh){
-  // var def = $.Deferred();
-  var iuf = ajax_calls(iuh,true);
-  // if(iuf>0){
-  //   var ind = sec_id_ar.indexOf(iuf);
-  //   call_server_sync(sec_id_ar[ind+1]);
-  //   def.reslove();
-  // // }
-  // return def.promise();
-}
 
 function ajax_calls(value,sync_type){
   $('#sec-load-'+value).css('display','block');
@@ -90,14 +83,38 @@ function ajax_calls(value,sync_type){
   $.ajax({
       url: "<?= $url ?>?sec="+value
   }).done(function(data) {
-      var r_data = JSON.parse(data) ;
-      $('#sec-'+r_data.sec).html(r_data.data);
-      $('#sec-load-'+r_data.sec).css('display','none');
-      if(sync_type){
-        var ind = sec_id_ar.indexOf(r_data.sec);
-        if(sec_id_ar[ind+1]){
-          call_server_sync(sec_id_ar[ind+1]);
+      try{
+        var r_data = JSON.parse(data) ;
+        $('#sec-'+r_data.sec).html(r_data.data);
+        $('#sec-load-'+r_data.sec).css('display','none');
+        if(sync_type){
+          var ind = sec_id_ar.indexOf(r_data.sec);
+          if(sec_id_ar[ind+1]){
+            ajax_calls(sec_id_ar[ind+1],true);
+          }
         }
+      }catch(err){
+        if(sync_type){
+          $('#sec-'+value).html('<b>couldn\'t fetch the data & It will automatically refresh in 2 mins</b>');
+          $('#sec-load-'+value).css('display','none');
+          if(sync_type){
+            var ind = sec_id_ar.indexOf(value);
+            if(sec_id_ar[ind+1]){
+              ajax_calls(sec_id_ar[ind+1],true);
+            }
+          }
+        }
+      }
+  }).fail(function(){
+    if(sync_type){
+      $('#sec-'+value).html('<b>Network Error.It will automatically refresh in 2 mins.</b>');
+      $('#sec-load-'+value).css('display','none');
+        var ind = sec_id_ar.indexOf(value);
+        if(sec_id_ar[ind+1]){
+          ajax_calls(sec_id_ar[ind+1],true);
+        }
+      }else{
+
       }
   });
 }
@@ -134,12 +151,6 @@ function blink_new_priority(x)
 
 function blink_new(x)
 {	
-	// obj="#"+x;
-	
-	// if ( $(obj).length ) 
-	// {
-	// 	$(obj).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-	// }
 	$("div[id='SJ"+x+"']").each(function() {
 	
 	$(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
@@ -187,12 +198,6 @@ function blink_new1(x)
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-// body
-// {
-// 	background-color:#eeeeee;
-// 	color: #000000;
-// 	font-family: Trebuchet MS;
-// }
 a {text-decoration: none;}
 
 table
