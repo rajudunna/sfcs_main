@@ -1866,7 +1866,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl8514212>Length</td>
   <?php
 	  $sql1="select iss_qty from $bai_rm_pj2.mrn_out_allocation where lable_id in ($lable_ids) and mrn_tid='$mrn_id'";
-	  echo $sql1;
+	  //echo $sql1;
 	$result1=mysqli_query($link, $sql1) or die("Error125=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
