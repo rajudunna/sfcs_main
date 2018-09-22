@@ -102,9 +102,9 @@
 							<!--<div style="margin-left:50px;"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>-->
 							<table>
 								<tr>
-									<td colspan=8><div><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
+									<td colspan=11><div><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
 									</td>
-									<td colspan=4 style="border: 4px solid black;
+									<td colspan=1 style="border: 4px solid black;
 									border-top-right-radius: 30px 12px; font-size:12px; width:60px; height:40px; text-align:center;"> <p style= "font-size: 15px;font-weight: bold;">'.$seq_num.'</p></td>
 								</tr>
 								<tr>
@@ -121,7 +121,8 @@
 								</tr>
 								
 								<tr>
-									<td colspan=2><b>Color: </b> </td><td> '.substr($barcode_rslt['order_col_des'],0,20).'</td>
+									<td colspan=2><b>Color: </b></td><td> '.substr($barcode_rslt['order_col_des'],0,17).'</td>
+									<td></td>
 								</tr>
 								<tr>	
 									<td colspan=4><b>Operation:</b>'.trim($operations).' </td>
