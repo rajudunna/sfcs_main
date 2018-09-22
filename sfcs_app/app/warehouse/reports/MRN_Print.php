@@ -55,7 +55,8 @@ $sql="select group_concat(lable_id) as lbl from $bai_rm_pj2.mrn_out_allocation w
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$lable_ids=$sql_row["lbl"];
+	$lable_ids=$sql_row["lable_id"];
+	
 }
 ?>
 
@@ -1791,7 +1792,6 @@ tags will be replaced.-->
   <td class=xl6714212>&nbsp;</td>
  </tr>
  <?php
- 
  	if(strlen($lable_ids)>0)
 	{
 ?>
@@ -1800,9 +1800,6 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>RollNo</td>
   <?php
-  
-		
-	
 	$sql1="select * from $bai_rm_pj1.store_in where tid in ($lable_ids)";
 	$result1=mysqli_query($link, $sql1) or die("Error121=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
@@ -1868,7 +1865,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Length</td>
   <?php
-  	$sql1="select * from $bai_rm_pj2.mrn_out_allocation where lable_id in ($lable_ids)";
+  	$sql1="select iss_qty from $bai_rm_pj2.mrn_out_allocation where lable_id in ($lable_ids) and   mrn_tid=$mrn_id";
 	$result1=mysqli_query($link, $sql1) or die("Error125=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
