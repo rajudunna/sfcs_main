@@ -67,7 +67,7 @@
                         $panel_qry = "
                         SELECT qms_style,qms_schedule,qms_color,qms_size,SUM(g_qms_qty) AS g_qms_qty,SUM(r_qms_qty) AS r_qms_qty,GROUP_CONCAT(doc_no) AS doc_no,qms_tran_type, GROUP_CONCAT(shift) AS shift, 
                         GROUP_CONCAT(operation_id) AS operation_id,GROUP_CONCAT(bundle_no) AS bundle_no  FROM ((SELECT qms_style,qms_schedule,qms_color,qms_size,SUM(qms_qty) AS g_qms_qty,0 AS r_qms_qty,NULL AS doc_no,qms_tran_type, NULL AS shift, 
-                        NULL AS operation_id,NULL AS bundle_no 
+                        '' AS operation_id,NULL AS bundle_no 
                         FROM bai_pro3.bai_qms_db WHERE qms_style='".$data_ary['style']."' 
                         AND qms_schedule='".$data_ary['schedule']."' AND qms_color = '".$data_ary['color']."' AND qms_size = '".$data_ary['size']."' AND qms_tran_type=1 
                         GROUP BY qms_size,qms_tran_type ORDER BY qms_size,qms_color,qms_tran_type ) UNION ALL (
@@ -79,13 +79,15 @@
                         )) AS tab GROUP BY qms_style,qms_schedule,qms_color,qms_size
                         ";
                 //    echo $panel_qry."<br>";
+                //    die();
                     $previous_size = '';
                     $count =0;
                     $res_qry =mysqli_query($link,$panel_qry);
                     echo "<tbody>";
-                        while($result1 = mysqli_fetch_array($res_qry))
+                   
+                        while($result1 = mysqli_fetch_assoc($res_qry))
                         {
-
+                            
                             $style = $result1['qms_style']; 
                             $schedule = $result1['qms_schedule'];$color = $result1['qms_color'];
                             $size = $result1['qms_size'];
@@ -94,7 +96,9 @@
                             $rej = $result1['r_qms_qty'];
                             $doc_no = $result1['doc_no'];
                             $shift = $result1['shift'];
-                            $operation = $result1['opeartion_id'];
+                            $operation = $result1['operation_id'];
+                            $operation =explode(',',$operation);
+                            $operation = $operation[1];
                             $bundle_no = $result1['bundle_no'];
 
                             echo "<tr><td>$style</td><td>$schedule</td><td>$color</td>
@@ -134,7 +138,9 @@
                                     echo "   <td><input type='text' id='rep_$i' name='replace_$i' class='form-control' value = '0' readonly></td><td></td>";
                                 }
                                 $i = $i+1;
+
                         }
+                        
                     }
                     echo "</tbody>";  
                 }
@@ -266,7 +272,7 @@ $('#mod_id').click(function(){
                                 swal("Replaced Successfully", {
                                     icon: "success",
                                 });
-                                $('.ajax-loader').css("visibility", "visible");
+                                $('.ajax-loader').css("visibility", "none");
                             }
                             
                         }
