@@ -1477,9 +1477,7 @@ if($barcode_generation == 1)
 				}
 				if($b_op_id == 100 || $b_op_id == 129)
 				{
-					//Searching whethere the operation was present in the ims log and ims buff
-					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$b_remarks[$i]'";
-					//echo $searching_query_in_imslog;
+					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$b_remarks[$i]'";
 					$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
 					if($result_searching_query_in_imslog->num_rows > 0)
 					{
@@ -1487,35 +1485,65 @@ if($barcode_generation == 1)
 						{
 							$updatable_id = $row['tid'];
 							$pre_ims_qty = $row['ims_qty'];
+							$act_ims_input_qty = $row['ims_qty'];
 						}
-						$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i] ;
+						$act_ims_qty = $pre_ims_qty + $reversalval[$key];
 						//updating the ims_qty when it was there in ims_log
-						$update_query = "update $bai_pro3.ims_log set ims_qty = $act_ims_qty where tid = $updatable_id";
-						mysqli_query($link,$update_query) or exit("While updating ims_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$update_query = "update $bai_pro3.ims_log_backup set ims_qty = $act_ims_qty where tid = $updatable_id";
+						$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if($ims_pro_qty_updating)
+						{
+							$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
+							mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+							mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
+							mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}
 					}
 					else
 					{
-						//$ims_date=date('Y-m-d', strtotime($ims_log_date);
-						$cat_ref=0;
-						$catrefd_qry="select * FROM $bai_pro3.plandoc_stat_log WHERE order_tid in (select order_tid FROM bai_pro3.bai_orders_db WHERE order_style_no='$b_style' AND order_del_no='$b_schedule' AND order_col_des='$b_colors[$i]')";
-						// echo "<br>Cat Qry :".$catrefd_qry."</br>";
-						$catrefd_qry_result=mysqli_query($link,$catrefd_qry);
-						while($buyer_qry_row=mysqli_fetch_array($catrefd_qry_result))
+						$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$b_remarks[$i]'";
+						//echo $searching_query_in_imslog;
+						$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
+						if($result_searching_query_in_imslog->num_rows > 0)
 						{
-							$cat_ref=$buyer_qry_row['cat_ref'];
+							while($row = $result_searching_query_in_imslog->fetch_assoc()) 
+							{
+								$updatable_id = $row['tid'];
+								$pre_ims_qty = $row['ims_qty'];
+							}
+							$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i] ;
+							//updating the ims_qty when it was there in ims_log
+							$update_query = "update $bai_pro3.ims_log set ims_qty = $act_ims_qty where tid = $updatable_id";
+							mysqli_query($link,$update_query) or exit("While updating ims_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}
-						$sizevalue="a_".$b_size_code[$i];
-						$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i].'-'.$b_remarks[$i];
-						$ims_log_date=date("Y-m-d");
-						if($b_rep_qty[$i] > 0)
+						else
 						{
-							$insert_imslog="insert into $bai_pro3.ims_log (ims_date,ims_cid,ims_doc_no,ims_mod_no,ims_shift,
-							ims_size,ims_qty,ims_log_date,ims_style,ims_schedule,ims_color,rand_track,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,ims_remarks,operation_id) values ('".$ims_log_date."','".$cat_ref."','".$b_doc_num[$i]."','".$b_module[$i]."','".$b_shift."','".trim($sizevalue)."','".$b_rep_qty[$i]."',CURRENT_TIMESTAMP(),'".$b_style."','".$b_schedule."','".$b_colors[$i]."','$b_doc_num[$i]','$bundle_op_id','".$b_job_no."','".$b_inp_job_ref[$i]."','".$b_tid[$i]."','".$b_remarks[$i]."','".$b_op_id."')";
-							//echo "Insert Ims log :".$insert_imslog."</br>";
-							$qry_status=mysqli_query($link,$insert_imslog);
+							//$ims_date=date('Y-m-d', strtotime($ims_log_date);
+							$cat_ref=0;
+							$catrefd_qry="select * FROM $bai_pro3.plandoc_stat_log WHERE order_tid in (select order_tid FROM bai_pro3.bai_orders_db WHERE order_style_no='$b_style' AND order_del_no='$b_schedule' AND order_col_des='$b_colors[$i]')";
+							// echo "<br>Cat Qry :".$catrefd_qry."</br>";
+							$catrefd_qry_result=mysqli_query($link,$catrefd_qry);
+							while($buyer_qry_row=mysqli_fetch_array($catrefd_qry_result))
+							{
+								$cat_ref=$buyer_qry_row['cat_ref'];
+							}
+							$sizevalue="a_".$b_size_code[$i];
+							$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i].'-'.$b_remarks[$i];
+							$ims_log_date=date("Y-m-d");
+							if($b_rep_qty[$i] > 0)
+							{
+								$insert_imslog="insert into $bai_pro3.ims_log (ims_date,ims_cid,ims_doc_no,ims_mod_no,ims_shift,
+								ims_size,ims_qty,ims_log_date,ims_style,ims_schedule,ims_color,rand_track,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,ims_remarks,operation_id) values ('".$ims_log_date."','".$cat_ref."','".$b_doc_num[$i]."','".$b_module[$i]."','".$b_shift."','".trim($sizevalue)."','".$b_rep_qty[$i]."',CURRENT_TIMESTAMP(),'".$b_style."','".$b_schedule."','".$b_colors[$i]."','$b_doc_num[$i]','$bundle_op_id','".$b_job_no."','".$b_inp_job_ref[$i]."','".$b_tid[$i]."','".$b_remarks[$i]."','".$b_op_id."')";
+								//echo "Insert Ims log :".$insert_imslog."</br>";
+								$qry_status=mysqli_query($link,$insert_imslog);
+							}
+							
 						}
-						
 					}
+					//Searching whethere the operation was present in the ims log and ims buff
+					
 				
 				}
 				else if($b_op_id == $output_ops_code)
