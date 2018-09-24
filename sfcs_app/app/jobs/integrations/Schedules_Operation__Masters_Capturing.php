@@ -45,8 +45,8 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 		$SMV=$value['PITI'];
 		$operation_desc=$value['OPDS'];
 		$operation_code=$value['OPNO'];
-		$WorkCenterId=$value['PLG1'];
-		$WorkCenterId_parent=$value['PLGR'];
+		$WorkCenterId=$value['PLGR'];
+		$WorkCenterId_parent=$value['PLG1'];
 		
 		//getting values from MO details
 		$Style=$sql_row['style'];
