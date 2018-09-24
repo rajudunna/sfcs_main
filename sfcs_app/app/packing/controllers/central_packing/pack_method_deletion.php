@@ -129,7 +129,7 @@
 					$schedule=$_POST['schedule'];
 					$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
 					$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
-					$check_status = echo_title("$bai_pr3.packing_summary","count(*)","status='DONE' and order_del_no",$schedule_original,$link);			
+					$check_status = echo_title("$bai_pro3.packing_summary","count(*)","status='DONE' and order_del_no",$schedule_original,$link);			
 					$query = "SELECT SUM(carton_qty) AS qty,seq_no,pack_description,pack_method,GROUP_CONCAT(DISTINCT TRIM(size_title)) AS size ,GROUP_CONCAT(DISTINCT TRIM(color)) AS color FROM bai_pro3.pac_stat 
 					LEFT JOIN tbl_pack_ref ON tbl_pack_ref.schedule=pac_stat.schedule 
 					LEFT JOIN tbl_pack_size_ref ON tbl_pack_ref.id=tbl_pack_size_ref.parent_id AND pac_stat.pac_seq_no=tbl_pack_size_ref.seq_no WHERE pac_stat.schedule='$schedule'	GROUP BY seq_no ORDER BY seq_no*1";
