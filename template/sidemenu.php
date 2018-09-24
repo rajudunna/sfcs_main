@@ -55,7 +55,7 @@
                         <?php
                             while($mann = mysqli_fetch_array($res)){
                                 if(base64_decode($_GET['r'])==$mann['link_location']){
-                                    echo "<li class='current-page'>
+                                    echo "<li id='link_active' class='current-page'>
                                         <a href='?r=".base64_encode($mann['link_location'])."'>".$mann['link_description']."</a>
                                     </li>";
                                 }else{

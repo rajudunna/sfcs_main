@@ -25,9 +25,9 @@
             $job_number = explode(",",$job_number);
             //var_dump($job_number);
             $job_number[4]=$job_number[1];
-            include("../../../../../common/config/config_ajax.php");
-            include("../../../../../common/config/m3Updations.php");
-
+            include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+            include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
+           
             $column_to_search = $job_number[0];
             $column_in_where_condition = 'input_job_no_random_ref';
             $column_in_pack_summary = 'input_job_no_random';
@@ -1125,5 +1125,6 @@
             echo json_encode($result_array);
             die();
         }
+       
     }
 ?>

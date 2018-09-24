@@ -15,7 +15,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
    
-	<?php include('/template/header.php'); ?>
+    <?php 
+    include($_SERVER['DOCUMENT_ROOT'].'/template/header.php'); ?>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -31,8 +32,13 @@
         $id=$_REQUEST['rowid'];
         $module=$_REQUEST['module_name'];
         $description=$_REQUEST['module_description'];
+       
 		$section=$_REQUEST['section'];
         $status=$_REQUEST['status'];
+        $module_color=$_REQUEST['module_color'];
+        
+        $module_label=$_REQUEST['module_label'];
+       
     }else
     {
         $id=0;
@@ -132,6 +138,23 @@
 		</select><span id="errId2" class="error"></span></div>
                 
 		</div></div>
+        <div class="col-md-4"><div class="form-group">
+			    <label class="control-label control-label-left col-sm-3" for="description">Module Color</label>
+			    <div class="controls col-sm-9">
+				<div id="cp2" class="input-group colorpicker-component"> 
+                    <input type="text" value="<?= $module_color ?? "#00AABB"; ?>" class="form-control" readonly="true" name="module_color"/> 
+                    <span class="input-group-addon"><i></i></span>
+                    </div>
+				</div>
+                
+		</div></div>
+        <div class="col-md-4"><div class="form-group">
+			    <label class="control-label control-label-left col-sm-3" for="description">Module Label</label>
+			    <div class="controls col-sm-9">
+				<input type="text" class="form-control" name="module_label" value="<?= $module_label; ?>"><span id="errId1" class="error"></span>
+				</div>
+                
+		</div></div>
 		
 		
 		
@@ -147,6 +170,12 @@
             </div>
         </div>
     </div>
+   
+		
+		
+    <script type="text/javascript">
+    $('#cp2').colorpicker();
+    </script>
     <script>
         $(function () {
             $('#datetimepicker11').datetimepicker({
@@ -155,11 +184,6 @@
             });
         });
     </script>
-
-		
-		
-		
-		
 		
 		
 		
@@ -168,7 +192,7 @@
 			    
 			    
                 
-		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save" style="margin-top: 57px;margin-left: -640px;">Save</button></div></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary" name="btn_save" style="margin-top: 0px;margin-left: -260px;">Save</button></div></div></div></div>
                                     </div>
                                 
 

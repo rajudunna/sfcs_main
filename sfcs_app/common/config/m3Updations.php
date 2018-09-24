@@ -104,6 +104,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
 
                 $insert_id=mysqli_insert_id($link);
 
+               
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
                     $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
@@ -132,6 +133,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
             }
         }
     }
+    return true;
 }
 
 
@@ -265,6 +267,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
             }
         }
     }
+    return true;
     
 }//Function ends
 
