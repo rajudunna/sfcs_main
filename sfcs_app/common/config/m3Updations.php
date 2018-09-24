@@ -6,16 +6,30 @@
 //function updateM3Transactions($input_doc_no,$op_code,$op_code,$input_shift,$plan_module){
 function  updateM3Transactions($ref_id,$op_code,$qty)
 {
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-
-    $details_query = "Select shift,assigned_module from $brandix_bts.bundle_creation_data where 
-                      bundle_number = '$ref_id' and operation_id = '$op_code'";
-
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id' and operation_id = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
         $input_shift = $row['shift'];
         $plan_module  = $row['assigned_module'];
+        $style = $row['style'];
+        $color = $row['mapped_color'];
     }
+    //getting main operation_code from operation mapping
+    $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    // echo $bundle_creation_data_check;
+	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+	{
+        while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+		{
+            $main_ops_code = $row_bundle_creation_data_check_result['main_operationnumber'];
+        }
+    }
+    // echo 'main'.$main_ops_code;
+    //got the main ops code
+
+
     $current_date = date("Y-m-d H:i:s");
     $b_shift  = $input_shift;
     $b_module = $plan_module;
@@ -82,9 +96,9 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
                 // if($is_m3 == 'yes')
                 // {
                 $cur_date = date('Y-m-d H:s:i');
-                $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) 
-                VALUES ('$current_date','$mo_number',$to_update_qty,'','Normal',user(),'','$b_module','$b_shift',$op_code,'$ops_des',$id,'$work_station_id','')";
-           
+                $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`) 
+                VALUES ('$current_date','$mo_number',$to_update_qty,'','Normal',user(),'','$b_module','$b_shift',$op_code,'$ops_des',$id,'$work_station_id','$main_ops_code','')";
+                // echo $inserting_into_m3_tran_log;
                 mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
             // }
 
@@ -93,7 +107,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
                
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
-                    $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                    $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                     $api_data = $obj->getCurlAuthRequest($api_url);
                     $decoded = json_decode($api_data,true);
                     $type=$decoded['@type'];
@@ -127,13 +141,29 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     $current_date = date("Y-m-d H:i:s");
 
-    $details_query = "Select shift,assigned_module from $brandix_bts.bundle_creation_data where bundle_number = '$bundle_no' and operation_id = '$op_code'";
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$bundle_no' and operation_id = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
-        $plan_module  = $row['shift'];
-        $input_shift  = $row['assigned_module'];
+        $input_shift = $row['shift'];
+        $plan_module  = $row['assigned_module'];
+        $style = $row['style'];
+        $color = $row['mapped_color'];
         $b_colors = $row['mapped_color'];
     }
+    //getting main operation_code from operation mapping
+    $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    // echo $bundle_creation_data_check;
+	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+	{
+        while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+		{
+            $main_ops_code = $row_bundle_creation_data_check_result['main_operationnumber'];
+        }
+    }
+    // echo 'main'.$main_ops_code;
+    //got the main ops code
 
     $b_tid    = $bundle_no;
     $b_rep_qty= $reversalval;
@@ -144,7 +174,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
     {
         $work_station_id = $row['work_center_id'];
         $short_key_code  = $row['short_cut_code'];
-        $b_style = $row['style'];
+        // $b_style = $row['style'];
     }
     if(!$work_station_id)
     {
@@ -191,7 +221,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                 }
                 // echo $update_qry.'</br>';
             $ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$b_colors' and operation_code='$op_code'";
+            $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$b_colors' and operation_code='$op_code'";
             $result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
             while($row = $result_dep_ops_array_qry->fetch_assoc()) 
             {
@@ -201,15 +231,15 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
             if($is_m3 == 'Yes')
             {                    
                 $to_update_qty = '-'.$b_rep_qty;
-                $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) 
-                 VALUES ('$current_date','$mo_number','$to_update_qty','','Normal',user(),'',$plan_module,'$input_shift',$op_code,'',$id,'$work_station_id','')";
+                $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) 
+                 VALUES ('$current_date','$mo_number','$to_update_qty','','Normal',user(),'',$plan_module,'$input_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code')";
                 // echo $inserting_into_m3_tran_log;
                 mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $insert_id=mysqli_insert_id($link);
 
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
-                    $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$op_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                    $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                     $api_data = $obj->getCurlAuthRequest($api_url);
                     $decoded = json_decode($api_data,true);
                     $type=$decoded['@type'];
@@ -246,11 +276,25 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     $current_date = date("Y-m-d H:i:s");
-    $details_query = "Select shift,assigned_module from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id' and operation_id = '$op_code'";
+    $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id' and operation_id = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
-        $plan_module = $row['shift'];
-        $input_shift  = $row['assigned_module'];
+        $input_shift = $row['shift'];
+        $plan_module  = $row['assigned_module'];
+        $style = $row['style'];
+        $color = $row['mapped_color'];
+        $b_colors = $row['mapped_color'];
+    }
+    //getting main operation_code from operation mapping
+    $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    // echo $bundle_creation_data_check;
+	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+	{
+        while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+		{
+            $main_ops_code = $row_bundle_creation_data_check_result['main_operationnumber'];
+        }
     }
     
     $b_shift  = $input_shift;
@@ -317,8 +361,8 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                     //echo $update_qry.'</br>';
                     // echo $r_reasons[$key];
                 
-                    $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) 
-                    VALUES ('$current_date','$mo_number',$to_update_qty,'$r_reasons[$key]','Normal',user(),'',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','')";
+                    $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) 
+                    VALUES ('$current_date','$mo_number',$to_update_qty,'$r_reasons[$key]','Normal',user(),'',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code')";
                     //echo $inserting_into_m3_tran_log.'</br>';
                     mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -327,7 +371,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 
                     //M3 Rest API Call
                     if($enable_api_call == 'YES'){
-                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$b_op_id&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                         $api_data = $obj->getCurlAuthRequest($api_url);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];

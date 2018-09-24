@@ -33,6 +33,8 @@
     $has_permission=haspermission($_GET['r']);
     $qry_short_codes = "SELECT * from $brandix_bts.ops_short_cuts";
     $result_oper = $link->query($qry_short_codes);
+    $qry_work_center_id = "SELECT * from $brandix_bts.parent_work_center_id";
+    $result_work_center_id = $link->query($qry_work_center_id);
 ?>
 <div class="container">
     <?php 
@@ -93,6 +95,22 @@
                                 </select>
 
 								</div>
+                                <div class = "col-sm-3">
+                                <b>Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b>            
+                                    <select id="parent_work_center_id" style="width:100%;" name="parent_work_center_id" class="form-control" required>
+                                    <option value=''>Select Parent Work Center Id</option>
+                                    <?php                       
+                                        if ($result_work_center_id->num_rows > 0) {
+                                            while($row = $result_work_center_id->fetch_assoc()) {
+                                            $row_value = $row['work_center_id_name'];
+                                                echo "<option value='".$row['work_center_id_name']."'>".strtoupper($row_value)."</option>";
+                                            }
+                                        } else {
+                                            echo "<option value=''>No Data Found..</option>";
+                                        }
+                                    ?>
+                                </select>
+								</div>
 								<div class="col-sm-3">
 									<b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id">
 								</div>
@@ -150,6 +168,9 @@
 	}
 	if(isset($_POST["category"])){
 		$category = $_POST["category"];
+    }
+    if(isset($_POST["parent_work_center_id"])){
+		$parent_work_center_id = $_POST["parent_work_center_id"];
 	}
     
     /* $servername = "localhost";
@@ -185,7 +206,7 @@
 		
         if($cnt == 0 && $cnt_short == 0 && $cnt_work == 0)
         {
-            $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category')";
+            $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category,parent_work_center_id)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category','$parent_work_center_id')";
             $res_do_num = mysqli_query($link,$qry_insert);
             echo "<script>sweetAlert('Saved Successfully','','success')</script>";
 		}
@@ -226,7 +247,7 @@
     $res_do_num=mysqli_query($link,$query_select);
     echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
     echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
-    echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th>Short Key Code</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
+    echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th>Short Key Code</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Parent Work Center Id</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
     $i=1;
     while($res_result = mysqli_fetch_array($res_do_num))
     {
@@ -255,7 +276,8 @@
             <td>".$res_result['type']."</td>
 			<td>".strtoupper($res_result['short_cut_code'])."</td>
 			<td>".$res_result['work_center_id']."</td>
-			<td>".$res_result['category']."</td>";
+            <td>".$res_result['category']."</td>
+            <td>".$res_result['parent_work_center_id']."</td>";
             if($flag == 1)
             {
                 $eurl = getFullURLLevel($_GET['r'],'operations_master_edit.php',0,'N');
