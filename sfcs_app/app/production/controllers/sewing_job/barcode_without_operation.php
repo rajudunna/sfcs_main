@@ -46,9 +46,9 @@
 				</head>
 				<body>';
 
-		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by old_size";			
+		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by old_size,tid";			
 		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+		$seq_num=1;
 		while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 		{				
 			$barcode=$barcode_rslt['tid'];
@@ -56,18 +56,28 @@
 			$style=$barcode_rslt['order_style_no'];
 			$cutno=$barcode_rslt['acutno'];
 			$quantity=$barcode_rslt['carton_act_qty'];
+			$size=$barcode_rslt['size_code'];
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
 			
-			$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
+			//sequence number logic based on size and colors
+			if(($size_temp!='') AND ($color_temp!='')){	
+				if(($size_temp!=$barcode_rslt['size_code'] ) OR ($color_temp!=$barcode_rslt['order_col_des'])){
+					$seq_num=1;
+				}
+			}
+
+			//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
+			$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 			$html.= '<div>
 						<table>
 							<tr rowspan=2>
-								<td colspan=10><b>Stab Here:</b></td>
-								<td colspan=2>
-									<svg height="25" width="25">
+								<td colspan=5><b>Stab Here:</b></td>
+								<td colspan=4>
+									<svg height="20" width="20">
 										<circle cx="10" cy="10" r="8"  />
 									</svg>
 								</td>
+								<td colspan=3 style="border: 2px solid black;width:60px; height:40px; text-align:center;"><p style= "font-size: 15px;">'.$seq_num.'</p></td>
 							</tr>	
 							<tr><td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b></td><td>'.$schedule.'</td></tr>
 							<tr><td><b>Job Number:</b></td><td>'.$display1.'</td><td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
@@ -79,7 +89,11 @@
 									
 						 
 					 </div><br>';
-			
+		
+					 $seq_num++;
+					//reset sequence number by size and color
+					$size_temp=$size;
+					$color_temp=$color;
 		}
 	$html.='
 				</body>
