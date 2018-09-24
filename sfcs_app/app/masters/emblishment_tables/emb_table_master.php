@@ -56,7 +56,7 @@
 				&nbsp;&nbsp;
 				<div class="form-group">
 					<label>Cutting Table: </label>
-					<select required class="form-control" name="cut_table" id="cut_table">
+					<select class="form-control" name="cut_table" id="cut_table">
 						<option value="">Please Select</option>
 						<?php 
 							$get_cut_table_qury = "SELECT tbl_name FROM bai_pro3.`tbl_cutting_table` WHERE status='active';";
