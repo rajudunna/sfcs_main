@@ -260,6 +260,7 @@ $(document).ready(function()
 		var job_number = $('#job_number').val();
 		var operation_id = $('#operation_id').val();
 		var assign_module = $('#module').val();
+		var operation_code_routing = $('#operation_code_routing').val();
 		var current = "<?php echo $operation_name; ?>";
 		//alert(current)
 		var array = [job_number,operation_id,barcode_generation,assign_module];
@@ -381,7 +382,17 @@ $(document).ready(function()
 						
 						if(data[i].flag == 'packing_summary_input' || emb_ops != undefined)
 						{
-							temp_var_bal = data[i].balance_to_report;
+							if (operation_id == operation_code_routing)
+							{
+								if (display_reporting_qty == 'yes')
+								{
+									temp_var_bal = data[i].balance_to_report;
+								}
+							}
+							else
+							{
+								temp_var_bal = data[i].balance_to_report;
+							}						
 							$('#flag_validation').val(1);
 						}
 						console.log(barcode_generation);
