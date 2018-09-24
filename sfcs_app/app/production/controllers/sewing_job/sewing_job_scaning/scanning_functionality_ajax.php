@@ -62,6 +62,7 @@ $emb_cut_check_flag = $new_data['emb_cut_check_flag'];
 // Hout
 // $hout_data_qry = "select * from $bai_pro2.hout where out_date = '$tod_date' and out_time = '$cur_hour' and team = '$b_module'";
 // echo $hout_data_qry;
+
 if($barcode_generation == 1)
 {
 	$concurrent_flag = 0;
@@ -265,7 +266,7 @@ if($barcode_generation == 1)
 							$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
 							//$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
 
-							$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
+							//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 							//updating this to cps log
 							$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = '$emb_cut_check_flag'";
 							$update_qry_cps_log_res = $link->query($update_qry_cps_log);
@@ -282,7 +283,7 @@ if($barcode_generation == 1)
 									{
 										if($bundle_max_insertion_qty <= $remain_qty_value)
 										{
-											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $bundle_max_insertion_qty.'$';
+											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $bundle_max_insertion_qty ;
 											$insertable_qty_rej = $bundle_max_insertion_qty;
 											$remainis = $remain_qty_value - $bundle_max_insertion_qty;
 											$reason_remaining_qty[$remain_qty_key] = $remainis;
@@ -291,7 +292,7 @@ if($barcode_generation == 1)
 										else
 										{
 											//$remain_qty_value = $reason_remaining_qty[$remain_qty_key];
-											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $remain_qty_value.'$';
+											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $remain_qty_value ;
 											$insertable_qty_rej = $remain_qty_value;
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += 0;
@@ -326,8 +327,8 @@ if($barcode_generation == 1)
 										if($bundle_max_insertion_qty <= $reson_max_qty)
 										{
 											$actual_rejection_reason_array[$bundle_individual_number] += $bundle_max_insertion_qty;
-											// $actual_rejection_reason_array_string[$bundle_individual_number][] =  $bundle_individual_number.'-'.$r_reasons [$reason_key].'-'.$bundle_max_insertion_qty.'$';
-											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$r_reasons [$reason_key].'-'.$bundle_max_insertion_qty.'$';
+											// $actual_rejection_reason_array_string[$bundle_individual_number][] =  $bundle_individual_number.'-'.$r_reasons [$reason_key].'-'.$bundle_max_insertion_qty ;
+											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$r_reasons [$reason_key].'-'.$bundle_max_insertion_qty ;
 											$insertable_qty_rej = $bundle_max_insertion_qty;
 											$remaining_bundle_qty = $reson_max_qty-$bundle_max_insertion_qty;
 											$remaining_bundle_reason = $r_reasons[$reason_key];
@@ -342,7 +343,7 @@ if($barcode_generation == 1)
 										else
 										{
 											$actual_rejection_reason_array[$bundle_individual_number] += $reson_max_qty;
-											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$r_reasons[$reason_key].'-'.$reson_max_qty.'$';
+											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$r_reasons[$reason_key].'-'.$reson_max_qty ;
 											$bundle_remaining_exces_qty = $bundle_max_insertion_qty - $reson_max_qty;
 											$bundle_remaining_qty[$bundle_individual_number] = $bundle_remaining_exces_qty;
 											$insertable_qty_rej = $reson_max_qty;
@@ -363,13 +364,12 @@ if($barcode_generation == 1)
 
 										//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 									}
-									/*
+									
 									else 
 									{
 									//	echo '2'.$r_reasons[$key].'-'.$reson_max_qty.'</br>';
 										$reason_remaining_qty[$r_reasons[$reason_key]] = $reson_max_qty;
 									}
-									*/
 									
 								}
 								$remarks_code = $reason_code.'-'.$insertable_qty_rej;
@@ -526,7 +526,7 @@ if($barcode_generation == 1)
 
 		}
 		//for negatives
-		if(array_sum($r_qty) > 0)
+		if(array_sum($r_qtys) > 0)
 		{
 			foreach($b_tid as $key => $value)
 			{
@@ -604,7 +604,7 @@ if($barcode_generation == 1)
 							$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
 							$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
 
-							$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
+							//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 
 						}
 						else
@@ -630,7 +630,7 @@ if($barcode_generation == 1)
 									{
 										if($bundle_max_insertion_qty <= $remain_qty_value)
 										{
-											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $bundle_max_insertion_qty.'$';
+											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $bundle_max_insertion_qty ;
 											$insertable_qty_rej = $bundle_max_insertion_qty;
 											$remainis = $remain_qty_value - $bundle_max_insertion_qty;
 											$reason_remaining_qty[$remain_qty_key] = $remainis;
@@ -639,7 +639,7 @@ if($barcode_generation == 1)
 										else
 										{
 											//$remain_qty_value = $reason_remaining_qty[$remain_qty_key];
-											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $remain_qty_value.'$';
+											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $remain_qty_value ;
 											$insertable_qty_rej = $remain_qty_value;
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += 0;
@@ -674,8 +674,8 @@ if($barcode_generation == 1)
 										if($bundle_max_insertion_qty <= $reson_max_qty)
 										{
 											$actual_rejection_reason_array[$bundle_individual_number] += $bundle_max_insertion_qty;
-											// $actual_rejection_reason_array_string[$bundle_individual_number][] =  $bundle_individual_number.'-'.$r_reasons [$reason_key].'-'.$bundle_max_insertion_qty.'$';
-											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$r_reasons [$reason_key].'-'.$bundle_max_insertion_qty.'$';
+											// $actual_rejection_reason_array_string[$bundle_individual_number][] =  $bundle_individual_number.'-'.$r_reasons [$reason_key].'-'.$bundle_max_insertion_qty ;
+											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$r_reasons [$reason_key].'-'.$bundle_max_insertion_qty ;
 											$insertable_qty_rej = $bundle_max_insertion_qty;
 											$remaining_bundle_qty = $reson_max_qty-$bundle_max_insertion_qty;
 											$remaining_bundle_reason = $r_reasons[$reason_key];
@@ -690,7 +690,7 @@ if($barcode_generation == 1)
 										else
 										{
 											$actual_rejection_reason_array[$bundle_individual_number] += $reson_max_qty;
-											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$r_reasons[$reason_key].'-'.$reson_max_qty.'$';
+											$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$r_reasons[$reason_key].'-'.$reson_max_qty ;
 											$bundle_remaining_exces_qty = $bundle_max_insertion_qty - $reson_max_qty;
 											$bundle_remaining_qty[$bundle_individual_number] = $bundle_remaining_exces_qty;
 											$insertable_qty_rej = $reson_max_qty;
@@ -770,16 +770,16 @@ if($barcode_generation == 1)
 		// echo $final_query;
 		$rej_insert_result = $link->query($final_query) or exit('data error');
 
-		if(substr($m3_bulk_bundle_insert_0, -1) == ',')
-		{
-			$final_query_m3 = substr($m3_bulk_bundle_insert_0, 0, -1);
-		}
-		else
-		{
-			$final_query_m3 = $m3_bulk_bundle_insert_0;
-		}
-		// echo $final_query_m3;
-		$rej_insert_result_m3 = $link->query($final_query_m3) or exit('data error');
+		// if(substr($m3_bulk_bundle_insert_0, -1) == ',')
+		// {
+		// 	$final_query_m3 = substr($m3_bulk_bundle_insert_0, 0, -1);
+		// }
+		// else
+		// {
+		// 	$final_query_m3 = $m3_bulk_bundle_insert_0;
+		// }
+		// // echo $final_query_m3;
+		// $rej_insert_result_m3 = $link->query($final_query_m3) or exit('data error');
 	}
 	$b_tid = array();
 	$b_rep_qty = array();
@@ -788,7 +788,7 @@ if($barcode_generation == 1)
 	{
 		$b_tid[] = $actual_bundles[$key];
 		$b_rep_qty[] = $actual_rec_quantities[$key];
-		//$b_rej_qty[] = $actual_rej_quantities[$value];
+		$b_rej_qty[] = $actual_rej_quantities[$value];
 	}
 }
 // var_dump($r_reason);
@@ -839,8 +839,10 @@ if($barcode_generation == 1)
 	{
 		echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
 	}
+
 	else if($concurrent_flag == 0)
 	{
+		
 		if($barcode_generation == 0)
 		{
 			$fetching_job_number_from_bundle = "select input_job_no_random FROM $bai_pro3.packing_summary_input where tid='$b_job_no'";
@@ -1005,7 +1007,7 @@ if($barcode_generation == 1)
 						if($index == sizeof($r_qty_array)-1){
 							$remarks_code .= $reason_code.'-'.$r_qnty;
 						}else {
-							$remarks_code .= $reason_code.'-'.$r_qnty.'$';
+							$remarks_code .= $reason_code.'-'.$r_qnty ;
 						}
 					}
 				}		
@@ -1276,7 +1278,7 @@ if($barcode_generation == 1)
 							if($index == sizeof($r_qty_array)-1){
 								$remarks_code .= $reason_code.'-'.$r_qnty;
 							}else {
-								$remarks_code .= $reason_code.'-'.$r_qnty.'$';
+								$remarks_code .= $reason_code.'-'.$r_qnty ;
 							}
 						}
 					}	
@@ -1685,9 +1687,18 @@ if($barcode_generation == 1)
 				$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
 			}
 				//updating into  m3 transactions for negatives
-			for($i=0;$i<sizeof($b_tid);$i++)
+				// var_dump($actual_rejection_reason_array_string);
+			for($i=0;$i<sizeof($actual_rejection_reason_array_string);$i++)
 			{
-				$updation_m3 = updateM3TransactionsRejections($b_tid[$i],$b_op_id,$r_qty,$r_reasons);
+				$r_qty = array();
+				$r_reasons = array();
+				$implode_next = explode('-',$actual_rejection_reason_array_string[$i]);
+				//var_dump($implode_next);
+				$r_qty[] = $implode_next[2];
+				$r_reasons[] = $implode_next[1];
+				$b_tid = $implode_next[0];
+				//echo $b_tid.','.$b_op_id.','.$r_qty.','.$r_reasons.'</br>';
+				$updation_m3 = updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$r_reasons);
 			}
 			$table_data .= "</tbody></table></div></div></div>";
 			echo $table_data;
