@@ -1,8 +1,30 @@
 
 <?php  
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');  
-    $ips = 'IPS';    
-    $status = "'0','F'";
+    $application = 'IPS';    
+    $status = 'F';
+
+
+    if( isset($_GET['job_no']) && $_GET['job_no']!=''){
+        $job_r = $_GET['job_no'];
+        $job = $_GET['job'];
+
+        //Back up jobs
+        // $insert_log = "Insert into $bai_pro3.delete_jobs_log values (`input_job_no_random`,`input_job_no`,`date_time`) 
+        //             values('$job_r','$job','".date('Y-m-d H:i:s')."')";
+        // mysqli_query($link,$insert_log);
+
+        $delete_query = "Delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$job_r'" ;
+        $delete_result = mysqli_query($link,$delete_query) or exit("Problem Encountered While Deleting The Job");
+        if($delete_result){
+            echo "<script>$(document).ready(function(){
+                                swal('Input Job Deleted Successfully','','success')
+                    });
+                 </script>";
+        }
+    }
+
+
 ?>
 <div class='panel panel-primary'>
     <div class='panel-heading'>
@@ -25,14 +47,15 @@
                 <?php
                     //getting the operation code from the masters table
                     $counter = 0;
-                    $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$ips' ";
+                    $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
                     $op_code_result = mysqli_query($link,$op_code);
                     while($row = mysqli_fetch_array($op_code_result)){
                         $op_code = $row['operation_code'];
                     }
 
                     //getting dockets with 0,F status
-                    $fail_dockets_query = "select doc_no from $bai_pro3.cps_log where reported_status IN ($status)";
+                    $fail_dockets_query = "select doc_no from $bai_pro3.cps_log where remaining_qty = 0
+                                           and reported_status = '$status'";
                     $fail_dockets_result = mysqli_query($link,$fail_dockets_query);
                     while($row = mysqli_fetch_array($fail_dockets_result)){
                         $dockets[] = $row['doc_no'];
@@ -40,62 +63,74 @@
                     $dockets = array_unique($dockets);
                     $dockets_str = implode(',',$dockets);
                     
+                    
+                    //getting the pre op code
+					$pre_opcode_query = "SELECT MAX(operation_code) as op_code FROM brandix_bts.tbl_style_ops_master  
+                                        WHERE operation_code < $operation_code ";
+                    $pre_opcode_result = mysqli_query($link,$pre_opcode_query);
+                    while($row = mysqli_query($link,$pre_opcode_result)){
+                        $pre_op_code = $row['op_code'];
+                    }
+                    if($dockets_str == '')
+                        $dockets_str = '""';
                     //getting all jobs with the above dockets
-                    $jobs_query = "Select input_job_no,input_job_no_random_ref,group_concat(docket_number) as doc_str,
+                    $jobs_query = "Select style,color,schedule,input_job_no,input_job_no_random_ref,
+                                   group_concat(docket_number) as doc_str,
                                    group_concat(bundle_number) as bun_str,SUM(original_qty) as oqty,
                                    SUM(recevied_qty) as rqty,assigned_module 
                                    from $brandix_bts.bundle_creation_data 
-                                   where docket_number IN ('$dockets_str') 
+                                   where bundle_number IN ($dockets_str)
                                    and operation_id = '$op_code'
-                                   GROUP BY input_job_no_random_ref";
-                    //echo $jobs_query;               
+                                   GROUP BY input_job_no_random_ref";     
+                    //echo $jobs_query;                         
                     $jobs_result = mysqli_query($link,$jobs_query) or exit("No Jobs Found");
                     while($row = mysqli_fetch_array($jobs_result)){
                         $flag = 0;
                         $job_no_r= $row['input_job_no_random_ref'];
                         $job_no  = $row['input_job_no'];
                         $doc_str = $row['doc_str'];
-                        $bun_str = $row['bun_str'];
+                        //$bun_str = $row['bun_str'];
                         $org_qty = $row['oqty'];
                         $rem_qty = $row['rqty'];
                         $module  = $row['assigned_module'];
-
-
-                        $docs = explode(',',$doc_str);
-                        $docs = array_unique($docs);
-                        /*
-                        $bundles = explode(',',$bun_str);
-                        $bundles = array_unique($bundles);
-                        $bundles = implode(',',$bun_str);
-                        */
-                        $comparision_query  = "Select original_qty as org,SUM(recevied_qty + rejected_qty) as total from 
-                                               $brandix_bts.bundle_creation_data where bundle_number in ($bun_str)";
-                        $comparision_result = mysqli_query($link,$comparision_query) or exit("Problem Encountered In Retreiving ");
-                        while($row = mysqli_fetch_array($comparision_result)){
-                            if( !($row['org'] == $row['total']) )
-                                $flag = 1;
+                        $style   = $row['style'];
+                        $schedule= $row['schedule'];
+                        $color   = $row['color'];
+                        $pre_opcode_query = "SELECT MAX(operation_code) as op_code FROM $brandix_bts.tbl_style_ops_master 
+                                             WHERE style='$style' and schedule='$schedule' and color='$color' 
+                                             and operation_code < $operation_code ";
+                        $pre_opcode_result = mysqli_query($link,$pre_opcode_query);
+                        while($row = mysqli_query($link,$pre_opcode_result)){
+                            $pre_op_code = $row['op_code'];
                         }
-                        
-                        if($flag == 0){
-                            $vary = array_diff($dockets,$docs);
-                            $url = 'index.php?r='.$_GET['r']."&job_no=$job_no_r";
-                            if(!sizeof($vary) > 0){
-                                $counter++;
-                                echo "<tr>";
-                                    echo "<td>$counter</td>"; 
-                                    echo "<td>J$job_no</td>";
-                                    echo "<td>$org_qty</td>";
-                                    echo "<td>$module</td>";
-                                    echo "<td>".implode(',',$doc_str)."</td>";
-                                    echo "<td>$rem_qty</td>";
-                                    echo "<td><a href='$url' onclick='return confirm_delete(event,this)' 
-                                            class='btn btn-danger btn-sm'>Delete</a></td>";
-                                echo "</tr>";
+                        //getting the status of dockets with the pre ops code
+                        $fail_dockets_query = "Select reported_status,remaining_qty from $bai_pro3.cps_log 
+                                               Where doc_no in ($doc_str) and operation_code='$pre_op_code'"; 
+                        $fail_dockets_result = mysqli_query($link,$fail_dockets_query);
+                        while($row = mysqli_fetch_array($fail_dockets_result)){
+                            if( !($row['remaining_qty'] == 0 && $row['reported_status']=='F') ){
+                                $flag = 1;
+                                break;
                             }
+                        }
+
+                        if($flag == 0){
+                            $url = 'index.php?r='.$_GET['r']."&job_no=$job_no_r&job=$job_no";
+                            $counter++;
+                            echo "<tr>";
+                                echo "<td>$counter</td>"; 
+                                echo "<td>J$job_no</td>";
+                                echo "<td>$org_qty</td>";
+                                echo "<td>$module</td>";
+                                echo "<td>$doc_str</td>";
+                                echo "<td>$rem_qty</td>";
+                                echo "<td><a href='$url' onclick='return confirm_delete(event,this)' 
+                                        class='btn btn-danger btn-sm'>Delete</a></td>";
+                            echo "</tr>";
                         }
                     }
                     if($counter == 0){
-                        echo "<td colspan=7><div class='alert alert-danger'>No Data Found</div></td>";
+                        echo "<tr><td colspan=7><div class='alert alert-danger'>No Data Found</div></td></tr>";
                     }
                 ?>
             </tbody>
@@ -104,25 +139,14 @@
 </div>
 
 
-<?php
-if( isset($_GET['job_no']) && $_GET['job_no']!=''){
-    $job = $_GET['job_no'];
-    $delete_query = "Delete from $bai_pro3.plan_dash_doc_summ_input where input_job_no_random_ref='$job'" ;
-    $delete_result = mysqli_query($link,$delete_query) or exit("Problem Encountered While Deleting The Job");
-    if($delete_result){
-        echo "<script>swal('Input Job Deleted Successfully','','success');</script>";
-    }
-}
 
-
-?>
 
 <script>
     function confirm_delete(e,t)
     {
         e.preventDefault();
         var v = sweetAlert({
-            title: "Are you sure to Delete the Packing Ratio?",
+            title: "Are you sure to Delete the JOB ?",
             icon: "warning",
             buttons: true,
             dangerMode: true,
