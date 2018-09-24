@@ -422,14 +422,14 @@ echo "<input type=\"hidden\" value=\"$style_ref\" name=\"style_ref\">";
 echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
 //$sql1="SELECT plandoc_stat_log.plan_lot_ref,plandoc_stat_log.cat_ref,plandoc_stat_log.print_status,plandoc_stat_log.doc_no,cat_stat_log.category from plandoc_stat_log left join cat_stat_log on plandoc_stat_log.cat_ref=cat_stat_log.tid  where plandoc_stat_log.order_tid=\"$order_id_ref\" and plandoc_stat_log.acutno=$cut_no_ref";
 
-$sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.acutno=$cut_no_ref";
+$sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.acutno=$cut_no_ref";
 
 // $sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.acutno=$cut_no_ref and order_cat_doc_mk_mix.doc_no=$doc_no";
 
 //Color Clubbing New Code
 if($clubbing>0)
 {
-	$sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.acutno=$cut_no_ref";
+	$sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.acutno=$cut_no_ref";
 }
 
 
@@ -808,7 +808,7 @@ if(isset($_POST['submit']))
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
-		$sql2="update plandoc_stat_log set fabric_status='5' where doc_no='".$doc_num[$i]."'";
+		$sql2="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no='".$doc_num[$i]."'";
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$doc_no_loc="D".$doc_num[$i];
 		$sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_num[$i]."' and status=1";
@@ -919,17 +919,17 @@ if(isset($_POST['submit']))
 			{
 				//echo "Test---21"."<br>";
 				//$sql1="update plan_dashboard set fabric_status=$issue_status where doc_no='";
-				$sql1="update plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
+				$sql1="update $bai_pro3.plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
 				//Uncheck this
 				mysqli_query($link, $sql1) or exit("Sql Error---5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-				$sql1="update plandoc_stat_log set fabric_status=$issue_status where doc_no in ($group_docs)";
+				$sql1="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no in ($group_docs)";
 				//Uncheck this
 				mysqli_query($link, $sql1) or exit("Sql Error---6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				//if($issue_status==5)
 				//{
-				$sql3="update fabric_priorities set issued_time='".date("Y-m-d H:i:s")."' where doc_ref in ($group_docs)";
+				$sql3="update $bai_pro3.fabric_priorities set issued_time='".date("Y-m-d H:i:s")."' where doc_ref in ($group_docs)";
 				//Uncheck this	
 				mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -940,7 +940,7 @@ if(isset($_POST['submit']))
 
 			if($issue_status==1)
 			{
-				$sql1="update plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
+				$sql1="update $bai_pro3.plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
 				//Uncheck this
 				mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
