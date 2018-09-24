@@ -386,13 +386,14 @@ $(document).ready(function()
 							{
 								if (display_reporting_qty == 'yes')
 								{
-									temp_var_bal = data[i].balance_to_report;
+									temp_var_bal1 = data[i].balance_to_report;
+								}
+								else
+								{
+									temp_var_bal1 = 0;
 								}
 							}
-							else
-							{
-								temp_var_bal = data[i].balance_to_report;
-							}						
+							temp_var_bal = data[i].balance_to_report;
 							$('#flag_validation').val(1);
 						}
 						console.log(barcode_generation);
