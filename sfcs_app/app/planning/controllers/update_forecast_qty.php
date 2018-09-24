@@ -134,18 +134,20 @@ if(isset($_POST['submit']))
 	$frv=array(); 
 	$frv_id=array(); 
 	$mod_names=array(); 
-	$sql="select * from $bai_pro3.plan_modules order by module_id*1"; 
+	$sql="select * from $bai_pro3.plan_modules GROUP BY module_id order by module_id*1 "; 
+	//echo $sql;
 	$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($row=mysqli_fetch_array($result)) 
 	{     
 		$mod_names[]=$row['module_id']; 
-		$sql1="SELECT * FROM $bai_pro2.fr_data WHERE frdate='$today' AND team='".$row['module_id']."'"; 
+		$sql1="SELECT sum(fr_qty) as qty FROM $bai_pro2.fr_data WHERE frdate='$today' AND team='".$row['module_id']."'"; 
+		//echo $sql1;
 		$result1=mysqli_query($link, $sql1) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($result1)) 
 		{ 
 			while($row1=mysqli_fetch_array($result1))
 			{				
-				$frv[$row['module_id']]=$row1['fr_qty'];
+				$frv[$row['module_id']]=$row1['qty'];
 				$frv_id[$row['module_id']]=$row1['fr_id'];
 			}			
 		} 
