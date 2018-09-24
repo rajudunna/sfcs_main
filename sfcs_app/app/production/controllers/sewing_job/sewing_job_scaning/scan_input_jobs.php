@@ -258,6 +258,7 @@ $(document).ready(function()
 		var barcode_generation = "<?php echo $barcode_generation?>";
 		var job_number = $('#job_number').val();
 		var operation_id = $('#operation_id').val();
+		var operation_code_routing = $('#operation_code_routing').val();
 		console.log(operation_id);
 		var array = [job_number,operation_id,barcode_generation];
 	$.ajax({
@@ -363,7 +364,17 @@ $(document).ready(function()
 						
 						if(data[i].flag == 'packing_summary_input')
 						{
-							temp_var_bal = data[i].balance_to_report;
+							if (operation_id == operation_code_routing)
+							{
+								if (display_reporting_qty == 'yes')
+								{
+									temp_var_bal = data[i].balance_to_report;
+								}
+							}
+							else
+							{
+								temp_var_bal = data[i].balance_to_report;
+							}						
 							$('#flag_validation').val(1);
 						}
 						console.log(barcode_generation);
