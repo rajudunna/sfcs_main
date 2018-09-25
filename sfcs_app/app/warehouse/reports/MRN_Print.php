@@ -1863,7 +1863,7 @@ tags will be replaced.-->
   <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6614212 style='height:15.75pt'>&nbsp;</td>
   <td class=xl1514212></td>
-  <td colspan=2 class=xl8514212>Length</td>
+  <td colspan=2 class=xl8514212>Allocated Qty</td>
   <?php
 	  $sql1="select iss_qty from $bai_rm_pj2.mrn_out_allocation where lable_id in ($lable_ids) and mrn_tid='$mrn_id'";
 	  //echo $sql1;
