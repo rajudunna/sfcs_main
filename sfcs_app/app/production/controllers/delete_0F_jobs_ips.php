@@ -17,7 +17,7 @@
         $delete_result = mysqli_query($link,$delete_query) or exit("Problem Encountered While Deleting The Job");
        
         echo "<script>$(document).ready(function(){
-                            swal('Input Job Deleted Successfully','','success')
+                            swal('Input Job Deleted Successfully','','success');
                 });
                 </script>";
         
