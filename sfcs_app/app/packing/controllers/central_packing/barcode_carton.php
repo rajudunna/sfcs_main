@@ -12,9 +12,8 @@
 		'format' => [50, 101], 
 		'orientation' => 'L'
 	]);
-
+	
 	$schedule=$_GET['schedule'];
-
 
 	$html = '
 			<html>
@@ -41,30 +40,26 @@
 
 				</head>
 				<body>';
-		
+		$filter="";$filter1="";
 		if(isset($_GET['seq_no'])>0)
 		{
-			$barcode_qry="select pac_stat_id from $bai_pro3.packing_summary where order_del_no='".$schedule."' and seq_no='".$_GET['seq_no']."' group by pac_stat_id order by tid*1";
+			$filter=" and seq_no='".$_GET['seq_no']."'";
 		}
-		else
+		if(isset($_GET['carton_no'])>0)
 		{
-			$barcode_qry="select pac_stat_id from $bai_pro3.packing_summary where order_del_no='".$schedule."' group by pac_stat_id order by tid*1";
-		}			
-		
-		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-		while($barcode_rslt = mysqli_fetch_array($sql_barcode))
+			$filter1=" and carton_no in (".$_GET['carton_no'].")";
+		}		
+		$barcode_qry1="select seq_no,count(distinct carton_no) as cart from $bai_pro3.packing_summary where order_del_no='".$schedule."' $filter group by seq_no order by seq_no*1";
+		$sql_barcode1=mysqli_query($link, $barcode_qry1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($barcode_rslt1 = mysqli_fetch_array($sql_barcode1))
 		{	
-			$tids[]=$barcode_rslt['pac_stat_id'];
-		}	
-		for($i=0;$i<sizeof($tids);$i++)
-		{
-			$printdetqry="SELECT carton_no,order_style_no, order_del_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR ',') AS colors, GROUP_CONCAT(DISTINCT size_tit SEPARATOR ',') AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE pac_stat_id = '".$tids[$i]."' group by pac_stat_id";
-			//echo $printdetqry."<br>";
-			$printrslt=mysqli_query($link, $printdetqry) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$tot_cart=$barcode_rslt1['cart'];
+			$barcode_qry="SELECT pac_stat_id,carton_no,order_style_no, order_del_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR ',') AS colors, GROUP_CONCAT(DISTINCT size_tit SEPARATOR ',') AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE order_del_no='".$schedule."' and seq_no='".$barcode_rslt1['seq_no']."' $filter1 group by pac_stat_id";
+			$printrslt=mysqli_query($link, $barcode_qry) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($rowss=mysqli_fetch_array($printrslt))
 			{
 				$style=$rowss['order_style_no'];
+				$pac_stat_id=$rowss['pac_stat_id'];
 				$schedule=$rowss['order_del_no'];
 				$color=$rowss['colors'];
 				$cartonno=$rowss['carton_no'];
@@ -77,39 +72,36 @@
 					$cono=$norows['co_no'];
 					$vpo=$norows['vpo'];
 				}				
-				$html.= '<div>
-							
-									
-							<table>
-								<tr>
-									<td ><barcode code="'.leading_zeros($tids[$i],10).'" type="C39"/ height="0.80" size="0.8" text="1"></td>
-									<td >'.leading_zeros($tids[$i],10).'</td>
-								</tr>
-								
-								<tr>
-									<td style="width:200px;"><b>Style:</b>'.$style.' </td>
-									<td> <b>Schedule:</b>'.$schedule.'</td>
-								</tr>
-								<tr rowspan=3>
-									<td colspan=2><b>Color:</b>'.substr($color,0,80).' </td>
-								</tr>
-								<tr>
-									<td colspan=2><b>Size:</b>'.$size.' </td>
-								</tr>
-								<tr>
-									<td><b>Carton No:</b>'.$cartonno.'/'.sizeof($tids).' </td>
-									<td><b>Qty:</b>'.$cartqty.' </td>
-								</tr>
-								<tr>
-									<td><b>Co No:</b>'.$cono.' </td>
-									<td><b>VPO:</b>'.$vpo.' </td>
-								</tr>
-								
-							</table>
-						</div>';	
-						$html.='<pagebreak />';
-			}
-			
+				$html.= '<div>								
+					<table>
+						<tr>
+							<td ><barcode code="'.leading_zeros($pac_stat_id,10).'" type="C39"/ height="0.80" size="0.8" text="1"></td>
+							<td >'.leading_zeros($pac_stat_id,10).'</td>
+						</tr>
+						
+						<tr>
+							<td style="width:200px;"><b>Style:</b>'.$style.' </td>
+							<td> <b>Schedule:</b>'.$schedule.'</td>
+						</tr>
+						<tr rowspan=3>
+							<td colspan=2><b>Color:</b>'.substr($color,0,80).' </td>
+						</tr>
+						<tr>
+							<td colspan=2><b>Size:</b>'.$size.' </td>
+						</tr>
+						<tr>
+							<td><b>Carton No:</b>'.$cartonno.'/'.$tot_cart.' </td>
+							<td><b>Qty:</b>'.$cartqty.' </td>
+						</tr>
+						<tr>
+							<td><b>Co No:</b>'.$cono.' </td>
+							<td><b>VPO:</b>'.$vpo.' </td>
+						</tr>
+						
+					</table>
+				</div>';	
+				$html.='<pagebreak />';
+			}				
 		}
 				
 	$html.='
