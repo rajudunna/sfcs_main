@@ -11,6 +11,7 @@ Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status)
 
 <?php    
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
 $layplanmail = $conf1->get('layplanmail'); 
 //var_dump($layplanmail);
 // include("header.php"); 
@@ -102,13 +103,11 @@ function myfunction ()
     { 
         $schedule=$_POST['schedule'];  
         $color=$_POST['color']; 
-        
     } 
     else 
     { 
-    $schedule='';  
-    $color=''; 
-
+        $schedule='';  
+        $color=''; 
     } 
     
 
@@ -181,6 +180,10 @@ if(isset($_POST["submit"]))
     $order_det_suc=array(); 
     //echo $schedule."---".$color."<br>"; 
     //Ticket# 365867/Date:2014-01-22/Task: LayPlan Deletion Validation Enhancement/Action:Taken the Order Tid instead of Schedule No for validate the query. 
+	
+			
+	
+	
     if($color!='0' || $color!='0') 
     {   
         $sql73="select *,order_tid as otid from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\" and order_joins='0'"; 
@@ -285,12 +288,22 @@ if(isset($_POST["submit"]))
                         //M3 Reversal 
                         //M3 Bulk operation reversal 
                         //To update M3 Bulk Upload Tool (To pass negative entry) 
-                        $sql2m3="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,(sfcs_qty*-1),sfcs_reason,USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=".$sql_row33['doc_no']." AND m3_op_des='LAY' and sfcs_reason='' and left(sfcs_job_no,1)<>'R' and sfcs_qty>0"; 
-                        mysqli_query($link, $sql2m3) or die("Sql error".$sql2m3.mysqli_errno($GLOBALS["___mysqli_ston"]));     
+                        //COMMENTED FOR #759
+                        // $sql2m3="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,(sfcs_qty*-1),sfcs_reason,USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=".$sql_row33['doc_no']." AND m3_op_des='LAY' and sfcs_reason='' and left(sfcs_job_no,1)<>'R' and sfcs_qty>0"; 
+                        // mysqli_query($link, $sql2m3) or die("Sql error".$sql2m3.mysqli_errno($GLOBALS["___mysqli_ston"]));     
                     } 
                     $sql1="update bai_orders_db set order_no=0 where order_tid=\"".$order_tid[$i]."\""; 
                     mysqli_query($link, $sql1) or die("Error=11".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     //echo $sql1."<br>"; 
+
+                    $sql_orders_db="select * from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid[$i]."\"";
+                    $sql_result_orders_db=mysqli_query($link, $sql_orders_db) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($sql_row=mysqli_fetch_array($sql_result_orders_db))
+                    {   
+                        //updating old order quantites to new order quantites, dont worry about the lables
+                        $update="update $bai_pro3.bai_orders_db set order_s_s01='".$sql_row['old_order_s_s01']."',order_s_s02='".$sql_row['old_order_s_s02']."',order_s_s03='".$sql_row['old_order_s_s03']."',order_s_s04='".$sql_row['old_order_s_s04']."',order_s_s05='".$sql_row['old_order_s_s05']."',order_s_s06='".$sql_row['old_order_s_s06']."',order_s_s07='".$sql_row['old_order_s_s07']."',order_s_s08='".$sql_row['old_order_s_s08']."',order_s_s09='".$sql_row['old_order_s_s09']."',order_s_s10='".$sql_row['old_order_s_s10']."',order_s_s11='".$sql_row['old_order_s_s11']."',order_s_s12='".$sql_row['old_order_s_s12']."',order_s_s13='".$sql_row['old_order_s_s13']."',order_s_s14='".$sql_row['old_order_s_s14']."',order_s_s15='".$sql_row['old_order_s_s15']."',order_s_s16='".$sql_row['old_order_s_s16']."',order_s_s17='".$sql_row['old_order_s_s17']."',order_s_s18='".$sql_row['old_order_s_s18']."',order_s_s19='".$sql_row['old_order_s_s19']."',order_s_s20='".$sql_row['old_order_s_s20']."',order_s_s21='".$sql_row['old_order_s_s21']."',order_s_s22='".$sql_row['old_order_s_s22']."',order_s_s23='".$sql_row['old_order_s_s23']."',order_s_s24='".$sql_row['old_order_s_s24']."',order_s_s25='".$sql_row['old_order_s_s25']."',order_s_s26='".$sql_row['old_order_s_s26']."',order_s_s27='".$sql_row['old_order_s_s27']."',order_s_s28='".$sql_row['old_order_s_s28']."',order_s_s29='".$sql_row['old_order_s_s29']."',order_s_s30='".$sql_row['old_order_s_s30']."',order_s_s29='".$sql_row['old_order_s_s31']."',order_s_s32='".$sql_row['old_order_s_s32']."',order_s_s33='".$sql_row['old_order_s_s33']."',order_s_s34='".$sql_row['old_order_s_s34']."',order_s_s35='".$sql_row['old_order_s_s35']."',order_s_s36='".$sql_row['old_order_s_s36']."',order_s_s37='".$sql_row['old_order_s_s37']."',order_s_s38='".$sql_row['old_order_s_s38']."',order_s_s39='".$sql_row['old_order_s_s39']."',order_s_s40='".$sql_row['old_order_s_s40']."',order_s_s41='".$sql_row['old_order_s_s41']."',order_s_s42='".$sql_row['old_order_s_s42']."',order_s_s43='".$sql_row['old_order_s_s43']."',order_s_s44='".$sql_row['old_order_s_s44']."',order_s_s45='".$sql_row['old_order_s_s45']."',order_s_s46='".$sql_row['old_order_s_s46']."',order_s_s47='".$sql_row['old_order_s_s47']."',order_s_s48='".$sql_row['old_order_s_s48']."',order_s_s49='".$sql_row['old_order_s_s49']."',order_s_s50='".$sql_row['old_order_s_s50']."' where order_del_no=".$schedule." and order_col_des='".$color."'";                   
+                        mysqli_query($link, $update) or die("quantites not updated".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    }
                      
                     $sql8="select doc_no from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\""; 
                     $result8=mysqli_query($link, $sql8) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -441,6 +454,30 @@ if(isset($_POST["submit"]))
                 } 
                  
             } 
+            
+            /*  OLD LOGIC TO DELETE mo operation quantites  
+            $op_codes = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+                         WHERE default_operation='Yes' and category='cutting' group by category order by category*1"; 
+            $op_codes_result = mysqli_query($link, $op_codes);
+            while($row = mysqli_fetch_array($op_codes_result)){
+                $op_codes = $row['codes'];
+            }
+
+			$getmonos="select mo_no from $bai_pro3.mo_details where schedule='$schedule' and color='$color'";
+			$moresult=mysqli_query($link, $getmonos) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($rowmo=mysqli_fetch_array($moresult)) 
+			{
+				$mos[]=$rowmo['mo_no'];
+			}
+			$mos=implode(',',$mos);
+			$deletefrommoquantitys="delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code in ($op_codes)";
+            //echo $deletefrommoquantitys;
+            mysqli_query($link, $deletefrommoquantitys) or die("Error while deleting mo nos from mo operation quantities".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            */
+            $deleted = deleteMOQuantitiesCut($schedule,$color);
+            if($deleted){
+                //Successfully Deleted From Mo Operation Quantites
+            }
         } 
         else 
         { 

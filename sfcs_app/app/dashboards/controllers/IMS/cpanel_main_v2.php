@@ -6,11 +6,25 @@ $start_timestamp = microtime(true);
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/css/bootstrap-colorpicker.min.css',4,'R'));
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/bootstrap-colorpicker.min.js',4,'R'));
+
 ?>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'/common/js/bootstrap-colorpicker.min.js',4,'R');?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'/common/js/bootstrap-colorpicker-plus.min.js',4,'R');?>"></script>
+
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'/common/css/bootstrap-colorpicker.min.css',4,'R');?>" type="text/css" media="all" />
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'/common/css/bootstrap-colorpicker-plus.min.css',4,'R');?>" type="text/css" media="all" />
 
 
 <title>IMS</title>
-
+<script>
+function firstbox()
+{
+  var shift_id = document.getElementById('shift').value;
+  window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&shift="+shift_id;
+}
+</script>
 
 <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 <link rel=\"stylesheet\" href=".getFullURL($_GET['r'],'common/css/ddcolortabs.css',4,'R')." type=\"text/css\" media=\"all\" />
@@ -79,6 +93,14 @@ window.onload = startBlink;
 <!-- POP up window -  start  -->
 <script>         
 function PopupCenter(pageURL, title,w,h) {
+    
+    var shift= $('#shift').val();
+    console.log(shift);
+    if(shift==''){
+swal('Please Select Shift First','','error');
+return false;
+    }
+ 
 var left = (screen.width/2)-(w/2);
 var top = (screen.height/2)-(h/2);
 var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
@@ -303,6 +325,7 @@ width:350px;
   color:#fff;
   font-size:12px;
   width:250px;
+  pointer-events: none; 
   
 }
 
@@ -331,7 +354,7 @@ width:350px;
 $(document).ready(function() {
 
   //Select all anchor tag with rel set to tooltip
-  $('a[rel=tooltip]').mouseover(function(e) {
+  $('a[rel=tooltip]').hover(function(e) {
     
     //Grab the title attribute's value and assign it to a variable
     var tip = $(this).attr('title');  
@@ -343,7 +366,7 @@ $(document).ready(function() {
     $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
         
     //Show the tooltip with faceIn effect
-    $('#tooltip').fadeIn('100');
+    //$('#tooltip').fadeIn('100');
     //$('#tooltip').fadeTo('10',0.9);
     
   }).mousemove(function(e) {
@@ -351,11 +374,15 @@ $(document).ready(function() {
     //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
     console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset);
     console.log(e);
+
     //e.pageY + 0.5 * e.view.parent.pageYOffset
-    $('#tooltip').css('top',);
-    $('#tooltip').css('left', e.pageX - 265 );
-    $('#tooltip').css('display', 'inline' );
+    $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
+    $('#tooltip').css('left',$(this).offset.left - 255 );
+     $('#tooltip').css('margin-left','10px' );
+     $('#tooltip').css('margin-top','10px' );
+    //$('#tooltip').css('display', 'inline' );
      $('#tooltip').css('position', 'absolute' );
+     $('#tooltip').css('z-index', '999999' );
   }).mouseout(function() {
   
     //Put back the title attribute's value
@@ -399,6 +426,8 @@ $(document).ready(function()
    <div class="panel-heading">
     
       Input Management System - Production WIP Dashboard -<span style="color:#fff;font-size:12px;margin-left:15px;">Refresh Rate: 120 Sec.</span>
+
+
 <?php
 $sql="select max(ims_log_date) as \"lastup\" from $bai_pro3.ims_log";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -406,13 +435,37 @@ while($sql_row=mysqli_fetch_array($sql_result))
 { ?>
   <span style="font-size:12px;color:#CCC;">Last Update at: <?PHP echo $sql_row['lastup']; ?></span>
 <?php
-} ?>
+} 
+$shifts = $_GET['shift'];
+
+//$shifts_array = ['A','B','C','G'];
+?>
   </div>
   <div class="panel-body">
+  <div class="row">
+  <div class="col-md-2">
+      
+    <label>Shift </label><select class="form-control" id="shift" name="shift" onchange="firstbox();">
+    <option value="">Select</option>
+     <?php
+          foreach($shifts_array as $shift){
+            if($shift == $shifts){
+              echo "<option value='$shift' selected>$shift</option>";
+            }else{
+               echo "<option value='$shift'>$shift</option>";
+            }
+           
+          }
+
+     ?>
+  </select>   
+  </div>  
+  </div>  
+
     <div style="padding-top:15px;">
     <div class="table-responsiv">
       <div class='col-sm-12'>
-   <?php $sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+   <?php $sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id";
   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
   $break_counter = 0;
   while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
@@ -444,6 +497,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
       
       $module=$mods[$x];
       $data[] = $mods[$x];
+
+      $module_sql = "SELECT * FROM $bai_pro3.module_master WHERE module_name=\"$module\"";
+      $module_sql_result = mysqli_query($link,$module_sql);
+      $module_col_lab = mysqli_fetch_array($module_sql_result);
+      // print_r($module_col_lab['color']);
       //include("mod_rep_recon.php");
   
       ?>
@@ -461,7 +519,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
        }
           */
       ?>
-            <div class="line_main">
+            <div class="line_main"  style="background:<?= $module_col_lab['color']; ?>">
+            <h5 align="center" style="margin-bottom: 0px;margin-top: 0px;" ><b><?= $module_col_lab['label']; ?></b></h5>
+            
               <div class="line_no">  <!-- module number DIV start -->
                 
                 <?php 
@@ -479,7 +539,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
         $wip='0';
         $wip=$sql_rowwip['WIP'];
         ?>" class="red-tooltip" 
-            onclick="PopupCenter('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1',800,600);">
+            onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?php echo $module; ?>', 'myPop1');">
             <?php echo $module; ?></a>
         <?php } ?>
                
@@ -505,14 +565,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 
 
-        
+        // $colors_modal = array();
         while($sql_rowred=mysqli_fetch_array($sql_resultred))     //docket boxes Loop -start
         {
             $input_qty=$sql_rowred['Input'];      // input qty
             $output_qty=$sql_rowred['Output'];      // output qty
             $docket_no=$sql_rowred['ims_doc_no'];   // capturing docket number
             $style_no=$sql_rowred['ims_style'];     // style
-            $color_name=$sql_rowred['ims_color'];   // color
+            $color_name=$sql_rowred['ims_color'];  
+            $colors_modal[] = $sql_rowred['ims_color']; // color
       // echo "Color=".$color_name."<br>";
       $color_ref="'".str_replace(",","','",$sql_rowred['ims_color'])."'"; 
       $remarks_ref="'".str_replace(",","','",$sql_rowred['ims_remarks'])."'"; 
@@ -532,6 +593,56 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $ijrs[] = $inputjobnorand;
            
 
+
+
+
+      
+      // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
+      // //echo $sql22;
+      // $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row22=mysqli_fetch_array($sql_result22))
+      // {
+      //   $order_tid=$sql_row22['order_tid'];
+      // } 
+      
+      // $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+      // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row33=mysqli_fetch_array($sql_result33))
+      // {
+      //   $ims_color=$sql_row33['order_tid'];
+      // }
+      // $size_value=array();
+      // $sizes_explode=explode(",",$ims_size);
+      // for($i=0;$i<sizeof($sizes_explode);$i++)
+      // {
+      //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
+      //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
+      // }
+      
+      // $sizes_implode="'".implode("','",$size_value)."'";
+
+
+      // $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
+      // //echo $sql22;
+      // $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row22=mysqli_fetch_array($sql_result22))
+      // {
+      //   $order_tid=$sql_row22['order_tid'];
+      // } 
+      
+      // $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+      // $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+      // while($sql_row33=mysqli_fetch_array($sql_result33))
+      // {
+      //   $ims_color=$sql_row33['order_tid'];
+      // }
+      // $size_value=array();
+      // $sizes_explode=explode(",",$ims_size);
+      // for($i=0;$i<sizeof($sizes_explode);$i++)
+      // {
+      //   $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
+      //   // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
+      // }
 
       $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
       //echo $sql22;
@@ -554,6 +665,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
         $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
         // echo "<BR>sIZE=".ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link)."<br>";
       }
+
       
        $sizes_implode="'".implode("','",$size_value)."'";
       
@@ -587,7 +699,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
                 $operation_code=$sql_row['operation_code'];
               } 
                
-               $shift='G';
+               //$shift='G';
                //$barcode_generation='1';
                $sidemenu=true;
               $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
@@ -595,7 +707,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
           ?>
                   
-                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&shift=<?php echo $shift; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
+                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&shift=<?php echo $shifts; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
@@ -701,15 +813,21 @@ while($sql_row=mysqli_fetch_array($sql_result))
 </div>
 
 </body>
+
+
 <script>
+ 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();   
 });
+
+
 </script>
 
 
 <script>
 $(document).ready(function(){
+
     $('[data-toggle="tooltip"]').tooltip(); 
     var url = '<?= getFullURL($_GET['r'],'mod_rep_recon.php','R'); ?>';
     var modules = '<?= json_encode($data); ?>';

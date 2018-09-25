@@ -29,9 +29,19 @@ else
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 	
 </script> 
+<?php
 
-
-
+session_start();
+	if($_GET['division'])
+	{
+		$division=$_GET['division'];
+	}
+	else
+	{
+		$division=	$_POST['division'];
+	}
+	$_SESSION['division']=$division;
+	?>
 <script>
 
 function enable_button()

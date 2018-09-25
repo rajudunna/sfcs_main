@@ -15,7 +15,7 @@
     
 	<link rel="stylesheet" href="assets/fontawesome/css/solid.css" />
 	<link rel="stylesheet" href="assets/fontawesome/css/fontawesome.css" />
-	
+	<link rel="stylesheet" href="assets/css/bootstrap-colorpicker.css" />
 	
     <script src="assets/js/base64.min.js"></script>
     <script src="assets/js/angular.min.js"></script>
@@ -24,6 +24,7 @@
     <script src="assets/js/app.js"></script>
 
     <script src="assets/vendors/select2/dist/js/select2.min.js"></script>
+    <script src="assets/js/bootstrap-colorpicker.js"></script>
     <script src="assets/js/sweetalert.min.js"></script>
     <!-- jquery data table -->
     <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">

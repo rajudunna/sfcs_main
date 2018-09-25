@@ -169,6 +169,10 @@ echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Pattern Ver</th><
 <div class=\"col-md-4\">
 <input class='form-control' onkeyup=\"return verify_spec(event)\"  type=\"text\"  name=\"patt_ver\" id='patt_ver' value=\"".$sql_row['patt_ver']."\"  required >
 </div></td></tr>";
+echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Binding Consumption</th><td class=\"  \">:</td><td class=\"  \">
+<div class=\"col-md-4\">
+<input class='form-control float' type=\"text\" name=\"binding_consumption\" id='binding_consumption' value=\"".$sql_row['binding_consumption']."\"  required >
+</div></td></tr>";
 
 echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Gmt Way</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" name=\"gmt_way\">";
 echo "<option value=\"N\""; if($sql_row['gmtway']=='N'){ echo "selected"; } echo ">All Gmt One Way</option>";
@@ -207,6 +211,7 @@ if(isset($_POST['Update']))
 	$in_date=$_POST['in_date'];
 	$in_cat=$_POST['in_cat'];
 	$in_width=$_POST['in_width'];
+	$binding_consumption=$_POST['binding_consumption'];
 	$patt_ver=$_POST['patt_ver'];
 	$gmt_way=$_POST['gmt_way'];
 	$strip_match=$_POST['strip_match'];
@@ -268,7 +273,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		else
 		{
-			$sql="update $bai_pro3.cat_stat_log set date=\"$in_date\", category=\"$in_cat\", purwidth=$in_width, patt_ver=\"$patt_ver\", gmtway=\"$gmt_way\",  strip_match=\"$strip_match\", gusset_sep=\"$guess_sep\", remarks=\"$remarks\", lastup=\"$lupdate\" where tid=$cat_tid";
+			$sql="update $bai_pro3.cat_stat_log set date=\"$in_date\", category=\"$in_cat\", purwidth=$in_width, patt_ver=\"$patt_ver\", gmtway=\"$gmt_way\",binding_consumption=\"$binding_consumption\", strip_match=\"$strip_match\", gusset_sep=\"$guess_sep\", remarks=\"$remarks\", lastup=\"$lupdate\" where tid=$cat_tid";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	

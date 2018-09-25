@@ -95,10 +95,11 @@ if(isset($_POST['submit']))
 		$catgory=$sql_row['category'];
 		if($sql_row['category']=="Body" or $sql_row['category']=="Front")
 		{
-			$fabric_status=$sql_row['fabric_status'];
-			$sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=$docket_id and m3_op_des='LAY'"; 
-			$result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$val_check=mysqli_num_rows($result);
+			//COMMENTED FOR #759
+			// $fabric_status=$sql_row['fabric_status'];
+			// $sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=$docket_id and m3_op_des='LAY'"; 
+			// $result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// $val_check=mysqli_num_rows($result);
 		}
 		else
 		{

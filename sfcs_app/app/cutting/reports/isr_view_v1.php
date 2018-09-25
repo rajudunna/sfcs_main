@@ -19,6 +19,8 @@ function get_size($table_name,$field,$compare,$key,$link)
 	((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
 }
 
+
+
 ?>
 <!-- <script src="js/jquery-1.4.2.min.js"></script>
 <script src="js/jquery-ui-1.8.1.custom.min.js"></script>
@@ -171,7 +173,7 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 	//$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_style,ims_schedule,ims_color from ims_log where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_date";
 	
 	//sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_style,ims_schedule,ims_color from ims_log where ims_date between \"$from_date\" and \"$to_date\" and ims_mod_no>0 ORDER BY ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_date";  
-	$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref from $bai_pro3.ims_log where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size";
+	$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_log where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size ";
 	//group by changed as a order by - Changed By Chathuranga
  	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -183,8 +185,8 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 		echo "<td>".$sql_row['ims_color']."</td>";
 		echo "<td>".$sql_row['ims_mod_no']."</td>";
 		echo "<td>".$sql_row['ims_doc_no']."</td>";
-		$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row['ims_schedule'],$sql_row['ims_color'],$sql_row['input_job_no_ref'],$link);
-		
+		// $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row['ims_schedule'],$sql_row['ims_color'],$sql_row['input_job_no_ref'],$link);
+		$display_prefix1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$sql_row['input_job_no_ref'],$sql_row['input_job_rand_no_ref'],$link);
 		$sql111="select order_div from $bai_pro3.bai_orders_db where order_del_no=".$sql_row['ims_schedule'];
 		//echo $sql1;
 	 	$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error Buyer Divisionsss".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -360,7 +362,7 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 	
 	//$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_style,ims_schedule,ims_color from ims_log_backup where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_date";
 	
-	$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref from $bai_pro3.ims_log_backup where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 order by ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_date";
+	$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_log_backup where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no order by ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_date";
 	//group by changed as a order by - Changed By Chathuranga
  	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -373,7 +375,9 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 		echo "<td>".$sql_row['ims_mod_no']."</td>";
 		echo "<td>".$sql_row['ims_doc_no']."</td>";
 		
-		$display_prefix = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row['ims_schedule'],$sql_row['ims_color'],$sql_row['input_job_no_ref'],$link);
+		// $display_prefix = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row['ims_schedule'],$sql_row['ims_color'],$sql_row['input_job_no_ref'],$link);
+
+		$display_prefix = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$sql_row['input_job_no_ref'],$sql_row['input_job_rand_no_ref'],$link);
 		
 		//$size_db=array("a_xs","a_s","a_m","a_l","a_xl","a_xxl","a_xxxl","a_s06","a_s08","a_s10","a_s12","a_s14","a_s16","a_s18","a_s20","a_s22","a_s24","a_s26","a_s28","a_s30");
 		$size_db=$size_db_base;

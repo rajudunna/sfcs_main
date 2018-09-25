@@ -333,30 +333,21 @@ if($print_status==NULL)
 	}
 }
 */
-if($category=='Body' || $category=='Front')
+	$binding_con=0;
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	if($sql_num_check > 0)
 	{
-		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-		// echo $sql2;
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows=mysqli_num_rows($sql_result2);
-		if($rows > 0)
+		while($sql_row2=mysqli_fetch_array($sql_result))
 		{
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$binding_con = $sql_row2['binding_con'];
-				$bind_con= $binding_con *($a_ratio_tot*$plies);
-				//$bind_con = $sql_row2['binding_con'];
-			}
-		}
-		else
-		{
-			$bind_con=0;
+			$binding_con = $sql_row2['binding_consumption'];
+			$bind_con= $binding_con *($a_ratio_tot*$plies);
 		}
 	}
 	else
 	{
 		$bind_con=0;
-		
 	}
 //To allocate Lot Number for RM Issuing
 ?>
