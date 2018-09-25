@@ -291,11 +291,13 @@
 				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if (mysqli_num_rows($pack_meth_qty) > 0)
 				{
+					$count = 0;
 					echo "<br><div class='col-md-12'>
 							<table class=\"table table-bordered\">
 								<tr class=\"info\">
 									<th>S.No</th>
 									<th>Sewing Job Method</th>
+									<th style='display: none;'>Mix Jobs</th>
 									<th>Description</th>
 									<th>Bundle Size</th>
 									<th>No of Cartons</th>
@@ -305,40 +307,54 @@
 									<th>Controls</th></tr>";
 								while($pack_result1=mysqli_fetch_array($pack_meth_qty))
 								{
+
 									echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_jobs_generate_packlist.php','N').'">';
-										// var_dump($operation);
 										$seq_no=$pack_result1['seq_no'];
+										$max_crton = echo_title("$bai_pro3.pac_stat","MAX(carton_no)","schedule='$schedule' and pac_seq_no",$seq_no,$link);
 										$parent_id=$pack_result1['parent_id'];
 										$pack_method=$pack_result1['pack_method'];
-										// echo $pack_method;
-										// $col_array[]=$sizes_result1['order_col_des'];
-										echo "<tr><td>".$pack_result1['seq_no']."</td>";
-										//packmethod drop down
-										echo "<td><select id=\"pack_method\" class='form-control' name=\"pack_method\" >";
-											for($j=0;$j<sizeof($operation);$j++)
-											{
-												echo "<option value=\"".$j."\">".$operation[$j]."</option>";
-											}
-										echo "</select></td>";
-
-
-										echo "<td>".$pack_result1['pack_description']."</td>";
-										echo "<td><input type='text' class='form-control' name='bund_size' id='bund_size' value='0'></td>";
-										echo "<td><input type='text' class='form-control' name='no_of_cartons' id='no_of_cartons' value='0'></td>";
-										echo "<td>".$pack_result1['qnty']."</td>";
-										echo "<td>".$pack_result1['color']."</td>";
-										echo "<td>".$pack_result1['size']."</td>";
-										$statusqry="SELECT * FROM $bai_pro3.`packing_summary_input` WHERE order_del_no='$schedule' and pac_seq_no='$seq_no'";
-										//echo $statusqry;
-										$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
-										
-										if(mysqli_num_rows($statusrslt)==0)
+										echo "<tr>
+											<td>".$pack_result1['seq_no']."</td>
+											<td><select id=\"pack_method\" required class='form-control' name=\"pack_method\" >";
+												for($j=0;$j<sizeof($operation);$j++)
+												{
+													if ($j==0)
+													{
+														echo "<option value=''>".$operation[$j]."</option>";
+													}
+													else
+													{
+														echo "<option value=\"".$j."\">".$operation[$j]."</option>";
+													}
+												}
+												echo "</select>
+											</td>
+											<td style='display: none;'>
+												<center>
+													<select name='mix_jobs' id='mix_jobs' required class='form-control'>
+														<option value=''>Please Select</option>
+														<option value='1'>Yes</option>
+														<option value='2' selected>No</option>
+													</select>
+												</center>
+											</td>
+											<td>".$pack_result1['pack_description']."</td>
+											<td><input type='text' class='form-control' name='bund_size' id='bund_size' value='0'></td>
+											<input type='hidden' name='seq_no' id='seq_no' value='$seq_no'>
+											<input type='hidden' name='schedule' id='schedule' value='$schedule'>
+											<input type='hidden' name='style' id='style' value='$style'>
+											<td><input type='number' required class='form-control integer' name='no_of_cartons' id='no_of_cartons' value='' min='0' max='$max_crton'></td>
+											<td>".$pack_result1['qnty']."</td>
+											<td>".$pack_result1['color']."</td>
+											<td>".$pack_result1['size']."</td>";
+										$check_status = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no='$schedule' and pac_seq_no",$seq_no,$link);
+										if($check_status==0)
 										{
 											// echo "<td>
 											// <a class='btn btn-success generate_sewing_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Sewing Job</a>
 											// </td>";
 											echo "<td>
-											<input type=\"submit\" class=\"btn btn-success\" value=\"Generate Sewing Jobs\" name=\"generate\" id=\"generate\" />;
+											<input type=\"submit\" class=\"btn btn-success\" value=\"Generate Sewing Jobs\" name=\"generate\" id=\"generate\" />
 											</td>";
 										}
 										else
@@ -347,7 +363,9 @@
 										}
 										echo "<tr>
 									</form>";
+									echo '<input type="hidden" name="count" value="'.$count.'" id="count">';
 
+									$count++;
 								}	
 							
 						echo "</table></div>";
@@ -357,24 +375,8 @@
 				
 			}
 			?>
-			<script type="text/javascript">
-				// $(document).ready(function() 
-				// {
-				// 	$(".generate_sewing_job").click(function()
-				// 	{
-						// var pack_method = $("#pack_method").val();
-						// // alert(pack_method);
-						// if (pack_method == 0)
-						// {
-						// 	sweetAlert('Please Select Sewing Job Method','','warning');
-						// }
-						// else
-						// {
-						// 	$("#loading-image").show();
-						// }
-				// 	});
-				// });
 
+			<script type="text/javascript">
 				$(document).ready(function(){
 					$('.generate_sewing_job').on('click',function(event, redirect=true)
 					{
