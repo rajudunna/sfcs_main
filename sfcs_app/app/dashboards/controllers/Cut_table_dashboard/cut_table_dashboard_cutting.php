@@ -399,7 +399,7 @@ height: 25px;
 .orange {
   max-width:130px; min-width:20px;
   height:20px;
-  background-color: #991144;
+  background-color: #ff9900;
   display:block;
   float: left;
   margin: 2px;
@@ -419,7 +419,7 @@ border: 1px solid #000000;
 
 .orange a:hover {
   text-decoration:none;
-  background-color: #991144;
+  background-color: #ff9900;
 }
 
 .blue {
@@ -1147,7 +1147,7 @@ document.getElementById()
 <div style="clear: both;"> </div>
 </br>
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'ctd.htm',0,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'ctd_cutting.htm',0,'R')); 
 ?>
 <!-- </body>
 </html> -->
