@@ -628,7 +628,7 @@ echo "</font>";
 
 echo '<div class="panel panel-primary">';
 
-echo "<div class='panel-heading'><span style='float'><strong><a href=".$url."  target='_blank'>Cut Table Dashboard</a></strong></a>
+echo "<div class='panel-heading'><span style='float'><strong><a href=".$url."  target='_blank'>Cut Table Dashboard (Warehouse)</a></strong></a>
 </span><span style='float: right; margin-top: 0px'><b>
 <a href='javascript:void(0)' onclick='Popup=window.open('cps.htm"."','Popup',
 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
@@ -778,8 +778,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       }
       else
       {
-        $dash = $_GET["view_div"];
-        $sql_qry = "select * from $bai_pro2.buyer_codes where buyer_name =".'"'.$dash.'"';
+        $dashe = $_GET["view_div"];
+        $sql_qry = "select * from $bai_pro2.buyer_codes where buyer_name =".'"'.$dashe.'"';
         
         $res = mysqli_query($link, $sql_qry);
         $sql_count_check = mysqli_num_rows($res);
