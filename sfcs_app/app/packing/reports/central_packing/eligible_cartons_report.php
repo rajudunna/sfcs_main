@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+table, th, td {
+		text-align: center;
+	}
+</style>
 	<title>Eligible Carton Report</title>
 	<?php
 		include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
