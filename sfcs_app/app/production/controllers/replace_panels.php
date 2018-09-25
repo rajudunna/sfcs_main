@@ -193,11 +193,11 @@ function getmodnos()
     var gud_value = $('#gud_'+base_id).val();
     // console.log(rep_value);
         if(parseInt(rep_value) > parseInt(gud_value)){
-            swal('Cannot Replce More than The Good quantity');
+            swal('Can not Replace More than The Good quantity');
             $('#'+input_id).val('0');
         }
         else if(parseInt(rep_value) > parseInt(rej_value)){
-            swal('Cannot Replce More than The Rejected quantity');
+            swal('Can not Replace More than The Rejected quantity');
             $('#'+input_id).val('0');
         }
  });
@@ -282,7 +282,7 @@ $('#mod_id').click(function(){
                     }
                 });
         }else{
-            swal('Replace atleast one size');
+            swal('Please check atleast one action!');
         }
 
     });
