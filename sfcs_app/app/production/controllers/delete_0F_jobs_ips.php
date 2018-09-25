@@ -4,24 +4,23 @@
     $application = 'IPS';    
     $status = 'F';
 
-
     if( isset($_GET['job_no']) && $_GET['job_no']!=''){
         $job_r = $_GET['job_no'];
         $job = $_GET['job'];
 
         //Back up jobs
-        // $insert_log = "Insert into $bai_pro3.delete_jobs_log values (`input_job_no_random`,`input_job_no`,`date_time`) 
-        //             values('$job_r','$job','".date('Y-m-d H:i:s')."')";
-        // mysqli_query($link,$insert_log);
+        $insert_log = "Insert into $bai_pro3.delete_jobs_log values (`input_job_no_random`,`username`,`date_time`) 
+                    values('$job_r','$username','".date('Y-m-d H:i:s')."')";
+        mysqli_query($link,$insert_log);
 
         $delete_query = "Delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$job_r'" ;
         $delete_result = mysqli_query($link,$delete_query) or exit("Problem Encountered While Deleting The Job");
-        if($delete_result){
-            echo "<script>$(document).ready(function(){
-                                swal('Input Job Deleted Successfully','','success')
-                    });
-                 </script>";
-        }
+       
+        echo "<script>$(document).ready(function(){
+                            swal('Input Job Deleted Successfully','','success');
+                });
+                </script>";
+        
     }
 
 
@@ -54,6 +53,7 @@
                     }
 
                     //getting dockets with 0,F status
+                    /*
                     $fail_dockets_query = "select doc_no from $bai_pro3.cps_log where remaining_qty = 0
                                            and reported_status = '$status'";
                     $fail_dockets_result = mysqli_query($link,$fail_dockets_query);
@@ -62,30 +62,23 @@
                     }
                     $dockets = array_unique($dockets);
                     $dockets_str = implode(',',$dockets);
-                    
-                    
-                    //getting the pre op code
-					$pre_opcode_query = "SELECT MAX(operation_code) as op_code FROM brandix_bts.tbl_style_ops_master  
-                                        WHERE operation_code < $operation_code ";
-                    $pre_opcode_result = mysqli_query($link,$pre_opcode_query);
-                    while($row = mysqli_query($link,$pre_opcode_result)){
-                        $pre_op_code = $row['op_code'];
-                    }
+                    */
+                
                     if($dockets_str == '')
                         $dockets_str = '""';
                     //getting all jobs with the above dockets
-                    $jobs_query = "Select style,color,schedule,input_job_no,input_job_no_random_ref,
+                    $jobs_query = "Select style,color,schedule,input_job_no,bcd.input_job_no_random_ref,
                                    group_concat(docket_number) as doc_str,
                                    group_concat(bundle_number) as bun_str,SUM(original_qty) as oqty,
                                    SUM(recevied_qty) as rqty,assigned_module 
-                                   from $brandix_bts.bundle_creation_data 
-                                   where bundle_number IN ($dockets_str)
-                                   and operation_id = '$op_code'
-                                   GROUP BY input_job_no_random_ref";     
+                                   from $bai_pro3.plan_dashboard_input pdi 
+                                   LEFT JOIN $brandix_bts.bundle_creation_data bcd ON pdi.input_job_no_random_ref  =  bcd.input_job_no_random_ref
+                                   where operation_id = '$op_code'
+                                   GROUP BY pdi.input_job_no_random_ref";     
                     //echo $jobs_query;                         
                     $jobs_result = mysqli_query($link,$jobs_query) or exit("No Jobs Found");
                     while($row = mysqli_fetch_array($jobs_result)){
-                        $flag = 0;
+                        $flag = 1;
                         $job_no_r= $row['input_job_no_random_ref'];
                         $job_no  = $row['input_job_no'];
                         $doc_str = $row['doc_str'];
@@ -96,19 +89,21 @@
                         $style   = $row['style'];
                         $schedule= $row['schedule'];
                         $color   = $row['color'];
-                        $pre_opcode_query = "SELECT MAX(operation_code) as op_code FROM $brandix_bts.tbl_style_ops_master 
+                        $pre_opcode_query = "SELECT operation_code as op_code FROM $brandix_bts.tbl_style_ops_master 
                                              WHERE style='$style' and schedule='$schedule' and color='$color' 
-                                             and operation_code < $operation_code ";
-                        $pre_opcode_result = mysqli_query($link,$pre_opcode_query);
-                        while($row = mysqli_query($link,$pre_opcode_result)){
+                                             and operation_code < $operation_code ORDER BY operation_order DESC LIMIT 1 ";
+                        $pre_opcode_result = mysqli_query($link,$pre_opcode_query) or exit("Pre Operation not found");
+                        while($row = mysqli_fetch_array($link,$pre_opcode_result)){
                             $pre_op_code = $row['op_code'];
                         }
                         //getting the status of dockets with the pre ops code
                         $fail_dockets_query = "Select reported_status,remaining_qty from $bai_pro3.cps_log 
                                                Where doc_no in ($doc_str) and operation_code='$pre_op_code'"; 
-                        $fail_dockets_result = mysqli_query($link,$fail_dockets_query);
+                        $fail_dockets_result = mysqli_query($link,$fail_dockets_query) or exit("Cannot Get Reported Status");
                         while($row = mysqli_fetch_array($fail_dockets_result)){
-                            if( !($row['remaining_qty'] == 0 && $row['reported_status']=='F') ){
+                            if( $row['remaining_qty'] == 0 && $row['reported_status']=='F' ){
+                                $flag = 0;
+                            }else{
                                 $flag = 1;
                                 break;
                             }
