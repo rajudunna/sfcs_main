@@ -13,8 +13,10 @@ if(isset($_POST) && isset($_POST['main_data'])){
     //echo $datt;die();
     $main_data = $_POST['main_data'];
     $schedule  = $_POST['schedule'];
+    $style  = $_POST['style'];
     $docnos = $_POST['docnos'];
    // echo $schedule;
+    $count = 0;
     foreach($_POST['main_data'] as $iv){
         //$reason = explode('(',$iv['reasons'])[0];
         $cut = $iv['cut'];
@@ -58,9 +60,26 @@ if(isset($_POST) && isset($_POST['main_data'])){
             );
             ";
             //echo  $ins_qry;
-            $result_time = mysqli_query($link_ui, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+           // die();
+           $result_time = mysqli_query($link_ui, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+          $count++;
         }
+        //echo $count;
+        $ins_qry2 = "INSERT INTO `bai_pro3`.`sewing_jobs_ref`
+        (
+         style,schedule,bundles_count,log_time
+        )
+        VALUES
+        (
+            '".$style."',
+            '".$schedule."',
+            '".$count."',
+             NOW()
+        )";
+       // echo $ins_qry2;
+        //die();
+       $result_time2 = mysqli_query($link_ui, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+
         
     }
 
@@ -333,12 +352,12 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                     </div>
                     <div class='col-sm-2'>
                         <br/><br/>
-                       <!--<button class="btn btn-primary" ng-click="createjobs()">Confirm..</button>-->
+                       <button class="btn btn-primary" ng-click="createjobs()">Confirm..</button>
                     </div>
                 </div>
                 <br/>
                 <div ng-show='jobs.length'>
-                    <table class='table' style="display: none;">
+                    <table class='table'>
                         <thead>
                             <tr><th>#</th><th>Job ID</th><th>Bundle</th><th>Size</th><th>Quantity</th></tr>
                         </thead>
@@ -440,6 +459,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
     $scope.getjobs = function() {
         if(Number($scope.jobcount)>0 && Number($scope.jobcount)>=Number($scope.bundleqty)){
             $scope.fulljob = {};
+           // console.log($scope.bundleqty);
             for(var ss=0;Number(ss)<$scope.details_all.length;ss++){
                 //$scope.j++;
                 var dummy = {};
@@ -454,7 +474,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
                 $scope.fulljob[ss] = dummy;
             }
             console.log($scope.fulljob);
-           $scope.createjobs();
+           //$scope.createjobs();
        }else{
            if(Number($scope.jobcount)<=0)
             swal('Input Job Quantity should be grater then zero.');
@@ -467,7 +487,9 @@ app.controller('cutjobcontroller', function($scope, $http) {
     {
         //console.log($scope.fulljob);
        // alert('hi');
-        let url_serv = "<?= $url ?>";
+       console.log($scope.bundleqty);
+        let url_serv = "<?= trim($url) ?>";
+        let style = "<?= $style ?>";
         let schedule = "<?= $schedule ?>";
         let color = "<?= $color ?>";
         let docnos = "<?= $docnos ?>";
@@ -480,7 +502,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
         // }
         //console.log(rv);
         var params = $.param({
-        'main_data' : $scope.fulljob, 'schedule' : schedule, 'color' : color,'docnos' : docnos
+        'main_data' : $scope.fulljob, 'style' : style, 'schedule' : schedule, 'color' : color,'docnos' : docnos
         });
         
             //$scope.saveinit = false;
