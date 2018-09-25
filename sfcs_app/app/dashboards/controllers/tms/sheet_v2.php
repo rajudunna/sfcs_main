@@ -1,6 +1,6 @@
 <head>
-	<link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
-	<title></title>
+    <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
+    <title></title>
 </head>
 <style>
 table, th, td {
@@ -38,7 +38,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 <div class="panel panel-primary">
     <div class="panel-heading"><center><button onclick="printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
     <div class="panel-body">
+    
 <?php
+// ini_set('display_startup_errors', 1);
+// ini_set('display_errors', 1);
+// error_reporting(-1);
 //error_reporting(0);
 //include("header.php");
 $plant_code = $global_facility_code;
@@ -46,16 +50,21 @@ $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
 
+// $plant_code = 'EKG';
+// $company_num = '200';
+// $host= "http://eka-mvxsod-01.brandixlk.org";
+// $port= 22105;
+
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $input_job_no=$_GET['input_job'];
 
 $colors=[];
-$sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	 
+$sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";  
 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($sql_result))
 {
-	$colors[]=$row['order_col_des'];
+    $colors[]=$row['order_col_des'];
 }
 if(count($colors)>0){
     foreach($colors as $key=>$color){ 
@@ -127,7 +136,7 @@ if(count($colors)>0){
             </div>
             <br>
             <?php
-                $sql="select order_col_des,size_code,SUM(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job_no."' and order_col_des='".$color."' group by size_code";
+                $sql="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job_no."' and order_col_des='".$color."' group by size_code";
                 //echo $sql."<br/>";
                 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo mysqli_num_rows($sql_result)."<br>";
@@ -139,21 +148,21 @@ if(count($colors)>0){
                         $size_name = $row['size_code'];
                         $size_qty = $row['carton_act_qty'];
                 
-						$mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
-						
+                        $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
+                        
                         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-						$mo_numrows=mysqli_num_rows($mo_sql_result);
-						
+                        $mo_numrows=mysqli_num_rows($mo_sql_result);
+                        
                         if($mo_numrows>0){
                             while($mo_row=mysqli_fetch_array($mo_sql_result))
                             {
                                 $mo_no = $mo_row['mo_no'];
-								$api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
-								
-								$api_data = $obj->getCurlAuthRequest($api_url);
-								
-								$api_data = json_decode($api_data, true);  
-								
+                                $api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,PEUN,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
+                                
+                                $api_data = $obj->getCurlAuthRequest($api_url);
+                                
+                                $api_data = json_decode($api_data, true);  
+                                
                                 $name_values = array_column($api_data['MIRecord'], 'NameValue');
                                 foreach ($name_values as $key => $value2) {
                                     $value2[] = ['Name' => 'color', 'Value' => $color];
@@ -172,7 +181,8 @@ if(count($colors)>0){
                                 <th>Color</th>
 								<th>Color Description</th>
                                 <th>Size</th>
-								<th>Z Code</th>
+                                <th>Z Code</th>
+                                <th>Option Description</th>
                                 <th>Per Piece Consumption</th>  
                                 <th>Wastage %</th>  
                                 <th>Req.-With Wastage</th> 
@@ -208,21 +218,21 @@ if(count($colors)>0){
                                 $mfno = $api_selected_valuess['MFNO'];
                                 $prno = urlencode($api_selected_valuess['PRNO']);
                                 $mseq = $api_selected_valuess['MSEQ'];
-                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                                 $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
                                 $api_data_result = json_decode($api_data_wastage, true);   
-                                $result_values = array_column($api_data_result['MIRecord'], 'NameValue');  
-                            
+                                $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
+                                
                                 //req without wastge
                                 $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
 
                                 //req with wastge                               
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0][1]['Value']/100);
-								
-								/* To Get color,size,z code  */
-								$ITNO = urlencode($api_selected_valuess['MTNO']);
-								$color_size_url = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=$company_num&ITNO=$ITNO";
-								
+                                $reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$result_values[0]['Value']/100);
+                                
+                                /* To Get color,size,z code  */
+                                $ITNO = urlencode($api_selected_valuess['MTNO']);
+                                $color_size_url = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=$company_num&ITNO=$ITNO";
+                                
                                 $color_size_data = $obj->getCurlAuthRequest($color_size_url);                               
                                 $color_size_result = json_decode($color_size_data, true);   
 								$color_size_values = array_column($color_size_result['MIRecord'], 'NameValue');
@@ -353,6 +363,10 @@ if(count($colors)>0){
     }
 }
 
-?>
-</div>
-</div>
+                                        break;
+                                    }else{
+                                        $color_res = "";
+                                    }
+                                }
+                                // var_dump($option_res_values);
+                      
