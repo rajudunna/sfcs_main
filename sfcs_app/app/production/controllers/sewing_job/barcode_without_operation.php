@@ -66,6 +66,13 @@
 				}
 			}
 
+            $get_destination="select * from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
+            $destination=mysqli_query($link, $get_destination) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($row = mysqli_fetch_array($destination));
+            {
+            	$destination=$row['destination'];
+            }
+            
 			//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 			$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 			$html.= '<div>
@@ -83,7 +90,7 @@
 							<tr><td><b>Job Number:</b></td><td>'.$display1.'</td><td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
 							<tr><td><b>Barcode ID:</b></td><td>'.$barcode.'</td><td><b>Cut No:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
 							<tr><td><b>Color:</b></td><td colspan=3>'.substr($barcode_rslt['order_col_des'],0,35).'</td></tr>
-							<tr><td><b>Country Code:</b></td><td>'.$display1.'</td><td><b>Qty:</b></td><td>'.$quantity.'</td></tr>
+							<tr><td><b>Country Code:</b></td><td>'.$destination.'</td><td><b>Qty:</b></td><td>'.$quantity.'</td></tr>
 							</table>
 							<div style="margin-left:60px;"><barcode code="'.$barcode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
 									
