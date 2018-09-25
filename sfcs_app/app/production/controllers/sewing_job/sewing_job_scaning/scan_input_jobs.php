@@ -370,7 +370,7 @@ $(document).ready(function()
 								status = '<font color="red">Already Scanned</font>';
 							}
 						}
-						
+						var temp_var_bal1 = 0;
 						if(data[i].flag == 'packing_summary_input' || emb_ops != undefined)
 						{
 							if (operation_id == operation_code_routing)
