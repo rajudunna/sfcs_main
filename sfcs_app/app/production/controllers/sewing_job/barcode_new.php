@@ -90,14 +90,13 @@
 						 // </table>
 					 // </div><br><br><br>';
 
-			$get_destination="select * from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
-
-            $destination=mysqli_query($link, $get_destination) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-            while($row = mysqli_fetch_array($destination));
+			$get_destination="select destination from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
+			
+			$destination_result=mysqli_query($link, $get_destination)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($dest_row = mysqli_fetch_array($destination_result))
             {
-            	$destination=$row['destination'];
+            	$destination=$dest_row['destination'];
             }
-          
 			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and tor.operation_code not in (10,15,200)";
 			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($ops = mysqli_fetch_array($sql_result1))
