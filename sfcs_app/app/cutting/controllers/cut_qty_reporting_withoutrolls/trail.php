@@ -25,7 +25,7 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 			}
 		}
 	}
-	$rec_qty =0 ;
+	$rec_qty =0 ; 
 	$left_over_qty = 0;
 
 	foreach ($cut_done_qty as $key => $value)
@@ -70,9 +70,24 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 				$post_ops_code = $row['operation_code'];
 			}
 		}
-		$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$value WHERE docket_number = '$doc_no_ref' AND size_id = '$key' AND operation_id = '$post_ops_code'";
-		$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$updation_m3 = updateM3Transactions($ref_no,$op_code,$value);
+		$category=['cutting','Send PF','Receive PF'];
+		$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+		//echo $checking_qry;
+		$result_checking_qry = $link->query($checking_qry);
+		while($row_cat = $result_checking_qry->fetch_assoc()) 
+		{
+			$category_act = $row_cat['category'];
+		}
+		if(in_array($category_act,$category))
+		{
+			$emb_cut_check_flag = 1;
+		}
+		if($emb_cut_check_flag)
+		{
+			$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$value WHERE docket_number = '$doc_no_ref' AND size_id = '$key' AND operation_id = '$post_ops_code'";
+			$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$updation_m3 = updateM3Transactions($ref_no,$op_code,$value);
+		}
 	}
 }
 echo "<div class=\"alert alert-success\">
