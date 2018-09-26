@@ -373,7 +373,10 @@
 										}
 										else
 										{
-											echo"<td>Sewing Job Generated</td>";
+											$url=getFullURL($_GET['r'],'input_job_mix_ch_report.php','N');
+											echo"<td>Sewing Job Generated 
+													<a class='btn btn-info' href='$url&schedule=$schedule&seq_no=$seq_no&style=$style'>Print Job Sheets</a>
+												</td>";
 										}
 										echo "<tr>
 									</form>";
