@@ -402,8 +402,11 @@ if(isset($_POST['Update']))
 				}
 				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej where id = $id_to_update";
 				$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$value where id = $ref_no";
-				$updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+				//remaining qty is good quantity in cps log rejections should not update the CPS LOG
+				// $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$value where id = $ref_no";
+				// $updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
 				$updated = updateM3TransactionsRejections($ref_no,$b_op_id,$r_qty,$r_reasons);
 				if($updated == true){
 				}
