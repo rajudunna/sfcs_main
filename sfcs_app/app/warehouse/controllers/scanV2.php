@@ -1,5 +1,7 @@
 <html>
 	<head>
+	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',2,'R'); ?>"></script>
+
 		<style>
 		body
 		{
@@ -14,7 +16,13 @@
 		};
 		</script>
 		<script>
-
+			function test(){
+				if($('#plant_name').val() != null){
+					document.input.submit();
+				}else {
+					sweetAlert('','Select Plant Name','Warning');
+				}
+			}
 		function numbersOnly()
 		{
 		   var charCode = event.keyCode;
@@ -27,8 +35,6 @@
 		}
 		</script>
 		<?php 
-		$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-		$username=strtolower($username_list[1]);
 		echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />';
  ?>
 	</head>
@@ -39,6 +45,7 @@
 		
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$username=getrbac_user()['uname'];	
 
 	//============= CWH DB Credentials =============
 	// $database="bai_rm_pj1";
@@ -67,47 +74,71 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	// 	die("Connection failed: " . $conn1->connect_error);
 	// } 
 	// //===============================================
-if(isset($_POST['barcode']) && $_POST['barcode']!=''){
+if((isset($_POST['barcode']) && $_POST['barcode']!='') || (isset($_POST['barcode1']) && $_POST['barcode1']!='')){
+	// echo $_POST['barcode'].'hh';
+	// die();
+	if($_POST['barcode']!=''){
+		$bar_code_new = $_POST['barcode'];
+	}else {
+		$bar_code_new = $_POST['barcode1'];
+	}
+	$plant_name1=$_POST['plant_name'];
+
+	$query = "select ip_address,port_number from $bai_pro3.plant_details where plant_code='".$plant_name1."'";
+	$res = mysqli_query($link, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rm = mysqli_fetch_array($res)){
+		$ip_address = $rm['ip_address'];
+		$port_number = $rm['port_number'];
+		
+	}
+	$host_new=$ip_address.":".$port_number;
+
+	
+	$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_new, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	// $res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
+
 	//================ get barcode details from CWH DB =============
-	$qry_get_data_fm_cwh = "select * from $bai_rm_pj1.store_in where tid=".$_POST['barcode'];
-	//echo $qry_get_data_fm_cwh."<br/>";
-	$res_get_data_fm_cwh = $cwh_link->query($qry_get_data_fm_cwh);
+	$qry_get_data_fm_cwh = "select * from $bai_rm_pj1.store_in where barcode_number='".$bar_code_new."'";
+	// echo '<br/>'.$qry_get_data_fm_cwh."<br/>";
+	$res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
 	$barcode_data = array();
 	$sticker_data1= array();
 	if($res_get_data_fm_cwh->num_rows == 0)
 	{
-		echo "<div class='alert alert-danger'>Sorry!! No Label ID(".$_POST['barcode'].") found..</div>";
+		echo "<div class='alert alert-danger'>Sorry!! No Label ID(".$bar_code_new.") found..</div>";
 	}
 	else if ($res_get_data_fm_cwh->num_rows == 1) 
 	{
 		while($row = $res_get_data_fm_cwh->fetch_assoc()) 
 		{
 			$barcode_data = $row;
+			$tid_new = $row['tid'];
 			break;
 		}
 		if(count($barcode_data)>0)
 		{
 			//$actual_quentity_present = $barcode_data['qty_rec']-$barcode_data['qty_issued']+$barcode_data['qty_ret'];
 			$actual_quentity_present = $barcode_data['qty_rec']-$barcode_data['qty_issued'];
-			
-				
+			// echo $actual_quentity_present.'if';
+
 			if($actual_quentity_present>0)
 			{
 				
 					//=================== check rmwh db with present tid ==================
-					$qry_check_rm_db = "select * from $bai_rm_pj1.store_in where tid=".$_POST['barcode'];
-					//echo $qry_check_rm_db."<br/>";
+					$qry_check_rm_db = "select * from $bai_rm_pj1.store_in where barcode_number='".$bar_code_new."'";
 					$res_check_rm_db = $link->query($qry_check_rm_db);
 					if($res_check_rm_db->num_rows == 0)
 					{
+						// echo $res_check_rm_db->num_rows.'aaaaa';
 						//=============== Insert Data in rmwh ==========================
-						$qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`tid`,`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`) VALUES ('".$_POST['barcode']."','".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from CWH','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."^".date('Y-m-d H:i:s')."^BEB Manual Interface')";	
-						//echo $qry_insert_update_rmwh_data."<br/>";
+						$qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`tid`,`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`) VALUES ('".$bar_code_new."','".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."')";	
+						// echo $qry_insert_update_rmwh_data."<br/>";
 						$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
 						
 						$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
 						//echo $sticker_report."<br/>";
-						$res_sticker_report_cwh = $cwh_link->query($sticker_report);
+						$res_sticker_report_cwh = $link_new->query($sticker_report);
 						while($row1 = $res_sticker_report_cwh->fetch_assoc()) 
 						{
 							$sticker_data = $row1;
@@ -148,15 +179,16 @@ if(isset($_POST['barcode']) && $_POST['barcode']!=''){
 					}
 					else
 					{
+						// echo 'hio';
 						//=============== Update Data in rmwh ==========================
-						$qry_insert_update_rmwh_data = "update $bai_rm_pj1.store_in set qty_rec=qty_rec+".$actual_quentity_present." where tid=".$_POST['barcode'];
-						//echo $qry_insert_update_rmwh_data."<br/>";
+						$qry_insert_update_rmwh_data = "update $bai_rm_pj1.store_in set qty_rec=qty_rec+".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+						// echo $qry_insert_update_rmwh_data."<br/>";
 						$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
 						//echo "<h3>Status: <font color=orange>already updated</font> $_POST['barcode']</h3>";
 						
 						$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
 						//echo $sticker_report."<br/>";
-						$res_sticker_report_cwh = $cwh_link->query($sticker_report);
+						$res_sticker_report_cwh = $link_new->query($sticker_report);
 						while($row1 = $res_sticker_report_cwh->fetch_assoc()) 
 						{
 							$sticker_data = $row1;
@@ -204,14 +236,14 @@ if(isset($_POST['barcode']) && $_POST['barcode']!=''){
 					//$res_insert_update_rmwh_data = $conn1->query($qry_insert_update_rmwh_data);
 					//=============== insert store_out & update store_in in cwh======================
 										
-					$qry_ins_stockout = "INSERT INTO $bai_rm_pj1.`store_out`(tran_tid,qty_issued,date,updated_by) VALUES (".$_POST['barcode'].",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."^BEB Manual Interface')";
-					//echo $qry_ins_stockout."<br/>";
-					$res_ins_stockout = $cwh_link->query($qry_ins_stockout);
+					$qry_ins_stockout = "INSERT INTO $bai_rm_pj1.`store_out`(tran_tid,qty_issued,date,updated_by,remarks) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_name."')";
+					// echo $qry_ins_stockout."<br/>";
+					$res_ins_stockout = $link_new->query($qry_ins_stockout);
 					
-					$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=qty_issued+".$actual_quentity_present." where tid=".$_POST['barcode'];
+					$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=qty_issued+".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
 					//echo $update_qty_store_in."<br/>";
-					$res_update_qty_store_in = $cwh_link->query($update_qty_store_in);
-					echo "<h3>Status: <font color=Green>Quantity ".$actual_quentity_present." Transferred successfully for Item ID : ".$_POST['barcode']." and Lot Number : ".$barcode_data['lot_no']."</font></h3>";
+					$res_update_qty_store_in = $link_new->query($update_qty_store_in);
+					echo "<h3>Status: <font color=Green>Quantity ".$actual_quentity_present." Transferred successfully for Item ID : ".$bar_code_new." and Lot Number : ".$barcode_data['lot_no']."</font></h3>";
 					//=====================================================================
 				
 			}
@@ -234,15 +266,33 @@ if(isset($_POST['barcode']) && $_POST['barcode']!=''){
 	
 }
 ?>
-		
+		<?php 
+			// echo $link;
+		?>
 		<form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data" style="margin-left:29px;">
-			<br/><textarea name="barcode" id='barcode' rows="2" cols="15" onkeydown="document.input.submit();"></textarea>
-		</form></br>
-		<form name="input1" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data"  style="margin-left:29px;margin-bottom: 36px;">
-			<b>Enter Lable ID:</b><br/>
-			<input type='text' name='barcode'  onkeypress='return numbersOnly(event)'>
+			<br/>
+			<?php
+				$query="SELECT * FROM $bai_pro3.plant_details";
+				$query_result=mysqli_query($link, $query) or exit("Error getting Plant Details");
+				echo "<tr>
+						<td>Plant Name</td><td>:</td>
+						<td><div class='row'><div class='col-sm-3'>
+						<select name=\"plant_name\" id='plant_name' class='form-control' required>";
+				echo "<option value='' selected disabled>Select Plant Name</option>";
+				while($row=mysqli_fetch_array($query_result))
+				{
+					echo "<option value='".$row['plant_code']."'>".$row['plant_name']."</option>";
+				}
+				echo "</select></div></div>
+					</td></tr>"; 
+			?>
+			<br/><textarea name="barcode" id='barcode' rows="2" cols="15" onchange="test();"></textarea>
+			<br/>
+			<input type='text' name='barcode1'>
+			<!-- <input type='text' name='barcode'  onkeypress='return numbersOnly(event)'> -->
 			<input type="submit" name="check2" value="Check Out" class="btn btn-success">
-		</form>
+		</form></br>
+		
         </div>
 	</body>
 </html>
