@@ -104,15 +104,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$ips_data.="<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
 			$id="yash";
 			$y=0;
-			$sql="SELECT input_job_no_random_ref,input_trims_status,type_of_sewing,MIN(st_status) AS st_status,MIN(ft_status) AS ft_status,order_style_no,GROUP_CONCAT(DISTINCT order_del_no) AS order_del_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc";	
+		
+			$sql="SELECT input_job_no_random_ref,input_trims_status,type_of_sewing,MIN(st_status) AS st_status,MIN(ft_status) AS ft_status,order_style_no,GROUP_CONCAT(DISTINCT order_del_no) AS order_del_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc limit ".$_GET['priority_limit'];	
 			// echo $sql."<br>";
 			$result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{
-				if($y==4)
-				{
-					break;
-				}			
+							
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
 				$input_trims_status=$row["input_trims_status"];
 				$add_css="behavior: url(border-radius-ie8.htc);  border-radius: 10px;";
@@ -387,7 +385,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}
 				$y++;
 			}
-			for($j=$y+1;$j<=4;$j++)
+			for($j=$y+1;$j<=$_GET['priority_limit'];$j++)
 			{	
 				$ips_data.="<div id=\"\" style=\"float:left;\">
 							<div id=\"$input_job_no_random_ref\" style=\"float:left;\">
