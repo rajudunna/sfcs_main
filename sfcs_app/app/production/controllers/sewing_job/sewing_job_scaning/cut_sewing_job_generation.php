@@ -15,7 +15,6 @@ if(isset($_POST) && isset($_POST['main_data'])){
     $schedule  = $_POST['schedule'];
     $style  = $_POST['style'];
     $docnos = $_POST['docnos'];
-   // echo $schedule;
     $count = 0;
     foreach($_POST['main_data'] as $iv){
         //$reason = explode('(',$iv['reasons'])[0];
@@ -350,14 +349,14 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                         <br/><br/>
                         <button class="btn btn-success" ng-click="getjobs()">Confirm..</button>
                     </div>
-                    <div class='col-sm-2'>
+                    <!--<div class='col-sm-2'>
                         <br/><br/>
                        <button class="btn btn-primary" ng-click="createjobs()">Confirm..</button>
-                    </div>
+                    </div>-->
                 </div>
                 <br/>
                 <div ng-show='jobs.length'>
-                    <table class='table'>
+                    <table class='table' style="display:none;">
                         <thead>
                             <tr><th>#</th><th>Job ID</th><th>Bundle</th><th>Size</th><th>Quantity</th></tr>
                         </thead>
@@ -474,7 +473,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
                 $scope.fulljob[ss] = dummy;
             }
             console.log($scope.fulljob);
-           //$scope.createjobs();
+           $scope.createjobs();
        }else{
            if(Number($scope.jobcount)<=0)
             swal('Input Job Quantity should be grater then zero.');
