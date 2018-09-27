@@ -286,7 +286,8 @@ if((isset($_POST['barcode']) && $_POST['barcode']!='') || (isset($_POST['barcode
 				echo "</select></div></div>
 					</td></tr>"; 
 			?>
-			<br/><textarea name="barcode" id='barcode' rows="2" cols="15" onchange="test();"></textarea>
+			<br/><textarea name="barcode" id='barcode' rows="2" cols="15" onkeydown="test();"></textarea>
+			<br/>
 			<br/>
 			<input type='text' name='barcode1'>
 			<!-- <input type='text' name='barcode'  onkeypress='return numbersOnly(event)'> -->
