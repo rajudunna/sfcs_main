@@ -71,6 +71,10 @@
 									$id = $nop_qry_row['id'];
 									$negative_qty = $good_quantity_past * -1;
 
+									$insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $good_quantity_past where mo_no= $mo_number";
+									// echo $insert_update_tbl_carton_ready;
+									mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
+
 									$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = '0' where id= $id";
 									$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
 

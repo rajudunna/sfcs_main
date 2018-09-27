@@ -93,14 +93,51 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
                 }
                 //echo $update_qry.'</br>';
                 $ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
-                // if($is_m3 == 'yes')
-                // {
-                $cur_date = date('Y-m-d H:s:i');
-                $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`) 
-                VALUES ('$current_date','$mo_number',$to_update_qty,'','Normal',user(),'','$b_module','$b_shift',$op_code,'$ops_des',$id,'$work_station_id','$main_ops_code','')";
-                // echo $inserting_into_m3_tran_log;
-                mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
-            // }
+                
+                // 763 mo filling for new operation start
+                    $application='Carton_Ready';
+                    $get_routing_query="SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+                    //echo $get_routing_query;
+                    $routing_result=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
+                    $opn_routing=mysqli_fetch_array($routing_result);
+                    $opn_routing_code = $opn_routing['operation_code'];
+
+                    if ($opn_routing_code == $op_code)
+                    {
+                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no='$mo_number' and operation_id='$op_code';";
+                        $count_result = $link->query($get_count);
+                        while($row = $count_result->fetch_assoc()) 
+                        {
+                            $count = $row['count'];
+                        }
+
+                        if ($count > 0)
+                        {
+                            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= $mo_number";
+                        }
+                        else
+                        {
+                            $insert_update_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty');";
+                        }
+                        // echo $insert_update_tbl_carton_ready.'<br>';
+                        mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
+                    }                        
+                // 763 mo filling for new operation end
+
+                $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$b_colors' and operation_code='$op_code'";
+                $result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
+                while($row = $result_dep_ops_array_qry->fetch_assoc()) 
+                {
+                    $is_m3 = $row['default_operration'];
+                }
+                if($is_m3 == 'yes')
+                {
+                    $cur_date = date('Y-m-d H:s:i');
+                    $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) 
+                    VALUES ('$current_date','$mo_number',$to_update_qty,'','Normal',user(),'','$b_module','$b_shift',$op_code,'$ops_des',$id,'$work_station_id','')";
+               
+                    mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
+                }
 
                 $insert_id=mysqli_insert_id($link);
 

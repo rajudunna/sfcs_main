@@ -122,7 +122,7 @@
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
         $sewing_cat = 'sewing';
         $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-                          WHERE default_operation='Yes' and trim(category) = '$sewing_cat' ";
+                          WHERE trim(category) = '$sewing_cat' ";
         $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
         while($row=mysqli_fetch_array($op_code_result)) 
         {
@@ -270,10 +270,11 @@
 		$opst=array();
 		
 		$op_codes_query = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-					 WHERE default_operation='Yes' and category = '$sewing_cat' group by category";
+					 WHERE category = '$sewing_cat' group by category";
 		$op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');	
 		while($row = mysqli_fetch_array($op_codes_result)){
 			$op_codes = $row['codes'];
+			$opst[]=$row['codes'];
 		}	
 
 		$jobs_style_query = "Select order_style_no as style from $bai_pro3.packing_summary_input where 
@@ -316,7 +317,7 @@
 					{
 						$ops_m_id[$row1210['mo_no']][$row1212['OperationNumber']]=$row1212['OperationNumber'];	
 						$ops_m_name[$row1210['mo_no']][$row1212['OperationNumber']]=$row1212['OperationDescription'];
-						$opst[]=$row1212['OperationNumber'];
+						// $opst[]=$row1212['OperationNumber'];
 					}
 				}
 			
