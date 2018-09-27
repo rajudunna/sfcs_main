@@ -84,7 +84,31 @@
 			$tid=$rows['tid'];
 			$doc=$tid;
 			$st=$rows['style'];
-			$module=$rows['module'];
+			$modu=$rows['module'];
+			$input_job_random=$rows['input_job_random'];
+
+			$ss="SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job_random'";
+					//echo $ss;
+					$ss_result=mysqli_query($link,$ss) or exit("Sql Error3 $ss".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                $rs=mysqli_fetch_array($ss_result);
+	
+	                $ss1="SELECT ims_mod_no FROM $bai_pro3.ims_log WHERE input_job_rand_no_ref='$input_job_random'";
+					//echo $ss1;
+					$ss1_result=mysqli_query($link,$ss1) or exit("Sql Error4 $ss1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                $rs1=mysqli_fetch_array($ss1_result);
+					//die();
+					$ss11="SELECT ims_mod_no FROM $bai_pro3.ims_log_backup WHERE input_job_rand_no_ref='$random_job'";
+	                $ss1_result1=mysqli_query($link,$ss11) or exit("Sql Error4 $ss11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                $rs11=mysqli_fetch_array($ss1_result1);
+                    if($rs){
+						$module=$rs['input_module'];
+						}else if(!$rs && $rs1){
+						$module=$rs1['ims_mod_no'];
+						}else if(!$rs1 && !$rs && $rs11){
+						$module=$rs11['ims_mod_no'];
+						}else if(!$rs && !$rs1 && !$rs11){
+						$module='Not Processed';
+						}
 
 			$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
 			// echo $sql;
