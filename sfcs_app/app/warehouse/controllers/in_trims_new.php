@@ -78,7 +78,7 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 		if(mysqli_num_rows($sql_result)>0)
 		{
 			$code=ltrim($code,"0");
-			$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\", status=0, allotment_status=0 where tid=\"$code\"";
+			$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\", status=0, allotment_status=0 where barcode_number=\"$code\"";
 			$sql_result1=mysqli_query($sql1,$link);
 			if(mysqli_affected_rows($link)>0)
 			{
@@ -109,8 +109,7 @@ if(isset($_POST['check2']))
 {
 	$code=$_POST['cartonid2'];
 	$location=$_POST['location'];
-
-	if(is_numeric(substr($code,0,1)))
+	if($code!='')
 			{
 				$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
 				//echo "<br/>".$sql."<br/>";
@@ -118,7 +117,7 @@ if(isset($_POST['check2']))
 				if(mysqli_num_rows($sql_result)>0)
 				{
 					$code=ltrim($code,"0");
-					$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\", status=0, allotment_status=0 where tid=\"$code\"";
+					$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\", status=0, allotment_status=0 where barcode_number=\"$code\"";
 					
 					$sql_result1=mysqli_query($link, $sql1);
 					if(mysqli_affected_rows($link)>0)
@@ -126,8 +125,9 @@ if(isset($_POST['check2']))
 						echo "<div id='status'>Status: <span class='label label-success'>Success!</span> $code</div>";
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"in_trims_new.php?location=$location\"; }</script>";
 					}else{
-						$sql1="select * from $bai_rm_pj1.store_in_deleted where tid=\"$code\" ";
+						$sql1="select * from $bai_rm_pj1.store_in_deleted where barcode_number=\"$code\"";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
 						if(mysqli_num_rows($sql_result1)>0)
 						{
 						echo "<h3>Status  : $code-<span class='label label-warning'>Label Deleted</span> </h3>";
@@ -135,7 +135,7 @@ if(isset($_POST['check2']))
 						}
 						else
 						{
-							$sql2="select * from $bai_rm_pj1.store_in where tid=\"$code\" ";
+							$sql2="select * from $bai_rm_pj1.store_in where barcode_number=\"$code\"";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($sql_result2)>0)
 							{
