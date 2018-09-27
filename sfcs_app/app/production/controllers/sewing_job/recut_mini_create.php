@@ -5,7 +5,7 @@
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',4,'R')?>"></script>
 <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',4,'R')?>">
 <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/table.css',4,'R')?>">
-<!---<style type="text/css">
+<!--<style type="text/css">
 #div-1a {
  position:absolute;
  top:65px;
@@ -40,7 +40,7 @@ div.tools{ margin:5px; }
 div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
 .mytable th{ background-color:#29759c; color:#FFF; padding:2px; solid #ccc; white-space: nowrap;}
 td{ padding:2px; white-space: nowrap;}
-</style>--->
+</style>-->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',4,'R')?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R')?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/filtergrid.css',4,'R')?>"></script>
@@ -53,7 +53,7 @@ td{ padding:2px; white-space: nowrap;}
 <div class="panel panel-primary">
 <div class="panel-heading">Re-cut Sewing Job Creation</div>
 <div class="panel-body">
-<!---<div id="page_heading"><span style="float: left"><h3>Re-cut Mini Order Creation</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>--->
+<!--<div id="page_heading"><span style="float: left"><h3>Re-cut Mini Order Creation</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
 <?php 
 
 
@@ -73,7 +73,8 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 ?>
 
-<form name="mini_order_report" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post" onsubmit=" return check_val();">
+<!-- <form name="mini_order_report" action="<?php //echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post" 
+	  onsubmit=" return check_val();"> -->
 <br>
 <?php
 	
@@ -124,7 +125,15 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 			
 			//get orders table row id
 			$url=getFullURLLevel($_GET['r'],'recut_mini_gen.php',0,'N');
-			echo "<tr><td><center>".$rowc++."</center></td><td><center>".$doc_num."</center></td><td><center>".$style_code."</center></td><td><center>".$product_schedule."</center></td><td><center>".$color_code."</center></td><td><center>".$actual_plies."</center></td><td><center><a href='$url&style=$style_id&schedule=$order_id&col=$color_code&doc=$doc_num' class='btn btn-success'>Generate </a></center></td></tr>";
+			echo "<tr>
+					<td><center>".$rowc++."</center></td>
+					<td><center>".$doc_num."</center></td>
+					<td><center>".$style_code."</center></td>
+					<td><center>".$product_schedule."</center></td>
+					<td><center>".$color_code."</center></td>
+					<td><center>".$actual_plies."</center></td>
+					<td><center><a href='$url&style=$style_id&schedule=$order_id&col=$color_code&doc=$doc_num' class='btn btn-success'>Generate </a></center></td>
+				</tr>";
 		}
 				
 		//sync completed in cut master and cut sizes masters

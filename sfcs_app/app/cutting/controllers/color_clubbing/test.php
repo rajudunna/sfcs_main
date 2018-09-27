@@ -147,7 +147,7 @@ echo "</select></div>";
 echo "<div class='col-md-3'>Select Schedule: <select name=\"schedule\" id=\"schedule\"  onclick=\"return check_style();\"  onchange=\"secondbox();\"  class=\"select2_single form-control\">";
 $sql_result='';
 if($style){
-	$sql="select order_del_no from $bai_pro3.order_cat_doc_mk_mix where style_id=\"$style\" group by order_del_no";	
+		$sql="select order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" group by order_del_no";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 echo "<option value='' selected>NIL</option>";

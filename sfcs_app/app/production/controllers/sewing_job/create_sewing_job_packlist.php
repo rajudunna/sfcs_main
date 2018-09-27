@@ -1,7 +1,7 @@
 <head>
 	<script language="javascript" type="text/javascript">
 	
-	var url1 = '<?= getFullURL($_GET['r'],'sewing_job_gen_packlist.php','N'); ?>';
+	var url1 = '<?= getFullURL($_GET['r'],'create_sewing_job_packlist.php','N'); ?>';
 	function myFunction() {
 		document.getElementById("generate").style.visibility = "hidden";
 	}
@@ -45,6 +45,9 @@
 	error_reporting(0);
 ?>
 <style>
+	table, th, td {
+		text-align: center;
+	}
 #loading-image{
   position:fixed;
   top:0px;
@@ -131,7 +134,7 @@
 				</form>
 		<div class="col-md-12">
 			<?php
-			if(isset($_POST['submit']) or $_GET['style'] and $_GET['schedule'])
+			if(isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule']))
 			{					
 				if ($_GET['style'] and $_GET['schedule'])
 				{
@@ -307,15 +310,26 @@
 									<th>Controls</th></tr>";
 								while($pack_result1=mysqli_fetch_array($pack_meth_qty))
 								{
-
 									echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_jobs_generate_packlist.php','N').'">';
 										$seq_no=$pack_result1['seq_no'];
+
+										$check_status = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no='$schedule' and pac_seq_no",$seq_no,$link);
+										if($check_status==0)
+										{
+											$readonly = '';
+											$disabled = '';
+										}
+										else
+										{
+											$readonly='readonly';
+											$disabled='disabled';
+										}
 										$max_crton = echo_title("$bai_pro3.pac_stat","MAX(carton_no)","schedule='$schedule' and pac_seq_no",$seq_no,$link);
 										$parent_id=$pack_result1['parent_id'];
 										$pack_method=$pack_result1['pack_method'];
 										echo "<tr>
 											<td>".$pack_result1['seq_no']."</td>
-											<td><select id=\"pack_method\" required class='form-control' name=\"pack_method\" >";
+											<td><select id=\"pack_method\" required class='form-control' $disabled name=\"pack_method\" >";
 												for($j=0;$j<sizeof($operation);$j++)
 												{
 													if ($j==0)
@@ -339,15 +353,15 @@
 												</center>
 											</td>
 											<td>".$pack_result1['pack_description']."</td>
-											<td><input type='text' class='form-control' name='bund_size' id='bund_size' value='0'></td>
+											<td><input type='text' $readonly class='form-control' name='bund_size' id='bund_size' value='0'></td>
 											<input type='hidden' name='seq_no' id='seq_no' value='$seq_no'>
 											<input type='hidden' name='schedule' id='schedule' value='$schedule'>
 											<input type='hidden' name='style' id='style' value='$style'>
-											<td><input type='number' required class='form-control integer' name='no_of_cartons' id='no_of_cartons' value='' min='0' max='$max_crton'></td>
+											<td><input type='number' $readonly required class='form-control integer' name='no_of_cartons' id='no_of_cartons' value='' min='0' max='$max_crton'></td>
 											<td>".$pack_result1['qnty']."</td>
 											<td>".$pack_result1['color']."</td>
 											<td>".$pack_result1['size']."</td>";
-										$check_status = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no='$schedule' and pac_seq_no",$seq_no,$link);
+										
 										if($check_status==0)
 										{
 											// echo "<td>
@@ -359,7 +373,10 @@
 										}
 										else
 										{
-											echo"<td>Sewing Job Generated</td>";
+											$url=getFullURL($_GET['r'],'input_job_mix_ch_report.php','N');
+											echo"<td>Sewing Job Generated 
+													<a class='btn btn-info' href='$url&schedule=$schedule&seq_no=$seq_no&style=$style'>Print Job Sheets</a>
+												</td>";
 										}
 										echo "<tr>
 									</form>";

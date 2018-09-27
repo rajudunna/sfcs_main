@@ -82,14 +82,14 @@ function validateQty(event)
 									<b></b><input type='hidden' class='form-control' id='id' name='id' required value = <?php echo $_GET['id'] ?> />
 								</div>
 								<div class="row">
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										<b>Operation Name<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b>
 										<input type="text" class="form-control" id="opn" name="opn" value= "<?php echo $row[0]['operation_name']?>" required>
 									</div> 
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										<b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b><input type="number" onkeypress="return validateQty(event);" class="form-control" id="opc" name="opc" value= "<?php echo $row[0]['operation_code']?>" required>
 									</div>
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										 <div class="dropdown">
 											<b>Type</b>
 											<select class="form-control" id="sel" name="sel" required>
@@ -99,7 +99,7 @@ function validateQty(event)
 											</select>	
 										</div>
 									</div>
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 									 <div class="dropdown">
 										<b>Report To ERP<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
 										<select class="form-control" id="sel1" name="sel1" required>
@@ -108,10 +108,10 @@ function validateQty(event)
 										<option value='No' <?php echo $row[0]['default_operation']== 'No'? 'selected' : ''?>>No</option></select>	
 									</div>
 								</div>
-									<div class="col-sm-2" hidden="true">
+									<div class="col-sm-3" hidden="true">
 										<b>Sewing Order Code</b><input type="text" class="form-control" id="sw_cod" name="sw_cod" value= "<?php echo $row[0]['operation_description']?>">
 									</div> 
-									<div class = "col-sm-2">
+									<div class = "col-sm-3">
 								<label for="style">Short Key Code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>			
 									<select id="short_key_code" name = "short_cut_code" style="width:100%;" class="form-control" required>
 									<option value='0'>Select Short Code</option>
@@ -127,7 +127,7 @@ function validateQty(event)
 												{
 													$selected = '';
 												}
-												echo "<option value='".$row_short['short_key_code']."' $selected>".$row_value."</option>";
+												echo "<option value='".$row_short['short_key_code']."' $selected>".strtoupper($row_value)."</option>";
 											}
 										} else {
 											echo "<option value=''>No Data Found..</option>";
@@ -136,6 +136,20 @@ function validateQty(event)
 								</select>
 
 								</div>
+									<div class="col-sm-3">
+										<b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id" value= "<?php echo $row[0]['work_center_id']?>">
+									</div> 
+									<div class="col-sm-3">
+										<b>Category</b>
+										<select class="form-control" id="category" name="category" required>
+											<option value='' <?php echo $row[0]['category']== 'please select'? 'selected' : ''?>>Please Select</option>
+											<option value='cutting' <?php echo $row[0]['category']== 'cutting'? 'selected' : ''?>>Cutting</option>
+											<option value='sewing' <?php echo $row[0]['category']== 'sewing'? 'selected' : ''?>>Sewing</option>
+											<option value='packing' <?php echo $row[0]['category']== 'packing'? 'selected' : ''?>>Packing</option>
+											<option value='Send PF' <?php echo $row[0]['category']== 'Send PF'? 'selected' : ''?>>Embellishment Send</option>
+                                   			 <option value='Receive PF' <?php echo $row[0]['category']== 'Receive PF'? 'selected' : ''?>>Embellishment Received</option>
+										</select>
+									</div>
 									<div class="col-sm-2">
 										<button type="submit" class="btn btn-info" style="margin-top:18px;">Update</button>
 									</div>
@@ -172,6 +186,12 @@ function validateQty(event)
 		if(isset($_GET["short_cut_code"])){
 			$short_cut_code= $_GET["short_cut_code"];
 		}
+		if(isset($_GET["work_center_id"])){
+			$work_center_id= $_GET["work_center_id"];
+		}
+		if(isset($_GET["category"])){
+			$category= $_GET["category"];
+		}
 		if($operation_name!="" && $operation_code!="" && $short_cut_code != ""){
 			
 			$checking_qry = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where operation_code = $operation_code and id <> $id";
@@ -191,9 +211,11 @@ function validateQty(event)
 			}
 			if($cnt == 0 && $cnt_short == 0)
 			{
-				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation' where id='$id'";
-				//echo $qry_insert1;
+				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category' where id='$id'";
+				// echo $qry_insert1;
+				// die();
 				$res_do_num1 = mysqli_query($link,$qry_insert1);
+				
 				echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";
 				//$sql_message = 'Operation Updated Successfully...';
 				//echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';

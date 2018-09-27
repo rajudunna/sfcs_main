@@ -74,7 +74,7 @@
 			else
 			{
 				// echo getFullURLLevel($_GET['r'],'/DB_MSSQL_Conn_TEST/CMS/ssc_plan_process.php',2,'N');
-				$url=getFullURL($_GET['r'],'ssc_porcess4.php','N');
+				$url=getFullURL($_GET['r'],'ssc_process4.php','N');
 				echo "<br/><br/><a href=$url class='btn btn-primary'>click me to check Analysis Report</a>";
 			}
 			echo '</div></div>';

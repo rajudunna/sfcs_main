@@ -4,8 +4,8 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(1000000);
 
-$connect = odbc_connect("BAIDBSRV01", "sa","Brandix@7");
-
+// $connect = odbc_connect("BAIDBSRV01", "sa","Brandix@7");
+$connect = odbc_connect( $odbc_host, $odbc_user, $odbc_pass);
 $styles_array=array();
 $styles_array[]=-1;
 
@@ -30,8 +30,7 @@ $k=0;
 for($i=0;$i<sizeof($styles_array);$i++)
 {
 
-$tsql="EXEC [M3_DB_LINK].[dbo].[OPRATION_DETAILS] '".$styles_array[$i]."'";
-
+$tsql="EXEC [M3_DB_LINK].[dbo].[OPRATION_DETAILS_GLOBAL] '".$styles_array[$i]."','".$plant_prod_code."'";
 $result = odbc_exec($connect, $tsql);
 while(odbc_fetch_row($result))
 {	

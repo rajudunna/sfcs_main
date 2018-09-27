@@ -7,6 +7,16 @@
 //include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
+
+$master_resons = array();
+$sql_mstr_resns = "SELECT id FROM $bai_pro2.downtime_reason WHERE id NOT IN (20,21,22) ";
+$res_mstr = mysqli_query($link, $sql_mstr_resns) or exit('SQL Error:'.$sql_mstr_resns);
+$z = 0;
+while ($row_mstr = mysqli_fetch_array($res_mstr))
+{
+	$master_resons[$z] = $row_mstr['id'];
+	$z++;
+}
 ?>
 <html lang="en">
 <head>
@@ -93,7 +103,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 			<table class="table table-bordered">
 
 			<thead>
-				<tr style="background:#6995d6;color:white;"> 
+				<tr style="background:#337ab7;color:white;"> 
 					<th>Team</th>
 					<th>NOP</th>
 					<th>Style</th>
@@ -317,6 +327,35 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 								}
 								else
 								{
+									
+									$reasons = array();
+									$break_resons = array(20,21,22);
+
+									$sql6_2="SELECT distinct(reason_id) FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$res6_12=mysqli_query($link,$sql6_2);
+									$k = 0;
+									while ($rows = mysqli_fetch_array($res6_12))
+									{
+										$reasons[$k] = $rows['reason_id'];
+										$k++;
+									}
+									
+									$only_others = sizeof(array_intersect($master_resons, $reasons));
+									$only_breaks = sizeof(array_intersect($break_resons, $reasons));
+
+									if($only_breaks > 0 && $only_others > 0 )
+									{
+										$color = '#D4AC0D';
+									}
+									else if($only_breaks > 0 && $only_others == 0)
+									{
+										$color = '#D40D86';
+									}
+									else
+									{
+										$color = '#DD3636';
+									}
+									
 									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									// echo $sql6_2.'<br><br>';
 									$res6_12=mysqli_query($link,$sql6_2);
@@ -330,7 +369,8 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 												$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
 											}
 										}												
-										echo "<td style='background-color:#ff0000; color:white;'><center>".$row."</center></td>";
+										echo "<td style='background-color:$color; color:white;'><center>".$row."</center></td>";
+										// echo "<td style='background-color:#dd3636; color:white;'><center>".$row."</center></td>";
 									}
 									else
 									{

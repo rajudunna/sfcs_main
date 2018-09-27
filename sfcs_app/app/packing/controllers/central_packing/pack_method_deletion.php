@@ -129,7 +129,7 @@
 					$schedule=$_POST['schedule'];
 					$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
 					$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
-					$check_status = echo_title("$bai_pro3.packing_summary","count(*)","status='DONE' and order_del_no",$schedule_original,$link);			
+					$check_status = echo_title("$bai_pro3.packing_summary","count(*)","status='DONE' and order_del_no",$schedule,$link);
 					$query = "SELECT SUM(carton_qty) AS qty,seq_no,pack_description,pack_method,GROUP_CONCAT(DISTINCT TRIM(size_title)) AS size ,GROUP_CONCAT(DISTINCT TRIM(color)) AS color FROM bai_pro3.pac_stat 
 					LEFT JOIN tbl_pack_ref ON tbl_pack_ref.schedule=pac_stat.schedule 
 					LEFT JOIN tbl_pack_size_ref ON tbl_pack_ref.id=tbl_pack_size_ref.parent_id AND pac_stat.pac_seq_no=tbl_pack_size_ref.seq_no WHERE pac_stat.schedule='$schedule'	GROUP BY seq_no ORDER BY seq_no*1";
@@ -153,18 +153,26 @@
 				
 							<table class=\"table table-bordered\">
 								<tr class='info'>
-							   <th>S.No</th>
+							   	<th>S.No</th>
 								<th>Description</th>
 								<th>Packing Method</th>
 								<th>Color</th>
 								<th>Sizes</th>
 								<th>Quantity</th>
 								<th>Schedule</th>
-								<th>Controlls</th></tr>";
+								<th>Controls</th></tr>";
 								$i = 1;
 								while($new_result1=mysqli_fetch_array($new_result))
 								{
 									$carton_qty_pac_stat=echo_title("$bai_pro3.pac_stat","sum(carton_qty)","schedule='".$schedule."' and pac_seq_no",$new_result1['seq_no'],$link);
+
+									$to_get_scanned_count = "SELECT COUNT(*) AS scanned_count FROM bai_pro3.`pac_stat_log` LEFT JOIN bai_pro3.`pac_stat` ON pac_stat.`id`= pac_stat_log.`pac_stat_id` WHERE pac_stat.schedule='$schedule' AND pac_stat.`pac_seq_no`='".$new_result1['seq_no']."' AND pac_stat_log.status='DONE';";
+									$scanned_count_result = mysqli_query($link, $to_get_scanned_count) or exit("Sql Error366");
+									while ($rowscnt=mysqli_fetch_array($scanned_count_result))
+									{
+										$seq_scan_count = $rowscnt['scanned_count'];
+									}
+
 								    echo "<tr><td>$i</td>";
 									echo "<td>".$new_result1['pack_description']."</td>";
 									echo"<td>".$operation[$new_result1['pack_method']]."</td>";
@@ -174,16 +182,16 @@
 									echo"<td>".$schedule."</td>";
 									$i++;
 									$url=getFullURL($_GET['r'],'pack_method_deletion.php','N');
-									if($new_result1['status'] != "DONE"){
-									echo "<td><a  id='delete' class='btn btn-danger'  onclick='return confirm_delete(event,this)' href='$url&schedule=".$schedule."&seq_no=".$new_result1['seq_no']."&option=delete'>Delete</td>";
+									if($seq_scan_count > 0)
+									{
+										echo "<td class='btn btn-success'>Already Scanned</td>";
 									}
-									else{
-										echo "<td  class='btn btn-success'>Already Scanned</td>";
+									else
+									{
+										echo "<td><a id='delete' class='btn btn-danger'  onclick='return confirm_delete(event,this)' href='$url&schedule=".$schedule."&seq_no=".$new_result1['seq_no']."&option=delete'>Delete</td>";
 									}
 									echo "<tr>";
-									
 								}	
-							
 							echo "</table></div>";
 					}
 					else{

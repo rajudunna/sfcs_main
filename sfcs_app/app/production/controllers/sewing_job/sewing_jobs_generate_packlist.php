@@ -11,8 +11,8 @@
 	$style = $_POST['style'];
 		
 	// echo "bundle_size = ".$bundle_size.", sew_no_of_cartons = ".$sew_no_of_cartons.", sew_pack_method = ".$sew_pack_method.", pack_seq_no = ".$pack_seq_no.", mix_jobs = ".$mix_jobs.", schedule = ".$schedule.", style = ".$style.", sew_pack  = ".$operation[$sew_pack_method].'<br>';
-	echo "<table class='table table-striped table-bordered'>";
-	echo "<thead><th>Type</th><th>Cut Number</th><th>Job Number</th><th>Color</th><th>Size</th><th>Quantity</th><th>Docket Number</th></thead>";
+	// echo "<table class='table table-striped table-bordered'>";
+	// echo "<thead><th>Type</th><th>Cut Number</th><th>Job Number</th><th>Color</th><th>Size</th><th>Quantity</th><th>Docket Number</th></thead>";
 	$insert_to_pac_stat_input = "INSERT INTO `bai_pro3`.`pac_stat_input` (`style`, `schedule`, `no_of_cartons`, `mix_jobs`, `bundle_qty`, `pac_seq_no`, `pack_method`) VALUES ('$style', '$schedule', '$sew_no_of_cartons', '$mix_jobs', '$bundle_size', '$pack_seq_no', '$sew_pack_method'); ";
 	// echo $insert_to_pac_stat_input.'<br>';
 	$inert_result = mysqli_query($link, $insert_to_pac_stat_input) or exit("Failed to save sewing method Details");
@@ -24,7 +24,7 @@
 
 		// $sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."'";
 		$sql1="SELECT * FROM $bai_pro3.`tbl_pack_ref` LEFT JOIN $bai_pro3.`tbl_pack_size_ref` ON tbl_pack_ref.`id`=tbl_pack_size_ref.`parent_id` WHERE SCHEDULE='$schedule' AND seq_no='$pack_seq_no'";
-		echo $sql1.'<br>';
+		// echo $sql1.'<br>';
 		$result1=mysqli_query($link, $sql1) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row1=mysqli_fetch_array($result1))
 		{

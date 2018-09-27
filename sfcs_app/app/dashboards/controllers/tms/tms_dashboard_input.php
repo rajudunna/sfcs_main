@@ -564,7 +564,7 @@ mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli
 $sql="CREATE TABLE $table_name ENGINE = myisam SELECT * FROM $bai_pro3.plan_dash_doc_summ_input ";
 mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+$sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {

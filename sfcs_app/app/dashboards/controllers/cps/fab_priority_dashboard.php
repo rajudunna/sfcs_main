@@ -37,6 +37,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
+$url = '/'.getFullURLLevel($_GET['r'],'fabric_requisition_report_v2.php',0,'R'); 
+
 // include("dbconf.php"); 
 // include("functions.php"); 
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
@@ -696,7 +698,7 @@ echo "</font>";
 
 echo '<div class="panel panel-primary">';
 
-echo "<div class='panel-heading'><span style='float'><strong>CPS Dashboard</strong></a>
+echo "<div class='panel-heading'><span style='float'><strong><a href=".$url.">CPS Dashboard</a></strong></a>
 </span><span style='float: right; margin-top: 0px'><b>
 <a href='javascript:void(0)' onclick='Popup=window.open('cps.htm"."','Popup',
 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
@@ -749,7 +751,7 @@ echo '<br><br>';
 $bindex=0;
 $blink_docs=array();
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+$sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id";
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -906,8 +908,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
       if($fabric_status==null or $fabric_status==0){
         
-        $fabric_status=$sql_row1['ft_status'];
-        if($fabric_status==5)
+        // $fabric_status=$sql_row1['ft_status'];
+        $ft_status=$sql_row1['ft_status'];
+
+        if($ft_status==5)
         {
           $fabric_status=4;
         }
@@ -1003,7 +1007,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             }
           }
           
-          $fabric_status=$join_ft_status;
+          // $fabric_status=$join_ft_status;
+          $ft_status=$join_ft_status;
+
         }
         //To get the status of join orders
       }
@@ -1013,7 +1019,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       {
         case "1":
         {
-          $id="green";
+            $id="yellow";
           /* if($fab_wip>$cut_wip_control)
           {
             $id="lgreen";
@@ -1058,6 +1064,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $rem="Not Update";
           break;
         }
+      }
+      if($fabric_status==1 and $ft_status==1)
+      {
+            $id="yellow";
+      }
+
+      if($fabric_status!=1 and $ft_status==1)
+      {
+        $id="green";
+
       }
          if($id!='yellow')
       {

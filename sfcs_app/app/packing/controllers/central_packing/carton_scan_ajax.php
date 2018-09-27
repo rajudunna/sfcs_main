@@ -86,6 +86,11 @@
 						$mo_quantity = $nop_qry_row['bundle_quantity'];
 						$good_quantity_past = $nop_qry_row['good_quantity'];
 						$id = $nop_qry_row['id'];
+
+						$insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $mo_quantity where mo_no= $mo_number";
+						// echo $insert_update_tbl_carton_ready;
+						mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
+
 						$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $mo_quantity where id = $id";
 						// echo $update_qry;
 						$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");

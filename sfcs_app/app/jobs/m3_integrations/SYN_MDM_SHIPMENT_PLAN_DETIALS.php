@@ -12,9 +12,14 @@ set_time_limit(6000000);
 		$from = date("Ymd", strtotime('-1 months'));
 		$to = date("Ymd", strtotime('+5 months'));
 		// $query_text = "CALL BAISFCS.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD('200','%','EKG','EKG','".$from."','".$to."')";
-		$query_text = "CALL M3BRNPRD.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD('200','%','EKG','EKG','".$from."','".$to."')";
+		$query_text = "CALL M3BRNPRD.RPT_BLI_SHIPMENT_PLAN_FOR_A_SELECTED_PERIOD($comp_no,'%','".$plant_prod_code."','".$plant_prod_code."','".$from."','".$to."')";
 		$result = odbc_exec($conn, $query_text);
 
+
+		$sql13="insert into $m3_inputs.shipment_plan_temp select * from $m3_inputs.shipment_plan";
+		mysqli_query($link, $sql13) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+		
 		$trunc_ship = "TRUNCATE TABLE $m3_inputs.shipment_plan";
 		$res_trunc_ship = mysqli_query($link, $trunc_ship);
 		$j=0;

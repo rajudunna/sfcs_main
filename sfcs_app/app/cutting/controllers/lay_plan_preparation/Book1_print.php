@@ -16,18 +16,12 @@ $cat_new = $_GET['category_new'];
 $clubbing = $_GET['clubbing']; 
 
 ?> 
-
-
 <?php 
-   $remarks_x = '';
-   $sql="select * from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\""; 
-  // echo $sql;
+    $sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
-    $remarks_x=$sql_row['remarks']; 
-    $binding_con = $sql_row['binding_con'];
-     
+        $binding_consumption = $sql_row['binding_consumption'];
     } 
      
     // embellishment start 
@@ -1356,6 +1350,7 @@ body{
 <style>
 
 @media print {
+@page { margin: 0; }
 @page narrow {size: 9in 11in}
 @page rotated {size: landscape}
 DIV {page: narrow}
@@ -1704,7 +1699,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     <td colspan=2 class=xl6913019><?php echo $gmtway; ?></td> 
     <td colspan=2></td>
     <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Binding Consumption</td> 
-    <td class=xl6913019><?php echo $binding_con; ?></td> 
+    <td class=xl6913019><?php echo $binding_consumption; ?></td> 
     <td class=xl7113019></td> 
     <td class=xl6613019></td> 
     </tr> 
@@ -3253,7 +3248,7 @@ echo "</tr>";
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
- </tr> 
+ </tr>
  <tr height=21 style='height:15.75pt'> 
   <td height=21 class=xl6513019 style='height:15.75pt'></td> 
   <td class=xl6613019></td> 
@@ -3277,7 +3272,8 @@ echo "</tr>";
   <td class=xl6613019></td> 
   <td class=xl6613019></td> 
   <td class=xl6613019></td> 
-  <td class=xl6613019></td> 
+  <td class=xl6613019><strong><u><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/>
+ <br/>Cutting Supervisor Authorization</u></strong></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
