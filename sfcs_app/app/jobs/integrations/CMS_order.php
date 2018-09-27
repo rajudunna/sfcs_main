@@ -3,6 +3,12 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
+$insert_order_details="INSERT INTO $m3_inputs.order_details SELECT * FROM $m3_inputs.order_details_original WHERE (CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) NOT IN (SELECT CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) FROM $m3_inputs.order_details) AND MO_Released_Status_Y_N='Y') ORDER BY TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)";
+$res=mysqli_query($link, $insert_order_details) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
+if($res)
+{
+	print("Data Inserted into order_details from order_details_original ")."\n";
+}
 ?>
 
 
@@ -15,7 +21,6 @@ set_time_limit(6000000);
 	}
 		
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_OS_1\")";
-echo $sql3;
 	$res=mysqli_query($link, $sql3) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res)
 	{

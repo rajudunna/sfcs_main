@@ -8,6 +8,12 @@ $time_diff=(int)date("YmdH")-$log_time;
 
 set_time_limit(6000000);
 
+$insert_shipment_plan="INSERT INTO $m3_inputs.shipment_plan SELECT * FROM $m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) FROM $m3_inputs.shipment_plan) AND CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) IN (SELECT CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) FROM $m3_inputs.order_details_original WHERE MO_Released_Status_Y_N='Y') ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
+$res=mysqli_query($link, $insert_shipment_plan) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
+if($res)
+{
+	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
+}
 function check_style($string)
 {
 	global $link;
