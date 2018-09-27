@@ -68,7 +68,7 @@ if(!(in_array($view,$has_permission)))
 			<div class="col-md-3">
 				<form name="test" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
 					<label>Enter Label Id: </label>
-					<input type="text" name="lid" value="" class="form-control integer" /required>
+					<input type="text" name="lid" value="" class="form-control" /required>
 			</div>
 			<div class="col-md-3">
 					<input type="submit" name="submit" value="Search" class="btn btn-success" style="margin-top:18px;" />
@@ -77,7 +77,7 @@ if(!(in_array($view,$has_permission)))
 			<div class="col-md-3">
 				<form name="test" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
 					<label>Enter Lot #:</label>
-					<input type="text" name="lot_no_ref" value="" class="form-control integer" /required>
+					<input type="text" id="text1" name="lot_no_ref" value="" class="form-control integer" /required>
 			</div>
 			<div class="col-md-3">
 					<input type="submit" name="submit2" value="Search" class="btn btn-success" style="margin-top:18px;" />
@@ -90,8 +90,7 @@ if(!(in_array($view,$has_permission)))
 if(isset($_POST['submit']))
 {
 	$lid=$_POST['lid'];
-	
-	$sql="select lot_no,qty_rec,qty_issued,qty_ret,ref1,ref4 from $bai_rm_pj1.store_in where tid=\"$lid\"";
+	$sql="select lot_no,qty_rec,qty_issued,qty_ret,ref1,ref4 from $bai_rm_pj1.store_in where barcode_number=\"$lid\"";
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	if(mysqli_affected_rows($link)>0)
@@ -169,7 +168,7 @@ if(isset($_POST['delete']))
 	$reason=$_POST['reason'];
 		
 
-	$query = "select qty_issued from $bai_rm_pj1.store_in where tid='$lid'";
+	$query = "select qty_issued from $bai_rm_pj1.store_in where barcode_number='$lid'";
 	
 	$result = mysqli_query($link,$query);
 	while($row = mysqli_fetch_array($result)){
@@ -185,20 +184,20 @@ if(isset($_POST['delete']))
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500); function Redirect() {  location.href = \"$url\"; }</script>";
 	
 	}else{
-		$sql="insert into $bai_rm_pj1.store_in_deleted select * from $bai_rm_pj1.store_in where tid=".$lid;
+		$sql="insert into $bai_rm_pj1.store_in_deleted select * from $bai_rm_pj1.store_in where barcode_number='$lid'";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error4=".mysqli_error($link));
 		
 		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		//echo $id;
-		$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."$".$reason."' where tid=".$id;
+		$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."$".$reason."' where barcode_number=".$id;
 		// echo  "<br/>".$sql3;	 
 		$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num3=mysqli_affected_rows($link);
 		
 
 		
-		$sql_store_in="select lot_no from $bai_rm_pj1.store_in where tid=".$lid;
+		$sql_store_in="select lot_no from $bai_rm_pj1.store_in where barcode_number='$lid'";
 		$sql_result_store_in=mysqli_query($link, $sql_store_in) or exit($sql_store_in."<br/>Sql Error_store_in=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		while($sql_row_store_in=mysqli_fetch_array($sql_result_store_in))
@@ -239,7 +238,7 @@ if(isset($_POST['delete']))
 				$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
-			$sql1="delete from $bai_rm_pj1.store_in where tid=\"$lid\"";
+			$sql1="delete from $bai_rm_pj1.store_in where barcode_number=\"$lid\"";
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		// echo "<table class='table table-bordered'><tr class='success'><td>Label Id Successfully Deleted</td></tr></table>";
@@ -508,7 +507,7 @@ echo "</div>";
 </div>
 </div>
 <script>
-		jQuery('input[type="text"]').keyup(function() {
+		jQuery('#text1').keyup(function() {
 		var raw_text =  jQuery(this).val();
 		var return_text = raw_text.replace(/[^a-zA-Z0-9 _]/g,'');
 		jQuery(this).val(return_text);

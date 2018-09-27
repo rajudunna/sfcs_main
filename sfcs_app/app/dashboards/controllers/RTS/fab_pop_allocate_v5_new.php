@@ -685,62 +685,18 @@ if(isset($_POST['allocate_new']))
 					$current_date=date("Y-m-d");
 
 					//getting new rolls details
-					$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason FROM $bai_rm_pj1.store_in WHERE tid=".$tid_ref[$j];
+					$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason,barcode_number,ref_tid FROM $bai_rm_pj1.store_in WHERE tid=".$tid_ref[$j];
 					$result__rolldetials=mysqli_query($link, $qry_rolldetails);
 					$row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
-					if($is_chw=='yes'){
-						$qry_newroll="insert into $bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$username."-".$plant_name."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid_ref[$j]."')";
-						mysqli_query($cwh_link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));	
-						$last_id= mysqli_insert_id($cwh_link);
-						$qry_get_data_fm_cwh = "select * from $bai_rm_pj1.store_in where tid=".$last_id;
-						//echo $qry_get_data_fm_cwh."<br/>";
-						$res_get_data_fm_cwh = $cwh_link->query($qry_get_data_fm_cwh);
-						$barcode_data = array();
-						$sticker_data1= array();
-						if ($res_get_data_fm_cwh->num_rows == 1) 
-						{
-							while($row = $res_get_data_fm_cwh->fetch_assoc()) 
-							{
-								$barcode_data = $row;
-								break;
-							}
-							if(count($barcode_data)>0)
-							{
-								//$actual_quentity_present = $barcode_data['qty_rec']-$barcode_data['qty_issued']+$barcode_data['qty_ret'];
-								$actual_quentity_present = $barcode_data['qty_rec']-$barcode_data['qty_issued'];
-								
-									
-							if($actual_quentity_present>0)
-							{
 					
-						//=================== check rmwh db with present tid ==================
-						$qry_check_rm_db = "select * from $bai_rm_pj1.store_in where tid=".$last_id;
-						//echo $qry_check_rm_db."<br/>";
-						$res_check_rm_db = $link->query($qry_check_rm_db);
-						if($res_check_rm_db->num_rows == 0)
-						{
-							//=============== Insert Data in rmwh ==========================
-							$qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`tid`,`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`,  `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,split_roll) VALUES ('".$last_id."','".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."-".$plant_name."^".date('Y-m-d H:i:s')."','".$tid_ref[$j]."')";	
-							//echo $qry_insert_update_rmwh_data."<br/>";
-							$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
-							$sql="update $bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
-							// $sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
-							//Uncheck this
-							mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));	
-						}
-					 }
-				}
-			 }
-
-					}else{
 					
-					$qry_newroll="insert into bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid_ref[$j]."')";
+					$qry_newroll="insert into $bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,barcode_number,ref_tid) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid_ref[$j]."','".$row_rolldetials["barcode_number"]."','".$row_rolldetials["ref_tid"]."')";
 					mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
-					}
+					
 				}
 
 				//To update Allocated Qty
-				$sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
+				$sql="update $bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
 
 				// $sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
 				//Uncheck this
@@ -752,11 +708,11 @@ if(isset($_POST['allocate_new']))
 		//To confirm docket as allocated
 		if($process_cat==1)
 		{
-			$sql1="update plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
+			$sql1="update $bai_pro3.plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 		}
 		else
 		{
-			$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
+			$sql1="update $bai_pro3.recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 		}
 		
 		mysqli_query($link, $sql1) or exit("Sql Error5: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -777,18 +733,18 @@ if(isset($_POST['allocate_new']))
 			
 			if(mysqli_num_rows($sql_result)!=0)
 			{
-				$sql="insert into bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
+				$sql="insert into $bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
 				//echo $sql."<br/>";
 				
 				mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$ilast_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 				
-				$sql="update bai_pro3.maker_stat_log set mklength=$mk_length where tid='$ilast_id'";
+				$sql="update $bai_pro3.maker_stat_log set mklength=$mk_length where tid='$ilast_id'";
 				
 				mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql="update bai_pro3.plandoc_stat_log set lastup=\"".date("Y-m-d")."\", mk_ref=$ilast_id where doc_no=".$doc[$i];
+				$sql="update $bai_pro3.plandoc_stat_log set lastup=\"".date("Y-m-d")."\", mk_ref=$ilast_id where doc_no=".$doc[$i];
 				
 				mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
