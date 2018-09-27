@@ -119,8 +119,10 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                         $option1=$_POST['option1']; 
                         $team=$_POST['team']; 
                         $hour_filter=$_POST['hour_filter']; 
-                        //echo "secstylesds".$sections_string; 
-                        //echo "secstyles".$secstyles; 
+                        $total_hours = $plant_end_time - $plant_start_time;
+                        list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
+                        $hour_start = $hour + 1;
+                        
                     ?> 
 
 
@@ -134,17 +136,17 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                 <label for="section">Select Unit: </label>
                                 <?php
                                     echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
-                                    $sql2="select * from $bai_pro.unit_db order by sno"; 
+                                    $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
-                                        if($sections_string==$sql_row2['unit_members']) 
+                                        if($sections_string==$sql_row2['sec_name']) 
                                         { 
-                                            echo "<option value=\"".$sql_row2['unit_members']."\" selected>".$sql_row2['unit_id']; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name'].""; 
                                         } 
                                         else 
                                         { 
-                                            echo "<option value=\"".$sql_row2['unit_members']."\">".$sql_row2['unit_id']; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\">Unit-".$sql_row2['sec_name'].""; 
                                         } 
                                     } 
                                     echo "</select>"; 
@@ -164,29 +166,50 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                <label for="hour_filter" valign="top">Select Hour: </label>
                                 <select name="hour_filter[]" id="hour_filter" class="form-control" multiple> 
                                     <?php 
-                                        if($hour_filter[0]!="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" and sizeof($hour_filter)!=0) 
-                                        { 
-                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21">All</option>'; 
-                                            for($i=6;$i<=21;$i++) 
-                                            { 
-                                                if($i==$hour_filter[$i-6]) 
-                                                { 
-                                                    echo '<option value="'.$i.'" selected>'.$i.'</option>'; 
-                                                } 
-                                                else 
-                                                { 
-                                                    echo '<option value="'.$i.'" >'.$i.'</option>'; 
-                                                } 
-                                            } 
-                                        } 
-                                        else 
-                                        { 
-                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" selected>All</option>'; 
-                                            for($i=6;$i<=21;$i++) 
-                                            { 
-                                                echo '<option value="'.$i.'">'.$i.'</option>'; 
-                                            } 
-                                        } 
+                                         $hour_filter1 = array();
+                                         for ($i=0; $i <= $total_hours; $i++)
+                                         {
+                                             $hour2=$hour;
+                                             $to_hour = "'".$hour2.":".$minutes."'";
+                                             $hour_filter1[]=$to_hour;
+                                             $hour++;
+                                         }
+                                         echo '<option value="'.(implode(',',$hour_filter1)).'">All</option>'; 
+                                         list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
+                                         for ($i=0; $i <= $total_hours; $i++)
+                                         {
+                                             $hour1=$hour;
+                                             $to_hour = $hour1.":".$minutes;
+                                             echo '<option value="\''.$to_hour.'\'">'.$to_hour.'</option>';
+                                             // echo '<br/>'.$to_hour;
+                                             $hour++;
+                 
+                                         }
+                                     	// $query='';
+                                       
+                                        // if($hour_filter[0]!="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" and sizeof($hour_filter)!=0) 
+                                        // { 
+                                        //     echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21">All</option>'; 
+                                        //     for($i=6;$i<=21;$i++) 
+                                        //     { 
+                                        //         if($i==$hour_filter[$i-6]) 
+                                        //         { 
+                                        //             echo '<option value="'.$i.'" selected>'.$i.'</option>'; 
+                                        //         } 
+                                        //         else 
+                                        //         { 
+                                        //             echo '<option value="'.$i.'" >'.$i.'</option>'; 
+                                        //         } 
+                                        //     } 
+                                        // } 
+                                        // else 
+                                        // { 
+                                        //     echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" selected>All</option>'; 
+                                        //     for($i=6;$i<=21;$i++) 
+                                        //     { 
+                                        //         echo '<option value="'.$i.'">'.$i.'</option>'; 
+                                        //     } 
+                                        // } 
                                     ?> 
                                 </select>
                             </div> 
@@ -287,9 +310,10 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                             
                             //Time filter 
                             $hour_filter=$_POST['hour_filter']; 
-                            if(in_array("6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",$hour_filter)) 
+                            
+                            if($hour_filter=='') 
                             { 
-                                   $time_query=" AND HOUR(bac_lastup) in (6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21) "; 
+                                   $time_query=""; 
                             } 
                             else 
                             { 
@@ -348,7 +372,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                 $i=0; 
                                 $j=0;
                                 $sql='SELECT DISTINCT(HOUR(bac_lastup)) AS "time" FROM '.$table_name.' WHERE bac_date="'.$date.'" AND bac_shift IN ('.$team.') '.$time_query.' ORDER BY HOUR(bac_lastup)';
-                                //echo $sql.'<br>';
+                                // echo $sql.'<br>';
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
