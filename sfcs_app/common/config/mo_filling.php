@@ -469,7 +469,7 @@
     {
         include("config.php");
 		global $link;
-		$packing_cat = 'PACKING';
+		$packing_cat = 'packing';
 
 		$op_codes_query = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref WHERE default_operation='Yes' and category = '$packing_cat'";
 		// echo $op_codes_query;
