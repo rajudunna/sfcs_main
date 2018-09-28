@@ -173,7 +173,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b>/ BOX # : <b>$ref2</b></td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong>/ GRN Date : <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
 				$html.= "<tr><td>BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b>/Label Id:<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong>  </td></td></tr>";
-				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."</tr>";
+				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">'."</tr>";
 				break;
 			}
 	
