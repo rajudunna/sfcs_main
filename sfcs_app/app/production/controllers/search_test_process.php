@@ -721,7 +721,7 @@ td{
 			}
 			if(check_val.length == 0){
 				sweetAlert('Please Select atleast one category','','warning');
-				return false;
+				return false;			
 			}
 		}
 		return true;

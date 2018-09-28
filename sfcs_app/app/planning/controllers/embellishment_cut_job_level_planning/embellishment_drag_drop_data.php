@@ -1,1 +1,1 @@
-<?php $style_ref="JJA263S9       "; $schedule_ref="549188"; $color_ref="69 - NAVY TOP                 "; $cat_ref_ref="10347473"; $code_ref=""; ?>
+<?php $style_ref="ACZ06SF8       "; $schedule_ref="493322"; $color_ref="BLK : BLACK                   "; $cat_ref_ref="10458460"; $code_ref="524845-A01-*"; ?>

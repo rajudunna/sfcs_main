@@ -182,7 +182,7 @@ if(isset($_POST['Update']))
 	$ilast_codes=array();
 	
 	//Added by KiranG 20150418
-	$usr_msg="The following entries are failed to update due to M3 system validations:<br/><table><tr><th>Module</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
+	$usr_msg="<br/><br/><table><tr><th>Module</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
 	if($sum > 0){
 		for($x=0;$x<sizeof($qty);$x++)
 		{
@@ -245,7 +245,7 @@ if(isset($_POST['Update']))
 				{
 					foreach ($m3_op_qty_chk_ary as $key => $value)
 					{
-						if($check_proceed==0 and rejection_validation_m3($key,$schedule[$x],$color[$x],$size[$x],$value,0,$username)=="FALSE")
+						if($check_proceed==0)
 						{
 							$check_proceed=1;
 						}
@@ -403,10 +403,6 @@ if(isset($_POST['Update']))
 				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej where id = $id_to_update";
 				$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				//remaining qty is good quantity in cps log rejections should not update the CPS LOG
-				// $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$value where id = $ref_no";
-				// $updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
 				$updated = updateM3TransactionsRejections($ref_no,$b_op_id,$r_qty,$r_reasons);
 				if($updated == true){
 				}
@@ -501,7 +497,6 @@ if(isset($_POST['Update']))
 		echo "<script>sweetAlert('Form Validation failed.').then((value) => { window.location.href = '$url'});</script>";
 	}
 }
-die();
 ?>
 
 </body>
@@ -536,24 +531,7 @@ if(isset($_POST['update1']))
 			//echo "<br/> query= ".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error11 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			//FOR M3 Upload
-			if($temp[4]=="ENP")
-			{
-				
-			}
-			else
-			{
-				//commented for #759 CR
-				// $sql="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_style='".$temp[0]."' and sfcs_schedule='".$temp[1]."' and sfcs_color='".$temp[2]."' and sfcs_job_no='REPLACE' and sfcs_tid_ref=".$temp[6];
-				// $sql_result=mysqli_query($link, $sql) or exit("Sql Error12 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 	
-				
-				// if(mysqli_num_rows($sql_result)==0)
-				// {
-				// 	$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_job_no,sfcs_tid_ref,sfcs_mod_no,sfcs_shift) values(NOW(),'".$temp[0]."','".$temp[1]."','".$temp[2]."','".$temp[3]."',0,".$replace[$i].",USER(),'SIN','REPLACE',".$temp[6].",'".$temp[4]."','".$temp[5]."')";
-				// 	mysqli_query($link, $sql) or exit("Sql Error13 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				// }
-					
-			}
+	
 		}
 	}
 	echo "<h2>Successfully Updated.</h2>";
