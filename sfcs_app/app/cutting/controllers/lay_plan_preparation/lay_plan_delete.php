@@ -478,10 +478,9 @@ if(isset($_POST["submit"]))
         { 
             echo "<div class=\"col-sm-12\" style=\"color: #ff0000\"><h2>Selected color not exists in the data. Please select another color.</h2></div>"; 
         } 
-    }   
-    
+    } 
     include("CMS_order_Schedule_Level.php");
-    include("CMS_shipment_Schedule_Level.php");
+    include("CMS_shipment_Schedule_Level.php");    
 }     
 
 ?> 

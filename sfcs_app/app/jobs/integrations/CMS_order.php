@@ -3,19 +3,18 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
+$insert_order_details="INSERT INTO $m3_inputs.order_details SELECT * FROM $m3_inputs.order_details_original WHERE (CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) NOT IN (SELECT CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) FROM $m3_inputs.order_details) AND MO_Released_Status_Y_N='Y') ORDER BY TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)";
+$res=mysqli_query($link, $insert_order_details) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
+echo $insert_order_details."<br><br>";
+if($res)
+{
+	print("Data Inserted into order_details from order_details_original ")."\n";
+}
 ?>
 
 
-<?php
-	$sql3="delete from $bai_pro3.order_plan";
-	$res1=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($res1)
-	{
-		print("sucessfully deleted")."\n";
-	}
-		
+<?php		
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_OS_1\")";
-echo $sql3;
 	$res=mysqli_query($link, $sql3) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res)
 	{
@@ -29,8 +28,8 @@ echo $sql3;
 $sql3="truncate table $bai_pro3.order_plan";
 mysqli_query($link, $sql3) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
-$sql="insert into $bai_pro3.order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des,material_sequence ) select SCHEDULE,MO_Released_Status_Y_N,Style,GMT_Color,GMT_Size,MO_Qty,Item_Code,Item_Description,Order_YY_WO_Wastage,RM_Color_Description,SEQ_NUMBER from $m3_inputs.order_details WHERE SCHEDULE not in (select distinct order_del_no from $bai_pro3.bai_orders_db_confirm) and MO_Released_Status_Y_N='Y'";
-// echo $sql."<br>";
+$sql="insert into $bai_pro3.order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des,material_sequence ) select SCHEDULE,MO_Released_Status_Y_N,Style,GMT_Color,GMT_Size,MO_Qty,Item_Code,Item_Description,Order_YY_WO_Wastage,RM_Color_Description,SEQ_NUMBER from $m3_inputs.order_details WHERE MO_Released_Status_Y_N='Y' AND CONCAT(Style,SCHEDULE,GMT_Color) NOT IN (SELECT order_tid FROM bai_pro3.cat_stat_log)";
+echo $sql."<br><br>";
 mysqli_query($link, $sql) or exit("Sql Error1d".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 // $sql="UPDATE order_plan SET color=CONCAT(CONVERT(stripSpeciaChars(size_code,0,0,1,0) USING utf8),'===',color) WHERE 
@@ -97,13 +96,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				}
 					
 				$sql3="insert ignore into $bai_pro3.cat_stat_log (order_tid2) values (\"$ssc_code2\")";
+				echo $sql3."<br></br>";
 				mysqli_query($link, $sql3) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$item_des=str_replace('"'," ",$item_des);
 				$item_des=str_replace("'"," ",$item_des);
 				
 				$sql3="update $bai_pro3.cat_stat_log set order_tid=\"$ssc_code\", mo_status=\"$mo_status\", compo_no=\"$compo_no\", catyy=$order_yy, fab_des=\"$item_des\", col_des=\"$col_des\",".$transaction_time." where order_tid2=\"$ssc_code2\"";
-				// echo $sql3;
+				echo $sql3."<br></br>";
 				mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 			}
@@ -112,8 +112,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}		
 }
 
-$sql3="delete from $bai_pro3.order_plan";
-mysqli_query($link, $sql3) or exit("Sql Error11".mysql_error());
+// $sql3="delete from $bai_pro3.order_plan";
+// mysqli_query($link, $sql3) or exit("Sql Error11".mysql_error());
 
 $sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_OS_2\")";
 mysqli_query($link, $sql3) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -226,4 +226,8 @@ mysqli_query($link, $sql3) or exit("Sql Error12".mysqli_error($GLOBALS["___mysql
 ?>
 
 
+<<<<<<< HEAD
+=======
+	
+>>>>>>> 974-order-qty-details-are-not-shown-in-lay-plan-preparation
 	
