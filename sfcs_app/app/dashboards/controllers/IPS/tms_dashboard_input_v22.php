@@ -21,10 +21,9 @@
             <div class='col-sm-12' style='padding-bottom:20px'>
             <div class='form-group'>
               <div class='col-sm-3'>";
-              echo 'Sewing Job Track: <input type="text" name="sewing" id="sewing" class="form-control alpha" onkeyup="blink_new(this.value)" size="10">';
-              echo "</div>
-              <div class='col-sm-3'>";
-              echo 'Schedule Track: <input type="text" name="schedule" id="schedule"  class="form-control integer" onkeyup="blink_new3(this.value)" size="10"> &nbsp;&nbsp;';
+                echo 'Sewing Job Track: <input type="text" name="sewing" id="sewing" class="form-control alpha" onkeyup="blink_new(this.value)" size="10">';
+              echo "</div><div class='col-sm-3'>";
+                echo 'Schedule Track: <input type="text" name="schedule" id="schedule"  class="form-control integer" onkeyup="blink_new3(this.value)" size="10"> &nbsp;&nbsp;';
               echo "</div>
               <div class='col-sm-3'>
                 Shift :<select class='form-control' id='shift' name='shift' required>
@@ -32,10 +31,15 @@
                     foreach($shifts_array as $shift){
                       echo "<option value='$shift'>$shift</option>";
                   }
-          
-          echo "</select>  
-           </div>
-         </div>
+              echo "</select></div>";
+              echo '<div class="col-sm-3">Priorities:
+              <select class="form-control" id="view_priority" onchange="redirect_priority()">
+              <option value="4" selected>4</option>
+              <option value="6">6</option>
+              <option value="8">8</option>';
+              echo '</select></div>';
+
+              echo "</div>
             </div>
             <div class='col-sm-12'>";
             $inc=0;
@@ -62,6 +66,15 @@
 ?>
 
 <script>
+
+function redirect_priority()
+{
+  call_server();
+}
+
+</script>
+
+<script>
 var sec_id_ar = sec_ids.split(',');
 jQuery( document ).ready(function() {
     call_server();
@@ -81,7 +94,7 @@ function ajax_calls(value,sync_type){
   $('#sec-load-'+value).css('display','block');
   $('#sec-'+value).html('');
   $.ajax({
-      url: "<?= $url ?>?sec="+value
+      url: "<?= $url ?>?sec="+value+"&priority_limit="+$('#view_priority').val()
   }).done(function(data) {
       try{
         var r_data = JSON.parse(data) ;
