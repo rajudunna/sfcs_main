@@ -2125,7 +2125,7 @@ tags will be replaced.-->
  </tr>
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td colspan=3 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="500" height="60"></td>
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -3285,7 +3285,7 @@ $tot_bind_len=0;
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_width[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $leng_det[$i]; $tot_alloc_qty=$tot_alloc_qty+$leng_det[$i];?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php// echo $plies1[$i]; ?></td>
+	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
