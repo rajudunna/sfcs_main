@@ -26,6 +26,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 =====================================================*/
 @import "<?= getFullURLLevel($_GET['r'],'common/css/filtergrid.css',3,'R');?>";
 
+
 /*====================================================
 	- General html elements
 =====================================================*/
@@ -432,10 +433,12 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 			</div>
 			<script language="javascript" type="text/javascript">
 				//<![CDATA[
-				var MyTableFilter = {  exact_match: false,
-				col_5: "select",
-				col_26: "select" ,
-				display_all_text: " [ALL] "}
+				var MyTableFilter = {  
+				exact_match: false,
+				}
+				// col_5: "select",
+				// col_26: "select" ,
+				// display_all_text: " [ALL] "}
 					setFilterGrid("table1",MyTableFilter);
 				//]]>
 			</script>
