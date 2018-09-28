@@ -152,7 +152,7 @@
 				// echo $style."---".$schedule;
 				
 				$pac_stat_input_check = echo_title("$bai_pro3.pac_stat_input","count(*)","schedule",$schedule,$link);
-				$packing_summary_input_check = echo_title("$bai_pro3.packing_summary_input","count(*)","schedule",$schedule,$link);
+				$packing_summary_input_check = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no",$schedule,$link);
 				$pack_size_ref_check = echo_title("$bai_pro3.tbl_pack_ref","count(*)","schedule",$schedule,$link);
 
 				if ($packing_summary_input_check > 0)
