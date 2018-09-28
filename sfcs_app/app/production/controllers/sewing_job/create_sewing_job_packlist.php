@@ -345,7 +345,8 @@
 										<th>Controls</th></tr>";
 									while($pack_result1=mysqli_fetch_array($pack_meth_qty))
 									{
-										echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'sewing_jobs_generate_packlist.php','N').'">';
+										$get_sew_method = 0;	$bundle_size_sew = 0;	$no_of_cartons_sew = -1;
+										echo '<form name="input" method="post" id="form_id_'.$count.'"  onsubmit="return test_man('.$count.',event);" action="'.getFullURL($_GET['r'],'sewing_jobs_generate_packlist.php','N').'">';
 											$seq_no=$pack_result1['seq_no'];
 
 											$check_status = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no='$schedule' and pac_seq_no",$seq_no,$link);
@@ -358,29 +359,39 @@
 											{
 												$readonly='readonly';
 												$disabled='disabled';
+												$get_sew_method = echo_title("$bai_pro3.pac_stat_input","pack_method","schedule='$schedule' and pac_seq_no",$seq_no,$link);
+												$bundle_size_sew = echo_title("$bai_pro3.pac_stat_input","bundle_qty","schedule='$schedule' and pac_seq_no",$seq_no,$link);
+												$no_of_cartons_sew = echo_title("$bai_pro3.pac_stat_input","no_of_cartons","schedule='$schedule' and pac_seq_no",$seq_no,$link);
+												// echo $get_sew_method;
 											}
 											$max_crton = echo_title("$bai_pro3.pac_stat","MAX(carton_no)","schedule='$schedule' and pac_seq_no",$seq_no,$link);
 											$parent_id=$pack_result1['parent_id'];
 											$pack_method=$pack_result1['pack_method'];
 											echo "<tr>
 												<td>".$pack_result1['seq_no']."</td>
-												<td><select id=\"pack_method\" required class='form-control' $disabled name=\"pack_method\" >";
+												<td><select id=\"pack_method_".$count."\"  class='form-control' $disabled name=\"pack_method\" >";
 													for($j=0;$j<sizeof($operation);$j++)
 													{
+														if ($get_sew_method == $j){
+															$selected_pm = 'selected';
+														} else {
+															$selected_pm = '';
+														}
+
 														if ($j==0)
 														{
 															echo "<option value=''>".$operation[$j]."</option>";
 														}
 														else
 														{
-															echo "<option value=\"".$j."\">".$operation[$j]."</option>";
+															echo "<option value=\"".$j."\" $selected_pm>".$operation[$j]."</option>";
 														}
 													}
 													echo "</select>
 												</td>
 												<td style='display: none;'>
 													<center>
-														<select name='mix_jobs' id='mix_jobs' required class='form-control'>
+														<select name='mix_jobs' id='mix_jobs' class='form-control'>
 															<option value=''>Please Select</option>
 															<option value='1'>Yes</option>
 															<option value='2' selected>No</option>
@@ -388,35 +399,41 @@
 													</center>
 												</td>
 												<td>".$pack_result1['pack_description']."</td>
-												<td><input type='text' $readonly class='form-control' name='bund_size' id='bund_size' value='0'></td>
+												<td><input type='text' $readonly class='form-control integer' name='bund_size' id='bund_size_".$count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='$bundle_size_sew'></td>
 												<input type='hidden' name='seq_no' id='seq_no' value='$seq_no'>
+												<input type='hidden' name='max_crton' id='max_crton_".$count."' value='$max_crton'>
 												<input type='hidden' name='schedule' id='schedule' value='$schedule'>
 												<input type='hidden' name='style' id='style' value='$style'>
-												<td><input type='number' $readonly required class='form-control integer' name='no_of_cartons' id='no_of_cartons' value='' min='0' max='$max_crton'></td>
+												<td><input type='text' $readonly  class='form-control integer' name='no_of_cartons' id='no_of_cartons_".$count."' onfocus=if(this.value==-1){this.value=''} onblur=if(this.value==''){this.value=-1;} value='$no_of_cartons_sew'></td>
 												<td>".$pack_result1['qnty']."</td>
 												<td>".$pack_result1['color']."</td>
 												<td>".$pack_result1['size']."</td>";
 											
-											if($check_status==0)
+											if ($max_crton > 0)
 											{
-												// echo "<td>
-												// <a class='btn btn-success generate_sewing_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Sewing Job</a>
-												// </td>";
-												echo "<td>
-												<input type=\"submit\" class=\"btn btn-success\" value=\"Generate Sewing Jobs\" name=\"generate\" id=\"generate\" />
-												</td>";
+												if($check_status==0)
+												{
+													echo "<td>
+													<input type=\"submit\" class=\"btn btn-success\" value=\"Generate Sewing Jobs\" name=\"generate\" id=\"generate\" />
+													</td>";
+												}
+												else
+												{
+													$url=getFullURL($_GET['r'],'input_job_mix_ch_report.php','N');
+													echo"<td>Sewing Job Generated 
+															<a class='btn btn-info' href='$url&schedule=$schedule&seq_no=$seq_no&style=$style'>Print Job Sheets</a>
+														</td>";
+												}
 											}
 											else
 											{
-												$url=getFullURL($_GET['r'],'input_job_mix_ch_report.php','N');
-												echo"<td>Sewing Job Generated 
-														<a class='btn btn-info' href='$url&schedule=$schedule&seq_no=$seq_no&style=$style'>Print Job Sheets</a>
-													</td>";
+												echo"<td><h4><span class='label label-danger'>Packing List not yet Generated</span></h4></td>";
 											}
+											
+												
 											echo "<tr>
 										</form>";
 										echo '<input type="hidden" name="count" value="'.$count.'" id="count">';
-
 										$count++;
 									}	
 								
@@ -429,26 +446,29 @@
 			?>
 
 			<script type="text/javascript">
-				$(document).ready(function(){
-					$('.generate_sewing_job').on('click',function(event, redirect=true)
-					{
-						if(redirect != false){
-							event.preventDefault();
-							submit_form($(this));
-						}
-					});
 
-					function submit_form(submit_btn)
+				function test_man(count,event)
+				{
+					event.preventDefault();
+					var sew_pack_method = document.getElementById('pack_method_'+count).value;
+					var sew_bundle_size = document.getElementById('bund_size_'+count).value;
+					var sew_no_of_cart = document.getElementById('no_of_cartons_'+count).value;
+					var max_carton = document.getElementById('max_crton_'+count).value;
+					// alert(sew_pack_method+' == '+sew_bundle_size+' == '+sew_no_of_cart+' == '+max_carton);
+					if (sew_pack_method == 0)
 					{
-						var pack_method = $("#pack_method").val();
-						if (pack_method == 0)
+						sweetAlert('Please Select Sewing Job Method','','warning');
+					}
+					else
+					{
+						if (sew_no_of_cart > max_carton)
 						{
-							sweetAlert('Please Select Sewing Job Method','','warning');
+							// sweetAlert('No of Cartons exceeding Max Cartons','','warning');
+							sweetAlert('Enter Cartons Less than '+max_carton,'','warning');
 						}
 						else
 						{
-							var bundle_size = $("#bund_size").val();
-							if (bundle_size > 0)
+							if (sew_bundle_size > 0)
 							{
 								title_to_show = "";
 							}
@@ -456,26 +476,35 @@
 							{
 								title_to_show = "Bundle Size not defined, Deafult bundle size will be applied";
 							}
-							sweetAlert({
-								title: "Are you sure to generate Sewing Jobs?",
-								text: title_to_show,
-								icon: "warning",
-								buttons: true,
-								dangerMode: true,
-								buttons: ["No, Cancel It!", "Yes, I am Sure!"],
-							}).then(function(isConfirm){
-								if (isConfirm) {
-										$('#'+submit_btn.attr('id')).trigger('click',false);
-								} else {
-									sweetAlert("Request Cancelled",'','error');
-									return;
-								}
-							});
-							return;
-							$("#loading-image").show();
+
+							if (sew_no_of_cart == -1 || sew_no_of_cart == 0 || sew_no_of_cart == null)
+							{
+								sweetAlert('Enter Valid No of Cartons','','warning');
+							}
+							else
+							{
+								sweetAlert({
+									title: "Are you sure to generate Sewing Jobs?",
+									text: title_to_show,
+									icon: "warning",
+									buttons: true,
+									dangerMode: true,
+									buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+								}).then(function(isConfirm){
+									if (isConfirm) {
+										document.getElementById('form_id_'+count).submit();
+										$("#loading-image").show();
+									} else {
+										sweetAlert("Request Cancelled",'','error');
+										return false;
+									}
+								});
+								return;
+							}
 						}
 					}
-				});
+					return false;
+				}
 			</script>
 		</div>
 	</div>
