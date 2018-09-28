@@ -212,7 +212,7 @@ if(isset($_POST["submit"]))
      
 
     $schedule_id=0; 
-    $sql_s="select id from $bai_pro3.pac_stat_log_input_job where input_job_no_random like '%".$schedule."%'"; 
+    $sql_s="select * from $bai_pro3.pac_stat_log_input_job where input_job_no_random like '%".$schedule."%'"; 
     $result_s=mysqli_query($link, $sql_s) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
     $mini_orders = mysqli_num_rows($result_s);
     
