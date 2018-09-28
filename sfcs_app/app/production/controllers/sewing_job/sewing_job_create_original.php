@@ -48,7 +48,7 @@
 				}
 				split_tot = split_tot + split;
 			}
-			var exces_from=document.getElementById("exces_from").value;
+			// var exces_from=document.getElementById("exces_from").value;
 			var mix_jobs=document.getElementById("mix_jobs").value;
 			// alert(mix_jobs);
 			if (mix_jobs == '')
@@ -57,12 +57,12 @@
 			}
 			else
 			{
-				if (exces_from == 0)
-				{
-					sweetAlert('Please Select Excess From','','warning');
-				}
-				else
-				{
+				// if (exces_from == 0)
+				// {
+				// 	sweetAlert('Please Select Excess From','','warning');
+				// }
+				// else
+				// {
 					if (split_tot > 0)
 					{
 						title_to_show = "";
@@ -87,7 +87,7 @@
 						}
 					});
 					return;
-				}
+				// }
 			}
 		}
 	});
@@ -770,7 +770,7 @@
 					if ($sum>0)
 					{
 						$merge_status=$_POST['mix_jobs'];
-						$exces_from=$_POST['exces_from'];
+						// $exces_from=$_POST['exces_from'];
 						$c_ref=$_POST['c_ref'];
 						$combo=$_POST['combo'];
 						
