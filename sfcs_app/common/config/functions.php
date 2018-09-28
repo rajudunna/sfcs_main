@@ -101,7 +101,7 @@ function leading_zeros($value, $places)
 
 function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link)
 {
-	include('config.php');
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$ims = substr($ims_size2,1);
 
 	if($ims>=01 && $ims<=50)

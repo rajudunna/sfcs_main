@@ -123,31 +123,7 @@ function update_m3_or($order_tid,$cut_no_ref,$operation,$link)
 		$color=$sql_row111['order_col_des'];		
 	}
 	
-	
-	$sql111="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_tid_ref='$doc_no' and m3_op_des='$operation'";
-	$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result111)==0)
-	{
-		for($i=0;$i<sizeof($size_code_db);$i++)
-		{
-			
-			if($size_qty[$i]>0)
-			{
-				//SR# 58655600 - KIRANG-20150815 added string quotes for plan module to handle TOP, CUT, EMB recuts.
-				$sql1="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no) values (NOW(),'$style','$schedule','$color','".$size_code_db[$i]."',$doc_no,".$size_qty[$i].",USER(),'$operation',$doc_no,'$plan_module','','R".leading_zeros($cut_no_ref,3)."')"; 
-			
-				//echo $sql."<br/>";
-				mysqli_query($link, $sql1) or exit("Sql Error6$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			}
-		}
-		
-	return 'TRUE';
-	}
-	else
-	{
-		return 'FALSE';
-	}
-	
+	return true;
 }
 
 if(isset($_POST['issue']))
@@ -321,10 +297,9 @@ if(isset($_POST['submit']))
 			
 		//calling the function to insert to bundle craetion data and cps log
 		$inserted = doc_size_wise_bundle_insertion_recut($docno[$i]);
-		if($inserted){
-			//Inserted Successfully
-		}
 	}
+
+	echo "<h2>Successfully Updated</h2>";
 	
 }
 

@@ -714,16 +714,14 @@ td{
 			return false;
 		}else{
 			for(var j =0; j<Number(cat_count);j++){
-				check_val[j] = document.getElementById('cat_'+j).checked;
+				var chk = document.getElementById('cat_'+j);
+				if(chk.checked){
+					check_val[j] = document.getElementById('cat_'+j).checked;
+				}
 			}
-			const check_t = 'true';
-			const ary_in = check_t.includes(check_val);
-			// alert(ary_in);
-			if(ary_in == false){
+			if(check_val.length == 0){
 				sweetAlert('Please Select atleast one category','','warning');
-				return false;
-			}else{
-				// return true;
+				return false;			
 			}
 		}
 		return true;
