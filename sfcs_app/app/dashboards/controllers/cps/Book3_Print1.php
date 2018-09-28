@@ -3148,7 +3148,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
   
   <?php
   $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id";
-//echo $sql;
+// echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -3158,6 +3158,7 @@ $width_det[]=round($sql_row['roll_width'],2);
 $leng_det[]=$sql_row['allocated_qty'];
 $batch_det[]=trim($sql_row['batch_no']);
 $shade_det[]=$sql_row['ref4'];
+$location_det[]=$sql_row['ref1'];
 $invoice_no[]=$sql_row['inv_no'];
 $locan_det[]=$sql_row['ref1'];
 $lot_det[]=$sql_row['lot_no'];
@@ -3257,8 +3258,8 @@ $item_name[] = $sql_row['item'];
   <td class=xl764118>Batch</td>
   <td class='xl764118'>Fabric Name</td>
   <td class=xl764118>Lot No</td>
- 
   <td class=xl764118>Shade</td>
+  <td class=xl764118>Location</td>
   <td class=xl7742018>Roll</br>No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Length</td>
@@ -3283,6 +3284,7 @@ $item_name[] = $sql_row['item'];
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>Excess</td>
+  <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>+</td>
@@ -3313,6 +3315,7 @@ $tot_bind_len=0;
 	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
 	 
 	  <td class=xl814118><?php echo $shade_det[$i]; ?></td>
+	  <td class=xl814118><?php echo $location_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_det[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
@@ -3343,6 +3346,7 @@ $tot_bind_len=0;
 	 <td class=xl804118></td>
 	 <td class=xl814118 style='font-size: 100%;'></td>
 	 
+	 <td class=xl814118></td>
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
@@ -3395,6 +3399,7 @@ $tot_bind_len=0;
 	 <td class=xl804118></td>
 	 <td class=xl814118 style='font-size: 100%;'></td>
 	 
+	 <td class=xl814118></td>
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>
 	 <td class=xl814118></td>

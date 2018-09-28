@@ -1080,7 +1080,11 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	border-left:.5pt solid windowtext;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:normal;}
+	white-space:normal;
+	word-wrap: break-word;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;}
 .xl9917319
 	{padding-top:1px;
 	padding-right:1px;
@@ -1124,7 +1128,11 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	border-left:.5pt solid windowtext;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:normal;}
+	white-space:normal;
+	word-wrap: break-word;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;}
 .xl10117319
 	{padding-top:1px;
 	padding-right:1px;
@@ -3449,6 +3457,7 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td class=xl764118>Lot No</td>
   
   <td class=xl764118>Shade</td>
+  <td class=xl764118>Location</td>
   <td class=xl774118>Roll </br> No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Length</td>
@@ -3497,8 +3506,8 @@ if(sizeof($roll_det)>0)
 			<td class=xl804118 style='text-align:center;padding-bottom:5pt;'><?php echo $batch_det[$i]; ?></td>
 			<td class=xl804118 style='text-align:center;padding-bottom:5pt;'><?php echo $item_name[$i]; ?></td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $lot_det[$i]; ?></td>
-			
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $shade_det[$i]; ?></td>
+			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $locan_det[$i]; ?></td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $roll_det[$i]; ?></td>
 			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
 			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
@@ -3524,6 +3533,7 @@ if(sizeof($roll_det)>0)
 		<td class=xl804118></td>
 		<td class=xl814118 style='font-size: 100%;'></td>
 		
+		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
@@ -3573,7 +3583,7 @@ else {
 		<td class=xl804118></td>
 		<td class=xl804118></td>
 		<td class=xl814118 style='font-size: 100%;'></td>
-		
+		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
@@ -3774,6 +3784,7 @@ echo "</tbody></table>";
   <td class=xl6417319 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/>
  <br/><strong><u> Cutting Supervisor Authorization<br/></u></strong></td>
  </tr>
+ <br/>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   <td colspan=16 rowspan=2 class=xl9117319 style='border-right:.5pt solid black;
@@ -3809,7 +3820,7 @@ echo "</tbody></table>";
   <td height=21 class=xl821731ff9 style='height:15.75pt'></td>
   </tr>
 
- 
+<!--  
  <tr height=30 style='height:15.75pt'>
   <td></td>
   <td  colspan=2 class=xl7217319>&nbsp;</td>
@@ -3821,7 +3832,7 @@ echo "</tbody></table>";
   <td  colspan=2 class=xl7317319>Excess</td>
   <td  colspan=3 class=xl8217319></td>
  </tr>
- 
+  -->
 
 <!--  
  <tr height=30 style='height:15.75pt'>
