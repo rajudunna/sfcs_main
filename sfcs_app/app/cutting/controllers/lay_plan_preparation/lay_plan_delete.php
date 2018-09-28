@@ -210,43 +210,17 @@ if(isset($_POST["submit"]))
         $check_oc+=echo_title("bai_orders_db_confirm","count(*)","order_tid",$order_tid[$i],$link); 
     } 
      
-    $mini_orders=0; 
+
     $schedule_id=0; 
-	$sql_s="select id from $brandix_bts.tbl_orders_master where product_schedule=".$schedule." limit 1"; 
-	$result_s=mysqli_query($link, $sql_s) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	if(mysqli_num_rows($result_s) > 0) 
-	{ 
-		while($roww1=mysqli_fetch_array($result_s)) 
-		{ 
-			$schedule_id=$roww1['id']; 
-		} 
-		$sql_sid="select id from $brandix_bts.tbl_min_ord_ref where ref_crt_schedule=".$schedule_id.""; 
-		$result_sid=mysqli_query($link, $sql_sid) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		if(mysqli_num_rows($result_sid) > 0) 
-		{ 
-			while($roww2=mysqli_fetch_array($result_sid)) 
-			{ 
-				$m_ref_id=$roww2['id']; 
-			} 
-			$sql_mid="select * from $brandix_bts.tbl_miniorder_data where mini_order_ref=".$m_ref_id.""; 
-			$result_mid=mysqli_query($link, $sql_mid) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			$mini_orders=mysqli_num_rows($result_mid); 
-		} 
-		else 
-		{ 
-			$mini_orders=0; 
-		}         
-	} 
-	else 
-	{ 
-		$mini_orders=0; 
-		$schedule_id=0; 
-	}
+    $sql_s="select id from $bai_pro3.pac_stat_log_input_job where input_job_no_random like '%".$schedule."%'"; 
+    $result_s=mysqli_query($link, $sql_s) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $mini_orders = mysqli_num_rows($result_s);
+    
     if($mini_orders>0) 
     { 
         echo "<h2>Already Sewing Orders Generated ...!</h2>"; 
 		echo "<h2>Please delete Sewing Orders and try again...!</h2>"; 
-    } 
+    }
     else 
     { 
 		if($check>0 || $check_a>0 || $check_c>0 || $check_m>0 || $check_oc>0) 
