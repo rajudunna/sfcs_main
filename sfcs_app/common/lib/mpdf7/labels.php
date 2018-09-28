@@ -151,6 +151,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$html.= "<tr><td>BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b>  Lable Id:<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong></td></tr>";
 				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."</tr>";
 				break;
+
+				
 			}	
 			case "Thread":	
 			{	
