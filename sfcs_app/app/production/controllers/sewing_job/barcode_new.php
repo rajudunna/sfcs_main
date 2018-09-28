@@ -90,6 +90,13 @@
 						 // </table>
 					 // </div><br><br><br>';
 
+			$get_destination="select destination from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
+			
+			$destination_result=mysqli_query($link, $get_destination)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($dest_row = mysqli_fetch_array($destination_result))
+            {
+            	$destination=$dest_row['destination'];
+            }
 			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and tor.operation_code not in (10,15,200)";
 			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($ops = mysqli_fetch_array($sql_result1))
@@ -102,14 +109,15 @@
 							<!--<div style="margin-left:50px;"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>-->
 							<table>
 								<tr>
-									<td colspan=11><div><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
+									<td colspan=7><div><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
 									</td>
-									<td colspan=1 style="border: 4px solid black;
+									<td colspan=5 style="border: 4px solid black;
 									border-top-right-radius: 30px 12px; font-size:12px; width:60px; height:40px; text-align:center;"> <p style= "font-size: 15px;font-weight: bold;">'.$seq_num.'</p></td>
 								</tr>
 								<tr>
 									<td colspan=4><b>Barcode ID:</b>'.$barcode.' </td>
-									<td> <b>Qty:</b>'.$quantity.'</td>
+									<td colspan=3> <b>Qty:</b>'.$quantity.'</td>
+									<td colspan=1> <b>Country Code:</b>'.$destination.'</td>
 								</tr>
 								<tr>
 									<td colspan=4><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td>
@@ -121,7 +129,7 @@
 								</tr>
 								
 								<tr>
-									<td colspan=2><b>Color: </b></td><td> '.substr($barcode_rslt['order_col_des'],0,17).'</td>
+									<td colspan=2><b>Color: </b></td><td> '.substr($barcode_rslt['order_col_des'],0,25).'</td>
 									<td></td>
 								</tr>
 								<tr>	
