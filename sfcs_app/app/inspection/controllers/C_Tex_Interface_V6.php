@@ -2219,9 +2219,13 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Roll Status</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Rejection reason</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Partial Rej Qty</td>
+  <?php
+  if($shrinkage_inspection == 'yes')
+	  { ?>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Length</td>
   <td class=xl13324082 dir=LTR  colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Width</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Group</td>
+	 <?php } ?>
   <td class=xl13324082 dir=LTR colspan=3 width=68 style='border-left:none;width:51pt'>Roll Remarks</td>
  </tr>
  
@@ -2378,12 +2382,15 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		echo "</select>
 	  </td>
 
-	  <td class=xl12824082 style='border-left:none'><input class='textbox float par_rej' ".$readonly."  type='text' min='0' name='ele_par_length[$i]' id='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
+	  <td class=xl12824082 style='border-left:none'><input class='textbox float par_rej' ".$readonly."  type='text' min='0' name='ele_par_length[$i]' id='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>";
+	  if($shrinkage_inspection == 'yes')
+	  {
+	  echo "<td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082 colspan=3 style='border-left:none'><input class='textbox' ".$readonly." type='text' id='roll_remarks[$i]' name='roll_remarks[$i]' value='".$temp[14]."' onchange='change_body(2,this.name,$i)'></td>
-
+	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
+	  }
+	 echo "<td class=xl12824082 colspan=3 style='border-left:none'><input class='textbox' ".$readonly." type='text' id='roll_remarks[$i]' name='roll_remarks[$i]' value='".$temp[14]."' onchange='change_body(2,this.name,$i)'></td>
+	 
 	 </tr>";
 	 $temp_shade_tag="";
 	
