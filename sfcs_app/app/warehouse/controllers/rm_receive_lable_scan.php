@@ -39,7 +39,7 @@
 		<?php
 		
 			if((isset($_POST['barcode']) && $_POST['barcode']!='') || (isset($_POST['barcode1']) && $_POST['barcode1']!='')){
-
+				
 				if($_POST['barcode']!=''){
 					$bar_code_new = $_POST['barcode'];
 				}else {
