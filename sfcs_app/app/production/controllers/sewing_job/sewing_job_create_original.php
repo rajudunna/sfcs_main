@@ -694,7 +694,7 @@
 											<table class='table table-bordered'>
 												<tr>
 													<th style='display: none;'><center>Mix Cut Jobs</center></th>
-													<th><center>Excess From</center></th>
+													<th style='display: none;'><center>Excess From</center></th>
 													<th><center>Control</center></th>
 												</tr>
 												<tr>
@@ -707,7 +707,7 @@
 															</select>
 														</center>
 													</td>
-													<td>
+													<td style='display: none;'> 
 														<center>
 															<select name='exces_from' id='exces_from' required class='form-control'>
 																<option value=''>Please Select</option>
