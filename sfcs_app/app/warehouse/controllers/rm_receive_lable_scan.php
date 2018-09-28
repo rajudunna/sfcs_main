@@ -11,7 +11,7 @@
 			$query="SELECT * FROM $bai_pro3.plant_details";
 			$query_result=mysqli_query($link, $query) or exit("Error getting Plant Details");
 			echo "<tr>
-					<td>Plant Name</td><td>:</td></br>
+					<td>Sender Plant Name</td><td>:</td></br>
 					<td>
 					<select name=\"plant_name\" id='plant_name' required>";
 			echo "<option value='' selected disabled>Select Plant Name</option>";
@@ -37,6 +37,7 @@
 
 
 		<?php
+		
 			if((isset($_POST['barcode']) && $_POST['barcode']!='') || (isset($_POST['barcode1']) && $_POST['barcode1']!='')){
 				
 				if($_POST['barcode']!=''){
