@@ -218,7 +218,8 @@
 						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
 						
 						$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
-						$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$c_ref,$link);
+						// $bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$c_ref,$link);
+						$bundle = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no",$schedule,$link);
 						$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 						$pack_method = echo_title("$brandix_bts.tbl_carton_ref","carton_method","carton_barcode",$schedule,$link);
 						$tbl_carton_ref_check = echo_title("$brandix_bts.tbl_carton_ref","count(*)","style_code='".$style_id."' AND ref_order_num",$sch_id,$link);
