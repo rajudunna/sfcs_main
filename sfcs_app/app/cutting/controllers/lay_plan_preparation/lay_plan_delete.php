@@ -212,10 +212,9 @@ if(isset($_POST["submit"]))
      
 
     $schedule_id=0; 
-    $sql_s="select * from $bai_pro3.pac_stat_log_input_job where input_job_no_random like '%".$schedule."%'"; 
+    $sql_s="select * from $bai_pro3.packing_summary_input where order_del_no ='$schedule'";
     $result_s=mysqli_query($link, $sql_s) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
     $mini_orders = mysqli_num_rows($result_s);
-    
     if($mini_orders>0) 
     { 
         echo "<h2>Already Sewing Orders Generated ...!</h2>"; 
