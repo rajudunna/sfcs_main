@@ -709,7 +709,7 @@
 													</td>
 													<td style='display: none;'> 
 														<center>
-															<select name='exces_from' id='exces_from' required class='form-control'>
+															<select name='exces_from' id='exces_from' class='form-control'>
 																<option value=''>Please Select</option>
 																<option value='1'>First Cut</option>
 																<option value='2'>Last Cut</option>
@@ -765,7 +765,7 @@
 					$style_id=$_POST['style_id'];
 					$sch_id=$_POST['sch_id'];
 					$pack_method=$_POST['pack_method'];
-					
+
 					$sum = array_sum($no_of_cartons);
 					if ($sum>0)
 					{
@@ -774,7 +774,7 @@
 						$c_ref=$_POST['c_ref'];
 						$combo=$_POST['combo'];
 						
-						$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."', merge_status='".$merge_status."' where id='".$c_ref."'";
+						$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='0', merge_status='".$merge_status."' where id='".$c_ref."'";
 						// echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Failed to update Carton Details");
 						for ($i=0; $i < sizeof($combo); $i++)
