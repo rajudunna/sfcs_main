@@ -22,7 +22,7 @@
     //temp values to insert to mo_quantites table    
     $temp_input_job_no_random = $input_job_no_random;
     $temp_input_job_no = $input_job_no;
-   
+    $jobs_array = '';
     $getlastrec="SELECT input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$input_job_no_random' and input_job_no = '$input_job_no' ORDER BY tid DESC LIMIT 0,1"; 
     // echo $getlastrec;die();
     $res_last_rec=mysqli_query($link,$getlastrec);
@@ -72,7 +72,7 @@
             $destination=$row['destination']; 
             $packing_mode=$row['packing_mode']; 
             $old_size=$row['old_size']; 
-
+            $jobs_array[] = $input_job_no;
             $url_s = getFullURLLevel($_GET['r'],'split_jobs.php',0,'N');
 
             $sqlx="SELECT order_del_no FROM $bai_pro3.packing_summary_input where tid='$tid'"; 
@@ -172,7 +172,11 @@
         }
     }
     $url = getFullURLLevel($_GET['r'],'split_jobs.php','0','N');
-    update_barcode_sequences($ninput_job_no_random);
+    $jobs_array = array_unique($jobs_array);
+    foreach($jobs_array as $job){
+        $updated = update_barcode_sequences($job);
+    }
+    $updated = update_barcode_sequences($ninput_job_no_random);
     echo "<script>sweetAlert('Success','Successfully Splitted your job.','success');</script>";
     echo "<script> 
                     setTimeout('Redirect()',3000); 
@@ -189,7 +193,7 @@
 function update_barcode_sequences($input_job_random){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     $query = "select group_concat(tid order by tid DESC) as tid from $bai_pro3.pac_stat_log_input_job 
-             where input_job_no_random = $input_job_random";
+             where input_job_no_random = '$input_job_random' ";
     $result = mysqli_query($link,$query);
     while($row = mysqli_fetch_array($result)){
         $tids = $row['tid'];
@@ -201,7 +205,7 @@ function update_barcode_sequences($input_job_random){
             $counter--;
         }
 	}
-	return;
+	return true;
 }  
 
 ?>
