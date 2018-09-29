@@ -2,7 +2,7 @@
 $start_timestamp = microtime(true);
 set_time_limit(6000000);
 
-	$sql3="delete from $bai_pro3.order_plan_schedule_level";
+	$sql3="delete from $bai_pro3.order_plan_schedule_level where schedule_no='$schedule'";
 	$res1=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res1)
 	{
@@ -20,9 +20,6 @@ set_time_limit(6000000);
 ?>
 <?php
 
-
-$sql3="truncate table $bai_pro3.order_plan_schedule_level";
-mysqli_query($link, $sql3) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
 $sql="insert into $bai_pro3.order_plan_schedule_level (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des,material_sequence ) select SCHEDULE,MO_Released_Status_Y_N,Style,GMT_Color,GMT_Size,MO_Qty,Item_Code,Item_Description,Order_YY_WO_Wastage,RM_Color_Description,SEQ_NUMBER from $m3_inputs.order_details WHERE SCHEDULE='".$schedule."' and MO_Released_Status_Y_N='Y'";
 // echo $sql."<br>";
@@ -107,7 +104,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}		
 }
 
-$sql3="delete from $bai_pro3.order_plan_schedule_level";
+$sql3="delete from $bai_pro3.order_plan_schedule_level where schedule_no='$schedule'";
 mysqli_query($link, $sql3) or exit("Sql Error11".mysql_error());
 
 $sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_OS_2\")";
