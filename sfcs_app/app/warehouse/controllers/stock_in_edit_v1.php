@@ -9,6 +9,33 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //	require_once('phplogin/auth.php');
 ?>
 
+<?php
+	// echo "upadte : ".isset($_POST['updat']);
+	if(isset($_POST['updat']))
+	{	
+		$ref1=$_POST['ref1'];
+		$ref4=$_POST['ref4'];
+		$ref3=$_POST['ref3'];
+		$ref5=$_POST['ref5'];
+		$tid=$_POST['tid'];
+		$lot_no_new=$_POST['lot_no'];
+		$user_name=$_SESSION['SESS_MEMBER_ID'];
+		// echo sizeof($ref1);
+		// die();
+		for($i=0; $i<sizeof($ref1); $i++)
+		{
+				//Changed to update only locations.	
+				$sql="update $bai_rm_pj1.store_in set ref1=\"".$ref1[$i]."\" where tid=".$tid[$i];
+				// echo $sql.' eleven<br>';
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error-g".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+			
+		}
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = '".getFullURL($_GET['r'],'stock_in_edit_v1.php','N')."&lot_no=".$lot_no_new."'; }</script>";
+		
+	}
+
+?>
 <?php  
 
 // $auth_members=array();
@@ -99,7 +126,6 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			if(isset($_POST['submit']))
 			{
 				$lot_no=$_POST['lot_no'];
-				
 			}
 			else
 			{
@@ -116,6 +142,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			{
 
 			$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
+			// echo $sql.'  one<br/>';
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -147,6 +174,8 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			}
 
 			$sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+			// echo $sql.'  two<br/>';
+
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -179,6 +208,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 
 
 			$sql="select * from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+			// echo $sql.'  three<br/>';
 			// echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-c".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
@@ -206,7 +236,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 					{
 						echo '<td><select name="ref1[]">';
 						$sql1="select * from $bai_rm_pj1.location_db where status=1 order by sno";
-						// echo $sql1."<br>";
+						// echo $sql1.'  four<br/>';
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error-d".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo "<option value=\"\" selected></option>";
 						while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -259,12 +289,11 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 						echo "<td><input type=\"text\" class='form-control' value=\"".$ref3."\" readonly  name=\"ref3[]\"></td>";
 						echo "<td><input type=\"text\" class='form-control' value=\"".$ref5."\" readonly name=\"ref5[]\"></td>";
 					}
-					
 				}
 				else
 				{
 					echo '<td>'.leading_zeros($tid,8).'</td>';
-					echo "<td>$location</td><td>$box</td><td>$qty_rec</td><td>$available</td>";
+					echo "<td>$location</td><td>$box</td><td>$qty_rec</td><td>$available</td><td></td><td></td><td></td>";
 				}
 				
 				
@@ -272,9 +301,10 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			}
 
 			echo "</tbody></table></div>";
+			echo "<div class='col-sm-6'><div class='col-sm-7'></div><div class='col-sm-5'></div></div><div class='col-sm-6'><div class='col-sm-8'></div><div class='col-sm-4'>";
 			echo '<input type="hidden" name="lot_no" value="'.$lot_no.'">';
-
 			echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable &nbsp;<input type="submit" value="Submit" class="btn btn-info" name="updat" id="updat" onclick="javascript:button_disable();"/></form>';
+			echo "</div></div>";
 			echo "<div class='col-md-12'>";
 			echo "<h2>Docket Transaction Log:</h2>";
 
@@ -282,6 +312,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			echo "<table class='table table-striped table-bordered'>";
 			echo "<thead><tr class=''><th>date</th><th>Qty</th><th>Box/Roll Number</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr></thead>";
 			$sql="select store_out.date as date1,store_out.qty_issued as qty,store_in.ref2 as ref2,store_out.style as style,store_out.schedule as schedule,store_out.cutno as jobno, store_out.remarks as remarks,store_out.updated_by as user from $bai_rm_pj1.store_out left join $bai_rm_pj1.store_in on store_out.tran_tid = store_in.tid where tran_tid in (select tid from bai_rm_pj1.store_in where lot_no=".trim($lot_no).") order by store_in.date";
+			// echo $sql." five<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			echo "<tbody>";
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -296,7 +327,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				if($doc_str == 'D' || $doc_str == 'd')
 				{
 					$sql = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.plandoc_stat_log where doc_no = '$doc_no');";
-					// echo $sql."<br>";
+					// echo $sql." six<br>";
 					$result = mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result)>0)
 					{
@@ -315,7 +346,8 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				}
 				else
 				{
-					$sql11 = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.recut_v2 where doc_no = '$doc_no');";
+					$sql11 = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.recut_v2 where doc_no = '$doc_no')";
+					// echo $sql11.' seven <br>';
 					$result11 = mysqli_query($link, $sql11) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result11)>0)
 					{
@@ -327,7 +359,8 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 					}
 					else
 					{
-						$sql22 = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.recut_v2_archive where doc_no = '$doc_no');";
+						$sql22 = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.recut_v2_archive where doc_no = '$doc_no')";
+						// echo $sql22.' eight<br/>';
 						$result22 = mysqli_query($link, $sql22) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($result22)>0)
 						{
@@ -365,7 +398,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			if($mr_tid!='')
 			{
 				$sql2="SELECT DATE(mrn_out_allocation.log_time) as dat,TIME(mrn_out_allocation.log_time) as tim,mrn_out_allocation.mrn_tid as tid,mrn_out_allocation.lot_no as lot,mrn_out_allocation.lable_id as label,mrn_out_allocation.iss_qty as qty,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',1) AS username,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',-1) AS hostname,store_in.ref2 FROM $bai_rm_pj2.mrn_out_allocation left join $bai_rm_pj1.store_in on mrn_out_allocation.lable_id = store_in.tid WHERE mrn_out_allocation.lable_id in (select tid from $bai_rm_pj1.store_in where tid in ($mr_tid))";
-				// echo $sql2."<br>";
+				// echo $sql2."  nine<br>";
 				$sql_result=mysqli_query($link, $sql2) or exit("No Data In MRN Transaction Log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 			echo "<tbody>";
@@ -382,6 +415,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				$mrn_ref2 = $sql_row['ref2'];
 				
 				$sql3="select style,schedule,remarks from $bai_rm_pj2.mrn_track where tid=".$mrn_tid."";
+				// echo $sql3.' ten <br/>';
 				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error-f".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row3=mysqli_fetch_array($sql_result3))
 				{
@@ -406,33 +440,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 </body>
 			
 
-<?php
-	//echo "upadte : ".isset($_POST['updat']);
-	if(isset($_POST['updat']))
-	{	
-		echo "Hello World..!";exit;
-		$ref1=$_POST['ref1'];
-		$ref4=$_POST['ref4'];
-		$ref3=$_POST['ref3'];
-		$ref5=$_POST['ref5'];
-		$tid=$_POST['tid'];
-		$lot_no_new=$_POST['lot_no'];
-		$user_name=$_SESSION['SESS_MEMBER_ID'];
-		
-		for($i=0; $i<sizeof($ref1); $i++)
-		{
-					
-				//Changed to update only locations.	
-				$sql="update store_in set ref1=\"".$ref1[$i]."\" where tid=".$tid[$i];
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error-g".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
-			
-		}
-		//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = '".getFullURL($_GET['r'],'stock_in_edit_v1.php','N')."&lot_no=".$lot_no_new."'; }</script>";
-		
-	}
 
-?>
 <!-- <script>
 $(function() {
   $('#course').on('keydown',function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||(/65|67|86|88/.test(e.keyCode)&&(e.ctrlKey===true||e.metaKey===true))&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
