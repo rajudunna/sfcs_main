@@ -2,7 +2,13 @@
 include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
     $vpo=$_GET["vpo"]; 
-    $style=$_GET["style"]; 
+    $style=$_GET["style"];
+
+    if ($_POST['style'])
+    {
+    	$vpo=$_POST["vpo"]; 
+    	$style=$_POST["style"]; 
+    }	
 ?> 
 <html> 
 <head> 
@@ -87,12 +93,12 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 			<div class='col-md-9'>
 				<form name="test" action="<?php $_GET['r'] ?>" method="POST" class='form-inline'> 
 					<?php 
-						echo "VPO: <select name=\"vpo\" onchange=\"firstbox();\" class='form-control'>"; 
-						$sql="select vpo from bai_pro3.bai_orders_db_confirm where order_style_no like 'Y%' group by vpo order by vpo";     
+						echo "VPO: <select name=\"vpo\" required onchange=\"firstbox();\" class='form-control'>"; 
+						$sql="select vpo from bai_pro3.bai_orders_db_confirm group by vpo order by vpo";     
 						$sql_result=mysqli_query($link, $sql) or exit("Error while getting vpo"); 
 						$sql_num_check=mysqli_num_rows($sql_result); 
 
-						echo "<option value=\"NIL\" selected>--Select--</option>"; 
+						echo "<option value='' selected>--Select--</option>"; 
 						while($sql_row=mysqli_fetch_array($sql_result)) 
 						{
 							if(str_replace(" ","",$sql_row['vpo'])==str_replace(" ","",$vpo)) 
@@ -106,10 +112,10 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 						} 
 						echo "</select>"; 
 						
-						echo "Style: <select name=\"style\" onchange=\"secondbox();\" class='form-control'>"; 
+						echo "Style: <select name=\"style\" required onchange=\"secondbox();\" class='form-control'>"; 
 						$sql="select order_style_no from bai_pro3.bai_orders_db_confirm where vpo like \"%$vpo%\" GROUP BY order_style_no order by order_style_no";     
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-						echo "<option value=\"NIL\" selected>--Select--</option>"; 
+						echo "<option value='' selected>--Select--</option>"; 
 						while($sql_row=mysqli_fetch_array($sql_result)) 
 						{ 
 							if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style)) 
@@ -161,7 +167,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 			    $vpo=$_POST['vpo'];
 			    $style=$_POST['style'];
 				$getschedule="select order_del_no,packing_method,group_concat(order_col_des SEPARATOR '\n') as cols,group_concat(order_col_des) as cols_new from $bai_pro3.bai_orders_db_confirm where vpo='".$vpo."' and order_style_no='".$style."' group by order_del_no,packing_method"; 
-				$sql_result=mysqli_query($link, $getschedule) or exit("Error while getting schedules for the vpo"); 
+				$sql_result=mysqli_query($link, $getschedule) or exit("Error while getting schedules for the vpo1"); 
 				while($sql_row=mysqli_fetch_array($sql_result)) 
 			    { 
 			        $schedule[]=$sql_row['order_del_no']; 
@@ -170,19 +176,19 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 			        $cols_new[]=$sql_row['cols_new']; 
 			    }
 				$query_val='';
-				$ops="select * from $brandix_bts.tbl_ims_ops where application in ('IPS','IMS','Carton_Ready')"; 
+				$ops="select * from $brandix_bts.tbl_ims_ops where appilication in ('IPS','IMS','Carton_Ready')";
 				$ops_result=mysqli_query($link, $ops) or exit("Error while getting schedules for the vpo"); 
 				while($row_result=mysqli_fetch_array($ops_result)) 
 			    { 
-			        if($row_result['application']=='IPS')
+			        if($row_result['appilication']=='IPS')
 					{
 						$query_val .= "if(operation_id='".$row_result['operation_code']."',SUM(recevied_qty),0) AS in_qty,"; 
 					}
-					else if($row_result['application']=='IMS')
+					else if($row_result['appilication']=='IMS')
 					{
 						$query_val .= "if(operation_id='".$row_result['operation_code']."',SUM(recevied_qty),0) AS out_qty,";
 					}
-					else if($row_result['application']=='Carton_Ready')
+					else if($row_result['appilication']=='Carton_Ready')
 					{
 						$query_val .= "if(operation_id='".$row_result['operation_code']."',SUM(recevied_qty),0) AS pac_qty,";
 					}
