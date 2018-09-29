@@ -164,7 +164,7 @@
 					else
 					{
 						echo '<br><div class="alert alert-danger">
-								  <strong>Warning!</strong><br>Generate Sewing Jobs in Packing List Based Sewing Job Screen';
+								  <strong>Warning!</strong><br>Generate Sewing Jobs in Sewing Job Screen';
 								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."'>Click Here</a>
 								</div>";
 					}
@@ -178,7 +178,7 @@
 					else
 					{
 						echo '<br><div class="alert alert-danger">
-								  <strong>Warning!</strong><br>Generate Sewing Jobs in Packing List Based Sewing Job Screen';
+								  <strong>Warning!</strong><br>Generate Sewing Jobs in Sewing Job Screen';
 								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."'>Click Here</a>
 								</div>";
 					}
@@ -420,7 +420,9 @@
 												else
 												{
 													$url=getFullURL($_GET['r'],'input_job_mix_ch_report.php','N');
-													echo"<td>Sewing Job Generated 
+													echo"<td>
+															<h4><span class='label label-success'>Sewing Job Generated</span></h4>
+															<br>
 															<a class='btn btn-info' href='$url&schedule=$schedule&seq_no=$seq_no&style=$style'>Print Job Sheets</a>
 														</td>";
 												}
@@ -429,8 +431,6 @@
 											{
 												echo"<td><h4><span class='label label-danger'>Packing List not yet Generated</span></h4></td>";
 											}
-											
-												
 											echo "<tr>
 										</form>";
 										echo '<input type="hidden" name="count" value="'.$count.'" id="count">';
@@ -464,7 +464,7 @@
 						if (sew_no_of_cart > max_carton)
 						{
 							// sweetAlert('No of Cartons exceeding Max Cartons','','warning');
-							sweetAlert('Enter Cartons Less than '+max_carton,'','warning');
+							sweetAlert('Enter Cartons Less than or equal to '+max_carton,'','warning');
 						}
 						else
 						{
