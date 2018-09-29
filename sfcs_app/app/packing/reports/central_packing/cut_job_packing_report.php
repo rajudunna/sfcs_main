@@ -169,6 +169,25 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 			        $cols[]=$sql_row['cols']; 
 			        $cols_new[]=$sql_row['cols_new']; 
 			    }
+				$query_val='';
+				$ops="select * from $brandix_bts.tbl_ims_ops where application in ('IPS','IMS','Carton_Ready')"; 
+				$ops_result=mysqli_query($link, $ops) or exit("Error while getting schedules for the vpo"); 
+				while($row_result=mysqli_fetch_array($ops_result)) 
+			    { 
+			        if($row_result['application']=='IPS')
+					{
+						$query_val .= "if(operation_id='".$row_result['operation_code']."',SUM(recevied_qty),0) AS in_qty,"; 
+					}
+					else if($row_result['application']=='IMS')
+					{
+						$query_val .= "if(operation_id='".$row_result['operation_code']."',SUM(recevied_qty),0) AS out_qty,";
+					}
+					else if($row_result['application']=='Carton_Ready')
+					{
+						$query_val .= "if(operation_id='".$row_result['operation_code']."',SUM(recevied_qty),0) AS pac_qty,";
+					}
+				}
+				
 			    echo "<h3><span class=\"label label-info\"><b>Style: ".$style.", Schedules: ".substr(implode(",",$schedule),0,-1)."</b></span></h3><br/>"; 
 			    // Cut Level
 				$cutnos=0;
@@ -218,10 +237,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 				            echo "<td height=20 style='height:15.0pt;align:centre;'>".$pack_method[$iii]."</td>"; 
 				            echo "<td width=300 height=20  colspan=2 style='height:15.0pt'>".str_replace(",","</br>",$cols_new[$iii])."</td>"; 
 				            echo "<td height=20 style='height:15.0pt'>".$ii."</td>";
-							$sql13="SELECT input_job_no_random_ref,
-							if(operation_id='129',SUM(recevied_qty),0) AS in_qty, 
-							if(operation_id='130',SUM(recevied_qty),0) AS out_qty, 
-							if(operation_id='950',SUM(recevied_qty),0) AS pac_qty
+							$sql13="SELECT $query_val input_job_no_random_ref
 							FROM $brandix_bts.bundle_creation_data WHERE cut_number='".$ii."' and input_job_no_random_ref in ('".implode("','",$sew_job_rand)."') GROUP BY input_job_no order by input_job_no*1"; 
 							$result13=mysqli_query($link, $sql13) or die("Error-".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row13=mysqli_fetch_array($result13)) 
