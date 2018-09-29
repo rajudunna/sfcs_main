@@ -22,7 +22,7 @@
     //temp values to insert to mo_quantites table    
     $temp_input_job_no_random = $input_job_no_random;
     $temp_input_job_no = $input_job_no;
-    $jobs_array = '';
+
     $getlastrec="SELECT input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$input_job_no_random' and input_job_no = '$input_job_no' ORDER BY tid DESC LIMIT 0,1"; 
     // echo $getlastrec;die();
     $res_last_rec=mysqli_query($link,$getlastrec);
