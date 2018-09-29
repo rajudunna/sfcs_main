@@ -3487,6 +3487,8 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>Excess</td>
   <td class=xl744118>&nbsp;</td>
+  <td class=xl744118>&nbsp;</td>
+  <td class=xl744118>&nbsp;</td>
   <td class=xl744118>+</td>
   <td class=xl744118>-</td>
 
