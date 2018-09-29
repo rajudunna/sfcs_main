@@ -105,7 +105,7 @@
 														$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty_new."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 														mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 														$id = mysqli_insert_id($link);
-														update_barcode_sequence($id,$rand,$job_counter);
+														$jobs_array[] = $rand;
 														$job_counter++;
 														// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 														$qty_new=0;
@@ -115,7 +115,7 @@
 														$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$split_qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 														mysqli_query($link, $sql1q) or die("Error---2".mysqli_error($GLOBALS["___mysqli_ston"]));
 														$id = mysqli_insert_id($link);
-														update_barcode_sequence($id,$rand,$job_counter);
+														$jobs_array[] = $rand;
 														$job_counter++;
 														// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$split_qty."</td></tr>";
 														$qty_new=$qty_new-$split_qty;
@@ -128,7 +128,7 @@
 												$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty_new."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 												mysqli_query($link, $sql1q) or die("Error---3".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$id = mysqli_insert_id($link);
-												update_barcode_sequence($id,$rand,$job_counter); $job_counter++;
+												$jobs_array[] = $rand; $job_counter++;
 												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 												$qty_new=0;
 											}
@@ -149,7 +149,7 @@
 														$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 														mysqli_query($link, $sql1q) or die("Error---5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 														$id = mysqli_insert_id($link);
-														update_barcode_sequence($id,$rand,$job_counter);
+														$jobs_array[] = $rand;
 														$job_counter++;
 														// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 														$qty=0;
@@ -159,7 +159,7 @@
 														$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$split_qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 														mysqli_query($link, $sql1q) or die("Error---6".mysqli_error($GLOBALS["___mysqli_ston"])); 
 														$id = mysqli_insert_id($link);
-														update_barcode_sequence($id,$rand,$job_counter);
+														$jobs_array[] = $rand;
 														$job_counter++;
 														// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$split_qty."</td></tr>";
 														$qty=$qty-$split_qty;
@@ -172,7 +172,7 @@
 												$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 												mysqli_query($link, $sql1q) or die("Error---7".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$id = mysqli_insert_id($link);
-												update_barcode_sequence($id,$rand,$job_counter); $job_counter++;
+												$jobs_array[] = $rand; $job_counter++;
 												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 												$qty=0;
 											}																				
@@ -199,7 +199,7 @@
 					$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$row12["size_tit"]."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'3','$inserted_id','$job_counter')";
 					mysqli_query($link, $sql1q) or die("Error---8".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					$id = mysqli_insert_id($link);
-					update_barcode_sequence($id,$rand,$job_counter);
+					$jobs_array[] = $rand;
 					$job_counter++;
 					// echo "<tr><td>".$docket_number."</td><td>".$row12["color"]."</td><td>".$row12["size_ref"]."</td><td>".$row12["size_tit"]."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 				}
@@ -218,7 +218,7 @@
 					$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$row12["size_tit"]."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'2','$inserted_id','$job_counter')";
 					mysqli_query($link, $sql1q) or die("Error---9".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$id = mysqli_insert_id($link);
-					update_barcode_sequence($id,$rand,$job_counter); 
+					$jobs_array[] = $rand; 
 					$job_counter++;
 					// echo "<tr><td>".$docket_number."</td><td>".$row12["color"]."</td><td>".$row12["size_ref"]."</td><td>".$row12["size_tit"]."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 				}
@@ -282,7 +282,7 @@
 													$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty_new."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 													mysqli_query($link, $sql1q) or die("Error---10".mysqli_error($GLOBALS["___mysqli_ston"])); 
 													$id = mysqli_insert_id($link);
-													update_barcode_sequence($id,$rand,$job_counter);
+													$jobs_array[] = $rand;
 													$job_counter++;
 													// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 													$qty_new=0;
@@ -292,7 +292,7 @@
 													$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$split_qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 													mysqli_query($link, $sql1q) or die("Error---11".mysqli_error($GLOBALS["___mysqli_ston"]));
 													$id = mysqli_insert_id($link);
-													update_barcode_sequence($id,$rand,$job_counter); 
+													$jobs_array[] = $rand; 
 													$job_counter++;
 													// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$split_qty."</td></tr>";
 													$qty_new=$qty_new-$split_qty;
@@ -305,7 +305,7 @@
 											$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty_new."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 											mysqli_query($link, $sql1q) or die("Error---12".mysqli_error($GLOBALS["___mysqli_ston"]));
 											$id = mysqli_insert_id($link);
-											update_barcode_sequence($id,$rand,$job_counter); 
+											$jobs_array[] = $rand; 
 											$job_counter++;
 											// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 											$qty_new=0;
@@ -327,7 +327,7 @@
 													$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 													mysqli_query($link, $sql1q) or die("Error---13".mysqli_error($GLOBALS["___mysqli_ston"]));
 													$id = mysqli_insert_id($link);
-													update_barcode_sequence($id,$rand,$job_counter); 
+													$jobs_array[] = $rand; 
 													$job_counter++;
 													// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 													$qty=0;
@@ -337,7 +337,7 @@
 													$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$split_qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 													mysqli_query($link, $sql1q) or die("Error---14".mysqli_error($GLOBALS["___mysqli_ston"]));
 													$id = mysqli_insert_id($link);
-													update_barcode_sequence($id,$rand,$job_counter); 
+													$jobs_array[] = $rand; 
 													$job_counter++;
 													// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$split_qty."</td></tr>";
 													$qty=$qty-$split_qty;
@@ -350,7 +350,7 @@
 											$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 											mysqli_query($link, $sql1q) or die("Error---15".mysqli_error($GLOBALS["___mysqli_ston"]));
 											$id = mysqli_insert_id($link);
-											update_barcode_sequence($id,$rand,$job_counter); 
+											$jobs_array[] = $rand; 
 											$job_counter++;
 											// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 											$qty=0;
@@ -376,7 +376,7 @@
 					$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$row12["size_tit"]."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'3','$inserted_id','$job_counter')";
 					mysqli_query($link, $sql1q) or die("Error---16".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$id = mysqli_insert_id($link);
-					update_barcode_sequence($id,$rand,$job_counter); 
+					$jobs_array[] = $rand; 
 					$job_counter++;
 					// echo "<tr><td>".$docket_number."</td><td>".$row12["color"]."</td><td>".$row12["size_ref"]."</td><td>".$row12["size_tit"]."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 				}
@@ -394,7 +394,7 @@
 					$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$row12["size_tit"]."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'2','$inserted_id','$job_counter')";
 					mysqli_query($link, $sql1q) or die("Error---17".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$id = mysqli_insert_id($link);
-					update_barcode_sequence($id,$rand,$job_counter); 
+					$jobs_array[] = $rand; 
 					$job_counter++;
 					// echo "<tr><td>".$docket_number."</td><td>".$row12["color"]."</td><td>".$row12["size_ref"]."</td><td>".$row12["size_tit"]."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 				}
@@ -514,7 +514,7 @@
 															$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty_new."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 															mysqli_query($link, $sql1q) or die("Error---18".mysqli_error($GLOBALS["___mysqli_ston"])); 
 															$id = mysqli_insert_id($link);
-															update_barcode_sequence($id,$rand,$job_counter);
+															$jobs_array[] = $rand;
 															$job_counter++;
 															// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 															$qty_new=0;
@@ -524,7 +524,7 @@
 															$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$split_qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 															mysqli_query($link, $sql1q) or die("Error---19".mysqli_error($GLOBALS["___mysqli_ston"]));
 															$id = mysqli_insert_id($link);
-															update_barcode_sequence($id,$rand,$job_counter); 
+															$jobs_array[] = $rand; 
 															$job_counter++;
 															// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$split_qty."</td></tr>";
 															$qty_new=$qty_new-$split_qty;
@@ -537,7 +537,7 @@
 													$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty_new."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 													mysqli_query($link, $sql1q) or die("Error---20".mysqli_error($GLOBALS["___mysqli_ston"]));
 													$id = mysqli_insert_id($link);
-													update_barcode_sequence($id,$rand,$job_counter); 
+													$jobs_array[] = $rand; 
 													$job_counter++;
 													// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 													$qty_new=0;
@@ -558,7 +558,7 @@
 															$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",'".$row12["size_ref"]."','$inserted_id','$job_counter')";
 															mysqli_query($link, $sql1q) or die("Error---21".mysqli_error($GLOBALS["___mysqli_ston"])); 
 															$id = mysqli_insert_id($link);
-															update_barcode_sequence($id,$rand,$job_counter);
+															$jobs_array[] = $rand;
 															$job_counter++;
 															// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 															$qty=0;
@@ -568,7 +568,7 @@
 															$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$split_qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",'".$row12["size_ref"]."','$inserted_id','$job_counter')";
 															mysqli_query($link, $sql1q) or die("Error---21".mysqli_error($GLOBALS["___mysqli_ston"]));
 															$id = mysqli_insert_id($link);
-															update_barcode_sequence($id,$rand,$job_counter); 
+															$jobs_array[] = $rand; 
 															$job_counter++;
 															// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$split_qty."</td></tr>";
 															$qty=$qty-$split_qty;
@@ -581,7 +581,7 @@
 													$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 													mysqli_query($link, $sql1q) or die("Error---22".mysqli_error($GLOBALS["___mysqli_ston"])); 
 													$id = mysqli_insert_id($link);
-													update_barcode_sequence($id,$rand,$job_counter);
+													$jobs_array[] = $rand;
 													$job_counter++;
 													// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 													$qty=0;
@@ -627,7 +627,7 @@
 							$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$row12["size_tit"]."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'3','$inserted_id','$job_counter')";
 							mysqli_query($link, $sql1q) or die("Error---23".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$id = mysqli_insert_id($link);
-							update_barcode_sequence($id,$rand,$job_counter); 
+							$jobs_array[] = $rand; 
 							$job_counter++;
 							// echo "<tr><td>".$docket_number."</td><td>".$row12["color"]."</td><td>".$row12["size_ref"]."</td><td>".$row12["size_tit"]."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 						}
@@ -659,7 +659,7 @@
 							$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$row12["size_tit"]."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'2','$inserted_id','$job_counter')";
 							mysqli_query($link, $sql1q) or die("Error---24".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$id = mysqli_insert_id($link);
-							update_barcode_sequence($id,$rand,$job_counter); 
+							$jobs_array[] = $rand; 
 							$job_counter++;
 							// echo "<tr><td>".$docket_number."</td><td>".$row12["color"]."</td><td>".$row12["size_ref"]."</td><td>".$row12["size_tit"]."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 						}
@@ -752,7 +752,7 @@
 														$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty_new."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 														mysqli_query($link, $sql1q) or die("Error---25".mysqli_error($GLOBALS["___mysqli_ston"]));
 														$id = mysqli_insert_id($link);
-														update_barcode_sequence($id,$rand,$job_counter); 
+														$jobs_array[] = $rand; 
 														$job_counter++;
 														// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 														$qty_new=0;
@@ -762,7 +762,7 @@
 														$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$split_qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 														mysqli_query($link, $sql1q) or die("Error---26".mysqli_error($GLOBALS["___mysqli_ston"]));
 														$id = mysqli_insert_id($link);
-														update_barcode_sequence($id,$rand,$job_counter); 
+														$jobs_array[] = $rand; 
 														$job_counter++;
 														// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$split_qty."</td></tr>";
 														$qty_new=$qty_new-$split_qty;
@@ -775,7 +775,7 @@
 												$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty_new."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 												mysqli_query($link, $sql1q) or die("Error---27".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$id = mysqli_insert_id($link);
-												update_barcode_sequence($id,$rand,$job_counter); $job_counter++;
+												$jobs_array[] = $rand; $job_counter++;
 												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 												$qty_new=0;
 											}
@@ -795,7 +795,7 @@
 														$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 														mysqli_query($link, $sql1q) or die("Error---28".mysqli_error($GLOBALS["___mysqli_ston"])); 
 														$id = mysqli_insert_id($link);
-														update_barcode_sequence($id,$rand,$job_counter);
+														$jobs_array[] = $rand;
 														$job_counter++;
 														// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 														$qty=0;
@@ -805,7 +805,7 @@
 														$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$split_qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 														mysqli_query($link, $sql1q) or die("Error---29".mysqli_error($GLOBALS["___mysqli_ston"])); 
 														$id = mysqli_insert_id($link);
-														update_barcode_sequence($id,$rand,$job_counter);
+														$jobs_array[] = $rand;
 														$job_counter++;
 														// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$split_qty."</td></tr>";
 														$qty=$qty-$split_qty;
@@ -818,7 +818,7 @@
 												$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$size_tit."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'$inserted_id','$job_counter')";
 												mysqli_query($link, $sql1q) or die("Error---30".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$id = mysqli_insert_id($link);
-												update_barcode_sequence($id,$rand,$job_counter); $job_counter++;
+												$jobs_array[] = $rand; $job_counter++;
 												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 												$qty=0;
 											}
@@ -862,7 +862,7 @@
 							$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$row12["size_tit"]."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'3','$inserted_id','$job_counter')";
 							mysqli_query($link, $sql1q) or die("Error---31".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							$id = mysqli_insert_id($link);
-							update_barcode_sequence($id,$rand,$job_counter);
+							$jobs_array[] = $rand;
 							$job_counter++;
 							// echo "<tr><td>".$docket_number."</td><td>".$row12["color"]."</td><td>".$row12["size_ref"]."</td><td>".$row12["size_tit"]."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 						}
@@ -893,7 +893,7 @@
 							$sql1q="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,sref_id,barcode_sequence) values(\"".$docket_number."\",\"".$row12["size_tit"]."\",\"".$qty."\",\"".$input_job_no."\",\"".$rand."\",\"".$destination."\",\"".$carton_method."\",\"".$row12["size_ref"]."\",'2','$inserted_id','$job_counter')";
 							mysqli_query($link, $sql1q) or die("Error---32".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							$id = mysqli_insert_id($link);
-							update_barcode_sequence($id,$rand,$job_counter);
+							$jobs_array[] = $rand;
 							$job_counter++;
 							// echo "<tr><td>".$docket_number."</td><td>".$row12["color"]."</td><td>".$row12["size_ref"]."</td><td>".$row12["size_tit"]."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 						}
@@ -935,6 +935,24 @@
 
 	echo("<script>location.href = '$mo_fill_url&sref_id=$inserted_id&style=$style_id&schedule=$schedule&schedule_id=$schedule_id&process_name=sewing&filename=create_sewing';</script>");	
 	*/
+	$jobs_array = array_unique($jobs_array);
+	foreach($jobs_array as $job){
+		$query = "select group_concat(tid order by tid DESC) as tid,input_job_no_random as ij from bai_pro3.pac_stat_log_input_job where input_job_no_random = '$job'
+          group by input_job_no_random ";        
+		$result = mysqli_query($link,$query);
+		while($row = mysqli_fetch_array($result)){
+			$tids = $row['tid'];
+			$tid  = explode(',',$tids);
+			$size = $counter = sizeof($tid);
+			foreach($tid as $id){
+				$update_query = "Update bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid='$id'";
+				mysqli_query($link,$update_query) or exit('Unable to update');
+
+				$counter--;
+			}
+    		$flag++;
+		}
+	}
 
 	echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
 	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");		
@@ -943,28 +961,3 @@
 </body>
 
 
-<?php
-function update_barcode_sequence($id,$input_job,$jc){
-	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-	$pre_id = $id-1;
-	$query = "Select input_job_no_random,barcode_sequence from 
-			  $bai_pro3.pac_stat_log_input_job 
-			  where tid ='$pre_id'";			  
-	$result = mysqli_query($link,$query);
-	while($row = mysqli_fetch_array($result)){
-		$bs = $row['barcode_sequence'];
-		if($row['input_job_no_random'] == $input_job){
-			if($bs <> $jc-1){
-				$update_query = "Update $bai_pro3.pac_stat_log_input_job 
-								set barcode_sequence = '".($bs+1)."' 
-								where tid='$id'";
-				// echo $update_query;				
-				mysqli_query($link,$update_query);
-				return true;
-			}
-		}
-	}
-	return true;
-}
-
-?>
