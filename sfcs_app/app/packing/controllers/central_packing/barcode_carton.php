@@ -65,12 +65,13 @@
 				$cartonno=$rowss['carton_no'];
 				$size=$rowss['sizes'];
 				$cartqty=$rowss['carton_qty'];
-				$mpocponos="select co_no,vpo from $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule'";
+				$mpocponos="select co_no,vpo,destination from $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule'";
 				$nosrslt=mysqli_query($link, $mpocponos) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($norows=mysqli_fetch_array($nosrslt))
 				{
 					$cono=$norows['co_no'];
 					$vpo=$norows['vpo'];
+					$destination=$norows['destination'];
 				}				
 				$html.= '<div>								
 					<table>
@@ -80,18 +81,17 @@
 						</tr>
 						
 						<tr>
-							<td style="width:200px;"><b>Style:</b>'.$style.' </td>
+							<td style="width:100px;"><b>Style:</b>'.$style.' </td>
 							<td> <b>Schedule:</b>'.$schedule.'</td>
 						</tr>
 						<tr rowspan=3>
-							<td colspan=2><b>Color:</b>'.substr($color,0,80).' </td>
+							<td colspan=2><b>Color:</b>'.substr($color,0,220).' </td>
 						</tr>
 						<tr>
 							<td colspan=2><b>Size:</b>'.$size.' </td>
 						</tr>
 						<tr>
-							<td><b>Carton No:</b>'.$cartonno.'/'.$tot_cart.' </td>
-							<td><b>Qty:</b>'.$cartqty.' </td>
+							<td><b>Carton No:</b>'.$cartonno.'/'.$tot_cart.' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Qty:</b>'.$cartqty.' </td><td> <b>Country :</b>'.$destination.'</td>
 						</tr>
 						<tr>
 							<td><b>Co No:</b>'.$cono.' </td>

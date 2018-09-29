@@ -30,7 +30,8 @@
 		{
 			$size=$row1["ref_size_name"];
 			$color=$row1["color"];
-			$ex_cut_status=$row1['exces_from'];
+			// $ex_cut_status=$row1['exces_from'];
+			$ex_cut_status = echo_title("$bai_pro3.excess_cuts_log","excess_cut_qty","schedule_no='".$schedule."' AND color",$color,$link);
 			$style = $row1["style"];
 			$schedule = $row1["schedule"];
 			$sno = 1;

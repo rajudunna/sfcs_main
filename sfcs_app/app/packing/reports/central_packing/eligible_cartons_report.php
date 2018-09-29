@@ -62,16 +62,16 @@ table, th, td {
 							{
 								$style = $row_result['style'];
 								$schedule_tmp = explode(",",$row_result['schedules']);
-								echo "<div class='col-md-12'>
-									<div class=\"panel panel-primary\">
-									<div class=\"panel-heading\">Style - ".$style." </div>
-									<div class=\"panel-body\">";
+								// echo "<div class='col-md-12'>
+									// <div class=\"panel panel-primary\">
+									// <div class=\"panel-heading\">Style - ".$style."  &nbsp&nbsp&nbsp&nbsp</div>
+									// <div class=\"panel-body\">";
 								for($k=0;$k<sizeof($schedule_tmp);$k++)
 								{
 									$schedule=$schedule_tmp[$k];
 									echo "<div class='col-md-12'>
 									<div class=\"panel panel-primary\">
-									<div class=\"panel-heading\">Schedule - ".$schedule."</div>
+									<div class=\"panel-heading\">Style - ".$style."  &nbsp&nbsp&nbsp&nbsp Schedule - ".$schedule."</div>
 									<div class=\"panel-body\">";								
 									$cart_no=array();
 									$complete_cart_no=array();
@@ -189,7 +189,7 @@ table, th, td {
 															<thead>
 																<tr class='info'>
 																	<th width=\"33%\">Completed Cartons</th>
-																	<th width=\"33%\">Eligible Cartons </th>
+																	<th width=\"33%\">Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$label_concat&seq_no=".$pack_result12['pac_seq_no']."' target='_blank'>Print All Cartons</a></th>
 																	<th width=\"33%\">Pending Cartons</th>
 																</tr>
 															</thead>
@@ -223,8 +223,7 @@ table, th, td {
 																			echo "<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$elgible_cart_no[$jj]&seq_no=".$pack_result12['pac_seq_no']."' target='_blank'>".$elgible_cart_no[$jj]."</a>";
 																			$k++;
 																		}
-																	}
-																	echo "<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$label_concat&seq_no=".$pack_result12['pac_seq_no']."' target='_blank'>Print All Cartons</a>";	
+																	}																		
 																	echo"</td><td>";
 																	$k=0;
 																	if(sizeof($pending_cart_no)>0)
@@ -262,10 +261,10 @@ table, th, td {
 								  </div>";
 								  echo "</br>";
 								}
-								echo "</div>
-								  </div>
-								  </div>";
-								echo "</br>";								
+								// echo "</div>
+								  // </div>
+								  // </div>";
+								//echo "</br>";								
 							}															  
 						}
 					}	
