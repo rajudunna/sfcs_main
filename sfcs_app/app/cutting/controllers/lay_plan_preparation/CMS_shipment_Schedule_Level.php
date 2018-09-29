@@ -52,8 +52,9 @@ function isNumber($c)
 
 
 <?php
-	$sql3="truncate $bai_pro3.shipment_plan_schedule_level";
-	mysqli_query($link, $sql3) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql3="delete from $bai_pro3.shipment_plan_schedule_level where schedule_no='$schedule'";
+	mysqli_query($link,$sql3) or exit("Sql Error".mysql_error());
+
 	$sql3="insert into $bai_pro3.shipment_plan_schedule_level (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) 
 	select TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination from $m3_inputs.shipment_plan where TRIM(BOTH FROM Schedule_No)='".$schedule."'";
 	// echo $sql3."<br>";
@@ -322,7 +323,7 @@ function isNumber($c)
 			}
 		}
 	}
-	$sql3="delete from $bai_pro3.shipment_plan_schedule_level";
+	$sql3="delete from $bai_pro3.shipment_plan_schedule_level where schedule_no='$schedule'";
 	mysqli_query($link,$sql3) or exit("Sql Error".mysql_error());
 
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_2\")";
