@@ -198,7 +198,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 						if(sizeof($sew_job_rand)>0)
 						{							
 							echo "<table id=\"example1\" class='table table-bordered'>"; 
-							echo "<tr class='info' >"; 
+							echo "<tr style='background-color:#1184AD;color:white;'>"; 
 							echo "<th >Style</th>"; 
 							echo "<th >VPO#</th>"; 
 							echo "<th >Schedule</th>"; 
