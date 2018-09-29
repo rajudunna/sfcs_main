@@ -18,7 +18,7 @@
     $qtys=$_POST['qty']; 
     $input_job_no_random=$_POST['input_job_no_random']; 
     $input_job_no=$_POST['input_job_no'];
-
+    $ninput_job_no_random = '';
     //temp values to insert to mo_quantites table    
     $temp_input_job_no_random = $input_job_no_random;
     $temp_input_job_no = $input_job_no;
@@ -172,6 +172,7 @@
         }
     }
     $url = getFullURLLevel($_GET['r'],'split_jobs.php','0','N');
+    update_barcode_sequences($ninput_job_no_random);
     echo "<script>sweetAlert('Success','Successfully Splitted your job.','success');</script>";
     echo "<script> 
                     setTimeout('Redirect()',3000); 
@@ -182,3 +183,25 @@
 ?> 
 </div></div>
 </body> 
+
+
+<?php
+function update_barcode_sequences($input_job_random){
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    $query = "select group_concat(tid order by tid DESC) as tid from $bai_pro3.pac_stat_log_input_job 
+             where input_job_no_random = $input_job_random";
+    $result = mysqli_query($link,$query);
+    while($row = mysqli_fetch_array($result)){
+        $tids = $row['tid'];
+        $tid = explode(',',$tids);
+        $counter = sizeof($tid);
+        foreach($tid as $id){
+            $update_query = "Update bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid='$id'";
+            mysqli_query($link,$update_query) or exit('Unable to update');
+            $counter--;
+        }
+	}
+	return;
+}  
+
+?>
