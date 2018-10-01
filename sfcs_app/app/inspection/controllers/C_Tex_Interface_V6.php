@@ -2009,7 +2009,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $total_rolls; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Length Short %</td>
   <td colspan=2 class=xl9424082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php if($rec_qty>0) {echo round((($ctex_sum-$rec_qty)/$rec_qty)*100,2)."%";}  ?></td>
-  <td rowspan=2 class=xl11224082 width=99 style='border-bottom:1.0pt solid black;  border-top:none;width:74pt'>Washing stability Shrinkage</td>
+  <td rowspan=2 class=xl11224082 width=99 style='border-bottom:1.0pt solid black;  border-top:none;width:74pt'>Residual Shrinkage</td>
   <td class=xl9324082 dir=LTR width=77 style='border-top:none;border-left:none;  width:58pt'>L%</td>
   <td class=xl9424082 dir=LTR width=68 style='border-top:none;border-left:none;  width:51pt'>W%</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='width:102pt'>Actual  Width</td>
