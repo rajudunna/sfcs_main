@@ -19,16 +19,16 @@
     
 </head>
 
-<body onload='assigncmb()'>
+<body >
      <?php
-    if(isset($_REQUEST['rowid']))
+    if(isset($_GET['rowid']))
     {
-        $q_id = $_REQUEST['rowid'];
-        $qms_location_id=$_REQUEST['qms_location_id'];
-        $qms_location=$_REQUEST['qms_location'];
-        $qms_location_cap=$_REQUEST['qms_location_cap'];
-        $qms_cur_qty = $_REQUEST['qms_cur_qty'];
-        $active_status = $_REQUEST['active_status'];
+        $q_id = $_GET['rowid'];
+        $qms_location_id=$_GET['qms_location_id'];
+        $qms_location=$_GET['qms_location'];
+        $qms_location_cap=$_GET['qms_location_cap'];
+        $qms_cur_qty = $_GET['qms_cur_qty'];
+        $active_status = $_GET['active_status'];
        
 
     }else
@@ -114,14 +114,14 @@
                 <label class="control-label control-label-left col-sm-3"  for="qms_location_id">Qms Location Id:<span class="req"> *</span></label>
                 <div class="controls col-sm-9">
                     
-                <input id="qms_location_id" type="text" class="form-control k-textbox" data-role="text" required="required" name="qms_location_id" value="<?php echo $qms_location_id; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="qms_location_id" type="text" class="form-control k-textbox" data-role="text" required="required" name="qms_location_id"  value="<?php echo $qms_location_id; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span></div>
                 
         </div></div>
             <div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="qms_location" >Qms Location:<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-                <input id="qms_location" type="text" class="form-control k-textbox" data-role="text" required="required" name="qms_location" value="<?php echo $qms_location; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="qms_location" type="text" class="form-control k-textbox" data-role="text" required="required" name="qms_location" value="<?php echo $qms_location; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span></div>
                 
 		</div></div>
                 <div class="col-md-4"><div class="form-group integer">
@@ -131,7 +131,7 @@
                 <input id="qms_location_cap" type="text" class="form-control k-textbox " data-role="text" required="required"  name="qms_location_cap" value="<?php echo $qms_location_cap; ?>" data-parsley-errors-container="#errId2"><span id="errId2" class="error"></span></div>
                 
 		</div></div>
-        <div class="col-md-4"><div class="form-group">
+        <div class="col-md-4"><div class="form-group integer">
 			    <label class="control-label control-label-left col-sm-3" for="qms_cur_qty">Quantity<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     

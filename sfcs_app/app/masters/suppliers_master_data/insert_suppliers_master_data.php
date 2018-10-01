@@ -94,7 +94,7 @@ if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || emp
 
 		echo"<script>setTimeout(function () { 
 			swal({
-			  title: 'Inspection Supplier Already Existed!',
+			  title: 'record inserted successfully ',
 			  text: 'Message!',
 			  type: 'warning',
 			  confirmButtonText: 'OK'

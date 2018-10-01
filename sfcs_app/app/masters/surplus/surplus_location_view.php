@@ -52,7 +52,7 @@ $(document).ready(function() {
     $('#qms_locate').DataTable();
 } );
 </script>
-<style>
+<style> 
 table th
 {
 	border: 1px solid grey;

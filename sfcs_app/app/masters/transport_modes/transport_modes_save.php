@@ -17,7 +17,7 @@ if (empty($code) )
 	$url=getFullURL($_GET['r'],'transport_modes_add.php','N');
 	echo"<script>setTimeout(function () { 
 		swal({ 
-		  title: 'Please Fill All Values',
+		  title: 'Please Fill Value',
 		  text: 'Message!', 
 		  type: 'warning',
 		  confirmButtonText: 'OK'

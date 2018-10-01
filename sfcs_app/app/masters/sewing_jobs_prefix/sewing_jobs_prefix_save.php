@@ -63,7 +63,7 @@ else
 
 		
 
-		$query1="select * from $brandix_bts.tbl_sewing_job_prefix  where type_of_sewing='$reason' and (prefix='$department')";
+		$query1="select * from $brandix_bts.tbl_sewing_job_prefix  where type_of_sewing='$reason' and (prefix='$department' or prefix_name='$code')";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){

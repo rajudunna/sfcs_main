@@ -3,9 +3,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
 // echo $_POST['table_name'];
-$tid =$_POST['reason_tid'];
-$rejec_code=$_POST['reason_code'];
-$rejec_des =$_POST['reason_desc'];
+$tid =$_POST['tid'];
+$complaint_reason=$_POST['complaint_reason'];
+$complaint_clasification =$_POST['complaint_clasification'];
+$complaint_category = $_POST['complaint_category'];
 $status = $_POST['status'];
 
 //echo $color_code;
@@ -16,15 +17,15 @@ $status = $_POST['status'];
 // $password = "baiall";
 // $dbname = "bai_rm_pj1";
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-$conn=$link; 
+$conn=$link;
 
 // // Create connection
 // $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
 
-if (empty($rejec_code) || empty($rejec_des)  ) 
+if (empty($complaint_reason) || empty($complaint_clasification) || empty($complaint_category) ) 
 {
-	$url=getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
+	$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 	echo"<script>setTimeout(function () { 
 		swal({
 		  title: 'Please Fill All Values',
@@ -39,14 +40,13 @@ if (empty($rejec_code) || empty($rejec_des)  )
 		}); }, 100);</script>";
 		
 
-}else{ 
-	
+}else{
 	if($tid>0){
 		//update
-		$sql = "update $bai_rm_pj2.mrn_reason_db set reason_code='$rejec_code',reason_desc='$rejec_des',status='$status' where reason_tid=$tid";
+		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid=$tid";
 		//echo $sql;exit;
 		if (mysqli_query($conn, $sql)) {
-			$url=getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
+			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 			
 			// echo "Record updated successfully";
 			echo"<script>setTimeout(function () { 
@@ -66,12 +66,12 @@ if (empty($rejec_code) || empty($rejec_des)  )
 		}
 	}else{
 		
-		$count_qry= "select * from $bai_rm_pj2.mrn_reason_db where reason_code = '$rejec_code' and (reason_desc = '$rejec_des' )"; 
+		$count_qry= "select * from $bai_rm_pj1.inspection_complaint_reasons where complaint_reason = '$complaint_reason' and (complaint_clasification = '$complaint_clasification' or complaint_category = '$complaint_category' )"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){
 			// echo $count;die();
-			$url=getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
+			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 
 
 		echo "<script>setTimeout(function () { 
@@ -90,14 +90,14 @@ if (empty($rejec_code) || empty($rejec_des)  )
 			// echo "<script>alert('Enter data correctly.')</script>";
 		}
 		else{
-			$sql = "INSERT INTO $bai_rm_pj2.mrn_reason_db(reason_code, reason_desc,status) VALUES('$rejec_code','$rejec_des','$status')";
+			$sql = "INSERT INTO $bai_rm_pj1.inspection_complaint_reasons(complaint_reason, complaint_clasification,complaint_category, status) VALUES('$complaint_reason','$complaint_clasification','$complaint_category','$status')";
 			if (mysqli_query($conn, $sql)) {
-				$url=getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
+				$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 
 
 		echo"<script>setTimeout(function () { 
 			swal({
-			  title: 'Record inserted successfully',
+			  title: 'New Record Created successfully',
 			  text: 'Message!',
 			  type: 'warning',
 			  confirmButtonText: 'OK'
@@ -117,7 +117,7 @@ if (empty($rejec_code) || empty($rejec_des)  )
 	}
 }
 
-$url1 = getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
+$url1 = getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 
 
 mysqli_close($conn);
