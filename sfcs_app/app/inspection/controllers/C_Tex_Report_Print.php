@@ -2236,15 +2236,14 @@ if($num_check>0)
 	  <td class=xl12824082 style='border-left:none'>".$temp[8]."</td>
 	  <td class=xl12824082 style='border-left:none'>".round(($temp[6]-$temp[5]),2)."</td>
 	  <td class=xl12824082 colspan=2 align=right style='border-left:none'>".$temp[7]."</td>";
-	  
-      if($shrinkage_inspection == 'yes')
+	  if($shrinkage_inspection == 'yes')
 	  {
 	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[11]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[12]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[13]."</td>";
 	  }
-	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>;
-	        <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
+	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
+	  <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
 
 	  			$reject_reason_query="select * from $bai_rm_pj1.reject_reasons ";
 				$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2436,7 +2435,6 @@ if($num_check>0)
 </body>
 
 </html>
-
 
 
 
