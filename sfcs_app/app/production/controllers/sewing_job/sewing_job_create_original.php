@@ -48,7 +48,7 @@
 				}
 				split_tot = split_tot + split;
 			}
-			var exces_from=document.getElementById("exces_from").value;
+			// var exces_from=document.getElementById("exces_from").value;
 			var mix_jobs=document.getElementById("mix_jobs").value;
 			// alert(mix_jobs);
 			if (mix_jobs == '')
@@ -57,12 +57,12 @@
 			}
 			else
 			{
-				if (exces_from == 0)
-				{
-					sweetAlert('Please Select Excess From','','warning');
-				}
-				else
-				{
+				// if (exces_from == 0)
+				// {
+				// 	sweetAlert('Please Select Excess From','','warning');
+				// }
+				// else
+				// {
 					if (split_tot > 0)
 					{
 						title_to_show = "";
@@ -87,7 +87,7 @@
 						}
 					});
 					return;
-				}
+				// }
 			}
 		}
 	});
@@ -226,7 +226,8 @@
 							if ($pac_stat_input_check > 0)
 							{
 								echo '<br><div class="alert alert-danger">
-								  <strong>Warning!</strong><br>Generate Sewing Jobs in Packing List Based Sewing Job Screen';
+								  <strong>Warning!</strong>
+								  <br>You have already created sewing jobs based on pack method, So You should go with the same process.';
 								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N')."'>Click Here to Go</a>
 								</div>";
 							}
@@ -237,19 +238,9 @@
 						}
 						else
 						{
-							if ($pack_size_ref_check > 0)
-							{
-								echo '<br><div class="alert alert-danger">
-								  <strong>Warning!</strong><br>Generate Sewing Jobs in Packing List Based Sewing Job Screen';
-								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N')."'>Click Here to Go</a>
-								</div>";
-							}
-							else
-							{
-								$display_check = 1;
-							}
-						}
-
+							$display_check = 1;
+						}	
+						
 						if ($display_check == 1)
 						{
 							$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
@@ -802,16 +793,16 @@
 					$style_id=$_POST['style_id'];
 					$sch_id=$_POST['sch_id'];
 					$pack_method=$_POST['pack_method'];
-					
+
 					$sum = array_sum($no_of_cartons);
 					if ($sum>0)
 					{
 						$merge_status=$_POST['mix_jobs'];
-						$exces_from=$_POST['exces_from'];
+						// $exces_from=$_POST['exces_from'];
 						$c_ref=$_POST['c_ref'];
 						$combo=$_POST['combo'];
 						
-						$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."', merge_status='".$merge_status."' where id='".$c_ref."'";
+						$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='0', merge_status='".$merge_status."' where id='".$c_ref."'";
 						// echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Failed to update Carton Details");
 						for ($i=0; $i < sizeof($combo); $i++)
