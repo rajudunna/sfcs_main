@@ -164,24 +164,14 @@
 					else
 					{
 						echo '<br><div class="alert alert-danger">
-								  <strong>Warning!</strong><br>Generate Sewing Jobs in Sewing Job Screen';
+								  <strong>Warning!</strong><br>You have prepared Sewing Jobs in Normal process, Please go to the interface and check';
 								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."'>Click Here</a>
 								</div>";
 					}
 				}
 				else
 				{
-					if ($pack_size_ref_check > 0)
-					{
-						$display_check = 1;
-					}
-					else
-					{
-						echo '<br><div class="alert alert-danger">
-								  <strong>Warning!</strong><br>Generate Sewing Jobs in Sewing Job Screen';
-								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."'>Click Here</a>
-								</div>";
-					}
+					$display_check = 1;
 				}
 
 				if ($display_check == 1)
