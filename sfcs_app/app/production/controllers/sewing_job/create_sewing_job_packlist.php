@@ -326,9 +326,9 @@
 										<th>S.No</th>
 										<th>Sewing Job Method</th>
 										<th style='display: none;'>Mix Jobs</th>
-										<th>Description</th>										
-										<th>No of Cartons</th>
+										<th>Description</th>	
 										<th>Bundle Size</th>
+										<th>No of Cartons</th>										
 										<th>Quantity</th>
 										<th>Colors</th>
 										<th>Sizes</th>
@@ -389,12 +389,12 @@
 													</center>
 												</td>
 												<td>".$pack_result1['pack_description']."</td>
-												<td><input type='text' $readonly class='form-control integer' name='bund_size' id='bund_size_".$count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='$bundle_size_sew'></td>
+												<td><input type='text' $readonly class='form-control integer' name='bund_size' id='bund_size_".$count."' onfocus=if(this.value==-1){this.value=''} onblur=if(this.value==''){this.value=-1;} value='$bundle_size_sew'></td>
 												<input type='hidden' name='seq_no' id='seq_no' value='$seq_no'>
 												<input type='hidden' name='max_crton' id='max_crton_".$count."' value='$max_crton'>
 												<input type='hidden' name='schedule' id='schedule' value='$schedule'>
 												<input type='hidden' name='style' id='style' value='$style'>
-												<td><input type='text' $readonly  class='form-control integer' name='no_of_cartons' id='no_of_cartons_".$count."' onfocus=if(this.value==-1){this.value=''} onblur=if(this.value==''){this.value=-1;} value='$no_of_cartons_sew'></td>
+												<td><input type='text' $readonly  class='form-control integer' name='no_of_cartons' id='no_of_cartons_".$count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='$no_of_cartons_sew'></td>
 												<td>".$pack_result1['qnty']."</td>
 												<td>".$pack_result1['color']."</td>
 												<td>".$pack_result1['size']."</td>";
