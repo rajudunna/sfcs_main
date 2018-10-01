@@ -159,6 +159,6 @@
 			}
 		}
 
-		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_main_packlist.php',0,'N')."&schedule=$schedule&seq_no=$pack_seq_no';</script>");
+		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_main_packlist.php',0,'N')."&schedule=$schedule&seq_no=$pack_seq_no&pac_method=$sew_pack_method';</script>");
 	}
 ?>
