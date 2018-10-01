@@ -29,7 +29,7 @@ table, th, td {
 				<select name="vpo" id="vpo" class="form-control" required="true">
 					<option value="">Please Select</option>
 					<?php
-						$sql="SELECT zfeature as vpo FROM $bai_pro3.mo_details WHERE zfeature<>'' GROUP BY zfeature";
+						$sql="SELECT vpo FROM $bai_pro3.bai_orders_db_confirm WHERE vpo<>'' GROUP BY vpo";
 						$sql_result=mysqli_query($link, $sql) or exit("error while fetching VPO numbers");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
@@ -51,7 +51,7 @@ table, th, td {
 				if (isset($_POST['submit']))
 				{
 					$vpo = $_POST['vpo'];
-					$mo_no_query = "SELECT pac_stat.style AS style, GROUP_CONCAT(DISTINCT pac_stat.schedule) AS schedules FROM bai_pro3.mo_details LEFT JOIN bai_pro3.pac_stat ON pac_stat.schedule=mo_details.schedule WHERE zfeature ='".$vpo."' GROUP BY style";
+					$mo_no_query = "SELECT pac_stat.style AS style, GROUP_CONCAT(DISTINCT pac_stat.schedule) AS schedules FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.pac_stat ON pac_stat.schedule=bai_orders_db_confirm.order_del_no WHERE bai_orders_db_confirm.vpo ='".$vpo."' GROUP BY order_style_no";
 					//echo $mo_no_query;
 					$mo_result=mysqli_query($link, $mo_no_query) or exit("Error while getting schedules");
 					if (mysqli_num_rows($mo_result) > 0)
