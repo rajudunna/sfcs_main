@@ -193,8 +193,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			echo "<tr><th>Product</th><td>$product_group</td></tr>";
 			echo "<tr><th>GRN Date</th><td>$grn_date</td></tr>";
 			echo "</table>";
-			echo "</div><div class='col-sm-6'>";
-
+			echo "</div><div class='col-sm-12'>";
 			echo '<form method="post" id="myForm" name="input" action="?r='.$_GET['r'].'">';
 			echo "<table class='table table-striped table-bordered '>";
 			echo "<thead><tr><th>Label ID</th><th>Location</th><th>Box/Roll No</th><th>IN Qty</th><th>Available Qty</th>";
@@ -301,10 +300,10 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			}
 
 			echo "</tbody></table></div>";
-			echo "<div class='col-sm-6'><div class='col-sm-7'></div><div class='col-sm-5'></div></div><div class='col-sm-6'><div class='col-sm-8'></div><div class='col-sm-4'>";
+			echo "<div class='col-sm-6'>";
 			echo '<input type="hidden" name="lot_no" value="'.$lot_no.'">';
 			echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable &nbsp;<input type="submit" value="Submit" class="btn btn-info" name="updat" id="updat" onclick="javascript:button_disable();"/></form>';
-			echo "</div></div>";
+			echo "</div>";
 			echo "<div class='col-md-12'>";
 			echo "<h2>Docket Transaction Log:</h2>";
 
