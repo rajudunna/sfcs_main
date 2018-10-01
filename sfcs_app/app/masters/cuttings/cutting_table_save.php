@@ -1,3 +1,4 @@
+
 <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
@@ -71,7 +72,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		}
 	}else{
 		
-		$query="select tbl_name from $bai_pro3.tbl_leader_name where emp_id='$emp_id' and emp_name = '$emp_name' ";
+		$query="select emp_id from $bai_pro3.tbl_leader_name where emp_id='$emp_id'  ";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
 		$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
