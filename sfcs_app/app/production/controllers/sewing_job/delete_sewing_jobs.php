@@ -336,13 +336,35 @@
         // echo $insert_log."</br>"; 
         mysqli_query($link, $insert_log) or exit("Sql Error insert_log");
 
-        echo "<script>sweetAlert('Sewing Jobs Successfully Deleted','','success')</script>";
+        // MO Deletion start
+            $sewing_cat = 'sewing';
+            $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+                              WHERE trim(category) = '$sewing_cat' ";
+            $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
+            while($row=mysqli_fetch_array($op_code_result)) 
+            {
+                $op_codes  = $row['codes']; 
+            }
 
-        echo("<script>
-                window.setTimeout(function(){
-                    window.location.href = '".getFullURLLevel($_GET['r'],'delete_sewing_jobs.php',0,'N')."';
-                }, 1500);
-            </script>");
+            $mo_query  = "Select GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$schedule'";
+            $mo_result = mysqli_query($link,$mo_query);
+            while($row = mysqli_fetch_array($mo_result))
+            {
+                $mos = $row['mos'];
+            }
+
+            $delete_query = "Delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code in ($op_codes) ";
+            $delete_result = mysqli_query($link,$delete_query);
+            if($delete_result > 0)
+            {
+                echo "<script>sweetAlert('Sewing Jobs Successfully Deleted','','success')</script>";
+                echo("<script>
+                        window.setTimeout(function(){
+                            window.location.href = '".getFullURLLevel($_GET['r'],'delete_sewing_jobs.php',0,'N')."';
+                        }, 1500);
+                    </script>");
+            }
+        // MO Deletion end
     }
 ?> 
 </div> 
