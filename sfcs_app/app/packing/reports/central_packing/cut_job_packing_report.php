@@ -88,7 +88,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 <body>
 <div class="container-fluid">
     <div class="panel panel-primary">
-        <div class="panel-heading">Central Packing Detailed Report</div>
+        <div class="panel-heading">Central Packing Summary Report</div>
         <div class="panel-body">
 			<div class='col-md-9'>
 				<form name="test" action="<?php $_GET['r'] ?>" method="POST" class='form-inline'> 
