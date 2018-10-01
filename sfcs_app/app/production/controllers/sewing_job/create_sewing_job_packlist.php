@@ -326,9 +326,9 @@
 										<th>S.No</th>
 										<th>Sewing Job Method</th>
 										<th style='display: none;'>Mix Jobs</th>
-										<th>Description</th>
-										<th>Bundle Size</th>
+										<th>Description</th>										
 										<th>No of Cartons</th>
+										<th>Bundle Size</th>
 										<th>Quantity</th>
 										<th>Colors</th>
 										<th>Sizes</th>
