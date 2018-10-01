@@ -1,3 +1,7 @@
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+
 <?php
 $rid=$_GET['tid'];
 
@@ -20,7 +24,7 @@ $url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 			window.location.href = \"$url\";
 		  }
 		}); }, 100);</script>";
-$delete="delete from $bai_rm_pj1.`inspection_supplier_db` where tid='$rid'";
+$delete="delete from $bai_rm_pj1.inspection_supplier_db where tid='$rid'";
 // echo $delete;
 if (mysqli_query($conn, $delete)) {
 			

@@ -71,7 +71,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		}
 	}else{
 		
-		$query="select tbl_name from $bai_pro3.tbl_leader_name where emp_id='$emp_id' and (emp_name = '$emp_name' )";
+		$query="select tbl_name from $bai_pro3.tbl_leader_name where emp_id='$emp_id' and emp_name = '$emp_name' ";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
 		$url=getFullURL($_GET['r'],'cutting_table_add.php','N');

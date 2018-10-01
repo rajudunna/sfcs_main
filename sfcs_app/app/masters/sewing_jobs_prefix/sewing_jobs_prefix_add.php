@@ -50,14 +50,15 @@
                         
                                     <div class="row">
                                         <div class="col-md-12"><div class="row"><div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" id="code"  value="<?php echo $code; ?>" required="required" for="code">Prefix Name<span class="req"> </span></label>
+			    <label class="control-label control-label-left col-sm-3" id="code"   required="required" for="code" >Prefix Name<span class="req" > </span></label>
 			    <div class="controls col-sm-9">
                 <div class="dropdown" >
                                         
-                                        <select class="form-control" name="prefix_name" id="prefix_name" onchange='assigncmb()'>
-                                            <option value='Normal' selected>Normal</option>
-                                            <option value='Excess' >Excess</option>
-                                            <option value='Sample' >Sample</option>
+                                        <select class="form-control" name="prefix_name" id="prefix_name" value="<?php echo $code; ?>" onchange='assigncmb()'>
+                                            
+                                            <option <?php if ($code == 'Normal' ) echo 'selected' ; ?> value='Normal'>Normal</option>
+                                            <option <?php if ($code == 'Excess' ) echo 'selected' ; ?>  value='Excess'>Excess</option>
+                                            <option <?php if ($code == 'Sample' ) echo 'selected' ; ?>   value='Sample' >Sample</option>
                                         </select>   
                                     </div>
 </div>
@@ -72,7 +73,7 @@
         <div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="department">Type Of Prefix</label>
 			    <div class="controls col-sm-9">
-				<input id="type_of_sewing" type="text" class="form-control k-textbox" data-role="text"  name="type_of_sewing" value="<?php echo $reason; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
+				<input id="type_of_sewing" type="text" class="form-control k-textbox" data-role="text"  name="type_of_sewing" value="<?php echo $reason; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span>
 				</div>
                 
 		</div></div>

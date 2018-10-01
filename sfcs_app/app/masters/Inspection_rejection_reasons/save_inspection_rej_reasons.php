@@ -69,7 +69,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="table_name">	Reject Code<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-				<input id="reject_code" type="text" class="form-control k-textbox" data-role="text"  name="reject_code" required="required" value="<?php echo $rejct_code; ?>" ><span id="errId1" class="error"></span></div>
+				<input id="reject_code" type="text" class="form-control k-textbox alpha" data-role="text"  name="reject_code" required="required" value="<?php echo $rejct_code; ?>" ><span id="errId1" class="error"></span></div>
                 
 				</div></div>
 		
@@ -78,7 +78,7 @@
 			    <div class="controls col-sm-9">
                     
 	
-                <input id="reject_desc" type="text" class="form-control k-textbox" data-role="text"  name="reject_desc" required="required" value="<?php echo $rejct_desc; ?>" ><span id="errId1" class="error"></span></div>
+                <input id="reject_desc" type="text" class="form-control k-textbox " data-role="text"  name="reject_desc" required="required" value="<?php echo $rejct_desc; ?>" ><span id="errId1" class="error"></span></div>
 	
                 
 		</div></div>
