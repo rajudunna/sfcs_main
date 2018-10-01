@@ -697,8 +697,8 @@ if($_GET['view']==3)
 echo "</font>";
 
 echo '<div class="panel panel-primary">';
-
-echo "<div class='panel-heading'><span style='float'><strong><a href=".$url."  target='_blank'>CPS Dashboard</a></strong></a>
+//target blank added for report
+echo "<div class='panel-heading'><span style='float'><strong><a href=".$url." target='_blank'>CPS Dashboard</a></strong></a>
 </span><span style='float: right; margin-top: 0px'><b>
 <a href='javascript:void(0)' onclick='Popup=window.open('cps.htm"."','Popup',
 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
