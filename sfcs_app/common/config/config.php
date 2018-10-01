@@ -123,6 +123,8 @@ $comp_no=$conf1->get('company_no');
 $central_wh_code=$conf1->get('central_wh_code');
 $plant_wh_code=$conf1->get('plant_wh_code');
 $plant_prod_code=$conf1->get('plant_prod_code');
+$shrinkage_inspection=$conf1->get('shrinkage-inspection');
+
 
 
 
@@ -183,7 +185,7 @@ while($methods=mysqli_fetch_array($pack_result))
 //***************************************************
 //======== for central warehouse connections ========
 //***************************************************
-    $is_chw = $conf1->get('central_warehouse');
+  /*  $is_chw = $conf1->get('central_warehouse');
     $cwh_link = Null;
     // if($is_chw == 'yes'){
     //     $cwh_host = $conf1->get('cw_host');

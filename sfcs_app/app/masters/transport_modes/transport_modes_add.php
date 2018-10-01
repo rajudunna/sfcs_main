@@ -50,7 +50,7 @@
                     <div class="col-md-12"><div class="row"><div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" id="code"   required="required" for="code">Transport Mode<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
-                <input id="department" type="text" class="form-control k-textbox" data-role="text"  name="transport_mode" value="<?php echo $transport_modes; ?>"   data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
+                <input id="department" type="text" class="form-control k-textbox alpha" data-role="text"  name="transport_mode" value="<?php echo $transport_modes; ?>"   data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
 
 </div>
 				</div></div>

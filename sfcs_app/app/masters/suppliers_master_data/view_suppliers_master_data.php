@@ -8,6 +8,9 @@
 	$sql = "SELECT * FROM bai_rm_pj1.`inspection_supplier_db`";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);
+	$sno = 1;
+
+	
 	if ($norows > 0) {
 		echo "<table id='tbl_packing_method' class='table'><thead><tr><th>S.No</th><th>Product Code</th><th>Supplier Code</th><th>Complaint No </th><th>Supplier M3 Code</th><th>Color Code</th><th>Sequence No</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
@@ -22,7 +25,7 @@
 			$seq_no=$row["seq_no"];
 			$edit_url = getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 			$delete_url = getFullURL($_GET['r'],'delete_suppliers_master_data.php','N');
-			echo "<tr><td>".++$start."</td><td>".$row["product_code"]." </td><td>".$row["supplier_code"]."</td><td>".$row["complaint_no"]."</td><td>".$row["supplier_m3_code"]."</td><td>".$row["color_code"]."</td><td>".$row["seq_no"]."</td><td><a href='$edit_url&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
+			echo "<tr><td>".$sno++."</td><td>".$row["product_code"]." </td><td>".$row["supplier_code"]."</td><td>".$row["complaint_no"]."</td><td>".$row["supplier_m3_code"]."</td><td>".$row["color_code"]."</td><td>".$row["seq_no"]."</td><td><a href='$edit_url&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
 			<a href='$delete_url&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";

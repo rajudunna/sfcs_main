@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,13 +56,13 @@
 			    <label class="control-label control-label-left col-sm-3" for="table_name">	Employee Id<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-                <input id="table_name" type="text" class="form-control k-textbox" data-role="text" placeholder="Table Name" name="emp_id" required="required" value="<?php echo $emp_id; ?>" ><span id="errId1" class="error"></span></div>
+                <input id="table_name" type="text" class="form-control k-textbox integer" data-role="text"  name="emp_id" required="required" value="<?php echo $emp_id; ?>" ><span id="errId1" class="error"></span></div>
                 
 		</div></div><div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="table_status">Employee Name</label>
 			    <div class="controls col-sm-9">
                     
-               <input id="emp_name" type="text" class="form-control k-textbox" data-role="text" placeholder="Table Name" name="emp_name" required="required" value="<?php echo $emp_name; ?>" ><span id="errId1" class="error"></span></div>
+               <input id="emp_name" type="text" class="form-control k-textbox alpha " data-role="text" pattern="[A-Za-z0-9]" name="emp_name" required="required" value="<?php echo $emp_name; ?>" ><span id="errId1" class="error"></span></div>
 	
                 
 		</div></div><div class="col-md-4"><div class="form-group">
