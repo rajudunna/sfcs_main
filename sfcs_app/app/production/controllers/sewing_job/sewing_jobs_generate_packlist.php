@@ -9,7 +9,7 @@
 	$mix_jobs = $_POST['mix_jobs'];
 	$schedule = $_POST['schedule'];
 	$style = $_POST['style'];
-		
+	$doc_data=array();	
 	// echo "bundle_size = ".$bundle_size.", sew_no_of_cartons = ".$sew_no_of_cartons.", sew_pack_method = ".$sew_pack_method.", pack_seq_no = ".$pack_seq_no.", mix_jobs = ".$mix_jobs.", schedule = ".$schedule.", style = ".$style.", sew_pack  = ".$operation[$sew_pack_method].'<br>';
 	// echo "<table class='table table-striped table-bordered'>";
 	// echo "<thead><th>Type</th><th>Cut Number</th><th>Job Number</th><th>Color</th><th>Size</th><th>Quantity</th><th>Docket Number</th></thead>";
@@ -70,6 +70,7 @@
 			{
 				$cut_alloc+=$rw2['qty'];
 			}
+			
 			$diff_qty=$cut_alloc-($order_qty_col_size+$sample);
 			if($ex_cut_status=='1')
 			{
@@ -82,10 +83,30 @@
 			$result23=mysqli_query($link, $sql23) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($result23))
 			{
+				$doc_data[]=$sql_row['docket_number'];
 				$cut_num=$sql_row['cut_num'];
 				$color_code=$sql_row['col_code'];
 				$ratio=$sql_row['quantity'];
 				$cut_quantity=$sql_row['total_cut_quantity'];
+				// Eiminate duplicate dockets
+				$sql221="SELECT * from $bai_pro3.tbl_docket_qty where doc_no='".$sql_row['docket_number']."' and ref_size='$size'";
+				$result1221=mysqli_query($link, $sql221) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($rw21=mysqli_fetch_array($result1221))
+				{
+					if($rw21['type']=='1')
+					{
+						$cut_quantity=$cut_quantity-$rw21['plan_qty'];
+					}
+					elseif($rw21['type']=='2')
+					{
+						$sample=$sample-$rw21['plan_qty'];	
+					}
+					elseif($rw21['type']=='3')
+					{
+						$diff_qty=$diff_qty-$rw21['plan_qty'];
+					}	
+				}
+
 				if($cut_quantity>0)
 				{
 					do
@@ -158,7 +179,8 @@
 				}
 			}
 		}
-
+		$update1="update $bai_pro3.`tbl_docket_qty` set pac_stat_input_id='$pac_stat_input_id' where doc_no in (".implode(",",$doc_data).")";
+		mysqli_query($link, $update1) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_main_packlist.php',0,'N')."&schedule=$schedule&seq_no=$pack_seq_no&pac_method=$sew_pack_method';</script>");
 	}
 ?>
