@@ -226,7 +226,8 @@
 							if ($pac_stat_input_check > 0)
 							{
 								echo '<br><div class="alert alert-danger">
-								  <strong>Warning!</strong><br>Generate Sewing Jobs in Packing List Based Sewing Job Screen';
+								  <strong>Warning!</strong>
+								  <br>You have already created sewing jobs based on pack method, So You should go with the same process.';
 								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N')."'>Click Here to Go</a>
 								</div>";
 							}
@@ -237,19 +238,9 @@
 						}
 						else
 						{
-							if ($pack_size_ref_check > 0)
-							{
-								echo '<br><div class="alert alert-danger">
-								  <strong>Warning!</strong><br>Generate Sewing Jobs in Packing List Based Sewing Job Screen';
-								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N')."'>Click Here to Go</a>
-								</div>";
-							}
-							else
-							{
-								$display_check = 1;
-							}
-						}
-
+							$display_check = 1;
+						}	
+						
 						if ($display_check == 1)
 						{
 							$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
