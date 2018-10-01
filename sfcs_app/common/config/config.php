@@ -195,5 +195,5 @@ while($methods=mysqli_fetch_array($pack_result))
     //     $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
     // }
-//===================================================
+//===================================================*/
 ?>
