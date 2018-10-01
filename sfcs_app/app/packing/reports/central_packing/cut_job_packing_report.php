@@ -94,7 +94,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 				<form name="test" action="<?php $_GET['r'] ?>" method="POST" class='form-inline'> 
 					<?php 
 						echo "VPO: <select name=\"vpo\" required onchange=\"firstbox();\" class='form-control'>"; 
-						$sql="select vpo from bai_pro3.bai_orders_db_confirm group by vpo order by vpo";     
+						$sql="select vpo from $bai_pro3.bai_orders_db_confirm group by vpo order by vpo";     
 						$sql_result=mysqli_query($link, $sql) or exit("Error while getting vpo"); 
 						$sql_num_check=mysqli_num_rows($sql_result); 
 
@@ -113,7 +113,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 						echo "</select>"; 
 						
 						echo "Style: <select name=\"style\" required onchange=\"secondbox();\" class='form-control'>"; 
-						$sql="select order_style_no from bai_pro3.bai_orders_db_confirm where vpo like \"%$vpo%\" GROUP BY order_style_no order by order_style_no";     
+						$sql="select order_style_no from $bai_pro3.bai_orders_db_confirm where vpo='".$vpo."' GROUP BY order_style_no order by order_style_no";     
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						echo "<option value='' selected>--Select--</option>"; 
 						while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -194,7 +194,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 					}
 				}
 				
-			    echo "<h3><span class=\"label label-info\"><b>Style: ".$style.", Schedules: ".substr(implode(",",$schedule),0,-1)."</b></span></h3><br/>"; 
+			    echo "<h3><span class=\"label label-info\"><b>Style: ".$style." &nbsp&nbsp&nbsp&nbsp Schedules: ".substr(implode(",",$schedule),0,-1)."</b></span></h3><br/>"; 
 			    // Cut Level
 				$cutnos=0;
 				$cutno="select max(acutno) as cutno FROM bai_pro3.packing_summary_input WHERE order_del_no IN(".implode(",",$schedule).")"; 
@@ -245,6 +245,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 				            echo "<td height=20 style='height:15.0pt'>".$ii."</td>";
 							$sql13="SELECT $query_val input_job_no_random_ref
 							FROM $brandix_bts.bundle_creation_data WHERE cut_number='".$ii."' and input_job_no_random_ref in ('".implode("','",$sew_job_rand)."') GROUP BY input_job_no order by input_job_no*1"; 
+							//echo $sql13."<br>";
 							$result13=mysqli_query($link, $sql13) or die("Error-".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row13=mysqli_fetch_array($result13)) 
 							{						
@@ -290,7 +291,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 								{
 									$bac_col='#ff3333';
 								}
-								echo "<td height=20 style='height:15.0pt;background-color:$bac_col;color:white;'>Job#-".$sew_job_no[$j]." </br> Qty#-".$job_qty[$sew_job_rand[$j]]."</td>";
+								echo "<td height=20 style='height:15.0pt;background-color:$bac_col;color:white;'>Job# ".$sew_job_no[$j]." </br> Qty# ".$job_qty[$sew_job_rand[$j]]." </br> Cut# ".$ii." </br> Col # ".$pack_method[$iii]."</td>";
 							}
 							echo "</tr>";
 							echo "</table>";
