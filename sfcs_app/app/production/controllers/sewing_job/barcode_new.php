@@ -129,7 +129,8 @@
 								</tr>
 								
 								<tr>
-									<td colspan=12><b>Color: </b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+									<td colspan=1><b>Color: </b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+									<td></td>	
 								</tr>
 								<tr>	
 									<td colspan=4><b>Operation:</b>'.trim($operations).' </td>
