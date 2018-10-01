@@ -389,7 +389,7 @@
 									}
 									else
 									{
-										echo"<td>Packing List Generated</td>";
+										echo"<td><h4><span class='label label-success'>Packing List Generated</span></h4></td>";
 									}
 									echo "<tr>";
 								}	
