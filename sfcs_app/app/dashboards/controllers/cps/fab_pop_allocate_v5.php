@@ -934,9 +934,12 @@ if(isset($_POST['allocate']))
 		echo "<th id='col1'>Item Code</th>";	
 		echo "<th id='col2'>Lot No</th>";	
 		echo "<th>Shade</th>";
+		if($shrinkage_inspection == 'yes')
+	  {
 		echo "<th id='col'>Shrinkage<br/>Group</th>";
 		echo "<th id='col'>Shrinkage<br/>Width</th>";	
 		echo "<th id='col'>Shrinkage<br/>Length</th>";
+	  }
 		echo "<th>Roll No</th>";	
 		echo "<th id='col'>Location</th>";	
 		echo "<th>Group</th>";	
@@ -1068,9 +1071,12 @@ if(isset($_POST['allocate']))
 			echo "<td id='col1'>".$sql_row['item']."</td>";
 			echo "<td id='col1'>".$sql_row['lot_no']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
+			if($shrinkage_inspection == 'yes')
+	        {
 			echo "<td>".$sql_row['shrinkage_group']."</td>";
 			echo "<td>".$sql_row['shrinkage_width']."</td>";
 			echo "<td>".$sql_row['shrinkage_length']."</td>";
+			}
 			echo "<td>".$sql_row['ref2']."</td>";
 			echo "<td>".$sql_row['ref1']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
