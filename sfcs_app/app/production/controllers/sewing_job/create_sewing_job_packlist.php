@@ -335,7 +335,7 @@
 										<th>Controls</th></tr>";
 									while($pack_result1=mysqli_fetch_array($pack_meth_qty))
 									{
-										$get_sew_method = 0;	$bundle_size_sew = 0;	$no_of_cartons_sew = -1;
+										$get_sew_method = 0;	$bundle_size_sew = -1;	$no_of_cartons_sew = 0;
 										echo '<form name="input" method="post" id="form_id_'.$count.'"  onsubmit="return test_man('.$count.',event);" action="'.getFullURL($_GET['r'],'sewing_jobs_generate_packlist.php','N').'">';
 											$seq_no=$pack_result1['seq_no'];
 
@@ -458,38 +458,45 @@
 						}
 						else
 						{
-							if (sew_bundle_size > 0)
+							if (sew_bundle_size == -1 || sew_bundle_size == null)
 							{
-								title_to_show = "";
+								sweetAlert('Enter Valid Bundle Size','','warning');
 							}
 							else
 							{
-								title_to_show = "Bundle Size not defined, Deafult bundle size will be applied";
-							}
+								if (sew_bundle_size > 0)
+								{
+									title_to_show = "";
+								}
+								else
+								{
+									title_to_show = "Bundle Size not defined, Deafult bundle size will be applied";
+								}
 
-							if (sew_no_of_cart == -1 || sew_no_of_cart == 0 || sew_no_of_cart == null)
-							{
-								sweetAlert('Enter Valid No of Cartons','','warning');
-							}
-							else
-							{
-								sweetAlert({
-									title: "Are you sure to generate Sewing Jobs?",
-									text: title_to_show,
-									icon: "warning",
-									buttons: true,
-									dangerMode: true,
-									buttons: ["No, Cancel It!", "Yes, I am Sure!"],
-								}).then(function(isConfirm){
-									if (isConfirm) {
-										document.getElementById('form_id_'+count).submit();
-										$("#loading-image").show();
-									} else {
-										sweetAlert("Request Cancelled",'','error');
-										return false;
-									}
-								});
-								return;
+								if (sew_no_of_cart == 0 || sew_no_of_cart == null)
+								{
+									sweetAlert('Enter Valid Number of Cartons','','warning');
+								}
+								else
+								{
+									sweetAlert({
+										title: "Are you sure to generate Sewing Jobs?",
+										text: title_to_show,
+										icon: "warning",
+										buttons: true,
+										dangerMode: true,
+										buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+									}).then(function(isConfirm){
+										if (isConfirm) {
+											document.getElementById('form_id_'+count).submit();
+											$("#loading-image").show();
+										} else {
+											sweetAlert("Request Cancelled",'','error');
+											return false;
+										}
+									});
+									return;
+								}
 							}
 						}
 					}
