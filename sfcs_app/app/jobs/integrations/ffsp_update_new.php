@@ -29,9 +29,9 @@ foreach($store_data as $data){
 	$duration = $end_timestamp - $start_timestamp;
 	print("Execution took ".$duration." milliseconds.")."\n";
 	
-	$style = $resultObj[0]->Style;
-	$schedule = $resultObj[0]->Schedule;
-	$color = $resultObj[0]->ColorDescription;
+	$style = $data['style'];
+	$schedule = $data['schedule'];
+	$color = $data['color'];
 	
 	$fabHigherStatus = $resultObj[0]->FabHigherStatus;
 	$sTRIMHigherStatus = $resultObj[0]->STRIMHigherStatus;
