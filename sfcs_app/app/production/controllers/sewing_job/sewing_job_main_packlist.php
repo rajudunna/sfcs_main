@@ -10,7 +10,7 @@
 	// $carton_id=$_GET["id"];
 	$schedule=$_GET["schedule"];
 	$seq_no=$_GET["seq_no"];
-	$carton_method=$_GET['pac_method']
+	$carton_method=$_GET['pac_method'];
 	if($carton_method==1 or $carton_method==4)
 	{
 		$sql123="SELECT pac_stat_input.`schedule`,pac_stat_input.`style` ,pac_stat_input.`mix_jobs`, pac_stat_input.`pack_method` AS sew_pack_method,GROUP_CONCAT(DISTINCT COLOR) AS cols FROM bai_pro3.`tbl_pack_ref` LEFT JOIN bai_pro3.`tbl_pack_size_ref` ON tbl_pack_ref.`id`=tbl_pack_size_ref.`parent_id` LEFT JOIN bai_pro3.`pac_stat_input` ON tbl_pack_ref.`schedule`= pac_stat_input.`schedule` AND tbl_pack_size_ref.`seq_no`=pac_stat_input.`pac_seq_no`WHERE pac_stat_input.schedule='$schedule' AND pac_stat_input.pac_seq_no='$seq_no' GROUP BY COLOR";
