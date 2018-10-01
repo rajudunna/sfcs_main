@@ -335,7 +335,7 @@
 						$last_mo = $mo_no[0];
 						for($k=0;$k<sizeof($ops);$k++)
 						{
-							echo $ops[$k].'<br>';
+							// echo $ops[$k].'<br>';
 							// if($ops_m_id[$mo_no[0]][$ops[$k]]>0)
 							{
 								$sql1231="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
@@ -471,7 +471,7 @@
 				//echo "<br>-----------------------------------------------------------------------<br/>";
 			}
 			unset($sizes);
-			echo 'done';
+			// echo 'done';
 		}
 	}
 	
