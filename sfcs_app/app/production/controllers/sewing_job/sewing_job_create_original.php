@@ -48,7 +48,7 @@
 				}
 				split_tot = split_tot + split;
 			}
-			var exces_from=document.getElementById("exces_from").value;
+			// var exces_from=document.getElementById("exces_from").value;
 			var mix_jobs=document.getElementById("mix_jobs").value;
 			// alert(mix_jobs);
 			if (mix_jobs == '')
@@ -57,12 +57,12 @@
 			}
 			else
 			{
-				if (exces_from == 0)
-				{
-					sweetAlert('Please Select Excess From','','warning');
-				}
-				else
-				{
+				// if (exces_from == 0)
+				// {
+				// 	sweetAlert('Please Select Excess From','','warning');
+				// }
+				// else
+				// {
 					if (split_tot > 0)
 					{
 						title_to_show = "";
@@ -87,7 +87,7 @@
 						}
 					});
 					return;
-				}
+				// }
 			}
 		}
 	});
@@ -218,7 +218,8 @@
 						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
 						
 						$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
-						$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$c_ref,$link);
+						// $bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$c_ref,$link);
+						$bundle = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no",$schedule,$link);
 						$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 						$pack_method = echo_title("$brandix_bts.tbl_carton_ref","carton_method","carton_barcode",$schedule,$link);
 						$tbl_carton_ref_check = echo_title("$brandix_bts.tbl_carton_ref","count(*)","style_code='".$style_id."' AND ref_order_num",$sch_id,$link);
@@ -694,7 +695,7 @@
 											<table class='table table-bordered'>
 												<tr>
 													<th style='display: none;'><center>Mix Cut Jobs</center></th>
-													<th><center>Excess From</center></th>
+													<th style='display: none;'><center>Excess From</center></th>
 													<th><center>Control</center></th>
 												</tr>
 												<tr>
@@ -707,9 +708,9 @@
 															</select>
 														</center>
 													</td>
-													<td>
+													<td style='display: none;'> 
 														<center>
-															<select name='exces_from' id='exces_from' required class='form-control'>
+															<select name='exces_from' id='exces_from' class='form-control'>
 																<option value=''>Please Select</option>
 																<option value='1'>First Cut</option>
 																<option value='2'>Last Cut</option>
@@ -765,16 +766,16 @@
 					$style_id=$_POST['style_id'];
 					$sch_id=$_POST['sch_id'];
 					$pack_method=$_POST['pack_method'];
-					
+
 					$sum = array_sum($no_of_cartons);
 					if ($sum>0)
 					{
 						$merge_status=$_POST['mix_jobs'];
-						$exces_from=$_POST['exces_from'];
+						// $exces_from=$_POST['exces_from'];
 						$c_ref=$_POST['c_ref'];
 						$combo=$_POST['combo'];
 						
-						$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='".$exces_from."', merge_status='".$merge_status."' where id='".$c_ref."'";
+						$sql="update $brandix_bts.`tbl_carton_ref` set exces_from='0', merge_status='".$merge_status."' where id='".$c_ref."'";
 						// echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Failed to update Carton Details");
 						for ($i=0; $i < sizeof($combo); $i++)

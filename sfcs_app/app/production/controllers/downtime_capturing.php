@@ -131,7 +131,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 //echo $forcast_qry;
                 $forcast_res = mysqli_query($link, $forcast_qry) or exit("Sql Error fr".mysqli_error($GLOBALS["___mysqli_ston"]));
                
-                $get_breaks = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22))";
+                $get_breaks = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22) AND team = '".$_GET['module']."')";
                 $brks = '';
                 
                 $result_breaks = mysqli_query($link, $get_breaks) or exit("SQL Error_x:".$get_breaks);
@@ -195,7 +195,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 $tab.="</tbody>
                 </table>";
 
-                $resons_data_sql = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id NOT IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22))";
+                $resons_data_sql = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id NOT IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22) AND team = '".$_GET['module']."')";
 
                 $resons_data_result = mysqli_query($link, $resons_data_sql) or exit("Sql Error resons".mysqli_error($GLOBALS["___mysqli_ston"]));
 

@@ -31,6 +31,8 @@ function validateQty(event)
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));	
 	$qry_short_codes = "SELECT * from $brandix_bts.ops_short_cuts";
 	$result_oper = $link->query($qry_short_codes);
+	$qry_work_center_id = "SELECT * from $brandix_bts.parent_work_center_id";
+    $result_work_center_id = $link->query($qry_work_center_id);
 	if(isset($_GET['id'])){
 		
 		$operation_name = "";
@@ -136,6 +138,32 @@ function validateQty(event)
 								</select>
 
 								</div>
+								<div class = "col-sm-3">
+								<label for="style">Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>			
+									<select id="parent_work_center_id" name="parent_work_center_id" style="width:100%;" class="form-control" required>
+									<option value='0'>Select Parent Work Center Id</option>
+									<?php				    	
+										if ($result_work_center_id->num_rows > 0) {
+											while($row_short = $result_work_center_id->fetch_assoc()) {
+												// var_dump($row_short);
+											$row_value = $row_short['work_center_id_name'];
+												if($row_short['work_center_id_name'] == $row[0]['parent_work_center_id'])
+												{
+													$selected = 'selected';
+												}
+												else
+												{
+													$selected = '';
+												}
+												echo "<option value='".$row_short['work_center_id_name']."' $selected>".strtoupper($row_value)."</option>";
+											}
+										} else {
+											echo "<option value=''>No Data Found..</option>";
+										}
+									?>
+								</select>
+
+								</div>
 									<div class="col-sm-3">
 										<b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id" value= "<?php echo $row[0]['work_center_id']?>">
 									</div> 
@@ -191,6 +219,10 @@ function validateQty(event)
 		}
 		if(isset($_GET["category"])){
 			$category= $_GET["category"];
+		}	
+		//echo 'work'.$_POST["parent_work_center_id"];
+		if(isset($_GET["parent_work_center_id"])){
+			$parent_work_center_id = $_GET["parent_work_center_id"];
 		}
 		if($operation_name!="" && $operation_code!="" && $short_cut_code != ""){
 			
@@ -203,7 +235,7 @@ function validateQty(event)
 				$cnt = $res_res_checking_qry['cnt'];
 			}
 			// echo $cnt;
-			$short_key_code_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where short_cut_code = '$short_cut_code' and id <> $id";
+			$short_key_code_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where short_cut_code = '$short_cut_code' and id <> $id AND $short_cut_code <> 0";
 			$res_short_key_code_check_qry = mysqli_query($link,$short_key_code_check_qry);
 			while($res_res_res_short_key_code_check_qry = mysqli_fetch_array($res_short_key_code_check_qry))
 			{
@@ -211,7 +243,7 @@ function validateQty(event)
 			}
 			if($cnt == 0 && $cnt_short == 0)
 			{
-				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category' where id='$id'";
+				$qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id' where id='$id'";
 				// echo $qry_insert1;
 				// die();
 				$res_do_num1 = mysqli_query($link,$qry_insert1);
