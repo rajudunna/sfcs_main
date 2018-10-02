@@ -24,13 +24,14 @@
 	 */
 	// The commands
 	$commands = array(
-		'git pull',
-		'git status'
+		'git pull 2>&1',
+		'git status 2>&1'
 	);
 	// Run the commands for output
 	$output = '';
-	
-	chdir("C:/xampp_sfcs/htdocs/sfcs_main/");
+	$pathValue = __DIR__;
+	$output .=  "change DIR $pathValue \n\n";
+	chdir($pathValue);
 	foreach($commands AS $command){
 		// empty
 		$output = '';
@@ -42,8 +43,9 @@
 		echo $output;
 	}
 	
+	$output .=  "change DIR $pathValue\..\configuration\API\saved_fields";
 	
-	chdir("C:/xampp_sfcs/htdocs/sfcs_main/configuration/API/saved_fields");
+	chdir("$pathValue\..\configuration\API\saved_fields");
 	foreach($commands AS $command){
 		// empty
 		$output = '';
