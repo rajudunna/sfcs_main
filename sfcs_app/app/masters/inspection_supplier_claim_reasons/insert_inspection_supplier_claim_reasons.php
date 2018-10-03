@@ -43,7 +43,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 }else{
 	if($tid>0){
 		//update
-		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid=$tid";
+		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where sno=$tid";
 		//echo $sql;exit;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
@@ -76,7 +76,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 
 		echo "<script>setTimeout(function () { 
 			swal({
-			  title: 'Mrn Request Reason Already Existed!',
+			  title: ' Reason Already Existed!',
 			  text: 'Message!',
 			  type: 'warning',
 			  confirmButtonText: 'OK'

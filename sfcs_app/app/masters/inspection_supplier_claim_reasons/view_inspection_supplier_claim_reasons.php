@@ -14,7 +14,7 @@
 		// output data of each row
 		while($row=mysqli_fetch_array($sql_result)) {
 			$complaint_reason=$row["complaint_reason"];
-			$tid=$row["tid"];
+			$tid=$row["sno"];
 			$complaint_clasification=$row["Complaint_clasification"];
 			$complaint_category=$row["complaint_category"];			
 			$status = $row['status'];
