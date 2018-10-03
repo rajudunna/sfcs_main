@@ -34,7 +34,7 @@ else
 	if($dr_id>0)
 	{
 		//update
-		$sql = "update $bai_pro3.transport_modes set transport_mode='$code' where tid=$dr_id";
+		$sql = "update $bai_pro3.transport_modes set transport_mode='$code' where sno=$dr_id";
 
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'transport_modes_add.php','N');
@@ -61,7 +61,7 @@ else
 
 		
 
-		$query1="select transport_mode from $bai_pro3.transport_modes where tid='$dr_id' ";
+		$query1="select transport_mode from $bai_pro3.transport_modes where sno='$dr_id' ";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){
