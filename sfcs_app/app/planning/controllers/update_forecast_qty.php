@@ -140,7 +140,7 @@ if(isset($_POST['submit']))
 	while($row=mysqli_fetch_array($result)) 
 	{     
 		$mod_names[]=$row['module_id']; 
-		$sql1="SELECT sum(fr_qty) as qty FROM $bai_pro2.fr_data WHERE frdate='$today' AND team='".$row['module_id']."'"; 
+		$sql1="SELECT *,SUM(fr_qty) AS qty FROM $bai_pro2.fr_data WHERE frdate='$today' AND team='".$row['module_id']."'"; 
 		//echo $sql1;
 		$result1=mysqli_query($link, $sql1) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($result1)) 
