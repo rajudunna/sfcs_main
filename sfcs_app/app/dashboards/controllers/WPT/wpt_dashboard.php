@@ -50,6 +50,35 @@
         <?php
             }
         ?>
+            <hr>
+            <div class='l-div col-sm-4'>
+                <span class="l-block yellow" >&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class='l-text'>Fabric Issued to Cutting Module</span>
+            </div>
+            <div class='l-div col-sm-4'>
+                <span class="l-block green" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                <span class='l-text'>Material Requested</span>
+            </div>
+            <div class='l-div col-sm-4'>
+                <span class="l-block lgreen" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                <span class='l-text'>Material Available and Not Requested</span>
+            </div>
+            <div class='l-div col-sm-4'>   
+                <span class="l-block red" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                <span class='l-text'>Material Not Available and Not Requested</span>
+            </div>
+            <div class='l-div col-sm-4'>
+                <span class="l-block yash" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                <span class='l-text'>Material Status Not Updated in FSP</span>
+            </div>
+            <div class='l-div col-sm-4'>
+                <span class="l-block pink" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                <span class='l-text'>Ready To Issue</span>
+            </div>
+            <div class='l-div col-sm-4'>
+                <span class="l-block orange" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                <span class='l-text'>Cutting Partially Done</span>
+            </div>
         </div>
     </div>
 </div>
@@ -133,7 +162,7 @@
 
 <style>
     .section-heading{
-        text-color : #3c3c3c;
+        color : #000;
         font-size : 16px;
         font-weight : 15px;
     }
@@ -144,7 +173,7 @@
     }
 
     .ims-wip{
-        background : #FFD400;
+        background : #FFAA00;
         width : parent;
         height : 35px;
         color : #000;
@@ -205,7 +234,18 @@
         height : 30px;
         border : 1px solid black;
     }
-
+    .l-div{
+        min-height : 40px;
+    }
+    .l-block{
+        min-width : 25px;
+        min-height : 25px;
+        border : 1px solid #3c3c3c;
+    }
+    .l-text{
+        color : #444;
+        font-weight : bold;
+    }
     .green{
         background : green;
     }

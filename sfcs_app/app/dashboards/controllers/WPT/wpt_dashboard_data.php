@@ -38,8 +38,10 @@ if($section > 0){
             //getting the WIP OF module in a section
             $ims_wip_query = "SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no,SMV  
                               FROM $bai_pro3.ims_log ims
-                              LEFT JOIN $bai_pro3.bai_orders_db bd ON bd.order_del_no = ims.ims_schedule 
+                              LEFT JOIN $brandix_bts.tbl_style_ops_master som ON som.schedule = ims.ims_schedule 
+                                        AND som.color = ims.ims_color AND som.style = ims.ims_style
                               WHERE ims_mod_no='$module' and ims_status<>'DONE' ";
+            //echo $ims_wip_query;                  
             $ims_wip_result = mysqli_query($link,$ims_wip_query) or exit($data.='Problem in ims wip');
             while($row = mysqli_fetch_array($ims_wip_result)){
                 $ims_wip = $row['WIP'];
@@ -81,7 +83,7 @@ if($section > 0){
         $ips_id_result = mysqli_query($link,$ips_id_query);
         $row = mysqli_fetch_array($link,$ips_id_result);
         $ips_id = $row['op_code'];
-        //$ips_id = 129;
+        $ips_id = 129;
         //getting all planned jobs for all the modules within the sec 
         $all_jobs_query = "SELECT input_job_no_random_ref as job,input_module FROM $bai_pro3.plan_dashboard_input 
                            WHERE input_module IN ($modules_str)"; 
@@ -115,24 +117,24 @@ if($section > 0){
                 $doc_no    = $row['doc_no'];
                 $order_tid = $row['order_tid'];
                 //getting the PRE OP'S CODE  ///////////////////////////////////////////////////////////////////////////
-                $style_schedule_query = "SELECT order_del_no,order_style_no,order_col_des from $bai_rpo3.bai_orders_db where 
-                                         order_tid = '$order_tid' ";
-                $style_schedule_result = mysqli_query($link,$style_schedule_query);
+                $style_schedule_query = "SELECT order_del_no,order_style_no,order_col_des from $bai_pro3.bai_orders_db where 
+                                         order_tid = '$order_tid' "; 
+                $style_schedule_result = mysqli_query($link,$style_schedule_query) or exit($data.='Problem in sty,sch details');
                 $row = mysqli_fetch_array($style_schedule_result);                         
-                $style   = $row['order_style_no']!= '' ? $style = $row['style']   : $style = '0';
-                $schedule= $row['order_del_no']  != '' ? $schedule= $row['schedule']: $schedule = '0' ;
-                $color   = $row['order_col_des'] != '' ? $color= $row['schedule']  : $color = '0' ;
+                $style   = $row['order_style_no']!= '' ? $style   = $row['order_style_no']   : $style = '0';
+                $schedule= $row['order_del_no']  != '' ? $schedule= $row['order_del_no']: $schedule = '0' ;
+                $color   = $row['order_col_des'] != '' ? $color   = $row['order_col_des']  : $color = '0' ;
 
                 $previous_op_query = "SELECT operation_code from $brandix_bts.tbl_style_ops_master where style='$style' 
                                       AND color = '$color' AND operation_order < $ips_id 
                                       and operation_code NOT IN  (10,200)
                                       ORDER BY operation_order DESC LIMIT 1";
-                $previous_op_result = mysqli_query($link,$previous_op_query);
+                $previous_op_result = mysqli_query($link,$previous_op_query) or exit($data.='Previous op query ');
                 $row = mysqli_query($link,$previous_op_result);
                 $pre_op_id = $row['operation_code'];                      
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-                $cdoc_cqty_query  = "SELECT SUM(recevied_qty+rejected_qty) as qty from $brandix_bts.bundle_creation_data
+                $cdoc_cqty_query  = "SELECT SUM(recevied_qty) as qty from $brandix_bts.bundle_creation_data
                                     where docket_number = '$doc_no' and operation_id = '$ips_id'";
                 $cdoc_cqty_result = mysqli_query($link,$cdoc_cqty_query) or exit($data.='Problem in getting con qty per doc');
                 $row = mysqli_fetch_array($cdoc_cqty_query);
@@ -145,6 +147,7 @@ if($section > 0){
                 $row = mysqli_fetch_array($cdoc_qty_result);
                 $docket_cqty[$doc_no] = $row['qty'] - $docket_ccqty[$doc_no];
             }
+
             foreach($sorted_modules as $key => $sorted_module){
                 //echo "<hr><br>INSIDE -------- $sorted_module<br/>";
                 $summing_qty = 0;
@@ -180,13 +183,9 @@ if($section > 0){
                     $wip[$sorted_module] = $summing_qty;
                     $final_qty = $wip[$sorted_module];
                     $data.= "<script>$('#pending-wip-$sorted_module').html($final_qty)</script>";
-                }
-                
+                } 
             }
         }
-        // echo "<hr>";
-        // var_dump($wip);
-        // echo "<hr>";
     }else{
         //This Section Has No Modules
     }
@@ -289,6 +288,8 @@ function getCutJobsData($module){
                                     exit($data.='Problem in partial qty');
                 $row = mysqli_fetch_array($partial_doc_qty_result);
                 $doc_qty = $row['qty'];  //--temporary comment
+                if($doc_qty == '')
+                    $doc_qty = 0;
                 $total_cut_wip = $total_cut_wip + $doc_qty;
             }
             $tool_tip_text = "Schedule No : $schedule <br/>Doc no : $doc_no <br/> Cut no : $cut_str <br/> Qty : $doc_qty";
