@@ -16,7 +16,7 @@
 
 <body>
      <?php
-    if(isset($_REQUEST['tid']))
+    if(isset($_GET['tid']))
     {
         $dr_id=$_GET['tid'];
         $transport_modes=$_GET['transport_mode'];

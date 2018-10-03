@@ -80,7 +80,7 @@ if (empty($emp_id) || empty($emp_name)) {
 
 		echo"<script>setTimeout(function () { 
 			swal({
-			  title: 'Cutting Table Already Existed!',
+			  title: 'Record Already Existed!',
 			  text: 'Message!',
 			  type: 'warning',
 			  confirmButtonText: 'OK'

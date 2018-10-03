@@ -31,7 +31,7 @@ $url=getFullURL($_GET['r'],'transport_modes_add.php','N');
 			window.location.href = \"$url\";
 		  }
 		}); }, 100);</script>";
-$delete="delete from $bai_pro3.`transport_modes` where tid='$dr_id' ";
+$delete="delete from $bai_pro3.`transport_modes` where sno='$dr_id' ";
 // echo $delete;
 if (mysqli_query($conn, $delete)) {
 			
