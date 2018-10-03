@@ -46,7 +46,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		
 		//update
 		
-		$sql = "update $bai_pro3.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name' where tid=$tbl_id";
+		$sql = "update $bai_pro3.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name' where id=$tbl_id";
 		// echo $sql;die();
 		if (mysqli_query($conn, $sql)) {
 
@@ -80,7 +80,7 @@ if (empty($emp_id) || empty($emp_name)) {
 
 		echo"<script>setTimeout(function () { 
 			swal({
-			  title: 'Cutting Table Already Existed!',
+			  title: 'Record Already Existed!',
 			  text: 'Message!',
 			  type: 'warning',
 			  confirmButtonText: 'OK'

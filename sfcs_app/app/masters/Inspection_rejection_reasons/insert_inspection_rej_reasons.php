@@ -55,7 +55,7 @@ if (empty($rejec_code) || empty($rejec_des) )
 		}
 	}else{
 		
-		$count_qry= "select * from $bai_rm_pj1.reject_reasons where reject_code = '$rejec_code' and (reject_desc = '$rejec_des' )"; 
+		$count_qry= "select reject_code from $bai_rm_pj1.reject_reasons where reject_code = '$rejec_code' or(reject_desc = '$rejec_des' )"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){

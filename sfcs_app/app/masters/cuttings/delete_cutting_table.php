@@ -23,7 +23,7 @@ if($tbl_id!=''){
 			window.location.href = \"$url\";
 		  }
 		}); }, 100);</script>";
-$delete="delete from $bai_pro3.`tbl_leader_name` where tid='$tbl_id'";
+$delete="delete from $bai_pro3.`tbl_leader_name` where id='$tbl_id'";
 //echo $delete;
 if (mysqli_query($conn, $delete)) {
 			

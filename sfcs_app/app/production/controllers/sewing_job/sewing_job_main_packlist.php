@@ -47,6 +47,11 @@
 		if($sew_pack_method==1 || $sew_pack_method==2)
 		{
 			$status_check=1;
+			$input_job_no_tmp_new= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
+			if ($input_job_no_tmp_new == '' or $input_job_no_tmp_new == null or $input_job_no_tmp_new == 0)
+			{
+				$status_check=1;
+			}
 			for($kk=0;$kk<sizeof($cols_tot_tmp);$kk++)
 			{
 				$cols_tot=explode(",",$cols_tot_tmp[$kk]);
@@ -56,7 +61,7 @@
 					$resulty=mysqli_query($link, $sql1y) or die ("Error1.51=".$sql1y.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row1y=mysqli_fetch_array($resulty))
 					{				
-						$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and pac_seq_no = $seq_no and order_del_no",$schedule,$link);
+						$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 						for($ii=0;$ii<sizeof($cols_tot);$ii++)
 						{			
 							if($status_check=='1')
@@ -190,7 +195,7 @@
 
 				// Sample
 					$input_job_no=0;
-					$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and pac_seq_no = $seq_no and order_del_no",$schedule,$link);
+					$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 					$rand=$schedule.date("ymd").$input_job_no;
 					//Excess Pieces Execution
 					// $sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =3 and color in ('".implode("','",$cols_tot)."') order by cut_num*1"; 
@@ -217,7 +222,7 @@
 
 				// Excess
 					$input_job_no=0;
-					$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and pac_seq_no = $seq_no and  order_del_no",$schedule,$link);
+					$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  order_del_no",$schedule,$link);
 					$rand=$schedule.date("ymd").$input_job_no;
 					//Excess Pieces Execution
 					$sql12="SELECT * 
@@ -250,7 +255,7 @@
 			{
 				$cols_tot=explode(",",$cols_tot_tmp[$kk]);
 				// Normal
-					$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and pac_seq_no = $seq_no and order_del_no",$schedule,$link);
+					$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 					$sql1232="SELECT color FROM $bai_pro3.`tbl_docket_qty` LEFT JOIN $bai_pro3.pac_stat_input ON tbl_docket_qty.`pac_stat_input_id`=pac_stat_input.`id` WHERE color IN ('".implode("','",$cols_tot)."') and SCHEDULE='$schedule' and type=1 AND pac_seq_no='$seq_no' GROUP BY cut_no ";
 					// $sql1232="SELECT color FROM brandix_bts.tbl_carton_ref LEFT JOIN brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id WHERE tbl_carton_ref.id='".$carton_id."' and color in ('".implode("','",$cols_tot)."') GROUP BY color ORDER BY color*1";
 					$result12132=mysqli_query($link, $sql1232) or die ("Error1.781=".$sql1232.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -384,7 +389,7 @@
 				// Normal
 
 				// Sample
-					$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  pac_seq_no = $seq_no and order_del_no",$schedule,$link);
+					$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 					$rand=$schedule.date("ymd").$input_job_no;
 					//Excess Pieces Execution
 					$sql12="SELECT * 
@@ -410,7 +415,7 @@
 				// Sample
 
 				// Excess
-					$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and pac_seq_no = $seq_no and order_del_no",$schedule,$link);
+					$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 					$rand=$schedule.date("ymd").$input_job_no;
 					//Excess Pieces Execution
 					$sql12="SELECT * 
@@ -447,10 +452,15 @@
 		$docs_cuttmp=array();
 		echo "<h3><font face='verdana' color='green'>Generating Sewing Jobs for <br>Schedule: <span class='label label-info'>".$schedule."</span> with Pack Method: <span class='label label-info'>".$operation[$sew_pack_method]."</span></font></h3>";
 
-		echo '<h4>Sewing Pack Method: <span class="label label-info">'.$operation[$sew_pack_method].'</span></h4>';
+		// echo '<h4>Sewing Pack Method: <span class="label label-info">'.$operation[$sew_pack_method].'</span></h4>';
 		// echo "<table class='table table-striped table-bordered'>";
 		// echo "<thead><th>Docket Number</th><th>Color</th><th>Size</th><th>Size Title</th><th>Input Job Number</th><th>Rand No Number</th><th>Quantity</th></thead>";
-		$status_sew=1;
+		$input_job_no_tmp_new= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
+		if ($input_job_no_tmp_new == '' or $input_job_no_tmp_new == null or $input_job_no_tmp_new == 0)
+		{
+			$status_sew=1;
+		}
+		
 		$cols_tot=array();
 		if($sew_pack_method==1 || $sew_pack_method==2)
 		{
@@ -496,7 +506,7 @@
 								}
 								else
 								{
-									$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1"," pac_seq_no = $seq_no and order_del_no",$schedule,$link);
+									$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
 									$input_job_no=$input_job_no_tmp;
 									$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","size_code='".$row1y['size_title']."' and pac_seq_no = $seq_no and acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);
 								
@@ -659,7 +669,7 @@
 						for($kkk=0;$kkk<sizeof($docs_new_o);$kkk++)
 						{					
 							//Excess Pieces Execution
-							$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and pac_seq_no = $seq_no and  order_del_no",$schedule,$link);
+							$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  order_del_no",$schedule,$link);
 							$rand=$schedule.date("ymd").$input_job_no;
 							// $sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num = 3 and docket_number='".$docs_new_o[$kkk]."'"; 
 							$sql12="SELECT * 
@@ -704,7 +714,7 @@
 						for($kkk=0;$kkk<sizeof($docs_new_o);$kkk++)
 						{					
 							//Excess Pieces Execution
-							$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and pac_seq_no = $seq_no and  order_del_no",$schedule,$link);
+							$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  order_del_no",$schedule,$link);
 							$rand=$schedule.date("ymd").$input_job_no;
 							// $sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num = 2 and docket_number='".$docs_new_o[$kkk]."'";
 							$sql12="SELECT * 
@@ -784,7 +794,7 @@
 								}
 								else
 								{
-									$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1"," pac_seq_no = $seq_no and order_del_no",$schedule,$link);
+									$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
 									$input_job_no=$input_job_no_tmp;
 									$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and pac_seq_no = $seq_no and  order_del_no",$schedule,$link);						
 									if($input_job_no_tmpn>0)
@@ -922,7 +932,7 @@
 					{
 						for($kkk=0;$kkk<sizeof($docs_new_o);$kkk++)
 						{
-							$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and pac_seq_no = $seq_no and  order_del_no",$schedule,$link);
+							$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  order_del_no",$schedule,$link);
 							$rand=$schedule.date("ymd").$input_job_no;
 							//Excess Pieces Execution
 							$sql12="SELECT * 
@@ -966,7 +976,7 @@
 					{
 						for($kkk=0;$kkk<sizeof($docs_new_o);$kkk++)
 						{
-							$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and pac_seq_no = $seq_no and  order_del_no",$schedule,$link);
+							$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  order_del_no",$schedule,$link);
 							$rand=$schedule.date("ymd").$input_job_no;
 							//Excess Pieces Execution
 							$sql12="SELECT * 

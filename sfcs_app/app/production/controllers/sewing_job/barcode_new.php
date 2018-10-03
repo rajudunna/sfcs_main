@@ -62,8 +62,8 @@
 			$size=$barcode_rslt['size_code'];
 
 			//if(($size_temp!=$barcode_rslt['size_code']) OR ($color_temp!=$barcode_rslt['order_col_des']))
-			if(($size_temp!='') AND ($color_temp!='')){	
-				if(($size_temp!=$barcode_rslt['size_code'] ) OR ($color_temp!=$barcode_rslt['order_col_des'])){
+			if(($size_temp!='') AND ($color_temp!='') AND ($cutno_temp != '')){	
+				if(($size_temp!=$barcode_rslt['size_code'] ) OR ($color_temp!=$barcode_rslt['order_col_des']) OR ($cutno_temp!=$barcode_rslt['acutno'])){
 					$seq_num=1;
 				}
 			}
@@ -142,6 +142,7 @@
 			//reset sequence number by size and color
 			$size_temp=$size;
 			$color_temp=$color;
+			$cutno_temp=$cutno;
 		}
 	$html.='
 				</body>
