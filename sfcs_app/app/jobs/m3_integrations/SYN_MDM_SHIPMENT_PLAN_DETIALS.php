@@ -16,11 +16,11 @@ set_time_limit(6000000);
 		$result = odbc_exec($conn, $query_text);
 
 
-		$sql13="insert into $m3_inputs.shipment_plan_temp select * from $m3_inputs.shipment_plan";
+		$sql13="insert into $m3_inputs.shipment_plan_temp select * from $m3_inputs.shipment_plan_original";
 		mysqli_query($link, $sql13) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		
-		$trunc_ship = "TRUNCATE TABLE $m3_inputs.shipment_plan";
+		$trunc_ship = "TRUNCATE TABLE $m3_inputs.shipment_plan_original";
 		$res_trunc_ship = mysqli_query($link, $trunc_ship);
 		$j=0;
 		while($row = odbc_fetch_array($result))
@@ -61,7 +61,7 @@ set_time_limit(6000000);
 			$obdlqt = str_replace('"', '\"', $row['OBDLQT']);
 			$obivqt = str_replace('"', '\"', $row['OBIVQT']);
 
-			$sql_insert_ship = "INSERT INTO $m3_inputs.shipment_plan (Customer_Order_No, CO_Line_Status, Ex_Factory, Order_Qty, Mode, Destination, Packing_Method, FOB_Price_per_piece, MPO, CPO, DBFDST, Size, HMTY15, ZFeature, MMBUAR, Style_No, Product,Buyer_Division, Buyer, CM_Value, Schedule_No, Colour, EMB_A, EMB_B, EMB_C, EMB_D, EMB_E, EMB_F, EMB_G, EMB_H, Alloc_Qty, Dsptched_Qty, BTS_vs_Ord_Qty, BTS_vs_FG_Qty) VALUES (\"".$oborno."\", \"".$oborst."\", \"".$oblded."\", \"".$urtrqt."\", \"".$obmodl."\", \"".$obadid."\", \"".$obtepa."\", \"".$obsapr."\", \"".$obcuor."\", \"".$oayref."\", \"".$dbfdst."\", \"".$hmtx15."\", \"".$hmty15."\", \"".$hmtz15."\", \"".$mmbuar."\", \"".$mmhdpr."\", \"".$cttx401."\", \"".$cttx402."\", \"".$okcunm."\", \"".$odsapr."\", \"".$schd_no."\", \"".$pftx30."\", \"".$aa."\", \"".$bb."\", \"".$cc."\", \"".$dd."\", \"".$ee."\", \"".$ff."\", \"".$gg."\", \"".$hh."\", \"".$obalqt."\", \"".$obplqt."\", \"".$obdlqt."\", \"".$obivqt."\")";
+			$sql_insert_ship = "INSERT INTO $m3_inputs.shipment_plan_original (Customer_Order_No, CO_Line_Status, Ex_Factory, Order_Qty, Mode, Destination, Packing_Method, FOB_Price_per_piece, MPO, CPO, DBFDST, Size, HMTY15, ZFeature, MMBUAR, Style_No, Product,Buyer_Division, Buyer, CM_Value, Schedule_No, Colour, EMB_A, EMB_B, EMB_C, EMB_D, EMB_E, EMB_F, EMB_G, EMB_H, Alloc_Qty, Dsptched_Qty, BTS_vs_Ord_Qty, BTS_vs_FG_Qty) VALUES (\"".$oborno."\", \"".$oborst."\", \"".$oblded."\", \"".$urtrqt."\", \"".$obmodl."\", \"".$obadid."\", \"".$obtepa."\", \"".$obsapr."\", \"".$obcuor."\", \"".$oayref."\", \"".$dbfdst."\", \"".$hmtx15."\", \"".$hmty15."\", \"".$hmtz15."\", \"".$mmbuar."\", \"".$mmhdpr."\", \"".$cttx401."\", \"".$cttx402."\", \"".$okcunm."\", \"".$odsapr."\", \"".$schd_no."\", \"".$pftx30."\", \"".$aa."\", \"".$bb."\", \"".$cc."\", \"".$dd."\", \"".$ee."\", \"".$ff."\", \"".$gg."\", \"".$hh."\", \"".$obalqt."\", \"".$obplqt."\", \"".$obdlqt."\", \"".$obivqt."\")";
 			$res_insert_ship = mysqli_query($link, $sql_insert_ship);
 			if($res_insert_ship )
 			{
