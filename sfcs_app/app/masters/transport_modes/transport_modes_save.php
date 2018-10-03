@@ -68,7 +68,7 @@ else
 			$url=getFullURL($_GET['r'],'transport_modes_add.php','N');
 			echo"<script>setTimeout(function () { 
 				swal({
-				  title: 'Reason Already Existed for this Department',
+				  title: 'Record Already Existed! ',
 				  text: 'Message!',
 				  type: 'warning',
 				  confirmButtonText: 'OK'

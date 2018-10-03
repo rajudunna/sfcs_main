@@ -12,7 +12,7 @@
 		echo "<table id='downtime_reason' class='table'><thead><tr><th>S.No</th><th>Transport Modes</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
 		while($row=mysqli_fetch_array($sql_result)) {
-			$rowid=$row["tid"];
+			$rowid=$row["sno"];
 			$code=$row["transport_mode"];
 			 
 
