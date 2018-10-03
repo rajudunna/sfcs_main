@@ -92,7 +92,9 @@
 		{
 			var no_of_cartons_size_wise = new Array();
 			var noofcart_packjob=document.getElementById('noofcartons_packjob').value;		
-			var size_count=document.getElementById('size_size1').value;		
+			var size_count=document.getElementById('size_size1').value;
+			var noOfCols=document.getElementById('noOfCols').value;
+			var temp = 0;	var temp1 = 0;	var carton_temp = 0;	var bag_per_cart = 0;	var temp2 = 0;
 			if(noofcart_packjob==0 || noofcart_packjob=='')
 			{
 				sweetAlert('Enter Valid Cartons per Pack Job','','warning');
@@ -100,43 +102,84 @@
 			}
 			else
 			{
-				for (var i = 0; i < size_count; i++)
+				for (var col = 0; col < noOfCols; col++)
 				{
-					no_of_cartons_size_wise[i]=document.getElementById('NoOf_Cartons_'+i).value;
-				}
-				var min_no = Math.min.apply(null, no_of_cartons_size_wise);
-				if (min_no == 0)
-				{
-					sweetAlert('Enter Valid No of Cartons','','warning');
-					return;
-				}
-				else
-				{
-					if(Number(noofcart_packjob) > Number(min_no))
+					for (var siz = 0; siz < size_count; siz++)
 					{
-						sweetAlert('Cartons Per Pack should be less than No of Cartons','','warning');
-						return;
+						temp1 = Number(document.getElementById('GarPerBag_'+col+'_'+siz).value);
+						temp = temp + temp1;
+					}
+				}
+				if (temp > 0)
+				{
+					for (var siz = 0; siz < size_count; siz++)
+					{
+						temp2 = Number(document.getElementById('BagPerCart_'+siz).value);
+						bag_per_cart = bag_per_cart + temp2;
+					}
+					if (bag_per_cart > 0)
+					{
+						for (var i = 0; i < size_count; i++)
+						{
+							no_of_cartons_size_wise[i]=document.getElementById('NoOf_Cartons_'+i).value;
+							carton_temp = carton_temp + no_of_cartons_size_wise[i];
+						}
+						if (carton_temp > 0)
+						{
+							var min_no = Math.min.apply(null, no_of_cartons_size_wise);
+							if (min_no == 0)
+							{
+								min_no = 1;
+							}
+							if (min_no == 0 || min_no == '')
+							{
+								sweetAlert('Enter Valid No of Cartons','','warning');
+								return;
+							}
+							else
+							{
+								if(Number(noofcart_packjob) > Number(min_no))
+								{
+									sweetAlert('Cartons Per Pack should be less than No of Cartons','','warning');
+									return;
+								}
+								else
+								{
+									sweetAlert({
+										title: "Are you sure to Save the Packing Ratio?",
+										icon: "warning",
+										buttons: true,
+										dangerMode: true,
+										buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+									}).then(function(isConfirm){
+										if (isConfirm) {
+												$('#'+submit_btn.attr('id')).trigger('click',false);
+										} else {
+											sweetAlert("Request Cancelled",'','error');
+											return;
+										}
+									});
+									return;
+								}
+							}
+						}
+						else
+						{
+							sweetAlert('Enter Valid No of Cartons','','warning');
+							return;
+						}
 					}
 					else
 					{
-						sweetAlert({
-							title: "Are you sure to Save the Packing Ratio?",
-							icon: "warning",
-							buttons: true,
-							dangerMode: true,
-							buttons: ["No, Cancel It!", "Yes, I am Sure!"],
-						}).then(function(isConfirm){
-							if (isConfirm) {
-									$('#'+submit_btn.attr('id')).trigger('click',false);
-							} else {
-								sweetAlert("Request Cancelled",'','error');
-								return;
-							}
-						});
+						sweetAlert('Enter Valid Bags per Carton','','warning');
 						return;
 					}
 				}
-					
+				else
+				{
+					sweetAlert('Enter Valid Garments Per Bag','','warning');
+					return;		
+				}
 			}
 		}
 		
@@ -145,6 +188,10 @@
 		{
 			var noofcart_packjob=document.getElementById('noofcartons_packjob').value;
 			var NoOf_Cartons=document.getElementById('NoOf_Cartons1').value;
+			var size_count=document.getElementById('size_size1').value;
+			var noOfCols=document.getElementById('noOfCols').value;
+			var BagPerCart=document.getElementById('BagPerCart').value;
+			var temp = 0;	var temp1 = 0;	var carton_temp = 0;
 			if (NoOf_Cartons == 0)
 			{
 				sweetAlert('Enter Valid No of Cartons','','warning');
@@ -152,36 +199,60 @@
 			}
 			else
 			{
-				if(noofcart_packjob==0 || noofcart_packjob=='')
+				for (var col = 0; col < noOfCols; col++)
 				{
-					sweetAlert('Enter Valid Cartons per Pack Job','','warning');
-					return;
-				}
-				else
-				{
-					if(Number(noofcart_packjob) > Number(NoOf_Cartons))
+					for (var siz = 0; siz < size_count; siz++)
 					{
-						sweetAlert('Cartons Per Pack should be less than No of Cartons','','warning');
+						temp1 = Number(document.getElementById('GarPerBag_'+col+'_'+siz).value);
+						temp = temp + temp1;
+					}
+				}
+				if (temp > 0)
+				{
+					if (BagPerCart == 0 || BagPerCart == '' || BagPerCart == null)
+					{	
+						sweetAlert('Enter Valid Bags Per Carton','','warning');
 						return;
 					}
 					else
 					{
-						sweetAlert({
-							title: "Are you sure to Save the Packing Ratio?",
-							icon: "warning",
-							buttons: true,
-							dangerMode: true,
-							buttons: ["No, Cancel It!", "Yes, I am Sure!"],
-						}).then(function(isConfirm){
-							if (isConfirm) {
-									$('#'+submit_btn.attr('id')).trigger('click',false);
-							} else {
-								sweetAlert("Request Cancelled",'','error');
+						if(noofcart_packjob==0 || noofcart_packjob=='')
+						{
+							sweetAlert('Enter Valid Cartons per Pack Job','','warning');
+							return;
+						}
+						else
+						{
+							if(Number(noofcart_packjob) > Number(NoOf_Cartons))
+							{
+								sweetAlert('Cartons Per Pack should be less than No of Cartons','','warning');
 								return;
 							}
-						});
-						return;
+							else
+							{
+								sweetAlert({
+									title: "Are you sure to Save the Packing Ratio?",
+									icon: "warning",
+									buttons: true,
+									dangerMode: true,
+									buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+								}).then(function(isConfirm){
+									if (isConfirm) {
+											$('#'+submit_btn.attr('id')).trigger('click',false);
+									} else {
+										sweetAlert("Request Cancelled",'','error');
+										return;
+									}
+								});
+								return;
+							}
+						}
 					}
+				}
+				else
+				{
+					sweetAlert('Enter Valid Garments Per Bag','','warning');
+					return;
 				}
 			}
 		}
@@ -212,11 +283,13 @@
 		$pack_method=$_POST['pack_method'];
 	}
 
+	$url2=getFullURL($_GET['r'],'order_qty_vs_packed_qty.php','N');
+	
 ?>
 
 	
 <div class="panel panel-primary">
-	<div class="panel-heading"><strong>Add Packing Ratio</strong></div>
+	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right' style='padding-top: 0px;' href='$url2&style=$style&schedule=$schedule' >Go Back</a>";  ?></div>
 	<div class="panel-body">
 		<div class="col-md-12">
 			<form method="POST" class="form-inline" name="decentralized_packing_ratio">
@@ -355,7 +428,7 @@
 																}
 																echo "</tr>";
 															// Display Textboxes
-															echo "<input type='hidden' name='noOfSizes' id='noOfSizes' value='".sizeof($color1)."' />";
+															echo "<input type='hidden' name='noOfCols' id='noOfCols' value='".sizeof($color1)."' />";
 															$row_count=0;
 															for ($j=0; $j < sizeof($color1); $j++)
 															{															
@@ -541,7 +614,8 @@
 																// echo "<th>Combo</th>";
 															echo "</tr>";
 															// Display Textboxes
-															echo "<input type='hidden' name='noOfSizes' id='noOfSizes' value='".sizeof($color1)."' />";
+															echo "<input type='hidden' name='size_size1' id='size_size1' value='".sizeof($size1)."' />";
+															echo "<input type='hidden' name='noOfCols' id='noOfCols' value='".sizeof($color1)."' />";
 															$row_count=0;
 															for ($j=0; $j < sizeof($color1); $j++)
 															{

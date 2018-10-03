@@ -447,7 +447,7 @@
 		$docs_cuttmp=array();
 		echo "<h3><font face='verdana' color='green'>Generating Sewing Jobs for <br>Schedule: <span class='label label-info'>".$schedule."</span> with Pack Method: <span class='label label-info'>".$operation[$sew_pack_method]."</span></font></h3>";
 
-		// echo '<h4>Pack Method: <span class="label label-info">'.$operation[$sew_pack_method].'</span></h4>';
+		echo '<h4>Sewing Pack Method: <span class="label label-info">'.$operation[$sew_pack_method].'</span></h4>';
 		// echo "<table class='table table-striped table-bordered'>";
 		// echo "<thead><th>Docket Number</th><th>Color</th><th>Size</th><th>Size Title</th><th>Input Job Number</th><th>Rand No Number</th><th>Quantity</th></thead>";
 		$status_sew=1;
@@ -527,7 +527,7 @@
 									$garments_per_carton=(($row1['garments_per_carton']*$row1['no_of_cartons'])-$qty_update);
 									$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
 									// $sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref='".$carton_id."' AND mini_order_num=1 and color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
-									$sql12="SELECT * FROM $bai_pro3.tbl_docket_qty WHERE type=1 and color='".$color_code."' and doc_no='".$docs_new[$iiii]."' AND size='".$size_tit."'";
+									$sql12="SELECT * FROM $bai_pro3.tbl_docket_qty LEFT JOIN $brandix_bts.`tbl_orders_size_ref` ON tbl_orders_size_ref.id = tbl_docket_qty.ref_size  WHERE type=1 and color='".$color_code."' and doc_no='".$docs_new[$iiii]."' AND size='".$size_tit."'";
 									// $sql12="SELECT * 
 										// FROM $bai_pro3.tbl_docket_qty 
 										// LEFT JOIN $bai_pro3.pac_stat_input ON pac_stat_input.`id` = tbl_docket_qty.`pac_stat_input_id`
@@ -800,7 +800,7 @@
 								$qty_update= echo_title("$bai_pro3.packing_summary_input","sum(carton_act_qty)"," order_col_des='$color_code' and size_code='$size_tit' and pac_seq_no = $seq_no and order_del_no",$schedule,$link);
 								$garments_per_carton=(($row1['garments_per_carton']*$row1['no_of_cartons'])-$qty_update);
 								$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
-								$sql12="SELECT * FROM $bai_pro3.tbl_docket_qty WHERE type='1' and doc_no='".$docs_new[$iiii]."' AND size='".$size_tit."'";
+								$sql12="SELECT * FROM $bai_pro3.tbl_docket_qty LEFT JOIN $brandix_bts.`tbl_orders_size_ref` ON tbl_orders_size_ref.id = tbl_docket_qty.ref_size  WHERE type='1' and doc_no='".$docs_new[$iiii]."' AND size='".$size_tit."'";
 								// $sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
 								// echo $sql12."<br>";
 								$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
