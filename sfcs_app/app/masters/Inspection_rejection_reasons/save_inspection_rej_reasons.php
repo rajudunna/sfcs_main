@@ -24,9 +24,11 @@
 <body>
     <?php
 	if(isset($_REQUEST['tid'])){
+		$jj='readonly';
+		$tid =$_GET['tid'];
+
 		//echo "Row id".$_REQUEST['supplier_code'];
 		$rejct_code =$_GET['reject_code'];
-		$tid =$_GET['tid'];
 		$rejct_desc=$_GET['reject_desc'];
 		
 		
@@ -36,9 +38,8 @@
 		
 
 	}else{
-		$supplier_code='';
-		//$packing_method="";
-		//$status="";
+		$tid=0;
+        $jj='';
 	}
 	$action_url = getFullURL($_GET['r'],'insert_inspection_rej_reasons.php','N');
 	?> 
@@ -69,7 +70,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="table_name">	Reject Code<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-				<input id="reject_code" type="text" class="form-control k-textbox alpha" data-role="text"  name="reject_code" required="required" value="<?php echo $rejct_code; ?>" ><span id="errId1" class="error"></span></div>
+				<input id="reject_code" type="text" class="form-control k-textbox alpha" data-role="text"  name="reject_code" required="required" <?= $jj ?> value="<?php echo $rejct_code; ?>" ><span id="errId1" class="error"></span></div>
                 
 				</div></div>
 		
