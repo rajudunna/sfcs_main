@@ -4,7 +4,7 @@
 	
 	
 
-	$sql = "SELECT * FROM $bai_pro3.transport_modes";
+	$sql = "SELECT * FROM $bai_pro3.transport_modes order by sno";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);
 	$sno = 1;
