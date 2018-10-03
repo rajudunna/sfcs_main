@@ -226,7 +226,16 @@ function getjobdetails($job_number)
 			echo json_encode($result_array);
 			die();
 		}
-		
+		$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where category='sewing'";
+		// echo $get_ops_query;
+		$ops_query_result=mysqli_query($link,$get_ops_query);
+		while ($row = mysqli_fetch_array($ops_query_result))
+		{
+		  
+		  $ops_get_code[] = $row['operation_code'];
+		  $result_array['ops_get_code'][] = $row['operation_code'];
+
+		}
 		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
 		// echo $pre_ops_check.'<br/>';
 		$result_pre_ops_check = $link->query($pre_ops_check);
@@ -363,7 +372,37 @@ function getjobdetails($job_number)
 						{
 							$result_array['status'] = 'Please assign module to this input job';
 						}
+						foreach ($ops_get_code as $key => $value)
+						{
+                                $row['recevied_pre_qty'][$value][] = 0;
+                               // $result_array['ops_get_code'][] = $value;
+                                //array_unique( $result_array['ops_get_code']);
+                                 // $result_array['ops_get_code'][] = $value;
+						}
 						
+					}
+					else
+					{
+						foreach ($ops_get_code as $key => $value)
+						{
+
+						  $color_pre = $row['order_col_des'] ;
+						  $size_pre = $row['size_code'];
+						  $module_pre = $row['assigned_module'];
+						  $get_quantities = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition ='$column_to_search' AND operation_id ='$value' and color = '$color_pre' and size_title = '$size_pre' and assigned_module = '$module_pre'";
+						 // echo $get_quantities.'</br>';
+							 $result_ops_quantities = $link->query($get_quantities);
+							 while($row3 = $result_ops_quantities->fetch_assoc()) 
+							 {
+							 	 $row['recevied_pre_qty'][$value][] = $row3['recevied_qty'];
+							 } 
+
+                            // $result_array['recevied_pre_qty'][$value][] = $recevied_pre_qty;
+                           //  $result_array['ops_get_code'][] = $value;
+                            // array_unique( $result_array['ops_get_code']);
+                             //echo json_encode($result_array);
+						}
+
 					}
 					// echo 'hi'.$emb_cut_check_flag;
 					if($emb_cut_check_flag == 1)
