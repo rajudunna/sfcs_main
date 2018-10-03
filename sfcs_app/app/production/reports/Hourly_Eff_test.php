@@ -138,17 +138,29 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
                                     $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    //$sql_row2=mysqli_fetch_array($sql_result2);
+                                    $movies_id = array();
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sections_string==$sql_row2['sec_name']) 
                                         { 
-                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name'].""; 
+                                            
+                                               echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name'].""; 
                                         } 
                                         else 
                                         { 
+                                           
                                             echo "<option value=\"".$sql_row2['sec_name']."\">Unit-".$sql_row2['sec_name'].""; 
                                         } 
+                                        $sec_ids[] =$sql_row2['sec_name'];
+                                        
                                     } 
+                                   // $section = implode(",",$movies_id);
+                                    //print_r($movies_id);
+                                    $section = implode(",",$sec_ids);
+                                    //echo $section;
+                                    echo "<option value='$section'>Factory</option>";
+                                   // print_r($movies_id);
                                     echo "</select>"; 
                                 ?>
                             </div>
@@ -324,7 +336,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                             // $sections=array(1,2,3,4,5,6); 
                             $sections_string=$_POST['section']; 
                             $sections=explode(",", $_POST['section']); 
-                            $sections_group=$_POST['section']; 
+                            $sections_group=$_POST['section'];
                             $secstyles=$_POST['secstyles']; 
                             $option1=$_POST['option1']; 
                             $date=$_POST['dat']; 
@@ -431,9 +443,13 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                 $h2=array(); 
                                 $headers=array(); 
                                 $i=0; 
-
+                                //$sectionsql = "SELECT sec_name FROM $bai_pro3.sections_master";
+                                //$sql_result99=mysqli_query($link, $sectionsql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                ////$sql_row=mysqli_fetch_array($sql_result99);
+                                //var_dump($sql_row);
                                 $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) and bac_sec in ($sections_group) $time_query order by hour(bac_lastup)"; 
                                 // echo $sql."<br>"; 
+                                // die();
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
