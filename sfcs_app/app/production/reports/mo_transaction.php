@@ -29,12 +29,12 @@
 				<div class='row'>
 					<div class="form-inline col-sm-10">
 
-						<label><font size="5">Style: </font></label>
+						<label><font size="2">Style: </font></label>
 						<select  name="style" class="form-control" id="style">
 							<option value="">Select Style</option>
 						</select>
 						
-						<label><font size="5">Schedule: </font></label>
+						<label><font size="2">Schedule: </font></label>
 						<select  name="schedule" class="form-control"  id="schedule" ">
 	                     	<option value="">Select Schedule</option>
 						</select>
