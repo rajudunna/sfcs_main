@@ -155,10 +155,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                         $sec_ids[] =$sql_row2['sec_name'];
                                         
                                     } 
-                                   // $section = implode(",",$movies_id);
-                                    //print_r($movies_id);
-                                    $section = implode(",",$sec_ids);
-                                    //echo $section;
+                                   $section = implode(",",$sec_ids);
                                     echo "<option value='$section'>Factory</option>";
                                    // print_r($movies_id);
                                     echo "</select>"; 
