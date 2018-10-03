@@ -46,7 +46,7 @@
 				</head>
 				<body>';
 
-		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by old_size,barcode_sequence";
+		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by doc_no,old_size,barcode_sequence";
 		//echo "Qry :".$barcode_qry."</br>";
 		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -62,8 +62,8 @@
 			$size=$barcode_rslt['size_code'];
 
 			//if(($size_temp!=$barcode_rslt['size_code']) OR ($color_temp!=$barcode_rslt['order_col_des']))
-			if(($size_temp!='') AND ($color_temp!='')){	
-				if(($size_temp!=$barcode_rslt['size_code'] ) OR ($color_temp!=$barcode_rslt['order_col_des'])){
+			if(($size_temp!='') AND ($color_temp!='') AND ($cutno_temp != '')){	
+				if(($size_temp!=$barcode_rslt['size_code'] ) OR ($color_temp!=$barcode_rslt['order_col_des']) OR ($cutno_temp!=$barcode_rslt['acutno'])){
 					$seq_num=1;
 				}
 			}
@@ -145,6 +145,7 @@
 			//reset sequence number by size and color
 			$size_temp=$size;
 			$color_temp=$color;
+			$cutno_temp=$cutno;
 		}
 	$html.='
 				</body>
