@@ -1560,8 +1560,8 @@ if($barcode_generation == 1)
 							}
 							
 						}
-
 					}
+					//Searching whethere the operation was present in the ims log and ims buff
 					
 				
 				}
@@ -1580,7 +1580,7 @@ if($barcode_generation == 1)
 					// }
 					// else
 					// {
-						$input_ops_code = 129;
+						$input_ops_code = 100;
 					//}
 					//echo 'input_ops_code'.$input_ops_code;
 					if($input_ops_code == 100 || $input_ops_code == 129)
