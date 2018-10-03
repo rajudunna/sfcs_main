@@ -940,15 +940,7 @@ if($barcode_generation == 1)
 				$post_ops_code = $row['operation_code'];
 			}
 		}
-		else{
-			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence > $ops_seq  AND operation_code not in (10,200,15) ORDER BY ops_sequence ASC LIMIT 1";
-		    $result_post_ops_check = $link->query($post_ops_check);
-		    //echo $post_ops_check;
-		    while($row = $result_post_ops_check->fetch_assoc()) 
-			{
-				$post_ops_code = $row['operation_code'];
-			}
-		}
+		
 		foreach($pre_ops_code as $index => $op_code)
 		{
 			if($op_code != $b_op_id)
