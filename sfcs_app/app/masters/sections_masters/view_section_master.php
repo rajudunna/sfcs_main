@@ -1,8 +1,6 @@
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<!-- then dataTables -->
-<link href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />   
-
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="/sfcs_app/common/js/jquery-1.11.1.min.js"></script>
+<link href="/sfcs_app/common/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />  
+<script src="/sfcs_app/common/js/jquery.dataTables.min.js"></script>
 	<?php
 	
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');

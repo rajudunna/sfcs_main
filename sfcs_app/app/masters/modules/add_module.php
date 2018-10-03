@@ -1,38 +1,10 @@
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-
-    <meta charset="utf-8">
-    <title></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-   
-    <?php 
-    include($_SERVER['DOCUMENT_ROOT'].'/template/header.php'); ?>
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!-- Fav and touch icons -->
-    
-</head>
-
-<body>
      <?php
     if(isset($_REQUEST['rowid']))
     {
         $id=$_REQUEST['rowid'];
         $module=$_REQUEST['module_name'];
         $description=$_REQUEST['module_description'];
-       
+        $mapped_cut_table =$_REQUEST['mapped_cut_table'];
 		$section=$_REQUEST['section'];
         $status=$_REQUEST['status'];
         $module_color=$_REQUEST['module_color'];
@@ -154,7 +126,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="description">Module Color</label>
 			    <div class="controls col-sm-9">
 				<div id="cp2" class="input-group colorpicker-component"> 
-                    <input type="text" value="<?= $module_color ?? "#00AABB"; ?>" class="form-control" readonly="true" name="module_color"/> 
+                    <input type="text" value="<?= ($module_color)?$module_color: "#00AABB"; ?>" class="form-control" readonly="true" name="module_color"/> 
                     <span class="input-group-addon"><i></i></span>
                     </div>
 				</div>
@@ -168,9 +140,7 @@
                 
 		</div></div>
 		
-		
-		
-
+		    
     <div class="col-md-4"><div class="form-group">
             <label class="control-label control-label-left col-sm-3" for="table_status">Cut Table</label>
             <div class="controls col-sm-9">
@@ -197,9 +167,22 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-4" style="visibility:hidden;"><div class="form-group">
+       
+       <div class='input-group date' id='datetimepicker11' >
+           <input type='text' class="form-control" name='datetimepicker11'/>
+           <span class="input-group-addon">
+               <span class="glyphicon glyphicon-calendar">
+               </span>
+           </span>
+       </div>
+   </div>
+</div>
+    		
     <script type="text/javascript">
-$('#cp2').colorpicker();
-</script>
+        $('#cp2').colorpicker();
+    </script>
     <script>
         $(function () {
             $('#datetimepicker11').datetimepicker({
@@ -208,19 +191,12 @@ $('#cp2').colorpicker();
             });
         });
     </script>
-		
-		
-		
-
-		<div class="col-md-4"><div class="form-group" style="margin-top: 0px;">
-			    
+	<div class="col-md-4"><div class="form-group" style="margin-top: 0px;">
 			    
                 
-		<button id="btn_save" type="submit" class="btn btn-primary" name="btn_save" style="margin-top: 0px;">Save</button></div></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button></div></div></div></div>
                                     </div>
                                 
-
-
                     </div>
                 </div>
             </form>
@@ -228,20 +204,3 @@ $('#cp2').colorpicker();
     </div>
     
 <?php include('view_modules.php'); ?>
-</body>
-</html>
-
-
-		
-
-
-
-
-
-
-
-
-
-
-
-

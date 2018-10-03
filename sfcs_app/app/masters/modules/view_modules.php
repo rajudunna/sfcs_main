@@ -1,16 +1,8 @@
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<!-- then dataTables -->
-<link href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />   
-
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="/sfcs_app/common/js/jquery-1.11.1.min.js"></script>
+<link href="/sfcs_app/common/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />  
+<script src="/sfcs_app/common/js/jquery.dataTables.min.js"></script>
 	<?php
-	// $servername = "192.168.0.110:3326";
-	// $username = "baiall";
-	// $password = "baiall";
-	// $dbname = "bai_pro3";
-
-	// Create connection
-	// $conn = new mysqli($servername, $username, $password, $dbname);
+	
 	// Check connection
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$conn=$link;
@@ -47,8 +39,8 @@
             $section=$row["section"];
             $color= urlencode($row["color"]);
             $label=$row["label"];
-            $module_description=$row["module_description"];
-            $mapped_cut_table=$row["mapped_cut_table"];
+			$module_description=$row["module_description"];
+			$mapped_cut_table=$row["mapped_cut_table"];
 			if ($mapped_cut_table == '' or $mapped_cut_table == NULL)
 			{
 				$mapped_cut_table = ' - ';
