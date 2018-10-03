@@ -22,7 +22,7 @@
         $code=$_GET['prefix_name'];
         $department=$_GET['prefix'];
         $reason=$_GET['type_of_sewing'];
-        $type=$_GET['bg_color'];
+        $type='#'.$_GET['bg_color'];
     }else
     {
         $dr_id=0;
@@ -57,8 +57,8 @@
                                         <select class="form-control" name="prefix_name" id="prefix_name" value="<?php echo $code; ?>" onchange='assigncmb()'>
                                             
                                             <option <?php if ($code == 'Normal' ) echo 'selected' ; ?> value='Normal'>Normal</option>
-                                            <option <?php if ($code == 'Excess' ) echo 'selected' ; ?>  value='Excess'>Excess</option>
-                                            <option <?php if ($code == 'Sample' ) echo 'selected' ; ?>   value='Sample' >Sample</option>
+                                            <option <?php if ($code == 'Excess' ) echo 'selected' ; ?> value='Excess'>Excess</option>
+                                            <option <?php if ($code == 'Sample' ) echo 'selected' ; ?> value='Sample' >Sample</option>
                                         </select>   
                                     </div>
 </div>

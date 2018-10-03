@@ -23,13 +23,13 @@
 		echo "<table id='tbl_cutting_table' class='table'><thead><tr><th>S.No</th><th>Employee Id</th><th>Employee Name</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
 		while($row = $result->fetch_assoc()) {
-			$tid=$row["tid"];
+			$tid=$row["id"];
 			$emp_id=$row["emp_id"];
 			$emp_name=$row["emp_name"];
 			
 			echo "<tr><td>".$sno++."</td><td>".$row["emp_id"]." </td><td>".$row["emp_name"]."</td>
 					  <td>
-					    <a href='$url&tid=$tid&emp_id=$emp_id&emp_name=$emp_name' class='btn btn-warning btn-xs editor_edit'>Edit</a> /
+					    <a href='$url&tid=$tid&emp_id=$emp_id&emp_name=$emp_name' class='btn btn-warning btn-xs editor_edit readonly'>Edit</a> /
 					 	<a href='$url1&tid=$tid' class='btn btn-danger btn-xs editor_remove'>Delete</a>
 					 </td>
 				 </tr>";

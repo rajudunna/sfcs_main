@@ -252,8 +252,8 @@ if(isset($_POST['formSubmit']))
 			while($row_result_query_to_fetch_individual_bundle_details=mysqli_fetch_array($result_query_to_fetch_individual_bundle_details))
 			{
 					
-				$rec_qty = $row_result_query_to_fetch_individual_bundle_details['recevied_qty'];
-				//echo $bundle_individual_number.'-'.$rec_qty.'-'.$cumulative_reversal_qty.'</br>';
+				$rec_qty = $nop_qry_row['recevied_qty'];
+				// echo $bundle_individual_number.'-'.$rec_qty.'-'.$cumulative_reversal_qty.'</br>';
 				if($rec_qty > 0)
 				{
 					if($cumulative_reversal_qty <= $rec_qty)
@@ -339,7 +339,7 @@ foreach ($bundle_no as $key=>$value)
 					//echo $pre_recieved_qty."-".$post_rec_qty."-".$act_reciving_qty."</br>";
 					if(($pre_recieved_qty - $post_rec_qty) < $act_reciving_qty)
 					{
-						$concurrent_flag = 1;
+						//$concurrent_flag = 1;
 					}
 	
 				}
@@ -357,7 +357,7 @@ foreach ($bundle_no as $key=>$value)
 					$post_rec_qty = $row['recevied_qty'];
 					if(($pre_recieved_qty - $post_rec_qty) < $act_reciving_qty)
 					{
-						$concurrent_flag = 1;
+						//$concurrent_flag = 1;
 					}
 	
 				}

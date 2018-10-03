@@ -88,7 +88,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="supplier_m3_code">Supplier M3Code<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-                <input id="supplier_m3_code" type="text" class="form-control k-textbox integer" data-role="text" placeholder="Supplier M3Code" name="supplier_m3_code" required="required" value="<?php echo $supplier_m3_code; ?>" ><span id="errId4" class="error"></span></div>
+                <input id="supplier_m3_code" type="text" class="form-control k-textbox alpha" data-role="text" placeholder="Supplier M3Code" name="supplier_m3_code" required="required" value="<?php echo $supplier_m3_code; ?>" ><span id="errId4" class="error"></span></div>
                 
 		</div></div></div><div class="row"><div class="col-md-6"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="color_code">Color Code<span class="req"> *</span></label>
