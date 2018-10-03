@@ -330,7 +330,7 @@ $(document).ready(function()
 						var hidden_class_sewing_in='';
 						var rec_qy_pre = response['recevied_pre_qty'];
 
-						if (operation_id == 129 || operation_id == 130 || operation_id == 900)
+						if (operation_id == 129 || operation_id == 130 )
 						{
 							var hidden_class_sewing_in='hidden';
 						}
