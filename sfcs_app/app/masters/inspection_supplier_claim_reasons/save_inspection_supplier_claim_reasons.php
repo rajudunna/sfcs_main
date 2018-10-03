@@ -82,7 +82,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="complaint_category" >Complaint Category:<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-                <input id="complaint_category" type="text" class="form-control k-textbox integer" data-role="text" required="required" name="complaint_category" value="<?php echo $complaint_category; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="complaint_category" type="text" class="form-control k-textbox alpha" data-role="text" required="required" name="complaint_category" value="<?php echo $complaint_category; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
 		</div></div>
         <div class="col-md-4"><div class="form-group">

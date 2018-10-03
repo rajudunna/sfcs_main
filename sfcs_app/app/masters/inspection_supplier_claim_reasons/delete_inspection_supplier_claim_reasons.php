@@ -24,7 +24,7 @@ $url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 		  window.location.href = \"$url\";
 		}
 	  }); }, 100);</script>";
-$delete="delete from bai_rm_pj1.inspection_complaint_reasons where tid='$rid'";
+$delete="delete from bai_rm_pj1.inspection_complaint_reasons where sno='$rid'";
 if (mysqli_query($conn, $delete)) {
 
 	  } else {
