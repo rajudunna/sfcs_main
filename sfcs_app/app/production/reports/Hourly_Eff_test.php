@@ -400,9 +400,8 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     $headers[$i]=$time; 
                                     $i=$i+1;
                                 }
-                                echo "<hr/>";
-                                echo "<table id=\"info\">"; 
-                                echo "<tr><th style='background-color:#29759C;'>Section</th><th style='background-color:#29759C;'>Head</th>"; 
+                                echo "<table class = 'table'>"; 
+                                echo "<tr><th style='background-color:#29759C; color: white;'>Section</th><th style='background-color:#29759C;'>Head</th>"; 
 
                                 for($i=0;$i<sizeof($headers);$i++) 
                                 { 
@@ -479,7 +478,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 if($option1==1)
                                 {  
-                                    echo "<table id=\"info\">";
+                                    echo "<table class ='table'>";
                                     echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>Section - ".$sec." (".$sec_head.")</td></tr>"; 
                                     echo "<tr><th style='background-color:#29759C;'>M#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Del DB</th>";              
                                     for($i=0;$i<sizeof($headers);$i++) 
@@ -2061,7 +2060,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                 { 
                                     $style_summ_head=$sql_row['unit_id']; 
                                 } 
-                                echo "<table id=\"info\">"; 
+                                echo "<table class = 'table'>"; 
                                 echo "<tr><td>Style Summary ".$style_summ_head."</td></tr>"; 
                                 echo "<tr><th>Style Code</th><th>SMV</th><th>Oprs</th><th>Mod Count</th>"; 
 
