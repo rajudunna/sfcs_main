@@ -102,7 +102,7 @@
 			while($ops = mysqli_fetch_array($sql_result1))
 			{	
 				$operations=$ops['operation_name'];
-				$opscode=$ops['operation_code'];				
+				$opscode=$ops['operation_code'];
 				//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 				$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 				$html.= '<div>
@@ -116,8 +116,8 @@
 								</tr>
 								<tr>
 									<td><b>Barcode ID:</b>'.$barcode.' </td>
-									<td> <b>Qty:</b>'.$quantity.'</td>
-									<td colspan=3> <b>Country: </b>'.$destination.'</td>
+									<td> <b>Qty:</b>'.str_pad($quantity,3,"0", STR_PAD_LEFT).'</td>
+									<td colspan=3> <b>Country : </b>'.$destination.'</td>
 								</tr>
 								<tr>
 									<td><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td>
