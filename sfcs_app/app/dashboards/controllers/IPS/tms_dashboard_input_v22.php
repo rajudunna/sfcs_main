@@ -496,25 +496,3 @@ border: 1px solid black;
 }
 </style>
 
-<script>
-function firstbox()
-{
-  var shift_id = document.getElementById('shift').value;
-  window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&shift="+shift_id;
-}
-</script>
-<script>         
-function PopupCenter(pageURL, title,w,h) {
-    
-    var shift= $('#shift').val();
-    console.log(shift);
-    if(shift==''){
-swal('Please Select Shift First','','error');
-return false;
-    }
- 
-var left = (screen.width/2)-(w/2);
-var top = (screen.height/2)-(h/2);
-var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-} 
-</script>
