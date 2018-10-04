@@ -37,15 +37,12 @@ if($section > 0){
             /*  BLOCK - 1 */
             //getting the WIP OF module in a section
             $ims_wip_query = "SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no,SMV  
-                              FROM $bai_pro3.ims_log ims
-                              LEFT JOIN $brandix_bts.tbl_style_ops_master som ON som.schedule = ims.ims_schedule 
-                                        AND som.color = ims.ims_color AND som.style = ims.ims_style
                               WHERE ims_mod_no='$module' and ims_status<>'DONE' ";
             //echo $ims_wip_query;                  
             $ims_wip_result = mysqli_query($link,$ims_wip_query) or exit($data.='Problem in ims wip');
             while($row = mysqli_fetch_array($ims_wip_result)){
                 $ims_wip = $row['WIP'];
-                $module_smv[$module] = $row['SMV'] * $ims_wip;
+                //$module_smv[$module] = $row['SMV'] * $ims_wip;
             }
             if($ims_wip == '')
                 $ims_wip = 0;          
@@ -91,10 +88,11 @@ if($section > 0){
         while($row = mysqli_fetch_array($all_jobs_result)){
             $input_jobs[] = $row['job'];
             $mod = $row['input_module'];
-            $input_jobs_per_mod[$mod][] = $row['job'];
+            $ij_module[$row['job']] = $mod;
+            $input_jobs_per_mod[$mod][] = $mod;
         }
-        
         $jobs_str = implode(',',$input_jobs);
+        
         if($jobs_str != ''){
             //getting the already line in qtys for the planned jobs within the sec
             $linein_qty_job_query = "SELECT SUM(recevied_qty) as line_in_qty,input_job_no_random_ref as job
@@ -107,14 +105,17 @@ if($section > 0){
                 $line_in[$job] = $row['line_in_qty'];
             }
             //getting all dockets for planned jobs along with cut reported qtys
-            $dockets_query = "SELECT distinct(psl.doc_no) as doc_no,order_tid
+            $dockets_query = "SELECT distinct(psl.doc_no) as doc_no,GROUP_CONCAT(input_job_no_random) as jobs,order_tid
                               from $bai_pro3.pac_stat_log_input_job psl
                               Left join $bai_pro3.plandoc_stat_log pd ON pd.doc_no = psl.doc_no  
                               where input_job_no_random IN ($jobs_str)";
                               //and pd.act_cut_status = 'DONE' ";
             $docekt_result = mysqli_query($link,$dockets_query) or exit($data.='Problem in getting cut reported dockets');
             while($row = mysqli_fetch_array($docekt_result)){
-                $doc_no    = $row['doc_no'];
+                $all_dockets[]     = $row['doc_no'];
+                $doc_no            = $row['doc_no'];
+                $jobs_per_docket[$doc_no] = $row['jobs'];
+
                 $order_tid = $row['order_tid'];
                 //getting the PRE OP'S CODE  ///////////////////////////////////////////////////////////////////////////
                 $style_schedule_query = "SELECT order_del_no,order_style_no,order_col_des from $bai_pro3.bai_orders_db where 
@@ -148,6 +149,21 @@ if($section > 0){
                 $docket_cqty[$doc_no] = $row['qty'] - $docket_ccqty[$doc_no];
             }
 
+            //getting smvs for each docket
+            $smvs_query = "SELECT smv,doc_no FROM $bai_pro3.ims_log ims
+                           LEFT JOIN $brandix_bts.tbl_style_ops_master som ON som.schedule = ims.ims_schedule 
+                           AND som.color = ims.ims_color AND som.style = ims.ims_style";
+            $smvs_result = mysqli_query($link,$smvs_query) or exit($data.='Problem in SMVs');
+
+            foreach($all_dockets as $docket){
+
+                $jobs = explode(',',$jobs_per_docket[$docket]);
+                if(sizeof($jobs) == 0)
+                    continue;
+                else{
+                    
+                }    
+            }
             foreach($sorted_modules as $key => $sorted_module){
                 //echo "<hr><br>INSIDE -------- $sorted_module<br/>";
                 $summing_qty = 0;
