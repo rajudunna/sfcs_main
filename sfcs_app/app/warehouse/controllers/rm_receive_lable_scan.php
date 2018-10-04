@@ -5,7 +5,7 @@
 		?>
 	</head>
 <body>
-<h3 style="font-family:Helvetica Neue,Roboto,Arial,Droid Sans,sans-serif;"><b>RM Ware House Material Receive</b></h3>
+<h3 style="font-family:Helvetica Neue,Roboto,Arial,Droid Sans,sans-serif;"><b>RM Warehouse Material Receive</b></h3>
 	<form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data">
 		<?php
 			$query="SELECT * FROM $bai_pro3.plant_details";
@@ -47,11 +47,13 @@
 				}
 				$plant_name1=$_POST['plant_name'];
 			
-				$query = "select ip_address,port_number from $bai_pro3.plant_details where plant_code='".$plant_name1."'";
+				$query = "select ip_address,port_number,database_type from $bai_pro3.plant_details where plant_code='".$plant_name1."'";
 				$res = mysqli_query($link, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rm = mysqli_fetch_array($res)){
 					$ip_address = $rm['ip_address'];
 					$port_number = $rm['port_number'];
+					$database_type = $rm['database_type'];
+					
 					
 				}
 				$host_new=$ip_address.":".$port_number;
@@ -66,8 +68,14 @@
 				// $res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
 			
 				//================ get barcode details from CWH DB =============
+				if($database_type=='new'){
 				$qry_get_data_fm_cwh = "select * from $bai_rm_pj1.store_in where barcode_number='".$bar_code_new."'";
 				// echo '<br/>'.$qry_get_data_fm_cwh."<br/>";
+				}
+				else{
+					$qry_get_data_fm_cwh = "select * from $bai_rm_pj1.store_in where tid='".$bar_code_new."'";
+	
+				}
 				$res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
 				$barcode_data = array();
 				$sticker_data1= array();
@@ -92,6 +100,7 @@
 						if($actual_quentity_present>0)
 						{							
 								//=================== check rmwh db with present tid ==================
+					
 								$qry_check_rm_db = "select * from $bai_rm_pj1.store_in where barcode_number='".$bar_code_new."'";
 								$res_check_rm_db = $link->query($qry_check_rm_db);
 								if($res_check_rm_db->num_rows == 0)
@@ -100,6 +109,7 @@
 									//=============== Insert Data in rmwh ==========================
 									$qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`) VALUES ('".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."')";	
 									// echo $qry_insert_update_rmwh_data."<br/>";
+	
 									$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
 									
 									$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
@@ -158,8 +168,12 @@
 								$qry_ins_stockout = "INSERT INTO $bai_rm_pj1.`store_out`(tran_tid,qty_issued,date,updated_by,remarks) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_name."')";
 								// echo $qry_ins_stockout."<br/>";
 								$res_ins_stockout = $link_new->query($qry_ins_stockout);
-								
+								if($database_type=='new'){
 								$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+								}else{
+									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where tid='".$bar_code_new."'";
+	
+								}
 								//echo $update_qty_store_in."<br/>";
 								$res_update_qty_store_in = $link_new->query($update_qty_store_in);
 								echo "<h3>Status: <font color=Green>Quantity ".$actual_quentity_present." Transferred successfully for Item ID : ".$bar_code_new." and Lot Number : ".$barcode_data['lot_no']."</font></h3>";
