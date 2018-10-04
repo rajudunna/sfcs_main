@@ -55,21 +55,21 @@
                         
                                     <div class="row">
                                         <div class="col-md-12"><div class="row"><div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="code">Code<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="code">Code:</label>
 			    <div class="controls col-sm-9">
                     
                 <input id="code" type="text" class="form-control k-textbox  " data-role="text" placeholder="Code" name="code" <?= $jj ?> value="<?php echo $code; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
 				</div></div>
 		<div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="department">Department</label>
+			    <label class="control-label control-label-left col-sm-3" for="department">Department:</label>
 			    <div class="controls col-sm-9">
 				<input id="department" type="text" class="form-control k-textbox alpha" data-role="text" placeholder="Department" name="department" value="<?php echo $department; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
 				</div>
                 
 		</div></div>
 		<div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="reason">Reason</label>
+			    <label class="control-label control-label-left col-sm-3" for="reason">Reason:</label>
 			    <div class="controls col-sm-9">
 				<textarea id="reason" type="text" class="form-control k-textbox" data-role="text" placeholder="Reason" name="reason" required="required" data-parsley-errors-container="#errId1"><?php echo htmlspecialchars($reason); ?></textarea><span id="errId1" class="error"></span>
 				</div>

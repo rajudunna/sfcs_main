@@ -10,7 +10,7 @@
 	$norows = mysqli_num_rows($sql_result);
 	$sno = 1; 
 	if ($norows > 0) {
-		echo "<table id='tbl_packing_method' class='table'><thead><tr><th>S.No</th><th>Complaint Reason</th><th>Complaint Clasification</th><th>Complaint Category</th><th>Status</th><th> Edit / Delete </th></tr></thead><tbody>";
+		echo "<table id='tbl_packing_method' class='table'><thead><tr><th>S.No</th><th>Complaint Reason</th><th>Complaint Classification</th><th>Complaint Category</th><th>Status</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
 		while($row=mysqli_fetch_array($sql_result)) {
 			$complaint_reason=$row["complaint_reason"];

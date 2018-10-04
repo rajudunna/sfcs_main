@@ -22,7 +22,7 @@ $conn=$link;
 // // Create connection
 // $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
-if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || empty($supplier_m3_code) || empty($color_code)) 
+if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || empty($supplier_m3_code) || empty($color_code) || empty($seq_no) ) 
 {
 	$url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 	echo"<script>setTimeout(function () { 
@@ -63,7 +63,7 @@ if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || emp
 		}
 	}else{
 		
-		$count_qry= "select * from $bai_rm_pj1.inspection_supplier_db where product_code = '$product_code' and (supplier_code = '$supplier_code' or supplier_m3_code = '$supplier_m3_code')"; 
+		$count_qry= "select * from $bai_rm_pj1.inspection_supplier_db where product_code = '$product_code' or (seq_no = '$seq_no' and supplier_m3_code = '$supplier_m3_code' and supplier_code='$supplier_code')"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){

@@ -76,7 +76,7 @@ if (empty($rejec_code) || empty($rejec_des)  )
 
 		echo "<script>setTimeout(function () { 
 			swal({
-			  title: 'Mrn Request Reason Already Existed!',
+			  title: 'MRN Request Reason Already Existed!',
 			  text: 'Message!',
 			  type: 'warning',
 			  confirmButtonText: 'OK'

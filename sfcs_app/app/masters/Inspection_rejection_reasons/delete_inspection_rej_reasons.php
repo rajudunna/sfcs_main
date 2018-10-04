@@ -14,7 +14,7 @@ $url=getFullURL($_GET['r'],'save_inspection_rej_reasons.php','N');
   echo"<script>setTimeout(function () { 
 	  swal({
 		title: 'Are you sure?',
-		text: 'Your will not be able to recover this Record!',
+		text: 'You will not be able to recover this Record!',
 		type: 'warning',
 		confirmButtonText: 'OK'
 	  },
