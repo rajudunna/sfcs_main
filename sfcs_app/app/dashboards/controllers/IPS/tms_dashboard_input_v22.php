@@ -494,9 +494,8 @@ border: 1px solid black;
   text-decoration:none;
   background-color: black;
 }
-<<<<<<< HEAD
-</style>
-=======
+
 </style>
 
->>>>>>> 1007-not-getting-shift-for-sewing-in-reporting
+
+
