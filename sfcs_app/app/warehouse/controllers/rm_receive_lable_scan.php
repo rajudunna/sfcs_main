@@ -47,24 +47,26 @@
 				}
 				$plant_name1=$_POST['plant_name'];
 			
-				$query = "select ip_address,port_number,database_type from $bai_pro3.plant_details where plant_code='".$plant_name1."'";
+				$query = "select ip_address,port_number,database_type,username,password from $bai_pro3.plant_details where plant_code='".$plant_name1."'";
 				$res = mysqli_query($link, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rm = mysqli_fetch_array($res)){
 					$ip_address = $rm['ip_address'];
 					$port_number = $rm['port_number'];
 					$database_type = $rm['database_type'];
+					$user_name = $rm['username'];
+					$password = $rm['password'];
 					
 					
 				}
-				$host_new=$ip_address.":".$port_number;
-			
-				if($plant_name1!=''){
-					$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_new, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				} else{
-					$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_new, $user, $pass)) or die("<span style='color:red;font-size:18px;'>Select Plant Name </span>".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$host_new=$ip_address.":".$port_number;
+			if($database_type=='new'){
+					$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_new, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));	 
+			}else{	
+				$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_new, $user_name, $password)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 
-				}
 			
+
 				// $res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
 			
 				//================ get barcode details from CWH DB =============

@@ -34,7 +34,7 @@
 	</head>
 <body>
 <div class="panel panel-primary">
-<div class="panel-heading"><h3 style="font-family:Helvetica Neue,Roboto,Arial,Droid Sans,sans-serif;font-size: 14px;"><b>RM Ware House Material Return</b></h3></div>
+<div class="panel-heading"><h3 style="font-family:Helvetica Neue,Roboto,Arial,Droid Sans,sans-serif;font-size: 14px;"><b>RM Warehouse Material Return</b></h3></div>
 		
 		
 <?php
