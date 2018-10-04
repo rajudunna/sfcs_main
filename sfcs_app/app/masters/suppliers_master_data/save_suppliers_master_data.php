@@ -23,7 +23,8 @@
 
 <body>
     <?php
-	if(isset($_REQUEST['tid'])){
+	if(isset($_GET['tid'])){
+		$jj='readonly';
 		//echo "Row id".$_REQUEST['supplier_code'];
 		$product_code =$_GET['product_code'];
 		$tid =$_GET['tid'];
@@ -38,7 +39,8 @@
 		
 
 	}else{
-		$supplier_code='';
+		$tid=0;
+		$jj='';
 		//$packing_method="";
 		//$status="";
 	}
@@ -100,7 +102,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="seq_no">Sequence No:</label>
 			    <div class="controls col-sm-9">
                     
-                <input id="seq_no" type="text" class="form-control k-textbox integer" data-role="text" placeholder="Sequence No" name="seq_no" required="required" value=<?php echo $seq_no; ?> ><span id="errId6" class="error"></span></div>
+                <input id="seq_no" type="text" class="form-control k-textbox integer" data-role="text" placeholder="Sequence No" name="seq_no" required="required" <?= $jj ?> value=<?php echo $seq_no; ?> ><span id="errId6" class="error"></span></div>
                 
 		</div></div></div><div class="row"><div class="col-md-12"><div class="form-group">
 			    
@@ -114,12 +116,8 @@
             </form>
         </div>
     </div>
-    
-
-
-
-   
-	<?php
+     
+<?php
 include('view_suppliers_master_data.php');
 ?>
 </body>

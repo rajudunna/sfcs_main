@@ -70,7 +70,7 @@ else
 
 		
 
-		$query1="select reason,rdept from $bai_pro2.downtime_reason  where reason='$reason' and rdept='$department'";
+		$query1="select reason,code from $bai_pro2.downtime_reason  where reason='$reason' or code='$code'";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		

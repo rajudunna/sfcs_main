@@ -63,12 +63,12 @@ if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || emp
 		}
 	}else{
 		
-		$count_qry= "select * from $bai_rm_pj1.inspection_supplier_db where product_code = '$product_code' or (seq_no = '$seq_no' and supplier_m3_code = '$supplier_m3_code' and supplier_code='$supplier_code')"; 
+		$count_qry= "select * from $bai_rm_pj1.inspection_supplier_db where product_code = '$product_code' and (seq_no = '$seq_no') "; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){
 			// echo $count;die();
-			$url=getFullURL($_GET['r'],'save_suppliers-master_data.php','N');
+			$url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 
 
 		echo "<script>setTimeout(function () { 

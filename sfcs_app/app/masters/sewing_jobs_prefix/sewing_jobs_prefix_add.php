@@ -16,7 +16,7 @@
 
 <body onload='assigncmb()'>
      <?php
-    if(isset($_REQUEST['id']))
+    if(isset($_GET['id']))
     {
         $dr_id=$_GET['id'];
         $code=$_GET['prefix_name'];
@@ -54,11 +54,11 @@
 			    <div class="controls col-sm-9">
                 <div class="dropdown" >
                                         
-                                        <select class="form-control" name="prefix_name" id="prefix_name" value="<?php echo $code; ?>" onchange='assigncmb()'>
+                                        <select class="form-control" name="prefix_name" id="prefix_name"  value="<?php echo $code; ?>" onchange='assigncmb()'>
                                             
-                                            <option <?php if ($code == 'Normal' ) echo 'selected' ; ?> value='Normal'>Normal</option>
-                                            <option <?php if ($code == 'Excess' ) echo 'selected' ; ?> value='Excess'>Excess</option>
-                                            <option <?php if ($code == 'Sample' ) echo 'selected' ; ?> value='Sample' >Sample</option>
+                                            <option <?php if ($code == 'Normal' ) echo 'selected' ; ?>  value='Normal'>Normal</option>
+                                            <option <?php if ($code == 'Excess' ) echo 'selected' ; ?>  value='Excess'>Excess</option>
+                                            <option <?php if ($code == 'Sample' ) echo 'selected' ; ?>  value='Sample' >Sample</option>
                                         </select>   
                                     </div>
 </div>
