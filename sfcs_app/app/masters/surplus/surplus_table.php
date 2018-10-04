@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +17,7 @@
     
 </head>
 
-<body >
+<body onload='assigncmb()'>
      <?php
     if(isset($_GET['rowid']))
     {
@@ -29,8 +27,10 @@
         $qms_location_cap=$_GET['qms_location_cap'];
         $qms_cur_qty = $_GET['qms_cur_qty'];
         $active_status = $_GET['active_status'];
-       
-
+        $str=explode("-",$qms_location_id);
+        $cmbitems=$str[0];
+        $sur_alpha=$str[1];
+        $sur_num=$str[2];
     }else
     {
         $q_id=0;
@@ -45,19 +45,19 @@
         <div name="sur_drop">
         <div class="form-group form-control " >
             <select name="cmbitems" id="cmbitems" onchange='assigncmb()'>
-                <option value='INT' >INT</option>
-                <option value='SUR' >SUR</option>
-                <option value='RES' >RES</option>
+                <option <?php if ($cmbitems == 'INT' ) echo 'selected' ; ?> value='INT' >INT</option>
+                <option <?php if ($cmbitems == 'SUR' ) echo 'selected' ; ?> value='SUR' >SUR</option>
+                <option <?php if ($cmbitems == 'RES' ) echo 'selected' ; ?> value='RES' >RES</option>
             </select>
     </div>
     <div class="form-group form-control" >
         <select name="sur_alpha" id="sur_alpha" onchange='assigncmb()' >
     <?php   
-    for ($char = 'A'; $char <= 'Z'; $char++) {
-        ?>
-        <option value="<?php echo $char;?>"><?php echo $char;?></option>
-    <?php
-}
+    foreach(range('A','Z') as $char){
+            ?>
+            <option  <?php if ($sur_alpha == $char ) echo 'selected' ; ?> value="<?php echo $char;?>"><?php echo $char;?></option>
+        <?php
+    }
 ?>
     </select>
     </div>
@@ -69,17 +69,17 @@
                         {
                             if($i<10){
                                 ?>
-                                    <option value="<?= "00".$i;?>"><?= "00".$i;?></option>
+                                    <option <?php if ($sur_num ==  "00".$i ) echo 'selected' ; ?> value="<?= "00".$i;?>"><?= "00".$i;?></option>
                                 <?php
                             }
                             elseif($i<100){
                                 ?>
-                                    <option value="<?= "0".$i;?>"><?= "0".$i;?></option>
+                                    <option  <?php if ($sur_num ==  "0".$i ) echo 'selected' ; ?> value="<?= "0".$i;?>"><?= "0".$i;?></option>
                                 <?php
                             }
                             else {
                                 ?>
-                                    <option value="<?= $i;?>"><?= $i;?></option>
+                                    <option <?php if ($sur_num == $i ) echo 'selected' ; ?> value="<?= $i;?>"><?= $i;?></option>
                                 <?php
                             }
                             
@@ -118,29 +118,29 @@
                 
         </div></div>
             <div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="qms_location" >Qms Location:<span class="req"> *</span></label>
-			    <div class="controls col-sm-9">
+                <label class="control-label control-label-left col-sm-3" for="qms_location" >Qms Location:<span class="req"> *</span></label>
+                <div class="controls col-sm-9">
                     
                 <input id="qms_location" type="text" class="form-control k-textbox" data-role="text" required="required" name="qms_location" value="<?php echo $qms_location; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span></div>
                 
-		</div></div>
+        </div></div>
                 <div class="col-md-4"><div class="form-group integer">
-			    <label class="control-label control-label-left col-sm-3 " for="qms_location_cap">Qms Location Capacity:<span class="req"> *</span></label>
-			    <div class="controls col-sm-9">
+                <label class="control-label control-label-left col-sm-3 " for="qms_location_cap">Qms Location Capacity:<span class="req"> *</span></label>
+                <div class="controls col-sm-9">
                     
                 <input id="qms_location_cap" type="text" class="form-control k-textbox " data-role="text" required="required"  name="qms_location_cap" value="<?php echo $qms_location_cap; ?>" data-parsley-errors-container="#errId2"><span id="errId2" class="error"></span></div>
                 
-		</div></div>
+        </div></div>
         <div class="col-md-4"><div class="form-group integer">
-			    <label class="control-label control-label-left col-sm-3" for="qms_cur_qty">Quantity<span class="req"> *</span></label>
-			    <div class="controls col-sm-9">
+                <label class="control-label control-label-left col-sm-3" for="qms_cur_qty">Quantity<span class="req"> *</span></label>
+                <div class="controls col-sm-9">
                     
                 <input id="qms_cur_qty" type="text" class="form-control k-textbox" data-role="text" name="qms_cur_qty" value="<?php echo $qms_cur_qty; ?>" placeholder="Enter Quantity" required="required" data-parsley-errors-container="#errId3"><span id="errId3" class="error"></span></div>
                 
-		</div></div>
+        </div></div>
         <div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="active_status">Status<span class="req"> *</span></label>
-			    <div class="controls col-sm-9">
+                <label class="control-label control-label-left col-sm-3" for="active_status">Status<span class="req"> *</span></label>
+                <div class="controls col-sm-9">
                     
                 <select id="active_status" class="form-control" data-role="select" selected="selected" required="required" name="active_status" data-parsley-errors-container="#errId4">
                 <?php
@@ -155,10 +155,10 @@
                 ?>
                 </select><span id="errId4" class="error"></span></div>
                 
-		</div></div>
+        </div></div>
         <div class="col-md-12">
             <div class="form-group btn-group pull-right">
-		<button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button>
+        <button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button>
     </div></div></div>
 
 
@@ -191,6 +191,6 @@
         }
 
     }
-    
+
 </script>
 </html>

@@ -65,28 +65,28 @@
             <div class="col-md-4">
                 
                 <div class="form-group">
-                <label class="control-label control-label-left col-sm-3"  for="complaint_reason">Complaint Reason:<span class="req"> *</span></label>
+                <label class="control-label control-label-left col-sm-3"  for="complaint_reason">Complaint Reason:</label>
                 <div class="controls col-sm-9">
                     
                 <input id="complaint_reason" type="text" class="form-control k-textbox alpha" data-role="text" required="required"  name="complaint_reason" value="<?php echo $complaint_reason; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
         </div></div>
             <div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="complaint_clasification" >Complaint Clasification:<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="complaint_clasification" >Complaint Classification:</label>
 			    <div class="controls col-sm-9">
                     
                 <input id="complaint_clasification" type="text" class="form-control k-textbox alpha" data-role="text" required="required" name="complaint_clasification" value="<?php echo $complaint_clasification; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
 		</div></div>
         <div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="complaint_category" >Complaint Category:<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="complaint_category" >Complaint Category:</label>
 			    <div class="controls col-sm-9">
                     
                 <input id="complaint_category" type="text" class="form-control k-textbox alpha" data-role="text" required="required" name="complaint_category" value="<?php echo $complaint_category; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
 		</div></div>
         <div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="active_status">Status<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="active_status">Status:</label>
 			    <div class="controls col-sm-9">
                     
                 <select id="active_status" class="form-control" data-role="select" selected="selected" required="required" name="status"  data-parsley-errors-container="#errId4">

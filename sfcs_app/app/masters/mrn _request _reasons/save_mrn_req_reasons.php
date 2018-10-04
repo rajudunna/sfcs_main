@@ -65,14 +65,14 @@
             <div class="col-md-4">
                 
                 <div class="form-group">
-                <label class="control-label control-label-left col-sm-3"  for="reason_code">Reason Code:<span class="req"> *</span></label>
+                <label class="control-label control-label-left col-sm-3"  for="reason_code">Reason Code:</label>
                 <div class="controls col-sm-9">
                     
                 <input id="reason_code" type="text" class="form-control k-textbox alpha" data-role="text" required="required"  name="reason_code" value="<?php echo $rejct_code; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
         </div></div>
             <div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="reason_desc" >Reason Description:<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="reason_desc" >Reason Description:</label>
 			    <div class="controls col-sm-9">
                     
                 <input id="reason_desc" type="text" class="form-control k-textbox" data-role="text" required="required" name="reason_desc" value="<?php echo $rejct_desc; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
@@ -80,7 +80,7 @@
 		</div></div>
         
         <div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="active_status">Status<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="active_status">Status</label>
 			    <div class="controls col-sm-9">
                     
                 <select id="active_status" class="form-control" data-role="select" selected="selected" required="required" name="status"  data-parsley-errors-container="#errId4">

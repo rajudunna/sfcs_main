@@ -64,7 +64,7 @@
                         
                                     
                                 <div class="row"><div class="col-md-6"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="product_code">Product Code<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="product_code">Product Code:</label>
 			    <div class="controls col-sm-9">
 				<select id="product_code" class="form-control" data-role="select" selected="selected" name="product_code" value=<?php echo $product_code; ?>  data-parsley-errors-container="#errId2">
 					<option <?php if ($product_code == 'fabric' ) echo 'selected' ; ?>  value="fabric" >Fabric</option>
@@ -73,31 +73,31 @@
 				<span id="errId1" class="error"></span></div>
                 
 		</div></div><div class="col-md-6"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="supplier_code">Supplier Code<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="supplier_code">Supplier Code:</label>
 			    <div class="controls col-sm-9">
                     
                 <input id="supplier_code" type="text" class="form-control k-textbox alpha" data-role="text" placeholder="Supplier Code" required="required" name="supplier_code" value=<?php echo $supplier_code; ?> ><span id="errId2" class="error"></span></div>
                 
 		</div></div></div><div class="row"><div class="col-md-6"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="complaint_no">Complaint No<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="complaint_no">Complaint No:</label>
 			    <div class="controls col-sm-9">
                     
                 <input id="complaint_no" type="text" class="form-control k-textbox integer" data-role="text" placeholder="Complaint No" name="complaint_no" required="required" value=<?php echo $complaint_no; ?> ><span id="errId3" class="error"></span></div>
                 
 		</div></div><div class="col-md-6"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="supplier_m3_code">Supplier M3Code<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="supplier_m3_code">Supplier M3Code:</label>
 			    <div class="controls col-sm-9">
                     
                 <input id="supplier_m3_code" type="text" class="form-control k-textbox alpha" data-role="text" placeholder="Supplier M3Code" name="supplier_m3_code" required="required" value="<?php echo $supplier_m3_code; ?>" ><span id="errId4" class="error"></span></div>
                 
 		</div></div></div><div class="row"><div class="col-md-6"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="color_code">Color Code<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="color_code">Color Code:</label>
 			    <div class="controls col-sm-9">
                     
-                <input id="color_code" type="text" class="form-control k-textbox alpha" data-role="text" placeholder="Color Code" name="color_code" required="required" value=<?php echo $color_code; ?> ><span id="errId5" class="error"></span></div>
+                <input id="color_code" type="text" class="form-control k-textbox " data-role="text" placeholder="Color Code" name="color_code" required="required" value=<?php echo $color_code; ?> ><span id="errId5" class="error"></span></div>
                 
 		</div></div><div class="col-md-6"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="seq_no">Sequence No<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="seq_no">Sequence No:</label>
 			    <div class="controls col-sm-9">
                     
                 <input id="seq_no" type="text" class="form-control k-textbox integer" data-role="text" placeholder="Sequence No" name="seq_no" required="required" value=<?php echo $seq_no; ?> ><span id="errId6" class="error"></span></div>

@@ -67,7 +67,7 @@
     
 	<div class="row">
                 <div class="col-md-12"><div class="row"><div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="table_name">	Reject Code<span class="req"> *</span></label>
+			    <label class="control-label control-label-left col-sm-3" for="table_name">Reject Code</label>
 			    <div class="controls col-sm-9">
                     
 				<input id="reject_code" type="text" class="form-control k-textbox alpha" data-role="text"  name="reject_code" required="required" <?= $jj ?> value="<?php echo $rejct_code; ?>" ><span id="errId1" class="error"></span></div>

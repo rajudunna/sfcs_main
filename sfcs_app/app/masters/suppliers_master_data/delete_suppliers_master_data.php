@@ -15,7 +15,7 @@ $url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 	echo"<script>setTimeout(function () { 
 		swal({
 		  title: 'Are you sure?',
-		  text: 'Your will not be able to recover this Record!',
+		  text: 'You will not be able to recover this Record!',
 		  type: 'warning',
 		  confirmButtonText: 'OK'
 		},
