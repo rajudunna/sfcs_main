@@ -2,7 +2,7 @@
 /* ===============================================================
                Created By : Sudheer and Chandu
 Created : 30-08-2018
-Updated : 02-09-2018
+Updated : 03-10-2018
 input : Schedule,color & cutjob count.
 output v0.1: Generate jobs.
 Technical Stack : PHP 7,Angular js 1.4,JQuery, Maria DB
@@ -201,23 +201,39 @@ echo "</select>
 </div>
 <?php
 if($schedule != "" && $color != "")
-{	
-//$ratio_query = "SELECT * FROM bai_orders_db_confirm  LEFT JOIN cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE  cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no= $schedule  AND bai_orders_db_confirm.order_col_des ='".$color."' ";
-//echo $ratio_query;
-
-//$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='529508' AND bai_orders_db_confirm.order_col_des ='DRBLU : DRESS BLUES'";
+{
 $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db.order_del_no='".$schedule."' AND TRIM(bai_orders_db.order_col_des) =trim('".$color."')";
-//echo $ratio_query;
 $doc_nos = [];
 $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     $i=0;
     $max=0;
+    $samples_qty = [];
+    $over_all_qtys_samps = [];
+    $ex_cut_lrt = 0;
+    $max_cut = 0;
     if(mysqli_num_rows($ratio_result)>0){
         echo "<table class='table'>";
         while($row=mysqli_fetch_array($ratio_result))
         {
             $doc_nos[] = $row['doc_no'];
             if($i==0){
+                //============ find 1st are last cut =================
+                $qry_get_lrf_cut = "SELECT * FROM bai_pro3.`excess_cuts_log` WHERE schedule_no='".$schedule."' AND trim(color)=trim('".$color."')";
+                $res_get_lrf_cut = mysqli_query($link_ui, $qry_get_lrf_cut) or exit("Sql Error : cut data qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $res_lrt_cut = mysqli_fetch_all($res_get_lrf_cut,MYSQLI_ASSOC);
+                $ex_cut_lrt = $res_lrt_cut[0]['excess_cut_qty'];
+                //================ get sample quantity ===================
+                $qry_get_sample_qty = "SELECT size,input_qty FROM bai_pro3.`sp_sample_order_db` WHERE order_tid='".$row['order_tid']."' GROUP BY size";
+                $res_get_sample_qty = mysqli_query($link_ui, $qry_get_sample_qty) or exit("Sql Error : sample qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $res_sample_qty = mysqli_fetch_all($res_get_sample_qty,MYSQLI_ASSOC);
+                foreach($res_sample_qty as $samp_view){
+                    $samples_qty[$samp_view['size']] = $samp_view['input_qty'];
+                }
+                //============ get excess qty ============
+                $get_excess_qty = "SELECT * FROM bai_pro3.`allocate_stat_log` WHERE cat_ref='".$row['cat_ref']."' AND order_tid='".$row['order_tid']."'";
+                $res_excess_qty = mysqli_query($link_ui, $get_excess_qty) or exit("Sql Error : excess qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $res_excess_qty = mysqli_fetch_all($res_excess_qty,MYSQLI_ASSOC);
+                //=====================================================================
                 echo "<thead>
                     <tr>
                         <th>Ratio</th><th>Cut No</th><th>Plies</th>";
@@ -227,11 +243,13 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                                 echo "<th id='datatitle".$j."' data-title='s".$sno."' data-value='".$row['title_size_s'.$sno]."'>".$row['title_size_s'.$sno]."</th>";
                                 $old_qty[$sno] = 0;
                                 $max=$j;
+                                
+                                $over_all_qtys_samps[$row['title_size_s'.$sno]] = ["order"=>$row['order_s_s'.$sno],"sample"=>$samples_qty[$row['title_size_s'.$sno]],"allocate"=>array_sum(array_column($res_excess_qty,'allocate_s'.$sno))];
                             }else{
                                 break;
                             } 
                         }
-                        echo "<th>Action</th>";
+                        
 
                 echo "</tr>
                 </thead><tbody>";
@@ -240,6 +258,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                $old_pplice = [];
                $end = 1;
                $old_doc_nos = [];
+
             }
             $i++;
             if($old_ratio==$row['ratio']){
@@ -299,7 +318,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 $old_doc_nos[] = $row['doc_no'];
             }
             
-            
+            $max_cut = $row['pcutno'];
         }
         echo "<tr>
             <td>".$old_ratio."</td>
@@ -406,6 +425,10 @@ app.controller('cutjobcontroller', function($scope, $http) {
     $scope.details_all = [];
     $scope.jobs   = [];
     $scope.fulljob = [];
+    $scope.maxcut = <?= $max_cut ?>;
+    $scope.last_r_first = <?= $ex_cut_lrt ?>;
+    $scope.over_all_qtys_samps = <?= json_encode($over_all_qtys_samps) ?>;
+    
     $scope.generatejobs = function(){
        if($scope.jobcount>0)
        {
