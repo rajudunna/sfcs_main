@@ -7,6 +7,12 @@
 function  updateM3Transactions($ref_id,$op_code,$qty)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
+    $host = $api_hostname;
+    $port = $api_port_no;
+    $company_num = $company_no;
+    $plant_code = $global_facility_code;
+
     $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id' and operation_id = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
@@ -104,7 +110,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
 
                 $insert_id=mysqli_insert_id($link);
 
-               
+      
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
                     $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
@@ -139,9 +145,14 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
 
 function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $current_date = date("Y-m-d H:i:s");
 
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    $host = $api_hostname;
+    $port = $api_port_no;
+    $company_num = $company_no;
+    $plant_code = $global_facility_code;
+    
     $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$bundle_no' and operation_id = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
@@ -236,7 +247,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                 // echo $inserting_into_m3_tran_log;
                 mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $insert_id=mysqli_insert_id($link);
-
+               
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
                     $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
@@ -275,7 +286,14 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
 function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $current_date = date("Y-m-d H:i:s");
+
+    $host = $api_hostname;
+    $port = $api_port_no;
+    $company_num = $company_no;
+    $plant_code = $global_facility_code;
+    
     $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id' and operation_id = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
@@ -368,10 +386,10 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 
                     //getting the last inserted record
                     $insert_id=mysqli_insert_id($link);
-
+    
                     //M3 Rest API Call
                     if($enable_api_call == 'YES'){
-                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='".$r_reasons[$key]."'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                         $api_data = $obj->getCurlAuthRequest($api_url);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];

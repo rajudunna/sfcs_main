@@ -1,7 +1,14 @@
 <?php 
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
 $conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
+//M3 Rest API Calls Details
+$company_no   = $conf1->get('companey-number');
+$api_username = $conf1->get('api-user-name');
+$api_password = $conf1->get('api-password');
+$api_hostname = $conf1->get('api-host-name');
+$api_port_no  = $conf1->get('api-port');
 
+$enable_api_call = $conf1->get('enable-api-call');
 // function get_config_values($config_id){
 //     error_reporting(0);
 //     $conf = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
