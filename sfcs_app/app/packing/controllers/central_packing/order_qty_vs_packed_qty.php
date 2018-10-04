@@ -174,13 +174,6 @@
 					$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
 					$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
 					// echo $style."---".$schedule;
-					//getting parent id from tbl_pack_ref
-					$getparentid="select id from $bai_pro3.tbl_pack_ref where schedule='$schedule' and style='$style'";
-					$parentidrslt=mysqli_query($link, $getparentid) or exit("Error while getting parent id");
-					if($row=mysqli_fetch_array($parentidrslt))
-					{
-						$parent=$row['id'];
-					}
 							
 					//echo "Style= ".$style."<br>Schedule= ".$schedule.'<br>';
 					
@@ -267,8 +260,22 @@
 									
 								}
 
-								$getpackqty="SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
-								WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]' AND order_col_des='$col_array[$j]'";
+								$getpack_saved_qty="SELECT SUM(garments_per_carton*cartons_per_pack_job*pack_job_per_pack_method) AS qty FROM bai_pro3.`tbl_pack_size_ref` LEFT JOIN bai_pro3.`tbl_pack_ref` ON tbl_pack_ref.`id`=tbl_pack_size_ref.`parent_id` WHERE schedule = '$schedule' AND color='$col_array[$j]' AND size_title='$size_main[$kk]'";
+								// echo $getpack_saved_qty;
+								$packqtyrslt=mysqli_query($link, $getpack_saved_qty) or exit("Error while getting parent id88");
+								if($pack_row=mysqli_fetch_array($packqtyrslt))
+								{
+									if($pack_row['qty']=='')
+									{
+										$pack_qty_saved[$col_array[$j]][$size_main[$kk]]=0;
+									}
+									else
+									{
+										$pack_qty_saved[$col_array[$j]][$size_main[$kk]]=$pack_row['qty'];
+									}
+								}
+
+								$getpackqty="SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]' AND order_col_des='$col_array[$j]'";
 								//echo $getpackqty;
 								$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
 								if($pack_row=mysqli_fetch_array($packqtyrslt))
@@ -287,7 +294,7 @@
 							
 
 							echo "<tr>
-									<td rowspan=3>$col_array[$j]</td>
+									<td rowspan=4>$col_array[$j]</td>
 									<td>Order Qty</td>";
 									for ($i=0; $i < sizeof($size_main); $i++)
 									{ 
@@ -305,6 +312,16 @@
 										$tot_planned = $tot_planned + $planned_qty[$col_array[$j]][$size_main[$i]];
 									}
 									echo "<td>$tot_planned</td>
+								</tr>";
+
+							echo "<tr>
+									<td>Packing Saved Quantity</td>";
+									for ($i=0; $i < sizeof($size_main); $i++)
+									{									
+										echo "<td>".$pack_qty_saved[$col_array[$j]][$size_main[$i]]."</td>";
+										$pack_tot_saved = $pack_tot_saved + $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+									}
+									echo "<td>$pack_tot_saved</td>
 								</tr>";
 
 							echo "<tr>
