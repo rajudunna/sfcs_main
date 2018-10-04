@@ -87,6 +87,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select * from $bai_rm_pj1.store_in where lot_no like \"%".trim($lot_no)."%\"";
+
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_labels=mysqli_num_rows($sql_result);
