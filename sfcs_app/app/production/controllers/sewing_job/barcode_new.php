@@ -117,7 +117,7 @@
 								<tr>
 									<td><b>Barcode ID:</b>'.$barcode.' </td>
 									<td> <b>Qty:</b>'.$quantity.'</td>
-									<td colspan=3> <b>Country Code: </b>'.$destination.'</td>
+									<td colspan=3> <b>Country: </b>'.$destination.'</td>
 								</tr>
 								<tr>
 									<td><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td>
