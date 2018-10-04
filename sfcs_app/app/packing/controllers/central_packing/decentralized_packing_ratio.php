@@ -4,16 +4,41 @@
 	{
 		for (var row_count = 0; row_count < sizeOfColors; row_count++)
 		{
+			var temp = 0;	var min_cart_array = new Array();
 			var GarPerBag=document.getElementById('GarPerBag_'+row_count+'_'+size_count).value;
 			var BagPerCart=document.getElementById('BagPerCart_'+size_count).value;
 			var GarPerCart = Number(GarPerBag)*Number(BagPerCart);
 			document.getElementById('GarPerCart_'+row_count+'_'+size_count).value = GarPerCart;
+			var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+size_count).value;
+			
+			if (ss_ms_no_of_cart == 0)
+			{
+				document.getElementById('ss_ms_pac_gen_'+row_count+'_'+size_count).innerHTML = 0;
+			}
+			else
+			{
+				var temppp = ss_ms_no_of_cart * GarPerCart;
+				document.getElementById('ss_ms_pac_gen_'+row_count+'_'+size_count).innerHTML = temppp;
+			}
+			
+			// var order_size_wise=document.getElementById('order_qty_'+row_count+'_'+size_count).value;
+			// // console.log(order_size_wise);
+			// if (GarPerCart == 0)
+			// {
+			// 	document.getElementById('NoOf_Cartons_'+size_count).value = 0;
+			// }
+			// else
+			// {
+			// 	temp = Number(order_size_wise)/Number(GarPerCart);
+			// 	console.log(temp);
+			// 	document.getElementById('NoOf_Cartons_'+size_count).value = Math.floor(temp);
+			// }
 		}
 	}
 
 	function calculateqty1(sizeofsizes,sizeOfColors)
 	{
-		var total=0;
+		var total=0;	var mm_sm_min_cart = new Array();	var temp = 0;
 		for (var row_count = 0; row_count < sizeOfColors; row_count++)
 		{
 			for(var size=0;size < sizeofsizes; size++)
@@ -23,8 +48,37 @@
 				var GarPerCart = GarPerBag*BagPerCart;
 				document.getElementById('GarPerCart_'+row_count+'_'+size).value=GarPerCart;
 				total = total+GarPerCart;
+
+				var mm_sm_order_size_wise=document.getElementById('mm_sm_order_qty_'+row_count+'_'+size).value;
+				var NoOf_Cartons1 = document.getElementById('NoOf_Cartons1').value;
+				if (NoOf_Cartons1 == 0)
+				{
+					document.getElementById('mm_sm_pac_gen_'+row_count+'_'+size).innerHTML = 0;
+				}
+				else
+				{
+					var test = GarPerCart * NoOf_Cartons1;
+					// var tot = total * NoOf_Cartons1;
+					document.getElementById('mm_sm_pac_gen_'+row_count+'_'+size).innerHTML = test;
+					// document.getElementById('mm_sm_pac_gen_total_'+row_count+'_'+size).innerHTML = 'tot';
+				}
+				// console.log(mm_sm_order_size_wise);
+				// if (GarPerCart == 0)
+				// {
+				// 	document.getElementById('NoOf_Cartons1').value = 0;
+				// }
+				// else
+				// {
+				// 	// mm_sm_min_cart[] = Number(mm_sm_order_size_wise)/Number(GarPerCart);
+				// 	// console.log(mm_sm_min_cart);
+				// 	// var min_no = Math.min.apply(null, mm_sm_min_cart);
+				// 	// console.log(min_no);
+				// 	// document.getElementById('NoOf_Cartons1').value = temp;
+				// }
 			}
+			var tot = total * NoOf_Cartons1;
 			document.getElementById('total_'+row_count).value=total;
+			document.getElementById('mm_sm_pac_gen_total_'+row_count).innerHTML = tot;
 			total=0;
 		}
 	}
@@ -553,13 +607,161 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='text' size='6' maxlength='5' required name='NoOf_Cartons[]' id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer'></td>";
+																	echo "<td><input type='text' size='6' maxlength='5' required name='NoOf_Cartons[]' onkeyup=calculateqty($size_count,$size_of_ordered_colors);  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer'></td>";
 																}
 															echo "</tr>
 														</table>
 													</div>
 												</div>
 											</div>";
+
+										// Order Details Display Start
+										{
+											echo "<div class='panel panel-primary'>";
+												echo "<div class='panel-heading'>Details</div>
+												<div class='panel-body'>";
+											$col_array = array();
+											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
+											//echo $sizes_query;die();
+											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+											$row_count = mysqli_num_rows($sizes_result);
+											while($sizes_result1=mysqli_fetch_array($sizes_result))
+											{
+												$col_array[]=$sizes_result1['order_col_des'];
+											}
+											
+											$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id=$schedule_id";
+											// echo $sewing_jobratio_sizes_query.'<br>';
+											$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+											while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+											{
+												$ref_size = $sewing_jobratio_color_details['size'];
+												$size_main = explode(",",$ref_size);
+												// var_dump($size);
+											}
+											$sizeofsizes=sizeof($size_main);
+
+											$planned_qty = array();
+											$ordered_qty = array();
+											$pack_qty = array();
+
+											echo "<br>
+												<div class='col-md-12 table-responsive'>
+													<table class=\"table table-bordered\">
+														<tr class=\"info\">
+															<th>Colors</th>
+															<th>Details</th>";
+															for ($i=0; $i < sizeof($size_main); $i++)
+															{
+																echo "<th>$size_main[$i]</th>";
+															}	
+															
+															echo "<th>Total</th>
+														</tr>";
+														// echo sizeof($col_array);ssss
+														for ($j=0; $j < sizeof($col_array); $j++)
+														{
+															$tot_ordered = 0;
+															$tot_planned = 0;
+															$pack_tot = 0;
+															for($kk=0;$kk<sizeof($size_main);$kk++)
+															//foreach ($sizes_array as $key => $value)
+															{
+																$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plannedQty FROM $brandix_bts.tbl_cut_size_master 
+																LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
+																LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
+																WHERE tbl_cut_master.ref_order_num='$schedule_id' AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
+																//echo $plannedQty_query.'<br>';
+																$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
+																while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
+																{
+																	if($planneQTYDetails['plannedQty']=='')
+																	{
+																		$planned_qty[$col_array[$j]][$size_main[$kk]]=0;
+																	}
+																	else
+																	{
+																		$planned_qty[$col_array[$j]][$size_main[$kk]] = $planneQTYDetails['plannedQty'];
+																	}
+																}
+																$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
+																WHERE parent_id='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
+																//echo $orderQty_query.'<br>';
+																$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
+																while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
+																{
+																	if($orderQty_details['orderedQty']=='')
+																	{
+																		$ordered_qty[$col_array[$j]][$size_main[$kk]]=0;
+																	}
+																	else
+																	{
+																		$ordered_qty[$col_array[$j]][$size_main[$kk]] = $orderQty_details['orderedQty'];
+																	}
+																	
+																}
+
+																$getpackqty="SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
+																WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]' AND order_col_des='$col_array[$j]'";
+																//echo $getpackqty;
+																$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
+																if($pack_row=mysqli_fetch_array($packqtyrslt))
+																{
+																	if($pack_row['pack_qty']=='')
+																	{
+																		$pack_qty[$col_array[$j]][$size_main[$kk]]=0;
+																	}
+																	else
+																	{
+																		$pack_qty[$col_array[$j]][$size_main[$kk]]=$pack_row['pack_qty'];
+																	}
+																}
+															}
+															// echo $col_array[$i];
+															
+
+															echo "<tr>
+																	<td rowspan=3>$col_array[$j]</td>
+																	<td>Order Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		echo "<input type='hidden' name='order_qty' id='order_qty_".$j."_".$i."' value='".$ordered_qty[$col_array[$j]][$size_main[$i]]."' />";
+																		echo "<td>".$ordered_qty[$col_array[$j]][$size_main[$i]]."</td>";
+																		$tot_ordered = $tot_ordered + $ordered_qty[$col_array[$j]][$size_main[$i]];
+																	}
+																	echo "<td>$tot_ordered</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Cut Plan Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{ 
+																		echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
+																		$tot_planned = $tot_planned + $planned_qty[$col_array[$j]][$size_main[$i]];
+																	}
+																	echo "<td>$tot_planned</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Pack Generated</td>";
+
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{									
+																	// 	echo "<td>".$pack_qty[$col_array[$j]][$size_main[$i]]."</td>";
+																	// 	$pack_tot = $pack_tot + $pack_qty[$col_array[$j]][$size_main[$i]];
+																	// }
+																	// echo "<td>$pack_tot</td>
+																		echo "<td><p id='ss_ms_pac_gen_".$j."_".$i."'></p></td>";
+																	}
+																	echo "<td><p id='ss_ms_pac_gen_total_".$j."'></p></td>
+																</tr>";
+														}
+											echo "</table>
+												</div>
+											</div>
+											</div>";
+										}
+										// Order Details Display End
 
 										echo "<input type='submit' class='btn btn-success' name='SS_MS_save' id='SS_MS_save' value='Save' />
 									</div>
@@ -711,9 +913,136 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>No of Cartons</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Cartons : <input type='text' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' ></div>";
+												echo "<div class='col-xs-12'>Number of Cartons : <input type='text' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors); value='0' ></div>";
 												echo "</div>
 											</div>";
+
+										// Order Details Display Start
+										{
+											echo "<div class='panel panel-primary'>";
+												echo "<div class='panel-heading'>Details</div>
+												<div class='panel-body'>";
+											$col_array = array();
+											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
+											//echo $sizes_query;die();
+											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+											$row_count = mysqli_num_rows($sizes_result);
+											while($sizes_result1=mysqli_fetch_array($sizes_result))
+											{
+												$col_array[]=$sizes_result1['order_col_des'];
+											}
+											
+											$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id=$schedule_id";
+											// echo $sewing_jobratio_sizes_query.'<br>';
+											$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+											while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+											{
+												$ref_size = $sewing_jobratio_color_details['size'];
+												$size_main = explode(",",$ref_size);
+												// var_dump($size);
+											}
+											$sizeofsizes=sizeof($size_main);
+
+											$planned_qty = array();
+											$ordered_qty = array();
+
+											echo "<br>
+												<div class='col-md-12 table-responsive'>
+													<table class=\"table table-bordered\">
+														<tr class=\"info\">
+															<th>Colors</th>
+															<th>Details</th>";
+															for ($i=0; $i < sizeof($size_main); $i++)
+															{
+																echo "<th>$size_main[$i]</th>";
+															}	
+															
+															echo "<th>Total</th>
+														</tr>";
+														// echo sizeof($col_array);ssss
+														for ($j=0; $j < sizeof($col_array); $j++)
+														{
+															$tot_ordered = 0;
+															$tot_planned = 0;
+															$pack_tot = 0;
+															for($kk=0;$kk<sizeof($size_main);$kk++)
+															//foreach ($sizes_array as $key => $value)
+															{
+																$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plannedQty FROM $brandix_bts.tbl_cut_size_master 
+																LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
+																LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
+																WHERE tbl_cut_master.ref_order_num='$schedule_id' AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
+																//echo $plannedQty_query.'<br>';
+																$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
+																while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
+																{
+																	if($planneQTYDetails['plannedQty']=='')
+																	{
+																		$planned_qty[$col_array[$j]][$size_main[$kk]]=0;
+																	}
+																	else
+																	{
+																		$planned_qty[$col_array[$j]][$size_main[$kk]] = $planneQTYDetails['plannedQty'];
+																	}
+																}
+																$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
+																WHERE parent_id='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
+																//echo $orderQty_query.'<br>';
+																$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
+																while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
+																{
+																	if($orderQty_details['orderedQty']=='')
+																	{
+																		$ordered_qty[$col_array[$j]][$size_main[$kk]]=0;
+																	}
+																	else
+																	{
+																		$ordered_qty[$col_array[$j]][$size_main[$kk]] = $orderQty_details['orderedQty'];
+																	}
+																}
+															}
+															// echo $col_array[$i];
+															
+
+															echo "<tr>
+																	<td rowspan=3>$col_array[$j]</td>
+																	<td>Order Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		echo "<input type='hidden' name='order_qty' id='mm_sm_order_qty_".$j."_".$i."' value='".$ordered_qty[$col_array[$j]][$size_main[$i]]."' />";
+																		echo "<td>".$ordered_qty[$col_array[$j]][$size_main[$i]]."</td>";
+																		$tot_ordered = $tot_ordered + $ordered_qty[$col_array[$j]][$size_main[$i]];
+																	}
+																	echo "
+																		<input type='hidden' name='order_qty_total' id='order_qty_total' value='".$tot_ordered."' />
+																		<td>$tot_ordered</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Cut Plan Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{ 
+																		echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
+																		$tot_planned = $tot_planned + $planned_qty[$col_array[$j]][$size_main[$i]];
+																	}
+																	echo "<td>$tot_planned</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Pack Generated</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{									
+																		echo "<td><p id='mm_sm_pac_gen_".$j."_".$i."'></p></td>";
+																	}
+																	echo "<td><p id='mm_sm_pac_gen_total_".$j."'></p></td>
+																</tr>";
+														}
+											echo "</table>
+												</div>
+											</div>
+											</div>";
+										}
+										// Order Details Display End
 
 										echo "<input type='submit' class='btn btn-success' name='MM_SM_save' id='MM_SM_save' value='Save' />
 										</div>
