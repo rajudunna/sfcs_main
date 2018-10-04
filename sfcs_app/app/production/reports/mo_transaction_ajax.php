@@ -40,19 +40,22 @@ $counter = 0;
    // die();
    foreach ($mo_details as $key => $mos)
    {
-   	$counter++;
+   	    $counter++;
    	    $table_data .= "<tr><td>$counter</td><td>$size[$key]</td><td>$color[$key]</td><td>$mos</td><td>$mo_qty[$key]</td>";
 	   	foreach ($ops_get_code as $key_op => $value)
 	    {
-	       $get_m3_quantities="select sum(good_quantity)as good_quantity from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code='".$value."' group by mo_no";
+	       $good_qty = 0;
+	       $get_m3_quantities="select sum(good_quantity) as good_quantity from $bai_pro3.mo_operation_quantites 
+	                           where mo_no = $mos and op_code='".$value."'";
 	       $get_m3__result=$link->query($get_m3_quantities);
 	       while ($row = $get_m3__result->fetch_assoc())
 	       {
 	       	   $good_qty = $row['good_quantity'];
 	       }
-	        if($good_qty == '')
-            $good_qty = 0;
-	       $table_data .= "<td>$good_qty</td>";
+	       if($good_qty == ''){
+               $good_qty = 0;
+	       }
+	       $table_data .= "<td>".$good_qty."</td>";
 	    }
 	    $table_data .= "</tr>";
 
