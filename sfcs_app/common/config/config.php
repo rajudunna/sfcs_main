@@ -56,6 +56,8 @@ $api_password = $conf1->get('api-password');
 $api_hostname = $conf1->get('api-host-name');
 $api_port_no = $conf1->get('api-port');
 
+$enable_api_call = $conf1->get('enable-api-call');
+
 //Scanning Methods
 $scanning_methods = $conf1->get('scaning-method');
 
