@@ -29,7 +29,8 @@
 					{
 						new_temp=0;
 					}
-					min_cart_array[color] = Math.floor(new_temp);
+					// min_cart_array[color] = Math.floor(new_temp);
+					min_cart_array.push(Math.floor(new_temp));
 					var min_no = Math.min.apply(null, min_cart_array);
 					// console.log('array = '+min_cart_array);
 					// console.log('min no45 = '+min_no);
@@ -117,7 +118,8 @@
 					else
 					{
 						var new_temp = Number(mm_sm_order_size_wise)/Number(GarPerCart);
-						mm_sm_min_cart[counter] = Math.floor(new_temp);
+						// mm_sm_min_cart[counter] = Math.floor(new_temp);
+						mm_sm_min_cart.push(Math.floor(new_temp));
 						counter++;
 					}
 				}
