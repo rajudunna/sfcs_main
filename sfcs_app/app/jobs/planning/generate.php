@@ -1,5 +1,6 @@
 <?php 
 $include_path=getenv('config_job_path');
+$include_path='E:\xampp\htdocs\sfcs_main';
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $start_timestamp = microtime(true);
@@ -8,7 +9,7 @@ error_reporting(0);
 
 <?php
 
-$date=date("Y-m-d"); 
+$date=date("Y-m-d");
 
 $sql="delete from $bai_pro.bai_bac";
 mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -205,11 +206,9 @@ else
 	}
 }
 
-
 if(mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "select * from $bai_pro.pro_plan where date=\"$date\""))==0)
 {
-
-$sql="select * from $bai_pro.pro_plan where date=(select max(date) from bai_pro.pro_plan)";
+$sql="select * from $bai_pro.tbl_freez_plan_log where date='".$date."'";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -218,31 +217,30 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$shift=$sql_row['shift'];
 	$plan_eff=$sql_row['plan_eff'];
 	$plan_pro=$sql_row['plan_pro'];
-	$remarks=$sql_row['remarks'];
+	$remarks='';
 	$sec_no=$sql_row['sec_no'];
-	$couple=$sql_row['couple'];
-	$fix_nop=$sql_row['fix_nop'];
+	$couple=1;
+	$fix_nop=16;
 	
 	$plan_clh=$sql_row['plan_clh'];
 	$plan_sah=$sql_row['plan_sah'];
 	
-	$plan_eff_ex=$sql_row['plan_eff_ex'];
+	$plan_eff_ex=0;
 
 
 	$ref_code=$date."-".$mod_no."-".$shift;
 
 	$sql="insert ignore into $bai_pro.pro_plan (plan_tag) values (\"$ref_code\")";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
 	$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	//NEW2011
 	$sql="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$ref_code\")";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//NEW2011
 	
 }
