@@ -1,85 +1,206 @@
 <script language="javascript" type="text/javascript">
 
-	function calculateqty(size_count,sizeOfColors)
+	function calculateqty(size,sizeOfColors)
 	{
-		for (var row_count = 0; row_count < sizeOfColors; row_count++)
+		var min_cart_array = new Array();	var ss_ms_pac_gen_total = 0;
+		for (var color = 0; color < sizeOfColors; color++)
 		{
-			var temp = 0;	var min_cart_array = new Array();
-			var GarPerBag=document.getElementById('GarPerBag_'+row_count+'_'+size_count).value;
-			var BagPerCart=document.getElementById('BagPerCart_'+size_count).value;
+			var GarPerBag=document.getElementById('GarPerBag_'+color+'_'+size).value;
+			var BagPerCart=document.getElementById('BagPerCart_'+size).value;
 			var GarPerCart = Number(GarPerBag)*Number(BagPerCart);
-			document.getElementById('GarPerCart_'+row_count+'_'+size_count).value = GarPerCart;
-			var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+size_count).value;
-			
-			if (ss_ms_no_of_cart == 0)
+			document.getElementById('GarPerCart_'+color+'_'+size).value = GarPerCart;
+			// alert(GarPerCart+' == '+GarPerBag);
+			// Automatic No of Cratons Logic
+			var order_size_wise=document.getElementById('order_qty_'+color+'_'+size).value;
+			if(GarPerBag>0)
 			{
-				document.getElementById('ss_ms_pac_gen_'+row_count+'_'+size_count).innerHTML = 0;
-			}
-			else
+				// alert(GarPerCart+' == 7 '+GarPerBag);
+				if (GarPerCart == 0 || GarPerCart == null || GarPerCart =='')
+				{
+					document.getElementById('NoOf_Cartons_'+size).value = 0;
+				}
+				else
+				{
+					// alert(GarPerCart+' == 8 '+GarPerBag);
+					// console.log(GarPerCart);
+					var new_temp = Number(order_size_wise)/Number(GarPerCart);
+					console.log('temp value = '+new_temp);
+					if(isNaN(new_temp))
+					{
+						new_temp=0;
+					}
+					min_cart_array[color] = Math.floor(new_temp);
+					var min_no = Math.min.apply(null, min_cart_array);
+					// console.log('array = '+min_cart_array);
+					// console.log('min no45 = '+min_no);
+					document.getElementById('NoOf_Cartons_'+size).value = min_no;
+				}
+
+				// Pack Generated Logic
+				var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+size).value;
+				if (ss_ms_no_of_cart == 0)
+				{
+					document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML = 0;
+				}
+				else
+				{
+					var temppp = ss_ms_no_of_cart * GarPerCart;
+					document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML = temppp;
+					ss_ms_pac_gen_total = ss_ms_pac_gen_total + temppp;
+				}
+
+				// Version 2
+				// var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+size).value;
+				// if (ss_ms_no_of_cart == 0)
+				// {
+				// 	document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML = 0;
+				// 	var order_size_wise=document.getElementById('order_qty_'+color+'_'+size).value;
+				// 	if (GarPerCart == 0)
+				// 	{
+				// 		document.getElementById('NoOf_Cartons_'+size).value = 0;
+				// 	}
+				// 	else
+				// 	{
+				// 		var new_temp = Number(order_size_wise)/Number(GarPerCart);
+				// 		min_cart_array[color] = Math.floor(new_temp);
+				// 		var min_no = Math.min.apply(null, min_cart_array);
+				// 		console.log('min no = '+min_no);
+				// 		document.getElementById('NoOf_Cartons_'+size).value = min_no;
+				// 	}
+				// }
+				// else
+				// {
+				// 	var temppp = ss_ms_no_of_cart * GarPerCart;
+				// 	document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML = temppp;
+				// }
+			}	
+		}
+		var no_of_sizes = document.getElementById('size_size1').value;
+		console.log('array1 = '+min_cart_array);
+		
+		for (var color = 0; color < sizeOfColors; color++)
+		{
+			var abc = 0;
+			for (var size = 0; size < no_of_sizes; size++)
 			{
-				var temppp = ss_ms_no_of_cart * GarPerCart;
-				document.getElementById('ss_ms_pac_gen_'+row_count+'_'+size_count).innerHTML = temppp;
+				var test = document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML;
+				// console.log('color = '+color+', size = '+size+', pac_gen = '+test);
+				if (test > 0)
+				{
+					abc = abc + Number(test);
+				}
 			}
-			
-			// var order_size_wise=document.getElementById('order_qty_'+row_count+'_'+size_count).value;
-			// // console.log(order_size_wise);
-			// if (GarPerCart == 0)
-			// {
-			// 	document.getElementById('NoOf_Cartons_'+size_count).value = 0;
-			// }
-			// else
-			// {
-			// 	temp = Number(order_size_wise)/Number(GarPerCart);
-			// 	console.log(temp);
-			// 	document.getElementById('NoOf_Cartons_'+size_count).value = Math.floor(temp);
-			// }
+			document.getElementById('ss_ms_pac_gen_total_'+color).innerHTML = abc;
 		}
 	}
 
 	function calculateqty1(sizeofsizes,sizeOfColors)
 	{
-		var total=0;	var mm_sm_min_cart = new Array();	var temp = 0;
-		for (var row_count = 0; row_count < sizeOfColors; row_count++)
+		var pac_gen_tot_temp=0;	var mm_sm_min_cart = new Array();	var counter = 0;	var col_gpc_tot = 0;
+		for (var color = 0; color < sizeOfColors; color++)
 		{
 			for(var size=0;size < sizeofsizes; size++)
 			{
-				var GarPerBag=document.getElementById('GarPerBag_'+row_count+'_'+size).value;
+				var GarPerBag=document.getElementById('GarPerBag_'+color+'_'+size).value;
 				var BagPerCart=document.getElementById('BagPerCart').value;
 				var GarPerCart = GarPerBag*BagPerCart;
-				document.getElementById('GarPerCart_'+row_count+'_'+size).value=GarPerCart;
-				total = total+GarPerCart;
-
-				var mm_sm_order_size_wise=document.getElementById('mm_sm_order_qty_'+row_count+'_'+size).value;
-				var NoOf_Cartons1 = document.getElementById('NoOf_Cartons1').value;
-				if (NoOf_Cartons1 == 0)
+				document.getElementById('GarPerCart_'+color+'_'+size).value=GarPerCart;
+				col_gpc_tot = col_gpc_tot + GarPerCart;
+				if(GarPerBag>0)
 				{
-					document.getElementById('mm_sm_pac_gen_'+row_count+'_'+size).innerHTML = 0;
+					// Store data to array (No of Cartons)
+					var mm_sm_order_size_wise=document.getElementById('mm_sm_order_qty_'+color+'_'+size).value;
+					if (GarPerCart == 0 || GarPerCart == null || GarPerCart =='')
+					{
+						document.getElementById('NoOf_Cartons1').value = 0;
+					}
+					else
+					{
+						var new_temp = Number(mm_sm_order_size_wise)/Number(GarPerCart);
+						mm_sm_min_cart[counter] = Math.floor(new_temp);
+						counter++;
+					}
+				}
+			}
+			document.getElementById('total_'+color).value = col_gpc_tot;
+			col_gpc_tot=0;
+		}
+
+		// Check Min no and assign to No of cartons
+		// console.log('array = '+mm_sm_min_cart);
+		if(mm_sm_min_cart.length > 0)
+		{
+			var min_no = Math.min.apply(null, mm_sm_min_cart);
+			// console.log('min no = '+min_no);
+			document.getElementById('NoOf_Cartons1').value = min_no;
+		}
+
+		// Pack Generated Qty Logic
+		for (var col = 0; col < sizeOfColors; col++)
+		{
+			for(var siz=0;siz < sizeofsizes; siz++)
+			{
+				var gpc = document.getElementById('GarPerCart_'+col+'_'+siz).value;
+				var noc = document.getElementById('NoOf_Cartons1').value;
+				if (noc == 0)
+				{
+					document.getElementById('mm_sm_pac_gen_'+col+'_'+siz).innerHTML = 0;
 				}
 				else
 				{
-					var test = GarPerCart * NoOf_Cartons1;
-					// var tot = total * NoOf_Cartons1;
-					document.getElementById('mm_sm_pac_gen_'+row_count+'_'+size).innerHTML = test;
-					// document.getElementById('mm_sm_pac_gen_total_'+row_count+'_'+size).innerHTML = 'tot';
+					var test = gpc * noc;
+					pac_gen_tot_temp = pac_gen_tot_temp + test;
+					document.getElementById('mm_sm_pac_gen_'+col+'_'+siz).innerHTML = test;
 				}
-				// console.log(mm_sm_order_size_wise);
-				// if (GarPerCart == 0)
-				// {
-				// 	document.getElementById('NoOf_Cartons1').value = 0;
-				// }
-				// else
-				// {
-				// 	// mm_sm_min_cart[] = Number(mm_sm_order_size_wise)/Number(GarPerCart);
-				// 	// console.log(mm_sm_min_cart);
-				// 	// var min_no = Math.min.apply(null, mm_sm_min_cart);
-				// 	// console.log(min_no);
-				// 	// document.getElementById('NoOf_Cartons1').value = temp;
-				// }
 			}
-			var tot = total * NoOf_Cartons1;
-			document.getElementById('total_'+row_count).value=total;
-			document.getElementById('mm_sm_pac_gen_total_'+row_count).innerHTML = tot;
-			total=0;
+			document.getElementById('mm_sm_pac_gen_total_'+col).innerHTML = pac_gen_tot_temp;
+			pac_gen_tot_temp=0;
+		}		
+	}
+
+	function ss_ms_cart_func(size,no_of_cols)
+	{
+		for (var col = 0; col < no_of_cols; col++)
+		{
+			var ss_ms_pac_genTotal = 0;
+			GarPerCart = document.getElementById('GarPerCart_'+col+'_'+size).value;
+			var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+size).value;
+			
+			if (ss_ms_no_of_cart == 0)
+			{
+				document.getElementById('ss_ms_pac_gen_'+col+'_'+size).innerHTML = 0;
+			}
+			else
+			{
+				var temppp = ss_ms_no_of_cart * GarPerCart;
+				document.getElementById('ss_ms_pac_gen_'+col+'_'+size).innerHTML = temppp;
+				ss_ms_pac_genTotal = ss_ms_pac_genTotal + temppp;
+			}
+			document.getElementById('ss_ms_pac_gen_total_'+col).innerHTML = ss_ms_pac_genTotal;
+		}
+	}
+
+	function mm_sm_cart_func(no_of_sizes,no_of_cols)
+	{
+		for (var col = 0; col < no_of_cols; col++)
+		{
+			var pac_gen_total = 0;
+			for(var size=0;size < no_of_sizes; size++)
+			{
+				GarperCarton = document.getElementById('GarPerCart_'+col+'_'+size).value;
+				var NoOf_Cartons1 = document.getElementById('NoOf_Cartons1').value;
+				if (NoOf_Cartons1 == 0)
+				{
+					document.getElementById('mm_sm_pac_gen_'+col+'_'+size).innerHTML = 0;
+				}
+				else
+				{
+					var test = GarperCarton * NoOf_Cartons1;
+					document.getElementById('mm_sm_pac_gen_'+col+'_'+size).innerHTML = test;
+					pac_gen_total = pac_gen_total + test;
+				}
+			}
+			document.getElementById('mm_sm_pac_gen_total_'+col).innerHTML = pac_gen_total;
 		}
 	}
 
@@ -178,6 +299,7 @@
 							no_of_cartons_size_wise[i]=document.getElementById('NoOf_Cartons_'+i).value;
 							carton_temp = carton_temp + no_of_cartons_size_wise[i];
 						}
+						console.log(no_of_cartons_size_wise);
 						if (carton_temp > 0)
 						{
 							var min_no = Math.min.apply(null, no_of_cartons_size_wise);
@@ -607,7 +729,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='text' size='6' maxlength='5' required name='NoOf_Cartons[]' onkeyup=calculateqty($size_count,$size_of_ordered_colors);  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer'></td>";
+																	echo "<td><input type='text' size='6' maxlength='5' required name='NoOf_Cartons[]' onkeyup=ss_ms_cart_func($size_count,$size_of_ordered_colors);  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer'></td>";
 																}
 															echo "</tr>
 														</table>
@@ -725,7 +847,7 @@
 																	<td>Order Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
-																		echo "<input type='hidden' name='order_qty' id='order_qty_".$j."_".$i."' value='".$ordered_qty[$col_array[$j]][$size_main[$i]]."' />";
+																		echo "<input type='hidden' name='order_qty' id='order_qty_".$j."_".$i."' value='".$planned_qty[$col_array[$j]][$size_main[$i]]."' />";
 																		echo "<td>".$ordered_qty[$col_array[$j]][$size_main[$i]]."</td>";
 																		$tot_ordered = $tot_ordered + $ordered_qty[$col_array[$j]][$size_main[$i]];
 																	}
@@ -913,7 +1035,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>No of Cartons</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Cartons : <input type='text' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors); value='0' ></div>";
+												echo "<div class='col-xs-12'>Number of Cartons : <input type='text' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} onkeyup=mm_sm_cart_func($sizeofsizes,$size_of_ordered_colors); value='0' ></div>";
 												echo "</div>
 											</div>";
 
