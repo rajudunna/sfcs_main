@@ -5299,12 +5299,12 @@ function printdiv(printpage) {
  <tr class=xl13432351 height=36 style='mso-height-source:userset;height:27.0pt'> 
     <td colspan=4 height=36 width=209 style='border-right:1.0pt solid black;height:27.0pt;width:157pt' align=left valign=top>
         <span style='mso-ignore:vglayout; position:absolute;z-index:1;margin-left:6px;margin-top:2px;width:100px; height:30px'>
-            <img width=200% height=100% src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" alt="Brandix Logo" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1">
+            
         </span>
         <span style='mso-ignore:vglayout2'> 
             <table cellpadding=0 cellspacing=0> 
                 <tr> 
-                    <td colspan=4 height=36 class=xl24132351 width=209 style='border-right:1.0pt solid black;height:27.0pt;width:157pt'>&nbsp;</td> 
+                    <td colspan=4 height=36 class=xl24132351 width=209 style='border-right:1.0pt solid black;height:43.0pt;width:157pt'><img width=100% height=100% src="/sfcs_app/common/images/logo.png" alt="Brandix Logo" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1"></td> 
                 </tr> 
             </table> 
         </span>
@@ -5340,7 +5340,7 @@ function printdiv(printpage) {
   <td colspan=3 class=xl28032351 width=132 style='border-right:1.0pt solid black;   border-left:none;width:99pt'><?php echo date("Y-m-d"); ?></td> 
  </tr> 
  <tr class=xl13432351 height=30 style='mso-height-source:userset;height:22.5pt'> 
-  <td colspan=4 height=30 class=xl23232351 style='border-right:1.0pt solid black;   height:22.5pt'><?php echo $plant_name; ?></td> 
+  <td colspan=4 height=30 class=xl23232351 style='border-right:1.0pt solid black;   height:35.5pt'><?php echo $plant_name; ?></td> 
   <?php  date_default_timezone_set("Asia/Colombo");  ?> 
   <td class=xl13632351 colspan=2 style='border-top:none;border-left:none'><center>Issued Date: </center></td> 
   <td colspan=3 class=xl28332351 style='border-right:1.0pt solid black'> 
