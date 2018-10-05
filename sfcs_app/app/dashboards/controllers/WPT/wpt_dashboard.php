@@ -35,7 +35,7 @@
                 $id1 = "sec-load-$section";
                 $id2 = "sec-$section";
         ?>    
-                <div class='section_div' style='width:25vw;float:left;padding:5px'>
+                <div class='section_div' style='width:25.5vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
                             <center><span class='section-heading'><b>SECTION - <?= $section ?></b></span></center>
@@ -50,34 +50,45 @@
         <?php
             }
         ?>
-            <hr>
-            <div class='l-div col-sm-4'>
-                <span class="l-block yellow" >&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span class='l-text'>Fabric Issued to Cutting Module</span>
+            <div class='row'></div>
+            <div class='row'>
+            <hr/>
+                <div class='l-div col-sm-4'>
+                    <span class="l-block yellow" >&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <span class='l-text'>Fabric Issued to Cutting Module</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="l-block green" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Material Requested</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="l-block lgreen" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Material Available and Not Requested</span>
+                </div>
+                <div class='l-div col-sm-4'>   
+                    <span class="l-block red" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Material Not Available and Not Requested</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="l-block yash" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Material Status Not Updated in FSP</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="l-block pink" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Ready To Issue</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="l-block orange" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Cutting Partially Done</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="l-block blue" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Cut Completed But Not Issued To Module</span>
+                </div>
             </div>
-            <div class='l-div col-sm-4'>
-                <span class="l-block green" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                <span class='l-text'>Material Requested</span>
-            </div>
-            <div class='l-div col-sm-4'>
-                <span class="l-block lgreen" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                <span class='l-text'>Material Available and Not Requested</span>
-            </div>
-            <div class='l-div col-sm-4'>   
-                <span class="l-block red" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                <span class='l-text'>Material Not Available and Not Requested</span>
-            </div>
-            <div class='l-div col-sm-4'>
-                <span class="l-block yash" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                <span class='l-text'>Material Status Not Updated in FSP</span>
-            </div>
-            <div class='l-div col-sm-4'>
-                <span class="l-block pink" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                <span class='l-text'>Ready To Issue</span>
-            </div>
-            <div class='l-div col-sm-4'>
-                <span class="l-block orange" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                <span class='l-text'>Cutting Partially Done</span>
+            <div class='row'>
+            <hr/>
+               
             </div>
         </div>
     </div>
@@ -150,17 +161,26 @@
     
     function change_widths(){
         var b = Number($('#blocks').val());
-        if(b>30 || b<4){
-           // swal('Please enter valid no:of blocks','','warning');
-           // return false;
+        if(b>30 || b<0){
+            swal('Please enter valid no:of blocks','','warning');
+            return false;
         }
-        var w = b*bw + 290;
+        if(b == 0){
+            var w = '25.5vw';
+            $('.section_div').css({"width":w});
+            return true;
+        }
+        else
+            var w = b*bw + 370;
         $('.section_div').css({"width":w+"px"});
     }
 </script>
 
 
 <style>
+    hr{
+        border-bottom : 1px solid black;
+    }
     .section-heading{
         color : #000;
         font-size : 16px;
@@ -213,7 +233,7 @@
         color : #3c3c3c;
     }
     .wip-td{
-        min-width : 80px;    
+        min-width : 100px;    
     }
 
     .mod-no{
@@ -222,7 +242,7 @@
         padding : 5px;
     }
     .mod-td{
-        min-width : 25px;
+        min-width : 40px;
     }
 
     .cut-td{
