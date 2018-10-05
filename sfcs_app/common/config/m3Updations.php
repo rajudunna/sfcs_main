@@ -7,15 +7,12 @@
 function  updateM3Transactions($ref_id,$op_code,$qty)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-<<<<<<< HEAD
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $host = $api_hostname;
     $port = $api_port_no;
     $company_num = $company_no;
     $plant_code = $global_facility_code;
 
-=======
->>>>>>> 763-decentralized-packing-generation
     $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id' and operation_id = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
@@ -23,7 +20,6 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
         $plan_module  = $row['assigned_module'];
         $style = $row['style'];
         $color = $row['mapped_color'];
-<<<<<<< HEAD
     }
     //getting main operation_code from operation mapping
     $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
@@ -36,20 +32,6 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
             $main_ops_code = $row_bundle_creation_data_check_result['main_operationnumber'];
         }
     }
-=======
-    }
-    //getting main operation_code from operation mapping
-    $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
-    // echo $bundle_creation_data_check;
-    $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-    if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
-    {
-        while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
-        {
-            $main_ops_code = $row_bundle_creation_data_check_result['main_operationnumber'];
-        }
-    }
->>>>>>> 763-decentralized-packing-generation
     // echo 'main'.$main_ops_code;
     //got the main ops code
 
@@ -204,15 +186,11 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $current_date = date("Y-m-d H:i:s");
 
-<<<<<<< HEAD
     $host = $api_hostname;
     $port = $api_port_no;
     $company_num = $company_no;
     $plant_code = $global_facility_code;
     
-=======
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
->>>>>>> 763-decentralized-packing-generation
     $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$bundle_no' and operation_id = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
@@ -225,19 +203,11 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
     //getting main operation_code from operation mapping
     $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
     // echo $bundle_creation_data_check;
-<<<<<<< HEAD
 	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
 	{
         while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
 		{
-=======
-    $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-    if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
-    {
-        while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
-        {
->>>>>>> 763-decentralized-packing-generation
             $main_ops_code = $row_bundle_creation_data_check_result['main_operationnumber'];
         }
     }
@@ -356,15 +326,12 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $current_date = date("Y-m-d H:i:s");
-<<<<<<< HEAD
 
     $host = $api_hostname;
     $port = $api_port_no;
     $company_num = $company_no;
     $plant_code = $global_facility_code;
     
-=======
->>>>>>> 763-decentralized-packing-generation
     $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id' and operation_id = '$op_code'";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
@@ -377,19 +344,11 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     //getting main operation_code from operation mapping
     $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
     // echo $bundle_creation_data_check;
-<<<<<<< HEAD
 	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
 	{
         while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
 		{
-=======
-    $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-    if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
-    {
-        while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
-        {
->>>>>>> 763-decentralized-packing-generation
             $main_ops_code = $row_bundle_creation_data_check_result['main_operationnumber'];
         }
     }
@@ -468,11 +427,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     
                     //M3 Rest API Call
                     if($enable_api_call == 'YES'){
-<<<<<<< HEAD
                         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='".$r_reasons[$key]."'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-=======
-                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='$r_reasons[$key]'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
->>>>>>> 763-decentralized-packing-generation
                         $api_data = $obj->getCurlAuthRequest($api_url);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];
