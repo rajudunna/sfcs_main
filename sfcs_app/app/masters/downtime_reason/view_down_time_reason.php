@@ -26,7 +26,7 @@
 			$code=$row["code"];
 			$department=$row["rdept"];
 			$reason=$row["reason"];
-			echo "<tr><td>".$sno++."</td><td>".$row["code"]."</td><td>".$row["rdept"]." </td><td>".$row["reason"]."</td><td><a href='$url==&rowid=$rowid&code=$code&rdept=$department&reason=$reason' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid&code=$code&rdept=$department&reason=$reason' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			echo "<tr><td>".$sno++."</td><td>".$row["code"]."</td><td>".$row["rdept"]." </td><td>".$row["reason"]."</td><td><a href='$url==&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
