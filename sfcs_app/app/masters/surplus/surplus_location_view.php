@@ -37,7 +37,7 @@
 			}
 			echo "<tr><td>".$sno++."</td><td>".$row["qms_location_id"]."</td><td>".$row["qms_location"]."</td><td>".$row["qms_location_cap"]." </td><td>".$row["qms_cur_qty"]."</td><td>".$cat_status."</td>
 			<td><a href='$url&rowid=$q_id&qms_location_id=$qms_location_id&qms_location=$qms_location&qms_location_cap=$qms_location_cap&qms_cur_qty=$qms_cur_qty&active_status=$cat_status' class='btn btn-warning btn-xs editor_edit'>Edit</a> /
-			 <a href='$url1&rowid=$q_id&qms_location_id=$qms_location_id&qms_location=$qms_location&qms_location_cap=$qms_location_cap&qms_cur_qty=$qms_cur_qty&active_status=$cat_status' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			 <a href='$url1&rowid=$q_id&qms_location_id=$qms_location_id&qms_location=$qms_location&qms_location_cap=$qms_location_cap&qms_cur_qty=$qms_cur_qty&active_status=$cat_status' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
@@ -51,6 +51,25 @@
 $(document).ready(function() {
     $('#qms_locate').DataTable();
 } );
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style> 
 table th
