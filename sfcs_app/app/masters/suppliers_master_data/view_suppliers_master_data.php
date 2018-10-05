@@ -26,7 +26,7 @@
 			$edit_url = getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 			$delete_url = getFullURL($_GET['r'],'delete_suppliers_master_data.php','N');
 			echo "<tr><td>".$sno++."</td><td>".$row["product_code"]." </td><td>".$row["supplier_code"]."</td><td>".$row["complaint_no"]."</td><td>".$row["supplier_m3_code"]."</td><td>".$row["color_code"]."</td><td>".$row["seq_no"]."</td><td><a href='$edit_url&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
-			<a href='$delete_url&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			<a href='$delete_url&tid=$tid&product_code=$product_code&supplier_code=$supplier_code&complaint_no=$complaint_no&supplier_m3_code=$supplier_m3_code&color_code=$color_code&seq_no=$seq_no' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
@@ -40,6 +40,26 @@
 $(document).ready(function() {
     $('#tbl_packing_method').DataTable();
 } );
+
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th
