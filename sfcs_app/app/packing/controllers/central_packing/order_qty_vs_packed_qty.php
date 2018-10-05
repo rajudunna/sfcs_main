@@ -86,7 +86,7 @@
     <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
 <div class="panel panel-primary">
-	<div class="panel-heading"><b>Order Details Vs Packed Details</b></div>
+	<div class="panel-heading"><b>Packing List Generation</b></div>
 	<div class="panel-body">
 	<?php
 	if(isset($_POST['style']))
