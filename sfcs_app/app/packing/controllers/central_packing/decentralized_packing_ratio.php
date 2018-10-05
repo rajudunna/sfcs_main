@@ -35,6 +35,8 @@
 					// console.log('array = '+min_cart_array);
 					// console.log('min no45 = '+min_no);
 					document.getElementById('NoOf_Cartons_'+size).value = min_no;
+					document.getElementById('NoOf_Cartons_'+size).max = min_no;
+
 				}
 
 				// Pack Generated Logic
@@ -135,6 +137,7 @@
 			var min_no = Math.min.apply(null, mm_sm_min_cart);
 			// console.log('min no = '+min_no);
 			document.getElementById('NoOf_Cartons1').value = min_no;
+			document.getElementById('NoOf_Cartons1').max = min_no;
 		}
 
 		// Pack Generated Qty Logic
@@ -283,6 +286,15 @@
 				{
 					for (var siz = 0; siz < size_count; siz++)
 					{
+						var no_carts = Number(document.getElementById('NoOf_Cartons_'+siz).value);
+						var max_cartons = Number(document.getElementById('NoOf_Cartons_'+siz).max);
+						console.log('entered cartons = '+no_carts+', max cartons = '+max_cartons);
+						if (no_carts > max_cartons)
+						{
+							sweetAlert('No of Cartons Exceeding Max Cratons','','warning');
+							return;
+						}
+
 						temp1 = Number(document.getElementById('GarPerBag_'+col+'_'+siz).value);
 						temp = temp + temp1;
 					}
@@ -378,6 +390,14 @@
 			}
 			else
 			{
+				var no_carts = Number(document.getElementById('NoOf_Cartons1').value);
+				var max_cartons = Number(document.getElementById('NoOf_Cartons1').max);
+				console.log('entered cartons = '+no_carts+', max cartons = '+max_cartons);
+				if (no_carts > max_cartons)
+				{
+					sweetAlert('No of Cartons Exceeding Max Cratons','','warning');
+					return;
+				}
 				for (var col = 0; col < noOfCols; col++)
 				{
 					for (var siz = 0; siz < size_count; siz++)
@@ -732,7 +752,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='text' size='6' maxlength='5' required name='NoOf_Cartons[]' onkeyup=ss_ms_cart_func($size_count,$size_of_ordered_colors);  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer'></td>";
+																	echo "<td><input type='number' size='6' maxlength='5' required name='NoOf_Cartons[]' onkeyup=ss_ms_cart_func($size_count,$size_of_ordered_colors);  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' min='0' max='0' class='form-control integer'></td>";
 																}
 															echo "</tr>
 														</table>
@@ -786,7 +806,7 @@
 														// echo sizeof($col_array);ssss
 														for ($j=0; $j < sizeof($col_array); $j++)
 														{
-															$tot_ordered = 0;
+															$tot_ordered = 0;	$pack_tot_saved = 0;
 															$tot_planned = 0;
 															$pack_tot = 0;
 															for($kk=0;$kk<sizeof($size_main);$kk++)
@@ -826,19 +846,18 @@
 																	
 																}
 
-																$getpackqty="SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
-																WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]' AND order_col_des='$col_array[$j]'";
-																//echo $getpackqty;
-																$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
+																$getpack_saved_qty="SELECT SUM(garments_per_carton*pack_job_per_pack_method) AS qty FROM bai_pro3.`tbl_pack_size_ref` LEFT JOIN bai_pro3.`tbl_pack_ref` ON tbl_pack_ref.`id`=tbl_pack_size_ref.`parent_id` WHERE schedule = '$schedule' AND color='$col_array[$j]' AND size_title='$size_main[$kk]'";
+																// echo $getpack_saved_qty;
+																$packqtyrslt=mysqli_query($link, $getpack_saved_qty) or exit("Error while getting parent id88");
 																if($pack_row=mysqli_fetch_array($packqtyrslt))
 																{
-																	if($pack_row['pack_qty']=='')
+																	if($pack_row['qty']=='')
 																	{
-																		$pack_qty[$col_array[$j]][$size_main[$kk]]=0;
+																		$pack_qty_saved[$col_array[$j]][$size_main[$kk]]=0;
 																	}
 																	else
 																	{
-																		$pack_qty[$col_array[$j]][$size_main[$kk]]=$pack_row['pack_qty'];
+																		$pack_qty_saved[$col_array[$j]][$size_main[$kk]]=$pack_row['qty'];
 																	}
 																}
 															}
@@ -846,11 +865,11 @@
 															
 
 															echo "<tr>
-																	<td rowspan=3>$col_array[$j]</td>
+																	<td rowspan=4>$col_array[$j]</td>
 																	<td>Order Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
-																		echo "<input type='hidden' name='order_qty' id='order_qty_".$j."_".$i."' value='".$planned_qty[$col_array[$j]][$size_main[$i]]."' />";
+																		echo "<input type='hidden' name='order_qty' id='order_qty_".$j."_".$i."' value='".($planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]]) ."' />";
 																		echo "<td>".$ordered_qty[$col_array[$j]][$size_main[$i]]."</td>";
 																		$tot_ordered = $tot_ordered + $ordered_qty[$col_array[$j]][$size_main[$i]];
 																	}
@@ -868,14 +887,20 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Pack Generated</td>";
-
+																	<td>Pack Saved Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{									
-																	// 	echo "<td>".$pack_qty[$col_array[$j]][$size_main[$i]]."</td>";
-																	// 	$pack_tot = $pack_tot + $pack_qty[$col_array[$j]][$size_main[$i]];
-																	// }
-																	// echo "<td>$pack_tot</td>
+																		echo "<td>".$pack_qty_saved[$col_array[$j]][$size_main[$i]]."</td>";
+																		$pack_tot_saved = $pack_tot_saved + $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																	}
+																	echo "<td>$pack_tot_saved</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>New Pack Quantity</td>";
+
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
 																		echo "<td><p id='ss_ms_pac_gen_".$j."_".$i."'></p></td>";
 																	}
 																	echo "<td><p id='ss_ms_pac_gen_total_".$j."'></p></td>
@@ -1038,7 +1063,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>No of Cartons</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Cartons : <input type='text' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} onkeyup=mm_sm_cart_func($sizeofsizes,$size_of_ordered_colors); value='0' ></div>";
+												echo "<div class='col-xs-12'>Number of Cartons : <input type='number' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} onkeyup=mm_sm_cart_func($sizeofsizes,$size_of_ordered_colors); min='0' max='0' value='0' ></div>";
 												echo "</div>
 											</div>";
 
@@ -1087,7 +1112,7 @@
 														// echo sizeof($col_array);ssss
 														for ($j=0; $j < sizeof($col_array); $j++)
 														{
-															$tot_ordered = 0;
+															$tot_ordered = 0;	$pack_tot_saved=0;
 															$tot_planned = 0;
 															$pack_tot = 0;
 															for($kk=0;$kk<sizeof($size_main);$kk++)
@@ -1125,16 +1150,31 @@
 																		$ordered_qty[$col_array[$j]][$size_main[$kk]] = $orderQty_details['orderedQty'];
 																	}
 																}
+
+																$getpack_saved_qty="SELECT SUM(garments_per_carton*pack_job_per_pack_method) AS qty FROM bai_pro3.`tbl_pack_size_ref` LEFT JOIN bai_pro3.`tbl_pack_ref` ON tbl_pack_ref.`id`=tbl_pack_size_ref.`parent_id` WHERE schedule = '$schedule' AND color='$col_array[$j]' AND size_title='$size_main[$kk]'";
+																// echo $getpack_saved_qty;
+																$packqtyrslt=mysqli_query($link, $getpack_saved_qty) or exit("Error while getting parent id88");
+																if($pack_row=mysqli_fetch_array($packqtyrslt))
+																{
+																	if($pack_row['qty']=='')
+																	{
+																		$pack_qty_saved[$col_array[$j]][$size_main[$kk]]=0;
+																	}
+																	else
+																	{
+																		$pack_qty_saved[$col_array[$j]][$size_main[$kk]]=$pack_row['qty'];
+																	}
+																}
 															}
 															// echo $col_array[$i];
 															
 
 															echo "<tr>
-																	<td rowspan=3>$col_array[$j]</td>
-																	<td>Order Qty</td>";
+																	<td rowspan=4>$col_array[$j]</td>
+																	<td>Order Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
-																		echo "<input type='hidden' name='order_qty' id='mm_sm_order_qty_".$j."_".$i."' value='".$ordered_qty[$col_array[$j]][$size_main[$i]]."' />";
+																		echo "<input type='hidden' name='order_qty' id='mm_sm_order_qty_".$j."_".$i."' value='".($planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]])."' />";
 																		echo "<td>".$ordered_qty[$col_array[$j]][$size_main[$i]]."</td>";
 																		$tot_ordered = $tot_ordered + $ordered_qty[$col_array[$j]][$size_main[$i]];
 																	}
@@ -1144,7 +1184,7 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Cut Plan Qty</td>";
+																	<td>Cut Plan Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{ 
 																		echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
@@ -1154,7 +1194,17 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Pack Generated</td>";
+																	<td>Pack Saved Quantity</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{									
+																		echo "<td>".$pack_qty_saved[$col_array[$j]][$size_main[$i]]."</td>";
+																		$pack_tot_saved = $pack_tot_saved + $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																	}
+																	echo "<td>$pack_tot_saved</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>New Pack Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{									
 																		echo "<td><p id='mm_sm_pac_gen_".$j."_".$i."'></p></td>";
