@@ -4,10 +4,11 @@
 // LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
 
 //function updateM3Transactions($input_doc_no,$op_code,$op_code,$input_shift,$plan_module){
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
 function updateM3Transactions($ref_id,$op_code,$qty)
 {
+    $obj = new rest_api_calls();    
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    include_once($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $host = $api_hostname;
     $port = $api_port_no;
     $company_num = $company_no;
@@ -145,9 +146,9 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                 }
 
                 $insert_id=mysqli_insert_id($link);
-
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
+            
                     $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                     $api_data = $obj->getCurlAuthRequest($api_url);
                     $decoded = json_decode($api_data,true);
@@ -173,14 +174,14 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                 }                
             }
         }
-    }
+    } 
     return true;
 }
 
 
 function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
+    $obj = new rest_api_calls();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-    include_once($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $current_date = date("Y-m-d H:i:s");
 
     $host = $api_hostname;
@@ -320,8 +321,8 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
 
 function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 {
+    $obj = new rest_api_calls();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-    include_once($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $current_date = date("Y-m-d H:i:s");
 
     $host = $api_hostname;
