@@ -432,7 +432,7 @@ if(isset($_POST['put']))
 			if($check==1 and $num7>0)
 			{
 				//echo "<h2><font color=green>Lot number deleted successfully</font></h2>";
-				echo "<script>sweetAlert('Lot Number Deleted Successfully','','Success')</script>";
+				echo "<script>sweetAlert('Lot Number Deleted Successfully','','success')</script>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
 			}				
