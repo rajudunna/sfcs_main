@@ -554,7 +554,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/logo.png" width="200" height="60"></td>
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala </td>
   <td class=xl662606></td>
   <td class=xl742606>CUSTOMER COPY</td>
@@ -1111,7 +1111,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
- <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+ <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/logo.png" width="200" height="60"></td>
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
   <td class=xl662606></td>
   <td class=xl742606>FG COPY</td>
@@ -1672,7 +1672,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/logo.png" width="200" height="60"></td>
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
   <td class=xl662606></td>
   <td class=xl742606>LOGISTICS COPY</td>
@@ -2228,7 +2228,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/logo.png" width="200" height="60"></td>
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
   <td class=xl662606></td>
   <td class=xl742606>SECURITY COPY</td>

@@ -43,7 +43,7 @@
 				<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>
 				<div class="panel-body">	
 					<div id="upperbody">				
-						<div style="float:right"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></div>
+						<div style="float:right"><img src="/sfcs_app/common/images/logo.png" width="200" height="60"></div>
 						<?php
 							$sql="select distinct order_del_no as sch,order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
 							// echo $sql."<br>";
