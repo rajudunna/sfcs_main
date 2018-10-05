@@ -223,6 +223,7 @@
 							$tot_ordered = 0;
 							$tot_planned = 0;
 							$pack_tot = 0;
+							$pack_tot_saved=0;
 							for($kk=0;$kk<sizeof($size_main);$kk++)
 							//foreach ($sizes_array as $key => $value)
 							{
