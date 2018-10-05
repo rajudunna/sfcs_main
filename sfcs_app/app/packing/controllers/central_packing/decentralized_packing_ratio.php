@@ -298,18 +298,18 @@
 					{
 						for (var i = 0; i < size_count; i++)
 						{
-							// no_of_cartons_size_wise[i]=document.getElementById('NoOf_Cartons_'+i).value;
-							no_of_cartons_size_wise.push(document.getElementById('NoOf_Cartons_'+i).value);
-							carton_temp = carton_temp + no_of_cartons_size_wise[i];
+							if (document.getElementById('NoOf_Cartons_'+i).value > 0)
+							{
+								no_of_cartons_size_wise.push(document.getElementById('NoOf_Cartons_'+i).value);
+								carton_temp = carton_temp + document.getElementById('NoOf_Cartons_'+i).value;
+							}
+							// no_of_cartons_size_wise.push(document.getElementById('NoOf_Cartons_'+i).value);
+							// carton_temp = carton_temp + document.getElementById('NoOf_Cartons_'+i).value;
 						}
 						console.log(no_of_cartons_size_wise);
 						if (carton_temp > 0)
 						{
 							var min_no = Math.min.apply(null, no_of_cartons_size_wise);
-							if (min_no == 0)
-							{
-								min_no = 1;
-							}
 							if (min_no == 0 || min_no == '')
 							{
 								sweetAlert('Enter Valid No of Cartons','','warning');
