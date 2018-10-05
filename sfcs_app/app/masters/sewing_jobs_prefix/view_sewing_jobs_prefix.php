@@ -26,7 +26,7 @@
             echo "<tr><td>".$sno++."</td><td>".$row["prefix_name"]."</td><td>".$row["prefix"]." </td><td>".$row["type_of_sewing"]."</td>
             <td><span style='border:1px solid black;width:100px;height:40px;background:$type'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
             <td><a href='$url&id=$rowid&prefix_name=$code&prefix=$department&type_of_sewing=$reason&bg_color=$color' class= 'btn btn-warning btn-xs editor_edit'>Edit</a> 
-            <a href='$url1&id=$rowid&prefix_name=$code&prefix=$department&type_of_sewing=$reason&bg_color= $type' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+            <a href='$url1&id=$rowid&prefix_name=$code&prefix=$department&type_of_sewing=$reason&bg_color= $type' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
         }
         echo "</tbody></table>";
     } else {
@@ -38,6 +38,26 @@
 $(document).ready(function() {
     $('#downtime_reason').DataTable();
 } );
+
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th
