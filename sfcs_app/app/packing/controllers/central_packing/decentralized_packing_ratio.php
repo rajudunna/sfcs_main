@@ -298,7 +298,8 @@
 					{
 						for (var i = 0; i < size_count; i++)
 						{
-							no_of_cartons_size_wise[i]=document.getElementById('NoOf_Cartons_'+i).value;
+							// no_of_cartons_size_wise[i]=document.getElementById('NoOf_Cartons_'+i).value;
+							no_of_cartons_size_wise.push(document.getElementById('NoOf_Cartons_'+i).value);
 							carton_temp = carton_temp + no_of_cartons_size_wise[i];
 						}
 						console.log(no_of_cartons_size_wise);
