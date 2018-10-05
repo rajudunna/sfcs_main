@@ -119,12 +119,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
                     $code=$decoded['@code'];
                     $message=$decoded['Message'];
                 }
-                
-                echo "<script>console.log('Query : $dep_ops_array_qry ')</script>";
-                echo "<script>console.log('M3 : $is_m3 ')</script>";
-                echo "<script>console.log('URL : $api_url')</script>";
-                echo "<script>console.log('Query : $inserting_into_m3_tran_log')</script>";
-                echo "<script>console.log('$enable_api_call')</script>";
+            
                 //validating response pass/fail and inserting log
                 if($type!='ServerReturnedNOK'){
                     //updating response status in m3_transactions
@@ -137,7 +132,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
                     mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     //insert transactions details into transactions_log
-                    $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message',USER(),'$current_date')"; 
+                    $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log`(`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message',USER(),'$current_date')"; 
                     mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                 }
             }
@@ -243,7 +238,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                 $is_m3 = $row['default_operration'];
             }
            
-            if($is_m3 == 'Yes')
+            if($is_m3 == 'Yes' || $is_m3 == 'yes' || $is_m3 == 'YES')
             {                    
                 $to_update_qty = '-'.$b_rep_qty;
                 $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) 
@@ -274,7 +269,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         //insert transactions details into transactions_log
-                        $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id',$message,USER(),$current_date)"; 
+                        $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message',USER(),'$current_date')"; 
                         mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
                 }
@@ -416,7 +411,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         //insert transactions details into transactions_log
-                        $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id',$message,USER(),$current_date)"; 
+                        $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id','$message',USER(),'$current_date')"; 
                         mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
                 }
