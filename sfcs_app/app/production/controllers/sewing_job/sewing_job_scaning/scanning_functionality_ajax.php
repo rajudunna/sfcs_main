@@ -1680,10 +1680,12 @@ if($barcode_generation == 1)
 					$table_data .= "<tr><td data-title='Job No'>$b_inp_job_ref[$i]</td><td data-title='Bundle No'>$b_tid[$i]</td><td data-title='Color'>$b_colors[$i]</td><td data-title='Size'>$size</td><td data-title='Remarks'>$b_remarks[$i]</td><td data-title='Reported Qty'>$b_rep_qty[$i]</td><td data-title='Rejected Qty'>$b_rej_qty[$i]</td></tr>";
 				}
 			}
-			//updating into  m3 transactions for positives
+			$table_data .= "</tbody></table></div></div></div>";
+			echo $table_data;
+			//updating into  m3 transactions for positives		
 			for($i=0;$i<sizeof($b_tid);$i++)
 			{
-				$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
+				updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
 			}
 				//updating into  m3 transactions for negatives
 				// var_dump($actual_rejection_reason_array_string);
@@ -1697,10 +1699,8 @@ if($barcode_generation == 1)
 				$r_reasons[] = $implode_next[1];
 				$b_tid = $implode_next[0];
 				//echo $b_tid.','.$b_op_id.','.$r_qty.','.$r_reasons.'</br>';
-				$updation_m3 = updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$r_reasons);
-			}
-			$table_data .= "</tbody></table></div></div></div>";
-			echo $table_data;
+				updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$r_reasons);
+			}			
 		}
 	}
 
