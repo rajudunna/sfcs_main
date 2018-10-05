@@ -9,37 +9,47 @@
 			var BagPerCart=document.getElementById('BagPerCart_'+size).value;
 			var GarPerCart = Number(GarPerBag)*Number(BagPerCart);
 			document.getElementById('GarPerCart_'+color+'_'+size).value = GarPerCart;
-			
+			// alert(GarPerCart+' == '+GarPerBag);
 			// Automatic No of Cratons Logic
 			var order_size_wise=document.getElementById('order_qty_'+color+'_'+size).value;
-			if (GarPerCart == 0)
+			if(GarPerBag>0)
 			{
-				document.getElementById('NoOf_Cartons_'+size).value = 0;
-			}
-			else
-			{
-				var new_temp = Number(order_size_wise)/Number(GarPerCart);
-				min_cart_array[color] = Math.floor(new_temp);
-				var min_no = Math.min.apply(null, min_cart_array);
-				// console.log('array = '+min_cart_array);
-				// console.log('min no45 = '+min_no);
-				document.getElementById('NoOf_Cartons_'+size).value = min_no;
-			}
+				// alert(GarPerCart+' == 7 '+GarPerBag);
+				if (GarPerCart == 0 || GarPerCart == null || GarPerCart =='')
+				{
+					document.getElementById('NoOf_Cartons_'+size).value = 0;
+				}
+				else
+				{
+					// alert(GarPerCart+' == 8 '+GarPerBag);
+					// console.log(GarPerCart);
+					var new_temp = Number(order_size_wise)/Number(GarPerCart);
+					console.log('temp value = '+new_temp);
+					if(isNaN(new_temp))
+					{
+						new_temp=0;
+					}
+					min_cart_array[color] = Math.floor(new_temp);
+					var min_no = Math.min.apply(null, min_cart_array);
+					// console.log('array = '+min_cart_array);
+					// console.log('min no45 = '+min_no);
+					document.getElementById('NoOf_Cartons_'+size).value = min_no;
+				}
 
-			// Pack Generated Logic
-			var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+size).value;
-			if (ss_ms_no_of_cart == 0)
-			{
-				document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML = 0;
-			}
-			else
-			{
-				var temppp = ss_ms_no_of_cart * GarPerCart;
-				document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML = temppp;
-				ss_ms_pac_gen_total = ss_ms_pac_gen_total + temppp;
-			}
+				// Pack Generated Logic
+				var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+size).value;
+				if (ss_ms_no_of_cart == 0)
+				{
+					document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML = 0;
+				}
+				else
+				{
+					var temppp = ss_ms_no_of_cart * GarPerCart;
+					document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML = temppp;
+					ss_ms_pac_gen_total = ss_ms_pac_gen_total + temppp;
+				}
 
-			// Version 2
+				// Version 2
 				// var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+size).value;
 				// if (ss_ms_no_of_cart == 0)
 				// {
@@ -63,6 +73,7 @@
 				// 	var temppp = ss_ms_no_of_cart * GarPerCart;
 				// 	document.getElementById('ss_ms_pac_gen_'+color+'_'+size).innerHTML = temppp;
 				// }
+			}	
 		}
 		var no_of_sizes = document.getElementById('size_size1').value;
 		console.log('array1 = '+min_cart_array);
@@ -95,19 +106,20 @@
 				var GarPerCart = GarPerBag*BagPerCart;
 				document.getElementById('GarPerCart_'+color+'_'+size).value=GarPerCart;
 				col_gpc_tot = col_gpc_tot + GarPerCart;
-				
-
-				// Store data to array (No of Cartons)
-				var mm_sm_order_size_wise=document.getElementById('mm_sm_order_qty_'+color+'_'+size).value;
-				if (GarPerCart == 0)
+				if(GarPerBag>0)
 				{
-					document.getElementById('NoOf_Cartons1').value = 0;
-				}
-				else
-				{
-					var new_temp = Number(mm_sm_order_size_wise)/Number(GarPerCart);
-					mm_sm_min_cart[counter] = Math.floor(new_temp);
-					counter++;
+					// Store data to array (No of Cartons)
+					var mm_sm_order_size_wise=document.getElementById('mm_sm_order_qty_'+color+'_'+size).value;
+					if (GarPerCart == 0 || GarPerCart == null || GarPerCart =='')
+					{
+						document.getElementById('NoOf_Cartons1').value = 0;
+					}
+					else
+					{
+						var new_temp = Number(mm_sm_order_size_wise)/Number(GarPerCart);
+						mm_sm_min_cart[counter] = Math.floor(new_temp);
+						counter++;
+					}
 				}
 			}
 			document.getElementById('total_'+color).value = col_gpc_tot;
@@ -835,7 +847,7 @@
 																	<td>Order Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
-																		echo "<input type='hidden' name='order_qty' id='order_qty_".$j."_".$i."' value='".$ordered_qty[$col_array[$j]][$size_main[$i]]."' />";
+																		echo "<input type='hidden' name='order_qty' id='order_qty_".$j."_".$i."' value='".$planned_qty[$col_array[$j]][$size_main[$i]]."' />";
 																		echo "<td>".$ordered_qty[$col_array[$j]][$size_main[$i]]."</td>";
 																		$tot_ordered = $tot_ordered + $ordered_qty[$col_array[$j]][$size_main[$i]];
 																	}

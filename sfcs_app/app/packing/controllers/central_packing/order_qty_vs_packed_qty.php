@@ -260,7 +260,7 @@
 									
 								}
 
-								$getpack_saved_qty="SELECT SUM(garments_per_carton*cartons_per_pack_job*pack_job_per_pack_method) AS qty FROM bai_pro3.`tbl_pack_size_ref` LEFT JOIN bai_pro3.`tbl_pack_ref` ON tbl_pack_ref.`id`=tbl_pack_size_ref.`parent_id` WHERE schedule = '$schedule' AND color='$col_array[$j]' AND size_title='$size_main[$kk]'";
+								$getpack_saved_qty="SELECT SUM(garments_per_carton*pack_job_per_pack_method) AS qty FROM bai_pro3.`tbl_pack_size_ref` LEFT JOIN bai_pro3.`tbl_pack_ref` ON tbl_pack_ref.`id`=tbl_pack_size_ref.`parent_id` WHERE schedule = '$schedule' AND color='$col_array[$j]' AND size_title='$size_main[$kk]'";
 								// echo $getpack_saved_qty;
 								$packqtyrslt=mysqli_query($link, $getpack_saved_qty) or exit("Error while getting parent id88");
 								if($pack_row=mysqli_fetch_array($packqtyrslt))
@@ -360,7 +360,7 @@
 				$pack_id=$row[0];
 				// echo $pack_id;
 				// die();
-				$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*cartons_per_pack_job*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
+				$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
 				// echo $pack_meth_qry;
 				// $sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
