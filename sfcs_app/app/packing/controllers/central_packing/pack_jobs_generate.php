@@ -228,6 +228,8 @@
 			unset($cols_size);
 			unset($carton_qty);
 			unset($carton_qty_tot);	
+			unset($no_of_cartons_fl);
+			unset($no_of_cartons_ce);
 		}			
 	}
 	else if($carton_method==3 or $carton_method==4)
@@ -354,7 +356,9 @@
 			unset($cols_tot);
 			unset($cols_size);
 			unset($carton_qty);
-			unset($carton_qty_tot);				
+			unset($carton_qty_tot);
+			unset($no_of_cartons_fl);
+			unset($no_of_cartons_ce);			
 		}
 	}
 	//echo "</table>";
