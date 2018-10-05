@@ -155,12 +155,7 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
                     $code=$decoded['@code'];
                     $message=$decoded['Message'];
                 }
-                
-                echo "<script>console.log('Query : $dep_ops_array_qry ')</script>";
-                echo "<script>console.log('M3 : $is_m3 ')</script>";
-                echo "<script>console.log('URL : $api_url')</script>";
-                echo "<script>console.log('Query : $inserting_into_m3_tran_log')</script>";
-                echo "<script>console.log('$enable_api_call')</script>";
+            
                 //validating response pass/fail and inserting log
                 if($type!='ServerReturnedNOK'){
                     //updating response status in m3_transactions
