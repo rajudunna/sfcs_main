@@ -7,6 +7,35 @@ input : Schedule,color & cutjob count.
 output v0.1: Generate jobs.
 Technical Stack : PHP 7,Angular js 1.4,JQuery, Maria DB
 =================================================================== */
+
+function assign_to_gets($ars,$data_samps){
+    for($lp=1;$lp<=$ars['max'];$lp++){
+        $snp = str_pad($lp,2,"0",STR_PAD_LEFT);
+        if($ars['s'.$snp]>0){
+            $aloc_val = 0;
+            $sample = 0;
+            $excess = 0;
+            if($data_samps['s'.$snp]['sample']>0){
+                $sample = ($ars['s'.$snp]-$data_samps['s'.$snp]['sample'])>=0 ? $data_samps['s'.$snp]['sample'] : $ars['s'.$snp];
+                $data_samps['s'.$snp]['sample'] = ($ars['s'.$snp]-$data_samps['s'.$snp]['sample'])>=0 ? 0 : ($data_samps['s'.$snp]['sample']-$ars['s'.$snp]);
+                $ars['s'.$snp] = (($ars['s'.$snp])-$sample);
+            }
+            if($data_samps['s'.$snp]['excess']>0 && $ars['s'.$snp]>0){
+                $excess = ($ars['s'.$snp]-$data_samps['s'.$snp]['excess'])>=0 ? $data_samps['s'.$snp]['excess'] : $ars['s'.$snp];
+                $data_samps['s'.$snp]['excess'] = ($ars['s'.$snp]-$data_samps['s'.$snp]['excess'])>=0 ? 0 : ($data_samps['s'.$snp]['excess']-$ars['s'.$snp]);
+                $ars['s'.$snp] = (($ars['s'.$snp])-$excess);
+            }
+            echo "<script>
+            var sp_values = document.getElementById('dataval'+".$ars['ratio']."+".$lp."+".$ars['end'].");
+            sp_values.setAttribute('data-sample','".$sample."');
+            sp_values.setAttribute('data-excess','".$excess."');
+            </script>";
+        }
+    }
+    $status = (array_sum(array_column($data_samps,'sample'))+(array_sum(array_column($data_samps,'excess')))==0) ? true : false;
+    return ['status'=>$status,'data'=>$data_samps];
+}
+
 if(isset($_POST) && isset($_POST['main_data'])){
     include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
     //$datt = $_POST['date_y']."-".$_POST['date_m']."-".$_POST['date_d'];
@@ -211,11 +240,13 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
     $over_all_qtys_samps = [];
     $ex_cut_lrt = 0;
     $max_cut = 0;
+    $over_all_data = [];
     if(mysqli_num_rows($ratio_result)>0){
         echo "<table class='table'>";
         while($row=mysqli_fetch_array($ratio_result))
         {
             $doc_nos[] = $row['doc_no'];
+            $raw = [];
             if($i==0){
                 //============ find 1st are last cut =================
                 $qry_get_lrf_cut = "SELECT * FROM bai_pro3.`excess_cuts_log` WHERE schedule_no='".$schedule."' AND trim(color)=trim('".$color."')";
@@ -243,8 +274,12 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                                 echo "<th id='datatitle".$j."' data-title='s".$sno."' data-value='".$row['title_size_s'.$sno]."'>".$row['title_size_s'.$sno]."</th>";
                                 $old_qty[$sno] = 0;
                                 $max=$j;
+                                $allocate = 0;
+                                foreach($res_excess_qty as $a){
+                                    $allocate+=($a['allocate_s'.$sno]*$a['plies']);
+                                }
                                 
-                                $over_all_qtys_samps[$row['title_size_s'.$sno]] = ["order"=>$row['order_s_s'.$sno],"sample"=>$samples_qty[$row['title_size_s'.$sno]],"allocate"=>array_sum(array_column($res_excess_qty,'allocate_s'.$sno))];
+                                $over_all_qtys_samps['s'.$sno] = ["order"=>$row['order_s_s'.$sno],"sample"=>$samples_qty[$row['title_size_s'.$sno]],"allocate"=>$allocate,"excess"=>$allocate-$row['order_s_s'.$sno]-$samples_qty[$row['title_size_s'.$sno]]];
                             }else{
                                 break;
                             } 
@@ -268,16 +303,24 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }
                 echo "<td></td>";
                 echo "</tr>";
-                $end++;
+                
                 $old_pcut[]=$row['pcutno'];
                 $old_pplice[]=$row['p_plies'];
                 $old_doc_nos[] = $row['doc_no'];
 
+                $raw['pcutno'] = $row['pcutno'];
+                $raw['p_plies'] = $row['p_plies'];
+                $raw['doc_no'] = $row['doc_no'];
+                $raw['ratio'] = $row['ratio'];
+                $raw['max'] = $max;
+                $raw['end'] = $end;
+                $end++;
             }else{
                 echo "<tr>
                 <td>".$old_ratio."</td>
@@ -307,18 +350,27 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }
                 echo "<td></td>";
                 echo "</tr>";
-                $end++;
+                
                 $old_pcut[]=$row['pcutno'];
                 $old_pplice[]=$row['p_plies'];
                 $old_doc_nos[] = $row['doc_no'];
+                $raw['pcutno'] = $row['pcutno'];
+                $raw['p_plies'] = $row['p_plies'];
+                $raw['doc_no'] = $row['doc_no'];
+                $raw['ratio'] = $row['ratio'];
+                $raw['max'] = $max;
+                $raw['end'] = $end;
+                $end++;
             }
             
             $max_cut = $row['pcutno'];
+            $over_all_data[] = $raw;
         }
         echo "<tr>
             <td>".$old_ratio."</td>
@@ -337,10 +389,33 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 echo "<td><h3 class='label label-warning'>Jobs Already Created..</h3></td>";
         echo "</tr>";
         echo "</tbody></table>"; 
+
+        if($ex_cut_lrt == 1){
+            //=============== first cut =============
+            for($i=0;$i<=count($over_all_data)-1;$i++){
+                $arts = assign_to_gets($over_all_data[$i],$over_all_qtys_samps);
+                if($arts['status']){
+                    break;
+                }else{
+                    $over_all_qtys_samps = $arts['data'];
+                }
+            }
+        }else{
+            //=============== last cut ==============
+            for($i=count($over_all_data)-1;$i>=0;$i--){
+                $arts = assign_to_gets($over_all_data[$i],$over_all_qtys_samps);
+                if($arts['status']){
+                    break;
+                }else{
+                    $over_all_qtys_samps = $arts['data'];
+                }
+            }
+        }
+
     }else{
         echo "<script> swal('No Data Found'); </script>";
     }
-    
+
     //=====================
     ?>
     <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -489,14 +564,17 @@ app.controller('cutjobcontroller', function($scope, $http) {
                 dummy['ratio'] = $scope.details_all[ss].ratio;
                 dummy['destination'] = $scope.details_all[ss].destination;
                 dummy['dono'] = $scope.details_all[ss].dono;
+                //console.log($scope.details_all[ss].size_details);
                 $scope.details = $scope.details_all[ss].size_details;
                 $scope.generatejobs();
-                var bun_jobs = $scope.genbundle($scope.jobs)
+                var bun_jobs = $scope.genbundle($scope.jobs);
+                $scope.arrange_jobs(bun_jobs);
                 dummy['sizedetails'] = bun_jobs;
                 $scope.fulljob[ss] = dummy;
+
             }
-            console.log($scope.fulljob);
-           $scope.createjobs();
+            //console.log($scope.fulljob);
+           //$scope.createjobs();
        }else{
            if(Number($scope.jobcount)<=0)
             swal('Input Job Quantity should be grater then zero.');
@@ -504,7 +582,55 @@ app.controller('cutjobcontroller', function($scope, $http) {
             swal('Bundle Quantity should be less then input job quantity.');
        }
     }
-    
+
+    $scope.arrange_jobs = function(bun_jobs){
+        console.log(bun_jobs);
+        var cons_ary = [];
+        for(var i=0;i<$scope.details.length;i++){
+            if($scope.details[i].value>0 && ($scope.details[i].sample>0 || $scope.details[i].excess>0)){
+                cons_ary[$scope.details[i].title]= {sample : $scope.details[i].sample,excess:$scope.details[i].excess};
+            }
+        }
+        var new_ary = [];
+        for(j=bun_jobs.length-1;j>=0;j--){
+            if(cons_ary[bun_jobs[j].job_size]){
+                if(cons_ary[bun_jobs[j].job_size].sample>0 || cons_ary[bun_jobs[j].job_size].excess>0){
+                    if(Number(cons_ary[bun_jobs[j].job_size].sample)<=Number(bun_jobs[j].job_qty)){
+                        //====== sample-3 ===========
+                        if(Number(cons_ary[bun_jobs[j].job_size].sample)>0){
+                            new_ary.push({job_id: bun_jobs[j].job_id,
+                             job_qty: cons_ary[bun_jobs[j].job_size].sample, 
+                             job_size_key: bun_jobs[j].job_size_key,
+                             job_size: bun_jobs[j].job_size, 
+                             bundle: bun_jobs[j].bundle,
+                             type_of_sewing:3});
+
+                            bun_jobs[j].job_qty = Number(bun_jobs[j].job_qty) - Number(cons_ary[bun_jobs[j].job_size].sample);
+
+                            if(Number(cons_ary[bun_jobs[j].job_size].excess)<=Number(bun_jobs[j].job_qty) && Number(bun_jobs[j].job_qty)>0){
+                            //=========== excess - 2 =============
+
+                            }else{
+
+                            }
+                        }
+                    }else{
+
+                    }
+
+                }else{
+                    bun_jobs[j].type_of_sewing = 1;
+                    new_ary.push(bun_jobs[j]);
+                }
+            }else{
+                bun_jobs[j].type_of_sewing = 1;
+                new_ary.push(bun_jobs);
+            }
+        }
+
+        console.log(new_ary);
+    }
+
     $scope.createjobs = function()
     {
         //console.log($scope.fulljob);
@@ -591,7 +717,10 @@ function assigndata(s,max,end){
 
             c = sp_title.getAttribute('data-value');
             d = sp_values.getAttribute('data-value');
-            var val = {title : c, key : a, value : d};
+
+            e=sp_values.getAttribute('data-sample');
+            f=sp_values.getAttribute('data-excess');
+            var val = {title : c, key : a, value : d, sample : e, excess : f};
             dummy['size_details'].push(val);
         }
         details.push(dummy);
