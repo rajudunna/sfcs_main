@@ -20,7 +20,7 @@
 			$edit_url = getFullURL($_GET['r'],'save_inspection_rej_reasons.php','N');
 			$delete_url = getFullURL($_GET['r'],'delete_inspection_rej_reasons.php','N');
 			echo "<tr><td>".++$start."</td><td>".$row["reject_code"]." </td><td>".$row["reject_desc"]."</td><td><a href='$edit_url&tid=$tid&reject_code=$rej_code&reject_desc=$rej_desc' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
-			<a href='$delete_url&tid=$tid&reject_code=$rej_code&reject_desc=$rej_desc' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			<a href='$delete_url&tid=$tid&reject_code=$rej_code&reject_desc=$rej_desc' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
@@ -35,6 +35,26 @@
 $(document).ready(function() {
     $('#tbl_packing_method').DataTable();
 } );
+
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th

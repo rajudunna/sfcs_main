@@ -223,6 +223,7 @@
 							$tot_ordered = 0;
 							$tot_planned = 0;
 							$pack_tot = 0;
+							$pack_tot_saved=0;
 							for($kk=0;$kk<sizeof($size_main);$kk++)
 							//foreach ($sizes_array as $key => $value)
 							{
@@ -432,7 +433,7 @@
 				$delete_result=mysqli_query($link, $delete_pack_method) or exit("Error while deleting pack method");
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 				function Redirect() {
-					swal('Packing Method Deleted Sucessfully','','warning');
+					swal('Packing Method Deleted Successfully','','success');
 					location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
 					}
 				</script>";	

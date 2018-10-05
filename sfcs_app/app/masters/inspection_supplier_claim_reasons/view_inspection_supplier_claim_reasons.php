@@ -30,7 +30,7 @@
 			$delete_url = getFullURL($_GET['r'],'delete_inspection_supplier_claim_reasons.php','N');
 			echo "<tr><td>".$sno++."</td><td>".$row["complaint_reason"]." </td><td>".$row["Complaint_clasification"]."</td><td>".$row["complaint_category"]."</td><td>".$cat_status."</td>
 			<td><a href='$edit_url&tid=$tid&complaint_reason=$complaint_reason&complaint_clasification=$complaint_clasification&complaint_category=$complaint_category&status=$cat_status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
-			<a href='$delete_url&tid=$tid&complaint_reason=$complaint_reason&complaint_clasification=$complaint_clasification&complaint_category=$complaint_category&status=$cat_status' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			<a href='$delete_url&tid=$tid&complaint_reason=$complaint_reason&complaint_clasification=$complaint_clasification&complaint_category=$complaint_category&status=$cat_status' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
@@ -44,6 +44,26 @@
 $(document).ready(function() {
     $('#tbl_packing_method').DataTable();
 } );
+
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th

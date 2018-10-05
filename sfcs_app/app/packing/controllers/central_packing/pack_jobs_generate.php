@@ -98,7 +98,7 @@
 		$eligible_to_qty[$row123['color']][$row123['size_title']]=$plan_qty[$row123['color']][$row123['size_title']]-$pack_qty[$row123['color']][$row123['size_title']];
 		
 		//Required Quantity
-		$require_qty[$row123['color']][$row123['size_title']]=$row123['garments_per_carton']*$row123['cartons_per_pack_job']*$row123['pack_job_per_pack_method'];
+		$require_qty[$row123['color']][$row123['size_title']]=$row123['garments_per_carton']*$row123['pack_job_per_pack_method'];
 		if($eligible_to_qty[$row123['color']][$row123['size_title']]<$require_qty[$row123['color']][$row123['size_title']])
 		{
 			$require_qty[$row123['color']][$row123['size_title']]=$eligible_to_qty[$row123['color']][$row123['size_title']];
@@ -228,6 +228,8 @@
 			unset($cols_size);
 			unset($carton_qty);
 			unset($carton_qty_tot);	
+			unset($no_of_cartons_fl);
+			unset($no_of_cartons_ce);
 		}			
 	}
 	else if($carton_method==3 or $carton_method==4)
@@ -354,7 +356,9 @@
 			unset($cols_tot);
 			unset($cols_size);
 			unset($carton_qty);
-			unset($carton_qty_tot);				
+			unset($carton_qty_tot);
+			unset($no_of_cartons_fl);
+			unset($no_of_cartons_ce);			
 		}
 	}
 	//echo "</table>";

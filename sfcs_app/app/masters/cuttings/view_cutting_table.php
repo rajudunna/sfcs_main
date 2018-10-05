@@ -30,7 +30,7 @@
 			echo "<tr><td>".$sno++."</td><td>".$row["emp_id"]." </td><td>".$row["emp_name"]."</td>
 					  <td>
 					    <a href='$url&tid=$tid&emp_id=$emp_id&emp_name=$emp_name' class='btn btn-warning btn-xs editor_edit readonly'>Edit</a> /
-					 	<a href='$url1&tid=$tid' class='btn btn-danger btn-xs editor_remove'>Delete</a>
+					 	<a href='$url1&tid=$tid' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a>
 					 </td>
 				 </tr>";
 		}
@@ -46,6 +46,26 @@
 $(document).ready(function() {
     $('#tbl_cutting_table').DataTable();
 } );
+
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th
