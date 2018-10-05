@@ -12,7 +12,7 @@ $sum_str = rtrim($sum,' + ');
 $asum_str = rtrim($asum,' + ');
 $data = '';
 $docs_data = '';
-
+$final_wip = array();
 if($section > 0){
     $docket_cqty = array();
 
@@ -24,7 +24,7 @@ if($section > 0){
     }
     if($modules_str != ''){
         $data.= "<table><tbody>";
-        $modules = explode(',',$modules_str);
+        $moduleso = $modules = explode(',',$modules_str);
        
         foreach($modules as $module){
             $total_wip = 0;
@@ -36,12 +36,13 @@ if($section > 0){
 
             /*  BLOCK - 1 */
             //getting the WIP OF module in a section
-            $ims_wip_query = "SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no,SMV  
+            $ims_wip_query = "SELECT SUM(ims_qty-ims_pro_qty) AS WIP  from $bai_pro3.ims_log
                               WHERE ims_mod_no='$module' and ims_status<>'DONE' ";
             //echo $ims_wip_query;                  
             $ims_wip_result = mysqli_query($link,$ims_wip_query) or exit($data.='Problem in ims wip');
             while($row = mysqli_fetch_array($ims_wip_result)){
                 $ims_wip = $row['WIP'];
+                $wip[$module]   = $ims_wip;
                 //$module_smv[$module] = $row['SMV'] * $ims_wip;
             }
             if($ims_wip == '')
@@ -63,24 +64,26 @@ if($section > 0){
         }//modules loop ending
 
         /* MAIN CODE FOR BLOCK 2 */
-        //Sorting the modules according to SMV's
-        $new_module_smv = $module_smv;
-        array_multisort($new_module_smv);
-        $new_module_smv = array_unique($new_module_smv);
-        foreach($new_module_smv as $value){
-            foreach($module_smv as $key => $value1){
-                if($value == $value1){
-                    $sorted_modules[] = $key;
-                }
-            }
-        }
+        // //Sorting the modules according to SMV's
+        // $new_module_smv = $module_smv;
+        // array_multisort($new_module_smv);
+        // $new_module_smv = array_unique($new_module_smv);
+        // foreach($new_module_smv as $value){
+        //     foreach($module_smv as $key => $value1){
+        //         if($value == $value1){
+        //             $sorted_modules[] = $key;
+        //         }
+        //     }
+        // }
 
         /* Calcualting middle WIP   */
+        //gettingt the op code with IPS
         $ips_id_query = "SELECT operation_code as op_code from $brandix_bts.tbl_ims_ops where appilication = 'IPS' ";
         $ips_id_result = mysqli_query($link,$ips_id_query);
-        $row = mysqli_fetch_array($link,$ips_id_result);
+        $row = mysqli_fetch_array($ips_id_result);
         $ips_id = $row['op_code'];
-        $ips_id = 129;
+        //$ips_id = 129;
+
         //getting all planned jobs for all the modules within the sec 
         $all_jobs_query = "SELECT input_job_no_random_ref as job,input_module FROM $bai_pro3.plan_dashboard_input 
                            WHERE input_module IN ($modules_str)"; 
@@ -92,26 +95,38 @@ if($section > 0){
             $input_jobs_per_mod[$mod][] = $mod;
         }
         $jobs_str = implode(',',$input_jobs);
-        
+    
         if($jobs_str != ''){
+            //Getting actual Quantity required per job
+            $job_quantity_query = "SELECT SUM(carton_act_qty) as qty,input_job_no_random as job 
+                                   from $bai_pro3.pac_stat_log_input_job
+                                   where input_job_no_random IN ($jobs_str) group by input_job_no_random";  
+            $job_quantity_result = mysqli_query($link,$job_quantity_query) or exit($data.='Total Job Qty Problem');
+            while($row = mysqli_fetch_array($job_quantity_result)){
+                $job = $row['job'];
+                $job_quantity[$job] = $row['qty'];
+            }
+
             //getting the already line in qtys for the planned jobs within the sec
             $linein_qty_job_query = "SELECT SUM(recevied_qty) as line_in_qty,input_job_no_random_ref as job
                                     from $brandix_bts.bundle_creation_data 
                                     where input_job_no_random_ref IN ($jobs_str) and operation_id = '$ips_id'
                                     group by input_job_no_random_ref";
             $linein_qty_job_result = mysqli_query($link,$linein_qty_job_query) or exit($data.=$all_jobs_query.'Problem in Line In Qtys');
-            while($row = mysqli_fetch_array($link,$linein_qty_job_result)){
+            while($row = mysqli_fetch_array($linein_qty_job_result)){
                 $job = $row['job'];
                 $line_in[$job] = $row['line_in_qty'];
             }
+    
             //getting all dockets for planned jobs along with cut reported qtys
-            $dockets_query = "SELECT distinct(psl.doc_no) as doc_no,GROUP_CONCAT(input_job_no_random) as jobs,order_tid
+            $dockets_query = "SELECT distinct(psl.doc_no) as doc_no,GROUP_CONCAT(distinct input_job_no_random) as jobs,order_tid
                               from $bai_pro3.pac_stat_log_input_job psl
                               Left join $bai_pro3.plandoc_stat_log pd ON pd.doc_no = psl.doc_no  
-                              where input_job_no_random IN ($jobs_str)";
-                              //and pd.act_cut_status = 'DONE' ";
+                              where input_job_no_random IN ($jobs_str) group by psl.doc_no";
+                              //and pd.act_cut_status = 'DONE' ";                 
             $docekt_result = mysqli_query($link,$dockets_query) or exit($data.='Problem in getting cut reported dockets');
             while($row = mysqli_fetch_array($docekt_result)){
+                
                 $all_dockets[]     = $row['doc_no'];
                 $doc_no            = $row['doc_no'];
                 $jobs_per_docket[$doc_no] = $row['jobs'];
@@ -122,23 +137,23 @@ if($section > 0){
                                          order_tid = '$order_tid' "; 
                 $style_schedule_result = mysqli_query($link,$style_schedule_query) or exit($data.='Problem in sty,sch details');
                 $row = mysqli_fetch_array($style_schedule_result);                         
-                $style   = $row['order_style_no']!= '' ? $style   = $row['order_style_no']   : $style = '0';
-                $schedule= $row['order_del_no']  != '' ? $schedule= $row['order_del_no']: $schedule = '0' ;
-                $color   = $row['order_col_des'] != '' ? $color   = $row['order_col_des']  : $color = '0' ;
+                $style   = $row['order_style_no']!= '' ? $style   = $row['order_style_no']: $style = '0';
+                $schedule= $row['order_del_no']  != '' ? $schedule= $row['order_del_no']  : $schedule = '0' ;
+                $color   = $row['order_col_des'] != '' ? $color   = $row['order_col_des'] : $color = '0' ;
 
                 $previous_op_query = "SELECT operation_code from $brandix_bts.tbl_style_ops_master where style='$style' 
                                       AND color = '$color' AND operation_order < $ips_id 
                                       and operation_code NOT IN  (10,200)
                                       ORDER BY operation_order DESC LIMIT 1";
                 $previous_op_result = mysqli_query($link,$previous_op_query) or exit($data.='Previous op query ');
-                $row = mysqli_query($link,$previous_op_result);
+                $row = mysqli_fetch_array($previous_op_result);
                 $pre_op_id = $row['operation_code'];                      
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////
                 $cdoc_cqty_query  = "SELECT SUM(recevied_qty) as qty from $brandix_bts.bundle_creation_data
                                     where docket_number = '$doc_no' and operation_id = '$ips_id'";
                 $cdoc_cqty_result = mysqli_query($link,$cdoc_cqty_query) or exit($data.='Problem in getting con qty per doc');
-                $row = mysqli_fetch_array($cdoc_cqty_query);
+                $row = mysqli_fetch_array($cdoc_cqty_result);
                 $docket_ccqty[$doc_no] = $row['qty'];                    
                 $cdoc_qty_query  = "SELECT SUM(recevied_qty) as qty from $brandix_bts.bundle_creation_data
                                     where docket_number = '$doc_no' and operation_id = '$pre_op_id'";
@@ -150,20 +165,70 @@ if($section > 0){
             }
 
             //getting smvs for each docket
-            $smvs_query = "SELECT smv,doc_no FROM $bai_pro3.ims_log ims
-                           LEFT JOIN $brandix_bts.tbl_style_ops_master som ON som.schedule = ims.ims_schedule 
-                           AND som.color = ims.ims_color AND som.style = ims.ims_style";
+            $smvs_query = "SELECT MAX(smv) as smv,docket_number as doc FROM $brandix_bts.bundle_creation_data bcd
+                           LEFT JOIN $brandix_bts.tbl_style_ops_master som ON som.schedule = bcd.schedule 
+                           AND som.style=bcd.style where recevied_qty > 0 GROUP BY docket_number";
             $smvs_result = mysqli_query($link,$smvs_query) or exit($data.='Problem in SMVs');
-
-            foreach($all_dockets as $docket){
-
+            while($row = mysqli_fetch_array($smvs_result)){
+                $doc = $row['doc'];
+                $smv[$doc] = $row['smv'];
+            }
+        
+            foreach($all_dockets as $docket){ 
+                if($docket_cqty <= 0)
+                    continue;
+                unset($modules);
                 $jobs = explode(',',$jobs_per_docket[$docket]);
                 if(sizeof($jobs) == 0)
                     continue;
                 else{
-                    
+                    foreach($jobs as $job){
+                        $module = $ij_module[$job]; 
+                        if($module == $pre_mod) 
+                            continue;
+                        $modules[$module] = $wip[$module] * $smv[$docket];
+                        $pre_mod = $module;
+                    }
+                
+                    //Sorting the modules according to SMV's
+                    $new_modules = $modules;
+                    array_multisort($new_modules);
+                    $new_modules = array_unique($new_modules);
+                    foreach($new_modules as $value){
+                        foreach($modules as $key => $value1){
+                            if($value == $value1){
+                                $sorted_modules[] = $key;
+                            }
+                        }
+                    }
+                    foreach($sorted_modules as $module){
+                        foreach($jobs as $job){
+                            if($ij_module[$job] == $module){
+                                $available = $docket_cqty[$docket];
+                                if($available <= 0)
+                                    goto  next_docket;   
+                                $need = $job_quantity[$job] - $line_in[$job];
+                                if($need > $available){
+                                    $final_wip[$module]+= $available;
+                                    $docket_cqty[$docket] = 0;
+                                    $job_quantity[$job]-=$available;  
+                                }else{
+                                    $final_wip[$module]+= $need;
+                                    $job_quantity[$job] = 0;
+                                    $docket_cqty[$docket]-=$need;
+                                }
+                            }
+                        }
+                    }
                 }    
+                next_docket : NULL;
             }
+            foreach($moduleso as $module)
+            {
+                $data.= "<script>$('#pending-wip-$module').html(".$final_wip[$module].")</script>";
+            }
+        
+            /*
             foreach($sorted_modules as $key => $sorted_module){
                 //echo "<hr><br>INSIDE -------- $sorted_module<br/>";
                 $summing_qty = 0;
@@ -201,6 +266,7 @@ if($section > 0){
                     $data.= "<script>$('#pending-wip-$sorted_module').html($final_qty)</script>";
                 } 
             }
+            */
         }
     }else{
         //This Section Has No Modules
