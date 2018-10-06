@@ -657,7 +657,7 @@ else if($concurrent_flag == 0)
 				}
 			$b_rep_qty_ins = '-'.$reversalval[$key];
 			$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
-			$appilication_out = 'Down_Time';
+			$appilication_out = 'IMS_OUT';
 			$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
 		    //echo $checking_output_ops_code;
 			$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
