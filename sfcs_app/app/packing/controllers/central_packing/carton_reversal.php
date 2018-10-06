@@ -86,7 +86,7 @@
 								$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = '0' where id= $id";
 								$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
 
-								$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$negative_qty','','cpk_reversal',USER(),'$team_id','$b_op_id','$short_key_code','$id','$work_station_id','','$b_op_id')";
+								$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$negative_qty','','cpk_reversal',USER(),'$b_op_id','$short_key_code','$id','$work_station_id','','$b_op_id')";
 								// echo $inserting_into_m3_tran_log;
 								mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
 
