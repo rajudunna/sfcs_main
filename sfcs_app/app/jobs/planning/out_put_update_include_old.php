@@ -16,7 +16,6 @@ if($rowcount>0){
 	}
 	//To track cutting completed schedules
 	$sql="select distinct order_del_no from $bai_pro3.plandoc_stat_log_cat_log_ref where order_del_no not in (".implode(",",array_merge($schedule_db,$schedules_to_update)).") and act_cut_status=\"DONE\" and act_cut_issue_status<>\"DONE\" and order_del_no>20000";
-
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Errorx2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -26,7 +25,7 @@ if($rowcount>0){
 }
 else{
 	echo "No schedules found to udpate.</br>";
-	$schedules_count=0;
+	//$schedules_count=0;
 }
 
 
@@ -464,7 +463,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 
 
 	
-	$sql="drop table $plandoc_stat_log_cat_log_ref";
+/* 	$sql="drop table $plandoc_stat_log_cat_log_ref";
 	//echo $sql."</br>";
 	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -476,7 +475,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 
 	$sql="drop table $disp_mix_temp";
 	//echo $sql."</br>";
-	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"])); */
 
 ?>
 
