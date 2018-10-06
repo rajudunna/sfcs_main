@@ -85,7 +85,7 @@ if(isset($_POST['filter']))
 	if(mysqli_num_rows($sql_result) > 0)
 	{
 		$flag=true;
-		// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
 		
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
