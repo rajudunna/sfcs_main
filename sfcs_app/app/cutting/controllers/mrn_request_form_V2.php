@@ -1,6 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_api_calls.php',3,'R'));
 //$view_access=user_acl("SFCS_0166",$username,1,$group_id_sfcs); 
 //var_dump(haspermission($_GET['r']));
 ?>
@@ -556,7 +557,67 @@ function button_disable()
 			$count_ref=0;
 			//CR# 376 // kirang // 2015-05-05 // Referred the Batch number details to restrict the request of quantity requirement.
 			$inp_5=$_POST["batchno"];
+			$post_color = $_POST['color'];
+			$sql = "SELECT mo_no FROM $bai_pro3.mo_details WHERE style=\"$inp_1\" AND SCHEDULE=\"$inp_2\" AND color=\"$post_color\"";
+			
+			$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+			$MIRecords = array();
+			$MIRecords_color = array();
+			$get_api_call = new get_api_call();
+			while($sql_result_32=mysqli_fetch_array($sql_result)){
+				 
+				$url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelMaterials?CONO=200&FACI=".$global_facility_code."&MFNO=".$sql_result_32['mo_no'];
+				$response_result = $get_api_call->getCurlRequest($url);
+				$response_result = json_decode($response_result);
+				
+				$MIRecords[] = $response_result->MIRecord;
 
+			}
+			$FromMO = array();
+			foreach($MIRecords as $key=>$value){
+				foreach($value as $key1=>$value1){
+					foreach($value1->NameValue as $res){
+						$FromMO[$key][$key1][$res->Name] = $res->Value;
+					}
+				}
+			}
+			// echo count($MIRecords);
+			$finalrecords = array();
+			foreach($FromMO as $key=>$value){
+				foreach($value as $key1=>$value1){
+					$finalrecords[] = $value1;
+				}
+			}
+
+			foreach($finalrecords as $key=>$value){
+
+				$mtno = urlencode($value['MTNO']);
+				$url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=200&ITNO=".$mtno;
+				
+				$response_result1 = $get_api_call->getCurlRequest($url);
+				$response_result1 = json_decode($response_result1);
+				
+				$MIRecords_color[] = $response_result1->MIRecord;
+			}
+			
+			$FromMO_color = array();
+			foreach($MIRecords_color as $key=>$value){
+				foreach($value as $key1=>$value1){
+					foreach($value1->NameValue as $res){
+						$FromMO_color[$key][$key1][$res->Name] = $res->Value;
+					}
+				}
+			}
+
+			$finalrecords_color = array();
+			foreach($FromMO_color as $key=>$value){
+				foreach($value as $key1=>$value1){
+					$finalrecords_color[] = $value1;
+				}
+			}
+		
+			// var_dump($finalrecords_color);
+			// die();
 			//echo "Cut=".$inp_4."<br>";
 
 			//echo "<br/>Batch no".$inp_5."<br/>";
@@ -648,10 +709,126 @@ function button_disable()
 
 			if($count_ref==0)
 			{
+			$reason_id_db = array();
+			$reason_code_db = array();
+			$sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
+			$sql_result=mysqli_query($link, $sql_reason) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$count = mysqli_num_rows($sql_result);
+			
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+				
+				$reason_id_db[]=$sql_row['reason_tid'];
+				$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
+			}
+
+			if(count($finalrecords) > 0){
+				
+			for($x=0;$x<count($finalrecords);$x++)
+			{
+			
+				$z1=$z1+1;	
+				$check=1;
+				echo "<input type=\"hidden\" name=\"price[]\" value=\"0\">";
+				echo "<tr bgcolor='$bgcolor'>";
+				
+				//echo "<td>$proc_grp</td>";
+				//echo "<td>$material_item</td>";
+				//echo "<td>$item_description</td>";
+				
+				//When M3 offline uncomment this
+				$opno = (int)$finalrecords[$x]['OPNO'];
+				// echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
+				if($opno === 15){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"FAB\">FAB</td>";
+				}
+				if($opno > 15 && $opno < 100){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"ETRIM\">ETRIM</td>";
+				}
+				if($opno === 200){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"PTRIM\">PTRIM</td>";
+				}
+
+				if($opno >= 100 && $opno < 200){
+					echo "<td><input type=\"hidden\" name=\"product[]\" value=\"STRIM\">STRIM</td>";
+				}
 				
 
+				$item_code = $finalrecords[$x]['MTNO'];
+				echo "<td><input type=\"hidden\" name=\"item_code[]\" id='item_code$x' value=\"$item_code\" style=\"background-color:#66FFCC;\" readonly='true'>$item_code</td>";
+				$item_des = $finalrecords[$x]['ITDS'];
+				echo "<td><input type=\"hidden\" name=\"item_desc[]\" id='item_desc$x' value=\"$item_des\" style=\"background-color:#66FFCC;\" readonly='true'>$item_des</td>";
+
+				foreach($finalrecords_color as $key=>$value){
+					if($finalrecords[$x]['MTNO'] === $value['ITNO']){
+						$color = $value['OPTY'];
+						break;
+					}else{
+						$color = '';
+					}
+				}
+				echo "<td><input type=\"hidden\" name=\"co[]\" id='item_color$x' value=\"$color\" style=\"background-color:#66FFCC;\">$color</td>"; 
+
+				echo "<td></td>";
+				$bom_qty = $finalrecords[$x]['REQT'];
+				echo "<td>".$bom_qty."</td>";
+				$alloc_qty = $finalrecords[$x]['ALQT'];
+				echo "<td>".$alloc_qty."</td>";
+				//echo "<td>".round($req_qty,2)."</td>";
+				//echo "<td>".round($iss_qty,2)."</td>";
+				echo "<td><input style=\"background-color:#66FFCC;\" class='integer quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value<0) { this.value=0; alert('Please enter correct value.'); }\" ".$validation_ref_text." id=\"qty_$z1\"  onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
+			
+			//When M3 offline comment this (Key word: When M3)
+				/* echo "<input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"$proc_grp\">
+				<input type=\"hidden\" name=\"item_code[]\" value=\"$material_item\">
+				<input type=\"hidden\" name=\"item_desc[]\" value=\"$item_description\">
+				<input type=\"hidden\" name=\"uom[]\" value=\"$uom\">
+				<input type=\"hidden\" name=\"co[]\" value=\"$co\">"; */
+				
+				//When M3 offline comment this (Key word: When M3)
+				$uom = $finalrecords[$x]['PEUN'];
+				echo "<td><input type=\"hidden\" name=\"uom[]\" value=\"$uom\">".$uom."</td>";
+				// echo "<td><select name=\"uom[]\"  disabled='true'>
+				// 		<option value='PCS' ";
+				// 		if($uom == 'PCS'){
+				// 			echo 'selected';
+				// 		}
+				// 		echo ">PCS</option>
+				// 		<option value='$fab_uom' ";
+				// 		if($uom == 'YRD'){
+				// 			echo 'selected';
+				// 		}
+				// 		echo ">$fab_uom</option>
+				// 		</select>
+				// 	</td>";
+
+					
+				//echo "<td>$uom</td>";
+				// $reason_id_db = array();
+				// $reason_code_db = array();
+				// $sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
+				// $sql_result=mysqli_query($link, $sql_reason) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row=mysqli_fetch_array($sql_result))
+				// {
+				// 	$reason_id_db[]=$sql_row['reason_tid'];
+				// 	$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
+				// }
+
+				echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" ".$validation_ref_select." >";
+				for($i=0;$i<sizeof($reason_code_db);$i++)
+				{
+					echo "<option value=\"".$reason_id_db[$i]."\">".$reason_code_db[$i]."</option>";
+				}
+				echo "</select></td>";
+				echo "<td><input type=\"text\" value=\"\" name=\"remarks[]\" id='remarks$x' style=\"background-color:#66FFCC;\"></td>";
+				echo "</tr>";
+			}
+		}
+		if(count($finalrecords) == 0){
+			
 			for($x=0;$x<10;$x++)
 			{
+			
 				$z1=$z1+1;	
 				$check=1;
 				echo "<input type=\"hidden\" name=\"price[]\" value=\"0\">";
@@ -663,8 +840,8 @@ function button_disable()
 				
 				//When M3 offline uncomment this
 				echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
-				echo "<td><input type=\"text\" name=\"item_code[]\" id='item_code$x' value=\"\" style=\"background-color:#66FFCC;\"></td>";
-				echo "<td><input type=\"text\" name=\"item_desc[]\" id='item_desc$x' value=\"\" style=\"background-color:#66FFCC;\"></td>";
+				echo "<td><input type=\"text\" name=\"item_code[]\" id='item_code$x' value=\"\" style=\"background-color:#66FFCC;\" ></td>";
+				echo "<td><input type=\"text\" name=\"item_desc[]\" id='item_desc$x' value=\"\" style=\"background-color:#66FFCC;\" ></td>";
 				echo "<td><input type=\"text\" name=\"co[]\" id='item_color$x' value=\"\" style=\"background-color:#66FFCC;\"></td>"; 
 				
 				echo "<td></td>";
@@ -682,20 +859,16 @@ function button_disable()
 				<input type=\"hidden\" name=\"co[]\" value=\"$co\">"; */
 				
 				//When M3 offline comment this (Key word: When M3)
-				echo "<td><select name=\"uom[]\"><option value='PCS'>PCS</option><option value='$fab_uom'>$fab_uom</option></select></td>";
+				$uom = $finalrecords[$x]['PEUN'];
+				echo "<td><select name=\"uom[]\"  >
+						<option value='PCS'>PCS</option>
+						<option value='$fab_uom'>$fab_uom</option>
+						</select>
+					</td>";
 				//echo "<td>$uom</td>";
-				$reason_id_db = array();
-				$reason_code_db = array();
-				$sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$reason_id_db[]=$sql_row['reason_tid'];
-					$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
-				}
-
+				
 				echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" ".$validation_ref_select." >";
-				for($i=1;$i<sizeof($reason_code_db);$i++)
+				for($i=0;$i<sizeof($reason_code_db);$i++)
 				{
 					echo "<option value=\"".$reason_id_db[$i]."\">".$reason_code_db[$i]."</option>";
 				}
@@ -703,6 +876,7 @@ function button_disable()
 				echo "<td><input type=\"text\" value=\"\" name=\"remarks[]\" id='remarks$x' style=\"background-color:#66FFCC;\"></td>";
 				echo "</tr>";
 			}
+		}
 
 			}
 
