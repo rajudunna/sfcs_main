@@ -56,6 +56,8 @@ $api_password = $conf1->get('api-password');
 $api_hostname = $conf1->get('api-host-name');
 $api_port_no = $conf1->get('api-port');
 
+$enable_api_call = $conf1->get('enable-api-call');
+
 //Scanning Methods
 $scanning_methods = $conf1->get('scaning-method');
 
@@ -123,6 +125,8 @@ $comp_no=$conf1->get('company_no');
 $central_wh_code=$conf1->get('central_wh_code');
 $plant_wh_code=$conf1->get('plant_wh_code');
 $plant_prod_code=$conf1->get('plant_prod_code');
+$shrinkage_inspection=$conf1->get('shrinkage-inspection');
+
 
 
 
@@ -183,7 +187,7 @@ while($methods=mysqli_fetch_array($pack_result))
 //***************************************************
 //======== for central warehouse connections ========
 //***************************************************
-    $is_chw = $conf1->get('central_warehouse');
+  /*  $is_chw = $conf1->get('central_warehouse');
     $cwh_link = Null;
     if($is_chw == 'yes'){
         $cwh_host = $conf1->get('cw_host');
@@ -192,6 +196,6 @@ while($methods=mysqli_fetch_array($pack_result))
         $cwh_port = $conf1->get('cw_port');
         $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-    }
+    } */
 //===================================================
 ?>

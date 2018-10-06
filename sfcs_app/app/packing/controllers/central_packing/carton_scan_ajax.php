@@ -104,13 +104,15 @@
 
 						//M3 Rest API Call START
 						// Given API => m3api-rest/execute/PMS050MI/RptReceipt?CONO=200&FACI=Q01&MFNO=7512409&RPQA=35&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1
-						$api_url = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$carton_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
-						$api_data = $obj->getCurlAuthRequest($api_url);
-						$decoded = json_decode($api_data,true);
-						$type=$decoded['@type'];
-						$code=$decoded['@code'];
-						$message=$decoded['Message'];
-
+						if($enable_api_call == 'YES')
+						{
+							$api_url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_no&FACI=$global_facility_code&MFNO=$mo_number&RPQA=$carton_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
+							$api_data = $obj->getCurlAuthRequest($api_url);
+							$decoded = json_decode($api_data,true);
+							$type=$decoded['@type'];
+							$code=$decoded['@code'];
+							$message=$decoded['Message'];
+						}
 						//validating response pass/fail and inserting log
 						if($type!='ServerReturnedNOK')
 						{
