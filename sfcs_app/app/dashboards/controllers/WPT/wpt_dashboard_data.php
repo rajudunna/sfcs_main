@@ -225,7 +225,8 @@ if($section > 0){
             }
             foreach($moduleso as $module)
             {
-                $data.= "<script>$('#pending-wip-$module').html(".$final_wip[$module].")</script>";
+                $pending_wip = $final_wip[$module] ?  $final_wip[$module] :  0;
+                $data.= "<script>$('#pending-wip-$module').html($pending_wip)</script>";
             }
         
             /*

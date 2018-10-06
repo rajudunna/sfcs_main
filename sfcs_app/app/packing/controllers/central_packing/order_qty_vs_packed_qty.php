@@ -86,7 +86,7 @@
     <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
 <div class="panel panel-primary">
-	<div class="panel-heading"><b>Order Details Vs Packed Details</b></div>
+	<div class="panel-heading"><b>Packing List Generation</b></div>
 	<div class="panel-body">
 	<?php
 	if(isset($_POST['style']))
@@ -433,7 +433,7 @@
 				$delete_result=mysqli_query($link, $delete_pack_method) or exit("Error while deleting pack method");
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 				function Redirect() {
-					swal('Packing Method Deleted Sucessfully','','warning');
+					swal('Packing Method Deleted Successfully','','success');
 					location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
 					}
 				</script>";	

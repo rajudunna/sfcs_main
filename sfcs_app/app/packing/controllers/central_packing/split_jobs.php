@@ -46,7 +46,7 @@
 				
 				echo '<form action='.getFullURLLevel($_GET['r'],'split_success.php',0,'N').' method="post" onsubmit="return verify_qty()">'; 
 				echo "<table class='table table-bordered table-striped'> 
-                <tr class='info'><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Carton No</th><th>Quantity</th><th>Enter Qty to be Split</th><th><input type='submit' width='20' name='submit' id='split_btn' class='btn btn-primary' value='Split'></th></tr> ";
+                <tr class='info'><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th><th>Enter Qty to be Split</th><th><input type='submit' width='20' name='submit' id='split_btn' class='btn btn-primary' value='Split'></th></tr> ";
                 while($row=mysqli_fetch_array($result))
                 { 
                     $i++;
@@ -66,7 +66,7 @@
                     echo "<input type='hidden' name='cartonno' value='$carton_no'>"; 
                     echo "<input type='hidden' name='seq_no' value='$seq_no'>"; 
                     echo "<input type='hidden' id='qty$i' value='$qty'>";
-                    echo '<tr><td>'.$style.'</td><td>'.$schedule.'</td><td>'.$color.'</td><td>'.$size.'</td><td>'.$cartonno.'</td><td>'.$qty."</td><td><input type='text' width='20' name='qty[]' id='$i' onkeyup='verify_split(this)' class='integer form-control'></td></tr>"; 
+                    echo '<tr><td>'.$style.'</td><td>'.$schedule.'</td><td>'.$color.'</td><td>'.$size.'</td><td>'.$qty."</td><td><input type='text' width='20' name='qty[]' id='$i' onkeyup='verify_split(this)' class='integer form-control'></td></tr>"; 
                     //echo '</form>'; 
                 } 
 				echo "<input type='hidden' id='total' value='$i'>";

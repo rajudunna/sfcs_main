@@ -4,10 +4,11 @@
 // LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
 
 //function updateM3Transactions($input_doc_no,$op_code,$op_code,$input_shift,$plan_module){
-function  updateM3Transactions($ref_id,$op_code,$qty)
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
+function updateM3Transactions($ref_id,$op_code,$qty)
 {
+    $obj = new rest_api_calls();    
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $host = $api_hostname;
     $port = $api_port_no;
     $company_num = $company_no;
@@ -145,42 +146,42 @@ function  updateM3Transactions($ref_id,$op_code,$qty)
                 }
 
                 $insert_id=mysqli_insert_id($link);
-
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
+            
                     $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                     $api_data = $obj->getCurlAuthRequest($api_url);
                     $decoded = json_decode($api_data,true);
                     $type=$decoded['@type'];
                     $code=$decoded['@code'];
                     $message=$decoded['Message'];
-                }
-            
-                //validating response pass/fail and inserting log
-                if($type!='ServerReturnedNOK'){
-                    //updating response status in m3_transactions
-                    $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
-                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                }else{
-                    //updating response status in m3_transactions
-                    $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
-                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    //validating response pass/fail and inserting log
+                    if($type!='ServerReturnedNOK'){
+                        //updating response status in m3_transactions
+                        $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
+                        mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                    //insert transactions details into transactions_log
-                    $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log`(`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message',USER(),'$current_date')"; 
-                    mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                }
+                    }else{
+                        //updating response status in m3_transactions
+                        $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
+                        mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                        //insert transactions details into transactions_log
+                        $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log`(`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message',USER(),'$current_date')"; 
+                        mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    }
+                }                
             }
         }
-    }
+    } 
     return true;
 }
 
 
 function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
+    $obj = new rest_api_calls();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $current_date = date("Y-m-d H:i:s");
 
     $host = $api_hostname;
@@ -320,8 +321,8 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
 
 function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 {
+    $obj = new rest_api_calls();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
     $current_date = date("Y-m-d H:i:s");
 
     $host = $api_hostname;
