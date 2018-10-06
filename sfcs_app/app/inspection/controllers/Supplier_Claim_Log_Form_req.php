@@ -3,7 +3,7 @@ $has_permission=haspermission($_GET['r']);
 
 $reject_roll_qty_sum=0;
 $reject_len_qty_sum=0;
-echo "<div class='panel panel-primary'>";
+echo "<br/><div class='panel panel-primary'>";
 echo "<div class='panel-heading'>Previous Claims</div>";
 echo "<div class='panel-body'>";
 $countqry="select count(*) as cnt from $bai_rm_pj1.inspection_complaint_db where reject_batch_no = \"".$batch_no."\" OR reject_inv_no=\"".$batch_no."\"";
