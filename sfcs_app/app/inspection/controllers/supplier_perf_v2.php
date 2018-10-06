@@ -265,7 +265,8 @@ if(isset($_POST['filter']))
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
 	echo "<form action='".getFullURL($_GET['r'],'supplier_perf_v2_update.php','N')."' 
 	       method='POST'>";
-	echo "<div class='table-responsive'><div style='height:600px; overflow-y: scroll;''><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\">";
+	echo "<div class='table-responsive'><div style='height:240px; overflow-y: scroll;''><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\" style='table-layout: fixed;
+	width: 10000px;'>";
 	echo "<tr><th>RECORD #</th><th>WEEK #</th><th>ENTRY NO</th><th>INVOICE NO & DATE</th><th>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th>
 	<th>SWATCHES RECEIVED FROM (SUPPLIER/WH)</th><th>INSPECTED DATE</th><th>RELEASED DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th>
 	<th>M3 LOT#</th><th>PO</th><th>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th><th>COMPOSITION</th><th>COLOR</th><th>SOLID / YARN DYE / PRINT</th><th>BATCH #</th>
@@ -523,9 +524,9 @@ if(mysqli_num_rows($sql_result) > 0){
 			echo "<td><input type=\"hidden\" name=\"weekno[".$n."]\" id=\"weekno\" value=\"".$week_no."\">".$week_no."</td>";
 			echo "<td><input type=\"hidden\" name=\"pkg_no[".$n."]\" id=\"pkg_no\" value=\"".$pkg_no."\">".$pkg_no."</td>";
 			echo "<td><input type=\"hidden\" name=\"invoice[".$n."]\" id=\"invoice\" value=\"".$inv_no."\">".$inv_no."</td>";
-			echo "<td><input type=\"text\" id=\"srdfs_".$n."\"  data-toggle='datepicker' name=\"srdfs[".$n."]\" size=8 value=\"".$srdfs."\">
+			echo "<td><center><input type=\"text\" id=\"srdfs_".$n."\"  data-toggle='datepicker' name=\"srdfs[".$n."]\" size=8 value=\"".$srdfs."\"></center>
 			</td>";
-			echo "<td><input type=\"time\" class='textbox' name=\"srtfs[".$n."]\" id=\"srtfs\" size=8 size=8 value=\"".$srtfs."\"></td>";
+			echo "<td><input type=\"time\" class='textbox' name=\"srtfs[".$n."]\" id=\"srtfs\" size=8 value=\"".$srtfs."\"></td>";
 			/*echo "<td>
 			<input id=\"srdfsw_".$n."\" onkeypress=\"javascript:NewCssCal('srdfsw_".$n."','yyyymmdd','dropdown')\" onclick=\"javascript:NewCssCal('srdfsw_".$n."','yyyymmdd','dropdown')\" type=\"text\" class='textbox' name=\"srdfsw[".$n."]\" size=8 value=\"".$srdfsw."\">
 			</td>";*/
@@ -552,7 +553,7 @@ if(mysqli_num_rows($sql_result) > 0){
 			echo "<td><input type=\"hidden\" name=\"entdate[".$n."]\" id=\"entdate\" value=\"$entdate\">".$entdate."</td>";
 			echo "<td><input type=\"hidden\" name=\"buyer[".$n."]\" id=\"buyer\" value=\"$buyer\">".$buyer."</td>";
 			echo "<td><input type=\"hidden\" name=\"item[".$n."]\" id=\"item\" value=\"$item\">".$item."</td>";
-			echo "<td><input type=\"hidden\" name=\"lots_ref[".$n."]\" id=\"lots_ref\" value=\"".str_replace("'","",$lots_ref)."\">".str_replace("'","",$lots_ref)."</td>";
+			echo "<td style='word-wrap: break-word;'><input type=\"hidden\" name=\"lots_ref[".$n."]\" id=\"lots_ref\" value=\"".str_replace("'","",$lots_ref)."\">".str_replace("'","",$lots_ref)."</td>";
 			echo "<td><input type=\"hidden\" name=\"po_ref[".$n."]\" id=\"po_ref\" value=\"".$po_ref."\">".$po_ref."</td>";
 			echo "<td><input type=\"hidden\" name=\"supplier_name[".$n."]\" id=\"supplier_name\" value=\"".$supplier_name."\">".$supplier_name."</td>";
 			//echo "<td><input type=\"text\" class='textbox' name=\"quality[".$n."]\" id=\"quality\" size=8 value=\"".$quality."\"></td>";
