@@ -88,7 +88,18 @@
             </div>
             <div class='row'>
             <hr/>
-               
+                <div class='l-div col-sm-4'>
+                    <span class="b-block ims-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'> - IMS WIP</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="b-block pending-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'> - CUT REPORTED BUT NOT ISSUED </span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="b-block cut-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'> - CUT WIP</span>
+                </div>
             </div>
         </div>
     </div>
@@ -161,8 +172,8 @@
     
     function change_widths(){
         var b = Number($('#blocks').val());
-        if(b>30 || b<0){
-            swal('Please enter valid no:of blocks','','warning');
+        if(b>25 || b<0){
+            swal('Please enter valid no:of blocks','25 is max','warning');
             return false;
         }
         if(b == 0){
@@ -265,6 +276,9 @@
     .l-text{
         color : #444;
         font-weight : bold;
+    }
+    .b-block{
+        border : 1px solid #3c3c3c;
     }
     .green{
         background : green;
