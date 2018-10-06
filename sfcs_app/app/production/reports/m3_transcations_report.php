@@ -3,11 +3,12 @@
         Report : M3 Transcations Report
         By : Chandu
         Created at : 17-09-2018
-        Updated at : 18-09-2018
+        Updated at : 06-10-2018
         Input : date and transcation status
         Output : 
                 -->Display the report with following field: Style, Schedule, Color, Size, Mo Number, Operation Code, Workstation Id, Quantity
                 -->Download Excel 
+        update : query changes and new fields added
     ================================================== */
     include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
     if(!isset($_GET['excel'])){
@@ -55,7 +56,11 @@
     if(isset($_GET['tdate'])){
         if($_GET['tdate']){
             $resp_stat = $_GET['ts'] ? 'AND response_status="'.$_GET["ts"].'"' : '';
-            $qry_m3_trans = "SELECT bundle_creation_data.style,bundle_creation_data.schedule,bundle_creation_data.color,bundle_creation_data.size_title,m3_transactions.mo_no,m3_transactions.op_code,m3_transactions.workstation_id,m3_transactions.quantity,m3_transactions.response_status FROM bai_pro3.`m3_transactions` LEFT JOIN bai_pro3.mo_operation_quantites ON m3_transactions.ref_no=mo_operation_quantites.id LEFT JOIN brandix_bts.bundle_creation_data ON mo_operation_quantites.ref_no=bundle_creation_data.bundle_number WHERE DATE(m3_transactions.date_time)='".$_GET['tdate']."' AND bundle_creation_data.style IS NOT NULL $resp_stat GROUP BY bundle_creation_data.style,bundle_creation_data.schedule,bundle_creation_data.color,bundle_creation_data.size_title";
+            
+            $qry_m3_trans = "SELECT *
+            FROM bai_pro3.`m3_transactions`  
+            LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE DATE(m3_transactions.date_time)='".$_GET['tdate']."' $resp_stat";
+            //echo $qry_m3_trans;
             $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
             $ary_res = mysqli_fetch_all($result_m3_trans,MYSQLI_ASSOC);
             if(count($ary_res)>0){
@@ -65,20 +70,24 @@
                 }
 ?>
                 <table class=<?= $_GET['excel'] ?? "table" ?>>
-                    <tr><thead><th>#</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Operation Code</th><th>Workstation Id</th><th>Quantity</th><th>Status</th></thead></tr>
+                    <tr><thead><th>#</th><th>Time</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Quantity</th><th>Status</th></thead></tr>
                     <tbody>
 <?php
                 $i=1;
                 foreach($ary_res as $res){
+                    $get_op_name = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`tbl_orders_ops_ref` WHERE operation_code='".$res['op_code']."'"));
+
 ?>
                     <tr>
                         <td><?= $i++ ?></td>
+                        <td><?= date('H:i',strtotime($res['date_time'])) ?></td>
                         <td><?= $res['style'] ?></td>
                         <td><?= $res['schedule'] ?></td>
                         <td><?= $res['color'] ?></td>
-                        <td><?= $res['size_title'] ?></td>
+                        <td><?= $res['size'] ?></td>
                         <td><?= $res['mo_no'] ?></td>
                         <td><?= $res['op_code'] ?></td>
+                        <td><?= $get_op_name['operation_name'] ?></td>
                         <td><?= $res['workstation_id'] ?></td>
                         <td><?= $res['quantity'] ?></td>
                         <td><?= $res['response_status'] ?></td>
