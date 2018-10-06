@@ -2,12 +2,28 @@
 	<head>
 		<?php 
 			include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+			$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+			$username=strtolower($username_list[1]);
 		?>
 	</head>
+<?php
+if(isset($_POST['check2']))
+{
+	$plant_name2=$_POST['plant_name'];
+	
+	
+}
+else
+{
+	$plant_name2=$_GET['plant_name'];
+	
+}
+?>	
 <body>
 <h3 style="font-family:Helvetica Neue,Roboto,Arial,Droid Sans,sans-serif;"><b>RM Warehouse Material Receive</b></h3>
 	<form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data">
 		<?php
+			
 			$query="SELECT * FROM $bai_pro3.plant_details";
 			$query_result=mysqli_query($link, $query) or exit("Error getting Plant Details");
 			echo "<tr>
@@ -18,7 +34,15 @@
 			
 			while($row=mysqli_fetch_array($query_result))
 			{
-				echo "<option value='".$row['plant_code']."'>".$row['plant_name']."</option>";
+				if(str_replace(" ","",$row['plant_code'])==str_replace(" ","",$plant_name2))
+				{
+					echo "<option value=\"".$row['plant_code']."\" selected>".$row['plant_name']."</option>";
+				}
+				else
+				{
+					echo "<option value=\"".$row['plant_code']."\">".$row['plant_name']."</option>";
+				}
+				// echo "<option value='".$row['plant_code']."'>".$row['plant_name']."</option>";
 			}
 			echo "</select>
 				</td></tr>"; 
