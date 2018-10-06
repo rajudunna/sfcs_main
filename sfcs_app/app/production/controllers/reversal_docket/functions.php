@@ -4,6 +4,8 @@
 // LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
 
 function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
+    // echo 'function';
+    // die();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     $current_date = date("Y-m-d H:i:s");
     $details_query = "select * from $brandix_bts.bundle_creation_data where bundle_number = '$bundle_no' and operation_id = '$op_code'";
@@ -47,7 +49,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
     while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
     {
         $total_bundle_present_qty = $total_bundle_rec_present_qty;
-        // echo $total_bundle_present_qty;
+        // echo $total_bundle_present_qty.'---';
         if($total_bundle_present_qty > 0)
         {
             $mo_number = $nop_qry_row['mo_no'];
@@ -73,6 +75,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                     $update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $actual_rep_qty where id= $id";
                     $total_bundle_rec_present_qty = $total_bundle_rec_present_qty - $balance_max_updatable_qty;
                 }
+                // echo $update_qry.'<br/>';
             $ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
             $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$b_colors' and operation_code='$op_code'";
             // echo $dep_ops_array_qry.'ssss<br/>';
@@ -84,7 +87,8 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
             if($is_m3 == 'Yes')
             {                    
                 $to_update_qty = '-'.$b_rep_qty;
-                $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number','$to_update_qty','','Normal',user(),'',$plan_module,'$input_shift',$op_code,'',$id,'$work_station_id','')";
+                $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('$mo_number','$to_update_qty','','Normal',user(),'','$plan_module','$input_shift',$op_code,'',$id,'$work_station_id','')";
+                // echo $inserting_into_m3_tran_log.'<br/>';   
                 mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $insert_id=mysqli_insert_id($link);
 
@@ -97,16 +101,17 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                     $code=$decoded['@code'];
                     $message=$decoded['Message'];
                 } 
-
                     //validating response pass/fail and inserting log
                     if($type!='ServerReturnedNOK'){
                         //updating response status in m3_transactions
                         $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
+                        // echo $qry_m3_transactions;
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     }else{
                         //updating response status in m3_transactions
                         $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
+                        // echo $qry_m3_transactions;
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
                         // echo $qry_m3_transactions.'<br/>';
 

@@ -63,8 +63,8 @@ if(isset($_POST['formSubmit']))
     $plies_post = $_POST['plies'];
     $does_docket_exists_flag= '';
     $next_operation_flag='';
-    $repeat_size = ''; 
-    $check=0;
+    $update_plan_doc = ''; 
+    $check='';
     if($docket_number_post!='' && $plies_post!='')
     {
         $get_docket_details_qry = "select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_number_post";
@@ -114,7 +114,8 @@ if(isset($_POST['formSubmit']))
                 $get_operation_code_qry_result = mysqli_query($link,$get_operation_code_qry) or exit(" Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($row_result_selecting_qry = $get_operation_code_qry_result->fetch_assoc()){
                     $operation_code = $row_result_selecting_qry['operation_code'];
-                    $selecting_cps_qry = "SELECT * FROM $bai_pro3.cps_log WHERE `doc_no`='$docket_number_post' AND `size_code`=  '$key' AND operation_code=$operation_code" ;
+                    $selecting_cps_qry = "SELECT * FROM $bai_pro3.cps_log WHERE `doc_no`='$docket_number_post' AND `size_code`=  '$key' AND operation_code=$operation_code";
+                    // echo $selecting_cps_qry;
                     $result_selecting_cps_qry = $link->query($selecting_cps_qry);
                     while($row_result_selecting_cps_qry = $result_selecting_cps_qry->fetch_assoc()) 
                     {
@@ -124,6 +125,10 @@ if(isset($_POST['formSubmit']))
                         // echo $res.'>='.$value;
                         if($res < $value){
                             $check = 1;
+                            break;
+                        }
+                        else {
+                            $check = 0;
                         }
                     }
                 }
@@ -145,9 +150,6 @@ if(isset($_POST['formSubmit']))
                         
                         if($row_result_selecting_qry['send_qty']>=$row_result_selecting_qry['recevied_qty']){
                             
-                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post WHERE doc_no=$docket_number_post";
-                            // echo $update_plies_qry.'<br/>';
-                            $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
                             //update bundle creation data
                             $selecting_qry2 = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$docket_number_post' AND size_id = '$key' AND operation_id = '".$operation_code."'";
                             
@@ -158,10 +160,8 @@ if(isset($_POST['formSubmit']))
                                 $id_to_update = $row_result_selecting_qry['id'];
                             }
                             $update_qry = "update $brandix_bts.bundle_creation_data set send_qty = send_qty-$value where id = $id_to_update";
-                            // echo $update_qry;
+                            // echo $update_qry.'<br/>';
                             $updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
 
                             // updating cut qty into  cps log
                             $selecting_cps_qry = "SELECT * FROM $bai_pro3.cps_log WHERE `doc_no`='$docket_number_post' AND `size_code`=  '$key' AND operation_code = '".$operation_code."'";
@@ -178,13 +178,14 @@ if(isset($_POST['formSubmit']))
                             // echo $update_qry_cps.'<br/>';
                             $updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+
+
                             //maintaining log
-                            $reversal_docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,parent_bundle_creation_id,bundle_number,size_title,cutting_reversal,act_cut_status)values(".$docket_number_post.",".$id_to_update.",".$ref_no.",'a_".$key."',".$value.",'Reversal')";
+                            $reversal_docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,parent_bundle_creation_id,bundle_number,size_title,cutting_reversal,act_cut_status)values(".$docket_number_post.",".$id_to_update.",".$ref_no.",'".$key."',".$value.",'Reversal')";
                             // echo $reversal_docket_log.'<br/>';
                             $reversal_docket_log_qry = mysqli_query($link,$reversal_docket_log) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
-
+                            $update_plan_doc = 1;
                             $op_code = $operation_code;
-                            // echo $ref_no.','.-$value.','.$op_code.'<br/>';
                             $category=['cutting','Send PF','Receive PF'];
                             $pre_ops_code=$op_code;
                             $checking_qry = "SELECT category FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_code = $operation_code";
@@ -193,17 +194,28 @@ if(isset($_POST['formSubmit']))
                             {
                                 $category_act = $row_cat['category'];
                             }
+                            // echo $category_act.'<br/>';
                             if(in_array($category_act,$category))
                             {
+                                // echo 'hi<br/>';
                                 $updation_m3 = updateM3TransactionsReversal($ref_no,$value,$op_code);
                             }
-                           
-
-                            echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
-                        // }
-                        }
+                                // echo $ref_no.','.-$value.','.$op_code.'<br/>';
+                            // }
+                            }
                     }
                 }
+                if($update_plan_doc==1){
+                    
+                    $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post WHERE doc_no=$docket_number_post";
+                    // echo $update_plies_qry.'<br/><br/>';
+                    $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                    echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
+                }
+            }
+            else {
+                //cps log not found
+                echo "<script>sweetAlert('Docket cant revered!','Updated Failed','warning');</script>";
             }
         }
         else{
@@ -227,10 +239,6 @@ if(isset($_POST['formSubmit']))
                     $url = getFullURLLevel($_GET['r'],'reversal_cutting.php',0,'N');
                     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",180); function Redirect() {  location.href = \"$url&doc_no_ref=$docket_number_post&plies=$plies_post\"; }</script>";
                     // $var=1;
-                    $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post WHERE doc_no=$docket_number_post";
-                    // echo $update_plies_qry.'<br/>';
-                    $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
-                    echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
                 }
             }
         }
