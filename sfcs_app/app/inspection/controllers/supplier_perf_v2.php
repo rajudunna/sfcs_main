@@ -261,11 +261,11 @@ if(isset($_POST['filter']))
 	echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='label label-success lb-lg'> Preformance Updated</span>  &nbsp;&nbsp;||&nbsp;&nbsp; <span class='label label-danger lb-lg'>Performance Not Updated </span> ";
 	echo "<br>";
 	echo "<b style='color:red' >Note:Please Fill All Fields to Update Supplier Performance Report </b>";
-	include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'supplier_perf_summary.php','R'));
-	
+	// include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'supplier_perf_summary.php','R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
 	echo "<form action='".getFullURL($_GET['r'],'supplier_perf_v2_update.php','N')."' 
 	       method='POST'>";
-	echo "<div class='table-responsive'><div style='height:350px; overflow-y: scroll;''><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\">";
+	echo "<div class='table-responsive'><div style='height:600px; overflow-y: scroll;''><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\">";
 	echo "<tr><th>RECORD #</th><th>WEEK #</th><th>ENTRY NO</th><th>INVOICE NO & DATE</th><th>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th>
 	<th>SWATCHES RECEIVED FROM (SUPPLIER/WH)</th><th>INSPECTED DATE</th><th>RELEASED DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th>
 	<th>M3 LOT#</th><th>PO</th><th>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th><th>COMPOSITION</th><th>COLOR</th><th>SOLID / YARN DYE / PRINT</th><th>BATCH #</th>
@@ -890,4 +890,3 @@ if(mysqli_num_rows($sql_result) > 0){
 
 </div>
 </div>
-
