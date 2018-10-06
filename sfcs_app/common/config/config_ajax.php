@@ -11,7 +11,7 @@ $conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fi
 //         return $conf->get($config_id);
 //     }
 // }
-
+$global_facility_code=$conf1->get('plantcode');
 //get_config_values('getmysqldb');
 $mysql_details = $conf1->getDBConfig();
 //SFCS Db Configurations
