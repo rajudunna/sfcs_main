@@ -364,7 +364,7 @@ function getCutJobsData($module){
 
             //Calculating the rejected qty of the partial dockets and adding it to total cut wip 
             if($order < 2){
-                $partial_doc_qty_query = "SELECT SUM(original_qty - recevied_qty + rejected_qty) as qty 
+                $partial_doc_qty_query = "SELECT SUM(original_qty - (recevied_qty + rejected_qty) ) as qty 
                                 from $brandix_bts.bundle_creation_data
                                 where docket_number IN ($doc_no) and operation_id = '15' ";
                 $partial_doc_qty_result = mysqli_query($link,$partial_doc_qty_query) or 
