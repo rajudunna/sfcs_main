@@ -8,17 +8,18 @@
 	$host= $api_hostname;
 	$port= $api_port_no;
 	$current_date = date('Y-m-d h:i:s');
-	$b_op_id='200';
-	// $b_op_id_query = "SELECT operation_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='PACKING';";
-	// $sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
-	// while($sql_row=mysqli_fetch_array($sql_result))
-	// {
-		// $b_op_id=$sql_row['operation_code'];
-	// }
+	// $b_op_id='200';
+	$b_op_id_query = "SELECT operation_code FROM brandix_bts.`tbl_orders_ops_ref` WHERE category='packing' AND default_operation='Yes';";
+	$sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$b_op_id=$sql_row['operation_code'];
+	}
 
 	if (isset($_GET['carton_id']))
 	{
 		$emp_id = $_GET['emp_id'];
+		$team_id = $_GET['team_id'];
 		$carton_id = $_GET['carton_id'];
 		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."';";
 		$count_result = mysqli_query($link,$count_query);
@@ -95,7 +96,7 @@
 						// echo $update_qry;
 						$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
 
-						$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$mo_quantity','','Normal',concat(user(),'-','$emp_id'),'','$b_shift','$b_op_id','CPK','$id','$work_station_id','')";
+						$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`module_no`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$mo_quantity','','Normal',concat(user(),'-','$emp_id'),'$team_id','$b_op_id','$short_key_code','$id','$work_station_id','','$b_op_id')";
 						// echo $inserting_into_m3_tran_log;
 						mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
 						
