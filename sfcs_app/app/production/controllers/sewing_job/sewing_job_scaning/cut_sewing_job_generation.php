@@ -2,10 +2,11 @@
 /* ===============================================================
                Created By : Sudheer and Chandu
 Created : 30-08-2018
-Updated : 03-10-2018
+Updated : 06-10-2018
 input : Schedule,color & cutjob count.
 output v0.1: Generate jobs.
 Technical Stack : PHP 7,Angular js 1.4,JQuery, Maria DB
+update : 1.Excess and sample code implemented, 2. View and deleate operations implemented in this screen.
 =================================================================== */
 
 function assign_to_gets($ars,$data_samps){
@@ -52,7 +53,6 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $dono = $iv['dono'];
         $ration = $iv['ratio'];
         $details = $iv['sizedetails'];
-        $type_of_sewing  = 1;
         $doc_type = 'N';
         $packing_mode = 1;
         $status = '';
@@ -68,10 +68,11 @@ if(isset($_POST) && isset($_POST['main_data'])){
             $carton_act_qty = $term['job_qty'];
             $size_code = $term['job_size'];
             $old_size = $term['job_size_key'];
+            $type_of_sewing  = $term['type_of_sewing'];
             //echo $job."<br/>";
            $ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 
             (
-             doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing
+             doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,pac_seq_no
             )
             VALUES
             ( 
@@ -84,7 +85,8 @@ if(isset($_POST) && isset($_POST['main_data'])){
             '".$packing_mode."',
             '".$old_size."',
             '".$doc_type."',
-            '".$type_of_sewing."'
+            '".$type_of_sewing."',
+            '-1'
             );
             ";
             //echo  $ins_qry;
@@ -111,7 +113,13 @@ if(isset($_POST) && isset($_POST['main_data'])){
         
     }
 
-    echo json_encode(['message'=>'success']);  
+    echo json_encode(['message'=>'success']);
+
+}elseif(isset($_POST) && isset($_POST['del_recs'])){
+    include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
+    $qry = "DELETE FROM `bai_pro3`.`pac_stat_log_input_job` where doc_no IN (".$_POST['del_recs'].") and pac_seq_no='-1'";
+    $result_time2 = mysqli_query($link_ui, $qry) or exit("Deleate jobs.".mysqli_error($GLOBALS["___mysqli_ston"]));
+    echo 'success';
 }else{
 ?>
 <script>
@@ -233,6 +241,7 @@ if($schedule != "" && $color != "")
 {
 $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db.order_del_no='".$schedule."' AND TRIM(bai_orders_db.order_col_des) =trim('".$color."')";
 $doc_nos = [];
+$view_shows=[];
 $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     $i=0;
     $max=0;
@@ -242,7 +251,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
     $max_cut = 0;
     $over_all_data = [];
     if(mysqli_num_rows($ratio_result)>0){
-        echo "<table class='table'>";
+        echo "<div class='col-sm-12' id='main-table'><table class='table'>";
         while($row=mysqli_fetch_array($ratio_result))
         {
             $doc_nos[] = $row['doc_no'];
@@ -291,6 +300,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                $old_ratio = $row['ratio'];
                $old_pcut = [];
                $old_pplice = [];
+               $old_cut_status = '';
                $end = 1;
                $old_doc_nos = [];
 
@@ -313,6 +323,8 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 $old_pcut[]=$row['pcutno'];
                 $old_pplice[]=$row['p_plies'];
                 $old_doc_nos[] = $row['doc_no'];
+                if($row['act_cut_status']!='')
+                    $old_cut_status = $row['act_cut_status'];
 
                 $raw['pcutno'] = $row['pcutno'];
                 $raw['p_plies'] = $row['p_plies'];
@@ -331,19 +343,28 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                     echo "<td>$old_qty[$sno]</td>";
                     $old_qty[$sno]=0;
                 }
-                $qry_get_doc_details = "SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".implode(',',$old_doc_nos).")";
+                $qry_get_doc_details = "SELECT COUNT(*) AS old_jobs,pac_seq_no FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".implode(',',$old_doc_nos).")";
                 $qry_get_doc_details_res = mysqli_query($link_ui, $qry_get_doc_details) or exit("Sql Error : qry_get_doc_details".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $old_cnt_jb = mysqli_fetch_array($qry_get_doc_details_res);
                 if($old_cnt_jb['old_jobs']==0)
                     echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
-                else
-                    echo "<td><h3 class='label label-warning'>Jobs Already Created..</h3></td>";
+                elseif($old_cnt_jb['pac_seq_no']=='-1'){
+                    $view_shows[] = implode(',',$old_doc_nos);
+                    $imp_data = implode(',',$old_doc_nos);
+                    echo "<td><a class='btn btn-warning' onclick='show_view_form($imp_data)'>View</a>"; 
+                    if($old_cut_status=='')
+                        echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>";
+                    echo "</td>";
+                }else{
+                    echo "<td><h3 class='label label-warning'>Jobs Already Created with another source..</h3></td>";
+                }
                 echo "</tr>";
                 $end = 1;
                 $old_ratio = $row['ratio'];
                 $old_pcut = [];
                 $old_pplice = [];
                 $old_doc_nos = [];
+                $old_cut_status = '';
                 echo "<tr style='display:none'>
                 <td>".$row['ratio']."</td>
                 <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
@@ -360,6 +381,8 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 $old_pcut[]=$row['pcutno'];
                 $old_pplice[]=$row['p_plies'];
                 $old_doc_nos[] = $row['doc_no'];
+                if($row['act_cut_status']!='')
+                    $old_cut_status = $row['act_cut_status'];
                 $raw['pcutno'] = $row['pcutno'];
                 $raw['p_plies'] = $row['p_plies'];
                 $raw['doc_no'] = $row['doc_no'];
@@ -380,15 +403,51 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 $sno = str_pad($k,2,"0",STR_PAD_LEFT);
                 echo "<td>$old_qty[$sno]</td>";
             }
-            $qry_get_doc_details = "SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".implode(',',$old_doc_nos).")";
+            $qry_get_doc_details = "SELECT COUNT(*) AS old_jobs,pac_seq_no FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".implode(',',$old_doc_nos).")";
             $qry_get_doc_details_res = mysqli_query($link_ui, $qry_get_doc_details) or exit("Sql Error : qry_get_doc_details".mysqli_error($GLOBALS["___mysqli_ston"]));
             $old_cnt_jb = mysqli_fetch_array($qry_get_doc_details_res);
             if($old_cnt_jb['old_jobs']==0)
                 echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
-            else
-                echo "<td><h3 class='label label-warning'>Jobs Already Created..</h3></td>";
+            elseif($old_cnt_jb['pac_seq_no']=='-1'){
+                $view_shows[] = implode(',',$old_doc_nos);
+                $imp_data = implode(',',$old_doc_nos);
+                echo "<td><a class='btn btn-warning' onclick='show_view_form($imp_data)'>View</a>"; 
+                if($old_cut_status=='')
+                    echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>";
+                echo "</td>";
+            }else{
+                echo "<td><h3 class='label label-warning'>Jobs Already Created with another source..</h3></td>";
+            }
         echo "</tr>";
-        echo "</tbody></table>"; 
+        echo "</tbody></table></div>"; 
+
+        foreach($view_shows as $view){
+            echo "<div id='view-".$view."' style='display:none'>";
+            $qry_get_doc_details_view = "SELECT * FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$view.")";
+            $qry_get_doc_details_view_res = mysqli_query($link_ui, $qry_get_doc_details_view) or exit("Sql Error : qry_get_doc_details_view_res".mysqli_error($GLOBALS["___mysqli_ston"]));
+            echo "<div class='pull-right'><button class='btn btn-info' onclick='hide_rev($view)'>Back</button></div><br/>";
+            echo "<table class='table'><thead><tr><th>#</th><th>Job</th><th>Size</th><th>Sewing Type</th><th>Quantity</th></tr></thead><tbody>";
+            $seq=1;
+            while($wr = mysqli_fetch_array($qry_get_doc_details_view_res)){
+                if($wr['type_of_sewing'] == 3){
+                    $sew_type = 'Sample';
+                }elseif($wr['type_of_sewing'] == 2){
+                    $sew_type = 'Excess';
+                }else{
+                    $sew_type = 'Normal';
+                }
+                 
+                echo "<tr>
+                    <td>".$seq++."</td>
+                    <td>".$wr['input_job_no']."</td>
+                    <td>".$wr['size_code']."</td>
+                    <td>".$sew_type."</td>
+                    <td>".$wr['carton_act_qty']."</td>
+                </tr>";
+            }
+            echo "</tbody></table>";
+            echo "</div>";
+        }
 
         if($ex_cut_lrt == 1){
             //=============== first cut =============
@@ -450,7 +509,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 </div>
                 <br/>
                 <div ng-show='jobs.length'>
-                    <table class='table' style="display:none;">
+                    <table class='table' style="display:none">
                         <thead>
                             <tr><th>#</th><th>Job ID</th><th>Bundle</th><th>Size</th><th>Quantity</th></tr>
                         </thead>
@@ -463,6 +522,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                                 <td>{{item.bundle}}</td>
                                 <td>{{item.job_size}}</td>
                                 <td>{{item.job_qty}}</td>
+                                <td>{{item.type_of_sewing}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -568,13 +628,13 @@ app.controller('cutjobcontroller', function($scope, $http) {
                 $scope.details = $scope.details_all[ss].size_details;
                 $scope.generatejobs();
                 var bun_jobs = $scope.genbundle($scope.jobs);
-                $scope.arrange_jobs(bun_jobs);
-                dummy['sizedetails'] = bun_jobs;
+                var arrange_jobs = $scope.arrange_jobs(bun_jobs);
+                dummy['sizedetails'] = arrange_jobs;
                 $scope.fulljob[ss] = dummy;
 
             }
             //console.log($scope.fulljob);
-           //$scope.createjobs();
+           $scope.createjobs();
        }else{
            if(Number($scope.jobcount)<=0)
             swal('Input Job Quantity should be grater then zero.');
@@ -594,10 +654,10 @@ app.controller('cutjobcontroller', function($scope, $http) {
         var new_ary = [];
         for(j=bun_jobs.length-1;j>=0;j--){
             if(cons_ary[bun_jobs[j].job_size]){
-                if(cons_ary[bun_jobs[j].job_size].sample>0 || cons_ary[bun_jobs[j].job_size].excess>0){
+                if(Number(cons_ary[bun_jobs[j].job_size].sample)>0 || Number(cons_ary[bun_jobs[j].job_size].excess)>0){
                     if(Number(cons_ary[bun_jobs[j].job_size].sample)<=Number(bun_jobs[j].job_qty)){
                         //====== sample-3 ===========
-                        if(Number(cons_ary[bun_jobs[j].job_size].sample)>0){
+                        if(Number(cons_ary[bun_jobs[j].job_size].sample)>0 && Number(bun_jobs[j].job_qty)>0){
                             new_ary.push({job_id: bun_jobs[j].job_id,
                              job_qty: cons_ary[bun_jobs[j].job_size].sample, 
                              job_size_key: bun_jobs[j].job_size_key,
@@ -606,29 +666,73 @@ app.controller('cutjobcontroller', function($scope, $http) {
                              type_of_sewing:3});
 
                             bun_jobs[j].job_qty = Number(bun_jobs[j].job_qty) - Number(cons_ary[bun_jobs[j].job_size].sample);
-
-                            if(Number(cons_ary[bun_jobs[j].job_size].excess)<=Number(bun_jobs[j].job_qty) && Number(bun_jobs[j].job_qty)>0){
-                            //=========== excess - 2 =============
-
-                            }else{
-
-                            }
+                            cons_ary[bun_jobs[j].job_size].sample = 0;
                         }
                     }else{
+                        new_ary.push({job_id: bun_jobs[j].job_id,
+                             job_qty: bun_jobs[j].job_qty, 
+                             job_size_key: bun_jobs[j].job_size_key,
+                             job_size: bun_jobs[j].job_size, 
+                             bundle: bun_jobs[j].bundle,
+                             type_of_sewing:3});
 
+                        cons_ary[bun_jobs[j].job_size].sample = cons_ary[bun_jobs[j].job_size].sample-bun_jobs[j].job_qty;
+                        bun_jobs[j].job_qty = 0;
+                    }
+                    if(Number(bun_jobs[j].job_qty)>0){
+                        if(Number(cons_ary[bun_jobs[j].job_size].excess)<=Number(bun_jobs[j].job_qty)){
+                        //=========== excess - 2 =============
+                            if(Number(cons_ary[bun_jobs[j].job_size].excess)>0){
+                                new_ary.push({job_id: bun_jobs[j].job_id,
+                                    job_qty: cons_ary[bun_jobs[j].job_size].excess, 
+                                    job_size_key: bun_jobs[j].job_size_key,
+                                    job_size: bun_jobs[j].job_size, 
+                                    bundle: bun_jobs[j].bundle,
+                                    type_of_sewing:2});
+
+                                bun_jobs[j].job_qty = Number(bun_jobs[j].job_qty) - Number(cons_ary[bun_jobs[j].job_size].excess);
+                                cons_ary[bun_jobs[j].job_size].excess = 0;
+                            }
+                        }else{
+                            new_ary.push({job_id: bun_jobs[j].job_id,
+                                job_qty: bun_jobs[j].job_qty, 
+                                job_size_key: bun_jobs[j].job_size_key,
+                                job_size: bun_jobs[j].job_size, 
+                                bundle: bun_jobs[j].bundle,
+                                type_of_sewing:2});
+                                
+                            cons_ary[bun_jobs[j].job_size].excess = cons_ary[bun_jobs[j].job_size].excess-bun_jobs[j].job_qty;
+                            bun_jobs[j].job_qty = 0;
+                        }
+                    }
+                    if(Number(bun_jobs[j].job_qty)>0){
+                        new_ary.push({job_id: bun_jobs[j].job_id,
+                             job_qty: bun_jobs[j].job_qty, 
+                             job_size_key: bun_jobs[j].job_size_key,
+                             job_size: bun_jobs[j].job_size, 
+                             bundle: bun_jobs[j].bundle,
+                             type_of_sewing:1});
                     }
 
+
                 }else{
+                    if(bun_jobs[j].job_qty>0){
+                        bun_jobs[j].type_of_sewing = 1;
+                        new_ary.push(bun_jobs[j]);
+                    }
+                }
+            }else{
+                if(bun_jobs[j].job_qty>0){
                     bun_jobs[j].type_of_sewing = 1;
                     new_ary.push(bun_jobs[j]);
                 }
-            }else{
-                bun_jobs[j].type_of_sewing = 1;
-                new_ary.push(bun_jobs);
             }
         }
 
-        console.log(new_ary);
+        //console.log(new_ary);
+        return new_ary.sort(function(a, b) {
+    return Number(a.bundle) - Number(b.bundle);  
+});
     }
 
     $scope.createjobs = function()
@@ -735,6 +839,28 @@ function assigndata(s,max,end){
         scope.jobs   = [];
         scope.fulljob = [];
     });
+}
+
+function show_view_form(docs_id){
+    $("#view-"+docs_id).css("display", "block");
+    $("#main-table").css("display", "none");
+}
+function hide_rev(docs_id){
+    $("#view-"+docs_id).css("display", "none");
+    $("#main-table").css("display", "block");
+}
+function delet(docs_id){
+    $("#del-"+docs_id).css("display", "none");
+    $.post( "<?= trim($url) ?>", { del_recs: docs_id } ).done(function(data) {
+    if(data=='success'){
+        swal('Jobs Deleated successfully.');
+        setTimeout(function(){ location.reload(); }, 300);
+    }else{
+        swal('Jobs not Deleated.');
+        setTimeout(function(){ location.reload(); }, 300);
+    }
+  });
+
 }
 </script>
 <?php } ?>
