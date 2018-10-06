@@ -88,11 +88,12 @@ function enableButton()
 		    for (i = 0; i < x.length; i++) 
 		    {
 		      y=Number(y)+Number(x[i].value);
-		        
+		    console.log(y);
+		    console.log(Number(txtrejtot)+Number(txtlenshrtqty));
 		    }
-		   if(y !=(Number(txtrejtot)+Number(txtlenshrtqty)))
+		   if(y > (Number(txtrejtot)+Number(txtlenshrtqty)))
 		   {
-		   	sweetAlert('Effected Quantity Total should Be equal to Rejected Total ','','warning');
+		   	sweetAlert('Effected Quantity Total should Be less or equal to Rejected Total ','','warning');
 		   	return false;
 		   }
 		   else
@@ -119,9 +120,15 @@ function enableButton()
 
 <body>
 <?php
+$comcat=$_POST["selcompro"];
+$batch_no=$_POST["txtbatch"];
+$lot_no_ref_new_test=$_POST["sellotnosrefnew"];
+
+
 if(isset($_POST['txtbatch']))
 {
 	$comcat=$_POST['selcompro'];
+	$batch_no=$_POST["txtbatch"];
 	$lot_no_ref_new_test=$_POST["sellotnosrefnew"];
 }
 else
@@ -141,19 +148,20 @@ echo '<a class="btn btn-info btn-xs" href="'.getFullURL($_GET["r"],"Supplier_Cla
 ?>
 <form id="testx" name="test" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="POST">
 
-Enter Batch No <input type="text" class="form-control alpha"  style="width: 150px;  display: inline-block;" name="txtbatch" id="txtbatch" onblur="firstbox();" 
-size="8" value="<?php if(isset($_POST['txtbatch'])) { echo $_GET['batch']; } else { echo $_GET['batch']; } ?>" /> 
+Enter Batch No <input type="text" class="form-control"  style="width: 150px;  display: inline-block;" name="txtbatch" id="txtbatch" onblur="firstbox();" 
+size="8" value="<?php if(isset($_POST['txtbatch'])) { echo $batch_no; } else { echo $_GET['batch']; } ?>" /> 
 
 
 
 <?php
 error_reporting(0);
-
 $batch=$_GET["batch"];
+$batch_temp = $batch;
 if($batch=="")
 {
 	$batch=-1;
 }
+$batch_temp1 = $batch;
 
 $sql="SELECT DISTINCT(SUBSTRING_INDEX(product_group,'-',-1)) AS compro FROM $bai_rm_pj1.sticker_report WHERE batch_no=\"".$batch."\"";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -161,33 +169,42 @@ $row=mysqli_fetch_array($result);
 
 
  $value_comp = $row["compro"];
- echo "Complaint Product ";
- echo "<input type='text' readonly value='$value_comp' name=\"selcompro\" class='form-control' style='width: 150px;  display: inline-block;'>";
-
-echo "Select Lot Nos";
-echo "<select name=\"sellotnosrefnew[]\"  class='form-control' onclick='return check_batch();' style='width: 150px;  display: inline-block;'>";
-$sql1="SELECT DISTINCT(lot_no) AS lot_no FROM $bai_rm_pj1.sticker_report WHERE batch_no=\"".$batch."\" and length(batch_no) > 0";
-$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($row1=mysqli_fetch_array($result1))
-{
-
-	if(in_array($row1["lot_no"],$lot_no_ref_new_test))
-	{
-
-		echo "<option selected>".$row1["lot_no"]."</option>";
-	}
-	else
-	{
-		echo "<option>".$row1["lot_no"]."</option>";
+ if($batch_temp!='' || $_POST['selcompro']!=''){
+	echo "Complaint Product ";
+	if(isset($_POST['selcompro']))
+	{ 
+		$value_comp=$comcat;
+		$batch = $batch_no;
 	}	
-}
-echo "</select>&nbsp;&nbsp;&nbsp;";
+	echo "<input type='text' readonly value='$value_comp' name=\"selcompro\" id='selcompro' class='form-control' style='width: 150px;  display: inline-block;'>";
+	
+	echo "Select Lot Nos";
+	echo "<select name=\"sellotnosrefnew[]\"  class='form-control' onclick='return check_batch();' style='width: 150px;  display: inline-block;'>";
+	echo "<option value='' selected disabled>Please Select</option>";
+	$sql1="SELECT DISTINCT(lot_no) AS lot_no FROM $bai_rm_pj1.sticker_report WHERE batch_no=\"".$batch."\" and length(batch_no) > 0";
+	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row1=mysqli_fetch_array($result1))
+	{
 
-if(mysqli_num_rows($result1) < 1 && $batch != '-1'){
-	echo "<script>sweetAlert('No lots found for entered batch','','error');</script>";
-}
+		if(in_array($row1["lot_no"],$lot_no_ref_new_test))
+		{
 
-echo "<input type=\"submit\" value=\"Show\" name=\"show\" onclick='return check_batch();' class=\"btn btn-success\" />";
+			echo "<option selected>".$row1["lot_no"]."</option>";
+		}
+		else
+		{
+			echo "<option>".$row1["lot_no"]."</option>";
+		}	
+	}
+	echo "</select>&nbsp;&nbsp;&nbsp;";
+
+	if(mysqli_num_rows($result1) < 1 && $batch != '-1'){
+		echo "<script>sweetAlert('No lots found for entered batch','','error');</script>";
+	}
+
+	echo "<input type=\"submit\" value=\"Show\" name=\"show\" onclick='return check_batch();' class=\"btn btn-success\" />";
+ }
+ 
 ?>
 </form>
 <?php
@@ -320,7 +337,13 @@ if(isset($_POST['show']))
 			echo "<th class=\"style1\"><input type=\"hidden\" class=\"form-control\" name=\"txtcomcat\" value=\"".$comcat_type."\" />Complaint Product</th><td>".$comcat_type."</td>";
 			echo "<th>Complaint Category</th>";
 	
-			echo "<td><input type=\"text\" name=\"selcomcat\" id=\"selcomcat\" class=\"form-control\" readonly=\"true\"></td>";	  
+			echo "<td>";
+			echo "<select name=\"selcomcat\" id=\"selcomcat\" class=\"form-control\" required>";
+			echo "<option value='' selected disabled>Please Select</option>";
+			echo "<option value='Rejected'>Rejected</option>";
+			echo "<option value='Replacement'>Replacement</option>"; 
+			echo "<option value='Rejected & Replacement'>Both</option>"; 
+			echo "</td>";	  
 			echo "<th>Batch No</th><td><input type=\"hidden\" class=\"form-control\"  name=\"txtbatchref\" value=\"".$batch_no."\" />$batch_no</td>";
 			echo "<th>PO No</th><td><input type=\"hidden\" class=\"form-control\" name=\"txtporef\" value=\"".$rej_pos."\" />".$rej_pos."</td>";
 			echo "</tr>";
@@ -397,7 +420,7 @@ if(isset($_POST['show']))
 			echo "<td><input type=\"text\" class=\"form-control float\"  size=10 name=\"txtrejtot\" id=\"txtrejtot\"  value=\"".(round($rejqty,2)-$reject_roll_qty_sum)."\" /><input type=\"hidden\" class=\"form-control float\"  size=10 name=\"txtrejtot1\" id=\"txtrejtot1\"  value=\"".(round($rejqty,2)-$reject_roll_qty_sum)."\" />";
 			echo "</td>";
 			echo "<th>Replacement Qty</th>";
-			echo "<td><input type=\"text\" class=\"form-control float\"  size=10  name=\"txtlenshrtqty\" id=\"txtlenshrtqty\" readOnly=\"true\" value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /></td>";
+			echo "<td><input type=\"text\" class=\"form-control float\"  size=10  name=\"txtlenshrtqty\" id=\"txtlenshrtqty\" value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /></td>";
 			echo "<th>UOM</th><td><select name=\"seluom\" class=\"form-control\">";
 			for($i=0;$i<sizeof($uom_exp);$i++)
 			{
@@ -633,6 +656,8 @@ if(isset($_POST['submitx']))
 	}
 	
 	echo "<script>sweetAlert('Successfully','Updated','success')</script>";
+	// $url = getFullURLLevel($_GET['r'],'Supplier_Claim_Request_Form.php',0,'N');
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",180); function Redirect() {  location.href = \"$url&batch=$batch_no_ref&sellotnosrefnew=$lot_no_ref_final&selcompro=$comcat_type_ref\"; }</script>";
 }
 ?>
 </body>
