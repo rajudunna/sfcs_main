@@ -17,7 +17,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
         <title>Hourly Efficiency Rework</title> 
         <meta http-equiv="X-UA-Compatible" content="IE=8" /> 
         <script language="javascript" type="text/javascript" src="../common/js/datetimepicker_css.js"></script> 
-        <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="../../../common/css/style.css" type="text/css" media="all" />
         <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
 
         <style> 
@@ -107,7 +107,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                 return false; 
             } 
         </script> 
-        <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>     
+        <?php echo '<link href="../../../common/css/sfcs_styles.css" rel="stylesheet" type="text/css" />'; ?>     
     </head> 
 
     <body onload="showHideDiv()"> 
