@@ -6,6 +6,7 @@
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 		$emp_id = $_GET['emp_id'];
+		$team_id = $_GET['team_id'];
 	?>
 	<link rel="stylesheet" type="text/css" href="../../common/css/bootstrap.css">
 	<script src="../../common/js/jquery.min.js"></script>
@@ -33,6 +34,7 @@
 			<div class="panel-heading">Carton Scanning - Decentralized Packing </div>
 			<div class="panel-body">
 				<input type="hidden" name="emp_id" id="emp_id" value="<?php echo $emp_id; ?>">
+				<input type="hidden" name="team_id" id="team_id" value="<?php echo $team_id; ?>">
 				<div class="form-inline col-sm-5">
 					<label><font size="5">Carton ID: </font></label>
 					<input type="text" name="carton_id" class="form-control" id="carton_id" onkeypress="return AcceptOnlyNumbers(event);" placeholder="Enter Carton ID here">
@@ -97,6 +99,7 @@
 		{
 			$("#display_result").hide();
 			var emp_id = $("#emp_id").val();
+			var team_id = $("#team_id").val();
 			if (carton_id != '')
 			{
 				$("#loading_img").show();
@@ -105,7 +108,7 @@
 					url: function_text,
 					dataType: "json", 
 					type: "GET",
-					data: {carton_id:carton_id,emp_id:emp_id},    
+					data: {carton_id:carton_id,emp_id:emp_id,team_id:team_id},    
 					cache: false,
 					success: function (response) 
 					{
