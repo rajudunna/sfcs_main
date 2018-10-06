@@ -563,7 +563,7 @@ else
 					if($qty[$i]>0)
 					{
 						
-						$sql="select coalesce(sum(qms_qty),0) as \"qms_qty\"  from $bai_pro3.bai_qms_db where qms_style=\"".$style."\" and qms_schedule=\"".$schedule."\" and qms_color=\"".$color."\" and qms_size=\"".$sizes[$i]."\" and qms_tran_type in (1)";
+						$sql="select coalesce(sum(qms_qty),0) as \"qms_qty\"  from $bai_pro3.bai_qms_db where qms_style=\"".$style."\" and qms_schedule=\"".$schedule."\" and qms_color=\"".$color."\" and qms_size=\"".$title_sizes_db[$i]."\" and qms_tran_type in (1)";
 
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
@@ -709,7 +709,7 @@ else
 		{
 			if($qty[$i]>0)
 			{
-				$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."\",\"".date("Y-m-d")."\")";
+				$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$title_sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."\",\"".date("Y-m-d")."\")";
 				//echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
