@@ -108,14 +108,14 @@ table, th, td {
 													$eligible[$row_result23['mo_no']]=$row_result23['remaining_qty'];
 												}
 											}
-											$pac_stat="SELECT pac_stat_id,carton_no,status,group_concat(tid) as tids FROM $bai_pro3.packing_summary WHERE order_del_no='$schedule' and seq_no='".$pack_result12['pac_seq_no']."' group by pac_stat_id";
+											$pac_stat="SELECT pac_stat_id,carton_no,status as cart_status,group_concat(tid) as tids FROM $bai_pro3.packing_summary WHERE order_del_no='$schedule' and seq_no='".$pack_result12['pac_seq_no']."' group by pac_stat_id";
 											//echo $pac_stat."<bR>";
 											$label_concat='';
 											$pac_stat_result=mysqli_query($link, $pac_stat) or exit("error while fetching pack methods4");
 											while($row_result1=mysqli_fetch_array($pac_stat_result))
 											{
 												$status=0;
-												if($row_result1['status']=='DONE')
+												if($row_result1['cart_status']=='DONE')
 												{
 													$complete_cart_no[]=$row_result1['carton_no'];
 													$cart_no[]=$row_result1['carton_no'];
