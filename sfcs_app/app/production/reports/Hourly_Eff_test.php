@@ -408,7 +408,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     echo "<th style='background-color:#29759C;'>".$headers[$i]."-".($headers[$i]+1)."</th>";  
                                 } 
 
-                                echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours12</th> 
+                                echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours</th> 
                                 <th style='background-color:#29759C;'>Plan EFF%</th> 
                                 <th style='background-color:#29759C;'>Plan Pro.</th> 
 
@@ -485,7 +485,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     { 
                                         echo "<th style='background-color:#29759C;'>".$headers[$i]."-".($headers[$i]+1)."</th>";
                                     } 
-                                    echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours11</th> 
+                                    echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours</th> 
                                         <th style='background-color:#29759C;'>Plan EFF%</th> 
                                         <th style='background-color:#29759C;'>Plan Pro.</th> 
                                         <th style='background-color:#29759C;'>CLH</th> 
