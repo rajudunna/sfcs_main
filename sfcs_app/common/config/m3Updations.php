@@ -24,7 +24,9 @@ function updateM3Transactions($ref_id,$op_code,$qty)
         $color = $row['mapped_color'];
     }
     //getting main operation_code from operation mapping
-    $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    //$bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    $bundle_creation_data_check = "SELECT main_operationnumber FROM $bai_pro3.schedule_oprations_master 
+                                    WHERE style ='$style' AND description ='$color' and operationnumber = '$op_code'";
     // echo $bundle_creation_data_check;
 	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
@@ -116,8 +118,8 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                 $insert_id=mysqli_insert_id($link);
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
-            
-                    $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+        
+                    $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                     $api_data = $obj->getCurlAuthRequest($api_url);
                     $decoded = json_decode($api_data,true);
                     $type=$decoded['@type'];
@@ -167,7 +169,9 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
         $b_colors = $row['mapped_color'];
     }
     //getting main operation_code from operation mapping
-    $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    //$bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    $bundle_creation_data_check = "SELECT main_operationnumber FROM $bai_pro3.schedule_oprations_master 
+                                    WHERE style ='$style' AND description ='$color' and operationnumber = '$op_code'";
     // echo $bundle_creation_data_check;
 	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
@@ -254,7 +258,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                
                 // //M3 Rest API Call
                 if($enable_api_call == 'YES'){
-                    $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                    $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                     $api_data = $obj->getCurlAuthRequest($api_url);
                     $decoded = json_decode($api_data,true);
                     $type=$decoded['@type'];
@@ -308,7 +312,9 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
         $b_colors = $row['mapped_color'];
     }
     //getting main operation_code from operation mapping
-    $bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    //$bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    $bundle_creation_data_check = "SELECT main_operationnumber FROM $bai_pro3.schedule_oprations_master 
+                                    WHERE style ='$style' AND description ='$color' and operationnumber = '$op_code'";
     // echo $bundle_creation_data_check;
 	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
@@ -393,7 +399,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     
                     //M3 Rest API Call
                     if($enable_api_call == 'YES'){
-                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=''&SCQA=$to_update_qty&SCRE='".$r_reasons[$key]."'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&SCQA=$to_update_qty&SCRE=".$r_reasons[$key]."&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                         $api_data = $obj->getCurlAuthRequest($api_url);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];
