@@ -3230,6 +3230,11 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                     ?> 
                 </div> 
             </div>
+            <script language="javascript" type="text/javascript" src="../../../common/js/jquery.js"></script> 
+			<script>
+                    $('#printable').find('br').remove();
+            </script>
+            </div>
             </div>
         </body>
     </body> 
