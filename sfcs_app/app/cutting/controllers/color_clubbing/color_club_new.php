@@ -122,7 +122,7 @@ echo "<div class='row'>";
 echo "<div class='col-md-3'>Select Style: <select name=\"style\" id=\"style\" onchange=\"firstbox();\" class=\"select2_single form-control\">";
 $sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm group by order_style_no";	
 // echo "working".$sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "<option value='' selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -148,7 +148,7 @@ echo "<div class='col-md-3'>Select Schedule: <select name=\"schedule\" id=\"sche
 $sql_result='';
 if($style){
 		$sql="select order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" group by order_del_no";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 echo "<option value='' selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -171,7 +171,7 @@ $sql_result = '';
 if($schedule){
 	$sql="select distinct category from $bai_pro3.order_cat_doc_mix where REPLACE(order_tid,' ','') like \"%$style_schedule%\"";
 	// echo "Qry :".$sql."</br>";	
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 echo "<div class='col-md-3'>Select Category: <select name=\"category\" id=\"category\" onclick=\"return check_style_sch();\" onchange=\"thirdbox();\" class=\"select2_single form-control\">";
 echo "<option value='' selected>NIL</option>";
@@ -189,16 +189,16 @@ echo "</select></div>";
 
 
 $sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";	
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $total_schedules=mysqli_num_rows($sql_result);
 
 $sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";	
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 $lay_plan_generated=mysqli_num_rows($sql_result);
 
 $sql="select print_status from $bai_pro3.plandoc_stat_log where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\") and print_status is not null and plan_module is not null";
 	
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $doc_count=mysqli_num_rows($sql_result);
 
 if($total_schedules==$lay_plan_generated and $doc_count==0 || $category!='')
@@ -230,7 +230,7 @@ if(isset($_POST['submit']))
 	$existing_id=0;
 	echo "<tr class='success'><th>Group</th><th>Style/Schedule/Color</th><th>Category</th><th>Purchase Width</th><th>Order Quantity</th><th>Packing Method Ratio</th></tr>";
 	$sql="select sum(p_xs*p_plies) as xs, sum(p_s*p_plies) as s, sum(p_m*p_plies) as m, sum(p_l*p_plies) as l, sum(p_xl*p_plies) as xl, sum(p_xxl*p_plies) as xxl, sum(p_xxxl*p_plies) as xxxl, sum(p_s01*p_plies) as s01,sum(p_s02*p_plies) as s02,sum(p_s03*p_plies) as s03,sum(p_s04*p_plies) as s04,sum(p_s05*p_plies) as s05,sum(p_s06*p_plies) as s06,sum(p_s07*p_plies) as s07,sum(p_s08*p_plies) as s08,sum(p_s09*p_plies) as s09,sum(p_s10*p_plies) as s10,sum(p_s11*p_plies) as s11,sum(p_s12*p_plies) as s12,sum(p_s13*p_plies) as s13,sum(p_s14*p_plies) as s14,sum(p_s15*p_plies) as s15,sum(p_s16*p_plies) as s16,sum(p_s17*p_plies) as s17,sum(p_s18*p_plies) as s18,sum(p_s19*p_plies) as s19,sum(p_s20*p_plies) as s20,sum(p_s21*p_plies) as s21,sum(p_s22*p_plies) as s22,sum(p_s23*p_plies) as s23,sum(p_s24*p_plies) as s24,sum(p_s25*p_plies) as s25,sum(p_s26*p_plies) as s26,sum(p_s27*p_plies) as s27,sum(p_s28*p_plies) as s28,sum(p_s29*p_plies) as s29,sum(p_s30*p_plies) as s30,sum(p_s31*p_plies) as s31,sum(p_s32*p_plies) as s32,sum(p_s33*p_plies) as s33,sum(p_s34*p_plies) as s34,sum(p_s35*p_plies) as s35,sum(p_s36*p_plies) as s36,sum(p_s37*p_plies) as s37,sum(p_s38*p_plies) as s38,sum(p_s39*p_plies) as s39,sum(p_s40*p_plies) as s40,sum(p_s41*p_plies) as s41,sum(p_s42*p_plies) as s42,sum(p_s43*p_plies) as s43,sum(p_s44*p_plies) as s44,sum(p_s45*p_plies) as s45,sum(p_s46*p_plies) as s46,sum(p_s47*p_plies) as s47,sum(p_s48*p_plies) as s48,sum(p_s49*p_plies) as s49,sum(p_s50*p_plies) as s50, category,order_tid,purwidth,clubbing,cat_ref from $bai_pro3.order_cat_doc_mix where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\") and category=\"$category\" group by order_tid,category order by purwidth";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$i=0;
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -392,19 +392,10 @@ if(sizeof($cat_ids)>1){
 
 		if(sizeof($tot)==sizeof($cat_ids))
 		{
-			($_POST['cb_ids']!= NULL ) ? $cb_ids_array = implode(',',$_POST['cb_ids'])  :  $cb_ids_array = '';
-				
-			$sql="Select (order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50) as sum  from $bai_pro3.bai_orders_db where order_tid in (select order_tid from $bai_pro3.cat_stat_log where tid in ($cb_ids_array))";
-			//echo $sql."<br>";
-			if(!$cb_ids_array){
-				echo "<script>swal('Colors Already Clubbed ','','info')</script>";
-				exit();
-			}
-
-			if(mysqli_query($link, $sql) or exit("Sql Error 31".mysqli_error($GLOBALS["___mysqli_ston"])))	
+            ($_POST['cb_ids']!= NULL ) ? $cb_ids_array = implode(',',$_POST['cb_ids'])  :  $cb_ids_array = '';
 			//$sql="update cat_stat_log set clubbing=$new_id where tid in (".implode(",",$_POST['cb_ids']).")";
 			$sql="update $bai_pro3.cat_stat_log set clubbing='$new_id' where tid in ($cb_ids_array)";
-			// echo $sql."<br/>";
+			
 			if(mysqli_query($link, $sql) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"])))
 			{
 				echo "<div class='col-sm-12'><div class='alert alert-success' role='alert' >Successfully Updated.</div></div>";
@@ -412,124 +403,8 @@ if(sizeof($cat_ids)>1){
 			else
 			{
 				echo "<div class='col-sm-12'><div class='alert alert-danger' role='alert' >Failed.</div></div>";
-			}
+			}		
 		
-			//$cat_ids=$_POST['cb_ids'];
-			$club_count=sizeof($_POST['cb_ids']);
-			if($plies_ref=="max")
-			{
-				// $sql="select max(pliespercut) as plies from allocate_stat_log where cat_ref in (".implode(",",$_POST['cb_ids']).")";
-				$sql="select max(pliespercut) as plies from $bai_pro3.allocate_stat_log where cat_ref in ('$cb_ids_array')";
-
-			}
-			if($plies_ref=="min")
-			{
-				// $sql="select min(pliespercut) as plies from allocate_stat_log where cat_ref in (".implode(",",$_POST['cb_ids']).")";
-				$sql="select min(pliespercut) as plies from $bai_pro3.allocate_stat_log where cat_ref in ('$cb_ids_array')";
-
-			}
-			//echo $sql."<br/>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$maxplies=$sql_row['plies'];
-			}
-		
-			for($i=0;$i<sizeof($cat_ids);$i++)
-			{
-				$cat_ref=$cat_ids[$i];
-				
-				if($clb_ratio==0)
-				{
-					$allowed_per_cut=sizeof($tot)/$sum_keys*$maxplies;
-					// echo $allowed_per_cut."=".sizeof($tot)."/".$sum_keys."*".$maxplies."<br>";
-				}
-				else
-				{
-					$allowed_per_cut=$tot[$i]/$clb_ratio*$maxplies; 
-				}
-							
-				$amend_doc=array();
-				$amend_plies=array();
-				
-				$new_doc_ref=array();
-				$new_doc_plies=array();
-				$new_doc_cut_no=array(); //added by KiranG 20150912 - to avoid ratio jumping issue
-				
-				$sql="select doc_no,p_plies,pcutno from $bai_pro3.plandoc_stat_log where cat_ref=$cat_ref order by pcutno";
-				//echo "<br/>".$sql;
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$doc_no=$sql_row['doc_no'];
-					$p_plies=$sql_row['p_plies'];
-					$pcutno=$sql_row['pcutno']; //relocated by KiranG 20150912 - to avoid ratio jumping issue
-					//echo "<br/>data=".$doc_no."--".$p_plies."--".$pcutno;
-					//echo "<br/> allowed per cut ".$allowed_per_cut;
-					if($p_plies>$allowed_per_cut)
-					{
-						//echo "One"."<br/>";
-						$amend_doc[]=$doc_no;
-						$amend_plies[]=$allowed_per_cut;
-						$p_plies=$p_plies-$allowed_per_cut;
-						
-						$new_cut_no=1; //added by KiranG 20150912 - to avoid ratio jumping issue
-						do
-						{
-							//echo "Two"."<br/>";
-							if($p_plies>$allowed_per_cut)
-							{
-								$new_doc_ref[]=$doc_no;
-								$new_doc_plies[]=$allowed_per_cut;
-							}
-							else
-							{
-								$new_doc_ref[]=$doc_no;
-								$new_doc_plies[]=$p_plies;
-							}
-							$p_plies=$p_plies-$allowed_per_cut;
-							$new_doc_cut_no[]=$pcutno.".".$new_cut_no; //added by KiranG 20150912 - to avoid ratio jumping issue
-							$new_cut_no++; //added by KiranG 20150912 - to avoid ratio jumping issue
-						}while($p_plies>0);
-					}
-					
-				}
-				
-				for($j=0;$j<sizeof($amend_doc);$j++)
-				{
-					$sql="update $bai_pro3.plandoc_stat_log set p_plies=".$amend_plies[$j].", a_plies=".$amend_plies[$j]." where cat_ref=$cat_ref and doc_no=".$amend_doc[$j];
-					// echo "<br/>".$sql;
-					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				}
-				$pcutno++;
-				
-				for($j=0;$j<sizeof($new_doc_ref);$j++)
-				{
-					$new_plies=$new_doc_plies[$j];
-					$new_doc_reff = $new_doc_ref[$j];
-					$sql="insert into $bai_pro3.plandoc_stat_log(date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,ratio,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_plies,a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,a_plies,lastup,remarks,act_cut_status,act_cut_issue_status,pcutdocid,print_status,a_s01,a_s02,a_s03,a_s04,a_s05,a_s06,a_s07,a_s08,a_s09,a_s10,a_s11,a_s12,a_s13,a_s14,a_s15,a_s16,a_s17,a_s18,a_s19,a_s20,a_s21,a_s22,a_s23,a_s24,a_s25,a_s26,a_s27,a_s28,a_s29,a_s30,a_s31,a_s32,a_s33,a_s34,a_s35,a_s36,a_s37,a_s38,a_s39,a_s40,a_s41,a_s42,a_s43,a_s44,a_s45,a_s46,a_s47,a_s48,a_s49,a_s50				,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,rm_date,cut_inp_temp,plan_module,fabric_status,plan_lot_ref) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,".$new_doc_cut_no[$j].",".$new_doc_cut_no[$j].",ratio,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,$new_plies,a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,$new_plies,lastup,remarks,act_cut_status,act_cut_issue_status,pcutdocid,print_status,a_s01,a_s02,a_s03,a_s04,a_s05,a_s06,a_s07,a_s08,a_s09,a_s10,a_s11,a_s12,a_s13,a_s14,a_s15,a_s16,a_s17,a_s18,a_s19,a_s20,a_s21,a_s22,a_s23,a_s24,a_s25,a_s26,a_s27,a_s28,a_s29,a_s30,a_s31,a_s32,a_s33,a_s34,a_s35,a_s36,a_s37,a_s38,a_s39,a_s40,a_s41,a_s42,a_s43,a_s44,a_s45,a_s46,a_s47,a_s48,a_s49,a_s50	,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,rm_date,cut_inp_temp,plan_module,fabric_status,plan_lot_ref from $bai_pro3.plandoc_stat_log where doc_no='$new_doc_reff'"; //replaced $pcutno with $new_doc_cut_no by KiranG 20150912 - to avoid ratio jumping issue
-					// echo "<br/>".$sql;
-					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$pcutno++;
-				}
-				
-				//Resetting the sequence of acutno and pcutno // kirang 20150912
-				$sql="select doc_no from $bai_pro3.plandoc_stat_log where cat_ref=$cat_ref order by pcutno";
-				// echo "<br/>".$sql;
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$m=1;
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$sql="update $bai_pro3.plandoc_stat_log set pcutno=$m,acutno=$m where doc_no=".$sql_row['doc_no']; //replaced $pcutno with $new_doc_cut_no by KiranG 20150912 - to avoid ratio jumping issue
-					//echo "<br/>".$sql;
-					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$m++;
-				}			
-				unset($amend_doc);
-				unset($amend_plies);
-				unset($new_doc_plies);
-				unset($new_doc_ref);		
-			}
 		}
 		else
 		{
@@ -541,6 +416,7 @@ if(sizeof($cat_ids)>1){
 }else{
 	echo "<script>swal('Error','Please choose more than one category to proceed with color clubbing','error')</script>";
 }
+
 }
 ?>
 
