@@ -176,3 +176,12 @@ echo '<br>
         </div>
      </div>
 </div>
+
+
+<?php
+    if(isset($_GET['pac_seq_no']) && $_GET['pac_seq_no']){
+        echo "<style>.btn-primary{
+            display:none;
+        }</style>";
+    }
+?>

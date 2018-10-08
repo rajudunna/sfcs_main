@@ -235,7 +235,7 @@ echo "</select>
     </div>
     <div class='col-sm-3'>";
     if($schedule!='' && $style!=''){
-        echo "<a class='btn btn-success pull-right' href='?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX21peF9jaF9yZXBvcnQucGhw&schedule=".$schedule."&seq_no=-1&style=".$style."'>Print Labels</a>";
+        echo "<a class='btn btn-success pull-right' href='?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX21peF9jaF9yZXBvcnQucGhw&schedule=".$schedule."&seq_no=-1&style=".$style."' id='print_labels'>Print Labels</a>";
     }
     echo "</div>
     <br/>";
@@ -425,33 +425,39 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
             }
         echo "</tr>";
         echo "</tbody></table></div>"; 
-
-        foreach($view_shows as $view){
-            echo "<div id='view-".$view."' style='display:none'>";
-            $qry_get_doc_details_view = "SELECT * FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$view.")";
-            $qry_get_doc_details_view_res = mysqli_query($link_ui, $qry_get_doc_details_view) or exit("Sql Error : qry_get_doc_details_view_res".mysqli_error($GLOBALS["___mysqli_ston"]));
-            echo "<div class='pull-right'><button class='btn btn-info' onclick='hide_rev($view)'>Back</button></div><br/>";
-            echo "<table class='table'><thead><tr><th>#</th><th>Job</th><th>Size</th><th>Sewing Type</th><th>Quantity</th></tr></thead><tbody>";
-            $seq=1;
-            while($wr = mysqli_fetch_array($qry_get_doc_details_view_res)){
-                if($wr['type_of_sewing'] == 3){
-                    $sew_type = 'Sample';
-                }elseif($wr['type_of_sewing'] == 2){
-                    $sew_type = 'Excess';
-                }else{
-                    $sew_type = 'Normal';
+        if(count($view_shows)>0){
+            foreach($view_shows as $view){
+                echo "<div id='view-".$view."' style='display:none'>";
+                $qry_get_doc_details_view = "SELECT * FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$view.")";
+                $qry_get_doc_details_view_res = mysqli_query($link_ui, $qry_get_doc_details_view) or exit("Sql Error : qry_get_doc_details_view_res".mysqli_error($GLOBALS["___mysqli_ston"]));
+                echo "<div class='pull-right'><button class='btn btn-info' onclick='hide_rev($view)'>Back</button></div><br/>";
+                echo "<table class='table'><thead><tr><th>#</th><th>Job</th><th>Size</th><th>Sewing Type</th><th>Quantity</th></tr></thead><tbody>";
+                $seq=1;
+                while($wr = mysqli_fetch_array($qry_get_doc_details_view_res)){
+                    if($wr['type_of_sewing'] == 3){
+                        $sew_type = 'Sample';
+                    }elseif($wr['type_of_sewing'] == 2){
+                        $sew_type = 'Excess';
+                    }else{
+                        $sew_type = 'Normal';
+                    }
+                    
+                    echo "<tr>
+                        <td>".$seq++."</td>
+                        <td>".$wr['input_job_no']."</td>
+                        <td>".$wr['size_code']."</td>
+                        <td>".$sew_type."</td>
+                        <td>".$wr['carton_act_qty']."</td>
+                    </tr>";
                 }
-                 
-                echo "<tr>
-                    <td>".$seq++."</td>
-                    <td>".$wr['input_job_no']."</td>
-                    <td>".$wr['size_code']."</td>
-                    <td>".$sew_type."</td>
-                    <td>".$wr['carton_act_qty']."</td>
-                </tr>";
+                echo "</tbody></table>";
+                echo "</div>";
             }
-            echo "</tbody></table>";
-            echo "</div>";
+            echo "<style>
+            #print_labels{
+                display:block !important;
+            }
+            </style>";
         }
 
         if($ex_cut_lrt == 1){
@@ -774,7 +780,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
             .then(function successCallback(response) {
                 console.log(response.data);
                 if(response.data.message=='success'){
-                    swal('Cut Sewing jobs generated sucessfully');
+                    swal('Cut Sewing jobs generated successfully');
                     location.reload();
                 }else{
                     swal('Fail..');
@@ -858,14 +864,19 @@ function delet(docs_id){
     $("#del-"+docs_id).css("display", "none");
     $.post( "<?= trim($url) ?>", { del_recs: docs_id } ).done(function(data) {
     if(data=='success'){
-        swal('Jobs Deleated successfully.');
+        swal('Jobs Deleted successfully.');
         setTimeout(function(){ location.reload(); }, 300);
     }else{
-        swal('Jobs Deleated successfully.');
+        swal('Jobs Deleted successfully.');
         setTimeout(function(){ location.reload(); }, 300);
     }
   });
 
 }
 </script>
+<style>
+#print_labels{
+    display:none;
+}
+</style>
 <?php } ?>
