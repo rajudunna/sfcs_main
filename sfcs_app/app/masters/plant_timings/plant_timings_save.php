@@ -87,15 +87,15 @@ else
 								$sm = $start[1];
 								$eh = $end[0];
 								$em = $end[1];								
-								$start_time = "$sh:$sm:00";
-								if($em == 0){
-									$end_time = ($eh-1).':59:59';
+								$end_time = "$eh:30:00";
+								if($sm == 0){
+									$start_time = ($sh+2).':29:59';
 								}else{
-									$end_time = "$eh:".($em-1).":59";
+									$start_time = "$sh:".($sm+2).":59";
 								}
 								
 								$sql = "INSERT INTO $bai_pro3.tbl_plant_timings (time_value,time_display,start_time,end_time,day_part)
-								VALUES ('$eh','$start1-$end1','$start_time','$end_time','$day_part')";
+								VALUES ('$sh','$start1-$end1','$end_time','$start_time','$day_part')";
 								
 								if (mysqli_query($conn, $sql)) 
 								{
