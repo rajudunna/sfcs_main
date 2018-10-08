@@ -179,7 +179,7 @@ echo '<br>
 
 
 <?php
-    if(isset($_GET['pac_seq_no']) && $_GET['pac_seq_no']){
+    if(isset($_GET['pac_seq_no']) && $_GET['pac_seq_no']==-1){
         echo "<style>.btn-primary{
             display:none;
         }</style>";
