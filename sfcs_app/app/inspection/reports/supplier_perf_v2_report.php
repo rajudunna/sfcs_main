@@ -70,9 +70,9 @@ if(isset($_POST['filter']))
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
 	
-	echo "<div id='main_div' class='table-responsive' style='height:500px;'>";
+	echo "<div id='main_div' class='table-responsive' style='height:440px;'>";
 	echo "<br/>";
-	$table="<table id='table1' class='table table-bordered'>";
+	$table="<table id='table1' class='table table-bordered' >";
 	$table.="<tr class = 'headings'>";
 	$table.="<th>RECORD #</th><th>WEEK #</th><th>ENTRY NO</th><th>INVOICE NO & DATE</th><th>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th><th>SWATCHES RECEIVED FROM (SUPPLIER/WH)</th><th>INSPECTED DATE</th><th>RELEASED DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th><th>M3 LOT#</th><th>PO</th><th>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th>
 	<th>COMPOSITION</th><th>COLOR</th><th>SOLID / YARN DYE / PRINT</th><th>BATCH #</th><th>NO OF ROLLS</th><th>QTY $fab_uom</th><th>C TEX LENGTH</th>

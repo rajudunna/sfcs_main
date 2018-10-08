@@ -265,7 +265,7 @@ if(isset($_POST['filter']))
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
 	echo "<form action='".getFullURL($_GET['r'],'supplier_perf_v2_update.php','N')."' 
 	       method='POST'>";
-	echo "<div class='table-responsive'><div style='height:240px; overflow-y: scroll;''><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\" style='table-layout: fixed;
+	echo "<div class='table-responsive'><div style='height:230px; overflow-y: scroll;''><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\" style='table-layout: fixed;
 	width: 10000px;'>";
 	echo "<tr><th>RECORD #</th><th>WEEK #</th><th>ENTRY NO</th><th>INVOICE NO & DATE</th><th>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th>
 	<th>SWATCHES RECEIVED FROM (SUPPLIER/WH)</th><th>INSPECTED DATE</th><th>RELEASED DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th>
