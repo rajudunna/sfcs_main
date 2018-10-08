@@ -79,7 +79,7 @@ function enableButton()
 			document.getElementById('txtrejtot').value = txtrejtot1; 
 			return false;
 	}
-	else if(txtrejtot > 0)
+	else 
 	{
 		    var x = document.getElementsByName("txtindrejqty[]");
 			
@@ -101,11 +101,11 @@ function enableButton()
 		   		document.getElementById('submitx').disabled='';
 		   }
 	}
-	else
-	{
-		sweetAlert('Please enter Rejected Total ','','warning');
-		return false;
-	}
+	// else
+	// {
+	// 	sweetAlert('Please enter Rejected Total ','','warning');
+	// 	return false;
+	// }
 
 }
 
@@ -180,7 +180,7 @@ $row=mysqli_fetch_array($result);
 	
 	echo "Select Lot Nos";
 	echo "<select name=\"sellotnosrefnew[]\"  class='form-control' onclick='return check_batch();' style='width: 150px;  display: inline-block;'>";
-	echo "<option value='' selected disabled>Please Select</option>";
+	echo "<option value='' selected>Please Select</option>";
 	$sql1="SELECT DISTINCT(lot_no) AS lot_no FROM $bai_rm_pj1.sticker_report WHERE batch_no=\"".$batch."\" and length(batch_no) > 0";
 	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
@@ -299,7 +299,7 @@ if(isset($_POST['show']))
 			
 			$rejqty=0;
 			$sql4="select SUM(qty_rec) AS recv_qty,SUM(partial_appr_qty) AS rejqty,roll_status as sts from $bai_rm_pj1.store_in where roll_status in ('1','2') and lot_no in ('".$lot_no_ref."') group by tid";	
-			// echo $sql4;
+			// echo $sql4."<br>";
 			$result4=mysqli_query($link, $sql4) or die("Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row4=mysqli_fetch_array($result4))
 			{
@@ -314,7 +314,8 @@ if(isset($_POST['show']))
 			}
 		
 			$lenrejqty=0;
-			$sql6="select SUM(qty_rec) AS recv_qty,SUM(ref5) AS ctexqty from $bai_rm_pj1.store_in where lot_no in ('".$lot_no_ref."') group by tid";	
+			$sql6="select SUM(qty_rec) AS recv_qty,SUM(ref5) AS ctexqty from $bai_rm_pj1.store_in where lot_no in ('".$lot_no_ref."') group by tid";
+			// echo $sql6."<br>";
 			$result6=mysqli_query($link, $sql6) or die("Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row6=mysqli_fetch_array($result6))
 			{
@@ -420,7 +421,7 @@ if(isset($_POST['show']))
 			echo "<td><input type=\"text\" class=\"form-control float\"  size=10 name=\"txtrejtot\" id=\"txtrejtot\"  value=\"".(round($rejqty,2)-$reject_roll_qty_sum)."\" /><input type=\"hidden\" class=\"form-control float\"  size=10 name=\"txtrejtot1\" id=\"txtrejtot1\"  value=\"".(round($rejqty,2)-$reject_roll_qty_sum)."\" />";
 			echo "</td>";
 			echo "<th>Replacement Qty</th>";
-			echo "<td><input type=\"text\" class=\"form-control float\"  size=10  name=\"txtlenshrtqty\" id=\"txtlenshrtqty\" value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /></td>";
+			echo "<td><input type=\"text\" class=\"form-control float\"  size=10  name=\"txtlenshrtqty\" id=\"txtlenshrtqty\" value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /><input type=\"hidden\" class=\"form-control float\"  size=10 name=\"txtlenshrtqty1\" id=\"txtlenshrtqty1\"  value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /></td>";
 			echo "<th>UOM</th><td><select name=\"seluom\" class=\"form-control\">";
 			for($i=0;$i<sizeof($uom_exp);$i++)
 			{
@@ -441,7 +442,7 @@ if(isset($_POST['show']))
 				{
 					echo "<tr>";
 					echo "<td><input type=\"hidden\" class=\"form-control\" name=\"txtindrejsno[]\" value=\"".$row5["sno"]."\" />".$row5["complaint_reason"]."</td>";
-					echo "<td><input type=\"text\" readonly class=\"form-control float\" name=\"txtindrejqty[]\" id=\"txtindrejqty[]\"  size=\"8\" value=\"".round(($lenrejqty-$reject_len_qty_sum),2)."\" />";
+					echo "<td><input type=\"text\" readonly class=\"form-control float\" name=\"txtindrejqty[]\" id=\"txtindrejqty[]\"  size=\"8\" value=\"".round(($lenrejqty-$reject_len_qty_sum),2)."	\" />";
 					echo "<td><input type=\"text\" readonly class=\"form-control integer \" name=\"txtindrejrat[]\" size=\"8\" value=\"".($len_shrt*-1)."\" />";
 					echo "<td><input type=\"text\" class=\"form-control\" name=\"txtindrejrem[]\" size=\"15\" value=\"\" />";			
 					echo "</tr>";
@@ -487,12 +488,35 @@ if(isset($_POST['show']))
 		}
 		else if(rejtot>0)
 		{
-			document.getElementById('selcomcat').value='Rejected';		
+			document.getElementById('selcomcat').value='Rejected';	
+
 		}
 		else
 		{
 			sweetAlert('You cant claim for this batch','since there is no rejections & replacements','info');
 		}
+		$('#selcomcat').on('change',function(){
+			var selcomcat = document.getElementById('selcomcat').value;
+			if(selcomcat == 'Rejected & Replacement') {
+				document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
+				document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
+				document.getElementById('txtrejtot').disabled=false;
+				document.getElementById('txtlenshrtqty').disabled=false;
+			}
+			else if(selcomcat == 'Rejected') {
+				document.getElementById('txtlenshrtqty').value=0;
+				document.getElementById('txtlenshrtqty').disabled=true;
+				document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
+				
+			}
+			else if (selcomcat == 'Replacement') {
+				document.getElementById('txtrejtot').value=0;
+				document.getElementById('txtrejtot').disabled=true;
+				document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
+				
+			}
+		});
+
 	</script>";
 	
 }
@@ -645,6 +669,7 @@ if(isset($_POST['submitx']))
 	}
 
 	$sql8="insert into $bai_rm_pj1.inspection_complaint_db(product_categoy,complaint_category,complaint_raised_by,supplier_name,buyer_name,reject_item_codes,reject_item_color,reject_batch_no,reject_po_no,reject_lot_no,reject_roll_qty,reject_len_qty,uom,complaint_remarks,reject_inv_no,reject_item_desc,ref_no,complaint_no,req_date,purchase_width,actual_width,purchase_gsm,actual_gsm,inspected_qty,complaint_cat_ref) values(\"".$comcat_type_ref."\",\"".$comcat_mode_ref."\",\"".$username."\",\"".$supplier_ref_final."\",\"".$buyer_ref_final."\",\"".$item_codes_ref_final."\",\"".$item_colors_ref_final."\",\"".$batch_no_ref."\",\"".$po_no_ref."\",\"".$lot_no_ref_final."\",\"".$rejected_roll_qty."\",\"".$rejected_len_qty."\",\"".$uom_ref."\",\"".$comaplint_remarks."\",\"".$invoice_ref_final."\",\"".str_replace('"',"",$item_name_ref_final)."\",\"".$supplier_code."".$cat_staring."".$add_string."".$max_complaint_nos."\",\"".$max_complaint_no."\",\"".date("Y-m-d H:i:s")."\",\"".$purchase_width."\",\"".$actual_width."\",\"".$purchase_gsm."\",\"".$actual_gsm."\",\"".$inspqty_lot."\",\"".$comcatref."\")";
+
 	mysqli_query($link, $sql8) or die("Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	for($i=0;$i<sizeof($rej_com_sno);$i++)
 	{
@@ -654,6 +679,10 @@ if(isset($_POST['submitx']))
 			mysqli_query($link, $sql9) or die("Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}
+	// echo $sql8."<br>";
+	// echo $sql9."<br>";
+	// die();
+
 	
 	echo "<script>sweetAlert('Successfully','Updated','success')</script>";
 	$url = getFullURLLevel($_GET['r'],'Supplier_Claim_Request_Form.php',0,'N');
