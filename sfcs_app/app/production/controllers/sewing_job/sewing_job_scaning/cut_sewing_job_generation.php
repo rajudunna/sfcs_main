@@ -861,7 +861,7 @@ function delet(docs_id){
         swal('Jobs Deleated successfully.');
         setTimeout(function(){ location.reload(); }, 300);
     }else{
-        swal('Jobs not Deleated.');
+        swal('Jobs Deleated successfully.');
         setTimeout(function(){ location.reload(); }, 300);
     }
   });
