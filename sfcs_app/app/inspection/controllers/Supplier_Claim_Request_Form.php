@@ -506,12 +506,14 @@ if(isset($_POST['show']))
 			else if(selcomcat == 'Rejected') {
 				document.getElementById('txtlenshrtqty').value=0;
 				document.getElementById('txtlenshrtqty').disabled=true;
+				document.getElementById('txtrejtot').disabled=false;
 				document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
 				
 			}
 			else if (selcomcat == 'Replacement') {
 				document.getElementById('txtrejtot').value=0;
 				document.getElementById('txtrejtot').disabled=true;
+				document.getElementById('txtlenshrtqty').disabled=false;
 				document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
 				
 			}
