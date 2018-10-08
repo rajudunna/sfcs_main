@@ -19,8 +19,8 @@
 	function qty_update(org_qty, id)
 	{
 		var update_qty = $('#update_qty_'+id).val();
-		if(update_qty > org_qty || update_qty == 0){
-			sweetAlert('Update quantity should greater than 0 and Excess cut.','','warning');
+		if(update_qty > org_qty){
+			sweetAlert('Update quantity should greater than Excess cut.','','warning');
 			$('#update_qty_'+id).val(org_qty);
 		}
 		
@@ -516,7 +516,7 @@ if(isset($_POST['submit']))
 			echo "<option value=\"".$doc_no_ref[$i2]."\">".$acutno_ref[$i2]."</option>";
 		}
 		echo "</select></div></div></td></tr>";
-		echo "<tr><th>Carton No: *</th><td><div class='row'><div class='col-md-4'><input type=\"text\" value=\"\" name=\"sourceid\" id=\"sourceid\"  class='form-control integer'></div></div></td></tr>";
+		echo "<tr><th>Carton No: </th><td><div class='row'><div class='col-md-4'><input type=\"text\" value=\"0\" name=\"sourceid\" id=\"sourceid\"  class='form-control integer'></div></div></td></tr>";
 		
 		echo "<tr><th>Source : *</th><td><div class='row'><div class='col-md-4'><select name=\"source\" id=\"source\"  class='form-control'>";
 		echo "<option value=\" \"></option>";
