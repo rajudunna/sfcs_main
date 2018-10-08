@@ -442,8 +442,8 @@ if(isset($_POST['show']))
 				{
 					echo "<tr>";
 					echo "<td><input type=\"hidden\" class=\"form-control\" name=\"txtindrejsno[]\" value=\"".$row5["sno"]."\" />".$row5["complaint_reason"]."</td>";
-					echo "<td><input type=\"text\" readonly class=\"form-control float\" name=\"txtindrejqty[]\" id=\"txtindrejqty[]\"  size=\"8\" value=\"".round(($lenrejqty-$reject_len_qty_sum),2)."	\" />";
-					echo "<td><input type=\"text\" readonly class=\"form-control integer \" name=\"txtindrejrat[]\" size=\"8\" value=\"".($len_shrt*-1)."\" />";
+					echo "<td><input type=\"text\" class=\"form-control float\" name=\"txtindrejqty[]\" id=\"txtindrejqty[]\"  size=\"8\" value=\"".round(($lenrejqty-$reject_len_qty_sum),2)."	\" />";
+					echo "<td><input type=\"text\" class=\"form-control integer \" name=\"txtindrejrat[]\" size=\"8\" value=\"".($len_shrt*-1)."\" />";
 					echo "<td><input type=\"text\" class=\"form-control\" name=\"txtindrejrem[]\" size=\"15\" value=\"\" />";			
 					echo "</tr>";
 				}
@@ -508,6 +508,10 @@ if(isset($_POST['show']))
 				document.getElementById('txtlenshrtqty').disabled=true;
 				document.getElementById('txtrejtot').disabled=false;
 				document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
+				if(document.getElementById('txtrejtot1').value < document.getElementById('txtrejtot').value){
+					document.getElementById('submitx').disabled=true;
+					return false;
+				}
 				
 			}
 			else if (selcomcat == 'Replacement') {
@@ -518,6 +522,27 @@ if(isset($_POST['show']))
 				
 			}
 		});
+		$(document).on('ready',function(){
+			if(document.getElementById('txtlenshrtqty').value < 0 ){
+				document.getElementById('txtlenshrtqty').value=0;
+			}
+		});
+		// $('#txtrejtot').on('change',function(){
+		// 	if(document.getElementById('txtrejtot1').value < document.getElementById('txtrejtot').value){
+		// 		document.getElementById('txtrejtot').value=0;
+		// 		document.getElementById('txtlenshrtqty').value=0;
+		// 		sweetAlert('You cant claim for this batch','since there is no rejections & replacements','info');
+		// 	}
+		// });
+
+		// $('#txtlenshrtqty').on('change',function(){
+		// 	if(document.getElementById('txtlenshrtqty1').value < document.getElementById('txtlenshrtqty').value){
+		// 		document.getElementById('txtrejtot').value=0;
+		// 		document.getElementById('txtlenshrtqty').value=0;
+		// 		sweetAlert('You cant claim for this batch','since there is no rejections & replacements','info');
+		// 	}
+		// });
+		
 
 	</script>";
 	
