@@ -98,10 +98,10 @@ if(isset($_POST['download']))
 	// echo "User : ".$user_ms;
 	// echo "password : ".$password_ms;
 	// exit;
-	$password_ms="lan@col3";
-	$m3_db="BAISFCS";
-	$host_ms="10.227.38.36";
-	$conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
+	// $password_ms="lan@col3";
+	// $m3_db="BAISFCS";
+	// $host_ms="10.227.38.36";
+	// $conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
 	
 	$conn = odbc_connect($conn_string,$user_ms,$password_ms);
 	$dateval=$_POST['dateval'];
