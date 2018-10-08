@@ -2,11 +2,11 @@
 /* ===============================================================
                Created By : Sudheer and Chandu
 Created : 30-08-2018
-Updated : 06-10-2018
+Updated : 08-10-2018
 input : Schedule,color & cutjob count.
 output v0.1: Generate jobs.
 Technical Stack : PHP 7,Angular js 1.4,JQuery, Maria DB
-update : 1.Excess and sample code implemented, 2. View and deleate operations implemented in this screen.
+update : 1.Excess and sample code implemented, 2. View and deleate operations implemented in this screen. 3.Redirect to print screens.
 =================================================================== */
 
 function assign_to_gets($ars,$data_samps){
@@ -212,8 +212,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
  }
 }
 
-echo "	</select>
-  </div>";
+echo "	</select>";
+  echo "</div>";
 
 echo "<div class='col-sm-3'><label>Select Color:</label>
 <select class='form-control' name=\"color\"  id='color'>";
@@ -233,6 +233,11 @@ echo "<option value='".$color."' disabled selected>Please Select</option>";
 
 echo "</select>
     </div>
+    <div class='col-sm-3'>";
+    if($schedule!='' && $style!=''){
+        echo "<a class='btn btn-success pull-right' href='?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX21peF9jaF9yZXBvcnQucGhw&schedule=".$schedule."&seq_no=-1&style=".$style."'>Print Labels</a>";
+    }
+    echo "</div>
     <br/>";
     ?>
 </div>
@@ -247,7 +252,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
     $max=0;
     $samples_qty = [];
     $over_all_qtys_samps = [];
-    $ex_cut_lrt = 0;
+    $ex_cut_lrt = 2;
     $max_cut = 0;
     $over_all_data = [];
     if(mysqli_num_rows($ratio_result)>0){
@@ -561,7 +566,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
     $scope.jobs   = [];
     $scope.fulljob = [];
     $scope.maxcut = <?= $max_cut ?>;
-    $scope.last_r_first = <?= $ex_cut_lrt ?>;
+    //$scope.last_r_first = <?= $ex_cut_lrt ?>;
     $scope.over_all_qtys_samps = <?= json_encode($over_all_qtys_samps) ?>;
     
     $scope.generatejobs = function(){
