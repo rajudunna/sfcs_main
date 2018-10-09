@@ -421,7 +421,13 @@ if(isset($_POST['show']))
 			echo "<td><input type=\"text\" class=\"form-control float\"  size=10 name=\"txtrejtot\" id=\"txtrejtot\"  value=\"".(round($rejqty,2)-$reject_roll_qty_sum)."\" /><input type=\"hidden\" class=\"form-control float\"  size=10 name=\"txtrejtot1\" id=\"txtrejtot1\"  value=\"".(round($rejqty,2)-$reject_roll_qty_sum)."\" />";
 			echo "</td>";
 			echo "<th>Replacement Qty</th>";
-			echo "<td><input type=\"text\" class=\"form-control float\"  size=10  name=\"txtlenshrtqty\" id=\"txtlenshrtqty\" value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /><input type=\"hidden\" class=\"form-control float\"  size=10 name=\"txtlenshrtqty1\" id=\"txtlenshrtqty1\"  value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /></td>";
+			if($reject_len_qty_sum<=$lenrejqty){
+				echo "<td><input type=\"text\" class=\"form-control float\"  size=10  name=\"txtlenshrtqty\" id=\"txtlenshrtqty\" value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /><input type=\"hidden\" class=\"form-control float\"  size=10 name=\"txtlenshrtqty1\" id=\"txtlenshrtqty1\"  value=\"".(round($lenrejqty,2)-$reject_len_qty_sum)."\" /></td>";
+			}
+			else {
+				echo "<td><input type=\"text\" class=\"form-control float\"  size=10  name=\"txtlenshrtqty\" id=\"txtlenshrtqty\" value='0' /><input type=\"hidden\" class=\"form-control float\"  size=10 name=\"txtlenshrtqty1\" id=\"txtlenshrtqty1\"  value='0' /></td>";
+			}
+			
 			echo "<th>UOM</th><td><select name=\"seluom\" class=\"form-control\">";
 			for($i=0;$i<sizeof($uom_exp);$i++)
 			{
@@ -523,29 +529,36 @@ if(isset($_POST['show']))
 				document.getElementById('txtrejtot').disabled=true;
 				document.getElementById('txtlenshrtqty').disabled=false;
 				document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
-				
+				if(document.getElementById('txtlenshrtqty1').value < document.getElementById('txtlenshrtqty').value){
+					document.getElementById('submitx').disabled=true;
+					return false;
+				}
 			}
 		});
 		$(document).on('ready',function(){
-			if(document.getElementById('txtlenshrtqty').value < 0 ){
+			var selcomcat = document.getElementById('selcomcat').value;
+			if(selcomcat == 'Rejected') {
 				document.getElementById('txtlenshrtqty').value=0;
+				document.getElementById('txtlenshrtqty').disabled=true;
+				document.getElementById('txtrejtot').disabled=false;
+				document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
+				if(document.getElementById('txtrejtot1').value < document.getElementById('txtrejtot').value){
+					document.getElementById('submitx').disabled=true;
+					return false;
+				}
+			}
+			else if (selcomcat == 'Replacement') {
+				document.getElementById('txtrejtot').value=0;
+				document.getElementById('txtrejtot').disabled=true;
+				document.getElementById('txtlenshrtqty').disabled=false;
+				document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
+				if(document.getElementById('txtlenshrtqty1').value < document.getElementById('txtlenshrtqty').value){
+					document.getElementById('submitx').disabled=true;
+					return false;
+				}
+				
 			}
 		});
-		// $('#txtrejtot').on('change',function(){
-		// 	if(document.getElementById('txtrejtot1').value < document.getElementById('txtrejtot').value){
-		// 		document.getElementById('txtrejtot').value=0;
-		// 		document.getElementById('txtlenshrtqty').value=0;
-		// 		sweetAlert('You cant claim for this batch','since there is no rejections & replacements','info');
-		// 	}
-		// });
-
-		// $('#txtlenshrtqty').on('change',function(){
-		// 	if(document.getElementById('txtlenshrtqty1').value < document.getElementById('txtlenshrtqty').value){
-		// 		document.getElementById('txtrejtot').value=0;
-		// 		document.getElementById('txtlenshrtqty').value=0;
-		// 		sweetAlert('You cant claim for this batch','since there is no rejections & replacements','info');
-		// 	}
-		// });
 		
 
 	</script>";
