@@ -29,7 +29,8 @@
             $qty_ary = $_POST['rep_qty'];
             $shift_ary = $_POST['shifts'];
             $bundle_ary = $_POST['bundles'];
-         
+
+                     
             for($i=0;$i<sizeof($size_ary);$i++)
             {
                 $remarks_in = $module."-".$shift_ary[$i];
@@ -74,10 +75,13 @@
                 // echo $insert_packing."<br>";
 
                 $res_get_job_data =mysqli_query($link,$insert_packing);
+                if($res_get_job_data){
+                    $bundle_no = mysqli_insert_id($link); 
+                }
 
-                $result = mysqli_query($link,"SELECT MAX(tid) FROM $bai_pro3.pac_stat_log_input_job");
-                $row = mysqli_fetch_row($result);
-                $bundle_no = $row[0];
+                //$result = mysqli_query($link,"SELECT MAX(tid) FROM $bai_pro3.pac_stat_log_input_job");
+               // $row = mysqli_fetch_row($result);
+               // $bundle_no = $row[0];
                 // echo $bundle_no."bundle number<br>";
                 $cut_qry = "SELECT cut_number FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color' AND docket_number='$doc_ary[$i]' ";
                 
@@ -104,6 +108,7 @@
 
                
                 /** Creating Bundles  */
+                $operations_ary = array_unique($operations_ary);
                 foreach($operations_ary as $op_code){
                      
                     $bundle_insert ="insert into $brandix_bts.bundle_creation_data (date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref,mapped_color) 
