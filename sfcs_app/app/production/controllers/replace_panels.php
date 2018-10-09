@@ -78,8 +78,8 @@
                         GROUP BY qms_size,qms_tran_type ORDER BY qms_size,qms_color,qms_tran_type
                         )) AS tab GROUP BY qms_style,qms_schedule,qms_color,qms_size
                         ";
-                //    echo $panel_qry."<br>";
-                //    die();
+                  //echo $panel_qry."<br>";
+                 //die();
                     $previous_size = '';
                     $count =0;
                     $res_qry =mysqli_query($link,$panel_qry);
@@ -158,7 +158,9 @@
 function getmodnos()
 {
     var job_value = $('#ijob').val();
+    
     if(job_value!=''){
+   
         $.ajax({
                 url: '<?= getFullURLLevel($_GET['r'],'replace_ajax.php',0,'R'); ?>',
 				data:{
@@ -273,6 +275,7 @@ $('#mod_id').click(function(){
                                     icon: "success",
                                 });
                                 $('.ajax-loader').css("visibility", "none");
+                                location.reload();
                             }
                             
                         }
