@@ -21,6 +21,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
 
     $b_tid    = $bundle_no;
     $b_rep_qty= $reversalval;
+    $temp = 1;
     
     $qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$op_code'";
     // echo $qry_to_get_work_station_id.'<br/>';
@@ -106,7 +107,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                     if($type!='ServerReturnedNOK'){
                         //updating response status in m3_transactions
                         $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
-                        // echo $qry_m3_transactions;
+                        echo $qry_m3_transactions;
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     }else{
@@ -124,6 +125,8 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                 }
                 
             }
+
+            
         }
     }
     
