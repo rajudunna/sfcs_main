@@ -6,8 +6,7 @@ $serverName='BAS-DBSRV-01';
 $m3_databasename='BEL_RMDashboard';
 $uid='sfcsproject4';
 $pwd='Brand@2018';
-$connect = odbc_connect("Driver=$driver_name,Server=$serverName,Database=$m3_databasename;", $uid,$pwd);
-echo $connect;
+$connect = odbc_connect("$driver_name,Server=$serverName,Database=$m3_databasename;", $uid,$pwd);
 //$conn = odbc_connect($conn_string,$user_ms,$password_ms);
 error_reporting(1);
 
