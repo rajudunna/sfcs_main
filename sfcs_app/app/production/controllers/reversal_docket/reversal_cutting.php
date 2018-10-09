@@ -10,7 +10,6 @@ $cut_done_qty = array();
 $qry_to_find_in_out = "select * from $brandix_bts.bundle_creation_data where docket_number='$doc_no_ref'";
 $qry_to_find_in_out_result = $link->query($qry_to_find_in_out) or exit('Error');
 // var_dump($qry_to_find_in_out_result);
-// var_dump(mysqli_num_rows($qry_to_find_in_out_result));
 error_reporting(0);
 if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 {

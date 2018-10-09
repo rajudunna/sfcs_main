@@ -7,6 +7,10 @@ $api_username = $conf1->get('api-user-name');
 $api_password = $conf1->get('api-password');
 $api_hostname = $conf1->get('api-host-name');
 $api_port_no  = $conf1->get('api-port');
+
+$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+$username=strtolower($username_list[1]);
+
 $global_facility_code=$conf1->get('plantcode');
 $enable_api_call = $conf1->get('enable-api-call');
 $sewing_rejection=$conf1->get('sewing_rejection');

@@ -164,6 +164,11 @@
                             </form>
                 </div>
             </div>';
+            if(isset($_GET['seq_no']) && $_GET['seq_no']==-1){
+                echo "<style>.btn-primary{
+                    display:none;
+                }</style>";
+            }
     }
     else
     {
@@ -339,3 +344,4 @@
         <?php
     }
 ?>
+

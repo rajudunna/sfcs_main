@@ -8,7 +8,7 @@ CR# 194 / 2014-09-24 / kirang: Modify the color code for Act eff% .
 CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count through HRMS 
 
 --> 
-        <title>Hourly Efficiency Report</title>
+<title>Hourly Efficiency Report</title>
         <meta http-equiv="X-UA-Compatible" content="IE=8,IE=edge,chrome=1" /> 
         <script language="javascript" type="text/javascript" src="../common/js/datetimepicker_css.js"></script> 
         <link rel="stylesheet" href="../../../common/css/style.css" type="text/css" media="all" /> 
@@ -284,6 +284,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                     </table> 
                 </div> 
 				<div class="table-responsive">
+                <br><br>
                 <div id="printable">    
                     <?php 
                         if(isset($_POST['submit'])) 
@@ -408,7 +409,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     echo "<th style='background-color:#29759C;'>".$headers[$i]."-".($headers[$i]+1)."</th>";  
                                 } 
 
-                                echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours12</th> 
+                                echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours</th> 
                                 <th style='background-color:#29759C;'>Plan EFF%</th> 
                                 <th style='background-color:#29759C;'>Plan Pro.</th> 
 
@@ -485,7 +486,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     { 
                                         echo "<th style='background-color:#29759C;'>".$headers[$i]."-".($headers[$i]+1)."</th>";
                                     } 
-                                    echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours11</th> 
+                                    echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours</th> 
                                         <th style='background-color:#29759C;'>Plan EFF%</th> 
                                         <th style='background-color:#29759C;'>Plan Pro.</th> 
                                         <th style='background-color:#29759C;'>CLH</th> 
@@ -2230,7 +2231,10 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
 					</div>
                 </div>
             </div>
-			
+            <script language="javascript" type="text/javascript" src="../../../common/js/jquery.js"></script> 
+			<script>
+                    $('#printable').find('br').remove();
+            </script>
             </div>
         </div>
     </body> 

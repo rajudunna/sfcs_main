@@ -3,7 +3,7 @@ $has_permission=haspermission($_GET['r']);
 
 $reject_roll_qty_sum=0;
 $reject_len_qty_sum=0;
-echo "<br/><div class='panel panel-primary'>";
+echo "<div class='panel panel-primary'>";
 echo "<div class='panel-heading'>Previous Claims</div>";
 echo "<div class='panel-body'>";
 $countqry="select count(*) as cnt from $bai_rm_pj1.inspection_complaint_db where reject_batch_no = \"".$batch_no."\" OR reject_inv_no=\"".$batch_no."\"";
@@ -16,7 +16,7 @@ while ($row1=mysqli_fetch_array($count))
 	if($count_res>0)
 	{
 
-		echo "<br><br><div class=\"table-responsive\"><div id='spldiv'><table cellspacing=\"0\" class=\"table table-striped jambo_table bulk_action\">";	
+		echo "<div class=\"table-responsive\"><div id='spldiv'><table cellspacing=\"0\" class=\"table table-striped jambo_table bulk_action\">";	
 		echo "<thead><tr><th bgcolor='#29759C'>Complaint No</th><th bgcolor='#29759C'>Complaint Category</th><th bgcolor='#29759C'>Report No</th><th bgcolor='#29759C'>Product Category</th><th bgcolor='#29759C'>Complaint Type</th><th bgcolor='#29759C'>Request Date</th><th bgcolor='#29759C'>Request User</th><th bgcolor='#29759C'>Supplier Name</th><th bgcolor='#29759C'>Buyer Name</th><th bgcolor='#29759C'>Item Desc</th><th bgcolor='#29759C'>Item Codes</th><th bgcolor='#29759C'>Item Colors</th><th bgcolor='#29759C'>Batch No</th><th bgcolor='#29759C'>Invoice No</th><th bgcolor='#29759C'>PO No</th><th bgcolor='#29759C'>Lot#</th><th bgcolor='#29759C'>Purchase Width</th><th bgcolor='#29759C'>Actual Width</th><th bgcolor='#29759C'>Purchase GSM</th><th bgcolor='#29759C'>Actual GSM</th><th bgcolor='#29759C'>Inspected Qty</th><th bgcolor='#29759C'>Reject Roll Qty</th><th bgcolor='#29759C'>Length Short Qty</th><th bgcolor='#29759C'>Total Replacement Required</th>
 		<th bgcolor='#29759C'>UOM</th><th bgcolor='#29759C'>Complaint Remarks</th><th bgcolor='#29759C'>Supplier Approved Date</th>
 		<th bgcolor='#29759C'>Replacement Category</th><th bgcolor='#29759C'>Supplier Remarks</th>

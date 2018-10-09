@@ -205,6 +205,7 @@ if(isset($_POST['formSubmit']))
                             }
                     }
                 }
+                
                 if($update_plan_doc==1){
                     
                     $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post WHERE doc_no=$docket_number_post";

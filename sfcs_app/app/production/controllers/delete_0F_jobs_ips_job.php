@@ -17,7 +17,6 @@
                     <th>Module</th>
                     <th>Docket No's</th>
                     <th>Received Qty</th>
-                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>";
@@ -25,7 +24,7 @@
             //getting the operation code from the masters table
             $counter = 0;
             $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
-            $op_code_result = mysqli_query($link,$op_code);
+            $op_code_result = mysqli_query($link,$op_code_query);
             while($row = mysqli_fetch_array($op_code_result)){
                 $op_code = $row['operation_code'];
             }
@@ -42,7 +41,7 @@
                 $dockets_str = '""';
             //getting all jobs with the above dockets
             $jobs_query = "Select style,color,schedule,input_job_no,bcd.input_job_no_random_ref,
-                                   group_concat(docket_number) as doc_str,
+                                   group_concat(distinct docket_number) as doc_str,
                                    group_concat(bundle_number) as bun_str,SUM(original_qty) as oqty,
                                    SUM(recevied_qty) as rqty,assigned_module 
                                    from $bai_pro3.plan_dashboard_input pdi 
@@ -55,7 +54,7 @@
                 $flag = 0;
                 $job_no_r= $row['input_job_no_random_ref'];
                 $job_no  = $row['input_job_no'];
-                $doc_str = $row['doc_str'];
+                $doc_str = rtrim($row['doc_str'],',');
                 //$bun_str = $row['bun_str'];
                 $org_qty = $row['oqty'];
                 $rem_qty = $row['rqty'];
@@ -64,10 +63,10 @@
                 $schedule= $row['schedule'];
                 $color   = $row['color'];
                 $pre_opcode_query = "SELECT operation_code as op_code FROM $brandix_bts.tbl_style_ops_master 
-                                        WHERE style='$style' and schedule='$schedule' and color='$color' 
-                                        and operation_code < $operation_code ORDER BY operation_order DESC LIMIT 1";
+                                        WHERE style='$style' and color='$color' 
+                                        and operation_code < $op_code ORDER BY operation_order DESC LIMIT 1";
                 $pre_opcode_result = mysqli_query($link,$pre_opcode_query);
-                while($row = mysqli_fetch_array($link,$pre_opcode_result)){
+                while($row = mysqli_fetch_array($pre_opcode_result)){
                     $pre_op_code = $row['op_code'];
                 }
                 //getting the status of dockets with the pre ops code
@@ -93,8 +92,8 @@
                     $append.= "<td>$module</td>";
                     $append.= "<td>$doc_str</td>";
                     $append.= "<td>$rem_qty</td>";
-                    $append.= "<td><a href='$url' onclick='return confirm_delete(event,this)' 
-                                class='btn btn-danger btn-sm'>Delete</a></td>";
+                    // $append.= "<td><a href='$url' onclick='return confirm_delete(event,this)' 
+                    //             class='btn btn-danger btn-sm'>Delete</a></td>";
                     $append.= "</tr>";
                 }
             }

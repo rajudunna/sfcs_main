@@ -54,7 +54,7 @@
                         <div class="col-md-12"><div class="row"><div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" id="code"  value="" required="required" for="code">Time Value<span class="req"> </span></label>
 			    <div class="controls col-sm-9">
-                <input id="department" type="text" class="form-control k-textbox" data-role="text"  name="time_value" value="<?php echo $code; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
+                <input id="department" type="text" class="form-control k-textbox" data-role="text"  name="time_value" value="<?php echo $code; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span>
 
 </div>
 				</div></div>
@@ -67,7 +67,7 @@
                 <?php 
                 for($hours=6; $hours<24; $hours++)
                 {
-                    for($mins=0; $mins<60; $mins+=30)
+                    for($mins=0; $mins<60; $mins+=60)
                     { 
                         $h = str_pad($hours,1,'0',STR_PAD_LEFT);
                         $m = str_pad($mins,2,'0',STR_PAD_LEFT);
@@ -94,7 +94,7 @@
                 <?php 
                     for($hours=6; $hours<24; $hours++)
                     {
-                        for($mins=0; $mins<60; $mins+=30)
+                        for($mins=0; $mins<60; $mins+=60)
                         { 
                             $h = str_pad($hours,1,'0',STR_PAD_LEFT);
                             $m = str_pad($mins,2,'0',STR_PAD_LEFT);
@@ -142,7 +142,7 @@
 
 		<div class="col-md-3"><div class="form-group">
 			             
-		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary btn-lg"  onclick="return time_diff();" name="btn_save">Save</button></div></div></div></div>
                                     </div>
                                 
 
@@ -166,9 +166,25 @@
         console.log(sh+':'+sm);
         console.log(eh+':'+em-1);
        // console.log(em-1);
-       document.getElementById("department").value = eh;
+       document.getElementById("department").value = sh;
 
     }
     
+    function time_diff(){
+         var v1 = document.getElementById("start").value;
+        var v2 = document.getElementById("start1").value;
+        var sh = v1.substr(0,2);
+        var sm = v1.substr(2,4);
+        var eh = v2.substr(0,2);
+        var em = v2.substr(2,4);
+        if(sh == eh){
+            swal('start time and end time should not equal','','warning');
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+
 </script>
 </html>
