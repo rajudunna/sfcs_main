@@ -13,7 +13,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
 // echo 'hai';
 $label_id=$_POST["label"];
-$sql="select * FROM $bai_rm_pj1.store_in WHERE tid='".$label_id."'";
+$sql="select * FROM $bai_rm_pj1.store_in WHERE barcode_number='".$label_id."'";
 $result1=mysqli_query($link, $sql);
 $sql_rows=mysqli_num_rows($result1);
 if($sql_rows>0)

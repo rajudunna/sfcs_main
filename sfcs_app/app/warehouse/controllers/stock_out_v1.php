@@ -73,7 +73,7 @@ if(isset($_POST['submit']))
 	$lot_nos=$_POST['lot_no'];
 	$lot_nos_explode=explode(",",$lot_nos);
 	//Added the single quotes for multiple level of stock searching
-	$lot_no="'".implode("','",$lot_nos_explode)."'";
+	$lot_no=implode(",",$lot_nos_explode);
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
 }
 else
@@ -81,7 +81,7 @@ else
 	$lot_nos=$_GET['lot_no'];
 	$lot_nos_explode=explode(",",$lot_nos);
 	//Added the single quotes for multiple level of stock searching
-	$lot_no="'".implode("','",$lot_nos_explode)."'";
+	$lot_no=implode(",",$lot_nos_explode);
 }
 
 
@@ -210,6 +210,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$location=$sql_row['ref1'];
 	$box=$sql_row['ref2'];
 	$qty_rec=$sql_row['qty_rec'];
+	$barcode_number=$sql_row['barcode_number'];
 	$status=$sql_row['status'];
 	$available=$qty_rec-$sql_row['qty_issued']+$sql_row['qty_ret']-$sql_row['partial_appr_qty'];
 	$available2=$sql_row['ref5']-$sql_row['qty_issued']+$sql_row['qty_ret']-$sql_row['partial_appr_qty']; //Ctex Length
@@ -220,7 +221,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		if($available > 0)
 		{
-			echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$tid</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
+			echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
 			echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
 			echo '<td style="background-color:white;"><input style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
 			echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
@@ -385,9 +386,10 @@ if(isset($_POST['put']))
 			}
 		}
 	}
-	$url2=getFullURL($_GET['r'],'stock_out_v1.php','N');
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"index.php?r=$url2&lot_no=$lot_no_new\"; }</script>";
-	
+	// $url2=getFullURL($_GET['r'],'stock_out_v1.php','N');
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"index.php?r=$url2&lot_no=$lot_no_new\"; }</script>";
+	echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
+	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'stock_out_v1.php',0,'N')."&lot_no=$lot_no_new';</script>");
 }
 
 
