@@ -1,6 +1,6 @@
 <?php
-$include_path=getenv('localhost/xampp/sfcs_main/configuration');
-//include($include_path.'\sfcs_app\common\config\config.php');
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $driver_name = 'SQL Server Native Client 11.0';
 $serverName='BAS-DBSRV-01';
 $m3_databasename='BEL_RMDashboard';
