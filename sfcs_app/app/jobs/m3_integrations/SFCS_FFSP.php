@@ -11,7 +11,7 @@ echo $connect;
 //$conn = odbc_connect($conn_string,$user_ms,$password_ms);
 error_reporting(1);
 
-$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db";
+$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm limit 1";
 //echo $get_details."<br>";
 $result=mysqli_query($link, $get_details) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row = mysqli_fetch_array($result))
@@ -19,7 +19,6 @@ while($row = mysqli_fetch_array($result))
 	$schedule =$row['order_del_no'];
 	$color = $row['order_col_des'];
 	$style= $row['order_style_no'];
-	
 	
 	$lay_plan_status_value=0;
 	$lay_plan_status_query="SELECT COUNT(DISTINCT order_del_no) as value FROM BAI_PRO3.bai_orders_db_confirm WHERE order_del_no='".$schedule."' and order_col_des='".$color."'";
