@@ -73,14 +73,14 @@ function enableButton()
 	var txtlenshrtqty=document.getElementById("txtlenshrtqty").value;
 	var txtrejtot1=document.getElementById("txtrejtot1").value;
 	
-	if(Number(txtrejtot) > Number(txtrejtot1))
-	{
-			sweetAlert('Rejected Total Cannot Enter More Than Actual Rejected Total ','','warning');
-			document.getElementById('txtrejtot').value = txtrejtot1; 
-			return false;
-	}
-	else 
-	{
+	// if(Number(txtrejtot) > Number(txtrejtot1))
+	// {
+	// 		sweetAlert('Rejected Total Cannot Enter More Than Actual Rejected Total ','','warning');
+	// 		document.getElementById('txtrejtot').value = txtrejtot1; 
+	// 		return false;
+	// }
+	// else 
+	// {
 		    var x = document.getElementsByName("txtindrejqty[]");
 			
 		    var i;
@@ -93,14 +93,14 @@ function enableButton()
 		    }
 		   if(y > (Number(txtrejtot)+Number(txtlenshrtqty)))
 		   {
-		   	sweetAlert('Effected Quantity Total should Be less or equal to Rejected Total ','','warning');
+		   	sweetAlert('Effected Quantity Total should Be less or equal to cumulative of Rejected Total and Replacement Qty  ','','warning');
 		   	return false;
 		   }
 		   else
 		   {
 		   		document.getElementById('submitx').disabled='';
 		   }
-	}
+	// }
 	// else
 	// {
 	// 	sweetAlert('Please enter Rejected Total ','','warning');
@@ -340,7 +340,7 @@ if(isset($_POST['show']))
 	
 			echo "<td>";
 			echo "<select name=\"selcomcat\" id=\"selcomcat\" class=\"form-control\" required>";
-			echo "<option value='' selected disabled>Please Select</option>";
+			echo "<option value='' selected>Please Select</option>";
 			echo "<option value='Rejected'>Rejected</option>";
 			echo "<option value='Replacement'>Replacement</option>"; 
 			echo "<option value='Rejected & Replacement'>Both</option>"; 
@@ -501,15 +501,15 @@ if(isset($_POST['show']))
 			document.getElementById('selcomcat').value='Rejected';	
 
 		}
-		else
-		{
-			sweetAlert('You cant claim for this batch','since there is no rejections & replacements','info');
-		}
+		// else
+		// {
+		// 	sweetAlert('You cant claim for this batch','since there is no rejections & replacements','info');
+		// }
 		$('#selcomcat').on('change',function(){
 			var selcomcat = document.getElementById('selcomcat').value;
 			if(selcomcat == 'Rejected & Replacement') {
-				document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
-				document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
+				// document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
+				// document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
 				document.getElementById('txtrejtot').disabled=false;
 				document.getElementById('txtlenshrtqty').disabled=false;
 			}
@@ -517,45 +517,47 @@ if(isset($_POST['show']))
 				document.getElementById('txtlenshrtqty').value=0;
 				document.getElementById('txtlenshrtqty').disabled=true;
 				document.getElementById('txtrejtot').disabled=false;
-				document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
-				if(document.getElementById('txtrejtot1').value < document.getElementById('txtrejtot').value){
-					document.getElementById('submitx').disabled=true;
-					return false;
-				}
+				// document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
+				// if(document.getElementById('txtrejtot1').value < document.getElementById('txtrejtot').value){
+				// 	document.getElementById('submitx').disabled=true;
+				// 	return false;
+				// }
 				
 			}
 			else if (selcomcat == 'Replacement') {
 				document.getElementById('txtrejtot').value=0;
 				document.getElementById('txtrejtot').disabled=true;
 				document.getElementById('txtlenshrtqty').disabled=false;
-				document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
-				if(document.getElementById('txtlenshrtqty1').value < document.getElementById('txtlenshrtqty').value){
-					document.getElementById('submitx').disabled=true;
-					return false;
-				}
+				// document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
+				// if(document.getElementById('txtlenshrtqty1').value < document.getElementById('txtlenshrtqty').value){
+				// 	document.getElementById('submitx').disabled=true;
+				// 	return false;
+				// }
 			}
 		});
 		$(document).on('ready',function(){
+			document.getElementById('txtrejtot').value='';
+			document.getElementById('txtlenshrtqty').value='';
 			var selcomcat = document.getElementById('selcomcat').value;
 			if(selcomcat == 'Rejected') {
 				document.getElementById('txtlenshrtqty').value=0;
 				document.getElementById('txtlenshrtqty').disabled=true;
 				document.getElementById('txtrejtot').disabled=false;
-				document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
-				if(document.getElementById('txtrejtot1').value < document.getElementById('txtrejtot').value){
-					document.getElementById('submitx').disabled=true;
-					return false;
-				}
+				// document.getElementById('txtrejtot').value=document.getElementById('txtrejtot1').value;
+				// if(document.getElementById('txtrejtot1').value < document.getElementById('txtrejtot').value){
+				// 	document.getElementById('submitx').disabled=true;
+				// 	return false;
+				// }
 			}
 			else if (selcomcat == 'Replacement') {
 				document.getElementById('txtrejtot').value=0;
 				document.getElementById('txtrejtot').disabled=true;
 				document.getElementById('txtlenshrtqty').disabled=false;
-				document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
-				if(document.getElementById('txtlenshrtqty1').value < document.getElementById('txtlenshrtqty').value){
-					document.getElementById('submitx').disabled=true;
-					return false;
-				}
+				// document.getElementById('txtlenshrtqty').value=document.getElementById('txtlenshrtqty1').value;
+				// if(document.getElementById('txtlenshrtqty1').value < document.getElementById('txtlenshrtqty').value){
+				// 	document.getElementById('submitx').disabled=true;
+				// 	return false;
+				// }
 				
 			}
 		});
