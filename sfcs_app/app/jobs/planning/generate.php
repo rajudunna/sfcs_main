@@ -1,8 +1,6 @@
 <?php 
 $include_path=getenv('config_job_path');
-$include_path='E:\xampp\htdocs\sfcs_main';
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-
 $start_timestamp = microtime(true);
 error_reporting(0);
 ?>
