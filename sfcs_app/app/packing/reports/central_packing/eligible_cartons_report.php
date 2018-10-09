@@ -158,7 +158,14 @@ table, th, td {
 											$label_concat=substr($label_concat,0,-1);
 											//echo $label_concat."<br>";											
 											//var_dump($elgible_cart_no);	
-											$pac_stat3="SELECT * FROM $bai_pro3.pac_stat WHERE schedule='$schedule' and pac_seq_no='".$pack_result12['pac_seq_no']."' and carton_no not in (".implode(",",$cart_no).")";
+											if(sizeof($cart_no)>0)
+											{												
+												$pac_stat3="SELECT * FROM $bai_pro3.pac_stat WHERE schedule='$schedule' and pac_seq_no='".$pack_result12['pac_seq_no']."' and carton_no not in (".implode(",",$cart_no).")";
+											}
+											else
+											{
+												$pac_stat3="SELECT * FROM $bai_pro3.pac_stat WHERE schedule='$schedule' and pac_seq_no='".$pack_result12['pac_seq_no']."'";
+											}
 											//echo $pac_stat3."<br>";
 											$pac_stat_result3=mysqli_query($link, $pac_stat3) or exit("error while fetching pack methods8");
 											if(mysqli_num_rows($pac_stat_result3)>0)
