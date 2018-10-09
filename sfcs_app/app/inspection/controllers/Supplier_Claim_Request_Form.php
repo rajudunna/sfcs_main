@@ -442,7 +442,11 @@ if(isset($_POST['show']))
 				{
 					echo "<tr>";
 					echo "<td><input type=\"hidden\" class=\"form-control\" name=\"txtindrejsno[]\" value=\"".$row5["sno"]."\" />".$row5["complaint_reason"]."</td>";
-					echo "<td><input type=\"text\" class=\"form-control float\" name=\"txtindrejqty[]\" id=\"txtindrejqty[]\"  size=\"8\" value=\"".round(($lenrejqty-$reject_len_qty_sum),2)."	\" />";
+					if($reject_len_qty_sum<=$lenrejqty){
+						echo "<td><input type=\"text\" class=\"form-control float\" name=\"txtindrejqty[]\" id=\"txtindrejqty[]\"  size=\"8\" value=\"".round(($lenrejqty-$reject_len_qty_sum),2)."	\" />";
+					}else {
+						echo "<td><input type=\"text\" class=\"form-control float\" name=\"txtindrejqty[]\" id=\"txtindrejqty[]\"  size=\"8\" value='0' />";
+					}
 					echo "<td><input type=\"text\" class=\"form-control integer \" name=\"txtindrejrat[]\" size=\"8\" value=\"".($len_shrt*-1)."\" />";
 					echo "<td><input type=\"text\" class=\"form-control\" name=\"txtindrejrem[]\" size=\"15\" value=\"\" />";			
 					echo "</tr>";
