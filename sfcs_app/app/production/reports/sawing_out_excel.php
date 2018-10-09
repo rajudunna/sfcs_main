@@ -74,7 +74,7 @@ table{
 		
 			$table='';	
 			$table.="<table border=1>";
-			$table.="<tr><td colspan=13><h2><center><strong>Sewing Out Report</strong></center></h2></td></tr>";
+			$table.="<tr><td colspan=13><h2><center><strong>Carton Out Report</strong></center></h2></td></tr>";
 			$table.="<tr><td colspan=13>For the period: $dat1 to $dat2</td></tr></table>";
 		
 			//echo "<right><strong><a href=\"sawing_out_excel.php?sdate=$dat1&edate=$dat2\">Export to Excel</a></strong></right>";	
@@ -140,7 +140,7 @@ table{
 	$table.="</table>";
 	    header("Content-type: application/x-msdownload"); 
 		# replace excelfile.xls with whatever you want the filename to default to
-		header("Content-Disposition: attachment; filename=sawing_out_report.xls");
+		header("Content-Disposition: attachment; filename=carton_out_report.xls");
 		header("Pragma: no-cache");
 		header("Expires: 0");
 	echo $table;

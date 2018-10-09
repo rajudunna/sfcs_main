@@ -217,7 +217,7 @@ var table3Filters = {
 		loader: true,
 		btn_reset_text: "Clear",
 		
-		btn_text: ">"
+		btn_text: "Filter"
 	}
 	setFilterGrid("table5",table3Filters);
 </script>
