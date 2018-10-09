@@ -159,9 +159,12 @@ if(isset($_POST['formSubmit']))
                             {
                                 $id_to_update = $row_result_selecting_qry['id'];
                             }
-                            $update_qry = "update $brandix_bts.bundle_creation_data set send_qty = send_qty-$value where id = $id_to_update";
-                            // echo $update_qry.'<br/>';
-                            $updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
+                           
+                            if(mysqli_num_rows($result_selecting_qry2)>0){
+                                $update_qry = "update $brandix_bts.bundle_creation_data set send_qty = send_qty-$value where id = $id_to_update";
+                                // echo $update_qry.'<br/>';
+                                $updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            }
 
                             // updating cut qty into  cps log
                             $selecting_cps_qry = "SELECT * FROM $bai_pro3.cps_log WHERE `doc_no`='$docket_number_post' AND `size_code`=  '$key' AND operation_code = '".$operation_code."'";
@@ -174,11 +177,11 @@ if(isset($_POST['formSubmit']))
                                 $remaining_qty_result = $row_result_selecting_cps_qry['remaining_qty'];
                                 $res = $cut_qty_result-$remaining_qty_result;
                             }
-                            $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$value where id = $id_to_update_cps";
-                            // echo $update_qry_cps.'<br/>';
-                            $updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
+                            if(mysqli_num_rows($result_selecting_qry2)>0){
+                                $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$value where id = $id_to_update_cps";
+                                // echo $update_qry_cps.'<br/>';
+                                $updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            }
 
                             //maintaining log
                             $reversal_docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,parent_bundle_creation_id,bundle_number,size_title,cutting_reversal,act_cut_status)values(".$docket_number_post.",".$id_to_update.",".$ref_no.",'".$key."',".$value.",'Reversal')";
@@ -202,12 +205,10 @@ if(isset($_POST['formSubmit']))
                             }
                                 // echo $ref_no.','.-$value.','.$op_code.'<br/>';
                             // }
-                            }
+                        }
                     }
                 }
-                
                 if($update_plan_doc==1){
-                    
                     $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post WHERE doc_no=$docket_number_post";
                     // echo $update_plies_qry.'<br/><br/>';
                     $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));

@@ -43,9 +43,12 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
             $ref_no = $row_result_selecting_qry['bundle_number'];
             $b_style = $row_result_selecting_qry['style'];
         }
-        $update_qry = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty-$value where id = $id_to_update";
-        // echo $update_qry.'<br/>';
-        $updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($result_selecting_qry)>0){
+            $update_qry = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty-$value where id = $id_to_update";
+            // echo $update_qry.'<br/>';
+            $updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
+        }
+       
         // updating cut qty into  cps log
         $selecting_cps_qry = "SELECT * FROM $bai_pro3.cps_log WHERE `doc_no`='$doc_no_ref' AND `size_code`=  '$key' AND operation_code = '$op_code'";
         $result_selecting_cps_qry = $link->query($selecting_cps_qry);
@@ -53,9 +56,11 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
         {
             $id_to_update_cps = $row_result_selecting_cps_qry['id'];
         }
-        $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty-$value where id = $id_to_update_cps";
-        // echo $update_qry_cps.'<br/>';
-        $updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($result_selecting_cps_qry)>0){
+            $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty-$value where id = $id_to_update_cps";
+            // echo $update_qry_cps.'<br/>';
+            $updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+        }
 
         //updating for next operation send_qty
         $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$op_code'";
@@ -73,7 +78,7 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 
 
         $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' AND operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1";
-        $result_post_ops_check = $link->query($post_ops_check);
+        $result_post_ops_check = $link->query($post_ops_check); 
         if($result_post_ops_check->num_rows > 0)
         {
             while($row = $result_post_ops_check->fetch_assoc()) 
