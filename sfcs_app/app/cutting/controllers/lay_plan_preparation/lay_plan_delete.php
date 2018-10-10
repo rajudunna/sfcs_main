@@ -312,6 +312,10 @@ if(isset($_POST["submit"]))
                     $sql7="update $bai_pro3.cat_stat_log set clubbing=0,category='',purwidth=0,gmtway='',binding_consumption=0,patt_ver='' where order_tid=\"".$order_tid[$i]."\""; 
                     mysqli_query($link, $sql7) or die("Error=7".mysqli_error($GLOBALS["___mysqli_ston"]));  
                     // echo $sql7."<br>"; 
+
+                    $sql3="delete from $bai_pro3.excess_cuts_log where schedule_no='$schedule' and color='$color'";
+                    mysqli_query($link, $sql3) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                    // echo $sql3."<br>"; 
                      
                     if($schedule_id!=0) 
                     { 
