@@ -92,7 +92,7 @@ while($row = mysqli_fetch_array($result))
 		  {
 			 $lay_done='NOT DONE';
 		  }
-	   $sql_check='SELECT COUNT(*) as count FROM [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
+	   $sql_check='SELECT COUNT(*) as count FROM [BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
 	   echo $sql_check."<br>";
 	   $result=odbc_exec($connect, $sql_check) or die("Couldn't open database $connect");
 	   while($row = odbc_fetch_row($result))
@@ -100,18 +100,18 @@ while($row = mysqli_fetch_array($result))
 		  $count1=$row['count'];
 		  if($count1=0)
 		  {
-			$sql2='SELECT * FROM [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
-			 echo $sql2."<br>";
+			//$sql2='SELECT * FROM [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
+			 //echo $sql2."<br>";
   
-			 /*$sql2='insert [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,PCD,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values("'.$schedule.'","'.$facility_code.'","'.$color.'","'.$lay_done.'",CAST ("'.$total_jobs_value.'" as VARCHAR(MAX)),"'.$lay_plan_status.'",CAST ("'.$input_status.'" as VARCHAR(MAX)),CAST ("'.$planned_jobs_value.'" as VARCHAR(MAX)))';*/
-			 // $result7=odbc_fetch_row($connect, $sql2) or die("Data not updated $connect");
+			 $sql2='insert [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,PCD,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values("'.$schedule.'","'.$facility_code.'","'.$color.'","'.$lay_done.'",CAST ("'.$total_jobs_value.'" as VARCHAR(MAX)),"'.$lay_plan_status.'",CAST ("'.$input_status.'" as VARCHAR(MAX)),CAST ("'.$planned_jobs_value.'" as VARCHAR(MAX)))';*/
+			 $result7=odbc_exec($connect, $sql2) or die("Data not updated $connect");
 			 echo $result7."<br><br>";
 		  }
 		  else
 		  {             
 			$sql2='update [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration set LayPlanGenerationStatusDesc="'.$lay_done.'", NoOfJobsPlanned="'.$planned_jobs_value.'",NoOfCutJobs=CAST ($total_jobs as VARCHAR(MAX)),LayPlanPrepStatusDesc="'.$lay_plan_status.'",
 			InputStatusDesc=CAST ("'.$input_status.'" as VARCHAR(MAX)) where Schedule="'.$schedule.'" AND ColorId="'.$color.'"';
-			// $result8=odbc_fetch_row($connect, $sql2) or die("data not updated $connect");
+			$result8=odbc_exec($connect, $sql2) or die("data not updated $connect");
 			echo $result8."<br><br>";
 		  }
 	   }
