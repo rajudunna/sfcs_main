@@ -591,7 +591,7 @@ function button_disable()
 			foreach($finalrecords as $key=>$value){
 
 				$mtno = urlencode($value['MTNO']);
-				$url = $api_hostname .":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=".$company_no."&ITNO=".$mtno;
+				$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=".$company_no."&ITNO=".$mtno;
 				
 				$response_result1 = $obj->getCurlRequest($url);
 				$response_result1 = json_decode($response_result1);
