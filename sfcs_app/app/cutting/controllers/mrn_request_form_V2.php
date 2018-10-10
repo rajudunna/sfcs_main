@@ -565,7 +565,7 @@ function button_disable()
 			$MIRecords_color = array();
 			while($sql_result_32=mysqli_fetch_array($sql_result)){
 				 
-				$url = $api_hostname .":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$global_facility_code."&MFNO=".$sql_result_32['mo_no'];
+				$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$global_facility_code."&MFNO=".$sql_result_32['mo_no'];
 				$response_result = $obj->getCurlAuthRequest($url);
 				$response_result = json_decode($response_result);
 				
