@@ -238,7 +238,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$sql2="SELECT (CAST(avail_$shift as SIGNED)-CAST(absent_$shift AS SIGNED)) as nop FROM $bai_pro.pro_atten WHERE DATE='$date' AND module=\"$module\"";
 			$note.=$sql2."<br/>";
 			//echo $sql2."<br>";
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$act_nop=$sql_row2['nop'];
@@ -261,8 +261,9 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				$pln_clh=0;
 				$pln_sth=0;
 				$sql2="select plan_eff, plan_pro, plan_sah,plan_clh from $bai_pro.pro_plan where sec_no=$sec and shift=\"$shift\" and date=\"$date\" and mod_no=\"$module\"";
+				//echo $sql2;
 				$note.=$sql2."<br/>";
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
 					$pln_output=$sql_row2['plan_pro'];
@@ -281,7 +282,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			
 			$sql2="update $bai_pro.grand_rep set date=\"$date\", module=\"$module\", shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$max_buyer\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
 			//echo $sql2."<br/>";
-			mysqli_query($link, $sql2) or exit("Sql Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));			
+			mysqli_query($link, $sql2) or exit("Sql Error50".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));			
 		
 		} //Module		
 	} //Shift
