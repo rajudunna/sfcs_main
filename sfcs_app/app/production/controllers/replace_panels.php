@@ -130,7 +130,9 @@
                                     <input type='hidden' id='shift_$i' name='shift_$i' value='$shift'>
                                     <input type='hidden' id='opid$i' name='opid$i' value='$operation'>
                                     <input type='hidden' id='bundle_$i' name='bun_$i' value='$bundle_no'>
+                                    <input type='hidden' id='color_$i' name='color_$i' value='$color'>
                                     <input type='checkbox' id='$i' name='che_$i' value=''>
+
                                     </td>
                                   </tr>";
                                  
@@ -218,6 +220,7 @@ $('#mod_id').click(function(){
         var shifts = [];
         var ops = [];
         var bundle = [];
+        var color = [];
 	    var count =0;   
         $("input[type='checkbox']").each(function() { 
             if($(this).prop('checked') == true){
@@ -230,6 +233,7 @@ $('#mod_id').click(function(){
                     ops.push($('#opid'+check_id).val());
                     replace_values.push($('#rep_'+check_id).val());
                     bundle.push($('#bundle_'+check_id).val());
+                    color.push($('#color_'+check_id).val());
                 }
                 // else{
                     // alert('In Checked quantity, Rejection Quantity is less than zero');
@@ -255,7 +259,7 @@ $('#mod_id').click(function(){
                         url: '<?= getFullURLLevel($_GET['r'],'replace_ajax.php',0,'R'); ?>',
                         data:{
                         'style':'<?= $style; ?>',
-                        'color':'<?= $color; ?>',
+                        'color':color,
                         'schedule':'<?= $schedule; ?>',
                         'size':sizes,
                         'job_no':'<?= $job_no; ?>',
