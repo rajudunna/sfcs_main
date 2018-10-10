@@ -2,7 +2,7 @@
 /*
 	=========== Create By Chandu =============
 	Created at : 09-10-2018
-	Updated at : 09-10-2018
+	Updated at : 10-10-2018
 	Input : data from bai_pro3.mo_details with status 0.
 	Output : populate the data in m3_inputs.order_details_original.
 */
@@ -32,15 +32,37 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
             $response_size_data = getCurlAuthRequest($color_size_url,$basic_auth);
             if($response_size_data['status'] && isset($response_size_data['response']['CONO'])){
                 $color_res = $response_size_data['response']['OPTY'];
-                $option_des_url_col =$api_hostname.":".$api_port_no."/m3api-rest/execute/PDS050MI/Get?CONO=$comp_no&OPTN=$color_res";
-                $response_color_data = getCurlAuthRequest($option_des_url_col,$basic_auth);
+                $option_des_url_all =$api_hostname.":".$api_port_no."/m3api-rest/execute/PDS050MI/Get?CONO=$comp_no&OPTN=";
+                $response_color_data = getCurlAuthRequest($option_des_url_all.$color_res,$basic_auth);
                 if($response_color_data['status'] && isset($response_color_data['response']['TX30'])){
                     $color_description = $response_color_data['response']['TX30'];
+                    //============= call api for wastage =============
+                    $mfno = $response['response']['MFNO'];
+                    $prno = urlencode($response['response']['PRNO']);
+                    $url_wastage = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$comp_no&FACI=$global_facility_code&MFNO=$mfno&PRNO=$prno&MSEQ=$sequence_no";
+                    //echo $url_wastage;die();
+                    $response_wastage = getCurlAuthRequest($url_wastage,$basic_auth);
+                    $uom = '';
+                    $wastage = '';
+                    if($response_wastage['status'] && isset($response_wastage['response']['WAPC'])){
+                        $uom = $response_wastage['response']['PEUN'];
+                        $wastage = $response_wastage['response']['WAPC'];
+                    }
+
+                    $size_description = getCurlAuthRequest($option_des_url_all.$result_data['size'],$basic_auth)['response']['TX30'] ?? '';
+                    $z_feature_description = getCurlAuthRequest($option_des_url_all.$result_data['zfeature'],$basic_auth)['response']['TX30'] ?? '';
+
+                    //=========== save data ================
+                    $qry_save_bom = "INSERT INTO $m3_inputs.bom_details(date_time,
+                    item_code,item_description,color,color_description,size,z_code,per_piece_consumption,wastage,uom) VALUES (now(),'".urldecode($item_code)."','".$item_description."','".$result_data['color']."','".$color_description."','".$size_description."','".$z_feature_description."','".$order_yy."','".$wastage."','".$uom."')";
+                    $res_save_bom = mysqli_query($link, $qry_save_bom) or exit("Sql Error Insert bom Details".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                    //================================================
                     $get_m3_trans_mo = "SELECT * FROM $m3_inputs.mo_details WHERE MONUMBER='".$mo_no."'";
                     $res_m3_trans_mo = mysqli_query($link, $get_m3_trans_mo) or exit("Sql Error select m3_transcation.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $res_m3_trans_mo = mysqli_fetch_array($res_m3_trans_mo);
                     //================ insert order_details_original =========================
-                    $ins_order_details = "INSERT INTO $m3_inputs.order_details_original(`Facility`, `Customer_Style_No`, `CPO_NO`, `VPO_NO`, `CO_no`, `Style`, `Schedule`, `Manufacturing_Schedule_no`, `MO_Split_Method`, `MO_Released_Status_Y_N`, `GMT_Color`, `GMT_Size`, `GMT_Z_Feature`, `Graphic_Number`, `CO_Qty`, `MO_Qty`, `PCD`, `Plan_Delivery_Date`, `Destination`, `Packing_Method`, `Item_Code`, `Item_Description`, `RM_Color_Description`, `Order_YY_WO_Wastage`, `Wastage`, `Required_Qty`, `UOM`, `MO_NUMBER`, `SEQ_NUMBER`, `time_stamp`) VALUES ('".$global_facility_code."','','".$res_m3_trans_mo['cpo']."','".$res_m3_trans_mo['VPO']."','','".$result_data['style']."','".$result_data['schedule']."','".$result_data['schedule']."','','Y','".$result_data['color']."','".$result_data['size']."','".$result_data['zfeature']."','','0','".$result_data['mo_quantity']."','".date('Ymd',strtotime($res_m3_trans_mo['STARTDATE']))."','".date('Ymd',strtotime($res_m3_trans_mo['COPLANDELDATE']))."','".$result_data['destination']."','".$result_data['packing_method']."','".urldecode($item_code)."','".$item_description."','".$color_description."','".$order_yy."','','','','".$mo_no."','".$sequence_no."','".date('Y-m-d H:i:s')."')";
+                    $ins_order_details = "INSERT INTO $m3_inputs.order_details_original(`Facility`, `Customer_Style_No`, `CPO_NO`, `VPO_NO`, `CO_no`, `Style`, `Schedule`, `Manufacturing_Schedule_no`, `MO_Split_Method`, `MO_Released_Status_Y_N`, `GMT_Color`, `GMT_Size`, `GMT_Z_Feature`, `Graphic_Number`, `CO_Qty`, `MO_Qty`, `PCD`, `Plan_Delivery_Date`, `Destination`, `Packing_Method`, `Item_Code`, `Item_Description`, `RM_Color_Description`, `Order_YY_WO_Wastage`, `Wastage`, `Required_Qty`, `UOM`, `MO_NUMBER`, `SEQ_NUMBER`, `time_stamp`) VALUES ('".$global_facility_code."','','".$result_data['cpo']."','".$res_m3_trans_mo['VPO']."','','".$result_data['style']."','".$result_data['schedule']."','".$result_data['schedule']."','','Y','".$result_data['color']."','".$result_data['size']."','".$result_data['zfeature']."','','0','".$result_data['mo_quantity']."','".date('Ymd',strtotime($res_m3_trans_mo['STARTDATE']))."','".date('Ymd',strtotime($res_m3_trans_mo['COPLANDELDATE']))."','".$result_data['destination']."','".$result_data['packing_method']."','".urldecode($item_code)."','".$item_description."','".$color_description."','".$order_yy."','".$wastage."','','".$uom."','".$mo_no."','".$sequence_no."','".date('Y-m-d H:i:s')."')";
                     $res_order_details = mysqli_query($link, $ins_order_details) or exit("Sql Error Insert Order Details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($res_order_details){
                         //=============== update mo_details status =========================
