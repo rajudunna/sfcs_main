@@ -155,7 +155,7 @@ for($i=0;$i<sizeof($cat_db);$i++)
 			//echo $mk_new_length."*".$new_plies."</br>";
 			$newyy=$newyy+($mk_new_length*$new_plies);
 		}
-		$sums[$i]=$newyy;
+		$sums[$cat_db[$i]]=$newyy;
 	}
 	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error());
@@ -1465,8 +1465,10 @@ tags will be replaced.-->
   <td colspan=3 class=xl7032599 >
   <?php 
   		$material = array();
-  		for($i=0;$i<sizeof($old_order_tot);$i++)
-  		$material[$i] = round(($old_order_tot[$i]*$body_yy),0);
+  		for($i=0;$i<sizeof($sch_tids);$i++)
+		{
+			$material[$i] = round(($old_order_tot[$sch_tids[$i]]*$body_yy),0);
+		}
 		echo implode("/",$material);
 	?>
 			
@@ -1476,8 +1478,10 @@ tags will be replaced.-->
   <td colspan=3 class=xl7032599>
   <?php 
   $sum_newyy = array();
-  	for($i=0;$i<sizeof($sums);$i++)
-  		$sum_newyy[$i]= round($sums[$i],0); 
+  	for($i=0;$i<sizeof($cat_db);$i++)
+	{
+  		$sum_newyy[$i]= round($sums[$cat_db[$i]],0); 
+	}	
 	echo implode("/",$sum_newyy);
 	?>
 		
@@ -1884,6 +1888,7 @@ tags will be replaced.-->
 			$ex_tot[$sch_tids[$ii]]=$ex_tot[$sch_tids[$ii]]+($cut_alloc[$sch_tids[$ii]][$sizes_array[$s]]-$qtys[$sch_tids[$ii]][$sizes_array[$s]]);
 			$ex[$sch_tids[$ii]][$sizes_array[$s]]=($cut_alloc[$sch_tids[$ii]][$sizes_array[$s]]-$qtys[$sch_tids[$ii]][$sizes_array[$s]]);
 		}
+		
 	}
 	// Excess	
 	if($check_status==1)
@@ -1908,7 +1913,7 @@ tags will be replaced.-->
 			{
 	  			echo "<td $style_css>".$ex[$sch_tids[$l]][$sizes_array[$i]]."</td>";
 			}	  	
-			echo "<td $style_css>".$ex_tot[$sch_tids[$ii]]."</td>";
+			echo "<td $style_css>".$ex_tot[$sch_tids[$l]]."</td>";
 			echo "</tr>";
 		}	
 	}
