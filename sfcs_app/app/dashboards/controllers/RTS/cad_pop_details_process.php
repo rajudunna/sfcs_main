@@ -280,6 +280,9 @@ if(isset($_POST['submit']))
 		$tid=$sql_row111['tid'];
 	    }
 		$sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength,cuttable_ref) values (\"".date("Y-m-d")."\",".$cat[$i].",\"$order_tid\",".$mklen[$i].",".$tid.")";
+		
+		$sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength) values (\"".date("Y-m-d")."\",".$cat[$i].",\"$order_tid\",".$mklen[$i].")";
+		//echo $sql1;
 //echo $sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
