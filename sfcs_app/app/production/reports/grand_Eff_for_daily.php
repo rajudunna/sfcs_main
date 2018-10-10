@@ -3,7 +3,7 @@ Date : 2014-01-18;
 Task : Takes the Max output style buyer for buyer level calculations in Efficiency Report;
 Ticket #815663
  -->
-<?php
+ <?php
 	$edate=$edate;
 	$sdate=$date;
 		
@@ -278,10 +278,15 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 					$pln_clh=0;				
 				}
 			}
-			
-			
+			 if($smv=='' && $nop=='')
+			 {
+				$sql2="update $bai_pro.grand_rep set date=\"$date\", module=\"$module\", shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv='', nop='', buyer=\"$max_buyer\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
+
+			 }
+			 else
+			{
 			$sql2="update $bai_pro.grand_rep set date=\"$date\", module=\"$module\", shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$max_buyer\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
-			//echo $sql2."<br/>";
+			}
 			mysqli_query($link, $sql2) or exit("Sql Error50".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));			
 		
 		} //Module		
