@@ -307,8 +307,11 @@ if($barcode_generation == 1)
 										$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
 									}
 									$remarks_code = $reason_code.'-'.$insertable_qty_rej;
-									$remarks_var = $b_module.'-'.$b_shift.'-'.$type;
-									$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+									$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
+									if($insertable_qty_rej > 0)
+									{
+										$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+									}
 
 									//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 
@@ -362,8 +365,11 @@ if($barcode_generation == 1)
 											$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
 										}
 										$remarks_code = $reason_code.'-'.$insertable_qty_rej;
-										$remarks_var = $b_module.'-'.$b_shift.'-'.$type;
-										$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+										$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
+										if($insertable_qty_rej > 0)
+										{
+											$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+										}
 
 										//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 									}
@@ -377,9 +383,9 @@ if($barcode_generation == 1)
 								}
 								$remarks_code = $reason_code.'-'.$insertable_qty_rej;
 								$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
-								$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+								//$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
 
-								$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
+								//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 							}
 							/*
 							else 
@@ -551,9 +557,9 @@ if($barcode_generation == 1)
 					// echo $cumulative_rej_qty.'-';
 					//$fillup_qty[$doc_value][$b_sizes[$key]] = 0;
 					$cumulative_rej_qty = $to_add_doc_val + $cumulative_rej_qty;
-					$$remaining_qty_rej = $cumulative_rej_qty;
+					$remaining_qty_rej = $cumulative_rej_qty;
 					$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = $b_job_no AND operation_id = '$b_op_id' AND docket_number = '$doc_value' AND assigned_module = '$module_cum' order by barcode_sequence DESC";
-					//echo $query_to_fetch_individual_bundles.'-';
+					// echo $query_to_fetch_individual_bundles.'-';
 					$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if($emb_cut_check_flag != 0)
 					{
@@ -579,22 +585,26 @@ if($barcode_generation == 1)
 					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 					{
 						$bundle_individual_number = $nop_qry_row['bundle_number'];
+						//echo $bundle_individual_number.'-'.$cumulative_rej_qty.'</br>';
 						if($cumulative_rej_qty > 0)
 						{
 							$bundle_pending_qty_rej =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+$rec_qtys_array[$bundle_individual_number]+$nop_qry_row['rejected_qty']);
-							//echo $bundle_individual_number.'-'.$bundle_pending_qty_rej.'-'.$remaining_qty_rej;
+							//echo $bundle_individual_number.'-';
 							if($bundle_pending_qty_rej != 0)
 							{
 								if($bundle_pending_qty_rej <= $remaining_qty_rej)
 								{
 									$to_add += $bundle_pending_qty_rej;
+									//echo '-'.$bundle_pending_qty_rej.'</br>';
 									$actual_rej_quantities[$bundle_individual_number]=$bundle_pending_qty_rej;
 									$remaining_qty_rej = $cumulative_rej_qty - $bundle_pending_qty_rej;
+									$cumulative_rej_qty = $remaining_qty_rej;
 								}
 								else
 								{
 									$to_add += $cumulative_rej_qty;
 									$actual_rej_quantities[$bundle_individual_number]=$cumulative_rej_qty;
+									//echo '-'.$cumulative_rej_qty.'</br>';
 									$cumulative_rej_qty = 0;
 									$remaining_qty_rej = 0;
 								}
@@ -606,7 +616,7 @@ if($barcode_generation == 1)
 							}
 							$remarks_code = $reason_code.'-'.$insertable_qty_rej;
 							$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
-							$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+							//$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
 
 							//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 
@@ -655,8 +665,11 @@ if($barcode_generation == 1)
 										$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
 									}
 									$remarks_code = $reason_code.'-'.$insertable_qty_rej;
-									$remarks_var = $b_module.'-'.$b_shift.'-'.$type;
-									$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+									$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
+									if($insertable_qty_rej > 0)
+									{
+										$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+									}
 
 									//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 
@@ -710,8 +723,12 @@ if($barcode_generation == 1)
 											$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
 										}
 										$remarks_code = $reason_code.'-'.$insertable_qty_rej;
-										$remarks_var = $b_module.'-'.$b_shift.'-'.$type;
-										$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+										$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
+										if($insertable_qty_rej > 0)
+										{
+											$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
+										}
+										
 
 										//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 									}
@@ -750,14 +767,14 @@ if($barcode_generation == 1)
 	}
 	// die();
 	//rejections updation in qms_db
-	//var_dump($actual_rejection_reason_array_string);
+	// var_dump($actual_rejection_reason_array_string);
 	//echo $bulk_insert_rej;
 	// foreach($actual_bundles as $key=>$value)
 	// {
-	// 	echo $actual_bundles[$key].'-'.$actual_rec_quantities[$key].'-'.$actual_rej_quantities[$value].'</br>';
-	// 	$b_tid[] = $actual_bundles[$key];
-	// 	$b_rep_qty[] = $actual_rec_quantities[$key];
-	// 	$b_rej_qty[] = $actual_rej_quantities[$value];
+	// 	//echo $actual_bundles[$key].'-'.$actual_rec_quantities[$key].'-'.$actual_rej_quantities[$value].'</br>';
+	// 	//$b_tid[] = $actual_bundles[$key];
+	// 	//$b_rep_qty[] = $actual_rec_quantities[$key];
+	// 	//$b_rej_qty[] = $actual_rej_quantities[$value];
 
 	// }
 	// die();
@@ -801,7 +818,7 @@ if($barcode_generation == 1)
 	foreach ($b_tid as $key=>$value)
 	{
 		$select_send_qty = "SELECT send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
-	// echo $select_send_qty;
+	   // echo $select_send_qty.'</br>';
 		$result_select_send_qty = $link->query($select_send_qty);
 		if($result_select_send_qty->num_rows >0)
 		{
@@ -813,6 +830,7 @@ if($barcode_generation == 1)
 				$rejected_qty = $row['rejected_qty'];
 				$act_reciving_qty = $b_rep_qty[$key]+$b_rej_qty[$key];
 				$total_rec_qty = $pre_recieved_qty + $act_reciving_qty+$rejected_qty;
+			//	echo $pre_recieved_qty.'+'.$act_reciving_qty.'+'.$rejected_qty.'</br>';
 				//echo "bcd=".$total_rec_qty."-".$send_qty."</br>";
 				if($total_rec_qty > $send_qty)
 				{
@@ -1155,7 +1173,8 @@ if($barcode_generation == 1)
 					}else{
 						$final_query = $bulk_insert_rej;
 					}
-					$rej_insert_result = $link->query($final_query) or exit('data error');
+					//echo $final_query;
+					//$rej_insert_result = $link->query($final_query) or exit('data error');
 				}
 			}
 			
