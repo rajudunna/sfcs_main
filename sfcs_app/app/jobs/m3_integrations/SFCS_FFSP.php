@@ -2,7 +2,7 @@
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $driver_name = 'Driver={SQL Server Native Client 11.0}';
-$serverName='10.227.18.139';
+$serverName='BAS-DBSRV-01';
 $m3_databasename='BEL_RMDashboard';
 $uid='BEL_SFCS';
 $pwd='2ESwasw!';
