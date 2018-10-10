@@ -43,6 +43,12 @@ else
 }
 
 $excess_cut = $_GET['excess_cut'];
+$query = "SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' AND order_col_des='$color'";
+$result = mysqli_query($link,$query) or exit("Packing summary Input");
+if(mysqli_num_rows($result) > 0) {
+	$check=1;
+}
+
 
 
 //Validation for the schedule operation matchings
@@ -1532,11 +1538,30 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 			else {
 				if($excess_cut==1){
 					$val = "First Cut";
+					echo "<form name='myForm1' action=$url1 method='POST'><div class='col-md-2'>
+						<select class='form-control' name='cut1' id='cut1'>
+							<option value='0' disabled>Please Select</option>
+							<option value='1' selected>First Cut</option>
+							<option value='2'>Last Cut</option>
+						</select></div>";
 				}
 				else {
 					$val = "Last Cut";
+					echo "<form name='myForm1' action=$url1 method='POST'><div class='col-md-2'>
+					<select class='form-control' name='cut1' id='cut1'>
+							<option value='0' disabled>Please Select</option>
+							<option value='1'>First Cut</option>
+							<option value='2' selected>Last Cut</option>
+						</select></div>";
 				}
-				echo "<div class='col-md-2'><b>".$val."</b></div>";
+				echo "<div class='col-md-2'><input type='hidden' id='style' name='style' value=$style><input type='hidden' id='schedule' name='schedule' value=$schedule><input type='hidden' id='color' name='color' value='$color'><input type='hidden' id='user' name='user' value=$user/></div>";
+				//check whether sewing job created or not
+				if($check=='1'){
+				} else {
+					echo "<input type='submit' name='submit' class='btn btn-warning btn-sm editor_edit'>";
+				}
+				echo "</form>";
+				// echo "<div class='col-md-2'><b>".$val."</b></div>";
 			}
 			?>			
 			</div>
@@ -1968,6 +1993,9 @@ $(document).ready(function(){
 		else{
 			document.getElementById('submit').disabled = true;
 		}
-	})
+	});
+	$('#submit').on('click',function(){
+		document.getElementById("cut1").disabled = false;
+	});
 })
 </script>

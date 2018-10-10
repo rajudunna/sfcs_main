@@ -1689,7 +1689,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
                     <td height=11 class=xl6513019 style='height:8.25pt'></td> 
                     <?php for($i=0;$i<32;$i++) echo "<td class=xl6613019></td>"; ?> 
                 </tr> 
- 
                 <!-- middle body code --> 
                 <tr> 
                     <td class=xl6613019></td> 
@@ -1706,9 +1705,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
                     One Way</td> 
                     <td colspan=2 class=xl6913019><?php echo $gmtway; ?></td> 
                     <td colspan=2></td>
-                    <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Binding Consumption</td> 
+                    <td colspan=4 class=xl9813019 style='border-right:.5pt solid black'>Binding Consumption</td> 
                     <td class=xl6913019><?php echo $binding_consumption; ?></td> 
-                    <td class=xl7113019></td> 
                     <td class=xl6613019></td> 
                 </tr> 
                 <tr> 
