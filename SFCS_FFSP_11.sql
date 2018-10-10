@@ -1,1 +1,0 @@
-select order_style_no,order_del_no,order_col_des from bai_pro3.orders_db_confirm
