@@ -77,6 +77,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 						?>
 						<label for="select_buyer">Select Buyer: </label><br>
 						<select name="buyer" class="form-control">
+						<option value="ALL" selected="ALL">ALL</option>
+
 							<?php
 								$sql3="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 								//echo $sql3;
@@ -96,7 +98,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 								}
 								}
 								?>
-						</select>
+						</select> 
 					</div>
 					<div class='col-sm-1'>
 						<br/><input type="submit" name="submit" onclick='return verify()' value="Show" class="btn btn-primary">
@@ -3040,13 +3042,15 @@ if(isset($_POST['submit']))
 		if($buyer_name == "ALL")
 		{
 			$sql="select distinct module from $bai_pro.grand_rep where section in(".$sec.") and date between \"$date\" and \"$edate\" order by module*1";
-			// echo $sql;
+			//echo $sql1;
+			//echo "Hello";
 		}
 		else
 		{
 			$sql="select distinct module from $bai_pro.grand_rep where section in(".$sec.") and date between \"$date\" and \"$edate\" and buyer like \"%".$buyer_name."%\" order by module*1";
 			// echo $sql;
 		}
+		//echo $sql;
 		//$sql="select distinct mod_no from pro_mod where mod_sec in(".$sec.") and mod_date between \"$date\" and \"$edate\" and buyer=\"".$buyer_name."\" order by mod_no";
 		mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3094,7 +3098,7 @@ if(isset($_POST['submit']))
 			{
 				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\"";	
 			}
-
+              echo $sql2;
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
