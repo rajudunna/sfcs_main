@@ -134,7 +134,7 @@
                 // echo $list_codes."op codes list";
                 $get_mo_details ="SELECT md.id as mid,md.mo_no as mo_no,md.rejected_quantity as rej_qty,md.status as rstatus,md.op_code as opcode,md.op_desc as opdes,m.size as sizeid FROM $bai_pro3.mo_operation_quantites md 
                 LEFT JOIN $bai_pro3.mo_details m ON m.mo_no = md.mo_no 
-                WHERE  style='$style' AND schedule='$schedule' AND color='$color' AND m.size='$size_ary[$i]' AND rejected_quantity  >0 and op_code in ($list_codes)" ;
+                WHERE  style='$style' AND schedule='$schedule' AND color='$color' AND m.size='$size_ary[$i]' AND rejected_quantity  >0 and op_code in ($list_codes) GROUP BY op_code ORDER BY md.mo_no DESC" ;
                 // echo $get_mo_details."10<br>";
              
                 $res_mo =mysqli_query($link,$get_mo_details)or exit(mysqli_error($link));
