@@ -660,11 +660,13 @@ if($barcode_generation == 1)
 									{
 										$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
 									}
-									$remarks_code = $reason_code.'-'.$insertable_qty_rej;$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
+									$remarks_code = $reason_code.'-'.$insertable_qty_rej;
+									$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
 									if($insertable_qty_rej > 0)
 									{
 										$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'",user(),"'.date('Y-m-d').'","'.$qms[$bundle_individual_number]['size_code'].'","'.$insertable_qty_rej.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$b_job_no.'","'. $b_op_id.'","'. $qms[$bundle_individual_number]['remarks'].'","'.$bundle_individual_number.'"),';
 									}
+		
 									//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 
 									}
@@ -1053,7 +1055,8 @@ if($barcode_generation == 1)
 						{
 							$send_qty = 0;
 							$cancel_qty =0;
-						}							$rec_qty = 0;
+						}							
+						    $rec_qty = 0;
 							$rej_qty = 0;
 							$b_query[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$mapped_color.'","'.$barcode_sequence[$key].'","'.$b_tid[$key].'","'.$cancel_qty.'"),';
 
