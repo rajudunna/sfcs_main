@@ -103,7 +103,7 @@ while($row = mysqli_fetch_array($result))
 			//$sql2='SELECT * FROM [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
 			 //echo $sql2."<br>";
   
-			 $sql2='insert [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,PCD,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values("'.$schedule.'","'.$facility_code.'","'.$color.'","'.$lay_done.'",CAST ("'.$total_jobs_value.'" as VARCHAR(MAX)),"'.$lay_plan_status.'",CAST ("'.$input_status.'" as VARCHAR(MAX)),CAST ("'.$planned_jobs_value.'" as VARCHAR(MAX)))';*/
+			 $sql2='insert [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,PCD,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values("'.$schedule.'","'.$facility_code.'","'.$color.'","'.$lay_done.'",CAST ("'.$total_jobs_value.'" as VARCHAR(MAX)),"'.$lay_plan_status.'",CAST ("'.$input_status.'" as VARCHAR(MAX)),CAST ("'.$planned_jobs_value.'" as VARCHAR(MAX)))';
 			 $result7=odbc_exec($connect, $sql2) or die("Data not updated $connect");
 			 echo $result7."<br><br>";
 		  }
