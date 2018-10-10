@@ -1,8 +1,10 @@
 <?php
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-
+$url = '/sfcs_app/app/dashboards/controllers/rms/fabric_requisition.php';
+$url = base64_encode($url);
 $section = $_GET['section'];
+$blocks_per_sec = $_GET['blocks'];
 
 foreach($sizes_array as $size){
     $sum.= $size." + ";
@@ -30,9 +32,8 @@ if($section > 0){
             $total_wip = 0;
             $docs_wip = '';
             $jobs_wip ='';
-            $data.= "<tr>";
-            $data.="<td class='mod-td'><span class='mod-no'><b>$module</b></span></td>";
-            $data.="<td class='wip-td'>";
+            $data.= "<tr rowspan=2>";
+            $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>$module</b></span></td>";
 
             /*  BLOCK - 1 */
             //getting the WIP OF module in a section
@@ -46,35 +47,28 @@ if($section > 0){
                 //$module_smv[$module] = $row['SMV'] * $ims_wip;
             }
             if($ims_wip == '')
-                $ims_wip = 0;          
-            $data.="<span class='ims-wip'>WIP : $ims_wip</span>";
-            $data.="</td>";
-
+                $ims_wip = 0;
+            else{              
+                $data.="<td rowspan=2 class='wip-td'>";    
+                $data.="<span class='ims-wip'><b>WIP : $ims_wip</b></span>";
+                $data.="</td>";
+            }
 
             /*  BLOCK - 2  */
+            /*
             $jobs_wip.="<td class='wip-td'>
                                 <span class='pending-wip'>WIP : <span id='pending-wip-$module'>0</span></span>
                             </td>";
+            */
             /*  BLOCK - 3 */
-            $docs_wip = getCutJobsData($module);
+            $docs_wip = getCutJobsData($section,$module,$blocks_per_sec);
            
             $data.= $jobs_wip;
             $data.= $docs_wip;
             $data.="</tr>";
         }//modules loop ending
 
-        /* MAIN CODE FOR BLOCK 2 */
-        // //Sorting the modules according to SMV's
-        // $new_module_smv = $module_smv;
-        // array_multisort($new_module_smv);
-        // $new_module_smv = array_unique($new_module_smv);
-        // foreach($new_module_smv as $value){
-        //     foreach($module_smv as $key => $value1){
-        //         if($value == $value1){
-        //             $sorted_modules[] = $key;
-        //         }
-        //     }
-        // }
+
 
         /* Calcualting middle WIP   */
         //gettingt the op code with IPS
@@ -284,15 +278,18 @@ echo json_encode($section_data);
 
 
 <?php
-function getCutJobsData($module){
+function getCutJobsData($section,$module,$blocks){
 
     global $sum_str; 
     global $link;
+    global $url;
     global $bai_pro3,$brandix_bts;
     $docs_data = ''; 
     $total_cut_wip = 0;
-
+    $next_row_break = 0;
+    $docs_data.="<td rowspan=1 class='cut-td'>";
     // Total WIP
+    /*
     $total_cut_wip_query = "SELECT (SUM($sum_str)) as qty from $bai_pro3.plan_dash_doc_summ 
                              where module = '$module' and  act_cut_status = '' ";
                              
@@ -304,6 +301,7 @@ function getCutJobsData($module){
             <span class='cut-wip'>WIP : <span id='cut-wip-$module'></span></span>
         </td>";
     }
+    */
    
     //getting all dockets with the partial cut reported quantities
     $partial_dockets_query  = "SELECT GROUP_CONCAT(doc_no) as doc_no,GROUP_CONCAT(acutno) as acutno,
@@ -326,14 +324,14 @@ function getCutJobsData($module){
                 from $bai_pro3.plan_dash_doc_summ 
                 where module = $module and  act_cut_status = '' 
                 and clubbing <> '0'
-                group by order_del_no,clubbing,acutno order by order_del_no,acutno,color_code";
+                group by order_del_no,clubbing,acutno order by priority";
             
     $nfull_dockets_query = "SELECT GROUP_CONCAT(doc_no) as doc_no,GROUP_CONCAT(acutno) as acutno,
                 SUM($sum_str) as qty,GROUP_CONCAT(color_code) as color_code,order_del_no,fabric_status_new 
                 from $bai_pro3.plan_dash_doc_summ 
                 where module = $module and  act_cut_status = '' 
                 and clubbing = '0'
-                group by order_del_no,doc_no order by order_del_no,acutno,color_code";
+                group by order_del_no,doc_no order by priority";
 
     $partial_dockets_result = mysqli_query($link,$partial_dockets_query) or exit($data.='Problem in c-partial docs');
     $partial_cdockets_result = mysqli_query($link,$partial_cdockets_query) or exit($data.='Problem in partial docs');          
@@ -376,7 +374,8 @@ function getCutJobsData($module){
                 $total_cut_wip = $total_cut_wip + $doc_qty;
             }
             $tool_tip_text = "Schedule No : $schedule <br/>Doc no : $doc_no <br/> Cut no : $cut_str <br/> Qty : $doc_qty";
-
+            $href= "$url&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=$doc_no";
+    
             //We need to check the fabric status of these dockets and change colors accordingly
             if($order > 1){
                 $tid_query   = "SELECT GROUP_CONCAT(distinct order_tid) as tid from $bai_pro3.plandoc_stat_log 
@@ -426,19 +425,34 @@ function getCutJobsData($module){
             }else{
                 $status_color = 'orange';
             }
+            $next_row_break++;
+            
+            $docs_data.="<span class='cut-block row-line'>
+                        <span class='block $status_color'>
+                            <span class='mytooltip'>
+                                <a href='#' onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\" data-toggle='tooltip' data-placement='top' title='$tool_tip_text' data-html='true'>
+                                    <b>$schedule : $doc_qty</b>
+                                </a>
+                            </span>
+                        </span>
+                        </span>";
+            
+            if($blocks == 8){
+                if($next_row_break == 4){
+                    $next_row_break = 0;
+                    $docs_data.="<br/>";
+                    $blocks = 4;
+                }
+            }else if($next_row_break == 8){
+                $next_row_break = 0;
+                $docs_data.="<br/>";
+            }
 
-
-            $docs_data.="<td class='cut-td'>&nbsp;";
-            $docs_data.="<span><span class='block cut-block $status_color'>
-                    <span class='mytooltip'>
-                        <a href='#' data-toggle='tooltip' data-placement='top' title='$tool_tip_text' data-html='true'>
-                            &nbsp;&nbsp;&nbsp;
-                        </a>
-                    </span>
-                </span></span>";
-            $docs_data.="</td>";
+            if($blocks == $next_row_break)
+                goto enough;
         }
         $docs_data.= "<script>$('#cut-wip-$module').html('$total_cut_wip')</script>";
     }
+    enough : $docs_data.="</td>";
     return $docs_data;
 }

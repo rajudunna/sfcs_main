@@ -9,8 +9,8 @@
         $sections[] = $row['sec_id'];
     }
     $sections_str = implode(',',$sections);
-
 ?>
+
 
 
 <div class='row'>
@@ -21,11 +21,20 @@
         <div class='panel-body'>
             <div class='row'>
                 <div class='col-sm-3'>
-                    <input class='form-control' type='text' name='blocks' id='blocks' class='integer' 
-                        placeholder='No Of Blocks Per Section'>
+                    <label for='blocks'>No of Blocks per Section</label>
+                    <select class='form-control'  name='blocks' id='blocks' >
+                        <option value selected disabled>Schedules Per Sec</option>
+                        <option value='4' >4</option>
+                        <option value='8' >8</option>
+                        <option value='12'>12</option>
+                        <option value='16'>16</option>
+                    </select>
+                    <!-- <input class='form-control' type='text' name='blocks' id='blocks' class='integer' 
+                        placeholder='No Of Blocks Per Section'> -->
                 </div>
                 <div class='col-sm-1'>
-                    <input class='btn btn-primary btn-sm' type='button' value='submit' onclick='change_widths()'>
+                    <label for='submit'><br/></label><br/>
+                    <input class='btn btn-success btn-sm' type='button' value='submit' onclick='change_widths()' name='submit'>
                 </div>
             </div><hr>
             
@@ -35,7 +44,7 @@
                 $id1 = "sec-load-$section";
                 $id2 = "sec-$section";
         ?>    
-                <div class='section_div' style='width:25.5vw;float:left;padding:5px'>
+                <div class='section_div' style='width:35.9vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
                             <center><span class='section-heading'><b>SECTION - <?= $section ?></b></span></center>
@@ -96,10 +105,10 @@
                     <span class="b-block pending-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - CUT REPORTED BUT NOT ISSUED </span>
                 </div>
-                <div class='l-div col-sm-4'>
+                <!-- <div class='l-div col-sm-4'>
                     <span class="b-block cut-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - CUT WIP</span>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -108,7 +117,7 @@
 <script>
     var sections_str = '<?= $sections_str ?>';
     var sections = sections_str.split(',');
-    var bw = 25;
+    var bw = 100;
     $(document).ready(function(){
         load_data();
         $('[data-toggle="tooltip"]').tooltip(); 
@@ -127,13 +136,15 @@
 
     function call_ajax(section,sync_type){
         console.log(section);
+        var blocks = $('#blocks').val();
+        if(blocks == '')
+            blocks = 4;
         $('#sec-load-'+section).css('display','block');
         $('#sec-'+section).html('');
         $.ajax({
-            url: "<?= $url ?>?section="+section
+            url: "<?= $url ?>?section="+section+"&blocks="+blocks
         }).done(function(data) {
             console.log("Response Came");
-            console.log(data);
             try{
                 var sec_data = JSON.parse(data) ;
                 $('#sec-'+section).html(sec_data.data);
@@ -171,18 +182,13 @@
     }
     
     function change_widths(){
+        load_data();
         var b = Number($('#blocks').val());
-        if(b>25 || b<0){
-            swal('Please enter valid no:of blocks','25 is max','warning');
-            return false;
-        }
-        if(b == 0){
-            var w = '25.5vw';
-            $('.section_div').css({"width":w});
-            return true;
-        }
-        else
-            var w = b*bw + 370;
+        var w = b*bw + 100;   
+        if(Number(w) > 1200)
+            w = 900;
+        if(b == 8)
+            w = 4*bw + 100;        
         $('.section_div').css({"width":w+"px"});
     }
 </script>
@@ -205,15 +211,16 @@
 
     .ims-wip{
         background : #FFAA00;
+        background : #FF00D4;
         width : parent;
         height : 35px;
-        color : #000;
+        color : #fff;
         font-size : 12px;
         font-weight : 8px;
         padding : 3px;
         opacity : 1;
         border : 1px solid #aaa;
-        border-radius : 2px;
+        border-radius : 3px;
     }
     .cut-wip{
         background : #00FF00;
@@ -243,10 +250,6 @@
         font-size : 12px;
         color : #3c3c3c;
     }
-    .wip-td{
-        min-width : 100px;    
-    }
-
     .mod-no{
         color : #000;
         font-weight : 10px;
@@ -255,15 +258,26 @@
     .mod-td{
         min-width : 40px;
     }
-
+    .wip-td{
+        min-width : 85px;    
+    }
     .cut-td{
-        min-width  : 25px;
+        min-width  : 1200px;
+        width : auto;
     }
     .block{
+        color : #000;
         overflow : hidden;
-        width  : parent;
-        height : 30px;
-        border : 1px solid black;
+        min-width  : 200px;
+        min-height : 40px;
+        font-size : 12px;
+        padding : 3px;
+        border : 1px solid #aaa;
+        border-radius : 3px;
+    }
+    .cut-block{
+        min-width : 100px;
+        padding : 2px;
     }
     .l-div{
         min-height : 40px;
@@ -308,6 +322,7 @@
 
     table{
         width : auto;
+        max-width : 500px; 
     }
     tr{
         border-bottom : 1px dashed #c5c5c5;
@@ -316,6 +331,10 @@
     }
     td{
         width : auto;
+    }
+    a{
+        text-decoration : none;
+        color : #000;
     }
 
     //Tool tip break
