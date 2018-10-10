@@ -1,5 +1,6 @@
 <?php
 include("../../../../../common/config/config_ajax.php");
+include("../../../../../common/config/functions.php");
 include("../../../../../common/config/m3Updations.php");
 $post_data = $_POST['bulk_data'];
 parse_str($post_data,$new_data);
@@ -1563,7 +1564,8 @@ if($barcode_generation == 1)
 					// }
 					// else
 					// {
-						$input_ops_code = 100;
+						// $input_ops_code = 100;
+						$input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
 					//}
 					//echo 'input_ops_code'.$input_ops_code;
 					if($input_ops_code == 100 || $input_ops_code == 129)
