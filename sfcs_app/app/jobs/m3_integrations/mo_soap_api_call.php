@@ -16,7 +16,7 @@ set_time_limit(6000000);
 	//var_dump($link);
 	$headerbody = array("user"=>$api_username,"password"=>$api_password,"company"=>$company_no);
 	$header = new SOAPHeader("http://lawson.com/ws/credentials", "lws", $headerbody);
-	$soap_client = new SoapClient( $api_hostname.":".$api_port_no."/lws-ws/lwsprd/SFCS?wsdl",array("login" => $api_username,"password" => $api_password));
+	$soap_client = new SoapClient( $api_hostname.":".$api_port_no."/lws-ws/lwsdev/SFCS?wsdl",array("login" => $api_username,"password" => $api_password));
 	$soap_client->__setSoapHeaders($header);
 	try{
 		$to = date('Ymd',  strtotime('+3 month'));
@@ -54,7 +54,7 @@ set_time_limit(6000000);
 			// 	echo "<td>".$value->COREQUESTEDDELDATE."</td>";
 			// echo "</tr>";
 			$basic_auth = base64_encode($api_username.':'.$api_password);
-			$rest_call = getCurlAuthRequest($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO=200&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE);
+			$rest_call = getCurlAuthRequest($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO=200&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE,$basic_auth);
             if($rest_call['status'] && isset($rest_call['response']['ITNO']) && $rest_call['response']['ITNO']!=''){
                 $ins_qry = "
                 INSERT IGNORE INTO `m3_inputs`.`mo_details` 
@@ -88,9 +88,11 @@ set_time_limit(6000000);
 	}
 
 	function getCurlAuthRequest($url,$basic_auth){
+		$include_path=getenv('config_job_path');
+		include($include_path.'\sfcs_app\common\config\m3_api_const.php');
         $curl = curl_init();
         curl_setopt_array($curl, array(
-        CURLOPT_PORT => "22105",
+        CURLOPT_PORT =>$api_port_no,
         CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
