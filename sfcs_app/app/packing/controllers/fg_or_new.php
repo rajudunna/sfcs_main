@@ -7,7 +7,7 @@
 ?>
 
 <?php
-	// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
+	//include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
@@ -575,11 +575,14 @@ if(isset($_POST['update']))
 	
 	//echo $source."-".$doc_no_id;
 	
-	$usr_msg="<div class='alert alert-danger' role='alert'>The following entries are failed to update due to M3 system validations:</div><br/>
-				<div class='col-sm-12'>
-				<div class='col-md-4'>
-					<table class='table table-bordered'>
-						<tr><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
+	/*Commneted By ram*/
+	// $usr_msg="<div class='alert alert-danger' role='alert'>The following entries are failed to update due to M3 system validations:</div><br/>
+	// 			<div class='col-sm-12'>
+	// 			<div class='col-md-4'>
+	// 				<table class='table table-bordered'>
+	// 					<tr><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
+
+	/*upto here*/
 	
 		//M3 Bulk Operation Reporting
 		//Extract Operation Code and Reason Code
@@ -595,8 +598,8 @@ if(isset($_POST['update']))
 	for($i=0;$i<sizeof($sizes_db);$i++)
 	{
 		//
-		if($qty[$i]>0 and rejection_validation_m3($m3_operation_code,$schedule,$color,$sizes_db[$i],$qty[$i],0,$username)=='TRUE')
-		{
+		// if($qty[$i]>0 and rejection_validation_m3($m3_operation_code,$schedule,$color,$sizes_db[$i],$qty[$i],0,$username)=='TRUE')
+		// {
 			//Changed Query for capturing the docket number
 			$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,ref1,doc_no) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."\",\"".date("Y-m-d")."\",\"$gtype\",\"$doc_no_id\")";
 			//echo $sql."<br>";
@@ -612,11 +615,11 @@ if(isset($_POST['update']))
 				//echo $sql."<br/>";
 				mysqli_query($link, $sql_sup) or exit("Sql Error6$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				//M3 Bulk Operation Reporting
-		}
-		else
-		{
-			$usr_msg.="<tr><td>".$schedule."</td><td>".$color."</td><td>".$sizes_db[$i]."</td><td>".$qty[$i]."</td></tr>";
-		}
+		// }
+		// else
+		// {
+		// 	$usr_msg.="<tr><td>".$schedule."</td><td>".$color."</td><td>".$sizes_db[$i]."</td><td>".$qty[$i]."</td></tr>";
+		// }
 	}
 	$usr_msg.="</table></div></div>";
 	
