@@ -565,8 +565,8 @@ function button_disable()
 			$MIRecords_color = array();
 			while($sql_result_32=mysqli_fetch_array($sql_result)){
 				 
-				$url = $api_hostname .":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$global_facility_code."&MFNO=".$sql_result_32['mo_no'];
-				$response_result = $obj->getCurlRequest($url);
+				$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$global_facility_code."&MFNO=".$sql_result_32['mo_no'];
+				$response_result = $obj->getCurlAuthRequest($url);
 				$response_result = json_decode($response_result);
 				
 				$MIRecords[] = $response_result->MIRecord;
@@ -593,7 +593,7 @@ function button_disable()
 				$mtno = urlencode($value['MTNO']);
 				$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=".$company_no."&ITNO=".$mtno;
 				
-				$response_result1 = $obj->getCurlRequest($url);
+				$response_result1 = $obj->getCurlAuthRequest($url);
 				$response_result1 = json_decode($response_result1);
 				
 				$MIRecords_color[] = $response_result1->MIRecord;
