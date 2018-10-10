@@ -3098,7 +3098,7 @@ if(isset($_POST['submit']))
 			{
 				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\"";	
 			}
-              echo $sql2;
+              //echo $sql2;
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
