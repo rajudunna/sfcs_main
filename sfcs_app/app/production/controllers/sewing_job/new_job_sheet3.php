@@ -5304,11 +5304,10 @@ function printdiv(printpage) {
         <span style='mso-ignore:vglayout2'> 
             <table cellpadding=0 cellspacing=0> 
                 <tr> 
-<<<<<<< HEAD
-                    <td colspan=4 height=36 class=xl24132351 width=209 style='border-right:1.0pt solid black;height:43.0pt;width:157pt'><img width=100% height=100% src="/sfcs_app/common/images/logo.png" alt="Brandix Logo" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1"></td> 
-=======
+
+                    
                     <td colspan=4 height=36 class=xl24132351 width=209 style='border-right:1.0pt solid black;height:43pt;width:157pt'><img width=100% height=100% src="<?= $logo ?>" alt="Brandix Logo" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1"></td> 
->>>>>>> 921-for-new-logos
+
                 </tr> 
             </table> 
         </span>
