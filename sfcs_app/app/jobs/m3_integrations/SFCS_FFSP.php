@@ -94,7 +94,7 @@ while($row = mysqli_fetch_array($result))
 		  }
 	   $sql_check='SELECT COUNT(*) as count FROM [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
 	   echo $sql_check."<br>";
-	   $result=odbc_fetch_row($connect, $sql_check) or die("Couldn't open database $connect");
+	   $result=odbc_exec($connect, $sql_check) or die("Couldn't open database $connect");
 	   while($row = odbc_fetch_row($result))
 	   {
 		  $count1=$row['count'];
