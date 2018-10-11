@@ -243,6 +243,7 @@ $('#mod_id').click(function(){
                 console.log('size'+sizes);console.log('docno'+doc_nos);
                 console.log('shift'+shifts);console.log('opid'+ops);
                 console.log('bundle'+bundle);
+                console.log('color'+color);
             }
 	    });
 
