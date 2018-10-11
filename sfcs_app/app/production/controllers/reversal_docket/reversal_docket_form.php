@@ -120,6 +120,18 @@ if(isset($_POST['formSubmit']))
                             {
                                 $category_act = $row_cat['category'];
                             }
+                            $bundle_creation_data_qry1 = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id = '15' AND size_id='$key' ORDER BY operation_id,size_id";
+                                // echo $bundle_creation_data_qry1.'<br/>';
+                                $bundle_creation_data_qry_result1 = mysqli_query($link,$bundle_creation_data_qry1) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                                while($row_result_selecting_qry = $bundle_creation_data_qry_result1->fetch_assoc()) 
+                                {
+                                    $send_qty_result = $row_result_selecting_qry['send_qty'];
+                                    $recevied_qty_result = $row_result_selecting_qry['recevied_qty'];
+                                    // echo $remaining_qty_result.'<'.$value.$key.'<br/>';
+                                    if($recevied_qty_result < $value) {
+                                        $does_received_qty_exists = 1;
+                                    }
+                                }
                             if(in_array($category_act,$category))
                             {
                                 $bundle_creation_data_qry1 = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id = '$pre_ops_code' AND size_id='$key' ORDER BY operation_id,size_id";
@@ -135,22 +147,10 @@ if(isset($_POST['formSubmit']))
                                     }
                                     
                                 }
-                                $bundle_creation_data_qry1 = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id = '15' AND size_id='$key' ORDER BY operation_id,size_id";
-                                // echo $bundle_creation_data_qry1.'<br/>';
-                                $bundle_creation_data_qry_result1 = mysqli_query($link,$bundle_creation_data_qry1) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
-                                while($row_result_selecting_qry = $bundle_creation_data_qry_result1->fetch_assoc()) 
-                                {
-                                    $send_qty_result = $row_result_selecting_qry['send_qty'];
-                                    $recevied_qty_result = $row_result_selecting_qry['recevied_qty'];
-                                    // echo $remaining_qty_result.'<'.$value.$key.'<br/>';
-                                    if($recevied_qty_result < $value) {
-                                        $does_received_qty_exists = 1;
-                                    }
-                                    
-                                }
+                                
                                 // echo $does_send_qty_exists.'mmmmm<br/>';
                                 // echo $does_send_qty_exists.'-'.$does_received_qty_exists;
-                                if($does_send_qty_exists == '1' && $does_received_qty_exists == '1'){
+                                if($does_send_qty_exists == '0'){
                                     $bundle_creation_data_qry1 = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id = '$pre_ops_code' AND size_id='$key' ORDER BY operation_id,size_id";
                                     // echo $bundle_creation_data_qry1.'<br/>';
                                     $bundle_creation_data_qry_result1 = mysqli_query($link,$bundle_creation_data_qry1) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
@@ -255,7 +255,7 @@ if(isset($_POST['formSubmit']))
                                     $remaining_qty_result = $row_result_selecting_cps_qry['remaining_qty'];
                                     $res = $cut_qty_result-$remaining_qty_result;
                                     // echo $remaining_qty_result.'<'.$value.$key.'<br/>';
-                                    if($remaining_qty_result < $value) {
+                                    if($remaining_qty_result > $value) {
                                         $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty-$value where id = $id_to_update_cps";
                                         // echo $update_qry_cps.'<br/>';
                                         $updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
