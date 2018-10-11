@@ -232,7 +232,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			//New 2012-05-21 - Need to do since plan sah has to calculate based on the clock hours (updated in Plan).
 			$pln_sth=($pln_clh*$pln_eff_a)/100;
 			$act_clh=$pln_clh;
-			
+			 
 			//New 2013-07-27 for actula clock hours calculation
 			$act_nop=0;			
 			$sql2="SELECT (CAST(avail_$shift as SIGNED)-CAST(absent_$shift AS SIGNED)) as nop FROM $bai_pro.pro_atten WHERE DATE='$date' AND module=\"$module\"";
