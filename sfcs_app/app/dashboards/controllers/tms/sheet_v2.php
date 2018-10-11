@@ -148,6 +148,13 @@ if(count($colors)>0){
                             while($mo_row=mysqli_fetch_array($mo_sql_result))
                             {
                                 $mo_no = $mo_row['mo_no'];
+
+                                //getting data from bom_details in m3inputs
+
+                                $bom_details="select * from $m3_inputs.bom_details where plant_code='".$plant_code."' and mo_no=".$mo_no;
+
+                                $bom_details_result=mysqli_query($link, $bom_details) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+
 								$api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
 								
 								$api_data = $obj->getCurlAuthRequest($api_url);
