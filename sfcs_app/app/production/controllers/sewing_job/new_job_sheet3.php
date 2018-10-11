@@ -82,7 +82,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $schedule=$_POST["schedule"]; 
         $jobno=$_POST["jobno"]; 
         $module_no=$_POST["moduleno"]; 
-        $color=$_POST["color"]; 
+        $color=$_POST["color"];
         //echo $doc."<br>"; 
     } 
     else 
@@ -92,12 +92,12 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $schedule=$_GET["schedule"]; 
         $jobno=$_GET["jobno"]; 
         $module_no=$_GET["moduleno"]; 
-        $color=$_GET["color"]; 
+        $color=$_GET["color"];
         //echo $doc."<br>"; 
     } 
 
     $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$jobno,$link);
-    $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY input_job_no_random"; 
+    $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
@@ -135,7 +135,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
  
     $job1_qty=array(); 
     $job1_color=array(); 
-    $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,input_job_no_random"; 
+    $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY order_col_des,input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12.2".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
@@ -146,7 +146,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
     } 
 
     $destination_list=""; 
-    $ssql13="SELECT DISTINCT destination FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='$doc' GROUP BY input_job_no_random,destination"; 
+    $ssql13="SELECT DISTINCT destination FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='$doc'  GROUP BY input_job_no_random,destination"; 
     //echo $ssql13; 
     $result13=mysqli_query($link, $ssql13) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row13=mysqli_fetch_array($result13)) 
@@ -154,7 +154,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $destination_list.=$row13["destination"].","; 
     } 
      
-    $ssql14="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno FROM $bai_pro3.packing_summary_input WHERE order_del_no = $schedule AND input_job_no_random='$doc'"; 
+    $ssql14="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno FROM $bai_pro3.packing_summary_input WHERE order_del_no = $schedule AND input_job_no_random='$doc' "; 
     // echo $ssql14;
     $result14=mysqli_query($link, $ssql14) or exit("Error while getting Cut Numbers"); 
     while($row14=mysqli_fetch_array($result14)) 
@@ -5297,12 +5297,15 @@ function printdiv(printpage) {
  <tr class=xl13432351 height=36 style='mso-height-source:userset;height:27.0pt'> 
     <td colspan=4 height=36 width=209 style='border-right:1.0pt solid black;height:27.0pt;width:157pt' align=left valign=top>
         <span style='mso-ignore:vglayout; position:absolute;z-index:1;margin-left:6px;margin-top:2px;width:100px; height:30px'>
-            <img width=200% height=100% src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" alt="Brandix Logo" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1">
+            
         </span>
         <span style='mso-ignore:vglayout2'> 
             <table cellpadding=0 cellspacing=0> 
                 <tr> 
-                    <td colspan=4 height=36 class=xl24132351 width=209 style='border-right:1.0pt solid black;height:27.0pt;width:157pt'>&nbsp;</td> 
+
+                    
+                    <td colspan=4 height=36 class=xl24132351 width=209 style='border-right:1.0pt solid black;height:43pt;width:157pt'><img width=100% height=100% src="<?= $logo ?>" alt="Brandix Logo" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1"></td> 
+
                 </tr> 
             </table> 
         </span>
@@ -5338,7 +5341,7 @@ function printdiv(printpage) {
   <td colspan=3 class=xl28032351 width=132 style='border-right:1.0pt solid black;   border-left:none;width:99pt'><?php echo date("Y-m-d"); ?></td> 
  </tr> 
  <tr class=xl13432351 height=30 style='mso-height-source:userset;height:22.5pt'> 
-  <td colspan=4 height=30 class=xl23232351 style='border-right:1.0pt solid black;   height:22.5pt'><?php echo $plant_name; ?></td> 
+  <td colspan=4 height=30 class=xl23232351 style='border-right:1.0pt solid black;   height:35.5pt'><?php echo $plant_name; ?></td> 
   <?php  date_default_timezone_set("Asia/Colombo");  ?> 
   <td class=xl13632351 colspan=2 style='border-top:none;border-left:none'><center>Issued Date: </center></td> 
   <td colspan=3 class=xl28332351 style='border-right:1.0pt solid black'> 
@@ -5491,7 +5494,7 @@ $hourly_sewing_out_count = "SELECT * FROM $bai_pro3.`tbl_plant_timings`";
  </tr> 
   <?php  
     // $ssqlxs="SELECT * FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\" order BY order_col_des,input_job_no_random,size_code"; 
-    $ssqlxs="SELECT *, SUM(carton_act_qty) AS cum_qty FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\" GROUP BY doc_no,order_col_des,size_code ORDER BY input_job_no_random"; 
+    $ssqlxs="SELECT *, SUM(carton_act_qty) AS cum_qty FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\"  GROUP BY doc_no,order_col_des,size_code ORDER BY input_job_no_random"; 
     // echo $ssqlxs; 
     $resultxs=mysqli_query($link, $ssqlxs) or exit("Sql Errorxs".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($rowxs=mysqli_fetch_array($resultxs)) 
