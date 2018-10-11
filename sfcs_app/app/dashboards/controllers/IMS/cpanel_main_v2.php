@@ -475,7 +475,7 @@ $shifts = $_GET['shift'];
     $section=$sql_rowx['sec_id'];
     $section_head=$sql_rowx['sec_head'];
     $section_mods=$sql_rowx['sec_mods'];
-    $ims_priority_boxes=$sql_rowx['ims_priority_boxes'];
+    $ims_priority_boxes=echo_title("$bai_pro3.sections_master","ims_priority_boxs","sec_name",$section,$link);;
     
     $mods=array();
     $mods=explode(",",$section_mods);
