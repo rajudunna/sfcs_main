@@ -57,7 +57,7 @@
                 // echo $insert_qry_3."3<br>";
                 $res_qry_3 =mysqli_query($link,$insert_qry_3) or exit("erro3");
                 
-                $barcode_qry = "select max(barcode_sequence) from bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$job_no'  AND doc_no='$doc_ary[$i]'";
+                $barcode_qry = "select max(barcode_sequence) from bai_pro3.pac_stat_log_input_job";
                 $res_barcodeseq = mysqli_query($link,$barcode_qry);
                 
                 $row_res = mysqli_fetch_row($res_barcodeseq);
@@ -124,8 +124,8 @@
 
                         $bundle_insert ="insert into $brandix_bts.bundle_creation_data (date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref,mapped_color) 
                        VALUES(NOW(),'$cut_no','$style','$schedule','$color[$i]','$o_size','$size_ary[$i]','$sfcs_smv','$bundle_no','$qty_ary[$i]','0','0','0','0','0','$op_code','$operation_sequence','$operation_dependency','$doc_ary[$i]','OPEN','','$sewing_order_status','$is_sewing_order','$sewing_order','$module','$remarks','','$shift_ary[$i]','','','','$input_job','$job_no','$color[$i]')";
-                    // echo $bundle_insert."7<br>";
-                //     $res_gen_bundles =mysqli_query($link,$bundle_insert) or exit("erro6");
+                    //   echo $bundle_insert."7<br>";
+                     $res_gen_bundles =mysqli_query($link,$bundle_insert) or exit("erro6");
 
                     }
 
@@ -135,11 +135,11 @@
                 
                 $get_operations_list = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
                 WHERE default_operation='Yes' and trim(category) = 'sewing' ";
-                //   echo $get_operations_list."8<br>";
+                //    echo $get_operations_list."8<br>";
                  $res_oplist =mysqli_query($link,$get_operations_list) or exit("erro7");
                  while($res_data = mysqli_fetch_array($res_oplist))
                 {
-                    $list_codes = array_push($list_codes,$res_data['codes']);
+                    $list_codes = $res_data['codes'];
                 }
                 // $list_codes = explode(',',$list_codes);
 
@@ -147,7 +147,7 @@
                 $get_mo_details ="SELECT md.id as mid,md.mo_no as mo_no,md.rejected_quantity as rej_qty,md.status as rstatus,md.op_code as opcode,md.op_desc as opdes,m.size as sizeid FROM $bai_pro3.mo_operation_quantites md 
                 LEFT JOIN $bai_pro3.mo_details m ON m.mo_no = md.mo_no 
                 WHERE  style='$style' AND schedule='$schedule' AND color='$color[$i]' AND m.size='$size_ary[$i]' AND rejected_quantity  >0 and op_code in ($list_codes) GROUP BY op_code ORDER BY md.mo_no DESC" ;
-                // echo $get_mo_details."10<br>";
+                //  echo $get_mo_details."10<br>";
              
                 $res_mo =mysqli_query($link,$get_mo_details) or exit("error8");
                 // var_dump($res_mo);
