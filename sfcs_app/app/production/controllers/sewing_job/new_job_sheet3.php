@@ -82,8 +82,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $schedule=$_POST["schedule"]; 
         $jobno=$_POST["jobno"]; 
         $module_no=$_POST["moduleno"]; 
-        $color=$_POST["color"]; 
-        $seq_no=$_POST["seq_no"]; 
+        $color=$_POST["color"];
         //echo $doc."<br>"; 
     } 
     else 
@@ -93,13 +92,12 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $schedule=$_GET["schedule"]; 
         $jobno=$_GET["jobno"]; 
         $module_no=$_GET["moduleno"]; 
-        $color=$_GET["color"]; 
-        $seq_no=$_GET["seq_no"]; 
+        $color=$_GET["color"];
         //echo $doc."<br>"; 
     } 
 
     $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$jobno,$link);
-    $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' and pac_seq_no=$seq_no GROUP BY input_job_no_random"; 
+    $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
@@ -137,7 +135,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
  
     $job1_qty=array(); 
     $job1_color=array(); 
-    $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' and pac_seq_no=$seq_no GROUP BY order_col_des,input_job_no_random"; 
+    $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY order_col_des,input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12.2".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
@@ -148,7 +146,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
     } 
 
     $destination_list=""; 
-    $ssql13="SELECT DISTINCT destination FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='$doc' and pac_seq_no=$seq_no GROUP BY input_job_no_random,destination"; 
+    $ssql13="SELECT DISTINCT destination FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='$doc'  GROUP BY input_job_no_random,destination"; 
     //echo $ssql13; 
     $result13=mysqli_query($link, $ssql13) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row13=mysqli_fetch_array($result13)) 
@@ -156,7 +154,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $destination_list.=$row13["destination"].","; 
     } 
      
-    $ssql14="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno FROM $bai_pro3.packing_summary_input WHERE order_del_no = $schedule AND input_job_no_random='$doc' and pac_seq_no=$seq_no"; 
+    $ssql14="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno FROM $bai_pro3.packing_summary_input WHERE order_del_no = $schedule AND input_job_no_random='$doc' "; 
     // echo $ssql14;
     $result14=mysqli_query($link, $ssql14) or exit("Error while getting Cut Numbers"); 
     while($row14=mysqli_fetch_array($result14)) 
@@ -5496,7 +5494,7 @@ $hourly_sewing_out_count = "SELECT * FROM $bai_pro3.`tbl_plant_timings`";
  </tr> 
   <?php  
     // $ssqlxs="SELECT * FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\" order BY order_col_des,input_job_no_random,size_code"; 
-    $ssqlxs="SELECT *, SUM(carton_act_qty) AS cum_qty FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\" and pac_seq_no=$seq_no GROUP BY doc_no,order_col_des,size_code ORDER BY input_job_no_random"; 
+    $ssqlxs="SELECT *, SUM(carton_act_qty) AS cum_qty FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\"  GROUP BY doc_no,order_col_des,size_code ORDER BY input_job_no_random"; 
     // echo $ssqlxs; 
     $resultxs=mysqli_query($link, $ssqlxs) or exit("Sql Errorxs".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($rowxs=mysqli_fetch_array($resultxs)) 
