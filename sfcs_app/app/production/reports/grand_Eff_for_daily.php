@@ -237,7 +237,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$act_nop=0;			
 			$sql2="SELECT (CAST(avail_$shift as SIGNED)-CAST(absent_$shift AS SIGNED)) as nop FROM $bai_pro.pro_atten WHERE DATE='$date' AND module=\"$module\"";
 			$note.=$sql2."<br/>";
-			//echo $sql2."<br>";
+			echo $sql2."<br>"; 
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
