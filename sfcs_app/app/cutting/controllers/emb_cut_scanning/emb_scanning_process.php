@@ -166,35 +166,9 @@ foreach($b_tid as $key => $value)
     //Total reproted quantity for the size
     $tot_report_qty = $b_rep_qty[$key];
     
-    //for prev 
+    //for prev operation updating remaining quantity in cps log
     $cps_log_qry_pre = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty-$tot_report_qty WHERE doc_no = '$b_doc_no' AND operation_code = '$pre_ops_code' AND size_title='". $b_sizes[$key]."'"; 
     $cps_log_result_pre = $link->query($cps_log_qry_pre) or exit('CPS LOG query pre error');
-
-
-    //To check previous operation is remaining qty is 0 and reported status is 'F'
-    $chec_prev_op = "SELECT remaining_qty,reported_status FROM $bai_pro3.cps_log WHERE doc_no = '$b_doc_no' AND operation_code = '$pre_ops_code' AND size_title='". $b_sizes[$key]."'";
-
-    $chec_prev_op_res = $link->query($chec_prev_op);
-    if($chec_prev_op_res->num_rows > 0)
-    {
-        while($result = $chec_prev_op_res->fetch_assoc()) 
-        {
-            $remaining_qty = $result['remaining_qty'];
-            $reported_status = $result['reported_status'];
-        }
-    }
-
-    if($remaining_qty == 0 && $reported_status == 'F'){
-        $reported_status = 'F';
-    }else{
-        $reported_status = 'P';
-    }
-   
-    
-    //update remaining quantity in cps_log table
-    $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty,`reported_status`='$reported_status' where id =$b_tid[$key] and operation_code='$b_op_id'"; 
-    $cps_log_result = $link->query($cps_log_qry) or exit('CPS LOG query error');
-
 
         
     //update shift and module against to each bundle number in BCD insert rejection in qms_db
@@ -286,6 +260,28 @@ foreach($b_tid as $key => $value)
             
             $result_query = $link->query($query) or exit('query error in updating');
 
+            //based on the bundle creation data current operation quantites we are changing reported status
+            $get_cumi_qtys = "SELECT (sum(send_qty)-sum(recevied_qty+rejected_qty)) as bal_report  FROM $brandix_bts.bundle_creation_data WHERE bundle_number ='".$b_tid[$key]."' AND operation_id = '$b_op_id'";
+            $result_get_cumi_qtys = $link->query($get_cumi_qtys) or exit('Error getting data from Bundle creation data for cumilative');
+
+            if($result_get_cumi_qtys->num_rows >0)
+            {
+                while($row = $result_get_cumi_qtys->fetch_assoc()) 
+                {
+                    $bal_report = $row['bal_report'];
+    
+                }
+                if($bal_report == 0){
+                    $reported_status = 'F';
+                }else{
+                    $reported_status = 'P';
+                }
+                //update remaining quantity in cps_log table
+                $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty,`reported_status`='$reported_status' where id =$b_tid[$key] and operation_code='$b_op_id'"; 
+                $cps_log_result = $link->query($cps_log_qry) or exit('CPS LOG query error');
+
+            }         
+
             //M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
             //updateM3Transactions($b_tid[$key],$b_op_id,$b_rep_qty[$key]);
 
@@ -293,7 +289,7 @@ foreach($b_tid as $key => $value)
             if($r_qtys[$value] != null && $r_reason[$value] != null){
                 $r_qty_array = explode(',',$r_qtys[$value]);
                 $r_reasons_array = explode(',',$r_reason[$value]);
-                //updateM3Transactions($b_tid[$key],$b_op_id,$r_qty_array,$r_reasons_array);
+                //updateM3TransactionsRejections($b_tid[$key],$b_op_id,$r_qty_array,$r_reasons_array);
             }           
         }
                
@@ -307,7 +303,7 @@ foreach($b_tid as $key => $value)
         }	
         if($post_ops_code != null)
         {
-            $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where cut_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id = ".$post_ops_code;
+            $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id = ".$post_ops_code;
             $result_query = $link->query($query_post) or exit('query error in updating');
         }
         if($ops_dep)
