@@ -1,12 +1,16 @@
 <?php
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
+<<<<<<< HEAD
 $driver_name = 'Driver={SQL Server Native Client 11.0}';
 $serverName='BAS-DBSRV-01';
 $m3_databasename='BEL_RMDashboard';
 $uid='BEL_SFCS';
 $pwd='2ESwasw!';
 $connect = odbc_connect("$driver_name;Server=$serverName;Database=$m3_databasename;", $uid,$pwd);
+=======
+$connect = odbc_connect("$driver_name;Server=$sfsp_serverName;Database=$sfsp_m3_databasename;", $sfsp_uid,$sfsp_pwd);
+>>>>>>> 999-sfcs-to-ffsp-integration
 //$conn = odbc_connect($conn_string,$user_ms,$password_ms);
 var_dump($connect)."<br>";
 error_reporting(1);
@@ -92,31 +96,52 @@ while($row = mysqli_fetch_array($result))
 		  {
 			 $lay_done='NOT DONE';
 		  }
+<<<<<<< HEAD
 	   $sql_check='SELECT COUNT(*) as count FROM [BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
 	   echo $sql_check."<br>";
 	   $result=odbc_exec($connect, $sql_check) or die("Couldn't open database $connect");
 	   while($row = odbc_fetch_row($result))
+=======
+	   $sql_check="SELECT COUNT(*) as count FROM [BEL_RMDashboard].[dbo].[SFCS_FSP_Integration] WHERE Schedule=".$schedule." and ColorId='".$color."'";
+	   echo $sql_check."<br>";
+	   // var_dump($connect);
+	   $result=odbc_exec($connect, $sql_check) or exit("Error=".odbc_errormsg($connect));
+	   while(odbc_fetch_row($result))
+>>>>>>> 999-sfcs-to-ffsp-integration
 	   {
-		  $count1=$row['count'];
-		  if($count1=0)
+		  $count1=odbc_result($result,1);
+		  echo "Count=".$count1."<br>";
+		  if($count1==0)
 		  {
 			//$sql2='SELECT * FROM [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
 			 //echo $sql2."<br>";
   
+<<<<<<< HEAD
 			 $sql2='insert [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,PCD,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values("'.$schedule.'","'.$facility_code.'","'.$color.'","'.$lay_done.'",CAST ("'.$total_jobs_value.'" as VARCHAR(MAX)),"'.$lay_plan_status.'",CAST ("'.$input_status.'" as VARCHAR(MAX)),CAST ("'.$planned_jobs_value.'" as VARCHAR(MAX)))';
 			 $result7=odbc_exec($connect, $sql2) or die("Data not updated $connect");
+=======
+			 $sql2="insert [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values('".$schedule."','".$facility_code."','".$color."','".$lay_done."','".$total_jobs_value."','".$lay_plan_status."','".$input_status."','".$planned_jobs_value."')";
+			 echo $sql2."<br>";
+			 $result7=odbc_exec($connect, $sql2) or exit("Error2=".odbc_errormsg($connect));
+>>>>>>> 999-sfcs-to-ffsp-integration
 			 echo $result7."<br><br>";
 		  }
 		  else
 		  {             
+<<<<<<< HEAD
 			$sql2='update [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration set LayPlanGenerationStatusDesc="'.$lay_done.'", NoOfJobsPlanned="'.$planned_jobs_value.'",NoOfCutJobs=CAST ($total_jobs as VARCHAR(MAX)),LayPlanPrepStatusDesc="'.$lay_plan_status.'",
 			InputStatusDesc=CAST ("'.$input_status.'" as VARCHAR(MAX)) where Schedule="'.$schedule.'" AND ColorId="'.$color.'"';
 			$result8=odbc_exec($connect, $sql2) or die("data not updated $connect");
+=======
+			$sql2="update [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration set LayPlanGenerationStatusDesc='".$lay_done."', NoOfJobsPlanned='".$planned_jobs_value."',NoOfCutJobs='".$total_jobs_value."',LayPlanPrepStatusDesc='".$lay_plan_status."',InputStatusDesc='".$input_status."' where Schedule='".$schedule."' AND ColorId='".$color."'";
+			echo $sql2."<br>";
+			$result8=odbc_exec($connect, $sql2) or exit("Error3=".odbc_errormsg($connect));
+>>>>>>> 999-sfcs-to-ffsp-integration
 			echo $result8."<br><br>";
 		  }
 	   }
    echo "Orders=".$style."/".$schedule."/".$color."/".$lay_plan_status."/".$planned_jobs_value."/".$total_jobs_value."/".$input_qty_value."/".$input_status." <br><br>";
 
-} 
+}  
 
 ?>
