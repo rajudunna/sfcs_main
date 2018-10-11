@@ -2,7 +2,7 @@
 /*
 	=========== Create By Chandu =============
 	Created at : 09-10-2018
-	Updated at : 10-10-2018
+	Updated at : 11-10-2018
 	Input : data from bai_pro3.mo_details with status 0.
 	Output : populate the data in m3_inputs.order_details_original.
 */
@@ -18,7 +18,7 @@ $i=0;
 while($result_data = mysqli_fetch_array($res_get_soap_data)){
     $mo_no = $result_data['mo_no'];
     $api_url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,MSEQ,PRNO,MFNO,OPNO?CONO=$comp_no&FACI=$global_facility_code&MFNO=".$mo_no;
-    $response = getCurlAuthRequest($api_url,$basic_auth);
+    $response = getCurlAuthRequestLocal($api_url,$basic_auth);
     if($response['status'] && isset($response['response']['PRNO'])){
         $item_code = urlencode($response['response']['MTNO']);
         $item_description = $response['response']['ITDS'];
@@ -29,11 +29,11 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
         $res_chk_op = mysqli_fetch_array($res_to_chk_op);
         if(isset($res_chk_op['id'])){
             $color_size_url = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=$comp_no&ITNO=$item_code";
-            $response_size_data = getCurlAuthRequest($color_size_url,$basic_auth);
+            $response_size_data = getCurlAuthRequestLocal($color_size_url,$basic_auth);
             if($response_size_data['status'] && isset($response_size_data['response']['CONO'])){
                 $color_res = $response_size_data['response']['OPTY'];
                 $option_des_url_all =$api_hostname.":".$api_port_no."/m3api-rest/execute/PDS050MI/Get?CONO=$comp_no&OPTN=";
-                $response_color_data = getCurlAuthRequest($option_des_url_all.$color_res,$basic_auth);
+                $response_color_data = getCurlAuthRequestLocal($option_des_url_all.$color_res,$basic_auth);
                 if($response_color_data['status'] && isset($response_color_data['response']['TX30'])){
                     $color_description = $response_color_data['response']['TX30'];
                     //============= call api for wastage =============
@@ -41,7 +41,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                     $prno = urlencode($response['response']['PRNO']);
                     $url_wastage = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$comp_no&FACI=$global_facility_code&MFNO=$mfno&PRNO=$prno&MSEQ=$sequence_no";
                     //echo $url_wastage;die();
-                    $response_wastage = getCurlAuthRequest($url_wastage,$basic_auth);
+                    $response_wastage = getCurlAuthRequestLocal($url_wastage,$basic_auth);
                     $uom = '';
                     $wastage = '';
                     if($response_wastage['status'] && isset($response_wastage['response']['WAPC'])){
@@ -49,8 +49,8 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                         $wastage = $response_wastage['response']['WAPC'];
                     }
 
-                    $size_description = getCurlAuthRequest($option_des_url_all.$result_data['size'],$basic_auth)['response']['TX30'] ?? '';
-                    $z_feature_description = getCurlAuthRequest($option_des_url_all.$result_data['zfeature'],$basic_auth)['response']['TX30'] ?? '';
+                    $size_description = getCurlAuthRequestLocal($option_des_url_all.$result_data['size'],$basic_auth)['response']['TX30'] ?? '';
+                    $z_feature_description = getCurlAuthRequestLocal($option_des_url_all.$result_data['zfeature'],$basic_auth)['response']['TX30'] ?? '';
 
                     //=========== save data ================
                     $qry_save_bom = "INSERT INTO $m3_inputs.bom_details(date_time,
@@ -77,41 +77,26 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
     }
 }
 echo "Excuted Records : ".$i;
-function getCurlAuthRequest($url,$basic_auth){
+function getCurlAuthRequestLocal($url,$basic_auth){
     $include_path=getenv('config_job_path');
-    include($include_path.'\sfcs_app\common\config\m3_api_const.php');
-    $curl = curl_init();
+    include_once($include_path.'\sfcs_app\common\config\rest_api_calls.php'); 
+    $obj1 = new rest_api_calls();
+    try{ 
+        $val = $obj1->getCurlAuthRequest($url);  
+        $response = json_decode($val,true);
+        $res = [];
+        if(count($response)>0 && isset($response['MIRecord'][0]['NameValue']) && count($response['MIRecord'][0]['NameValue'])>0){
+            foreach($response['MIRecord'][0]['NameValue'] as $fields){
+                $res[$fields['Name']] = $fields['Value'];
+            }
+            return ['status'=>true,'response'=>$res];
+        }else{
+            return ['status'=>false,'response'=>'No data found.'];
+        }
+        
+    }catch(Exception $err){
+        return ['status'=>false,'response'=>'Error: '.$err];
+    }
     
-    curl_setopt_array($curl, array(
-    CURLOPT_PORT =>$api_port_no,
-    CURLOPT_URL => $url,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => "",
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 30,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => "GET",
-    CURLOPT_HTTPHEADER => array(
-    "accept: application/json",
-    "authorization: Basic ".$basic_auth,
-    "cache-control: no-cache",
-    //"postman-token: fe9d938e-ff9e-0a12-b3b6-92e55251aa2e"
-    ),
-    ));
-
-    $response = json_decode(curl_exec($curl),true);
-    $err = curl_error($curl);
-
-    curl_close($curl);
-    $res = [];
-    foreach($response['MIRecord'][0]['NameValue'] as $fields){
-        $res[$fields['Name']] = $fields['Value'];
-    }
-
-    if ($err) {
-        return ['status'=>false,'response'=>$err];
-    } else {
-        return ['status'=>true,'response'=>$res];
-    }
 }
 ?>
