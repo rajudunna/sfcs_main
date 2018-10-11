@@ -691,7 +691,7 @@
 										}
 										// Sewing Job Qty End
 										// var_dump($combo);
-										echo "<div class='col-md-6'>
+										echo "<div class='col-md-2'>
 											<table class='table table-bordered'>
 												<tr>
 													<th style='display: none;'><center>Mix Cut Jobs</center></th>
