@@ -138,8 +138,17 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							
 							
 						  $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						  $update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid)";
-						  $sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
+						  $last_id_ref = mysqli_insert_id($link);
+						  $for_last_val = $last_id_ref+$iro_cnt;
+						  for($last_id=$last_id_ref;$last_id<$for_last_val;$last_id++){
+
+							$update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where tid=".$last_id;
+							//echo "Update : ".$update_query."</br>"; 
+						  $sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+						  }
+						  
+						  	
 							fclose($handle);
 							// echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>Stock Updated Successfully.... Please Wait</font></h1></center></div>";
 							  
@@ -244,8 +253,9 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."')";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
+					$last_id = mysqli_insert_id($link);
 					
-					$update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid)";
+					$update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where tid='$last_id'";
 					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}
