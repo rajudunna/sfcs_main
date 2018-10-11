@@ -4,7 +4,7 @@
 // LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
 
 function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
-    // echo 'function';
+    // echo 'function<br/><br/>';
     // die();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     $current_date = date("Y-m-d H:i:s");
@@ -107,7 +107,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                     if($type!='ServerReturnedNOK'){
                         //updating response status in m3_transactions
                         $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
-                        echo $qry_m3_transactions;
+                        // echo $qry_m3_transactions;
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     }else{

@@ -1260,7 +1260,7 @@ if($barcode_generation == 1)
 					}	
 					if($post_ops_code != null)
 					{
-						$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$post_ops_code;
+						$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."',`cancel_qty`='".$final_rej_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$post_ops_code;
 						$result_query = $link->query($query_post) or exit('query error in updating');
 					}
 					if($ops_dep)
@@ -1479,7 +1479,8 @@ if($barcode_generation == 1)
 					// }
 					// else
 					// {
-						$input_ops_code = 100;
+						//$input_ops_code = 100;
+						$input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
 					//}
 					//echo 'input_ops_code'.$input_ops_code;
 					if($input_ops_code == 100 || $input_ops_code == 129)
@@ -1589,14 +1590,15 @@ if($barcode_generation == 1)
 						}
 					}
 				}			
-				if($b_rep_qty[$i] > 0 || $b_rej_qty[$i] > 0)
+				
+
+			}
+			if($b_rep_qty[$i] > 0 || $b_rej_qty[$i] > 0)
 				{
 					//echo $b_rej_qty[$i];
 					$size = strtoupper($b_sizes[$i]);
 					$table_data .= "<tr><td data-title='Job No'>$b_inp_job_ref[$i]</td><td data-title='Bundle No'>$b_tid[$i]</td><td data-title='Color'>$b_colors[$i]</td><td data-title='Size'>$size</td><td data-title='Remarks'>$b_remarks[$i]</td><td data-title='Reported Qty'>$b_rep_qty[$i]</td><td data-title='Rejected Qty'>$b_rej_qty[$i]</td></tr>";
 				}
-
-			}
 			
 		}
 		$table_data .= "</tbody></table></div></div></div>";
