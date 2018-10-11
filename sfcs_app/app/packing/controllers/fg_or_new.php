@@ -20,7 +20,7 @@
 	{
 		var update_qty = $('#update_qty_'+id).val();
 		if(update_qty > org_qty){
-			sweetAlert('Update quantity should greater than Excess cut.','','warning');
+			sweetAlert('Update quantity should not be greater than Excess cut.','','warning');
 			$('#update_qty_'+id).val(org_qty);
 		}
 		
