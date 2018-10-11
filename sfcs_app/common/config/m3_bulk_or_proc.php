@@ -9,7 +9,7 @@ function know_my_config($input)
 	{
 		case "facility":
 		{
-			return 'Q01';
+			return $facility_code;
 			break;
 		}
 		case "mysqlhost":
