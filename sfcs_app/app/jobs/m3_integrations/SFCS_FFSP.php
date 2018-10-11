@@ -1,21 +1,12 @@
 <?php
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-<<<<<<< HEAD
-$driver_name = 'Driver={SQL Server Native Client 11.0}';
-$serverName='BAS-DBSRV-01';
-$m3_databasename='BEL_RMDashboard';
-$uid='BEL_SFCS';
-$pwd='2ESwasw!';
-$connect = odbc_connect("$driver_name;Server=$serverName;Database=$m3_databasename;", $uid,$pwd);
-=======
 $connect = odbc_connect("$driver_name;Server=$sfsp_serverName;Database=$sfsp_m3_databasename;", $sfsp_uid,$sfsp_pwd);
->>>>>>> 999-sfcs-to-ffsp-integration
 //$conn = odbc_connect($conn_string,$user_ms,$password_ms);
 var_dump($connect)."<br>";
 error_reporting(1);
 
-$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm limit 1";
+$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm limit 10";
 //echo $get_details."<br>";
 $result=mysqli_query($link, $get_details) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row = mysqli_fetch_array($result))
@@ -28,7 +19,7 @@ while($row = mysqli_fetch_array($result))
 
 	   $lay_plan_status_value=0;
 	   $lay_plan_status_query="SELECT COUNT(DISTINCT order_del_no) as value FROM BAI_PRO3.bai_orders_db_confirm WHERE order_del_no='".$schedule."' and order_col_des='".$color."'";
-	   echo $lay_plan_status_query."<br>";
+	   //echo $lay_plan_status_query."<br>";
 	   $result1=mysqli_query($link, $lay_plan_status_query) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 	   while($row1 = mysqli_fetch_array($result1))
 	   {
@@ -45,7 +36,7 @@ while($row = mysqli_fetch_array($result))
 	   }
 	   $total_jobs_value=0;
 	   $total_jobs="SELECT COUNT(cat_ref) as value FROM BAI_PRO3.order_cat_doc_mix WHERE order_del_no IN ('".$schedule."') and order_col_des='".$color."' AND category IN (\"Body\",\"Front\")";
-	   echo $total_jobs."<br>";
+	   //echo $total_jobs."<br>";
 
 	   $total_jobs_result=mysqli_query($link, $total_jobs) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 	   while($total_jobs_row = mysqli_fetch_array($total_jobs_result))
@@ -55,7 +46,7 @@ while($row = mysqli_fetch_array($result))
 	   }             
 	   $input_qty=0;
 	   $input_qty="SELECT COUNT(cat_ref) as value FROM BAI_PRO3.order_cat_doc_mix WHERE order_del_no IN ('".$schedule."') and order_col_des='".$color."' AND category IN (\"Body\",\"Front\")";
-	   echo $input_qty."<br>";
+	   //echo $input_qty."<br>";
 	   $input_qty_result=mysqli_query($link, $input_qty) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 	   while($input_qty_row = mysqli_fetch_array($input_qty_result))
 	   {
@@ -65,7 +56,7 @@ while($row = mysqli_fetch_array($result))
 
 	   $input_status_value=0;
 	   $input_status_value="SELECT COUNT(DISTINCT order_del_no) as value FROM BAI_PRO3.bai_orders_db_confirm WHERE order_del_no='".$schedule."' and order_col_des='".$color."'";
-	   echo $input_status_value."<br>";
+	   //echo $input_status_value."<br>";
 	   $result1=mysqli_query($link, $input_status_value) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 	   while($row1 = mysqli_fetch_array($result1))
 	   {
@@ -81,7 +72,7 @@ while($row = mysqli_fetch_array($result))
 	   }
 	   $planned_jobs_value=0;
 	   $planned_jobs="SELECT COUNT(cat_ref) as value FROM BAI_PRO3.order_cat_doc_mix WHERE order_del_no IN ('".$schedule."') and order_col_des='".$color."' AND category IN (\"Body\",\"Front\")";
-	   echo $planned_jobs."<br><br><br>";
+	   //echo $planned_jobs."<br><br><br>";
 	   $planned_jobs_result=mysqli_query($link, $planned_jobs) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 	   while($planned_jobs_row = mysqli_fetch_array($planned_jobs_result))
 	   {
@@ -96,51 +87,33 @@ while($row = mysqli_fetch_array($result))
 		  {
 			 $lay_done='NOT DONE';
 		  }
-<<<<<<< HEAD
-	   $sql_check='SELECT COUNT(*) as count FROM [BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
-	   echo $sql_check."<br>";
-	   $result=odbc_exec($connect, $sql_check) or die("Couldn't open database $connect");
-	   while($row = odbc_fetch_row($result))
-=======
 	   $sql_check="SELECT COUNT(*) as count FROM [BEL_RMDashboard].[dbo].[SFCS_FSP_Integration] WHERE Schedule=".$schedule." and ColorId='".$color."'";
-	   echo $sql_check."<br>";
+	   //echo $sql_check."<br>";
 	   // var_dump($connect);
 	   $result=odbc_exec($connect, $sql_check) or exit("Error=".odbc_errormsg($connect));
 	   while(odbc_fetch_row($result))
->>>>>>> 999-sfcs-to-ffsp-integration
 	   {
 		  $count1=odbc_result($result,1);
-		  echo "Count=".$count1."<br>";
+		  //echo "Count=".$count1."<br>";
 		  if($count1==0)
 		  {
 			//$sql2='SELECT * FROM [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration WHERE Schedule="'.$schedule.'" and ColorId="'.$color.'"';
 			 //echo $sql2."<br>";
   
-<<<<<<< HEAD
-			 $sql2='insert [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,PCD,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values("'.$schedule.'","'.$facility_code.'","'.$color.'","'.$lay_done.'",CAST ("'.$total_jobs_value.'" as VARCHAR(MAX)),"'.$lay_plan_status.'",CAST ("'.$input_status.'" as VARCHAR(MAX)),CAST ("'.$planned_jobs_value.'" as VARCHAR(MAX)))';
-			 $result7=odbc_exec($connect, $sql2) or die("Data not updated $connect");
-=======
 			 $sql2="insert [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values('".$schedule."','".$facility_code."','".$color."','".$lay_done."','".$total_jobs_value."','".$lay_plan_status."','".$input_status."','".$planned_jobs_value."')";
-			 echo $sql2."<br>";
+			 //echo $sql2."<br>";
 			 $result7=odbc_exec($connect, $sql2) or exit("Error2=".odbc_errormsg($connect));
->>>>>>> 999-sfcs-to-ffsp-integration
-			 echo $result7."<br><br>";
+			 //echo $result7."<br><br>";
 		  }
 		  else
 		  {             
-<<<<<<< HEAD
-			$sql2='update [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration set LayPlanGenerationStatusDesc="'.$lay_done.'", NoOfJobsPlanned="'.$planned_jobs_value.'",NoOfCutJobs=CAST ($total_jobs as VARCHAR(MAX)),LayPlanPrepStatusDesc="'.$lay_plan_status.'",
-			InputStatusDesc=CAST ("'.$input_status.'" as VARCHAR(MAX)) where Schedule="'.$schedule.'" AND ColorId="'.$color.'"';
-			$result8=odbc_exec($connect, $sql2) or die("data not updated $connect");
-=======
 			$sql2="update [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration set LayPlanGenerationStatusDesc='".$lay_done."', NoOfJobsPlanned='".$planned_jobs_value."',NoOfCutJobs='".$total_jobs_value."',LayPlanPrepStatusDesc='".$lay_plan_status."',InputStatusDesc='".$input_status."' where Schedule='".$schedule."' AND ColorId='".$color."'";
 			echo $sql2."<br>";
 			$result8=odbc_exec($connect, $sql2) or exit("Error3=".odbc_errormsg($connect));
->>>>>>> 999-sfcs-to-ffsp-integration
-			echo $result8."<br><br>";
+			//echo $result8."<br><br>";
 		  }
 	   }
-   echo "Orders=".$style."/".$schedule."/".$color."/".$lay_plan_status."/".$planned_jobs_value."/".$total_jobs_value."/".$input_qty_value."/".$input_status." <br><br>";
+   //echo "Orders=".$style."/".$schedule."/".$color."/".$lay_plan_status."/".$planned_jobs_value."/".$total_jobs_value."/".$input_qty_value."/".$input_status." <br><br>";
 
 }  
 
