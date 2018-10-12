@@ -23,7 +23,7 @@
 
 <body>
     <?php
-	if(isset($_REQUEST['tid'])){
+	if(isset($_GET['tid'])){
 		//echo "Row id".$_REQUEST['supplier_code'];
 		$complaint_reason =$_GET['complaint_reason'];
 		$tid =$_GET['tid'];
