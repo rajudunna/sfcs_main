@@ -876,6 +876,7 @@ else
 }
 
 $sql="select * from $ord_tbl_name where order_tid=\"$tran_order_tid\"";
+//echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -1124,7 +1125,7 @@ echo "</table></div>
 
 /* NEW */
 
-$sql="select * from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\"";
+$sql="select * from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" order by tid";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -1215,6 +1216,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cat_id_new=$sql_row['cat_id'];
 	
 	$sql2="select * from $bai_pro3.cat_stat_log where tid=$cat_id order by catyy DESC";
+	//echo $sql2;
 	// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -1800,7 +1802,7 @@ else{
 	//echo "<th class=\"column-title\"><center>Docket Print</center></th>";
 	echo "</tr></thead>";
 
-	$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$tran_order_tid."' order by catyy DESC";
+	$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$tran_order_tid."' order by lastup DESC";
 	//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
