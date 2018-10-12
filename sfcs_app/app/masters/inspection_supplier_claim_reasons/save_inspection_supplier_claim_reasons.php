@@ -25,7 +25,8 @@
     <?php
 	if(isset($_GET['tid'])){
 		//echo "Row id".$_REQUEST['supplier_code'];
-		$complaint_reason =$_GET['complaint_reason'];
+        $complaint_reason =$_GET['complaint_reason'];
+        
 		$tid =$_GET['tid'];
 		$complaint_clasification=$_GET['complaint_clasification'];
 		$status = $_GET['status'];

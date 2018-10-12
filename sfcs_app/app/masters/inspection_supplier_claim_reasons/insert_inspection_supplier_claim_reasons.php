@@ -96,7 +96,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 
 
 		echo"<script>setTimeout(function () { 
-			swal({
+			swal({ 
 			  title: 'New Record Created successfully',
 			  text: 'Message!',
 			  type: 'warning',
