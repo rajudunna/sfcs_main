@@ -2,8 +2,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
-// echo $_POST['table_name'];
-$tid =$_POST['tid'];
+
+$tid =$_POST['tid']; 
 $complaint_reason=$_POST['complaint_reason'];
 $complaint_clasification =$_POST['complaint_clasification'];
 $complaint_category = $_POST['complaint_category'];

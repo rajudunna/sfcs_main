@@ -6,13 +6,14 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 	$sql = "SELECT * FROM bai_rm_pj1.inspection_complaint_reasons";
+	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);
 	$sno = 1; 
-	
+
 	if ($norows > 0) {
 		echo "<table id='tbl_packing_method' class='table'><thead><tr><th>S.No</th><th>Complaint Reason</th><th>Complaint Classification</th><th>Complaint Category</th><th>Status</th><th> Edit / Delete </th></tr></thead><tbody>";
-		// output data of each row
+	
 		while($row=mysqli_fetch_array($sql_result)) {
 			$complaint_reason=$row["complaint_reason"];
 			$tid=$row["tid"];
@@ -37,7 +38,7 @@
 	} else {
 		echo "0 results";
 	}
-	// echo "<script>swal('Enter data correctly.')</script>";
+	
 	?>
 
 
