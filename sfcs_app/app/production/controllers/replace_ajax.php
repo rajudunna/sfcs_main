@@ -128,7 +128,8 @@
                      $res_gen_bundles =mysqli_query($link,$bundle_insert) or exit("erro6");
 
                     }
-                    $cpslog_update = "UPDATE $bai_pro3.cps_log SET cut_quantity= cut_quantity+$qty_ary[$i] WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$opid'";
+                    $qty = (int)$qty_ary[$i];
+                    $cpslog_update = "UPDATE $bai_pro3.cps_log SET cut_quantity= cut_quantity+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$opid'";
                     $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
 
                  }
