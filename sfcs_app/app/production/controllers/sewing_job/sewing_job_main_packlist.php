@@ -490,6 +490,7 @@
 						while($row1219=mysqli_fetch_array($result1219))
 						{
 							$docs_new[]=$row1219['doc'];
+							$docs_cut[]=$row1219['cut'];
 							$temp_val .= $row1219['cut'].",";
 							if(sizeof(explode(",",$row1219['doc']))>1)
 							{
@@ -519,22 +520,10 @@
 							$garments_per_carton_tmp=$row12['garments_per_carton']*$row12['no_of_cartons'];
 							$limit_sewing_job_tmp=ceil($row12['pack_job_per_pack_method']/$row12['no_of_cartons']);				
 						}
-						$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
-						if($status_sew==1)
-						{
-							$input_job_no=1;													
-						}
-						else
-						{
-							$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
-							$input_job_no=$input_job_no_tmp;
-							$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","size_code='".$row1y['size_title']."' and pac_seq_no = $seq_no and acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);									
-							if($input_job_no_tmpn>0)
-							{
-								$input_job_no=$input_job_no_tmpn;
-							}
-						}
-						$rand=$schedule.date("ymd").$input_job_no;
+						$destination=echo_title("$bai_pro3.bai_orders_db_confirm","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
+						
+						
+						//echo $limit_sewing_job_tmp."<br>";
 						for($ij=1;$ij<=$limit_sewing_job_tmp;$ij++)
 						{
 							if($garments_per_carton_full_tmp>0)
@@ -552,14 +541,31 @@
 								}
 							}								
 						}
+						if($status_sew==1)
+						{
+							$input_job_no=1;													
+						}
+						else
+						{
+							$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
+							$input_job_no=$input_job_no_tmp;
+							$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","size_code='".$row1y['size_title']."' and pac_seq_no = $seq_no and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);	//$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","size_code='".$row1y['size_title']."' and pac_seq_no = $seq_no and acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);								
+							if($input_job_no_tmpn>0)
+							{
+								$input_job_no=$input_job_no_tmpn;
+							}
+						}
+						$rand=$schedule.date("ymd").$input_job_no;
 						for($iii=1;$iii<=$limit_sewing_job_tmp;$iii++)
 						{	
 							$garments_per_carton=$garments_per_cartons[$iii];
+							//echo $iii."----".$garments_per_carton."<br>";
 							for($iiii=0;$iiii<sizeof($docs_new);$iiii++)
-							{	
+							{						
 								$qty_update=0;							
 								$qty_tmp=0;									
 								$sql12="SELECT * FROM $bai_pro3.tbl_docket_qty LEFT JOIN $brandix_bts.`tbl_orders_size_ref` ON tbl_orders_size_ref.id = tbl_docket_qty.ref_size  WHERE type=1 and color='".$color_code."' and doc_no='".$docs_new[$iiii]."' AND size='".$size_tit."'";
+								//echo $sql12."<br>";							
 								$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								if (mysqli_num_rows($result12) > 0)
 								{
@@ -660,14 +666,12 @@
 										}
 									}
 								}
-							}
-							unset($docs_new);
-							unset($docs_cut);
-							$status_sew=0;
+							}														
 						}
-						unset($docs_newtmp);
-						unset($docs_cuttmp);
+						unset($docs_new);
+						unset($docs_cut);
 					}
+					$status_sew=0;
 				}
 				//Sample
 				$input_job_no=0;
@@ -1050,10 +1054,9 @@
 	if($inserted){
 		//Inserted Successfully
 	}
-
-	//echo "</table>";	
-	// echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
-	// echo("<script>location.href = '".getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N')."&style=$style&schedule=$schedule';</script>");		
+	echo "</table>";	
+	echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
+	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N')."&style=$style&schedule=$schedule';</script>");		
 ?> 
 </div></div>
 </body>

@@ -314,7 +314,7 @@
 					$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$row = mysqli_fetch_row($get_pack_id_res);
 					$pack_id=$row[0];
-					$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*cartons_per_pack_job*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
+					$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
 					// echo $pack_meth_qry;
 					$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if (mysqli_num_rows($pack_meth_qty) > 0)
@@ -328,7 +328,7 @@
 										<th style='display: none;'>Mix Jobs</th>
 										<th>Description</th>	
 										<th>Bundle Size</th>
-										<th>No of Cartons</th>										
+										<th>No of Cartons per Sewing Job</th>										
 										<th>Quantity</th>
 										<th>Colors</th>
 										<th>Sizes</th>
