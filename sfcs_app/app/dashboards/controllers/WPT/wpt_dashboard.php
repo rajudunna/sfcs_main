@@ -9,8 +9,8 @@
         $sections[] = $row['sec_id'];
     }
     $sections_str = implode(',',$sections);
-
 ?>
+
 
 
 <div class='row'>
@@ -20,12 +20,21 @@
         </div>
         <div class='panel-body'>
             <div class='row'>
-                <div class='col-sm-3'>
-                    <input class='form-control' type='text' name='blocks' id='blocks' class='integer' 
-                        placeholder='No Of Blocks Per Section'>
+                <div class='col-sm-2'>
+                    <label for='blocks'>No of Blocks per Section</label>
+                    <select class='form-control'  name='blocks' id='blocks' >
+                        <option value='0' selected disabled>Please Select</option>
+                        <option value='4' >4</option>
+                        <option value='8' >8</option>
+                        <option value='12'>12</option>
+                        <option value='16'>16</option>
+                    </select>
+                    <!-- <input class='form-control' type='text' name='blocks' id='blocks' class='integer' 
+                        placeholder='No Of Blocks Per Section'> -->
                 </div>
                 <div class='col-sm-1'>
-                    <input class='btn btn-primary btn-sm' type='button' value='submit' onclick='change_widths()'>
+                    <label for='submit'><br/></label><br/>
+                    <input class='btn btn-success btn-sm' type='button' value='submit' onclick='change_widths()' name='submit'>
                 </div>
             </div><hr>
             
@@ -35,7 +44,7 @@
                 $id1 = "sec-load-$section";
                 $id2 = "sec-$section";
         ?>    
-                <div class='section_div' style='width:25.5vw;float:left;padding:5px'>
+                <div class='section_div' style='width:19vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
                             <center><span class='section-heading'><b>SECTION - <?= $section ?></b></span></center>
@@ -87,11 +96,12 @@
                 </div>
             </div>
             <div class='row'>
-            <hr/>
+            
                 <div class='l-div col-sm-4'>
                     <span class="b-block ims-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - IMS WIP</span>
                 </div>
+            <!--
                 <div class='l-div col-sm-4'>
                     <span class="b-block pending-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - CUT REPORTED BUT NOT ISSUED </span>
@@ -99,7 +109,7 @@
                 <div class='l-div col-sm-4'>
                     <span class="b-block cut-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - CUT WIP</span>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -108,7 +118,7 @@
 <script>
     var sections_str = '<?= $sections_str ?>';
     var sections = sections_str.split(',');
-    var bw = 25;
+    var bw = 42;
     $(document).ready(function(){
         load_data();
         $('[data-toggle="tooltip"]').tooltip(); 
@@ -127,13 +137,16 @@
 
     function call_ajax(section,sync_type){
         console.log(section);
+        var blocks = $('#blocks').val();
+        if(Number(blocks) == 0)
+            blocks = 4;
+        console.log(blocks);    
         $('#sec-load-'+section).css('display','block');
         $('#sec-'+section).html('');
         $.ajax({
-            url: "<?= $url ?>?section="+section
+            url: "<?= $url ?>?section="+section+"&blocks="+blocks
         }).done(function(data) {
             console.log("Response Came");
-            console.log(data);
             try{
                 var sec_data = JSON.parse(data) ;
                 $('#sec-'+section).html(sec_data.data);
@@ -172,18 +185,21 @@
     
     function change_widths(){
         var b = Number($('#blocks').val());
-        if(b>25 || b<0){
-            swal('Please enter valid no:of blocks','25 is max','warning');
+        if(b == 0){
+            swal('Please select no : of blocks','','warning');
             return false;
         }
-        if(b == 0){
-            var w = '25.5vw';
-            $('.section_div').css({"width":w});
-            return true;
-        }
-        else
-            var w = b*bw + 370;
+        var w = b*bw + 90;   
+        if(Number(w) > 1200)
+            w = 900;
+        if(b == 8)
+            w = 4*bw + 90;
+        if(b == 12)
+            w = 6*bw + 95; 
+        if(b == 16)
+            w = 6*bw + 95;                   
         $('.section_div').css({"width":w+"px"});
+        load_data();
     }
 </script>
 
@@ -192,28 +208,33 @@
     hr{
         border-bottom : 1px solid black;
     }
+    .panel-body{
+        background : #efefef;
+    }
     .section-heading{
         color : #000;
         font-size : 16px;
         font-weight : 15px;
     }
     .sec-box{
-        min-height:200px;
+        min-height:400px;
         overflow : hidden;
-        background : #f9f9f9;
+        background : #fffffd;
+        border : 1px solid #111;
     }
 
     .ims-wip{
         background : #FFAA00;
+        background : #D00B7C;
         width : parent;
         height : 35px;
-        color : #000;
+        color : #fff;
         font-size : 12px;
         font-weight : 8px;
         padding : 3px;
         opacity : 1;
         border : 1px solid #aaa;
-        border-radius : 2px;
+        border-radius : 3px;
     }
     .cut-wip{
         background : #00FF00;
@@ -243,10 +264,6 @@
         font-size : 12px;
         color : #3c3c3c;
     }
-    .wip-td{
-        min-width : 100px;    
-    }
-
     .mod-no{
         color : #000;
         font-weight : 10px;
@@ -255,15 +272,23 @@
     .mod-td{
         min-width : 40px;
     }
-
+    .wip-td{
+        min-width : 80px;    
+    }
     .cut-td{
-        min-width  : 25px;
+        width    : auto;
+        margin : 0;
     }
     .block{
-        overflow : hidden;
-        width  : parent;
-        height : 30px;
-        border : 1px solid black;
+        color      : #000;
+        min-width  : 25px;
+        min-height : 25px;
+        padding    : 2px;
+    }
+    .cut-block{
+        width  : 25px;
+        height : 25px;
+        border : 1px solid #000;
     }
     .l-div{
         min-height : 40px;
@@ -305,9 +330,9 @@
         background : #ff0000;
     }
   
-
     table{
         width : auto;
+        max-width : 500px; 
     }
     tr{
         border-bottom : 1px dashed #c5c5c5;
@@ -317,12 +342,31 @@
     td{
         width : auto;
     }
-
+    a{
+        text-decoration : none;
+        color : #000;
+    }
+    a:hover{
+        cursor : pointer;
+    }
+    v{
+        color : #fff;
+        text-align : left; 
+        display : block;
+        font-size : 11px;
+    }
+    c{
+        color : #FFFF55;
+        text-align : left;   
+    }
     //Tool tip break
     .tooltip-inner {
-        white-space: pre-line;
+        max-width: 500px;
+        white-space: nowrap;
+        margin:0;
+        padding:0;
     }
-
+    
     .loading-block{
         border: 10px solid #f3f3f3; 
         border-top: 10px solid #156b0a; 
