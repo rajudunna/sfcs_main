@@ -276,7 +276,7 @@ $('#mod_id').click(function(){
                                     icon: "success",
                                 });
                                 $('.ajax-loader').css("visibility", "none");
-                                // location.reload();
+                                location.reload();
                             }
                             
                         }
