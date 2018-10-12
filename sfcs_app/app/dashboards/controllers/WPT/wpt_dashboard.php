@@ -218,7 +218,7 @@
         font-weight : 15px;
     }
     .sec-box{
-        min-height:400px;
+        min-height:100px;
         overflow : hidden;
         background : #fffffd;
         border : 1px solid #111;
@@ -236,7 +236,7 @@
         opacity : 1;
         border : 1px solid #aaa;
         border-radius : 3px;
-    }
+    }    
     .cut-wip{
         background : #00FF00;
         width : parent;

@@ -92,6 +92,7 @@ echo json_encode($section_data);
 
 <?php
 function  getCutDoneJobsData($section,$module,$blocks){
+    $cutting_op_code = 15;
     global $line_breaker;
     global $sum_str; 
     global $link;
@@ -149,7 +150,7 @@ function  getCutDoneJobsData($section,$module,$blocks){
             $job_qty_result = mysqli_query($link,$job_qty_query);  
            
             $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty from $bai_pro3.cps_log 
-                            where doc_no = '$doc_no' and operation_code = 15 ";
+                            where doc_no = '$doc_no' and operation_code = $cutting_op_code ";
             $cut_qty_result = mysqli_query($link,$cut_qty_query);
            
             $jrow = mysqli_fetch_array($job_qty_result);
@@ -232,7 +233,7 @@ function  getCutDoneJobsData($section,$module,$blocks){
                                 <v><c>Cut No : </c> $cut_str</v>
                                 <v><c>Docket Qty : </c>$doc_qty</v>
                                 <v><c>Sewing  Job Qty</c> : $job_qty</v>
-                                <v><c>Cut Reported Qty </c>: $rem_qty</v>
+                                <v><c>Cut Remaining Qty </c>: $rem_qty</v>
                                 <p>";
             if($order == 0){                    
                 $docs_data.="<span class='block'>
