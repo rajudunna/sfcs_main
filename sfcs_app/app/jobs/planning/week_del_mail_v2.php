@@ -214,7 +214,7 @@ if($weekday1 != "tuesday")
 
 			$to  = $week_del_mail_v2;
 		
-			$subject = 'BEK Weekly Delivery Plan Status';
+			$subject = $plant_name.' Weekly Delivery Plan Status';
 			$headers  = 'MIME-Version: 1.0' . "\r\n";
 			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 	
@@ -576,7 +576,7 @@ else
 				}
 				$subject='Dear All, <br/><br/> Please Find The Weekly Delivery Plan Status Report of This Week. <br/><br/> Message Sent Via:'.$plant_name;
 				// $to=$week_del_mail_v2;
-				email_attachment($to,$subject,' Weekly Delivery Plan Status Report','Shop Floor System Alert', 'ravindranath.yrr35@gmail.com', 'Weekly_Delivery_Plan_Status.xls', $default_filetype='application/zip');
+				email_attachment($to,$subject,' Weekly Delivery Plan Status Report','Shop Floor System Alert', $header_from, 'Weekly_Delivery_Plan_Status.xls', $default_filetype='application/zip');
 
 }
 
