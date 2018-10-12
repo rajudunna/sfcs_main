@@ -29,12 +29,26 @@
 -->     
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $has_permission=haspermission($_GET['r']);
     $qry_short_codes = "SELECT * from $brandix_bts.ops_short_cuts";
     $result_oper = $link->query($qry_short_codes);
-    $qry_work_center_id = "SELECT * from $brandix_bts.parent_work_center_id";
-    $result_work_center_id = $link->query($qry_work_center_id);
+    //$qry_work_center_id = "SELECT * from $brandix_bts.parent_work_center_id";
+    //$result_work_center_id = $link->query($qry_work_center_id);
+    $url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PDS010MI/Select?CONO=".$company_no."&FFAC=".$facility_code."&TFAC=".$facility_code."&PLTP=1";
+   //$url = str_replace(' ', '%20', $url);
+    //echo "Api :".$url."<br>";
+     $result = $obj->getCurlAuthRequest($url);
+    $decoded = json_decode($result,true);
+    //  // var_dump($decoded);
+    
+        if($decoded['@type'])
+        {
+         continue;
+        }
+        $vals = (conctruct_array($decoded['MIRecord']));
+       
 ?>
 <div class="container">
     <?php 
@@ -99,15 +113,29 @@
                                 <b>Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b>            
                                     <select id="parent_work_center_id" style="width:100%;" name="parent_work_center_id" class="form-control" required>
                                     <option value=''>Select Parent Work Center Id</option>
-                                    <?php                       
-                                        if ($result_work_center_id->num_rows > 0) {
-                                            while($row = $result_work_center_id->fetch_assoc()) {
-                                            $row_value = $row['work_center_id_name'];
-                                                echo "<option value='".$row['work_center_id_name']."'>".strtoupper($row_value)."</option>";
+                                    <?php   
+                                    if($vals>0){
+                                     foreach ($vals as $value) 
+                                            {
+                                                //echo "Oper Desc: ".$value['OPDS']."MO No:".$value['MFNO']."Work Station Id :".$value['PLG1']."SMV :".$value['PITI']."Operation :".$value['OPNO']."</br>";
+                                                
+                                                //getting values from api call
+                                                $PLGR=$value['PLGR'];
+                                                $PLNM=$value['PLNM'];
+                                        echo "<option value='". $PLGR."'>".$PLNM."</option>";
+
                                             }
-                                        } else {
-                                            echo "<option value=''>No Data Found..</option>";
+                                        }else{
+                                            echo "<option value=''>No Data Found..</option>"; 
                                         }
+                                        // if ($result_work_center_id->num_rows > 0) {
+                                        //     while($row = $result_work_center_id->fetch_assoc()) {
+                                        //     $row_value = $row['work_center_id_name'];
+                                        //         echo "<option value='".$row['work_center_id_name']."'>".strtoupper($row_value)."</option>";
+                                        //     }
+                                        // } else {
+                                        //     echo "<option value=''>No Data Found..</option>";
+                                        // }
                                     ?>
                                 </select>
 								</div>
