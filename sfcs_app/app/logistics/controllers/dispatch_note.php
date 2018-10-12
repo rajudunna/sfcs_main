@@ -555,7 +555,7 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
 
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $icon?>" width="100" height="70"></td>
+  <td colspan=4 rowspan=2 class=xl8217319x valign="top" align="left"><img src="<?= $icon2?>" width="100" height="70"></td>
 
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala </td>
   <td class=xl662606></td>
@@ -1114,7 +1114,7 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
 
- <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $icon?>" width="100" height="70"></td>
+ <td colspan=4 rowspan=2 class=xl8217319x valign="top" align="left"><img src="<?= $icon2?>" width="100" height="70"></td>
 
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
   <td class=xl662606></td>
@@ -1677,7 +1677,7 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
 
-<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $icon ?>" width="100" height="70"></td>
+<td colspan=4 rowspan=2 class=xl8217319x valign="top" align="left"><img src="<?= $icon2 ?>" width="100" height="70"></td>
 
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
   <td class=xl662606></td>
@@ -2235,7 +2235,7 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
 
-<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $icon ?>" width="100" height="70"></td>
+<td colspan=4 rowspan=2 class=xl8217319x valign="top" align="left"><img src="<?= $icon2 ?>" width="100" height="70"></td>
 
   <td colspan=4 class=xl822606>Brandix Essentials Limited, Koggala</td>
   <td class=xl662606></td>
