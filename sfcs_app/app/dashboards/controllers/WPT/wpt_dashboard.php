@@ -183,6 +183,7 @@
         });
     }
     
+    
     function change_widths(){
         var b = Number($('#blocks').val());
         if(b == 0){

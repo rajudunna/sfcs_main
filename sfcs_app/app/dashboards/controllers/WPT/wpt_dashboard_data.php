@@ -225,6 +225,7 @@ function  getCutDoneJobsData($section,$module,$blocks){
                 }  
             }  
             
+            
             $tool_tip_text = "<p style=\"width : 500px\">
                                 <v><c>Style</c> : $style</v><v><c>Schedule No</c> : $schedule</v>
                                 <v><c>Colors</c> : $color</v><v><c>Doc no</c> : $doc_no</v>
