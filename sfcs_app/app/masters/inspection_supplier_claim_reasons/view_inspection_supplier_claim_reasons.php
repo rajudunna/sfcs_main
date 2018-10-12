@@ -29,7 +29,7 @@
 			 
 			
 			$edit_url = getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
-			//echo hii;
+		
 			$delete_url = getFullURL($_GET['r'],'delete_inspection_supplier_claim_reasons.php','N');
 			echo "<tr><td>".$sno++."</td><td>".$row["complaint_reason"]." </td><td>".$row["Complaint_clasification"]."</td><td>".$row["complaint_category"]."</td><td>".$cat_status."</td>
 			<td><a href='$edit_url&tid=$tid&complaint_reason=$complaint_reason&complaint_clasification=$complaint_clasification&complaint_category=$complaint_category&status=$cat_status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
