@@ -258,7 +258,7 @@ if(date("H")>18)
 
 	$to  = $line_wip_track;
 
-	$subject = 'BEK WIP (Production) Track';
+	$subject = $plant_name.' WIP (Production) Track';
 	
 	// To send HTML mail, the Content-type header must be set
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
