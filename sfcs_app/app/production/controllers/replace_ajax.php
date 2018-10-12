@@ -99,7 +99,7 @@
                 $cut_no = $doc_ary[$i];
 
                 /* get distinct operations from bundlecreationdata */
-
+                $flag = 1;
                 $get_operations = "SELECT DISTINCT operation_id
                 FROM brandix_bts.bundle_creation_data bcd LEFT JOIN brandix_bts.`tbl_orders_ops_ref` ops ON ops.`operation_code`= bcd.`operation_id`
                 WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND category = 'sewing'  ORDER BY operation_id";
@@ -108,7 +108,7 @@
                 $previous = array();$cps_operation ='';
                 while($resop = mysqli_fetch_array($res_get_operations))
                  {
-                     $flag = 1;
+                    
                      $opid = $resop['operation_id'];
 
                     $insert_bundle =" SELECT *  FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND operation_id = '$opid' LIMIT  0,1 ";
@@ -138,12 +138,14 @@
                                 array_push($previous,$rescpsopid['operation_code']);
                             }
                         }
+                        $qty = (int)$qty_ary[$i];
+                        $cps_operation = end($previous);
+                        $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
+                       
+                        $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
                     }
-                    $qty = (int)$qty_ary[$i];
-                    $cps_operation = end($previous);
-                    $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
                    
-                    $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
+                    $flag++;
                  }
 
                 /** Get MO Operations */
