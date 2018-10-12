@@ -135,6 +135,7 @@ $sewing_rejection=$conf1->get('sewing_rejection');
 
 
 $logo = '/sfcs_app/common/images/logo.png';
+$icon2='/sfcs_app/common/images/BAI_Logo.JPG';
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
