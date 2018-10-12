@@ -102,12 +102,13 @@
 
                 $get_operations = "SELECT DISTINCT operation_id
                 FROM brandix_bts.bundle_creation_data bcd LEFT JOIN brandix_bts.`tbl_orders_ops_ref` ops ON ops.`operation_code`= bcd.`operation_id`
-                WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND category = 'sewing'";
+                WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND category = 'sewing'  ORDER BY operation_id";
                 // echo $get_operations."<br>";
                 $res_get_operations =mysqli_query($link,$get_operations) or exit("erro5");
-                
+                $previous = array();$cps_operation ='';
                 while($resop = mysqli_fetch_array($res_get_operations))
                  {
+                     $flag = 1;
                      $opid = $resop['operation_id'];
 
                     $insert_bundle =" SELECT *  FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND operation_id = '$opid' LIMIT  0,1 ";
@@ -128,7 +129,25 @@
                      $res_gen_bundles =mysqli_query($link,$bundle_insert) or exit("erro6");
 
                     }
+<<<<<<< HEAD
 
+=======
+                    if($flag == 1){
+                        
+                        $opidqry = "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style = '$style' AND color='$color[$i]' ORDER BY operation_code";
+                        $res_get_tblopid =mysqli_query($link,$opidqry) or exit("erro6.11");
+                        while($rescpsopid = mysqli_fetch_array($res_get_tblopid)){
+                            if($opid != $rescpsopid['operation_code']){
+                                array_push($previous,$rescpsopid['operation_code']);
+                            }
+                        }
+                    }
+                    $qty = (int)$qty_ary[$i];
+                    $cps_operation = end($previous);
+                    $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
+                   
+                    $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
+>>>>>>> 791-good-panels-replacement-process-based-on-rejection-reporting
                  }
 
                 /** Get MO Operations */
