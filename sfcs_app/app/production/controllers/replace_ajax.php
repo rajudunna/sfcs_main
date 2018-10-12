@@ -3,8 +3,10 @@
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     if(isset($_POST['input_job'])){
         $job_no = $_POST['input_job'];
+        
         $mod_ary = array();
         $get_modules = "SELECT distinct(SUBSTRING_INDEX(remarks, '-', 1)) as remarks FROM bai_pro3.bai_qms_db WHERE input_job_no='$job_no'";
+       
         $res_qry =mysqli_query($link,$get_modules);
         // $i=0;
         while($result1 = mysqli_fetch_array($res_qry))
@@ -15,7 +17,7 @@
                 // $mod_ary[$i]=$result1['remarks'];
             }
         }
-        echo json_encode($mod_ary);
+        echo json_encode($mod_ary);die();
         
         
         }else if(isset($_POST['style'])){
@@ -23,12 +25,13 @@
         $status='';$doc_ref='';$input_job_no='';$destination='';$pack_mode =''; $o_size ='';$doc_type='';$type_sewing=''; $operations_ary = array(); $operations_list_ary = array();$remarks_in ='';$bundle_ary = array();
         if($_POST['style']!='' && $_POST['schedule']!='')
         {
-            $style = $_POST['style'];$schedule = $_POST['schedule'];$color = $_POST['color'];$job_no = $_POST['job_no'];$module = $_POST['mod_no'];$opid = $_POST['operations'];
+            $style = $_POST['style'];$schedule = $_POST['schedule'];$color = $_POST['color'];$job_no = $_POST['job_no'];$module = $_POST['mod_no'];
+            // $opid = $_POST['operations'];
             $doc_ary = $_POST['docs'];
             $size_ary = $_POST['size'];
             $qty_ary = $_POST['rep_qty'];
             $shift_ary = $_POST['shifts'];
-            $bundle_ary = $_POST['bundles'];
+            // $bundle_ary = $_POST['bundles'];
              
            // var_dump($color);var_dump($doc_ary);var_dump($size_ary);var_dump($qty_ary);var_dump($bundle_ary);
            // echo  sizeof($size_ary);
@@ -38,22 +41,21 @@
                 $remarks_in = $module."-".$shift_ary[$i];
                 /* Replace Panels  with qms_tran_type 2*/
                 $insert_qry = "insert into $bai_pro3.bai_qms_db(qms_style,qms_schedule,qms_color,qms_remarks,bundle_no,log_user,log_date,issued_by,qms_size,qms_qty,qms_tran_type,remarks,ref1,doc_no,location_id,input_job_no,operation_id)
-                VALUES('$style','$schedule','$color[$i]','','$bundle_ary[$i]','','','','$size_ary[$i]','$qty_ary[$i]','2','$remarks_in','','$doc_ary[$i]','','$job_no','$opid[$i]')";
-                // echo $insert_qry."1<br>";
+                VALUES('$style','$schedule','$color[$i]','','','','','','$size_ary[$i]','$qty_ary[$i]','2','$remarks_in','','$doc_ary[$i]','','$job_no','')";
                $res_qry =mysqli_query($link,$insert_qry) or exit("erro1");
 
                 /* Replace Panels with qms_tran_type 1 */
                 $qty_1 = ($qty_ary[$i]*-1);
                
                 $insert_qry_1 = "insert into $bai_pro3.bai_qms_db(qms_style,qms_schedule,qms_color,qms_remarks,bundle_no,log_user,log_date,issued_by,qms_size,qms_qty,qms_tran_type,remarks,ref1,doc_no,location_id,input_job_no,operation_id)
-                VALUES('$style','$schedule','$color[$i]','','$bundle_ary[$i]','','','','$size_ary[$i]','$qty_1','1','$remarks_in','','$doc_ary[$i]','','$job_no','$opid[$i]')";
+                VALUES('$style','$schedule','$color[$i]','','','','','','$size_ary[$i]','$qty_1','1','$remarks_in','','$doc_ary[$i]','','$job_no','')";
                 // echo $insert_qry_1."2<br>";
                $res_qry_1 =mysqli_query($link,$insert_qry_1) or exit("erro2");
 
                 /* Replace Panels with qms_tran_type 3 */
 
                 $insert_qry_3 = "insert into $bai_pro3.bai_qms_db(qms_style,qms_schedule,qms_color,qms_remarks,bundle_no,log_user,log_date,issued_by,qms_size,qms_qty,qms_tran_type,remarks,ref1,doc_no,location_id,input_job_no,operation_id)
-                VALUES('$style','$schedule','$color[$i]','','$bundle_ary[$i]','','','','$size_ary[$i]','$qty_1','3','$remarks_in','','$doc_ary[$i]','','$job_no','$opid[$i]')";
+                VALUES('$style','$schedule','$color[$i]','','','','','','$size_ary[$i]','$qty_1','3','$remarks_in','','$doc_ary[$i]','','$job_no','')";
                 // echo $insert_qry_3."3<br>";
                 $res_qry_3 =mysqli_query($link,$insert_qry_3) or exit("erro3");
                 
@@ -123,8 +125,8 @@
                         $sewing_order = $res_bundle_data_ary['sewing_order'];$remarks = $res_bundle_data_ary['remarks'];
                         $input_job = $res_bundle_data_ary['input_job_no'];
 
-                        $bundle_insert ="insert into $brandix_bts.bundle_creation_data (date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref,mapped_color) 
-                       VALUES(NOW(),'$cut_no','$style','$schedule','$color[$i]','$o_size','$size_ary[$i]','$sfcs_smv','$bundle_no','$qty_ary[$i]','0','0','0','0','0','$op_code','$operation_sequence','$operation_dependency','$doc_ary[$i]','OPEN','','$sewing_order_status','$is_sewing_order','$sewing_order','$module','$remarks','','$shift_ary[$i]','','','','$input_job','$job_no','$color[$i]')";
+                        $bundle_insert ="insert into $brandix_bts.bundle_creation_data (date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref,mapped_color,barcode_sequence,barcode_number,cancel_qty) 
+                       VALUES(NOW(),'$cut_no','$style','$schedule','$color[$i]','$o_size','$size_ary[$i]','$sfcs_smv','$bundle_no','$qty_ary[$i]','$qty_ary[$i]','0','0','0','0','$op_code','$operation_sequence','$operation_dependency','$doc_ary[$i]','OPEN','','$sewing_order_status','$is_sewing_order','$sewing_order','$module','$remarks','','$shift_ary[$i]','','','','$input_job','$job_no','$color[$i]','$barcode_sequence','$bundle_no','')";
                     //   echo $bundle_insert."7<br>";
                      $res_gen_bundles =mysqli_query($link,$bundle_insert) or exit("erro6");
 
