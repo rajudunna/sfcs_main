@@ -20,10 +20,10 @@
         </div>
         <div class='panel-body'>
             <div class='row'>
-                <div class='col-sm-3'>
+                <div class='col-sm-2'>
                     <label for='blocks'>No of Blocks per Section</label>
                     <select class='form-control'  name='blocks' id='blocks' >
-                        <option value selected disabled>Schedules Per Sec</option>
+                        <option value='0' selected disabled>Please Select</option>
                         <option value='4' >4</option>
                         <option value='8' >8</option>
                         <option value='12'>12</option>
@@ -44,7 +44,7 @@
                 $id1 = "sec-load-$section";
                 $id2 = "sec-$section";
         ?>    
-                <div class='section_div' style='width:35.9vw;float:left;padding:5px'>
+                <div class='section_div' style='width:19vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
                             <center><span class='section-heading'><b>SECTION - <?= $section ?></b></span></center>
@@ -96,16 +96,17 @@
                 </div>
             </div>
             <div class='row'>
-            <hr/>
+            
                 <div class='l-div col-sm-4'>
                     <span class="b-block ims-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - IMS WIP</span>
                 </div>
+            <!--
                 <div class='l-div col-sm-4'>
                     <span class="b-block pending-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - CUT REPORTED BUT NOT ISSUED </span>
                 </div>
-                <!-- <div class='l-div col-sm-4'>
+                <div class='l-div col-sm-4'>
                     <span class="b-block cut-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - CUT WIP</span>
                 </div> -->
@@ -117,7 +118,7 @@
 <script>
     var sections_str = '<?= $sections_str ?>';
     var sections = sections_str.split(',');
-    var bw = 100;
+    var bw = 42;
     $(document).ready(function(){
         load_data();
         $('[data-toggle="tooltip"]').tooltip(); 
@@ -137,8 +138,9 @@
     function call_ajax(section,sync_type){
         console.log(section);
         var blocks = $('#blocks').val();
-        if(blocks == '')
+        if(Number(blocks) == 0)
             blocks = 4;
+        console.log(blocks);    
         $('#sec-load-'+section).css('display','block');
         $('#sec-'+section).html('');
         $.ajax({
@@ -182,14 +184,22 @@
     }
     
     function change_widths(){
-        load_data();
         var b = Number($('#blocks').val());
-        var w = b*bw + 100;   
+        if(b == 0){
+            swal('Please select no : of blocks','','warning');
+            return false;
+        }
+        var w = b*bw + 90;   
         if(Number(w) > 1200)
             w = 900;
         if(b == 8)
-            w = 4*bw + 100;        
+            w = 4*bw + 90;
+        if(b == 12)
+            w = 6*bw + 95; 
+        if(b == 16)
+            w = 6*bw + 95;                   
         $('.section_div').css({"width":w+"px"});
+        load_data();
     }
 </script>
 
@@ -198,20 +208,24 @@
     hr{
         border-bottom : 1px solid black;
     }
+    .panel-body{
+        background : #efefef;
+    }
     .section-heading{
         color : #000;
         font-size : 16px;
         font-weight : 15px;
     }
     .sec-box{
-        min-height:200px;
+        min-height:400px;
         overflow : hidden;
-        background : #f9f9f9;
+        background : #fffffd;
+        border : 1px solid #111;
     }
 
     .ims-wip{
         background : #FFAA00;
-        background : #FF00D4;
+        background : #D00B7C;
         width : parent;
         height : 35px;
         color : #fff;
@@ -259,25 +273,22 @@
         min-width : 40px;
     }
     .wip-td{
-        min-width : 85px;    
+        min-width : 80px;    
     }
     .cut-td{
-        min-width  : 1200px;
-        width : auto;
+        width    : auto;
+        margin : 0;
     }
     .block{
-        color : #000;
-        overflow : hidden;
-        min-width  : 200px;
-        min-height : 40px;
-        font-size : 12px;
-        padding : 3px;
-        border : 1px solid #aaa;
-        border-radius : 3px;
+        color      : #000;
+        min-width  : 25px;
+        min-height : 25px;
+        padding    : 2px;
     }
     .cut-block{
-        min-width : 100px;
-        padding : 2px;
+        width  : 25px;
+        height : 25px;
+        border : 1px solid #000;
     }
     .l-div{
         min-height : 40px;
@@ -319,7 +330,6 @@
         background : #ff0000;
     }
   
-
     table{
         width : auto;
         max-width : 500px; 
@@ -336,12 +346,27 @@
         text-decoration : none;
         color : #000;
     }
-
+    a:hover{
+        cursor : pointer;
+    }
+    v{
+        color : #fff;
+        text-align : left; 
+        display : block;
+        font-size : 11px;
+    }
+    c{
+        color : #FFFF55;
+        text-align : left;   
+    }
     //Tool tip break
     .tooltip-inner {
-        white-space: pre-line;
+        max-width: 500px;
+        white-space: nowrap;
+        margin:0;
+        padding:0;
     }
-
+    
     .loading-block{
         border: 10px solid #f3f3f3; 
         border-top: 10px solid #156b0a; 
