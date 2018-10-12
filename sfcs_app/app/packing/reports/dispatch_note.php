@@ -2233,8 +2233,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-
-<td colspan=4 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo?>" width="200" height="60"></td>
+<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/BAI_Logo.JPG" width="200" height="60"></td>
 
   <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?></td>
   <td class=xl662606></td>
