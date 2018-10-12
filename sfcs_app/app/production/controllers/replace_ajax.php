@@ -134,12 +134,12 @@
                         $opidqry = "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style = '$style' AND color='$color[$i]' ORDER BY operation_code";
                         $res_get_tblopid =mysqli_query($link,$opidqry) or exit("erro6.11");
                         while($rescpsopid = mysqli_fetch_array($res_get_tblopid)){
-                            if($opid != $rescpsopid['operation_code']){
                                 array_push($previous,$rescpsopid['operation_code']);
-                            }
                         }
+                        $key = array_search($opid,$previous);
+
                         $qty = (int)$qty_ary[$i];
-                        $cps_operation = end($previous);
+                        $cps_operation = $previous[$key-1];
                         $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
                        
                         $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
