@@ -1,7 +1,6 @@
 <?php
 
 //configuration files
-
 function know_my_config($input)
 {
 	include("config.php");
@@ -9,7 +8,7 @@ function know_my_config($input)
 	{
 		case "facility":
 		{
-			return 'Q01';
+			return $facility_code;
 			break;
 		}
 		case "mysqlhost":

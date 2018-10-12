@@ -4024,8 +4024,8 @@ if(isset($_POST['submit']))
 
 			if($x_sec==sizeof($section_array))
 			{
-				include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report3_excel_new.php',0,'R'));
-				
+				include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
+
 				if(sizeof($section_array) > 1)
 				{	
 					
