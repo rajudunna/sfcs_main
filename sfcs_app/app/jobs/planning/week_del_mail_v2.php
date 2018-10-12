@@ -5,7 +5,7 @@ $include_path=getenv('config_job_path');
 error_reporting(0);
 $date1=date("Y-m-d");
 $weekday1 = strtolower(date('l', strtotime($date1)));
-$weekday1='monday';
+// $weekday1='monday';
 // echo "Week = ".$weekday1;
 
 if($weekday1 != "tuesday")
