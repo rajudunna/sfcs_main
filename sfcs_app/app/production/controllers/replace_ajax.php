@@ -138,12 +138,13 @@
                                 array_push($previous,$rescpsopid['operation_code']);
                             }
                         }
+                        $qty = (int)$qty_ary[$i];
+                        $cps_operation = end($previous);
+                        $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
+                       
+                        $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
                     }
-                    $qty = (int)$qty_ary[$i];
-                    $cps_operation = end($previous);
-                    $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
                    
-                    $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
                     $flag++;
                  }
 
