@@ -99,7 +99,7 @@
                 $cut_no = $doc_ary[$i];
 
                 /* get distinct operations from bundlecreationdata */
-
+                $flag = 1;
                 $get_operations = "SELECT DISTINCT operation_id
                 FROM brandix_bts.bundle_creation_data bcd LEFT JOIN brandix_bts.`tbl_orders_ops_ref` ops ON ops.`operation_code`= bcd.`operation_id`
                 WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND category = 'sewing'  ORDER BY operation_id";
@@ -108,7 +108,7 @@
                 $previous = array();$cps_operation ='';
                 while($resop = mysqli_fetch_array($res_get_operations))
                  {
-                     $flag = 1;
+                    
                      $opid = $resop['operation_id'];
 
                     $insert_bundle =" SELECT *  FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND operation_id = '$opid' LIMIT  0,1 ";
@@ -123,8 +123,8 @@
                         $sewing_order = $res_bundle_data_ary['sewing_order'];$remarks = $res_bundle_data_ary['remarks'];
                         $input_job = $res_bundle_data_ary['input_job_no'];
 
-                        $bundle_insert ="insert into $brandix_bts.bundle_creation_data (date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref,mapped_color,barcode_sequence,barcode_number,cancel_qty) 
-                       VALUES(NOW(),'$cut_no','$style','$schedule','$color[$i]','$o_size','$size_ary[$i]','$sfcs_smv','$bundle_no','$qty_ary[$i]','$qty_ary[$i]','0','0','0','0','$op_code','$operation_sequence','$operation_dependency','$doc_ary[$i]','OPEN','','$sewing_order_status','$is_sewing_order','$sewing_order','$module','$remarks','','$shift_ary[$i]','','','','$input_job','$job_no','$color[$i]','$barcode_sequence','$bundle_no','0')";
+                        $bundle_insert ="insert into $brandix_bts.bundle_creation_data (date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref,mapped_color) 
+                       VALUES(NOW(),'$cut_no','$style','$schedule','$color[$i]','$o_size','$size_ary[$i]','$sfcs_smv','$bundle_no','$qty_ary[$i]','0','0','0','0','0','$op_code','$operation_sequence','$operation_dependency','$doc_ary[$i]','OPEN','','$sewing_order_status','$is_sewing_order','$sewing_order','$module','$remarks','','$shift_ary[$i]','','','','$input_job','$job_no','$color[$i]')";
                     //   echo $bundle_insert."7<br>";
                      $res_gen_bundles =mysqli_query($link,$bundle_insert) or exit("erro6");
 
@@ -144,6 +144,7 @@
                     $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
                    
                     $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
+                    $flag++;
                  }
 
                 /** Get MO Operations */
