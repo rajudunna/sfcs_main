@@ -3475,7 +3475,8 @@ if(isset($_POST['submit']))
 				echo $table_temp;
 				$table.=$table_temp;
 				// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-				$eff_grand=$eff_grand+round(($peff_a_new+$peff_b_new)/(($act_hrsa+$act_hrsb)/7.5),0);
+				if($act_hrsa+$act_hrsb == '' || $act_hrsa+$act_hrsb == 0 )
+					$eff_grand=$eff_grand+round(($peff_a_new+$peff_b_new)/(($act_hrsa+$act_hrsb)/7.5),0);
 				$i3=$i3+1;
 				$table_temp="<td  class=xl8926424>".round((($pstha+$psthb)/($pclha+$pclhb))*100,0)."%</td>";
 
@@ -3603,7 +3604,14 @@ if(isset($_POST['submit']))
 			// Actual Eff % taken from Actual Clock hours.   
 				if(($clha+$clhb)>0)
 				{
-					$table_temp="<td class=xl9526424>".round((round(($stha/(($avail_A_fix-$absent_A_fix)*$act_hrsa))*100,0)+round(($sthb/(($avail_B_fix-$absent_B_fix)*$act_hrsb))*100,0))/(($act_hrsa+$act_hrsb)/7.5),0)."%</td>";
+					if($act_hrsa+$act_hrsb != 0 && $avail_A_fix-$absent_A_fix != 0 && $avail_B_fix-$absent_B_fix != 0)
+						$table_temp="<td class=xl9526424>".
+						round((round(($stha/(($avail_A_fix-$absent_A_fix)*$act_hrsa))*100,0)+
+						round(($sthb/(($avail_B_fix-$absent_B_fix)*$act_hrsb))*100,0))/(($act_hrsa+$act_hrsb)/7.5),0)."
+						%</td>";
+					else
+						$table_temp="<td class=xl9526424>0%</td>";
+
 					echo $table_temp;
 					$table.=$table_temp;
 				}
@@ -3956,7 +3964,11 @@ if(isset($_POST['submit']))
 
 
 			// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-			$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			if( $totalmodules== '' || $act_hrsa+$act_hrsb == '' || $totalmodules== 0 || $act_hrsa+$act_hrsb == 0) 
+				$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			else
+				$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>0%</td>";
+
 			echo $table_temp;
 			$table.=$table_temp;
 			$table_temp="<td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>".($auf_A+$auf_B)."</td>";
@@ -4044,6 +4056,7 @@ td{
 #text_color{
 	color=white;
 }
+td { word-wrap:break-word;}
 </style>
 <?php
 unlink("Eff_Report.xls");
@@ -4057,3 +4070,6 @@ fclose($fh1);
 
 </div>
 </div>
+
+
+
