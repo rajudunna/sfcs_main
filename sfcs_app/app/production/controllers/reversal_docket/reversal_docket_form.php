@@ -33,6 +33,7 @@
 		</style>
 <body>
 
+
 <div class="panel panel-primary"> 
 	<div class="panel-heading">Reversal Docket</div>
 		<div class='panel-body'>
@@ -40,11 +41,11 @@
                 <div class="row">
                     <div class="col-md-3">
                         <label>Docket Number</label>
-                        <input type="text" class='integer'  id="docket_number" class="form-control" name="docket_number" size=8 required>
+                        <input type="text" class='integer' id="docket_number" class="form-control" name="docket_number" size=8 required>
                     </div>
                     <div class="col-md-2">
                         <label>Plies</label>
-                        <input type="text" class='integer'  id="plies" class="form-control" name="plies" size=5 required>
+                        <input type="text" class='integer' id="plies" class="form-control" name="plies" size=5 required>
                     </div><br/>
                     <div class="col-md-3">
                         <input type="submit" id="delete_reversal_docket" class="btn btn-danger" name="formSubmit" value="Delete">
