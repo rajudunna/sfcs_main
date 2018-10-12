@@ -43,8 +43,8 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 }else{
 	if($tid>0){ 
 		//update
-		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid=$tid";
-		//echo $sql;exit;
+		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid =$tid";
+		//echo 	$sql;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 			
