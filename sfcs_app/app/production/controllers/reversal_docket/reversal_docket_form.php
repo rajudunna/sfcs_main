@@ -40,11 +40,11 @@
                 <div class="row">
                     <div class="col-md-3">
                         <label>Docket Number</label>
-                        <input type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true"  id="docket_number" class="form-control" name="docket_number" size=8 required>
+                        <input type="text" class='integer'  id="docket_number" class="form-control" name="docket_number" size=8 required>
                     </div>
                     <div class="col-md-2">
                         <label>Plies</label>
-                        <input type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true"  id="plies" class="form-control" name="plies" size=5 required>
+                        <input type="text" class='integer'  id="plies" class="form-control" name="plies" size=5 required>
                     </div><br/>
                     <div class="col-md-3">
                         <input type="submit" id="delete_reversal_docket" class="btn btn-danger" name="formSubmit" value="Delete">
@@ -92,7 +92,7 @@ if(isset($_POST['formSubmit']))
         $get_docket_details_qry_result = mysqli_query($link,$get_docket_details_qry) or exit("PlanDocStat Log Query Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row = $get_docket_details_qry_result->fetch_assoc()) 
         {
-            // echo '<br/><br/>'.$row['a_plies'].' - '.$plies_post;
+            echo '<br/><br/>'.$row['a_plies'].' - '.$plies_post;
             $does_docket_exists_flag= 1;
             if($row['a_plies'] >= $plies_post) {
                 for ($i=0; $i < sizeof($sizes_array); $i++)
@@ -177,7 +177,7 @@ if(isset($_POST['formSubmit']))
                     $docket_log_res = mysqli_query($link,$docket_log) or exit(" Error77".mysqli_error ($GLOBALS["___mysqli_ston"]));
                 }
                 if($update_plan_doc_stat_flag==1){
-                    $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post WHERE doc_no=$docket_number_post";
+                    $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='' WHERE doc_no=$docket_number_post";
                     // echo $update_plies_qry.'<br/><br/>';
                     $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
                     echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
