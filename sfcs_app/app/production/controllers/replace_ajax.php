@@ -129,9 +129,6 @@
                      $res_gen_bundles =mysqli_query($link,$bundle_insert) or exit("erro6");
 
                     }
-<<<<<<< HEAD
-
-=======
                     if($flag == 1){
                         
                         $opidqry = "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style = '$style' AND color='$color[$i]' ORDER BY operation_code";
@@ -147,7 +144,6 @@
                     $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
                    
                     $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
->>>>>>> 791-good-panels-replacement-process-based-on-rejection-reporting
                  }
 
                 /** Get MO Operations */
