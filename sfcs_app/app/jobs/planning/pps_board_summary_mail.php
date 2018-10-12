@@ -102,7 +102,7 @@ $to  = $pps_board_summary;
 
 
 // subject
-$subject = 'BEK Planning Dashboard Summary';
+$subject = $plant_name.' Planning Dashboard Summary';
 
 // To send HTML mail, the Content-type header must be set
 $headers  = 'MIME-Version: 1.0' . "\r\n";
