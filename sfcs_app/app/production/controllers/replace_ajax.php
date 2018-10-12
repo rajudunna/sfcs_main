@@ -139,13 +139,11 @@
                             }
                         }
                     }
-                    var_dump($previous);
                     $qty = (int)$qty_ary[$i];
                     $cps_operation = end($previous);
                     $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
-                    echo $cpslog_update;
-                    // $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
-                    
+                   
+                    $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
                  }
 
                 /** Get MO Operations */
