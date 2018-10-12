@@ -21,7 +21,7 @@
 			if($status == 0) 
 			{
 				$cat_status = "Active";
-			}else{
+			}else{ 
 				$cat_status = "In-Active";
 			}
 			 
