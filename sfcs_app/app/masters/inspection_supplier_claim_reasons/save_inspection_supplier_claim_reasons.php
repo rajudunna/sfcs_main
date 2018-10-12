@@ -34,7 +34,7 @@
 		
 		//echo $color_code;
        
-		
+		 
 
 	}else{
 		$supplier_code='';
