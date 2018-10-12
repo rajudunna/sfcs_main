@@ -35,17 +35,17 @@
 
 
 <div class="panel panel-primary"> 
-	<div class="panel-heading">Reversal Docket</div>
+	<div class="panel-heading">Cutting Reversal</div>
 		<div class='panel-body'>
             <form method="post" name="form1" action="?r=<?php echo $_GET['r']; ?>">
                 <div class="row">
                     <div class="col-md-3">
                         <label>Docket Number</label>
-                        <input type="text" class='integer' id="docket_number" class="form-control" name="docket_number" size=8 required>
+                        <input type="text" class='integer form-control' id="docket_number" name="docket_number" size=8 required>
                     </div>
                     <div class="col-md-2">
                         <label>Plies</label>
-                        <input type="text" class='integer' id="plies" class="form-control" name="plies" size=5 required>
+                        <input type="text" class='integer form-control' id="plies" name="plies" size=5 required>
                     </div><br/>
                     <div class="col-md-3">
                         <input type="submit" id="delete_reversal_docket" class="btn btn-danger" name="formSubmit" value="Delete">
@@ -93,7 +93,7 @@ if(isset($_POST['formSubmit']))
         $get_docket_details_qry_result = mysqli_query($link,$get_docket_details_qry) or exit("PlanDocStat Log Query Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row = $get_docket_details_qry_result->fetch_assoc()) 
         {
-            echo '<br/><br/>'.$row['a_plies'].' - '.$plies_post;
+            // echo '<br/><br/>'.$row['a_plies'].' - '.$plies_post;
             $does_docket_exists_flag= 1;
             if($row['a_plies'] >= $plies_post) {
                 for ($i=0; $i < sizeof($sizes_array); $i++)
