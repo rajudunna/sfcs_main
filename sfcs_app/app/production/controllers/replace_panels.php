@@ -65,22 +65,12 @@
                     $i=0;
                     foreach($render_data as $data_ary){
                         $panel_qry = "
-                        SELECT qms_style,qms_schedule,qms_color,qms_size,SUM(g_qms_qty) AS g_qms_qty,SUM(r_qms_qty) AS r_qms_qty,GROUP_CONCAT(doc_no) AS doc_no,qms_tran_type, GROUP_CONCAT(shift) AS shift, 
-                        GROUP_CONCAT(operation_id) AS operation_id,GROUP_CONCAT(bundle_no) AS bundle_no  FROM ((SELECT qms_style,qms_schedule,qms_color,qms_size,SUM(qms_qty) AS g_qms_qty,0 AS r_qms_qty,NULL AS doc_no,qms_tran_type, NULL AS shift, 
-                        '' AS operation_id,NULL AS bundle_no 
-                        FROM bai_pro3.bai_qms_db WHERE qms_style='".$data_ary['style']."' 
-                        AND qms_schedule='".$data_ary['schedule']."' AND qms_color = '".$data_ary['color']."' AND qms_size = '".$data_ary['size']."' AND qms_tran_type=1 
-                        GROUP BY qms_size,qms_tran_type ORDER BY qms_size,qms_color,qms_tran_type ) UNION ALL (
-                        SELECT qms_style,qms_schedule,qms_color,qms_size,0 AS g_qms_qty,SUM(qms_qty) AS r_qms_qty,doc_no,qms_tran_type, SUBSTRING_INDEX(SUBSTRING_INDEX(remarks, '-', -2),'-',1) AS shift, 
-                        operation_id,bundle_no 
-                        FROM bai_pro3.bai_qms_db WHERE qms_style='".$data_ary['style']."' 
-                        AND qms_schedule='".$data_ary['schedule']."' AND qms_color = '".$data_ary['color']."' AND qms_size = '".$data_ary['size']."' AND qms_tran_type=3
-                        GROUP BY qms_size,qms_tran_type ORDER BY qms_size,qms_color,qms_tran_type
-                        )) AS tab GROUP BY qms_style,qms_schedule,qms_color,qms_size
-                        ";
-                  //echo $panel_qry."<br>";
-                 //die();
-                    $previous_size = '';
+                        SELECT SUM(IF((qms_tran_type=1),qms_qty,0)) AS g_qms_qty, SUM(IF(qms_tran_type=2,qms_qty,0)) AS replaced,
+                        SUM(IF(qms_tran_type=3 AND input_job_no='$job_no',qms_qty,0)) AS r_qms_qty FROM bai_pro3.bai_qms_db WHERE qms_style = '".$data_ary['style']."' 
+                        AND qms_size='".$data_ary['size']."' AND qms_schedule='".$data_ary['schedule']."' AND qms_color='".$data_ary['color']."'";
+                        // echo $panel_qry."<br>";
+
+                        $previous_size = '';
                     $count =0;
                     $res_qry =mysqli_query($link,$panel_qry);
                     echo "<tbody>";
@@ -88,19 +78,27 @@
                         while($result1 = mysqli_fetch_assoc($res_qry))
                         {
                             
-                            $style = $result1['qms_style']; 
-                            $schedule = $result1['qms_schedule'];$color = $result1['qms_color'];
-                            $size = $result1['qms_size'];
+                          $qms_det_qry ="select qms_style,qms_schedule,qms_color,qms_size,doc_no,SUBSTRING_INDEX(SUBSTRING_INDEX(remarks, '-', -2),'-',1) AS shift,GROUP_CONCAT(operation_id) as operation_id,GROUP_CONCAT(bundle_no) as bundle_no from $bai_pro3.bai_qms_db where qms_style = '".$data_ary['style']."' 
+                          AND qms_size='".$data_ary['size']."' AND qms_schedule='".$data_ary['schedule']."' AND qms_color='".$data_ary['color']."' and qms_tran_type='3'";
+
+                        //   echo $qms_det_qry."<br>";
+                          
+                          $res_qry_1 =mysqli_query($link,$qms_det_qry);
+                          while($result2 = mysqli_fetch_array($res_qry_1)){
+
+                            $style = $result2['qms_style']; 
+                            $schedule = $result2['qms_schedule'];$color = $result2['qms_color'];
+                            $size = $result2['qms_size'];
+                            $doc_no = $result2['doc_no'];
+                            $shift = $result2['shift'];
+                            // $operation = $result1['operation_id'];
+                            // $bundle_no = $result1['bundle_no'];
+                          }
                             $good = $result1['g_qms_qty'];
                             // $good=0;
-                            $rej = $result1['r_qms_qty'];
-                            $doc_no = $result1['doc_no'];
-                            $shift = $result1['shift'];
-                            $operation = $result1['operation_id'];
-                            $operation =explode(',',$operation);
-                            $operation = $operation[1];
-                            $bundle_no = $result1['bundle_no'];
-
+                            $rej = $result1['r_qms_qty']; 
+                            // $operation =explode(',',$operation);
+                            // $operation = $operation[1];
                             echo "<tr><td>$style</td><td>$schedule</td><td>$color</td>
                                     <td>$size</td>";
                                     if($good>0){
@@ -128,8 +126,6 @@
                                     <input type='hidden' id='rej_$i' name='gud_$i' value='$rej'>
                                     <input type='hidden' id='doc_$i' name='doc_$i' value='$doc_no'>
                                     <input type='hidden' id='shift_$i' name='shift_$i' value='$shift'>
-                                    <input type='hidden' id='opid$i' name='opid$i' value='$operation'>
-                                    <input type='hidden' id='bundle_$i' name='bun_$i' value='$bundle_no'>
                                     <input type='hidden' id='color_$i' name='color_$i' value='$color'>
                                     <input type='checkbox' id='$i' name='che_$i' value=''>
 
@@ -160,6 +156,7 @@
 function getmodnos()
 {
     var job_value = $('#ijob').val();
+    console.log(job_value);
     
     if(job_value!=''){
    
@@ -230,9 +227,9 @@ $('#mod_id').click(function(){
                     sizes.push($('#siz_'+check_id).val());
                     doc_nos.push($('#doc_'+check_id).val());
                     shifts.push($('#shift_'+check_id).val());
-                    ops.push($('#opid'+check_id).val());
+                    // ops.push($('#opid'+check_id).val());
                     replace_values.push($('#rep_'+check_id).val());
-                    bundle.push($('#bundle_'+check_id).val());
+                    // bundle.push($('#bundle_'+check_id).val());
                     color.push($('#color_'+check_id).val());
                 }
                 // else{
@@ -241,13 +238,14 @@ $('#mod_id').click(function(){
                 // }
                
                 console.log('size'+sizes);console.log('docno'+doc_nos);
-                console.log('shift'+shifts);console.log('opid'+ops);
-                console.log('bundle'+bundle);
+                console.log('shift'+shifts);
+                // console.log('opid'+ops);
+                // console.log('bundle'+bundle);
                 console.log('color'+color);
             }
 	    });
 
-        if(count>0){
+        if(count>0 && sizes.length > 0){
                 swal({
                 title: "Are you sure?",
                 icon: "warning",
@@ -267,8 +265,6 @@ $('#mod_id').click(function(){
                         'mod_no':'<?= $mod_no; ?>',
                         'shifts':shifts,
                         'docs':doc_nos,
-                        'operations':ops,
-                        'bundles':bundle,
                         'rep_qty': replace_values
                         },
                         method:'POST',
@@ -280,17 +276,22 @@ $('#mod_id').click(function(){
                                     icon: "success",
                                 });
                                 $('.ajax-loader').css("visibility", "none");
-                                location.reload();
+                                // location.reload();
                             }
                             
                         }
                     });
+                    location.reload();
                 } else {
                     swal("Your Process is cancelled!");
                     }
                 });
         }else{
+            if(count==0){
             swal('Please check atleast one action!');
+            }else{
+                swal('Replaced Quantity should be greater than zero!');
+                }
         }
 
     });

@@ -96,6 +96,10 @@ function enableButton()
 		   	sweetAlert('Effected Quantity Total should Be less or equal to cumulative of Rejected Total and Replacement Qty  ','','warning');
 		   	return false;
 		   }
+		   if(y == 0){
+			sweetAlert('Can not update','rejection without giving Effected Qty','warning');
+		   	return false; 
+		   }
 		   else
 		   {
 		   		document.getElementById('submitx').disabled='';

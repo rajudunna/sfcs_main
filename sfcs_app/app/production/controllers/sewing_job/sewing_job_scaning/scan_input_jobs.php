@@ -41,6 +41,7 @@
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
 	echo '<input type="hidden" name="sewing_rejection" id="sewing_rejection" value="'.$sewing_rejection.'">';
 	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
+	echo '<input type="hidden" name="line-in" id="line-in" value="'.$line_in.'">';
 
 
 
@@ -247,7 +248,7 @@ $(document).ready(function()
 {
 	//$('#rejec_reasons').select2();
 	// $('#reason_drop').select2();
-	
+	var display_reporting_qty = document.getElementById('display_reporting_qty').value;
 	$('#job_number').focus();
 	$('#loading-image').hide();
 	<?php if ($_POST['operation_name']) {?>
@@ -261,7 +262,6 @@ $(document).ready(function()
 		var job_number = $('#job_number').val();
 		var operation_id = $('#operation_id').val();
 		var assign_module = $('#module').val();
-		var operation_code_routing = $('#operation_code_routing').val();
 		var current = "<?php echo $operation_name; ?>";
 		//alert(current)
 		var array = [job_number,operation_id,barcode_generation,assign_module];
@@ -389,7 +389,6 @@ $(document).ready(function()
 								status = '<font color="red">Already Scanned</font>';
 							}
 						}
-						
 						var temp_var_bal1 = 0;
 						if(data[i].flag == 'packing_summary_input' || emb_ops != undefined)
 						{
@@ -563,6 +562,7 @@ function validating_cumulative(e,t)
 function validating_remarks_qty(val,remarks)
 {
 	var display_reporting_qty = document.getElementById('display_reporting_qty').value;
+	var line_in = document.getElementById('line-in').value;
 	var operation_code_routing = document.getElementById('operation_code_routing').value;
 	var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 	var bundle_number_var = val+"tid";
@@ -600,6 +600,10 @@ function validating_remarks_qty(val,remarks)
 			$('#'+html_id).html(array[0]);
 			if (operation_id == operation_code_routing || operation_id == '900')
 			{
+				if (line_in == 'yes')
+				{
+					$('#'+html_id_reporting).val(array[0]);
+				}
 				if (display_reporting_qty == 'yes')
 				{
 					$('#'+html_id_reporting).val(array[0]);

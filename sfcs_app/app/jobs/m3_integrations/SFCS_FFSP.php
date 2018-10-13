@@ -3,7 +3,7 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $connect = odbc_connect("$driver_name;Server=$sfsp_serverName;Database=$sfsp_m3_databasename;", $sfsp_uid,$sfsp_pwd);
 //$conn = odbc_connect($conn_string,$user_ms,$password_ms);
-var_dump($connect)."<br>";
+//var_dump($connect)."<br>";
 error_reporting(1);
 
 $get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm limit 1";
@@ -76,7 +76,7 @@ while($row = mysqli_fetch_array($result))
 	   $planned_jobs_result=mysqli_query($link, $planned_jobs) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 	   while($planned_jobs_row = mysqli_fetch_array($planned_jobs_result))
 	   {
-		  echo $planned_jobs."---".$planned_jobs_row["value"]."<BR><BR>";
+		  //echo $planned_jobs."---".$planned_jobs_row["value"]."<BR><BR>";
 		  $planned_jobs_value=$planned_jobs_row["value"];
 	   }             
 		  if($lay_done='1')
@@ -89,7 +89,7 @@ while($row = mysqli_fetch_array($result))
 		  }
 	   $sql_check="SELECT COUNT(*) as count FROM [BEL_RMDashboard].[dbo].[SFCS_FSP_Integration] WHERE Schedule=".$schedule." and ColorId='".$color."'";
 	   //echo $sql_check."<br>";
-	   var_dump($connect);
+	   //var_dump($connect);
 	   $result=odbc_exec($connect, $sql_check) or exit("Error=".odbc_errormsg($connect));
 	   while(odbc_fetch_row($result))
 	   {
