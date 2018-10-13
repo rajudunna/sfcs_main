@@ -190,7 +190,7 @@ if(isset($_POST['formSubmit']))
                             echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
                         }
                         else {
-                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies+$plies_post,act_cut_status='DONE' WHERE doc_no=$docket_number_post";
+                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='DONE' WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
                             $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
                             echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
