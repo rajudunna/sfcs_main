@@ -95,13 +95,12 @@
                     <span class='l-text'>Cut Completed But Not Issued To Module</span>
                 </div>
             </div>
+            <!--
             <div class='row'>
-            
                 <div class='l-div col-sm-4'>
                     <span class="b-block ims-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - IMS WIP</span>
                 </div>
-            <!--
                 <div class='l-div col-sm-4'>
                     <span class="b-block pending-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - CUT REPORTED BUT NOT ISSUED </span>
@@ -109,7 +108,22 @@
                 <div class='l-div col-sm-4'>
                     <span class="b-block cut-wip" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - CUT WIP</span>
-                </div> -->
+                </div>
+            </div> -->
+            <div class='row'>
+                <hr/>
+                <div class='l-div col-sm-4'>
+                    <span class="b-block gloss-red" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'> - Line WIP &le; 216</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="b-block gloss-green" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'> - Line WIP &ge; 217 && &le; 750</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="b-block gloss-black" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'> - Line WIP &ge; 751</span>
+                </div>
             </div>
         </div>
     </div>
@@ -329,6 +343,18 @@
     }
     .red{
         background : #ff0000;
+    }
+    .gloss-red{
+        background : #ff0000;
+        opacity    : 1; 
+    }
+    .gloss-green{
+        background : #008000;
+        opacity    : 1;
+    }
+    .gloss-black{
+        background : #111;
+        opacity    : 1;
     }
   
     table{

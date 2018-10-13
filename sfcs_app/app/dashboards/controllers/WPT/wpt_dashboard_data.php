@@ -48,11 +48,22 @@ if($section > 0){
                 $wip[$module]   = $ims_wip;
                 //$module_smv[$module] = $row['SMV'] * $ims_wip;
             }
+
+            $wip_color = '';
+            if($ims_wip == '')
+                $ims_wip = 0;
+            if($ims_wip <= 216)
+                $wip_color = 'gloss-red';
+            elseif($ims_wip >= 751)  
+                $wip_color = 'gloss-black';
+            else
+                $wip_color = 'gloss-green';
+
             if($ims_wip == '')
                 $ims_wip = 0;
             else{              
                 $data.="<td rowspan=2 class='wip-td'>";    
-                $data.="<span class='ims-wip'><b>WIP : $ims_wip</b></span>";
+                $data.="<span class='ims-wip $wip_color'><b>WIP : $ims_wip</b></span>";
                 $data.="</td>";
             }
 
@@ -101,12 +112,22 @@ function  getCutDoneJobsData($section,$module,$blocks){
     $status_color = 'blue';
     $docs_data = '';
     $dockets_query = "";
+    /*
     $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
             WHERE input_module = $module AND a_plies >= p_plies and act_cut_status = 'DONE'
-            GROUP BY pdsi.doc_no";
+            GROUP BY pdsi.doc_no"; */
+    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
+            pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,pds.color_code,
+            pds.order_del_no as schedule
+            from $bai_pro3.plan_dash_doc_summ pds
+            LEFT JOIN $bai_pro3.plan_dashboard_input pdi ON pds.module = pdi.input_module
+            LEFT JOIN $bai_pro3.pac_stat_log_input_job psi ON pds.doc_no = psi.doc_no
+            where module = $module and  act_cut_status = 'DONE' 
+            and pds.a_plies >= pds.p_plies  
+            group by doc_no order by input_priority";
     $partial_dockets_query  = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
             pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,SUM(($sum_str)) as qty,pds.color_code,
             pds.order_del_no as schedule
@@ -218,11 +239,11 @@ function  getCutDoneJobsData($section,$module,$blocks){
                 goto enough;
             if($blocks <= 8){
                 if($line_breaker == 5){
-                    $docs_data.='<br/>';
+                    $docs_data.='&nbsp;<br/>';
                 }
             }else if($blocks > 8){
                 if($line_breaker == 9){
-                    $docs_data.='<br/>';
+                    $docs_data.='&nbsp;<br/>';
                 }  
             }  
             
