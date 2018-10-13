@@ -43,6 +43,11 @@ echo "Api :".$url."<br>";
         //getting values from api call
         $MONumber=$value['MFNO'];
         $SMV=$value['PITI'];
+        $CTCD=$value['CTCD'];
+        if($CTCD>0)
+        {
+        $SMV = $SMV/$CTCD;
+        }
         $operation_desc=$value['OPDS'];
         $operation_code=$value['OPNO'];
         $WorkCenterId=$value['PLGR'];
