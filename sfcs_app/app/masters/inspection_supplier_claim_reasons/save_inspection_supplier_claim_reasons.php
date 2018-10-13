@@ -23,9 +23,8 @@
 
 <body>
     <?php
-	if(isset($_REQUEST['tid'])){
-		//echo "Row id".$_REQUEST['supplier_code'];
-		$complaint_reason =$_GET['complaint_reason'];
+	if(isset($_GET['tid'])){
+        $complaint_reason =$_GET['complaint_reason'];
 		$tid =$_GET['tid'];
 		$complaint_clasification=$_GET['complaint_clasification'];
 		$status = $_GET['status'];
@@ -34,7 +33,7 @@
 		
 		//echo $color_code;
        
-		
+		 
 
 	}else{
 		$supplier_code='';

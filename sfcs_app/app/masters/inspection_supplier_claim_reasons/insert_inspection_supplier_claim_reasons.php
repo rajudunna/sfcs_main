@@ -2,8 +2,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
-// echo $_POST['table_name'];
-$tid =$_POST['tid'];
+
+$tid =$_POST['tid']; 
 $complaint_reason=$_POST['complaint_reason'];
 $complaint_clasification =$_POST['complaint_clasification'];
 $complaint_category = $_POST['complaint_category'];
@@ -41,10 +41,10 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 		
 
 }else{
-	if($tid>0){
+	if($tid>0){ 
 		//update
-		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where sno=$tid";
-		//echo $sql;exit;
+		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid =$tid";
+		//echo 	$sql;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 			
@@ -96,7 +96,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 
 
 		echo"<script>setTimeout(function () { 
-			swal({
+			swal({ 
 			  title: 'New Record Created successfully',
 			  text: 'Message!',
 			  type: 'warning',

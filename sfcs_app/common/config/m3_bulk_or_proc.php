@@ -1,7 +1,6 @@
 <?php
 
 //configuration files
-
 function know_my_config($input)
 {
 	include("config.php");

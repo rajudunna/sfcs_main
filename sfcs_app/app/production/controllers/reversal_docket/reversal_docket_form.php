@@ -33,18 +33,19 @@
 		</style>
 <body>
 
+
 <div class="panel panel-primary"> 
-	<div class="panel-heading">Reversal Docket</div>
+	<div class="panel-heading">Cutting Reversal</div>
 		<div class='panel-body'>
             <form method="post" name="form1" action="?r=<?php echo $_GET['r']; ?>">
                 <div class="row">
                     <div class="col-md-3">
                         <label>Docket Number</label>
-                        <input type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true"  id="docket_number" class="form-control" name="docket_number" size=8 required>
+                        <input type="text" class='integer form-control' id="docket_number" name="docket_number" size=8 required>
                     </div>
                     <div class="col-md-2">
                         <label>Plies</label>
-                        <input type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true"  id="plies" class="form-control" name="plies" size=5 required>
+                        <input type="text" class='integer form-control' id="plies" name="plies" size=5 required>
                     </div><br/>
                     <div class="col-md-3">
                         <input type="submit" id="delete_reversal_docket" class="btn btn-danger" name="formSubmit" value="Delete">
@@ -177,10 +178,25 @@ if(isset($_POST['formSubmit']))
                     $docket_log_res = mysqli_query($link,$docket_log) or exit(" Error77".mysqli_error ($GLOBALS["___mysqli_ston"]));
                 }
                 if($update_plan_doc_stat_flag==1){
-                    $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post WHERE doc_no=$docket_number_post";
-                    // echo $update_plies_qry.'<br/><br/>';
-                    $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
-                    echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
+                    $cut_status_qry = "SELECT * from $bai_pro3.plandoc_stat_log where doc_no=$docket_number_post";
+                    $cut_status_qry_result = mysqli_query($link,$cut_status_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                    while($sql_row = $cut_status_qry_result->fetch_assoc()){
+                        $a_plies_old = $sql_row['a_plies'];
+                        $p_plies_old = $sql_row['p_plies'];
+                        if($p_plies_old==$plies_post) {
+                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=$p_plies_old,act_cut_status='' WHERE doc_no=$docket_number_post";
+                            // echo $update_plies_qry.'<br/><br/>';
+                            $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                            echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
+                        }
+                        else {
+                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='DONE' WHERE doc_no=$docket_number_post";
+                            // echo $update_plies_qry.'<br/><br/>';
+                            $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                            echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
+                        }
+                    }
+                    
                 }
             }
             else

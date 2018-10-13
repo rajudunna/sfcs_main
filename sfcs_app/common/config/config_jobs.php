@@ -41,12 +41,6 @@ $sfsp_uid=$conf->get('sf_sp_username');
 $sfsp_pwd=$conf->get('sf_sp_pwd');
 
 
-//ms-sql jobs 
-$user_ms = "BAISFCS";
-$password_ms = "fcs@m3pr";
-$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
-
-
 //material requirement in week_del_mail_v2
 $server="GD-RPTSQL";
 $database="M3_BEL";

@@ -1497,7 +1497,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
   <td class=xl6513019 width=64 style='width:48pt'></td> 
   <td class=xl6513019 width=16 style='width:12pt'></td> 
  </tr>--> 
- <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/logo.png" width="200" height="60"></td>
+ <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo ?>" width="200" height="60"></td>
   <td class=xl6432599></td>
   <td class=xl6432599></td>
   <td class=xl6432599></td>
