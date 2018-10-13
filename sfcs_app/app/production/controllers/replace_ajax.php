@@ -113,7 +113,7 @@
                     
                      $opid = $resop['operation_id'];
 
-                    $insert_bundle =" SELECT *  FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND operation_id = '$opid' LIMIT  0,1 ";
+                    $insert_bundle =" SELECT *  FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND operation_id = '$opid' AND size_title='$size_ary[$i]'  LIMIT  0,1 ";
                     // echo $insert_bundle."<br>";
 
                     $res_bundle_data = mysqli_query($link,$insert_bundle) or exit("erro6");
