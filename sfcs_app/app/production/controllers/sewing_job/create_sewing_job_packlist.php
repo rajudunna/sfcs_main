@@ -314,7 +314,7 @@
 					$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$row = mysqli_fetch_row($get_pack_id_res);
 					$pack_id=$row[0];
-					$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method,min(pack_job_per_pack_method) as min_carton FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
+					$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title ORDER BY ref_size_name SEPARATOR '<br>') as size ,GROUP_CONCAT(color ORDER BY ref_size_name SEPARATOR '<br>') as color,seq_no,pack_method,min(pack_job_per_pack_method) as min_carton FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
 					// echo $pack_meth_qry;
 					$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if (mysqli_num_rows($pack_meth_qty) > 0)
@@ -328,9 +328,9 @@
 										<th style='display: none;'>Mix Jobs</th>
 										<th>Description</th>	
 										<th>Bundle Size</th>
-										<th>No of Cartons per sewing job</th>										
+										<th>No of Cartons<br>per Sewing Job</th>										
 										<th>Quantity</th>
-										<th>Colors</th>
+										<th colspan=3>Colors</th>
 										<th>Sizes</th>
 										<th>Controls</th></tr>";
 									while($pack_result1=mysqli_fetch_array($pack_meth_qty))
@@ -389,14 +389,14 @@
 													</center>
 												</td>
 												<td>".$pack_result1['pack_description']."</td>
-												<td><input type='text' $readonly class='form-control integer' name='bund_size' id='bund_size_".$count."' onfocus=if(this.value==-1){this.value=''} onblur=if(this.value==''){this.value=-1;} value='$bundle_size_sew'></td>
+												<td><input type='text' size=5 $readonly class='form-control integer' name='bund_size' id='bund_size_".$count."' onfocus=if(this.value==-1){this.value=''} onblur=if(this.value==''){this.value=-1;} value='$bundle_size_sew'></td>
 												<input type='hidden' name='seq_no' id='seq_no' value='$seq_no'>
 												<input type='hidden' name='max_crton' id='max_crton_".$count."' value='$max_crton'>
 												<input type='hidden' name='schedule' id='schedule' value='$schedule'>
 												<input type='hidden' name='style' id='style' value='$style'>
-												<td><input type='text' $readonly  class='form-control integer' name='no_of_cartons' id='no_of_cartons_".$count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='$no_of_cartons_sew'></td>
+												<td><input type='text' size=5 $readonly  class='form-control integer' name='no_of_cartons' id='no_of_cartons_".$count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='$no_of_cartons_sew'></td>
 												<td>".$pack_result1['qnty']."</td>
-												<td>".$pack_result1['color']."</td>
+												<td colspan=3>".$pack_result1['color']."</td>
 												<td>".$pack_result1['size']."</td>";
 											
 											if ($max_crton > 0)
