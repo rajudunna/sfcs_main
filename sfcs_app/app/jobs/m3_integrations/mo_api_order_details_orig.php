@@ -24,6 +24,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
         $item_description = $response['response']['ITDS'];
         $order_yy = $response['response']['CNQT'];
         $sequence_no = $response['response']['MSEQ'];
+
         $qry_to_chk_op = "SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code='".$response['response']['OPNO']."' AND category='cutting'";
         $res_to_chk_op = mysqli_query($link, $qry_to_chk_op) or exit("Sql Error select bai_pro3.operation cutting".mysqli_error($GLOBALS["___mysqli_ston"]));
         $res_chk_op = mysqli_fetch_array($res_to_chk_op);
@@ -54,7 +55,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
 
                     //=========== save data ================
                     $qry_save_bom = "INSERT INTO $m3_inputs.bom_details(date_time,mo_no,plant_code,
-                    item_code,item_description,color,color_description,size,z_code,per_piece_consumption,wastage,uom) VALUES (now(),'".$mo_no."','".$global_facility_code."','".urldecode($item_code)."','".$item_description."','".$result_data['color']."','".$color_description."','".$size_description."','".$z_feature_description."','".$order_yy."','".$wastage."','".$uom."')";
+                    item_code,item_description,color,color_description,size,z_code,per_piece_consumption,wastage,uom,material_sequence,product_no,operation_code) VALUES (now(),'".$mo_no."','".$global_facility_code."','".urldecode($item_code)."','".$item_description."','".$result_data['color']."','".$color_description."','".$size_description."','".$z_feature_description."','".$order_yy."','".$wastage."','".$uom."','".$sequence_no."','".urldecode($prno)."','".$response['response']['OPNO']."')";
                     $res_save_bom = mysqli_query($link, $qry_save_bom) or exit("Sql Error Insert bom Details".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     //================================================
