@@ -112,13 +112,14 @@ function  getCutDoneJobsData($section,$module,$blocks){
     $status_color = 'blue';
     $docs_data = '';
     $dockets_query = "";
-    /*
+
     $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
-            WHERE input_module = $module AND a_plies >= p_plies and act_cut_status = 'DONE'
-            GROUP BY pdsi.doc_no"; */
+            WHERE input_module = $module AND a_plies >= p_plies
+            GROUP BY pdsi.doc_no"; 
+    /*
     $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
             pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,pds.color_code,
             pds.order_del_no as schedule
@@ -128,6 +129,7 @@ function  getCutDoneJobsData($section,$module,$blocks){
             where module = $module and  act_cut_status = 'DONE' 
             and pds.a_plies >= pds.p_plies  
             group by doc_no order by input_priority";
+    */        
     $partial_dockets_query  = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
             pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,SUM(($sum_str)) as qty,pds.color_code,
             pds.order_del_no as schedule
