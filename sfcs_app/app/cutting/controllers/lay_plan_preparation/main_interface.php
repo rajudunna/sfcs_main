@@ -1802,7 +1802,7 @@ else{
 	//echo "<th class=\"column-title\"><center>Docket Print</center></th>";
 	echo "</tr></thead>";
 
-	$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$tran_order_tid."' order by lastup DESC";
+	$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$tran_order_tid."' order by lastup";
 	//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
