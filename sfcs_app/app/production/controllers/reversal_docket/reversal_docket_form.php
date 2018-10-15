@@ -183,8 +183,8 @@ if(isset($_POST['formSubmit']))
                     while($sql_row = $cut_status_qry_result->fetch_assoc()){
                         $a_plies_old = $sql_row['a_plies'];
                         $p_plies_old = $sql_row['p_plies'];
-                        if($p_plies_old==$plies_post) {
-                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=$p_plies_old,act_cut_status='' WHERE doc_no=$docket_number_post";
+                        if($a_plies_old==$plies_post) {
+                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=$p_plies,act_cut_status='' WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
                             $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
                             echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";

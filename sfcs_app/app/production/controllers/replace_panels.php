@@ -245,7 +245,7 @@ $('#mod_id').click(function(){
             }
 	    });
 
-        if(count>0){
+        if(count>0 && sizes.length > 0){
                 swal({
                 title: "Are you sure?",
                 icon: "warning",
@@ -276,17 +276,22 @@ $('#mod_id').click(function(){
                                     icon: "success",
                                 });
                                 $('.ajax-loader').css("visibility", "none");
-                                location.reload();
+                                // location.reload();
                             }
                             
                         }
                     });
+                    location.reload();
                 } else {
                     swal("Your Process is cancelled!");
                     }
                 });
         }else{
+            if(count==0){
             swal('Please check atleast one action!');
+            }else{
+                swal('Replaced Quantity should be greater than zero!');
+                }
         }
 
     });

@@ -72,7 +72,7 @@ else
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 			echo"<script>setTimeout(function () { 
 				swal({
-				  title: 'Reason Already Existed for this Department',
+				  title: 'Reason Already Existed!',
 				  text: 'Message!',
 				  type: 'warning',
 				  confirmButtonText: 'OK'

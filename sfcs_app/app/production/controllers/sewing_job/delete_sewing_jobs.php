@@ -308,10 +308,6 @@
             $get_docs=$row['doc_nos'];
         }
 
-        $delete_pac_stat="DELETE FROM $bai_pro3.`pac_stat` WHERE SCHEDULE=$schedule AND pac_seq_no=$seqno"; 
-        // echo $delete_pac_stat."<br>"; 
-        mysqli_query($link, $delete_pac_stat) or exit("while Deleting pac_stat"); 
-
         $delete_tbl_docket_qty="DELETE FROM bai_pro3.`tbl_docket_qty` WHERE pac_stat_input_id IN (SELECT id FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule AND pac_seq_no=$seqno)"; 
         // echo $delete_tbl_docket_qty."<br>"; 
         mysqli_query($link, $delete_tbl_docket_qty) or exit("while Deleting tbl_docket_qty"); 
