@@ -263,7 +263,7 @@ echo "<h2>Transaction Log:</h2>";
 
 echo "<div class='table-responsive'>";
 echo "<table class='table table-bordered'>";
-echo "<tr style='background-color:white;'><th>date</th><th>Lot #</th><th>Label Id</th><th>Roll No</th><th>Qty</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr>";
+echo "<tr style='background-color:white;'><th>date</th><th>Label Id</th><th>Roll No</th><th>Qty</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr>";
 if($sql_num_check1>0){
 $sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where lot_no in (".trim($lot_no).")) order by date";
 }
@@ -292,7 +292,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$result3=mysqli_query($link,$sql3) or die("Error = ".mysqli_error());
 		while($row3=mysqli_fetch_array($result3))
 		{
-			$lot_no1=$row3["lot_no"];
+			//$lot_no1=$row3["lot_no"];
 			$ref2=$row3["ref2"];
 			$barcode_number=$row3["barcode_number"];
 		}
@@ -321,11 +321,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$code=$row2["code"];
 		}
 					
-		echo "<tr style='background-color:white;'><td>$date</td><td>$lot_no1</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>".chr($code)."00".$cutnos."</td><td>$remarks</td><td>$user</td></tr>";
+		echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>".chr($code)."00".$cutnos."</td><td>$remarks</td><td>$user</td></tr>";
 	}
 	else
 	{
-		echo "<tr style='background-color:white;'><td>$date</td><td>$lot_no1</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";
+		echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";
 	}
 	
 	/*$remarks=$sql_row['remarks'];
