@@ -247,12 +247,11 @@ if(count($colors)>0){
                             <tr style="background-color: whitesmoke;"><td colspan=11><center><strong>Packing Trims</strong></center></td></tr>
                         <?php
                             foreach($api_selected_valuess_ptrim as $api_selected_valuess){                               
-                                //req without wastge
-                                $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['SIZE_QTY'];
-
-                                //req with wastge               
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$api_selected_valuess['WASTAGE']/100);
-								
+                                  //per piece consumption calculation
+                            $api_selected_valuess['CNQT'] = $api_selected_valuess['WITH_OUT_WASTAGE']/$api_selected_valuess['SIZE_QTY'];
+                            
+                            //wastage calculation
+                            $api_selected_valuess['WASTAGE'] =  (($api_selected_valuess['WITH_WASTAGE']-$api_selected_valuess['WITH_OUT_WASTAGE'])*100)/$api_selected_valuess['WITH_OUT_WASTAGE'];
                         ?>
                         <tr>
                             <td><?= $api_selected_valuess['MTNO'] ?></td>
@@ -263,8 +262,8 @@ if(count($colors)>0){
 							<td><?= $api_selected_valuess['Z_DESC'] ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
                             <td><?php echo "<span style='float:right;'>".$api_selected_valuess['WASTAGE']."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['WITH_WASTAGE'], 2)."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['WITH_OUT_WASTAGE'], 2)."</span>";?></td>
                             <td><?=  $api_selected_valuess['UOM'] ?></td>
                         </tr>
                         <?php }
