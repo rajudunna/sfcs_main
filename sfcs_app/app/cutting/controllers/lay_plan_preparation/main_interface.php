@@ -710,7 +710,7 @@ Change log:
 */
 //echo $tran_order_tid;
 //$tran_order_tid1=str_replace(' ', '', $tran_order_tid);
-$sql="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" order by catyy DESC";
+$sql="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" ORDER BY lastup";
 //echo $sql."</br>test";
 
 //$sql="select * from cat_stat_log where order_tid like \"% ".$schedule."%\" order by catyy DESC";
@@ -935,7 +935,7 @@ $order_s50=$sql_row['order_s_s50'];
 
 	
 }
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=trim('$tran_order_tid') order by catyy DESC";
+$sql="select * from $bai_pro3.cat_stat_log where order_tid=trim('$tran_order_tid') ORDER BY lastup";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
