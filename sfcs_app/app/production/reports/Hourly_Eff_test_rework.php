@@ -21,6 +21,90 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
         <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
 
         <style> 
+		body
+{
+	background-color: WHITE;
+	font-size: 8pt;
+	color: BLACK;
+	line-height: 15pt;
+	font-style: normal;
+	font-family: "calibri", Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+
+table#filter td
+{
+	
+	padding:10px;
+}
+
+table#info
+{
+	border-collapse:collapse;
+
+}
+
+table#info tr
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info2 td
+{
+	border: 1px solid black;
+	text-align: right;
+	vertical-align:top;
+white-space:nowrap; 
+}
+
+table#info td
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info th
+{
+	border: 1px solid black;
+	text-align: center;
+    	background-color: BLUE;
+	color: WHITE;
+white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+
+table#info tr.total
+{
+	border: 1px solid black;
+    	background-color: GREEN;
+	color: WHITE;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info td.head
+{
+	border: 1px solid black;
+    	background-color: GREEN;
+	color: WHITE;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info tr.total_grand
+{
+	border: 1px solid black;
+    	background-color: ORANGE;
+	color: WHITE;
+	text-align: right;
+white-space:nowrap; 
+}
+
             table {
                 width:100%
             }
@@ -162,12 +246,22 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         if($sections_string==$sql_row2['sec_name']) 
                                         { 
                                             echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name'].""; 
+											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                         else 
                                         { 
                                             echo "<option value=\"".$sql_row2['sec_name']."\">Unit-".$sql_row2['sec_name'].""; 
+											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                     } 
+									if($sections_string==implode(",",$sections_list)) 
+									{
+										echo "<option value=\"".implode(",",$sections_list)."\" selected>Factory</option>"; 
+									}
+									else
+									{
+										echo "<option value=\"".implode(",",$sections_list)."\">Factory</option>"; 
+									}
                                     echo "</select>"; 
                             ?> 
                             </div>
@@ -573,7 +667,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 if($option1==1)
                                 {  
                                     echo "<table id=\"info\">"; 
-                                    echo "<tr><td colspan=4 style='background-color:#29759C; color:white;'>Section -".$sec." (".$sec_head.")</td></tr> <tr><th rowspan=2 style='background-color:#29759C;'>M#</th> <th rowspan=2 style='background-color:#29759C;'>NOP</th> <th  rowspan=2 style='background-color:#29759C;'>Style DB</th> <th rowspan=2 style='background-color:#29759C;'>Del DB</th>"; 
+                                    echo "<tr><td colspan=4 style='background-color:#29759C; color:white;'>Section -".$sec."</td></tr> <tr><th rowspan=2 style='background-color:#29759C;'>M#</th> <th rowspan=2 style='background-color:#29759C;'>NOP</th> <th  rowspan=2 style='background-color:#29759C;'>Style DB</th> <th rowspan=2 style='background-color:#29759C;'>Del DB</th>"; 
                                 } 
 
                                 $set_colspan = $ftt_chk + $rw_chk + $ut_chk;  

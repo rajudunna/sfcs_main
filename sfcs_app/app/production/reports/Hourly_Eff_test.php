@@ -203,7 +203,7 @@ white-space:nowrap;
                     <!--<h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3>--> 
                     <?php  
                         include("../../../common/config/config.php");
-                        error_reporting(0);
+                        // error_reporting(0);
                         $secstyles=$_POST['secstyles']; 
                         $sections_string=$_POST['section']; 
                         $date=$_POST['dat']; 
@@ -221,26 +221,36 @@ white-space:nowrap;
                         <div class="row">
                             <div class="col-md-2">
 									<label for="demo1">Select Date: </label>
-                                	<input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
+                                	<input id="demo1" readonly type="text" class="form-control" size="8" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
                             </div>
                             <div class="col-md-2">
                                 <label for="section">Select Unit: </label>
                                 <?php
                                     echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
                                     $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
-									// echo "<option value=\"".$sql2."\" selected>Unit-".$sql2.""; 
+									
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sections_string==$sql_row2['sec_name']) 
                                         { 
-                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name'].""; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name']."</option>"; 
+											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                         else 
                                         { 
-                                            echo "<option value=\"".$sql_row2['sec_name']."\">Unit-".$sql_row2['sec_name'].""; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\">Unit-".$sql_row2['sec_name']."</option>"; 
+											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                     } 
+									if($sections_string==implode(",",$sections_list)) 
+									{
+										echo "<option value=\"".implode(",",$sections_list)."\" selected>Factory</option>"; 
+									}
+									else
+									{
+										echo "<option value=\"".implode(",",$sections_list)."\">Factory</option>"; 
+									}
                                     echo "</select>"; 
                                 ?>
                             </div>
@@ -2165,20 +2175,43 @@ white-space:nowrap;
 
                                 //$sql="select distinct bac_style,smv,nop from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) and bac_shift in ($team)"; 
                                 $sql="select distinct bac_style,smv from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_shift in ($team)";   
-								echo $sql."<br>";								
+								// echo $sql."<br>";								
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     $mod_style=$sql_row['bac_style']; 
                                     echo "<tr><td>".$mod_style."</td>"; 
-                                    $sql2="select nop,smv from $pro_style where style=\"$mod_style\" and date=\"$date\"";                              
+                                    $sql2="select * from $pro_style where style=\"$mod_style\" and date=\"$date\"";                              
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                    { 
-                                        //echo "<td>".$sql_row2['smv']."</td>"; 
-                                        echo "<td>".$sql_row['smv']."</td>"; //Modified by KiranG 20150814 to show smv based on m3 integration from system. 
-                                        echo "<td>".$sql_row2['nop']."</td>"; 
-                                    } 
+									if(mysqli_num_rows($sql_result2)>0)
+									{
+										while($sql_row2=mysqli_fetch_array($sql_result2)) 
+										{ 
+											//echo "<td>".$sql_row2['smv']."</td>"; 
+											echo "<td>".$sql_row['smv']."</td>"; //Modified by KiranG 20150814 to show smv based on m3 integration from system. 
+											echo "<td>".$sql_row2['nop']."</td>"; 
+										} 
+									}
+									else
+									{
+										
+										$sql2="select smv,nop from $table_name where bac_date=\"$date\" and bac_style=\"$mod_style\" limit 1"; 
+										//echo $sql2;         
+										$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+										if(mysqli_num_rows($sql_result2)>0)
+										{
+											while($sql_row2=mysqli_fetch_array($sql_result2)) 
+											{ 
+												echo "<td>".$sql_row['smv']."</td>"; //Modified by KiranG 20150814 to show smv based on m3 integration from system. 
+												echo "<td>".$sql_row2['nop']."</td>"; 
+											} 
+										}
+										else
+										{										
+											echo "<td>0</td>"; 
+											echo "<td>0</td>"; 
+										}
+									}
                                      
                                     //SMV and NOP from direct table 
                                         //echo "<td>".$sql_row['smv']."</td>"; 
