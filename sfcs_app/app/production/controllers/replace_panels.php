@@ -276,12 +276,11 @@ $('#mod_id').click(function(){
                                     icon: "success",
                                 });
                                 $('.ajax-loader').css("visibility", "none");
-                                // location.reload();
+                                location.reload();
                             }
-                            
                         }
                     });
-                    location.reload();
+                    // location.reload();
                 } else {
                     swal("Your Process is cancelled!");
                     }
