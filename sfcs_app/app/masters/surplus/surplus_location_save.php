@@ -22,7 +22,7 @@ $active_status = $_POST['active_status'];
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
-if (empty($qms_location) || empty($qms_location_cap) || empty($qms_cur_qty) ||  empty($qms_location_id) ) 
+if (empty($qms_location) || empty($qms_location_cap) ||   empty($qms_location_id) ) 
 {
 	$url=getFullURL($_GET['r'],'surplus_table.php','N');
 	echo"<script>setTimeout(function () { 
@@ -44,7 +44,8 @@ else
 	if($q_id>0)
 	{
 		//update
-		$sql = "update $bai_pro3.bai_qms_location_db set  qms_location='$qms_location', qms_location_cap = '$qms_location_cap', active_status='$active_status',qms_cur_qty='$qms_cur_qty' where q_id=$q_id";
+		$sql = "update $bai_pro3.bai_qms_location_db set  qms_location='$qms_location', active_status='$active_status',qms_location_cap='$qms_location_cap'
+		where q_id=$q_id";
 		
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'surplus_table.php','N');
@@ -77,7 +78,7 @@ else
 			$url=getFullURL($_GET['r'],'surplus_table.php','N');
 			echo"<script>setTimeout(function () { 
 				swal({
-				  title: 'Location Id Already Exist',
+				  title: 'Location Id Already Existed!',
 				  text: 'Message!',
 				  type: 'warning',
 				  confirmButtonText: 'OK'

@@ -99,7 +99,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 			swal({ 
 			  title: 'New Record Created successfully',
 			  text: 'Message!',
-			  type: 'warning',
+			  type: 'success',
 			  confirmButtonText: 'OK'
 			},
 			function(isConfirm){

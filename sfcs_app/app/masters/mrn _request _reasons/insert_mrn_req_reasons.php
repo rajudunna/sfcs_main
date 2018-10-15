@@ -99,7 +99,7 @@ if (empty($rejec_code) || empty($rejec_des)  )
 			swal({
 			  title: 'Record inserted successfully',
 			  text: 'Message!',
-			  type: 'warning',
+			  type: 'success',
 			  confirmButtonText: 'OK'
 			},
 			function(isConfirm){

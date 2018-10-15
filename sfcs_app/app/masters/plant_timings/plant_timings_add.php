@@ -65,7 +65,7 @@
                 <SELECT name="time_display" id="start" value="<?php echo $start_time ; ?>" onchange="calculate()" class="form-control">
 
                 <?php 
-                for($hours=6; $hours<24; $hours++)
+                for($hours=1; $hours<13; $hours++)
                 {
                     for($mins=0; $mins<60; $mins+=60)
                     { 
@@ -92,7 +92,7 @@
                 <SELECT name="time_display1" id="start1" value="<?php echo $end_time; ?>" onchange="calculate()" class="form-control">
 
                 <?php 
-                    for($hours=6; $hours<24; $hours++)
+                    for($hours=1; $hours<13; $hours++)
                     {
                         for($mins=0; $mins<60; $mins+=60)
                         { 
