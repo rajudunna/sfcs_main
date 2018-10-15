@@ -55,7 +55,7 @@ $().ready(function() {
 <body onload="dodisable();">
 <div class="panel panel-primary">
 <div class="panel-heading" style="height:35px;">
-<span style="float: left"><h3 style="margin-top: -6px;">Updating RM Issuing</h3></span><span style="float: right"><b></b>&nbsp;</span></div></div>
+<span style="float: left"><h3 style="margin-top: -6px;">Update RM Issuing</h3></span><span style="float: right"><b></b>&nbsp;</span></div></div>
 
 <?php include("menu_content.php"); ?>
 
