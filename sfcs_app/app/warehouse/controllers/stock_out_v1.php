@@ -288,14 +288,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	$remarks=$sql_row['remarks'];
 	$user=$sql_row['updated_by'];
-	$sql3="select lot_no,ref2,barcode_number from $bai_rm_pj1.store_in where tid='$tran_tid'";
-		$result3=mysqli_query($link,$sql3) or die("Error = ".mysqli_error());
-		while($row3=mysqli_fetch_array($result3))
-		{
-			//$lot_no1=$row3["lot_no"];
-			$ref2=$row3["ref2"];
-			$barcode_number=$row3["barcode_number"];
-		}
+				$sql3="select lot_no,ref2,barcode_number from $bai_rm_pj1.store_in where tid='$tran_tid'";
+				$result3=mysqli_query($link,$sql3) or die("Error = ".mysqli_error());
+				while($row3=mysqli_fetch_array($result3))
+				{
+					//$lot_no1=$row3["lot_no"];
+					$ref2=$row3["ref2"];
+					$barcode_number=$row3["barcode_number"];
+				}
 	if($d==1)
 	{
 		$dockets=explode("T",$cutno);
