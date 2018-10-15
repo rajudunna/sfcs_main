@@ -87,7 +87,7 @@
                     header("Content-Type: application/xls");
                     header("Content-Disposition: attachment; filename= M3 Transcation Report.xls ");
                 }else{
-                    echo "<div class='table-responsive'>";
+                    echo "<div class='table-responsive' style='height:500px;overflow-y: scroll;'>";
                 }
 ?>
                 
