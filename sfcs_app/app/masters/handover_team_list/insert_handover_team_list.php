@@ -106,7 +106,7 @@ if (empty($emp_id) || empty($emp_call_name) )
 			swal({
 			  title: 'New Record Created successfully',
 			  text: 'Message!',
-			  type: 'warning',
+			  type: 'success',
 			  confirmButtonText: 'OK'
 			},
 			function(isConfirm){

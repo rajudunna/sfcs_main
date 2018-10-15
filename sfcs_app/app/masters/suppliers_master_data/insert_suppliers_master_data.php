@@ -96,7 +96,7 @@ if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || emp
 			swal({
 			  title: 'record inserted successfully ',
 			  text: 'Message!',
-			  type: 'warning',
+			  type: 'success',
 			  confirmButtonText: 'OK'
 			},
 			function(isConfirm){

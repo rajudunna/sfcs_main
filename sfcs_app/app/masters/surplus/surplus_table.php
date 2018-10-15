@@ -21,6 +21,8 @@
      <?php
     if(isset($_GET['rowid']))
     {
+        $jj='readonly';
+        
         $q_id = $_GET['rowid'];
         $qms_location_id=$_GET['qms_location_id'];
         $qms_location=$_GET['qms_location'];
@@ -34,6 +36,7 @@
     }else
     {
         $q_id=0;
+        $jj='';
     }
     $action_url = getFullURL($_GET['r'],'surplus_location_save.php','N');
     ?>
@@ -44,7 +47,7 @@
         <div class="row">
         <div name="sur_drop">
         <div class="form-group form-control " >
-            <select name="cmbitems" id="cmbitems" onchange='assigncmb()'>
+            <select name="cmbitems" id="cmbitems"  onchange='assigncmb()'>
                 <option <?php if ($cmbitems == 'INT' ) echo 'selected' ; ?> value='INT' >INT</option>
                 <option <?php if ($cmbitems == 'SUR' ) echo 'selected' ; ?> value='SUR' >SUR</option>
                 <option <?php if ($cmbitems == 'RES' ) echo 'selected' ; ?> value='RES' >RES</option>
@@ -63,7 +66,8 @@
     </div>
 
          
-              <div class="form-group form-control" ><select name="sur_num" id="sur_num" onchange='assigncmb()'>
+              <div class="form-group form-control" >
+              <select name="sur_num" id="sur_num" onchange='assigncmb()'>
                     <?php
                         for ($i=1; $i<=999; $i++)
                         {
@@ -101,11 +105,6 @@
                             <div class="alert alert-success">Yay! ..</div>
                         </div>
 
-                        
-                                    
-                           
-            
-            
         <div class="row">
             
             <div class="col-md-4">
@@ -113,7 +112,7 @@
                 <div class="form-group">
                 <label class="control-label control-label-left col-sm-3"  for="qms_location_id">Qms Location Id:<span class="req"> *</span></label>
                 <div class="controls col-sm-9">
-                    
+            
                 <input id="qms_location_id" type="text" class="form-control k-textbox" data-role="text" required="required" name="qms_location_id"  value="<?php echo $qms_location_id; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span></div>
                 
         </div></div>
@@ -121,7 +120,7 @@
                 <label class="control-label control-label-left col-sm-3" for="qms_location" >Qms Location:<span class="req"> *</span></label>
                 <div class="controls col-sm-9">
                     
-                <input id="qms_location" type="text" class="form-control k-textbox" data-role="text" required="required" name="qms_location" value="<?php echo $qms_location; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span></div>
+                <input id="qms_location" type="text" class="form-control k-textbox" data-role="text" <?= $jj ?> required="required" name="qms_location" value="<?php echo $qms_location; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span></div>
                 
         </div></div>
                 <div class="col-md-4"><div class="form-group integer">
@@ -129,13 +128,6 @@
                 <div class="controls col-sm-9">
                     
                 <input id="qms_location_cap" type="text" class="form-control k-textbox " data-role="text" required="required"  name="qms_location_cap" value="<?php echo $qms_location_cap; ?>" data-parsley-errors-container="#errId2"><span id="errId2" class="error"></span></div>
-                
-        </div></div>
-        <div class="col-md-4"><div class="form-group integer">
-                <label class="control-label control-label-left col-sm-3" for="qms_cur_qty">Quantity<span class="req"> *</span></label>
-                <div class="controls col-sm-9">
-                    
-                <input id="qms_cur_qty" type="text" class="form-control k-textbox" data-role="text" name="qms_cur_qty" value="<?php echo $qms_cur_qty; ?>" placeholder="Enter Quantity" required="required" data-parsley-errors-container="#errId3"><span id="errId3" class="error"></span></div>
                 
         </div></div>
         <div class="col-md-4"><div class="form-group">
@@ -175,7 +167,13 @@
 </body>
 <script>
     function assigncmb(){
-        var v1 = document.getElementById("cmbitems").value;
+        var qty = document.getElementById("qms_location_cap").value;
+        
+        if (qty != '' ) {
+         
+        }
+        else {
+            var v1 = document.getElementById("cmbitems").value;
         var v2 = document.getElementById("sur_alpha").value;
         var v3 = document.getElementById("sur_num").value;
         document.getElementById("qms_location_id").value = v1+'-'+v2+'-'+v3;
@@ -189,6 +187,9 @@
             document.getElementById("qms_location").value = "Surplus Room ";
 
         }
+        }
+
+        
 
     }
 
