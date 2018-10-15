@@ -232,7 +232,7 @@ white-space:nowrap;
                     <div class="row">
                         <div class="col-md-2">
 							<label for="demo1">Select Date: </label>
-                            <input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>    <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
+                            <input id="demo1" readonly type="text" class="form-control" size="8" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>    <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
                         </div>
                         <div class="col-md-2">
                             <label for="section">Select Unit: </label>
