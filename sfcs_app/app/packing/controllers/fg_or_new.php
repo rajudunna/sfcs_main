@@ -520,7 +520,7 @@ if(isset($_POST['submit']))
 		echo "</select></div></div></td></tr>";
 		echo "<tr><th>Carton No: </th><td><div class='row'><div class='col-md-4'><input type=\"text\" value=\"0\" name=\"sourceid\" id=\"sourceid\"  class='form-control integer'></div></div></td></tr>";
 		
-		echo "<tr><th>Source : *</th><td><div class='row'><div class='col-md-4'><select name=\"source\" id=\"source\"  class='form-control'>";
+		echo "<tr><th>Source : </th><td><div class='row'><div class='col-md-4'><select name=\"source\" id=\"source\"  class='form-control'>";
 		echo "<option value=\" \">Please Select</option>";
 		//echo "<option value=\"-1\">Production (O.R)</option>";
 		echo "<option value=\"SAM\">Sample (O.R)</option>";
