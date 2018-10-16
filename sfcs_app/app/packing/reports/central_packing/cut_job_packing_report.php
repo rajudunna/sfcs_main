@@ -212,6 +212,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 						//echo str_replae(",","','",$cols_new[$iii])."<br>";
 						$size_array=array();
 						$sizeqry="select input_job_no,input_job_no_random,m3_size_code,sum(carton_act_qty) as qty FROM bai_pro3.packing_summary_input WHERE order_del_no='".$schedule[$iii]."' and order_col_des in ('".str_replace(",","','",$cols_new[$iii])."') and acutno='$ii' group by input_job_no order by input_job_no*1";
+						//echo $sizeqry."<br>";
 						$sizerslt=mysqli_query($link, $sizeqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						while($sizerow=mysqli_fetch_array($sizerslt)) 
 						{ 
@@ -244,6 +245,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 				            echo "<td height=20 style='height:15.0pt;align:centre;'>".$pack_method[$iii]."</td>"; 
 				            echo "<td width=300 height=20  colspan=2 style='height:15.0pt'>".str_replace(",","</br>",$cols_new[$iii])."</td>"; 
 				            echo "<td height=20 style='height:15.0pt'>".$ii."</td>";
+							// echo "<div style=\"overflow:scroll; width:100%\">";
 							$sql13="SELECT $query_val input_job_no_random_ref
 							FROM $brandix_bts.bundle_creation_data WHERE cut_number='".$ii."' and input_job_no_random_ref in ('".implode("','",$sew_job_rand)."') GROUP BY input_job_no order by input_job_no*1"; 
 							//echo $sql13."<br>";
@@ -259,6 +261,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 								$pack_qty=$sew_job_pac[$sew_job_rand[$j]];
 								$in_qty=$sew_job_in[$sew_job_rand[$j]];
 								$out_qty=$sew_job_out[$sew_job_rand[$j]];
+								//echo $sew_job_no[$j]."--".$job_qty[$sew_job_rand[$j]]."--".$in_qty."--".$out_qty."--".$pack_qty."<br>";
 								if($pack_qty=="")
 								{
 									$pack_qty=0;
@@ -292,16 +295,18 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 								{
 									$bac_col='#ff3333';
 								}
-								echo "<td height=20 style='height:15.0pt;background-color:$bac_col;color:white;'>Job# ".$sew_job_no[$j]." </br> Qty# ".$job_qty[$sew_job_rand[$j]]." </br> Cut# ".$ii." </br> Col # ".$pack_method[$iii]."</td>";
+								echo "<td height=20 style='height:15.0pt;background-color:$bac_col;color:white;'>Job# ".$sew_job_no[$j]." </br> Qty# ".$job_qty[$sew_job_rand[$j]]." </br> Cut# ".$ii." </br> Col# ".$pack_method[$iii]."</td>";
 							}
 							echo "</tr>";
 							echo "</table>";
-							unset($sew_job_pac);
-							unset($sew_job_out);
-							unset($sew_job_in);
-							unset($size_array);
-							unset($sew_job_no);
 						}
+						unset($sew_job_pac);
+						unset($sew_job_out);
+						unset($sew_job_in);
+						unset($size_array);
+						unset($sew_job_rand);
+						unset($sew_job_no);
+						unset($job_qty);
 						echo "</div>";	
 					}
 				}
