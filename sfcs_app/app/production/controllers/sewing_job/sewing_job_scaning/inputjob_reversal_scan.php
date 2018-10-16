@@ -566,7 +566,7 @@ else if($concurrent_flag == 0)
 			// }
 			// else
 			// {
-				$input_ops_code = 100;
+				$input_ops_code =100;
 			// }
 		
 			//echo "PAC TID = $b_tid + $value";
@@ -592,9 +592,9 @@ else if($concurrent_flag == 0)
 				else
 				{
 					//if it was not there in ims log am checking that in ims log backup and updating the qty and reverting that into the ims log because ims_qty and ims_pro_qty not equal
-					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module'  AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
+					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]'  AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
 					$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
-					//echo '<br/>'.$searching_query_in_imslog;
+					// echo '<br/>'.$searching_query_in_imslog;
 					if($result_searching_query_in_imslog->num_rows > 0)
 					{
 						while($row = $result_searching_query_in_imslog->fetch_assoc()) 
@@ -604,18 +604,22 @@ else if($concurrent_flag == 0)
 							$act_ims_input_qty = $row['ims_qty'];
 						}
 						$act_ims_qty = $pre_ims_qty - $reversalval[$key];
-						//updating the ims_qty when it was there in ims_log
-						$update_query = "update $bai_pro3.ims_log_backup set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
-						$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if($ims_pro_qty_updating)
+						//updating the ims_qty when it was there in 
+						if($reversalval[$key] > 0)
 						{
-							$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
-							mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
-							mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
-							mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$update_query = "update $bai_pro3.ims_log_backup set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
+							$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if($ims_pro_qty_updating)
+							{
+								$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
+								mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+								mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
+								mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
 						}
+						
 					}
 					
 				}
@@ -736,6 +740,7 @@ else if($concurrent_flag == 0)
 	// die();
 	$url = '?r='.$_GET['r'];
 	echo "<script>window.location = '".$url."'</script>";
+	// die();
  }
 
 ?>
