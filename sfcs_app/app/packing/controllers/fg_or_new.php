@@ -501,6 +501,7 @@ if(isset($_POST['submit']))
 		echo "<input type=\"hidden\" name=\"color\" value=\"".$color."\">";
 		
 		echo "<tr><th>Garment Category: </th><td><div class='row'><div class='col-md-4'><select name=\"gtype\" id=\"gtype\" class='form-control'>";
+		echo "<option value=''>Please Select</option>";
 		echo "<option value=\"Good Garments\">Good Garments</option>";
 		echo "<option value=\"Without Label\">Without Label</option>";
 		echo "<option value=\"Without Heatseal\">Without Heatseal</option>";
@@ -511,7 +512,8 @@ if(isset($_POST['submit']))
 		echo "</select></div></div></td></tr>";
 		
 		echo "<tr><th>Cut No</th><td><div class='row'><div class='col-md-4'><select name=\"doc_ref\" id=\"doc_ref\"  class='form-control'>";
-		for($i2=0;$i2<sizeof($doc_no_ref);$i2++)
+		echo "<option value=''>Please Select</option>";
+       for($i2=0;$i2<sizeof($doc_no_ref);$i2++)
 		{
 			echo "<option value=\"".$doc_no_ref[$i2]."\">".$acutno_ref[$i2]."</option>";
 		}
@@ -519,7 +521,7 @@ if(isset($_POST['submit']))
 		echo "<tr><th>Carton No: </th><td><div class='row'><div class='col-md-4'><input type=\"text\" value=\"0\" name=\"sourceid\" id=\"sourceid\"  class='form-control integer'></div></div></td></tr>";
 		
 		echo "<tr><th>Source : *</th><td><div class='row'><div class='col-md-4'><select name=\"source\" id=\"source\"  class='form-control'>";
-		echo "<option value=\" \"></option>";
+		echo "<option value=\" \">Please Select</option>";
 		//echo "<option value=\"-1\">Production (O.R)</option>";
 		echo "<option value=\"SAM\">Sample (O.R)</option>";
 		echo "<option value=\"ENP\">Embellishment (O.R)</option>";
@@ -571,6 +573,8 @@ if(isset($_POST['update']))
 	
 	//Added DOCKET Number to store in database
 	$doc_no_id=$_POST["doc_ref"];
+	//echo $doc_no_id;
+	//die();
 	$temp="5";
 	
 	//echo $source."-".$doc_no_id;
@@ -603,6 +607,8 @@ if(isset($_POST['update']))
 			//Changed Query for capturing the docket number
 			$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,ref1,doc_no) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."\",\"".date("Y-m-d")."\",\"$gtype\",\"$doc_no_id\")";
 			//echo $sql."<br>";
+			//die();
+			
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 			
@@ -612,7 +618,8 @@ if(isset($_POST['update']))
 				
 				$sql_sup="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_reason) values(NOW(),'".$style."','".$schedule."','".$color."','".$sizes_db[$i]."','".substr($doc_no_id,1)."',".$qty[$i].",USER(),'$m3_operation_code',$iLastid,'".(is_numeric($_POST['source'])?$_POST['source']:'0')."','','".$m3_reason_code."')"; 
 			
-				//echo $sql."<br/>";
+				//echo $sql_sup."<br/>";
+				//die();
 				mysqli_query($link, $sql_sup) or exit("Sql Error6$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				//M3 Bulk Operation Reporting
 		// }
