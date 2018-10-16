@@ -94,7 +94,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 				<form name="test" action="<?php $_GET['r'] ?>" method="POST" class='form-inline'> 
 					<?php 
 						echo "VPO: <select name=\"vpo\" required onchange=\"firstbox();\" class='form-control'>"; 
-						$sql="select vpo from $bai_pro3.bai_orders_db_confirm group by vpo order by vpo";     
+						$sql="select vpo from $bai_pro3.bai_orders_db_confirm where vpo<>'' group by vpo order by vpo";     
 						$sql_result=mysqli_query($link, $sql) or exit("Error while getting vpo"); 
 						$sql_num_check=mysqli_num_rows($sql_result); 
 
@@ -194,7 +194,8 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 					}
 				}
 				
-			    echo "<h3><span class=\"label label-info\"><b>Style: ".$style." &nbsp&nbsp&nbsp&nbsp Schedules: ".substr(implode(",",$schedule),0,-1)."</b></span></h3><br/>"; 
+			    //echo "<h3><span class=\"label label-info\"><b>Style: ".$style." &nbsp&nbsp&nbsp&nbsp Schedules: ".substr(implode(",",$schedule),0,-1)."</b></span></h3><br/>"; 
+			    echo "<h3><span class=\"label label-info\"><b>Style: ".$style." &nbsp&nbsp&nbsp&nbsp Schedules: ".implode(",",array_unique($schedule))."</b></span></h3><br/>"; 
 			    // Cut Level
 				$cutnos=0;
 				$cutno="select max(acutno) as cutno FROM bai_pro3.packing_summary_input WHERE order_del_no IN(".implode(",",$schedule).")"; 
@@ -224,12 +225,12 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 						{							
 							echo "<table id=\"example1\" class='table table-bordered'>"; 
 							echo "<tr style='background-color:#1184AD;color:white;'>"; 
-							echo "<th >Style</th>"; 
-							echo "<th >VPO#</th>"; 
-							echo "<th >Schedule</th>"; 
-							echo "<th >Color Way</th>"; 
-							echo "<th colspan=2 >Color Description</th>"; 
-							echo "<th >Cut Job#</th>"; 
+							echo "<th width=\"5%\" >Style</th>"; 
+							echo "<th width=\"10%\">VPO#</th>"; 
+							echo "<th width=\"5%\">Schedule</th>"; 
+							echo "<th width=\"8%\">Color Way</th>"; 
+							echo "<th width=\"20%\" colspan=2 >Color Description</th>"; 
+							echo "<th width=\"5%\">Cut Job#</th>"; 
 							for ($i=0; $i < sizeof($size_array); $i++) 
 							{  
 								echo "<th >".$size_array[$i]."</th>"; 
