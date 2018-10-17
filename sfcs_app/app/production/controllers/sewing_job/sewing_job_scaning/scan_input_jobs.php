@@ -248,7 +248,8 @@ $(document).ready(function()
 {
 	//$('#rejec_reasons').select2();
 	// $('#reason_drop').select2();
-	var display_reporting_qty = document.getElementById('display_reporting_qty').value;
+	var display_reporting_qty = document.getElementById('display_reporting_qty').value;	
+	var operation_code_routing = document.getElementById('operation_code_routing').value;
 	$('#job_number').focus();
 	$('#loading-image').hide();
 	<?php if ($_POST['operation_name']) {?>
