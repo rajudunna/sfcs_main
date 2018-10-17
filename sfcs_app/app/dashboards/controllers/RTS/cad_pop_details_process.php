@@ -330,10 +330,10 @@ if(isset($_POST['submit']))
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 		//calling the function to insert to bundle craetion data and cps log
-		$inserted = doc_size_wise_bundle_insertion_recut($docno[$i]);
-		if($inserted){
-			//Inserted Successfully
-		}
+		// $inserted = doc_size_wise_bundle_insertion_recut($docno[$i]);
+		// if($inserted){
+		// 	//Inserted Successfully
+		// }
 	}
 	
 }

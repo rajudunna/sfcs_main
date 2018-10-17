@@ -399,13 +399,50 @@ if(isset($_POST['Update']))
 				{
 					$id_to_update = $row_result_selecting_qry['id'];
 					$ref_no = $row_result_selecting_qry['bundle_number'];
+					$mapped_color = $row_result_selecting_qry['mapped_color'];
+					$b_style = $row_result_selecting_qry['style'];
 				}
 				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej where id = $id_to_update";
 				$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$value where id = $ref_no";
+				$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$array_rej where id = $ref_no";
 				$updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$updated = updateM3TransactionsRejections($ref_no,$b_op_id,$r_qty,$r_reasons);
 				if($updated == true){
+				}
+				$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$op_code'";
+				$result_ops_seq_check = $link->query($ops_seq_check);
+				while($row = $result_ops_seq_check->fetch_assoc()) 
+				{
+					$ops_seq = $row['ops_sequence'];
+					$seq_id = $row['id'];
+					$ops_order = $row['operation_order'];
+				}
+				$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' AND operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1";
+				$result_post_ops_check = $link->query($post_ops_check);
+				if($result_post_ops_check->num_rows > 0)
+				{
+					while($row = $result_post_ops_check->fetch_assoc()) 
+					{
+						$post_ops_code = $row['operation_code'];
+					}
+				}
+				$category=['cutting','Send PF','Receive PF'];
+				$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+				//echo $checking_qry;
+				$result_checking_qry = $link->query($checking_qry);
+				while($row_cat = $result_checking_qry->fetch_assoc()) 
+				{
+					$category_act = $row_cat['category'];
+				}
+				if(in_array($category_act,$category))
+				{
+					$emb_cut_check_flag = 1;
+				}
+				if($emb_cut_check_flag)
+				{
+					$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty-$array_rej WHERE docket_number = '$doc_no_ref' AND size_id = '$key_size' AND operation_id = '$post_ops_code'";
+					$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
 				}
 			}
 		}

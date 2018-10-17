@@ -54,7 +54,7 @@ table tr
 table td
 {
 	border: 1px solid black;
-	text-align:left;
+	text-align:center;
 	vertical-align:top;
 white-space:nowrap; 
 }
@@ -63,8 +63,8 @@ table th
 {
 	border: 1px solid black;
 	text-align: center;
-    	background-color: BLUE;
-	color: WHITE;
+	/*background-color: BLUE;*/
+	color: BLACK;
 white-space:nowrap; 
 	padding-left: 5px;
 	padding-right: 5px;
@@ -133,9 +133,11 @@ if(isset($_POST['request']))
 	$cat=$_POST['cat'];
 	$size=$_POST['size'];
 	$qty=$_POST['qty'];
+	$doc_no = $_POST['doc_no'];
+	$old_size = $_POST['old_size'];
+	$ops_code = $_POST['ops_code'];
 	//$user=$_POST['user'];
 	$open_access=$_POST['open_access'];
-	
 	if(sizeof($cat)>0)
 	{
 		for($i=0;$i<sizeof($cat);$i++)
@@ -161,6 +163,21 @@ if(isset($_POST['request']))
 	//echo $sql;
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+					foreach($old_size as $key => $value)
+					{
+						$doc_no_sub = substr($doc_no[$key], 0, 1);
+						if($doc_no_sub == 'D' || $doc_no_sub == 'R')
+						{
+							$doc_no[$key] = substr($doc_no[$key], 1);
+						}
+						if($ops_code[$key] == '')
+						{
+							$ops_code[$key] = '15';
+						}
+						$insert_qry = "INSERT INTO `recut_v2_child` (`parent_id`,`doc_no`,`size`,`qty`,`operation_id`) VALUE ($iLastid,'$doc_no[$key]','$old_size[$key]',$qty[$key],$ops_code[$key])";
+						// echo $insert_qry;
+						$sql_result=mysqli_query($link, $insert_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					}
 				}
 				
 				if($temp[1]=="Body" or $temp[1]=="Front")
@@ -169,12 +186,13 @@ if(isset($_POST['request']))
 					{
 						$qms_size=array();$qms_sizes=array();
 						$qms_qty=array();
-						$sql="select qms_size,SUM(IF((qms_tran_type = 2),qms_qty,0)) AS \"replaced\",  SUM(IF((qms_tran_type = 3),qms_qty,0)) AS \"rejected\",  SUM(IF((qms_tran_type = 6),qms_qty,0)) AS \"recut_raised\" from $bai_pro3.bai_qms_db where qms_style=\"$style\" and qms_schedule=\"$schedule\" and qms_color=\"$color\" and SUBSTRING_INDEX(remarks,\"-\",1)=\"$module\" group by qms_size";
+						$qms_doc = array();
+						$sql="select qms_size,SUM(IF((qms_tran_type = 2),qms_qty,0)) AS \"replaced\",  SUM(IF((qms_tran_type = 3),qms_qty,0)) AS \"rejected\",  SUM(IF((qms_tran_type = 6),qms_qty,0)) AS \"recut_raised\",doc_no,operation_id from $bai_pro3.bai_qms_db where qms_style=\"$style\" and qms_schedule=\"$schedule\" and qms_color=\"$color\" and SUBSTRING_INDEX(remarks,\"-\",1)=\"$module\" group by doc_no,qms_size";
 						//echo $sql;
 						//echo "Hello";
-						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row=mysqli_fetch_array($sql_result))
-						{
+							$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row=mysqli_fetch_array($sql_result))
+							{
 							$replaced=$sql_row['replaced'];
 							//echo "Replace=".$replaced;
 							$rejected=$sql_row['rejected'];
@@ -184,6 +202,7 @@ if(isset($_POST['request']))
 							if($bal>0)
 							{
 								$qms_size[]=$sql_row['qms_size'];
+								$qms_doc[]=$sql_row['doc_no'];
 								//echo "<br>".$sql_row['qms_size'];
 								$qms_qty[]=$bal;
 							}
@@ -228,6 +247,7 @@ if(isset($_POST['request']))
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"$url\"; }</script>";
 	// header("Location:$url");
 	// exit();
+	// die();
 }
 
 
@@ -312,12 +332,15 @@ if(isset($_POST['search']))
 		$y=$y+1;
 	}
 	
-	
+	// echo $open_access.'-';
+	// echo $chk.'</br>';
 	if($open_access==$chk)  // if condition true specila else default.
 	{
 		// Special block
 		$qms_size=array();$qms_sizes=array();
 		$qms_qty=array();
+		$qms_doc=array();
+		$qms_ops=array();
 		
 		$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 		//echo $sql;
@@ -439,7 +462,7 @@ if(isset($_POST['search']))
 		
 		for($i=0;$i<sizeof($qms_size);$i++)
 		{
-			$sql="select qms_size,SUM(IF((qms_tran_type = 2),qms_qty,0)) AS \"replaced\",  SUM(IF((qms_tran_type = 3),qms_qty,0)) AS \"rejected\",  SUM(IF((qms_tran_type = 6),qms_qty,0)) AS \"recut_raised\" from $bai_pro3.bai_qms_db where qms_style=\"$style\" and qms_schedule=\"$schedule\" and qms_color=\"$color\" and SUBSTRING_INDEX(remarks,\"-\",1)=\"$module\" and qms_size=\"".$qms_size[$i]."\" group by qms_size";
+			$sql="select qms_size,SUM(IF((qms_tran_type = 2),qms_qty,0)) AS \"replaced\",  SUM(IF((qms_tran_type = 3),qms_qty,0)) AS \"rejected\",  SUM(IF((qms_tran_type = 6),qms_qty,0)) AS \"recut_raised\",doc_no,operation_id from $bai_pro3.bai_qms_db where qms_style=\"$style\" and qms_schedule=\"$schedule\" and qms_color=\"$color\" and SUBSTRING_INDEX(remarks,\"-\",1)=\"$module\" and qms_size=\"".$qms_size[$i]."\" group by doc_no,qms_size";
 //echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -451,6 +474,8 @@ if(isset($_POST['search']))
 				if($bal>0)
 				{
 					$qms_qty[$i]=$bal;
+					$qms_doc[$i] = $sql_row['doc_no'];
+					$qms_ops[$i] = $sql_row['operation_id'];
 					//echo "1bal =".$bal;
 				}
 			}
@@ -463,7 +488,9 @@ if(isset($_POST['search']))
 
 		$qms_size=array();$qms_sizes=array();
 		$qms_qty=array();
-		$sql="select qms_size,SUM(IF((qms_tran_type = 2),qms_qty,0)) AS \"replaced\",  SUM(IF((qms_tran_type = 3),qms_qty,0)) AS \"rejected\",  SUM(IF((qms_tran_type = 6),qms_qty,0)) AS \"recut_raised\" from $bai_pro3.bai_qms_db where qms_style=\"$style\" and qms_schedule=\"$schedule\" and qms_color=\"$color\" and SUBSTRING_INDEX(remarks,\"-\",1)=\"$module\" group by qms_size";
+		$qms_doc = array();
+		$qms_ops = array();
+		$sql="select qms_size,SUM(IF((qms_tran_type = 2),qms_qty,0)) AS \"replaced\",  SUM(IF((qms_tran_type = 3),qms_qty,0)) AS \"rejected\",  SUM(IF((qms_tran_type = 6),qms_qty,0)) AS \"recut_raised\",doc_no,operation_id from $bai_pro3.bai_qms_db where qms_style=\"$style\" and qms_schedule=\"$schedule\" and qms_color=\"$color\" and SUBSTRING_INDEX(remarks,\"-\",1)=\"$module\" group by doc_no,qms_size";
 		//echo $sql;
 		//echo "Hello";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -481,6 +508,8 @@ if(isset($_POST['search']))
 				$qms_sizes[]=ims_sizes($order_tid,$schedule,$style,$color,$sql_row['qms_size'],$link);
 				//echo "<br>".$sql_row['qms_size'];
 				$qms_qty[]=$bal;
+				$qms_doc[] = $sql_row['doc_no'];
+				$qms_ops[] = $sql_row['operation_id'];
 			}
 		}
 		
@@ -610,10 +639,11 @@ if(isset($_POST['search']))
 	// var_dump($qms_qty);
 	if(sizeof($qms_size)>0)
 	{
-		$table="<table class='table table-bordered table-striped'>";
+		$table="<table class='table table-bordered'><tr><th>Docket</th><th>Size</th><th>Recut Quantity</th></tr>";
 		for($i=0;$i<sizeof($qms_size);$i++)
 		{
-			$table.= "<tr><th><input type=\"hidden\" name=\"size[]\" value=\"p_".$qms_size[$i]."\">".$qms_sizes[$i]."</th>";
+			$table.= "<tr><input type='hidden' name='doc_no[]' value=".$qms_doc[$i].">
+			<input type='hidden' name='ops_code[]' value=".$qms_ops[$i]."><input type='hidden' name='old_size[]' value=".$qms_size[$i]."><td>".$qms_doc[$i]."</td><td><input type=\"hidden\" name=\"size[]\" value=\"p_".$qms_size[$i]."\">".$qms_sizes[$i]."</td>";
 			
 			if($open_access==$chk || $module=="TOP" )
 			{
@@ -623,7 +653,7 @@ if(isset($_POST['search']))
 			{
 				$validate_1="onchange=\"if(check1(this.value,".$qms_qty[$i].")==1010) { this.value=".$qms_qty[$i]."; }\"";
 			}
-			$table.= "<td><div class='row'><div class='col-md-3'><input type=\"text\" class='form-control' name=\"qty[]\" id='qty_$i' value=\"".$qms_qty[$i]."\" size=\"5\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" autocomplete=\"off\" onkeypress=\"return isNum(event)\" $validate_1></div></td></tr>";
+			$table.= "<td style 'text-align:center'><div class='row'><div class='col-md-3'><input type=\"text\" class='form-control' name=\"qty[]\" id='qty_$i' value=\"".$qms_qty[$i]."\" size=\"5\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" autocomplete=\"off\" onkeypress=\"return isNum(event)\" $validate_1></div></td></tr>";
 			$x1 = $x1+1;
 		}
 		$table.="</table><div id=\"button1\">
@@ -690,7 +720,7 @@ th{
 	text-align:center;
 }
 td{
-	text-align:left;
+	text-align:center;
 }
 </style>
 <script>
