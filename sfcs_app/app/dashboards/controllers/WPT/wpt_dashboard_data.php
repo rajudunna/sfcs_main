@@ -5,14 +5,14 @@ $url = '/sfcs_app/app/dashboards/controllers/rms/fabric_requisition.php';
 $url = base64_encode($url);
 $section = $_GET['section'];
 $blocks_per_sec = $_GET['blocks'];
-
+/*
 foreach($sizes_array as $size){
     $sum.= $size." + ";
     $asum.= "a_".$size." + ";
 }
 $sum_str = rtrim($sum,' + ');
 $asum_str = rtrim($asum,' + ');
-
+*/
 $data = '';
 $final_wip = array();
 $line_breaker = 0;
@@ -68,19 +68,14 @@ if($section > 0){
             }
 
             /*  BLOCK - 2  */
-            $cut_done_wip = getCutDoneJobsData($section,$module,$blocks_per_sec);
-            /*
-            $jobs_wip.="<td class='wip-td'>
-                                <span class='pending-wip'>WIP : <span id='pending-wip-$module'>0</span></span>
-                            </td>";
-            */
+            $data.="<td rowspan=2 class='wip-td' id='cut-wip-td-$module'>";
+            $data.="    <span class='cut-wip blue'><b>CWIP : <span id='cut-wip-$module'></span></b></span>";
+            $data.="</td>";	
             
             /*  BLOCK - 3 */
-            $docs_wip = getCutJobsData($section,$module,$blocks_per_sec);
-            
+            $docs_wip = getCutDoneJobsData($section,$module,$blocks_per_sec,$ims_wip);
             $data.="<td rowspan=1 class='cut-td'>";
-            $data.= $cut_done_wip;
-            //$data.= $docs_wip;
+            $data.= $docs_wip;
             $data.="&nbsp;</td>";
 
             $data.="</tr>";
@@ -102,37 +97,40 @@ echo json_encode($section_data);
 
 
 <?php
-function  getCutDoneJobsData($section,$module,$blocks){
-    $cutting_op_code = 15;
+function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     global $line_breaker;
     global $sum_str; 
     global $link;
     global $url;
     global $bai_pro3,$brandix_bts;
-    $status_color = 'blue';
-    $docs_data = '';
-    $dockets_query = "";
 
+    $cutting_op_code = 15;
+    $temp_line_breaker = 0;
+    $docs_data = '';
+    $break_me_at = 6;
+    $cut_wip = 0; 
+    //adjusting line breaker
+    if($ims_wip == 0){
+        $break_me_at = 11;
+    }
+
+    $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
+            acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
+            FROM bai_pro3.plan_dashboard_input pdi
+            LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
+            WHERE input_module = $module 
+            AND a_plies = p_plies AND act_cut_status='DONE' 
+            group by doc_no order by input_priority";
     $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
-            WHERE input_module = $module AND a_plies >= p_plies
-            GROUP BY pdsi.doc_no ORDER BY input_priority"; 
-    /*
-    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
-            pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,pds.color_code,
-            pds.order_del_no as schedule
-            from $bai_pro3.plan_dash_doc_summ pds
-            LEFT JOIN $bai_pro3.plan_dashboard_input pdi ON pds.module = pdi.input_module
-            LEFT JOIN $bai_pro3.pac_stat_log_input_job psi ON pds.doc_no = psi.doc_no
-            where module = $module and  act_cut_status = 'DONE' 
-            and pds.a_plies >= pds.p_plies  
-            group by doc_no order by input_priority";
-    */        
+            WHERE input_module = $module 
+            AND ( (a_plies = p_plies and act_cut_status='') OR (a_plies < p_plies AND act_cut_status='DONE') ) 
+            group by doc_no order by input_priority";        
     $partial_dockets_query  = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
-            pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,SUM(($sum_str)) as qty,pds.color_code,
-            pds.order_del_no as schedule,fabric_status
+            pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,pds.color_code,
+            pds.order_del_no as schedule,fabric_status,ft_status
             from $bai_pro3.plan_dash_doc_summ pds
             LEFT JOIN $bai_pro3.pac_stat_log_input_job psi ON pds.doc_no = psi.doc_no
             where module = $module  
@@ -140,19 +138,28 @@ function  getCutDoneJobsData($section,$module,$blocks){
             group by doc_no order by priority";
     $nfull_dockets_query = "SELECT  GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,order_style_no as style,
             order_col_des as color,pds.doc_no as doc_no,acutno as acutno,
-            SUM($sum_str) as qty,color_code,order_del_no as schedule,fabric_status 
+            color_code,order_del_no as schedule,fabric_status,ft_status 
             from $bai_pro3.plan_dash_doc_summ pds
             LEFT JOIN $bai_pro3.pac_stat_log_input_job psi ON pds.doc_no = psi.doc_no
             where module = $module and  act_cut_status = '' 
             group by doc_no order by priority";  
 
+    $dockets_cqty_result = mysqli_query($link,$dockets_cqty_query);
     $dockets_qty_job_qty_result = mysqli_query($link,$dockets_qty_job_qty_query);
     $partial_dockets_result = mysqli_query($link,$partial_dockets_query) or exit($data.='Problem in c-partial docs');
     $nfull_dockets_result   = mysqli_query($link,$nfull_dockets_query)   or exit($data.='Problem in empty dockets');
 
     $no_fabric_dockets_result_array = array();
-    $no_fabric_dockets_result_array = [$dockets_qty_job_qty_result,$partial_dockets_result,$nfull_dockets_result];
-    foreach($no_fabric_dockets_result_array as $order=>$dockets_result){               
+    $no_fabric_dockets_result_array = [$dockets_cqty_result,$dockets_qty_job_qty_result,
+                                       $partial_dockets_result,$nfull_dockets_result];
+    foreach($no_fabric_dockets_result_array as $order=>$dockets_result){  
+        if($cut_wip == 0 && $ims_wip == 0)
+            $break_me_at = 13;
+        else if($cut_wip == 0)   
+            $break_me_at = 10; 
+        else 
+            $break_me_at = 6;       
+            
         while($row = mysqli_fetch_assoc($dockets_result)){     
             $style   = $row['style']; 
             $schedule= $row['schedule'];
@@ -195,7 +202,13 @@ function  getCutDoneJobsData($section,$module,$blocks){
             $cut_rep_qty = $crrow['rep_qty'];
             $plan_qty = $crrow['plan_qty'];
             $status_color = '';
+            
             if($order == 0){
+                $cut_wip += $rem_qty;
+                continue;
+            }
+            
+            if($order == 1 || $order == 3){
                 if($cut_status == '') $cut_status = 0; else $cut_status = 5;
 
                 $fabric_status_query="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' 
@@ -232,6 +245,7 @@ function  getCutDoneJobsData($section,$module,$blocks){
                 }else{
                     $status_color = 'yash';
                 }
+
                 if($status_color == 'yellow' || $status_color == 'blue'){
                     if( ($plan_qty > $cut_rep_qty ) && $cut_rep_qty != 0){
                         $status_color='orange';
@@ -239,64 +253,20 @@ function  getCutDoneJobsData($section,$module,$blocks){
                 }
 
             }else if($order == 2){
-                $status_color = '';
-                $tid_query   = "SELECT GROUP_CONCAT(distinct order_tid) as tid from $bai_pro3.plandoc_stat_log 
-                                where doc_no IN ('$doc_no')";
-                $tids_result = mysqli_query($link,$tid_query) or exit($data.='Problem in Fabric Status'); 
-                while($row = mysqli_fetch_array($tids_result)){
-                    $tids = $row['tid'];
-                }
-                $tids == '' ? $tids = '""' : $tids = $tids; 
-                $ft_status_query="SELECT min(ft_status) as f_status 
-                                from $bai_pro3.bai_orders_db_confirm where order_tid in ('$tids')";
-                $ft_status_result = mysqli_query($link,$ft_status_query);
-                $row = mysqli_fetch_array($ft_status_result);
-                $ft_status = $row['f_status'];
-                $fab_status = '';
-                $fab_issue_query="SELECT * from $bai_pro3.plandoc_stat_log where fabric_status!=5 
-                                and doc_no IN ($doc_no) limit 1";              
-                $fab_issue_result = mysqli_query($link,$fab_issue_query);
-                mysqli_num_rows($fab_issue_result)>0 ? $fab_status = 0 : $fab_status = 5 ;
-
-                $fab_issue2_query="SELECT * from $bai_pro3.plan_dashboard where fabric_status='1' 
-                                and doc_no IN ($doc_no) limit 1";
-                $fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit($data.='Issue in plan dashboard');
-                mysqli_num_rows($fab_isuue2_result)>0 ? $fab_status = 1 : NULL;
-
-                $fab_request_query="SELECT * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no) limit 1";
-                $fab_request_result=mysqli_query($link, $fab_request_query) or exit($data.='Issue in fabric priorities');;
-                $row_count = mysqli_num_rows($fab_request_result);
-                // $fab_status == 5 ? $status_color = 'yellow' : $fab_status == 1 ? $status_color = 'pink' : $row_count > 0 ?$status_color = 'green' : $fabric_status < 5 ? $flag = 1 : $status_color = 'yash'; 
-                if($fab_status == 5)
-                    $status_color = 'yellow';
-                elseif($fab_status == 1)    
-                    $status_color = 'pink';
-                elseif($row_count > 0)
-                    $status_color = 'green';
-                elseif($fabric_status < 5){
-                    switch($ft_status){
-                        case "1":{ $status_color="lgreen"; break; }
-                        case "0":{ $status_color="red";    break; }
-                        case "2":{ $status_color="red";    break; }
-                        case "3":{ $status_color="red";    break; }
-                        case "4":{ $status_color="red";    break; }
-                        default :{ $status_color="yash";   break; }
-                    }
-                }else
-                    $status_color="yash";
-            }else if($order == 1){
                 $status_color = 'orange';
             }
-        
+            
             $line_breaker++;
+            $temp_line_breaker++; //remove for 4,8 divisions
             if(($line_breaker-1) == $blocks)
                 goto enough;
             if($blocks <= 8){
-                if($line_breaker == 5){
+                if($line_breaker == $break_me_at){
                     $docs_data.='&nbsp;<br/>';
                 }
             }else if($blocks > 8){
-                if($line_breaker == 9){
+                if($temp_line_breaker == $break_me_at){
+                    $temp_line_breaker = 1; //remove for 4,8 divisions
                     $docs_data.='&nbsp;<br/>';
                 }  
             }  
@@ -309,22 +279,9 @@ function  getCutDoneJobsData($section,$module,$blocks){
                                 <v><c>Docket Qty : </c>$doc_qty</v>
                                 <v><c>Sewing  Job Qty</c> : $job_qty</v>
                                 <v><c>Cut Remaining Qty </c>: $rem_qty</v>
-                                <p>";
-            // if($order == 0){                    
-            //     $docs_data.="<span class='block'>
-            //                     <span class='cut-block $status_color'>
-            //                         <span class='mytooltip'>
-            //                             <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
-            //                             data-html='true'>
-            //                                 &nbsp;&nbsp;&nbsp;
-            //                             </a>
-            //                         </span>
-            //                     </span>
-            //                 </span>";
-            // }else{
-                $href= "$url&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=$doc_no";
-
-                $docs_data.="<span class='block'>
+                            </p>";
+            $href= "$url&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=$doc_no";
+            $docs_data.="<span class='block'>
                             <span class='cut-block $status_color'>
                                 <span class='mytooltip'>
                                     <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
@@ -334,200 +291,14 @@ function  getCutDoneJobsData($section,$module,$blocks){
                                     </a>
                                 </span>
                             </span>
-                            </span>";  
-            //}   //uncomment this line if enabled above if()
+                        </span>";       
         }  
+        if($cut_wip == 0 || $cut_wip == '')
+            $docs_data.= "<script>$('#cut-wip-td-$module').remove()</script>"; 
+        else
+            $docs_data.= "<script>$('#cut-wip-$module').html('$cut_wip')</script>";      
     }   
     enough : NULL; 
     return $docs_data; 
-}
-
-function getCutJobsData($section,$module,$blocks){
-    global $line_breaker;
-    global $sum_str; 
-    global $link;
-    global $url;
-    global $bai_pro3,$brandix_bts;
-    $docs_data = ''; 
-    $total_cut_wip = 0;
-    $next_row_break = 0;
-    $rblocks = $blocks;
-    // Total WIP
-    /*
-    $total_cut_wip_query = "SELECT (SUM($sum_str)) as qty from $bai_pro3.plan_dash_doc_summ 
-                             where module = '$module' and  act_cut_status = '' ";
-                             
-    $total_cut_wip_result = mysqli_query($link,$total_cut_wip_query) or exit($data.='Problem in cut wip');
-    //echo $total_wip_query;
-    while($row = mysqli_fetch_array($total_cut_wip_result)){
-        $row['qty'] != 0 ? $total_cut_wip = $row['qty'] : $total_cut_wip = 0;
-        $docs_data.="<td class='wip-td'>
-            <span class='cut-wip'>WIP : <span id='cut-wip-$module'></span></span>
-        </td>";
-    }
-    */
-   
-    //getting all dockets with the partial cut reported quantities
-    $partial_dockets_query  = "SELECT order_style_no as style,GROUP_CONCAT(order_col_des) as colors,
-                GROUP_CONCAT(doc_no) as doc_no,GROUP_CONCAT(acutno) as acutno,
-                SUM(($sum_str)) as qty,GROUP_CONCAT(color_code) as color_code,order_del_no
-                from $bai_pro3.plan_dash_doc_summ 
-                where module = $module and  act_cut_status = 'DONE' 
-                and a_plies != p_plies  
-                group by doc_no order by acutno";
-    // $partial_cdockets_query  = "SELECT order_style_no as style,GROUP_CONCAT(order_col_des) as colors,
-    //             GROUP_CONCAT(doc_no) as doc_no,GROUP_CONCAT(acutno) as acutno,
-    //             SUM(($sum_str)) as qty,GROUP_CONCAT(color_code) as color_code,order_del_no
-    //             from $bai_pro3.plan_dash_doc_summ 
-    //             where module = $module and  act_cut_status = 'DONE' 
-    //             and a_plies != p_plies and  clubbing = '0'
-    //             group by doc_no order by acutno";              
-                            
-    //getting all the dockets with fabric issue status no but planned
-    // $nfull_dockets_queryc = "SELECT order_style_no as style,GROUP_CONCAT(order_col_des) as colors,
-    //             GROUP_CONCAT(doc_no) as doc_no,GROUP_CONCAT(acutno) as acutno,
-    //             SUM($sum_str) as qty,GROUP_CONCAT(color_code) as color_code,order_del_no,fabric_status_new 
-    //             from $bai_pro3.plan_dash_doc_summ 
-    //             where module = $module and  act_cut_status = '' 
-    //             and clubbing <> '0'
-    //             group by doc_no order by priority";
-            
-    $nfull_dockets_query = "SELECT order_style_no as style,GROUP_CONCAT(order_col_des) as colors,
-                GROUP_CONCAT(doc_no) as doc_no,GROUP_CONCAT(acutno) as acutno,
-                SUM($sum_str) as qty,GROUP_CONCAT(color_code) as color_code,order_del_no,fabric_status_new 
-                from $bai_pro3.plan_dash_doc_summ 
-                where module = $module and  act_cut_status = '' 
-                group by doc_no order by clubbing,priority";
-
-    $partial_dockets_result = mysqli_query($link,$partial_dockets_query) or exit($data.='Problem in c-partial docs');
-    //$partial_cdockets_result= mysqli_query($link,$partial_cdockets_query)or exit($data.='Problem in partial docs');          
-    //$nfull_dockets_resultc  = mysqli_query($link,$nfull_dockets_queryc)  or exit($data.='Problem in empty club dockets');
-    $nfull_dockets_result   = mysqli_query($link,$nfull_dockets_query)   or exit($data.='Problem in empty dockets');
-
-    $no_fabric_dockets_result_array = array();
-    $no_fabric_dockets_result_array = [$partial_dockets_result,$partial_cdockets_result,$nfull_dockets_resultc,$nfull_dockets_result];
-    foreach($no_fabric_dockets_result_array as $order=>$dockets_result){
-        while($row = mysqli_fetch_array($dockets_result)){
-            $doc_no     = $row['doc_no'];
-            $doc_qty    = $row['qty'];
-            $cut_no     = $row['acutno'];
-            $color_code = $row['color_code'];
-            $schedule   = $row['order_del_no'];
-            $style      = $row['style'];
-            $color      = str_replace(',','<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',$row['colors']);
-            $cut_nos    = explode(',',$cut_no);
-            $color_codes= explode(',',$color_code);
-
-            $fabric_status = $row['fabric_status_new'];
-            $cut_str = '';
-            $status_color = '';
-            if(sizeof($cut_nos) > 1){
-                foreach($cut_nos as $key=>$value)
-                    $cut_str.= chr($color_codes[$key]).'0'.$value.',';
-            }else{    
-                $cut_str = chr($color_code).''.$cut_no;
-            }
-            $cut_str = rtrim($cut_str,',');
-
-            //Calculating the rejected qty of the partial dockets and adding it to total cut wip 
-            if($order < 2){
-                $partial_doc_qty_query = "SELECT SUM(original_qty - (recevied_qty + rejected_qty) ) as qty 
-                                from $brandix_bts.bundle_creation_data
-                                where docket_number IN ($doc_no) and operation_id = '15' ";
-                $partial_doc_qty_result = mysqli_query($link,$partial_doc_qty_query) or 
-                                    exit($data.='Problem in partial qty');
-                $row = mysqli_fetch_array($partial_doc_qty_result);
-                $doc_qty = $row['qty'];  //--temporary comment
-                if($doc_qty == '')
-                    $doc_qty = 0;
-                $total_cut_wip = $total_cut_wip + $doc_qty;
-            }
-          
-            //We need to check the fabric status of these dockets and change colors accordingly
-            if($order > 1){
-                $tid_query   = "SELECT GROUP_CONCAT(distinct order_tid) as tid from $bai_pro3.plandoc_stat_log 
-                                where doc_no IN ('$doc_no')";
-                $tids_result = mysqli_query($link,$tid_query) or exit($data.='Problem in Fabric Status'); 
-                while($row = mysqli_fetch_array($tids_result)){
-                    $tids = $row['tid'];
-                }
-                $tids == '' ? $tids = '""' : $tids = $tids; 
-                $ft_status_query="SELECT min(ft_status) as f_status 
-                                  from $bai_pro3.bai_orders_db_confirm where order_tid in ('$tids')";
-                $ft_status_result = mysqli_query($link,$ft_status_query);
-                $row = mysqli_fetch_array($ft_status_result);
-                $ft_status = $row['f_status'];
-                $fab_status = '';
-                $fab_issue_query="SELECT * from $bai_pro3.plandoc_stat_log where fabric_status!=5 
-                                and doc_no IN ($doc_no) limit 1";              
-                $fab_issue_result = mysqli_query($link,$fab_issue_query);
-                mysqli_num_rows($fab_issue_result)>0 ? $fab_status = 0 : $fab_status = 5 ;
-
-                $fab_issue2_query="SELECT * from $bai_pro3.plan_dashboard where fabric_status='1' 
-                                and doc_no IN ($doc_no) limit 1";
-                $fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit($data.='Issue in plan dashboard');
-                mysqli_num_rows($fab_isuue2_result)>0 ? $fab_status = 1 : NULL;
-
-                $fab_request_query="SELECT * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no) limit 1";
-                $fab_request_result=mysqli_query($link, $fab_request_query) or exit($data.='Issue in fabric priorities');;
-                $row_count = mysqli_num_rows($fab_request_result);
-                // $fab_status == 5 ? $status_color = 'yellow' : $fab_status == 1 ? $status_color = 'pink' : $row_count > 0 ?$status_color = 'green' : $fabric_status < 5 ? $flag = 1 : $status_color = 'yash'; 
-                if($fab_status == 5)
-                    $status_color = 'yellow';
-                elseif($fab_status == 1)    
-                    $status_color = 'pink';
-                elseif($row_count > 0)
-                    $status_color = 'green';
-                elseif($fabric_status < 5){
-                    switch($ft_status){
-                        case "1":{ $status_color="lgreen"; break; }
-                        case "0":{ $status_color="red";    break; }
-                        case "2":{ $status_color="red";    break; }
-                        case "3":{ $status_color="red";    break; }
-                        case "4":{ $status_color="red";    break; }
-                        default :{ $status_color="yash";   break; }
-                    }
-                }else
-                    $status_color="yash";
-            }else{
-                $status_color = 'orange';
-            }
-            
-            $line_breaker++;
-            if($line_breaker > $blocks)
-                goto enough;
-            if($blocks <= 8){
-                if($line_breaker == 5){
-                    $docs_data.='&nbsp;<br/>';
-                }
-            }
-            else if($blocks > 8){
-                if($line_breaker == 9){
-                    $docs_data.='&nbsp;<br/>';
-                }   
-            } 
-            $tool_tip_text = "<p style=\"width : 500px\">
-                                <v><c>Style</c> : $style</v><v><c>Schedule No</c> : $schedule</v>
-                                <v><c>Colors</c> : $color</v><v><c>Doc no</c> : $doc_no</v>
-                                <v><c>Cut no</c> : $cut_str</v><v><c>Qty </c>: $doc_qty</v>
-                              <p>";
-            $href= "$url&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=$doc_no";
-
-            $docs_data.="<span class='block'>
-                        <span class='cut-block $status_color'>
-                            <span class='mytooltip'>
-                                <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
-                                 onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\"
-                                 data-html='true'>
-                                    &nbsp;&nbsp;&nbsp;
-                                </a>
-                            </span>
-                        </span>
-                        </span>";           
-        }
-        $docs_data.= "<script>$('#cut-wip-$module').html('$total_cut_wip')</script>";
-    }
-    enough : NULL;
-    return $docs_data;
 }
 
