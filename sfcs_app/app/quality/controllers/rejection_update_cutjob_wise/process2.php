@@ -128,7 +128,7 @@ if(isset($_POST['Update']))
 	$ilast_codes=array();
 	
 	//Added by KiranG 20150418
-	$usr_msg="The following entries are failed to update due to M3 system validations:<br/><table><tr><th>Module</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
+	$usr_msg="<br/><br/><table><tr><th>Module</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
 	
 	for($x=0;$x<sizeof($qty);$x++)
 	{
@@ -169,7 +169,7 @@ if(isset($_POST['Update']))
 							//echo $sql_sup."-".$m3_reason_code."-".$m3_operation_code."<br>";
 							$m3_op_qty_chk_ary[$m3_operation_code]=$m3_op_qty_chk_ary[$m3_operation_code]+$ref[$x][$j];
 							
-							if($check_proceed==0 and rejection_validation_m3($m3_operation_code,$schedule[$x],$color[$x],$size[$x],$ref[$x][$j],0,$username)=="FALSE")
+							if($check_proceed==0)
 							{
 								$check_proceed=1;
 							}
@@ -237,15 +237,7 @@ if(isset($_POST['Update']))
 									$m3_reason_code=$sql_row_sup['m3_reason_code'];
 									$m3_operation_code=$sql_row_sup['m3_operation_code'];
 								}
-								//echo "2=".$m3_reason_code."-".$m3_operation_code."<br>";
-								$sql_sup="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_reason) values(NOW(),'".$style[$x]."','".$schedule[$x]."','".$color[$x]."','".$size[$x]."','".substr($job[$x],1)."',".$ref[$x][$j].",USER(),'$m3_operation_code',$iLastid,'".(is_numeric($module[$x])?$module[$x]:'0')."','".$team[$x]."','".$m3_reason_code."')"; 
-								$sql_m3_insert[]=$sql_sup;
-								//echo $sql."<br/>";
-								//mysql_query($sql_sup,$link) or exit("Sql Error3 $sql_sup".mysql_error());
 								
-							//	$ilast_codes[]=mysql_insert_id($link);
-							//M3 Bulk Operation Reporting
-							
 							if($j==33)
 							{
 								$qms_tran_type="5";
@@ -266,15 +258,8 @@ if(isset($_POST['Update']))
 							mysqli_query($link, $sql_m3_insert[$v]) or exit("Sql Error3".$sql_m3_insert[$v] .mysqli_error($GLOBALS["___mysqli_ston"]));
 							$ilast_codes[]=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 						}
-						//M3 Bulk upload tool
-						$sql_sup="update $m3_bulk_ops_rep_db.m3_sfcs_tran_log set sfcs_tid_ref=$iLastid where sfcs_tid in (".implode(",",$ilast_codes).")"; 
-						//echo $sql."<br/>";
-						mysqli_query($link, $sql_sup) or exit("Sql Error5 $sql_sup".mysqli_error($GLOBALS["___mysqli_ston"]));
-						//M3 Bulk upload tool
-					}
-					unset($ilast_codes);
-					// End To avoid the sfcs_tid_ref=0 issue. 
 					
+					}					
 					for($j=0;$j<sizeof($ref[$x]);$j++)
 					{
 						if($ref[$x][$j]>0)
@@ -431,23 +416,6 @@ if(isset($_POST['update1']))
 			//echo "<br/> query= ".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error11 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			//FOR M3 Upload
-			if($temp[4]=="ENP")
-			{
-				
-			}
-			else
-			{
-				$sql="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_style='".$temp[0]."' and sfcs_schedule='".$temp[1]."' and sfcs_color='".$temp[2]."' and sfcs_job_no='REPLACE' and sfcs_tid_ref=".$temp[6];
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error12 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 	
-				
-				if(mysqli_num_rows($sql_result)==0)
-				{
-					$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_job_no,sfcs_tid_ref,sfcs_mod_no,sfcs_shift) values(NOW(),'".$temp[0]."','".$temp[1]."','".$temp[2]."','".$temp[3]."',0,".$replace[$i].",USER(),'SIN','REPLACE',".$temp[6].",'".$temp[4]."','".$temp[5]."')";
-					mysqli_query($link, $sql) or exit("Sql Error13 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				}
-					
-			}
 		}
 	}
 	echo "<h2>Successfully Updated.</h2>";

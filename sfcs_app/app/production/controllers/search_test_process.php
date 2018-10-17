@@ -132,6 +132,7 @@ if(isset($_POST['request']))
 	$order_tid=$_POST['order_tid'];
 	$cat=$_POST['cat'];
 	$size=$_POST['size'];
+	$sizes_titles=$_POST['sizes_titles'];
 	$qty=$_POST['qty'];
 	$doc_no = $_POST['doc_no'];
 	$old_size = $_POST['old_size'];
@@ -147,8 +148,7 @@ if(isset($_POST['request']))
 			$temp=array();
 			$temp=explode("-",$cat[$i]);
 			
-			$sql="select doc_no from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and cat_ref=\"".$temp[0]."\"";
-			//echo $sql;
+			$sql="select doc_no from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and cat_ref=\"".$temp[0]."\"";		
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count=mysqli_num_rows($sql_result);
 			// echo $count."<br/>";
@@ -216,7 +216,7 @@ if(isset($_POST['request']))
 						{
 							if($qty[$j]>0)
 							{
-								$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks,ref1) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("p_","",$size[$j])."\",".$qty[$j].",6,\"$module-$iLastid\",\"$username\")";
+								$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks,ref1) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".$sizes_titles[$i]."\",".$qty[$j].",6,\"$module-$iLastid\",\"$username\")";
 					//echo $sql;
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
@@ -225,7 +225,7 @@ if(isset($_POST['request']))
 						{
 							if($qty[$j]>0 and $qms_qty[array_search(str_replace("p_","",$size[$j]),$qms_size)]>0 and $qms_qty[array_search(str_replace("p_","",$size[$j]),$qms_size)]>=$qty[$j])
 							{
-								$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks,ref1) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("p_","",$size[$j])."\",".$qty[$j].",6,\"$module-$iLastid\",\"$username\")";
+								$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks,ref1) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".$sizes_titles[$i]."\",".$qty[$j].",6,\"$module-$iLastid\",\"$username\")";
 					//echo $sql;
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
@@ -283,7 +283,8 @@ if(isset($_POST['search']))
 	$module=$_POST['module'];
 	$order_tid=$_POST['order_tid'];
 	// start special request
-	$user=$_POST['user'];
+	$user=$_POST['user'];	
+	//$user='sfcsproject1';	
 	$chk = 0;
 	if(strlen($user)>0)
 	{
@@ -343,7 +344,6 @@ if(isset($_POST['search']))
 		$qms_ops=array();
 		
 		$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -744,16 +744,14 @@ td{
 			return false;
 		}else{
 			for(var j =0; j<Number(cat_count);j++){
-				check_val[j] = document.getElementById('cat_'+j).checked;
+				var chk = document.getElementById('cat_'+j);
+				if(chk.checked){
+					check_val[j] = document.getElementById('cat_'+j).checked;
+				}
 			}
-			const check_t = 'true';
-			const ary_in = check_t.includes(check_val);
-			// alert(ary_in);
-			if(ary_in == false){
+			if(check_val.length == 0){
 				sweetAlert('Please Select atleast one category','','warning');
-				return false;
-			}else{
-				// return true;
+				return false;			
 			}
 		}
 		return true;

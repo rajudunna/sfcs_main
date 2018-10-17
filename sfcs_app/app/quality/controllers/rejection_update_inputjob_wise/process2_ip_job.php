@@ -182,7 +182,7 @@ if(isset($_POST['Update']))
 	$ilast_codes=array();
 	
 	//Added by KiranG 20150418
-	$usr_msg="The following entries are failed to update due to M3 system validations:<br/><table><tr><th>Module</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
+	$usr_msg="<br/><br/><table><tr><th>Module</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
 	if($sum > 0){
 		for($x=0;$x<sizeof($qty);$x++)
 		{
@@ -192,7 +192,6 @@ if(isset($_POST['Update']))
 				$r_qty = array();
 				$r_reasons = array();
 				$check_proceed=0; //0-OK, 1- NOK
-				$m3_op_qty_chk_ary=array();
 				
 				//Validation Check Start
 				if($qty[$x]>0 and $qty[$x]!="" and $test[$x]==1 and strlen($style[$x])>0 and strlen($schedule[$x])>0 and strlen($color[$x])>0 and strlen($size[$x])>0)
@@ -239,27 +238,7 @@ if(isset($_POST['Update']))
 				{
 					$check_proceed=1;
 				}
-				
-				//Additional Validation
-				if(sizeof($m3_op_qty_chk_ary)>0)
-				{
-					foreach ($m3_op_qty_chk_ary as $key => $value)
-					{
-						if($check_proceed==0 and rejection_validation_m3($key,$schedule[$x],$color[$x],$size[$x],$value,0,$username)=="FALSE")
-						{
-							$check_proceed=1;
-						}
-					}
-					
-				}
-				else
-				{
-					$check_proceed=1;
-				}
-				unset($m3_op_qty_chk_ary);
-				
-				//Validation Check End
-				
+								
 				//validation
 				$check_proceed=0;
 				if($check_proceed==0)
@@ -317,7 +296,8 @@ if(isset($_POST['Update']))
 							$input_job=$job[$x];
 							$doc=$job[$x];
 						}
-						$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,ref1,remarks,log_date,doc_no,log_user,input_job_no) values (\"".$style[$x]."\",\"".$schedule[$x]."\",\"".$color[$x]."\",\"".$size[$x]."\",".$qty[$x].",\"".$qms_tran_type."\",\"".implode("$",$ref_code)."\",\"".$module[$x]."-".$team[$x]."-".$form[$x]."\",\"".date("Y-m-d")."\",\"".$doc."\",'$username',\"".$input_job."\")";
+						$size_value1=ims_sizes($order_tid,$schedule[$x],$style[$x],$color[$x],$size[$x],$link);
+						$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,ref1,remarks,log_date,doc_no,log_user,input_job_no) values (\"".$style[$x]."\",\"".$schedule[$x]."\",\"".$color[$x]."\",\"".$size_value1."\",".$qty[$x].",\"".$qms_tran_type."\",\"".implode("$",$ref_code)."\",\"".$module[$x]."-".$team[$x]."-".$form[$x]."\",\"".date("Y-m-d")."\",\"".$doc."\",'$username',\"".$input_job."\")";
 						//echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Sql Error4 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
@@ -372,7 +352,7 @@ if(isset($_POST['Update']))
 						//$replace_ref[]=$style[$x]."$".$schedule[$x]."$".$color[$x]."$".$size[$x]."$".$module;	
 					}
 							
-					$replace_ref[]=$style[$x]."$".$schedule[$x]."$".$color[$x]."$".$size[$x]."$".$module[$x]."$".$team[$x]."$".$iLastid;	
+					$replace_ref[]=$style[$x]."$".$schedule[$x]."$".$color[$x]."$".$size_value1."$".$module[$x]."$".$team[$x]."$".$iLastid;	
 					//to track min and max insert ids
 					$maxilastid=$iLastid;
 					if($minilastid==0)
@@ -382,7 +362,7 @@ if(isset($_POST['Update']))
 				}
 				else
 				{
-					$usr_msg.="<tr><td>".$module[$x]."</td><td>".$schedule[$x]."</td><td>".$color[$x]."</td><td>".$size[$x]."</td><td>".$qty[$x]."</td></tr>";
+					$usr_msg.="<tr><td>".$module[$x]."</td><td>".$schedule[$x]."</td><td>".$color[$x]."</td><td>".$size_value1."</td><td>".$qty[$x]."</td></tr>";
 				}
 				//Logic for M3_TRANSACTIONS AND MO FILLING #759 CR CODE STARTING
 				$doc_no_ref = substr($job[$x],1);
@@ -474,7 +454,6 @@ if(isset($_POST['Update']))
 			sum(if(qms_tran_type=3 and qms_tid>=$minilastid and qms_tid<".$temp[6].",qms_qty,0)) as \"prev_cumm_rejected\",
 			sum(if(qms_tran_type=3 and qms_tid>=$minilastid and qms_tid<=".$temp[6].",qms_qty,0)) as \"cumm_rejected\",
 			sum(if(qms_tran_type=10,qms_qty,0)) as \"tran_sent\", sum(if(qms_tran_type=12,qms_qty,0)) as \"res_panel_destroy\" from $bai_pro3.bai_qms_db where qms_style=\"".$temp[0]."\" and  qms_schedule=\"".$temp[1]."\" and qms_color=\"".$temp[2]."\" and qms_size=\"".$temp[3]."\"";
-			//echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error10 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -535,7 +514,6 @@ if(isset($_POST['Update']))
 		echo "<script>sweetAlert('Form Validation failed.').then((value) => { window.location.href = '$url'});</script>";
 	}
 }
-die();
 ?>
 
 </body>
@@ -570,24 +548,7 @@ if(isset($_POST['update1']))
 			//echo "<br/> query= ".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error11 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			//FOR M3 Upload
-			if($temp[4]=="ENP")
-			{
-				
-			}
-			else
-			{
-				//commented for #759 CR
-				// $sql="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_style='".$temp[0]."' and sfcs_schedule='".$temp[1]."' and sfcs_color='".$temp[2]."' and sfcs_job_no='REPLACE' and sfcs_tid_ref=".$temp[6];
-				// $sql_result=mysqli_query($link, $sql) or exit("Sql Error12 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 	
-				
-				// if(mysqli_num_rows($sql_result)==0)
-				// {
-				// 	$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_job_no,sfcs_tid_ref,sfcs_mod_no,sfcs_shift) values(NOW(),'".$temp[0]."','".$temp[1]."','".$temp[2]."','".$temp[3]."',0,".$replace[$i].",USER(),'SIN','REPLACE',".$temp[6].",'".$temp[4]."','".$temp[5]."')";
-				// 	mysqli_query($link, $sql) or exit("Sql Error13 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				// }
-					
-			}
+	
 		}
 	}
 	echo "<h2>Successfully Updated.</h2>";

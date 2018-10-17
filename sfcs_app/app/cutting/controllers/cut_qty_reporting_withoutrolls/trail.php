@@ -6,7 +6,7 @@ $go_back_to = $_GET['go_back_to'];
 $bundle_no = array();
 $op_code = '15';
 $cut_done_qty = array();
-$qry_to_find_in_out = "select * from $brandix_bts.bundle_creation_data where docket_number='$doc_no_ref'";
+$qry_to_find_in_out = "select * from $brandix_bts.bundle_creation_data where docket_number='$	'";
 $qry_to_find_in_out_result = $link->query($qry_to_find_in_out);
 error_reporting(0);
 if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
@@ -108,7 +108,7 @@ else if ($go_back_to == 'doc_track_panel_withrolls_recut')
 }
 else if ($go_back_to == 'doc_track_panel_without_recut')
 {
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel.php',1,'N')."'; }</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel.php',0,'N')."'; }</script>";
 }
 
 

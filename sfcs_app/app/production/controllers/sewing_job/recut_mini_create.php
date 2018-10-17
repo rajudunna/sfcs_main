@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',4,'R')?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery-1.11.1.min.js',4,'R')?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',4,'R')?>"></script>
 <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',4,'R')?>">
 <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/table.css',4,'R')?>">
@@ -85,13 +85,13 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 	//$layPlanResult=$db->loadAssocList();
 	//echo count($layPlanResult);
 	//print_r($layPlanResult);exit;
+	echo "<table class='table table-bordered'>";
+		echo "<tr><th colspan='8'> Re-Cuts to be Generated </th></tr>";
+		echo "<tr><th>S.No</th><th>Doc.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>No of Plies</th><th>Control</th></tr>";
 	if(mysqli_num_rows($result)>0)
 	{
 		
-		$rowc=1;
-		echo "<table class='table table-bordered'>";
-		echo "<tr><th colspan='8'> Re-Cuts to be Generated </th></tr>";
-		echo "<tr><th>S.No</th><th>Doc.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>No of Plies</th><th>Control</th></tr>";
+		$rowc=1;		
 		while($l=mysqli_fetch_array($result))
 		{
 			$doc_num=$l['doc_no'];
@@ -141,7 +141,9 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 	}
 	else
 	{
-		echo "<script>swal('No Lay plan found for order','','warning');</script></br>";
+		echo "<tr>
+					<td colspan=7><center>Sewing jobs created for all the recuts</center></td>
+			</tr>";
 	}
 	
 
