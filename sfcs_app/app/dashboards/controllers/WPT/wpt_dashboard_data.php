@@ -204,7 +204,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $status_color = '';
             
             if($order == 0){
-                $cut_wip += $rem_qty;
+                $cut_wip += $job_qty;
                 continue;
             }
             
