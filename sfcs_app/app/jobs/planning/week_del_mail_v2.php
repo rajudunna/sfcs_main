@@ -69,8 +69,7 @@ $weekday1 = strtolower(date('l', strtotime($date1)));
 
 			$start_date_w=date("Y-m-d",$start_date_w);
 			$end_date_w=date("Y-m-d",$end_date_w);
-			$start_date_w='2017-09-05';
-			$end_date_w="2017-10-05";
+			
 			//echo $start_date_w."--".$end_date_w;
 			$date=date("Y-m-d");
 			//$date="2012-08-19";
