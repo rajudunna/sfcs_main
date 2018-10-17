@@ -16,11 +16,9 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	table {
 		border-collapse: collapse;
 		border-spacing: 0;
-		width: 100%;
 		border: 1px solid #ddd;
 		display: block;
-        overflow-x: auto;
-        white-space: nowrap;
+        overflow-x: auto;        
 	}
 
 	th, td {
@@ -28,9 +26,6 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 		padding: 8px;
 	}
 
-	tr:nth-child(even){
-		background-color: #f2f2f2
-	}
 	.red_box 
 	{ 
 	    width:20px;height:20px;float:left;margin-right:5px;background-color:'#ff3333';line-height:0px;font-size:0px; 
@@ -229,18 +224,18 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 							echo "<th width=\"5%\" >Style</th>"; 
 							echo "<th width=\"10%\">VPO#</th>"; 
 							echo "<th width=\"5%\">Schedule</th>"; 
-							echo "<th width=\"3%\">Color Way</th>"; 
-							echo "<th width='300' colspan=2 >Color Description</th>"; 
+							echo "<th width=\"3%\">Color<br>Way</th>"; 
+							echo "<th style='min-width: 300px'>Color Description</th>"; 
 							echo "<th width=\"3%\">Cut Job#</th>"; 
 							for ($i=0; $i < sizeof($size_array); $i++) 
 							{  
-								echo "<th width=\"5%\">".$size_array[$i]."</th>"; 
+								echo "<th width=\"5%\" style='white-space: nowrap;'>".$size_array[$i]."</th>"; 
 							}
 							if($rows-sizeof($size_array)>0)
 							{
 								for ($i=0; $i < ($rows-sizeof($size_array)); $i++) 
 								{  
-									echo "<th width=\"5%\">  </th>"; 
+									echo "<th width=\"5%\" style='white-space: nowrap;'>  </th>"; 
 								}
 							}	
 							echo "</tr>"; 
@@ -250,7 +245,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 				            echo "<td height=20 style='height:15.0pt'>".$vpo."</td>"; 
 				            echo "<td height=20 style='height:15.0pt;align:centre;'>".$schedule[$iii]."</td>"; 
 				            echo "<td height=20 style='height:15.0pt;align:centre;'>".$pack_method[$iii]."</td>"; 
-				            echo "<td width='300' colspan=2 height=20  style='height:15.0pt'>".str_replace(",","</br>",$cols[$iii])."</td>"; 
+				            echo "<td style='min-width: 300px'>".str_replace(",","</br>",$cols[$iii])."</td>"; 
 				            echo "<td height=20 style='height:15.0pt'>".$ii."</td>";
 							// echo "<div style=\"overflow:scroll; width:100%\">";
 							$sql13="SELECT $query_val input_job_no_random_ref
@@ -302,13 +297,13 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 								{
 									$bac_col='#ff3333';
 								}
-								echo "<td width=\"7%\" height=20 style='height:15.0pt;background-color:$bac_col;color:white;'>Job# ".$sew_job_no[$j]." </br> Qty# ".$job_qty[$sew_job_rand[$j]]." </br> Cut# ".$ii." </br> Col# ".$pack_method[$iii]."</td>";
+								echo "<td width=\"7%\" height=20 style='height:15.0pt;background-color:$bac_col;color:white;white-space: nowrap;'>Job# ".$sew_job_no[$j]." </br> Qty# ".$job_qty[$sew_job_rand[$j]]." </br> Cut# ".$ii." </br> Col# ".$pack_method[$iii]."</td>";
 							}
 							if($rows-sizeof($size_array)>0)
 							{
 								for ($i=0; $i < ($rows-sizeof($size_array)); $i++) 
 								{  
-									echo "<td width=\"7%\" height=20 style='height:15.0pt;background-color:white;color:white;'> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</br>  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</br>   &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</br>  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>";	
+									echo "<td width=\"7%\" height=20 style='height:15.0pt;background-color:white;color:white;white-space: nowrap;'> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</br>  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</br>   &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</br>  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>";	
 								}
 							}
 							echo "</tr>";
