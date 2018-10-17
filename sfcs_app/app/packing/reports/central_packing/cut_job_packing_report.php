@@ -13,31 +13,19 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 <html> 
 <head> 
 <style type="text/css"> 
-	table.gridtable { 
-	    font-family:arial; 
-	    font-size:12px; 
-	    color:#333333; 
-	    border-width: 1px; 
-	    border-color: #666666; 
-	    border-collapse: collapse; 
-	     
-	    /*height: 100%;  
-	    width: 100%;*/ 
-	} 
-	table.gridtable th { 
-	    border-width: 1px; 
-	    padding: 3.5px; 
-	    border-style: solid; 
-	    border-color: #666666; 
-	    background-color: #ffffff; 
-	} 
-	table.gridtable td { 
-	    border-width: 1px; 
-	    padding: 3.5px; 
-	    border-style: solid; 
-	    border-color: #666666; 
-	    background-color: #ffffff; 
-	} 
+	table {
+		border-collapse: collapse;
+		border-spacing: 0;
+		border: 1px solid #ddd;
+		display: block;
+        overflow-x: auto;        
+	}
+
+	th, td {
+		text-align: left;
+		padding: 8px;
+	}
+
 	.red_box 
 	{ 
 	    width:20px;height:20px;float:left;margin-right:5px;background-color:'#ff3333';line-height:0px;font-size:0px; 
@@ -60,19 +48,19 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	}
 
 	.btn-red{ 
-	color: #FF3333; 
-	background-color: #FF3333; 
-	border-color: #FF3333; 
+		color: #FF3333; 
+		background-color: #FF3333; 
+		border-color: #FF3333; 
 	} 
 	.btn-pink { 
-	color: #FF4DA6; 
-	background-color: #FF4DA6; 
-	border-color: #FF4DA6; 
+		color: #FF4DA6; 
+		background-color: #FF4DA6; 
+		border-color: #FF4DA6; 
 	}
 	.btn-light_green { 
-	color: #1AFF1A; 
-	background-color: #1AFF1A; 
-	border-color: #1AFF1A; 
+		color: #1AFF1A; 
+		background-color: #1AFF1A; 
+		border-color: #1AFF1A; 
 	} 
 </style> 
 
@@ -166,7 +154,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 			{
 			    $vpo=$_POST['vpo'];
 			    $style=$_POST['style'];
-				$getschedule="select order_del_no,packing_method,group_concat(order_col_des SEPARATOR '\n') as cols,group_concat(order_col_des) as cols_new from $bai_pro3.bai_orders_db_confirm where vpo='".$vpo."' and order_style_no='".$style."' group by order_del_no,packing_method"; 
+				$getschedule="select order_del_no,packing_method,group_concat(trim(order_col_des)) as cols,group_concat(order_col_des) as cols_new from $bai_pro3.bai_orders_db_confirm where vpo='".$vpo."' and order_style_no='".$style."' group by order_del_no,packing_method"; 
 				$sql_result=mysqli_query($link, $getschedule) or exit("Error while getting schedules for the vpo1"); 
 				while($sql_row=mysqli_fetch_array($sql_result)) 
 			    { 
@@ -182,15 +170,15 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 			    { 
 			        if($row_result['appilication']=='IPS')
 					{
-						$query_val .= "if(operation_id='".$row_result['operation_code']."',SUM(recevied_qty),0) AS in_qty,"; 
+						$query_val .= "sum(if(operation_id='".$row_result['operation_code']."',recevied_qty,0)) AS in_qty,"; 
 					}
 					else if($row_result['appilication']=='IMS')
 					{
-						$query_val .= "if(operation_id='".$row_result['operation_code']."',SUM(recevied_qty),0) AS out_qty,";
+						$query_val .= "sum(if(operation_id='".$row_result['operation_code']."',recevied_qty,0)) AS out_qty,";
 					}
 					else if($row_result['appilication']=='Carton_Ready')
 					{
-						$query_val .= "if(operation_id='".$row_result['operation_code']."',SUM(recevied_qty),0) AS pac_qty,";
+						$query_val .= "sum(if(operation_id='".$row_result['operation_code']."',recevied_qty,0)) AS pac_qty,";
 					}
 				}
 				
@@ -203,7 +191,13 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 			    while($cut_result_row=mysqli_fetch_array($cut_result)) 
 			    { 
 			        $cutnos=$cut_result_row['cutno']; 
-			    } 
+			    }
+				$cutno1="SELECT COUNT(DISTINCT input_job_no) AS cnt FROM bai_pro3.packing_summary_input WHERE order_del_no IN(".implode(",",$schedule).") GROUP BY order_del_no,acutno ORDER BY cnt DESC LIMIT 1";				
+			    $cut_result1=mysqli_query($link, $cutno1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			    while($cut_result_row1=mysqli_fetch_array($cut_result1)) 
+			    { 
+			        $rows=$cut_result_row1['cnt']; 
+			    } 	
 			    for ($ii=1; $ii <=$cutnos; $ii++) 
 				{				
 					for($iii=0;$iii<sizeof($schedule);$iii++)
@@ -221,21 +215,29 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 							$sew_job_rand[]=$sizerow['input_job_no_random'];
 							$sew_job_no[]=$sizerow['input_job_no'];
 						}
-						echo "<div class='table-responsive'>";
+						
 						if(sizeof($sew_job_rand)>0)
-						{							
-							echo "<table id=\"example1\" class='table table-bordered'>"; 
+						{
+							echo "<div style='overflow-x:auto;'>";
+							echo "<table border='1px'>"; 
 							echo "<tr style='background-color:#1184AD;color:white;'>"; 
 							echo "<th width=\"5%\" >Style</th>"; 
 							echo "<th width=\"10%\">VPO#</th>"; 
 							echo "<th width=\"5%\">Schedule</th>"; 
-							echo "<th width=\"8%\">Color Way</th>"; 
-							echo "<th width=\"20%\" colspan=2 >Color Description</th>"; 
-							echo "<th width=\"5%\">Cut Job#</th>"; 
+							echo "<th width=\"3%\">Color<br>Way</th>"; 
+							echo "<th style='min-width: 300px'>Color Description</th>"; 
+							echo "<th width=\"3%\">Cut Job#</th>"; 
 							for ($i=0; $i < sizeof($size_array); $i++) 
 							{  
-								echo "<th >".$size_array[$i]."</th>"; 
-							} 
+								echo "<th width=\"5%\" style='white-space: nowrap;'>".$size_array[$i]."</th>"; 
+							}
+							if($rows-sizeof($size_array)>0)
+							{
+								for ($i=0; $i < ($rows-sizeof($size_array)); $i++) 
+								{  
+									echo "<th width=\"5%\" style='white-space: nowrap;'>  </th>"; 
+								}
+							}	
 							echo "</tr>"; 
 							echo "</div>";
 							echo "<tr height=20 style='height:15.0pt;'>"; 
@@ -243,7 +245,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 				            echo "<td height=20 style='height:15.0pt'>".$vpo."</td>"; 
 				            echo "<td height=20 style='height:15.0pt;align:centre;'>".$schedule[$iii]."</td>"; 
 				            echo "<td height=20 style='height:15.0pt;align:centre;'>".$pack_method[$iii]."</td>"; 
-				            echo "<td width=300 height=20  colspan=2 style='height:15.0pt'>".str_replace(",","</br>",$cols_new[$iii])."</td>"; 
+				            echo "<td style='min-width: 300px'>".str_replace(",","</br>",$cols[$iii])."</td>"; 
 				            echo "<td height=20 style='height:15.0pt'>".$ii."</td>";
 							// echo "<div style=\"overflow:scroll; width:100%\">";
 							$sql13="SELECT $query_val input_job_no_random_ref
@@ -287,7 +289,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 								{
 									$bac_col='#ff4da6';
 								}
-								elseif($imsquantity>0)
+								elseif($in_qty>0 && ($in_qty==$job_qty[$sew_job_rand[$j]]))
 								{
 									$bac_col='#15a5f2';
 								}
@@ -295,10 +297,20 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 								{
 									$bac_col='#ff3333';
 								}
-								echo "<td height=20 style='height:15.0pt;background-color:$bac_col;color:white;'>Job# ".$sew_job_no[$j]." </br> Qty# ".$job_qty[$sew_job_rand[$j]]." </br> Cut# ".$ii." </br> Col# ".$pack_method[$iii]."</td>";
+								echo "<td width=\"7%\" height=20 style='height:15.0pt;background-color:$bac_col;color:white;white-space: nowrap;'>Job# ".$sew_job_no[$j]." </br> Qty# ".$job_qty[$sew_job_rand[$j]]." </br> Cut# ".$ii." </br> Col# ".$pack_method[$iii]."</td>";
+							}
+							if($rows-sizeof($size_array)>0)
+							{
+								for ($i=0; $i < ($rows-sizeof($size_array)); $i++) 
+								{  
+									echo "<td width=\"7%\" height=20 style='height:15.0pt;background-color:white;color:white;white-space: nowrap;'> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</br>  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</br>   &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</br>  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>";	
+								}
 							}
 							echo "</tr>";
 							echo "</table>";
+							echo "</div>";
+							echo "<br>";
+							echo "<br>";
 						}
 						unset($sew_job_pac);
 						unset($sew_job_out);
@@ -307,7 +319,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 						unset($sew_job_rand);
 						unset($sew_job_no);
 						unset($job_qty);
-						echo "</div>";	
+							
 					}
 				}
 			}	
