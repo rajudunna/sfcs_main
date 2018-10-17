@@ -230,7 +230,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 							echo "<th width=\"10%\">VPO#</th>"; 
 							echo "<th width=\"5%\">Schedule</th>"; 
 							echo "<th width=\"3%\">Color Way</th>"; 
-							echo "<th width=\"15%\" >Color Description</th>"; 
+							echo "<th width='300' colspan=2 >Color Description</th>"; 
 							echo "<th width=\"3%\">Cut Job#</th>"; 
 							for ($i=0; $i < sizeof($size_array); $i++) 
 							{  
@@ -250,7 +250,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 				            echo "<td height=20 style='height:15.0pt'>".$vpo."</td>"; 
 				            echo "<td height=20 style='height:15.0pt;align:centre;'>".$schedule[$iii]."</td>"; 
 				            echo "<td height=20 style='height:15.0pt;align:centre;'>".$pack_method[$iii]."</td>"; 
-				            echo "<td width=\"15%\" height=20  style='height:15.0pt'>".str_replace(",","</br>",$cols[$iii])."</td>"; 
+				            echo "<td width='300' colspan=2 height=20  style='height:15.0pt'>".str_replace(",","</br>",$cols[$iii])."</td>"; 
 				            echo "<td height=20 style='height:15.0pt'>".$ii."</td>";
 							// echo "<div style=\"overflow:scroll; width:100%\">";
 							$sql13="SELECT $query_val input_job_no_random_ref
