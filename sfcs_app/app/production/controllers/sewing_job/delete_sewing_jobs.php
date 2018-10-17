@@ -221,9 +221,16 @@
                         $delete_plan_input_qry="DELETE FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref like  \"".$schedule."%\""; 
                         // echo $delete_plan_input_qry."<br>"; 
                         mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                         
-                        //$sql3="delete from pac_stat_log_input_job where tid in (".$tid.")"; 
-                        $sql3="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random like  \"".$schedule."%\""; 
+                        
+                        $get_tids="SELECT GROUP_CONCAT(tid) AS tids FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule'"; 
+                        $sql_result111=mysqli_query($link, $get_tids) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                        while($sql_row111=mysqli_fetch_array($sql_result111)) 
+                        { 
+                            $final_tid=$sql_row111['tids'];
+                        }
+
+                        $sql3="DELETE FROM $bai_pro3.`pac_stat_log_input_job` WHERE tid IN (".$final_tid.")";
+                        // $sql3="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random like  \"".$schedule."%\""; 
                         // echo $sql3."<br>"; 
                         mysqli_query($link, $sql3) or exit("Sql Error91".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         

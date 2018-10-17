@@ -182,8 +182,9 @@ $row=mysqli_fetch_array($result);
 	}	
 	echo "<input type='text' readonly value='$value_comp' name=\"selcompro\" id='selcompro' class='form-control' style='width: 150px;  display: inline-block;'>";
 	
-	echo "&nbsp;&nbsp;&nbsp;Select Lot Nos";
+	echo "Select Lot Nos";
 	echo "<select name=\"sellotnosrefnew[]\"  class='form-control' onclick='return check_batch();' style='width: 150px;  display: inline-block;' multiple>";
+	echo "<option value='' selected>Please Select</option>";
 	$sql1="SELECT DISTINCT(lot_no) AS lot_no FROM $bai_rm_pj1.sticker_report WHERE batch_no=\"".$batch."\" and length(batch_no) > 0";
 	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
