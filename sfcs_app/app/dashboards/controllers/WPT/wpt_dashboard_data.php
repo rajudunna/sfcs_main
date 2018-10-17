@@ -28,7 +28,7 @@ if($section > 0){
     if($modules_str != ''){
         $data.= "<table><tbody>";
         $moduleso = $modules = explode(',',$modules_str);
-       
+        
         foreach($modules as $module){
             $line_breaker = 0;
             $total_wip = 0;
@@ -103,7 +103,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     global $link;
     global $url;
     global $bai_pro3,$brandix_bts;
-
+    $dockets = array();
     $cutting_op_code = 15;
     $temp_line_breaker = 0;
     $docs_data = '';
@@ -159,7 +159,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $break_me_at = 10; 
         else 
             $break_me_at = 6;       
-            
+
         while($row = mysqli_fetch_assoc($dockets_result)){     
             $style   = $row['style']; 
             $schedule= $row['schedule'];
@@ -172,6 +172,14 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $cut_status    = $row['act_cut_status'];
             $fabric_status = $row['fabric_status'];
             $ft_status     = $row['ft_status'];
+
+            if($order == 1){
+                $dockets[] = $doc_no;
+            }
+            if($order > 1){
+                if(in_array($doc_no,$dockets))
+                    continue;
+            }
             /*
             $job_qty_query = "SELECT SUM(send_qty) as job_qty,SUM(recevied_qty) as scan_qty from $bai_pro3.bundle_creation_data 
                             where input_job_no_random_ref IN ($jobs) and operation_id = 100";
@@ -186,11 +194,13 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                             where doc_no = '$doc_no' and operation_code = $cutting_op_code ";
             $cut_qty_result = mysqli_query($link,$cut_qty_query);
 
+            /*
             $cut_report_query = "SELECT SUM(recevied_qty + rejected_qty) as rep_qty,SUM(original_qty) as plan_qty from 
                                 $brandix_bts.bundle_creation_data 
                                 where docket_number='$doc_no' and  operation_id = $cutting_op_code";
             $cut_report_result = mysqli_query($link,$cut_report_query);
-
+            */
+            
             $jrow  = mysqli_fetch_array($job_qty_result);
             $crow  = mysqli_fetch_array($cut_qty_result);
             $crrow = mysqli_fetch_array($cut_report_result);
