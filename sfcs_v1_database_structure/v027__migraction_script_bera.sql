@@ -138,7 +138,7 @@ CREATE TABLE `mo_operation_quantites`(
 /* Create table in target */
 CREATE TABLE `module_master`(
 	`id` int(11) NOT NULL  auto_increment , 
-	`date_time` timestamp NOT NULL  DEFAULT 'current_timestamp()' on update current_timestamp() , 
+	`date_time` timestamp NOT NULL  DEFAULT current_timestamp() on update current_timestamp() , 
 	`module_name` varchar(50) COLLATE latin1_swedish_ci NULL  , 
 	`module_description` text COLLATE latin1_swedish_ci NULL  , 
 	`status` varchar(10) COLLATE latin1_swedish_ci NULL  , 
@@ -1056,7 +1056,7 @@ USE `brandix_bts`;
 
 /* Alter table in target */
 ALTER TABLE `bundle_creation_data` 
-	CHANGE `date_time` `date_time` timestamp   NOT NULL DEFAULT 'current_timestamp()' after `id` , 
+	CHANGE `date_time` `date_time` timestamp   NOT NULL DEFAULT current_timestamp() after `id` , 
 	ADD COLUMN `barcode_sequence` int(11)   NULL after `mapped_color` , 
 	ADD COLUMN `barcode_number` int(11)   NULL after `barcode_sequence` , 
 	ADD KEY `barcode_number`(`barcode_number`) , 
@@ -1064,7 +1064,7 @@ ALTER TABLE `bundle_creation_data`
 
 /* Alter table in target */
 ALTER TABLE `bundle_creation_data_temp` 
-	CHANGE `date_time` `date_time` timestamp   NOT NULL DEFAULT 'current_timestamp()' after `id` , 
+	CHANGE `date_time` `date_time` timestamp   NOT NULL DEFAULT current_timestamp() after `id` , 
 	ADD KEY `input_mod_remark`(`input_job_no_random_ref`,`operation_id`,`assigned_module`,`color`,`size_title`) ;
 
 
@@ -1698,7 +1698,7 @@ CREATE TABLE `mo_details`(
 /* Alter table in target */
 ALTER TABLE `order_details` 
 	CHANGE `sno` `sno` bigint(20)   NOT NULL first , 
-	CHANGE `time_stamp` `time_stamp` timestamp   NULL DEFAULT 'current_timestamp()' after `SEQ_NUMBER` , 
+	CHANGE `time_stamp` `time_stamp` timestamp   NULL DEFAULT current_timestamp() after `SEQ_NUMBER` , 
 	DROP KEY `PRIMARY` ;
 
 /* Create table in target */
@@ -1762,7 +1762,7 @@ CREATE TABLE `order_details_original`(
 	`A200` longtext COLLATE latin1_swedish_ci NULL  , 
 	`MO_NUMBER` longtext COLLATE latin1_swedish_ci NULL  , 
 	`SEQ_NUMBER` longtext COLLATE latin1_swedish_ci NULL  , 
-	`time_stamp` timestamp NULL  DEFAULT 'current_timestamp()' , 
+	`time_stamp` timestamp NULL  DEFAULT current_timestamp() , 
 	PRIMARY KEY (`sno`) 
 ) ENGINE=InnoDB DEFAULT CHARSET='latin1' COLLATE='latin1_swedish_ci';
 
@@ -1828,14 +1828,14 @@ CREATE TABLE `order_details_temp`(
 	`A200` longtext COLLATE latin1_swedish_ci NULL  , 
 	`MO_NUMBER` longtext COLLATE latin1_swedish_ci NULL  , 
 	`SEQ_NUMBER` longtext COLLATE latin1_swedish_ci NULL  , 
-	`time_stamp` timestamp NULL  DEFAULT 'current_timestamp()' 
+	`time_stamp` timestamp NULL  DEFAULT current_timestamp() 
 ) ENGINE=InnoDB DEFAULT CHARSET='latin1' COLLATE='latin1_swedish_ci';
 
 
 /* Alter table in target */
 ALTER TABLE `shipment_plan` 
 	CHANGE `sno` `sno` bigint(20)   NOT NULL first , 
-	CHANGE `time_stamp` `time_stamp` timestamp   NULL DEFAULT 'current_timestamp()' after `BTS_vs_FG_Qty` , 
+	CHANGE `time_stamp` `time_stamp` timestamp   NULL DEFAULT current_timestamp() after `BTS_vs_FG_Qty` , 
 	DROP KEY `PRIMARY` ;
 
 /* Create table in target */
@@ -1875,7 +1875,7 @@ CREATE TABLE `shipment_plan_original`(
 	`Dsptched_Qty` longtext COLLATE latin1_swedish_ci NULL  , 
 	`BTS_vs_Ord_Qty` longtext COLLATE latin1_swedish_ci NULL  , 
 	`BTS_vs_FG_Qty` longtext COLLATE latin1_swedish_ci NULL  , 
-	`time_stamp` timestamp NULL  DEFAULT 'current_timestamp()' , 
+	`time_stamp` timestamp NULL  DEFAULT current_timestamp() , 
 	PRIMARY KEY (`sno`) 
 ) ENGINE=InnoDB DEFAULT CHARSET='latin1' COLLATE='latin1_swedish_ci';
 
@@ -1917,7 +1917,7 @@ CREATE TABLE `shipment_plan_temp`(
 	`Dsptched_Qty` longtext COLLATE latin1_swedish_ci NULL  , 
 	`BTS_vs_Ord_Qty` longtext COLLATE latin1_swedish_ci NULL  , 
 	`BTS_vs_FG_Qty` longtext COLLATE latin1_swedish_ci NULL  , 
-	`time_stamp` timestamp NULL  DEFAULT 'current_timestamp()' 
+	`time_stamp` timestamp NULL  DEFAULT current_timestamp() 
 ) ENGINE=InnoDB DEFAULT CHARSET='latin1' COLLATE='latin1_swedish_ci';
 
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
