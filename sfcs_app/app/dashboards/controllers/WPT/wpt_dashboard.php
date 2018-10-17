@@ -44,7 +44,7 @@
                 $id1 = "sec-load-$section";
                 $id2 = "sec-$section";
         ?>    
-                <div class='section_div' style='width:19vw;float:left;padding:5px'>
+                <div class='section_div' style='width:25vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
                             <center><span class='section-heading'><b>SECTION - <?= $section ?></b></span></center>
@@ -90,10 +90,10 @@
                     <span class="l-block orange" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'>Cutting Partially Done</span>
                 </div>
-                <div class='l-div col-sm-4'>
+                <!-- <div class='l-div col-sm-4'>
                     <span class="l-block blue" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'>Cut Completed But Not Issued To Module</span>
-                </div>
+                </div> -->
             </div>
             <!--
             <div class='row'>
@@ -112,17 +112,21 @@
             </div> -->
             <div class='row'>
                 <hr/>
-                <div class='l-div col-sm-4'>
+                <div class='l-div col-sm-3'>
                     <span class="b-block gloss-red" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - Line WIP &le; 216</span>
                 </div>
-                <div class='l-div col-sm-4'>
+                <div class='l-div col-sm-3'>
                     <span class="b-block gloss-green" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - Line WIP &ge; 217 && &le; 750</span>
                 </div>
-                <div class='l-div col-sm-4'>
+                <div class='l-div col-sm-3'>
                     <span class="b-block gloss-black" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - Line WIP &ge; 751</span>
+                </div>
+                <div class='l-div col-sm-3'>
+                    <span class="b-block blue" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'> - CUT WIP</span>
                 </div>
             </div>
         </div>
@@ -207,12 +211,13 @@
         var w = b*bw + 90;   
         if(Number(w) > 1200)
             w = 900;
-        if(b == 8)
-            w = 4*bw + 90;
-        if(b == 12)
-            w = 6*bw + 95; 
-        if(b == 16)
-            w = 6*bw + 95;                   
+        // if(b == 8)
+        //     w = 4*bw + 90;
+        // if(b == 12)
+        //     w = 6*bw + 95; 
+        // if(b == 16)
+        //     w = 6*bw + 95;
+        w = 6 * bw + 95;                   
         $('.section_div').css({"width":w+"px"});
         load_data();
     }
@@ -249,19 +254,19 @@
         padding : 3px;
         opacity : 1;
         border : 1px solid #aaa;
-        border-radius : 3px;
+        border-radius : 4px;
     }    
     .cut-wip{
-        background : #00FF00;
+        //background : #D00B7C;
         width : parent;
         height : 35px;
-        color : #000;
+        color : #fff;
+        padding : 3px;
         font-size : 12px;
         font-weight : 8px;
-        padding : 3px;
         opacity : 1;
         border : 1px solid #aaa;
-        border-radius : 2px;
+        border-radius : 4px;
     }
     .pending-wip{
         background : #0055FF;
@@ -356,6 +361,10 @@
         background : #111;
         opacity    : 1;
     }
+    .gloss-purple{
+        background : #D00B7C;
+        opacity    : 1;
+    }
   
     table{
         width : auto;
@@ -365,9 +374,12 @@
         border-bottom : 1px dashed #c5c5c5;
         width : parent;
         display : block;
+        line-height : 1px;
     }
     td{
         width : auto;
+        line-height : 1px;
+        white-space: nowrap;
     }
     a{
         text-decoration : none;
