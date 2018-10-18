@@ -171,6 +171,19 @@ a{
 	color: #000000;
 }
 
+.gloss-pink{
+	background : #FF7FFF;
+	color : #000;
+	width:20px;
+  height:20px;
+	font-weight : bold;
+  display:block;
+	text-align : center;
+  float: left;
+  margin: 2px;
+	border: 1px solid black;
+}
+
 .white {
   width:20px;
   height:20px;
@@ -606,7 +619,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;" class="hide_table">';
 		echo "<p>";
 		echo "<table>";
-	
+		
 		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url_path?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
 		
 		//For Section level blinking
@@ -632,6 +645,19 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
 			 if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
 			$y=0;
+
+
+			$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
+			if($show_block > 0){
+				echo "<div style='float:left;'>
+								<div  class='gloss-pink' style='float:left;'>
+									<div>
+										<b>$show_block</b>
+									</div>
+								</div>
+							</div>";
+			}
+
 			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
 			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
@@ -736,3 +762,38 @@ include('include_legends_tms.php');
 <br/>	
 </body>
 </html> 
+
+
+
+<?php
+
+function calculateJobsCount($table_name,$module,$order_div_ref){
+	global $link;
+	$ijs_query  = "SELECT GROUP_CONCAT(DISTINCT input_job_no_random_ref) as jobs FROM $table_name WHERE input_trims_status=4  
+						     AND input_module=$module $order_div_ref";
+	$ijs_result = mysqli_query($link,$ijs_query);
+	while($row = mysqli_fetch_array($ijs_result)){
+		$jobs = $row['jobs'];
+	}
+
+	if($jobs == '')
+		return 0;
+	else{
+		$ips_jobs_query = "SELECT count(distinct pdsi.input_job_no_random) AS ips_jobs_match_count
+            FROM bai_pro3.plan_dashboard_input pdi
+            LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
+						WHERE input_module = $module AND pdsi.input_job_no_random IN ($jobs)";
+		$inps_jobs_result = mysqli_query($link,$ips_jobs_query);
+		while($row = mysqli_fetch_array($inps_jobs_result)){
+				$ips_jobs_count = $row['ips_jobs_match_count'];
+		}			 
+	}
+
+	if($ips_jobs_count == 0 || $ips_jobs_count == '')
+		return 0;
+	else	
+		return $ips_jobs_count;
+}
+
+
+?>
