@@ -272,7 +272,7 @@ if($barcode_generation == 1)
 							//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 							//updating this to cps log
 							$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = '$emb_cut_check_flag'";
-							$update_qry_cps_log_res = $link->query($update_qry_cps_log);
+							//$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 							$pre_insertion_qty = 0;
 							$max_insertion_qty_rej = $max_insertion_qty;
 							$actual_rejection_reason_array[$bundle_individual_number] = 0;
@@ -623,7 +623,7 @@ if($barcode_generation == 1)
 							$actual_rej_quantities[$bundle_individual_number]=0;
 						}
 						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = '$emb_cut_check_flag'";
-						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
+						//$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 						//rejection resons
 							$pre_insertion_qty = 0;
 							// $max_insertion_qty_rej = $max_insertion_qty;
