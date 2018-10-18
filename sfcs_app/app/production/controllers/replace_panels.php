@@ -1,5 +1,6 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     $style='';$schedule='';$color='';
 ?>
 <style>
@@ -47,7 +48,7 @@
                     $job_no = $_POST['job_no'];
                     $mod_no = $_POST['mod_no'];
                     $render_data = array();
-                    echo "<div> <button  class='btn btn-success' id='replace_id'>Replace</button></div><form><table class='table table-bordered'><thead><tr><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Good</th><th>Reject</th><th>Replace Qty</th><th>Action</th></tr><thead>";
+                    echo "<div> <button  class='btn btn-success' id='replace_id'>Replace</button></div><form><table class='table table-bordered'><thead><tr><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Good</th><th>Reject</th><th>Replace Qty</th><th>Action <input type='checkbox' id='checkAll' ></th></tr><thead>";
 
                     $get_details_qry = "select DISTINCT qms_style,qms_schedule,qms_color,qms_size from $bai_pro3.bai_qms_db where input_job_no='$job_no' and remarks like '%$mod_no%'";
                     
@@ -64,6 +65,15 @@
                     // var_dump($render_data);
                     $i=0;
                     foreach($render_data as $data_ary){
+
+
+                        $sql_tid="select order_tid from $bai_pro3.bai_orders_db where order_del_no='".$data_ary['schedule']."' and order_col_des='".$data_ary['color']."'";
+                        $sql_result_tid=mysqli_query($link, $sql_tid) or exit("Sql Error6 $sql_tid".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($sql_row_tid=mysqli_fetch_array($sql_result_tid))
+						{
+							$order_tid=$sql_row_tid["order_tid"];
+						}
+
                         $panel_qry = "
                         SELECT SUM(IF((qms_tran_type=1),qms_qty,0)) AS g_qms_qty, SUM(IF(qms_tran_type=2,qms_qty,0)) AS replaced,
                         SUM(IF(qms_tran_type=3 AND input_job_no='$job_no',qms_qty,0)) AS r_qms_qty FROM bai_pro3.bai_qms_db WHERE qms_style = '".$data_ary['style']."' 
@@ -71,9 +81,9 @@
                         // echo $panel_qry."<br>";
 
                         $previous_size = '';
-                    $count =0;
-                    $res_qry =mysqli_query($link,$panel_qry);
-                    echo "<tbody>";
+                        $count =0;
+                        $res_qry =mysqli_query($link,$panel_qry);
+                        echo "<tbody>";
                    
                         while($result1 = mysqli_fetch_assoc($res_qry))
                         {
@@ -88,9 +98,16 @@
 
                             $style = $result2['qms_style']; 
                             $schedule = $result2['qms_schedule'];$color = $result2['qms_color'];
-                            $size = $result2['qms_size'];
+                            $size_code = $result2['qms_size'];
+                            $size = ims_sizes($order_tid,$schedule,$style,$color,$size_code,$link);
                             $doc_no = $result2['doc_no'];
                             $shift = $result2['shift'];
+                            $doc_no_temp = substr($doc_no, 0, 1);
+                            if(is_numeric($doc_no_temp)){
+                                $doc_no;
+                            }else{
+                                $doc_no = substr($doc_no,1);
+                            }
                             // $operation = $result1['operation_id'];
                             // $bundle_no = $result1['bundle_no'];
                           }
@@ -121,7 +138,7 @@
                                         echo "   <td><input type='text' id='rep_$i' name='replace_$i' class='form-control' value = '$good'></td>";
                                     }
                                     echo"  <td>
-                                    <input type='hidden' id='siz_$i' name='size_$i' value='$size'>
+                                    <input type='hidden' id='siz_$i' name='size_$i' value='$size_code'>
                                     <input type='hidden' id='gud_$i' name='gud_$i' value='$good'>
                                     <input type='hidden' id='rej_$i' name='gud_$i' value='$rej'>
                                     <input type='hidden' id='doc_$i' name='doc_$i' value='$doc_no'>
@@ -294,4 +311,7 @@ $('#mod_id').click(function(){
         }
 
     });
+    $('#checkAll').click(function () {    
+        $('input:checkbox').prop('checked', this.checked);    
+     });
 </script>

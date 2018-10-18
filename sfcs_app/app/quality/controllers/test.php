@@ -667,7 +667,7 @@ else
 		$sizes_db=array();
 		$sizes_db=explode(",",$sizes);
 		$title_sizes_db=explode(",",$title_sizes);
-		
+	
 		switch($source)
 		{
 			case -1:
@@ -702,16 +702,15 @@ else
 			}
 		}
 		
-		$usr_msg="<br/><span style='color:black;text-weight:bold;text-align:center;'><b>The following entries are failed to update due to M3 system validations:<b></span>
+		$usr_msg="<br/>
 		<br/><br/><table class='table table-bordered'><tr style='background-color:#003366;;color:white;'><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
 		
 		// for($i=0;$i<sizeof($sizes_db);$i++)
 		for($i=0;$i<sizeof($title_sizes_db);$i++)
 		{
-			// if($qty[$i]>0 and rejection_validation('REJ',$schedule,$color,$sizes_db[$i],$qty[$i],0,$username)=='TRUE')
 			if($qty[$i]>0)
 			{
-				$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date) values (\"".trim($style)."\",\"".$schedule."\",\"".$color."\",\"".$title_sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."\",\"".date("Y-m-d")."\")";
+				$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date) values (\"".trim($style)."\",\"".$schedule."\",\"".$color."\",\"".$sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."\",\"".date("Y-m-d")."\")";
 				// echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				

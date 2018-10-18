@@ -464,6 +464,7 @@ if(isset($_GET['qq']))
 			$y++;
 			$temp=array();
 			$temp=explode("$",$val);
+			$embs = 'Send PF';$embr='Receive PF';
 			//	$return2="$x$y$<select id=\"mods[$x]\" name=\"mods[$x]\" onchange=\"showUser(6,$x,$y,this.value)\"><option vallue=\"0\">Select</option>";
 			$return2="$x$y$<select id=\"mods[$x]\" name=\"mods[$x]\" ><option value=\"0\">Select</option>";
 			$sizes=array();
@@ -504,7 +505,19 @@ if(isset($_GET['qq']))
 				
 			}	
 			//$return2.='<option value="1">1</option>';
-			$return2.='<option value="CUT">CUT</option>';
+			$return2.='<option value="15">CUT</option>';
+			$emb_operations = "SELECT tbl_style_ops_master.operation_code AS opcode,tbl_orders_ops_ref.operation_name as opname  FROM brandix_bts.tbl_style_ops_master LEFT JOIN brandix_bts.`tbl_orders_ops_ref` ON 
+			brandix_bts.tbl_style_ops_master.operation_name = brandix_bts.`tbl_orders_ops_ref`.id
+			WHERE style='".$temp[0]."' AND color='".$temp[2]."' 
+			 AND category IN ('$embs','$embr')";
+			//  echo $emb_operations;
+			 $sql_result1=mysqli_query($link,$emb_operations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			 while($sql_row1=mysqli_fetch_array($sql_result1))
+			{
+				if($sql_row1['opcode']!='' && $sql_row1['opname']!=''){
+					$return2.="<option value='".$sql_row1['opcode']."'>".$sql_row1['opname']."</option>";
+				}
+			}	
 			//$return2.='<option value="ENP">E/P</option>';
 			//$return2.='<option value="Pack">Pack</option>';
 			// $return2.='<option value="FG">CPK</option>';
