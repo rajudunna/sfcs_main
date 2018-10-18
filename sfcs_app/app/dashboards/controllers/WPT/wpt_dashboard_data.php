@@ -221,9 +221,9 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             }
 
             if($order == 1){
-                if($aplies < $plies && $cut_status == 'DONE')
+                if($aplies < $pplies && $cut_status == 'DONE'){
                     $status_color = 'orange';
-                else if($order == 1 || $order == 3){
+                }else if($order == 1 || $order == 3){
                     if($cut_status == '') $cut_status = 0; else $cut_status = 5;
 
                     $fabric_status_query="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' 
