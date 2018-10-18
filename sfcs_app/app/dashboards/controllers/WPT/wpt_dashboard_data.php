@@ -220,93 +220,96 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                 continue;
             }
 
-            if($aplies < $plies && $cut_status == 'DONE')
-                $status_color = 'orange';
-            else if($order == 1 || $order == 3){
-                if($cut_status == '') $cut_status = 0; else $cut_status = 5;
+            if($order == 1){
+                if($aplies < $plies && $cut_status == 'DONE')
+                    $status_color = 'orange';
+                else if($order == 1 || $order == 3){
+                    if($cut_status == '') $cut_status = 0; else $cut_status = 5;
 
-                $fabric_status_query="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' 
-                                     and doc_no in ($doc_no)";
-				$fabric_status_query_result  =mysqli_query($link, $fabric_status_query) or exit($docs_data.='Fabric Status error');
-				if(mysqli_num_rows($fabric_status_query_result) > 0) $fabric_status = 0; else $fabric_status = 5;
-                   
-                $fabric_query ="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no in ($doc_no)";
-                $fabric_result=mysqli_query($link, $fabric_query) or exit($docs_data.='Fabric Status Error');
-                if(mysqli_num_rows($fabric_result)>0)
-                    $fabric_status = 1;
-               								
-                $priorities_query="select * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no)";
-                $priorities_result=mysqli_query($link, $priorities_query) or exit($docs_data.='Fabric Priorities Error');
-                if(mysqli_num_rows($priorities_result)>0) $fabric_req = 5;	else $fabric_req = 0;
-        
-                if($cut_status == 5)
-                    $status_color = 'blue';
-                elseif($fabric_status == 5)
-                    $status_color = 'yellow';
-                elseif($fabric_status == 1)    
-                    $status_color = 'pink';
-                elseif($fabric_req == 5)
-                    $status_color = 'green';
-                elseif($fabric_status < 5){
-                    switch($ft_status){
-                        case "1":{ $status_color="lgreen"; break; }
-                        case "0":{ $status_color="red";    break; }
-                        case "2":{ $status_color="red";    break; }
-                        case "3":{ $status_color="red";    break; }
-                        case "4":{ $status_color="red";    break; }
-                        default :{ $status_color="yash";   break; }
+                    $fabric_status_query="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' 
+                                        and doc_no in ($doc_no)";
+                    $fabric_status_query_result  =mysqli_query($link, $fabric_status_query) or exit($docs_data.='Fabric Status error');
+                    if(mysqli_num_rows($fabric_status_query_result) > 0) $fabric_status = 0; else $fabric_status = 5;
+                    
+                    $fabric_query ="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no in ($doc_no)";
+                    $fabric_result=mysqli_query($link, $fabric_query) or exit($docs_data.='Fabric Status Error');
+                    if(mysqli_num_rows($fabric_result)>0)
+                        $fabric_status = 1;
+                                                
+                    $priorities_query="select * from $bai_pro3.fabric_priorities where doc_ref in ($doc_no)";
+                    $priorities_result=mysqli_query($link, $priorities_query) or exit($docs_data.='Fabric Priorities Error');
+                    if(mysqli_num_rows($priorities_result)>0) $fabric_req = 5;	else $fabric_req = 0;
+            
+                    if($cut_status == 5)
+                        $status_color = 'blue';
+                    elseif($fabric_status == 5)
+                        $status_color = 'yellow';
+                    elseif($fabric_status == 1)    
+                        $status_color = 'pink';
+                    elseif($fabric_req == 5)
+                        $status_color = 'green';
+                    elseif($fabric_status < 5){
+                        switch($ft_status){
+                            case "1":{ $status_color="lgreen"; break; }
+                            case "0":{ $status_color="red";    break; }
+                            case "2":{ $status_color="red";    break; }
+                            case "3":{ $status_color="red";    break; }
+                            case "4":{ $status_color="red";    break; }
+                            default :{ $status_color="yash";   break; }
+                        }
+                    }else{
+                        $status_color = 'yash';
                     }
-                }else{
-                    $status_color = 'yash';
-                }
 
-                if($status_color == 'yellow' || $status_color == 'blue'){
-                    if( ($plan_qty > $cut_rep_qty ) && $cut_rep_qty != 0){
-                        $status_color='orange';
+                    if($status_color == 'yellow' || $status_color == 'blue'){
+                        if( ($plan_qty > $cut_rep_qty ) && $cut_rep_qty != 0){
+                            $status_color='orange';
+                        }
                     }
+
+                }else if($order == 2){
+                    $status_color = 'orange';
                 }
-
-            }else if($order == 2){
-                $status_color = 'orange';
-            }
-
-
-            $line_breaker++;
-            $temp_line_breaker++; //remove for 4,8 divisions
-            if(($line_breaker-1) == $blocks)
-                goto enough;
-            if($blocks <= 8){
-                if($line_breaker == $break_me_at){
-                    $docs_data.='&nbsp;<br/>';
-                }
-            }else if($blocks > 8){
-                if($temp_line_breaker == $break_me_at){
-                    $temp_line_breaker = 1; //remove for 4,8 divisions
-                    $docs_data.='&nbsp;<br/>';
-                }  
-            }  
             
 
-            $tool_tip_text = "<p style=\"width : 500px\">
-                                <v><c>Style</c> : $style</v><v><c>Schedule No</c> : $schedule</v>
-                                <v><c>Colors</c> : $color</v><v><c>Doc no</c> : $doc_no</v>
-                                <v><c>Cut No : </c> $cut_str</v>
-                                <v><c>Docket Qty : </c>$doc_qty</v>
-                                <v><c>Sewing  Job Qty</c> : $job_qty</v>
-                                <v><c>Cut Remaining Qty </c>: $rem_qty</v>
-                            </p>";
-            $href= "$url&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=$doc_no";
-            $docs_data.="<span class='block'>
-                            <span class='cut-block $status_color'>
-                                <span class='mytooltip'>
-                                    <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
-                                     onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\"
-                                     data-html='true'>
-                                        &nbsp;&nbsp;&nbsp;
-                                    </a>
+
+                $line_breaker++;
+                $temp_line_breaker++; //remove for 4,8 divisions
+                if(($line_breaker-1) == $blocks)
+                    goto enough;
+                if($blocks <= 8){
+                    if($line_breaker == $break_me_at){
+                        $docs_data.='&nbsp;<br/>';
+                    }
+                }else if($blocks > 8){
+                    if($temp_line_breaker == $break_me_at){
+                        $temp_line_breaker = 1; //remove for 4,8 divisions
+                        $docs_data.='&nbsp;<br/>';
+                    }  
+                }  
+            
+
+                $tool_tip_text = "<p style=\"width : 500px\">
+                                    <v><c>Style</c> : $style</v><v><c>Schedule No</c> : $schedule</v>
+                                    <v><c>Colors</c> : $color</v><v><c>Doc no</c> : $doc_no</v>
+                                    <v><c>Cut No : </c> $cut_str</v>
+                                    <v><c>Docket Qty : </c>$doc_qty</v>
+                                    <v><c>Sewing  Job Qty</c> : $job_qty</v>
+                                    <v><c>Cut Remaining Qty </c>: $rem_qty</v>
+                                </p>";
+                $href= "$url&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=$doc_no";
+                $docs_data.="<span class='block'>
+                                <span class='cut-block $status_color'>
+                                    <span class='mytooltip'>
+                                        <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
+                                        onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\"
+                                        data-html='true'>
+                                            &nbsp;&nbsp;&nbsp;
+                                        </a>
+                                    </span>
                                 </span>
-                            </span>
-                        </span>";       
+                            </span>"; 
+            }      
         }  
         if($cut_wip == 0 || $cut_wip == '')
             $docs_data.= "<script>$('#cut-wip-td-$module').remove()</script>"; 
