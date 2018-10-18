@@ -121,7 +121,7 @@
                                 echo "<td>$doc_str</td>";
                                 echo "<td>$rem_qty</td>";
                                 echo "<td><a href='$url' onclick='return confirm_delete(event,this)' 
-                                        class='btn btn-danger btn-sm'>Delete</a></td>";
+                                        class='btn btn-danger btn-sm'>Remove From IPS</a></td>";
                             echo "</tr>";
                         }
                     }
