@@ -296,9 +296,13 @@ if(isset($_POST['submit']))
 		{
 			for($j=0;$j<sizeof($size);$j++)
 			{
-				$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size[$j])."\",".($qty[$j]*$plies[$i]).",9,\"$module-".$docno[$i]."\")";
-		//echo $sql;
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if($qty[$j]*$plies[$i] > 0)
+				{
+					$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size[$j])."\",".($qty[$j]*$plies[$i]).",9,\"$module-".$docno[$i]."\")";
+			//echo $sql;
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
+				
 			}
 		}
 		
@@ -307,7 +311,10 @@ if(isset($_POST['submit']))
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 		//calling the function to insert to bundle craetion data and cps log
-		$inserted = doc_size_wise_bundle_insertion_recut($docno[$i]);
+		// $inserted = doc_size_wise_bundle_insertion_recut($docno[$i]);
+		// if($inserted){
+		// 	//Inserted Successfully
+		// }
 	}
 
 	echo "<h2>Successfully Updated</h2>";

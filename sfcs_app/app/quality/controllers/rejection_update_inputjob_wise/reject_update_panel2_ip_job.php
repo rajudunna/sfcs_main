@@ -98,68 +98,96 @@ table.gridtable td {
 </style>
 <script>
  
-function disp(x)
+function disp(x,y)
 {
-	isNaN(document.getElementById("qty["+x+"]").value)  ?
+	var flag = 0;
+	if(y == 0)
+	{
+		var function_text = "<?php echo getFullURL($_GET['r'],'getuser2.php','R'); ?>";
+		job=document.getElementById("job["+x+"]").value;
+		size=document.getElementById("size["+x+"]").value;
+		qty=document.getElementById("qty["+x+"]").value;
+		var array = [job,size,qty];
+		console.log(array);
+		$.ajax({
+		type: "POST",
+		url: function_text+"?job_number_validate="+array,
+		success: function (response) 
+		{
+            if(response == 1)
+			{
+				sweetAlert('You Are Rejecting More than eligible quantity');
+				flag = 1;
+				document.getElementById("qty["+x+"]").value = '0';
+			}
+		}
+		});
+
+	}
+	if(flag == 0)
+	{
+		isNaN(document.getElementById("qty["+x+"]").value)  ?
 		document.getElementById("qty["+x+"]").style.backgroundColor="white" : 
 		document.getElementById("qty["+x+"]").style.backgroundColor="red";
 	//document.getElementById("demos"+x).style.backgroundColor="red";
 	
-	document.getElementById("test["+x+"]").value=0;
-	//val=document.input["ref["+x+"]"].value;
-	style=document.getElementById("style["+x+"]").value;
-	schedule=document.getElementById("schedule["+x+"]").value;
-	color=document.getElementById("color["+x+"]").value;
-	size=document.getElementById("size["+x+"]").value;
-	shift=document.getElementById("shift["+x+"]").value;
-	job=document.getElementById("job["+x+"]").value;
-	forms=document.getElementById("form["+x+"]").value;
-	qty=document.getElementById("qty["+x+"]").value;
-	modno=document.getElementById("mods["+x+"]").value;
-	
-	document.getElementById("modules["+x+"]").value=document.getElementById("mods["+x+"]").value;;
-	
-	//alert(size+"-"+job+"-"+forms+"-"+color+"-"+style+"-"+schedule+"-"+modno);
-	
-	breakup=0;
-	for(i=0;i<33;i++)
-	{
-		//alert(x+"-"+i);
-		if(parseInt(document.getElementById("ref["+x+"]["+i+"]").value)>0)
+		document.getElementById("test["+x+"]").value=0;
+		//val=document.input["ref["+x+"]"].value;
+		style=document.getElementById("style["+x+"]").value;
+		schedule=document.getElementById("schedule["+x+"]").value;
+		color=document.getElementById("color["+x+"]").value;
+		size=document.getElementById("size["+x+"]").value;
+		shift=document.getElementById("shift["+x+"]").value;
+		job=document.getElementById("job["+x+"]").value;
+		forms=document.getElementById("form["+x+"]").value;
+		qty=document.getElementById("qty["+x+"]").value;
+		modno=document.getElementById("mods["+x+"]").value;
+		
+		document.getElementById("modules["+x+"]").value=document.getElementById("mods["+x+"]").value;;
+		
+		//alert(size+"-"+job+"-"+forms+"-"+color+"-"+style+"-"+schedule+"-"+modno);
+		
+		breakup=0;
+		for(i=0;i<33;i++)
 		{
-			breakup=breakup + parseInt(document.getElementById("ref["+x+"]["+i+"]").value);
+			//alert(x+"-"+i);
+			if(parseInt(document.getElementById("ref["+x+"]["+i+"]").value)>0)
+			{
+				breakup=breakup + parseInt(document.getElementById("ref["+x+"]["+i+"]").value);
+			}
+			
 		}
 		
-	}
-	
-	if(qty>0)
-	{
-		document.getElementById("qty["+x+"]").style.backgroundColor="red";
-		document.getElementById("test["+x+"]").value=0;
-		if(style.length>0 && schedule.length>0 && color.length>0 && size.length>0 && job.length>0 && forms.length>0 && modno!=0 && shift!=0 && forms!=0)
+		if(qty>0)
 		{
-			if(qty==breakup)
+			document.getElementById("qty["+x+"]").style.backgroundColor="red";
+			document.getElementById("test["+x+"]").value=0;
+			if(style.length>0 && schedule.length>0 && color.length>0 && size.length>0 && job.length>0 && forms.length>0 && modno!=0 && shift!=0 && forms!=0)
 			{
-				document.getElementById("qty["+x+"]").style.backgroundColor="lightgreen";
-				document.getElementById("test["+x+"]").value=1;
+				if(qty==breakup)
+				{
+					document.getElementById("qty["+x+"]").style.backgroundColor="lightgreen";
+					document.getElementById("test["+x+"]").value=1;
+				}
 			}
+			else
+			{
+				sweetAlert('Please fill all the required details','','warning');
+				document.getElementById("qty["+x+"]").value=0;
+				document.getElementById("demo"+x).style.backgroundColor="red";
+				document.getElementById("demos"+x).style.backgroundColor="red";
+				document.getElementById("test["+x+"]").value=0;
+				
+			}		
 		}
 		else
 		{
-			sweetAlert('Please fill all the required details','','warning');
-			document.getElementById("qty["+x+"]").value=0;
 			document.getElementById("demo"+x).style.backgroundColor="red";
 			document.getElementById("demos"+x).style.backgroundColor="red";
 			document.getElementById("test["+x+"]").value=0;
-			
-		}		
+		}
 	}
-	else
-	{
-		document.getElementById("demo"+x).style.backgroundColor="red";
-		document.getElementById("demos"+x).style.backgroundColor="red";
-		document.getElementById("test["+x+"]").value=0;
-	}
+	
 }
 
 
@@ -417,11 +445,11 @@ for($i=0;$i<15;$i++)
   
   echo "<td class=xl11531661 style='border-left:none' >
   <input type=\"hidden\" id=\"modules[$i]\" style=\"border-style:none;\" name=\"modules[$i]\" size=\"5\" value=\"\">
-  <input type=\"text\" id=\"qty[$i]\" class=\"integer\" style=\"border-style:none;\" name=\"qty[$i]\" size=\"5\" value=\"\" onkeyup='verify_alpha(event)' onchange=\"disp($i)\"> <input type=\"hidden\" id=\"test[$i]\" name=\"test[$i]\" value=\"0\"></td>";
+  <input type=\"text\" id=\"qty[$i]\" class=\"integer\" style=\"border-style:none;\" name=\"qty[$i]\" size=\"5\" value=\"\" onkeyup='verify_alpha(event)' onchange=\"disp($i,0)\"> <input type=\"hidden\" id=\"test[$i]\" name=\"test[$i]\" value=\"0\"></td>";
   
   for($m=0;$m<sizeof($rejections_array);$m++)
   {
-	echo "<td><input type=\"text\" size='1' class=\"integer\" onkeyup='verify_alpha(event)' style=\"border-style:none;\" id=\"ref[$i][$rej_val[$m]]\" name=\"ref[$i][$rej_val[$m]]\" value=\"\" onchange=\"disp($i)\"></td>";
+	echo "<td><input type=\"text\" size='1' class=\"integer\" onkeyup='verify_alpha(event)' style=\"border-style:none;\" id=\"ref[$i][$rej_val[$m]]\" name=\"ref[$i][$rej_val[$m]]\" value=\"\" onchange=\"disp($i,1)\"></td>";
   } 
   
   echo "</tr>";
