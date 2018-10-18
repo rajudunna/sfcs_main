@@ -296,8 +296,8 @@ if(isset($_POST['Update']))
 							$input_job=$job[$x];
 							$doc=$job[$x];
 						}
-						$size_value1=ims_sizes($order_tid,$schedule[$x],$style[$x],$color[$x],$size[$x],$link);
-						$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,ref1,remarks,log_date,doc_no,log_user,input_job_no) values (\"".$style[$x]."\",\"".$schedule[$x]."\",\"".$color[$x]."\",\"".$size_value1."\",".$qty[$x].",\"".$qms_tran_type."\",\"".implode("$",$ref_code)."\",\"".$module[$x]."-".$team[$x]."-".$form[$x]."\",\"".date("Y-m-d")."\",\"".$doc."\",'$username',\"".$input_job."\")";
+						//$size_value1=ims_sizes($order_tid,$schedule[$x],$style[$x],$color[$x],$size[$x],$link);
+						$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,ref1,remarks,log_date,doc_no,log_user,input_job_no) values (\"".$style[$x]."\",\"".$schedule[$x]."\",\"".$color[$x]."\",\"".$size[$x]."\",".$qty[$x].",\"".$qms_tran_type."\",\"".implode("$",$ref_code)."\",\"".$module[$x]."-".$team[$x]."-".$form[$x]."\",\"".date("Y-m-d")."\",\"".$doc."\",'$username',\"".$input_job."\")";
 						//echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Sql Error4 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
@@ -382,9 +382,9 @@ if(isset($_POST['Update']))
 					$mapped_color = $row_result_selecting_qry['mapped_color'];
 					$b_style = $row_result_selecting_qry['style'];
 				}
-				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej where id = $id_to_update";
+				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej,recevied_qty=recevied_qty-$array_rej where id = $id_to_update";
 				$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$array_rej where id = $ref_no";
+				$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty-$array_rej where id = $ref_no";
 				$updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$updated = updateM3TransactionsRejections($ref_no,$b_op_id,$r_qty,$r_reasons);
 				if($updated == true){
@@ -427,11 +427,6 @@ if(isset($_POST['Update']))
 			}
 		}
 		$usr_msg.="</table>";
-		//die();
-		
-		//Validations
-		//echo $usr_msg;
-		
 		$replace_ref=array_unique($replace_ref);
 		echo "<div class='panel panel-primary'><div class='panel-heading'>Rejection Replacement Update Panel</div><div class='panel-body'>";
 		echo "<form name=\"input\" method=\"post\" action=\"?r=".$_GET['r']."\">";
