@@ -7,6 +7,7 @@ $module=$_REQUEST['module'];
 $description =$_REQUEST['description'];
 $status =$_REQUEST['table_status'];
 $sections =$_REQUEST['sections'];
+$sec1 =$_REQUEST['sec1'];
 $module_color =$_REQUEST['module_color'];
 $module_label =$_REQUEST['module_label'];
 $mapped_cut_table =$_REQUEST['mapped_cut_table'];
@@ -68,17 +69,17 @@ if (empty($module)||empty($sections)) {
 			}
 
 
-			$sections_query1="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sections'";
-			$result3 = mysqli_query($conn, $sections_query1);
-			$row = mysqli_fetch_assoc($result3);
-			$total_modules=$row['module_concat'];
+			// $sections_query1="SELECT GROUP_CONCAT(module_id)as module_concat FROM $bai_pro3.`plan_modules` WHERE section_id='$sections'";
+			// $result3 = mysqli_query($conn, $sections_query1);
+			// $row = mysqli_fetch_assoc($result3);
+			// $total_modules=$row['module_concat'];
 
 
 
 
-			$sql1 = "update $bai_pro3.sections_db set sec_id='$sections',sec_head='$sections',sec_mods='$total_modules' where sec_head='$sections'";
+			// $sql1 = "update $bai_pro3.sections_db set sec_id='$sections',sec_head='$sections',sec_mods='$total_modules' where sec_head='$sections'";
 				
-			 if (mysqli_query($conn, $sql1)) {
+			 if (mysqli_query($conn, $sql5)) {
 				$url=getFullURL($_GET['r'],'add_module.php','N');
 				//echo $url;
 				//echo "Record updated successfully";
@@ -182,11 +183,11 @@ if (empty($module)||empty($sections)) {
 	  $result3 = mysqli_query($conn, $sections_query);
     $row = mysqli_fetch_assoc($result3);
 		$total_modules=$row['module_concat'];
-		$sql1 = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods)
+		$sql123 = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods)
 			VALUES ('$sections','$sections','$total_modules')";
-	   if (mysqli_query($conn, $sql1)) {
+	   if (mysqli_query($conn, $sql123)) {
 							 	} else {
-										 echo "Error: " . $sql1 . "<br>" . mysqli_error($conn);
+										 echo "Error: " . $sql123 . "<br>" . mysqli_error($conn);
 					    	}
 
 	
