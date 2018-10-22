@@ -113,7 +113,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     if($ims_wip == 0){
         $break_me_at = 11;
     }
-
+    
     $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
@@ -191,7 +191,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $job_qty_query = "SELECT SUM(carton_act_qty) as job_qty from $bai_pro3.pac_stat_log_input_job 
                             where input_job_no_random IN ($jobs)";              
             $job_qty_result = mysqli_query($link,$job_qty_query);  
-           
+            
             $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty from $bai_pro3.cps_log 
                             where doc_no = '$doc_no' and operation_code = $cutting_op_code ";
             $cut_qty_result = mysqli_query($link,$cut_qty_query);
@@ -206,7 +206,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $jrow  = mysqli_fetch_array($job_qty_result);
             $crow  = mysqli_fetch_array($cut_qty_result);
             $crrow = mysqli_fetch_array($cut_report_result);
-        
+            
             $job_qty = $jrow['job_qty'];
             $scan_qty= $jrow['scan_qty'];
             $doc_qty = $crow['cut_qty'];
@@ -310,13 +310,14 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                                 </span>
                             </span>"; 
             }      
-        }  
-        if($cut_wip == 0 || $cut_wip == '')
-            $docs_data.= "<script>$('#cut-wip-td-$module').remove()</script>"; 
-        else
-            $docs_data.= "<script>$('#cut-wip-$module').html('$cut_wip')</script>";      
+        }       
     }   
     enough : NULL; 
+    if($cut_wip == 0 || $cut_wip == '')
+        $docs_data.= "<script>$('#cut-wip-td-$module').remove()</script>"; 
+    else
+        $docs_data.= "<script>$('#cut-wip-$module').html('$cut_wip')</script>"; 
+
     return $docs_data; 
 }
 
