@@ -552,7 +552,13 @@ if(isset($_POST['update1']))
 	$embs = 'Send PF';$embr='Receive PF';$opary1 = array();
 	for($i=0;$i<sizeof($replace);$i++)
 	{
-		$emb_operations = "SELECT tbl_style_ops_master.operation_code AS opcode,tbl_orders_ops_ref.operation_name as opname  FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON 
+		if($replace[$i]>0)
+		{
+			$temp=array();
+			//echo "temp=".$replace_ref[$i];
+			$temp=explode("$",$replace_ref[$i]);
+
+			$emb_operations = "SELECT tbl_style_ops_master.operation_code AS opcode,tbl_orders_ops_ref.operation_name as opname  FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON 
 			$brandix_bts.tbl_style_ops_master.operation_name = $brandix_bts.`tbl_orders_ops_ref`.id
 			WHERE style='".$temp[0]."' AND color='".$temp[2]."' 
 			 AND category IN ('$embs','$embr')";
@@ -563,11 +569,7 @@ if(isset($_POST['update1']))
 					array_push($opary1,$sql_row1['opcode']);
 				}
 			}
-		if($replace[$i]>0)
-		{
-			$temp=array();
-			//echo "temp=".$replace_ref[$i];
-			$temp=explode("$",$replace_ref[$i]);
+
 			if(in_array($temp[4],$opary1)){
 				$remarks = 'ENP';
 			}else{
