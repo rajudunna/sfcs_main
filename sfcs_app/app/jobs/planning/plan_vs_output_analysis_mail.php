@@ -172,7 +172,7 @@ $headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
 	}
 	else
 	{
-		print("Mail Not sent Because No Data Found ")."\n";
+		print("mail Not Send Becoz No Data Found ")."\n";
 	}
 	
 ?>
