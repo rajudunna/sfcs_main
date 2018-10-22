@@ -602,7 +602,7 @@ if(isset($_POST['update1']))
 				$mapped_color = $row_result_selecting_qry['mapped_color'];
 				$b_style = $row_result_selecting_qry['style'];
 			}
-			$update_qry = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty+$array_rej where id = $id_to_update";
+			$update_qry = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty+$replace[$i] where id = $id_to_update";
 			// echo $update_qry."<br>";
 			$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -642,7 +642,7 @@ if(isset($_POST['update1']))
 				}
 				if($emb_cut_check_flag)
 				{
-					$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$array_rej WHERE docket_number = '".substr($temp[7],1)."' AND size_id = '".$temp[3]."' AND operation_id = '$post_ops_code'";
+					$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$replace[$i] WHERE docket_number = '".substr($temp[7],1)."' AND size_id = '".$temp[3]."' AND operation_id = '$post_ops_code'";
 					// echo $update_qry_post;
 					$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
