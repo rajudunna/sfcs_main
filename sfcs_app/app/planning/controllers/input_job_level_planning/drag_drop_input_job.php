@@ -688,7 +688,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 <br>
 <div id="dhtmlgoodies_dragDropContainer">
 	<div id="dhtmlgoodies_listOfItems">
-		<div style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;">
+		<div id='scrollable_block' style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;">
 			<p>Jobs</p>		
 		<ul id="allItems">		
 		<?php
@@ -707,7 +707,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					$font_color = 'white';
 				}
 
-				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" data-color='blue' style=\" background-color:$check; border-color:#b8daff; color:#f6f6f6;\">
+				echo "<li class='apply-remove' id=\"".$code_db_new[0]."|".$code_db_new[4]."\" data-color='blue' style=\" background-color:$check; border-color:#b8daff; color:#f6f6f6;\">
 							<strong><font color='$font_color'>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</font></strong>
 						</li>";
 			}
@@ -892,6 +892,15 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 </body>
 
 </html>
-<script src="../../common/js/jquery-1.3.2.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $('.apply-remove').css({'min-width':'134px'});
+        $('#scrollable_block').scroll(function(){
+            $('.apply-remove').css({'border':'1px solid black'});
+            $('.apply-remove').css({'display':'inline-block'});
+        });
+    });
+</script>
 
 
