@@ -107,7 +107,8 @@ function disp(x,y)
 		job=document.getElementById("job["+x+"]").value;
 		size=document.getElementById("size["+x+"]").value;
 		qty=document.getElementById("qty["+x+"]").value;
-		var array = [job,size,qty];
+		op_code = document.getElementById("mods["+x+"]").value;
+		var array = [job,size,qty,op_code];
 		console.log(array);
 		$.ajax({
 		type: "POST",

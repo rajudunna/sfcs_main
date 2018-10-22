@@ -601,7 +601,7 @@ if(isset($_GET['job_number_validate']))
 	{
 		$doc_number[0] = substr($doc_number[0], 1);
 	}
-	$select_qty_qry = "select remaining_qty from $bai_pro3.cps_log where doc_no = '$doc_number[0]' and size_code = '$doc_number[1]' and operation_code = '15'";
+	$select_qty_qry = "select remaining_qty from $bai_pro3.cps_log where doc_no = '$doc_number[0]' and size_code = '$doc_number[1]' and operation_code = '$doc_number[2]'";
 	// echo $select_qty_qry;
 	$result_select_qty_qry = $link->query($select_qty_qry);
 	if($result_select_qty_qry->num_rows > 0)
@@ -619,4 +619,5 @@ if(isset($_GET['job_number_validate']))
 		}
 	}
 }
+
 ?>
