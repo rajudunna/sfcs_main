@@ -895,7 +895,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 
 <script>
     $(document).ready(function(){
-        $('.apply-remove').css({'min-width':'120px'});
+        $('.apply-remove').css({'min-width':'134px'});
         $('#scrollable_block').scroll(function(){
             $('.apply-remove').css({'border':'1px solid black'});
             $('.apply-remove').css({'display':'inline-block'});
