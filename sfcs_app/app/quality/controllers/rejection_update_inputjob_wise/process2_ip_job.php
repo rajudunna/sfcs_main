@@ -542,20 +542,19 @@ if(isset($_POST['update1']))
 	$replace_ref=explode("#",$_POST['replace_ref']);
 
 	$embs = 'Send PF';$embr='Receive PF';$opary1 = array();
-	$emb_operations = "SELECT tbl_style_ops_master.operation_code AS opcode,tbl_orders_ops_ref.operation_name as opname  FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON 
+	for($i=0;$i<sizeof($replace);$i++)
+	{
+		$emb_operations = "SELECT tbl_style_ops_master.operation_code AS opcode,tbl_orders_ops_ref.operation_name as opname  FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON 
 			$brandix_bts.tbl_style_ops_master.operation_name = $brandix_bts.`tbl_orders_ops_ref`.id
 			WHERE style='".$temp[0]."' AND color='".$temp[2]."' 
 			 AND category IN ('$embs','$embr')";
-	 $sql_result1=mysqli_query($link,$emb_operations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	 while($sql_row1=mysqli_fetch_array($sql_result1))
-	{
-		if($sql_row1['opcode']!='' && $sql_row1['opname']!=''){
-			array_push($opary1,$sql_row1['opcode']);
-		}
-	}		
-
-	for($i=0;$i<sizeof($replace);$i++)
-	{
+			$sql_result1=mysqli_query($link,$emb_operations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row1=mysqli_fetch_array($sql_result1))
+			{
+				if($sql_row1['opcode']!='' && $sql_row1['opname']!=''){
+					array_push($opary1,$sql_row1['opcode']);
+				}
+			}
 		if($replace[$i]>0)
 		{
 			$temp=array();
