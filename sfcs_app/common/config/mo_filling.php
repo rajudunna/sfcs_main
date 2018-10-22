@@ -174,7 +174,8 @@
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 		//getting style,color,schedule,size
-		$order_details = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id'";
+		$order_details = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data 
+						  where bundle_number = '$ref_id' and operation_id = '$op_code'";
 		$order_result = mysqli_query($link,$order_details) or exit('Unable to get info from BCD');
 		while($row = mysqli_fetch_array($order_result)){
 			$style = $row['style'];
