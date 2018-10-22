@@ -168,6 +168,7 @@
             try{
                 var sec_data = JSON.parse(data) ;
                 $('#sec-'+section).html(sec_data.data);
+                $('body').append(sec_data.java_scripts);
                 $('#sec-load-'+section).css('display','none');
                 $('[data-toggle="tooltip"]').tooltip(); 
 
