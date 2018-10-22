@@ -14,16 +14,20 @@
 		$ref_nos_query = "Select group_concat(distinct(bundle_number)) as bundle_nos from $brandix_bts.bundle_creation_data 
 						  where operation_id in ($op_codes) and trim(schedule)='".trim($schedule)."' 
 						  and trim(color)='".trim($color)."'";
-		//echo $ref_nos_query.'<br/>';
 		$ref_nos_result = mysqli_query($link,$ref_nos_query) or exit('Problem in getting bundles from BCD');	
 		while($row = mysqli_fetch_array($ref_nos_result)){
 			$bundle_nos = $row['bundle_nos'];
 		}	
+		if(sizeof($bundle_nos) == 0)
+			return true;
+
 		// ----Transaction begin---
 		mysqli_begin_transaction($link);
 		$delete_bcd_query = "Delete from $brandix_bts.bundle_creation_data where bundle_number in ($bundle_nos)";
 		//echo $delete_bcd_query;
-		$delete_bcd_data = mysqli_query($link,$delete_bcd_query) or exit('Problem While deleting Bundle Creation Data');
+		$delete_bcd_data = mysqli_query($link,$delete_bcd_query) or exit('Problem While deleting Bundle cps Data');
+		$delete_cps_qry = "Delete from $bai_pro3.cps_log where id in ($bundle_nos)";
+		$deletedelete_cps_qry = mysqli_query($link,$delete_cps_qry) or exit('Problem While deleting Bundle Creation Data');
 		if($delete_bcd_data){
 			$delete_mos_query = "Delete from $bai_pro3.mo_operation_quantites where ref_no in ($bundle_nos)";
 			$delete_mos_result = mysqli_query($link,$delete_mos_query) or 
@@ -170,7 +174,8 @@
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 		//getting style,color,schedule,size
-		$order_details = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id'";
+		$order_details = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data 
+						  where bundle_number = '$ref_id' and operation_id = '$op_code'";
 		$order_result = mysqli_query($link,$order_details) or exit('Unable to get info from BCD');
 		while($row = mysqli_fetch_array($order_result)){
 			$style = $row['style'];
@@ -738,6 +743,11 @@
 			$mapped_color = $b_colors;
 			foreach($operation_codes as $index => $op_code)
 			{
+				if($op_code != 15)
+				{
+					$send_qty = 0; 
+				}
+
 				$b_cps_qty[$op_code] = "INSERT INTO $bai_pro3.cps_log(`operation_code`,`short_key_code`,`cut_quantity`,`remaining_qty`,`doc_no`,`size_code`,`size_title`) VALUES";
 				$b_cps_qty[$op_code] .= '("'.$op_code.'","'. $short_key_code[$index].'","'.$b_in_job_qty.'","0","'. $b_job_no.'","'.$b_size_code.'","'. $b_sizes.'")';
 				$bundle_creation_result_002 = $link->query($b_cps_qty[$op_code]);

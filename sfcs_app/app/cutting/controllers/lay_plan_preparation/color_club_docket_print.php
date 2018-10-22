@@ -3536,8 +3536,8 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td class=xl764118 style='width: 38px;'>Batch</td>
   <td class='xl764118' style='width: 112px;'>Fabric Name</td>
   <td class=xl764118>Lot No</td>
- 
   <td class=xl764118>Shade</td>
+  <td class=xl764118>Location</td>
   <td class=xl774118>Roll </br> No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Length</td>
@@ -3564,6 +3564,7 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td class=xl744118>Excess</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
+  <td class=xl744118>&nbsp;</td>
   <td class=xl744118>+</td>
   <td class=xl744118>-</td>
   <!--<td class=xl744118>&nbsp;</td>
@@ -3588,6 +3589,7 @@ if(sizeof($roll_det)>0)
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $lot_det[$i]; ?></td>
 			
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $shade_det[$i]; ?></td>
+			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $locan_det[$i]; ?></td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $roll_det[$i]; ?></td>
 			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
 			<td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
@@ -3613,6 +3615,7 @@ if(sizeof($roll_det)>0)
 		<td class=xl804118></td>
 		<td class=xl814118 style='font-size: 100%;'></td>
 		
+		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
@@ -3663,6 +3666,7 @@ else {
 		<td class=xl804118></td>
 		<td class=xl814118 style='font-size: 100%;'></td>
 		
+		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>

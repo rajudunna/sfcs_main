@@ -1,16 +1,8 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<!-- then dataTables -->
-<link href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />   
-
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="/sfcs_app/common/js/jquery-1.11.1.min.js"></script>
+<link href="/sfcs_app/common/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />  
+<script src="/sfcs_app/common/js/jquery.dataTables.min.js"></script>
 	<?php
-	// $servername = "192.168.0.110:3326";
-	// $username = "baiall";
-	// $password = "baiall";
-	// $dbname = "bai_pro3";
-
-	// Create connection
-	// $conn = new mysqli($servername, $username, $password, $dbname);
+	
 	// Check connection
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$conn=$link;
@@ -28,11 +20,12 @@
 		<thead>
 		<tr>
 		<th>S.No</th>
-		<th>Section Name</th>
 		<th>Module Name</th>
-        <th>Module Description</th>
         <th>Module Color</th>
         <th>Module Label</th>
+		<th>Section Name</th>
+		<th>Module Description</th>		
+		<th>Mapped Cut Table</th>
 		<th>Status</th>
 		<th> Edit / Delete </th>
 		</tr>
@@ -47,16 +40,22 @@
             $color= urlencode($row["color"]);
             $label=$row["label"];
 			$module_description=$row["module_description"];
+			$mapped_cut_table=$row["mapped_cut_table"];
+			if ($mapped_cut_table == '' or $mapped_cut_table == NULL)
+			{
+				$mapped_cut_table = ' - ';
+			}
 			
 			echo "<tr>
 			<td>".$sno++."</td>
-			<td>".$row["section"]."</td>
 			<td>".$row["module_name"]."</td>
-            <td>".$row["module_description"]."</td>
             <td>".$row["color"]."</td>
             <td>".$row["label"]."</td>
+			<td>".$row["section"]."</td>
+			<td>".$row["module_description"]."</td>
+			<td>".$mapped_cut_table."</td>
 			<td>".$row["status"]." </td>
-			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove'>Delete</a></td>
+			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&mapped_cut_table=$mapped_cut_table&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove'>Delete</a></td>
 			</tr>";
 		}
 

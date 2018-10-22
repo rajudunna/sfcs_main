@@ -1,38 +1,10 @@
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-
-    <meta charset="utf-8">
-    <title></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-   
-    <?php 
-    include($_SERVER['DOCUMENT_ROOT'].'/template/header.php'); ?>
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!-- Fav and touch icons -->
-    
-</head>
-
-<body>
      <?php
     if(isset($_REQUEST['rowid']))
     {
         $id=$_REQUEST['rowid'];
         $module=$_REQUEST['module_name'];
         $description=$_REQUEST['module_description'];
-       
+        $mapped_cut_table =$_REQUEST['mapped_cut_table'];
 		$section=$_REQUEST['section'];
         $status=$_REQUEST['status'];
         $module_color=$_REQUEST['module_color'];
@@ -53,6 +25,7 @@
 
             <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
                 <input type='hidden' id='id' name='id' value="<?php echo $id; ?>" >
+                <input type='hidden' id='sec1' name='sec1' value="<?php echo $section; ?>" >
                 <div class="container-fluid shadow">
                     <div class="row">
                         <div id="valErr" class="row viewerror clearfix hidden">
@@ -72,9 +45,14 @@
 				<div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="module">Module</label>
 			    <div class="controls col-sm-9">
-                    
-                <input id="module" type="text" class="form-control k-textbox float" data-role="text" placeholder="Module" name="module" value="<?php echo $module; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
-                
+                <?php if($module!=''){   
+               echo" <input id='module' type='text' class='form-control k-textbox float' data-role='text' placeholder='Module' name='module' readonly value='$module' required='required' data-parsley-errors-container='#errId1'><span id='errId1' class='error'></span></div>";
+                }
+                else{
+                    echo" <input id='module' type='text' class='form-control k-textbox float' data-role='text' placeholder='Module' name='module' value='$module' required='required' data-parsley-errors-container='#errId1'><span id='errId1' class='error'></span></div>";
+
+                }
+                ?>
 				</div>
 				</div>
 						
@@ -86,19 +64,24 @@
    <?php 
    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
    $conn=$link;
-		echo "<select id='sections' class='form-control' data-role='select'  name='sections' data-parsley-errors-container='#errId2'>";
-		if($id!=''){
-			echo "<option value='".$section."' ".$selected.">$section</option>";
-		}else{
-		echo "<option value='Please Select'>Please Select</option><br/>\r\n";
-		}
+		echo "<select id='sections' class='form-control' data-role='select'  name='sections'  data-parsley-errors-container='#errId2' required>";
+		
+        echo "<option value='Please Select'  disabled selected>Please Select</option><br/>\r\n";
 		$query = "SELECT sec_id,sec_name FROM $bai_pro3.sections_master";
 		$result = $conn->query($query);
 		while($row = $result->fetch_assoc()) 
 		{
 			$operation_id=$row['id'];
 			$sec_name=$row['sec_name'];
-			echo "<option value='".$sec_name."' ".$selected.">$sec_name</option>";
+            if($section == $sec_name){
+                echo "<option value='".$sec_name."' selected>$sec_name</option>";
+
+            }else{
+                echo "<option value='".$sec_name."'>$sec_name</option>";
+
+            }
+            
+
 			
 		}
 		echo "</select>";
@@ -142,7 +125,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="description">Module Color</label>
 			    <div class="controls col-sm-9">
 				<div id="cp2" class="input-group colorpicker-component"> 
-                    <input type="text" value="<?= $module_color ?? "#00AABB"; ?>" class="form-control" readonly="true" name="module_color"/> 
+                    <input type="text" value="<?= ($module_color)?$module_color: "#00AABB"; ?>" class="form-control" readonly="true" name="module_color"/> 
                     <span class="input-group-addon"><i></i></span>
                     </div>
 				</div>
@@ -156,25 +139,48 @@
                 
 		</div></div>
 		
-		
-		
-
-    <div class="col-md-4" style="visibility:hidden;"><div class="form-group">
-       
-            <div class='input-group date' id='datetimepicker11' >
-                <input type='text' class="form-control" name='datetimepicker11'/>
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar">
-                    </span>
-                </span>
+		    
+    <div class="col-md-4"><div class="form-group">
+            <label class="control-label control-label-left col-sm-3" for="table_status">Cut Table</label>
+            <div class="controls col-sm-9">
+                <select class="form-control" name="mapped_cut_table" id="mapped_cut_table">
+                    <option value="">Please Select</option>
+                    <?php 
+                        $get_cut_table_qury = "SELECT tbl_name FROM bai_pro3.`tbl_cutting_table` WHERE status='active';";
+                        $get_cut_table_result = mysqli_query( $link, $get_cut_table_qury);
+                        while ($row = mysqli_fetch_array($get_cut_table_result))
+                        {
+                            if ($mapped_cut_table == $row['tbl_name'])
+                            {
+                                $selected = 'selected';
+                            }
+                            else
+                            {
+                                $selected = '';
+                            }
+                            
+                            echo "<option value='".$row['tbl_name']."' $selected>".$row['tbl_name']."</option>";
+                        }
+                    ?>
+                </select>
             </div>
         </div>
     </div>
-   
-		
-		
+
+    <div class="col-md-4" style="visibility:hidden;"><div class="form-group">
+       
+       <div class='input-group date' id='datetimepicker11' >
+           <input type='text' class="form-control" name='datetimepicker11'/>
+           <span class="input-group-addon">
+               <span class="glyphicon glyphicon-calendar">
+               </span>
+           </span>
+       </div>
+   </div>
+</div>
+    		
     <script type="text/javascript">
-    $('#cp2').colorpicker();
+        $('#cp2').colorpicker();
     </script>
     <script>
         $(function () {
@@ -184,19 +190,12 @@
             });
         });
     </script>
-		
-		
-		
-
-		<div class="col-md-4"><div class="form-group" style="margin-top: 0px;">
-			    
+	<div class="col-md-4"><div class="form-group" style="margin-top: 0px;">
 			    
                 
-		<button id="btn_save" type="submit" class="btn btn-primary" name="btn_save" style="margin-top: 0px;margin-left: -260px;">Save</button></div></div></div></div>
+		<button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button></div></div></div></div>
                                     </div>
                                 
-
-
                     </div>
                 </div>
             </form>
@@ -204,17 +203,3 @@
     </div>
     
 <?php include('view_modules.php'); ?>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-

@@ -295,8 +295,18 @@ if(isset($_POST['submit']))
 			$temp[]=$size[$j]."=".$qty[$j];
 		}
 		
+		
+		$query="SELECT* FROM $bai_pro3.`cuttable_stat_log` WHERE order_tid='$order_tid'";
+		$sql_result111=mysqli_query($link, $query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	    while($sql_row111=mysqli_fetch_array($sql_result111))
+	    {
+		$tid=$sql_row111['tid'];
+	    }
+		$sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength,cuttable_ref) values (\"".date("Y-m-d")."\",".$cat[$i].",\"$order_tid\",".$mklen[$i].",".$tid.")";
+		
 		$sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength) values (\"".date("Y-m-d")."\",".$cat[$i].",\"$order_tid\",".$mklen[$i].")";
 		//echo $sql1;
+//echo $sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		

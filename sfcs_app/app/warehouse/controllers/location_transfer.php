@@ -250,6 +250,8 @@ if($sql_num_check>0)
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$tid=$sql_row['tid'];
+			$barcode_number=$sql_row['barcode_number'];
+			$ref_tid=$sql_row['ref_tid'];
 			$location=$sql_row['ref1'];
 			$box=$sql_row['ref2'];
 			$qty_rec=$sql_row['qty_rec'];
@@ -272,7 +274,7 @@ if($sql_num_check>0)
 				}
 				echo '</select></td>';
 				echo '<td><input type="text" class="form-control" name="remarks[]" value="">';
-				echo '<input type="hidden" name="s_location[]" value="'.$location.'"><input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="qty_rec[]" value="'.$qty_rec.'"></td>';
+				echo '<input type="hidden" name="s_location[]" value="'.$location.'"><input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="qty_rec[]" value="'.$qty_rec.'"><input type="hidden" name="barcode_number[]" value="'.$barcode_number.'"><input type="hidden" name="ref_tid[]" value="'.$ref_tid.'"></td>';
 			}
 			echo "</tr>";	
 		}

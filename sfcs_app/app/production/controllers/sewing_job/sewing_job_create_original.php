@@ -716,7 +716,7 @@
 											}
 											// Sewing Job Qty End
 											// var_dump($combo);
-											echo "<div class='col-md-6'>
+											echo "<div class='col-md-2'>
 												<table class='table table-bordered'>
 													<tr>
 														<th style='display: none;'><center>Mix Cut Jobs</center></th>
@@ -726,7 +726,7 @@
 													<tr>
 														<td style='display: none;'>
 															<center>
-																<select name='mix_jobs' id='mix_jobs' required class='form-control'>
+																<select name='mix_jobs' id='mix_jobs' class='form-control'>
 																	<option value=''>Please Select</option>
 																	<option value='1'>Yes</option>
 																	<option value='2' selected>No</option>
@@ -735,7 +735,7 @@
 														</td>
 														<td style='display: none;'>
 															<center>
-																<select name='exces_from' id='exces_from' required class='form-control'>
+																<select name='exces_from' id='exces_from' class='form-control'>
 																	<option value=''>Please Select</option>
 																	<option value='1'>First Cut</option>
 																	<option value='2'>Last Cut</option>

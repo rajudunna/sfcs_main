@@ -77,6 +77,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 						?>
 						<label for="select_buyer">Select Buyer: </label><br>
 						<select name="buyer" class="form-control">
+						<option value="ALL" selected="ALL">ALL</option>
+
 							<?php
 								$sql3="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 								//echo $sql3;
@@ -96,7 +98,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 								}
 								}
 								?>
-						</select>
+						</select> 
 					</div>
 					<div class='col-sm-1'>
 						<br/><input type="submit" name="submit" onclick='return verify()' value="Show" class="btn btn-primary">
@@ -3040,13 +3042,15 @@ if(isset($_POST['submit']))
 		if($buyer_name == "ALL")
 		{
 			$sql="select distinct module from $bai_pro.grand_rep where section in(".$sec.") and date between \"$date\" and \"$edate\" order by module*1";
-			// echo $sql;
+			//echo $sql1;
+			//echo "Hello";
 		}
 		else
 		{
 			$sql="select distinct module from $bai_pro.grand_rep where section in(".$sec.") and date between \"$date\" and \"$edate\" and buyer like \"%".$buyer_name."%\" order by module*1";
 			// echo $sql;
 		}
+		//echo $sql;
 		//$sql="select distinct mod_no from pro_mod where mod_sec in(".$sec.") and mod_date between \"$date\" and \"$edate\" and buyer=\"".$buyer_name."\" order by mod_no";
 		mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3094,7 +3098,7 @@ if(isset($_POST['submit']))
 			{
 				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\"";	
 			}
-
+              //echo $sql2;
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -3471,7 +3475,8 @@ if(isset($_POST['submit']))
 				echo $table_temp;
 				$table.=$table_temp;
 				// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-				$eff_grand=$eff_grand+round(($peff_a_new+$peff_b_new)/(($act_hrsa+$act_hrsb)/7.5),0);
+				if($act_hrsa+$act_hrsb == '' || $act_hrsa+$act_hrsb == 0 )
+					$eff_grand=$eff_grand+round(($peff_a_new+$peff_b_new)/(($act_hrsa+$act_hrsb)/7.5),0);
 				$i3=$i3+1;
 				$table_temp="<td  class=xl8926424>".round((($pstha+$psthb)/($pclha+$pclhb))*100,0)."%</td>";
 
@@ -3599,7 +3604,14 @@ if(isset($_POST['submit']))
 			// Actual Eff % taken from Actual Clock hours.   
 				if(($clha+$clhb)>0)
 				{
-					$table_temp="<td class=xl9526424>".round((round(($stha/(($avail_A_fix-$absent_A_fix)*$act_hrsa))*100,0)+round(($sthb/(($avail_B_fix-$absent_B_fix)*$act_hrsb))*100,0))/(($act_hrsa+$act_hrsb)/7.5),0)."%</td>";
+					if($act_hrsa+$act_hrsb != 0 && $avail_A_fix-$absent_A_fix != 0 && $avail_B_fix-$absent_B_fix != 0)
+						$table_temp="<td class=xl9526424>".
+						round((round(($stha/(($avail_A_fix-$absent_A_fix)*$act_hrsa))*100,0)+
+						round(($sthb/(($avail_B_fix-$absent_B_fix)*$act_hrsb))*100,0))/(($act_hrsa+$act_hrsb)/7.5),0)."
+						%</td>";
+					else
+						$table_temp="<td class=xl9526424>0%</td>";
+
 					echo $table_temp;
 					$table.=$table_temp;
 				}
@@ -3952,7 +3964,11 @@ if(isset($_POST['submit']))
 
 
 			// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-			$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			if( $totalmodules== '' || $act_hrsa+$act_hrsb == '' || $totalmodules== 0 || $act_hrsa+$act_hrsb == 0) 
+				$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			else
+				$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>0%</td>";
+
 			echo $table_temp;
 			$table.=$table_temp;
 			$table_temp="<td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>".($auf_A+$auf_B)."</td>";
@@ -4018,7 +4034,7 @@ if(isset($_POST['submit']))
 
 			if($x_sec==sizeof($section_array))
 			{
-				include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
+				//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
 				
 				if(sizeof($section_array) > 1)
 				{	
@@ -4040,6 +4056,7 @@ td{
 #text_color{
 	color=white;
 }
+td { word-wrap:break-word;}
 </style>
 <?php
 unlink("Eff_Report.xls");
@@ -4053,3 +4070,6 @@ fclose($fh1);
 
 </div>
 </div>
+
+
+

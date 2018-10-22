@@ -97,7 +97,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 							WHERE input_job_no = '$input_job' and input_job_no_random = '$input_job_random'";
 							//echo $count_sch_qry2 ;
 							$result12=mysqli_query($link, $count_sch_qry2) or die("Error108-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-							
+							update_barcode_sequences($input_job_random_min);
 							 //die();
 							//echo 'Input Job NO '.$input_job.'clubbed to '.$value2.' and Random Number '.$input_job_random_min.' </br>';
 							//echo "Updated data successfully\n";
@@ -419,5 +419,23 @@ function min_vals($ary){
 	}
 	return $temp;
 }
+
+function update_barcode_sequences($input_job_random){
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    $query = "select group_concat(tid order by tid DESC) as tid from $bai_pro3.pac_stat_log_input_job 
+             where input_job_no_random = $input_job_random";
+    $result = mysqli_query($link,$query);
+    while($row = mysqli_fetch_array($result)){
+        $tids = $row['tid'];
+        $tid = explode(',',$tids);
+        $counter = sizeof($tid);
+        foreach($tid as $id){
+            $update_query = "Update bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid='$id'";
+            mysqli_query($link,$update_query) or exit('Unable to update');
+            $counter--;
+        }
+	}
+	return;
+}  
 ?>
 
