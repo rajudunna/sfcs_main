@@ -6,7 +6,7 @@ $go_back_to = $_GET['go_back_to'];
 $bundle_no = array();
 $op_code = '15';
 $cut_done_qty = array();
-$qry_to_find_in_out = "select * from $brandix_bts.bundle_creation_data where docket_number='$	'";
+$qry_to_find_in_out = "select * from $brandix_bts.bundle_creation_data where docket_number='$doc_no_ref'";
 $qry_to_find_in_out_result = $link->query($qry_to_find_in_out);
 error_reporting(0);
 if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
