@@ -20,7 +20,7 @@
         "db_host": "192.168.0.110",
         "db_user": "baiall",
         "db_pass": "baiall",
-        "db_port": "3336"
+        "db_port": "3324"
     },
     "mssql_database_info": {
         "db_host": "localhost",

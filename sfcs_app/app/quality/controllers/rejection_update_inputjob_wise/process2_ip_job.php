@@ -170,7 +170,7 @@ if(isset($_POST['Update']))
 	$test=$_POST['test'];
 	$job=$_POST['job'];
 	$form=$_POST['form'];
-    // var_dump($ref);
+    
 	$sum = 0;
 	foreach ($ref as $key => $value) {
 		$sum += array_sum($value);
@@ -195,7 +195,7 @@ if(isset($_POST['Update']))
 				$brandix_bts.tbl_style_ops_master.operation_name = $brandix_bts.`tbl_orders_ops_ref`.id
 				WHERE style='".$style[$x]."' AND color='".$color[$x]."' 
 				AND category IN ('$embs','$embr')";
-				echo $emb_operations;
+				// echo $emb_operations;
 				$sql_result1=mysqli_query($link,$emb_operations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
@@ -337,7 +337,7 @@ if(isset($_POST['Update']))
 							$remarks = 'CUT';
 						}
 						$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,ref1,remarks,log_date,doc_no,log_user,input_job_no,operation_id) values (\"".$style[$x]."\",\"".$schedule[$x]."\",\"".$color[$x]."\",\"".$size[$x]."\",".$qty[$x].",\"".$qms_tran_type."\",\"".implode("$",$ref_code)."\",\"".$remarks."-".$team[$x]."-".$form[$x]."\",\"".date("Y-m-d")."\",\"".$doc."\",'$username',\"".$input_job."\",\"".$module[$x]."\")";
-						echo $sql."<br>";
+						// echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Sql Error4 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 						
@@ -413,6 +413,7 @@ if(isset($_POST['Update']))
 				$key_size = $size[$x];
 				$array_rej = array_sum($r_qty);
 				$selecting_qry = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no_ref' AND size_id = '$key_size' AND operation_id = '$op_code'";
+				// echo $selecting_qry;
 				$result_selecting_qry = $link->query($selecting_qry);
 				while($row_result_selecting_qry = $result_selecting_qry->fetch_assoc()) 
 				{
@@ -420,14 +421,12 @@ if(isset($_POST['Update']))
 					$ref_no = $row_result_selecting_qry['bundle_number'];
 				}
 				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej where id = $id_to_update";
-				echo $update_qry;
+				// echo $update_qry;
 				$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$qty[$x] where id = $ref_no";
-				echo $update_qry_cps;
+				// echo $update_qry_cps;
 				$updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$updated = updateM3TransactionsRejections($ref_no,$b_op_id,$r_qty,$r_reasons);
-				if($updated == true){
-				}
+				// $updated = updateM3TransactionsRejections($ref_no,$b_op_id,$r_qty,$r_reasons);
 			}
 		}
 		$usr_msg.="</table>";
@@ -581,7 +580,7 @@ if(isset($_POST['update1']))
 			// echo "<br/> query= ".$sql2."<br>";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error11 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-			 $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='".substr($temp[7],1)."' AND size_title='".$temp[3]."' AND operation_code='$temp[4]'";
+			 $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$replace[$i] WHERE doc_no='".substr($temp[7],1)."' AND size_title='".$temp[3]."' AND operation_code='$temp[4]'";
 			// echo $cpslog_update."<br>";
             $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
 			//FOR M3 Upload

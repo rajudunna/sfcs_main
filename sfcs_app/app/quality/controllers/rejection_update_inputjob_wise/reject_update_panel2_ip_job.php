@@ -100,9 +100,10 @@ table.gridtable td {
  
 function disp(x)
 {
-	isNaN(document.getElementById("qty["+x+"]").value)  ?
+		isNaN(document.getElementById("qty["+x+"]").value)  ?
 		document.getElementById("qty["+x+"]").style.backgroundColor="white" : 
 		document.getElementById("qty["+x+"]").style.backgroundColor="red";
+		// document.getElementById("qty["+x+"]").focus();
 	//document.getElementById("demos"+x).style.backgroundColor="red";
 	
 	document.getElementById("test["+x+"]").value=0;
