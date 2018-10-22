@@ -14,6 +14,7 @@ $sum_str = rtrim($sum,' + ');
 $asum_str = rtrim($asum,' + ');
 */
 $data = '';
+$jquery_data = '';
 $final_wip = array();
 $line_breaker = 0;
 if($section > 0){
@@ -91,6 +92,7 @@ if($section > 0){
 
 $data.="</tbody></table>";
 $section_data['data'] = $data;
+$section_data['java_scripts'] = $jquery_data;
 echo json_encode($section_data);
 
 ?>
@@ -103,6 +105,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     global $link;
     global $url;
     global $bai_pro3,$brandix_bts;
+    global $jquery_data;
     $dockets = array();
     $cutting_op_code = 15;
     $temp_line_breaker = 0;
@@ -314,9 +317,9 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     }   
     enough : NULL; 
     if($cut_wip == 0 || $cut_wip == '')
-        $docs_data.= "<script>$('#cut-wip-td-$module').remove()</script>"; 
+        $jquery_data.= "<script>$('#cut-wip-td-$module').remove()</script>"; 
     else
-        $docs_data.= "<script>$('#cut-wip-$module').html('$cut_wip')</script>"; 
+        $jquery_data.= "<script>$('#cut-wip-$module').html('$cut_wip')</script>"; 
 
     return $docs_data; 
 }
