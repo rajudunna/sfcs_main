@@ -560,7 +560,7 @@ if(isset($_POST['update1']))
 			$temp=array();
 			//echo "temp=".$replace_ref[$i];
 			$temp=explode("$",$replace_ref[$i]);
-			if(in_array($temp[4],$opary)){
+			if(in_array($temp[4],$opary1)){
 				$remarks = 'ENP';
 			}else{
 				$remarks = 'CUT';
