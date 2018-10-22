@@ -641,13 +641,6 @@ if(isset($_POST['update1']))
 					
 				}
 			}
-
-
-
-
-
-
-
 			//FOR M3 Upload
 			if($temp[4]=="ENP")
 			{
