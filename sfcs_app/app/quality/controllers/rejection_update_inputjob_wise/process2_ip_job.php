@@ -623,7 +623,7 @@ if(isset($_POST['update1']))
 			{
 				$category=['cutting','Send PF','Receive PF'];
 				$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
-				echo $checking_qry;
+				// echo $checking_qry;
 				$result_checking_qry = $link->query($checking_qry);
 				while($row_cat = $result_checking_qry->fetch_assoc()) 
 				{
