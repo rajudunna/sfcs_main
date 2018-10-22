@@ -55,7 +55,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		$remarks=$_POST['remarks'];
 		$user_name=$_SESSION['SESS_MEMBER_ID'];
 		$available=$_POST['available'];
-				  
+		$username=getrbac_user()['uname'];		
 		$filename = explode(".",$_FILES['file']['name']);		
 		$upload_file= $filename[0];
 		//echo $upload_file;	
@@ -72,92 +72,111 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 			try{
 				if($filename[1]=='csv')
 				{
-					$handle = fopen($_FILES['file']['tmp_name'],"r");
-					$flag = true;
-					$sql1 = "insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ";
-					$values = array();
-					$total_qty=0;
-
-					while(($data = fgetcsv($handle, 1000, ",")) !== FALSE)
-					{
-						if($flag) { $flag = false; continue; }
-						$item1 = $data[0];
-						$item2 = $data[1];	
-							//if the entry from excel file is not an nummeric or is -ve then quitting process	
-							if(!is_numeric($item2)){
-								throw new Exception('Error');
+					
+						$handle = fopen($_FILES['file']['tmp_name'],"r");
+						$flag = true;
+						$sql1 = "insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user) values ";
+						$values = array();
+						$total_qty=0;
+						$iro_cnt = 0;
+						while(($data = fgetcsv($handle, 1000, ",")) !== FALSE)
+						{
+							if($flag) { $flag = false; continue; }
+							$item1 = $data[0];
+							$item2 = $data[1];	
+								//if the entry from excel file is not an nummeric or is -ve then quitting process	
+								if(!is_numeric($item2)){
+									throw new Exception('Error');
+								}
+								if($item2 < 0){
+									throw new Exception('Error');
+								}
+							if($convert==1)
+							{
+								if($fab_uom == "meters"){
+									if($uom == "YRD"){
+										$item2=round($item2*0.9144,2);
+									}
+								}
+								if($fab_uom == "yards"){
+									if($uom == "MTR"){
+										$item2=round($item2*1.09361,2);
+									}
+								}
+								
+							
 							}
-							if($item2 < 0){
-								throw new Exception('Error');
-							}
+						
+							// $sql1 = "insert into bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ( '$lot_no','$ref1', '$item1','$item2', '$date','$remarks','$user_name','$upload_file')";
+							
+							array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $remarks . "','".$username."-".$plant_name."')");
+							$total_qty=$total_qty+$item2;
+							$iro_cnt++;
+						}
 						if($convert==1)
 						{
 							if($fab_uom == "meters"){
 								if($uom == "YRD"){
-									$item2=round($item2*0.9144,2);
+									$total_qty=round($total_qty*0.9144,2);
 								}
 							}
 							if($fab_uom == "yards"){
 								if($uom == "MTR"){
-									$item2=round($item2*1.09361,2);
+									$total_qty=round($total_qty*1.09361,2);
 								}
 							}
+						}
 							
-						
+						if($total_qty>$available)
+						{
+							echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>input qty(".$total_qty.") more than balance qty</font></h1></center></div>";
+							$url = getFullURL($_GET['r'],'insert_v1.php','N');
+							echo "<a class='btn btn-primary' href='$url&lot_no=$lot_no'><center><br/><br/><br/><h3><font color='blue'>Back to Stock In Screen</font></h3></center></a>";
 						}
-					
-						// $sql1 = "insert into bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ( '$lot_no','$ref1', '$item1','$item2', '$date','$remarks','$user_name','$upload_file')";
-						
-						array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $remarks . "','" . $user_name . "','" . $upload_file . "')");
-						$total_qty=$total_qty+$item2;
-					}
-					if($convert==1)
-					{
-						if($fab_uom == "meters"){
-							if($uom == "YRD"){
-								$total_qty=round($total_qty*0.9144,2);
-							}
-						}
-						if($fab_uom == "yards"){
-							if($uom == "MTR"){
-								$total_qty=round($total_qty*1.09361,2);
-							}
-						}
-					}
-						
-					if($total_qty>$available)
-					{
-						echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>input qty(".$total_qty.") more than balance qty</font></h1></center></div>";
-						$url = getFullURL($_GET['r'],'insert_v1.php','N');
-						echo "<a class='btn btn-primary' href='$url&lot_no=$lot_no'><center><br/><br/><br/><h3><font color='blue'>Back to Stock In Screen</font></h3></center></a>";
-					}
-					else
-					{
-						
-						
-						$sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						fclose($handle);
-						// echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>Stock Updated Successfully.... Please Wait</font></h1></center></div>";
-                          
-						$ext = $filename[1]; // get the extension of the file
-						$newname = "$upload_file"."."."$ext";
-						$path_new=$_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],"Upload_files/$newname","R");
-						 //echo $path_new;
-						move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
-                 
-					//	echo "<script>sweetAlert('Stock Updated Successfully...','Please Wait','success')</script>";
-					echo "<script>
-						swal({
-							title: 'Stock Updated Successfully',
-							text: 'please wait...',
-							type: 'warning',
-							buttons:false,
-						  })
-						</script>";
+						else
+						{
+							
+							
+						  $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						  $last_id_ref = mysqli_insert_id($link);
+						  $for_last_val = $last_id_ref+$iro_cnt;
+						  for($last_id=$last_id_ref;$last_id<$for_last_val;$last_id++){
 
-						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&lot_no=$lot_no\"; }</script>";
-						// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert_v1.php?lot_no=$lot_no\"; }</script>";
-					}	
+							$update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where tid=".$last_id;
+							//echo "Update : ".$update_query."</br>"; 
+						  $sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+						  }
+						  
+						  	
+							fclose($handle);
+							// echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>Stock Updated Successfully.... Please Wait</font></h1></center></div>";
+							  
+							$ext = $filename[1]; // get the extension of the file
+							$newname = "$upload_file"."."."$ext";
+							$path_new=$_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],"Upload_files/$newname","R");
+							 //echo $path_new;
+							move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
+							
+				
+			}  
+						//	echo "<script>sweetAlert('Stock Updated Successfully...','Please Wait','success')</script>";
+						echo "<script>
+							swal({
+								title: 'Stock Updated Successfully',
+								text: 'please wait...',
+								type: 'warning',
+								buttons:false,
+							  })
+							</script>";
+	
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&lot_no=$lot_no\"; }</script>";
+							// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert_v1.php?lot_no=$lot_no\"; }</script>";
+						
+
+
+					
+
 				}else{
 					echo "<script>sweetAlert('File format not supported','please upload .csv format','warning')</script>";
 				}
@@ -177,9 +196,11 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		$qty=$_POST['qty'];
 		$lot_no=$_POST['lot_no'];
 		$remarks=$_POST['remarks'];
-		$user_name=$_SESSION['SESS_MEMBER_ID'];
+		$user_name=$_SESSION['REMOTE_USER'];
 		$available=$_POST['available'];
+		$username=getrbac_user()['uname'];
 
+		
 		$total_qty=array_sum($qty);
 
 
@@ -229,9 +250,14 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							}
 						}
 					}
-					$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','$user_name')";
+						$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."')";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
+					$last_id = mysqli_insert_id($link);
+					
+					$update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where tid='$last_id'";
+					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 				}
 
 				// if(!$sql_result)

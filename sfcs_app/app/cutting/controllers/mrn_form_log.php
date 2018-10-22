@@ -26,6 +26,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 =====================================================*/
 @import "<?= getFullURLLevel($_GET['r'],'common/css/filtergrid.css',3,'R');?>";
 
+
 /*====================================================
 	- General html elements
 =====================================================*/
@@ -225,7 +226,11 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							echo "<td>".$sql_row['product']."</td>";
 							echo "<td>".$sql_row['item_code']."</td>";
 							echo "<td>".$sql_row['item_desc']."</td>";
-							echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
+							$reason_code = $sql_row['reason_code'];
+							$sql_reason = "SELECT * FROM $bai_rm_pj2.mrn_reason_db WHERE reason_tid = \"$reason_code\"";
+							$result_reason = mysqli_query($link,$sql_reason);
+							$reason_row = mysqli_fetch_assoc($result_reason);
+							echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";
 							echo "<td>".$sql_row['remarks']."</td>";
 							//Add the new column as other remarks as a popup to display the all the remarks in each level.
 							$link_remarks=getFullURL($_GET['r'],'remarks_log.php','N');
@@ -428,10 +433,12 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 			</div>
 			<script language="javascript" type="text/javascript">
 				//<![CDATA[
-				var MyTableFilter = {  exact_match: false,
-				col_5: "select",
-				col_26: "select" ,
-				display_all_text: " [ALL] "}
+				var MyTableFilter = {  
+				exact_match: false,
+				}
+				// col_5: "select",
+				// col_26: "select" ,
+				// display_all_text: " [ALL] "}
 					setFilterGrid("table1",MyTableFilter);
 				//]]>
 			</script>

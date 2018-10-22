@@ -121,109 +121,84 @@ function verify_date()
 </div>	
 </form><br/><hr/><br/>
 <?php
-if(isset($_POST['submit']))
-{
-	$dat1=$_POST['dat1'];	
-	$dat2=$_POST['dat2'];
-	$sch=$_POST['sch'];
-	if($sch==""){
-		$sch=='';
-		$sql="SELECT * FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND scan_date BETWEEN '$dat1' AND '$dat2'";
-		 //echo $sql;
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	}else if($sch !=""){
-		$sql="SELECT * FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND schedule='$sch' AND scan_date BETWEEN '$dat1' AND '$dat2'";
-		// echo $sql;
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
-	}
-	if(mysqli_num_rows($sql_result)> 0) {
-?>
-	<?= "<div class='btn btn-success pull-right' style='font-weight:bold;color:WHITE;'>
-	<a href='$sawing_out_excel?sdate=$dat1&edate=$dat2&schedule=$sch'>Export to Excel</a></div>"; ?>
-	<div class="col-md-12 table-responsive" style="max-height:900px;overflow-y:scroll;">
-	<table id="table5" class="table table-bordered">
-	<tr><th>Barcode ID</th>
-	<th>Date and Time</th>
-	<th>Module</th>
-	<th>User Style</th>
-	<th>Movex Style</th>
-	<th>Schedule</th>
-	<th>Color</th>
-	<th>Cut Job No</th>
-	<th>Input Job No</th>
-	<th>Size</th>
-	<th>Qty</th>
-	</tr>
-	<?php
-	while($rows=mysqli_fetch_array($sql_result)){
-		$dat=$rows['scan_date'];
-		$module=$rows['module'];
-		$bid=$rows['tid'];	
-		$sql1="SELECT section_id FROM $bai_pro3.plan_modules WHERE module_id='$module'";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));	
-		$rows1=mysqli_fetch_array($sql_result1);
-		$sec_id=$rows1['section_id'];
-		
-		$shift='A';
-		$ustyle=$rows['style'];
-		$mstyle=$rows['style'];
-		$schedule=$rows['schedule'];
-		$color=$rows['color'];
-		$doc_no=$rows['doc_no'];
-		$sql2="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_row2=mysqli_fetch_array($sql_result2);
-		$order_tid=$sql_row2['order_tid'];
-		$cutno=$sql_row2['acutno'];
-		$sql3="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\" ";
-		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_row3=mysqli_fetch_array($sql_result3);
-		$sql4 = "select * from $bai_pro3.bai_orders_db_confirm_archive where order_tid=\"$order_tid\"";
-		$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_row4=mysqli_fetch_array($sql_result4);
-		$color_code=$sql_row3['color_code'];
-		
-		$cut_job=chr($color_code).'00'.$cutno;
-		$job_no='J00'.$rows['input_job_number'];
-		$size=$rows['size_code'];
-		$qty=$rows['carton_act_qty'];
-		
-		$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
-		// echo $sql;
-		$sql_result1=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($title_size = mysqli_fetch_array($sql_result1))
-		{	
-			// echo "size".$title_size["size"];
-			$title_size_ref=$title_size["size"];
-		}
-		
-	?>
-	<tr>
-	<td><?= $bid; ?></td>
-	<td><?= $dat; ?></td>
-	<td><?= $module; ?></td>
-	<td><?= $ustyle; ?></td>
-	<td><?= $mstyle; ?></td>
-	<td><?= $schedule; ?></td>
-	<td><?= $color; ?></td>
-	<td><?= $cut_job; ?></td>
-	<td><?= $job_no; ?></td>
-	<td><?= $title_size_ref; ?></td>
-	<td><?= $qty; ?></td>
-	</tr>
-	<?php
-		}
-	}
-	else {
-		echo "<script>sweetAlert('No data Found','','warning')</script>";
-	}
+	if(isset($_POST['submit']))
+	{
+		$dat1=$_POST['dat1'];	
+		$dat2=$_POST['dat2'];
+		$sch=$_POST['sch'];
 
-?>
-</table>
-</div>
-	<?php
+		if($sch=="")
+		{
+			$sch=='';
+			$sql="SELECT * FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND scan_date BETWEEN '$dat1' AND '$dat2'";
+			// echo $sql;
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
-	?>
+		else if($sch !="")
+		{
+			$sql="SELECT * FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND schedule='$sch' AND scan_date BETWEEN '$dat1' AND '$dat2'";
+			// echo $sql;
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
+		}
+
+		if(mysqli_num_rows($sql_result)> 0)
+		{
+			?>
+			<?= "<div class='btn btn-success pull-right' style='font-weight:bold;color:WHITE;'><a href='$sawing_out_excel?sdate=$dat1&edate=$dat2&schedule=$sch'>Export to Excel</a></div>"; ?>
+			<div class="col-md-12 table-responsive" style="max-height:900px;overflow-y:scroll;">
+				<table id="table5" class="table table-bordered">
+					<tr>
+						<th>Barcode ID</th>
+						<th>Date and Time</th>
+						<th>Style</th>
+						<th>Schedule</th>
+						<th>Color</th>
+						<th>Size</th>
+						<th>Qty</th>
+					</tr>
+					<?php
+					while($rows=mysqli_fetch_array($sql_result))
+					{
+						$dat=$rows['scan_date'];
+						$bid=$rows['pac_stat_id'];
+
+						$style=$rows['style'];
+						$schedule=$rows['schedule'];
+						$color=$rows['color'];
+
+						$size=$rows['size_code'];
+						$qty=$rows['carton_act_qty'];
+						$size_tit=$rows['size_tit'];
+						
+						$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
+						// echo $sql;
+						$sql_result1=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($title_size = mysqli_fetch_array($sql_result1))
+						{	
+							// echo "size".$title_size["size"];
+							$title_size_ref=$title_size["size"];
+						}
+						?>
+						<tr>
+							<td><?= $bid; ?></td>
+							<td><?= $dat; ?></td>
+							<td><?= $style; ?></td>
+							<td><?= $schedule; ?></td>
+							<td><?= $color; ?></td>
+							<td><?= $title_size_ref; ?></td>
+							<td><?= $qty; ?></td>
+						</tr>
+						<?php
+					}
+				echo "</table>
+			</div>";
+		}
+		else
+		{
+			echo "<script>sweetAlert('No data Found','','warning')</script>";
+		}
+	}
+?>
 </div>
 </div>
 <script language="javascript" type="text/javascript">
@@ -235,13 +210,6 @@ var table3Filters = {
 		col_3: "select",
 		col_4: "select",
 		col_5: "select",
-		col_6: "select",
-		col_7: "select",
-		col_8: "select",
-		col_9: "select",
-		col_10:"select",
-		col_11:"select",
-		col_12:"select",
 		exact_match: true,
 		alternate_rows: true,
 		loader: true,
@@ -249,7 +217,7 @@ var table3Filters = {
 		loader: true,
 		btn_reset_text: "Clear",
 		
-		btn_text: ">"
+		btn_text: "Filter"
 	}
 	setFilterGrid("table5",table3Filters);
 </script>

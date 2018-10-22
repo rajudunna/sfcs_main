@@ -55,7 +55,7 @@ $().ready(function() {
 <body onload="dodisable();">
 <div class="panel panel-primary">
 <div class="panel-heading" style="height:35px;">
-<span style="float: left"><h3 style="margin-top: -6px;">Updating RM Issuing</h3></span><span style="float: right"><b></b>&nbsp;</span></div></div>
+<span style="float: left"><h3 style="margin-top: -6px;">Update RM Issuing</h3></span><span style="float: right"><b></b>&nbsp;</span></div></div>
 
 <?php include("menu_content.php"); ?>
 
@@ -73,7 +73,7 @@ if(isset($_POST['submit']))
 	$lot_nos=$_POST['lot_no'];
 	$lot_nos_explode=explode(",",$lot_nos);
 	//Added the single quotes for multiple level of stock searching
-	$lot_no="'".implode("','",$lot_nos_explode)."'";
+	$lot_no=implode(",",$lot_nos_explode);
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
 }
 else
@@ -81,7 +81,7 @@ else
 	$lot_nos=$_GET['lot_no'];
 	$lot_nos_explode=explode(",",$lot_nos);
 	//Added the single quotes for multiple level of stock searching
-	$lot_no="'".implode("','",$lot_nos_explode)."'";
+	$lot_no=implode(",",$lot_nos_explode);
 }
 
 
@@ -210,6 +210,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$location=$sql_row['ref1'];
 	$box=$sql_row['ref2'];
 	$qty_rec=$sql_row['qty_rec'];
+	$barcode_number=$sql_row['barcode_number'];
 	$status=$sql_row['status'];
 	$available=$qty_rec-$sql_row['qty_issued']+$sql_row['qty_ret']-$sql_row['partial_appr_qty'];
 	$available2=$sql_row['ref5']-$sql_row['qty_issued']+$sql_row['qty_ret']-$sql_row['partial_appr_qty']; //Ctex Length
@@ -220,7 +221,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		if($available > 0)
 		{
-			echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$tid</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
+			echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
 			echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
 			echo '<td style="background-color:white;"><input style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
 			echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
@@ -262,13 +263,14 @@ echo "<h2>Transaction Log:</h2>";
 
 echo "<div class='table-responsive'>";
 echo "<table class='table table-bordered'>";
-echo "<tr style='background-color:white;'><th>date</th><th>Qty</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr>";
+echo "<tr style='background-color:white;'><th>date</th><th>Label Id</th><th>Roll No</th><th>Qty</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr>";
 if($sql_num_check1>0){
 $sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where lot_no in (".trim($lot_no).")) order by date";
 }
 else{
 	$sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where ref1 in (".trim($lot_no).")) order by date";
 }
+//echo $sql;
 //mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -277,6 +279,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$qty=$sql_row['qty_issued'];
 	$style=$sql_row['Style'];
 	$schedule=$sql_row['Schedule'];
+	$tran_tid=$sql_row['tran_tid'];
 	$cutno=$sql_row['cutno'];
 	$d=0;
 	if(strpos($cutno,"T") !== FALSE)
@@ -285,6 +288,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	$remarks=$sql_row['remarks'];
 	$user=$sql_row['updated_by'];
+				$sql3="select lot_no,ref2,barcode_number from $bai_rm_pj1.store_in where tid='$tran_tid'";
+				$result3=mysqli_query($link,$sql3) or die("Error = ".mysqli_error());
+				while($row3=mysqli_fetch_array($result3))
+				{
+					//$lot_no1=$row3["lot_no"];
+					$ref2=$row3["ref2"];
+					$barcode_number=$row3["barcode_number"];
+				}
 	if($d==1)
 	{
 		$dockets=explode("T",$cutno);
@@ -296,6 +307,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$cutnos=$row1["acutno"];
 			$order_tid=$row1["orders"];
 		}
+
+		
 		
 		$sql2="select order_style_no AS style,order_del_no AS sch,order_col_des AS color,color_code AS code from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
 		//echo $sql1;
@@ -308,11 +321,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$code=$row2["code"];
 		}
 					
-		echo "<tr style='background-color:white;'><td>$date</td><td>$qty</td><td>$style</td><td>$schedule</td><td>".chr($code)."00".$cutnos."</td><td>$remarks</td><td>$user</td></tr>";
+		echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>".chr($code)."00".$cutnos."</td><td>$remarks</td><td>$user</td></tr>";
 	}
 	else
 	{
-		echo "<tr style='background-color:white;'><td>$date</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";
+		echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";
 	}
 	
 	/*$remarks=$sql_row['remarks'];
@@ -385,9 +398,10 @@ if(isset($_POST['put']))
 			}
 		}
 	}
-	$url2=getFullURL($_GET['r'],'stock_out_v1.php','N');
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"index.php?r=$url2&lot_no=$lot_no_new\"; }</script>";
-	
+	// $url2=getFullURL($_GET['r'],'stock_out_v1.php','N');
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"index.php?r=$url2&lot_no=$lot_no_new\"; }</script>";
+	echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
+	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'stock_out_v1.php',0,'N')."&lot_no=$lot_no_new';</script>");
 }
 
 

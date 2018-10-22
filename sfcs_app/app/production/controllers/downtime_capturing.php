@@ -131,7 +131,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 //echo $forcast_qry;
                 $forcast_res = mysqli_query($link, $forcast_qry) or exit("Sql Error fr".mysqli_error($GLOBALS["___mysqli_ston"]));
                
-                $get_breaks = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22))";
+                $get_breaks = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22) AND team = '".$_GET['module']."')";
                 $brks = '';
                 
                 $result_breaks = mysqli_query($link, $get_breaks) or exit("SQL Error_x:".$get_breaks);
@@ -165,7 +165,9 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
 
                     if($actual_qty<$forcast_qty){
                         $hours = $forcast_qty - $actual_qty;
-                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$r['start_time']."') AND team = '".$_GET['module']."'";
+                        $t = str_pad(explode(":",$r['start_time'])[0],2,"0",STR_PAD_LEFT);
+                        $tmm = $t.":30:00";
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$tmm."') AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($hourly_down_time_res)==0){
                             $btn="<button class='btn btn-danger pull right' onclick='assignhour(".explode(":",$r['start_time'])[0].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
@@ -175,7 +177,10 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                         }
                     }elseif($actual_qty<$plan_qty && $forcast_qty==0){
                         $hours = $plan_qty - $actual_qty;
-                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$r['start_time']."') AND team = '".$_GET['module']."'";
+                        $t = str_pad(explode(":",$r['start_time'])[0],2,"0",STR_PAD_LEFT);
+                        $tmm = $t.":30:00";
+                        
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$tmm."') AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         //echo $hourly_down_time_qry."<br/>" ;
                         if(mysqli_num_rows($hourly_down_time_res)==0){
@@ -195,7 +200,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 $tab.="</tbody>
                 </table>";
 
-                $resons_data_sql = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id NOT IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22))";
+                $resons_data_sql = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id NOT IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22) AND team = '".$_GET['module']."')";
 
                 $resons_data_result = mysqli_query($link, $resons_data_sql) or exit("Sql Error resons".mysqli_error($GLOBALS["___mysqli_ston"]));
 

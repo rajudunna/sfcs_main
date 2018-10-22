@@ -56,6 +56,8 @@ $api_password = $conf1->get('api-password');
 $api_hostname = $conf1->get('api-host-name');
 $api_port_no = $conf1->get('api-port');
 
+$enable_api_call = $conf1->get('enable-api-call');
+
 //Scanning Methods
 $scanning_methods = $conf1->get('scaning-method');
 
@@ -102,8 +104,9 @@ $sizes_code=array('01','02','03','04','05','06','07','08','09','10','11','12','1
 
 $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','S31','S32','S33','S34','S35','S36','S37','S38','S39','S40','S41','S42','S43','S44','S45','S46','S47','S48','S49','S50');
 
-//$shifts_array = $conf1->get('shifts');
-$shifts_array = array("A","B","C","G");
+$shifts_array = $conf1->get('shifts');
+$teams_array = $conf1->get('teams');
+//$shifts_array = array("A","B","C","G","ALL");
 
 $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40");
 
@@ -123,6 +126,10 @@ $comp_no=$conf1->get('company_no');
 $central_wh_code=$conf1->get('central_wh_code');
 $plant_wh_code=$conf1->get('plant_wh_code');
 $plant_prod_code=$conf1->get('plant_prod_code');
+$shrinkage_inspection=$conf1->get('shrinkage-inspection');
+$sewing_rejection=$conf1->get('sewing_rejection');
+
+
 
 
 
@@ -183,7 +190,7 @@ while($methods=mysqli_fetch_array($pack_result))
 //***************************************************
 //======== for central warehouse connections ========
 //***************************************************
-    $is_chw = $conf1->get('central_warehouse');
+  /*  $is_chw = $conf1->get('central_warehouse');
     $cwh_link = Null;
     if($is_chw == 'yes'){
         $cwh_host = $conf1->get('cw_host');
@@ -192,6 +199,6 @@ while($methods=mysqli_fetch_array($pack_result))
         $cwh_port = $conf1->get('cw_port');
         $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-    }
+    } */
 //===================================================
 ?>

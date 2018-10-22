@@ -14,11 +14,13 @@
 		$ref_nos_query = "Select group_concat(distinct(bundle_number)) as bundle_nos from $brandix_bts.bundle_creation_data 
 						  where operation_id in ($op_codes) and trim(schedule)='".trim($schedule)."' 
 						  and trim(color)='".trim($color)."'";
-		echo $ref_nos_query.'<br/>';
 		$ref_nos_result = mysqli_query($link,$ref_nos_query) or exit('Problem in getting bundles from BCD');	
 		while($row = mysqli_fetch_array($ref_nos_result)){
 			$bundle_nos = $row['bundle_nos'];
 		}	
+		if(sizeof($bundle_nos) == 0)
+			return true;
+
 		// ----Transaction begin---
 		mysqli_begin_transaction($link);
 		$delete_bcd_query = "Delete from $brandix_bts.bundle_creation_data where bundle_number in ($bundle_nos)";
@@ -172,7 +174,8 @@
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 		//getting style,color,schedule,size
-		$order_details = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id'";
+		$order_details = "Select style,color,schedule,size_title from $brandix_bts.bundle_creation_data 
+						  where bundle_number = '$ref_id' and operation_id = '$op_code'";
 		$order_result = mysqli_query($link,$order_details) or exit('Unable to get info from BCD');
 		while($row = mysqli_fetch_array($order_result)){
 			$style = $row['style'];
