@@ -5,7 +5,7 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $yesterday=date("Y-m-d",strtotime("-1 day")); 
-$yesterday="2018-02-21"; 
+
 $total_sch_count=0; 
 $buyer_hold_count = [];
 $buyer_unhold_count = [];
