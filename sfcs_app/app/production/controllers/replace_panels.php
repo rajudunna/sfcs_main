@@ -1,5 +1,10 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+<<<<<<< HEAD
+=======
+    //adding sizes title
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+>>>>>>> 791-good-panels-replacement-process-based-on-rejection-reporting
     $style='';$schedule='';$color='';
 ?>
 <style>
