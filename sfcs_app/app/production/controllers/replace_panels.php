@@ -1,6 +1,6 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    //adding sizes title
+    //including functions file
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     $style='';$schedule='';$color='';
 ?>

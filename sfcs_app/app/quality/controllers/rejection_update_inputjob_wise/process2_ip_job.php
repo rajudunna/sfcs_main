@@ -590,7 +590,65 @@ if(isset($_POST['update1']))
 
 			 $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$replace[$i] WHERE doc_no='".substr($temp[7],1)."' AND size_title='".$temp[3]."' AND operation_code='$temp[4]'";
 			// echo $cpslog_update."<br>";
-            $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
+			$cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
+
+			$selecting_qry = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number = '".substr($temp[7],1)."' AND size_id = '".$temp[3]."' AND operation_id = '".$temp[4]."'";
+			// echo $selecting_qry;
+			$result_selecting_qry = $link->query($selecting_qry);
+			while($row_result_selecting_qry = $result_selecting_qry->fetch_assoc()) 
+			{
+				$id_to_update = $row_result_selecting_qry['id'];
+				$ref_no = $row_result_selecting_qry['bundle_number'];
+				$mapped_color = $row_result_selecting_qry['mapped_color'];
+				$b_style = $row_result_selecting_qry['style'];
+			}
+			$update_qry = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty+$array_rej where id = $id_to_update";
+			// echo $update_qry."<br>";
+			$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+			$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='".$temp[4]."'";
+			// echo $ops_seq_check."<br>";
+			$result_ops_seq_check = $link->query($ops_seq_check);
+			while($row = $result_ops_seq_check->fetch_assoc()) 
+			{
+				$ops_seq = $row['ops_sequence'];
+				$seq_id = $row['id'];
+				$ops_order = $row['operation_order'];
+			}
+			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' AND operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1";
+			// echo $post_ops_check."<br>";
+			$result_post_ops_check = $link->query($post_ops_check);
+			
+			if($result_post_ops_check->num_rows > 0)
+			{
+				while($row = $result_post_ops_check->fetch_assoc()) 
+				{
+					$post_ops_code = $row['operation_code'];
+				}
+			}
+			if($post_ops_code)
+			{
+				$category=['cutting','Send PF','Receive PF'];
+				$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+				echo $checking_qry;
+				$result_checking_qry = $link->query($checking_qry);
+				while($row_cat = $result_checking_qry->fetch_assoc()) 
+				{
+					$category_act = $row_cat['category'];
+				}
+				if(in_array($category_act,$category))
+				{
+					$emb_cut_check_flag = 1;
+				}
+				if($emb_cut_check_flag)
+				{
+					$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$array_rej WHERE docket_number = '".substr($temp[7],1)."' AND size_id = '".$temp[3]."' AND operation_id = '$post_ops_code'";
+					// echo $update_qry_post;
+					$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					
+				}
+			}
 			//FOR M3 Upload
 			if($temp[4]=="ENP")
 			{
