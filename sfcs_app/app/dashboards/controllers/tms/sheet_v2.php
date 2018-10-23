@@ -19,8 +19,36 @@ body
     }
     .visible-print  { display: inherit !important; }
     .hidden-print   { display: none !important; }
-
+    div.divFooter {
+        width:100%;
+        position: fixed;
+        bottom: 0;
+        align-content: center;
+        page-break-after: always;
+        margin-bottom:2%;
+    }
+    .panel-primary{
+        border-color: white;
+    }
 }
+
+.footertable{
+    border: 1px none black;
+}
+
+hr{
+border: 1px solid black;
+}
+.dotted {border: 1.5px dotted black; border-style: none none dotted;}
+.space{
+    margin-bottom: 5px;
+}
+@media screen {
+  div.divFooter {
+    display: none;
+  }
+}
+
 </style>
 <script>
 function printPreview(){
@@ -34,20 +62,22 @@ function printPreview(){
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 ?>
+
 <div class="panel panel-primary">
     <div class="panel-heading"><center><button onclick="printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
     <div class="panel-body">
 <?php
 //error_reporting(0);
 //include("header.php");
-$plant_code = $global_facility_code;
+//$plant_code = $global_facility_code;
+$plant_code = 'AIP';
 $company_num = $company_no;
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $input_job_no=$_GET['input_job'];
 
 $colors=[];
-$sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	 
+$sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	
 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($sql_result))
 {
@@ -62,7 +92,7 @@ if(count($colors)>0){
         unset($size_code);
         unset($size_code_qty);
         $sql="select size_code,sum(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and order_col_des='".$color."' and input_job_no='".$input_job_no."' group by size_code";
- 
+   
         $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
         $colorrows = mysqli_num_rows($sql_result);
         while($row=mysqli_fetch_array($sql_result))
@@ -121,7 +151,6 @@ if(count($colors)>0){
                     </table>
                 </div>
             </div>
-            <br>
             <?php
                 $sql="select order_col_des,size_code,SUM(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job_no."' and order_col_des='".$color."' group by size_code";
                 //echo $sql."<br/>";
@@ -135,8 +164,8 @@ if(count($colors)>0){
                         $size_name = $row['size_code'];
                         $size_qty = $row['carton_act_qty'];
                 
-						$mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
-						
+                        $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
+                        //echo $mo_sql."<br/>";
                         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 						$mo_numrows=mysqli_num_rows($mo_sql_result);
 						
@@ -148,6 +177,7 @@ if(count($colors)>0){
                                 //getting data from bom_details in m3inputs
 
                                 $bom_details="select * from $m3_inputs.bom_details where plant_code='".$plant_code."' and mo_no=".$mo_no;
+                                
                                 $bom_details_result=mysqli_query($link, $bom_details) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                 $bom_numrows=mysqli_num_rows($bom_details_result);
@@ -184,7 +214,6 @@ if(count($colors)>0){
                         $checkingitemcode_ptrim = [];
                         foreach ($final_data as $key1 => $value1) {
 							$op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['COLOR']."' and Main_OperationNumber = '".$value1['OPNO']."' and SMV > 0";
-							
                             $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                             if(mysqli_num_rows($op_sql_result) > 0){
                                 $value1['trim_type'] = 'STRIM';  
@@ -287,5 +316,27 @@ if(count($colors)>0){
 }
 
 ?>
+<div class="divFooter">
+<hr>
+<table class='footertable' style="width:100%;">
+<tbody>
+	<tr class='footertable'>
+      <td class='footertable'><hr width=195 class='space'><center><strong>Prepared By(Name/EPF No)</strong><center></td>
+      <td class='footertable' style="padding-left:50px;"><hr width=160 class='space'><center><strong>Issuer/EPF No</strong></center></td>
+      <td class='footertable' style="padding-left:50px;"><hr width=180 class='space'><center><strong>Receiver Name/EPF No</strong></center></td>
+    </tr>
+</tbody>
+</table>
+<br/>
+<table class='footertable' style="width:100%;">
+<tbody >
+	<tr class='footertable'>
+      <td class='footertable'><hr width=195 class='dotted space'><center><strong>Signature & Date</strong><center></td>
+      <td class='footertable' style="padding-left:50px;"><hr width=170 class='dotted space'><center><strong>Signature & Date</strong></center></td>
+      <td class='footertable' style="padding-left:50px;"><hr width=180 class='dotted space'><center><strong>Signature & Date</strong></center></td>
+    </tr>
+    </tbody>
+</table>
+<div>
 </div>
 </div>
