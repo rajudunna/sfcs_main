@@ -356,7 +356,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 	{
         while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
 		{
-            $main_ops_code = $row_bundle_creation_data_check_result['main_operationnumber'];
+            $main_ops_code = $row_bundle_creation_data_check_result['OperationNumber'];
         }
     }
     
