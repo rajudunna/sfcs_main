@@ -101,30 +101,30 @@ table.gridtable td {
 function disp(x,y)
 {
 	var flag = 0;
-	if(y == 0)
-	{
-		var function_text = "<?php echo getFullURL($_GET['r'],'getuser2.php','R'); ?>";
-		job=document.getElementById("job["+x+"]").value;
-		size=document.getElementById("size["+x+"]").value;
-		qty=document.getElementById("qty["+x+"]").value;
-		op_code = document.getElementById("mods["+x+"]").value;
-		var array = [job,size,qty,op_code];
-		console.log(array);
-		$.ajax({
-		type: "POST",
-		url: function_text+"?job_number_validate="+array,
-		success: function (response) 
-		{
-            if(response == 1)
-			{
-				sweetAlert('You Are Rejecting More than eligible quantity');
-				flag = 1;
-				document.getElementById("qty["+x+"]").value = '0';
-			}
-		}
-		});
+	// if(y == 0)
+	// {
+	// 	var function_text = "<?php echo getFullURL($_GET['r'],'getuser2.php','R'); ?>";
+	// 	job=document.getElementById("job["+x+"]").value;
+	// 	size=document.getElementById("size["+x+"]").value;
+	// 	qty=document.getElementById("qty["+x+"]").value;
+	// 	op_code = document.getElementById("mods["+x+"]").value;
+	// 	var array = [job,size,qty,op_code];
+	// 	console.log(array);
+	// 	$.ajax({
+	// 	type: "POST",
+	// 	url: function_text+"?job_number_validate="+array,
+	// 	success: function (response) 
+	// 	{
+    //         if(response == 1)
+	// 		{
+	// 			sweetAlert('You Are Rejecting More than eligible quantity');
+	// 			flag = 1;
+	// 			document.getElementById("qty["+x+"]").value = '0';
+	// 		}
+	// 	}
+	// 	});
 
-	}
+	// }
 	if(flag == 0)
 	{
 		isNaN(document.getElementById("qty["+x+"]").value)  ?
