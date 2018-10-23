@@ -382,10 +382,11 @@ if(isset($_POST['Update']))
 					$mapped_color = $row_result_selecting_qry['mapped_color'];
 					$b_style = $row_result_selecting_qry['style'];
 				}
-				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej,recevied_qty=recevied_qty-$array_rej where id = $id_to_update";
+				//$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej,recevied_qty=recevied_qty-$array_rej where id = $id_to_update";
+				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej where id = $id_to_update";
 				$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty-$array_rej where id = $ref_no";
-				$updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+				//$updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$updated = updateM3TransactionsRejections($ref_no,$b_op_id,$r_qty,$r_reasons);
 				if($updated == true){
 				}
@@ -421,7 +422,7 @@ if(isset($_POST['Update']))
 				if($emb_cut_check_flag)
 				{
 					$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty-$array_rej WHERE docket_number = '$doc_no_ref' AND size_id = '$key_size' AND operation_id = '$post_ops_code'";
-					$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+					//$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
 				}
 			}
