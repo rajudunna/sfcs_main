@@ -642,6 +642,10 @@ if(isset($_POST['update1']))
 					
 				}
 			}
+			$moqty = (int)$replace[$i];
+			$mo_op_qty = "update bai_pro3.mo_operation_quantites set bundle_quantity= bundle_quantity+$moqty where ref_no=$ref_no and op_code=$temp[4]";
+			$cps_execute = mysqli_query($link,$mo_op_qty) or exit("Error While Updating the Mo Operation Quantities");
+
 			//FOR M3 Upload
 			if($temp[4]=="ENP")
 			{
