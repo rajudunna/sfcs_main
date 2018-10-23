@@ -310,7 +310,7 @@ if(isset($_POST['Update']))
 							$input_job=$job[$x];
 							$doc=$job[$x];
 						}
-						if(in_array($temp[4],$opary)){
+						if(in_array($module[$x],$opary)){
 							$remarks = 'ENP';
 						}else{
 							$remarks = 'CUT';
