@@ -39,8 +39,8 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                 $color_res = $response_size_data['response']['OPTY'];
                 $option_des_url_all =$api_hostname.":".$api_port_no."/m3api-rest/execute/PDS050MI/Get?CONO=$comp_no&OPTN=";
                 $response_color_data = getCurlAuthRequestLocal($option_des_url_all.$color_res,$basic_auth);
-                if($response_color_data['status'] && isset($response_color_data['response']['TX30'])){
-                    $color_description = $response_color_data['response']['TX30'];
+
+                    $color_description = ($response_color_data['status']) ? $response_color_data['response']['TX30'] : '';
                     //============= call api for wastage =============
                     $mfno = $response['response']['MFNO'];
                     $prno = urlencode($response['response']['PRNO']);
@@ -79,7 +79,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                         }
                     }
 
-                }
+                
             }
         
         }
