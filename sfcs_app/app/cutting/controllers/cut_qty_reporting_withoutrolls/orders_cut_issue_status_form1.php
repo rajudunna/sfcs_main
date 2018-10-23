@@ -222,8 +222,7 @@ for($i = 0; $i < sizeof($table_name); $i++)
 }
 echo "</select></div></td></tr>";
 //echo "<tr><td>Shift</td><td>:</td><td><input type=\"text\" name=\"shift\" value=\"NIL\"></td></tr>";
-echo "<tr><td>Shift</td><td>:</td><td><div class='row col-md-4'><select name=\"shift\" class='form-control' id='team'>
-<option value=\"\">SELECT TEAM</option>";
+echo "<tr><td>Shift</td><td>:</td><td><div class='row col-md-4'><select name=\"shift\" class='form-control' id='team'>";
 foreach($shifts_array as $key=>$shift){
 	echo "<option value='$shift'>$shift</option>";
 }
@@ -233,8 +232,7 @@ $team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
 $team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
 echo "<tr>
 			<td>Team Leader</td><td>:</td>
-		<td><div class='col-sm-4'><select name=\"leader_name\" class='form-control'>";
-echo "<option value='' selected disabled>Select Team</option>";
+		<td><div class='row col-sm-4'><select name=\"leader_name\" class='form-control'>";
 while($row=mysqli_fetch_array($team_result))
 {
 	echo "<option value='".$row['emp_name']."'>".$row['emp_name']."</option>";
