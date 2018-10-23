@@ -77,7 +77,7 @@
                         <tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr> 
                         <tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr> 
                         <tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr> 
-                        <tr><th>Input Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr> 
+                        <tr><th>Sewing Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr> 
                         </table>        
                     </div><br><br><br><br><br><br><br><br>
                     <?php 
@@ -330,7 +330,7 @@
                     echo "<th>Color</th>"; 
                     echo "<th>Cut Job#</th>"; 
                     echo "<th>Delivery Date</th>"; 
-                    echo "<th>Input Job#</th>"; 
+                    echo "<th>Sewing Job#</th>"; 
                     for($i=0;$i<sizeof($size_array);$i++) 
                     { 
                         echo "<th align=\"center\">".$orginal_size_array[$i]."</th>"; 
@@ -338,7 +338,7 @@
                     echo "<th>Total</th>"; 
                     echo "</tr>"; 
 
-                    $sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) group by input_job_no_random order by input_job_no*1"; 
+                    $sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) group by input_job_no_random order by acutno*1, input_job_no*1"; 
                     // echo $sql;
                     $result=mysqli_query($link, $sql) or die("Error-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));             
                     while($sql_row=mysqli_fetch_array($result)) 
@@ -441,16 +441,20 @@
                     echo "<tr>"; 
                     echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>"; 
                         
-                        $sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) GROUP BY old_size";
-                        //echo $sql1;
-                        $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($sql_row1=mysqli_fetch_array($sql_result1))
-                        {
-                            $o_s=$sql_row1['qty'];
-                            if ($o_s!=0) {  echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>"; }
-                            $o_total=$o_s+$o_total;
-                            //echo $o_total;
+                        for ($i=0; $i < sizeof($size_array); $i++)
+                        { 
+                            $sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$orginal_size_array[$i]'";
+                            //echo $sql1;
+                            $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row1=mysqli_fetch_array($sql_result1))
+                            {
+                                $o_s=$sql_row1['qty'];
+                                if ($o_s!=0) {  echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>"; }
+                                $o_total=$o_s+$o_total;
+                                //echo $o_total;
+                            }
                         }
+                        
                         echo "<th  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">$o_total</th>";
                         echo "</tr>"; 
                         echo "</table></div></div></div></div><br>"; 
