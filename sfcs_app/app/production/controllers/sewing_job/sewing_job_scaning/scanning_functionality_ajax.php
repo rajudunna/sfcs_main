@@ -217,7 +217,7 @@ if($barcode_generation == 1)
 				// echo $cumulative_rej_qty.'-';
 				//$fillup_qty[$doc_value][$b_sizes[$key]] = 0;
 				$cumulative_rej_qty = $to_add_doc_val + $cumulative_rej_qty;
-				$query_to_fetch_individual_bundles = "select tid,order_col_des,old_size,size_code,carton_act_qty,acutno,input_job_no,doc_no FROM $bai_pro3.packing_summary_input where order_col_des = '$b_colors[$key]' and size_code = '$b_sizes[$key]' and doc_no = '$doc_value' and input_job_no_random = $b_job_no order by barcode_sequence DESC";
+				$query_to_fetch_individual_bundles = "select tid,order_col_des,old_size,size_code,carton_act_qty,acutno,input_job_no,doc_no FROM $bai_pro3.packing_summary_input where order_col_des = '$b_colors[$key]' and size_code = '$b_sizes[$key]' and doc_no = '$doc_value' and input_job_no_random = '$b_job_no' order by barcode_sequence DESC";
 				//echo $query_to_fetch_individual_bundles.'-';
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($emb_cut_check_flag != 0)
@@ -444,7 +444,7 @@ if($barcode_generation == 1)
 				// echo 'cum'.$cumulative_qty;
 				//echo $doc_value.'up'.$to_add_doc_val.'</br>';
 				$cumulative_qty = $to_add_doc_val + $cumulative_qty;
-				$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = $b_job_no AND operation_id = '$b_op_id' and docket_number = '$doc_value' and assigned_module='$module_cum' order by barcode_sequence";
+				$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = '$b_op_id' and docket_number = '$doc_value' and assigned_module='$module_cum' order by barcode_sequence";
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$remaining_qty_rec = 0;
 				if($emb_cut_check_flag != 0)
@@ -558,7 +558,7 @@ if($barcode_generation == 1)
 					//$fillup_qty[$doc_value][$b_sizes[$key]] = 0;
 					$cumulative_rej_qty = $to_add_doc_val + $cumulative_rej_qty;
 					$remaining_qty_rej = $cumulative_rej_qty;
-					$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = $b_job_no AND operation_id = '$b_op_id' AND docket_number = '$doc_value' AND assigned_module = '$module_cum' order by barcode_sequence DESC";
+					$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = '$b_op_id' AND docket_number = '$doc_value' AND assigned_module = '$module_cum' order by barcode_sequence DESC";
 					// echo $query_to_fetch_individual_bundles.'-';
 					$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if($emb_cut_check_flag != 0)
@@ -1601,7 +1601,7 @@ if($barcode_generation == 1)
 			
 		}
 		$table_data .= "</tbody></table></div></div></div>";
-		echo $table_data;
+	
 		//updating into  m3 transactions for positives		
 		for($i=0;$i<sizeof($b_tid);$i++)
 		{
@@ -1622,6 +1622,7 @@ if($barcode_generation == 1)
 			updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$r_reasons);
 		}			
 	}
+	echo $table_data;
 }
 
 ?>
