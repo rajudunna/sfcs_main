@@ -349,14 +349,14 @@
                 $op_codes  = $row['codes']; 
             }
 
-            $mo_query  = "Select GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$schedule'";
+            $mo_query  = "SELECT GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$schedule'";
             $mo_result = mysqli_query($link,$mo_query);
             while($row = mysqli_fetch_array($mo_result))
             {
                 $mos = $row['mos'];
             }
 
-            $delete_query = "Delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code in ($op_codes) ";
+            $delete_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($get_tids) and op_code in ($op_codes) ";
             $delete_result = mysqli_query($link,$delete_query);
             if($delete_result > 0)
             {
