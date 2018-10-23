@@ -72,10 +72,10 @@
             $destination=$row['destination']; 
             $packing_mode=$row['packing_mode']; 
             $old_size=$row['old_size']; 
+            $jobs_array[] = $input_job_no;
             $sref_id=$row['sref_id']; 
             $pac_seq_no=$row['pac_seq_no']; 
 
-            $jobs_array[] = $input_job_no;
             $url_s = getFullURLLevel($_GET['r'],'split_jobs.php',0,'N');
 
             $sqlx="SELECT order_del_no FROM $bai_pro3.packing_summary_input where tid='$tid'"; 
