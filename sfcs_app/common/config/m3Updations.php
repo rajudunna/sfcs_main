@@ -349,14 +349,14 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     }
     //getting main operation_code from operation mapping
     //$bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
-    $bundle_creation_data_check = "SELECT DISTINCT OperationNumber FROM $bai_pro3.schedule_oprations_master WHERE style ='$style' AND description ='$color'  AND SMV > 0";
+    $bundle_creation_data_check = "SELECT DISTINCT Main_OperationNumber FROM $bai_pro3.schedule_oprations_master WHERE style ='$style' AND description ='$color'  AND SMV > 0";
     // echo $bundle_creation_data_check;
 	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
 	{
         while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
 		{
-            $main_ops_code = $row_bundle_creation_data_check_result['OperationNumber'];
+            $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
         }
     }
     
