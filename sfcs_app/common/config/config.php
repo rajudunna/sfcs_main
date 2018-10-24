@@ -49,6 +49,12 @@ $rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
+
+//get plant details and adress
+$plant_head=$conf1->get('plant_head');
+$plant_address=$conf1->get('plant_address');
+$plant_location=$conf1->get('plant_location');
+
 //M3 Rest API Calls Details
 $company_no = $conf1->get('companey-number');
 $api_username = $conf1->get('api-user-name');
