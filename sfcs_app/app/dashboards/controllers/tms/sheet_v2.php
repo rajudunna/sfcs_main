@@ -19,24 +19,25 @@ body
     }
     .visible-print  { display: inherit !important; }
     .hidden-print   { display: none !important; }
-    div.divFooter {
+    /* div.divFooter {
         width:100%;
         position: fixed;
         bottom: 0;
         align-content: center;
         page-break-after: always;
         margin-bottom:2%;
+        display:none;
     }
     .panel-primary{
         border-color: white;
-    }
+    } */
 }
 
-.footertable{
+/* .footertable{
     border: 1px none black;
-}
+} */
 
-hr{
+/* hr{
 border: 1px solid black;
 }
 .dotted {border: 1.5px dotted black; border-style: none none dotted;}
@@ -47,7 +48,7 @@ border: 1px solid black;
   div.divFooter {
     display: none;
   }
-}
+} */
 
 </style>
 <script>
@@ -69,8 +70,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 <?php
 //error_reporting(0);
 //include("header.php");
-//$plant_code = $global_facility_code;
-$plant_code = 'AIP';
+$plant_code = $global_facility_code;
 $company_num = $company_no;
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
@@ -151,6 +151,7 @@ if(count($colors)>0){
                     </table>
                 </div>
             </div>
+            <br/>
             <?php
                 $sql="select order_col_des,size_code,SUM(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job_no."' and order_col_des='".$color."' group by size_code";
                 //echo $sql."<br/>";
@@ -316,7 +317,7 @@ if(count($colors)>0){
 }
 
 ?>
-<div class="divFooter">
+<!-- <div class="divFooter">
 <hr>
 <table class='footertable' style="width:100%;">
 <tbody>
@@ -337,6 +338,6 @@ if(count($colors)>0){
     </tr>
     </tbody>
 </table>
-<div>
+<div> -->
 </div>
 </div>
