@@ -45,7 +45,7 @@ table, th, td {
 					?>
 				</select>
 				&nbsp;&nbsp;
-				<input type="submit" name="submit" id="submit" class="btn btn-success">
+				<input type="submit" name="submit" id="submit" class="btn btn-success" value="Submit">
 			</form>
 			<?php
 				if (isset($_POST['submit']))
@@ -185,6 +185,14 @@ table, th, td {
 											}
 											
 											//$url2=getFullURL($_GET['r'],'barcode_carton.php','R');
+											if ($label_concat == '' || $label_concat == null)
+											{
+												$hide = "style='display: none'";
+											}
+											else
+											{
+												$hide = '';
+											}
 											
 											$url2=getFullURLLevel($_GET['r'],'controllers/central_packing/barcode_carton.php',2,'R');
 											echo "<br>
@@ -196,7 +204,7 @@ table, th, td {
 															<thead>
 																<tr class='info'>
 																	<th width=\"33%\">Completed Cartons</th>
-																	<th width=\"33%\">Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$label_concat&seq_no=".$pack_result12['pac_seq_no']."' target='_blank'>Print All Cartons</a></th>
+																	<th width=\"33%\">Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$label_concat&seq_no=".$pack_result12['pac_seq_no']."' target='_blank' $hide>Print All Cartons</a></th>
 																	<th width=\"33%\">Pending Cartons</th>
 																</tr>
 															</thead>
