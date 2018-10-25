@@ -92,7 +92,7 @@ foreach($colors_array as $key=>$color_value )
 	}
 
 	if(sizeof($array1) == 0 || sizeof($array2) == 0){
-		echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger')</script>";
+		echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
 		$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
 		echo "<script>setTimeout(function(){
 					location.href='$url' 
