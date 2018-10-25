@@ -98,6 +98,7 @@ echo "<td><a href=\"$url?lot_no=$ref\" onclick=\"Popup=window.open('$url?lot_no=
 					 <th>Item Description</th><th>Invoice #</th><th>PO #</th><th>Qty</th><th>Labeled</th><th>IN Qty</th><th>Box #</th><th>REF#</th><th>Lot#</th>
 					 <th>Batch #</th><th>Product</th><th>PKG No</th><th>GRN Date</th>
 				 </tr></thead><tbody>';
+				 $i=0;
 		//echo '<hr><div class="table-responsive"><table id="table1" class="table table-bordered"><tr><th>Receiving #</th><th>Item</th><th>Item Name</th><th>Item Description</th><th>Invoice #</th><th>PO #</th><th>Qty</th><th>Labeled</th><th>IN Qty</th><th>Box #</th><th>REF#</th><th>Lot#</th><th>Batch #</th><th>Product</th><th>PKG No</th><th>GRN Date</th></tr>';
 
 		// $sql1="select * from sticker_report where inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\"";
@@ -114,12 +115,12 @@ echo "<td><a href=\"$url?lot_no=$ref\" onclick=\"Popup=window.open('$url?lot_no=
 			$balance_qty=$sql_row1['rec_qty']-$in;
 			$url=  getFullURL($_GET['r'],'insert_v1.php','N');
 			echo "<tr><td><a href=\"$url&lot_no=".$sql_row1['lot_no']."\" class=\"btn btn-info btn-xs\">".$sql_row1['rec_no']."</a></td><td>".$sql_row1['item']."</td><td>".$sql_row1['item_name']."</td>
-				  <td>".rtrim($sql_row1['item_desc'],'/ ')."</td><td>".$sql_row1['inv_no']."</td><td>".$sql_row1['po_no']."</td><td>".(float)$sql_row1['rec_qty']."</td><td>$in</td><td><input type=\"text\" size=\"5\" name=\"qty[]\" value=\"".$balance_qty."\"></td>";
-			echo "<td><input type=\"text\" size=\"5\" name=\"box[]\"><td><input type=\"text\" size=\"5\" name=\"rmks[]\"><input type=\"hidden\" size=\"5\" name=\"lot_no[]\" value=\"".$sql_row1['lot_no']."\"></td>";
+				  <td>".rtrim($sql_row1['item_desc'],'/ ')."</td><td>".$sql_row1['inv_no']."</td><td>".$sql_row1['po_no']."</td><td>".(float)$sql_row1['rec_qty']."</td><td>$in</td><td><input type=\"text\" size=\"5\" name=\"qty[$i]\" id=\"qty[$i]\" value=\"".$balance_qty."\" onchange='return check_qty($i);'></td>";
+			echo "<td><input type=\"text\" size=\"5\" name=\"box[]\"><td><input type=\"text\" size=\"5\" name=\"rmks[]\"><input type=\"hidden\" size=\"5\" name=\"lot_no[]\" value=\"".$sql_row1['lot_no']."\"><input type=\"hidden\" size=\"5\" name=\"balance_qty[$i]\"  id=\"balance_qty[$i]\" value=\"".$balance_qty."\"></td>";
 			//echo "<td><input type=\"text\" size=\"5\" name=\"qty[]\" onchange=\"if(check(this.value,".($sql_row1['rec_qty']-$in).")==1010) { this.value=0; }\" readonly></td><td><input type=\"text\" size=\"5\" name=\"box[]\"><td><input type=\"text\" size=\"5\" name=\"rmks[]\"><input type=\"hidden\" size=\"5\" name=\"lot_no[]\" value=\"".$sql_row1['lot_no']."\"></td>";
 			echo "<td>".$sql_row1['lot_no']."</td><td>".$sql_row1['batch_no']."</td><td>".$sql_row1['product_group']."</td><td>".$sql_row1['pkg_no']."</td><td>".$sql_row1['grn_date']."</td>";
 			echo "</tr>";
-
+			$i++;
 		}
 		echo '<tr class="bottom danger">
 			<td>Total:</td>
@@ -162,7 +163,17 @@ var table2_Props = {
 	setFilterGrid( "table1", table2_Props);
  	
 //]]>
+function check_qty(id) {
+	var entered_qty=document.getElementById('qty['+id+']').value;
+	var balance_qty=document.getElementById('balance_qty['+id+']').value;
 
+	if(Number(entered_qty) > Number(balance_qty))
+	{
+		swal('You cannot enter more than Qty','Please Enter Correct Qty','warning');
+		document.getElementById('qty['+id+']').value=balance_qty;
+	}
+
+}
 </script>
 
 
@@ -194,8 +205,6 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 
 		$update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where tid='$last_id'";
 		$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		
 		}
 	}
 	$url=  getFullURL($_GET['r'],'quick_insert_v1.php','N');
