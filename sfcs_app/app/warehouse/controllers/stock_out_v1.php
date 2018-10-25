@@ -103,7 +103,7 @@ if(strlen($lot_no)>2)
 	   }
 
 //$sql="select * from sticker_report where lot_no=\"".trim($lot_no)."\"";
-$sql5="select * from $bai_rm_pj1.sticker_report where lot_no in (".trim($lot_no).")";
+$sql5="select * from $bai_rm_pj1.sticker_report where lot_no in ('".trim($lot_no)."')";
 //mysqli_query($sql,$link) or exit("Sql Error2".mysqli_error());
 $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check1=mysqli_num_rows($sql_result5);
@@ -124,7 +124,7 @@ while($sql_row=mysqli_fetch_array($sql_result5))
 	$grn_date=$sql_row['grn_date'];
 }
 
-$sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no in (".trim($lot_no).")";
+$sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."')";
 //mysqli_query($sql,$link) or exit("Sql Error3".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error3".mysqli_error());
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -191,13 +191,13 @@ switch (trim($product_group))
 if($sql_num_check1>0)
 {
 	//$sql="select * from store_in where lot_no=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";	
-	$sql="select * from $bai_rm_pj1.store_in where lot_no in (".trim($lot_no).") and status in (0,1) and roll_status in (0,2) order by lot_no";	
+	$sql="select * from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2) order by lot_no";	
 	//
 }
 else
 {
 	//$sql="select * from store_in where ref1=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";
-	$sql="select * from $bai_rm_pj1.store_in where ref1 in (".trim($lot_no).") and status in (0,1) and roll_status in (0,2) order by lot_no";
+	$sql="select * from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2) order by lot_no";
 //echo $sql;
 }
 
