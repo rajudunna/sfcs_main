@@ -27,7 +27,7 @@ while($sql_row=mysqli_fetch_array($result))
 			//getting m3_smv from schedule_oprations_master
 			$ops_code = $select_default_operations_row['operation_code'];
 			$is_m3 = $select_default_operations_row['default_operration'];
-			if($is_m3 == 'Yes')
+			if($is_m3 == 'Yes' || $is_m3 == 'yes' || $is_m3 == 'YES' )
 			{
 				$qty_to_fetch_m3_smv = "SELECT * FROM `$bai_pro3`.`schedule_oprations_master` WHERE style = '$style' AND Description='$color' AND OperationNumber = '$ops_code' LIMIT 0,1";
 				$select_qty_to_fetch_m3_smv=mysqli_query($link, $qty_to_fetch_m3_smv) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
