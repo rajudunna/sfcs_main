@@ -1,3 +1,4 @@
+
 <?php
 include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
@@ -9,8 +10,11 @@ $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
+$shift=$_POST['shift'];
+  
 if(isset($_POST['id']))
 {
+	
 	//echo "<script>document.getElementById('main').hidden = true</script>";
 	echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
 	//echo "<script>document.getElementById('message').innerHTML='<b>Please wait a while</b>'</script>";
