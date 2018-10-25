@@ -85,7 +85,7 @@ CREATE TABLE `tbl_pack_size_ref` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 
-ALTER TABLE bai_pro3.pac_stat_log
+ALTER TABLE pac_stat_log
  ADD COLUMN size_tit VARCHAR(255) NULL COMMENT 'actual size' AFTER color,
  ADD COLUMN pac_stat_id INT(11) NULL COMMENT 'id from pac_stat table' AFTER size_tit;
  
@@ -121,3 +121,33 @@ from (((`pac_stat_log`
    left join `bai_orders_db_confirm`
      on (`bai_orders_db_confirm`.`order_tid` = `plandoc_stat_log`.`order_tid`)));
 
+	 
+	 
+USE central_administration_sfcs;
+	
+-- Work Place Links
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1596', 'SFCS_0363', '8', '2', '143', '0', '1', '', 'Centralized Packing List', '1', ''); 
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1597', 'SFCS_0364', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/order_qty_vs_packed_qty.php', 'Add Packing List', '1', ''); 
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1598', 'SFCS_0365', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/pack_method_loading.php', 'Pack Method Loading', '2', ''); 
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1599', 'SFCS_0366', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_club_drag_drop.php', 'Carton Club', '3', ''); 
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1600', 'SFCS_0367', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_split.php', 'Carton Split', '4', ''); 
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1601', 'SFCS_0368', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_scan_select_user.php', 'Carton Scanning', '5', ''); 
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1602', 'SFCS_0369', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/pack_method_deletion.php', 'Delete Packing List', '6', ''); 
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1603', 'SFCS_0370', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_reversal.php', 'Carton Reversal', '7', ''); 
+
+-- Reports Links
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1604', 'SFCS_0371', '8', '2', '39', '1', '1', '/sfcs_app/app/packing/reports/central_packing/eligible_cartons_report.php', 'Carton Eligible Report', '', ''); 
+INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1605', 'SFCS_0372', '8', '2', '39', '1', '1', '/sfcs_app/app/packing/reports/central_packing/cut_job_packing_report.php', 'Central Pack Report', '', ''); 
+
+-- User Access Links Work Place
+INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1597', 'Add Packing List', '1'); 
+INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1598', 'Pack Method Loading', '1'); 
+INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1599', 'Carton Club', '1'); 
+INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1600', 'Carton Split', '1'); 
+INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1601', 'Carton Scanning', '1'); 
+INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1602', 'Delete Packing List', '1'); 
+INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1603', 'Carton Reversal', '1'); 
+
+-- User Access Links Reports
+INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1604', 'Carton Eligible Report', '1'); 
+INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1605', 'Carton Pack Report', '1'); 
