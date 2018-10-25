@@ -265,10 +265,10 @@ echo "<div class='table-responsive'>";
 echo "<table class='table table-bordered'>";
 echo "<tr style='background-color:white;'><th>date</th><th>Label Id</th><th>Roll No</th><th>Qty</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr>";
 if($sql_num_check1>0){
-$sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where lot_no in (".trim($lot_no).")) order by date";
+$sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."')) order by date";
 }
 else{
-	$sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where ref1 in (".trim($lot_no).")) order by date";
+	$sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."')) order by date";
 }
 //echo $sql;
 //mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
