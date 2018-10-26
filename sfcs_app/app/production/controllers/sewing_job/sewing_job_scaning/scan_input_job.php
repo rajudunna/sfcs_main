@@ -8,9 +8,9 @@
     <div class="panel-body">
     <form method ='POST' action='<?php echo $url ?>'>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <label>Shift:<span style="color:red">*</span></label>
-                <select class="form-control shift"  name="shift" id="shift" style="width:50%;" required>
+                <select class="form-control shift"  name="shift" id="shift" required>
                     <option value="">Select Shift</option>
                     <?php 
                         for ($i=0; $i < sizeof($shifts_array); $i++) {?>
@@ -19,7 +19,10 @@
                     ?>
                 </select>
             </div>
-                    <input type="submit" id="continue" class="btn btn-primary" value="CONTINUE">
+            <div class='col-sm-1'>
+                <label><br/></label>
+                <input type="submit" id="continue" class="btn btn-success" value="Continue">
+            </div>
         </div>
     </form>
     </div>
