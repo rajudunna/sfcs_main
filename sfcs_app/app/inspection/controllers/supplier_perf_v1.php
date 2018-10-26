@@ -41,6 +41,9 @@
 td{
     max-width: 170px;
 }
+th {
+    text-align:center;
+}
 </style>
 
 <script>
@@ -194,10 +197,10 @@ if(isset($_POST['filter']))
     echo "<form action='".getFullURL($_GET['r'],'supplier_perf_v2_update.php','N')."' 
      method='POST'>";
     echo "<div class='table-responsive'><div style='height:450px; overflow-y: scroll;''><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\" style='
-    width: 7500px;'>";
-    echo "<tr><th>RECORD #</th><th>WEEK #</th><th>ENTRY NO</th><th>INVOICE NO & DATE</th><th style='width:180px;'>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th>
+    width: 6200px;'>";
+    echo "<tr><th style='width:67px;'>RECORD #</th><th style='width:65px;'>WEEK #</th><th style='width:70px;'>ENTRY NO</th><th>INVOICE NO & DATE</th><th style='width:180px;'>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th>
     <th>SWATCHES RECEIVED FROM (SUPPLIER/WH)</th><th>INSPECTED DATE</th><th>RELEASED DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th>
-    <th>M3 LOT#</th><th>PO</th><th>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th><th>COMPOSITION</th><th>COLOR</th><th>SOLID / YARN DYE / PRINT</th><th>BATCH #</th>
+    <th>M3 LOT#</th><th>PO</th><th style='width:160px;'>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th><th>COMPOSITION</th><th>COLOR</th><th>SOLID / YARN DYE / PRINT</th><th>BATCH #</th>
     <th>NO OF ROLLS</th><th>QTY $fab_uom</th><th>C TEX LENGTH</th><th>C TEX L/S</th><th>INSPECTED TAG STY ($fab_uom)</th><th>INSPECTED ACT STY ($fab_uom)</th><th>WIDTH MEASURING UNIT</th>
     <th>PURCHASE WIDTH </th><th>ACTUAL WIDTH </th><th>PURCHASED WEIGHT (GSM)</th><th>ACTUAL WEIGHT (GSM)</th><th>CONSUMPTION</th><th>PTS./100 SQ. $fab_uom OR FAULT RATE</th>
     <th>GMT FALLOUT% (FAB.INS)</th><th>FREQUENTLY SEEN DEFECTS</th><th>SKEW / BOW / WAVINESS / DOG-LEG</th><th>SKEW / BOW / WAVINESS / DOG-LEG %</th><th>RESIDUAL SHRINKAGE LENGTH</th>
