@@ -49,6 +49,7 @@ if(isset($_POST['id']))
 	<div class='panel panel-primary'>
 			<div class='panel-heading'>Job Data</div>
 			<form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
+				<input type='hidden' value='<?= $shift ?>' id='shift_val' name='shift_val'>
 				<div class='panel-body' id="dynamic_table_panel">	
 						<div id ="dynamic_table1">
 				</div>
@@ -213,6 +214,8 @@ if(isset($_POST['formSubmit']))
 	$input_job_no_random = $_POST['input_job_no_random'];
 	$mapped_color = $_POST['mapped_color'];
 	$b_module = $_POST['module'];
+	$b_shift  = $_POST['shift_val'];
+
 	//var_dump($ops_dep);
 	if($_POST['post_ops'])
 	{
@@ -298,6 +301,17 @@ if(isset($_POST['formSubmit']))
 	$concurrent_flag = 0;
 	$reversalval = $actual_reversal_val_array;
 	$b_module = $b_module1;
+
+	//getting sfcs_smv
+	$smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' 
+				  and operation_code = $operation_id";
+	$result_smv_query = $link->query($smv_query);
+	while($row_ops = $result_smv_query->fetch_assoc()) 
+	{
+		$sfcs_smv = $row_ops['smv'];
+	}
+
+
 // echo "post code".$post_code;
 $ops_seq_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code='$operation_id'";
 $result_ops_seq_check = $link->query($ops_seq_check);
@@ -443,8 +457,8 @@ else if($concurrent_flag == 0)
 			$b_op_id = $row['operation_id'];
 			$b_job_no =  $row['input_job_no_random_ref'];
 			// $b_module = $row['assigned_module'];
-			$b_shift = $row['shift'];
-			$sfcs_smv = $row['sfcs_smv'];
+			//$b_shift = $row['shift'];
+			//$sfcs_smv = $row['sfcs_smv'];
 			$b_inp_job_ref = $row['input_job_no'];
 			$size_id = $row['size_id'];
 			$b_in_job_qty = $row['original_qty'];
