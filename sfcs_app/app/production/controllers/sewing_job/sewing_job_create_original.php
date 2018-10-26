@@ -509,13 +509,20 @@
 																			$individual_color = $individual_sizes_details['size_title'];
 																		}
 
-																		$qty_query = "SELECT garments_per_carton,combo_no FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
+																		$get_combo_query = "SELECT distinct(combo_no) FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
+																		// echo '<br>'.$get_combo_query;
+																		$combo_query_result=mysqli_query($link, $get_combo_query) or exit("Error while getting combo Details");
+																		while($combo_query_details=mysqli_fetch_array($combo_query_result)) 
+																		{
+																			$comboNO = $combo_query_details['combo_no'];
+																		}
+																		$qty_query = "SELECT group_concat(garments_per_carton) as garments_per_carton FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
 																		// echo '<br>'.$qty_query;
 																		$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
 																		while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 																		{
 																			$qty = $qty_query_details['garments_per_carton'];
-																			$comboNO = $qty_query_details['combo_no'];
+																			// $comboNO = $qty_query_details['combo_no'];
 																			if ($qty == '') {
 																				$qty=0;
 																			}
@@ -665,47 +672,41 @@
 																			{
 																				$individual_color = $individual_sizes_details['size_title'];
 																			}
-																			$qty_query = "SELECT combo_no FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
+
+																			$qty_query = "SELECT distinct(combo_no) FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
 																			// echo '<br>'.$qty_query;
 																			$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
 																			while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 																			{
 																				$comboNO = $qty_query_details['combo_no'];
-																				if($combo_count == 0) 
-																				{
-																					echo "<td>$comboNO</td>";
-																					$combo_count++;
-																				}
+																			}
 
-																				if ($pack_method == 1 || $pack_method == 4)
+																			if($combo_count == 0) 
+																			{
+																				echo "<td>$comboNO</td>";
+																				$combo_count++;
+																			}
+
+																			if ($pack_method == 1 || $pack_method == 4)
+																			{
+																				$sew_job_qty_id = "'SewingJobQty_".$size_count."_".$comboNO."'";
+																			}
+																			if ($pack_method == 2 || $pack_method == 3)
+																			{
+																				$combo_count_query = "SELECT DISTINCT(combo_no) FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id=$c_ref";
+																				// echo '<br>'.$combo_count_query;
+																				$como_count_result=mysqli_query($link, $combo_count_query) or exit("Error while getting combo count Details");
+																				if(mysqli_num_rows($como_count_result) > 1)
 																				{
 																					$sew_job_qty_id = "'SewingJobQty_".$size_count."_".$comboNO."'";
 																				}
-																				if ($pack_method == 2 || $pack_method == 3)
+																				else
 																				{
-																					$combo_count_query = "SELECT DISTINCT(combo_no) FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id=$c_ref";
-																					// echo '<br>'.$combo_count_query;
-																					$como_count_result=mysqli_query($link, $combo_count_query) or exit("Error while getting combo count Details");
-																					if(mysqli_num_rows($como_count_result) > 1)
-																					{
-																						$sew_job_qty_id = "'SewingJobQty_".$size_count."_".$comboNO."'";
-																					}
-																					else
-																					{
-																						$sew_job_qty_id = "'SewingJobQty_".$size_count."_".$comboNO."_".$j."'";
-																					}														
-																				}
-																				if (mysqli_num_rows($individual_sizes_result) >0)
-																				{
-																					if ($size1[$size_count] == $individual_color) {
-																						echo "<td><input type='text' required readonly='true' name='SewingJobQty[$j][]' id=$sew_job_qty_id class='form-control integer' value='0'></td>";
-																					}
-																				}
-																				else 
-																				{
-																					echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id=$sew_job_qty_id class='form-control integer' value='0'></td>";
-																				}
+																					$sew_job_qty_id = "'SewingJobQty_".$size_count."_".$comboNO."_".$j."'";
+																				}														
 																			}
+ 
+																			echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id=$sew_job_qty_id class='form-control integer' value='0'></td>";
 																		}
 																echo "</tr>";
 																$row_count++;
