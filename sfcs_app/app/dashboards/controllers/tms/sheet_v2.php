@@ -12,22 +12,17 @@ body
     font-family: Calibri;
     font-size: 11px;
 }
-@media print{
-    @page { margin: 0;}
-    body{
-        font-size:22px;
-    }
-    .visible-print  { display: inherit !important; }
-    .hidden-print   { display: none !important; }
-
-}
 </style>
 <script>
 function printPreview(){
-    var printid = document.getElementById("printid");
-    printid.style.visibility = 'hidden';
-    window.print();
-    printid.style.visibility = 'visible';
+    var style = document.getElementById('style').value;
+    var schedule = document.getElementById('schedule').value;
+    var input_job = document.getElementById('input_job_no').value;
+    
+    var url = 'bom_sheet_print.php?schedule='+schedule+'&style='+style+'&input_job='+input_job;
+    newwindow=window.open(url,'Job Wise Sewing and Packing Trim Requirement Report','height=500,width=800');
+    if (window.focus) {newwindow.focus()}
+    return false;
 }
 </script>
 <?php
@@ -36,7 +31,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 ?>
 <div class="panel panel-primary">
-    <div class="panel-heading"><center><button onclick="printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
+    <div class="panel-heading"><center><button onclick="return printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
     <div class="panel-body">
 <?php
 //error_reporting(0);
@@ -49,6 +44,10 @@ $port= $api_port_no;
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $input_job_no=$_GET['input_job'];
+
+echo "<input type='text' id='style' value='".$_GET['style']."'>
+<input type='text' id='schedule' value='".$_GET['schedule']."'>
+<input type='text' id='input_job_no' value='".$_GET['input_job']."'>";
 
 $colors=[];
 $sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	 
@@ -203,15 +202,16 @@ if(count($colors)>0){
                                 $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
 
                                 if(!in_array($value1['MTNO'],$checkingitemcode_strim)){
-                                    $value1['wastage'] = $result_values[0][1]['Value'];
                                     $value1['UOM'] = $result_values[0][0]['Value'];
+                                    $value1['WITH_WASTAGE'] = ($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                    $value1['WITH_OUT_WASTAGE'] = ($value1['size_qty']*$value1['CNQT']);
                                     $api_selected_valuess_strim[$value1['MTNO']] = $value1;
                                     array_push($checkingitemcode_strim,$value1['MTNO']);
                                 }else{
-                                    $value1['wastage'] = $result_values[0][1]['Value'];
                                     $api_selected_valuess_strim[$value1['MTNO']]['CNQT']+=$value1['CNQT'];
                                     $api_selected_valuess_strim[$value1['MTNO']]['size_qty']+=$value1['size_qty'];
-                                    $api_selected_valuess_strim[$value1['MTNO']]['wastage']+=$value1['wastage'];  
+                                    $api_selected_valuess_strim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                    $api_selected_valuess_strim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['size_qty']*$value1['CNQT']); 
                                 }
                             }
                            
@@ -231,15 +231,16 @@ if(count($colors)>0){
                                 $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
 
                                 if(!in_array($value1['MTNO'],$checkingitemcode_ptrim)){
-                                    $value1['wastage'] = $result_values[0][1]['Value'];
+                                    $value1['WITH_WASTAGE'] = ($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                    $value1['WITH_OUT_WASTAGE'] = ($value1['size_qty']*$value1['CNQT']);
                                     $value1['UOM'] = $result_values[0][0]['Value'];
                                     $api_selected_valuess_ptrim[$value1['MTNO']] = $value1;
                                     array_push($checkingitemcode_ptrim,$value1['MTNO']);
                                 }else{
-                                    $value1['wastage'] = $result_values[0][1]['Value'];
                                     $api_selected_valuess_ptrim[$value1['MTNO']]['CNQT']+=$value1['CNQT'];
                                     $api_selected_valuess_ptrim[$value1['MTNO']]['size_qty']+=$value1['size_qty'];
-                                    $api_selected_valuess_ptrim[$value1['MTNO']]['wastage']+=$value1['wastage'];
+                                    $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                    $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['size_qty']*$value1['CNQT']);
                                 }
                             }                                                 
                         }
@@ -254,10 +255,10 @@ if(count($colors)>0){
                                 $option_res_values_zcode = [];     
                             
                                 //req without wastge
-                                $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
-
-                                //req with wastge  
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$api_selected_valuess['wastage']/100);
+                                $api_selected_valuess['CNQT'] = $api_selected_valuess['WITH_OUT_WASTAGE']/$api_selected_valuess['size_qty'];
+                                
+                                //wastage calculation
+                                $api_selected_valuess['WASTAGE'] =  (($api_selected_valuess['WITH_WASTAGE']-$api_selected_valuess['WITH_OUT_WASTAGE'])*100)/$api_selected_valuess['WITH_OUT_WASTAGE'];
 								
 								/* To Get color,size,z code  */
 								$ITNO = urlencode($api_selected_valuess['MTNO']);
@@ -346,9 +347,9 @@ if(count($colors)>0){
 							<td><center><?= $option_des_size ?><center></td>
 							<td><?= $option_des_zcode ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$api_selected_valuess['wastage']."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
+                            <td><?php echo "<span style='float:right;'>".$api_selected_valuess['WASTAGE']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['WITH_WASTAGE'], 2)."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['WITH_OUT_WASTAGE'], 2)."</span>";?></td>
                             <td><?= $api_selected_valuess['UOM'] ?></td>
                         </tr>
                         <?php }
@@ -362,11 +363,10 @@ if(count($colors)>0){
                                 $option_res_values_size = [];
                                 $option_res_values_zcode = [];
                                 
-                                //req without wastge
-                                $reqwithoutwastage = $api_selected_valuess['CNQT']*$api_selected_valuess['size_qty'];
-
-                                //req with wastge               
-								$reqwithwastage = $reqwithoutwastage+($reqwithoutwastage*$api_selected_valuess['wastage']/100);
+                                $api_selected_valuess['CNQT'] = $api_selected_valuess['WITH_OUT_WASTAGE']/$api_selected_valuess['size_qty'];
+                            
+                                //wastage calculation
+                                $api_selected_valuess['WASTAGE'] =  (($api_selected_valuess['WITH_WASTAGE']-$api_selected_valuess['WITH_OUT_WASTAGE'])*100)/$api_selected_valuess['WITH_OUT_WASTAGE'];
 								
 								/* To Get color,size,z code  */
 								$ITNO = urlencode($api_selected_valuess['MTNO']);
@@ -452,9 +452,9 @@ if(count($colors)>0){
 							<td><center><?= $option_des_size ?><center></td>
 							<td><?= $option_des_zcode ?></td>
                             <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['CNQT'], 4)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".$api_selected_valuess['wastage']."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithwastage, 2)."</span>"; ?></td>
-                            <td><?php echo "<span style='float:right;'>".number_format((float)$reqwithoutwastage, 2)."</span>";?></td>
+                            <td><?php echo "<span style='float:right;'>".$api_selected_valuess['WASTAGE']."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['WITH_WASTAGE'], 2)."</span>"; ?></td>
+                            <td><?php echo "<span style='float:right;'>".number_format((float)$api_selected_valuess['WITH_OUT_WASTAGE'], 2)."</span>";?></td>
                             <td><?=  $api_selected_valuess['UOM'] ?></td>
                         </tr>
                         <?php }
