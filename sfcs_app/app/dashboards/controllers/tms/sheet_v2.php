@@ -12,51 +12,17 @@ body
     font-family: Calibri;
     font-size: 11px;
 }
-@media print{
-    @page { margin: 0;}
-    body{
-        font-size:22px;
-    }
-    .visible-print  { display: inherit !important; }
-    .hidden-print   { display: none !important; }
-    /* div.divFooter {
-        width:100%;
-        position: fixed;
-        bottom: 0;
-        align-content: center;
-        page-break-after: always;
-        margin-bottom:2%;
-        display:none;
-    }
-    .panel-primary{
-        border-color: white;
-    } */
-}
-
-/* .footertable{
-    border: 1px none black;
-} */
-
-/* hr{
-border: 1px solid black;
-}
-.dotted {border: 1.5px dotted black; border-style: none none dotted;}
-.space{
-    margin-bottom: 5px;
-}
-@media screen {
-  div.divFooter {
-    display: none;
-  }
-} */
-
 </style>
 <script>
 function printPreview(){
-    var printid = document.getElementById("printid");
-    printid.style.visibility = 'hidden';
-    window.print();
-    printid.style.visibility = 'visible';
+    var style = document.getElementById('style').value;
+    var schedule = document.getElementById('schedule').value;
+    var input_job = document.getElementById('input_job_no').value;
+    
+    var url = 'bom_sheet_print.php?schedule='+schedule+'&style='+style+'&input_job='+input_job;
+    newwindow=window.open(url,'Job Wise Sewing and Packing Trim Requirement Report','height=500,width=800');
+    if (window.focus) {newwindow.focus()}
+    return false;
 }
 </script>
 <?php
@@ -65,7 +31,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 ?>
 
 <div class="panel panel-primary">
-    <div class="panel-heading"><center><button onclick="printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
+    <div class="panel-heading"><center><button onclick="return printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
     <div class="panel-body">
 <?php
 //error_reporting(0);
@@ -75,6 +41,10 @@ $company_num = $company_no;
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $input_job_no=$_GET['input_job'];
+
+echo "<input type='text' id='style' value='".$_GET['style']."'>
+<input type='text' id='schedule' value='".$_GET['schedule']."'>
+<input type='text' id='input_job_no' value='".$_GET['input_job']."'>";
 
 $colors=[];
 $sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	
@@ -219,14 +189,16 @@ if(count($colors)>0){
                             if(mysqli_num_rows($op_sql_result) > 0){
                                 $value1['trim_type'] = 'STRIM';  
                                 if(!in_array($value1['MTNO'],$checkingitemcode_strim)){
-                                    $value1['WITH_WASTAGE'] = ($value1['SIZE_QTY']*$value1['CNQT'])+($value1['SIZE_QTY']*$value1['CNQT']*$value1['WASTAGE']/100);
-                                    $value1['WITH_OUT_WASTAGE'] = ($value1['SIZE_QTY']*$value1['CNQT']);
+                                    $value1['UOM'] = $result_values[0][0]['Value'];
+                                    $value1['WITH_WASTAGE'] = ($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                    $value1['WITH_OUT_WASTAGE'] = ($value1['size_qty']*$value1['CNQT']);
                                     $api_selected_valuess_strim[$value1['MTNO']] = $value1;
                                     array_push($checkingitemcode_strim,$value1['MTNO']);
-                                }else{  
-                                    $api_selected_valuess_strim[$value1['MTNO']]['SIZE_QTY']+=$value1['SIZE_QTY'];
-                                    $api_selected_valuess_strim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['SIZE_QTY']*$value1['CNQT'])+($value1['SIZE_QTY']*$value1['CNQT']*$value1['WASTAGE']/100);
-                                    $api_selected_valuess_strim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['SIZE_QTY']*$value1['CNQT']);
+                                }else{
+                                    $api_selected_valuess_strim[$value1['MTNO']]['CNQT']+=$value1['CNQT'];
+                                    $api_selected_valuess_strim[$value1['MTNO']]['size_qty']+=$value1['size_qty'];
+                                    $api_selected_valuess_strim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                    $api_selected_valuess_strim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['size_qty']*$value1['CNQT']); 
                                 }
                             }
                             $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['COLOR']."' and Main_OperationNumber = '".$value1['OPNO']."' and Main_OperationNumber = 200";
@@ -234,14 +206,16 @@ if(count($colors)>0){
                             if(mysqli_num_rows($op_ptrim_sql_result) > 0){
                                 $value1['trim_type'] = 'PTRIM';  
                                 if(!in_array($value1['MTNO'],$checkingitemcode_ptrim)){
-                                    $value1['WITH_WASTAGE'] = ($value1['SIZE_QTY']*$value1['CNQT'])+($value1['SIZE_QTY']*$value1['CNQT']*$value1['WASTAGE']/100);
-                                    $value1['WITH_OUT_WASTAGE'] = ($value1['SIZE_QTY']*$value1['CNQT']);
+                                    $value1['WITH_WASTAGE'] = ($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                    $value1['WITH_OUT_WASTAGE'] = ($value1['size_qty']*$value1['CNQT']);
+                                    $value1['UOM'] = $result_values[0][0]['Value'];
                                     $api_selected_valuess_ptrim[$value1['MTNO']] = $value1;
                                     array_push($checkingitemcode_ptrim,$value1['MTNO']);
                                 }else{
-                                    $api_selected_valuess_ptrim[$value1['MTNO']]['SIZE_QTY']+=$value1['SIZE_QTY'];
-                                    $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['SIZE_QTY']*$value1['CNQT'])+($value1['SIZE_QTY']*$value1['CNQT']*$value1['WASTAGE']/100);
-                                    $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['SIZE_QTY']*$value1['CNQT']);
+                                    $api_selected_valuess_ptrim[$value1['MTNO']]['CNQT']+=$value1['CNQT'];
+                                    $api_selected_valuess_ptrim[$value1['MTNO']]['size_qty']+=$value1['size_qty'];
+                                    $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                    $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['size_qty']*$value1['CNQT']);
                                 }
                             }                                                 
                         }
@@ -249,9 +223,58 @@ if(count($colors)>0){
                         if(count($api_selected_valuess_strim)>0){?>
                             <tr style="background-color: whitesmoke;"><td colspan=11><center><strong>Sewing Trims</strong></center></td></tr>
                         <?php
-                            foreach($api_selected_valuess_strim as $api_selected_valuess){                        
-                            //per piece consumption calculation
-                            $api_selected_valuess['CNQT'] = $api_selected_valuess['WITH_OUT_WASTAGE']/$api_selected_valuess['SIZE_QTY'];
+                            foreach($api_selected_valuess_strim as $api_selected_valuess){
+                                $res_values = [];
+                                $option_res_values_col = [];
+                                $option_res_values_size = [];
+                                $option_res_values_zcode = [];     
+                            
+                                //req without wastge
+                                $api_selected_valuess['CNQT'] = $api_selected_valuess['WITH_OUT_WASTAGE']/$api_selected_valuess['size_qty'];
+                                
+                                //wastage calculation
+                                $api_selected_valuess['WASTAGE'] =  (($api_selected_valuess['WITH_WASTAGE']-$api_selected_valuess['WITH_OUT_WASTAGE'])*100)/$api_selected_valuess['WITH_OUT_WASTAGE'];
+								
+								/* To Get color,size,z code  */
+								$ITNO = urlencode($api_selected_valuess['MTNO']);
+								$color_size_url = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=$company_num&ITNO=$ITNO";
+								
+                                $color_size_data = $obj->getCurlAuthRequest($color_size_url);                               
+                                $color_size_result = json_decode($color_size_data, true);   
+								$color_size_values = array_column($color_size_result['MIRecord'], 'NameValue');
+								foreach($color_size_values as $values){
+									
+									$res_values[]  = array_column($values, 'Value','Name');
+                                }                                
+								$color_res =  $res_values[0]['OPTY'];
+                                $size_res = $res_values[0]['OPTX'];
+                                $z_res = $res_values[0]['OPTZ'];
+                                
+                                /* To Get Option Description */
+                                // for color description
+                                if(trim($color_res)){
+                                    $option_des_url_col =$host.":".$port."/m3api-rest/execute/PDS050MI/Get?CONO=$company_num&OPTN=$color_res";
+                            
+                                    $option_des_data_col = $obj->getCurlAuthRequest($option_des_url_col);                               
+                                    $option_des_result_col = json_decode($option_des_data_col, true);   
+                                    $option_des_values_col = array_column($option_des_result_col['MIRecord'], 'NameValue');
+                                    foreach($option_des_values_col as $values){                                    
+                                        $option_res_values_col[]  = array_column($values, 'Value','Name');
+                                    }
+
+                                    if(trim($color_res) === trim($option_res_values_col[0]['OPTN'])){
+                                        $option_des_col = $option_res_values_col[0]['TX30'];
+                                    }else{
+                                        $option_des_col = "";
+                                    }
+                                }else{
+                                    $option_des_col = "";
+                                }
+                                
+
+                                // for size description
+                                if(trim($size_res)){
+                                    $option_des_url_size =$host.":".$port."/m3api-rest/execute/PDS050MI/Get?CONO=$company_num&OPTN=$size_res";
                             
                             //wastage calculation
                             $api_selected_valuess['WASTAGE'] =  (($api_selected_valuess['WITH_WASTAGE']-$api_selected_valuess['WITH_OUT_WASTAGE'])*100)/$api_selected_valuess['WITH_OUT_WASTAGE'];
@@ -276,9 +299,36 @@ if(count($colors)>0){
                         if(count($api_selected_valuess_ptrim)>0){?>
                             <tr style="background-color: whitesmoke;"><td colspan=11><center><strong>Packing Trims</strong></center></td></tr>
                         <?php
-                            foreach($api_selected_valuess_ptrim as $api_selected_valuess){                               
-                                  //per piece consumption calculation
-                            $api_selected_valuess['CNQT'] = $api_selected_valuess['WITH_OUT_WASTAGE']/$api_selected_valuess['SIZE_QTY'];
+                            foreach($api_selected_valuess_ptrim as $api_selected_valuess){
+                                $res_values = [];
+                                $option_res_values_col = [];
+                                $option_res_values_size = [];
+                                $option_res_values_zcode = [];
+                                
+                                $api_selected_valuess['CNQT'] = $api_selected_valuess['WITH_OUT_WASTAGE']/$api_selected_valuess['size_qty'];
+                            
+                                //wastage calculation
+                                $api_selected_valuess['WASTAGE'] =  (($api_selected_valuess['WITH_WASTAGE']-$api_selected_valuess['WITH_OUT_WASTAGE'])*100)/$api_selected_valuess['WITH_OUT_WASTAGE'];
+								
+								/* To Get color,size,z code  */
+								$ITNO = urlencode($api_selected_valuess['MTNO']);
+								$color_size_url = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=$company_num&ITNO=$ITNO";
+								
+                                $color_size_data = $obj->getCurlAuthRequest($color_size_url);                               
+                                $color_size_result = json_decode($color_size_data, true);   
+								$color_size_values = array_column($color_size_result['MIRecord'], 'NameValue');
+								foreach($color_size_values as $values){
+									
+									$res_values[]  = array_column($values, 'Value','Name');
+                                }
+								$color_res =  $res_values[0]['OPTY'];
+                                $size_res = $res_values[0]['OPTX'];
+                                $z_res = $res_values[0]['OPTZ'];
+
+                                 /* To Get Option Description */
+                                // for color description
+                                if(trim($color_res)){
+                                    $option_des_url_col =$host.":".$port."/m3api-rest/execute/PDS050MI/Get?CONO=$company_num&OPTN=$color_res";
                             
                             //wastage calculation
                             $api_selected_valuess['WASTAGE'] =  (($api_selected_valuess['WITH_WASTAGE']-$api_selected_valuess['WITH_OUT_WASTAGE'])*100)/$api_selected_valuess['WITH_OUT_WASTAGE'];
