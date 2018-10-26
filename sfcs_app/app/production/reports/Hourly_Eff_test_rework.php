@@ -17,10 +17,104 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
         <title>Hourly Efficiency Rework</title> 
         <meta http-equiv="X-UA-Compatible" content="IE=8" /> 
         <script language="javascript" type="text/javascript" src="../common/js/datetimepicker_css.js"></script> 
-        <link rel="stylesheet" href="../../../common/css/style.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="style.css" type="text/css" media="all" />
         <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
 
         <style> 
+		body
+{
+	background-color: WHITE;
+	font-size: 8pt;
+	color: BLACK;
+	line-height: 15pt;
+	font-style: normal;
+	font-family: "calibri", Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+
+table#filter td
+{
+	
+	padding:10px;
+}
+
+table#info
+{
+	border-collapse:collapse;
+
+}
+
+table#info tr
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info2 td
+{
+	border: 1px solid black;
+	text-align: right;
+	vertical-align:top;
+white-space:nowrap; 
+}
+
+table#info td
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info th
+{
+	border: 1px solid black;
+	text-align: center;
+    	background-color: BLUE;
+	color: WHITE;
+white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+
+table#info tr.total
+{
+	border: 1px solid black;
+    	background-color: GREEN;
+	color: WHITE;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info td.head
+{
+	border: 1px solid black;
+    	background-color: GREEN;
+	color: WHITE;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info tr.total_grand
+{
+	border: 1px solid black;
+    	background-color: ORANGE;
+	color: WHITE;
+	text-align: right;
+white-space:nowrap; 
+}
+
+            table {
+                width:100%
+            }
+            td,th {
+                border-collapse: separate;
+                border: 1px solid black;
+            }
+            th{
+                text-align:center;
+            }
             @media print { 
                 @page narrow {size: 11in 9in} 
                 @page rotated {size: landscape} 
@@ -97,7 +191,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                 return false; 
             } 
         </script> 
-        <?php echo '<link href="../../../common/css/sfcs_styles.css" rel="stylesheet" type="text/css" />'; ?>     
+        <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>     
     </head> 
 
     <body onload="showHideDiv()"> 
@@ -107,7 +201,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                 <div id="non-printable"> 
                     <!-- <a href="#" onClick="print(); return false;">click here to print this page</a> --> 
                     <?php include('../../../common/config/config.php'); 
-                    error_reporting(0);
+                    // error_reporting(0);
 
                     ?> 
 
@@ -126,6 +220,9 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                     $rw_chk=$_POST['rw_chk']; 
                     $team=$_POST['team']; 
                     $hour_filter=$_POST['hour_filter']; 
+					$total_hours = $plant_end_time - $plant_start_time;
+					list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
+					$hour_start = $hour + 1;
                     //echo "secstylesds".$sections_string; 
                     //echo "secstyles".$secstyles; 
                     ?> 
@@ -135,31 +232,43 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                     <div class="row">
                         <div class="col-md-2">
 							<label for="demo1">Select Date: </label>
-                            <input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>    <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
+                            <input id="demo1" readonly type="text" class="form-control" size="8" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>    <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
                         </div>
                         <div class="col-md-2">
                             <label for="section">Select Unit: </label>
                             <?php
-                                echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
-                                $sql2="select * from $bai_pro.unit_db order by sno"; 
-                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error65896".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                { 
-                                    if($sections_string==$sql_row2['unit_members']) 
+									echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
+                                    $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
+									// echo "<option value=\"".$sql2."\" selected>Unit-".$sql2.""; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
-                                        echo "<option value=\"".$sql_row2['unit_members']."\" selected>".$sql_row2['unit_id']; 
+                                        if($sections_string==$sql_row2['sec_name']) 
+                                        { 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name'].""; 
+											$sections_list[]=$sql_row2['sec_name'];
+                                        } 
+                                        else 
+                                        { 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\">Unit-".$sql_row2['sec_name'].""; 
+											$sections_list[]=$sql_row2['sec_name'];
+                                        } 
                                     } 
-                                    else 
-                                    { 
-                                        echo "<option value=\"".$sql_row2['unit_members']."\">".$sql_row2['unit_id']; 
-                                    } 
-                                } 
-                                echo "</select>"; 
+									if($sections_string==implode(",",$sections_list)) 
+									{
+										echo "<option value=\"".implode(",",$sections_list)."\" selected>Factory</option>"; 
+									}
+									else
+									{
+										echo "<option value=\"".implode(",",$sections_list)."\">Factory</option>"; 
+									}
+                                    echo "</select>"; 
                             ?> 
                             </div>
 							<div class="col-md-2">
                                 <label for="team">Select Team: </label>
                                 <select name="team" id="team" class="form-control"> 
+								<option value=<?php echo implode(",",$shifts_array); ?>>All</option>
                                     <?php 
                                         for ($i=0; $i < sizeof($shifts_array); $i++) {?>
                                             <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
@@ -171,29 +280,34 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 <label for="hour_filter" valign="top">Select Hour: </label>
                                 <select name="hour_filter[]" id="hour_filter" class="form-control" multiple> 
                                     <?php 
-                                        if($hour_filter[0]!="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" and sizeof($hour_filter)!=0) 
-                                        { 
-                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21">All</option>'; 
-                                            for($i=6;$i<=21;$i++) 
-                                            { 
-                                                if($i==$hour_filter[$i-6]) 
-                                                { 
-                                                    echo '<option value="'.$i.'" selected>'.$i.'</option>'; 
-                                                } 
-                                                else 
-                                                { 
-                                                    echo '<option value="'.$i.'" >'.$i.'</option>'; 
-                                                } 
-                                            } 
-                                        } 
-                                        else 
-                                        { 
-                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" selected>All</option>'; 
-                                            for($i=6;$i<=21;$i++) 
-                                            { 
-                                                echo '<option value="'.$i.'">'.$i.'</option>'; 
-                                            } 
-                                        } 
+                                       $hour_filter1 = array();
+                                         for ($i=0; $i <= $total_hours; $i++)
+                                         {
+                                             $hour2=$hour;
+                                             // $to_hour = "'".$hour2.":".$minutes."'";
+											 $to_hour = "'".$hour2."'";
+                                             $hour_filter1[]=$to_hour;
+                                             $hour++;
+                                         }
+                                         echo '<option value="'.(implode(',',$hour_filter1)).'">All</option>'; 
+                                         list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
+                                         for ($i=0; $i <= $total_hours; $i++)
+                                         {
+                                             $hour1=$hour;
+                                             // $to_hour = $hour1.":".$minutes;
+											 if($hour1 > 12)
+											 {
+												$to_hour = $hour1-12;
+											 }
+											 else
+											 {
+												$to_hour = $hour1;
+											 }
+                                             echo '<option value="\''.$to_hour.'\'">'.$to_hour.'</option>';
+                                             // echo '<br/>'.$to_hour;
+                                             $hour++;
+                 
+                                         }
                                     ?> 
                                 </select> 
                             </div>
@@ -324,9 +438,11 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                             $ftt_ut_chk=$_POST['ftt_ut_chk']; 
                             $date=$_POST['dat']; 
                             $team=$_POST['team'];
-                            $team = "'".$team."'";
+                            
+							$teams=explode(",",$team);
+                            $team = "'".str_replace(",","','",$team)."'"; 
 
-                            if($team=='"A", "B"') 
+                            if(sizeof($teams) > 1) 
                             { 
                                 $work_hours=15; 
                             } 
@@ -418,8 +534,8 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                     $headers[$i]=$time; 
                                     $i=$i+1; 
                                 } 
-
-                                echo "<table id=\"info\">"; 
+                                echo "<hr/>";
+                                echo "<table id=\"info\" style='border:1px solid black;'>"; 
                                 echo "<tr><th style='background-color:#29759C; color: white;' rowspan=2>Section</th> 
                                 <th style='background-color:#29759C; color: white;' rowspan=2>Head</th>"; 
 
@@ -551,7 +667,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                 if($option1==1)
                                 {  
                                     echo "<table id=\"info\">"; 
-                                    echo "<tr><td colspan=4 style='background-color:#29759C; color:white;'>Section -".$sec." (".$sec_head.")</td></tr> <tr><th rowspan=2 style='background-color:#29759C;'>M#</th> <th rowspan=2 style='background-color:#29759C;'>NOP</th> <th  rowspan=2 style='background-color:#29759C;'>Style DB</th> <th rowspan=2 style='background-color:#29759C;'>Del DB</th>"; 
+                                    echo "<tr><td colspan=4 style='background-color:#29759C; color:white;'>Section -".$sec."</td></tr> <tr><th rowspan=2 style='background-color:#29759C;'>M#</th> <th rowspan=2 style='background-color:#29759C;'>NOP</th> <th  rowspan=2 style='background-color:#29759C;'>Style DB</th> <th rowspan=2 style='background-color:#29759C;'>Del DB</th>"; 
                                 } 
 
                                 $set_colspan = $ftt_chk + $rw_chk + $ut_chk;  
@@ -742,7 +858,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
                                     //echo $hoursa."<br>"; 
 
-                                    if($team=="\"A\"") 
+                                    if($team=="'A'") 
                                     { 
                                         $sql_nop="select avail_a as avail,absent_a as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
                                         $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -761,7 +877,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         //echo $sql_nop."-".mysql_num_rows($sql_result_nop)."-".$nop."<br>"; 
                                     } 
 
-                                    if($team=="\"B\"") 
+                                    if($team=="'B'") 
                                     { 
                                         $sql_nop="select avail_b as avail,absent_b as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
                                         $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -781,7 +897,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         //echo $sql_nop."-".mysql_num_rows($sql_result_nop)."-".$nop."<br>"; 
                                     } 
 
-                                    if($team=="\"A\", \"B\"") 
+                                    if(sizeof($teams) > 1) 
                                     { 
                                         //echo "\"A\",\"B\"<br>"; 
                                         $sql_nop="select avail_a as avail,absent_a as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
@@ -1873,7 +1989,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                             } 
 
                                             { 
-                                                $sql2_rw="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                                $sql2_rw="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
                                                 $sql_result2_rw=mysqli_query($link, $sql2_rw) or exit("Sql Error37".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                                 while($sql_row2_rw=mysqli_fetch_array($sql_result2_rw)) 
                                                 { 
@@ -1893,7 +2009,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                             { 
-                                                $sql2_ut="select sum(bac_qty) as \"sum\" from bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                                $sql2_ut="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
                                                 $sql_result2_ut=mysqli_query($link, $sql2_ut) or exit("Sql Error_ut".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                                 while($sql_row2_ut=mysqli_fetch_array($sql_result2_ut)) 
                                                 { 
@@ -2059,7 +2175,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                         } 
 
                                         { 
-                                            $sql2_rw5="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                            $sql2_rw5="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
                                             $sql_result2_rw5=mysqli_query($link, $sql2_rw5) or exit("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2_rw5=mysqli_fetch_array($sql_result2_rw5)) 
                                             { 
@@ -2079,7 +2195,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
 
 
                                         { 
-                                            $sql2_ut5="select sum(bac_qty) as \"sum\" from bai_trim_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                            $sql2_ut5="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
                                             $sql_result2_ut5=mysqli_query($link, $sql2_ut5) or exit("Sql Error_ut".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2_ut5=mysqli_fetch_array($sql_result2_ut5)) 
                                             { 
@@ -2271,7 +2387,7 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                                                 $gtotal=$gtotal+$sum; 
                                             } 
                                         } 
-                                        $sql2_rw1="select sum(bac_qty) as \"sum\" from bai_quality_log where bac_date=\"$date\" and bac_no=$mod $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                        $sql2_rw1="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_no=$mod $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                         $sql_result2_rw1=mysqli_query($link, $sql2_rw1) or exit("Sql Error49".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2_rw1=mysqli_fetch_array($sql_result2_rw1)) 
                                         { 
@@ -3219,11 +3335,6 @@ CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework 
                         }
                     ?> 
                 </div> 
-            </div>
-            <script language="javascript" type="text/javascript" src="../../../common/js/jquery.js"></script> 
-			<script>
-                    $('#printable').find('br').remove();
-            </script>
             </div>
             </div>
         </body>

@@ -108,7 +108,7 @@ else if ($go_back_to == 'doc_track_panel_withrolls_recut')
 }
 else if ($go_back_to == 'doc_track_panel_without_recut')
 {
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel.php',1,'N')."'; }</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel.php',0,'N')."'; }</script>";
 }
 
 

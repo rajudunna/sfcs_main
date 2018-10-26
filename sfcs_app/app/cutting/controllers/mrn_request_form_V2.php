@@ -1,7 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_api_calls.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R'));
 //$view_access=user_acl("SFCS_0166",$username,1,$group_id_sfcs); 
 //var_dump(haspermission($_GET['r']));
 ?>
@@ -563,11 +563,10 @@ function button_disable()
 			$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 			$MIRecords = array();
 			$MIRecords_color = array();
-			$get_api_call = new get_api_call();
 			while($sql_result_32=mysqli_fetch_array($sql_result)){
 				 
-				$url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/PMS100MI/SelMaterials?CONO=200&FACI=".$global_facility_code."&MFNO=".$sql_result_32['mo_no'];
-				$response_result = $get_api_call->getCurlRequest($url);
+				$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$global_facility_code."&MFNO=".$sql_result_32['mo_no'];
+				$response_result = $obj->getCurlAuthRequest($url);
 				$response_result = json_decode($response_result);
 				
 				$MIRecords[] = $response_result->MIRecord;
@@ -592,9 +591,9 @@ function button_disable()
 			foreach($finalrecords as $key=>$value){
 
 				$mtno = urlencode($value['MTNO']);
-				$url = "http://eka-mvxsod-01.brandixlk.org:22105/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=200&ITNO=".$mtno;
+				$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=".$company_no."&ITNO=".$mtno;
 				
-				$response_result1 = $get_api_call->getCurlRequest($url);
+				$response_result1 = $obj->getCurlAuthRequest($url);
 				$response_result1 = json_decode($response_result1);
 				
 				$MIRecords_color[] = $response_result1->MIRecord;

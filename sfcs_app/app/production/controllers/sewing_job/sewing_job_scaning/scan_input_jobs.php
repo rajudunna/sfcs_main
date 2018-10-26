@@ -39,6 +39,7 @@
 		$operation_code_routing=$sql_row['operation_code'];
 	}
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
+	echo '<input type="hidden" name="sewing_rejection" id="sewing_rejection" value="'.$sewing_rejection.'">';
 	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
 	echo '<input type="hidden" name="line-in" id="line-in" value="'.$line_in.'">';
 
@@ -247,7 +248,8 @@ $(document).ready(function()
 {
 	//$('#rejec_reasons').select2();
 	// $('#reason_drop').select2();
-	
+	var display_reporting_qty = document.getElementById('display_reporting_qty').value;	
+	var operation_code_routing = document.getElementById('operation_code_routing').value;
 	$('#job_number').focus();
 	$('#loading-image').hide();
 	<?php if ($_POST['operation_name']) {?>
@@ -269,8 +271,10 @@ $(document).ready(function()
 			url: function_text+"?job_number="+array,
 			dataType: "json",
 			success: function (response) 
-			{	
+			{
+				var sewing_rejection = document.getElementById('sewing_rejection').value;
 				console.log(response);
+				console.log(sewing_rejection);
 				s_no = 0;
 				var data = response['table_data'];
 				var flag = response['flag'];
@@ -330,9 +334,16 @@ $(document).ready(function()
 						var hidden_class_sewing_in='';
 						var rec_qy_pre = response['recevied_pre_qty'];
 
-						if (operation_id == 129 || operation_id == 130 || operation_id == 900)
+						if (operation_id == 100 || operation_id == 130 || operation_id == 900)
 						{
-							var hidden_class_sewing_in='hidden';
+							if (sewing_rejection == 'no')
+							{
+								var hidden_class_sewing_in='hidden';
+							}
+							else
+							{
+								var hidden_class_sewing_in='';
+							}							
 						}
 
 						var remarks_check_flag = 0;

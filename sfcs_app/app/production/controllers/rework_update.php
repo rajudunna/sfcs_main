@@ -296,7 +296,7 @@ function second_box(){
 		mysqli_query($link, $sql12) or exit("Sql Error74125".mysqli_error($GLOBALS["___mysqli_ston"]));
 	?>
 <!--<div id="page_heading"><span style="float"><h3>Rework Update Panel</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
-	<form action="#" method="POST" onSubmit="return validateThisFrom (this);" name="select_module" id="select_module">
+	<form action="#" method="POST" onsubmit="return validateThisFrom (this);" name="select_module" id="select_module">
 		<input type="hidden" name="today" id="today" value="<?php echo date("Y-m-d"); ?>">
 		<div class="col-sm-2"><?php 
 			

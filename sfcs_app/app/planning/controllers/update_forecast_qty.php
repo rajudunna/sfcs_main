@@ -276,8 +276,11 @@ if(isset($_POST['update']))
 </div> 
 </div> 
 <script type="text/javascript">
+	var EndDate_datePicker = new Date();
+	EndDate_datePicker.setDate(EndDate_datePicker.getDate()+1);
+
 	$('[data-toggle="datepicker"]').datepicker({
-	format: 'yyyy-mm-dd',
-	endDate: new Date()
-});
+		format: 'yyyy-mm-dd',
+		endDate: EndDate_datePicker,
+	});
 </script>

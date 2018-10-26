@@ -283,7 +283,7 @@ $table.= "</body>
 // echo $table;
 		$to  = $inspection_rep_email;
 		
-		$subject = 'BEK RM - Inspection Summary';
+		$subject = $plant_name.' RM - Inspection Summary';
 		
 		// To send HTML mail, the Content-type header must be set
 		$headers  = 'MIME-Version: 1.0' . "\r\n";

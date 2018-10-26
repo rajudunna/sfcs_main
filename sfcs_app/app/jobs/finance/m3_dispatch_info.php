@@ -46,7 +46,7 @@ fputcsv($file,$title_list);
 				}
 				
 				$sqlx1="select *, (ship_s_xs+ship_s_s+ship_s_m+ship_s_l+ship_s_xl+ship_s_xxl+ship_s_xxxl+ship_s_s01+ship_s_s02+ship_s_s03+ship_s_s04+ship_s_s05+ship_s_s06+ship_s_s07+ship_s_s08+ship_s_s09+ship_s_s10+ship_s_s11+ship_s_s12+ship_s_s13+ship_s_s14+ship_s_s15+ship_s_s16+ship_s_s17+ship_s_s18+ship_s_s19+ship_s_s20+ship_s_s21+ship_s_s22+ship_s_s23+ship_s_s24+ship_s_s25+ship_s_s26+ship_s_s27+ship_s_s28+ship_s_s29+ship_s_s30+ship_s_s31+ship_s_s32+ship_s_s33+ship_s_s34+ship_s_s35+ship_s_s36+ship_s_s37+ship_s_s38+ship_s_s39+ship_s_s40+ship_s_s41+ship_s_s42+ship_s_s43+ship_s_s44+ship_s_s45+ship_s_s46+ship_s_s47+ship_s_s48+ship_s_s49+ship_s_s50
-) as ship_out_qty, stripSpeciaChars(ship_remarks,0,1,0,0) as ship_remarks from $bai_pro3.ship_stat_log where disp_note_no=$aod_no_value";
+) as ship_out_qty, bai_pro3.stripSpeciaChars(ship_remarks,0,1,0,0) as ship_remarks from $bai_pro3.ship_stat_log where disp_note_no=$aod_no_value";
                 //var_dump($sqlx1);
 				$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
