@@ -42,9 +42,9 @@ $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $input_job_no=$_GET['input_job'];
 
-echo "<input type='text' id='style' value='".$_GET['style']."'>
-<input type='text' id='schedule' value='".$_GET['schedule']."'>
-<input type='text' id='input_job_no' value='".$_GET['input_job']."'>";
+echo "<input type='hidden' id='style' value='".$_GET['style']."'>
+<input type='hidden' id='schedule' value='".$_GET['schedule']."'>
+<input type='hidden' id='input_job_no' value='".$_GET['input_job']."'>";
 
 $colors=[];
 $sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	
