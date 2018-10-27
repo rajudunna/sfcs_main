@@ -170,25 +170,10 @@ $(function() {
 });
 </script>
 <script type="text/javascript">
-    $(function(){
-       // $('#people').multiSelect();
-       // $('#menu').multiSelect();
-        
-      
-       /* $('#categories').multiSelect({
-            noneText: 'All categories',
-            presets: [
-                {
-                    name: 'All categories',
-                    options: []
-                },
-                {
-                    name: 'My categories',
-                    options: ['a', 'c']
-                }
-            ]
-        });*/
-    });
+   function validateCheckbox() {
+        var n = $("input:checked").length;    
+        alert(n)
+    }  
 
    
     </script>
