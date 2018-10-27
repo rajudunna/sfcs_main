@@ -196,15 +196,14 @@ if(isset($_POST['filter']))
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
     echo "<form action='".getFullURL($_GET['r'],'supplier_perf_v2_update.php','N')."' 
      method='POST'>";
-    echo "<div class='table-responsive'><div style='height:450px; overflow-y: scroll;''><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\" style='
-    width: 6200px;'>";
-    echo "<tr><th style='width:67px;'>RECORD #</th><th style='width:65px;'>WEEK #</th><th style='width:70px;'>ENTRY NO</th><th>INVOICE NO & DATE</th><th style='width:180px;'>SWATCHES RECEIVED DATE FROM STORES</th><th>SWATCHES RECEIVED TIME FROM STORES</th>
-    <th>SWATCHES RECEIVED FROM (SUPPLIER/WH)</th><th>INSPECTED DATE</th><th>RELEASED DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th>
-    <th>M3 LOT#</th><th>PO</th><th style='width:160px;'>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th><th>COMPOSITION</th><th>COLOR</th><th>SOLID / YARN DYE / PRINT</th><th>BATCH #</th>
-    <th>NO OF ROLLS</th><th>QTY $fab_uom</th><th>C TEX LENGTH</th><th>C TEX L/S</th><th>INSPECTED TAG STY ($fab_uom)</th><th>INSPECTED ACT STY ($fab_uom)</th><th>WIDTH MEASURING UNIT</th>
+    echo "<div class='table-responsive'><div ><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\" style='width: 5900px;'>";
+    echo "<tr><th style='width:67px;'>RECORD #</th><th style='width:65px;'>WEEK #</th><th style='width:70px;'>ENTRY NO</th><th>INVOICE NO & DATE</th><th style='width:100px;'>SWATCHES<br>RECEIVED<br> DATE<br> FROM STORES</th><th>SWATCHES RECEIVED <br>TIME FROM STORES</th>
+    <th>SWATCHES RECEIVED<br> FROM (SUPPLIER/WH)</th><th>INSPECTED<br> DATE</th><th>RELEASED<br> DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th>
+    <th>M3 LOT#</th><th>PO</th><th style='width:160px;'>SUPPLIER</th><th>QUALITY</th><th>RM SPECIALTY</th><th>CONSTRUCTION</th><th>COMPOSITION</th><th>COLOR</th><th>SOLID /<br> YARN DYE <br>/ PRINT</th><th>BATCH #</th>
+    <th>NO OF <br>ROLLS</th><th>QTY $fab_uom</th><th>C TEX<br> LENGTH</th><th>C TEX L/S</th><th>INSPECTED TAG STY ($fab_uom)</th><th>INSPECTED ACT STY ($fab_uom)</th><th>WIDTH MEASURING UNIT</th>
     <th>PURCHASE WIDTH </th><th>ACTUAL WIDTH </th><th>PURCHASED WEIGHT (GSM)</th><th>ACTUAL WEIGHT (GSM)</th><th>CONSUMPTION</th><th>PTS./100 SQ. $fab_uom OR FAULT RATE</th>
     <th>GMT FALLOUT% (FAB.INS)</th><th>FREQUENTLY SEEN DEFECTS</th><th>SKEW / BOW / WAVINESS / DOG-LEG</th><th>SKEW / BOW / WAVINESS / DOG-LEG %</th><th>RESIDUAL SHRINKAGE LENGTH</th>
-    <th>RESIDUAL SHRINKAGE WIDTH</th><th>SUPPLIER TEST REPORT (PASS/FAIL/NA)</th><th>AT SOURCE INSPECTION 10% REPORT (YES /NO)</th><th>AT SOURCE INSPECTION C.C REPORT (YES /NO)</th>
+    <th>RESIDUAL SHRINKAGE WIDTH</th><th>SUPPLIER TEST REPORT<br> (PASS/FAIL/NA)</th><th>AT SOURCE INSPECTION <br>10% REPORT<br> (YES /NO)</th><th>AT SOURCE INSPECTION <br>C.C REPORT (YES /NO)</th>
  <th>COMPLAINT#</th><th>REJECTED QTY ($fab_uom)</th><th>FAIL REASON1</th><th>REASON 1 VALUE</th><th>FAIL REASON 2</th><th>REASON 2 VALUE</th><th>FAB TECH DECISION</th>";
  
     $n=0;
