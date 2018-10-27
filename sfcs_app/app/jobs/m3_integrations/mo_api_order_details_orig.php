@@ -52,18 +52,19 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
         
             $color_size_url = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=$comp_no&ITNO=$item_code";
             $response_size_data = getCurlAuthRequestLocal($color_size_url,$basic_auth);
-            if($response_size_data['status'] && isset($response_size_data['response']['CONO'])){
-                $color_res = $response_size_data['response']['OPTY'];
+                $color_res = $response_size_data['status'] ? $response_size_data['response']['OPTY'] : '';
                 $option_des_url_all =$api_hostname.":".$api_port_no."/m3api-rest/execute/PDS050MI/Get?CONO=$comp_no&OPTN=";
                 $response_color_data = getCurlAuthRequestLocal($option_des_url_all.$color_res,$basic_auth);
 
                     $color_description = ($response_color_data['status']) ? $response_color_data['response']['TX30'] : '';
-                    $size_description = getCurlAuthRequestLocal($option_des_url_all.$response_size_data['response']['OPTX'],$basic_auth)['response']['TX30'] ?? '';
-                    $z_feature_description = getCurlAuthRequestLocal($option_des_url_all.$response_size_data['response']['OPTZ'],$basic_auth)['response']['TX30'] ?? '';
+                    $optx = $response_size_data['status'] ? $response_size_data['response']['OPTX'] : '';
+                    $optz = $response_size_data['status'] ? $response_size_data['response']['OPTZ'] : '';
+                    $size_description = getCurlAuthRequestLocal($option_des_url_all.$optx,$basic_auth)['response']['TX30'] ?? '';
+                    $z_feature_description = getCurlAuthRequestLocal($option_des_url_all.$optz,$basic_auth)['response']['TX30'] ?? '';
 
                     //=========== save data ================
                     $qry_save_bom = "INSERT INTO $m3_inputs.bom_details(date_time,mo_no,plant_code,
-                    item_code,item_description,color,color_description,size,z_code,per_piece_consumption,wastage,uom,material_sequence,product_no,operation_code) VALUES (now(),'".$mo_no."','".$global_facility_code."','".urldecode($item_code)."','".$item_description."','".$result_data['color']."','".$color_description."','".$size_description."','".$z_feature_description."','".$order_yy."','".$wastage."','".$uom."','".$sequence_no."','".urldecode($prno)."','".$response['response']['OPNO']."')";
+                    item_code,item_description,color,color_description,size,z_code,per_piece_consumption,wastage,uom,material_sequence,product_no,operation_code) VALUES (now(),'".$mo_no."','".$global_facility_code."','".urldecode($item_code)."','".$item_description."','".$color_res."','".$color_description."','".$size_description."','".$z_feature_description."','".$order_yy."','".$wastage."','".$uom."','".$sequence_no."','".urldecode($prno)."','".$response['response']['OPNO']."')";
                     $res_save_bom = mysqli_query($link, $qry_save_bom) or exit("Sql Error Insert bom Details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(in_array(trim($response['response']['OPNO']),$res_chk_op)){
                         //================================================
@@ -77,9 +78,6 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                         $res_order_details = mysqli_query($link, $ins_order_details) or exit("Sql Error Insert Order Details".mysqli_error($GLOBALS["___mysqli_ston"]));
                         
                     }
-
-                
-            }
         
         }
     }
