@@ -53,7 +53,7 @@ if(is_array($_POST) && !empty($_POST))
             foreach ($permissions as $key => $permission) {
                 $sql_insert_query = "insert into $central_administration_sfcs.rbac_role_menu_per (role_menu_id,permission_id) values ('$role_menu_id','$permission')";
                  $query_result2 = mysqli_query($link, $sql_insert_query) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
-                echo $sql_insert_query;
+               // echo $sql_insert_query;
                 
             }
         $_SESSION["msg"]='Role Menu and Permissions created successfully';
