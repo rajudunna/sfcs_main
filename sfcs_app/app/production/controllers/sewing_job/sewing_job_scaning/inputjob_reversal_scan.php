@@ -655,7 +655,7 @@ else if($concurrent_flag == 0)
 		//exit('force quitting');
 		//inserting into bai_log and bai_log buff
 			$sizevalue="size_".$size_id;
-			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
+			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '%,".$b_module[$key]."' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
 			//echo $sections_qry;
 			$sections_qry_result=mysqli_query($link,$sections_qry) or exit("Bundles Query Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($buyer_qry_row=mysqli_fetch_array($sections_qry_result)){
