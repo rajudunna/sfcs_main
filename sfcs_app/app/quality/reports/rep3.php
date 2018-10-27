@@ -306,19 +306,19 @@ function verify_date()
 				if(sizeof(explode(",",$sch_db_grand))==1)
 				{
 					// $sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand) and color=\"$sch_color\" and length(size)>0 group by delivery,color,size";
-					$sql1="select sum(recevied_qty) as qty,schedule,size_title,assigned_module,color from $brandix_bts.bundle_creation_data where length(size)>0 and schedule in ($sch_db_grand) and color = '$sch_color' and and length(size)>0 group by schedule,color,size_title";
+					$sql1="select sum(recevied_qty) as qty,schedule,size_id,assigned_module,color from $brandix_bts.bundle_creation_data where length(size)>0 and schedule in ($sch_db_grand) and color = '$sch_color' and and length(size)>0 group by schedule,color,size_id";
 				}
 				else
 				{
 					// $sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand) and length(size)>0 group by delivery,color,size";
-					$sql1="select sum(recevied_qty) as qty,schedule,size_title,assigned_module,color from $brandix_bts.bundle_creation_data where length(size)>0 and schedule in ($sch_db_grand) and length(size)>0 group by schedule,color,size_title";
+					$sql1="select sum(recevied_qty) as qty,schedule,size_id,assigned_module,color from $brandix_bts.bundle_creation_data where length(size)>0 and schedule in ($sch_db_grand) and length(size)>0 group by schedule,color,size_id";
 				}
 				//echo $sql1;
 			}
 			if($choice==2)
 			{
 				// $sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where delivery in ($sch_db_grand) and color=\"$sch_color\" and length(size)>0 group by delivery,color,size,bac_no";
-				$sql1="select sum(recevied_qty) as qty,schedule,size_title,assigned_module,color from $brandix_bts.bundle_creation_data where schedule in ($sch_db_grand) and color = '$sch_color' and length(size)>0 group by schedule,color,size_title,assigned_module";
+				$sql1="select sum(recevied_qty) as qty,schedule,size_id,assigned_module,color from $brandix_bts.bundle_creation_data where schedule in ($sch_db_grand) and color = '$sch_color' and length(size)>0 group by schedule,color,size_id,assigned_module";
 			}
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -326,7 +326,7 @@ function verify_date()
 				
 				$sw_out=$sql_row1['qty'];	
 				$sch_db=$sql_row1['schedule'];
-				$size=$sql_row1['size_title'];
+				$size=$sql_row1['size_id'];
 				$mod=$sql_row1['assigned_module'];	
 				$color=$sql_row1['color'];
 				$qms_qty=0;
