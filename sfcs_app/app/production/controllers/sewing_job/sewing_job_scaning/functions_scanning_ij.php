@@ -1689,7 +1689,7 @@ function validating_with_module($pre_array_module)
 	}
 	if(!in_array($job_no,$input_job_array))
 	{
-		if(sizeof($input_job_array) > 4)
+		if(sizeof($input_job_array) > $ims_boxes_count)
 		{
 			$response_flag = 1;
 		}
