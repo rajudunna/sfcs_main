@@ -160,28 +160,41 @@ background-position:center middle;
 
 					</tr>";
 
+					$application='IMS_OUT';
+                    $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+		            //echo $scanning_query;
+		            $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		            while($sql_row=mysqli_fetch_array($scanning_result))
+		            {
+		                $operation_code=$sql_row['operation_code'];
+		            } 
+
 
 					if($choice==0)
 					{
-						$sql="select sum(bac_qty) as \"output\", bac_no from $bai_pro.bai_log where bac_no in ($sec_db) and bac_date between \"$sdate\" and \"$edate\" group by bac_no";
+
+						 $sql="select sum(recevied_qty) as output,assigned_module from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id='$operation_code' and date(date_time) between '$sdate' and '$edate' GROUP BY assigned_module" ;
 					}
 
 					if($choice==1)
 					{
-						$sql="select sum(bac_qty) as \"output\", group_concat(distinct delivery) as \"delivery\", group_concat(distinct color) as \"color\", bac_style from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" group by bac_style order by bac_style+1";
+
+						$sql="select sum(recevied_qty) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style from brandix_bts.bundle_creation_data_temp where operation_id='$operation_code' and date(date_time) between '$sdate' and '$edate' group by style order by style";
 					}
 
 					if($choice==2)
 					{
-						$sql="select sum(bac_qty) as \"output\", bac_no, bac_shift from $bai_pro.bai_log where bac_no in ($sec_db) and bac_date between \"$sdate\" and \"$edate\" group by bac_no,bac_shift order by bac_no,bac_shift";
+
+						$sql="select sum(recevied_qty) as output, assigned_module, shift from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id='$operation_code' and date(date_time) between '$sdate' and '$edate' group by assigned_module,shift order by assigned_module,shift";
 					}
 
 					if($choice==3)
 					{
-						$sql="select sum(bac_qty) as \"output\", group_concat(distinct delivery) as \"delivery\", group_concat(distinct color) as \"color\", bac_style,bac_no, bac_shift from $bai_pro.bai_log where bac_no in ($sec_db) and bac_date between \"$sdate\" and \"$edate\" group by bac_style,bac_no,bac_shift order by bac_no,bac_shift";
+
+						$sql="select sum(recevied_qty) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style,assigned_module,shift from $brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id='$operation_code' and date(date_time) between '$sdate' and '$edate' group by style,assigned_module,shift order by assigned_module,shift";
 					}
 					$grand_vals=array();
-					
+					//echo $sql;
 					for($i=0;$i<33;$i++) {	$grand_vals[$i]=0;	}
 					$grand_output=0;
 					$grand_rejections=0;
@@ -189,17 +202,19 @@ background-position:center middle;
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					
-					$mod=$sql_row['bac_no'];
-					$shif=$sql_row['bac_shift'];
-					$delivery=$sql_row['delivery'];
+					$mod=$sql_row['assigned_module'];
+					$shif=$sql_row['shift'];
+					$schedule=$sql_row['schedule'];
 					echo "<tr>";
-					echo "<td>".$sql_row['bac_no']."</td>";
-					echo "<td>".$sql_row['bac_shift']."</td>";
-					echo "<td>".$sql_row['bac_style']."</td>";
-					echo "<td>".$sql_row['delivery']."</td>";
+					echo "<td>".$sql_row['assigned_module']."</td>";
+					echo "<td>".$sql_row['shift']."</td>";
+					echo "<td>".$sql_row['style']."</td>";
+					echo "<td>".$sql_row['schedule']."</td>";
 					echo "<td>".$sql_row['color']."</td>";
 					
 					$sw_out=$sql_row['output'];
+
+					//echo $sw_out;
 					
 					$sql1x="SET SESSION group_concat_max_len = 1000000";
 					mysqli_query($link, $sql1x) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -212,7 +227,7 @@ background-position:center middle;
 					
 					if($choice==1)
 					{
-						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $bai_pro3.bai_qms_db where qms_tran_type=3 and qms_schedule in ($delivery) and log_date between \"$sdate\" and \"$edate\"";
+						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $bai_pro3.bai_qms_db where qms_tran_type=3 and qms_schedule in ($schedule) and log_date between \"$sdate\" and \"$edate\"";
 						//echo $sql1."<br/>";
 					}
 					
@@ -225,7 +240,7 @@ background-position:center middle;
 					if($choice==3)
 					{
 						
-						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $bai_pro3.bai_qms_db where qms_tran_type=3 and qms_schedule in ($delivery) and substring_index(remarks,\"-\",1)=\"$mod\" and  substring_index(substring_index(remarks,\"-\",2),\"-\",-1)=\"$shif\" and log_date between \"$sdate\" and \"$edate\"";
+						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $bai_pro3.bai_qms_db where qms_tran_type=3 and qms_schedule in ($schedule) and substring_index(remarks,\"-\",1)=\"$mod\" and  substring_index(substring_index(remarks,\"-\",2),\"-\",-1)=\"$shif\" and log_date between \"$sdate\" and \"$edate\"";
 					  // echo "query=".$sql1;
 					}
 					
