@@ -272,7 +272,7 @@ function verify_date()
 		else
 		{
 			$sql="select group_concat(distinct schedule_no) as schedules from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between '$sdate' and '$edate'";
-			 echo $sql;
+			 //echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
