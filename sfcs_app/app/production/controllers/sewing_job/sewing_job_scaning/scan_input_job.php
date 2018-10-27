@@ -1,12 +1,12 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
-    $url = getFullURLLEVEL($_GET['r'],'inputjob_reversal_scan.php',0,'N');
+    $url = getFullURL($_GET['r'],'inputjob_reversal_scan.php','N');
 ?>
 <div class="panel panel-primary " id="inputjob_scanning">
     <div class="panel-heading">Input Job Scanning</div>
     <div class="panel-body">
-    <form method ='POST' action='<?php echo $url ?>'>
+   
         <div class="row">
             <div class="col-md-2">
                 <label>Shift:<span style="color:red">*</span></label>
@@ -21,9 +21,21 @@
             </div>
             <div class='col-sm-1'>
                 <label><br/></label>
-                <input type="submit" id="continue" class="btn btn-success" value="Continue">
+                <input type='button' onclick='verify_shift()' id="continue" class="btn btn-success" value="Continue">
             </div>
         </div>
-    </form>
+   
     </div>
 </div>
+
+<script>
+    function verify_shift(){
+        var shift = $('#shift').val();
+        if( shift == ''){
+            swal('Please Select Shift','','error');
+            return false;
+        }else{
+            window.location = '<?= $url  ?>&shift='+shift;
+        }
+    }
+</script>

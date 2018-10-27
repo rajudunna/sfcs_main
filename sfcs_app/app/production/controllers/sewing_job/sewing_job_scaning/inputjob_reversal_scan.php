@@ -10,7 +10,7 @@ $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
-$shift=$_POST['shift'];
+$shift=$_GET['shift'];
   
 if(isset($_POST['id']))
 {
@@ -763,7 +763,7 @@ else if($concurrent_flag == 0)
 	}
 
 	// die();
-	$url = '?r='.$_GET['r'];
+	$url = '?r='.$_GET['r']."&shift=$b_shift";
 	echo "<script>window.location = '".$url."'</script>";
 	// die();
  }
