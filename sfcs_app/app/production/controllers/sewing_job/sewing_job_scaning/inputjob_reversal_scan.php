@@ -248,7 +248,14 @@ if(isset($_POST['formSubmit']))
 			$bundle_individual_number = $nop_qry_row['bundle_number'];
 			// $bundle_individual_number = $nop_qry_row['tid'];
 			$actual_bundles[] = $nop_qry_row['bundle_number'];
-			$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
+			if($post_code)
+			{
+				$query_to_fetch_individual_bundle_details = "select (send_qty-recevied_qty)as recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$post_code'";
+			}
+			else
+			{
+				$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
+			}
 			// echo $query_to_fetch_individual_bundle_details;
 			// echo "<br/><br/>";
 			$result_query_to_fetch_individual_bundle_details=mysqli_query($link,$query_to_fetch_individual_bundle_details) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
