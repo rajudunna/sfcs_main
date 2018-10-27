@@ -250,7 +250,7 @@ if(isset($_POST['formSubmit']))
 			$actual_bundles[] = $nop_qry_row['bundle_number'];
 			if($post_code)
 			{
-				$query_to_fetch_individual_bundle_details = "select (send_qty-recevied_qty)as recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$post_code'";
+				$query_to_fetch_individual_bundle_details = "select (send_qty-recevied_qty)as recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$post_code[0]'";
 			}
 			else
 			{
