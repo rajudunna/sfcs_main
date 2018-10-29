@@ -89,7 +89,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<tr>";
 
 		echo "<td>".$sql_row['doc_no']."</td>";
-		echo "<td>".$sql_row['record_comment']."</td>";
+		echo "<td>".$sql_row['from_module']." - ".$sql_row['to_module']."</td>";
 		echo "<td>".$sql_row['username']."</td>";
 		echo "<td>".$sql_row['log_time']."</td>";
 		echo "</tr>";
@@ -104,7 +104,7 @@ echo "</div>";
 
 	
 //echo "<div>";
-echo "<div class='table-responsive'><div class=\"panel panel-primary\" style=\"width:1500px\"><div class=\"panel-heading\"><h2>BAI Log</h2></div>";
+echo "<div class='table-responsive'><div class=\"panel panel-primary\" style=\"width:2000px\"><div class=\"panel-heading\"><h2>BAI Log</h2></div>";
 echo "<table id=\"table1\" border=1 class='table table-bordered'>";
 echo "<tr><th>Date</th><th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>DocketNo</th><th>Qty</th><th>SMV</th><th>NOP</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th><th>XXXL</th><th>s06</th><th>s08</th><th>s10</th><th>s12</th><th>s14</th><th>s16</th><th>s18</th><th>s20</th><th>s22</th><th>s24</th><th>s26</th><th>s28</th><th>s30</th></tr>";
 
@@ -249,31 +249,34 @@ echo"</br>";
 
 <script language="javascript" type="text/javascript">
 //<![CDATA[
+	var totRowIndex = tf_Tag(tf_Id('table1'),"tr").length;  
 	var fnsFilters = {
 	
-	rows_counter: true,
-	sort_select: true,
+		rows_counter: true,  
+	    sort_select: true,
 		on_change: true,
 		display_all_text: " [ Show all ] ",
-		loader_text: "Filtering data...",  
-	loader: true,
-	loader_text: "Filtering data...",
-	btn_reset: true,
+		loader: true,
+		loader_text: "Filtering data...",
+		btn_reset: true,
 		alternate_rows: true,
 		btn_reset_text: "Clear",
-	col_operation: { 
+	    col_operation: { 
 						id: ["table1Tot1"],
 						 col: [10],  
 						operation: ["sum"],
 						 decimal_precision: [1],
-						write_method: ["innerHTML"] 
+						write_method: ["innerHTML"] ,
+						exclude_row: [totRowIndex],  
+                         decimal_precision: [1,0] 
+
 					},
-	rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]
+		rows_always_visible: [totRowIndex]  
 							
 	
 		
 	};
-	
+	var tf7 = setFilterGrid("table1", fnsFilters);
 	 setFilterGrid("table1");
 	setFilterGrid( "table10" );
 //]]>
@@ -288,6 +291,7 @@ echo "<tr><th>Input Date</th><th>Layplan ID</th><th>Dockete</th><th>Module</th><
 $sql="select * from $bai_pro3.ims_log where ims_schedule=\"$schedule\"";
 mysqli_query($link,$sql) or exit("Sql Error7".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error7".mysqli_error());
+$count=mysqli_num_rows($sql_result); 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 $ims_date=$sql_row['ims_date'];
@@ -307,14 +311,30 @@ $ims_schedule=$sql_row['ims_schedule'];
 $ims_color=$sql_row['ims_color'];
 $tid=$sql_row['tid'];
 $rand_track=$sql_row['rand_track'];
+$size1=str_replace("a_","",$sql_row['ims_size']);
+		$size2=str_replace("s","",$size1);
+		$sql_size = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$sql_row['ims_style']."' and order_del_no='".$schedule."' and order_col_des='".$sql_row['ims_color']."'";
+			
+		$sql_size_result =mysqli_query($link,$sql_size) or exit("Sql Error123".mysqli_error());
+		while($sql_row1=mysqli_fetch_array($sql_size_result)) {
+		for($s=0;$s<sizeof($count);$s++)
+			{
+				
+				if($sql_row1["title_size_s".$size2.""]<>'')
+				{
+					$s_tit=$sql_row1["title_size_s".$size2.""];
+				}	
+				
 
-echo "<tr><td>".$sql_row['ims_date']."</td><td>".$sql_row['ims_cid']."</td><td>".$sql_row['ims_doc_no']."</td><td>".$sql_row['ims_mod_no']."</td><td>".$sql_row['ims_shift']."</td><td>".$sql_row['ims_size']."</td><td>".$sql_row['ims_qty']."</td><td>".$sql_row['ims_pro_qty']."</td><td>".$sql_row['ims_status']."</td><td>".$sql_row['bai_pro_ref']."</td><td>".$sql_row['ims_log_date']."</td><td>".$sql_row['ims_remarks']."</td><td>".$sql_row['ims_style']."</td><td>".$sql_row['ims_schedule']."</td><td>".$sql_row['ims_color']."</td><td>".$sql_row['tid']."</td><td>".$sql_row['rand_track']."</td></tr>";
-
+echo "<tr><td>".$sql_row['ims_date']."</td><td>".$sql_row['ims_cid']."</td><td>".$sql_row['ims_doc_no']."</td><td>".$sql_row['ims_mod_no']."</td><td>".$sql_row['ims_shift']."</td><td>".$s_tit."</td><td>".$sql_row['ims_qty']."</td><td>".$sql_row['ims_pro_qty']."</td><td>".$sql_row['ims_status']."</td><td>".$sql_row['bai_pro_ref']."</td><td>".$sql_row['ims_log_date']."</td><td>".$sql_row['ims_remarks']."</td><td>".$sql_row['ims_style']."</td><td>".$sql_row['ims_schedule']."</td><td>".$sql_row['ims_color']."</td><td>".$sql_row['tid']."</td><td>".$sql_row['rand_track']."</td></tr>";
+			}
+		}
 }
 
 $sql="select * from $bai_pro3.ims_log_backup where ims_schedule=\"$schedule\" order by ims_mod_no";
 mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error9".mysqli_error());
+$count1=mysqli_num_rows($sql_result); 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 $ims_date=$sql_row['ims_date'];
@@ -334,9 +354,23 @@ $ims_schedule=$sql_row['ims_schedule'];
 $ims_color=$sql_row['ims_color'];
 $tid=$sql_row['tid'];
 $rand_track=$sql_row['rand_track'];
-
-echo "<tr><td>".$sql_row['ims_date']."</td><td>".$sql_row['ims_cid']."</td><td>".$sql_row['ims_doc_no']."</td><td>".$sql_row['ims_mod_no']."</td><td>".$sql_row['ims_shift']."</td><td>".$sql_row['ims_size']."</td><td>".$sql_row['ims_qty']."</td><td>".$sql_row['ims_pro_qty']."</td><td>".$sql_row['ims_status']."</td><td>".$sql_row['bai_pro_ref']."</td><td>".$sql_row['ims_log_date']."</td><td>".$sql_row['ims_remarks']."</td><td>".$sql_row['ims_style']."</td><td>".$sql_row['ims_schedule']."</td><td>".$sql_row['ims_color']."</td><td>".$sql_row['tid']."</td><td>".$sql_row['rand_track']."</td></tr>";
-
+$size3=str_replace("a_","",$sql_row['ims_size']);
+$size4=str_replace("s","",$size3);
+$sql_size = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$sql_row['ims_style']."' and order_del_no='".$schedule."' and order_col_des='".$sql_row['ims_color']."'";
+			
+		$sql_size_result =mysqli_query($link,$sql_size) or exit("Sql Error123".mysqli_error());
+		while($sql_row1=mysqli_fetch_array($sql_size_result)) {
+		for($s=0;$s<sizeof($count1);$s++)
+			{
+				
+				if($sql_row1["title_size_s".$size4.""]<>'')
+				{
+					$s_tit=$sql_row1["title_size_s".$size4.""];
+				}	
+				
+echo "<tr><td>".$sql_row['ims_date']."</td><td>".$sql_row['ims_cid']."</td><td>".$sql_row['ims_doc_no']."</td><td>".$sql_row['ims_mod_no']."</td><td>".$sql_row['ims_shift']."</td><td>".$s_tit."</td><td>".$sql_row['ims_qty']."</td><td>".$sql_row['ims_pro_qty']."</td><td>".$sql_row['ims_status']."</td><td>".$sql_row['bai_pro_ref']."</td><td>".$sql_row['ims_log_date']."</td><td>".$sql_row['ims_remarks']."</td><td>".$sql_row['ims_style']."</td><td>".$sql_row['ims_schedule']."</td><td>".$sql_row['ims_color']."</td><td>".$sql_row['tid']."</td><td>".$sql_row['rand_track']."</td></tr>";
+			}
+		}
 }
 echo '<tr><td>Input Total:</td><td id="table111Tot1" style="background-color:#FFFFCC; color:red;"></td><td>Output Total:</td><td id="table111Tot2" style="background-color:#FFFFCC; color:red;"></td></tr>';
 echo "</table>";
@@ -389,6 +423,7 @@ $packing_tid_list=array();
 $sql="select * from $bai_pro3.packing_summary where order_del_no=\"$schedule\" order by size_code,carton_act_qty desc,tid";
 mysqli_query($link,$sql) or exit("Sql Error10".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error11".mysqli_error());
+$count2=mysqli_num_rows($sql_result); 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 
@@ -408,11 +443,23 @@ $audit_status=$sql_row['audit_status'];
 $order_style_no=$sql_row['order_style_no'];
 $order_del_no=$sql_row['order_del_no'];
 $order_col_des=$sql_row['order_col_des'];
-
-
-echo "<tr><td>".$sql_row['doc_no']."</td><td>".$sql_row['doc_no_ref']."</td><td>".$sql_row['tid']."</td><td>"."a_".$sql_row['size_code']."</td><td>".$sql_row['remarks']."</td><td>".(strlen($sql_row['status'])==0?"Pending":$sql_row['status'])."</td><td>".$sql_row['lastup']."</td><td>".$sql_row['carton_act_qty']."</td><td>".$sql_row['order_style_no']."</td><td>".$sql_row['order_del_no']."</td><td>".$sql_row['order_col_des']."</td>
+$size5=str_replace("a_","",$sql_row['size_code']);
+$size6=str_replace("s","",$size5);
+$sql_size = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$sql_row['order_style_no']."' and order_del_no='".$schedule."' and order_col_des='".$sql_row['order_col_des']."'";
+			
+		$sql_size_result =mysqli_query($link,$sql_size) or exit("Sql Error123".mysqli_error());
+		while($sql_row1=mysqli_fetch_array($sql_size_result)) {
+		for($s=0;$s<sizeof($count1);$s++)
+			{
+				
+				if($sql_row1["title_size_s".$size6.""]<>'')
+				{
+					$s_tit=$sql_row1["title_size_s".$size6.""];
+				}	
+echo "<tr><td>".$sql_row['doc_no']."</td><td>".$sql_row['doc_no_ref']."</td><td>".$sql_row['tid']."</td><td>".$s_tit."</td><td>".$sql_row['remarks']."</td><td>".(strlen($sql_row['status'])==0?"Pending":$sql_row['status'])."</td><td>".$sql_row['lastup']."</td><td>".$sql_row['carton_act_qty']."</td><td>".$sql_row['order_style_no']."</td><td>".$sql_row['order_del_no']."</td><td>".$sql_row['order_col_des']."</td>
 </tr>";
-
+			}
+		}
 }
 echo '<tr><td>Total:</td><td id="table1111Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
 echo "</table>";

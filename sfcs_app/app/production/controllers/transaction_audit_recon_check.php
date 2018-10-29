@@ -94,11 +94,12 @@ SELECT sfcs_style,sfcs_mod_no,CONCAT('a_',sfcs_size),0,0,sfcs_color FROM $m3_bul
 ";
 mysqli_query($link,$sql) or exit("Sql Error4".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
+ $count=mysqli_num_rows($sql_result); 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	
-		echo "<tr>";
-
+		$size1=str_replace("a_","",$sql_row['ims_size']);
+		$size2=str_replace("s","",$size1);
 			$in_modules[]=$sql_row['ims_mod_no'];
 			$recut_qty_db=array();
 			$recut_req_db=array();
@@ -190,27 +191,44 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$output=$sql_row12["sout"];
 		}
-		
-		//echo "<td>$tid</td>";
-		echo "<td>".$sql_row["ims_color"]."</td>";
-		echo "<td>".$sql_row["ims_size"]."</td>";
-		echo "<td>".$sql_row["ims_mod_no"]."</td>";
-		echo "<td>".($sql_row["ims_qty"]-$transfer)."</td>";
-		echo "<td>".$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]."</td>";
-		echo "<td>".$replaced."</td>";
-		echo "<td>".$transfer."</td>";
-		echo "<td>".$output."</td>";
-		echo "<td>".$rejections."</td>";
-		echo "<td>".$outofratio."</td>";
-		echo "<td>".($sample_out_qty+$sample_in_qty)."</td>";
-		echo "<td>".$sample_out_qty."</td>";
-		//08-09-2016/SR#18628309/Removed $sample_in_qty from missing garment output calculation and added $sample_in_qty,$sample_out_qty in input calculation as per mail at 30/08/2016 3:57 PM (subject:IMS removed)
-		echo "<td>".((($sql_row["ims_qty"]-$transfer)
-		+$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]
-		+$replaced
-		+$transfer+$sample_out_qty+$sample_in_qty)-($output+$rejections+$outofratio+$sample_out_qty))."</td>";
+		$sql_size = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$sql_row['ims_style']."' and order_del_no='".$schedule."' and order_col_des='".$sql_row['ims_color']."'";
+			
+		$sql_size_result =mysqli_query($link,$sql_size) or exit("Sql Error123".mysqli_error());
+		while($sql_row1=mysqli_fetch_array($sql_size_result)) {
+		for($s=0;$s<sizeof($count);$s++)
+			{
+				
+				if($sql_row1["title_size_s".$size2.""]<>'')
+				{
+					$s_tit=$sql_row1["title_size_s".$size2.""];
+				}	
+				//echo $sql_row1["title_size_s".$size2[$s].""];
+		echo "<tr>";
+				echo "<td>".$sql_row["ims_color"]."</td>";
+				echo "<td>".$s_tit."</td>";
+				echo "<td>".$sql_row["ims_mod_no"]."</td>";
+				echo "<td>".($sql_row["ims_qty"]-$transfer)."</td>";
+				echo "<td>".$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]."</td>";
+				echo "<td>".$replaced."</td>";
+				echo "<td>".$transfer."</td>";
+				echo "<td>".$output."</td>";
+				echo "<td>".$rejections."</td>";
+				echo "<td>".$outofratio."</td>";
+				echo "<td>".($sample_out_qty+$sample_in_qty)."</td>";
+				echo "<td>".$sample_out_qty."</td>";
+				//08-09-2016/SR#18628309/Removed $sample_in_qty from missing garment output calculation and added $sample_in_qty,$sample_out_qty in input calculation as per mail at 30/08/2016 3:57 PM (subject:IMS removed)
+				echo "<td>".((($sql_row["ims_qty"]-$transfer)
+				+$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]
+				+$replaced
+				+$transfer+$sample_out_qty+$sample_in_qty)-($output+$rejections+$outofratio+$sample_out_qty))."</td>";
+						
+				echo "</tr>";
+			}
 
-		echo "</tr>";
+			
+
+		
+				}
 }
 echo '<tr>
 		<td colspan="3" style="background-color:RED; color:white;">Total:</td>
