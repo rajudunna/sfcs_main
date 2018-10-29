@@ -45,7 +45,6 @@ if(isset($_GET['location']))
 	
 	// die();
 }
-
 else
 {
 	echo "<h3>Location: <font color=red>Scan Location!</font></h3>";
@@ -71,10 +70,11 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 {
 	$code=$_POST['cartonid'];
 	$location=$_POST['location'];
+	//echo "Location :".$code;
 	//if(is_numeric(substr($code,0,1)))
-		$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
+		$sql="select * from $bai_rm_pj1.location_db where location_id=\"$code\" and sno>0";
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error3".mysqli_error());
-		if(mysqli_num_rows($sql_result)>0)
+		if(mysqli_num_rows($sql_result)<=0)
 		{
 			//$code=ltrim($code,"0");
 			$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\", status=0, allotment_status=0 where barcode_number=\"$code\"";
@@ -105,8 +105,10 @@ if(isset($_POST['check2']))
 {
 	$code=$_POST['cartonid2'];
 	$location=$_POST['location'];
-	if($code!='')
-			{
+	$qry_validateloc="select * from $bai_rm_pj1.location_db where location_id=\"$code\" and sno>0";
+	$qry_validateloc=mysqli_query($link, $qry_validateloc);
+	if(mysqli_num_rows($qry_validateloc)<=0)
+	{
 				$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
 				//echo "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql);
@@ -159,7 +161,7 @@ if(isset($_POST['check2']))
 	else
 	{
 		echo "<h3>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h3>";
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"in_trims_new.php?location=$location\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"in_trims_new.php?location=$code\"; }</script>";
 	}
 }
 
