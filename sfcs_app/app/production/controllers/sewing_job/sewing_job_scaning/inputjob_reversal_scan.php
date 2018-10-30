@@ -266,7 +266,7 @@ if(isset($_POST['formSubmit']))
 			while($row_result_query_to_fetch_individual_bundle_details=mysqli_fetch_array($result_query_to_fetch_individual_bundle_details))
 			{
 
-				$rec_qty = $nop_qry_row['recevied_qty'];
+				$rec_qty = $row_result_query_to_fetch_individual_bundle_details['recevied_qty'];
 				// echo $bundle_individual_number.'-'.$rec_qty.'-'.$cumulative_reversal_qty.'</br>';
 				if($rec_qty > 0)
 				{
