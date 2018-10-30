@@ -208,20 +208,42 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				echo "<td>".$s_tit."</td>";
 				echo "<td>".$sql_row["ims_mod_no"]."</td>";
 				echo "<td>".($sql_row["ims_qty"]-$transfer)."</td>";
+				$total_input_qty+=($sql_row["ims_qty"]-$transfer);
+				$total_input_qty1=$total_input_qty;
 				echo "<td>".$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]."</td>";
+				$recut_qty+=($recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]);
+				$recut_qty1=$recut_qty;
 				echo "<td>".$replaced."</td>";
+				$replaced_qty+=$replaced;
+				$replaced_qty1=$replaced_qty;
 				echo "<td>".$transfer."</td>";
+				$transfer_qty+=$transfer;
+				$transfer_qty1=$transfer_qty;
 				echo "<td>".$output."</td>";
+				$output_qty+=$output;
+				$output_qty1=$output_qty;
 				echo "<td>".$rejections."</td>";
+				$rejections_qty+=$rejections;
+				$rejections_qty1=$rejections_qty;
 				echo "<td>".$outofratio."</td>";
+				$outofratio_qty+=$outofratio;
+				$outofratio_qty1=$outofratio_qty;
 				echo "<td>".($sample_out_qty+$sample_in_qty)."</td>";
+				$total_qty2+=($sample_out_qty+$sample_in_qty);
+				$total_qty3=$total_qty2;
 				echo "<td>".$sample_out_qty."</td>";
+				$sample_out_qty5+=$sample_out_qty;
+				$sample_out_qty510=$sample_out_qty5;
 				//08-09-2016/SR#18628309/Removed $sample_in_qty from missing garment output calculation and added $sample_in_qty,$sample_out_qty in input calculation as per mail at 30/08/2016 3:57 PM (subject:IMS removed)
 				echo "<td>".((($sql_row["ims_qty"]-$transfer)
 				+$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]
 				+$replaced
 				+$transfer+$sample_out_qty+$sample_in_qty)-($output+$rejections+$outofratio+$sample_out_qty))."</td>";
-						
+				$missing_qty+=((($sql_row["ims_qty"]-$transfer)
+				+$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]
+				+$replaced
+				+$transfer+$sample_out_qty+$sample_in_qty)-($output+$rejections+$outofratio+$sample_out_qty));
+				$missing_qty1=$missing_qty;		
 				echo "</tr>";
 			}
 
@@ -230,19 +252,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 				}
 }
-echo '<tr>
-		<td colspan="3" style="background-color:RED; color:white;">Total:</td>
-		<td id="tablex1Tot1" style="background-color:#FFFFCC; color:red;"></td>
-		<td id="tablex1Tot2" style="background-color:#FFFFCC; color:red;"></td>
-		<td id="tablex1Tot3" style="background-color:#FFFFCC; color:red;"></td>
-		<td id="tablex1Tot4" style="background-color:#FFFFCC; color:red;"></td>
-		<td id="tablex1Tot5" style="background-color:#FFFFCC; color:red;"></td>
-		<td id="tablex1Tot6" style="background-color:#FFFFCC; color:red;"></td>
-		<td id="tablex1Tot7" style="background-color:#FFFFCC; color:red;"></td>
-		<td id="tablex1Tot8" style="background-color:#FFFFCC; color:red;"></td>
-		<td id="tablex1Tot9" style="background-color:#FFFFCC; color:red;"></td>
-		<td id="tablex1Tot10" style="background-color:#FFFFCC; color:red;"></td>
-	</tr>';
+echo "<tr>
+		<td colspan=\"3\" style=\"background-color:RED; color:white;\">Total:</td>
+		<td id=\"tablex1Tot1\" style=\"background-color:#FFFFCC; color:red;\">".$total_input_qty1."</td>
+		<td id=\"tablex1Tot2\" style=\"background-color:#FFFFCC; color:red;\">".$recut_qty1."</td>
+		<td id=\"tablex1Tot3\" style=\"background-color:#FFFFCC; color:red;\">".$replaced_qty1."</td>
+		<td id=\"tablex1Tot4\" style=\"background-color:#FFFFCC; color:red;\">".$transfer_qty1."</td>
+		<td id=\"tablex1Tot5\" style=\"background-color:#FFFFCC; color:red;\">".$output_qty1."</td>
+		<td id=\"tablex1Tot6\" style=\"background-color:#FFFFCC; color:red;\">".$rejections_qty1."</td>
+		<td id=\"tablex1Tot7\" style=\"background-color:#FFFFCC; color:red;\">".$outofratio_qty1."</td>
+		<td id=\"tablex1Tot8\" style=\"background-color:#FFFFCC; color:red;\">".$total_qty3."</td>
+		<td id=\"tablex1Tot9\" style=\"background-color:#FFFFCC; color:red;\">".$sample_out_qty510."</td>
+		<td id=\"tablex1Tot10\" style=\"background-color:#FFFFCC; color:red;\">".$missing_qty."</td>
+	</tr>";
 
 echo "</table>";
 echo"</div>";
