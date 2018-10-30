@@ -40,6 +40,12 @@ $sfsp_m3_databasename=$conf->get('sf_sp_dbname');
 $sfsp_uid=$conf->get('sf_sp_username');
 $sfsp_pwd=$conf->get('sf_sp_pwd');
 
+// Production Status Connections
+$prod_status_server_name=$conf->get('prod-status-server-name');
+$prod_status_username=$conf->get('prod-status-user-name');
+$prod_status_password = $conf->get('prod-status-password');
+$prod_status_database=$conf->get('prod-status-db');
+$prod_status_driver_name=$conf->get('prod-status-driver-name');
 
 //material requirement in week_del_mail_v2
 $server="GD-RPTSQL";
