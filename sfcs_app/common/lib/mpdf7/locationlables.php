@@ -1,4 +1,8 @@
 <?php
+// Increase max_execution_time. If a large pdf fails, increase it even more.
+ini_set('max_execution_time', 240);
+// Increase this for old PHP versions (like 5.3.3). If a large pdf fails, increase it even more.
+ini_set('pcre.backtrack_limit', 10000000);
 	include("../../config/config.php");
 	include("../../config/functions.php");
 	require_once 'vendor/autoload.php';
@@ -53,7 +57,6 @@ margin-bottom: 5px;
 </style>
 </head>
 <body>';
-
 $sql="SELECT * FROM $bai_rm_pj1.location_db where status=1 order by sno ASC";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
