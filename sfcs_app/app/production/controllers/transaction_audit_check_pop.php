@@ -102,14 +102,41 @@ echo "</div>";
 
 <?php
 
-	
-//echo "<div>";
 echo "<div class='table-responsive'><div class=\"panel panel-primary\" style=\"width:2000px\"><div class=\"panel-heading\"><h2>BAI Log</h2></div>";
 echo "<table id=\"table1\" border=1 class='table table-bordered'>";
-echo "<tr><th>Date</th><th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>DocketNo</th><th>Qty</th><th>SMV</th><th>NOP</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th><th>XXXL</th><th>s06</th><th>s08</th><th>s10</th><th>s12</th><th>s14</th><th>s16</th><th>s18</th><th>s20</th><th>s22</th><th>s24</th><th>s26</th><th>s28</th><th>s30</th></tr>";
-
-
-$sql="select tid,bac_no,bac_sec,bac_date,bac_shift,sum(bac_Qty) as \"bac_Qty\",bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop, sum(size_xs) as \"size_xs\", sum(size_s) as \"size_s\", sum(size_m) as \"size_m\", sum(size_l) as \"size_l\", sum(size_xl) as \"size_xl\", sum(size_xxl) as \"size_xxl\", sum(size_xxxl) as \"size_xxxl\", sum(size_s06) as \"size_s06\",sum(size_s08) as \"size_s08\", sum(size_s10) as \"size_s10\", sum(size_s12) as \"size_s12\", sum(size_s14) as \"size_s14\", sum(size_s16) as \"size_s16\", sum(size_s18) as \"size_s18\", sum(size_s20) as \"size_s20\", sum(size_s22) as \"size_s22\", sum(size_s24) as \"size_s24\", sum(size_s26) as \"size_s26\", sum(size_s28) as \"size_s28\",sum(size_s30) as \"size_s30\" from $bai_pro.bai_log where delivery=\"$schedule\" group by tid order by ims_doc_no";
+echo "<tr><th>Date</th><th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>DocketNo</th><th>Qty</th><th>SMV</th><th>NOP</th>";
+$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" group by order_del_no";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+if(mysqli_num_rows($sql_result)>0)
+{
+	$ord_tbl_name="$bai_pro3.bai_orders_db_confirm";	
+}
+else{
+	$ord_tbl_name="$bai_pro3.bai_orders_db";		
+}
+$count_val  = 0;
+$sql1="select * from $ord_tbl_name where order_del_no=\"$schedule\" group by order_del_no";
+$sql_result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row10=mysqli_fetch_array($sql_result))
+{
+	for($s=0;$s<sizeof($sizes_code);$s++)
+	{
+		if($sql_row10["title_size_s".$sizes_code[$s].""]<>'')
+		{
+			$count_val++;
+			$s_tit=$sql_row10["title_size_s".$sizes_code[$s].""];
+			echo " <th>".$sql_row10["title_size_s".$sizes_code[$s].""]."</th>";
+			
+		}	
+	}
+}
+// echo $count_val;
+//$sql="select tid,bac_no,bac_sec,bac_date,bac_shift,sum(bac_Qty) as \"bac_Qty\",bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop, sum(size_xs) as \"size_xs\", sum(size_s) as \"size_s\", sum(size_m) as \"size_m\", sum(size_l) as \"size_l\", sum(size_xl) as \"size_xl\", sum(size_xxl) as \"size_xxl\", sum(size_xxxl) as \"size_xxxl\", sum(size_s06) as \"size_s06\",sum(size_s08) as \"size_s08\", sum(size_s10) as \"size_s10\", sum(size_s12) as \"size_s12\", sum(size_s14) as \"size_s14\", sum(size_s16) as \"size_s16\", sum(size_s18) as \"size_s18\", sum(size_s20) as \"size_s20\", sum(size_s22) as \"size_s22\", sum(size_s24) as \"size_s24\", sum(size_s26) as \"size_s26\", sum(size_s28) as \"size_s28\",sum(size_s30) as \"size_s30\",sum(size_s31) as \"size_s31\",sum(size_s32) as \"size_s32\",sum(size_s33) as \"size_s33\",sum(size_s34) as \"size_s34\",sum(size_s35) as \"size_s35\",sum(size_s36) as \"size_s36\",sum(size_s37) as \"size_s37\",sum(size_s38) as \"size_s38\",sum(size_s39) as \"size_s39\",sum(size_s40) as \"size_s40\",sum(size_s41) as \"size_s41\",sum(size_s42) as \"size_s42\",sum(size_s43) as \"size_s43\",sum(size_s44) as \"size_s44\",sum(size_s45) as \"size_s45\",sum(size_s46) as \"size_s46\",sum(size_s47) as \"size_s47\",sum(size_s48) as \"size_s48\",sum(size_s49) as \"size_s49\",sum(size_s50) as \"size_s50\" from $bai_pro.bai_log where delivery=\"$schedule\" group by tid order by ims_doc_no";
+foreach($sizes_array as $key=>$size){
+	$append.= " SUM(size_$size) as size_$size,";
+}
+$append = rtrim($append,',');
+$sql="select tid,bac_no,bac_sec,bac_date,bac_shift,sum(bac_Qty) as \"bac_Qty\",bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where delivery=\"$schedule\" group by tid order by ims_doc_no";
 mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error());
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -129,28 +156,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$smv=$sql_row['smv'];
 	$nop=$sql_row['nop'];
 	
-	$xs=$sql_row['size_xs'];
-	$s=$sql_row['size_s'];
-	$m=$sql_row['size_m'];
-	$l=$sql_row['size_l'];
-	$xl=$sql_row['size_xl'];
-	$xxl=$sql_row['size_xxl'];
-	$xxxl=$sql_row['size_xxxl'];
-	$s06=$sql_row['size_s06'];
-	$s08=$sql_row['size_s08'];
-	$s10=$sql_row['size_s10'];
-	$s12=$sql_row['size_s12'];
-	$s14=$sql_row['size_s14'];
-	$s16=$sql_row['size_s16'];
-	$s18=$sql_row['size_s18'];
-	$s20=$sql_row['size_s20'];
-	$s22=$sql_row['size_s22'];
-	$s24=$sql_row['size_s24'];
-	$s26=$sql_row['size_s26'];
-	$s28=$sql_row['size_s28'];
-	$s30=$sql_row['size_s30'];
+	
+
 
 	
+			// 
 		
 			$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
 			//echo $sql1;
@@ -211,33 +221,40 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td>$qty</td>";
 		echo "<td>".$smv."</td>";
 		echo "<td>".$nop."</td>";
-		
-		echo "<td>$xs</td>";
-		echo "<td>$s</td>";
-		echo "<td>$m</td>";
-		echo "<td>$l</td>";
-		echo "<td>$xl</td>";
-		echo "<td>$xxl</td>";
-		echo "<td>$xxxl</td>";
-		 echo "<td>$s06</td>";
-		  echo "<td>$s08</td>";
-		  echo "<td>$s10</td>";
-		  echo "<td>$s12</td>";
-		  echo "<td>$s14</td>";
-		  echo "<td>$s16</td>";
-		  echo "<td>$s18</td>";
-		  echo "<td>$s20</td>";
-		  echo "<td>$s22</td>";
-		  echo "<td>$s24</td>";
-		  echo "<td>$s26</td>";
-		  echo "<td>$s28</td>";
-		   echo "<td>$s30</td>";
+			
 
+		for($s=0;$s<$count_val;$s++){
+			echo "<td>".$sql_row["size_s".$sizes_code[$s].""]."</td>";
+		}
 		
+		
+	      
+		// echo "<td>$xs</td>";
+		// echo "<td>$s</td>";
+		// echo "<td>$m</td>";
+		// echo "<td>$l</td>";
+		// echo "<td>$xl</td>";
+		// echo "<td>$xxl</td>";
+		// echo "<td>$xxxl</td>";
+		//  echo "<td>$s06</td>";
+		//   echo "<td>$s08</td>";
+		//   echo "<td>$s10</td>";
+		//   echo "<td>$s12</td>";
+		//   echo "<td>$s14</td>";
+		//   echo "<td>$s16</td>";
+		//   echo "<td>$s18</td>";
+		//   echo "<td>$s20</td>";
+		//   echo "<td>$s22</td>";
+		//   echo "<td>$s24</td>";
+		//   echo "<td>$s26</td>";
+		//   echo "<td>$s28</td>";
+		//    echo "<td>$s30</td>";
+
+	
 
 		echo "</tr>";
 }
-
+$count_val = 0;	
 echo '<tr><td>Output Total:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
 
 echo "</table>";
@@ -520,7 +537,33 @@ echo "<br/><h3><a href=\"$url2?order_tid=$tran_order_tid&cat_ref=$cat_ref&carton
 //Date 2013-11-25/Ticket#100078/ Added Carton Track and AOD details
 echo "<div class='table-responsive'><div class=\"panel panel-primary\" style=\"width:1500px;\"><div class=\"panel-heading\"><h2>AOD Details</h2></div>";
 echo "<table id=\"table11111\" border=1 class=\"table table-bordered\">";
-echo "<tr><th>order tid</th><th>update</th><th>remarks</th><th>status</th><th>style</th><th>schedule</th><th>xs</th><th>s</th><th>m</th><th>l</th><th>xl</th><th>xxl</th><th>xxxl</th><th>s06</th><th>s08</th><th>s10</th><th>s12</th><th>s14</th><th>s16</th><th>s18</th><th>s20</th><th>s22</th><th>s24</th><th>s26</th><th>s28</th><th>s30</th><th>tid</th><th>cartons</th><th>AOD no</th><th>lastup</th><th>Total QTY</th></tr>";
+echo "<tr><th>order tid</th><th>update</th><th>remarks</th><th>status</th><th>style</th><th>schedule</th>";
+$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" group by order_del_no";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+if(mysqli_num_rows($sql_result)>0)
+{
+	$ord_tbl_name="$bai_pro3.bai_orders_db_confirm";	
+}
+else{
+	$ord_tbl_name="$bai_pro3.bai_orders_db";		
+}
+$count_val1  = 0;
+$sql1="select * from $ord_tbl_name where order_del_no=\"$schedule\" group by order_del_no";
+$sql_result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row10=mysqli_fetch_array($sql_result))
+{
+	for($s=0;$s<sizeof($sizes_code);$s++)
+	{
+		if($sql_row10["title_size_s".$sizes_code[$s].""]<>'')
+		{
+			$count_val1++;
+			$s_tit=$sql_row10["title_size_s".$sizes_code[$s].""];
+			echo " <th>".$sql_row10["title_size_s".$sizes_code[$s].""]."</th>";
+			
+		}	
+	}
+}
+echo "<th>tid</th><th>cartons</th><th>AOD no</th><th>lastup</th><th>Total QTY</th></tr>";
 $sql="select * from $bai_pro3.ship_stat_log where ship_schedule=$schedule";
 mysqli_query($link,$sql) or exit("Sql Erro12r".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error13".mysqli_error());
@@ -531,32 +574,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 <td>".$sql_row["ship_remarks"]."</td>
 <td>".$sql_row["ship_status"]."</td>
 <td>".$sql_row["ship_style"]."</td>
-<td>".$sql_row["ship_schedule"]."</td>
-<td>".$sql_row["ship_s_xs"]."</td>
-<td>".$sql_row["ship_s_s"]."</td>
-<td>".$sql_row["ship_s_m"]."</td>
-<td>".$sql_row["ship_s_l"]."</td>
-<td>".$sql_row["ship_s_xl"]."</td>
-<td>".$sql_row["ship_s_xxl"]."</td>
-<td>".$sql_row["ship_s_xxxl"]."</td>
-<td>".$sql_row["ship_s_s06"]."</td>
-<td>".$sql_row["ship_s_s08"]."</td>
-<td>".$sql_row["ship_s_s10"]."</td>
-<td>".$sql_row["ship_s_s12"]."</td>
-<td>".$sql_row["ship_s_s14"]."</td>
-<td>".$sql_row["ship_s_s16"]."</td>
-<td>".$sql_row["ship_s_s18"]."</td>
-<td>".$sql_row["ship_s_s20"]."</td>
-<td>".$sql_row["ship_s_s22"]."</td>
-<td>".$sql_row["ship_s_s24"]."</td>
-<td>".$sql_row["ship_s_s26"]."</td>
-<td>".$sql_row["ship_s_s28"]."</td>
-<td>".$sql_row["ship_s_s30"]."</td>
-<td>".$sql_row["ship_tid"]."</td>
+<td>".$sql_row["ship_schedule"]."</td>";
+for($s=0;$s<$count_val1;$s++){
+	echo "<td>".$sql_row["ship_s_s".$sizes_code[$s].""]."</td>";
+	$tot+=$sql_row["ship_s_s".$sizes_code[$s].""];
+}
+echo"<td>".$sql_row["ship_tid"]."</td>
 <td>".$sql_row["ship_cartons"]."</td>
 <td>".$sql_row["disp_note_no"]."</td>
 <td>".$sql_row["last_up"]."</td>
-<td>".($sql_row["ship_s_xs"]+$sql_row["ship_s_s"]+$sql_row["ship_s_m"]+$sql_row["ship_s_l"]+$sql_row["ship_s_xl"]+$sql_row["ship_s_xxl"]+$sql_row["ship_s_xxxl"]+$sql_row["ship_s_s06"]+$sql_row["ship_s_s08"]+$sql_row["ship_s_s10"]+$sql_row["ship_s_s12"]+$sql_row["ship_s_s14"]+$sql_row["ship_s_s16"]+$sql_row["ship_s_s18"]+$sql_row["ship_s_s20"]+$sql_row["ship_s_s22"]+$sql_row["ship_s_s24"]+$sql_row["ship_s_s26"]+$sql_row["ship_s_s28"]+$sql_row["ship_s_s30"])."</td></tr>";
+<td>".$tot."</td></tr>";
 
 }
 echo "</table>";
