@@ -680,7 +680,7 @@
 
 						<div id="dhtmlgoodies_listOfItems">
 
-							<div style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;text-align:center">
+							<div  id='scrollable_block' style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;text-align:center">
 								<p>Jobs</p>		
 								<ul id="allItems">
 
@@ -706,7 +706,7 @@
 											
 											$title=title_des($link,$code_db_new[0]);
 											// <li data-color="green" style="background-color:green; color:white;">
-											echo "<li id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  data-color='blue' title=\"$title\" class=\"normalTip\"><strong>".$code_db_new[1]."</strong></li>";
+											echo "<li  class='apply-remove' id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  data-color='blue' title=\"$title\"><strong>".$code_db_new[1]."</strong></li>";
 										}
 									?>
 								
@@ -862,3 +862,12 @@
 </html>
 
 <script src="../../common/js/jquery-1.3.2.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.apply-remove').css({'min-width':'134px'});
+        $('#scrollable_block').scroll(function(){
+            $('.apply-remove').css({'border':'1px solid black'});
+            $('.apply-remove').css({'display':'inline-block'});
+        });
+    });
+</script>
