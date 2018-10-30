@@ -3,7 +3,7 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 
-$connect = odbc_connect("$driver_name;Server=BERDBTEST01;Database=SAH;", "SAH_Test_User","Test@123");
+$connect = odbc_connect("$prod_status_driver_name;Server=$prod_status_server_name;Database=$prod_status_database;", $prod_status_username,$prod_status_password);
 
 if(isset($_GET["date"]))
 {
