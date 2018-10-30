@@ -241,7 +241,14 @@ if(isset($_POST['formSubmit']))
 			$bundle_individual_number = $nop_qry_row['bundle_number'];
 			// $bundle_individual_number = $nop_qry_row['tid'];
 			$actual_bundles[] = $nop_qry_row['bundle_number'];
-			$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
+			if($post_code[0] != '0')
+			{
+				$query_to_fetch_individual_bundle_details = "select (send_qty-recevied_qty)as recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$post_code[0]'";
+			}
+			else
+			{
+				$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
+			}
 			// echo $query_to_fetch_individual_bundle_details;
 			// echo "<br/><br/>";
 			$result_query_to_fetch_individual_bundle_details=mysqli_query($link,$query_to_fetch_individual_bundle_details) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -252,7 +259,7 @@ if(isset($_POST['formSubmit']))
 			while($row_result_query_to_fetch_individual_bundle_details=mysqli_fetch_array($result_query_to_fetch_individual_bundle_details))
 			{
 
-				$rec_qty = $nop_qry_row['recevied_qty'];
+				$rec_qty = $row_result_query_to_fetch_individual_bundle_details['recevied_qty'];
 				// echo $bundle_individual_number.'-'.$rec_qty.'-'.$cumulative_reversal_qty.'</br>';
 				if($rec_qty > 0)
 				{
@@ -630,7 +637,7 @@ else if($concurrent_flag == 0)
 		//exit('force quitting');
 		//inserting into bai_log and bai_log buff
 			$sizevalue="size_".$size_id;
-			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
+			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '%,".$b_module[$key]."' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
 			//echo $sections_qry;
 			$sections_qry_result=mysqli_query($link,$sections_qry) or exit("Bundles Query Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($buyer_qry_row=mysqli_fetch_array($sections_qry_result)){
