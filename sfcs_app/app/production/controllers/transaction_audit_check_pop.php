@@ -225,6 +225,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 		for($s=0;$s<$count_val;$s++){
 			echo "<td>".$sql_row["size_s".$sizes_code[$s].""]."</td>";
+			$tot1+=$sql_row["size_s".$sizes_code[$s].""];
 		}
 		
 		
@@ -255,7 +256,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "</tr>";
 }
 $count_val = 0;	
-echo '<tr><td>Output Total:</td><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
+echo "<tr><td>Output Total:</td><td id=\"table1Tot1\" style=\"background-color:#FFFFCC; color:red;\">".$tot1."
+</td></tr>";
 
 echo "</table>";
 echo"</div>";
@@ -344,10 +346,17 @@ $size1=str_replace("a_","",$sql_row['ims_size']);
 				
 
 echo "<tr><td>".$sql_row['ims_date']."</td><td>".$sql_row['ims_cid']."</td><td>".$sql_row['ims_doc_no']."</td><td>".$sql_row['ims_mod_no']."</td><td>".$sql_row['ims_shift']."</td><td>".$s_tit."</td><td>".$sql_row['ims_qty']."</td><td>".$sql_row['ims_pro_qty']."</td><td>".$sql_row['ims_status']."</td><td>".$sql_row['bai_pro_ref']."</td><td>".$sql_row['ims_log_date']."</td><td>".$sql_row['ims_remarks']."</td><td>".$sql_row['ims_style']."</td><td>".$sql_row['ims_schedule']."</td><td>".$sql_row['ims_color']."</td><td>".$sql_row['tid']."</td><td>".$sql_row['rand_track']."</td></tr>";
+$input_total_qty+=$sql_row['ims_qty'];
+$input_total_qty1=$input_total_qty;
+$output_total_qty+=$sql_row['ims_pro_qty'];
+$output_total_qty1=$output_total_qty;
+
+
 			}
 		}
 }
-
+$total_output_qty = 0;
+$tot4 = 0;
 $sql="select * from $bai_pro3.ims_log_backup where ims_schedule=\"$schedule\" order by ims_mod_no";
 mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error9".mysqli_error());
@@ -384,12 +393,17 @@ $sql_size = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no=
 				{
 					$s_tit=$sql_row1["title_size_s".$size4.""];
 				}	
-				
+			
 echo "<tr><td>".$sql_row['ims_date']."</td><td>".$sql_row['ims_cid']."</td><td>".$sql_row['ims_doc_no']."</td><td>".$sql_row['ims_mod_no']."</td><td>".$sql_row['ims_shift']."</td><td>".$s_tit."</td><td>".$sql_row['ims_qty']."</td><td>".$sql_row['ims_pro_qty']."</td><td>".$sql_row['ims_status']."</td><td>".$sql_row['bai_pro_ref']."</td><td>".$sql_row['ims_log_date']."</td><td>".$sql_row['ims_remarks']."</td><td>".$sql_row['ims_style']."</td><td>".$sql_row['ims_schedule']."</td><td>".$sql_row['ims_color']."</td><td>".$sql_row['tid']."</td><td>".$sql_row['rand_track']."</td></tr>";
+$input_total_qty+=$sql_row['ims_qty'];
+$input_total_qty1=$input_total_qty;
+$output_total_qty+=$sql_row['ims_pro_qty'];
+$output_total_qty1=$output_total_qty;
 			}
 		}
 }
-echo '<tr><td>Input Total:</td><td id="table111Tot1" style="background-color:#FFFFCC; color:red;"></td><td>Output Total:</td><td id="table111Tot2" style="background-color:#FFFFCC; color:red;"></td></tr>';
+	
+echo "<tr><td>Input Total:</td><td id=\"table111Tot1\" style=\"background-color:#FFFFCC; color:red;\">".$input_total_qty."</td><td>Output Total:</td><td id=\"table111Tot2\" style=\"background-color:#FFFFCC; color:red;\">".$output_total_qty1."</td></tr>";
 echo "</table>";
 echo"</div>";
 echo"</div>";
@@ -441,6 +455,7 @@ $sql="select * from $bai_pro3.packing_summary where order_del_no=\"$schedule\" o
 mysqli_query($link,$sql) or exit("Sql Error10".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error11".mysqli_error());
 $count2=mysqli_num_rows($sql_result); 
+$carton_act_qty2=0;
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 
@@ -475,10 +490,13 @@ $sql_size = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no=
 				}	
 echo "<tr><td>".$sql_row['doc_no']."</td><td>".$sql_row['doc_no_ref']."</td><td>".$sql_row['tid']."</td><td>".$s_tit."</td><td>".$sql_row['remarks']."</td><td>".(strlen($sql_row['status'])==0?"Pending":$sql_row['status'])."</td><td>".$sql_row['lastup']."</td><td>".$sql_row['carton_act_qty']."</td><td>".$sql_row['order_style_no']."</td><td>".$sql_row['order_del_no']."</td><td>".$sql_row['order_col_des']."</td>
 </tr>";
+$carton_act_qty2+=$sql_row['carton_act_qty'];
+$carton_act_qty3=$carton_act_qty2;
+
 			}
 		}
 }
-echo '<tr><td>Total:</td><td id="table1111Tot1" style="background-color:#FFFFCC; color:red;"></td></tr>';
+echo "<tr><td>Total:</td><td id=\"table1111Tot1\" style=\"background-color:#FFFFCC; color:red;\">".$carton_act_qty3."</td></tr>";
 echo "</table>";
 echo "</div>";
 
