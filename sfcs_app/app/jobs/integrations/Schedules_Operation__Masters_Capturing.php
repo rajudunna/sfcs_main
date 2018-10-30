@@ -12,7 +12,6 @@ $qry_modetails="SELECT mo_no AS mo_num,item_code,style,SCHEDULE,color,size,zfeat
 echo $qry_modetails."<br>";
 $result_qry_modetails=mysqli_query($link, $qry_modetails) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 print("job started\n");
-$workcenter_status_valid=true;
 while($sql_row=mysqli_fetch_array($result_qry_modetails))
 {
 
@@ -38,7 +37,8 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     $vals = (conctruct_array($decoded['MIRecord']));
     //For bulk insertion in  schedule master
     $sql1 = "insert into $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values";
-	$values = array();
+    $values = array();
+    $workcenter_status_valid=true;
     foreach ($vals as $value) 
     {
         
@@ -85,9 +85,14 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     }
 
     if($workcenter_status_valid){
-       
+       //var_dump($values);
         //insertion query for schedule_oprations_master table
-        $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+       $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+       if($sql_result1){
+            print("Inserted successfully")."\n";
+
+       }
+
         
         //Update status for updated mo's and FG_codes
         $update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num'";
