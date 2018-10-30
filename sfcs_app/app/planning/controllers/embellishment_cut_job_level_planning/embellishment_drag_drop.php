@@ -668,7 +668,7 @@
 						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #008080;color: white;margin-left: 30px;">
 						<div>Different Style,Schedule And Color Jobs</div>
 						</div>&nbsp;&nbsp;&nbsp;
-						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: 'red';color: white;margin-left: 30px;">
+						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: red;color: white;margin-left: 30px;">
 						<div>Selected Style,Schedule And Color Jobs</div>
 						</div>
 						<div style="clear: both;"> </div>
