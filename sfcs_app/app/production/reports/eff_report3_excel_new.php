@@ -14,12 +14,13 @@ Ticket #516359.
 //service request #474467 /2014-12-24 / kirang / Modification on efficiency report for M&S styles (put MS instead of M&S)
  -->
  <?php 
-          include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	$view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
 	$final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
-?>
 
+?>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FileSaver.js',1,'R');?>"></script>
 <style id="Daily_Efficiency_Report_26424_Styles">
 </style>
 
@@ -104,7 +105,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 						<br/><input type="submit" name="submit" onclick='return verify()' value="Show" class="btn btn-primary">
 					</div>
 					<div class='col-sm-1'>
-						<br/><button class="btn btn-success" onclick='return verify()'><?php echo "<a href=\"Eff_Report.xls\">Export to Excel</a>"; ?></button>
+						<br/><button class="btn btn-success" id='excel1'>Export to Excel</button>
 					</div>
 				</div>	
 			</form>
@@ -2818,9 +2819,9 @@ if(isset($_POST['submit']))
 	</style>';
 	$table_temp.="<div id=\"Daily_Efficiency_Report_26424\" align=center x:publishsource=\"Excel\">
 
-	<div u1:publishsource=Excel  class='table-responsive'>
+	<div u1:publishsource=Excel  class='table-responsive' id='print_content'>
 
-	<table border=0 cellpadding=0 cellspacing=0 width=2823 style='border-collapse:collapse;table-layout:fixed;width:2200pt' class='table'>
+	<table border=1 cellpadding=0 cellspacing=0 width=2823 style='border-collapse:collapse;table-layout:fixed;width:2200pt' class='table'>
 	<col width=66 style='mso-width-source:userset;mso-width-alt:2413;width:50pt'>
 	<col width=64 span=17 style='mso-width-source:userset;mso-width-alt:2340; width:48pt'>
 	<col width=72 style='mso-width-source:userset;mso-width-alt:2633;width:54pt'>
@@ -2828,7 +2829,7 @@ if(isset($_POST['submit']))
 	<col width=63 style='mso-width-source:userset;mso-width-alt:2304;width:47pt'>
 	<col width=64 span=13 style='mso-width-source:userset;mso-width-alt:2340; width:48pt'>
 	<col width=63 span=2 style='mso-width-source:userset;mso-width-alt:2304; width:47pt'>
-
+	<br/>
 	<tr height=22 style='mso-height-source:userset;height:16.5pt'>
 	<td colspan=25 height=22 class=xl10226424 width=1865 style='border-right:1.0pt solid black;height:16.5pt;width:1399pt'>DAILY EFFICIENCY REPORT ($report_heading)</td>
 	<td colspan=13 class=xl10626424 width=958 style='border-right:1.0pt solid black;
@@ -3260,12 +3261,14 @@ if(isset($_POST['submit']))
 			$total_nop=$total_nop+$nop;
 			$grand_total_nop=$grand_total_nop+$nop;
 			$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
-			<td height=21 class=xl8326424 style='height:15.75pt'><a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a></td>
-			<td class=xl8426424 >$buyerdb</td>
-			<td class=xl8426424 >$styledb</td>
-			<td class=xl8426424 >$smv</td>
-			<td class=xl8526424 >$age_days</td>
-			<td class=xl8626424 >".$nop."</td>";
+			<td height=21 class=xl8326424 style='height:15.75pt'>
+			<a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a>
+			</td>
+			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$buyerdb</td>
+			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$styledb</td>
+			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$smv</td>
+			<td class=xl8526424 style='width:100px;word-wrap:break-word;'>$age_days</td>
+			<td class=xl8626424 style='width:100px;word-wrap:break-word;'>".$nop."</td>";
 			//$total_nop=$total_nop+$nop;
 			$age_days=0;
 			echo $table_temp;
@@ -3738,11 +3741,11 @@ if(isset($_POST['submit']))
 				$head_name=$sql_row2['sec_head'];
 			}
 
-			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt'>";
+			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt;background-color:#5A5A5A'>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td colspan=5 rowspan=2 height=44 class=xl15326424 style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt'>".$head_name."</td>";
+			$table_temp="<td colspan=5 rowspan=2 height=44 class=xl15326424 style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt;'>".$head_name."</td>";
 			echo $table_temp;
 
 			$table.=$table_temp;
@@ -3790,7 +3793,7 @@ if(isset($_POST['submit']))
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>".round(($ppro_a_total+$ppro_b_total),0)."</td>";
+			$table_temp="<td rowspan=2 class=xl15926424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".round(($ppro_a_total+$ppro_b_total),0)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			$table_temp="<td class=xl9726424>".$atotal."</td>";
@@ -3801,7 +3804,7 @@ if(isset($_POST['submit']))
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>".($pstha_mod_total+$psthb_mod_total)."</td>";
+			$table_temp="<td rowspan=2 class=xl15926424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".($pstha_mod_total+$psthb_mod_total)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			$table_temp="<td class=xl9726424>".($pstha_mod_total)."</td>";
@@ -3833,15 +3836,15 @@ if(isset($_POST['submit']))
 
 			if(($pclha_total+$pclhb_total)>0)
 			{
-				$table_temp="<td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>".round((($pstha_total+$psthb_total)/($pclha_total+$pclhb_total))*100,0)."%</td>";
-				//$table_temp="<td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>".round($eff_grand/$i3,0)."%</td>";
-				//$table_temp="<td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>".round($eff_grand/$i3,0)."%xx</td>";
+				$table_temp="<td rowspan=2 class=xl16126424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".round((($pstha_total+$psthb_total)/($pclha_total+$pclhb_total))*100,0)."%</td>";
+				//$table_temp="<td rowspan=2 class=xl16126424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".round($eff_grand/$i3,0)."%</td>";
+				//$table_temp="<td rowspan=2 class=xl16126424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".round($eff_grand/$i3,0)."%xx</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 			else
 			{
-				$table_temp="<td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>0%</td>";
+				$table_temp="<td rowspan=2 class=xl16126424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>0%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
@@ -3927,22 +3930,22 @@ if(isset($_POST['submit']))
 			$sah_pro_unit_b_array[]=$sah_prod_b;
 
 			$sah_dtime_sec=$sah_dtime_a+$sah_dtime_b;
-			$table_temp="<td class=xl18926424>".$sah_dtime_a."</td>";
+			$table_temp="<td class=xl18926424 style='background-color:#5A5A5A'>".$sah_dtime_a."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			//$sah_dtime_a=0;
-			$table_temp="<td class=xl18926424>".$sah_dtime_b."</td>";		
+			$table_temp="<td class=xl18926424 style='background-color:#5A5A5A'>".$sah_dtime_b."</td>";		
 			echo $table_temp;
 			$table.=$table_temp;
 			//$sah_dtime_b=0;
 
 			$sah_prod_sec=$sah_prod_a+$sah_prod_b;
-			$table_temp="<td class=xl18926424>".$sah_prod_a."</td>";
+			$table_temp="<td class=xl18926424 style='background-color:#5A5A5A'>".$sah_prod_a."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			$sah_prod_a=0;
 
-			$table_temp="<td class=xl18926424>".$sah_prod_b."</td>";
+			$table_temp="<td class=xl18926424 style='background-color:#5A5A5A'>".$sah_prod_b."</td>";
 			echo $table_temp;
 			$table.=$table_temp;	
 			$sah_prod_b=0;	
@@ -3954,65 +3957,65 @@ if(isset($_POST['submit']))
 			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt'>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td height=22 class=xl9926424 style='height:16.5pt'>".$operatorssum."</td>";
+			$table_temp="<td height=22 class=xl9926424 style='background-color:#5A5A5A' style='height:16.5pt'>".$operatorssum."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>".($avail_A+$avail_B-$absent_A-$absent_B)."</td>";
+			$table_temp="<td colspan=2 class=xl9926424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".($avail_A+$avail_B-$absent_A-$absent_B)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
 
 			// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
 			if( $totalmodules== '' || $act_hrsa+$act_hrsb == '' || $totalmodules== 0 || $act_hrsa+$act_hrsb == 0) 
-				$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
 			else
-				$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>0%</td>";
+				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>0%</td>";
 
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>".($auf_A+$auf_B)."</td>";
+			$table_temp="<td colspan=2 class=xl9926424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".($auf_A+$auf_B)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>".round(($pclha_total+$pclhb_total),$decimal_factor)."</td>";
+			$table_temp="<td colspan=2 class=xl9926424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".round(($pclha_total+$pclhb_total),$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>".($atotal+$btotal)."</td>";
+			$table_temp="<td colspan=2 class=xl16326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".($atotal+$btotal)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=3 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>Actual std hrs =</td>";
+			$table_temp="<td colspan=3 class=xl16326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>Actual std hrs =</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9926424>".round(($stha_total+$sthb_total),$decimal_factor)."</td>";
+			$table_temp="<td class=xl9926424 style='background-color:#5A5A5A'>".round(($stha_total+$sthb_total),$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl17226424 style='border-right:1.0pt solid black;border-left:none'>Act EFF % =</td>";
+			$table_temp="<td colspan=2 class=xl17226424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>Act EFF % =</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			
 			if(($clha_total+$clhb_total)>0)
 			{
 
-				$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black'>".round((($stha_total+$sthb_total)/($clha_total+$clhb_total))*100,0)."%</td>";
+				$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black;background-color:#C00000'>".round((($stha_total+$sthb_total)/($clha_total+$clhb_total))*100,0)."%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 			else
 			{
-				$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black'>0%</td>";
+				$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black;background-color:#C00000'>0%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 
 
-			$table_temp="<td colspan=2 class=xl18926424 style='border-left:none'>".round(($offstha_sum+$offsthb_sum)/60,2)."</td>";
+			$table_temp="<td colspan=2 class=xl18926424 style='background-color:#5A5A5A' style='border-left:none'>".round(($offstha_sum+$offsthb_sum)/60,2)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl18926424 style='border-left:none'>".$sah_dtime_sec."</td>";
+			$table_temp="<td colspan=2 class=xl18926424 style='background-color:#5A5A5A' style='border-left:none'>".$sah_dtime_sec."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td colspan=2 class=xl18926424 style='border-left:none'>".$sah_prod_sec."</td>";
+			$table_temp="<td colspan=2 class=xl18926424 style='background-color:#5A5A5A' style='border-left:none'>".$sah_prod_sec."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
@@ -4034,14 +4037,14 @@ if(isset($_POST['submit']))
 
 			if($x_sec==sizeof($section_array))
 			{
-				//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
-				
+				include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
+
 				if(sizeof($section_array) > 1)
 				{	
 					
 					include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'Eff_report33_excel_new_buyer.php',0,'R'));
 					
-				}
+				}	
 				
 			}
 		}
@@ -4059,12 +4062,12 @@ td{
 td { word-wrap:break-word;}
 </style>
 <?php
-unlink("Eff_Report.xls");
-$myFile1 = "Eff_Report.xls";
-$fh1 = fopen($myFile1, 'w') or die("can't open file");
-$stringData1=$table;
-fwrite($fh1, $stringData1);
-fclose($fh1);
+// unlink("Eff_Report.xls");
+// $myFile1 = "Eff_Report.xls";
+// $fh1 = fopen($myFile1, 'w') or die("can't open file");
+// $stringData1=$table;
+// fwrite($fh1, $stringData1);
+// fclose($fh1);
 
 ?>
 
@@ -4073,3 +4076,11 @@ fclose($fh1);
 
 
 
+<script>
+	$('#excel1').click(function(){
+        var blob = new Blob([document.getElementById('print_content').innerHTML], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+        });
+        saveAs(blob,"Eff_Report.xls");
+    })
+	</script>
