@@ -27,6 +27,14 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
+
+// Production Status Connections
+$prod_status_server_name=$conf->get('prod-status-server-name');
+$prod_status_username=$conf->get('prod-status-user-name');
+$prod_status_password = $conf->get('prod-status-password');
+$prod_status_database=$conf->get('prod-status-db');
+$prod_status_driver_name=$conf->get('prod-status-driver-name');
+
 //ms-sql jobs 
 $user_ms = "BAISFCS";
 $password_ms = "fcs@m3pr";
