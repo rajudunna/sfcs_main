@@ -105,7 +105,7 @@ Ticket #516359.
 						<br/><input type="submit" name="submit" onclick='return verify()' value="Show" class="btn btn-primary">
 					</div>
 					<div class='col-sm-1'>
-						<br/><button class="btn btn-success" id='excel1'>Export to Excel</button>
+						<br/><input type="button" class="btn btn-success" id='excel1' value="Export to Excel">
 					</div>
 				</div>	
 			</form>
@@ -4080,7 +4080,10 @@ td { word-wrap:break-word;}
 	$('#excel1').click(function(){
         var blob = new Blob([document.getElementById('print_content').innerHTML], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-        });
-        saveAs(blob,"Eff_Report.xls");
+		});
+		console.log('one');
+		saveAs(blob,"Eff_Report.xls");
+		console.log('hi');
+		return;
     })
-	</script>
+</script>
