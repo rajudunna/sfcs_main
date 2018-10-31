@@ -1533,7 +1533,8 @@ if($barcode_generation == 1)
 				if($b_op_id == $output_ops_code_out)
 				{
 					$sizevalue="size_".$b_size_code[$i];
-					$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$i].",%' OR  sec_mods LIKE '".$b_module[$i].",%' LIMIT 0,1";
+					//$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$i].",%' OR  sec_mods LIKE '".$b_module[$i].",%' LIMIT 0,1";
+					$sections_qry="SELECT section AS sec_id FROM `bai_pro3`.`module_master` WHERE module_name = '$b_module[$i]'";
 					//echo $sections_qry;
 					$sections_qry_result=mysqli_query($link,$sections_qry) or exit("Bundles Query Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($buyer_qry_row=mysqli_fetch_array($sections_qry_result)){
