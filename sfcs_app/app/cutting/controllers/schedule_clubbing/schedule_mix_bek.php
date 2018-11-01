@@ -237,10 +237,23 @@ if(isset($_POST['submit']))
                 } 
             } 
         } 
-        sort($orginal_size_array); 
-        sort($size_array); 
-        $unique_orginal_sizes=implode(",",array_unique($orginal_size_array)); 
-        $unique_sizes=implode(",",array_unique($size_array)); 
+        sort(array_unique($orginal_size_array));
+		sort(array_unique($size_array));
+		if(sizeof($orginal_size_array)<>sizeof($size_array))
+		{
+			for($qq=0;$qq<sizeof($sizes_array);$qq++)
+			{
+				if(sizeof($orginal_size_array)<>sizeof($size_array))
+				{
+					if(!in_array($sizes_array[$qq],$size_array))
+					{
+						$size_array[]=$sizes_array[$qq];
+					}
+				}
+			}	
+		}
+		$unique_orginal_sizes=implode(",",$orginal_size_array);
+		$unique_sizes=implode(",",$size_array); 
         $unique_orginal_sizes_explode=explode(",",$unique_orginal_sizes); 
         $unique_sizes_explode=explode(",",$unique_sizes); 
        
@@ -438,36 +451,16 @@ if(isset($_POST['fix']))
     $size_array1=array(); 
     $orginal_size_array1=array(); 
     $schedule_array=array(); 
-	
-    for($q1=0;$q1<sizeof($sizes_array);$q1++) 
-    { 
-        for($x1=0;$x1<sizeof($selected);$x1++) 
-        { 
-            $sql62="select order_style_no,title_size_".$sizes_array[$q1]." as size,order_s_".$sizes_array[$q1]." as order_qty from $bai_pro3.bai_orders_db where order_col_des='$selected[$x1]' and order_del_no='$schedule' group by order_col_des order by order_style_no,order_col_des"; 
-            $result62=mysqli_query($link, $sql62) or die("Error3 = ".$sql62.mysqli_error($GLOBALS["___mysqli_ston"])); 
-            while($row62=mysqli_fetch_array($result62)) 
-            {     
-				if($row62["order_qty"] > 0) 
-                { 
-                    if(!in_array($sizes_array[$q1],$size_array1)) 
-                    { 
-                        $size_array1[]=$sizes_array[$q1]; 
-					}     
-                    if(!in_array($row62["size"],$orginal_size_array1)) 
-                    { 
-                        $orginal_size_array1[]=$row62["size"]; 
-                    } 
-                } 
-            } 
-        } 
-    } 
-    sort($orginal_size_array1); 
-    sort($size_array1); 
-    $unique_orginal_sizes1=implode(",",array_unique($orginal_size_array1)); 
-    $unique_sizes1=implode(",",array_unique($size_array1)); 
-	//echo  $unique_orginal_sizes1."--".$unique_sizes1."<br>";
-    $unique_orginal_sizes_explode1=explode(",",$unique_orginal_sizes1); 
-    $unique_sizes_explode1=explode(",",$unique_sizes1); 
+	$schedule_array=explode(",",implode(",",$selected));
+	$sql62="select * from $bai_pro3.orders_club_schedule where order_col_des=\"$color\" and order_del_no in (".implode(",",$selected).") limit 1";
+	$result62=mysqli_query($link, $sql62) or die("Error3 = ".$sql62.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row62=mysqli_fetch_array($result62))
+	{				
+		$unique_orginal_sizes1=$row62["size_code"];
+		$unique_sizes1=$row62["orginal_size_code"];
+	}
+	$unique_orginal_sizes_explode1=explode(",",$unique_orginal_sizes1);
+	$unique_sizes_explode1=explode(",",$unique_sizes1);
     if(sizeof($selected)>1) 
     { 
 		$sql23="select max(order_joins) as maxorder from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" "; 
