@@ -3741,82 +3741,82 @@ if(isset($_POST['submit']))
 				$head_name=$sql_row2['sec_head'];
 			}
 
-			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt;background-color:#5A5A5A'>";
+			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt;'>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td colspan=5 rowspan=2 height=44 class=xl15326424 style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt;'>".$head_name."</td>";
+			$table_temp="<td colspan=5 rowspan=2 height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt;'>".$head_name."</td>";
 			echo $table_temp;
 
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".$operatorssum."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$operatorssum."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".($avail_A-$absent_A)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".($avail_A-$absent_A)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".($avail_B-$absent_B)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".($avail_B-$absent_B)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
 
 			if($totalmodules>0)
 			{
-				$table_temp="<td class=xl9826424>".round($rew_A/$totalmodules,0)."%</td>";
+				$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round($rew_A/$totalmodules,0)."%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
-				$table_temp="<td class=xl9826424>".round($rew_B/$totalmodules,0)."%</td>";
+				$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round($rew_B/$totalmodules,0)."%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 			else
 			{
-				$table_temp="<td class=xl9826424>0%</td>";
+				$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>0%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
-				$table_temp="<td class=xl9826424>0%</td>";
+				$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>0%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 
-			$table_temp="<td class=xl9726424>".$auf_A."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$auf_A."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".$auf_B."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$auf_B."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td class=xl9726424>".round($pclha_total,$decimal_factor)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($pclha_total,$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".round($pclhb_total,$decimal_factor)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($pclhb_total,$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
 			$table_temp="<td rowspan=2 class=xl15926424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".round(($ppro_a_total+$ppro_b_total),0)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".$atotal."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$atotal."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td class=xl9726424>".$btotal."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$btotal."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
 			$table_temp="<td rowspan=2 class=xl15926424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".($pstha_mod_total+$psthb_mod_total)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".($pstha_mod_total)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".($pstha_mod_total)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".round($stha_total,$decimal_factor)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($stha_total,$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".($psthb_mod_total)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".($psthb_mod_total)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".round($sthb_total,$decimal_factor)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($sthb_total,$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
@@ -3872,40 +3872,40 @@ if(isset($_POST['submit']))
 				$xb_actual=round(($sthb_total/($pclhb_total-($offsthb_sum/60)))*100,0);
 			}
 
-			$table_temp="<td class=xl9726424>".round($ppro_a_total,0)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($ppro_a_total,0)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td  class=xl9826424>".round($peffresulta,0)."%</td>";
+			$table_temp="<td  class=xl9826424 style='background-color:#5A5A5A'>".round($peffresulta,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			/*$table_temp="<td class=xl9826424>".round($xa,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;*/
 			//$table_temp="<td class=xl9826424>".$xa_actual."%</td>";
-			$table_temp="<td class=xl9826424>".round(($stha_total/(($avail_A-$absent_A)*7.5))*100,0)."%</td>";
+			$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round(($stha_total/(($avail_A-$absent_A)*7.5))*100,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			/*$table_temp="<td class=xl9726424>".($clha-round(($offstha_sum/60),2))."</td>";
 			echo $table_temp;
 			$table.=$table_temp;*/
-			$table_temp="<td class=xl9726424>".round($ppro_b_total,0)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($ppro_b_total,0)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9826424>".round($peffresultb,0)."%</td>";
+			$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round($peffresultb,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			/*$table_temp="<td class=xl9826424>".round($xb,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;*/
 			//$table_temp="<td class=xl9826424>".$xb_actual."%</td>";
-			$table_temp="<td class=xl9826424>".round(($sthb_total/(($avail_B-$absent_B)*7.5))*100,0)."%</td>";
+			$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round(($sthb_total/(($avail_B-$absent_B)*7.5))*100,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td class=xl9726424>".round(($offstha_sum/60),2)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round(($offstha_sum/60),2)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl10026424>".round(($offsthb_sum/60),2)."</td>";
+			$table_temp="<td class=xl10026424 style='background-color:#5A5A5A'>".round(($offsthb_sum/60),2)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
