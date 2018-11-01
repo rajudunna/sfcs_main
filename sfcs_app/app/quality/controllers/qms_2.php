@@ -239,10 +239,6 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 		$schedule=$_GET['schedule_id'];
 	}
 
-	$get_order_tid = "select order_tid,order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
-	$get_order_tid_res=mysqli_query($link, $get_order_tid) or die("Sql error".$get_order_tid.mysqli_errno($GLOBALS["___mysqli_ston"]));
-
-	$colors_array = mysqli_fetch_all($get_order_tid_res,MYSQLI_ASSOC);
 
 	$sql="select * from $bai_pro3.bai_qms_db where qms_tran_type in (3,5) and qms_schedule='".$schedule."'";
 	// echo $sql."<br>";
@@ -257,14 +253,7 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 			$qms_qty1=$row["qms_qty"];
 			
 			$url = '?r='.$_GET['r'];
-
-			foreach($colors_array as $color){
-				if($color['order_col_des'] == $row["qms_color"]){
-					$order_tid = $color['order_tid'];
-					break;
-				}
-			}
-
+			$order_tid = '';
 			$qms_size_title = ims_sizes($order_tid,$row["qms_schedule"],$row["qms_style"],$row["qms_color"],$row["qms_size"],$link);
 			
 			$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$qms_size_title."</td><td>".$row["qms_remarks"]."</td><td>".$row["bundle_no"]."</td><td>".$row["operation_id"]."</td><td>".$row["input_job_no"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
