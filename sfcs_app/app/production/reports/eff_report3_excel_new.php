@@ -3741,11 +3741,11 @@ if(isset($_POST['submit']))
 				$head_name=$sql_row2['sec_head'];
 			}
 
-			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt;'>";
+			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt;background-color:#5A5A5A'>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td colspan=5 rowspan=2 height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt;'>".$head_name."</td>";
+			$table_temp="<td colspan=5 rowspan=2 height=44 class=xl15326424 style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt;'>".$head_name."</td>";
 			echo $table_temp;
 
 			$table.=$table_temp;
