@@ -1,6 +1,7 @@
 <?php
 // include("dbconf.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
 //$has_perm=haspermission($_GET['r']);
@@ -237,12 +238,18 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	{
 		$schedule=$_GET['schedule_id'];
 	}
+
+	$get_order_tid = "select order_tid,order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
+	$get_order_tid_res=mysqli_query($link, $get_order_tid) or die("Sql error".$get_order_tid.mysqli_errno($GLOBALS["___mysqli_ston"]));
+
+	$colors_array = mysqli_fetch_all($get_order_tid_res,MYSQLI_ASSOC);
+
 	$sql="select * from $bai_pro3.bai_qms_db where qms_tran_type in (3,5) and qms_schedule='".$schedule."'";
 	// echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($result)>0)
 	{
-		$msg="<table border='1px' class=\"table table-bordered\"  id=\"table1\"><tr><th>Style</th><th>ScheduleNo</th><th>Color</th><th>Qms_remarks</th><th>Bundle_no</th><th>Operation_id</th><th>Input_job_no</th><th>Date</th><th>Quantity</th><th>Control</th></tr>";
+		$msg="<table border='1px' class=\"table table-bordered\"  id=\"table1\"><tr><th>Style</th><th>ScheduleNo</th><th>Color</th><th>Size</th><th>Qms_remarks</th><th>Bundle_no</th><th>Operation_id</th><th>Input_job_no</th><th>Date</th><th>Quantity</th><th>Control</th></tr>";
 		while($row=mysqli_fetch_array($result))
 		{
 			$tid=$row["qms_tid"];
@@ -250,8 +257,17 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 			$qms_qty1=$row["qms_qty"];
 			
 			$url = '?r='.$_GET['r'];
+
+			foreach($colors_array as $color){
+				if($color['order_col_des'] == $row["qms_color"]){
+					$order_tid = $color['order_tid'];
+					break;
+				}
+			}
+
+			$qms_size_title = ims_sizes($order_tid,$row["qms_schedule"],$row["qms_style"],$row["qms_color"],$row["qms_size"],$link);
 			
-			$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$row["qms_remarks"]."</td><td>".$row["bundle_no"]."</td><td>".$row["operation_id"]."</td><td>".$row["input_job_no"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
+			$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$qms_size_title."</td><td>".$row["qms_remarks"]."</td><td>".$row["bundle_no"]."</td><td>".$row["operation_id"]."</td><td>".$row["input_job_no"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
 		}
 		$msg.="</table>";
 		echo $msg;
