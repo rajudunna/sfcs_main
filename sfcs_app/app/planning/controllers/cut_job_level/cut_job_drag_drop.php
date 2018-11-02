@@ -753,11 +753,12 @@
 								
 										$mods=array();
 										$mods=explode(",",$table_id);
+
 										
 										// echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
 										for($x=0;$x<sizeof($mods);$x++)
 										{
-									
+									        $doc_no1=array();
 											echo '<ul id="'.$mods[$x].'" style="width:150px">';
 													//<li id="node16">Student P</li>
 													
