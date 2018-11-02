@@ -1,6 +1,7 @@
 <?php
     // include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     if(isset($_POST['input_job'])){
         $job_no = $_POST['input_job'];
         
@@ -38,6 +39,13 @@
                      
             for($i=0;$i<sizeof($size_ary);$i++)
             {
+                $sql_tid="select order_tid from $bai_pro3.bai_orders_db where order_del_no='".schedule."' and order_col_des='".$color[$i]."'";
+                $sql_result_tid=mysqli_query($link, $sql_tid) or exit("Sql Error6 $sql_tid".mysqli_error($GLOBALS["___mysqli_ston"]));
+                 while($sql_row_tid=mysqli_fetch_array($sql_result_tid))
+					{
+						$order_tid=$sql_row_tid["order_tid"];
+                    }
+                $size_tit = ims_sizes($order_tid,$schedule,$style,$color[$i],$size_ary[$i],$link);
                 $remarks_in = $module."-".$shift_ary[$i];
                 /* Replace Panels  with qms_tran_type 2*/
                 $insert_qry = "insert into $bai_pro3.bai_qms_db(qms_style,qms_schedule,qms_color,qms_remarks,bundle_no,log_user,log_date,issued_by,qms_size,qms_qty,qms_tran_type,remarks,ref1,doc_no,location_id,input_job_no,operation_id)
@@ -67,7 +75,7 @@
                
                 /* Get data of sewing job for this input_job,size,doc_no */
 
-                $get_job_data = "select * from bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$job_no' AND size_code='$size_ary[$i]' AND doc_no='$doc_ary[$i]' "; 
+                $get_job_data = "select * from bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$job_no' AND old_size='$size_ary[$i]' AND doc_no='$doc_ary[$i]' "; 
                 
                $res_get_job_data =mysqli_query($link,$get_job_data) or exit("erro3");
               
@@ -75,14 +83,14 @@
                 {
                     // $doc_ref = $result1['doc_ref'];
                     $status = $result1['status'];$input_job_no = $result1['input_job_no'];$destination = $result1['destination'];$pack_mode = $result1['packing_mode'];
-                    $o_size = $result1['old_size'];$doc_type=$result1['doc_type'];$type_sewing = $result1['type_of_sewing'];
+                    $size_code = $result1['size_code'];$doc_type=$result1['doc_type'];$type_sewing = $result1['type_of_sewing'];
                     //$barcode_sequence = (int)$result1['barcode_sequence']+1;
                     $sref_id = $result1['sref_id'];$pac_seq_no=$result1['pac_seq_no'];
                 }
                $barcode_sequence = (int)$barcode_sequence+1;
                 // echo $status."--".$input_job."--".$destination."--".$pack_mode."--".$o_size."--".$doc_type."--".$type_sewing."-".$barcode_sequence."<br>";die();
                 
-                $insert_packing = "insert into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,status,doc_no_ref,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,sref_id,pac_seq_no,barcode_sequence)VALUES('$doc_ary[$i]','$size_ary[$i]','$qty_ary[$i]','$status','','$input_job_no','$job_no','$destination','$pack_mode','$o_size','$doc_type','$type_sewing','$sref_id','$pac_seq_no','$barcode_sequence')";
+                $insert_packing = "insert into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,status,doc_no_ref,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,sref_id,pac_seq_no,barcode_sequence)VALUES('$doc_ary[$i]','$size_code','$qty_ary[$i]','$status','','$input_job_no','$job_no','$destination','$pack_mode','$size_ary[$i]','$doc_type','$type_sewing','$sref_id','$pac_seq_no','$barcode_sequence')";
 
                 $res_get_job_data =mysqli_query($link,$insert_packing) or exit("erro4");
                 if($res_get_job_data){
