@@ -49,7 +49,7 @@
 $url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
 // echo $operation_code;
 $form = 'P';
-if($operation_code >=130 && $operation_code < 300)
+if($operation_code >=130)
 {
 	$form = 'G';
 }
