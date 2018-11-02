@@ -14,31 +14,33 @@ $result_qry_modetails=mysqli_query($link, $qry_modetails) or exit("Sql Error".my
 print("job started\n");
 while($sql_row=mysqli_fetch_array($result_qry_modetails))
 {
-    //echo "MO Number :".$sql_row['mo_num']."- Item Code : ".$sql_row['item_code']."- Style : ".$sql_row['style']."- Schedule : ".$sql_row['SCHEDULE']."- Color : ".$sql_row['color']."- Size : ".$sql_row['size']."- Zfeature : ".$sql_row['zfeature']."</br>";
 
     $mo_num=$sql_row['mo_num'];
     $FG_code=$sql_row['product_sku'];
-    
-    //For testing API
-    // $mo_num='1991686';
-    // $FG_code= 'ASL18SF8   0026';
 
+    //getting all work center id in sfcs
+    $qry_getworkcenters="SELECT * FROM brandix_bts.tbl_orders_ops_ref";
+    $result_qry_getworkcenters=mysqli_query($link, $qry_getworkcenters) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $result_allcenters=mysqli_fetch_all($result_qry_getworkcenters,MYSQLI_ASSOC);
+    $workcenters_array=array_column($result_allcenters,'parent_work_center_id');
+    
     $url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations?CONO=".$company_no."&FACI=".$facility_code."&MFNO=".$mo_num."&PRNO=".$FG_code;
     $url = str_replace(' ', '%20', $url);
-echo "Api :".$url."<br>";
-// die();
+
     $result = $obj->getCurlAuthRequest($url);
     $decoded = json_decode($result,true);
-     // var_dump($decoded);
     
     if($decoded['@type'])
     {
         continue;
     }
     $vals = (conctruct_array($decoded['MIRecord']));
+    //For bulk insertion in  schedule master
+    $sql1 = "insert into $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values";
+    $values = array();
+    $workcenter_status_valid=true;
     foreach ($vals as $value) 
     {
-        //echo "Oper Desc: ".$value['OPDS']."MO No:".$value['MFNO']."Work Station Id :".$value['PLG1']."SMV :".$value['PITI']."Operation :".$value['OPNO']."</br>";
         
         //getting values from api call
         $MONumber=$value['MFNO'];
@@ -51,7 +53,14 @@ echo "Api :".$url."<br>";
         $operation_desc=$value['OPDS'];
         $operation_code=$value['OPNO'];
         $WorkCenterId=$value['PLGR'];
-        $WorkCenterId_parent=$value['PLG1'];
+        $WorkCenterId_parent=trim($value['PLG1'],' ');
+         
+        //validating m3 workcenter with sfcs
+        if (!in_array($WorkCenterId_parent,$workcenters_array)) {
+            $workcenter_status_valid=false;
+            break;
+        }
+
         
         //getting values from MO details
         $Style=$sql_row['style'];
@@ -70,15 +79,27 @@ echo "Api :".$url."<br>";
         }
 
         //insertion query for schedule_oprations_master table
-        $sql1="insert into $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values('".$Style."','".$ScheduleNumber."','".$ColorId."','".$Description."','".$SizeId."','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."')";
+        // $sql1="insert into $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values('".$Style."','".$ScheduleNumber."','".$ColorId."','".$Description."','".$SizeId."','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."')";
 
-        echo $sql1."<br>";
-        $insert_result=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));  
-    }   
-    //Update status for updated mo's and FG_codes
-    $update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num'";
-    echo $update_mo_details."<br>";
-    $result = mysqli_query($link, $update_mo_details)or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+        array_push($values, "('" . $Style . "','" . $ScheduleNumber . "','" . $ColorId . "','" . $Description . "','" . $SizeId . "','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."')");
+    }
+
+    if($workcenter_status_valid){
+       //var_dump($values);
+        //insertion query for schedule_oprations_master table
+       $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+       if($sql_result1){
+            print("Inserted successfully")."\n";
+
+       }
+
+        
+        //Update status for updated mo's and FG_codes
+        $update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num'";
+        $result = mysqli_query($link, $update_mo_details)or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+    }  
+    
 }
 print("job successfully completed\n");
 //construct key values and 
