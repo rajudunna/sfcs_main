@@ -31,7 +31,6 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                     $workcenter_id=$sql_row1['work_center_id'];
 
                 }
-
                 $insert_query="insert into $bai_pro3.m3_transactions (quantity,log_user,op_code, op_des, workstation_id,m3_ops_code) values ('$carton_act_qty', '$username', '$operation_code', '$operation_description','$workcenter_id','$operation_code')";
                 $insert_query_result=mysqli_query($link, $insert_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo $insert_query;

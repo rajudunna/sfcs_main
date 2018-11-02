@@ -136,8 +136,6 @@
 	}
 ?>
 
-
-
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>MRN Integration</b></div>
 	<div class="panel-body">

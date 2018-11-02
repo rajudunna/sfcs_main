@@ -138,7 +138,6 @@
                                             }
 
                                             echo "<tr style='background-color:$bg_color;'>";
-
                                             echo "<td>".$sql_row['order_del_no']."</td>";
                                             echo "<td>".$sql_row['order_col_des']."</td>";
                                             echo "<td>".$cut_jobs_new."</td>";
