@@ -1,7 +1,7 @@
 <?php
     // include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
     if(isset($_POST['input_job'])){
         $job_no = $_POST['input_job'];
         
