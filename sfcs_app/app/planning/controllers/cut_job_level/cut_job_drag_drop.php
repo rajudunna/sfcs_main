@@ -783,7 +783,7 @@
 
 
 												    
-													$sql1="select act_cut_status,act_cut_issue_status,doc_no,order_style_no,order_del_no,order_col_des,acutno,color_code from $bai_pro3.plan_doc_summ where doc_no  in ($doc_no) and act_cut_status<>\"DONE\""; 
+													$sql1="select act_cut_status,act_cut_issue_status,doc_no,order_style_no,order_del_no,order_col_des,acutno,color_code from $bai_pro3.plan_dash_doc_summ where doc_no  in ($doc_no) and act_cut_status<>\"DONE\""; 
 
 													 //echo $sql1;
 													 //die();
@@ -832,7 +832,7 @@
 
                                                         
 														
-														 $title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Cut No:".chr($color_code1).leading_zeros($act_cut_no,3),50)."\n".str_pad("Qty:".$total_qty1,50);
+														 $title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Cut No:".chr($color_code1).leading_zeros($act_cut_no,3),50)."\n".str_pad("Doc No:".$doc_no,50)."\n".str_pad("Qty:".$total_qty1,50);
 														
 														 // echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
 														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
