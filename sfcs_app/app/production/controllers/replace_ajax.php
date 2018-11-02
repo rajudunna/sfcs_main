@@ -1,7 +1,6 @@
 <?php
     // include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
     if(isset($_POST['input_job'])){
         $job_no = $_POST['input_job'];
         
@@ -39,13 +38,19 @@
                      
             for($i=0;$i<sizeof($size_ary);$i++)
             {
-                $sql_tid="select order_tid from $bai_pro3.bai_orders_db where order_del_no='".schedule."' and order_col_des='".$color[$i]."'";
+                $sql_tid="select order_tid from $bai_pro3.bai_orders_db where order_del_no='".$schedule."' and order_col_des='".$color[$i]."'";
                 $sql_result_tid=mysqli_query($link, $sql_tid) or exit("Sql Error6 $sql_tid".mysqli_error($GLOBALS["___mysqli_ston"]));
                  while($sql_row_tid=mysqli_fetch_array($sql_result_tid))
 					{
 						$order_tid=$sql_row_tid["order_tid"];
-                    }
-                $size_tit = ims_sizes($order_tid,$schedule,$style,$color[$i],$size_ary[$i],$link);
+                    }  
+            $sql23="select title_size_$size_ary[$i] as size_val,title_flag from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid' and order_style_no='$style' and order_del_no='$schedule' and order_col_des='".$color[$i]."'";
+            $sql_result_size=mysqli_query($link, $sql23) or exit("Sql Error6 $sql_tid".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($sql_row_tid=mysqli_fetch_array($sql_result_size))
+               {
+                   $size_tit=$sql_row_tid["order_tid"];
+               } 
+            
                 $remarks_in = $module."-".$shift_ary[$i];
                 /* Replace Panels  with qms_tran_type 2*/
                 $insert_qry = "insert into $bai_pro3.bai_qms_db(qms_style,qms_schedule,qms_color,qms_remarks,bundle_no,log_user,log_date,issued_by,qms_size,qms_qty,qms_tran_type,remarks,ref1,doc_no,location_id,input_job_no,operation_id)
