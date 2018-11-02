@@ -27,6 +27,14 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
+
+// Production Status Connections
+$prod_status_server_name=$conf->get('prod-status-server-name');
+$prod_status_username=$conf->get('prod-status-user-name');
+$prod_status_password = $conf->get('prod-status-password');
+$prod_status_database=$conf->get('prod-status-db');
+$prod_status_driver_name=$conf->get('prod-status-driver-name');
+
 //ms-sql jobs 
 $user_ms = "BAISFCS";
 $password_ms = "fcs@m3pr";
@@ -96,8 +104,8 @@ $bai_ict="bai_ict";
 $path=$include_path."/sfcs_app/app";
 // $mail_to_test=$mail_alert[2];
 $smtp_user=$conf->get('smtp-user-name');
-$header_name="BEKSFCS Alert";
-$header_mail="bek_sfcs@brandix.com";
+$header_name=$smtp_user." Alert";
+$header_mail=$conf->get('smtp_mail_from');
  $header_from= 'From: BEKSFCS Alert <bek_sfcs@brandix.com>';
 // $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 $order_summary_report=$conf->get('order_summary_mail');

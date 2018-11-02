@@ -39,7 +39,7 @@ $style_i = $style;
 $schedule_i = $schedule;
 
 //Inserting data  into the sewing 'job log table
-$in_query = "Insert into $bai_pro3.sewing_jobs_ref ('style','schedule','log_time','bundles_count') values 
+$in_query = "Insert into $bai_pro3.sewing_jobs_ref (style,schedule,log_time,bundles_count) values 
 			('$style','$schedule','".date('Y-m-d H:i:s')."','0')";
 $in_result = mysqli_query($link,$in_query) or exit('Unable to insert into the sewing job ref');		
 if($in_result)

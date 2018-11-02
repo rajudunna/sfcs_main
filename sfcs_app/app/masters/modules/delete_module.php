@@ -1,18 +1,10 @@
-<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+<script src="/sfcs_app/common/js/jquery-1.11.1.min.js"></script>
+<script src="/sfcs_app/common/js/sweetalert-dev.js"></script>
+<link rel="stylesheet" href="/sfcs_app/common/css/sweetalert.css">
 <?php
 $rid=$_GET['rowid1'];
 $module_name=$_GET['module_name'];
 $section=$_GET['section'];
-// echo $rid;
-// $servername = "192.168.0.110:3326";
-// $username = "baiall";
-// $password = "baiall";
-// $dbname = "bai_pro3";
-
-// Create connection
-// $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
@@ -34,17 +26,17 @@ if($rid!=''){
 		  }
 		}); }, 100);</script>";
 
-		$plan_dashboard11="select * from bai_pro3.plan_dashboard where module='$module_name'";
+		$plan_dashboard11="select * from $bai_pro3.plan_dashboard where module='$module_name'";
 		$result11= mysqli_query($conn, $plan_dashboard11);
 		$rowcount11=mysqli_num_rows($result11);
 
 
-		$plan_dashboard_input12="select * from bai_pro3.plan_dashboard_input where input_module='$module_name'";
+		$plan_dashboard_input12="select * from $bai_pro3.plan_dashboard_input where input_module='$module_name'";
 		$result12= mysqli_query($conn, $plan_dashboard_input12);
 		$rowcount12=mysqli_num_rows($result12);
 
 
-		$fabric_priorities="select * from bai_pro3.fabric_priorities where module='$module_name'";
+		$fabric_priorities="select * from $bai_pro3.fabric_priorities where module='$module_name'";
 		$fabric_priorities1= mysqli_query($conn, $fabric_priorities);
 		$rowcount13=mysqli_num_rows($fabric_priorities1);
 		
@@ -57,7 +49,7 @@ if($rowcount11>0 or 	$rowcount12>0 or 	$rowcount13>0){
 				swal({
 				  title: 'Module Already in Production',
 				  text: 'Message!',
-				  type: 'success',
+				  type: 'warning',
 				  confirmButtonText: 'OK'
 				},
 				function(isConfirm){

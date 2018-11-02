@@ -278,7 +278,8 @@ if(isset($_POST['search']))
 		$sew_exces_tot=0;
 		$trim_tot=0;
 		$mac_tot=0;
-		$sql="select sum(act_out) as \"output\", sum(rework_qty) as \"rework\", group_concat(distinct module) as \"module\",section from $bai_pro.grand_rep where section in (1,2,3,4,5,6,7,8) and date between \"$sdate\" and \"$edate\" and shift in ($team) group by section";
+		$sql="select sum(act_out) as \"output\", sum(rework_qty) as \"rework\", group_concat(distinct module) as \"module\",section from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" and shift in ($team) group by section";
+		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -292,7 +293,7 @@ if(isset($_POST['search']))
 			
 					
 			$sql1="select ref1, qms_qty from $bai_pro3.bai_qms_db where qms_tran_type=3 and substring_index(remarks,\"-\",1) in (".$sql_row['module'].") and log_date between \"$sdate\" and \"$edate\" and substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in ($team)";
-			
+			// echo $sql1;
 			
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))

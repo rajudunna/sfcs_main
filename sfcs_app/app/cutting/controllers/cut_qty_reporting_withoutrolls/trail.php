@@ -32,7 +32,7 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 			}
 		}
 	}
-	$rec_qty =0 ;
+	$rec_qty =0 ; 
 	$left_over_qty = 0;
 
 	foreach ($cut_done_qty as $key => $value)
@@ -80,12 +80,24 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 				$post_ops_code = $row['operation_code'];
 			}
 		}
-		$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$value WHERE docket_number = '$doc_no_ref' AND size_id = '$key' AND operation_id = '$post_ops_code'";
-		$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-		// $update_qry_cps_post_code = "update $bai_pro3.cps_log set received_qty_cumulative=$recevied_qty WHERE `doc_no`='$doc_no_ref' AND `size_code`=  '$key' AND operation_code = '$post_ops_code'";
-		// $updating_cps = mysqli_query($link,$update_qry_cps_post_code) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+		$category=['cutting','Send PF','Receive PF'];
+		$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+		//echo $checking_qry;
+		$result_checking_qry = $link->query($checking_qry);
+		while($row_cat = $result_checking_qry->fetch_assoc()) 
+		{
+			$category_act = $row_cat['category'];
+		}
+		if(in_array($category_act,$category))
+		{
+			$emb_cut_check_flag = 1;
+		}
+		if($emb_cut_check_flag)
+		{
+			$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$value WHERE docket_number = '$doc_no_ref' AND size_id = '$key' AND operation_id = '$post_ops_code'";
+			$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+		}
 		$updation_m3 = updateM3Transactions($ref_no,$op_code,$value);
 	}
 }
@@ -106,7 +118,7 @@ else if ($go_back_to == 'doc_track_panel_withrolls_recut')
 }
 else if ($go_back_to == 'doc_track_panel_without_recut')
 {
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel.php',1,'N')."'; }</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel.php',0,'N')."'; }</script>";
 }
 
 

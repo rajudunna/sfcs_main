@@ -226,7 +226,16 @@ function getjobdetails($job_number)
 			echo json_encode($result_array);
 			die();
 		}
-		
+		$get_ops_query = "SELECT DISTINCT tm.operation_code FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.id=tm.operation_name WHERE tm.style ='$job_number[1]' AND tm.color='$maped_color' AND tr.category = 'sewing' ORDER BY operation_order";
+		// echo $get_ops_query;
+		$ops_query_result=mysqli_query($link,$get_ops_query);
+		while ($row = mysqli_fetch_array($ops_query_result))
+		{
+		  
+		  $ops_get_code[] = $row['operation_code'];
+		  $result_array['ops_get_code'][] = $row['operation_code'];
+
+		}
 		$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
 		// echo $pre_ops_check.'<br/>';
 		$result_pre_ops_check = $link->query($pre_ops_check);
@@ -239,7 +248,7 @@ function getjobdetails($job_number)
 			// echo $pre_ops_code;
 			$category=['cutting','Send PF','Receive PF'];
 			$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $pre_ops_code";
-			//echo $checking_qry;
+			// echo $checking_qry;
 			$result_checking_qry = $link->query($checking_qry);
 			while($row_cat = $result_checking_qry->fetch_assoc()) 
 			{
@@ -270,17 +279,17 @@ function getjobdetails($job_number)
 			if($schedule_count_query->num_rows > 0)
 			{
 				if($module_no==0){
-					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' GROUP BY size_code,order_col_des,assigned_module order by tid";
+					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)  order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' GROUP BY size_code,order_col_des,assigned_module order by tid";
 					
 				}else{
-					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' and assigned_module = '$module_no' GROUP BY size_code,order_col_des,assigned_module order by tid";
+					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)  order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' and assigned_module = '$module_no' GROUP BY size_code,order_col_des,assigned_module order by tid";
 				}
 
 				$flag = 'bundle_creation_data';
 			}
 			else
 			{
-				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)) as doc_no,'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
+				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)  order by doc_no) as doc_no,'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
 				$flag = 'packing_summary_input';
 				// $result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
 				// $flags = 100;
@@ -296,15 +305,15 @@ function getjobdetails($job_number)
 			if($schedule_count_query->num_rows > 0)
 			{
 				if($module_no==0){
-					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' GROUP BY size_code,order_col_des,assigned_module order by tid";
+					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)  order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' GROUP BY size_code,order_col_des,assigned_module order by tid";
 				}else{
-					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' and assigned_module = '$module_no' GROUP BY size_code,order_col_des,assigned_module order by tid";
+					$schedule_query = "SELECT sum(send_qty)as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)-(SUM(recevied_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number) order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' and assigned_module = '$module_no' GROUP BY size_code,order_col_des,assigned_module order by tid";
 				}
 				$flag = 'bundle_creation_data';
 			}
 			else
 			{
-				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)) as doc_no,'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
+				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no) order by doc_no) as doc_no,'packing_summary_input' as flag FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = $job_number[0] GROUP BY size_code,order_col_des order by tid";
 				$flag = 'packing_summary_input';
 				// $result_array['status'] = 'Cut Quantity reporting Not Yet Done!!!';
 				// $flags = 100;
@@ -363,7 +372,37 @@ function getjobdetails($job_number)
 						{
 							$result_array['status'] = 'Please assign module to this input job';
 						}
+						foreach ($ops_get_code as $key => $value)
+						{
+                                $row['recevied_pre_qty'][$value][] = 0;
+                               // $result_array['ops_get_code'][] = $value;
+                                //array_unique( $result_array['ops_get_code']);
+                                 // $result_array['ops_get_code'][] = $value;
+						}
 						
+					}
+					else
+					{
+						foreach ($ops_get_code as $key => $value)
+						{
+
+						  $color_pre = $row['order_col_des'] ;
+						  $size_pre = $row['size_code'];
+						  $module_pre = $row['assigned_module'];
+						  $get_quantities = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition ='$column_to_search' AND operation_id ='$value' and color = '$color_pre' and size_title = '$size_pre' and assigned_module = '$module_pre'";
+						 // echo $get_quantities.'</br>';
+							 $result_ops_quantities = $link->query($get_quantities);
+							 while($row3 = $result_ops_quantities->fetch_assoc()) 
+							 {
+							 	 $row['recevied_pre_qty'][$value][] = $row3['recevied_qty'];
+							 } 
+
+                            // $result_array['recevied_pre_qty'][$value][] = $recevied_pre_qty;
+                           //  $result_array['ops_get_code'][] = $value;
+                            // array_unique( $result_array['ops_get_code']);
+                             //echo json_encode($result_array);
+						}
+
 					}
 					// echo 'hi'.$emb_cut_check_flag;
 					if($emb_cut_check_flag == 1)
@@ -388,7 +427,7 @@ function getjobdetails($job_number)
 								}
 								else
 								{
-									$doc_wise_bundle_qty = "SELECT SUM(original_qty)-(SUM(recevied_qty)+SUM(rejected_qty)) AS carton_act_qty FROM `brandix_bts`.`bundle_creation_data` WHERE docket_number = '$doc_no' AND size_id ='$size' AND input_job_no_random_ref = '$job_number[0]' AND operation_id = '$job_number[4]'";
+									$doc_wise_bundle_qty = "SELECT SUM(original_qty)-(SUM(recevied_qty)) AS carton_act_qty FROM `brandix_bts`.`bundle_creation_data` WHERE docket_number = '$doc_no' AND size_id ='$size' AND input_job_no_random_ref = '$job_number[0]' AND operation_id = '$job_number[4]'";
 								}
 								// echo $doc_wise_bundle_qty;
 								$result_doc_wise_bundle_qty = $link->query($doc_wise_bundle_qty);
@@ -416,14 +455,13 @@ function getjobdetails($job_number)
 								}
 								
 							//}
-							
-							$result_array['emb_cut_check_flag'] = $pre_ops_code;
 						}
 						else
 						{
 							$act_bal_to_report = 0;
 						}
 						$row['balance_to_report'] = $act_bal_to_report;
+						$result_array['emb_cut_check_flag'] = $pre_ops_code;
 					}
 					$result_array['table_data'][] = $row;
 				}
@@ -626,7 +664,7 @@ function getjobdetails($job_number)
 			$schedule_count_query = $link->query($schedule_count_query);
 			if($schedule_count_query->num_rows > 0)
 			{
-				$schedule_query = "SELECT `send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,`recevied_qty` as reported_qty,`rejected_qty` as rejected_qty,(send_qty-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' order by tid";
+				$schedule_query = "SELECT `send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,`recevied_qty` as reported_qty,`rejected_qty` as rejected_qty,(send_qty-(recevied_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' order by tid";
 				$flag = 'bundle_creation_data';
 			}
 			else
@@ -646,7 +684,7 @@ function getjobdetails($job_number)
 			$schedule_count_query = $link->query($schedule_count_query);
 			if($schedule_count_query->num_rows > 0)
 			{
-				$schedule_query = "SELECT `send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,`recevied_qty` as reported_qty,`rejected_qty` as rejected_qty,(send_qty-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' order by tid";
+				$schedule_query = "SELECT `send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,`recevied_qty` as reported_qty,`rejected_qty` as rejected_qty,(send_qty-(recevied_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = $column_to_search AND operation_id = '$job_number[4]' order by tid";
 				$flags=3;
 				$flag = 'bundle_creation_data';
 			}
@@ -733,7 +771,7 @@ function getjobdetails($job_number)
 								}
 								else
 								{
-									$doc_wise_bundle_qty = "SELECT SUM(original_qty)-(SUM(recevied_qty)+SUM(rejected_qty)) AS carton_act_qty FROM `brandix_bts`.`bundle_creation_data` WHERE docket_number = '$doc_no' AND size_id ='$size' AND input_job_no_random_ref = '$job_number[0]' AND operation_id = '$job_number[4]'";
+									$doc_wise_bundle_qty = "SELECT SUM(original_qty)-(SUM(recevied_qty)) AS carton_act_qty FROM `brandix_bts`.`bundle_creation_data` WHERE docket_number = '$doc_no' AND size_id ='$size' AND input_job_no_random_ref = '$job_number[0]' AND operation_id = '$job_number[4]'";
 								}
 								// echo $doc_wise_bundle_qty;
 								$result_doc_wise_bundle_qty = $link->query($doc_wise_bundle_qty);
@@ -930,7 +968,7 @@ function getreversalscanningdetails($job_number)
 			$size_code = $row['size_title'];
 			$color = $row['color'];
 			$module = $row['assigned_module'];
-			$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$module' GROUP BY size_title,color,assigned_module order by bundle_number";
+			$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$module' GROUP BY size_title,color,assigned_module order by bundle_number";
 			// echo $post_ops_qry_to_find_rec_qty;
 			$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 			if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
@@ -962,7 +1000,7 @@ function getreversalscanningdetails($job_number)
 			$assigned_module = $row['assigned_module'];
 			if($checking_flag == 1)
 			{
-				$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $ops_dependency and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
+				$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $ops_dependency and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
 				//echo $post_ops_qry_to_find_rec_qty;
 				$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 				if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
@@ -1183,7 +1221,7 @@ function validating_remarks_with_qty($validating_remarks)
 			$result_qry_for_fetching_bal_to_report_qty_pre = $link->query($qry_for_fetching_bal_to_report_qty_pre);
 			if($result_qry_for_fetching_bal_to_report_qty_pre->num_rows > 0)
 			{
-				$qry_for_fetching_bal_to_report_qty_post = "select $send_qty-(SUM(recevied_qty)+SUM(rejected_qty)) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2] and remarks = '$validating_remarks[3]' order by bundle_number";
+				$qry_for_fetching_bal_to_report_qty_post = "select $send_qty-(SUM(recevied_qty)) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2] and remarks = '$validating_remarks[3]' order by bundle_number";
 				//echo $qry_for_fetching_bal_to_report_qty_post;
 				$result_qry_for_fetching_bal_to_report_qty_post = $link->query($qry_for_fetching_bal_to_report_qty_post);
 				while($row = $result_qry_for_fetching_bal_to_report_qty_post->fetch_assoc()) 
@@ -1192,11 +1230,11 @@ function validating_remarks_with_qty($validating_remarks)
 					$rec_qty = $row['rec_qty'];
 					if($post_ops_code == 0)
 					{
-						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty)+sum(rejected_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id =  $validating_remarks[2] and remarks <> '$remarks_post' order by bundle_number";
+						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id =  $validating_remarks[2] and remarks <> '$remarks_post' order by bundle_number";
 					}
 					else
 					{
-						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty)+sum(rejected_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id =  $post_ops_code and remarks <> '$remarks_post' order by bundle_number";
+						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where bundle_number = $validating_remarks[1] and operation_id =  $post_ops_code and remarks <> '$remarks_post' order by bundle_number";
 					}
 					
 					//echo $qry_for_fetching_bal_to_report_qty_post_post;
@@ -1234,7 +1272,7 @@ function validating_remarks_with_qty($validating_remarks)
 				}
 				else
 				{
-					$qry_for_fetching_bal_to_report_qty = "select (send_qty-(recevied_qty+rejected_qty))AS rec_qty,remarks from $brandix_bts.bundle_creation_data where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2]";
+					$qry_for_fetching_bal_to_report_qty = "select (send_qty-(recevied_qty))AS rec_qty,remarks from $brandix_bts.bundle_creation_data where bundle_number = $validating_remarks[1] and operation_id = $validating_remarks[2]";
 				}
 				// echo $qry_for_fetching_bal_to_report_qty;
 				$result_qry_for_fetching_bal_to_report_qty = $link->query($qry_for_fetching_bal_to_report_qty);
@@ -1430,7 +1468,7 @@ function validating_remarks_with_qty($validating_remarks)
 			$result_qry_for_fetching_bal_to_report_qty_pre = $link->query($qry_for_fetching_bal_to_report_qty_pre);
 			if($result_qry_for_fetching_bal_to_report_qty_pre->num_rows > 0)
 			{
-				$qry_for_fetching_bal_to_report_qty_post = "select $send_qty-(SUM(recevied_qty)+SUM(rejected_qty)) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id = $validating_remarks[2] and remarks = '$validating_remarks[3]' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' and assigned_module = '$module' order by bundle_number";
+				$qry_for_fetching_bal_to_report_qty_post = "select $send_qty-(SUM(recevied_qty)) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id = $validating_remarks[2] and remarks = '$validating_remarks[3]' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' and assigned_module = '$module' order by bundle_number";
 				//echo $qry_for_fetching_bal_to_report_qty_post;
 				$result_qry_for_fetching_bal_to_report_qty_post = $link->query($qry_for_fetching_bal_to_report_qty_post);
 				while($row = $result_qry_for_fetching_bal_to_report_qty_post->fetch_assoc()) 
@@ -1439,11 +1477,11 @@ function validating_remarks_with_qty($validating_remarks)
 					$rec_qty = $row['rec_qty'];
 					if($post_ops_code == 0)
 					{
-						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty)+sum(rejected_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id =  $validating_remarks[2] and remarks <> '$remarks_post' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' and assigned_module = '$module' order by bundle_number";
+						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id =  $validating_remarks[2] and remarks <> '$remarks_post' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' and assigned_module = '$module' order by bundle_number";
 					}
 					else
 					{
-						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty)+sum(rejected_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id =  $post_ops_code and remarks <> '$remarks_post' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' and assigned_module = '$module' order by bundle_number";
+						$qry_for_fetching_bal_to_report_qty_post_post = "select sum(recevied_qty) as rec_qty,remarks from $brandix_bts.bundle_creation_data_temp where  operation_id =  $post_ops_code and remarks <> '$remarks_post' and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' and assigned_module = '$module' order by bundle_number";
 					}
 					
 					//echo $qry_for_fetching_bal_to_report_qty_post_post;
@@ -1480,7 +1518,7 @@ function validating_remarks_with_qty($validating_remarks)
 				}
 				else
 				{
-					$qry_for_fetching_bal_to_report_qty = "select (SUM(send_qty)-(SUM(recevied_qty)+SUM(rejected_qty)))AS rec_qty,remarks from $brandix_bts.bundle_creation_data where  operation_id = $validating_remarks[2] and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' and assigned_module = '$module'";
+					$qry_for_fetching_bal_to_report_qty = "select (SUM(send_qty)-(SUM(recevied_qty)))AS rec_qty,remarks from $brandix_bts.bundle_creation_data where  operation_id = $validating_remarks[2] and color='$color_act' and size_title='$size_act' AND input_job_no_random_ref = '$validating_remarks[0]' and assigned_module = '$module'";
 				}
 				//echo $qry_for_fetching_bal_to_report_qty;
 				$result_qry_for_fetching_bal_to_report_qty = $link->query($qry_for_fetching_bal_to_report_qty);
@@ -1627,5 +1665,6 @@ function getCutDetails($doc_number){
 	}
 
 }
+
 
 ?>
