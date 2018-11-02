@@ -4,6 +4,7 @@
         $id=$_REQUEST['rowid'];
         $module=$_REQUEST['module_name'];
         $description=$_REQUEST['module_description'];
+        $block_priorities =$_REQUEST['block_priorities'];
         $mapped_cut_table =$_REQUEST['mapped_cut_table'];
 		$section=$_REQUEST['section'];
         $status=$_REQUEST['status'];
@@ -65,7 +66,6 @@
    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
    $conn=$link;
 		echo "<select id='sections' class='form-control' data-role='select'  name='sections'  data-parsley-errors-container='#errId2' required>";
-		
         echo "<option value='Please Select'  disabled selected>Please Select</option><br/>\r\n";
 		$query = "SELECT sec_id,sec_name FROM $bai_pro3.sections_master";
 		$result = $conn->query($query);
@@ -80,22 +80,32 @@
                 echo "<option value='".$sec_name."'>$sec_name</option>";
 
             }
-            
 
-			
+
+            
 		}
 		echo "</select>";
 	?>      </div>
 				</div>
 				</div>			
-				
-		<div class="col-md-4"><div class="form-group">
+		
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label control-label-left col-sm-3" for="description">Block Priorities</label>
+                <div class="controls col-sm-9">
+                    <input type="text" name="block_priorities" id="block_priorities" value="<?= $block_priorities; ?>" class="form-control integer" required>
+                </div>
+            </div>
+        </div>
+
+		<div class="col-md-4">
+            <div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="description">Module Description</label>
 			    <div class="controls col-sm-9">
-				<textarea id="description" type="text" class="form-control k-textbox" data-role="text" placeholder="Module Description" name="description" data-parsley-errors-container="#errId1"><?php echo htmlspecialchars($description); ?></textarea><span id="errId1" class="error"></span>
+				    <textarea id="description" type="text" class="form-control k-textbox" data-role="text" placeholder="Module Description" name="description" data-parsley-errors-container="#errId1"><?php echo htmlspecialchars($description); ?></textarea><span id="errId1" class="error"></span>
 				</div>
-                
-		</div></div>
+            </div>
+        </div>
 		<div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="table_status">Status</label>
 			    <div class="controls col-sm-9">
@@ -125,7 +135,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="description">Module Color</label>
 			    <div class="controls col-sm-9">
 				<div id="cp2" class="input-group colorpicker-component"> 
-                    <input type="text" value="<?= ($module_color)?$module_color: "#00AABB"; ?>" class="form-control" readonly="true" name="module_color"/> 
+                    <input type="text" value="<?= ($module_color)?$module_color: "#ffffff"; ?>" class="form-control" readonly="true" name="module_color"/> 
                     <span class="input-group-addon"><i></i></span>
                     </div>
 				</div>
@@ -190,10 +200,12 @@
             });
         });
     </script>
-	<div class="col-md-4"><div class="form-group" style="margin-top: 0px;">
-			    
-                
-		<button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button></div></div></div></div>
+    <div class="col-md-4">
+        <div class="form-group" style="margin-top: 0px;">
+            <button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button>
+        </div>
+    </div>
+</div></div>
                                     </div>
                                 
                     </div>
