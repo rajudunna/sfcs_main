@@ -1665,6 +1665,41 @@ function getCutDetails($doc_number){
 	}
 
 }
+if(isset($_GET['pre_array_module']))
+{
+	$pre_array_module = $_GET['pre_array_module'];
+	if($pre_array_module != '')
+	{
+		validating_with_module($pre_array_module);
+	}
+}
+function validating_with_module($pre_array_module)
+{
+	$pre_array_module = explode(",",$pre_array_module);
+	$module = $pre_array_module[0];
+	$job_no = $pre_array_module[1];
+	$input_job_array = array();
+	$response_flag = 0;
+	include("../../../../../common/config/config_ajax.php");
+	$validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM `bai_pro3`.`ims_log` WHERE ims_mod_no = '$module'";
+	$result_validating_qry = $link->query($validating_qry);
+	while($row = $result_validating_qry->fetch_assoc()) 
+	{
+		$input_job_array[] = $row['input_job_rand_no_ref'];
+	}
+	if(!in_array($job_no,$input_job_array))
+	{
+		if(sizeof($input_job_array) > $ims_boxes_count)
+		{
+			$response_flag = 1;
+		}
+	}
+	else
+	{
+		$response_flag = 0;
+	}
+	echo $response_flag;
+}
 
 
 ?>
