@@ -78,7 +78,7 @@
                         $panel_qry = "
                         SELECT SUM(IF((qms_tran_type=1),qms_qty,0)) AS g_qms_qty, SUM(IF(qms_tran_type=2,qms_qty,0)) AS replaced,
                         SUM(IF(qms_tran_type=3 AND input_job_no='$job_no',qms_qty,0)) AS r_qms_qty FROM bai_pro3.bai_qms_db WHERE qms_style = '".$data_ary['style']."' 
-                        AND qms_size='".$data_ary['size']."' AND qms_schedule='".$data_ary['schedule']."' AND input_job_no='".$job_no."' and  qms_color='".$data_ary['color']."'";
+                        AND qms_size='".$data_ary['size']."' AND qms_schedule='".$data_ary['schedule']."' AND  qms_color='".$data_ary['color']."'";
                         // echo $panel_qry."<br>";
 
                         $previous_size = '';
@@ -90,7 +90,7 @@
                         {
                             
                           $qms_det_qry ="select qms_style,qms_schedule,qms_color,qms_size,doc_no,SUBSTRING_INDEX(SUBSTRING_INDEX(remarks, '-', -2),'-',1) AS shift,GROUP_CONCAT(operation_id) as operation_id,GROUP_CONCAT(bundle_no) as bundle_no from $bai_pro3.bai_qms_db where qms_style = '".$data_ary['style']."' 
-                          AND qms_size='".$data_ary['size']."' AND qms_schedule='".$data_ary['schedule']."' AND qms_color='".$data_ary['color']."' and qms_tran_type='3'";
+                          AND qms_size='".$data_ary['size']."' AND qms_schedule='".$data_ary['schedule']."' AND qms_color='".$data_ary['color']."' and input_job_no='".$job_no."' and qms_tran_type='3'";
 
                         //   echo $qms_det_qry."<br>";
                           
