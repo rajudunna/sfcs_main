@@ -31,7 +31,7 @@ if(isset($_POST['id']))
 			<div class='row'>
 				<div class="form-group col-md-3">
 					<label>Sewing Job Number:<span style="color:red">*</span></label>
-					<input type="text"  id="job_number" class="form-control" required placeholder="Scan the Job..."/>
+					<input type="text"  id="job_number" onkeyup="validateQty1(event,this);" class="form-control" required placeholder="Scan the Job..."/>
 				</div>
 				<div class='form-group col-md-3'>
 					<label>Remarks:<span style="color:red">*</span></label>
@@ -59,6 +59,19 @@ if(isset($_POST['id']))
 </body>
 
 <script>
+	function validateQty1(e,t) 
+	{
+		if(e.keyCode == 13)
+			return;
+		var p = String.fromCharCode(e.which);
+		var c = /^[0-9]*\.?[0-9]*$/;
+		var v = document.getElementById(t.id);
+		if( !(v.value.match(c)) && v.value!=null ){
+			v.value = '';
+			return false;
+		}
+		return true;
+	}
 $(document).ready(function() 
 {
 	$('#job_number').focus();
@@ -84,10 +97,9 @@ $(document).ready(function()
 				else
 				{
 					$.each(response, function(key, value) {
-					$('select[name="operation"]').append('<option value="'+ key +'">'+ value +'</option>');
+						$('select[name="operation"]').append('<option value="'+ key +'">'+ value +'</option>');
 					});
-				}
-				
+				}				
 			}
 			
 		});
