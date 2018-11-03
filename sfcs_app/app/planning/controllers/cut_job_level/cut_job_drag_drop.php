@@ -783,7 +783,7 @@
 
 
 												    
-													$sql1="select act_cut_status,act_cut_issue_status,doc_no,order_style_no,order_del_no,order_col_des,acutno,color_code from $bai_pro3.plan_dash_doc_summ where doc_no  in ($doc_no) and act_cut_status<>\"DONE\""; 
+													$sql1="select act_cut_status,act_cut_issue_status,doc_no,order_style_no,order_del_no,order_col_des,acutno,color_code from $bai_pro3.plan_doc_summ where doc_no  in ($doc_no) and act_cut_status<>\"DONE\""; 
 
 													 //echo $sql1;
 													 //die();
