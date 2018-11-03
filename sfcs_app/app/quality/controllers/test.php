@@ -563,8 +563,7 @@ else
 					if($qty[$i]>0)
 					{
 						
-						$sql="select coalesce(sum(qms_qty),0) as \"qms_qty\"  from $bai_pro3.bai_qms_db where qms_style=\"".$style."\" and qms_schedule=\"".$schedule."\" and qms_color=\"".$color."\" and qms_size=\"".$title_sizes[$i]."\" and qms_tran_type in (1)";
-
+						$sql="select coalesce(SUM(IF((qms_qty>0),qms_qty,0))) as \"qms_qty\"  from $bai_pro3.bai_qms_db where qms_style=\"".$style."\" and qms_schedule=\"".$schedule."\" and qms_color=\"".$color."\" and qms_size=\"".$sizes_db[$i]."\" and qms_tran_type in (1)";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
