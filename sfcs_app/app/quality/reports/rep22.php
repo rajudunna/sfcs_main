@@ -161,15 +161,6 @@ background-position:center middle;
 
 					</tr>";
 
-                    // To get sewing output operation
-					$application='IMS_OUT';
-                    $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
-		            //echo $scanning_query;
-		            $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		            while($sql_row=mysqli_fetch_array($scanning_result))
-		            {
-		                $sewing_out_op=$sql_row['operation_code'];
-		            } 
                    
                     // To get category sewing
 		            $get_category="SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.`tbl_orders_ops_ref` 
@@ -224,14 +215,9 @@ background-position:center middle;
 					echo "<td>".$sql_row['schedule']."</td>";
 					echo "<td>".$sql_row['color']."</td>";
 					
-					if($op == $sewing_out_op)
-					{
+					
 					    $sw_out=$sql_row['output'];
-					}
-					else
-					{
-						$sw_out = 0;
-					}
+					
 
 					//echo $sw_out;
 					
